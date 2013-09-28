@@ -142,7 +142,7 @@ function submit_main()
   var form = document.getElementsByTagName('form')[0];
   var elms = document.getElementsByTagName('input');
   for (var i = 0; i < elms.length; i++) {
-    if (elms[i].name == "subpage") {
+    if (elms[i].name == "subpage" || elms[i].name=="delivery" || elms[i].name=="customize") {
       form.removeChild(elms[i]);
     }
   }
@@ -1261,7 +1261,7 @@ function nav_customize(type) {
   var f = document.forms['choices_form']; 
   var elms = document.getElementsByTagName('input');
   for (var i = 0; i < elms.length; i++) {
-    if (elms[i].name=="delivery" || elms[i].name=="customize") {
+    if (elms[i].name=="subpage" || elms[i].name=="delivery" || elms[i].name=="customize") {
       f.removeChild(elms[i]);
     }
   }
@@ -1283,4 +1283,7 @@ function nav_customize(type) {
   f.appendChild(t);
   f.appendChild(i);
   f.submit();
+
+  f.removeChild(t);
+  f.removeChild(i);
 }

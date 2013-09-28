@@ -1038,6 +1038,7 @@ class MatrixDefFile:
 
     choices_file = 'sessions/' + cookie + '/choices'
     choices = ChoicesFile(choices_file)
+    
 
     section_begin = -1
     section_end = -1
@@ -1064,7 +1065,6 @@ class MatrixDefFile:
     if section_begin != -1:
       if section_end == -1:
         section_end = i
-
       print '<title>' + section_friendly + '</title>'
       print HTML_posttitle % \
             (js_array4(choices.features()),
@@ -1105,7 +1105,7 @@ class MatrixDefFile:
           if cur_sec == section: 
             sec_links.append('</span><span class="navlinks">'+self.sections[cur_sec]+'</span>')
           else:
-            sec_links.append('</span><a class="navlinks" href="?subpage='+cur_sec+'" onclick="submit_go(\''+cur_sec+'\')">'+self.sections[cur_sec]+'</a>')
+            sec_links.append('</span><a class="navlinks" href="#" onclick="submit_go(\''+cur_sec+'\')">'+self.sections[cur_sec]+'</a>')
           n+=1
         elif word[0] == 'BeginIter':
           if prefix:
@@ -1131,7 +1131,7 @@ class MatrixDefFile:
                 printed = True 
                 break
             
-      print '<a href="#main" onclick="submit_main()" class="navleft">Main page</a><br />'
+      print '<a href="." onclick="submit_main()" class="navleft">Main page</a><br />'
       print '<hr />'
       for l in sec_links: 
         print '<span style="color:#ff0000;" class="navleft">'+l+'<br />'
@@ -1152,7 +1152,7 @@ class MatrixDefFile:
         print '<span class="navleft" style="padding-left:15px">tgz</span>, <span class="navleft">zip</span>'
       else: 
         print '<span class="navleft">Create grammar:</span><br />'
-        print '<a href="#customize" onclick="nav_customize(\'tgz\')" class="navleft" style="padding-left:15px">tgz</a>, <a href="#customize" onclick="nav_customize(\'zip\')" class="navleft">zip</a>'
+        print '<a href="#" onclick="nav_customize(\'tgz\')" class="navleft" style="padding-left:15px">tgz</a>, <a href="#customize" onclick="nav_customize(\'zip\')" class="navleft">zip</a>'
       print '</div>'
 
 
