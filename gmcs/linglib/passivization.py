@@ -8,7 +8,10 @@
 # This library contains possibilities to go beyond Germanic languages
 # but is not based on any cross-linguistic research whatsoever!
 
-def customize_passivization(ch, mylang, lrules, lexicon, climb_files):
+
+from gmcs.utils import TDLencode
+
+def customize_passivization(ch, mylang, lrules, lexicon, trigger, climb_files):
 
   climb_pass = climb_files.get('pass')
   climb_pass.set_section('mylang')
@@ -335,4 +338,9 @@ def customize_passivization(ch, mylang, lrules, lexicon, climb_files):
                     [ STEM < "' + sform + '" > ].') 
       climb_pass.add(sform + '-passive := passive-marking-adp-lex & \
                     [ STEM < "' + sform + '" > ].',section='lexicon') 
+
+      grdef = TDLencode(sform) +'_gr := generator_rule & \
+                   [ CONTEXT [ RELS <! [ ARG0.SF ques ] !> ], \
+                     FLAGS.TRIGGER "' + TDLencode(sform) + '" ].'
+      trigger.add(grdef)
       

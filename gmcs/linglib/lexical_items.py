@@ -132,7 +132,7 @@ def customize_bipartite_stems(ch):
         for stemid in avpairs[aff]:
           ch[stemid + '_require1_others'] = next_lrt_str
 
-def customize_verbs(mylang, ch, lexicon, hierarchies, climb_verbs):
+def customize_verbs(mylang, ch, lexicon, trigger, hierarchies, climb_verbs):
   negmod = ch.get('neg-mod')
   negadv = ch.get('neg-adv')
   wo = ch.get('word-order')
@@ -543,7 +543,7 @@ def customize_verbs(mylang, ch, lexicon, hierarchies, climb_verbs):
           b_case = case.canon_to_abbr(c[1], cases)
           o_case = case.canon_to_abbr(c[2], cases)
           tivity = a_case + '-' + b_case + '-' + o_case + '-part-trans'
-          create_particle_lex_entry(mylang, lexicon, o_case, climb_verbs)
+          create_particle_lex_entry(mylang, lexicon, trigger, o_case, climb_verbs)
         else:
           a_case = case.canon_to_abbr(c[0], cases)
           b_case = case.canon_to_abbr(c[1], cases)
@@ -651,7 +651,7 @@ def main_or_verb(ch):
     return 'verb-lex'
 
 
-def create_particle_lex_entry(mylang, lexicon, o_case, climb_verbs):
+def create_particle_lex_entry(mylang, lexicon, trigger, o_case, climb_verbs):
   mylang.add(o_case + '-verbal-particle-lex := verbal-particle-lex & \
               [ SYNSEM.LOCAL.CAT.HEAD.FORM ' + o_case + '-part ].')
   climb_verbs.add(o_case + '-verbal-particle-lex := verbal-particle-lex & \
@@ -662,9 +662,13 @@ def create_particle_lex_entry(mylang, lexicon, o_case, climb_verbs):
   lexicon.add(typedef)
   climb_verbs.add(typedef, section='lexicon')
   climb_verbs.set_section('mylang')
+  grdef = TDLencode(o_case) +'_gr := generator_rule & \
+                   [ CONTEXT [ RELS <! [ ARG0.SF ques ] !> ], \
+                     FLAGS.TRIGGER "' + TDLencode(o_case) + '" ].'
+  trigger.add(grdef)
 
 
-def customize_copula(mylang, climb_cop, ch, lexicon, hierarchies):
+def customize_copula(mylang, climb_cop, ch, lexicon, trigger, hierarchies):
   #add copula supertype
   #copula
   if ch.get('has-cop') == 'yes':
@@ -806,9 +810,9 @@ def customize_copula(mylang, climb_cop, ch, lexicon, hierarchies):
       climb_cop.add(userstypename + ' := ' + aux_s + '-only-verb-lex.')
 
     features.customize_feature_values(mylang, ch, hierarchies, cop, userstypename, 'cop', climbfile = climb_cop)
-    add_copula_to_lexicon(userstypename, cop, lexicon, climb_cop)
+    add_copula_to_lexicon(userstypename, cop, lexicon, trigger, climb_cop)
 
-def add_copula_to_lexicon(userstypename, cop, lexicon, climb_cop):
+def add_copula_to_lexicon(userstypename, cop, lexicon, trigger, climb_cop):
   for stem in cop.get('stem',[]):
     orth = stem.get('orth')
     orthstr = orth_encode(orth)
@@ -825,6 +829,11 @@ def add_copula_to_lexicon(userstypename, cop, lexicon, climb_cop):
                     ' := [ SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
       lexicon.add(typedef, merge=True)
       climb_cop.add(typedef, merge=True,section='lexicon')
+    else:
+      grdef = TDLencode(orth) +'_gr := generator_rule & \
+                   [ CONTEXT [ RELS <! [ ARG0.SF ques ] !> ], \
+                     FLAGS.TRIGGER "' + TDLencode(orth) + '" ].'
+      trigger.add(grdef)
 
 def customize_determiners(mylang, ch, lexicon, climb_lex, hierarchies):
 
@@ -1840,7 +1849,7 @@ def create_adposition_supertypes(ch, mylang, climb_lex):
   return s_name
 
 
-def customize_particles(ch, mylang, lexicon, climb_lex):
+def customize_particles(ch, mylang, lexicon, trigger, climb_lex):
 
   comment = 'For now, we make particles verbal types (though only particles that are verbal complements can occur in the verbal cluster).'
   super_type = '''basic-verbal-particle-lex := norm-zero-arg &
@@ -1889,6 +1898,10 @@ def customize_particles(ch, mylang, lexicon, climb_lex):
                    [ STEM < "' + orthstr + '" > ].'
       lexicon.add(typedef)
       climb_lex.add(typedef,section='lexicon')
+      grdef = TDLencode(orth) +'_gr := generator_rule & \
+                   [ CONTEXT [ RELS <! [ ARG0.SF ques ] !> ], \
+                     FLAGS.TRIGGER "' + TDLencode(orth) + '" ].'
+      trigger.add(grdef)
       
 def need_marking_adposition(ch):
   needed = False
@@ -1989,7 +2002,7 @@ def create_adp_cross_classification(ch, mylang, climb_lex, sname):
           climb_lex.add(type_n + ' := ' + default + '-lex-item.')
 
        
-def customize_complementizers(ch, mylang, lexicon, climb_lex):
+def customize_complementizers(ch, mylang, lexicon, trigger, climb_lex):
   if ch.get('has-compl') == 'yes':
   ###create section in lexicon
     lexicon.add_literal(';;; Complementizers')
@@ -2054,9 +2067,13 @@ def customize_complementizers(ch, mylang, lexicon, climb_lex):
                    [ STEM < "' + orthstr + '" > ].'
         lexicon.add(typedef)
         climb_lex.add(typedef, section='lexicon')
+        grdef = TDLencode(orth) +'_gr := generator_rule & \
+                   [ CONTEXT [ RELS <! [ ARG0.SF ques ] !> ], \
+                     FLAGS.TRIGGER "' + TDLencode(orth) + '" ].'
+        trigger.add(grdef)
 
 
-def customize_misc_lex(ch, lexicon, climb_lex):
+def customize_misc_lex(ch, lexicon, trigger, climb_lex):
 
   #lexicon.add_literal(';;; Other')
 
@@ -2070,8 +2087,12 @@ def customize_misc_lex(ch, lexicon, climb_lex):
                    [ STEM < "' + orthstr + '" > ].'
     lexicon.add(typedef)
     climb_lex.add(typedef, section='lexicon')
+    grdef = TDLencode(orth) +'_gr := generator_rule & \
+                   [ CONTEXT [ RELS <! [ ARG0.SF ques ] !> ], \
+                     FLAGS.TRIGGER "' + TDLencode(orth) + '" ].'
+    trigger.add(grdef)
 
-def customize_nouns(mylang, ch, lexicon, hierarchies, climb_nouns):
+def customize_nouns(mylang, ch, lexicon, trigger, hierarchies, climb_nouns):
   # Figure out which kinds of determiner-marking are in the language
   seen = {'obl':False, 'opt':False, 'imp':False}
   seenCount = 0
@@ -2594,9 +2615,18 @@ def customize_nouns(mylang, ch, lexicon, hierarchies, climb_nouns):
       if expl == 'yes':
         typedef = TDLencode(id) + ' := expl-noun-lex & \
                     [ STEM < "' + orthstr + '" > ].'
+        
+        grdef = TDLencode(orthstr) +'_gr := generator_rule & \
+                   [ CONTEXT [ RELS <! [ ARG0.SF ques ] !> ], \
+                     FLAGS.TRIGGER "' + TDLencode(orthstr) + '" ].'
+        trigger.add(grdef)
       elif rel == 'yes' or n_refl == 'obl':
         typedef = TDLencode(id) + ' :=  ' + ntype + ' & \
                     [ STEM < "' + orthstr + '" > ].'
+        grdef = TDLencode(orthstr) +'_gr := generator_rule & \
+                   [ CONTEXT [ RELS <! [ ARG0.SF ques ] !> ], \
+                     FLAGS.TRIGGER "' + TDLencode(orthstr) + '" ].'
+        trigger.add(grdef)
       elif pers_n:
         typedef = TDLencode(id) + ' := ' + ntype + ' & \
                     [ STEM < "' + orthstr + '" >, \
@@ -2716,7 +2746,7 @@ def create_wh_phrases(mylang, climb_wh, ch):
 
 
 
-def customize_lexicon(mylang, ch, lexicon, hierarchies, lrules, rules, climb_files):
+def customize_lexicon(mylang, ch, lexicon, trigger, hierarchies, lrules, rules, climb_files):
 
   climb_lex = climb_files.get('lexical_items')
   climb_lex.set_section('mylang')
@@ -2730,7 +2760,7 @@ def customize_lexicon(mylang, ch, lexicon, hierarchies, lrules, rules, climb_fil
   mylang.set_section('nounlex')
   climb_nouns = climb_files.get('nouns')
   climb_nouns.set_section('mylang')
-  customize_nouns(mylang, ch, lexicon, hierarchies, climb_nouns)
+  customize_nouns(mylang, ch, lexicon, trigger, hierarchies, climb_nouns)
 
   mylang.set_section('otherlex')
   climb_case = climb_files.get('case')
@@ -2742,17 +2772,17 @@ def customize_lexicon(mylang, ch, lexicon, hierarchies, lrules, rules, climb_fil
   mylang.set_section('verblex')
   climb_verbs = climb_files.get('verbs')
   climb_verbs.set_section('mylang')
-  customize_verbs(mylang, ch, lexicon, hierarchies, climb_verbs)
+  customize_verbs(mylang, ch, lexicon, trigger, hierarchies, climb_verbs)
   ####CLIMB PAUZE
   if ch.get('has-aux') == 'yes':
     mylang.set_section('auxlex')
     climb_aux = climb_files.get('aux')
     climb_aux.set_section('mylang')
-    auxiliaries.customize_auxiliaries(mylang, climb_aux, ch, lexicon, hierarchies)
+    auxiliaries.customize_auxiliaries(mylang, climb_aux, ch, lexicon, trigger, hierarchies)
   if ch.get('has-cop') == 'yes':
     climb_cop = climb_files.get('cop')
     climb_cop.set_section('mylang')
-    customize_copula(mylang, climb_cop, ch, lexicon, hierarchies)
+    customize_copula(mylang, climb_cop, ch, lexicon, trigger, hierarchies)
   
   mylang.set_section('otherlex')
   if ch.get('wh-questions') == 'yes':
@@ -2767,6 +2797,6 @@ def customize_lexicon(mylang, ch, lexicon, hierarchies, lrules, rules, climb_fil
   customize_adverbs(mylang, ch, lexicon, climb_lex)
   customize_adpositions(ch, mylang, lexicon, climb_lex, hierarchies)
   if ch.get('verbal-particles') == 'yes' or ch.get('circumpositions') == 'yes':
-    customize_particles(ch, mylang, lexicon, climb_lex)
-  customize_complementizers(ch, mylang, lexicon, climb_lex) 
-  customize_misc_lex(ch, lexicon, climb_lex)
+    customize_particles(ch, mylang, lexicon, trigger, climb_lex)
+  customize_complementizers(ch, mylang, lexicon, trigger, climb_lex) 
+  customize_misc_lex(ch, lexicon, trigger, climb_lex)

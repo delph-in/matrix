@@ -220,6 +220,17 @@ def general_post_objectival_cluster_phrases(ch, mylang, climb_gwo):
     if ch.get('q-inv'):
       mylang.add('comp-aux-vc-phrase := [ SYNSEM.LOCAL.CAT.HEAD.INV - ].')
       climb_gwo.add('comp-aux-vc-phrase := [ SYNSEM.LOCAL.CAT.HEAD.INV - ].')
+  elif ch.get('aux-comp-order') == 'before':
+    mylang.add('aux-comp-vc-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT [ VC +, \
+                                                                    MC - ], \
+                                        NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ MC - ]].')
+    climb_gwo.add('aux-comp-vc-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT [ VC +, \
+                                                                    MC - ], \
+                                        NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ MC - ]].')
+    if ch.get('q-inv'):
+      mylang.add('aux-comp-vc-phrase := [ SYNSEM.LOCAL.CAT.HEAD.INV - ].')
+      climb_gwo.add('aux-comp-vc-phrase := [ SYNSEM.LOCAL.CAT.HEAD.INV - ].')
+
   elif ch.get('aux-comp-order') == 'both':
     mylang.add('comp-aux-vc-phrase := [ SYNSEM.LOCAL.CAT [ HEADFINAL #hf ], \
                                             HEAD-DTR.SYNSEM.LOCAL.CAT [ HEADFINAL +, \
@@ -277,6 +288,12 @@ def add_v2_with_cluster_rules(ch, rules, climb_gwo):
     rules.add('mverb-2nd-vcomp := mverb-2nd-vcomp-phrase.')
     climb_gwo.add('vcomp-mverb-2nd := vcomp-mverb-2nd-phrase.')
     climb_gwo.add('mverb-2nd-vcomp := mverb-2nd-vcomp-phrase.')
+    if ch.get('aux-comp-order') != 'after':
+      rules.add('comp-mverb-vc := comp-mverb-vc-phrase.')
+      climb_gwo.add('comp-mverb-vc := comp-mverb-vc-phrase.', section='rules')
+    if ch.get('aux-comp-order') != 'before':
+      rules.add('mverb-comp-vc := mverb-comp-vc-phrase.')
+      climb_gwo.add('mverb-comp-vc := mverb-comp-vc-phrase.', section='rules')
   # rule for yes-no question inversion
   # for now only when analysis is aux-rule (apparently not used for 
   # arg-comp, or old error...)
@@ -303,8 +320,8 @@ def add_v2_with_cluster_rules(ch, rules, climb_gwo):
   if ch.get('split-cluster') == 'yes':
     add_split_cluster_rules(rules, climb_gwo, auxRule)
 
-  
   climb_gwo.set_section('mylang')
+
 
 def add_preobjectival_verbcluster_rules(ch, rules, climb_gwo, auxRule):
 
@@ -1313,12 +1330,10 @@ def argument_composition_revised_additional_constraints(ch, mylang, lrules, clim
     climb_gwo.add('comp-head-vc-phrase := ' + headdtrval + ' ].')
     climb_gwo.add('comp-2-head-vc-phrase := ' + headdtrval + ' ].')
    
-  mylang.add('comp-aux-vc-phrase := ' + nhddtrval + ' ].')
   mylang.add('basic-head-subj-phrase :+ '+ headdtrval + ' ].')
   mylang.add(aux2nd + ' := ' + nhddtrval + ' ].')
   mylang.add('basic-head-mod-phrase-simple :+ ' +headdtrval + ' ].')
 
-  climb_gwo.add('comp-aux-vc-phrase := ' + nhddtrval + ' ].')
   climb_gwo.add('basic-head-subj-phrase :+ '+ headdtrval + ' ].')
   climb_gwo.add(aux2nd + ' := ' + nhddtrval + ' ].')
   climb_gwo.add('basic-head-mod-phrase-simple :+ ' +headdtrval + ' ].')
@@ -1336,9 +1351,12 @@ def argument_composition_revised_additional_constraints(ch, mylang, lrules, clim
  #                         DTR.SYNSEM.LOCAL.CAT [ ARG-ORDER #ao, \
  #                                                ALLOWED-PART #ap ]].')
 
-  if ch.get('aux-comp-order') == 'both':
+  if ch.get('aux-comp-order') == 'both' or ch.get('aux-comp-order') == 'before':
     mylang.add('aux-comp-vc-phrase := ' + nhddtrval + ' ].')
     climb_gwo.add('aux-comp-vc-phrase := ' + nhddtrval + ' ].')
+  if ch.get('aux-comp-order') == 'both' or ch.get('aux-comp-order') == 'after':
+    mylang.add('comp-aux-vc-phrase := ' + nhddtrval + ' ].')
+    climb_gwo.add('comp-aux-vc-phrase := ' + nhddtrval + ' ].')
 
 ####
 # Additions needed to account for split clusters if arg-comp
@@ -1455,6 +1473,19 @@ def create_aux_plus_verb_phrases(ch, mylang, climb_gwo):
                                                        VC na ], \
                                     NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ VC na-or-+, \
                                                                       NOMINAL - ] ].')
+
+####ADD BEFORE AS AN OPTION
+
+    elif ch.get('aux-comp-order') == 'before':
+      mylang.add('aux-comp-vc-phrase := basic-aux-verb-rule & head-initial & \
+                                  [ SYNSEM.LOCAL.CAT [ MC -, \
+                                                       VC na ], \
+                                    NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ VC na-or-+ ] ].')
+      climb_gwo.add('aux-comp-vc-phrase := basic-aux-verb-rule & head-initial & \
+                                  [ SYNSEM.LOCAL.CAT [ MC -, \
+                                                       VC na ], \
+                                    NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ VC na-or-+ ] ].')
+
 ######next constraint is shared between both alternative analyses
 ####WILL STAY UP THERE....
 #      mylang.add(currenttype + ' := ' + currentsupertype + ' & \
@@ -1475,6 +1506,12 @@ def spec_word_order_phrases_aux_plus_verb(ch, mylang, climb_gwo):
   else:
     stype = 'basic-binary-headed-phrase'
 
+### sharing xarg with non-head-dtr else this goes wrong when more than
+### one auxiliary is in the sentence (coindexing between xarg and subj is lost)
+### 2013-09-05 this constraint should not be part of the basic-verbal-comp-rule
+### it should not apply to object-raising verbs. 
+### Moving it to appropriate subtype basic-aux-verb-rule
+
   mylang.add('basic-verbal-comp-rule := head-compositional & ' + stype + ' & head-valence-phrase & \
                 [ SYNSEM.LOCAL [ CAT.VAL [ SPR #spr, \
                                            SPEC #spec ], \
@@ -1484,9 +1521,9 @@ def spec_word_order_phrases_aux_plus_verb(ch, mylang, climb_gwo):
 	                   HOOK #hook ], \
                   HEAD-DTR.SYNSEM.LOCAL [ CAT.HEAD verb, \
 			                  CONT.HOOK #hook ], \
-                  NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD verb, \
+                  NON-HEAD-DTR.SYNSEM.LOCAL [ CAT [ HEAD verb, \
 					          VAL [ SPR #spr, \
-                                                        SPEC #spec ] ] ].')
+                                                        SPEC #spec ] ] ] ].')
   climb_gwo.add('basic-verbal-comp-rule := head-compositional & ' + stype + ' & head-valence-phrase & \
                 [ SYNSEM.LOCAL [ CAT.VAL [ SPR #spr, \
                                            SPEC #spec ], \
@@ -1520,9 +1557,11 @@ def spec_word_order_phrases_aux_plus_verb(ch, mylang, climb_gwo):
    
   bar = \
     'basic-aux-verb-rule := basic-verbal-comp-rule-1 & \
-        [ SYNSEM.LOCAL.CAT [ VAL #val, \
-	      	             HEAD.AUX + ], \
-          NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL #val ].'
+        [ SYNSEM.LOCAL [ CAT [ VAL #val, \
+	      	               HEAD.AUX + ], \
+                         CONT.HOOK.XARG #xarg ], \
+          NON-HEAD-DTR.SYNSEM.LOCAL [ CAT.VAL #val, \
+                                      CONT.HOOK.XARG #xarg ] ].'
   mylang.add(bar)
   climb_gwo.add(bar)
 
@@ -1533,6 +1572,51 @@ def spec_word_order_phrases_aux_plus_verb(ch, mylang, climb_gwo):
         SYNSEM.LOCAL.CAT.VAL.SUBJ #subj ].'
   mylang.add(mv2vcp) 
   climb_gwo.add(mv2vcp) 
+
+  ###for object raising, we also need rules for these verbs in the verbal cluster
+  if ch.get('obj-raising') == 'yes':
+    vmvvc = \
+    '''comp-mverb-vc-phrase := basic-verbal-comp-rule-1 & head-final &
+  [ SYNSEM.LOCAL.CAT [ HEADFINAL #hf,
+                       HEAD.INV -,
+                       VAL.SUBJ #subj,
+                       EDGE #ed & na-or--,
+                       MC -,
+                       VC +,
+                       NOMINAL #nl ],
+    HEAD-DTR.SYNSEM.LOCAL.CAT [ HEADFINAL +,
+                                VAL.SUBJ #subj,
+                                MC -,
+                                VC na ],
+    NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ MC -,
+                                    HEADFINAL #hf,
+                                    EDGE #ed,
+                                    NOMINAL #nl ] ].'''
+
+    mvvvc = \
+    '''mverb-comp-vc-phrase := basic-verbal-comp-rule-1 & head-initial &
+  [ HEAD-DTR.SYNSEM.LOCAL.CAT [ HEADFINAL -,
+                                VC +,
+                                VAL.SUBJ #subj ],
+    SYNSEM.LOCAL.CAT [ HEADFINAL #hf,
+                       HEAD.INV -,
+                       VAL.SUBJ #subj,
+                       EDGE #ed & bool,
+                       MC -,
+                       VC na ],
+    NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ MC -,
+                                    HEADFINAL #hf,
+                                    EDGE #ed,
+                                    VC na-or-+,
+                                    NOMINAL - ] ].'''
+
+
+    if ch.get('aux-comp-order') != 'before':
+      mylang.add(vmvvc)
+      climb_gwo.add(vmvvc)
+    if ch.get('aux-comp-order') != 'after':
+      mylang.add(mvvvc)
+      climb_gwo.add(mvvvc)
 
 
   mytype = 'aux-comp-non-vc-phrase'

@@ -58,6 +58,7 @@ irules = None
 lrules = None
 lexicon = None
 roots = None
+trigger = None
 
 # ERB 2006-09-16 There are properties which are derived from the
 # choices file as a whole which various modules will want to know about.
@@ -548,6 +549,8 @@ def customize_matrix(path, arch_type, destination=None):
   lrules =  tdl.TDLfile(os.path.join(grammar_path, 'lrules.tdl'))
   lexicon = tdl.TDLfile(os.path.join(grammar_path, 'lexicon.tdl'))
   roots =   tdl.TDLfile(os.path.join(grammar_path, 'roots.tdl'))
+  trigger = tdl.TDLfile(os.path.join(grammar_path, 'trigger.mtr'))
+  trigger.add_literal(';;; Semantically Empty Lexical Entries')
 
   climb_files = create_climb_files_dict(grammar_path)
 
@@ -616,7 +619,7 @@ def customize_matrix(path, arch_type, destination=None):
   # information to lexical rules when we customize inflection.
   
 
-  lexical_items.customize_lexicon(mylang, ch, lexicon, hierarchies, lrules, rules, climb_files)
+  lexical_items.customize_lexicon(mylang, ch, lexicon, trigger, hierarchies, lrules, rules, climb_files)
   argument_optionality.customize_arg_op(mylang, ch, rules, hierarchies, climb_files)
   ###DIRECT INVERSE, TODO WHEN DOING DESCRIPTION
   direct_inverse.customize_direct_inverse(ch, mylang, climb_files, hierarchies)
@@ -656,13 +659,13 @@ def customize_matrix(path, arch_type, destination=None):
   coordination.customize_coordination(mylang, ch, lexicon, rules, irules, climb_files)
   yes_no_questions.customize_yesno_questions(mylang, ch, rules, lrules, hierarchies, climb_files)
   if ch.get('passivization') == 'yes':
-    passivization.customize_passivization(ch, mylang, lrules, lexicon, climb_files)
+    passivization.customize_passivization(ch, mylang, lrules, lexicon, trigger, climb_files)
   if ch.get('ldd') == 'yes':
     long_distance_dependencies.customize_long_distance_deps(ch, mylang, rules, climb_files)
   if ch.get('extraposition') == 'yes':
     extraposition.create_extraposition(ch, mylang, rules, climb_files)
   if ch.get('comparatives') == 'yes':
-    comparatives.create_comparative_basic_type(ch, mylang, lexicon, climb_files)
+    comparatives.create_comparative_basic_type(ch, mylang, lexicon, trigger, climb_files)
   customize_punctuation(grammar_path)
   customize_test_sentences(grammar_path)
   customize_itsdb(grammar_path)
@@ -678,6 +681,7 @@ def customize_matrix(path, arch_type, destination=None):
   lrules.save()
   lexicon.save()
   roots.save()
+  trigger.save()
   version_lsp.save()
 
   for cl_file in climb_files.itervalues():

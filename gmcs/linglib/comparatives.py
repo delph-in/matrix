@@ -8,7 +8,9 @@
 # but is not based on any cross-linguistic research whatsoever!
 
 
-def create_comparative_basic_type(ch, mylang, lexicon, climb_files):
+from gmcs.utils import TDLencode
+
+def create_comparative_basic_type(ch, mylang, lexicon, trigger, climb_files):
   climb_comp = climb_files.get('compar')
   typedef = \
   '''comp-or-superlative-creating-lex-rule := same-non-local-lex-rule &
@@ -73,7 +75,7 @@ def create_comparative_basic_type(ch, mylang, lexicon, climb_files):
   form = form.strip('+')
   if head == 'adp':
     superform += 'p'
-    create_marker_position(mylang, form, lexicon, climb_comp)
+    create_marker_position(mylang, form, lexicon, trigger, climb_comp)
     superform += 'form'
 
   if form and superform:
@@ -115,7 +117,7 @@ def create_comparative_basic_type(ch, mylang, lexicon, climb_files):
   climb_comp.add(sub_t1)
   climb_comp.add(sub_t2)
 
-def create_marker_position(mylang, form, lexicon, climb_comp):
+def create_marker_position(mylang, form, lexicon, trigger, climb_comp):
   ###TO DO: the case marking should probably go
   my_adp = \
    '''comp-marking-adp-lex := basic-marking-only-adp-lex & norm-sem-lex-item &
@@ -136,3 +138,8 @@ def create_marker_position(mylang, form, lexicon, climb_comp):
                     [ STEM < "' + form + '" > ].') 
   climb_comp.add(form + '-comparative := comp-marking-adp-lex & \
                     [ STEM < "' + form + '" > ].',section='lexicon') 
+
+  grdef = TDLencode(form) +'_gr := generator_rule & \
+                   [ CONTEXT [ RELS <! [ ARG0.SF ques ] !> ], \
+                     FLAGS.TRIGGER "' + TDLencode(form) + '" ].'
+  trigger.add(grdef)
