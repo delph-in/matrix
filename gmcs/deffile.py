@@ -26,6 +26,7 @@ from gmcs import choices
 from gmcs.choices import ChoicesFile
 from gmcs.utils import tokenize_def
 from gmcs import generate
+from gmcs.validate import ValidationMessage
 
 ######################################################################
 # HTML blocks, used to create web pages
@@ -234,30 +235,6 @@ HTML_sentencespostbody = '''
 
 HTML_prebody = '''<body onload="animate(); focus_all_fields(); multi_init(); fill_hidden_errors();scalenav();">
 '''
-
-#HTML_navmenu = '''
-#<div id="navmenu">
-#  <ul>
-#    <li><a onclick="submit_go('general')">General Information</a></li>
-#    <li><a onclick="submit_go('word-order')">Word Order</a></li>
-#    <li><a onclick="submit_go('number')">Number</a></li>
-#    <li><a onclick="submit_go('person')">Person</a></li>
-#    <li><a onclick="submit_go('gender')">Gender</a></li>
-#    <li><a onclick="submit_go('case')">Case</a></li>
-#    <li><a onclick="submit_go('direct-inverse')">Direct-inverse</a></li>
-#    <li><a onclick="submit_go('tense-aspect-mood')">Tense, Aspect and Mood</a></li>
-#    <li><a onclick="submit_go('other-features')">Other Features</a></li>
-#    <li><a onclick="submit_go('sentential-negation')">Sentential Negation</a></li>
-#    <li><a onclick="submit_go('coordination')">Coordination</a></li>
-#    <li><a onclick="submit_go('matrix-yes-no')">Matrix Yes/No Questions</a></li>
-#    <li><a onclick="submit_go('info-str')">Information Structure</a></li>
-#    <li><a onclick="submit_go('arg-opt')">Argument Optionality</a></li>
-#    <li><a onclick="submit_go('lexicon')">Lexicon</a></li>
-#    <li><a onclick="submit_go('morphology')">Morphology</a></li>
-#    <li><a onclick="border()">border</a></li>
-#    <li><a onclick="sticky()">sticky</a></li>
-#  </ul>
-#</div>'''
 
 HTML_prebody_sn = '''<body onload="animate(); focus_all_fields(); multi_init(); fill_hidden_errors();display_neg_form();scalenav();">'''
 
@@ -1061,6 +1038,7 @@ class MatrixDefFile:
 
     choices_file = 'sessions/' + cookie + '/choices'
     choices = ChoicesFile(choices_file)
+    
 
     section_begin = -1
     section_end = -1
@@ -1087,7 +1065,6 @@ class MatrixDefFile:
     if section_begin != -1:
       if section_end == -1:
         section_end = i
-
       print '<title>' + section_friendly + '</title>'
       print HTML_posttitle % \
             (js_array4(choices.features()),
@@ -1105,7 +1082,6 @@ class MatrixDefFile:
       print '<span class="tt">['+doclink+']</span><br />'
 
 
-#      print HTML_navmenu
       print '<div id="navmenu"><br />'
     # pass through the definition file once, augmenting the list of validation
     # results with section names so that we can put red asterisks on the links
@@ -1129,7 +1105,7 @@ class MatrixDefFile:
           if cur_sec == section: 
             sec_links.append('</span><span class="navlinks">'+self.sections[cur_sec]+'</span>')
           else:
-            sec_links.append('</span><a class="navlinks" href="#'+cur_sec+'" onclick="submit_go(\''+cur_sec+'\')">'+self.sections[cur_sec]+'</a>')
+            sec_links.append('</span><a class="navlinks" href="#" onclick="submit_go(\''+cur_sec+'\')">'+self.sections[cur_sec]+'</a>')
           n+=1
         elif word[0] == 'BeginIter':
           if prefix:
@@ -1155,7 +1131,7 @@ class MatrixDefFile:
                 printed = True 
                 break
             
-      print '<a href="#main" onclick="submit_main()" class="navleft">Main page</a><br />'
+      print '<a href="." onclick="submit_main()" class="navleft">Main page</a><br />'
       print '<hr />'
       for l in sec_links: 
         print '<span style="color:#ff0000;" class="navleft">'+l+'<br />'
@@ -1163,7 +1139,20 @@ class MatrixDefFile:
       print '<hr />'
       print '<a href="' + choices_file + '" class="navleft">Choices file</a><br /><div class="navleft" style="margin-bottom:0;padding-bottom:0">(right-click to download)</div>'
       print '<a href="#stay" onclick="document.forms[0].submit()" class="navleft">Save &amp; stay</a><br />'
-      print '<a href="#clear" onclick="clear_form()" class="navleft">Clear form</a>'
+      print '<a href="#clear" onclick="clear_form()" class="navleft">Clear form</a><br />'
+
+      ## if there are errors, then we print the links in red and  
+      ## unclickable
+      if not vr.has_errors() == 0:
+        print '<span class="navleft">Create grammar:'
+        print html_info_mark(
+              ValidationMessage('','Resolve validation errors to enable '+
+              'grammar customization.',''))
+        print '</span><br />'
+        print '<span class="navleft" style="padding-left:15px">tgz</span>, <span class="navleft">zip</span>'
+      else: 
+        print '<span class="navleft">Create grammar:</span><br />'
+        print '<a href="#" onclick="nav_customize(\'tgz\')" class="navleft" style="padding-left:15px">tgz</a>, <a href="#customize" onclick="nav_customize(\'zip\')" class="navleft">zip</a>'
       print '</div>'
 
 
@@ -1300,7 +1289,7 @@ class MatrixDefFile:
       print '<dl>'
       for k in vr.errors:
         print '<dt><b>' + k + ':</b></dt>'
-        print '<dd>' + vr.errors[k] + '</dd>'
+        print '<dd>' + vr.errors[k].message + '</dd>'
       print '</dl>'
 
     if vr.has_warnings():
@@ -1308,7 +1297,7 @@ class MatrixDefFile:
       print '<dl>'
       for k in vr.warnings:
         print '<dt><b>' + k + ':</b></dt>'
-        print '<dd>' + vr.warnings[k] + '</dd>'
+        print '<dd>' + vr.warnings[k].message + '</dd>'
       print '</dl>'
 
     print HTML_postbody

@@ -142,7 +142,7 @@ function submit_main()
   var form = document.getElementsByTagName('form')[0];
   var elms = document.getElementsByTagName('input');
   for (var i = 0; i < elms.length; i++) {
-    if (elms[i].name == "subpage") {
+    if (elms[i].name == "subpage" || elms[i].name=="delivery" || elms[i].name=="customize") {
       form.removeChild(elms[i]);
     }
   }
@@ -155,7 +155,7 @@ function submit_go(subpage){
   var form = document.getElementsByTagName('form')[0];
   var elms = document.getElementsByTagName('input');
   for (var i = 0; i < elms.length; i++) {
-    if (elms[i].name == "subpage") {
+    if (elms[i].name == "subpage" || elms[i].name=="delivery" || elms[i].name=="customize") {
       form.removeChild(elms[i]);
     }
   } 
@@ -1226,6 +1226,7 @@ function scalenav() {
               "Direct-inverse":"Dir-inv",
               "Sentential Negation":"Neg",
               "Matrix Yes/No Questions":"Y/N Qs",
+              "Information Structure": "Info Str",
               "Argument Optionality":"Arg Opt",
               "Toolbox Import":"Tb Import",
               "Test Sentences":"Test S",
@@ -1253,4 +1254,36 @@ function scalenav() {
       }
     }
   }
+}
+
+// call customize grammar from a subpage
+function nav_customize(type) {
+  var f = document.forms['choices_form']; 
+  var elms = document.getElementsByTagName('input');
+  for (var i = 0; i < elms.length; i++) {
+    if (elms[i].name=="subpage" || elms[i].name=="delivery" || elms[i].name=="customize") {
+      f.removeChild(elms[i]);
+    }
+  }
+
+  var t = document.createElement('input');
+  var i = document.createElement('input');
+
+  t.id="delivery";
+
+  t.type= "hidden";
+  i.type= "hidden";
+
+  t.name= "delivery";
+  i.name= "customize";
+
+  t.value=type;
+  i.value="customize"
+
+  f.appendChild(t);
+  f.appendChild(i);
+  f.submit();
+
+  f.removeChild(t);
+  f.removeChild(i);
 }
