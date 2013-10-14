@@ -176,6 +176,12 @@ def add_basic_phrases_v2_with_cluster(ch, mylang, rules, climb_gwo):
               [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD noun & [ CASE nom ], \
                                                 VAL.SPR < > ] ].', comment)
 
+  #this constraint was only added to argument-comp, not aux-rule  
+  mylang.add('basic-head-mod-phrase-simple :+ [ SYNSEM.LOCAL.CAT.VC #vc, \
+              NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc ].')
+  climb_gwo.add('basic-head-mod-phrase-simple :+ [ SYNSEM.LOCAL.CAT.VC #vc, \
+              NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc ].')
+
   if ch.get('vc-analysis') == 'basic':
     create_argument_composition_phrases(ch, mylang, rules, climb_gwo)
   elif ch.get('vc-analysis') == 'aux-rule':
@@ -1261,13 +1267,9 @@ def argument_composition_revised_additional_constraints(ch, mylang, lrules, clim
   else:
     aux2nd = 'aux-2nd-comp-phrase'
   mylang.add(aux2nd + ' := basic-head-comp-share-vc.')
-  mylang.add('basic-head-mod-phrase-simple :+ [ SYNSEM.LOCAL.CAT.VC #vc, \
-              NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc ].')
   mylang.add('head-final-invc := [ SYNSEM.LOCAL.CAT.VC na-or-+ ].')
 
   climb_gwo.add(aux2nd + ' := basic-head-comp-share-vc.')
-  climb_gwo.add('basic-head-mod-phrase-simple :+ [ SYNSEM.LOCAL.CAT.VC #vc, \
-              NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc ].')
   climb_gwo.add('head-final-invc := [ SYNSEM.LOCAL.CAT.VC na-or-+ ].')
 
 #with revised rules for object generation, languages with fixed argument order
