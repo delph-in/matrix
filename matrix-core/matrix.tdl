@@ -2526,7 +2526,7 @@ basic-three-arg-no-hcons := basic-three-arg & no-hcons-lex-item.
 ; semantic head.
 
 ; By hypothesis, the order of the syntactic arguments on the ARG-ST
-; list corresponds to the order of the semantric arguments ARGn, with
+; list corresponds to the order of the semantic arguments ARGn, with
 ; the caveat that not all syntactic arguments are also semantic
 ; arguments, as in constructions involving expletives or raising.  The
 ; ARGn features do not correspond to theta roles but rather should
@@ -2545,7 +2545,7 @@ basic-three-arg-no-hcons := basic-three-arg & no-hcons-lex-item.
 
 ; Kim is tired, Kim sleeps, Kim is in the park, Kim is a student.
 ; Kim ga nemui, Kim ga neru.
-; Kim est fatigue, Kim dors, Kim est a la maison, Kim est etudiant.
+; Kim est fatigue, Kim dort, Kim est a la maison, Kim est etudiant.
 
 ; (Kim is a student requires an analysis of predicative NPs.)
 
