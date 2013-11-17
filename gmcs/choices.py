@@ -1159,8 +1159,15 @@ class ChoicesFile:
     if self.get('verb-cluster') == 'yes' and self.get('aux-comp-order') == 'both':
       features += [ ['headfinal', '-|-', 'LOCAL.CAT.HEADFINAL' ] ]
       features += [ ['headfinal', '+|+', 'LOCAL.CAT.HEADFINAL' ] ]
-
-
+    if self.get('word-order') == 'v2' and self.get('verb-cluster') == 'yes':
+      if self.get('verb-morph') == 'off':
+        features += [ ['mc', '-|-', 'LOCAL.CAT.MC' ] ]
+        features += [ ['mc', '+|+', 'LOCAL.CAT.MC' ] ]
+        features += [ ['mc', 'na|na', 'LOCAL.CAT.MC' ] ]
+        features += [ ['mc', 'na-or--|na-or--', 'LOCAL.CAT.MC' ] ]
+        features += [ ['mc', 'na-or-+|na-or-+', 'LOCAL.CAT.MC' ] ]
+        features += [ ['mc', 'bool|bool', 'LOCAL.CAT.MC' ] ]
+        
     if self.get('explitives') == 'yes':
       features += [ ['index', 'expl-ind', 'LOCAL.CONT.HOOK.INDEX'] ]
 
@@ -1179,6 +1186,12 @@ class ChoicesFile:
           features += [ ['strong', 'na|na', 'LOCAL.CAT.HEAD.STRONG'] ]
     if self.get('has-cop') == 'yes':
       features += [ ['vc', '-|-', 'LOCAL.CAT.VC' ] ] 
+
+# if language uses suffix to assign definiteness
+    if self.get('def-morph-mark') == 'yes':
+      features += [ ['def', 'bool|bool', 'LOCAL.CAT.HEAD.DEF'] ]
+      features += [ ['def', '-|-', 'LOCAL.CAT.HEAD.DEF'] ]
+      features += [ ['def', '+|+', 'LOCAL.CAT.HEAD.DEF'] ]
 
 ####END GERMANIC
 ###

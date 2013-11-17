@@ -1045,14 +1045,16 @@ def customize_np_word_order(mylang, ch, rules, climb_wo):
   if ch.get('def-morph-mark') == 'yes': 
     mylang.add('bare-def-np-phrase := basic-bare-np-phrase &\
       [ C-CONT.RELS <! [ PRED \"def_q_rel\" ] !>,\
-        HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.DEF + ].',
-             'Bare NP phrase.  Consider modifying the PRED value of the quantifier relation\nintroduced to match the semantic effect of bare NPs in your language.')
+        HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.DEF + ].')
     climb_wo.add('bare-def-np-phrase := basic-bare-np-phrase &\
      [ C-CONT.RELS <! [ PRED \"def_q_rel\" ] !>,\
-       HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.DEF + ].',
-             'Bare NP phrase.  Consider modifying the PRED value of the quantifier relation\nintroduced to match the semantic effect of bare NPs in your language.')
+       HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.DEF + ].')
     mylang.add('bare-np-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.DEF - ].')
     climb_wo.add('bare-np-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.DEF - ].')
+    #do not allow head-spr rule for DEF +
+    #I believe this phrase is always called 'head-spec' also for languages
+    #that exhibit other word order
+    mylang.add('head-spec-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.DEF - ].')
 
   if ch.get('n_spec_spr') == 'yes':
     mylang.add('bare-np-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD mass_cnt_noun ].')
@@ -1121,6 +1123,9 @@ def customize_np_word_order(mylang, ch, rules, climb_wo):
 
   rules.add('bare-np := bare-np-phrase.')
   climb_wo.add('bare-np := bare-np-phrase.',section='rules')
+  if ch.get('def-morph-mark') == 'yes':
+    rules.add('bare-def-np := bare-def-np-phrase.')
+    climb_wo.add('bare-def-np := bare-def-np-phrase.', section='rules')
 
 ###################################################
 #

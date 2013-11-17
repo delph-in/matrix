@@ -118,17 +118,20 @@ def filler_head_basic(ch, mylang, rules, climb_file):
   mylang.add(fg)
   climb_file.add(fg)
 
-  wfg = \
+  
+  rules.add('filler-head := filler-head-phrase.')
+  climb_file.add('filler-head := filler-head-phrase.',section='rules')
+
+  if ch.get('wh-questions') == 'yes':
+    wfg = \
   '''wh-filler-head-phrase := general-filler-head-phrase &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques,
     NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE 1-dlist ].'''
-  mylang.add(wfg)
-  climb_file.add(wfg)
+    mylang.add(wfg)
+    climb_file.add(wfg)
+    rules.add('wh-filler-head := wh-filler-head-phrase.')
+    climb_file.add('wh-filler-head := wh-filler-head-phrase.',section='rules')
   
-  rules.add('filler-head := filler-head-phrase.')
-  rules.add('wh-filler-head := wh-filler-head-phrase.')
-  climb_file.add('filler-head := filler-head-phrase.',section='rules')
-  climb_file.add('wh-filler-head := wh-filler-head-phrase.',section='rules')
 
 def add_analysis_specific_constraints(ch, mylang, rules, climb_file):
   fg = ''

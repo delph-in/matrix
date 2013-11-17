@@ -114,7 +114,7 @@ def customize_passivization(ch, mylang, lrules, lexicon, trigger, climb_files):
                                                             FORM ''' + sform + '''] ] ] ] . #othercomps > ],  
            DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ < [ LOCAL.CONT #arg1,
                                           NON-LOCAL #nls ] >,
-                                 COMPS < #othercomps > ] ].'''
+                                 COMPS #othercomps ] ].'''
       mylang.add(imp_p_typedef)
       climb_pass.add(imp_p_typedef)
 
@@ -190,6 +190,7 @@ def customize_passivization(ch, mylang, lrules, lexicon, trigger, climb_files):
       climb_pass.add('part-to-adj := participle-to-adj-rule.',section='lrules')
 
     lr_n = 'gen-passive-lex-rule'
+    slr_n = 'passive-lex-rule'
     mylang.add(lr_n + ' := [ SYNSEM.LOCAL.CAT.HEAD.FORM ' + form + ' ].')
     climb_pass.add(lr_n + ' := [ SYNSEM.LOCAL.CAT.HEAD.FORM ' + form + ' ].')
     if marking == 'aux':
@@ -234,8 +235,8 @@ def customize_passivization(ch, mylang, lrules, lexicon, trigger, climb_files):
         elif fname == 'comps':
           path += 'VAL.COMPS ' + val
              
-        mylang.add(lr_n + ' := ' + path + ' ].')
-        climb_pass.add(lr_n + ' := ' + path + ' ].')
+        mylang.add(slr_n + ' := ' + path + ' ].')
+        climb_pass.add(slr_n + ' := ' + path + ' ].')
 
 ###passing up features that need to be passed up
     vc = False
@@ -279,7 +280,6 @@ def customize_passivization(ch, mylang, lrules, lexicon, trigger, climb_files):
                              SPR #spr,
                              SPEC #spec ],
                        VC #vc,
-                       VFRONT -,
                        EDGE #ed ],
     DTR.SYNSEM.LOCAL.CAT [ VAL [ SUBJ #subj,
                                  COMPS < #comp1,
@@ -291,9 +291,15 @@ def customize_passivization(ch, mylang, lrules, lexicon, trigger, climb_files):
                                   AUX -,
 				  INV - ],
                            VC #vc,
-                           VFRONT +,
                            EDGE #ed ] ].'''
       mylang.add(typedef)
+      if ch.get('argument-order') != 'fixed':
+        mylang.add('change-arg-order-rule := \
+                     [ SYNSEM.LOCAL.CAT.VFRONT -, \
+                       DTR.SYNSEM.LOCAL.CAT.VFRONT + ].')
+        climb_pass.add('change-arg-order-rule := \
+                     [ SYNSEM.LOCAL.CAT.VFRONT -, \
+                       DTR.SYNSEM.LOCAL.CAT.VFRONT + ].')
       lrules.add('change-arg-order := change-arg-order-rule.')
       climb_pass.add(typedef)
       climb_pass.add('change-arg-order := change-arg-order-rule.',section='lrules')

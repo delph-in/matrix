@@ -2126,6 +2126,12 @@ def customize_nouns(mylang, ch, lexicon, trigger, hierarchies, climb_nouns):
   # head-spec rule has to require [OPT -] on its non-head daughter.
   # Adding that just in case we add the no-spr-noun-lex type.
 
+  # if determiner suffixes:
+  if ch.get('def-morph-mark') == 'yes':
+    mylang.add('noun :+ [ DEF bool ].')
+    climb_nouns.add('noun :+ [ DEF bool ].')
+
+
   if refl:
     stype1 = 'non-reflexive-noun-lex'
   else:

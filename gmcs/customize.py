@@ -355,6 +355,8 @@ def customize_roots(grammar_path):
 
   if ch.get('extraposition') == 'yes':
     roots.add('root := [ SYNSEM.LOCAL.ANCHOR.TO-BIND < > ].')
+    if ch.get('phrase-root') == 'on':
+      roots.add('phrase-root := [ SYNSEM.LOCAL.ANCHOR.TO-BIND < > ].')
   # ERB 2006-10-05 I predict a bug here:  If we a language with auxiliaries
   # and question particles, we're going to need to make sure that FORM is
   # compatible with comp.
@@ -372,8 +374,7 @@ def customize_roots(grammar_path):
     typedef = \
      '''phrase-root := phrase &
         [ SYNSEM [ NON-LOCAL.SLASH <! !>,
-                   LOCAL [ ANCHOR.TO-BIND < >,
-                           CAT.VAL [ SUBJ < >,
+                   LOCAL [ CAT.VAL [ SUBJ < >,
                                      COMPS < > ] ] ] ].'''
     roots.add(typedef, comment) 
     customize_globals(grammar_path)

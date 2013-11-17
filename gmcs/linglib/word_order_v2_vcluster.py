@@ -190,7 +190,7 @@ def add_basic_phrases_v2_with_cluster(ch, mylang, rules, climb_gwo):
   if ch.get('v2-analysis') == 'filler-gap':
     long_distance_dependencies.add_basic_ldd_phrases(ch, mylang, rules, climb_gwo)
     filler_gap_word_order(ch, mylang, climb_gwo)
-    filler_gap_rules(rules, climb_gwo)
+    filler_gap_rules(ch, rules, climb_gwo)
   else:
     mc_v2_word_order(ch, mylang, rules, climb_gwo)
 
@@ -227,12 +227,17 @@ def general_post_objectival_cluster_phrases(ch, mylang, climb_gwo):
       mylang.add('comp-aux-vc-phrase := [ SYNSEM.LOCAL.CAT.HEAD.INV - ].')
       climb_gwo.add('comp-aux-vc-phrase := [ SYNSEM.LOCAL.CAT.HEAD.INV - ].')
   elif ch.get('aux-comp-order') == 'before':
+    mylang.add('general-head-comp-vc-phrase := basic-head-1st-comp-phrase & head-initial-invc.')
     mylang.add('aux-comp-vc-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT [ VC +, \
                                                                     MC - ], \
                                         NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ MC - ]].')
     climb_gwo.add('aux-comp-vc-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT [ VC +, \
                                                                     MC - ], \
                                         NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ MC - ]].')
+    climb_gwo.add('general-head-comp-vc-phrase := basic-head-1st-comp-phrase & head-initial-invc.')
+    mylang.add('aux-comp-vc-phrase := [ HEAD-DTR.SYNSEM.LIGHT + ].') 
+    climb_gwo.add('aux-comp-vc-phrase := [ HEAD-DTR.SYNSEM.LIGHT + ].') 
+
     if ch.get('q-inv'):
       mylang.add('aux-comp-vc-phrase := [ SYNSEM.LOCAL.CAT.HEAD.INV - ].')
       climb_gwo.add('aux-comp-vc-phrase := [ SYNSEM.LOCAL.CAT.HEAD.INV - ].')
@@ -545,10 +550,12 @@ def specialized_word_order_v2_with_cluster(ch, mylang, lrules, rules, climb_gwo)
 
   if auxorder == 'before' or auxorder == 'both' or ch.get('vc-placement') == 'pre':
     mylang.add('head-initial-invc := head-initial & \
-                  [ SYNSEM.LOCAL.CAT.MC #mc & -, \
+                  [ SYNSEM.LOCAL.CAT [ MC #mc & -, \
+                                       HEAD verb & [ INV - ] ], \
                     HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].')
     climb_gwo.add('head-initial-invc := head-initial & \
-                  [ SYNSEM.LOCAL.CAT.MC #mc & -, \
+                  [ SYNSEM.LOCAL.CAT [ MC #mc & -, \
+                                       HEAD verb & [ INV - ] ], \
                     HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].')
 ##
 ##calling specific rules depending on chosen analysis
@@ -672,6 +679,9 @@ def create_wh_wo_phrases(ch, mylang, climb_wh):
   mylang.add('bare-np-phrase :=[ HEAD-DTR.SYNSEM.NON-LOCAL.QUE 0-dlist ].')
   climb_wh.add('bare-np-phrase :=[ HEAD-DTR.SYNSEM.NON-LOCAL.QUE 0-dlist ].')
   
+  #no wh when definite marker has been added
+  if ch.get('def-morph-mark') == 'yes': 
+    mylang.add('bare-def-np-phrase := [ SYNSEM.NON-LOCAL.QUE 0-dlist ].')
 
 def create_wh_rules(ch, rules, climb_wh):
   rules.add('head-wh-subj := head-wh-subj-phrase.')
@@ -925,6 +935,20 @@ def create_argument_composition_phrases(ch, mylang, rules, climb_gwo):
       climb_gwo.add('comp-aux-vc-phrase := general-comp-head-vc-phrase & \
                          [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC +, \
                            HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.AUX + ].') 
+
+    elif ch.get('aux-comp-order') == 'before':
+      mylang.add('aux-comp-vc-phrase := general-head-comp-vc-phrase & \
+                         [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC +, \
+                           HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.AUX + ].') 
+      climb_gwo.add('aux-comp-vc-phrase := general-head-comp-vc-phrase & \
+                         [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC +, \
+                           HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.AUX + ].') 
+      if ch.get('argument-order') == 'fixed':
+        mylang.add('aux-comp-vc-phrase := [ SYNSEM.LOCAL.CAT.ALLOWED-PART #ap, \
+                             NON-HEAD-DTR.SYNSEM.LOCAL.CAT.ALLOWED-PART #ap ].')
+        climb_gwo.add('aux-comp-vc-phrase := [ SYNSEM.LOCAL.CAT.ALLOWED-PART #ap, \
+                             NON-HEAD-DTR.SYNSEM.LOCAL.CAT.ALLOWED-PART #ap ].')
+   
 
     elif ch.get('aux-comp-order') == 'both':
       mylang.add('comp-aux-vc-phrase := general-comp-head-vc-phrase & \
@@ -1251,6 +1275,11 @@ def argument_composition_revised_additional_constraints(ch, mylang, lrules, clim
     mylang.add('comp-2-head-vc-phrase := basic-head-comp-share-vc.')
     climb_gwo.add('general-comp-head-vc-phrase := basic-head-comp-share-vc.')
     climb_gwo.add('comp-2-head-vc-phrase := basic-head-comp-share-vc.')
+    if ch.get('aux-comp-order') == 'before':
+      mylang.add('general-comp-head-vc-phrase := basic-head-comp-share-vc.')
+      mylang.add('comp-2-head-vc-phrase := basic-head-comp-share-vc.')
+      climb_gwo.add('general-comp-head-vc-phrase := basic-head-comp-share-vc.')
+      climb_gwo.add('comp-2-head-vc-phrase := basic-head-comp-share-vc.')
   else:
     mylang.add('general-head-comp-vc-phrase := basic-head-comp-share-vc.')
     mylang.add('head-comp-2-vc-phrase := basic-head-comp-share-vc.')
@@ -1392,6 +1421,7 @@ def add_additional_arg_order_constraints(ch, mylang, climb_gwo):
     mylang.add('comp-aux-2nd-phrase-2 := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.ARG-ORDER - ].')
     climb_gwo.add('comp-aux-2nd-phrase-2 := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.ARG-ORDER - ].')
   if not ch.get('argument-order') == 'fixed':
+    print 'line 1426'
     mylang.add('change-arg-order-rule := [ SYNSEM.LOCAL.CAT.ARG-ORDER + ].')
     climb_gwo.add('change-arg-order-rule := [ SYNSEM.LOCAL.CAT.ARG-ORDER + ].')
 
@@ -1990,21 +2020,22 @@ def create_germanic_adjunct_phrases(ch, mylang, rules, climb_gwo):
 
 
 ### TO DO: FIND OUT ABOUT DANISH
-  if ch.get('vc-placement') == 'post':
+### 2013-11-17 removing requirement, Danish has adjuncts before cluster
+ # if ch.get('vc-placement') == 'post':
 
-    hf_invc = ''
-    if ch.get('v2-analysis') == 'filler-gap':
-      hf_invc = 'general-head-final-invc'
-    else:
-      hf_invc = 'head-final-invc'
-    mylang.add('adj-head-int-vc-phrase := adj-head-int-phrase & ' + hf_invc +' & adjunct-head-phrase.')
-    mylang.add('adj-head-scop-vc-phrase := adj-head-scop-phrase & ' + hf_invc +  ' & adjunct-head-phrase.')    
-    rules.add('adj-head-int-vc := adj-head-int-vc-phrase.')
-    rules.add('adj-head-scop-vc := adj-head-scop-vc-phrase.')
-    climb_gwo.add('adj-head-int-vc-phrase := adj-head-int-phrase & ' + hf_invc +' & adjunct-head-phrase.')
-    climb_gwo.add('adj-head-scop-vc-phrase := adj-head-scop-phrase & ' + hf_invc +  ' & adjunct-head-phrase.')    
-    climb_gwo.add('adj-head-int-vc := adj-head-int-vc-phrase.',section='rules')
-    climb_gwo.add('adj-head-scop-vc := adj-head-scop-vc-phrase.',section='rules')
+  hf_invc = ''
+  if ch.get('v2-analysis') == 'filler-gap':
+    hf_invc = 'general-head-final-invc'
+  else:
+    hf_invc = 'head-final-invc'
+  mylang.add('adj-head-int-vc-phrase := adj-head-int-phrase & ' + hf_invc +' & adjunct-head-phrase.')
+  mylang.add('adj-head-scop-vc-phrase := adj-head-scop-phrase & ' + hf_invc +  ' & adjunct-head-phrase.')    
+  rules.add('adj-head-int-vc := adj-head-int-vc-phrase.')
+  rules.add('adj-head-scop-vc := adj-head-scop-vc-phrase.')
+  climb_gwo.add('adj-head-int-vc-phrase := adj-head-int-phrase & ' + hf_invc +' & adjunct-head-phrase.')
+  climb_gwo.add('adj-head-scop-vc-phrase := adj-head-scop-phrase & ' + hf_invc +  ' & adjunct-head-phrase.')    
+  climb_gwo.add('adj-head-int-vc := adj-head-int-vc-phrase.',section='rules')
+  climb_gwo.add('adj-head-scop-vc := adj-head-scop-vc-phrase.',section='rules')
 
 
 def create_rel_clause_phrases(mylang, rules, climb_gwo, ch):
@@ -2223,13 +2254,14 @@ def filler_gap_word_order(ch, mylang, climb_gwo):
   climb_gwo.add('head-final-invc := general-head-final-invc.')
 
 # additional constraints for fixed argument order:
-
-  if ch.get('argument-order') == 'fixed':
+#turning this off: no longer works for filler-gap 2013-10-16 (TO DO: FIND OUT
+#HOW TO SOLVE THIS ISSUE
+ # if ch.get('argument-order') == 'fixed':
 #    mylang.add('head-subj-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH 1-dlist].')
-    mylang.add('aux-2nd-comp-phrase := [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >, \
-                                                         COMPS < > ] ].')
-    climb_gwo.add('aux-2nd-comp-phrase := [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >, \
-                                                         COMPS < > ] ].')
+ #   mylang.add('aux-2nd-comp-phrase := [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >, \
+ #                                                        COMPS < > ] ].')
+ #   climb_gwo.add('aux-2nd-comp-phrase := [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >, \
+ #                                                        COMPS < > ] ].')
 #                                  NON-HEAD-DTR.SYNSEM.NON-LOCAL.SLASH 1-dlist ].') 
 
  # should not be necessary anymore with revised slash constraints
@@ -2354,7 +2386,7 @@ def filler_gap_word_order(ch, mylang, climb_gwo):
                    HEAD-DTR.SYNSEM.LOCAL.CAT [ MC #mc, \
 			                       SECOND #sec ] ].')
 
-def filler_gap_rules(rules, climb_gwo):
+def filler_gap_rules(ch, rules, climb_gwo):
   climb_gwo.set_section('rules')
   rules.add('aux-2nd-comp-2 := aux-2nd-comp-phrase-2.')
   rules.add('extracted-subj := extracted-subj-phrase.')
@@ -2362,7 +2394,6 @@ def filler_gap_rules(rules, climb_gwo):
   rules.add('extracted-comp := extracted-non-verbal-comp-phrase.')
   rules.add('extracted-adj := ger-extracted-adj-phrase.')
   rules.add('filler-head := filler-head-phrase.')
-  rules.add('wh-filler-head := wh-filler-head-phrase.')
 
   climb_gwo.add('aux-2nd-comp-2 := aux-2nd-comp-phrase-2.')
   climb_gwo.add('extracted-subj := extracted-subj-phrase.')
@@ -2370,7 +2401,10 @@ def filler_gap_rules(rules, climb_gwo):
   climb_gwo.add('extracted-comp := extracted-non-verbal-comp-phrase.')
   climb_gwo.add('extracted-adj := ger-extracted-adj-phrase.')
   climb_gwo.add('filler-head := filler-head-phrase.')
-  climb_gwo.add('wh-filler-head := wh-filler-head-phrase.')
+  if ch.get('wh-questions') == 'yes':
+    rules.add('wh-filler-head := wh-filler-head-phrase.')
+    climb_gwo.add('wh-filler-head := wh-filler-head-phrase.')
+
   climb_gwo.set_section('mylang')
   
 #########################################################################
