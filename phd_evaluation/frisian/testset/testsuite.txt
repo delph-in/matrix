@@ -1,0 +1,1723 @@
+Language: North Frisian
+Language code: frr
+Lines: orth orth-seg gloss translat
+Author: Nigel Kilmer and Woodley Packard
+Date: April 9, 2013
+Source a: Dissertation: Lasswell 1998
+
+############################################################
+# Word Order Examples
+############################################################
+
+# Word Order Example 1
+# S V1 DO V2 IO
+Source: a:233
+Vetted: s
+Judgment: g
+Phenomena: word order
+ik haa  di  breev  dön       tö di  dreeng
+ik haa  di  breev  dö-t      tö di  dreeng
+I  have the letter give-PST.PTCP to the boy
+I gave the letter to the boy
+
+# Word Order Example 2
+# V1 S DO V2 IO
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: word order, q
+haa  ik di  breev  dön       tö di  dreeng
+haa  ik di  breev  dö-t      tö di  dreeng
+have I  the letter give-PST.PTCP to the boy
+have I given the letter to the boy?
+
+# Word Order Example 3: a question
+# V1 adv V2
+Source: a:231
+Vetted: s
+Judgment: g
+Phenomena: word order, q
+heest    gur slöpen
+haa-st   gur sliip-t
+have-2SG good sleep-PST.PTCP
+did you sleep well?
+
+# Word Order Example 4
+# obl V1 subj obj V2
+Source: a:238
+Vetted: s
+Judgment: g
+Phenomena: word order
+bi höm her          ik mal  fuul liirt
+bi höm haa-t        ik mal  fuul liir-t
+by him have-1SG.PST I  very much learn-PST.PTCP
+I really learned a lot from him.
+
+# Word Order Example 5
+# subj V1 obj V2
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: word order
+di soldaaten   her           fuul liirt
+di soldaat-en  haa-t         fuul liir-t
+the soldier-PL have-1SG.PST  much learn-PST.PTCP
+the soldiers learned a lot.
+
+# Word Order Example 6
+# subj obj V1 V2
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: word order
+di soldaaten    fuul her          liirt
+di soldaat-en   fuul haa-t        liir-t
+the soldier-PL  much have-1SG.PST learn-PST.PTCP
+the soldiers learned a lot.
+
+# Word Order Example 7
+# subj obj V2 V1
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: word order
+di soldaaten fuul liirt  her
+di soldaat-en fuul liir-t haa-t
+the soldier-PL  much learn-PST.PTCP have-1SG.PST
+the soldiers learned a lot.
+
+# Word Order Example 8
+# subj V1 obj
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: word order
+di  soldaaten  liir fuul
+di  soldaat-en liir fuul
+the soldier-PL learn  much
+the soldiers learn a lot.
+
+# Word Order Example 9
+# subj obj V1
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: word order
+di  soldaaten   fuul liir
+di  soldaat-en  fuul liir
+the soldier-PL  much learn
+the soldiers learn a lot.
+
+# Word Order Example 10
+# obj subj V1
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: word order
+fuul di soldaaten liir
+fuul di soldaat-en liir
+much the soldier-PL learn
+the soldiers learn a lot.
+
+############################################################
+# Pronoun Examples
+############################################################
+
+# Prounoun Example 1
+# 1st-person singular subjective
+# Original from a:245 "jaa, iit ik fuul" "yes, I eat (it) a lot"
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: pronouns
+ik iit höm
+ik iit höm
+I  eat it.OBJ
+I eat it
+
+# Prounoun Example 2
+# 1st-person dual subjective
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: pronouns
+wat   iit höm
+wat   iit höm
+we.DU eat it.OBJ
+we eat it
+
+# Prounoun Example 3
+# 1st-person plural subjective
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: pronouns
+wü    iit höm
+wü    iit höm
+we.PL eat it.OBJ
+we eat it
+
+# Prounoun Example 4
+# 2nd-person singular subjective
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: pronouns
+dü     iitst   höm
+dü     iit-st  höm
+you.SG eat-2SG it.OBJ
+you eat it
+
+# Prounoun Example 5
+# 2nd-person dual subjective
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: pronouns
+at     iit höm
+at     iit höm
+you.DU eat it.OBJ
+you eat it
+
+# Prounoun Example 6
+# 2nd-person plural subjective
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: pronouns
+i      iit höm
+i      iit höm
+you.PL eat it.OBJ
+you eat it
+
+# Prounoun Example 7
+# 3rd-person singular masculine subjective
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: pronouns
+hi et     höm
+hi iit-t   höm
+he eat-3SG it.OBJ
+he eats it
+
+# Prounoun Example 8
+# 3rd-person singular feminine subjective
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: pronouns
+jü  et     höm
+jü  iit-t   höm
+she eat-3SG it.OBJ
+she eats it
+
+# Prounoun Example 9
+# 3rd-person singular neuter subjective
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: pronouns
+hat et     höm
+hat iit-t   höm
+it  eat-3SG it.OBJ
+it eats it
+
+# Prounoun Example 10
+# 3rd-person dual subjective
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: pronouns
+jat     iit höm
+jat     iit höm
+they.DU eat it.OBJ
+they eat it
+
+# Prounoun Example 11
+# 3rd-person plural subjective
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: pronouns
+ja      iit höm
+ja      iit höm
+they.PL eat it.OBJ
+they eat it
+
+# Prounoun Example 12
+# 1st-person singular objective
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: pronouns
+hat et     mi
+hat iit-t   mi
+it  eat-3SG me
+it eats me
+
+# Prounoun Example 13
+# 1st-person dual objective
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: pronouns
+hat et     unk
+hat iit-t   unk
+it  eat-3SG us.DU
+it eats us
+
+# Prounoun Example 14
+# 1st-person plural objective
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: pronouns
+hat et     üüs
+hat iit-t   üüs
+it  eat-3SG us.PL
+it eats us
+
+# Prounoun Example 15
+# 2nd-person singular objective
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: pronouns
+hat et     di
+hat iit-t   di
+it  eat-3SG you.SG
+it eats you
+
+# Prounoun Example 16
+# 2nd-person dual objective
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: pronouns
+hat et     junk
+hat iit-t   junk
+it  eat-3SG you.DU
+it eats you
+
+# Prounoun Example 17
+# 2nd-person plural objective
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: pronouns
+hat et     juu
+hat iit-t   juu
+it  eat-3SG you.PL
+it eats you
+
+# Prounoun Example 18
+# 3rd-person singular masculine objective
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: pronouns
+hat et     höm
+hat iit-t   höm
+it  eat-3SG him
+it eats him
+
+# Prounoun Example 19
+# 3rd-person singular feminine objective
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: pronouns
+hat et     höör
+hat iit-t   höör
+it  eat-3SG her
+it eats her
+
+# Prounoun Example 20
+# 3rd-person singular neuter objective
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: pronouns
+hat et     höm
+hat iit-t   höm
+it  eat-3SG it
+it eats it
+
+# Prounoun Example 21
+# 3rd-person dual/plural objective
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: pronouns
+hat et     jam
+hat iit-t   jam
+it  eat-3SG them
+it eats them
+
+############################################################
+# Case Examples
+############################################################
+
+
+# sliip (1SG), sleept (3SG)	 = sleep
+# skiar (1SG), skiart (3SG)	 = cut
+# dö (1SG), dēr (3SG)            = do or give
+
+# Case Example 1
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: case
+ik sliip
+ik sliip
+I sleep
+I sleep
+
+# Case Example 2
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: case
+mi sliip
+mi sliip
+me sleep
+I sleep
+
+# Case Example 3
+# subj V1 subj
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: case
+ik skiar hat
+ik skiar hat
+I cut it.SUBJ
+I cut it
+
+# Case Example 4
+# subj V1 obj
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: case
+ik skiar höm
+ik skiar höm
+I cut it.OBJ
+I cut it
+
+# Case Example 5
+# obj V1 subj
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: case
+mi skiar hat
+mi skiar hat
+me cut it.SUBJ
+I cut it
+
+# Case Example 6
+# obj V1 obj
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: case
+mi skiar höm
+mi skiar höm
+me cut it.OBJ
+I cut it
+
+
+# Case Example 7
+# subj V1 subj subj
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: case
+ik dö dü hat
+ik dö dü hat
+I give you it
+I give you it
+
+# Case Example 8
+# subj V1 subj obj
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: case
+ik dö dü höm
+ik dö dü höm
+I give you it.OBJ
+I give you it
+
+# Case Example 9
+# subj V1 obj subj
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: case
+ik dö di hat
+ik dö di hat
+I give you.OBJ it
+I give you it
+
+# Case Example 10
+# subj V1 obj obj
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: case
+ik dö di höm
+ik dö di höm
+I give you.OBJ it.OBJ
+I give you it
+
+
+# Case Example 11
+# obj V1 subj subj
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: case
+mi dö dü hat
+mi dö dü hat
+me give you it
+I give you it
+
+# Case Example 12
+# subj V1 subj obj
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: case
+mi dö dü höm
+mi dö dü höm
+me give you it.OBJ
+I give you it
+
+# Case Example 13
+# subj V1 obj subj
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: case
+mi dö di hat
+mi dö di hat
+me give you.OBJ it
+I give you it
+
+# Case Example 14
+# subj V1 obj obj
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: case
+mi dö di höm
+mi dö di höm
+me give you.OBJ it.OBJ
+I give you it
+
+
+############################################################
+# NP Examples
+############################################################
+
+# NP Example 1
+# Bare singular count noun
+# Original from a:255 "luki jens üt wining wat jir luas es" "look out the window at what's going on"
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: determiners
+luki üt  wining
+luki üt  wining
+look out window
+look out the window
+
+# NP Example 2
+# Bare mass noun
+Source: a:256
+Vetted: s
+Judgment: g
+Phenomena: determiners
+ja  luki hat jaav ja  lön  wat  öner  weeter ging
+ja  luki hat jaav ja  lön  wat  öner  weeter ging
+yes look it  gave yes land what under water  went
+yes, well there was land that had gone under
+
+# NP Example 3
+# Bare plural nouns
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: determiners
+diar  laap hingster en  fölken ön di  guart
+diar  laap hingst-en en  fölk-en ön di  guart
+there run  horse-PL   and foal-PL  in the garden
+there are horses and foals running around the yard
+
+# NP Example 4
+# Plural nouns with determiners
+Source: a:256
+Vetted: s
+Judgment: g
+Phenomena: determiners
+diar  laap di  hingster en  di  fölken ön di  guart
+diar  laap di  hingst-en en  di  fölk-en ön di  guart
+there run  the horse-PL   and the foal-PL  in the garden
+there are horses and foals running around the yard
+
+# NP Example 5
+# Pronoun with determiner (ungrammatical)
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: case
+ik skiar di  höm
+ik skiar di  höm
+I  cut   the it.OBJ
+I cut it
+
+
+###############################
+#  Negation Examples
+###############################
+
+Source: a:280
+Vetted: s
+Judgment: g
+Phenomena: negation
+hüner, diar böli, bit ek
+hün-en diar böli  bit ek
+dog-PL that bark  bite not
+dogs that bark don't bite
+
+# negation with an intransitive verb
+Source: a:283
+Vetted: s
+Judgment: g
+Phenomena: negation
+ja kum miaren ek
+ja kum miaren ek
+they come tomorrow not
+they're not coming tomorrow
+
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: negation
+di hün sleept ek
+di hün sliip-t ek
+the dog sleep-3SG not
+the dog doesn't sleep
+
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: negation
+di hün ek sleept
+di hün ek sliip-t
+the dog not sleep-3SG
+the dog doesn't sleep
+
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: negation
+ek di hün sleept
+ek di hün sliip-t
+not the dog sleep-3SG
+the dog doesn't sleep
+
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: negation
+ek sleept di hün
+ek sliip-t di hün
+not sleep-3SG the dog
+the dog doesn't sleep
+
+# negation with a transitive verb
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: negation
+di hün bet di soldaat ek
+di hün bit-t di soldaat ek
+the dog bite-3SG the soldier not
+the dog doesn't bite the soldier
+
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: negation
+di hün bet ek di soldaat
+di hün bit-t ek di soldaat
+the dog bite-3SG not the soldier
+the dog doesn't bite the soldier
+
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: negation
+di hün ek bet di soldaat
+di hün ek bit-t di soldaat
+the dog not bite-3SG the soldier
+the dog doesn't bite the soldier
+
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: negation
+ek di hün bet di soldaat
+ek di hün bit-t di soldaat
+not the dog bite-3SG the soldier
+the dog doesn't bite the soldier
+
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: negation
+ek bet di hün di soldaat
+ek bit-t di hün di soldaat
+not bite-3SG the dog the soldier
+the dog doesn't bite the soldier
+
+
+########################################
+# Definiteness/demonstratives
+########################################
+
+# definiteness
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {cogst, agr}
+di soldaat sleept
+di soldaat sliip-t
+the soldier sleep-3SG
+the soldier sleeps
+
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {cogst, agr}
+dit soldaat sleept
+dit soldaat sliip-t
+the soldier sleep-3SG
+the soldier sleeps
+
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {cogst, agr}
+dit heest sleept
+dit heest sliip-t
+the train sleep-3SG
+the train sleeps
+
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {cogst, agr}
+di heest sleept
+di heest sliip-t
+the train sleep-3SG
+the train sleeps
+
+Source: a:258
+Vetted: s
+Judgment: g
+Phenomena: cogst
+ja löp bi strön
+ja laap-t bi strön
+they walk-PRET by beach
+they were walking by the beach
+
+Source: a:261
+Vetted: s
+Judgment: g
+Phenomena: cogst
+diar laap di hingster bi üüs ön guart
+diar laap di hingst-en bi üüs ön guart
+there run the horse-PL by us in yard
+there are horses running around in the yard
+
+Source: a:261
+Vetted: s
+Judgment: g
+Phenomena: cogst
+diar laap di hingster en di fölken ön di guart
+diar laap di hingst-en en di fölk-en ön di guart
+there run the horse-PL and the foal-PL in the yard
+there are horses and foals running around in the yard
+
+#demonstratives (table on page 254-255, examples on page 144
+Source: a:144
+Vetted: s
+Judgment: g
+Phenomena: cogst
+det bigent me didiar liti.motorräder
+det bigen-t me didiar liti.motorräd-en
+that begin-3SG with the.there little.motorcycle-PL
+it begins with those little motorcycles
+
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {cogst, agr}
+didiar soldaat sleept
+didiar soldaat sliip-t
+the.there soldier sleep-3SG
+that soldier sleeps
+
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {cogst, agr}
+ditdiar soldaat sleept
+ditdiar soldaat sliip-t
+the.there soldier sleep-3SG
+that soldier sleeps
+
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {cogst, agr}
+dijir soldaat sleept
+dijir soldaat sliip-t
+the.here soldier sleep-3SG
+this soldier sleeps
+
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {cogst, agr}
+ditjir soldaat sleept
+ditjir soldaat sliip-t
+the.here soldier sleep-3SG
+this soldier sleeps
+
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {cogst, agr}
+des soldaat sleept
+des soldaat sliip-t
+this/that soldier sleep-3SG
+this/that soldier sleeps
+
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {cogst, agr}
+det soldaat sleept
+det soldaat sliip-t
+this/that soldier sleep-3SG
+this/that soldier sleeps
+
+############################################################
+# Argument Optionality
+############################################################
+
+Source: a:231
+Vetted: s
+Judgment: g
+Phenomena: pro-d
+heest gur slöpen
+haa-st gur sliip-t
+have-2SG good sleep-PST.PTCP
+did you sleep well?
+
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: pro-d
+heest dü gur slöpen
+haa-st dü gur sliip-t
+have-2SG you good sleep-PST.PTCP
+did you sleep well?
+
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: pro-d
+haa i gur slöpen
+haa i gur sliip-t
+have you.PL good sleep-PST.PTCP
+did you sleep well?
+
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: pro-d
+haa gur slöpen
+haa gur sliip-t
+have.2PL good sleep-PST.PTCP
+did you sleep well?
+
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: pro-d
+ik haa gur slöpen
+ik haa gur sliip-t
+I have good sleep-PST.PTCP
+I slept well
+
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: pro-d
+haa gur slöpen
+haa gur sliip-t
+have.1SG good sleep-PST.PTCP
+I slept well
+
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: pro-d
+hat heer gur slöpen
+hat haa-t gur sliip-t
+it have-3SG good sleep-PST.PTCP
+it slept well
+
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: pro-d
+heer gur slöpen
+haa-t gur sliip-t
+have-3SG good sleep-PST.PTCP
+it slept well
+
+# Based on (19) from a:236
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {pro-d, neg}
+jil fairst dü ek
+jil fo-st dü ek
+money get.PRES-2SG you.SG not
+you're not getting any money
+
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {pro-d, neg}
+jil fairst ek
+jil fo-st ek
+money get.PRES-2SG not
+you're not getting any money
+
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {pro-d, neg}
+jil fo ik ek
+jil fo ik ek
+money get.PRES I not
+I'm not getting any money
+
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {pro-d, neg}
+jil fo ek
+jil fo ek
+money get.PRES not
+I'm not getting any money
+
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {pro-d, neg}
+dü fairst ek
+dü fo-st ek
+you.SG get.PRES-2SG not
+you're not getting (any money)
+
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: {pro-d, neg}
+ik fo di ek
+ik fo di ek
+I get.PRES you.SG not
+I'm not getting you
+
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {pro-d, neg}
+ik fo ek
+ik fo ek
+I get.PRES not
+I'm not getting (you)
+
+############################################################
+# Agreement
+############################################################
+
+# For examples of determiner agreement, see the earlier section on definiteness/demonstratives.
+
+# Examples with proper agreement with pronouns.
+
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+ik fo jil
+ik fo jil
+I get.PRES.1SG money
+I'm getting money
+
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+wü fo jil
+wü fo jil
+we get.PRES.1PL money
+we're getting money
+
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+dü fairst jil
+dü fo-st jil
+you.SG get.PRES-2SG money
+you're getting money
+
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+i fo jil
+i fo jil
+you.PL get.PRES.2PL money
+you're getting money
+
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+hat fair jil
+hat fo-t jil
+it get.PRES-3SG money
+it's getting money
+
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: agr
+ja fo jil
+ja fo jil
+they get.PRES.3PL money
+they're getting money
+
+# Ungrammatical examples of verbs that don't agree with pronoun subjects.
+
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+ik fairst jil
+ik fo-st jil
+I get.PRES-2SG money
+I'm getting money
+
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+wü fairst jil
+wü fo-st jil
+we get.PRES-2SG money
+we're getting money
+
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+dü fo jil
+dü fo jil
+you.SG get.PRES.1SG money
+you're getting money
+
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+i fairst jil
+i fo-st jil
+you.PL get.PRES-2SG money
+you're getting money
+
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+hat fo jil
+hat fo jil
+it get.PRES.1SG money
+it's getting money
+
+# Ungrammatical example in which verb agrees with object instead of subject.
+
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: agr
+ik fairst di
+ik fo-st di
+I get.PRES-2SG you.SG.OBJ
+I'm getting you
+
+############################################################
+# Tense / Aspect
+############################################################
+
+# Present tense
+
+Source: a:152
+Vetted: s
+Judgment: g
+Phenomena: tam
+ik snaki
+ik snaki
+I speak
+I speak
+
+# Preterite tense
+
+Source: a:153
+Vetted: s
+Judgment: g
+Phenomena: tam
+ik snaket
+ik snaki-t
+I speak-PRET
+I spoke
+
+# Perfect aspect
+
+Source: a:154
+Vetted: s
+Judgment: g
+Phenomena: tam
+ik haa snaket
+ik haa snaki-t
+I have speak-PST.PTCP
+I have spoken
+
+# Pluperfect aspect
+
+Source: a:154
+Vetted: s
+Judgment: g
+Phenomena: tam
+ik her snaket
+ik haa-t snaki-t
+I have-PRET speak-PST.PTCP
+I had spoken
+
+# Future tense (no gloss is given for 'noch')
+Source: a:155
+Vetted: s
+Judgment: g
+Phenomena: tam
+ik skel miaren noch weder kum
+ik skel miaren noch weder kum
+I shall tomorrow NOCH again come
+I'll be back tomorrow
+
+# Ungrammatical examples
+
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: tam
+ik haa snaki
+ik haa snaki
+I have speak
+I have spoken
+
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: tam
+ik her snaki
+ik haa-t snaki
+I have-PRET speak
+I had spoken
+
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: tam
+ik haa snaki her
+ik haa snaki haa-t
+I have speak have-PST.PTCP
+I have spoken
+
+Source: a:155
+Vetted: s
+Judgment: g
+Phenomena: tam
+ik haa miaren noch weder kum
+ik haa miaren noch weder kum
+I have tomorrow NOCH again come
+I'll be back tomorrow
+
+
+######################
+# yes/no questions
+######################
+
+Source: a:277
+Vetted: s
+Judgment: g
+Phenomena: q
+skel ik di en stek me.dö
+skel ik di en stek me.dö
+shall I you a piece with.do
+Shall I give you a piece to take along?
+
+Source: a:277
+Vetted: s
+Judgment: g
+Phenomena: q
+wet dü jir bliiv
+wel-st dü jir bliiv
+want-2SG you here stay
+Do you want to stay here?
+
+Source: a:278
+Vetted: s
+Judgment: g
+Phenomena: q
+maist jit wat
+mai-st jit wat
+want-2SG yet what
+Would you like some more?
+
+Source: a:244
+Vetted: s
+Judgment: g
+Phenomena: q
+nemst dü diar fleten ön
+nem-st dü diar fleten ön
+take-2SG you there cream in
+Do you take cream [in your coffee]?
+
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: q
+sleept di soldaat
+sliip-t di soldaat
+sleep-3SG the soldier
+Is the soldier sleeping?
+
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: q
+et      hi höm
+iit-t   hi höm
+eat-3SG he it.OBJ
+Does he eat it?
+
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: q
+et      hi höm ek
+iit-t   hi höm ek
+eat-3SG he it.OBJ not
+Does he not eat it?
+
+########################################
+# Adjectives
+########################################
+
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: adj
+di gurt soldaat sleept
+di gurt soldaat sliip-t
+the big soldier sleep-3SG
+the big soldier sleeps
+
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: adj
+di gurt wunderbar soldaat sleept
+di gurt wunderbar soldaat sliip-t
+the big wonderful soldier sleep-3SG
+the big wonderful soldier sleeps
+
+# The adjective isn't in the correct position.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: adj
+gurt di soldaat sleept
+gurt di soldaat sliip-t
+big the soldier sleep-3SG
+the big soldier sleeps
+
+# The adjective isn't in the correct position.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: adj
+di soldaat gurt sleept
+di soldaat gurt sliip-t
+the soldier big sleep-3SG
+the big soldier sleeps
+
+# The adjective isn't in the correct position.
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: adj
+di soldaat sleept gurt
+di soldaat sliip-t gurt
+the soldier sleep-3SG big
+the big soldier sleeps
+
+########################################
+# Adverbs
+########################################
+
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: adv
+di soldaat sleept aural
+di soldaat sliip-t aur.al
+the soldier sleep-3SG over.all
+the soldier sleeps everywhere
+
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: adv
+aural sleept di soldaat
+aur.al sliip-t di soldaat
+over.all sleep-3SG the soldier
+the soldier sleeps everywhere
+
+# Adverbs can go basically anywhere, so ungrammatical examples would actually be ungrammatical
+# because of other word order constraints like V2.
+
+########################################
+# Embedded clauses
+########################################
+
+# Adapted from a:294
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: emb-d
+ik skul ja üppasi dat wü ali wainer mefing
+ik skel-t ja üp.pasi dat wü ali wainer me.fing
+I shall-PRET yes take.care that we all autos with.got
+I was supposed to make sure that we had all the vehicles with us
+
+# Adapted from a:295
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: emb-d
+ik gesi dat ik jam iit
+ik gesi dat ik jam iit
+I guess that I them eat
+I guess that I eat them
+
+# Not sure whether this is grammatical, since the source only mentions (p.296) that complementizers
+# are optional for quotatives
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: emb-d
+ik gesi di soldaat sleept
+ik gesi di soldaat sliip-t
+I guess the soldier sleep-3SG
+I guess the soldier sleeps
+
+# V2 word order is permitted in embedded clauses
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: emb-d
+ik gesi dat ik iit jam
+ik gesi dat ik iit jam
+I guess that I eat them
+I guess that I eat them
+
+# Verb-initial is not permitted in embedded clauses
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: emb-d
+ik gesi dat iit ik jam
+ik gesi dat iit ik jam
+I guess that eat I them
+I guess that I eat them
+
+# Adapated from a:295
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: emb-q
+ik weet weder ik jam iit
+ik weet weder ik jam iit
+I know whether I them eat
+I know whether I eat them
+
+# The verb "gesi" (guess) can't take an embedded interrogative
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: emb-q
+ik gesi weder ik jam iit
+ik gesi weder ik jam iit
+I guess whether I them eat
+I guess whether I eat them
+
+# Complementizers must occur before the embedded clause
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: emb-q
+ik gesi ik jam iit dat
+ik gesi ik jam iit dat
+I guess I them eat that
+I guess that I eat them
+
+# Subjects must still have the correct case when embedded clauses are involved
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: {emb-q, case}
+mi gesi ik jam iit dat
+mi gesi ik jam iit dat
+me guess I them eat that
+I guess that I eat them
+
+# Quotatives allow the complementizer to be dropped.
+# Adapted from a:296
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: emb-d
+ik sair tö min maker ja haa en auto
+ik sii-t tö min maker ja haa en auto
+I say-PRET to my colleague they have a car
+I said to my colleague they have a car
+
+########################################
+# Coordination
+########################################
+
+# Adapted from a:261
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: crd
+diar laap di hingster en di fölken
+diar laap di hingst-en en di fölk-en
+there run the horse-PL and the foal-PL
+there are horses and foals running around
+
+Source: a:300
+Vetted: s
+Judgment: g
+Phenomena: crd
+Weesterlön wel det ja hol en di Aussendörfer
+Weesterlön wel-t det ja hol en di Aussen.dörf-en
+Weesterlön want-3SG that yes gladly and the outer.village-PL
+Weesterlön and the outer villages want it
+
+# Adapted from a:301
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: crd
+jü smilet en sleept
+jü smile-t en sliip-t
+she smile-3SG and sleep-3SG
+she smiled and slept
+
+# Adapted from a:301
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: crd
+min aalern her swin en kin en molk
+min aaler-en haa-t swin-en en kin-en en molk
+my parent-PL have-PRET pig-PL and cow-PL and milk
+my parents had pigs and cows and milk
+
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: crd
+min aalern her swin kin en molk
+min aaller-en haa-t swin-en kin-en en molk
+my parent-PL have-PRET pig-PL cow-PL and milk
+my parents had pigs cows and milk
+
+# Coordination without use of a conjunction - ungrammatical
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: crd
+min aalern her swin kin molk
+min aaler-en haa-t swin-en kin-en molk
+my parent-PL have-PRET pig-PL cow-PL milk
+my parents had pigs cows and milk
+
+# Adapted from a:301
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: crd
+ik her swin en kin en molk
+ik haa-t swin-en en kin-en en molk
+I have-PRET pig-PL and cow-PL and milk
+I had pigs and cows and milk
+
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: crd
+ik her swin kin en molk
+ik haa-t swin-en kin-en en molk
+I have-PRET pig-PL cow-PL and milk
+I had pigs cows and milk
+
+# Coordination without use of a conjunction - ungrammatical
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: crd
+ik her swin kin molk
+ik haa-t swin-en kin-en molk
+I have-PRET pig-PL cow-PL milk
+I had pigs cows and milk
+
+#######
+# information structure
+#######
+
+# syntactic defocusing by passivization ("it" is focused)
+Source: a:247
+Vetted: s
+Judgment: g
+Phenomena: info
+diar kür nün kuurn wuksi, det waar ek plaantet
+diar kür nün kuurn wuksi det uur-t ek plaant-t
+there could no grain grow that became-PAST not planted-PST.PTCP
+no grain could grow there, it wasn't planted
+
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: info
+det waar ek iiten
+det uur-t ek iit-t
+that became-PAST not eaten-PST.PTCP
+it wasn't eaten
+
+# lexical focusing with "fo" ("you" is focused)
+Source: a:250
+Vetted: s
+Judgment: g
+Phenomena: info
+da fairst dü leeterhen uk jit din skuur
+da fo-st dü leeterhen uk jit din skuur
+then get-2SG you later.on too yet your shoes
+Later on, you'll get your shoes.
+
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: info
+dü fairst dü leeterhen uk jit din skuur
+dü fo-st en hingst
+you get-2SG a horse
+You get a horse.
+
+# lexical defocusing of the generic pronoun "em"
+Source: a:254
+Vetted: s
+Judgment: g
+Phenomena: info
+em kumt ek tö Ruu jer em en Stek suar üp haur heer
+em kum-t ek tö Ruu jer em en Stek suar üp haur haa-t
+one come-3SG not to rest ere one a piece sod up head has-3SG
+there's no rest before the grave
+
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: info
+em sleept
+em sliip-t
+one sleep-3SG
+one sleeps
+
+#######
+# nonverbal predicates
+#######
+
+# copula+PP
+Source: a:235
+Vetted: s
+Judgment: g
+Phenomena: cop
+jü es fan Langeness
+jü wiis-t fan Langeness
+she is-3SG from Langeness
+she's from Langeness
+
+# copula+AdjP
+Source: a:238
+Vetted: s
+Judgment: g
+Phenomena: cop
+en hi wiar gans, verrückt eeder Motor.räder
+en hi wiis-t gans verrückt eeder Motor.räder
+and he was-PAST whole crazy after motor.cycles
+and he was really crazy about motorcycles
+
+# copula+Adj
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: cop
+hi es gurt
+hi wiis-t gurt
+he is-3SG big
+he is big
+
+# showing alternate copula
+Source: a:238
+Vetted: s
+Judgment: g
+Phenomena: cop
+hi uur nü tö hārefst aacht.en.tachentig
+hi uur-t nü tö hārefst aacht.en.tachentig
+he become-3SG now to autumn eight.and.eighty
+he'll be eighty-eight in the fall
+
+# copula+NP
+Source: a:239
+Vetted: s
+Judgment: g
+Phenomena: cop
+min mooter wiar en hoog.dütsk.en
+min mooter wiis-t en hoog.dütsk.en
+my mother was-PAST a high.German.NOM
+my mother was a (speaker of) High German
+
+# copula+NP
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: cop
+hi wiar en soldaat
+hi wiis-t en soldaat
+he was-PAST a soldier
+he was a soldier
+
+# missing copula/PP
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: cop
+hi fan Langeness
+hi fan Langeness
+he from Langeness
+he is from Langeness
+
+# missing copula/Adj
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: cop
+hi gurt
+hi gurt
+he big
+he is big
+
+# missing copula/NP
+Source: author
+Vetted: f
+Judgment: u
+Phenomena: cop
+hi en soldaat
+hi en soldaat
+he a soldier
+he is a soldier
+
+
+#######
+# Lab 7: I can eat glass. It doesn't hurt me.
+#######
+
+Source: author
+Vetted: f
+Judgment: g
+Phenomena:
+ik ken glees iit
+ik ken glees iit
+I can glass eat
+I can eat glass
+
+Source: author
+Vetted: f
+Judgment: u
+Phenomena:
+ik iit glees ken
+ik iit glees ken
+I eat glass ken
+I can eat glass
+
+Source: author
+Vetted: f
+Judgment: g
+Phenomena:
+hi ken glees iit
+hi ken-t glees iit
+he can-3SG glass eat
+he can eat glass
+
+Source: author
+Vetted: f
+Judgment: u
+Phenomena:
+hi ken glees iit
+hi ken-st glees iit
+he can-2SG glass eat
+he can eat glass
+
+# the verb `dö' is part of the translation of "to hurt", not an auxiliary brought in to aid negation
+Source: author
+Vetted: f
+Judgment: g
+Phenomena: neg
+hat dēr mi siir ek
+hat dö-t mi siir ek
+it give-3SG me hurt not
+it doesn't hurt me

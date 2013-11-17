@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from gmcs.utils import get_name
 from gmcs.utils import TDLencode
 from gmcs.utils import orth_encode
@@ -70,6 +72,12 @@ def insert_ids(ch):
         else:
           stemidcounters[orth] += 1
           ch[bistem.full_key + '_name'] = orth + '_' + str(stemidcounters[orth])
+
+
+
+def noun_id(item):
+  """Return the identifier for a noun lexical item."""
+  return get_name(item) + '-noun-lex'
 
 
 ##########################################################
@@ -2099,7 +2107,7 @@ def customize_nouns(mylang, ch, lexicon, trigger, hierarchies, climb_nouns):
 
   for noun in ch.get('noun',[]):
     det = noun.get('det')
-    if not seen[det]:
+    if not det == '' and not seen[det]:
       seen[det] = True
       seenCount += 1
 
@@ -2446,9 +2454,54 @@ def customize_nouns(mylang, ch, lexicon, trigger, hierarchies, climb_nouns):
   lexicon.add_literal(';;; Nouns')
 ###
 
+  # make a hash of nountypes --> lists of children so that we
+  # can stopdet on children
+  children = defaultdict(dict)
   for noun in ch.get('noun',[]):
-    name = get_name(noun)
+    for p in noun.get('supertypes').split(', '):
+      children[p][noun.full_key] = 1
+
+  # make and populate a dictionary of stopdets, to avoid vacuous det supertypes
+  # have to follow inheritance paths downwards from any nonempty det values
+  stopdets={}
+
+
+   # make and populate a dictionary of stopdets, to avoid vacuous det supertypes
+  # have to follow inheritance paths downwards from any nonempty det values
+  stopdets={}
+  for noun in ch.get('noun',[]):
+    # if det is nonempty, child nouns shouldn't inherit det
     det = noun.get('det')
+    if det != '':
+      if noun.full_key in children:
+      # there are children to stopdet on
+      # recursively look for children
+        parents = [ noun.full_key ]
+        while (True):
+          next_parents = []
+          for p in parents:
+            if p in children:
+              for c in children[p].keys():
+                stopdets[c]=True
+                if not c in next_parents:
+                  next_parents.append(c)
+          if len(next_parents) == 0:
+            break
+          else:
+            parents = next_parents
+
+
+  for noun in ch.get('noun',[]):
+    ntype = noun_id(noun)
+    det = noun.get('det')
+    if noun.full_key in stopdets:
+      det = ''
+
+    stypes = noun.get('supertypes').split(', ')
+    stype_names = [noun_id(ch[st]) for st in stypes if st != '']
+
+ #   name = get_name(noun)
+ #   det = noun.get('det')
     wh = noun.get('wh')
     rel = noun.get('rel-pn')
     sub_rel = noun.get('sub-rel')
@@ -2466,35 +2519,35 @@ def customize_nouns(mylang, ch, lexicon, trigger, hierarchies, climb_nouns):
     if noun.get('refl'):
       n_refl = noun.get('refl')  
 
-    ntype = name + '-noun-lex'
+  #  ntype = name + '-noun-lex'
     
 ##TO DO: allow wh-words to be rel pronouns as well
 
     if wh == 'yes':
-      stype = 'wh-noun-lex'
+      stype_names.append('wh-noun-lex')
     elif rel == 'yes':
-      stype = 'rel-pronoun-lex'
+      stype_names.append('rel-pronoun-lex')
       if sub_rel:
-        stype = sub_rel + '-rel-pronoun-lex'
+        stype_names.append(sub_rel + '-rel-pronoun-lex')
     elif kind == 'pronoun':
-      stype = 'basic-pronoun-lex'
+      stype_names.append('basic-pronoun-lex')
     elif kind == 'indef':
-      stype = 'basic-indef-noun-lex'
+      stype_names.append('basic-indef-noun-lex')
     elif kind == 'neg':
-      stype = 'basic-neg-noun-lex'
+      stype_names.append('basic-neg-noun-lex')
     elif kind == 'every':
-      stype = 'basic-every-noun-lex'
+      stype_names.append('basic-every-noun-lex')
     elif kind == 'ander':
-      stype = 'basic-ander-noun-lex'
+      stype_names.append('basic-ander-noun-lex')
     elif arg_st:
 ##2011-12-21 just s-comp for now, more to be added
 ##2012-12-22 also pps now. Assuming arguments on nouns are all optional
 ####TO DO: CREATE LIGHT VERB CONSTRUCTION FOR HABEN + SOME OF THESE NOUNS
 ####TO DO2: FIND OUT ABOUT SEMANTICS, WHY MUST ONE-ARG HAVE REF-IND?
       if arg_st == 'scomp' or arg_st == 'qcomp':
-        stype = 'noun-clausal-arg-lex'
+        stype_names.append('noun-clausal-arg-lex')
       else:
-        stype = 'noun-clausal-arg-lex'
+        stype_names.append('noun-clausal-arg-lex')
       if det == 'opt' or det == 'obl':
         mylang.add(ntype + ':= [ SYNSEM.LOCAL.CAT.VAL.SPR < #spr >, \
                                ARG-ST < #spr & [ LOCAL.CAT.HEAD det ], [ ]> ].')
@@ -2576,25 +2629,31 @@ def customize_nouns(mylang, ch, lexicon, trigger, hierarchies, climb_nouns):
     elif mod:
 ####TO DO: 1. noun can be mod and have arg-st (at least theoretically possible)
 ####2. Maybe there are scopal modifier nouns
-      stype = 'mod-noun-lex'
+      stype_names.append('mod-noun-lex')
       mylang.add(ntype + ' := intersective-mod-lex & \
                       [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.HEAD ' + mod + ' ] > ].')
       climb_nouns.add(ntype + ' := intersective-mod-lex & \
                       [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.HEAD ' + mod + ' ] > ].')
     elif n_refl == 'obl':
-      stype = 'reflexive-noun-lex'
+      stype_names.append('reflexive-noun-lex')
     elif compound:
-      stype = 'compound-noun-lex'
+      stype_names.append('compound-noun-lex')
     elif singlentype or det == 'opt':
-      stype = 'noun-lex'
+      stype_names.append('noun-lex')
     elif det == 'obl':
-      stype = 'obl-spr-noun-lex'
-    else:
-      stype = 'no-spr-noun-lex'
+      stype_names.append('obl-spr-noun-lex')
+    elif det:
+      stype_names.append('no-spr-noun-lex')
 
     if not expl:
-      mylang.add(ntype + ' := ' + stype + '.')
-      climb_nouns.add(ntype + ' := ' + stype + '.')
+      if len(stype_names) == 0:
+        mylang.add(ntype + ' := noun-lex .')
+        climb_nouns.add(ntype + ' := noun-lex .')
+      else:
+        mylang.add(ntype + ' := ' + ' & '.join(stype_names) + '.')
+        climb_nouns.add(ntype + ' := ' + ' & '.join(stype_names) + '.')
+      #mylang.add(ntype + ' := ' + stype + '.')
+      #climb_nouns.add(ntype + ' := ' + stype + '.')
 
       if pers_n:
         mylang.add(ntype + ' := [ SYNSEM.LKEYS.KEYREL named-relation ].')

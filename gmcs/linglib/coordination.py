@@ -496,29 +496,30 @@ def add_np_restrictions(mylang, climb_coord, mid, pn, csnum):
 
 def add_shared_features(mylang, climb_coord, f, path, mid):
   compl_path =  path + str.upper(f) + ' #' + f
-  mylang.add(f + '-agr-top-coord-rule := top-coord-rule & \
+  if f:
+    mylang.add(f + '-agr-top-coord-rule := top-coord-rule & \
                   [ ' + compl_path + ', \
                   LCOORD-DTR.' + compl_path + ', \
                   RCOORD-DTR.' + compl_path + ' ].' )
-  climb_coord.add(f + '-agr-top-coord-rule := top-coord-rule & \
+    climb_coord.add(f + '-agr-top-coord-rule := top-coord-rule & \
                   [ ' + compl_path + ', \
                   LCOORD-DTR.' + compl_path + ', \
                   RCOORD-DTR.' + compl_path + ' ].' )
 
-  if mid:
-    mylang.add(f + '-agr-mid-coord-rule := mid-coord-rule &\
+    if mid:
+      mylang.add(f + '-agr-mid-coord-rule := mid-coord-rule &\
                [ ' + compl_path + ', \
                   LCOORD-DTR.' + compl_path + ', \
                   RCOORD-DTR.' + compl_path + ' ].')
-    climb_coord.add(f + '-agr-mid-coord-rule := mid-coord-rule &\
+      climb_coord.add(f + '-agr-mid-coord-rule := mid-coord-rule &\
                [ ' + compl_path + ', \
                   LCOORD-DTR.' + compl_path + ', \
                   RCOORD-DTR.' + compl_path + ' ].')
 
-  mylang.add(f + '-agr-bottom-coord-rule := bottom-coord-phrase &\
+    mylang.add(f + '-agr-bottom-coord-rule := bottom-coord-phrase &\
              [ ' + compl_path + ', \
                NONCONJ-DTR.' + compl_path + ' ].')
-  climb_coord.add(f + '-agr-bottom-coord-rule := bottom-coord-phrase &\
+    climb_coord.add(f + '-agr-bottom-coord-rule := bottom-coord-phrase &\
              [ ' + compl_path + ', \
                NONCONJ-DTR.' + compl_path + ' ].')
 
@@ -540,14 +541,15 @@ def add_sharing_supertypes(mylang, climb_coord, pn, mid, agr):
   if '-' in agr:
     agr_parts = agr.split('-')
     agr = agr_parts[0]
-  if not vp_except:
-    mylang.add(pn + '-top-coord-rule :=  ' + agr + '-agr-top-coord-rule.')
-    climb_coord.add(pn + '-top-coord-rule :=  ' + agr + '-agr-top-coord-rule.')
-  if mid:   
-    mylang.add(pn + '-mid-coord-rule := ' + agr + '-agr-mid-coord-rule.')
-    climb_coord.add(pn + '-mid-coord-rule := ' + agr + '-agr-mid-coord-rule.')
-  mylang.add(pn + '-bottom-coord-rule := ' + agr + '-agr-bottom-coord-rule.')  
-  climb_coord.add(pn + '-bottom-coord-rule := ' + agr + '-agr-bottom-coord-rule.')  
+  if agr:
+    if not vp_except:
+      mylang.add(pn + '-top-coord-rule :=  ' + agr + '-agr-top-coord-rule.')
+      climb_coord.add(pn + '-top-coord-rule :=  ' + agr + '-agr-top-coord-rule.')
+    if mid:   
+      mylang.add(pn + '-mid-coord-rule := ' + agr + '-agr-mid-coord-rule.')
+      climb_coord.add(pn + '-mid-coord-rule := ' + agr + '-agr-mid-coord-rule.')
+    mylang.add(pn + '-bottom-coord-rule := ' + agr + '-agr-bottom-coord-rule.')  
+    climb_coord.add(pn + '-bottom-coord-rule := ' + agr + '-agr-bottom-coord-rule.')  
 
 
 def share_wh_properties(mylang, climb_coord, pn, mid):
@@ -562,18 +564,19 @@ def share_rel_properties(mylang, climb_coord, pn, mid):
   f = 'rel'
   add_shared_features(mylang, climb_coord, f, path, mid)
   add_sharing_supertypes(mylang, climb_coord, pn, mid, f)
-  mylang.add(f + '-agr-top-coord-rule := \
+  if f:
+    mylang.add(f + '-agr-top-coord-rule := \
                      [ LCOORD-DTR.SYNSEM.NON-LOCAL.REL 0-dlist ].')
-  climb_coord.add(f + '-agr-top-coord-rule := \
+    climb_coord.add(f + '-agr-top-coord-rule := \
                      [ LCOORD-DTR.SYNSEM.NON-LOCAL.REL 0-dlist ].')
-  if mid:
-    mylang.add(f + '-agr-mid-coord-rule := \
+    if mid:
+      mylang.add(f + '-agr-mid-coord-rule := \
                      [ LCOORD-DTR.SYNSEM.NON-LOCAL.REL 0-dlist ].')
-    climb_coord.add(f + '-agr-mid-coord-rule := \
+      climb_coord.add(f + '-agr-mid-coord-rule := \
                      [ LCOORD-DTR.SYNSEM.NON-LOCAL.REL 0-dlist ].')
-  mylang.add(f + '-agr-bottom-coord-rule := \
+    mylang.add(f + '-agr-bottom-coord-rule := \
                      [ NONCONJ-DTR.SYNSEM.NON-LOCAL.REL 0-dlist ].')
-  climb_coord.add(f + '-agr-bottom-coord-rule := \
+    climb_coord.add(f + '-agr-bottom-coord-rule := \
                      [ NONCONJ-DTR.SYNSEM.NON-LOCAL.REL 0-dlist ].')
 
 #######
