@@ -723,8 +723,15 @@ def write_i_or_l_rules(ch, irules, lrules, climb_morph, lrt, order):
     # lexical rules
     for lri in lrt.lris:
       lrt_id = lrt.identifier()
-      lrules.add(lrt_id.rsplit('-rule',1)[0] + ' := ' + lrt_id + '.')
-      climb_morph.add(lrt_id.rsplit('-rule',1)[0] + ' := ' + lrt_id + '.', section='lrules')
+      if ch.get('verb-cluster') == 'yes' and len(lrt.lris) == 2 and ch.get('word-order') == 'v2':
+        
+        lrules.add('mainv-' + lrt_id.rsplit('-rule',1)[0] + ' := ' + lrt_id + '-main-verb.')
+        climb_morph.add('mainv-' + lrt_id.rsplit('-rule',1)[0] + ' := ' + lrt_id + '-main-verb.', section='lrules')
+        lrules.add('aux-' + lrt_id.rsplit('-rule',1)[0] + ' := ' + lrt_id + '-aux.')
+        climb_morph.add('aux-' + lrt_id.rsplit('-rule',1)[0] + ' := ' + lrt_id + '-aux.', section='lrules')
+      else:
+        lrules.add(lrt_id.rsplit('-rule',1)[0] + ' := ' + lrt_id + '.')
+        climb_morph.add(lrt_id.rsplit('-rule',1)[0] + ' := ' + lrt_id + '.', section='lrules')
 
 ##################
 ### VALIDATION ###

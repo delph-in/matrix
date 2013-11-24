@@ -765,6 +765,11 @@ def create_nachfeld_phrases(ch, mylang, rules, climb_gwo):
     mylang.add('nachfeld-phrase := collect-anchor-phrase.')
     climb_gwo.add('nachfeld-phrase := collect-anchor-phrase.')
 
+ # introduce EDGE if not already present
+  if not ch.get('edge-related-res') == 'yes':
+    mylang.add('cat :+ [ EDGE luk ].')
+    climb_gwo.add('cat :+ [ EDGE luk ].')
+
   typedef = '''extracted-comp-phrase-nachfeld := 
          basic-extracted-comp-phrase & share-anchor-unary-phrase & 
     [ HEAD-DTR.SYNSEM.LOCAL.CAT [ MC #mc & -,

@@ -1798,7 +1798,7 @@ def customize_verb_case(mylang, climb_verbs, ch):
         b_head = 'noun'
 ###should allow to create list of particles and check if is in list
 ###rather than specific form
-        if p[0] == 'partv' or o_case == 'vor' or o_case == 'voor':
+        if p[0] == 'partv' or o_case == 'vor' or o_case == 'voor' or o_case == 'in':
           o_head = 'verb'
         else:
           o_head = 'noun'

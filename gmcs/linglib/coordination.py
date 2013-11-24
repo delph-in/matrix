@@ -365,11 +365,11 @@ trunc-coord-lex-rule.
                     SYNSEM.LKEYS.KEYREL.PRED "_' + w_pred + '_coord_rel",\
                     CFORM "' + csnum + '" ].', section='lexicon')
       else:
-        lexicon.add(TDLencode(orth) + ' := conj-lex &\
+        lexicon.add(TDLencode(orth) + '-coord := conj-lex &\
                   [ STEM < "' + orthstr + '" >,\
                     SYNSEM.LKEYS.KEYREL.PRED "_and_coord_rel",\
                     CFORM "' + csnum + '" ].')
-        climb_coord.add(TDLencode(orth) + ' := conj-lex &\
+        climb_coord.add(TDLencode(orth) + '-coord := conj-lex &\
                   [ STEM < "' + orthstr + '" >,\
                     SYNSEM.LKEYS.KEYREL.PRED "_and_coord_rel",\
                     CFORM "' + csnum + '" ].',section='lexicon')

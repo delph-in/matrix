@@ -68,6 +68,15 @@ def customize_dative_shift(ch, mylang, lrules, lexicon, climb_arg_alt):
 
 
 ###info for marking preposition
+
+####make sure pform is introduced....
+      
+  sf = ''
+  if ch.get('nachfeld') == 'yes' and 'pform' in ch.get('nf-forms'):
+    sf += 'nf-'
+  sf += 'form'
+  mylang.add('pform := ' + sf + '.',section='features')
+
   mylang.add(new_m2 + ' := pform.', 'Form of preposition in dative shift', section='features')
   climb_arg_alt.add(new_m2 + ' := pform.', 'Form of preposition in dative shift', section='features')
 

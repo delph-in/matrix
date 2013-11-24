@@ -546,7 +546,7 @@ def customize_verbs(mylang, ch, lexicon, trigger, hierarchies, climb_verbs):
           o_case = case.canon_to_abbr(c[1], cases)
           tivity = a_case + '-' + o_case + '-' + c[2]
           tivity += '-trans'
-        elif c[2] == 'vor' or c[2] == 'voor':
+        elif c[2] == 'vor' or c[2] == 'voor' or c[2] == 'in':
           a_case = case.canon_to_abbr(c[0], cases)
           b_case = case.canon_to_abbr(c[1], cases)
           o_case = case.canon_to_abbr(c[2], cases)
@@ -598,7 +598,7 @@ def customize_verbs(mylang, ch, lexicon, trigger, hierarchies, climb_verbs):
                      [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT \
                                            ' + o_drop_default + ' ].')
         if len(c) == 3:
-          if c[2] == 'vor' or c[2] == 'voor':
+          if c[2] == 'vor' or c[2] == 'voor' or c[2] == 'in':
             mylang.add(vtype + ' := \
                          [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ ], [ OPT - ] > ].')
             climb_verbs.add(vtype + ' := \
@@ -1133,7 +1133,7 @@ def customize_adjectives(mylang, ch, lexicon, rules, climb_lex, hierarchies):
     else:
       stype = 'scopal' + stype
     atype = name + '-adjective-lex'
-    
+
     mylang.add(atype + ' := ' + stype + ' & \
       [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT [ HEAD noun, \
                                                   VAL.SPR <[ ]> ] ] > ].')
@@ -2069,7 +2069,7 @@ def customize_complementizers(ch, mylang, lexicon, trigger, climb_lex):
       for stem in compl.get('stem'):
         orth = stem.get('orth')
         orthstr = orth_encode(orth)
-        orth = orth.replace(' ','_')
+        orth = orth.replace(' ','_') + '_comp'
         typedef = \
             TDLencode(orth) + ' := ' + my_type + ' & \
                    [ STEM < "' + orthstr + '" > ].'

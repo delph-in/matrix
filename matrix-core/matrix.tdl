@@ -1751,6 +1751,7 @@ basic-head-opt-comp-phrase := head-valence-head-nexus & head-only &
 ; down to decl-head-opt-subj-phrase, since we might *not* want it for
 ; imperatives.
 
+
 basic-head-opt-subj-phrase := head-valence-head-nexus & head-only &
   [ INFLECTED #infl,
     SYNSEM canonical-synsem &

@@ -145,16 +145,18 @@ def add_anchor_related_suptypes_and_constraints(ch, mylang, climb_expos):
     climb_expos.add('bare-np-spec_incl-phrase := \
       [ SYNSEM.LOCAL [ ANCHOR.ANCHS <! #index !>, \
  		       CONT.HOOK.INDEX #index ] ].')
-  mylang.add('wh-spec-head-phrase := \
+  if ch.get('wh-questions') == 'yes':
+    mylang.add('wh-spec-head-phrase := \
                   [ SYNSEM.LOCAL [ ANCHOR.ANCHS <! #index !>, \
                                    CONT.HOOK.INDEX #index ] ].')
-  mylang.add('basic-rel-phrase := \
+    climb_expos.add('wh-spec-head-phrase := \
+                  [ SYNSEM.LOCAL [ ANCHOR.ANCHS <! #index !>, \
+                                   CONT.HOOK.INDEX #index ] ].')
+  if ch.get('rel-clause') == 'yes':
+    mylang.add('basic-rel-phrase := \
                      [ SYNSEM.LOCAL.ANCHOR [ ANCHS <! !>, \
 			                     TO-BIND < > ] ],') 
-  climb_expos.add('wh-spec-head-phrase := \
-                  [ SYNSEM.LOCAL [ ANCHOR.ANCHS <! #index !>, \
-                                   CONT.HOOK.INDEX #index ] ].')
-  climb_expos.add('basic-rel-phrase := \
+    climb_expos.add('basic-rel-phrase := \
                      [ SYNSEM.LOCAL.ANCHOR [ ANCHS <! !>, \
 			                     TO-BIND < > ] ],')  
   if ch.get('clz-optionality'):
@@ -162,6 +164,10 @@ def add_anchor_related_suptypes_and_constraints(ch, mylang, climb_expos):
                   [ ARGS < [ SYNSEM.LOCAL.ANCHOR.TO-BIND < > ] > ].')
     climb_expos.add('basic-informal-vcomp := \
                   [ ARGS < [ SYNSEM.LOCAL.ANCHOR.TO-BIND < > ] > ].')
+
+  if ch.get('subj-drop'):
+    mylang.add('decl-head-opt-subj-phrase :+ [ SYNSEM.LOCAL.ANCHOR #anchor, \
+                                    HEAD-DTR.SYNSEM.LOCAL.ANCHOR #anchor ].')
 
   mylang.add('compound-noun-phrase := collect-anchor-phrase.')
   mylang.add('int-cl := share-anchor-unary-phrase.')

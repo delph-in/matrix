@@ -23,7 +23,8 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
 #hack so I won't have to wait testing until all is done
   if not climbfile:
     climbfile = mylang
-  
+
+
   pos_geom_prefix = ''
  
 
