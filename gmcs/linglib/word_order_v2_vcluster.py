@@ -2021,7 +2021,10 @@ def create_germanic_adjunct_phrases(ch, mylang, rules, climb_gwo):
     rules.add('adj-head-2nd-scop := adj-head-2nd-scop-phrase.')
     climb_gwo.add('adj-head-2nd-int := adj-head-2nd-int-phrase.',section='rules')
     climb_gwo.add('adj-head-2nd-scop := adj-head-2nd-scop-phrase.',section='rules')
-
+    #constraint to exclude scopal single word adverbs
+    if ch.get('fronted-scopal') == 'no':
+      mylang.add('adj-head-2nd-scop-phrase := [ NON-HEAD-DTR.SYNSEM.LIGHT - ].')
+      climb_gwo.add('adj-head-2nd-scop-phrase := [ NON-HEAD-DTR.SYNSEM.LIGHT - ].')
 
 
 ### TO DO: FIND OUT ABOUT DANISH

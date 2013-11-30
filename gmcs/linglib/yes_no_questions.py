@@ -34,6 +34,7 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies, climb_file
       # ERB 2006-10-05 Adding in semantics here.  This rule constrains MESG to ques.
       # ERB 2007-01-21 Removing semantics here: Need to allow inversion to not express questions.  Instead, the result of this is MC na, and there is a separate non-branching rule which introduces question semantics.  Following the ERG in this.
       # ERB 2010-04-15 Adding [AUX +] on DTR, too.
+    # ASF 2013-11-29: sharing INFLECTED
     if ch.get('verb-cluster') == 'yes':
       typedef = '''
       subj-v-inv-lrule := cat-change-only-lex-rule &
@@ -47,11 +48,13 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies, climb_file
                              MC na ],
                          COORD #coord ],
                  LKEYS #lkeys ],
-        DTR.SYNSEM [ LOCAL [ CAT [ HEAD verb & [ INV -,
+        INFLECTED #infl,
+        DTR [ INFLECTED #infl & infl-satisfied,
+              SYNSEM [ LOCAL [ CAT [ HEAD verb & [ INV -,
                                                  MOD #mod ],
                                    VAL #val ],
                              COORD #coord ],
-                     LKEYS #lkeys ]].'''
+                     LKEYS #lkeys ]]].'''
     else:
       typedef = '''
       subj-v-inv-lrule := cat-change-only-lex-rule &
