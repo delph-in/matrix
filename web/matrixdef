@@ -1452,7 +1452,7 @@ BeginIter noun{i} "a Noun Type" 1 1
   Text name "Noun {i} name" "Type name: " "<br /><br />" 20
 
   MultiSelect supertypes "Noun type {i}" "Supertypes: " "<br /><br />"
-  fillregex p=noun(?!{i})[0-9]+_name
+  fillregex p=noun(?!{i}_)[0-9]+_name
 
   Label "Features:"
 
@@ -1515,7 +1515,7 @@ BeginIter verb{i} "a Verb Type" 1 2
   Text name "Verb {i} name" "Type name: " "<br /><br />" 20
 
   MultiSelect supertypes "Verb type {i}" "Supertypes: " "<br /><br />"
-  fillregex p=verb(?!{i})[0-9]+_name
+  fillregex p=verb(?!{i}_)[0-9]+_name
 
   Label "Features:"
 
