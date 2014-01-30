@@ -1120,7 +1120,7 @@ Radio q-part-order "Question particle order" "" ""
 
 Text q-part-orth "Question particle spelling" "&nbsp;&nbsp;&nbsp;&nbsp;Spelling of question particle: " "<br>" 40
 
-Check q-infl "Inflection" "<p>" "Verbal inflection: Checking this box enables a features called <span class=\"feat\">question</span> with possible value <span class=\"tt\">plus</span> for use in defining morphemes on the lexicon page.  Defining morphemes that specify [<span class=\"feat\">question</span> <span class=\"tt\">plus</span>] will produce lexical rules that add the semantics of questions.</p>"
+Check q-infl "Inflection" "<p>" "Verbal inflection: Checking this box enables a feature called <span class=\"feat\">question</span> with possible value <span class=\"tt\">plus</span> for use in defining lexical rules on the morphology page.  Defining lexical rules that specify [<span class=\"feat\">question</span> <span class=\"tt\">plus</span>] will produce lexical rules in the grammar that add the semantics of questions.</p>"
 
 Check q-inv "Subject-verb inversion" "" "Subject-verb inversion: "
 

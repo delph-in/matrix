@@ -839,8 +839,8 @@ def validate_yesno_questions(ch, vr):
                     for feat in lrt.get('feat',[])])
     if not ques_aff:
       mess = 'If matrix yes-no questions are expressed through affixation, ' +\
-             'you must specify an affix with the "question" feature in the ' +\
-             'lexicon page.'
+             'you must specify a lexical rule with the "question" feature ' +\
+             'in the morphology page.'
       vr.err('q-infl', mess)
 
    # the above change was implemented as a first-pass to allow a student to
