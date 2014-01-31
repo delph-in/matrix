@@ -180,24 +180,21 @@ comp-head-nmc-phrase := basic-head-comp-nmc-phrase & head-final &
 
 head_nf_comp_phrase = """
 head-nf-comp-phrase := head-nf-comp-phrase-super & head-initial & 
- [ SYNSEM.LOCAL.CAT.MC -, 
-   HEAD-DTR.SYNSEM [ LIGHT +,
-         	     LOCAL.CAT.MC - ],
+ [ HEAD-DTR.SYNSEM.LIGHT +,
    NON-HEAD-DTR.SYNSEM.LOCAL [ CAT.HEAD +np,
 		               CONT.HOOK.ICONS-KEY $ ] ]. 
 """
 
 head_nf_subj_phrase = """
 head-nf-subj-phrase := head-nf-subj-phrase-super & head-initial & 
-  [ HEAD-DTR.SYNSEM [ LIGHT +,
-		      LOCAL.CAT.MC - ], 
+  [ HEAD-DTR.SYNSEM.LIGHT +,
    NON-HEAD-DTR.SYNSEM.LOCAL [ CAT.HEAD +np,
 		               CONT.HOOK.ICONS-KEY $ ] ]. 
 """
 
 infostr_dislocated_phrase = """
 infostr-dislocated-phrase := no-rels-hcons-rule & narrow-focus &
-  [ SYNSEM.LOCAL.CAT.MC +,
+  [ SYNSEM.LOCAL.CAT [ MC +, VAL.SUBJ < > ],
     C-CONT.ICONS <! info-str & #icons & [ TARGET #index, CLAUSE #clause ] !>,
     HEAD-DTR.SYNSEM.LOCAL [ CAT [ MC -, HEAD verb ],
                             CONT.HOOK [ INDEX #clause,
@@ -226,31 +223,37 @@ infostr-head-filler-phrase := nc-head-filler-phrase & infostr-dislocated-phrase 
 
 head_nf_comp_phrase_super = """
 head-nf-comp-phrase-super := basic-head-comp-phrase & narrow-focus &
-  [ SYNSEM.LOCAL.CAT [ MC -, VAL.COMPS #comps ],
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS #comps,
     HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < #synsem . #comps >,
     NON-HEAD-DTR.SYNSEM #synsem & [ INFOSTR-FLAG + ] ].
 """
 
 head_nf_subj_phrase_super = """
 head-nf-subj-phrase-super := basic-head-subj-phrase & declarative-clause & narrow-focus &
-  [ SYNSEM.LOCAL.CAT.MC -,
-    NON-HEAD-DTR.SYNSEM.INFOSTR-FLAG + ].
+  [ NON-HEAD-DTR.SYNSEM.INFOSTR-FLAG + ].
+"""
+
+# [MC -]: deleting it from all nf rules
+nf_comp_head_phrase_old = """
+nf-comp-head-phrase := head-nf-comp-phrase-super & head-final &
+ [ SYNSEM.LOCAL.CAT.MC -, 
+   HEAD-DTR.SYNSEM [ LIGHT +,
+         	     LOCAL.CAT [ MC -, VAL.SUBJ < [ ] > ],
+   NON-HEAD-DTR.SYNSEM.LOCAL [ CAT.HEAD +np,
+		               CONT.HOOK.ICONS-KEY $ ] ]. 
 """
 
 nf_comp_head_phrase = """
 nf-comp-head-phrase := head-nf-comp-phrase-super & head-final &
- [ SYNSEM.LOCAL.CAT.MC -, 
-   HEAD-DTR.SYNSEM [ LIGHT +,
-         	     LOCAL.CAT.MC - ],
+ [ HEAD-DTR.SYNSEM.LIGHT +,
    NON-HEAD-DTR.SYNSEM.LOCAL [ CAT.HEAD +np,
 		               CONT.HOOK.ICONS-KEY $ ] ]. 
 """
 
 nf_comp_head_phrase_v2 = """
 nf-comp-head-phrase := head-nf-comp-phrase-super & head-final &
- [ SYNSEM [ L-PERIPH +, LOCAL.CAT.MC - ], 
-   HEAD-DTR.SYNSEM [ LIGHT +,
-         	     LOCAL.CAT.MC - ],
+ [ SYNSEM.L-PERIPH +, 
+   HEAD-DTR.SYNSEM.LIGHT +,
    NON-HEAD-DTR.SYNSEM [ L-PERIPH +,
                          LOCAL [ CAT.HEAD +np,
 		                 CONT.HOOK.ICONS-KEY $ ] ] ]. 
@@ -259,8 +262,7 @@ nf-comp-head-phrase := head-nf-comp-phrase-super & head-final &
 head_nf_subj_phrase_w_comps = """
 nf-subj-head-phrase := head-nf-subj-phrase-super & head-final &
   [ HEAD-DTR.SYNSEM [ LIGHT +,
-		      LOCAL.CAT [ MC -,
-                                  VAL.COMPS.FIRST [ ] ] ], 
+		      LOCAL.CAT.VAL.COMPS.FIRST [ ] ], 
    NON-HEAD-DTR.SYNSEM.LOCAL [ CAT.HEAD +np,
 		               CONT.HOOK.ICONS-KEY $ ] ]. 
 """
@@ -268,35 +270,29 @@ nf-subj-head-phrase := head-nf-subj-phrase-super & head-final &
 nf_subj_head_phrase = """
 nf-subj-head-phrase := head-nf-subj-phrase-super & head-final &
   [ HEAD-DTR.SYNSEM [ LIGHT +,
-                      LOCAL.CAT [ MC -,
-				  VAL.COMPS.FIRST [ ] ] ],
+		      LOCAL.CAT.VAL.COMPS.FIRST [ ] ], 
    NON-HEAD-DTR.SYNSEM.LOCAL [ CAT.HEAD +np,
 		               CONT.HOOK.ICONS-KEY $ ] ]. 
 """
 
 nf_subj_head_phrase_simple = """
 nf-subj-head-phrase := head-nf-subj-phrase-super & head-final & 
-  [ HEAD-DTR.SYNSEM [ LIGHT +,
-                      LOCAL.CAT.MC - ],
+  [ HEAD-DTR.SYNSEM.LIGHT +,
     NON-HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.ICONS-KEY $ ].
 """
 
 nf_comp_head_phrase_aux = """
 nf-comp-head-phrase := head-nf-comp-phrase-super & head-final & 
- [ SYNSEM.LOCAL.CAT.MC -, 
-   HEAD-DTR.SYNSEM [ LIGHT +,
-         	     LOCAL.CAT [ MC -, 
-                                 HEAD.AUX - ] ],
+ [ HEAD-DTR.SYNSEM [ LIGHT +,
+         	     LOCAL.CAT.HEAD.AUX - ],
    NON-HEAD-DTR.SYNSEM.LOCAL [ CAT.HEAD +np,
 		               CONT.HOOK.ICONS-KEY $ ] ]. 
 """
 
 head_nf_comp_phrase_aux = """
 head-nf-comp-phrase := head-nf-comp-phrase-super & head-initial &
- [ SYNSEM.LOCAL.CAT.MC -, 
-   HEAD-DTR.SYNSEM [ LIGHT +,
-         	     LOCAL.CAT [ MC -, 
-                                 HEAD.AUX - ] ],
+ [ HEAD-DTR.SYNSEM [ LIGHT +,
+         	     LOCAL.CAT.HEAD.AUX - ],
    NON-HEAD-DTR.SYNSEM.LOCAL [ CAT.HEAD +np,
 		               CONT.HOOK.ICONS-KEY $ ] ]. 
 """
@@ -304,8 +300,7 @@ head-nf-comp-phrase := head-nf-comp-phrase-super & head-initial &
 head_nf_subj_phrase_aux = """
 head-nf-subj-phrase := head-nf-subj-phrase-super & head-initial & 
   [ HEAD-DTR.SYNSEM [ LIGHT +,
-                      LOCAL.CAT [ MC -, 
-                                  HEAD.AUX - ] ],
+                      LOCAL.CAT.HEAD.AUX - ],
    NON-HEAD-DTR.SYNSEM.LOCAL [ CAT.HEAD +np,
 		               CONT.HOOK.ICONS-KEY $ ] ]. 
 """
@@ -313,8 +308,7 @@ head-nf-subj-phrase := head-nf-subj-phrase-super & head-initial &
 head_nf_subj_phrase_w_comps_aux = """
 head-nf-subj-phrase := head-nf-subj-phrase-super & head-initial & 
   [ HEAD-DTR.SYNSEM [ LIGHT +,
-		      LOCAL.CAT [ MC -,
-                                  HEAD.AUX -,
+		      LOCAL.CAT [ HEAD.AUX -,
                                   VAL.COMPS.FIRST [ ] ] ], 
    NON-HEAD-DTR.SYNSEM.LOCAL [ CAT.HEAD +np,
 		               CONT.HOOK.ICONS-KEY $ ] ]. 
@@ -323,8 +317,7 @@ head-nf-subj-phrase := head-nf-subj-phrase-super & head-initial &
 nf_subj_head_phrase_aux = """
 nf-subj-head-phrase := head-nf-subj-phrase-super & head-final &
   [ HEAD-DTR.SYNSEM [ LIGHT +,
-                      LOCAL.CAT [ MC -,
-                                  HEAD.AUX -,
+                      LOCAL.CAT [ HEAD.AUX -,
 				  VAL.COMPS.FIRST [ ] ] ],
    NON-HEAD-DTR.SYNSEM.LOCAL [ CAT.HEAD +np,
 		               CONT.HOOK.ICONS-KEY $ ] ]. 
@@ -333,8 +326,7 @@ nf-subj-head-phrase := head-nf-subj-phrase-super & head-final &
 nf_subj_head_phrase_simple_aux = """
 nf-subj-head-phrase := head-nf-subj-phrase-super & head-final & 
   [ HEAD-DTR.SYNSEM [ LIGHT +,
-                      LOCAL.CAT [ MC -, 
-                                  HEAD.AUX - ] ],
+                      LOCAL.CAT.HEAD.AUX - ],
     NON-HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.ICONS-KEY $ ].
 """
 

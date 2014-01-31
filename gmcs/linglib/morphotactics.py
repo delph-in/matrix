@@ -35,6 +35,7 @@ _mns = {}
 _dtrs = set()
 _infostr_lrt = []
 _infostr_pc = {}
+_infostr_head = {}
 
 ########################
 ### HELPER FUNCTIONS ###
@@ -247,6 +248,10 @@ def create_lexical_rule_type(lrt, mtx_supertypes, cur_pc):
       if new_lrt.identifier() not in _infostr_lrt:
         _infostr_lrt.append(new_lrt.identifier())
         _infostr_pc[new_lrt.identifier()] = cur_pc.identifier()
+      if new_lrt.identifier() not in _infostr_head.keys():
+        _infostr_head[new_lrt.identifier()] = []
+      if feat.get('head') not in _infostr_head[new_lrt.identifier()]:
+        _infostr_head[new_lrt.identifier()].append(feat.get('head'))        
   new_lrt.lris = [lri['orth'] if lri['inflecting'] == 'yes' else ''
                   for lri in lrt.get('lri',[])]
   # Fill out the obvious supertypes (later we'll finish)
@@ -397,6 +402,7 @@ def set_req_bkwd_initial_flags(lex_pc, flag_tuple):
 ALL_LEX_RULE_SUPERTYPES = set(['cat-change-only-lex-rule',
                                'same-agr-lex-rule',
                                'cont-change-only-lex-rule',
+                               'add-only-no-rels-hcons-rule',
                                'add-only-no-ccont-rule',
                                'val-change-only-lex-rule',
                                'head-change-only-lex-rule',
@@ -525,7 +531,21 @@ def write_rules(pch, mylang, irules, lrules, lextdl, choices):
       if lrt.identifier() != pc.identifier():
         if str(pc.identifier()) in _infostr_pc.values():
           if lrt.identifier() in _infostr_lrt:
-            lrt.supertypes.add('add-icons-rule')
+            _hlist = _infostr_head[lrt.identifier()]
+            if 'subj' in _hlist and 'obj' in _hlist and 'verb' in _hlist:
+              lrt.supertypes.add('add-icons-subj-comp-verb-rule')
+            elif 'subj' in _hlist and 'obj' in _hlist:
+              lrt.supertypes.add('add-icons-subj-comp-rule')
+            elif 'subj' in _hlist and 'verb' in _hlist:
+              lrt.supertypes.add('add-icons-subj-verb-rule')
+            elif 'obj' in _hlist and 'verb' in _hlist:
+              lrt.supertypes.add('add-icons-comp-verb-rule')
+            elif 'subj' in _hlist:
+              lrt.supertypes.add('add-icons-subj-rule')
+            elif 'obj' in _hlist:
+              lrt.supertypes.add('add-icons-obj-rule')
+            else:
+              lrt.supertypes.add('add-icons-rule')
           else:
             lrt.supertypes.add('no-icons-rule')
         write_supertypes(mylang, lrt.identifier(), lrt.all_supertypes())

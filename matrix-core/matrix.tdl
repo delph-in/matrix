@@ -983,10 +983,11 @@ same-mc-lex-rule := lex-rule &
     DTR.SYNSEM.LOCAL.CAT.MC #mc ].
 
 ; SSH 2012-03-03
-no-ccont-lex-rule := lex-rule & 
-  [ C-CONT [ RELS <! !>,
-	     HCONS <! !>,
-	     ICONS <! !> ] ].
+no-rels-hcons-lex-rule := lex-rule & 
+  [ C-CONT [ RELS <! !>, HCONS <! !>  ] ].
+
+no-ccont-lex-rule := no-rels-hcons-lex-rule & 
+  [ C-CONT.ICONS <! !> ].
 
 ; ERB 2007-05-16 Realized I haven't been copying up MODIFIED
 ; and LIGHT.  Fixing that.
@@ -1069,7 +1070,7 @@ add-only-no-ccont-rule := add-only-rule &
 			  no-ccont-lex-rule.
 
 add-only-no-rels-hcons-rule := add-only-rule &
-			       no-rels-hcons-rule.
+			       no-rels-hcons-lex-rule.
 
 ; Lexical rules vary on one dimensions: whether they involve spelling changes.
 ; Accordingly, we define two subtypes of lex-rule.
@@ -1884,8 +1885,8 @@ basic-head-opt-comp-phrase := head-valence-phrase & head-only &
 			MODIFIED #mod ] ],
     C-CONT [ RELS <! !>,
 	     HCONS <! !>,
-	     ICONS <! #ikey & non-focus & [ TARGET #index,
-					    CLAUSE #ckey ] !> ] ].
+	     ICONS.LIST.FIRST #ikey & non-focus & [ TARGET #index,
+						    CLAUSE #ckey ] ] ].
 
 
 ; ERB 2004-05-10 For languages that allow "pro-drop" of subjects.
@@ -1933,8 +1934,8 @@ basic-head-opt-subj-phrase := head-valence-phrase & head-only &
 			MODIFIED #mod ] ],
     C-CONT [ RELS <! !>,
 	     HCONS <! !>,
-	     ICONS <! #ikey & non-focus & [ TARGET #index,
-					    CLAUSE #ckey ] !> ] ].
+	     ICONS.LIST.FIRST #ikey & non-focus & [ TARGET #index,
+						    CLAUSE #ckey ] ] ].
 
 ; ERB 2007-01-21 Subtypes for declaratives and imperatives
 
@@ -3634,8 +3635,52 @@ no-ccont-rule := no-rels-hcons-rule & no-icons-rule.
 add-icons-rule := phrase-or-lexrule & word-or-lexrule &
   [ SYNSEM.LOCAL.CONT.HOOK [ INDEX #index,
 			     ICONS-KEY #icons ],
-    C-CONT.ICONS <! info-str & #icons & [ TARGET #index] !> ].
+    C-CONT.ICONS <! info-str & #icons & [ TARGET #index ] !> ].
 
+add-icons-subj-rule := phrase-or-lexrule & word-or-lexrule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK [ INDEX #index,
+						      ICONS-KEY #icons ],
+    C-CONT.ICONS <! info-str & #icons & [ TARGET #index ] !> ].
+
+add-icons-comp-rule := phrase-or-lexrule & word-or-lexrule &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK [ INDEX #index,
+						       ICONS-KEY #icons ],
+    C-CONT.ICONS <! info-str & #icons & [ TARGET #index ] !> ].
+
+add-icons-subj-verb-rule := phrase-or-lexrule & word-or-lexrule &
+  [ SYNSEM.LOCAL [ CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK [ INDEX #index1,
+							ICONS-KEY #icons1 ],
+		   CONT.HOOK [ INDEX #index2,
+			       ICONS-KEY #icons2 ] ],
+    C-CONT.ICONS <! info-str & #icons1 & [ TARGET #index1 ], 
+		    info-str & #icons2 & [ TARGET #index2 ] !> ].
+
+add-icons-comp-verb-rule := phrase-or-lexrule & word-or-lexrule &
+  [ SYNSEM.LOCAL [ CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK [ INDEX #index1,
+							 ICONS-KEY #icons1 ],
+		   CONT.HOOK [ INDEX #index2,
+			       ICONS-KEY #icons2 ] ],
+    C-CONT.ICONS <! info-str & #icons1 & [ TARGET #index1 ], 
+		    info-str & #icons2 & [ TARGET #index2 ] !> ].
+
+add-icons-subj-comp-rule := phrase-or-lexrule & word-or-lexrule &
+  [ SYNSEM.LOCAL [ CAT.VAL [ SUBJ.FIRST.LOCAL.CONT.HOOK [ INDEX #index1,
+							  ICONS-KEY #icons1 ],
+			     COMPS.FIRST.LOCAL.CONT.HOOK [ INDEX #index2,
+							  ICONS-KEY #icons2 ] ] ],
+    C-CONT.ICONS <! info-str & #icons1 & [ TARGET #index1 ], 
+		    info-str & #icons2 & [ TARGET #index2 ] !> ].
+
+add-icons-subj-comp-verb-rule := phrase-or-lexrule & word-or-lexrule &
+  [ SYNSEM.LOCAL [ CAT.VAL [ SUBJ.FIRST.LOCAL.CONT.HOOK [ INDEX #index1,
+							  ICONS-KEY #icons1 ],
+			     COMPS.FIRST.LOCAL.CONT.HOOK [ INDEX #index2,
+							  ICONS-KEY #icons2 ] ],
+		   CONT.HOOK [ INDEX #index3,
+			       ICONS-KEY #icons3 ] ],
+    C-CONT.ICONS <! info-str & #icons1 & [ TARGET #index1 ], 
+		    info-str & #icons2 & [ TARGET #index2 ],
+		    info-str & #icons3 & [ TARGET #index3 ] !> ].
 
 
 ; ;;; PHON information
