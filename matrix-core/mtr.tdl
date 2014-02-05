@@ -26,7 +26,6 @@ x := i & p.
 ;;;
 a := u.
 
-
 ;;;
 ;;; the scratch slot in variables: used during transfer to control application
 ;;; of rules, e.g. the rules that introduce selected preposition EPs in the ERG

@@ -109,6 +109,9 @@ class ChoiceDict(ChoiceCategory, dict):
             return int(result.group(0))
     return None
 
+  def split_value(self, key):
+    return [x for x in self[key].split(', ') if x != ''] 
+
   def walk(self, intermediates=False):
     if intermediates and self.full_key != None:
       yield (self.full_key, self)
@@ -539,6 +542,10 @@ class ChoicesFile:
       self.convert_24_to_25()
     if self.version < 26:
       self.convert_25_to_26()
+    if self.version < 27:
+      self.convert_26_to_27()
+    if self.version < 28:
+      self.convert_27_to_28()
     # As we get more versions, add more version-conversion methods, and:
     # if self.version < N:
     #   self.convert_N-1_to_N
@@ -598,6 +605,25 @@ class ChoicesFile:
     return result
 
 
+  def has_adp_only_infostr(self):
+    """
+    Returns True iff the target language has information structural adpositions 
+    without case-marking.
+    If the check_opt argument is True, only return True
+    if the adposition is optional.
+    """
+    if self.has_adp_case():
+      return False
+
+    for adp in self.get('adp'):
+      opt = adp.get('opt')
+      for feat in adp.get('feat', []):
+        if feat['name'] == 'information-structure meaning':
+          return True
+
+    return False
+
+
   def has_adp_case(self, case = '', check_opt = False):
     """
     Returns True iff the target language has case-marking adpositions
@@ -650,6 +676,8 @@ class ChoicesFile:
     has_optadp = self.has_optadp_case(case)
 
     if (has_noun and has_adp) or has_optadp:
+      return '+np'
+    elif self.has_adp_only_infostr():
       return '+np'
     elif has_adp:
       return 'adp'
@@ -716,20 +744,20 @@ class ChoicesFile:
       patterns += [ ['abs', '', False] ]
       patterns += [ ['erg-abs', '', False] ]
     elif cm == 'tripartite':
-      patterns += [ ['s', '', False] ]
-      patterns += [ ['a-o', '', False] ]
+      patterns += [ ['s_case', '', False] ]
+      patterns += [ ['a_case-o_case', '', False] ]
     elif cm == 'split-s':
-      patterns += [ ['a', '', False] ]
-      patterns += [ ['o', '', False] ]
-      patterns += [ ['a-o', '', False] ]
+      patterns += [ ['a_case', '', False] ]
+      patterns += [ ['o_case', '', False] ]
+      patterns += [ ['a_case-o_case', '', False] ]
     elif cm == 'fluid-s':
-      patterns += [ ['a', '', False] ]
-      patterns += [ ['o', '', False] ]
-      patterns += [ ['a+o', '', False] ]
-      patterns += [ ['a-o', '', False] ]
+      patterns += [ ['a_case', '', False] ]
+      patterns += [ ['o_case', '', False] ]
+      patterns += [ ['a_case+o_case', '', False] ]
+      patterns += [ ['a_case-o_case', '', False] ]
     elif cm == 'split-n':
-      patterns += [ ['s', '', False] ]
-      patterns += [ ['a-o', '', False] ]
+      patterns += [ ['s_case', '', False] ]
+      patterns += [ ['a_case-o_case', '', False] ]
     elif cm == 'split-v':
       patterns += [ ['nom', '', True] ]
       patterns += [ ['abs', '', True] ]
@@ -737,8 +765,8 @@ class ChoicesFile:
       patterns += [ ['erg-abs', '', True] ]
     elif cm == 'focus':
       patterns += [ ['focus', '', True] ]
-      patterns += [ ['focus-o', '', True] ]
-      patterns += [ ['a-focus', '', True] ]
+      patterns += [ ['focus-o_case', '', True] ]
+      patterns += [ ['a_case-focus', '', True] ]
 
     # Add intransitive and transitive, which are always available.
     patterns += [ ['intrans', '', False] ]
@@ -1063,17 +1091,21 @@ class ChoicesFile:
     if self.has_dirinv():
       features += [ ['direction', 'dir|direct;inv|inverse', '', 'verb', 'y'] ]
 
-    # Negaton
-    if 'infl-neg' in self.choices:
+    # Negation
+    if  'infl-neg' or 'neg-aux' in self.choices:
       features += [ ['negation', 'plus|plus;minus|minus', '', 'verb', 'y'] ]
-    if self.get('neg-exp') == '2':
-      if self.get('neg1-type') == 'b' and self.get('neg2-type') == 'fd':
-        features += [ ['negation', 'plus|plus;minus|minus', '', 'verb', 'y'] ]
-        features += [ ['requires-neg-adv', 'plus|plus', '', 'verb', 'y'] ]
+    # if 'neg1b-neg2b' in self.choices:
+    #  features += [ ['neg2', 'plus|plus', '', 'verb' ] ]
 
     # Questions
     if 'q-infl' in self.choices:
       features += [ ['question', 'plus|plus', '', 'verb', 'y'] ]
+
+    # Information Structure
+    infostr_values = 'focus|focus;topic|topic;contrast|contrast;semantic-focus|non-contrastive-focus;contrast-focus|contrastive-focus;aboutness-topic|non-contrastive-topic;contrast-topic|contrastive-topic;frame-setting-topic|frame-setting-topic;focus-or-topic|focus-or-topic;contrast-or-focus|contrast-or-focus;contrast-or-topic|contrast-or-topic;non-topic|non-topic;non-focus|non-focus;bg|background'
+    mkg_values = 'fc|focus;tp|topic;fc-only|focus-only;tp-only|topic-only;fc-+-tp|focus-and-topic;non-tp|non-topic;non-fc|non-focus;unmkg|unmarking'
+    features += [ ['information-structure marking', mkg_values, 'LOCAL.CAT.MKG', 'both', 'n'] ]
+    features += [ ['information-structure meaning', infostr_values, 'LOCAL.CONT.HOOK.ICONS-KEY', 'both', 'n'] ]  
 
     # Argument Optionality
     if 'subj-drop' in self.choices or 'obj-drop' in self.choices:
@@ -1167,7 +1199,7 @@ class ChoicesFile:
   # convert_value(), followed by a sequence of calls to convert_key().
   # That way the calls always contain an old name and a new name.
   def current_version(self):
-    return 26
+    return 28
 
   def convert_value(self, key, old, new, partial=False):
     if key in self:
@@ -1941,32 +1973,137 @@ class ChoicesFile:
     Some choices files have vlaue names that should be used only in mtr.tdl, which include
     a, u, i, etc. The names should be changed. On the other hand, nouny vs. verby / 
     existing vs. new are required on the Other Feature.
+    
+    This uprev also adds exp=1 to old choices files so that they are compatible
+    with the new negation library.
     """
+    if (self.get('infl-neg')) and (not self.get('neg-exp')):
+      self['neg-exp']='1'
 
-    mtr = [ 'a', 'e', 'i', 'h', 'p', 'u', 'x', 'A', 'E', 'I', 'H', 'P', 'U', 'X' ]
-
+    mtr = [ 'e', 'i', 'h', 'p', 'u', 'x', 'E', 'I', 'H', 'P', 'U', 'X' ]
     for g in self.get('gender'):
       name = g['name']
       if name in mtr:
         self.convert_value(g.full_key + '_name', name, '_'+name)
-	
-    for lextype in ['aux','det','verb','noun']:
-      for lt in self[lextype]:
-        for feature in lt['feat']:
-          value = feature['value']
-          if value in mtr:
-            feature['value'] = '_'+value
+
+    inproper_case_names = [ 'a', 'o', 's', 'A', 'O', 'S' ]    
 
     cm = self.get('case-marking')
-    case_name = self.get(cm + '-a-case-name')
-    if case_name in mtr:
-      self.convert_value(cm + '-a-case-name', case_name, '_'+case_name)
+    for name in inproper_case_names:
+      case_name = self.get(cm + '-' + name + '-case-name')
+      if case_name == name:
+        self.convert_value(cm + '-' + name + '-case-name', case_name, case_name + '_case')
 
- 
+    for lex_cat in ['aux','det','verb','noun', 'adp']:
+      for lex_type in self[lex_cat]:
+        for feat in lex_type['feat']:
+          name = feat['name']
+          value = feat['value']
+          if value in mtr:
+            feat['value'] = '_'+value
+
+          if name == 'case':
+            tmp = ''
+            cs = value.split(', ')
+            for i in range(0, len(cs)):
+              if cs[i] in inproper_case_names:
+                tmp += cs[i] + '_case'
+              else:
+                tmp += cs[i]
+              if i < (len(cs) - 1):
+                tmp += ', '
+            feat['value'] = tmp
+
+        valence = lex_type['valence']
+        tmp = ''
+        delimiter = '-'
+        if valence.find('+') > -1:
+          delimiter = '+'          
+        argst = valence.split(delimiter)
+        for i in range(0, len(argst)):
+          if argst[i] in inproper_case_names:
+            tmp += argst[i] + '_case'
+          else:
+            tmp += argst[i]
+          if i < (len(argst) - 1):
+            tmp += delimiter
+        lex_type['valence'] = tmp
+
+          
+      for pc in self[lex_cat + '-pc']:
+        for lrt in pc['lrt']:
+          for feat in lrt['feat']:
+            name = feat['name']
+            value = feat['value']
+            if name == 'case':
+              vs = value.split(', ')
+              tmp = ''
+              for i in range(0, len(vs)):
+                if vs[i] in inproper_case_names:
+                  tmp += vs[i] + '_case'
+                else:
+                  tmp += vs[i]
+                if i < (len(vs) - 1):
+                  tmp += ', '
+              self.convert_value(feat.full_key + '_value', value, tmp)
+            if name == 'argument structure':
+              argst = value.split('-')
+              tmp = ''
+              for i in range(0, len(argst)):
+                if argst[i] in inproper_case_names:
+                  tmp += argst[i] + '_case'
+                else:
+                  tmp += argst[i]
+                if i < (len(argst) - 1):
+                  tmp += '-'
+              self.convert_value(feat.full_key + '_value', value, tmp)
+
+
     for feature in self.get('feature'):
       if not feature.has_key('new'):
         feature['new'] = 'yes'
         feature['cat'] = 'both'
+
+  def convert_26_to_27(self):
+    """ 
+    This uprev converts the names involving topicality in other features.
+    """
+    for feature in self.get('feature'):
+      self.convert_value(feature.full_key + '_name', 'topicality', '_topicality')
+      for value in feature['value']:
+        self.convert_value(value.full_key + '_name', 'topic', '_topic')
+        self.convert_value(value.full_key + '_name', 'non-topic', '_non-topic')
+        for supertype in value['supertype']:
+          self.convert_value(supertype.full_key + '_name', 'topicality', '_topicality')
+
+    for scale in self.get('scale'):
+      for feat in scale['feat']:
+        self.convert_value(feat.full_key + '_name', 'topicality', '_topicality')
+        self.convert_value(feat.full_key + '_value', 'topic', '_topic')
+        self.convert_value(feat.full_key + '_value', 'non-topic', '_non-topic')
+
+    for cat in ['noun-pc', 'verb-pc']:
+      for pc in self.get(cat):
+        self.convert_value(pc.full_key + '_name', 'topic', '_topic')
+        for lrt in pc['lrt']:
+          for feat in lrt['feat']:
+            self.convert_value(feat.full_key + '_name', 'topicality', '_topicality')
+            self.convert_value(feat.full_key + '_value', 'topic', '_topic')
+            self.convert_value(feat.full_key + '_value', 'non-topic', '_non-topic')
+
+  def convert_27_to_28(self):
+    """
+    This uprev converts uppercase affixes into lowercase ones, because
+    ACE does not handle uppercase suffixes.
+    """
+    for lex_cat in ['det','verb','noun',]:
+      for pc in self[lex_cat + '-pc']:
+        for lrt in pc['lrt']:
+          for lri in lrt['lri']:
+            orth = lri['orth']
+            self.convert_value(lri.full_key + '_orth', orth, orth.lower())
+
+
 
 ########################################################################
 # FormData Class

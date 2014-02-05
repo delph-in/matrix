@@ -542,6 +542,103 @@ def validate_other_features(ch, vr):
                'You must specify a supertype for each value you define.')
 
 
+
+######################################################################
+# validate_information_structure_msg(ch, vr, marker, _type, msg)
+#   Leave an error msg for information structural affixes
+def validate_information_structure_msg(ch, vr, marker, _type, msg):
+    for m in ch.get(marker):
+      if m['type'].strip() == _type:
+        vr.err(m.full_key + '_type', msg)
+
+######################################################################
+# validate_information_structure_affix(ch, marker, values)
+#   Validate the user's choices about information structure for each value
+def validate_information_structure_affix(ch, marker, values):
+  for cat in ['noun-pc', 'verb-pc']:
+    for pc in ch.get(cat):
+      for lrt in pc.get('lrt', []):
+        for feat in lrt.get('feat', []):
+          if feat['name'] == 'information-structure meaning' and feat['value'] in values:
+            return True
+  return False
+
+######################################################################
+# validate_information_structure_adp(ch, marker, values)
+#   Validate the user's choices about information structure for each value
+def validate_information_structure_adp(ch, marker, values):
+  for adp in ch.get('adp'):
+    for feat in adp.get('feat', []):
+      if feat['name'] == 'information-structure meaning' and feat['value'] in values:
+        return True
+  return False
+
+######################################################################
+# validate_information_structure(ch, vr)
+#   Validate the user's choices about information structure
+
+def validate_information_structure(ch, vr):
+  infostr_values = {
+    'focus-marker' : ['focus', 'semantic-focus', 'contrast-focus', 'focus-or-topic', 'contrast-or-focus', 'non-topic'],
+    'topic-marker' : ['topic', 'aboutness-topic', 'contrast-topic', 'frame-setting-topic', 'focus-or-topic', 'contrast-or-topic', 'non-focus'],
+    'c-focus-marker' : ['contrast', 'contrast-focus', 'contrast-or-focus'],
+    'c-topic-marker' : ['contrast', 'contrast-topic', 'contrast-or-topic'] 
+    }
+
+  infostr_markers = []
+  for marker in infostr_values.keys():
+    for m in ch.get(marker):
+      if m['type'].strip() == 'affix' and marker not in infostr_markers:
+        infostr_markers.append(marker)
+        break
+  for m in infostr_markers:
+    if not validate_information_structure_affix(ch, m, infostr_values[m]):
+      validate_information_structure_msg(ch, vr, m, 'affix', 'You must create at least one affix involving this feature on Morphology.') 
+
+  infostr_markers = []
+  for marker in infostr_values.keys():
+    for m in ch.get(marker):
+      if m['type'].strip() == 'adp' and marker not in infostr_markers:
+        infostr_markers.append(marker)
+        break
+  for m in infostr_markers:
+    if not validate_information_structure_adp(ch, m, infostr_values[m]):
+      validate_information_structure_msg(ch, vr, m, 'adp', 'You must create at least one adposition involving this feature on Lexicon.') 
+
+
+
+  for marker in infostr_values.keys():
+    for m in ch.get(marker):
+      if m['type'].strip() in ['affix', 'adp']:
+        if m['pos'].strip() != '' or m['cat'].strip() != '' or m['orth'].strip() != '':
+          vr.err(m.full_key + '_type', 'You must either check a modifier or delete the choices following a modifier.')
+
+
+  if ch.get('word-order') == 'free':
+    warning_msg = 'Information structural modules for free word order languages are under development. If positions are multiply checked, your grammar may have some overgeneration.'
+    if ch.get('focus-pos') != '' and ch.get('topic-first') != '':
+      if ch.get('focus-pos') != 'clause-initial': 
+        vr.warn('focus-pos', warning_msg)
+
+    if ch.get('focus-pos') != '' and ch.get('c-focus-pos') != '':
+      if ch.get('focus-pos') != ch.get('c-focus-pos') != '':
+        vr.warn('focus-pos', warning_msg)
+
+    if ch.get('c-focus-pos') != '' and ch.get('topic-first') != '':
+      if ch.get('c-focus-pos') != 'clause-initial': 
+        vr.warn('topic-first', warning_msg)
+
+
+  if ch.get('topic-first') != '' and ch.get('topic-marker') != '':
+    vr.warn('topic-first', 'You may need some additional constraint(s) on sentence positioning of topic-marked constituents.')
+
+  if ch.get('focus-pos') == '' and ch.get('c-focus') != '':
+    vr.err('c-focus', 'You must check a specific position for focus above.')
+  if ch.get('c-focus') != '' and ch.get('c-focus-pos') != '':
+    vr.err('c-focus', 'Your description is inconsistent. You must either check this or choose a specific position below.')
+
+
+
 ######################################################################
 # validate_word_order(ch, vr)
 #   Validate the user's choices about basic word order.
@@ -742,8 +839,8 @@ def validate_yesno_questions(ch, vr):
                     for feat in lrt.get('feat',[])])
     if not ques_aff:
       mess = 'If matrix yes-no questions are expressed through affixation, ' +\
-             'you must specify an affix with the "question" feature in the ' +\
-             'lexicon page.'
+             'you must specify a lexical rule with the "question" feature ' +\
+             'in the morphology page.'
       vr.err('q-infl', mess)
 
    # the above change was implemented as a first-pass to allow a student to
@@ -991,7 +1088,7 @@ def validate_features(ch, vr):
 
 def validate_arg_opt(ch, vr):
   """Check to see if the user completed the necessary portions of the arg
-   opt page"""
+   opt page and see that the OPT feature is used correctly elsewhere"""
 
   if ch.get('subj-drop') and not ch.get('subj-mark-drop'):
     vr.err('subj-mark-drop',
@@ -1018,6 +1115,14 @@ def validate_arg_opt(ch, vr):
       if not feat.get('head'):
         mess = 'You must choose where the feature is specified.'
         vr.err(feat.full_key+'_head',mess)
+  
+  verbslist =  ch.get('verb')
+  for v in verbslist:
+    for feat in v['feat']:
+      if feat.get('name') == 'OPT' and not feat.get('head') in ['subj','obj']:
+        mess = "The OPT feature on verbs should be specified " + \
+               "on the subject NP or the object NP."
+        vr.err(feat.full_key+'_head',mess)        
 
 
 def validate(ch, extra = False):
@@ -1035,6 +1140,7 @@ def validate(ch, extra = False):
   validate_gender(ch, vr)
   validate_other_features(ch, vr)
   validate_word_order(ch, vr)
+  validate_information_structure(ch, vr)
   validate_tanda(ch, vr)
   gmcs.linglib.negation.validate(ch, vr)
   validate_coordination(ch, vr)

@@ -2,9 +2,9 @@
 
 grammar-top               := "%(mylanguage)s".
 variable-property-mapping := "../semi.vpm".
-preprocessor              := "../lkb/vanilla.rpp".
+preprocessor              := "../repp/vanilla.rpp".
 ;generation-ignore-signs   := "generation.ignore".
-;generation-trigger-rules  := "../lkb/trigger.mtr".
+generation-trigger-rules  := "../trigger.mtr".
 version                   := "../Version.lsp".
 parse-node-labels         := "../labels.tdl".
 
@@ -41,4 +41,12 @@ mrs-deleted-roles :=
   IDIOMP LNK CFROM CTO --PSV WLINK PARAMS.
 
 ; hack for LTOP-GTOP issue
-invent-ltop := true;
+invent-ltop := true. 
+
+ortho-max-rules := 20.
+
+enable-icons := yes.
+mrs-icons-list := ICONS LIST.
+icons-left := CLAUSE.
+icons-right := TARGET.
+

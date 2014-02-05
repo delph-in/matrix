@@ -87,18 +87,6 @@
 ;;;
 (lkb-load-lisp (this-directory) "mrsglobals.lsp" t)
 
-;;;
-;;; SSH 2012-03-27 This invokes trigger rules for semantically empty
-;;; lexical entries. The trigger rules themselves should be in
-;;; trigger.mtr in the grammar directory. The documentation on trigger
-;;; rules: http://moin.delph-in.net/LkbGeneration
-;;;
-(mt:read-transfer-rules
- (list
-  (lkb-pathname (parent-directory) "trigger.mtr"))
-  "Generation trigger rules"
-  :filter nil :task :trigger :recurse nil :edges 200 :subsume nil)
-
 
 ;;;
 ;;; Matrix-derived grammars often have stable enough semantic 
@@ -117,6 +105,23 @@
 ;(mt:read-vpm (lkb-pathname (parent-directory) "semi.vpm") :semi)
 
 (lkb-load-lisp (this-directory) "mt.lsp" t)
+
+
+;;;
+;;; SSH 2012-03-27 This invokes trigger rules for semantically empty
+;;; lexical entries. The trigger rules themselves should be in
+;;; trigger.mtr in the grammar directory. The documentation on trigger
+;;; rules: http://moin.delph-in.net/LkbGeneration
+;;;
+;;; SSH 2013-05-23 The semi.vpm file needs to be loaded *before* the
+;;; trigger.mtr file in lkb/script for correct interaction.
+;;;
+
+(mt:read-transfer-rules
+ (list
+  (lkb-pathname (parent-directory) "trigger.mtr"))
+  "Generation trigger rules"
+  :filter nil :task :trigger :recurse nil :edges 200 :subsume nil)
 
 
 ;;;

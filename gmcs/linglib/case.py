@@ -29,26 +29,24 @@ def case_names(ch):
     canon.append('abs')
     user.append(ch[cm + '-abs-case-name'])
   elif cm == 'tripartite':
-    canon.append('s')
+    canon.append('s_case')
     user.append(ch[cm + '-s-case-name'])
-    canon.append('a')
+    canon.append('a_case')
     user.append(ch[cm + '-a-case-name'])
-    canon.append('o')
+    canon.append('o_case')
     user.append(ch[cm + '-o-case-name'])
   elif cm in ['split-s']:
-    canon.append('a')
+    canon.append('a_case')
     user.append(ch[cm + '-a-case-name'])
-    canon.append('o')
+    canon.append('o_case')
     user.append(ch[cm + '-o-case-name'])
-  elif cm in ['fluid-s']:
-    a_name = ch[cm + '-a-case-name']
-    o_name = ch[cm + '-o-case-name']
-    canon.append('a+o')
+  elif cm in ['fluid-s']:   
+    canon.append('a_case+o_case')
     user.append('fluid')
-    canon.append('a')
-    user.append(a_name)
-    canon.append('o')
-    user.append(o_name)
+    canon.append('a_case')
+    user.append(ch[cm + '-a-case-name'])
+    canon.append('o_case')
+    user.append(ch[cm + '-o-case-name'])
   elif cm in ['split-n', 'split-v']:
     canon.append('nom')
     user.append(ch[cm + '-nom-case-name'])
@@ -61,9 +59,9 @@ def case_names(ch):
   elif cm in ['focus']:
     canon.append('focus')
     user.append(ch[cm + '-focus-case-name'])
-    canon.append('a')
+    canon.append('a_case')
     user.append(ch[cm + '-a-case-name'])
-    canon.append('o')
+    canon.append('o_case')
     user.append(ch[cm + '-o-case-name'])
 
   # fill in any additional cases the user has specified
@@ -110,9 +108,9 @@ def init_case_hierarchy(ch, hierarchies):
     for c in cases:
       hier.add(c[2], 'case', c[1])
   elif cm in ['fluid-s']:
-    abbr = canon_to_abbr('a+o', cases)
+    abbr = canon_to_abbr('a_case+o_case', cases)
     for c in cases:
-      if c[0] in ['a', 'o']:
+      if c[0] in ['a_case', 'o_case']:
         hier.add(c[2], abbr, c[1])
       else:
         hier.add(c[2], 'case', c[1])
@@ -125,26 +123,20 @@ def init_case_hierarchy(ch, hierarchies):
       for c in cases:
         hier.add(c[2], 'case', c[1])
     else:  # 'split-n':
-    # SSH (2012-08-27) 
-    # 'a' collides with the type name used by mtr.tdl
-    # 'a' is simply replaced by '_a'.
-      hier.add('_a', 'case', 'transitive agent')
-    #hier.add('a', 'case', 'transitive agent')
-      hier.add('s', 'case', 'intransitive subject')
-      hier.add('o', 'case', 'transitive patient')
+      hier.add('a_case', 'case', 'transitive agent')
+      hier.add('s_case', 'case', 'intransitive subject')
+      hier.add('o_case', 'case', 'transitive patient')
       for c in cases:
         if c[2] == erg_a:
-          hier.add(c[2], '_a', c[1])
-          #hier.add(c[2], 'a', c[1]) 
+          hier.add(c[2], 'a_case', c[1])
         elif c[2] == nom_a:
-          hier.add(c[2], '_a', c[1])
-          #hier.add(c[2], 'a', c[1])
-          hier.add(c[2], 's', c[1])
+          hier.add(c[2], 'a_case', c[1])
+          hier.add(c[2], 's_case', c[1])
         elif c[2] == abs_a:
-          hier.add(c[2], 's', c[1])
-          hier.add(c[2], 'o', c[1])
+          hier.add(c[2], 's_case', c[1])
+          hier.add(c[2], 'o_case', c[1])
         elif c[2] == acc_a:
-          hier.add(c[2], 'o', c[1])
+          hier.add(c[2], 'o_case', c[1])
         else:
           hier.add(c[2], 'case', c[1])
 
@@ -210,12 +202,35 @@ def customize_case_adpositions(mylang, lexicon, trigger, ch):
         'case-marking-adp-lex := \
          [ ARG-ST < [ LOCAL.CAT.HEAD.CASE-MARKED - ] > ].')
 
+
+    # checking whether language has both prepositions and postpositions
+    bidirectional = False
+    adporders = []
+    for adp in ch.get('adp',[]):
+      adp_order = adp.get('order')
+      if not adp_order in adporders:
+        adporders.append(adp_order)
+    if len(adporders) == 2:
+      bidirectional = True
+      mylang.add('case-marking-prep-lex := case-marking-adp-lex & \
+               [ SYNSEM.LOCAL.CAT.HEADFINAL - ].')
+      mylang.add('case-marking-postp-lex := case-marking-adp-lex & \
+               [ SYNSEM.LOCAL.CAT.HEADFINAL + ].')
+
+
     # Lexical entries
     lexicon.add_literal(';;; Case-marking adpositions')
 
     for adp in ch.get('adp',[]):
       orth = orth_encode(adp.get('orth'))
+      infix_tname = 'ad'
+      if bidirectional:
+        if adp.get('order') == 'before':
+          infix_tname = 'pre'
+        elif adp.get('order') == 'after':
+          infix_tname = 'post'
 
+      super_type = 'case-marking-' + infix_tname + 'p-lex'
       # figure out the abbreviation for the case this adp marks
       cn = ''
       abbr = ''
@@ -228,9 +243,24 @@ def customize_case_adpositions(mylang, lexicon, trigger, ch):
 
       adp_type = TDLencode(abbr + '-marker')
       typedef = \
-        adp_type + ' := case-marking-adp-lex & \
+        adp_type + ' := ' + super_type + ' & \
                         [ STEM < "' + orth + '" > ].'
       lexicon.add(typedef)
+
+      has_inforstr_feat = False
+      for feat in adp.get('feat', []):
+        if feat['name'] == "information-structure meaning":
+          has_inforstr_feat = True 
+          typedef = \
+          adp_type + ' := [ SYNSEM.LOCAL [ CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX #target ] >, \
+                                           CONT [ HOOK.ICONS-KEY #icons, \
+                                                  ICONS <! info-str & #icons & [ TARGET #target ] !> ] ] ] ].'
+          lexicon.add(typedef)          
+          break
+      if not has_inforstr_feat:
+        typedef = \
+        adp_type + ' := [ SYNSEM.LOCAL.CONT [ HOOK [ ICONS-KEY.CLAUSE #clause, CLAUSE-KEY #clause ], ICONS <! !> ] ].'
+        lexicon.add(typedef)          
 
       if cn.strip() != '':
         customize_trigger_rules(adp_type, trigger)
@@ -338,17 +368,10 @@ def customize_verb_case(mylang, ch):
         mylang.add(typedef)
 
         # constrain the case of the agent/subject
-        if a_case:
-        # SSH (2012-08-27) 
-        # The type name 'a' collides with the type names used by mtr.tdl 
-        # Temporarily, a_case is replaced by _a_case in order to avoid the collision.
-          _a_case = a_case
-          if a_case == 'a':
-            _a_case = '_a' 
-            
+        if a_case:          
           typedef = \
             t_type + ' := \
-            [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + _a_case + ' ].'
+            [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + a_case + ' ].'
           mylang.add(typedef)
 
         # constrain CASE-MARKING of the agent/subject, if appropriate
