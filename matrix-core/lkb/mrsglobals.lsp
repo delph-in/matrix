@@ -102,4 +102,4 @@
 ;;; MWG 2013-05-21: block the LKB's default var type mappings (use the SEMI)
 ;;;
 
-;(setf *variable-type-mapping* :semi)
+(setf *variable-type-mapping* :semi)

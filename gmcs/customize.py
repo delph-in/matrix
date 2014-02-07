@@ -342,9 +342,8 @@ non_event      <> p
 *              >> u
 semarg         << u
 
-SORT : SORT
+SPECI : SPECI
   * <> *
-  semsort << *
 
 SF : SF
   prop <> prop
@@ -352,6 +351,7 @@ SF : SF
   prop-or-ques >> prop-or-ques
   prop << prop-or-ques
   comm <> comm
+  * <> *
 
 COG-ST : COG-ST
   type-id <> type-id
@@ -368,10 +368,11 @@ COG-ST : COG-ST
   fam-or-less <> fam-or-less
   uniq-or-more <> uniq-or-more
   activ-or-less <> activ-or-less
+  * <> *
 """)
   # Add customized mappings
   agreement_features.create_vpm_blocks(ch, vpm, hierarchies)
-  verbal_features.create_vpm_blocks(ch, vpm)
+  verbal_features.create_vpm_blocks(ch, vpm, hierarchies)
 
 ######################################################################
 # Version Control

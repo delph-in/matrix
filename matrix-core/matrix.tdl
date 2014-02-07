@@ -2235,8 +2235,8 @@ scopal-mod-phrase := basic-head-mod-phrase-simple &
 ; rules?
 
 isect-mod-phrase := basic-head-mod-phrase-simple & head-compositional &
-  [ HEAD-DTR.SYNSEM.LOCAL.CONT [ HOOK.LTOP #hand ],
-    NON-HEAD-DTR.SYNSEM.LOCAL [ CAT.HEAD.MOD < [ LOCAL intersective-mod ] >,
+  [ HEAD-DTR.SYNSEM.LOCAL [ CAT.MKG #mkg, CONT [ HOOK.LTOP #hand ] ],
+    NON-HEAD-DTR.SYNSEM.LOCAL [ CAT.HEAD.MOD < [ LOCAL intersective-mod & [ CAT.MKG #mkg ] ] >,
 				CONT.HOOK.LTOP #hand ],
     C-CONT [ HCONS <! !>,
 	     ICONS <! !> ] ].

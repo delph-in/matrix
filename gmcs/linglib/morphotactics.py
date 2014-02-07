@@ -543,7 +543,7 @@ def write_rules(pch, mylang, irules, lrules, lextdl, choices):
             elif 'subj' in _hlist:
               lrt.supertypes.add('add-icons-subj-rule')
             elif 'obj' in _hlist:
-              lrt.supertypes.add('add-icons-obj-rule')
+              lrt.supertypes.add('add-icons-comp-rule')
             else:
               lrt.supertypes.add('add-icons-rule')
           else:

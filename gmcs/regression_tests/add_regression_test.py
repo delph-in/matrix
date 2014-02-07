@@ -13,6 +13,7 @@ import sys
 import os
 import shutil
 import re
+import subprocess
 from gmcs.regression_tests.regressiontestindex import RegressionTestIndex
 from gmcs.choices import ChoicesFile
 
@@ -22,8 +23,8 @@ def add(choices_file, txt_suite):
   # Check whether arguments correspond to existing files
 
   rt_root = cust_root + "/regression_tests/"
-  choices_file = os.path.join(rt_root, 'scratch', choices_file)
-  txt_suite = os.path.join(rt_root, 'scratch', txt_suite)
+  #choices_file = os.path.join(rt_root, 'scratch', choices_file)
+  #txt_suite = os.path.join(rt_root, 'scratch', txt_suite)
 
   if not os.path.exists(cust_root):
       raise ValueError, "Invalid path name for customization root."
@@ -69,21 +70,17 @@ def add(choices_file, txt_suite):
   if os.path.exists(rt_root + "home/skeletons/" + lg_name):
       raise ValueError, "Move regression_tests/home/skeletons/" + lg_name +", it is in the way. You might also need to edit regression_tests/home/skeletons/Index.lisp."
 
-  # Check whether there is an appropriate profile in home/current
-  # _FIX_ME_: Ideally, this should also check whether the profile corresponds
-  # to the txt-suite, at least.
-
-  if not os.path.exists(rt_root + "home/current/" + lg_name):
-      raise ValueError, "No [incr tsdb()] profile in home/current for this regression test.  Invoke create-matrix-regression-test() from within lisp first, and then come back."
-
   # Prompt user for comment on test.
-
   comment = raw_input("Enter a short comment describing this regression test: ")
 
   # Make sure illegal characters (for lisp strings) are not in the comment.
   # For now this is just double-quotes "
   if any(c in ('"',) for c in comment):
       raise ValueError, 'Double-quotes are not allowed in the comment.'
+
+  # Make the profile
+  cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'], 'regression_tests/add_regression_test.sh')
+  subprocess.call([cmd, choices_file, txt_suite, lg_name], env=os.environ);
 
   # Add line to regression-test-index
 
@@ -92,19 +89,16 @@ def add(choices_file, txt_suite):
   index_file.close()
 
   # Copy choices file, txt-suite and profile to the appropriate places.
-
   shutil.copy(choices_file, rt_root + "choices/" + lg_name)
   shutil.copy(txt_suite, rt_root + "txt-suites/" + lg_name)
-  shutil.copytree(rt_root + "home/current/" + lg_name, rt_root + "home/gold/" + lg_name)
+  #shutil.copytree(rt_root + "home/current/" + lg_name, rt_root + "home/gold/" + lg_name)
 
   # Create skeleton
-
   os.mkdir(rt_root + "skeletons/" + lg_name)
   shutil.copy(rt_root + "home/gold/" + lg_name + "/item", rt_root + "skeletons/" + lg_name)
   shutil.copy(rt_root + "skeletons/Relations", rt_root + "skeletons/" + lg_name + "/relations")
 
   # Update Index.lisp
-
   f = open(rt_root + "skeletons/Index.lisp",'r')
   lines = f.readlines()
   f.close

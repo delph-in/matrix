@@ -1,0 +1,74 @@
+#!/bin/bash
+
+MKDIR=mkdir
+
+#
+# first, work out the current operating system, one of `linux' (x86), `solaris'
+# (sparc), or `windows' (x86); anything else will require manual installation.
+#
+if [ "$OSTYPE" = "linux" -o "$OSTYPE" = "linux-gnu" ]; then
+  #
+  # apparently, (some) Debian installations come with an older uname(1), where
+  # `-i' is not available :-{.                                 (11-mar-05; oe)
+  #
+  if uname -i > /dev/null 2>&1; then
+    cpu=$(uname -i)
+    if [ "${cpu}" = "unknown" ]; then cpu=$(uname -m); fi
+  else
+    cpu=$(uname -m)
+  fi
+  case "${cpu}" in
+    i?86)
+      os="linux.x86.32"
+      ;;
+    x86_64)
+      os="linux.x86.64"
+      ;;
+    *)
+      echo "lkb: unknown Linux variant (check \`uname -m'); exit."
+      exit 1;
+  esac
+elif [ "$OSTYPE" = "solaris" -o "${OSTYPE%%?.?}" = "solaris" ]; then
+  os="solaris";
+elif [ "$OSTYPE" = "cygwin" ]; then
+  os="windows";
+fi
+
+#
+# determine the DELPH-IN root directory, assuming this script resides in a 
+# `bin' sub-directory that is shared across platforms.
+#
+path=$(dirname $0)
+if [ "${path#./}" != "${path}" ]; then
+  path="$(pwd)/${path#./}"
+fi
+if [ "${path#/}" = "${path}" ]; then
+  if [ "${path}" = "." ]; then
+    path="$(pwd)";
+  else 
+    path="$(pwd)/${path}"
+  fi
+fi
+
+DELPHINHOME="${path%/bin}";
+export DELPHINHOME;
+
+#
+# for the LKB, make sure there is a temporary directory available.
+#
+if [ "${os%%.*}" == "linux" -o "$os" == "solaris" ]; then
+  [ -d ${HOME}/tmp ] || ${MKDIR} ${HOME}/tmp;
+
+  #
+  # also, add the OS-specific DELPH-IN library directory to the dynamic linker
+  # path; put ourselves at the front to avoid collisions with other libraries.
+  #
+  if [ -z "${LD_LIBRARY_PATH}" ]; then
+    LD_LIBRARY_PATH=${DELPHINHOME}/lkb/lib/${os};
+  else
+    LD_LIBRARY_PATH=${DELPHINHOME}/lkb/lib/${os}:${LD_LIBRARY_PATH};
+  fi
+  export LD_LIBRARY_PATH;
+fi
+
+exec ${DELPHINHOME}/lkb/${os}/lkb "$@"
