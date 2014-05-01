@@ -1767,7 +1767,7 @@ basic-head-opt-subj-phrase := head-valence-head-nexus & head-only &
 		SYNSEM [ LOCAL [ CAT [ VAL [ SUBJ < unexpressed-reg &
 						    [ OPT +,
 						      LOCAL.CONT.HOOK.INDEX.COG-ST in-foc ] >,
-					     COMPS #comps & < >,
+					     COMPS #comps,
 					     SPR #spr,
 					     SPEC #spec ],
 				       POSTHEAD #ph ],

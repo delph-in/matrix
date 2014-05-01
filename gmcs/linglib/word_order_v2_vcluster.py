@@ -1425,10 +1425,11 @@ def add_additional_arg_order_constraints(ch, mylang, climb_gwo):
   if not ch.get('v2-analysis') == 'filler-gap':
     mylang.add('comp-aux-2nd-phrase-2 := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.ARG-ORDER - ].')
     climb_gwo.add('comp-aux-2nd-phrase-2 := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.ARG-ORDER - ].')
-  if not ch.get('argument-order') == 'fixed':
-    print 'line 1426'
-    mylang.add('change-arg-order-rule := [ SYNSEM.LOCAL.CAT.ARG-ORDER + ].')
-    climb_gwo.add('change-arg-order-rule := [ SYNSEM.LOCAL.CAT.ARG-ORDER + ].')
+
+### turning this off: this really does not make sense: this function is only called if argument-order is fuxed...
+#  if not ch.get('argument-order') == 'fixed':
+#    mylang.add('change-arg-order-rule := [ SYNSEM.LOCAL.CAT.ARG-ORDER + ].')
+#    climb_gwo.add('change-arg-order-rule := [ SYNSEM.LOCAL.CAT.ARG-ORDER + ].')
 
   mylang.add('head-initial-head-nexus := [ SYNSEM.LOCAL.CAT.ARG-ORDER #ao, \
                HEAD-DTR.SYNSEM.LOCAL.CAT.ARG-ORDER #ao ].')
