@@ -544,6 +544,8 @@ class ChoicesFile:
       self.convert_25_to_26()
     if self.version < 27:
       self.convert_26_to_27()
+    if self.version < 28:
+      self.convert_27_to_28()
     # As we get more versions, add more version-conversion methods, and:
     # if self.version < N:
     #   self.convert_N-1_to_N
@@ -1102,17 +1104,6 @@ class ChoicesFile:
     # Information Structure
     infostr_values = 'focus|focus;topic|topic;contrast|contrast;semantic-focus|non-contrastive-focus;contrast-focus|contrastive-focus;aboutness-topic|non-contrastive-topic;contrast-topic|contrastive-topic;frame-setting-topic|frame-setting-topic;focus-or-topic|focus-or-topic;contrast-or-focus|contrast-or-focus;contrast-or-topic|contrast-or-topic;non-topic|non-topic;non-focus|non-focus;bg|background'
     mkg_values = 'fc|focus;tp|topic;fc-only|focus-only;tp-only|topic-only;fc-+-tp|focus-and-topic;non-tp|non-topic;non-fc|non-focus;unmkg|unmarking'
-    """
-    is_infostr_marker = False
-    for marker in ['focus-marker', 'topic-marker', 'c-focus-marker', 'c-topic-marker']:
-      if is_infostr_marker:
-	break
-      for m in self.get(marker):            
-        if m['type'].strip() in ['affix', 'adp']:
-	  is_infostr_marker = True
-	  break
-    if is_infostr_marker: 
-    """
     features += [ ['information-structure marking', mkg_values, 'LOCAL.CAT.MKG', 'both', 'n'] ]
     features += [ ['information-structure meaning', infostr_values, 'LOCAL.CONT.HOOK.ICONS-KEY', 'both', 'n'] ]  
 
@@ -1208,7 +1199,7 @@ class ChoicesFile:
   # convert_value(), followed by a sequence of calls to convert_key().
   # That way the calls always contain an old name and a new name.
   def current_version(self):
-    return 27
+    return 28
 
   def convert_value(self, key, old, new, partial=False):
     if key in self:
@@ -1962,9 +1953,6 @@ class ChoicesFile:
         sentence['star'] = 'on'
         sentence['orth'] = sentence['orth'].lstrip('*')
 
-
-
-
   def convert_24_to_25(self):
     """
     This uprev converts the old choices about punctuation characters
@@ -2102,6 +2090,20 @@ class ChoicesFile:
             self.convert_value(feat.full_key + '_name', 'topicality', '_topicality')
             self.convert_value(feat.full_key + '_value', 'topic', '_topic')
             self.convert_value(feat.full_key + '_value', 'non-topic', '_non-topic')
+
+  def convert_27_to_28(self):
+    """
+    This uprev converts uppercase affixes into lowercase ones, because
+    ACE does not handle uppercase suffixes.
+    """
+    for lex_cat in ['det','verb','noun',]:
+      for pc in self[lex_cat + '-pc']:
+        for lrt in pc['lrt']:
+          for lri in lrt['lri']:
+            orth = lri['orth']
+            self.convert_value(lri.full_key + '_orth', orth, orth.lower())
+
+
 
 ########################################################################
 # FormData Class

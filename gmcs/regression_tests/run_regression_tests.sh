@@ -24,10 +24,15 @@ if [ -z "${CUSTOMIZATIONROOT}" ]; then
   exit 1
 fi
 
+if [ -z "${ACEROOT}" ]; then
+  echo "run-regression-tests: unable to determine \$ACEROOT directory; exit."
+  exit 1
+fi
+
 logon32=''
 if [ ! -z "${LOGON32}" ]; then
-  echo "running regression tests with --32 flag for logon"
-  logon32='--32'
+  echo "The regression test with ACE is not currently possible on a 32-bit machine; exit."
+  exit 1
 fi
 
 # set the appropriate Python version
@@ -145,6 +150,12 @@ done
 
 # Now do essentially the same things as one-regression-test for each one:
 
+# comparison without restarting tsdb++
+profiles=""
+comparison=""
+
+echo "== All grammar(s) are being created. =="      
+
 for lgname in $lgnames
 do
     printf "%-70s " "$lgname..."
@@ -193,80 +204,125 @@ do
         echo "Gold profile does not exist: $tsdbhome/$gold" >> $log
         continue
       fi
+    fi
+    
+    subdir=`ls -d $grammardir/*/`
+    dat_file=$subdir/${lgname}.dat
+    config_file=$subdir/ace/config.tdl
+    $ACEROOT/ace -G $dat_file -g $config_file 1>/dev/null 2>/dev/null
 
-      subdir=`ls -d $grammardir/*/`
-      grammar=$subdir/lkb/script
-      grm_file=`ls $subdir/*-pet.grm`
-      # Do the following if parsing with PET and without TSDB
-      #mkdir -p $tsdbhome/$target
-      #cut -d@ -f7 $skeleton/item | cheap -mrs -tsdbdump $tsdbhome/$target $grm_file 2>${TSDBLOG} >${TSDBLOG}
-      # cheap makes a bad item file, so just copy over the original one
-      #cp $skeleton/item $tsdbhome/$target/item
-      #$matrix_cmd a $tsdbhome/$target $tsdbhome/$gold > $log
+    #echo "Running ACE with $lgname..."
 
-      {
-          options=":error :exit :wait 300"
-  
-          echo "(setf (system:getenv \"DISPLAY\") nil)"
-  
-          # Use the following for PET parsing
-          # echo "(setf *tsdb-cache-connections-p* t)"
-          # echo "(setf *pvm-encoding* :utf-8)"
-          # echo "(setf *pvm-cpus* (list (make-cpu"
-          # echo "  :host (short-site-name)"
-          # echo "  :spawn \"${LOGONROOT}/bin/cheap\""
-          # echo "  :options (list \"-tsdb\" \"-packing\" \"-mrs\" \"$grm_file\")"
-          # echo "  :class :$lgname :name \"$lgname\""
-          # echo "  :grammar \"$lgname (current)\""
-          # echo "  :encoding :utf-8"
-          # echo "  :task '(:parse) :wait 300 :quantum 180)))"
-          # echo "(tsdb:tsdb :cpu :$lgname :task :parse :file t)"
-  
-          # Use the following for LKB parsing
-          echo "(lkb::read-script-file-aux \"$grammar\")"
-  
-          # And the following is necessary for TSDB
-          echo "(setf tsdb::*process-suppress-duplicates* nil)"
-          echo "(setf tsdb::*process-raw-print-trace-p* t)"
-  
-          echo "(setf tsdb::*tsdb-home* \"$tsdbhome\")"
-          echo "(tsdb:tsdb :skeletons \"$skeletons\")"
-  
-          echo "(setf target \"$target\")"
-          echo "(tsdb:tsdb :create target :skeleton \"$lgname\")"
-          echo "(tsdb:tsdb :process target)"
-  
-          echo "(tsdb::compare-in-detail \"$target\" \"$gold\" :format :ascii :compare '(:readings :mrs) :append \"$log\")"
-  
-      } | ${LOGONROOT}/bin/logon $logon32 \
-          -I base -locale no_NO.UTF-8 -qq 2> ${TSDBLOG} > ${TSDBLOG}
-      
-    # The $TSDBLOG is overwritten each time, so copy it to $ALLTSDBLOG
-    echo "== BEGIN TSDB LOG for $lgname ==" >> $ALLTSDBLOG
-    cat $TSDBLOG >> $ALLTSDBLOG
+    mkdir -p $tsdbhome/$target
+    cp ${LOGONROOT}/lingo/lkb/src/tsdb/skeletons/english/Relations $tsdbhome/$target/relations
+    touch $tsdbhome/$target/item-set
+    touch $tsdbhome/$target/run
+    touch $tsdbhome/$target/parse
+    touch $tsdbhome/$target/result
+    touch $tsdbhome/$target/edge
+    touch $tsdbhome/$target/decision
+    touch $tsdbhome/$target/preference
+    touch $tsdbhome/$target/tree
+    cp $skeleton/item $tsdbhome/$target/item
+    cut -d@ -f7 $skeleton/item | ${CUSTOMIZATIONROOT}/regression_tests/art-static-prerelease -a "$ACEROOT/ace -g $dat_file 2>/dev/null" $tsdbhome/$target 1>/dev/null
+    echo "DONE"	
 
+    #echo "Working on ACE is done!!!"
+    sed "s;@@;@0@;g" $tsdbhome/$target/parse > $tsdbhome/$target/tmp
+    mv -f $tsdbhome/$target/tmp $tsdbhome/$target/parse
+    sed "s;@@;@0@;g" $tsdbhome/$target/parse > $tsdbhome/$target/tmp
+    mv -f $tsdbhome/$target/tmp $tsdbhome/$target/parse
+    sed "s;@@;@0@;g" $tsdbhome/$target/result > $tsdbhome/$target/tmp
+    mv -f $tsdbhome/$target/tmp $tsdbhome/$target/result
+    sed "s;@@;@0@;g" $tsdbhome/$target/result > $tsdbhome/$target/tmp
+    mv -f $tsdbhome/$target/tmp $tsdbhome/$target/result
+
+    #$python_cmd ${CUSTOMIZATIONROOT}/regression_tests/cleanup_parse.py < $tsdbhome/$target/parse > $tsdbhome/$target/tmp
+    #mv -f $tsdbhome/$target/tmp $tsdbhome/$target/parse
+
+    echo "=== Readings-Compare ===" >> $log
+    profiles+="(tsdb:tsdb :create \"$target\" :skeleton \"$lgname\")"
+    comparison+="(tsdb::compare-in-detail \"$target\" \"$gold\" :format :ascii :compare '(:readings) :append \"$log\")"
+done
+
+
+echo "== All profile(s) are being compared to the gold standards. =="      
+
+{
+  options=":error :exit :wait 300"
+  echo "(setf (system:getenv \"DISPLAY\") nil)"
+
+  echo "(setf tsdb::*process-suppress-duplicates* nil)"
+  echo "(setf tsdb::*process-raw-print-trace-p* t)"
+
+  echo "(setf tsdb::*tsdb-home* \"$tsdbhome\")"
+  echo "(tsdb:tsdb :skeletons \"$skeletons\")"
+
+  echo "$profiles"
+  echo "$comparison"
+
+} | ${LOGONROOT}/bin/logon -I base -locale no_NO.UTF-8 -qq 2> ${TSDBLOG} > ${TSDBLOG}
+
+# The $TSDBLOG is overwritten each time, so copy it to $ALLTSDBLOG
+echo "== BEGIN TSDB LOG for $lgname ==" >> $ALLTSDBLOG
+cat $TSDBLOG >> $ALLTSDBLOG
+
+
+# checking out the results of comparion
+for lgname in $lgnames
+do
 # When the grammar fails to load, [incr tsdb()] is not creating
 # the directory.  So use existence of $tsdbhome/$target to check
 # for grammar load problems.
+    printf "%-70s " "$lgname..."
+    log="$logs/$lgname.$date"
 
-      if [ ! -e $tsdbhome/$target ]
-      then
-        echo "ERROR!"
-        echo "Probable tdl error; grammar failed to load." >> $log
-        continue
-      # newer versions of [incr tsdb()] write that there were 0 diffs, so
-      # the file is no longer empty for success
-      elif [ -n "$(grep -i "error" ${TSDBLOG} | grep -v "^([0-9]\+) \`\*")" ]
-      then
-        echo "ERROR!"
-        echo "TSDB error; check ${TSDBLOG}" >> $log
-        continue
-      elif [ -z "$(grep "compare-in-detail(): 0 differences" $log)" ]
-      then
-        echo "DIFFS!"
-        echo "Diffs were found in the current and gold profiles." >> $log
-        continue
-      fi
+    gold="${CUSTOMIZATIONROOT}/regression_tests/home/gold/$lgname"
+    target="${CUSTOMIZATIONROOT}/regression_tests/home/current/$lgname"
+    echo "" >> $log
+    echo "" >> $log
+    echo "=== MRS-Compare ===" >> $log
+    echo "" >> $log
+    cp $gold/result $gold/result.tmp
+    cp $gold/parse $gold/parse.tmp 
+    cp $gold/item $gold/item.tmp  
+    cp $target/result $target/result.tmp
+    cp $target/parse $target/parse.tmp 
+    cp $target/item $target/item.tmp  
+    $python_cmd ${CUSTOMIZATIONROOT}/regression_tests/multiple-mrs.py $gold
+    $python_cmd ${CUSTOMIZATIONROOT}/regression_tests/multiple-mrs.py $target
+    ${CUSTOMIZATIONROOT}/regression_tests/mrs-compare $target $gold >> $log
+    mv $gold/result.tmp $gold/result
+    mv $gold/parse.tmp $gold/parse
+    mv $gold/item.tmp $gold/item
+    mv $target/result.tmp $target/result
+    mv $target/parse.tmp $target/parse
+    mv $target/item.tmp $target/item
+
+    target="current/$lgname"
+    
+    if [ ! -e $tsdbhome/$target ]
+    then
+      echo "ERROR!"
+      echo "Probable tdl error; grammar failed to load." >> $log
+      continue
+    # newer versions of [incr tsdb()] write that there were 0 diffs, so
+    # the file is no longer empty for success
+    elif [ -n "$(grep -i "error" ${TSDBLOG} | grep -v "^([0-9]\+) \`\*")" ]
+    then
+      echo "ERROR!"
+      echo "TSDB error; check ${TSDBLOG}" >> $log
+      continue
+    elif [ -z "$(grep "compare-in-detail(): 0 differences" $log)" ]
+    then
+      echo "DIFFS!"
+      echo "Diffs were found in the current and gold profiles." >> $log
+      continue
+    elif [ "$(grep "^item [0-9]*:" $log)" ]
+    then
+      echo "DIFFS!"
+      echo "Diffs were found in the current and gold profiles." >> $log
+      continue
     fi
 
     # if we made it here, it's probably a success
@@ -292,13 +348,13 @@ do
 done
 
 # Notify user of results:
-if [[ $performance ]]; then
-  echo "Grepping for 'error' in tsdb log:"
-  echo ""
+#if [[ $performance ]]; then
+#  echo "Grepping for 'error' in tsdb log:"
+#  echo ""
 
   # Don't report errors for starred items
-  grep -i "error" ${ALLTSDBLOG} | grep -v "^([0-9]\+) \`\*"
-fi
+#  grep -i "error" ${ALLTSDBLOG} | grep -v "^([0-9]\+) \`\*"
+#fi
 
 echo ""
 echo "Results of the regression tests can be seen in"

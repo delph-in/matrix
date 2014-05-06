@@ -102,7 +102,7 @@
 
 (index-for-generator)
 
-;(mt:read-vpm (lkb-pathname (parent-directory) "semi.vpm") :semi)
+(mt:read-vpm (lkb-pathname (parent-directory) "semi.vpm") :semi)
 
 (lkb-load-lisp (this-directory) "mt.lsp" t)
 

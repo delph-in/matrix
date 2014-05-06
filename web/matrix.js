@@ -365,12 +365,20 @@ function prev_div(n, name)
 // Worker function that clones the invisible tempate of an iterator,
 // replaces any iterator variables with the proper values, and inserts
 // the copy into the page.
-function do_clone_region(id, iter_var, bAnim, bShow)
+function do_clone_region(id, iter_var, check, bAnim, bShow)
 {
 
   var d = document.getElementById(id + '_TEMPLATE');
   var a = document.getElementById(id + '_ANCHOR');
   var p = prev_div(a, id);
+  
+  // Show/hide options based on previous choices
+  if (check) {
+    toShow = d.getElementById(check);
+    if (toShow) {
+      toShow.style.display = "block";
+    }
+  }
 
   var cur = 1;
   if (p && p.id) {
@@ -414,16 +422,30 @@ function do_clone_region(id, iter_var, bAnim, bShow)
 
 // clone_region()
 // Clone a region and expand using animation
-function clone_region(id, iter_var, bShow)
+function clone_region(id, iter_var, check, bShow)
 {
-    do_clone_region(id, iter_var, true, bShow);
+  //original
+  //do_clone_region(id, iter_var, true, bShow);
+  if (check) {
+    do_clone_region(id, iter_var, check, true, bShow);
+  }
+  else {
+    do_clone_region(id, iter_var, false, true, bShow);
+  }
 }
 
 // clone_region()
 // Clone a region and expand *without* animation
-function clone_region_noanim(id, iter_var)
+function clone_region_noanim(id, iter_var, check)
 {
-  do_clone_region(id, iter_var, false);
+  //original
+  //do_clone_region(id, iter_var, false);
+  if (check) {
+    do_clone_region(id, iter_var, check, false);
+  }
+  else {
+    do_clone_region(id, iter_var, false, false);
+  }
 }
 
 // remove_region()
@@ -1020,10 +1042,14 @@ function import_toolbox_lexicon()
   submit_main();
 }
 ////////////////////////////////////////////////////////////
-// Special functions for Sentential Negation Subpage 
+// Special functions for Subpages
 ////////////////////////////////////////////////////////////
 
-// set_negexp(n)
+////////
+// Sentential Negation Subpage
+////////
+
+// set_negexp(n) automatically hide and show section based on radio choice
 //
 function set_negexp(n)
 {
@@ -1287,3 +1313,34 @@ function nav_customize(type) {
   f.removeChild(t);
   f.removeChild(i);
 }
+
+////////
+// Morphology Subpage (for adjectives)
+////////
+
+// set_incorporation(n) // Show or hide incorporation option depending on Lexicon choice
+function show_hidden(n)
+{
+  document.write(document.forms["choices_form"])
+  var divs = document.getElementsByClassName("incorp_switch");
+	for(var i=0; i<divs.length;i++){
+          var d = divs[i];
+          d.style.display = 'none';
+	}
+  var d = null;
+  //if option on lexicon page ticked
+  if (document.forms["choices_form"]["incorp"]) {
+    document.getElementById(n).style.display = "block";
+  }
+  else {
+    document.getElementById(n).style.display = "none";
+  }
+}
+
+// Display warning on radio choice
+function show(id) {
+  alert(id);
+  document.getElementById(id).setAttribute("style", "display: block");
+}
+
+

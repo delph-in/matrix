@@ -83,3 +83,7 @@ div.iterframe div.iterframe div.iterframe div.iterframe div.iterframe div.iterfr
 #feedback td{
   vertical-align:top;
 }
+
+.incorp_switch {
+  display: none;
+}

@@ -917,6 +917,10 @@ class MatrixDefFile:
         iter_min = 0
         if len(word) > 4:
           iter_min = int(word[4])
+	# Adding show function: incrementing length +1; TJT 1-17-14
+	show_check = 'false'
+	if len(word) > 5:
+	  show_check = str(word[5])
         i += 1
 
         # collect the lines that are between BeginIter and EndIter
@@ -1017,6 +1021,10 @@ class MatrixDefFile:
                 'onclick="clone_region(\'' + \
                 prefix + iter_name + '\', \'' + \
                 iter_var + '\','
+	# Adding show_check to check for IDs to hide automatically
+	# based on other choices TJT 1-17-14
+	if show_check != 'false':
+	  html += show_check + ', '
         if show_hide:
           html += 'true)">'
         else:

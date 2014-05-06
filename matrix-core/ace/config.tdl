@@ -43,6 +43,8 @@ mrs-deleted-roles :=
 ; hack for LTOP-GTOP issue
 invent-ltop := true. 
 
+ortho-max-rules := 20.
+
 enable-icons := yes.
 mrs-icons-list := ICONS LIST.
 icons-left := CLAUSE.

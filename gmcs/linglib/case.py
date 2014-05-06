@@ -247,6 +247,21 @@ def customize_case_adpositions(mylang, lexicon, trigger, ch):
                         [ STEM < "' + orth + '" > ].'
       lexicon.add(typedef)
 
+      has_inforstr_feat = False
+      for feat in adp.get('feat', []):
+        if feat['name'] == "information-structure meaning":
+          has_inforstr_feat = True 
+          typedef = \
+          adp_type + ' := [ SYNSEM.LOCAL [ CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX #target ] >, \
+                                           CONT [ HOOK.ICONS-KEY #icons, \
+                                                  ICONS <! info-str & #icons & [ TARGET #target ] !> ] ] ] ].'
+          lexicon.add(typedef)          
+          break
+      if not has_inforstr_feat:
+        typedef = \
+        adp_type + ' := [ SYNSEM.LOCAL.CONT [ HOOK [ ICONS-KEY.CLAUSE #clause, CLAUSE-KEY #clause ], ICONS <! !> ] ].'
+        lexicon.add(typedef)          
+
       if cn.strip() != '':
         customize_trigger_rules(adp_type, trigger)
 

@@ -352,6 +352,7 @@ def customize_determiners(mylang, ch, lexicon, hierarchies):
     mylang.add(typedef)
 
     mylang.add('determiner-lex := non-mod-lex-item.')
+
   # Determiners
   if 'det' in ch:
     lexicon.add_literal(';;; Determiners')
@@ -361,6 +362,15 @@ def customize_determiners(mylang, ch, lexicon, hierarchies):
     dtype = det_id(det)
 
     mylang.add(dtype + ' := ' + stype + '.')
+
+    has_inforstr_feat = False
+    for feat in det.get('feat', []):
+      if feat['name'] == "information-structure meaning":
+        has_inforstr_feat = True
+        mylang.add(dtype + ' := infostr-marking-determiner-lex.')
+        break
+    if not has_inforstr_feat:
+      mylang.add(dtype + ' := no-icons-lex-item.')
 
     features.customize_feature_values(mylang, ch, hierarchies, det, dtype, 'det')
 

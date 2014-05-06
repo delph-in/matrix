@@ -194,6 +194,7 @@ def main():
     try:
       lg = gmcs.regression_tests.add_regression_test.add(choices, txtsuite)
       print 'Succeeded copying files for %s.' % lg
+      """ 	
       rpath = os.path.join(os.environ['CUSTOMIZATIONROOT'], 'regression_tests')
       subprocess.call(['svn', '-q', 'add'] +\
                       [os.path.join(rpath, 'home/gold', lg),
@@ -203,6 +204,7 @@ def main():
                        os.path.join(rpath, 'skeletons', lg, '/[a-z]*'),
                        os.path.join(rpath, 'choices', lg),
                        os.path.join(rpath, 'txt-suites', lg)])
+      """
       print 'Succeeded adding files to Subversion. Be sure to commit!'
     except ValueError, er:
       print "Error adding regression test."

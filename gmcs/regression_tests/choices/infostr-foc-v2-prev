@@ -1,0 +1,91 @@
+
+version=28
+
+section=general
+language=infostr-foc-v2-prev
+
+section=word-order
+word-order=v2
+has-dets=yes
+noun-det-order=det-noun
+has-aux=no
+
+section=number
+  number1_name=sing
+  number2_name=plural
+
+section=person
+person=1-2-3
+first-person=none
+
+section=gender
+  gender1_name=masc
+  gender2_name=fem
+
+section=case
+case-marking=none
+
+section=direct-inverse
+
+section=tense-aspect-mood
+
+section=other-features
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=info-str
+focus-pos=preverbal
+
+section=arg-opt
+
+section=lexicon
+  noun1_name=common-noun
+  noun1_det=opt
+    noun1_stem1_orth=CN
+    noun1_stem1_pred=_dog_n_rel
+  noun2_name=proper-noun
+  noun2_det=imp
+    noun2_stem1_orth=PN
+    noun2_stem1_pred=_Kim_n_rel
+  noun3_name=pronoun
+  noun3_det=imp
+    noun3_stem1_orth=PRO
+    noun3_stem1_pred=pronoun_q_rel
+  verb1_name=intransitive-verb
+  verb1_valence=intrans
+    verb1_stem1_orth=IV
+    verb1_stem1_pred=_bark_v_rel
+  verb2_name=transitive-verb
+  verb2_valence=trans
+    verb2_stem1_orth=TV
+    verb2_stem1_pred=_chase_v_rel
+  det1_name=det
+    det1_stem1_orth=DET
+    det1_stem1_pred=exist_q_rel
+
+section=morphology
+
+section=toolbox-import
+
+section=test-sentences
+  sentence1_orth=CN IV
+  sentence2_orth=IV CN
+  sentence2_star=on
+  sentence3_orth=PN TV CN
+  sentence3_star=on
+  sentence4_orth=PN CN TV
+  sentence5_orth=CN PN TV
+  sentence5_star=on
+  sentence6_orth=CN TV PN
+  sentence7_orth=TV PN CN
+  sentence7_star=on
+  sentence8_orth=TV CN PN
+  sentence8_star=on
+
+section=gen-options
+
+section=ToolboxLexicon

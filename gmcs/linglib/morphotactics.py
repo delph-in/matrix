@@ -33,6 +33,9 @@ from gmcs.utils import TDLencode
 
 _mns = {}
 _dtrs = set()
+_infostr_lrt = []
+_infostr_pc = {}
+_infostr_head = {}
 
 ########################
 ### HELPER FUNCTIONS ###
@@ -228,7 +231,7 @@ def create_lexical_rule_types(cur_pc, pc):
     # default name uses name of PC with _lrtX
     if 'name' not in lrt:
       lrt['name'] = cur_pc.name + lrt.full_key.replace(cur_pc.key, '', 1)
-    cur_lrt = create_lexical_rule_type(lrt, mtx_supertypes)
+    cur_lrt = create_lexical_rule_type(lrt, mtx_supertypes, cur_pc)
     # the ordering should only mess up if there are 100+ lrts
     cur_lrt.tdl_order = cur_pc.tdl_order + (0.01 * j)
     cur_pc.add_node(cur_lrt)
@@ -236,11 +239,19 @@ def create_lexical_rule_types(cur_pc, pc):
     for parent in lrt_parents[child]:
       cur_pc.relate_parent_child(_mns[parent], _mns[child])
 
-def create_lexical_rule_type(lrt, mtx_supertypes):
+def create_lexical_rule_type(lrt, mtx_supertypes, cur_pc):
   new_lrt = LexicalRuleType(lrt.full_key, get_name(lrt))
   for feat in lrt.get('feat'):
     new_lrt.features[feat['name']] = {'value': feat['value'],
                                       'head': feat.get('head')}
+    if feat['name'] == "information-structure meaning":
+      if new_lrt.identifier() not in _infostr_lrt:
+        _infostr_lrt.append(new_lrt.identifier())
+        _infostr_pc[new_lrt.identifier()] = cur_pc.identifier()
+      if new_lrt.identifier() not in _infostr_head.keys():
+        _infostr_head[new_lrt.identifier()] = []
+      if feat.get('head') not in _infostr_head[new_lrt.identifier()]:
+        _infostr_head[new_lrt.identifier()].append(feat.get('head'))        
   new_lrt.lris = [lri['orth'] if lri['inflecting'] == 'yes' else ''
                   for lri in lrt.get('lri',[])]
   # Fill out the obvious supertypes (later we'll finish)
@@ -391,6 +402,7 @@ def set_req_bkwd_initial_flags(lex_pc, flag_tuple):
 ALL_LEX_RULE_SUPERTYPES = set(['cat-change-only-lex-rule',
                                'same-agr-lex-rule',
                                'cont-change-only-lex-rule',
+                               'add-only-no-rels-hcons-rule',
                                'add-only-no-ccont-rule',
                                'val-change-only-lex-rule',
                                'head-change-only-lex-rule',
@@ -458,7 +470,10 @@ def percolate_supertypes(pc):
   def validate_supertypes(x):
     if pc.is_lex_rule:
       if not any(st in LEX_RULE_SUPERTYPES for st in x.supertypes):
-        x.supertypes.add('add-only-no-ccont-rule')
+        if str(pc.identifier()) in _infostr_pc.values():
+          x.supertypes.add('add-only-no-rels-hcons-rule')
+        else:
+          x.supertypes.add('add-only-no-ccont-rule')
 
   for r in pc.roots():
     r.percolate_down(items=lambda x: x.supertypes,
@@ -514,6 +529,25 @@ def write_rules(pch, mylang, irules, lrules, lextdl, choices):
       write_i_or_l_rules(irules, lrules, lrt, pc.order)
       # merged LRT/PCs have the same identifier, so don't write supertypes here
       if lrt.identifier() != pc.identifier():
+        if str(pc.identifier()) in _infostr_pc.values():
+          if lrt.identifier() in _infostr_lrt:
+            _hlist = _infostr_head[lrt.identifier()]
+            if 'subj' in _hlist and 'obj' in _hlist and 'verb' in _hlist:
+              lrt.supertypes.add('add-icons-subj-comp-verb-rule')
+            elif 'subj' in _hlist and 'obj' in _hlist:
+              lrt.supertypes.add('add-icons-subj-comp-rule')
+            elif 'subj' in _hlist and 'verb' in _hlist:
+              lrt.supertypes.add('add-icons-subj-verb-rule')
+            elif 'obj' in _hlist and 'verb' in _hlist:
+              lrt.supertypes.add('add-icons-comp-verb-rule')
+            elif 'subj' in _hlist:
+              lrt.supertypes.add('add-icons-subj-rule')
+            elif 'obj' in _hlist:
+              lrt.supertypes.add('add-icons-comp-rule')
+            else:
+              lrt.supertypes.add('add-icons-rule')
+          else:
+            lrt.supertypes.add('no-icons-rule')
         write_supertypes(mylang, lrt.identifier(), lrt.all_supertypes())
     write_daughter_types(mylang, pc)
   # features need to be written later

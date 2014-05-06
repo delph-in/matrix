@@ -342,9 +342,8 @@ non_event      <> p
 *              >> u
 semarg         << u
 
-SORT : SORT
+SPECI : SPECI
   * <> *
-  semsort << *
 
 SF : SF
   prop <> prop
@@ -352,6 +351,7 @@ SF : SF
   prop-or-ques >> prop-or-ques
   prop << prop-or-ques
   comm <> comm
+  * <> *
 
 COG-ST : COG-ST
   type-id <> type-id
@@ -368,10 +368,11 @@ COG-ST : COG-ST
   fam-or-less <> fam-or-less
   uniq-or-more <> uniq-or-more
   activ-or-less <> activ-or-less
+  * <> *
 """)
   # Add customized mappings
   agreement_features.create_vpm_blocks(ch, vpm, hierarchies)
-  verbal_features.create_vpm_blocks(ch, vpm)
+  verbal_features.create_vpm_blocks(ch, vpm, hierarchies)
 
 ######################################################################
 # Version Control
@@ -463,6 +464,8 @@ def customize_matrix(path, arch_type, destination=None):
                           ['nounlex', 'Nouns', False, False],
                           ['verblex', 'Verbs', False, False],
                           ['auxlex', 'Auxiliaries', False, False],
+                          ['coplex', 'Copulas', False, False],
+                          ['adjlex', 'Adjectives', False, False],
                           ['otherlex', 'Others', False, False],
                           ['lexrules', 'Lexical Rules', True, False],
                           ['phrases', 'Phrasal Types', True, False],
@@ -499,8 +502,8 @@ def customize_matrix(path, arch_type, destination=None):
     ';;;\n' + format_comment_block(ch.get('comment')) + '\n' +
     ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;')
 
-  # BUT, put the date/time of the Matrix version in Version.lsp (along
-  # with the name of the language.
+  # Put the date/time of the Matrix version in Version.lsp (along
+  # with the name of the language).
   global version_lsp
   version_lsp = tdl.TDLfile(os.path.join(grammar_path, 'Version.lsp'))
 
