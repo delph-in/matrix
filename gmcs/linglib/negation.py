@@ -363,14 +363,14 @@ def customize_infl_mod_neg(mylang,ch,lexicon,rules):
 
   # now parameterize as pre/posthead, no value here means both orders
   # should work, also add specialized modifier rules
-  if ch.get('neg-mod-order') == 'before':
+  if ch.get('neg-mod-order-infl-mod-neg') == 'before':
     mylang.add('neg-adv-lex := [ SYNSEM.LOCAL.CAT.POSTHEAD - ].')
     mylang.add('''neg-adj-head-scop-phrase := adj-head-scop-phrase &
                  [ SYNSEM.NEG-SAT +,
                    HEAD-DTR.SYNSEM.NEG-SAT -,
                    NON-HEAD-DTR neg-adv-lex ].''')
     rules.add('neg-adj-head-scop := neg-adj-head-scop-phrase.')
-  elif ch.get('neg-mod-order') == 'after':
+  elif ch.get('neg-mod-order-infl-mod-neg') == 'after':
     mylang.add('neg-adv-lex := [ SYNSEM.LOCAL.CAT.POSTHEAD + ].')
     mylang.add('''neg-head-adj-scop-phrase := head-adj-scop-phrase &
                [ SYNSEM.NEG-SAT +,
@@ -391,13 +391,13 @@ def customize_infl_mod_neg(mylang,ch,lexicon,rules):
 
 
   # constrain type of constituent modified by neg-adv
-  if ch.get('neg-mod') == 's':
+  if ch.get('neg-mod-infl-mod-neg') == 's':
     mylang.add('''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ null,
                                                                                    COMPS null ]].''')
-  elif ch.get('neg-mod') == 'vp':
+  elif ch.get('neg-mod-infl-mod-neg') == 'vp':
     mylang.add('''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ cons,
                                                                                    COMPS null ]].''')
-  elif ch.get('neg-mod') == 'v':
+  elif ch.get('neg-mod-infl-mod-neg') == 'v':
     mylang.add('''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LIGHT + ].''')
 
   mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].','''verb-lex is HC-LIGHT - to allow us to pick out\n
@@ -503,14 +503,14 @@ def customize_head_mod_neg(mylang, ch, lexicon,rules):
 
   # now parameterize as pre/posthead, no value here means both orders
   # should work, also add specialized modifier rules
-  if ch.get('neg-mod-order') == 'before':
+  if ch.get('neg-mod-order-head-mod-neg') == 'before':
     mylang.add('neg-adv-lex := [ SYNSEM.LOCAL.CAT.POSTHEAD - ].')
     mylang.add('''neg-adj-head-scop-phrase := adj-head-scop-phrase &
                  [ SYNSEM.NEG-SAT +,
                    HEAD-DTR.SYNSEM.NEG-SAT -,
                    NON-HEAD-DTR neg-adv-lex ].''')
     rules.add('neg-adj-head-scop := neg-adj-head-scop-phrase.')
-  elif ch.get('neg-mod-order') == 'after':
+  elif ch.get('neg-mod-order-head-mod-neg') == 'after':
     mylang.add('neg-adv-lex := [ SYNSEM.LOCAL.CAT.POSTHEAD + ].')
     mylang.add('''neg-head-adj-scop-phrase := head-adj-scop-phrase &
                [ SYNSEM.NEG-SAT +,
@@ -531,13 +531,13 @@ def customize_head_mod_neg(mylang, ch, lexicon,rules):
 
 
   # constrain type of constituent modified by neg-adv
-  if ch.get('neg-mod') == 's':
+  if ch.get('neg-mod-head-mod-neg') == 's':
     mylang.add('''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ null,
                                                                                    COMPS null ]].''')
-  elif ch.get('neg-mod') == 'vp':
+  elif ch.get('neg-mod-head-mod-neg') == 'vp':
     mylang.add('''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ cons,
                                                                                    COMPS null ]].''')
-  elif ch.get('neg-mod') == 'v':
+  elif ch.get('neg-mod-head-mod-neg') == 'v':
     mylang.add('''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LIGHT + ].''')
 
   mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].','''verb-lex is HC-LIGHT - to allow us to pick out\n
@@ -670,7 +670,7 @@ def customize_comp_mod_neg(mylang,ch,lexicon,rules):
   #TODO: parameterize this rule according to neg-comp before/after
   #      current system only supports before and ignores the choice!
   attach=''
-  if ch.get('comp-neg-head') == 'v':
+  if ch.get('comp-neg-head-comp-mod') == 'v':
     attach='verb'
   else: attach='aux'
 
@@ -724,14 +724,14 @@ def customize_comp_mod_neg(mylang,ch,lexicon,rules):
 
   # now parameterize as pre/posthead, no value here means both orders
   # should work, also add specialized modifier rules
-  if ch.get('neg-mod-order') == 'before':
+  if ch.get('neg-mod-order-comp-mod-neg') == 'before':
     mylang.add('neg-adv-lex := [ SYNSEM.LOCAL.CAT.POSTHEAD - ].')
     mylang.add('''neg-adj-head-scop-phrase := adj-head-scop-phrase &
                  [ SYNSEM.NEG-SAT +,
                    HEAD-DTR.SYNSEM.NEG-SAT -,
                    NON-HEAD-DTR neg-adv-lex ].''')
     rules.add('neg-adj-head-scop := neg-adj-head-scop-phrase.')
-  elif ch.get('neg-mod-order') == 'after':
+  elif ch.get('neg-mod-order-comp-mod-neg') == 'after':
     mylang.add('neg-adv-lex := [ SYNSEM.LOCAL.CAT.POSTHEAD + ].')
     mylang.add('''neg-head-adj-scop-phrase := head-adj-scop-phrase &
                [ SYNSEM.NEG-SAT +,
@@ -752,13 +752,13 @@ def customize_comp_mod_neg(mylang,ch,lexicon,rules):
 
 
   # constrain type of constituent modified by neg-adv
-  if ch.get('neg-mod') == 's':
+  if ch.get('neg-mod-comp-mod-neg') == 's':
     mylang.add('''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ null,
                                                                                    COMPS null ]].''')
-  elif ch.get('neg-mod') == 'vp':
+  elif ch.get('neg-mod-comp-mod-neg') == 'vp':
     mylang.add('''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ cons,
                                                                                    COMPS null ]].''')
-  elif ch.get('neg-mod') == 'v':
+  elif ch.get('neg-mod-comp-mod-neg') == 'v':
     mylang.add('''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LIGHT + ].''')
 
   mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].','''verb-lex is HC-LIGHT - to allow us to pick out\n

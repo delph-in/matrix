@@ -31,7 +31,7 @@ def set_supertypename(auxcomp):
 
 def define_arg_str_and_valency(aux, auxcomp, ch, mylang, negaux):
   if negaux:
-    norder = ch.get('comp-neg-order')
+    norder = ch.get('comp-neg-order-head-comp')
   supertypename = set_supertypename(auxcomp)
   basic_typedef = supertypename + ' := aux-lex & \
                 [ SYNSEM.LOCAL.CAT.VAL [ SPR < >, \
@@ -217,7 +217,7 @@ def add_subj_tdl(aux, auxcomp, ch, mylang):
 
 def create_semantics(sem, aux, auxcomp, mylang, ch, hierarchies, negaux):
   if negaux:
-    norder = ch.get('comp-neg-order')
+    norder = ch.get('comp-neg-order-head-comp')
   supertypename = set_supertypename(auxcomp)
   if sem == 'add-pred':
     auxtypename = supertypename + '-with-pred'
