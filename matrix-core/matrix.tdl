@@ -2514,7 +2514,7 @@ expl-arg-only-lex-item := basic-one-arg-no-hcons &
 
 transitive-lex-item := basic-two-arg-no-hcons &
    [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind1 ],
-	      [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind2 ] >,
+	      [ LOCAL.CONT.HOOK.INDEX #ind2 ] >,
      SYNSEM.LKEYS.KEYREL [ ARG1 #ind1,
 			   ARG2 #ind2 ] ].
 
@@ -2525,7 +2525,7 @@ transitive-lex-item := basic-two-arg-no-hcons &
 ditransitive-lex-item := basic-three-arg-no-hcons &
   [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind1 ],
 	     [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind2 ],
-	     [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind3 ] >,
+	     [ LOCAL.CONT.HOOK.INDEX #ind3 ] >,
     SYNSEM.LKEYS.KEYREL [ ARG1 #ind1,
 			  ARG2 #ind2,
 			  ARG3 #ind3 ] ].

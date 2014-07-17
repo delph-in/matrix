@@ -1,0 +1,732 @@
+Der General befoerdert den Mann 
+Der General befoerdert Karl 
+Der General befoerdert Karl zum Hauptmann 
+Der General befoerdert Karl vom Leutnant zum Hauptmann 
+Vom Leutnant befoerdert der General Karl zum Hauptmann 
+Karl glaubt dass der General den Leutnant befoerdert 
+Karl wird befoerdert 
+Karl wird von dem General befoerdert 
+Karl wird vom Leutnant zum Hauptmann befoerdert 
+Wird der Mann befoerdert
+Vom Leutnant wird Karl zum Hauptmann befoerdert 
+Karl wird vom General befoerdert 
+Karl kauft einen Mantel 
+Karl kauft der Frau einen Mantel 
+Der Mann dem sie den Mantel gab wird zum Hauptmann befoerdert 
+Der Mann dem sie den Mantel gibt befoerderte Karl 
+Der Mann dem ich den Mantel gebe befoerderte Karl 
+Der Mann dem ich den Mantel gegeben habe befoerdert Karl 
+Der General von dem Karl befoerdert wurde verachtet ihn 
+Der General der Karl befoerdert hat bevorzugt ihn 
+Wer befoerdert Karl
+Karl faerbt den Mantel um 
+Karl faerbt die Jacke um 
+Faerbt Karl die Jacke um
+Karl glaubt dass der Mann die Jacke umfaerbt 
+Karl glaubt dass Maria die Jacke umfaerbt 
+Du glaubst Maria faerbt die Jacke um 
+Karl glaubt die Jacke umzufaerben 
+Karl glaubt den Mantel umzufaerben 
+Karl glaubt dass der Mann den Mantel umzufaerben glaubt 
+Karl vermutet dass der Mann glaubt Maria zu helfen 
+Karl vermutet dass der Mann Maria zu helfen glaubt 
+Dass der Mann Maria zu helfen glaubt vermutet Karl 
+Karl bildet den Lehrling aus 
+Bildet Karl den Lehrling aus
+Der Lehrling wird ausgebildet 
+Karl glaubt dass der Lehrling ausgebildet wird 
+Rad faehrt Karl 
+Rad ist Karl gefahren 
+Rad wird Karl fahren 
+Karl faehrt Rad 
+Karl ist radgefahren 
+Karl wird radfahren 
+Rad versucht Karl zu fahren 
+Karl versucht radzufahren 
+Bus faehrt Karl 
+Bus ist Karl gefahren 
+Bus wird Karl fahren 
+Karl faehrt Bus 
+Karl ist Bus gefahren 
+Karl wird Bus fahren 
+Bus versucht Karl zu fahren 
+Karl versucht Bus zu fahren 
+Die radfahrende Frau ist schoen 
+Die Bus fahrende Frau schlaeft 
+Von Maria hat Karl ein Bild gemalt 
+Von Maria wurde Karls Bild gemalt 
+Ich kenne Karls Bild von Maria 
+Von Maria kenne ich ein Bild 
+In der Vorlesung hat Maria geschlafen 
+Gestern hat es geregnet 
+Gestern wurde getanzt 
+Weil Karl den Mann kennt hilft er ihm 
+Karl gibt dem Mann das Buch 
+Er gibt ihr das Buch 
+Er gibt das Buch ihr 
+Das Buch gibt ihr er 
+Karl erholt sich 
+Karl freut sich ueber das Buch 
+Dieser Ansatz bringt ein Problem mit sich 
+Gibt der Mann der Frau das Buch
+Gibt der Mann das Buch der Frau
+Gibt der Frau das Buch der Mann
+Gibt der Frau der Mann das Buch
+Gibt es der Frau der Mann
+Gibt der Frau es der Mann
+Der Mann der Maria liebt verachtet sich 
+Der Mann der sich verachtet liebt Maria 
+Der Mann der Maria liebt kuesst sie 
+Der Mann der sie kuesst liebt Maria 
+Den Mann den Maria liebt verachtet Karl 
+Maria verachtet den Mann der sie liebt 
+Die Jacke die er liebt faerbt Karl um 
+Der Mann wird von der Frau geliebt die den Mantel umfaerbt 
+Der Mann gibt einer Frau das Buch die er liebt 
+Maria faerbt die Jacke die ihr Mann gekauft hat um 
+Maria faerbt die Jacke die ihr ihr Mann gekauft hat um 
+Der Mann von dessen Frau ein Bild gemalt wurde schlaeft 
+Der Mann von dessen Frau Maria ein Bild gemalt hat schlaeft 
+Der Mann den Karl nicht zu begruessen vorzog lief weg 
+Der Mann den Karl vorzog nicht zu begruessen lief weg 
+Der Mann kauft das Bild von Maria das ich kenne 
+Die Vorlesung in der Maria schlaeft ist nicht spannend 
+Der Mann von dessen Frau Maria ein Bild gemalt hat das ich kenne schlaeft 
+Der Mann der die Frau die den General verachtet geliebt hat ist gestorben 
+Der Mann der die Frau geliebt hat die den General verachtet ist gestorben 
+Der Mann ist gestorben der die Frau die den General verachtet geliebt hat 
+Der Mann ist gestorben der die Frau geliebt hat die den General verachtet 
+Maria gibt dem Mann den Mantel den sie kennt 
+Maria faerbt den Mantel um den sie liebt 
+Der Mann gibt der Frau das Buch die er liebt 
+Karl glaubt dass der Lehrling ausgebildet wird der Maria liebt 
+Der Mann glaubt dass Maria ausgebildet wird der sie liebt 
+Der Mann liebt Maria der den General verachtet 
+Ein Mann hat die Frau geliebt die ich kenne der schlaeft 
+Ich glaube dass die Frau zu schlagen der Mann versuchte den ich kenne 
+Ich glaube dass die Frau zu schlagen die ich kenne der Mann versuchte 
+Er hat das Kind eines Mannes geschlagen den ich kenne 
+Ich kenne den Mann den zu lieben Maria versucht 
+Ich kenne den Mann den Maria zu lieben versucht 
+Ich kenne den Mann den Maria versucht zu lieben 
+Die Frau die zu lieben ich versucht habe schlaeft 
+John vermutet dass Karl der Frau den Mantel gegeben zu haben glaubt den er umgefaerbt hat 
+John vermutet dass Karl der Frau den Mantel gegeben zu haben glaubt den er ihr gekauft hat 
+Wer schlaeft suendigt nicht 
+Wen ich kenne begruesse ich 
+Was er nicht kennt isst er nicht 
+Wo ich arbeite schlafe ich 
+Ueber was ich nachdenke hast du nicht nachgedacht 
+Wer schlaeft der suendigt nicht 
+Wen ich kenne den begruesse ich 
+Wem das nicht gefaellt der ist selber schuld 
+Was er nicht kennt das isst er nicht 
+Maria kennt das Argument dass Karl ihr hilft 
+Maria hat das Argument dass Karl ihr hilft gekannt 
+Maria hat das Argument gekannt dass Karl ihr hilft 
+Der Mann hat geglaubt dass Maria ihn kennt der schlaeft 
+Dass der Satz grammatisch ist fiel dem Grammatiker auf der den Satz untersuchte 
+Dass der Mann die Frau liebt den Karl kennt glaubt Karl 
+Dass Maria schlaeft ist dem Mann aufgefallen der sie kennt 
+Karl hat versucht den Mann zu schlagen dem ich geholfen habe 
+Karls Frau hat der Mann versucht zu kuessen 
+Karls Frau hat der Mann behauptet dass er gekuesst hat 
+Karls Frau hat das Kind behauptet dass ein Mann gekuesst hat den es kennt 
+Er behauptete nicht dass es regnet 
+In der Vorlesung hat Maria geschlafen die ich gehalten habe 
+Karl hat oft nachgedacht ueber dieses Buch 
+Karl wurde geliebt von Maria 
+Karl hat geschlafen in der Vorlesung 
+Dieser Mann hat eine Frau geliebt und einen Mann 
+Ich gebe dem Mann ein Buch und der Frau 
+Der Mann ist weggelaufen weil er maria liebt 
+Karl hat behauptet Maria zu lieben weil sie klug ist 
+Karl muss behaupten Maria zu lieben weil sie klug ist 
+Karl muss behaupten Maria nicht zu lieben weil sie schoen ist 
+Karl muss behaupten dass er Maria liebt weil sie klug ist 
+Karl muss behaupten dass er Maria nicht liebt weil sie schoen ist 
+Ich kenne einen Mann und eine Frau 
+Er kennt diese Frau und er liebt sie 
+Er kennt und liebt diese Frau 
+Er schlaeft und liebt diese Frau 
+Er hat die Frau gekannt und geliebt 
+weil er sie gekannt hat und geliebt 
+Er liebt diese schoene und kluge Frau 
+Der Mann dessen Frau und dessen Kind ich kenne schlaeft 
+Karl Max oder Maria schlaeft 
+Die kluge intelligente und schoene Frau schlaeft 
+Eine kluge intelligente oder schoene Frau schlaeft 
+Die angeblich schoene und kluge Frau schlaeft 
+Er wacht auf und faehrt Rad 
+Er ist aufgewacht und radgefahren 
+Er ist aufgewacht und hat nachgedacht 
+Er ist aufgewacht und hat sofort ueber das Buch nachgedacht 
+Er ist aufgewacht und hat die Frau geliebt 
+Er hat Maria weder gekuesst noch geliebt 
+Er hat entweder geschlafen oder getanzt 
+Du hast geschlafen und ich habe das Buch gelesen 
+Ich kenne eine Frau die schoen ist und die einen Mann liebt 
+Ich habe eine Frau gekannt die schoen ist und die einen Mann liebt 
+Ich habe eine Frau gekannt die schoen ist und einen Mann liebt 
+Ich habe eine Frau gekannt die schoen ist oder die einen Mann liebt 
+Ich habe eine Frau gekannt die schoen ist oder einen Mann liebt 
+Ein Beamter schlaeft und arbeitet nicht 
+Faerbt Karl den Mantel um
+Karl faerbt den Mantel um 
+Faerbte Karl den Mantel um
+Karl faerbte den Mantel um 
+Hat Karl den Mantel umgefaerbt
+Karl hat den Mantel umgefaerbt 
+Hatte Karl den Mantel umgefaerbt
+Karl hatte den Mantel umgefaerbt 
+Wird Karl den Mantel umfaerben
+Karl wird den Mantel umfaerben 
+Wird Karl den Mantel umgefaerbt haben
+Karl wird den Mantel umgefaerbt haben 
+Wird der Mantel umgefaerbt
+Der Mantel wird umgefaerbt 
+Wurde der Mantel umgefaerbt
+Der Mantel wurde umgefaerbt 
+Ist der Mantel umgefaerbt worden
+Der Mantel ist umgefaerbt worden 
+War der Mantel umgefaerbt worden
+Der Mantel war umgefaerbt worden 
+Wird der Mantel umgefaerbt werden
+Der Mantel wird umgefaerbt werden 
+Wird der Mantel umgefaerbt worden sein
+Der Mantel wird umgefaerbt worden sein 
+Karl ist klug gewesen 
+Karl ist klug geworden 
+Der Mann liebt seine Frau 
+Seine Frau ist gestorben 
+Wer liebt Maria
+Wer liebt wen
+Welche Frau liebt welchen Mann
+Welche schoene Frau liebt einen dummen Mann
+Wer liebt eine Frau
+Wer ist schoen
+Von wem malt Karl ein Bild
+Was glaubt Karl
+Eine schoene Frau gibt einem dummen Mann ein spannendes Buch 
+Maria ist schoen 
+Maria ist schoen gewesen 
+Ich bin dumm gewesen 
+Mir ist schlecht 
+Ich bin schlecht 
+Ein Mann liebt seine schoene Frau 
+Karl liebt sein spannendes Buch 
+Karl gibt sein spannendes Buch seiner Frau 
+Der vermeintliche neue Chef kennt seinen potentiellen Moerder 
+Sein angeblicher grosser Bruder laeuft weg 
+Karl ist stolz auf Maria 
+Der auf seine Frau stolze Mann schlaeft 
+Maria ist klueger als Karl 
+Es ist klug 
+Es ist warm 
+Mir ist warm 
+Maria zwingt den Mann sich zu veraendern 
+Maria zwingt sich Max zu lieben 
+Ich ziehe vor dass Karl geht 
+Ich ziehe vor zu gehen 
+Ich behaupte vorzuziehen dass John geht 
+Ich werde vorziehen dass John geht 
+Ich behaupte dass John geht vorzuziehen 
+Der Mann behauptet die Frau geliebt zu haben 
+Karl hat behauptet vorzuziehen dass John geht 
+Karl behauptet vorzuziehen dass John geht 
+Karl glaubt intelligent zu sein 
+Karl glaubt er ist intelligent 
+Karl glaubt dass er intelligent ist 
+Karl verlangt von John gluecklich zu sein 
+Von John wird verlangt gluecklich zu sein 
+Von John wird von Karl verlangt gluecklich zu sein 
+Karl darf weglaufen 
+Karl darf seine Frau kuessen 
+Karl glaubte schlafen zu duerfen 
+Sie glaubt von Karl geliebt zu werden 
+Karl glaubt seine Frau schlagen zu duerfen 
+Maria weiss dass sie weglaufen darf 
+Karl glaubt ihn geschlagen zu haben 
+Er behauptet von ihr betrogen worden zu sein 
+Karl versucht wegzulaufen 
+Karl zwingt den Mann zu gehen 
+John wird gezwungen zu gehen 
+John wird das Buch zu lesen gezwungen 
+Maria versucht er zu lieben 
+Der Mann liebt die Frau die er glaubt lieben zu muessen 
+Der Mann liebt die Frau die er lieben zu muessen glaubt 
+Karl hilft ihm das Buch zu schreiben 
+Karl scheint wegzulaufen 
+Das Buch scheint spannend zu sein 
+Es schien geschlafen worden zu sein 
+Gestern schien geschlafen worden zu sein 
+Es schien gestern nicht geregnet zu haben 
+Es schien gestern geregnet zu haben 
+Dem Lehrling graut es vor der Pruefung 
+Dem Lehrling scheint vor der Pruefung zu grauen 
+Dem Lehrling scheint vor der Pruefung gegraut zu haben 
+Dem Lehrling scheint es vor der Pruefung gegraut zu haben 
+Vor der Pruefung scheint dem Lehrling gegraut zu haben 
+Es faengt an zu regnen 
+Es faengt zu regnen an 
+Du fingst an Maria zu lieben 
+Ihm fing an vor der Pruefung zu grauen 
+Die von Karl betrogene Frau verachtet den Maria liebenden Mann 
+Die Karl helfende Frau kennt Karls Chef 
+Die gestorbene Frau war schoen 
+Das weggelaufene Kind schlaeft 
+Die radfahrende Frau schlaeft 
+Der auszubildende Lehrling ist intelligent 
+Der von dir auszubildende Lehrling ist intelligent 
+Karl glaubt seine ihn betruegende Frau schlagen zu duerfen 
+Das mir gehoerende Buch ist spannend 
+Der das Buch lesen muessende Mann schlaeft 
+Karl hat vor der Pruefung gegraut 
+Vor der Pruefung hat Karl gegraut 
+Hat sie dem Mann das Buch gegeben
+Sie hat dem Mann den Mantel gegeben 
+Die Frau hat geschlafen 
+Die Frau ist gestorben 
+Ich habe geschlafen 
+Ich habe eine Frau gekannt 
+Der Mann wurde geschlagen 
+Mir wird geholfen 
+Karl half mir 
+Karl hat mir geholfen 
+Das Buch gehoert mir 
+Das Buch hat mir gehoert 
+Dass er gestorben ist verdient erwaehnt zu werden 
+Mir wird ein Buch geschenkt 
+Ich bekomme ein Buch geschenkt 
+Ich habe ein Buch geschenkt bekommen 
+Ich werde ein Buch geschenkt bekommen haben 
+Der Mann bekommt von mir ein Buch geschenkt 
+Karl bekommt ein Buch geschenkt 
+Karl bekommt gesagt dass er intelligent ist 
+Karl ist geschlagen 
+Es ist genug gearbeitet 
+Dem Mann ist geholfen 
+Karl ist erholt 
+Hier wurde gestorben 
+Jetzt wird sich erholt 
+Hier wird sich von dir nicht gewaschen 
+dass der Wagen zu reparieren versucht wurde 
+dass der Wagen versucht wurde zu reparieren 
+Zu reparieren versucht wurde der Wagen 
+Den Wagen zu reparieren wurde versucht 
+dass den Wagen zu reparieren versucht wurde 
+Der Wagen wurde zu reparieren versucht 
+Den Wagen wurde zu reparieren versucht 
+Es ist der Wagen gestern zu reparieren versucht worden 
+dass den Wagen zu reparieren hat versucht werden muessen 
+Das Buch ist bis Montag zu lesen 
+Dem Mann ist zu helfen 
+Dem Mann scheint nicht zu helfen zu sein 
+Karl hat bis Montag das Buch zu lesen 
+Karl hat vor der Pruefung zu grauen 
+Karl hat dem Mann zu helfen 
+Ihm hat geholfen zu werden 
+Er hat nicht krank zu sein 
+Das Buch hat gelesen zu werden 
+Er hat das zu lesende Buch Karl gegeben 
+Sie hat ihn einen Luegner genannt 
+Er wurde ein Luegner genannt 
+Er behauptet ein Luegner genannt worden zu sein 
+Ich habe ihn als meinen Freund angesehen 
+Er wurde als mein Freund angesehen 
+weil er ihm ein luegner genannt zu werden half
+Wird geschlafen
+Ein Beamter schlaeft 
+Der Beamte schlaeft 
+Der kluge starke Mann schlaeft 
+Die kluge starke Frau schlaeft 
+Das kluge starke Kind schlaeft 
+Dem klugen starken Mann graut 
+Der klugen starken Frau graut 
+Dem klugen starken Kind graut 
+Den klugen starken Mann duerstet 
+Die kluge starke Frau duerstet 
+Das kluge starke Kind duerstet 
+Ein kluger starker Mann schlaeft 
+Eine kluge starke Frau schlaeft 
+Ein kluges starkes Kind schlaeft 
+Einem klugen starken Mann graut 
+Einer klugen starken Frau graut 
+Einem klugen starken Kind graut 
+Einen klugen starken Mann duerstet 
+Eine kluge starke Frau duerstet 
+Ein kluges starkes Kind duerstet 
+Karls kluger starker Mann schlaeft 
+Karls kluge starke Frau schlaeft 
+Karls kluges starkes Kind schlaeft 
+Karls klugem starkem Mann graut 
+Karls kluger starker Frau graut 
+Karls klugem starkem Kind graut 
+Karls klugen starken Mann duerstet 
+Karls kluge starke Frau duerstet 
+Karls kluges starkes Kind duerstet 
+Es wurde geschlafen 
+Es wurde das Buch Maria gegeben 
+Es lief Karl weg 
+Es regnet 
+Es scheint zu regnen 
+Es hat geregnet 
+Karl hoert den Mann weglaufen 
+Karl hoert den Mann sagen dass Maria schlaeft 
+Karl sieht den angeblichen grossen Bruder weglaufen 
+Ich habe es ihn zu kaufen gezwungen 
+Aicke behauptet dass es ihm sein Chef zu lesen versprochen hat 
+Karl hat es mir zu lesen versprochen 
+Karl darf das Buch zu kaufen nicht versuchen 
+Karl darf das Buch nicht zu kaufen versuchen 
+Ich glaube dass es Karl ihm zu geben versucht 
+Ich habe behauptet dass von Brigitte Bardot ein Bild gemalt wurde 
+Ich behaupte dass Max von Brigitte Bardot ein Bild malt 
+Gestern hat er von Brigitte Bardot ein schoenes Bild gemalt 
+Karl glaubt dass Max von der Frau ein Bild malt die er kennt 
+Karl glaubt dass Max von der Frau das Bild gemalt hat das er kennt 
+Ich habe behauptet dass von Maria Karls Bild gemalt wurde 
+Karl behauptet dass er von Maria dieses Bild geschenkt bekommen hat 
+Karl behauptet dass er von Maria ein Bild geschenkt bekommen hat 
+Karl ist auf das Buch gestern so stolz gewesen dass er es mir geben musste 
+Karl war auf das Buch stolz das er geschrieben hat 
+Karl ist auf das Buch gestern stolz gewesen das er geschrieben hat 
+Karl schlief gestern 
+Karl lief gestern weg 
+Karl behauptet dass John gestern weggelaufen ist 
+Der Mann wird morgen der Frau das Buch geben 
+Der Mann wird der Frau morgen das Buch geben 
+Der Mann wird der Frau das Buch morgen geben 
+Der vermeintliche neue Chef der gestern geschlafen hat hat es ihm zu lesen versprochen 
+Er hat gestern den Mann geschlagen 
+Er hat gestern die Frau oft geliebt 
+Karl kauft das Haus in Hamburg 
+Sie lief lachend weg 
+Die lachend weglaufende Frau ist schoen 
+Die lachend den Mann schlagende Frau ist intelligent 
+Die den Mann lachend schlagende Frau ist klug 
+Der in der Vorlesung ein Buch lesenden Frau graut vor der Pruefung 
+Ich schlafe eine Woche 
+Karl versucht nicht zu schlafen 
+Karl behauptet den Mann nicht zu betruegen 
+Karl behauptet den Mann nicht geschlagen zu haben 
+Karl darf nicht zu schlafen versuchen 
+Karl darf versuchen nicht zu schlafen 
+Karl darf nicht versuchen zu schlafen 
+Karl glaubt nicht schlafen zu duerfen 
+Karl hat nicht versucht Maria zu schlagen 
+Ich behaupte dass Karl nicht zu schlafen scheint 
+Der Mann hat nicht zu schlafen nicht versucht 
+Der Mann hat gestern nicht zu schlafen nicht versucht 
+Der Mann hat den Grammatiker nicht zu schlagen nicht versucht 
+Karl versuchte die Frau zu schlagen nicht 
+Max denkt ueber sich nach 
+Karl denkt darueber nach dass der Grammatiker den Satz untersucht 
+Karl denkt darueber dass der Grammatiker den Satz untersucht nach 
+Mir ist es aufgefallen dass der Mann die Frau schlug 
+Mir ist es aufgefallen dass der Mann seine Frau geschlagen hat 
+Es fiel einem Grammatiker auf der den Satz untersuchte dass der Satz grammatisch ist 
+Es fiel dem Grammatiker auf dass der Satz grammatisch ist der den Satz untersuchte 
+Es hat ein Grammatiker geglaubt der den Satz untersuchte dass der Satz grammatisch ist 
+Karl ist so intelligent den Grammatiker nicht zu schlagen 
+Maria ist so klug gewesen nicht in der Vorlesung zu schlafen die ich gehalten habe 
+Karl geniesst es dass Maria ihn liebt 
+Karl hat es genossen dass der Chef Maria nicht bevorzugte 
+Karl ist klug genug gewesen nicht in der Vorlesung zu schlafen 
+Karl geniesst es zu schlafen 
+Karl hat es genossen zu schlafen 
+Ich behaupte dass Karl wird schlafen duerfen 
+Ich behaupte dass Karl schlafen duerfen wird 
+Ich behaupte dass Karl das Buch wird lesen duerfen 
+Ich behaupte dass Karl ihm das Buch hat lesen helfen 
+Ich behaupte dass Karl ihm hat das Buch lesen helfen 
+Ich behaupte dass Karl ihm das Buch zu lesen geholfen hat 
+Ich behaupte dass Karl das Buch wird haben lesen duerfen 
+Ich behaupte dass Karl schlafen koennen darf 
+Das Buch hat Karl lesen duerfen 
+weil er nicht hat schlafen duerfen
+Karl wird das Buch haben lesen duerfen 
+Ich weiss dass ich Karl das Buch versprochen habe zu lesen 
+Ich weiss dass ich es Karl versprochen habe zu lesen 
+Ich glaube dass Karl es mir versprochen hat zu lesen 
+Ich habe dir versucht das Buch zu geben 
+Ich habe es versucht dem Mann zu geben 
+Ich habe das Buch versucht mehrmals zu lesen 
+Karl hat es mir nicht versprochen zu lesen 
+weil er das Buch nicht versucht zu lesen
+Lesen wird Karl das Buch 
+Das Buch lesen wird Karl 
+Lesen wird Karl das Buch duerfen 
+Das Buch lesen wird Karl duerfen 
+Lesen wird Karl das Buch morgen 
+Das Buch lesen wird Karl morgen 
+Lesen muessen wird Karl das Buch 
+Gelesen hat Karl das Buch 
+Das Buch gelesen hat Karl 
+Das Buch gegeben hat Karl der Frau 
+Der Frau gegeben hat Karl das Buch 
+Gelesen wird dieses Buch oft 
+Lesen wird er das Buch in der Vorlesung 
+Schoen ist Maria nicht 
+Gelesen wurde das Buch von John 
+Das Buch lesen muessen wird Karl 
+Treu sein wird Karl seiner Frau 
+Treu wird Karl seiner Frau sein 
+Treu ist Karl seiner Frau gewesen 
+Stolz sein wird Karl auf seine Frau 
+Stolz wird Karl auf seine Frau sein 
+Stolz wird Karl sein auf seine Frau 
+Stolz wird karl auf das Buch morgen sein 
+Stolz wird Karl darauf sein dass er das Buch gelesen hat 
+Stolz ist Karl darauf gewesen dass er das Buch gelesen hat 
+Das Buch lesen das ich ihm gegeben habe wird Karl duerfen 
+Lesen wird Karl das Buch duerfen das ich ihm gegeben habe 
+Fragen ob er das Buch gelesen hat wirst du ihn muessen 
+Fragen wirst du ihn muessen ob er das Buch gelesen hat 
+Den Chef fragen ob er das Buch gelesen hat wirst du muessen 
+Versucht zu lesen hat er das Buch 
+Da hat er drueber nachgedacht 
+Ich weiss dass er da nicht drueber nachdenkt 
+Ich weiss dass er darueber nicht nachdenkt 
+Da wurde nicht mit gerechnet 
+Wurde da nicht mit gerechnet
+Da hat Karl drin geschlafen 
+Ich weiss dass da Karl drin geschlafen hat 
+Nachdenken darf er da nicht drueber 
+Nachdenken darf er nicht darueber 
+Da nachdenken drueber darf er nicht 
+Karl hat ein spannendes Buch 
+Maria braucht einen neuen Mantel 
+Maria bekommt ihren neuen Mantel 
+Karl war in Berlin so stolz dass er schlafen konnte 
+Tut mir leid 
+Das Buch ist leicht zu lesen 
+ein leicht zu lesendes Buch
+Er glaubt dass das Buch leicht zu lesen ist 
+Er hilft ihr nackt 
+Er liest das Buch nackt 
+Er isst das Fleisch roh 
+Er gibt ihr das Buch nackt 
+Er hat ihr das Buch nackt gegeben 
+Er hat ihr nackt das Buch gegeben 
+Das Buch wurde ihr nackt gegeben 
+Das Buch wurde nackt gelesen 
+Das Fleisch wurde roh gegessen 
+Das Buch ist nackt zu lesen 
+Nackt hilft er ihr 
+Roh isst er das Fleisch 
+dass er den Mann nackt ihr helfen sieht
+dass er nackt den Mann ihr helfen sieht
+Er muss das Fleisch nackt essen 
+Er muss das Fleisch roh essen 
+Er erholt sich nackt 
+Er waescht sich nackt 
+Die schoene schlaeft 
+Der der dich liebt schlaeft 
+Das in Hamburg kenne ich 
+Die schoene aus Hamburg ist ihm aufgefallen 
+Die schoene die ich kenne schlaeft 
+Die lachende kenne ich 
+Er hilft ihr 
+Hilft er seiner Freundin
+Er hilft ihr schnell 
+Er hilft ihr oft 
+Hilft er ihr schnell
+Hilft er ihr oft
+Liess er ihr ihn helfen
+Er liess ihn ihr schnell helfen 
+Er liess ihn ihr oft helfen 
+Liess er ihn ihr schnell helfen
+Liess er ihn ihr oft helfen
+Der Vater liess seiner Freundin seinen Sohn helfen 
+Sie denkt dass er ihr hilft 
+Sie denkt dass er ihr schnell hilft 
+Sie denkt dass er ihr oft hilft 
+Sie denkt dass er ihr ihn helfen liess 
+Sie denkt dass er seiner Freundin seinen Sohn helfen liess 
+*Karl um faerbt die Jacke 
+*Karl umfaerbt die Jacke 
+*Karl glaubt Maria die Jacke um faerbt 
+*Um faerbt Karl die Jacke 
+*Es liebt der Mann 
+*Von wem das Bild hast du gemalt
+*Rad die fahrende Frau schlaeft 
+*Rad schlaeft die fahrende Frau 
+*Bus schlaeft die fahrende Frau 
+*Fahren wird Karl Rad 
+*Karl ist Rad gefahren 
+*Karl wird Rad fahren 
+*Karl versucht Rad zu fahren 
+*Karl ist busgefahren 
+*Karl wird busfahren 
+*Karl versucht buszufahren 
+*Die Bus gefahrene Frau schlaeft 
+*Damals wurden Karten gespielt 
+*Von Maria hat Karl Johns Bild gemalt 
+*Von Maria kenne ich Karls Bild 
+*Nicht schlaeft Karl 
+*Dieser Ansatz bringt ein Problem damit 
+*Sich erholt Karl 
+*Sich freut Karl ueber das Buch 
+*Mit sich bringt dieser Ansatz ein Problem 
+*Der Mann ich den Mantel gegeben habe dem schlaeft 
+*Der Mann ich den Mantel dem gegeben habe schlaeft 
+*Der Mann dem Maria liebt kuesst sie 
+*Der Mann dessen Frau treu ich bin schlaeft 
+*Die Frau der treu ich bin schlaeft 
+*Das Buch das lesend Maria einschlief war nicht spannend 
+*Der den ich kenne Mann schlaeft 
+*Dass der Mann das Kind kennt glaubt Karl das schlaeft 
+*Der Mann der die Frau geliebt hat ist gestorben die den General verachtet 
+*Wer schlaeft kenne ich 
+*Wen schlaeft kenne ich 
+*Schlaeft wer suendigt 
+*Ich habe ueber nachgedacht was ich kenne 
+*Dem Mann wird gesagt weil die Frau schlaeft 
+*Der Lehrling glaubt Karl dass ausgebildet wird 
+*Der Mann der behauptet hat schlaeft dass Maria stirbt 
+*Der Mann der schlaeft geht der weglief 
+*Der Lehrling ausgebildet wird glaubt Hans dass 
+*Es glaubt Hans regnet 
+*Der Lehrling glaubt Karl dass ausgebildet wird 
+*Karls Frau hat der Mann behauptet dass er gekuesst hat 
+*Der stolze auf seine Frau Mann schlaeft 
+*Der stolze Mann auf seine Frau schlaeft 
+*Stirbt die am Haus schlafende Frau oder am Kind
+*Schlaeft die ueber Karl nachdenkende Frau und ueber Maria
+*Hat die ueber Karl nachdenkende Frau geschlafen und ueber Maria
+*Der Mantel wird umgefaerbt worden sein werden 
+*Der Mantel wird umgefaerbt werden werden 
+*Karl wird den Mantel umfaerben werden 
+*Der Mann wird geliebt gehabt 
+*Er wurde kommen 
+*Da kenne ich ein mit spielendes Kind 
+*Ich ziehe vor Karl geht 
+*Es versucht zu regnen 
+*Ihn versucht zu duersten 
+*Ihm versucht vor der Pruefung zu grauen 
+*Er zwingt ihn vor der Pruefung zu grauen 
+*Die Frau ist mich liebend 
+*Der Mann hat gestorben 
+*Die Frau ist geschlafen 
+*Den Mantel ist Karl umgefaerbt 
+*Karl wird geschlafen 
+*John wird verlangt gluecklich zu sein 
+*Das Buch wird gehoert 
+*Dass Maria schlaeft wird aufgefallen 
+*Der geschlafene Mann stirbt 
+*Der geholfene Mann schlaeft 
+*Mich wird geholfen 
+*Mir wird gehoert 
+*Mir werde geholfen 
+*Heute wurde geregnet 
+*Mir wird geschlagen 
+*Mir werde geschlagen 
+*Das Buch ist Max geschenkt bekommen worden 
+*Ein Buch wird geschenkt bekommen 
+*Er ist ein Buch geschenkt bekommen 
+*Ich bekomme aufgefallen 
+*Ich bekomme von Maria aufgefallen 
+*Karl bekommt ein Buch geschenkt bekommen 
+*Ist heute geregnet
+*Ich bin geholfen 
+*Hier wird dich nicht gewaschen 
+*Hier wird dich von dir nicht gewaschen 
+*Jetzt wird dich erholt 
+*Zu reparieren versucht wurde den Wagen 
+*dass den Wagen hat zu reparieren versprochen werden muessen 
+*dass ihm nicht geholfen zu werden ist
+*Das Buch wird zu lesen gehabt 
+*Ich sehe ihn als mein Freund an 
+*Er wird als meinen Freund angesehen 
+*weil er ihm einen luegner genannt zu werden half
+*Der Mann dem ich den Mantel gegeben hat schlaeft 
+*Die Frau der Karl liebt kuesst ihn 
+*Welches schoenes Buch schreibt Karl
+*Karl gibt sein spannende Buch Anna 
+*Werde geschlafen
+*Geschlafen werde 
+*Mir wirst geholfen 
+*Einem Mann geholfen wirst 
+*Mir haben vor der Pruefung gegraut 
+*Maria bin dumm gewesen 
+*Der Beamter schlaeft 
+*Ein Beamte schlaeft 
+*Es regnet es 
+*weil der Mann weglaufen gesehen wird
+*weil den Mann weglaufen gesehen wird
+*Karl glaubt dass ein Bild Max von Maria malt 
+*Schlafen werde ich in die Vorlesung 
+*Schlafen werde ich in die Vorlesung am Haus 
+*Naechsten Wochen komme ich 
+*Ich schlafe einer Woche 
+*Karl behauptet dass der Mann schien zu schlafen 
+*Karl faellt es dass Maria schlaeft auf 
+*Dass Maria schlaeft faellt es Karl auf 
+*Es dass Maria schlaeft faellt Karl auf 
+*Es zu schlafen geniesst Karl 
+*Zu schlafen geniesst es Karl 
+*Karl hat es zu schlafen genossen 
+*Es geniesst Karl zu schlafen 
+*Karl war so in Berlin stolz dass er schlafen konnte 
+*Das Buch denke ich darueber nach ihm zu geben 
+*Ich habe ueber es nachgedacht dieses Buch zu kaufen 
+*Er behauptet worden betrogen zu sein 
+*Hans glaubt dass Maria ist gestorben 
+*Hans glaubt dass Maria wird geliebt 
+*dass karl den wagen hat versucht zu reparieren
+*weil Karl das Buch scheint zu lesen
+*An faengt es zu regnen 
+*An faengt er zu schlafen 
+*Zu schlafen an faengt Karl 
+*Zu regnen an faengt es 
+*Karl war so in Berlin stolz dass er nicht schlafen konnte 
+*Regnet 
+*Habe ich drin geschlafen 
+*Habe ich geschlafen 
+*Habe ich ein Bild gesehen 
+*ein leichtes Buch zu lesen
+*ein leichtes zu lesen Buch
+*ein zu lesen leichtes Buch
+*Er glaubt dass das Buch leicht ist zu lesen 
+*Der General befoerdert Karl von dem Leutnant zu dem Hauptmann 
+*Vom Leutnant befoerdert zum Hauptmann der General Karl 
+*Der General befoerdert vom Leutnant Karl zum Hauptmann 
+*Der General befoerdert Karl Hauptmann zum 
+*Wird Karl befoerdert vom Leutnant zum Hauptmann
+*Vom Leutnant wird Karl befoerdert zum Hauptmann 
+*Der General befoerdert Karl um 
+*Mann der liebt sie 
+*Die Frau schoene schlaeft 
+*Der der schlaeft Mann liebt Maria 
+*Er geben das Buch ihr 
+*Der Mann geben das Buch ihr 
+*Hauptmann befoerdert der General Karl zum 
+*Der Mann hat ihm das Buch gegeben gehabt 
+*Hat der Mann ihm das Buch gegeben gehabt
+*Karl glaubt eine Tatsache dass Maria schlaeft 
+*Karl befoerdert der General den Mann 
+*Maria ist Junggeselle 
+*Karl wird von einem General vom Hauptmann zum Leutnant befoerdert 
+*Karl liebt Maria der den General verachtet 
+*Um die Frau zu lieben schlafe ich die ich kenne 
+*Es ist es mir aufgefallen dass Maria schlaeft 
+*Den Mann sagt dass Maria schlaeft 
+*Darf das Buch Karl zu kaufen nicht versuchen
+*Ich glaube dass die Frau den Mann zu lieben nicht scheint 
+*Den Mann hat die Frau zu schlagen gestern versucht 
+*Der der Mann geliebte Mann schlaeft 
+*dass die Mittel zu in ihrer Groessenordnung gering sind
+*Den Mann schlaeft die lieben wollende Frau 
+*Schoene schlaeft die Frau 
+*Ein Lied kam Karl singend herein 
+*Karl ist sehr ein Student 
+*Karl ist als der Vorlesung 
+*Karl ist als die Vorlesung 
+*Die Wolke reicht nicht um zu regnen 
+*Es ist zu heiss um gearbeitet zu werden 
+*Ich sah gearbeitet werden 
+*Der Manager wohnt nach Berlin 
+*Der Manager wohnt von Berlin 
+*Der Manager wohnt von Berlin 
+

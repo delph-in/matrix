@@ -7,6 +7,10 @@ from gmcs.linglib import case
 #PART-FORM also for adp when circumpositions
 #KEY-PART no form intro for circumpositions
 
+
+particles = ['vor','voor','in','um','nach','aus','rad','weg']
+
+
 # Returns the verb type for lexical/main verbs.
 def main_or_verb(ch):
   if ch.get('has-aux') == 'yes':
@@ -49,6 +53,9 @@ def create_subcategorization_values(ch, mylang, climb_verbs):
                 [ LOCAL.CAT.HEAD ' + head + ' ].')
       climb_verbs.add(name + ' := synsem & \
                 [ LOCAL.CAT.HEAD ' + head + ' ].')
+      if not ch.get('phrasal-bug') == 'on':
+        mylang.add('phr-' + name + ' := phr-synsem-min & ' + name + '.')
+        climb_verbs.add('phr-' + name + ' := phr-synsem-min & ' + name + '.')
       synsem_ts.append(name)
       if head == 'comp':
         mylang.add(name + ' := [ LOCAL.CONT.HOOK.INDEX.SF prop-or-ques ].')
@@ -960,7 +967,7 @@ def create_relevant_types(mylang, climb_verbs, sbj_cps, c, fa, cn):
 def create_subcat_total_list(ch):
   sc_list = []
   if ch.get('subcat_list') == 'tiger-complete':
-    sc_list = [ 'comp-adp-zuinf', 'expl-dat-zuinf', 'comp-adp-zuinf-part', 'nom-acc-adp-comp', 'comp-dat-zuinf' , 'expl-acc' , 'comp-dat-comp', 'nom' , 'nom-acc' , 'nom-acc-dat' , 'nom-acc-inf', 'nom-adj' , 'nom-nom' , 'nom-refl-adp' , 'nom-acc-part' , 'nom-comp' , 'nom-sent' , 'nom-wh' , 'nom-zuinf' , 'nom-dat-zuinf' , 'nom-refl' , 'nom-part' , 'nom-refl-part' , 'nom-acc-dat-part' , 'nom-dat-part' , 'nom-refl-dat-part' , 'nom-refl-acc' , 'nom-dat' , 'comp-adp-part' , 'comp-acc-part' , 'comp-part' , 'nom-zuinf-part' , 'nom-adp', 'nom-refl-acc-part' , 'nom-comp-part' , 'expl-part' , 'nom-acc-adp' , 'nom-refl-dat' , 'nom-dat-zuinf-part' , 'nom-sent-part' , 'comp-comp-part' , 'nom-acc-zuinf' , 'nom-refl-sent-part' , 'nom-acc-zuinf-part' , 'nom-acc-gen-part' , 'nom-gen-part' , 'expl-adp-part' , 'expl-dat-part' , 'comp-acc-dat-part' , 'comp-dat-part' , 'comp-refl-acc-part' , 'comp-sent-part' , 'comp-refl-gen-part' , 'nom-refl-gen-part' , 'comp-acc' , 'nom-acc-sent-part' , 'nom-dat-comp-part' , 'nom-adp-sent' , 'nom-adp-zuinf' , 'nom-dat-sent-part' , 'expl-acc-part' , 'expl-acc-adp-part' , 'comp' , 'comp-zuinf-part' , 'comp-acc-adp-part' , 'comp-refl-adp-part' , 'comp-refl-part' , 'nom-acc-comp' , 'comp-comp' , 'comp-zuinf' , 'comp-acc-dat' , 'comp-dat-sent' , 'comp-sent' , 'nom-dat-sent' , 'nom-acc-gen' , 'nom-refl-gen' , 'expl-dat' , 'expl-gen' , 'nom-gen' , 'nom-acc-sent' , 'comp-acc-adp' , 'comp-acc-sent' , 'comp-refl-adp' , 'comp-refl' , 'expl' , 'expl-comp' , 'expl-zuinf' , 'expl-refl' , 'expl-sent' , 'comp-adp-zuinf-part' , 'nom-adp-zuinf-part' , 'comp-dat' , 'nom-refl-comp' , 'nom-refl-sent' , 'nom-acc-adp-sent' , 'nom-acc-dat-adp' , 'nom-dat-adp' , 'comp-adp' , 'nom-dat-comp' , 'expl-acc-adp' , 'expl-acc-dat' , 'expl-acc-sent' , 'expl-adp' , 'expl-dat-adp' , 'nom-refl-comp-part' , 'comp-dat-zuinf-part' , 'comp-refl-comp' , 'comp-refl-sent' , 'nom-adp-comp' , 'comp-adp-comp' , 'dat-comp' , 'comp-refl-acc' , 'dat-zuinf' , 'expl-adp-comp' , 'expl-adp-sent' , 'expl-refl-acc' , 'expl-refl-acc-adp' , 'nom-refl-acc-adp' , 'comp-refl-comp-part' , 'comp-refl-sent-part' , 'expl-acc-gen' , 'dat-zuinf' , 'expl-refl-adp' , 'comp-dat-comp-part' , 'comp-dat-adp' , 'comp-acc-dat-zuinf' , 'comp-refl-acc-sent' , 'expl-acc-dat-zuinf' , 'expl-dat-comp' , 'expl-refl-acc-sent' , 'nom-acc-dat-zuinf' , 'nom-refl-acc-sent' , 'comp-dat-sent-part' , 'comp-refl-dat' , 'comp-acc-comp' , 'comp-adp-sent' , 'comp-acc-zuinf' , 'expl-acc-zuinf' , 'comp-gen' , 'comp-refl-gen' , 'expl-acc-dat-sent' , 'nom-acc-dat-sent' , 'nom-refl-adp-sent' , 'nom-acc-adp-part' , 'nom-adp-part' , 'nom-refl-adp-part' , 'nom-wh-part' , 'nom-refl-wh-part' , 'nom-dat-wh-part' , 'nom-acc-wh', 'comp-wh' , 'nom-adp-wh' , 'comp-acc-wh' , 'comp-dat-wh' , 'nom-dat-wh' , 'comp-refl-wh-part' , 'comp-wh-part' , 'nom-refl-wh' , 'expl-wh' , 'expl-acc-wh' , 'comp-dat-wh-part' , 'comp-refl-wh' , 'comp-adj' , 'comp-adj-acc' , 'comp-nom' , 'comp-nom-acc' , 'expl-adj' , 'expl-adj-acc' , 'expl-nom' , 'expl-nom-acc' , 'nom-adj-acc' , 'nom-nom-acc' , 'nom-adj-part' , 'nom-nom-part' , 'comp-refl-adj-acc' , 'comp-refl-nom-acc' , 'expl-refl-adj-acc' , 'expl-refl-nom-acc' , 'nom-refl-adj-acc' , 'nom-refl-nom-acc' , 'comp-adj-comp' , 'comp-adj-dat' , 'comp-adj-sent' , 'comp-nom-comp' , 'comp-nom-dat' , 'comp-nom-sent' , 'comp-refl-adj' , 'comp-refl-nom' , 'expl-adj-comp' , 'expl-adj-dat' , 'expl-adj-sent' , 'expl-nom-comp' , 'expl-nom-dat' , 'expl-nom-sent' , 'expl-refl-adj' , 'expl-refl-nom' , 'nom-adj-comp' , 'nom-adj-dat' , 'nom-adj-sent' , 'nom-nom-comp' , 'nom-nom-dat' , 'nom-nom-sent' , 'nom-refl-adj' , 'nom-refl-nom']
+    sc_list = [ 'comp-adp-zuinf', 'dat-adp','expl-dat-zuinf', 'expl-dat-comp-part', 'comp-adp-zuinf-part', 'nom-acc-adp-comp', 'comp-dat-zuinf' , 'expl-acc' , 'comp-dat-comp', 'nom' , 'nom-acc' , 'nom-acc-dat' , 'nom-acc-inf', 'nom-adj' , 'nom-nom' , 'nom-refl-adp' , 'nom-acc-part' , 'nom-comp' , 'nom-sent' , 'nom-wh' , 'nom-zuinf' , 'nom-dat-zuinf' , 'nom-refl' , 'nom-part' , 'nom-refl-part' , 'nom-acc-dat-part' , 'nom-dat-part' , 'nom-refl-dat-part' , 'nom-refl-acc' , 'nom-dat' , 'comp-adp-part' , 'comp-acc-part' , 'comp-part' , 'nom-zuinf-part' , 'nom-adp', 'nom-refl-acc-part' , 'nom-comp-part' , 'expl-part' , 'nom-acc-adp' , 'nom-refl-dat' , 'nom-dat-zuinf-part' , 'nom-sent-part' , 'comp-comp-part' , 'nom-acc-zuinf' , 'nom-refl-sent-part' , 'nom-acc-zuinf-part' , 'nom-acc-gen-part' , 'nom-gen-part' , 'expl-adp-part' , 'expl-dat-part' , 'comp-acc-dat-part' , 'comp-dat-part' , 'comp-refl-acc-part' , 'comp-sent-part' , 'comp-refl-gen-part' , 'nom-refl-gen-part' , 'comp-acc' , 'nom-acc-sent-part' , 'nom-dat-comp-part' , 'nom-adp-sent' , 'nom-adp-zuinf' , 'nom-dat-sent-part' , 'expl-acc-part' , 'expl-acc-adp-part' , 'comp' , 'comp-zuinf-part' , 'comp-acc-adp-part' , 'comp-refl-adp-part' , 'comp-refl-part' , 'nom-acc-comp' , 'comp-comp' , 'comp-zuinf' , 'comp-acc-dat' , 'comp-dat-sent' , 'comp-sent' , 'nom-dat-sent' , 'nom-acc-gen' , 'nom-refl-gen' , 'expl-dat' , 'expl-gen' , 'nom-gen' , 'nom-acc-sent' , 'comp-acc-adp' , 'comp-acc-sent' , 'comp-refl-adp' , 'comp-refl' , 'expl' , 'expl-comp' , 'expl-zuinf' , 'expl-refl' , 'expl-sent' , 'comp-adp-zuinf-part' , 'nom-adp-zuinf-part' , 'comp-dat' , 'nom-refl-comp' , 'nom-refl-sent' , 'nom-acc-adp-sent' , 'nom-acc-dat-adp' , 'nom-dat-adp' , 'comp-adp' , 'nom-dat-comp' , 'expl-acc-adp' , 'expl-acc-dat' , 'expl-acc-sent' , 'expl-adp' , 'expl-dat-adp' , 'nom-refl-comp-part' , 'comp-dat-zuinf-part' , 'comp-refl-comp' , 'comp-refl-sent' , 'nom-adp-comp' , 'comp-adp-comp' , 'dat-comp' , 'comp-refl-acc' , 'dat-zuinf' , 'expl-adp-comp' , 'expl-adp-sent' , 'expl-refl-acc' , 'expl-refl-acc-adp' , 'nom-refl-acc-adp' , 'comp-refl-comp-part' , 'comp-refl-sent-part' , 'expl-acc-gen' , 'dat-zuinf' , 'expl-refl-adp' , 'comp-dat-comp-part' , 'comp-dat-adp' , 'comp-acc-dat-zuinf' , 'comp-refl-acc-sent' , 'expl-acc-dat-zuinf' , 'expl-dat-comp' , 'expl-refl-acc-sent' , 'nom-acc-dat-zuinf' , 'nom-refl-acc-sent' , 'comp-dat-sent-part' , 'comp-refl-dat' , 'comp-acc-comp' , 'comp-adp-sent' , 'comp-acc-zuinf' , 'expl-acc-zuinf' , 'comp-gen' , 'comp-refl-gen' , 'expl-acc-dat-sent' , 'nom-acc-dat-sent' , 'nom-refl-adp-sent' , 'nom-acc-adp-part' , 'nom-adp-part' , 'nom-refl-adp-part' , 'nom-wh-part' , 'nom-refl-wh-part' , 'nom-dat-wh-part' , 'nom-acc-wh', 'comp-wh' , 'nom-adp-wh' , 'comp-acc-wh' , 'comp-dat-wh' , 'nom-dat-wh' , 'comp-refl-wh-part' , 'comp-wh-part' , 'nom-refl-wh' , 'expl-wh' , 'expl-acc-wh' , 'comp-dat-wh-part' , 'comp-refl-wh' , 'comp-adj' , 'comp-adj-acc' , 'comp-nom' , 'comp-nom-acc' , 'expl-adj' , 'expl-adj-acc' , 'expl-nom' , 'expl-nom-acc' , 'nom-adj-acc' , 'nom-nom-acc' , 'nom-adj-part' , 'nom-nom-part' , 'comp-refl-adj-acc' , 'comp-refl-nom-acc' , 'expl-refl-adj-acc' , 'expl-refl-nom-acc' , 'nom-refl-adj-acc' , 'nom-refl-nom-acc' , 'comp-adj-comp' , 'comp-adj-dat' , 'comp-adj-sent' , 'comp-nom-comp' , 'comp-nom-dat' , 'comp-nom-sent' , 'comp-refl-adj' , 'comp-refl-nom' , 'expl-adj-comp' , 'expl-adj-dat' , 'expl-adj-sent' , 'expl-nom-comp' , 'expl-nom-dat' , 'expl-nom-sent' , 'expl-refl-adj' , 'expl-refl-nom' , 'nom-adj-comp' , 'nom-adj-dat' , 'nom-adj-sent' , 'nom-nom-comp' , 'nom-nom-dat' , 'nom-nom-sent' , 'nom-refl-adj' , 'nom-refl-nom']
 
   return sc_list
 
@@ -968,7 +975,7 @@ def create_subcat_total_list(ch):
 def create_subcat_with_opt_list(ch):
   sc_list = []
   if ch.get('subcat_list') == 'tiger-complete':
-    sc_list = ['expl-acc','nom-acc-inf','nom-acc','nom-opt_adp', 'nom-adp', 'nom-adp-part', 'nom-opt_acc' , 'nom-opt_refl-opt_gen', 'nom-refl-opt_gen', 'nom-refl', 'nom-opt_refl', 'nom-acc-opt_dat', 'nom-opt_refl-acc', 'nom-opt_acc-adp', 'nom-opt_acc-opt_adp', 'nom-opt_acc-opt_sent', 'nom-opt_refl-adp', 'nom-opt_refl-opt_nom', 'nom-opt_refl-opt_nom-acc', 'nom-opt_refl-opt_adp', 'nom-refl-opt_adp', 'nom-opt_refl-opt_sent', 'nom-refl-opt_sent', 'expl-opt_adp', 'nom-opt_acc-part', 'nom-opt_adp-part', 'nom-opt_refl-adp-part', 'nom-opt_refl-opt_adp-part', 'nom-refl-opt_adp-part', 'nom-opt_refl-part', 'nom-opt_zuinf', 'expl-opt_acc', 'expl-opt_dat', 'nom-opt_dat', 'nom-opt_sent', 'nom-acc-opt_adp', 'nom-adp-opt_comp', 'nom-opt_adp-comp', 'nom-opt_adp-opt_comp', 'nom-adp-opt_wh', 'nom-opt_adp-opt_wh', 'nom-opt_adp-wh', 'nom-opt_comp', 'nom-opt_wh', 'expl-acc-opt_dat', 'expl-opt_acc-dat', 'expl-opt_acc-opt_dat', 'expl-acc-opt_sent', 'expl-opt_acc-opt_sent', 'nom-opt_acc-dat', 'nom-opt_acc-opt_dat', 'nom-acc-opt_sent', 'expl-acc-opt_adp', 'expl-opt_acc-adp', 'expl-opt_acc-opt_adp', 'expl-adp-opt_comp', 'expl-opt_adp-comp', 'expl-opt_adp-opt_comp', 'expl-adp-opt_sent', 'expl-opt_adp-opt_sent', 'expl-opt_adp-sent', 'expl-opt_comp', 'expl-opt_refl-acc-adp', 'expl-opt_refl-acc-opt_adp', 'expl-opt_refl-opt_acc-adp', 'expl-opt_refl-opt_acc-opt_adp', 'expl-refl-acc-opt_adp', 'expl-refl-opt_acc-opt_adp', 'expl-opt_refl-acc', 'expl-opt_refl-opt_acc','expl-refl-opt_acc', 'expl-opt_refl', 'expl-opt_sent','expl-opt_zuinf','nom-opt_refl-acc-adp','nom-opt_refl-acc-opt_adp', 'nom-opt_refl-opt_acc-adp', 'nom-opt_refl-opt_acc-opt_adp', 'nom-refl-acc-opt_adp','nom-refl-opt_acc-opt_adp','nom-opt_refl-opt_acc', 'nom-refl-opt_acc','nom-opt_dat-part','nom-dat-opt_sent', 'nom-opt_dat-opt_sent', 'comp-comp-part','comp-opt_comp','comp-opt_comp-part','comp-opt_refl-opt_gen-part','comp-opt_sent-part','opt_nom-comp-part', 'nom-opt_comp-part', 'nom-opt_refl-opt_gen-part','nom-opt_sent-part', 'comp-opt_acc', 'comp-opt_acc-part', 'comp-opt_dat', 'comp-opt_dat-opt_comp', 'comp-opt_dat-opt_comp-part', 'comp-acc-opt_dat', 'comp-opt_refl-opt_comp', 'comp-opt_acc-opt_comp', 'comp-acc-opt_comp', 'comp-opt_acc-opt_dat', 'comp-comp','comp-opt_refl','comp-opt_sent','opt_nom-comp', 'nom-acc-opt_dat-part', 'nom-opt_acc-opt_dat-part', 'nom-dat-opt_zuinf', 'nom-opt_dat-opt_zuinf', 'nom-opt_dat-zuinf', 'comp-opt_wh', 'nom-opt_acc-dat-part', 'nom-dat-opt_comp-part', 'nom-opt_adj', 'nom-nom', 'nom-refl-opt_acc-part','nom-refl-opt_dat','nom-acc-opt_zuinf','nom-opt_acc-opt_zuinf','nom-opt_acc-zuinf','nom-adp-opt_zuinf','nom-opt_adp-opt_zuinf','nom-opt_adp-zuinf','nom-opt_refl-dat-part', 'comp-acc-opt_sent', 'comp-opt_acc-opt_sent', 'comp-opt_zuinf', 'opt_expl-comp', 'expl-opt_refl-adp', 'expl-opt_refl-opt_adp', 'expl-refl-opt_adp', 'nom-acc-opt_sent-part', 'nom-opt_acc-sent-part', 'nom-acc-opt_gen', 'nom-opt_adj-acc', 'nom-opt_adj-opt_acc', 'nom-nom-acc', 'nom-nom-opt_acc', 'comp-acc-opt_adp','comp-opt_acc-adp','comp-opt_acc-opt_adp', 'comp-opt_adp', 'nom-acc-opt_adp-part', 'nom-opt_acc-adp-part', 'nom-opt_acc-opt_adp-part', 'comp-adj-opt_dat', 'comp-opt_adj-dat', 'comp-opt_adj-opt_dat', 'comp-opt_adj', 'comp-opt_nom-dat', 'comp-opt_nom-opt_dat', 'comp-nom-opt_dat', 'opt_comp-nom-dat', 'opt_comp-nom-opt_dat', 'comp-opt_nom', 'opt_comp-nom','comp-opt_refl-adj', 'comp-opt_refl-opt_adj', 'comp-opt_refl-opt_nom', 'comp-opt_refl-nom', 'opt_comp-opt_refl-nom', 'expl-adj-opt_dat', 'expl-opt_adj-dat', 'expl-opt_adj-opt_dat', 'expl-opt_adj', 'expl-opt_nom-dat', 'expl-opt_nom-opt_dat', 'expl-nom-opt_dat', 'opt_expl-nom-dat','opt_expl-nom-opt_dat','expl-opt_nom','opt_expl-nom','expl-opt_refl-adj','expl-opt_refl-opt_adj','expl-opt_refl-opt_nom','expl-opt_refl-nom','opt_expl-opt_refl-nom','nom-adj-opt_dat','nom-opt_adj-dat','nom-opt_adj-opt_dat', 'nom-nom-dat','nom-nom-opt_dat','nom-opt_refl-adj','nom-opt_refl-opt_adj', 'nom-opt_refl-nom','comp-acc-opt_zuinf','comp-opt_acc-opt_zuinf','comp-opt_acc-zuinf','comp-opt_dat-comp','comp-dat-comp','comp-opt_dat-opt_zuinf','comp-dat-opt_zuinf','comp-opt_dat-zuinf','expl-acc-opt_zuinf','expl-opt_acc-opt_zuinf','expl-opt_acc-zuinf', 'opt_expl-opt_dat-comp','opt_expl-dat-comp','expl-opt_dat-comp','expl-dat-opt_comp','expl-opt_dat-opt_comp','expl-dat-opt_zuinf','expl-opt_dat-opt_zuinf','expl-opt_dat-zuinf','opt_nom-opt_dat-comp','opt_nom-dat-comp','nom-opt_dat-comp','nom-dat-opt_comp','nom-opt_dat-opt_comp','nom-opt_dat-adp','nom-opt_dat-opt_adp','nom-opt_dat-sent','nom-opt_dat-opt_wh','nom-opt_dat-wh','comp-opt_acc-dat','comp-adp-opt_sent','comp-opt_adp-opt_sent','comp-opt_adp-sent','opt_nom-adp-comp','opt_nom-opt_adp-comp','nom-opt_acc-sent','nom-opt_refl-acc-part', 'nom-opt_zuinf-part','comp-opt_adp-comp','comp-opt_refl-opt_sent','comp-refl-opt_sent','comp-opt_refl-sent','nom-opt_refl-sent','nom-opt_adj-part','nom-nom-part','nom-opt_dat-opt_wh-part','nom-opt_dat-wh-part','nom-opt_wh-part','nom-acc-opt_comp', 'nom-opt_acc-opt_comp','expl-opt_dat-adp','expl-dat-opt_adp','expl-opt_dat-opt_adp','nom-dat-opt_adp','nom-acc-opt_zuinf-part','nom-opt_acc-opt_zuinf-part','nom-opt_acc-zuinf-part','nom-refl-opt_comp','comp-acc-opt_dat-part', 'comp-opt_acc-opt_dat-part','comp-opt_dat-comp-part','comp-opt_dat-opt_sent-part','comp-opt_dat-sent','comp-opt_dat-sent-part','opt_nom-opt_dat-comp-part','nom-opt_dat-comp-part','nom-opt_dat-opt_comp-part','nom-opt_dat-opt_sent-part', 'nom-opt_dat-sent-part', 'nom-dat-opt_sent-part', 'nom-dat-opt_zuinf-part', 'comp-opt_acc-dat-part', 'comp-opt_dat-part', 'comp-opt_dat-opt_zuinf-part', 'comp-dat-opt_zuinf-part', 'comp-opt_dat-zuinf-part', 'comp-opt_zuinf-part', 'nom-opt_dat-opt_zuinf-part', 'nom-opt_dat-zuinf-part','comp-refl-comp-part', 'opt_nom-refl-comp-part', 'nom-refl-opt_comp-part', 'comp-refl-opt_adp-part', 'expl-opt_acc-sent', 'expl-opt_wh', 'comp-opt_adj-acc', 'comp-adj-opt_acc', 'comp-opt_adj-opt_acc', 'comp-opt_nom-acc','comp-opt_nom-opt_acc','comp-nom-opt_acc','opt_comp-nom-acc','opt_comp-nom-opt_acc','expl-opt_adj-acc','expl-adj-opt_acc','expl-opt_adj-opt_acc','expl-opt_nom-acc','expl-opt_nom-opt_acc','expl-nom-opt_acc','opt_expl-nom-acc','opt_expl-nom-opt_acc','nom-adj-opt_acc','comp-opt_acc-sent','nom-opt_refl-opt_dat','expl-opt_adp-part','expl-opt_dat-part','nom-opt_refl-opt_acc-part','nom-opt_refl-comp','nom-opt_refl-opt_comp','nom-acc-opt_dat-adp','nom-acc-opt_dat-opt_adp','nom-opt_acc-opt_dat-adp','nom-opt_acc-dat-adp','nom-opt_acc-dat-opt_adp','nom-opt_acc-opt_dat-opt_adp','comp-opt_refl-dat', 'nom-opt_refl-dat','comp-opt_adp-part','expl-opt_acc-adp-part','expl-opt_acc-opt_adp-part','nom-opt_gen','comp-opt_refl-opt_adp','comp-refl-opt_adp','nom-opt_refl-comp-part','nom-opt_refl-opt_comp-part','nom-refl-adp-opt_sent', 'nom-refl-opt_adp-opt_sent','nom-refl-opt_dat-part', 'comp-acc-comp', 'comp-opt_acc-comp', 'comp-opt_refl-adp','comp-opt_refl-comp', 'opt_nom-acc-comp', 'opt_nom-opt_acc-comp', 'nom-opt_acc-comp','opt_nom-opt_refl-comp', 'nom-acc-opt_wh','nom-opt_acc-opt_wh','nom-opt_acc-wh','nom-opt_refl-opt_wh', 'nom-refl-opt_wh', 'nom-opt_refl-wh', 'comp-opt_refl-acc-part', 'comp-opt_refl-opt_acc-part', 'comp-opt_dat-adp', 'comp-dat-opt_adp', 'comp-dat-opt_comp', 'comp-opt_dat-opt_adp', 'expl-acc-dat-opt_sent', 'expl-acc-opt_dat-opt_sent', 'nom-acc-dat-opt_sent', 'nom-acc-opt_dat-opt_sent','comp-opt_refl-part','nom-acc-opt_adp-opt_comp','nom-opt_acc-opt_adp-opt_comp', 'comp-opt_dat-opt_wh', 'comp-opt_dat-wh','comp-opt_refl-acc','comp-opt_refl-opt_acc','comp-refl-opt_acc','expl-acc-opt_gen','expl-opt_acc-opt_gen','nom-opt_acc-opt_gen', 'comp-adj-comp', 'comp-opt_adj-comp', 'comp-adj-opt_sent', 'comp-opt_adj-opt_sent', 'comp-opt_adj-sent','comp-opt_gen', 'comp-opt_nom-comp','comp-nom-comp','opt_comp-nom-opt_comp','comp-opt_nom-opt_sent','comp-nom-opt_sent', 'comp-opt_nom-sent', 'opt_comp-nom-opt_sent','opt_comp-nom-sent','comp-refl-opt_adj','comp-refl-opt_nom','opt_comp-refl-nom','opt_expl-adj-comp','opt_expl-opt_adj-comp','expl-adj-opt_comp','expl-opt_adj-comp','expl-opt_adj-opt_comp', 'expl-adj-opt_sent', 'expl-opt_adj-opt_sent','expl-opt_adj-sent', 'expl-opt_gen', 'opt_expl-opt_nom-comp', 'opt_expl-nom-comp','expl-opt_nom-comp', 'expl-opt_nom-opt_comp','expl-nom-opt_comp', 'opt_expl-nom-opt_comp','expl-opt_nom-opt_sent','expl-nom-opt_sent','expl-opt_nom-sent','opt_expl-nom-opt_sent','opt_expl-nom-sent','expl-refl-opt_adj','expl-refl-opt_nom','opt_expl-refl-nom','opt_nom-adj-comp','opt_nom-opt_adj-comp','nom-opt_adj-comp','nom-adj-opt_comp','nom-opt_adj-opt_comp','nom-adj-opt_sent','nom-opt_adj-opt_sent','nom-opt_adj-sent','opt_nom-opt_nom-comp','nom-opt_nom','nom-opt_nom-part','nom-opt_nom-sent','nom-opt_nom-opt_comp','nom-opt_nom-opt_acc','nom-opt_nom-opt_dat','nom-nom-comp','nom-nom-opt_comp','nom-nom-opt_sent','nom-nom-sent','nom-refl-opt_adj','nom-refl-nom','comp-acc-opt_adp-part','comp-opt_acc-adp-part','comp-opt_acc-opt_adp-part','comp-opt_refl-adp-part','comp-opt_refl-opt_adp-part','comp-adp-opt_zuinf-part','comp-opt_adp-opt_zuinf','comp-opt_adp-opt_zuinf-part','nom-adp-opt_zuinf-part','nom-opt_adp-opt_zuinf-part','nom-opt_refl-opt_dat-part','nom-opt_acc-gen','nom-opt_refl-opt_sent-part','nom-refl-opt_sent-part', 'nom-opt_refl-opt_wh-part', 'nom-refl-opt_wh-part','comp-opt_refl-opt_dat','expl-opt_acc-gen','nom-acc-opt_gen-part','nom-opt_acc-gen-part','nom-opt_acc-opt_gen-part','nom-opt_gen-part','expl-opt_acc-part','comp-opt_refl-comp-part','comp-opt_refl-opt_sent-part','comp-refl-opt_sent-part','comp-opt_refl-opt_wh-part','comp-refl-opt_wh-part','comp-opt_refl-wh','comp-opt_refl-wh-part','comp-opt_wh-part','opt_nom-opt_refl-comp-part','nom-opt_refl-wh-part','expl-acc-opt_wh','expl-opt_acc-opt_wh','nom-opt_acc-opt_sent-part','nom-opt_refl-gen','comp-dat-opt_sent-part','comp-acc-opt_wh','comp-opt_acc-opt_wh','comp-opt_acc-wh','comp-refl-comp','opt_nom-refl-comp', 'comp-acc-dat-opt_zuinf', 'comp-acc-opt_dat-opt_zuinf','comp-opt_acc-opt_dat-opt_zuinf', 'comp-opt_acc-dat-opt_zuinf', 'comp-opt_acc-opt_dat-zuinf', 'comp-opt_refl-acc-opt_sent', 'comp-opt_refl-opt_acc-opt_sent', 'comp-refl-acc-opt_sent', 'comp-refl-opt_acc-opt_sent', 'comp-refl-opt_comp', 'comp-refl-opt_comp-part', 'comp-opt_refl-opt_acc-sent', 'comp-opt_refl-opt_adj-acc','comp-opt_refl-adj-acc','comp-opt_refl-opt_adj-opt_acc','comp-refl-opt_adj-acc','comp-refl-opt_adj-opt_acc','comp-opt_refl-opt_nom-acc','comp-opt_refl-opt_nom-opt_acc','comp-opt_refl-nom-acc','comp-refl-opt_nom-acc','comp-refl-opt_nom-opt_acc','opt_comp-opt_refl-nom-acc','comp-opt_refl-nom-opt_acc','opt_comp-opt_refl-nom-opt_acc', 'opt_comp-refl-nom-acc', 'opt_comp-refl-nom-opt_acc', 'expl-acc-dat-opt_zuinf', 'expl-acc-opt_dat-opt_zuinf', 'expl-opt_acc-dat-opt_zuinf','expl-opt_acc-opt_dat-opt_zuinf', 'expl-opt_acc-opt_dat-zuinf', 'expl-opt_refl-acc-opt_sent', 'expl-opt_refl-opt_acc-opt_sent', 'expl-refl-acc-opt_sent','expl-refl-opt_acc-opt_sent','expl-opt_refl-opt_acc-sent', 'expl-opt_refl-opt_adj-acc','expl-opt_refl-adj-acc','expl-opt_refl-opt_adj-opt_acc','expl-refl-opt_adj-acc','expl-refl-opt_adj-opt_acc','expl-opt_refl-opt_nom-acc','expl-opt_refl-opt_nom-opt_acc','expl-opt_refl-nom-acc','expl-refl-opt_nom-acc', 'expl-refl-opt_nom-opt_acc', 'opt_expl-opt_refl-nom-acc', 'opt_expl-opt_refl-nom-opt_acc', 'opt_expl-refl-nom-acc', 'opt_expl-refl-nom-opt_acc', 'nom-acc-dat-opt_zuinf', 'nom-acc-opt_dat-opt_zuinf', 'nom-opt_acc-dat-opt_zuinf', 'nom-opt_acc-opt_dat-opt_zuinf', 'nom-opt_acc-opt_dat-zuinf', 'nom-opt_refl-acc-opt_sent', 'nom-opt_refl-opt_acc-opt_sent','nom-refl-acc-opt_sent', 'nom-refl-opt_acc-opt_sent', 'nom-opt_refl-opt_acc-sent', 'nom-opt_refl-opt_adj-acc', 'nom-opt_refl-adj-acc', 'nom-opt_refl-opt_adj-opt_acc', 'nom-refl-opt_adj-acc', 'nom-refl-opt_adj-opt_acc', 'nom-opt_refl-nom-acc', 'nom-opt_refl-nom-opt_acc', 'nom-refl-nom-acc', 'nom-refl-nom-opt_acc', 'comp-dat-opt_wh', 'nom-dat-opt_wh']
+    sc_list = ['expl-acc','nom-acc-inf','nom-acc','dat-adp','nom-opt_adp', 'expl-dat-comp-part','nom-adp', 'nom-adp-part', 'nom-opt_acc' , 'nom-opt_refl-opt_gen', 'nom-refl-opt_gen', 'nom-refl', 'nom-opt_refl', 'nom-acc-opt_dat', 'nom-opt_refl-acc', 'nom-opt_acc-adp', 'nom-opt_acc-opt_adp', 'nom-opt_acc-opt_sent', 'nom-opt_refl-adp', 'nom-opt_refl-opt_nom', 'nom-opt_refl-opt_nom-acc', 'nom-opt_refl-opt_adp', 'nom-refl-opt_adp', 'nom-opt_refl-opt_sent', 'nom-refl-opt_sent', 'expl-opt_adp', 'nom-opt_acc-part', 'nom-opt_adp-part', 'nom-opt_refl-adp-part', 'nom-opt_refl-opt_adp-part', 'nom-refl-opt_adp-part', 'nom-opt_refl-part', 'nom-opt_zuinf', 'expl-opt_acc', 'expl-opt_dat', 'nom-opt_dat', 'nom-opt_sent', 'nom-acc-opt_adp', 'nom-adp-opt_comp', 'nom-opt_adp-comp', 'nom-opt_adp-opt_comp', 'nom-adp-opt_wh', 'nom-opt_adp-opt_wh', 'nom-opt_adp-wh', 'nom-opt_comp', 'nom-opt_wh', 'expl-acc-opt_dat', 'expl-opt_acc-dat', 'expl-opt_acc-opt_dat', 'expl-acc-opt_sent', 'expl-opt_acc-opt_sent', 'nom-opt_acc-dat', 'nom-opt_acc-opt_dat', 'nom-acc-opt_sent', 'expl-acc-opt_adp', 'expl-opt_acc-adp', 'expl-opt_acc-opt_adp', 'expl-adp-opt_comp', 'expl-opt_adp-comp', 'expl-opt_adp-opt_comp', 'expl-adp-opt_sent', 'expl-opt_adp-opt_sent', 'expl-opt_adp-sent', 'expl-opt_comp', 'expl-opt_refl-acc-adp', 'expl-opt_refl-acc-opt_adp', 'expl-opt_refl-opt_acc-adp', 'expl-opt_refl-opt_acc-opt_adp', 'expl-refl-acc-opt_adp', 'expl-refl-opt_acc-opt_adp', 'expl-opt_refl-acc', 'expl-opt_refl-opt_acc','expl-refl-opt_acc', 'expl-opt_refl', 'expl-opt_sent','expl-opt_zuinf','nom-opt_refl-acc-adp','nom-opt_refl-acc-opt_adp', 'nom-opt_refl-opt_acc-adp', 'nom-opt_refl-opt_acc-opt_adp', 'nom-refl-acc-opt_adp','nom-refl-opt_acc-opt_adp','nom-opt_refl-opt_acc', 'nom-refl-opt_acc','nom-opt_dat-part','nom-dat-opt_sent', 'nom-opt_dat-opt_sent', 'comp-comp-part','comp-opt_comp','comp-opt_comp-part','comp-opt_refl-opt_gen-part','comp-opt_sent-part','opt_nom-comp-part', 'nom-opt_comp-part', 'nom-opt_refl-opt_gen-part','nom-opt_sent-part', 'comp-opt_acc', 'comp-opt_acc-part', 'comp-opt_dat', 'comp-opt_dat-opt_comp', 'comp-opt_dat-opt_comp-part', 'comp-acc-opt_dat', 'comp-opt_refl-opt_comp', 'comp-opt_acc-opt_comp', 'comp-acc-opt_comp', 'comp-opt_acc-opt_dat', 'comp-comp','comp-opt_refl','comp-opt_sent','opt_nom-comp', 'nom-acc-opt_dat-part', 'nom-opt_acc-opt_dat-part', 'nom-dat-opt_zuinf', 'nom-opt_dat-opt_zuinf', 'nom-opt_dat-zuinf', 'comp-opt_wh', 'nom-opt_acc-dat-part', 'nom-dat-opt_comp-part', 'nom-opt_adj', 'nom-nom', 'nom-refl-opt_acc-part','nom-refl-opt_dat','nom-acc-opt_zuinf','nom-opt_acc-opt_zuinf','nom-opt_acc-zuinf','nom-adp-opt_zuinf','nom-opt_adp-opt_zuinf','nom-opt_adp-zuinf','nom-opt_refl-dat-part', 'comp-acc-opt_sent', 'comp-opt_acc-opt_sent', 'comp-opt_zuinf', 'opt_expl-comp', 'expl-opt_refl-adp', 'expl-opt_refl-opt_adp', 'expl-refl-opt_adp', 'nom-acc-opt_sent-part', 'nom-opt_acc-sent-part', 'nom-acc-opt_gen', 'nom-opt_adj-acc', 'nom-opt_adj-opt_acc', 'nom-nom-acc', 'nom-nom-opt_acc', 'comp-acc-opt_adp','comp-opt_acc-adp','comp-opt_acc-opt_adp', 'comp-opt_adp', 'nom-acc-opt_adp-part', 'nom-opt_acc-adp-part', 'nom-opt_acc-opt_adp-part', 'comp-adj-opt_dat', 'comp-opt_adj-dat', 'comp-opt_adj-opt_dat', 'comp-opt_adj', 'comp-opt_nom-dat', 'comp-opt_nom-opt_dat', 'comp-nom-opt_dat', 'opt_comp-nom-dat', 'opt_comp-nom-opt_dat', 'comp-opt_nom', 'opt_comp-nom','comp-opt_refl-adj', 'comp-opt_refl-opt_adj', 'comp-opt_refl-opt_nom', 'comp-opt_refl-nom', 'opt_comp-opt_refl-nom', 'expl-adj-opt_dat', 'expl-opt_adj-dat', 'expl-opt_adj-opt_dat', 'expl-opt_adj', 'expl-opt_nom-dat', 'expl-opt_nom-opt_dat', 'expl-nom-opt_dat', 'opt_expl-nom-dat','opt_expl-nom-opt_dat','expl-opt_nom','opt_expl-nom','expl-opt_refl-adj','expl-opt_refl-opt_adj','expl-opt_refl-opt_nom','expl-opt_refl-nom','opt_expl-opt_refl-nom','nom-adj-opt_dat','nom-opt_adj-dat','nom-opt_adj-opt_dat', 'nom-nom-dat','nom-nom-opt_dat','nom-opt_refl-adj','nom-opt_refl-opt_adj', 'nom-opt_refl-nom','comp-acc-opt_zuinf','comp-opt_acc-opt_zuinf','comp-opt_acc-zuinf','comp-opt_dat-comp','comp-dat-comp','comp-opt_dat-opt_zuinf','comp-dat-opt_zuinf','comp-opt_dat-zuinf','expl-acc-opt_zuinf','expl-opt_acc-opt_zuinf','expl-opt_acc-zuinf', 'opt_expl-opt_dat-comp','opt_expl-dat-comp','expl-opt_dat-comp','expl-dat-opt_comp','expl-opt_dat-opt_comp','expl-dat-opt_zuinf','expl-opt_dat-opt_zuinf','expl-opt_dat-zuinf','opt_nom-opt_dat-comp','opt_nom-dat-comp','nom-opt_dat-comp','nom-dat-opt_comp','nom-opt_dat-opt_comp','nom-opt_dat-adp','nom-opt_dat-opt_adp','nom-opt_dat-sent','nom-opt_dat-opt_wh','nom-opt_dat-wh','comp-opt_acc-dat','comp-adp-opt_sent','comp-opt_adp-opt_sent','comp-opt_adp-sent','opt_nom-adp-comp','opt_nom-opt_adp-comp','nom-opt_acc-sent','nom-opt_refl-acc-part', 'nom-opt_zuinf-part','comp-opt_adp-comp','comp-opt_refl-opt_sent','comp-refl-opt_sent','comp-opt_refl-sent','nom-opt_refl-sent','nom-opt_adj-part','nom-nom-part','nom-opt_dat-opt_wh-part','nom-opt_dat-wh-part','nom-opt_wh-part','nom-acc-opt_comp', 'nom-opt_acc-opt_comp','expl-opt_dat-adp','expl-dat-opt_adp','expl-opt_dat-opt_adp','nom-dat-opt_adp','nom-acc-opt_zuinf-part','nom-opt_acc-opt_zuinf-part','nom-opt_acc-zuinf-part','nom-refl-opt_comp','comp-acc-opt_dat-part', 'comp-opt_acc-opt_dat-part','comp-opt_dat-comp-part','comp-opt_dat-opt_sent-part','comp-opt_dat-sent','comp-opt_dat-sent-part','opt_nom-opt_dat-comp-part','nom-opt_dat-comp-part','nom-opt_dat-opt_comp-part','nom-opt_dat-opt_sent-part', 'nom-opt_dat-sent-part', 'nom-dat-opt_sent-part', 'nom-dat-opt_zuinf-part', 'comp-opt_acc-dat-part', 'comp-opt_dat-part', 'comp-opt_dat-opt_zuinf-part', 'comp-dat-opt_zuinf-part', 'comp-opt_dat-zuinf-part', 'comp-opt_zuinf-part', 'nom-opt_dat-opt_zuinf-part', 'nom-opt_dat-zuinf-part','comp-refl-comp-part', 'opt_nom-refl-comp-part', 'nom-refl-opt_comp-part', 'comp-refl-opt_adp-part', 'expl-opt_acc-sent', 'expl-opt_wh', 'comp-opt_adj-acc', 'comp-adj-opt_acc', 'comp-opt_adj-opt_acc', 'comp-opt_nom-acc','comp-opt_nom-opt_acc','comp-nom-opt_acc','opt_comp-nom-acc','opt_comp-nom-opt_acc','expl-opt_adj-acc','expl-adj-opt_acc','expl-opt_adj-opt_acc','expl-opt_nom-acc','expl-opt_nom-opt_acc','expl-nom-opt_acc','opt_expl-nom-acc','opt_expl-nom-opt_acc','nom-adj-opt_acc','comp-opt_acc-sent','nom-opt_refl-opt_dat','expl-opt_adp-part','expl-opt_dat-part','nom-opt_refl-opt_acc-part','nom-opt_refl-comp','nom-opt_refl-opt_comp','nom-acc-opt_dat-adp','nom-acc-opt_dat-opt_adp','nom-opt_acc-opt_dat-adp','nom-opt_acc-dat-adp','nom-opt_acc-dat-opt_adp','nom-opt_acc-opt_dat-opt_adp','comp-opt_refl-dat', 'nom-opt_refl-dat','comp-opt_adp-part','expl-opt_acc-adp-part','expl-opt_acc-opt_adp-part','nom-opt_gen','comp-opt_refl-opt_adp','comp-refl-opt_adp','nom-opt_refl-comp-part','nom-opt_refl-opt_comp-part','nom-refl-adp-opt_sent', 'nom-refl-opt_adp-opt_sent','nom-refl-opt_dat-part', 'comp-acc-comp', 'comp-opt_acc-comp', 'comp-opt_refl-adp','comp-opt_refl-comp', 'opt_nom-acc-comp', 'opt_nom-opt_acc-comp', 'nom-opt_acc-comp','opt_nom-opt_refl-comp', 'nom-acc-opt_wh','nom-opt_acc-opt_wh','nom-opt_acc-wh','nom-opt_refl-opt_wh', 'nom-refl-opt_wh', 'nom-opt_refl-wh', 'comp-opt_refl-acc-part', 'comp-opt_refl-opt_acc-part', 'comp-opt_dat-adp', 'comp-dat-opt_adp', 'comp-dat-opt_comp', 'comp-opt_dat-opt_adp', 'expl-acc-dat-opt_sent', 'expl-acc-opt_dat-opt_sent', 'nom-acc-dat-opt_sent', 'nom-acc-opt_dat-opt_sent','comp-opt_refl-part','nom-acc-opt_adp-opt_comp','nom-opt_acc-opt_adp-opt_comp', 'comp-opt_dat-opt_wh', 'comp-opt_dat-wh','comp-opt_refl-acc','comp-opt_refl-opt_acc','comp-refl-opt_acc','expl-acc-opt_gen','expl-opt_acc-opt_gen','nom-opt_acc-opt_gen', 'comp-adj-comp', 'comp-opt_adj-comp', 'comp-adj-opt_sent', 'comp-opt_adj-opt_sent', 'comp-opt_adj-sent','comp-opt_gen', 'comp-opt_nom-comp','comp-nom-comp','opt_comp-nom-opt_comp','comp-opt_nom-opt_sent','comp-nom-opt_sent', 'comp-opt_nom-sent', 'opt_comp-nom-opt_sent','opt_comp-nom-sent','comp-refl-opt_adj','comp-refl-opt_nom','opt_comp-refl-nom','opt_expl-adj-comp','opt_expl-opt_adj-comp','expl-adj-opt_comp','expl-opt_adj-comp','expl-opt_adj-opt_comp', 'expl-adj-opt_sent', 'expl-opt_adj-opt_sent','expl-opt_adj-sent', 'expl-opt_gen', 'opt_expl-opt_nom-comp', 'opt_expl-nom-comp','expl-opt_nom-comp', 'expl-opt_nom-opt_comp','expl-nom-opt_comp', 'opt_expl-nom-opt_comp','expl-opt_nom-opt_sent','expl-nom-opt_sent','expl-opt_nom-sent','opt_expl-nom-opt_sent','opt_expl-nom-sent','expl-refl-opt_adj','expl-refl-opt_nom','opt_expl-refl-nom','opt_nom-adj-comp','opt_nom-opt_adj-comp','nom-opt_adj-comp','nom-adj-opt_comp','nom-opt_adj-opt_comp','nom-adj-opt_sent','nom-opt_adj-opt_sent','nom-opt_adj-sent','opt_nom-opt_nom-comp','nom-opt_nom','nom-opt_nom-part','nom-opt_nom-sent','nom-opt_nom-opt_comp','nom-opt_nom-opt_acc','nom-opt_nom-opt_dat','nom-nom-comp','nom-nom-opt_comp','nom-nom-opt_sent','nom-nom-sent','nom-refl-opt_adj','nom-refl-nom','comp-acc-opt_adp-part','comp-opt_acc-adp-part','comp-opt_acc-opt_adp-part','comp-opt_refl-adp-part','comp-opt_refl-opt_adp-part','comp-adp-opt_zuinf-part','comp-opt_adp-opt_zuinf','comp-opt_adp-opt_zuinf-part','nom-adp-opt_zuinf-part','nom-opt_adp-opt_zuinf-part','nom-opt_refl-opt_dat-part','nom-opt_acc-gen','nom-opt_refl-opt_sent-part','nom-refl-opt_sent-part', 'nom-opt_refl-opt_wh-part', 'nom-refl-opt_wh-part','comp-opt_refl-opt_dat','expl-opt_acc-gen','nom-acc-opt_gen-part','nom-opt_acc-gen-part','nom-opt_acc-opt_gen-part','nom-opt_gen-part','expl-opt_acc-part','comp-opt_refl-comp-part','comp-opt_refl-opt_sent-part','comp-refl-opt_sent-part','comp-opt_refl-opt_wh-part','comp-refl-opt_wh-part','comp-opt_refl-wh','comp-opt_refl-wh-part','comp-opt_wh-part','opt_nom-opt_refl-comp-part','nom-opt_refl-wh-part','expl-acc-opt_wh','expl-opt_acc-opt_wh','nom-opt_acc-opt_sent-part','nom-opt_refl-gen','comp-dat-opt_sent-part','comp-acc-opt_wh','comp-opt_acc-opt_wh','comp-opt_acc-wh','comp-refl-comp','opt_nom-refl-comp', 'comp-acc-dat-opt_zuinf', 'comp-acc-opt_dat-opt_zuinf','comp-opt_acc-opt_dat-opt_zuinf', 'comp-opt_acc-dat-opt_zuinf', 'comp-opt_acc-opt_dat-zuinf', 'comp-opt_refl-acc-opt_sent', 'comp-opt_refl-opt_acc-opt_sent', 'comp-refl-acc-opt_sent', 'comp-refl-opt_acc-opt_sent', 'comp-refl-opt_comp', 'comp-refl-opt_comp-part', 'comp-opt_refl-opt_acc-sent', 'comp-opt_refl-opt_adj-acc','comp-opt_refl-adj-acc','comp-opt_refl-opt_adj-opt_acc','comp-refl-opt_adj-acc','comp-refl-opt_adj-opt_acc','comp-opt_refl-opt_nom-acc','comp-opt_refl-opt_nom-opt_acc','comp-opt_refl-nom-acc','comp-refl-opt_nom-acc','comp-refl-opt_nom-opt_acc','opt_comp-opt_refl-nom-acc','comp-opt_refl-nom-opt_acc','opt_comp-opt_refl-nom-opt_acc', 'opt_comp-refl-nom-acc', 'opt_comp-refl-nom-opt_acc', 'expl-acc-dat-opt_zuinf', 'expl-acc-opt_dat-opt_zuinf', 'expl-opt_acc-dat-opt_zuinf','expl-opt_acc-opt_dat-opt_zuinf', 'expl-opt_acc-opt_dat-zuinf', 'expl-opt_refl-acc-opt_sent', 'expl-opt_refl-opt_acc-opt_sent', 'expl-refl-acc-opt_sent','expl-refl-opt_acc-opt_sent','expl-opt_refl-opt_acc-sent', 'expl-opt_refl-opt_adj-acc','expl-opt_refl-adj-acc','expl-opt_refl-opt_adj-opt_acc','expl-refl-opt_adj-acc','expl-refl-opt_adj-opt_acc','expl-opt_refl-opt_nom-acc','expl-opt_refl-opt_nom-opt_acc','expl-opt_refl-nom-acc','expl-refl-opt_nom-acc', 'expl-refl-opt_nom-opt_acc', 'opt_expl-opt_refl-nom-acc', 'opt_expl-opt_refl-nom-opt_acc', 'opt_expl-refl-nom-acc', 'opt_expl-refl-nom-opt_acc', 'nom-acc-dat-opt_zuinf', 'nom-acc-opt_dat-opt_zuinf', 'nom-opt_acc-dat-opt_zuinf', 'nom-opt_acc-opt_dat-opt_zuinf', 'nom-opt_acc-opt_dat-zuinf', 'nom-opt_refl-acc-opt_sent', 'nom-opt_refl-opt_acc-opt_sent','nom-refl-acc-opt_sent', 'nom-refl-opt_acc-opt_sent', 'nom-opt_refl-opt_acc-sent', 'nom-opt_refl-opt_adj-acc', 'nom-opt_refl-adj-acc', 'nom-opt_refl-opt_adj-opt_acc', 'nom-refl-opt_adj-acc', 'nom-refl-opt_adj-opt_acc', 'nom-opt_refl-nom-acc', 'nom-opt_refl-nom-opt_acc', 'nom-refl-nom-acc', 'nom-refl-nom-opt_acc', 'comp-dat-opt_wh', 'nom-dat-opt_wh']
 
   return sc_list
 
@@ -1436,7 +1443,222 @@ def create_semantic_types_for_different_args(mylang, climb_verbs):
   climb_verbs.add('n-n-n-args-lex := n-n-args-lex & comp2-arg3-structure.')
   climb_verbs.add('n-n-n-n-args-lex := n-n-n-args-lex & comp3-arg4-structure.')
 
+
+def customize_particle(mylang, climb_verbs, ch):
+  global particles
+
+  cases = case.case_names(ch)
+  for p in ch.patterns():
+    rule_pattern = p[2]
+
+
+    p = p[0].split(',')  
+
+    subjcontr = False
+    if p[0] == 'scontr':
+      subjcontr = True
+    if not rule_pattern:
+      c = p[0].split('-')  # split 'agentcase-patientcase'
+
+      if len(c) == 3: #ditrans 
+       
+        a_case = case.canon_to_abbr(c[0], cases)
+        b_case = case.canon_to_abbr(c[1], cases)
+        o_case = case.canon_to_abbr(c[2], cases)
+
+        a_head = 'noun'
+        b_head = 'noun'
+
+        if o_case in particles:
+          o_head = 'verb'
+        
+###should allow to create list of particles and check if is in list
+###rather than specific form
+      
+          t_type = a_case + '-' + b_case + '-' + o_case + '-part-transitive-verb-lex'
+          if t_type != 'part-transitive-verb-lex':
+            mylang.add(t_type + ' := part-transitive-verb-lex.')
+            climb_verbs.add(t_type + ' := part-transitive-verb-lex.')
+
+          typedef = \
+                t_type + ' := \
+                  [ ARG-ST.FIRST.LOCAL.CAT.HEAD ' + a_head + ' ].'
+          mylang.add(typedef)
+          climb_verbs.add(typedef)
+
+        # constrain the case of the agent/subject
+          if a_case:
+            typedef = \
+             t_type + ' := \
+               [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + a_case + ' ].'
+            mylang.add(typedef)
+            climb_verbs.add(typedef)
+       
+       
+
+        # constrain the case of the patient/object
+          if b_case:
+            typedef = \
+            t_type + ' := \
+              [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.CASE ' + b_case + ' ] > ].'
+            mylang.add(typedef)
+            climb_verbs.add(typedef)
+
+
+# constrain the head of the patient/object
+          typedef = \
+            t_type + ' := \
+              [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ ], \
+                                         [ LOCAL.CAT.HEAD ' + o_head + ' ] > ].'
+          mylang.add(typedef)
+          climb_verbs.add(typedef)
+
+
+
+          o_case += '-part'
+          typedef = \
+              t_type + ' := \
+               [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ ], \
+                                    [ LOCAL.CAT.HEAD.FORM ' + o_case + ' ] > ].'
+          mylang.add(o_case + ' := form.')
+          climb_verbs.add(o_case + ' := form.')
+ 
+          mylang.add(typedef)
+          climb_verbs.add(typedef)
+        elif p[0] == 'refl' or (len(c) == 3 and c[1] == 'refl'):   #reflexive
+         
+          if p[0] == 'refl':
+            a_case = ''
+            b_case = ''
+            o_case = ''
+          else:
+            a_case = case.canon_to_abbr(c[0], cases)
+            b_case = case.canon_to_abbr(c[1], cases)
+            o_case = case.canon_to_abbr(c[2], cases)
+
+          a_head = 'noun'
+          b_head = 'noun'
+          o_head = 'noun'
+          if o_case == 'pp':
+            o_head = 'adp'
+
+          if a_case and b_case and o_case:
+            t_type =  a_case + '-' + b_case + '-' + o_case + '-transitive-verb-lex'
+          else:
+            t_type = 'refl-trans-verb-lex'
+  # constrain the head of the agent/subject
+          typedef = \
+            t_type + ' := \
+             [ ARG-ST.FIRST.LOCAL.CAT.HEAD ' + a_head + ' ].'
+          mylang.add(typedef)
+          climb_verbs.add(typedef)
+        # constrain the case of the agent/subject
+          if a_case:
+            typedef = \
+                t_type + ' := \
+               [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + a_case + ' ].'
+            mylang.add(typedef)
+            climb_verbs.add(typedef)
+
+        # second argument get correct properties from refl-verb-lex
+          mylang.add(t_type + ' := refl-verb-lex.')
+          climb_verbs.add(t_type + ' := refl-verb-lex.')
+
+        # constrain the head of the patient/object
+          typedef = \
+              t_type + ' := \
+              [ ARG-ST < [ ], [ LOCAL.CAT.HEAD ' + o_head + ' ] > ].'
+          mylang.add(typedef)
+          climb_verbs.add(typedef)
+
+        # constrain the case of the patient/object
+          if not o_case == 'pp':
+            typedef = \
+                t_type + ' := \
+                [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.CASE ' + o_case + ' ] > ].'
+            mylang.add(typedef)
+            climb_verbs.add(typedef)
+
+       ####adding some properties to get the semantics right
+          typedef = \
+             t_type + ' := trans-first-arg-raising-lex-item & \
+               [ SYNSEM [ LOCAL.CAT.VAL.COMPS < [ ], #comp2 & \
+                                      [ LOCAL.CONT.HOOK.INDEX #arg2 ] >, \
+                          LKEYS.KEYREL [ ARG1 #arg1, \
+                                         ARG2 #arg2 ] ], \
+                 ARG-ST < [ LOCAL.CONT.HOOK.INDEX #arg1 ], \
+                              #comp2 > ].'
+          mylang.add(typedef)
+          climb_verbs.add(typedef)
+
+       
+
+      elif len(c) == 2:
+#p[0] == 'scontr' or (len(c) == 2 and (c[1] == 'inf' or c[1] == 'zuinf')):
+        
+        if p[0] == 'scontr':
+          a_case = ''
+          a_head = ch.case_head()
+        else:
+          a_case = case.canon_to_abbr(c[0], cases)
+          a_head = ch.case_head(c[0])
+          b_res = c[1]                        
+        
+        
+
+        if 'zuinf' in b_res:
+          t_type = a_case + '-' + b_res + '-subj-contr-transitive-verb-lex'
+          if b_res == 'inf':
+            b_res += 'initive'
+#HACK to get old choices files to work with addition of zuinf
+          elif b_res == 'zuinf':
+            mylang.add('zuinf := nonfinite.')
+            climb_verbs.add('zuinf := nonfinite.')
+        #else:
+        #  t_type = 'subj-contr-transitive-verb-lex'                      
+          mylang.add(t_type + ' := subj-contr-transitive-verb-lex.')      
+          climb_verbs.add(t_type + ' := subj-contr-transitive-verb-lex.')
+
+          if ch.get('vc-analysis') != 'aux-rule':
+            typedef = \
+                t_type + ' := \
+                   [ ARG-ST < [ LOCAL.CAT.HEAD ' + a_head + ' ], \
+                          [ LOCAL.CAT.HEAD verb  & [ FORM ' + b_res + ' ] ] > ].'
+          else:
+             typedef = \
+               t_type + ' := \
+               [ ARG-ST < [ LOCAL.CAT [ HEAD verb & [ FORM ' + b_res + ' ], \
+                                        VAL.SUBJ.FIRST.LOCAL.CAT.HEAD.CASE ' + a_case + ' ] ] > ].'
+          mylang.add(typedef)
+          climb_verbs.add(typedef)
+
+
+        elif (not 'expl' in a_case and 'acc' in b_res) or 'dat' in a_case:
+          t_type = a_case + '-' + b_res + '-transitive-verb-lex'
+          mylang.add(t_type + ':= transitive-verb-lex.')
+          climb_verbs.add(t_type + ':= transitive-verb-lex.')
+
+          if 'pp' in b_res:
+            constraint = ' adp'
+          else:
+            constraint = '.CASE ' + b_res
+          typedef = \
+                t_type + ' := \
+                    [ ARG-ST.REST.FIRST.LOCAL.CAT.HEAD' + constraint + ' ].'
+          mylang.add(typedef)
+          climb_verbs.add(typedef)
+
+          typedef = \
+                t_type + ' := \
+                    [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + a_case + ' ].'
+          mylang.add(typedef)
+          climb_verbs.add(typedef)
+
+
+
 def customize_verb_case(mylang, climb_verbs, ch):
+  global particles
+
   cm = ch.get('case-marking')
   cases = case.case_names(ch)
 
@@ -1798,7 +2020,7 @@ def customize_verb_case(mylang, climb_verbs, ch):
         b_head = 'noun'
 ###should allow to create list of particles and check if is in list
 ###rather than specific form
-        if p[0] == 'partv' or o_case == 'vor' or o_case == 'voor' or o_case == 'in':
+        if p[0] == 'partv' or o_case in particles:
           o_head = 'verb'
         else:
           o_head = 'noun'

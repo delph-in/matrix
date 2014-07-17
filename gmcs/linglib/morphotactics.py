@@ -684,8 +684,8 @@ def write_i_or_l_rules(ch, irules, lrules, climb_morph, lrt, order):
 ###their own.
     if ch.get('verb-cluster') == 'yes' and len(lrt.lris) == 2 and ch.get('word-order') == 'v2':
       lri = lrt.lris[1]
-      
-      if 'irreg' in order:
+      #HACK for combining lexica
+      if 'irreg' in order and not 'generic' in lrt.name:
         rule1 = '\n'.join(['-'.join([lrt.name, 'main-verb-' + order]) + ' :=',
                       r'%suffix  (' + lri + ' ' + lri + ')',
                       lrt.identifier()]) + '-main-verb.'

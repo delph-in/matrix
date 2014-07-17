@@ -8,6 +8,10 @@ from gmcs.utils import get_name
 #   Create the type definitions associated with the user's choices
 #   about case.
 
+
+
+particles = ['vor','voor','in','um','nach','aus']
+
 # case_names()
 #   Create and return a list containing information about the cases
 #   in the language described by the current choices.  This list consists
@@ -300,6 +304,7 @@ def interpret_verb_valence(valence):
 
 
 def customize_verb_case(mylang, ch):
+  global particles
   cm = ch.get('case-marking')
   cases = case_names(ch)
   # Pass through the list of case-marking patterns.  If a pattern is a
@@ -628,7 +633,7 @@ def customize_verb_case(mylang, ch):
         b_head = 'noun'
 ###should allow to create list of particles and check if is in list
 ###rather than specific form
-        if p[0] == 'partv' or o_case == 'vor' or o_case == 'voor' or o_case == 'in':
+        if p[0] == 'partv' or o_case in particles:
           o_head = 'verb'
         else:
           o_head = 'noun'

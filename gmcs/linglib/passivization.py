@@ -155,6 +155,7 @@ def customize_passivization(ch, mylang, lrules, lexicon, trigger, climb_files):
                        COORD-REL #coord-rel,
                        COORD-STRAT #coord-strat,
                        CAT [ EDGE #edge,
+                             HEAD.FORM participle,
                              VAL [ SPR #spr,
 				   SUBJ < [ LOCAL.CONT #arg1,
                                             NON-LOCAL #nls ] >,

@@ -14,6 +14,9 @@ from gmcs.linglib.lexbase import ALL_LEX_TYPES
 ##########################################################
 # insert_ids()
 
+
+particles = ['vor','voor','in','um','nach','aus','rad','weg']
+
 def insert_ids(ch):
   """
   Create a unique identifier for each lexical entry based
@@ -141,6 +144,7 @@ def customize_bipartite_stems(ch):
           ch[stemid + '_require1_others'] = next_lrt_str
 
 def customize_verbs(mylang, ch, lexicon, trigger, hierarchies, climb_verbs):
+  global particles
   negmod = ch.get('neg-mod')
   negadv = ch.get('neg-adv')
   wo = ch.get('word-order')
@@ -474,6 +478,9 @@ def customize_verbs(mylang, ch, lexicon, trigger, hierarchies, climb_verbs):
   vcross = False
   if ch.get('verb-cross-classification') == 'yes':
     subcategorization.create_basic_verb_types(ch, mylang, climb_verbs)
+    if ch.get('combined-lex') == 'yes':
+      subcategorization.customize_particle(mylang, climb_verbs, ch)
+  
   #  subcategorization.customize_verb_case(mylang, ch)
     vcross = True
   else:
@@ -520,6 +527,7 @@ def customize_verbs(mylang, ch, lexicon, trigger, hierarchies, climb_verbs):
       c = val.split('-')
 #c can point to transitive or ditransitive
       if len(c) == 2:
+        
         if c[1] == 'scomp':
           a_case = case.canon_to_abbr(c[0], cases)
           tivity = a_case + '-' + c[1] + '-trans'
@@ -534,6 +542,7 @@ def customize_verbs(mylang, ch, lexicon, trigger, hierarchies, climb_verbs):
           o_case = case.canon_to_abbr(c[1], cases)
           tivity = a_case + '-' + o_case + '-trans'
       elif len(c) == 3:
+        
         if c[2] == 'inf':
           a_case = case.canon_to_abbr(c[0], cases)
           o_case = case.canon_to_abbr(c[1], cases)
@@ -546,25 +555,55 @@ def customize_verbs(mylang, ch, lexicon, trigger, hierarchies, climb_verbs):
           o_case = case.canon_to_abbr(c[1], cases)
           tivity = a_case + '-' + o_case + '-' + c[2]
           tivity += '-trans'
-        elif c[2] == 'vor' or c[2] == 'voor' or c[2] == 'in':
+        elif c[2] in particles:
+       
           a_case = case.canon_to_abbr(c[0], cases)
           b_case = case.canon_to_abbr(c[1], cases)
           o_case = case.canon_to_abbr(c[2], cases)
           tivity = a_case + '-' + b_case + '-' + o_case + '-part-trans'
+       
           create_particle_lex_entry(mylang, lexicon, trigger, o_case, climb_verbs)
         else:
           a_case = case.canon_to_abbr(c[0], cases)
           b_case = case.canon_to_abbr(c[1], cases)
           o_case = case.canon_to_abbr(c[2], cases)
           tivity = a_case + '-' + b_case + '-' + o_case + '-ditrans'
+     
     elif val.find('-') != -1:
       tivity = val
       vparts = val.split('-')
       if not raising:
         if len(vparts) == 2:
-          tivity += '-trans'
+          if vparts[1] in particles:
+            tivity = 'nom-part'
+          elif tivity == 'nom-acc' or 'dat-' in tivity:
+            tivity += '-transitive'
+          else:
+            tivity += '-trans'
+            if vparts[1] == 'inf' or vparts[1] == 'zuinf':
+           
+              a_case = case.canon_to_abbr(vparts[0], cases)
+              tivity = a_case + '-' + vparts[1]
+              if verb.get('control') == 'subj':
+                tivity += '-subj-contr'
+              tivity += '-transitive'
         elif len(vparts) == 3:
-          tivity += '-ditrans'
+#hack for quickly allowing combination of customized and Cheetah lexicon
+          a_case = case.canon_to_abbr(vparts[0], cases)
+          b_case = case.canon_to_abbr(vparts[1], cases)
+          o_case = case.canon_to_abbr(vparts[2], cases)
+          if vparts[1] == 'acc' and vparts[2] in particles:
+           
+            tivity = a_case + '-' + b_case + '-' + o_case + '-part-transitive'
+       
+            create_particle_lex_entry(mylang, lexicon, trigger, o_case, climb_verbs)
+          elif vparts[1] == 'refl':
+            tivity = a_case + '-' + b_case + '-' + o_case + '-transitive'
+          elif 'expl' in vparts and 'dat' in vparts:
+            tivity = a_case + '-' + b_case + '-' + o_case + '-ditransitive'
+            
+          else:  
+            tivity += '-ditrans'
         elif len(vparts) == 4:
           tivity += '-3arg'
         elif len(vparts) == 5:
@@ -598,7 +637,7 @@ def customize_verbs(mylang, ch, lexicon, trigger, hierarchies, climb_verbs):
                      [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT \
                                            ' + o_drop_default + ' ].')
         if len(c) == 3:
-          if c[2] == 'vor' or c[2] == 'voor' or c[2] == 'in':
+          if c[2] in particles:
             mylang.add(vtype + ' := \
                          [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ ], [ OPT - ] > ].')
             climb_verbs.add(vtype + ' := \
@@ -648,6 +687,7 @@ def customize_verbs(mylang, ch, lexicon, trigger, hierarchies, climb_verbs):
       lexicon.add(typedef)
       climb_verbs.add(typedef, section='lexicon')
       climb_verbs.set_section('mylang')
+
 # Returns the verb type for lexical/main verbs.
 def main_or_verb(ch):
   if ch.get('has-aux') == 'yes':
@@ -1021,19 +1061,19 @@ def customize_adjectives(mylang, ch, lexicon, rules, climb_lex, hierarchies):
       climb_lex.add(comp_adj)
     if ch.get('indep-adj') == 'yes':
       adj_to_noun_phrase = \
-      '''independent_adjective_phrase := basic-unary-phrase & phrasal &
+      '''independent_adjective_phrase := basic-unary-phrase & phrasal & same-non-local-lex-rule &
   [ SYNSEM [ LOCAL [ CAT [ HEAD noun &
                                 [ MOD < >,
 				  CASE #case,
 				  STRONG #strength ],
                            VAL [ SUBJ < >,
-                                 SPR.FIRST synsem &
+                                 SPR < synsem &
                                            [ LOCAL [ CAT [ VAL [ SPR < >,
                                                                  COMPS < > ]
                                                            HEAD det ],
                                                      AGR #index ],
                                              NON-LOCAL.REL 0-dlist,
-                                             OPT - ],
+                                             OPT - ] >,
                                  COMPS < >,
                                  SPEC < > ] ],
                      AGR #agr,
@@ -1878,6 +1918,8 @@ def customize_particles(ch, mylang, lexicon, trigger, climb_lex):
   climb_lex.add('adp-particle-lex := basic-verbal-particle-lex & \
             [ SYNSEM.LOCAL.CAT.HEAD verb & [ MOD < > ] ].')
  # mylang.add('part-form := form.')
+
+
 
   for part in ch.get('part',[]):
     name = part.get('name')

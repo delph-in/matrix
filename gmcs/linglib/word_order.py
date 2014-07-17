@@ -40,8 +40,8 @@ def customize_word_order(mylang, ch, rules, climb_files):
 # ERB 2006-09-14 Then add information as necessary to handle adpositions,
 # free auxiliaries, etc.
   if not ch.get('vso-osv-opt-subj') == 'yes':
-    mylang.add('basic-head-opt-subj-phrase := \
-                     [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].', section='addenda', 'Non-universal constraint removed from Matrix core. It applies to most lagnuages.')
+    mylang.add('basic-head-opt-subj-phrase :+ \
+                     [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].', section='addenda', comment='Non-universal constraint removed from Matrix core. It applies to most languages.')
 #In general, we might also find word order sensitive to
 #clause type (matrix v. subordinate) and dependent type.
 

@@ -140,6 +140,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
         path_parts = geom.split('.')
         ff_num = len(path_parts) - 1
         final_feat = path_parts[ff_num]
+
         geom2 = geom_prefix2 + 'LOCAL.CONT.HOOK.XARG.PNG.' + final_feat
 ###separated types only if dealing with lexical rules
 ###lexical items are already defined as aux or mainverb
@@ -151,7 +152,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     # otherwise, handle it specially.
     # HACK: making sure 'expl' morphological rules have main-verb subtypes...
     if geom:
-      if n in hierarchies or (geom2 and 'expl' in det_type):
+      if n in hierarchies or (geom2 and ('expl' in det_type or 'generic' in det_type)):
         if n in hierarchies:
           value = hierarchies[n].get_type_covering(v)
           expl = False
@@ -159,6 +160,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
           value = v[0]
           expl = True
         if geom2:
+
           if 'rule' in det_type:
             tdlfile.add(type_name_1 +
                       ' := ' + type_name + ' & ' +
@@ -172,7 +174,9 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
             climbfile.add(type_name_1 +
                       ' := [ SYNSEM.LOCAL.CAT.HEAD.AUX - ].', 
                          merge=True)
-            if not expl:
+            if not expl or 'generic' in det_type:
+              if 'generic' in det_type:
+                geom2 = geom_prefix2 + 'LOCAL.VAL.SUBJ.FIRST.LOCAL.CAT.' + final_feat
               tdlfile.add(type_name_2 +
                       ' := ' + type_name + ' & ' +
                        ' [ ' + geom2 + ' ' + value + ' ].')

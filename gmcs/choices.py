@@ -721,6 +721,9 @@ class ChoicesFile:
             has_datives = True
         if has_datives:
           patterns += [ ['nom-dat-acc', '', False] ]
+          patterns += [ ['dat-pp', '', False] ]
+          patterns += [ ['expl-dat-pp', '', False] ]
+          patterns += [ ['dat', '', False] ]
         else:
           patterns += [ ['nom-acc-acc', '', False] ]
       if self.get('emb-clause-2nd-verb') == 'yes':
@@ -734,10 +737,14 @@ class ChoicesFile:
         patterns += [[ 'nom-refl-pp', '', False ]]
       if self.get('expl-two-arg') == 'yes':
         patterns += [[ 'expl-acc', '', False ]]
+        patterns += [[ 'expl-dat', '', False ]]
       if self.get('verbal-particles') == 'yes':
         patterns += [ ['nom-acc-vor', '', False] ]
         patterns += [ ['nom-acc-voor', '', False] ]
         patterns += [ ['nom-acc-in', '', False] ]
+        patterns += [ ['nom-acc-um', '', False] ]
+        patterns += [ ['nom-acc-aus', '', False] ]
+        patterns += [ ['nom-rad', '', False] ]
     elif cm == 'erg-abs':
       patterns += [ ['abs', '', False] ]
       patterns += [ ['erg-abs', '', False] ]
@@ -1066,6 +1073,10 @@ class ChoicesFile:
     # Form
     features += self.__get_features(self.forms(), 0, 0, 'form',
                                     'LOCAL.CAT.HEAD.FORM', 'verb')
+
+    # head
+    features += self.__get_features(self.forms(), 0, 0, 'head',
+                                    'LOCAL.CAT.HEAD', 'verb')
 
     # Tense
     features += self.__get_features(self.tenses(), 0, 0, 'tense',
