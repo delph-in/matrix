@@ -107,8 +107,8 @@ def customize_other_features(mylang, hierarchies):
     feat = h.name
     type = h.type
     # if this hierarchy isn't handled elsewhere, handle it here
-    if feat not in ['case', 'person', 'number', 'pernum', 'gender',
-                    'form', 'tense', 'aspect', 'situation', 'mood']:
+    if feat not in ('case', 'person', 'number', 'pernum', 'gender',
+                    'form', 'tense', 'aspect', 'situation', 'mood'):
       if type == 'head':
         mylang.add('head :+ [ ' + feat.upper() + ' ' + feat + ' ].',
                    section='addenda')

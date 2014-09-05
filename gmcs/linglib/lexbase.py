@@ -7,21 +7,29 @@ from gmcs.lib import Hierarchy, HierarchyNode
 ################################
 
 # all types of lexical items (on lexicon page)
-ALL_LEX_TYPES = ['noun', 'verb', 'det', 'aux', 'adj']
+# TJT 2014-08-15: changing to tuple for speed
+ALL_LEX_TYPES = ('noun', 'verb', 'det', 'aux', 'adj', 'cop')
 
 # types used for lexical rules (verb and aux are merged)
-LEXICAL_CATEGORIES = ['noun', 'verb', 'det', 'adj']
+# TJT 2014-08-15: adding "cop"
+# TJT 2014-08-15: changing to tuple for speed
+LEXICAL_CATEGORIES = ('noun', 'verb', 'det', 'adj', 'cop')
+
+# TJT 2014-09-03: Types not automatically added to mylanguage.tdl
+NON_ESSENTIAL_LEX_CATEGORIES = ('det', 'adj', 'cop')
 
 # lexical_supertypes is a dictionary mapping the choices file
-# encodings to the actual lex-type identifiers.
+# encodings to the actual lex-type identifiers of the supertypes.
 LEXICAL_SUPERTYPES = {'noun':'noun-lex',
                       'verb':'verb-lex',
                       'iverb':'intransitive-verb-lex',
                       'tverb':'transitive-verb-lex',
                       'mverb':'main-verb-lex',
+                      'cop':'copula-verb-lex',
                       'det':'determiner-lex',
                       'aux':'aux-lex',
-                      'adj':'adjective-lex'}
+                      'adj':'adj-lex'}
+
 ###############
 ### CLASSES ###
 ###############
@@ -115,6 +123,9 @@ class PositionClass(MorphotacticNode):
     self.pc = self
     self.identifier_suffix = identifier_suffix or 'lex-rule-super'
     self.is_lex_rule = lex_rule
+    # TJT 2014-08-21: Keep track of whether position
+    # class has incorporated stems
+    self._has_is = None
 
   def __repr__(self):
     return 'PositionClass(' + self.identifier() + ')'
@@ -143,8 +154,20 @@ class PositionClass(MorphotacticNode):
     # 1. A node, or all its ancestors, req-fwd an intervening node
     # 2. This pc, or all its followers, req-bkwd an intervening node
 
-    # implement these later.. try to be efficient
+    # TODO: implement these later.. try to be efficient
     return all_inps
+
+  def has_incorporated_stems(self):
+    # 2014-08-21 TJT: Keep track of whether a PositionClass has
+    # Incorporated Stem Lexical Rule Instances
+    if self._has_is == None: # Only do this once
+      for lrt in self.nodes.values():
+        for lri in lrt.lris:
+          if lri.pred:
+            self._has_is = True # Keep track of result
+            return self._has_is
+      self._has_is = False
+    return self._has_is
 
 class LexicalType(MorphotacticNode):
   def __init__(self, key, name, parents=None, entry=False):
@@ -185,3 +208,23 @@ class LexicalRuleType(MorphotacticNode):
     if len(parents) == 0:
       parents = [self.pc.identifier()]
     return set(parents).union(self.supertypes)
+
+# TJT 2014-08-21: Class for keeping Lexical Rule Instances and their
+# predicates together
+class LexicalRuleInstance:
+  """
+  Store LRI name and pred together
+  """
+
+  def __init__(self, name, pred=None):
+    self.name = name
+    self.pred = pred or None
+
+  def __repr__(self):
+    return 'LexicalRuleInstance(' + self.name + ')'
+
+  def __str__(self):
+    return self.name
+
+  def __len__(self):
+    return len(self.name)

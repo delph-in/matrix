@@ -2322,7 +2322,7 @@ norm-hook-lex-item := norm-ltop-lex-item &
 ; well as scopal modifiers, or just the scopal guys.
 
 ; TJT 2014-04-24 raise-index-mod-lex-item should not be used for
-; adjectives or adverbs as the MOD...INDEX is indentified with the
+; adjectives or adverbs as the MOD...INDEX is identified with the
 ; CONT.HOOK.XARG, not the CONT.HOOK.INDEX. Removing raise-index-mod-lex-item.
 ; See ERG as example of not using this.
 
@@ -2938,23 +2938,7 @@ spr-trans-first-arg-control-lex-item := basic-three-arg & basic-icons-lex-item &
 
 ; Possibly more types related to the above.
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Modifiers
-
-; Modifiers which can be used either attributively or predicatively 
-; identify their XARG with their MOD..IND, so that the modified element
-; or the subject play the same role.  Assume other constraints will block
-; a modifier from picking up a subject (in the ERG, this is done by
-; not giving them any SUBJ ever, since adjectives and PPs require
-; the support of the copula to function as predicates; in a language
-; which doesn't use the copula in these contexts, something else would
-; need to be done.
-
-; TJT 2014-04-24 Editing out for new adjective hierarchy; See below
-
-;attrib-or-pred-lex-item := lex-item &
-;  [ SYNSEM.LOCAL [ CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX #ind,
-;		   CONT.HOOK.XARG #ind ] ].
+; TJT 2014-04-24 Editing out "Modifiers" for new adjective hierarchy; See below
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Part of speech
@@ -2963,6 +2947,8 @@ spr-trans-first-arg-control-lex-item := basic-three-arg & basic-icons-lex-item &
 ; many closed-class items have linking constraints which are particular
 ; to the part of speech class, and so some linking constraints are
 ; included.
+
+;;; Verbs
 
 ; Bringing in norm-sem-lex-item here where relevant, although this
 ; might be too stringent.
@@ -2981,27 +2967,6 @@ basic-verb-lex-super := norm-hook-lex-item &
 
 basic-verb-lex := basic-verb-lex-super & single-rel-lex-item & 
   [ SYNSEM.LKEYS.KEYREL event-relation ].
-
-; TJT 2014-04-24 Adding basic copula type for predicative adjectives
-; based on LING 567 instructions + CoLLAGE grammars
-
-basic-copula-verb-lex := basic-verb-lex-super & trans-first-arg-raising-lex-item-2 & 
-  [ SYNSEM.LOCAL [ CAT.VAL [ SUBJ < [ LOCAL [ CONT.HOOK.INDEX #xarg,
-    		   	     	      	      CAT [ VAL [ SPR < >,
-					      	    	  COMPS < > ],
-						    HEAD noun ] ] ] >,
-	  		     COMPS < [ LOCAL.CAT [ HEAD.PRD +,
-			     	       		   VAL.COMPS < > ] ] >,
-		   	     SPR < >,
-		   	     SPEC < > ],
-	           CONT [ HOOK.XARG #xarg,
-		   	  RELS <! !>  ] ] ].
-
-; Copula type taking adjectival complements.
-; Need to define more for additional complement types.
-
-adj-comp-copula-verb-lex := basic-copula-verb-lex &
- [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD adj ] > ].
 
 ; ERB 2004-08-26 Put in qeq, assuming that for all scopal modifiers
 ; the relevant argument position is ARG1, and there will be
@@ -3046,9 +3011,10 @@ no-mod-lex := no-hcons-lex-item &
 ; (event for adj, index for nouns) preventing coordination from working
 ; changed to norm-sem-lex-item.
 
-; TJT 2014-05-01 raise-index-mod-lex-item incorrectly identifies the mod value's
-; index with the modifier's index, which is incorrect. The mod value's index
-; should be the XARG / ARG1 of the modifier, as in intersective-mod-lex
+; TJT 2014-05-01 raise-index-mod-lex-item incorrectly identifies the
+; modificand's index with the modifier's index, which is incorrect. The MOD
+; value's index should be the XARG / ARG1 of the modifier,
+; as in intersective-mod-lex
 
 ;basic-mod-adj-lex := basic-adjective-lex & norm-sem-lex-item.
 ;basic-scopal-mod-adj-lex := basic-mod-adj-lex & scopal-mod-lex.
@@ -3056,30 +3022,25 @@ no-mod-lex := no-hcons-lex-item &
 ;basic-nomod-adj-lex := basic-adjective-lex & no-mod-lex & norm-hook-lex-item.
 
 ; TJT 2014-04-24 New adjective hierarchy
+; TJT 2014-09-04 Most of the adjective hierarchy is now calculated for mylanguage.tdl in order to accomodate argument agreement languages.
 
 basic-adjective-lex := norm-sem-lex-item &
   [ SYNSEM [ LOCAL [ CAT [ HEAD adj,
                            VAL [ COMPS < >,
 				 SPEC < >,
                                  SPR.FIRST.LOCAL.CONT.HOOK.XARG #index ] ] ],
-              LKEYS.KEYREL event-relation & 
-	      		   [ ARG0 #index ] ] ].
+             LKEYS.KEYREL event-relation & 
+	      		  [ ARG0 #index ] ] ].
 
-basic-attr-adj-lex := basic-adjective-lex & intersective-mod-lex &
-  [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT [ HEAD noun,
-    			     	       	 VAL.SPR cons ] ] > ].
+basic-intersective-adjective-lex := basic-adjective-lex &
+  [ SYNSEM [ LOCAL.CONT.HOOK.XARG ref-ind & #xarg,
+    	     LKEYS.KEYREL.ARG1 #xarg ] ].
 
-basic-pred-adj-lex := basic-adjective-lex &
-  [ SYNSEM [ LOCAL [ CAT.VAL.SUBJ.FIRST.LOCAL.CAT.HEAD noun,
-		     CONT.HOOK.XARG #xarg ],
-             LKEYS.KEYREL.ARG1 #xarg ] ].
+; Scopal Adjectives
+; TJT 2014-05-07 Trying to fit scopals back into new hierarchy.
+; Use with caution!
 
-adjective-lex := basic-attr-adj-lex & basic-pred-adj-lex.
-
-basic-attr-only-adj-lex := basic-attr-adj-lex &
-  [ SYNSEM.LOCAL.CAT.HEAD.PRD - ].
-
-basic-pred-only-adj-lex := basic-pred-adj-lex & no-mod-lex.
+basic-scopal-mod-adj-lex := basic-adjective-lex & scopal-mod-lex.
 
 ;;; Adpositions
 
@@ -3213,10 +3174,18 @@ basic-subord-conjunction-lex := basic-one-arg &
 ;
 ; null-coord-rel: used when a conjunction contributes *no* relation.
 
+; TJT 2014-05-07 Changing to "implicit_coord_rel" and "null_coord_rel" at
+; ACE's suggestion, which claims the unquoted versions are deprecated
+
+;implicit-coord-rel := coordination-relation &
+;  [ PRED 'implicit_coord_rel ].
+;null-coord-rel := coordination-relation &
+;  [ PRED 'null_coord_rel ].
+
 implicit-coord-rel := coordination-relation &
-  [ PRED 'implicit_coord_rel ].
+  [ PRED "implicit_coord_rel" ].
 null-coord-rel := coordination-relation &
-  [ PRED 'null_coord_rel ].
+  [ PRED "null_coord_rel" ].
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Conjunction parts of speech

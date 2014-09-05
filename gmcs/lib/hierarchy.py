@@ -93,7 +93,7 @@ class Hierarchy(object):
 #  return_value = op(x in subsumees for x in all_subsumed)
 #  if not allow_outliers:
 #
-#  return 
+#  return
 #
 #
 #def supersumes(supersumers, supersumees, hierarchy,

@@ -1,8 +1,8 @@
 from gmcs.linglib import case
-from gmcs.linglib import lexical_items
+#from gmcs.linglib import lexical_items
 from gmcs.utils import get_name
 from gmcs.linglib.lexbase import LexicalType, PositionClass
-from gmcs.linglib.lexbase import ALL_LEX_TYPES
+#from gmcs.linglib.lexbase import ALL_LEX_TYPES
 from gmcs.linglib.lexbase import LEXICAL_CATEGORIES
 from gmcs.linglib.lexbase import LEXICAL_SUPERTYPES
 
@@ -31,8 +31,10 @@ def lexical_type_hierarchy(choices, lexical_supertype):
   for lst in lts_to_add:
     for lt in choices[lst]:
       st = get_lexical_supertype(lt.full_key, choices)
-      lth.add_node(LexicalType(lt.full_key, get_lt_name(lt.full_key, choices),
-                               parents={st:lth.nodes[st]}))
+      try:
+        lth.add_node(LexicalType(lt.full_key, get_lt_name(lt.full_key, choices),
+                                 parents={st:lth.nodes[st]}))
+      except: raise Exception(lth.nodes)
       # If we're dealing with a verb add nodes for all lexical entries
       # because bistems can give rise to flags that need to appear on
       # all verbs.
@@ -54,7 +56,7 @@ def get_lexical_supertype(lt_key, choices):
     return 'verb'
   elif lexical_category == 'verb':
     return case.interpret_verb_valence(choices[lt_key]['valence'])
-  elif lexical_category in ('noun', 'det', 'aux'):
+  elif lexical_category in ('noun', 'det', 'aux', 'adj', 'cop'): # TJT Added cop
     return lexical_category
   return None
 
@@ -94,7 +96,8 @@ def used_lexical_supertypes(choices):
   lexical_supertypes) that will actually be used in the grammar.
   """
   used = set()
-  for x in ['noun','aux','adj','det']:
+  # TJT 2014-09-03: Adding copula here
+  for x in ['noun','aux','adj','det','cop']:
     if x in choices:
       used.add(x)
   if 'verb' in choices:
@@ -117,7 +120,7 @@ def get_lexical_supertypes(lrt_key, choices):
     if lrt_key in ('iverb','tverb'):
       if choices['has-aux'] == 'yes': return ['mverb','verb']
       else: return ['verb']
-    elif lrt_key == 'aux': return ['verb']
+    elif lrt_key =='aux': return ['verb']
     else: return []
   # otherwise we have a lexical type (e.g. noun1, verb2, etc)
   elif lexical_category == 'verb':
@@ -125,9 +128,35 @@ def get_lexical_supertypes(lrt_key, choices):
     return [verb_type] + get_lexical_supertypes(verb_type, choices)
   elif lexical_category == 'aux':
     return ['verb']
-  elif lexical_category in ('noun', 'det', 'adj'):
+  elif lexical_category in ('noun', 'det', 'adj', 'cop'): # TJT 2014-09-03: Adding copulas
     return [lexical_category]
   return []
+
+# TJT 2014-09-03
+def get_all_supertypes(key, choices):
+  """
+  Return a list of all the supertypes of a given lexical type as defined by
+  the user and whether the supertypes provide a path to the root. This does
+  not include matrix internal types. Returns an empty list if no supertypes defined.
+  """
+  pathToRoot = False
+  seen = set()
+  supertypes = key.get('supertypes','').split(', ')
+  if len(supertypes) == 1 and supertypes[0] == '':
+    pathToRoot = True
+    supertypes = []
+  else:
+    for supertype in supertypes:
+      if supertype in seen: continue
+      seen.add(supertype)
+      if not choices.get(supertype,False): continue
+      parents = choices.get(supertype).get('supertypes','').split(', ')
+      if parents:
+        if '' in parents:
+          pathToRoot = True
+        else:
+          supertypes.extend(parents)
+  return supertypes, pathToRoot
 
 def get_lt_name(key, choices):
   if key in LEXICAL_SUPERTYPES:
@@ -149,6 +178,23 @@ def validate_lexicon(ch, vr):
   if 'noun' not in ch:
     mess = 'You should create at least one noun class.'
     vr.warn('noun1_stem1_orth', mess)
+
+  # For verbs and verbal inflection, we need to prevent that index features are
+  # assigned to verbs: making set of features that should not be assigned to
+  # verbs
+
+  # TJT 2014-09-02: Updating/moving this for adjectives: need to keep track of
+  # both nominal and verbal constraints to constrain adjective agreement and
+  # inflection properly
+
+  index_features = {'person', 'number','gender'}
+  head_features = {'tense', 'aspect', 'mood'}
+  for feature in ch.get('feature'):
+    if 'name' in feature:
+      if feature.get('type') == 'index':
+        index_features.add(feature.get('name'))
+      elif feature.get('type') == 'head':
+        head_features.add(feature.get('name'))
 
   # Nouns
 
@@ -327,7 +373,7 @@ def validate_lexicon(ch, vr):
   #          b := a
   #          c := b & a
 
-  # ntsts is a dict of nountype names->lists of supertypes
+  # vtsts is a dict of verbtype names->lists of supertypes
   # inherited_feats dict of verbtype names->lists of inherited features
   vtsts = {}
   feats = {}
@@ -466,6 +512,159 @@ def validate_lexicon(ch, vr):
     vr.warn('verb1_valence', mess)
     vr.warn('verb2_valence', mess)
 
+  # TODO: Adjectives: TJT 2014-08-25
+
+  # Adjectives TJT 2014-08-25
+  # First, gather switching adjective position classes' inputs
+  adj_pc_switching_inputs = set()
+  for adj_pc in ch.get('adj-pc',[]):
+    if adj_pc.get('switching',''):
+      inputs = adj_pc.get('inputs',[]).split(', ')
+      if isinstance(inputs, basestring):
+        adj_pc_switching_inputs.add(inputs)
+        continue
+      # Else, assume list
+      adj_pc_switching_inputs.update(inputs)
+
+  for adj in ch.get('adj',[]):
+    mode = adj.get('mod','')
+
+    # Name can't have illegal characters
+    name = adj.get('name')
+    if name:
+      if " " in name:
+        vr.err(adj.full_key + '_name',
+               'Type names cannot include the space character')
+
+    # Supertypes must be defined
+    supertypes = adj.get('supertypes','').split(', ')
+    undefined_supertypes = filter(lambda x: x not in ch, supertypes)
+    if undefined_supertypes:
+      vr.err(adj.full_key + '_supertypes',
+             "The following supertypes are not defined: "
+             "%s" % ', '.join(undefined_supertypes))
+
+    # Adjectives must have a mode defined
+    if not mode:
+      vr.err(adj.full_key+'_mod',
+             'Every adjective requires a choice of mode (attributive, ' +\
+             'predicative, or both)')
+
+    # If mode unspecified, mode must be defined on a position class accepting
+    # this as its input
+    if mode == 'none':
+      if adj.full_key not in adj_pc_switching_inputs:
+        vr.err(adj.full_key+'_mod',
+               'Unspecified adjectives must be specified for mode by ' +\
+               'some position class on the Morphology page enabled by using ' +\
+               'argument agreement choices on the feature section below.' +\
+               (' The current full_key is: %s' % adj.full_key) +\
+               (' full_key in adj_pc_switching_inputs: %s' % str(adj.full_key in adj_pc_switching_inputs)) +\
+               ' The switching position class inputs are: %s' % adj_pc_switching_inputs)
+
+    # Enforce feature specifications to unify with mode
+    illegal_heads = {'attr':'subj', 'pred':'mod'}
+    if mode in illegal_heads:
+      name_map = {'attr':'attributive', 'pred':'predicative'}
+      illegal_head = illegal_heads[mode]
+      for feat in adj.get('feat',[]):
+        if feat.get('head','') == illegal_head:
+          vr.err(feat.full_key+'_head',
+                 'This head is not compatible with %s adjectives.' % name_map[mode])
+
+    # Adjective agreement features on one adjective are exclusively set
+    # through the Morphology page
+    for feat in adj.get('feat',[]):
+      if feat.get('head','') in illegal_heads.values():
+        vr.err(feat.full_key+'_head',
+               'This head is available here to enable features on the Morphology ' +\
+               'page. If you are encountering this error, make sure you have ' +\
+               'JavaScript enabled, or try deleting this feature and checking the ' +\
+               'Morphology page.')
+
+    # Choices required for a given mode must be specified
+    if mode in ('both', 'attr'):
+      message = 'This choice is required for adjectives that can be attributive'
+      if not adj.get('modpos'):
+        vr.err(adj.full_key+"_modpos", message)
+    if mode in ('both', 'pred'):
+      message = 'This choice is required for adjectives that can be predicative'
+      if not adj.get('predcop'):
+        vr.err(adj.full_key+"_predcop", message)
+
+    # Mode specific adjective choices are disregarded without the proper mode
+    if mode in ('pred', 'attr'):
+      inverse_mode_name = {'pred':'attributively', 'attr':'predicatively'}[mode]
+      message = 'This choice is only applicable to adjectives behaving ' +\
+                ('%s. This choice will be ignored, or you ' % inverse_mode_name) +\
+                'can change the adjective\'s behavoir to enable this choice above.'
+      if mode != 'attr':
+        if adj.get('modpos'):
+          vr.warn(adj.full_key+'_modpos', message)
+        if adj.get('modunique'):
+          vr.warn(adj.full_key+'_modunique', message)
+      if mode != 'pred':
+        if adj.get('predcop'):
+          vr.warn(adj.full_key+'_predcop', message)
+
+    # Adjectives defined as a copula complement are unusuable without a copula defined
+    if adj.get('predcop','') in ('opt', 'obl') and not ch.get('cop',''):
+      messages = {
+        'opt':'optionally a copula complement is unusable as a copula complement',
+        'obl':'obligatorily a copula complement is unusable' }
+      message = messages[adj.get('predcop','')]
+      vr.warn(adj.full_key+'_predcop',
+              'An adjective defined as %s without a copula ' % message +\
+              'defined on the Lexicon page.')
+
+    ## Get path to root and supertypes to check
+    supertypes, pathToRoot = get_all_supertypes(adj, ch)
+
+    # Each adjective needs a path to root
+    if not pathToRoot:
+      vr.err(adj.full_key+'_supertypes',
+             'This adjective type doesn\'t inherit from adj-lex or a ' +\
+             'descendant, where a type inherits from adj-lex if it is' +\
+             'defined without a supertype.')
+
+    # Type definitions must unify with their supertype's definitions
+    name_map = {'mod':'adjective mode', 'modpos':'attributive modification direction',
+                'modunique':'unique modification', 'predcop':'copula complement'}
+    for supertype in supertypes:
+      super_type_def = ch.get(supertype,False)
+      if not super_type_def: continue
+      for choice in name_map:
+        super_type_value = super_type_def.get(choice,False)
+        if super_type_value:
+          if super_type_value != adj.get(choice):
+            # Both and predicative/attributive unify
+            if super_type_def.get(choice) == 'both' and \
+               adj.get(choice) in ('pred', 'attr'):
+              continue
+            # Either position and before/after unify
+            if super_type_def.get(choice) == 'either' and \
+               adj.get(choice) in ('before', 'after'):
+              continue
+            # modunique underspecified can be the parent of modunique +
+            if super_type_def.get(choice,'missing') == 'missing' and \
+               adj.get(choice,'') == 'on':
+              continue
+            # Found collision
+            vr.err(adj.full_key+'_supertypes',
+                   'This adjective definition clashes with its supertype ' +\
+                   ('%s on choice of %s. ' % (supertype, name_map[choice])) +\
+                   ('type choice: %s; supertype choice: %s.' % (adj.get(choice), super_type_value)))
+
+    # Each stem needs a predicate / each predicate needs a stem
+    message = 'Every stem requires both a spelling and predicate'
+    for stem in adj.get('stem',''):
+      orth = stem.get('orth',False)
+      pred = stem.get('pred',False)
+      if not orth:
+        vr.err(stem.full_key+"_orth", message)
+      if not pred:
+        vr.err(stem.full_key+"_pred", message)
+
   # Auxiliaries
   aux_defined = 'aux' in ch
   if ch.get('has-aux') != 'yes':
@@ -519,7 +718,6 @@ def validate_lexicon(ch, vr):
              'i.e., the value of the complement feature FORM.'
       vr.err(aux.full_key + '_complabel', mess)
 
-
     for stem in aux.get('stem', []):
       if sem == 'add-pred' and not stem.get('pred'):
         mess = 'You have indicated that this type contributes a predicate. ' +\
@@ -533,8 +731,51 @@ def validate_lexicon(ch, vr):
         mess = 'You must specify a spelling for each auxiliary you define.'
         vr.err(stem.full_key + '_orth', mess);
 
+  # TODO: Copulas: TJT 2014-08-25
+
+  # Copulas
+  for cop in ch.get('cop',[]):
+    # Names can't have illegal characters
+    name = cop.get('name',False)
+    if name:
+      if " " in name:
+        vr.err(cop.full_key + '_name',
+               'Type names cannot include the space character.')
+
+    # Supertypes must be defined
+    immediate_supertypes = cop.get('supertypes','').split(', ')
+    undefined_supertypes = filter(lambda st: st not in ch, immediate_supertypes)
+    if undefined_supertypes:
+      vr.err(adj.full_key+'_supertypes',
+             "The following supertypes are not defined: "
+             "%s." % ', '.join(undefined_supertypes))
+
+    # Copulas must have a complement type specified
+    if not cop.get('comptype',False):
+      vr.err(cop.full_key+'_comptype',
+             'Every copula must have at least one complement type defined.')
+
+    ## Get path to root and supertypes to check
+    supertypes, pathToRoot = get_all_supertypes(cop, ch)
+
+    # Each Copula needs a path to root
+    if not pathToRoot:
+      vr.err(cop.full_key+'_supertypes',
+             'This copula type doesn\'t inherit from cop-lex or a ' +\
+             'descendant, where a type inherits from cop-lex if it is' +\
+             'defined without a supertype.')
+
+    # TJT 2014-09-05: Verbs don't seem to do this, so not doing it
+    # Supertype features cannot conflict with type features
+#    for stname in supertypes:
+#      supertype = ch.get(stname,False)
+#      if supertype:
+#        supertype_features = supertype.get('feats',[])
+#        for feat in supertype_features:
+
+
   # Determiners
-  for det in ch.get('det'):
+  for det in ch.get('det',[]):
     for stem in det.get('stem', []):
       if not stem.get('orth'):
         mess = 'You must specify a spelling for each determiner you define.'
@@ -550,20 +791,10 @@ def validate_lexicon(ch, vr):
       mess = 'You should specify a value for at least one feature (e.g., CASE).'
       vr.warn(adp.full_key + '_feat1_name', mess)
 
-  # For verbs and verbal inflection, we need to prevent that index features are
-  # assigned to verbs: making set of features that should not be assigned to
-  # verbs
-
-  index_feat = ['person', 'number','gender']
-  for feature in ch.get('feature'):
-    if 'name' in feature:
-      if feature.get('type') == 'index':
-        index_feat.append(feature.get('name'))
-
-
 
   # Features on all lexical types
-  for lextype in ('noun', 'verb', 'aux', 'det', 'adp'):
+  # TJT 2014-09-02: Adding adj and cop
+  for lextype in ('noun', 'verb', 'adj', 'aux', 'cop', 'det', 'adp'):
     for lt in ch.get(lextype):
       for feat in lt.get('feat', []):
         if not feat.get('name'):
@@ -580,13 +811,23 @@ def validate_lexicon(ch, vr):
                  'other lexical types do not yet support argument structure.'
           vr.err(feat.full_key + '_name', mess)
 
-        if lextype == 'verb': # or lextype == 'aux': lap: 1/5/11 removed aux to get rid of overzealous validation
-
+        # TJT 2014-09-03: Adding adjectives and copulas here
+        if lextype in ('verb', 'adj', 'cop'): # or lextype == 'aux': lap: 1/5/11 removed aux to get rid of overzealous validation
+          # The head must be defined
           if not feat.get('head'):
             mess = 'You must choose where the feature is specified.'
             vr.err(feat.full_key + '_head', mess)
-          elif feat.get('head') == 'verb' and index_feat.count(feat.get('name')) > 0:
-            mess = 'This feature is associated with nouns, please select one of the NP-options.'
+          # Index features must be defined on some argument
+          elif feat.get('head') in ('verb', 'adj', 'cop'):
+            if feat.get('name') in index_features:
+              mess = 'This feature is associated with nouns. ' +\
+                     'Please select one of the NP options to use this feature.'
+              vr.err(feat.full_key + '_head', mess)
+          # Head features must be defined on the main predicate
+          elif feat.get('name') in head_features:
+            predicate = {"verb":"verb", "adj":"adjective", "cop":"copula"}[lextype]
+            mess = 'This feature is associated with predicates. ' +\
+                   'Please select "the %s" to use this feature.' % predicate
             vr.err(feat.full_key + '_head', mess)
 
         if not ch.has_dirinv() and feat.get('head') in ['higher', 'lower']:

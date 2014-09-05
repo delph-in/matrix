@@ -39,7 +39,7 @@ class ValidationResult:
   def err(self, key, message, anchor=None, concat=True):
     """
     Add an error message to key (a choices variable).  If the key
-    already has an error and 'concat' is set to true, concatenate 
+    already has an error and 'concat' is set to true, concatenate
     the new message with the existing one. Otherwise replace the
     message.
     """
@@ -51,7 +51,7 @@ class ValidationResult:
   def warn(self, key, message, anchor=None, concat=True):
     """
     Add an warning message to key (a choices variable).  If the key
-    already has a warning and 'concat' is set to true, concatenate 
+    already has a warning and 'concat' is set to true, concatenate
     the new message with the existing one. Otherwise replace the
     message.
     """
@@ -92,7 +92,8 @@ class ValidationMessage:
 #   system typically uses in grammars).
 
 # type names reserved for the customization system
-cust_types = [
+# TJT 2014-08-25: Making into tuple for speed
+cust_types = (
   'case-marking-adp-lex',
   'dir-inv-scale',
   'comp-head-phrase',
@@ -139,8 +140,13 @@ cust_types = [
   's-comp-aux-with-pred',
   's-comp-aux-no-pred',
   'determiner-lex',
-  'word-to-lexeme-rule'
-]
+  'word-to-lexeme-rule',
+  # TJT 2014-08-25: adding mylanguage.tdl adjective and copula types
+  'stative-pred-adj-lex',
+  'basic-copula-verb-lex',
+  'adj-comp-copula-verb-lex',
+  'adj_incorporation-lex-rule',
+)
 
 # regex patterns for sets of names that are not available for
 # user-defined types
@@ -153,9 +159,9 @@ forbidden_type_patterns = [
   '[a-z]+[0-9]+-left-coord-rule',
 
   #type names that collide with the type names used by mtr.tdl
-  '[aeihpuxAEIHPUX]', 
-  
-  'context[0-9]+-decl-head-opt-subj-phrase'  
+  '[aeihpuxAEIHPUX]',
+
+  'context[0-9]+-decl-head-opt-subj-phrase'
 ]
 
 def validate_names(ch, vr):
@@ -168,7 +174,8 @@ def validate_names(ch, vr):
     filename = 'matrix-types'
     f = open(filename, 'r')
     for t in f.readlines():
-      reserved_types[t.strip()] = True
+      type_name = t.strip()
+      reserved_types[type_name] = True
     f.close()
   except IOError:
     pass
@@ -313,7 +320,8 @@ def validate_names(ch, vr):
     user_types += [[get_name(verb) + '-inv-lex-rule',
                     verb.full_key + '_name']]
 
-  for pcprefix in ['noun', 'verb', 'det', 'aux']:
+  # TJT 2014-08-25: Adding adj + cop; changing to tuple for speed
+  for pcprefix in ('noun', 'verb', 'det', 'aux', 'adj', 'cop'):
     for pc in ch.get(pcprefix + '-pc', []):
       user_types += [[get_name(pc) + '-lex-rule',
                       pc.full_key + '_name']]
@@ -405,23 +413,23 @@ def validate_general(ch, vr):
   else:
     url = "http://www.ethnologue.com/show_language.asp?code="+iso
     try:
-      valid = False 
+      valid = False
       f = open('iso.tab')
       lines = f.readlines()
       for l in lines:
         toks = l.split('\t')
         if iso in toks[0]:
-          vr.info('iso-code', 'ISO 693-3 suggests the reference name for your language is: '+toks[6], anchor=url) 
+          vr.info('iso-code', 'ISO 693-3 suggests the reference name for your language is: '+toks[6], anchor=url)
           valid = True
       f.close()
       if not valid:
-        vr.warn('iso-code', 
-                'The three-letter code you provided is not in ISO-639-3.') 
+        vr.warn('iso-code',
+                'The three-letter code you provided is not in ISO-639-3.')
     except IOError:
       sys.stderr.write('''
-[iso-code not validated] Get the latest code table file from sil.org and put it in 
+[iso-code not validated] Get the latest code table file from sil.org and put it in
 your installation root directory as iso.tab to enable iso validation:
-\n$wget http://www.sil.org/iso639-3/iso-639-3_20120206.tab -O iso.tab\n\n''') 
+\n$wget http://www.sil.org/iso639-3/iso-639-3_20120206.tab -O iso.tab\n\n''')
 
   if not ch.get('archive'):
     vr.warn('archive',
@@ -524,14 +532,14 @@ def validate_other_features(ch, vr):
       if feature['new'] == 'no':
         if 'existing' not in feature:
           vr.err(feature.full_key + '_existing',
-             'You must specify which existing value type is used.')	
+             'You must specify which existing value type is used.')
         if 'value' in feature:
           vr.err(feature.full_key + '_new',
-             'You must check [define a new value type] if you add a value.')	
+             'You must check [define a new value type] if you add a value.')
       else:
         if 'value' not in feature:
           vr.err(feature.full_key + '_new',
-             'You must add a value if you check [define a new value type].')	
+             'You must add a value if you check [define a new value type].')
 
     for value in feature.get('value', []):
       if 'name' not in value:
@@ -582,7 +590,7 @@ def validate_information_structure(ch, vr):
     'focus-marker' : ['focus', 'semantic-focus', 'contrast-focus', 'focus-or-topic', 'contrast-or-focus', 'non-topic'],
     'topic-marker' : ['topic', 'aboutness-topic', 'contrast-topic', 'frame-setting-topic', 'focus-or-topic', 'contrast-or-topic', 'non-focus'],
     'c-focus-marker' : ['contrast', 'contrast-focus', 'contrast-or-focus'],
-    'c-topic-marker' : ['contrast', 'contrast-topic', 'contrast-or-topic'] 
+    'c-topic-marker' : ['contrast', 'contrast-topic', 'contrast-or-topic']
     }
 
   infostr_markers = []
@@ -593,7 +601,7 @@ def validate_information_structure(ch, vr):
         break
   for m in infostr_markers:
     if not validate_information_structure_affix(ch, m, infostr_values[m]):
-      validate_information_structure_msg(ch, vr, m, 'affix', 'You must create at least one affix involving this feature on Morphology.') 
+      validate_information_structure_msg(ch, vr, m, 'affix', 'You must create at least one affix involving this feature on Morphology.')
 
   infostr_markers = []
   for marker in infostr_values.keys():
@@ -603,7 +611,7 @@ def validate_information_structure(ch, vr):
         break
   for m in infostr_markers:
     if not validate_information_structure_adp(ch, m, infostr_values[m]):
-      validate_information_structure_msg(ch, vr, m, 'adp', 'You must create at least one adposition involving this feature on Lexicon.') 
+      validate_information_structure_msg(ch, vr, m, 'adp', 'You must create at least one adposition involving this feature on Lexicon.')
 
 
 
@@ -617,7 +625,7 @@ def validate_information_structure(ch, vr):
   if ch.get('word-order') == 'free':
     warning_msg = 'Information structural modules for free word order languages are under development. If positions are multiply checked, your grammar may have some overgeneration.'
     if ch.get('focus-pos') != '' and ch.get('topic-first') != '':
-      if ch.get('focus-pos') != 'clause-initial': 
+      if ch.get('focus-pos') != 'clause-initial':
         vr.warn('focus-pos', warning_msg)
 
     if ch.get('focus-pos') != '' and ch.get('c-focus-pos') != '':
@@ -625,7 +633,7 @@ def validate_information_structure(ch, vr):
         vr.warn('focus-pos', warning_msg)
 
     if ch.get('c-focus-pos') != '' and ch.get('topic-first') != '':
-      if ch.get('c-focus-pos') != 'clause-initial': 
+      if ch.get('c-focus-pos') != 'clause-initial':
         vr.warn('topic-first', warning_msg)
 
 
@@ -1115,14 +1123,14 @@ def validate_arg_opt(ch, vr):
       if not feat.get('head'):
         mess = 'You must choose where the feature is specified.'
         vr.err(feat.full_key+'_head',mess)
-  
+
   verbslist =  ch.get('verb')
   for v in verbslist:
     for feat in v['feat']:
       if feat.get('name') == 'OPT' and not feat.get('head') in ['subj','obj']:
         mess = "The OPT feature on verbs should be specified " + \
                "on the subject NP or the object NP."
-        vr.err(feat.full_key+'_head',mess)        
+        vr.err(feat.full_key+'_head',mess)
 
 
 def validate(ch, extra = False):

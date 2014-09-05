@@ -67,6 +67,45 @@ function is_displayed(node)
   return true;
 }
 
+// TJT 2014-08-26
+// toggle_element(id, how="toggle", switchOn=null)
+// Toggle display none/block on id
+//  id (string): which id to toggle
+//  how (string): toggle, turn on, or turn off div with id
+//  switchOn ([string, ...]): list of options able to activate toggle in select
+function toggle_element(id, how, switchOn) {
+  how = how || "toggle"; // set default to "toggle"
+  switchOn = switchOn || null; // set default to null
+  switchActive = true; // Ignore switch unless switchOn activates
+  // Get element to toggle
+  element = document.getElementById(id);
+  if (switchOn) {
+    switchActive = false; // If switchOn, do nothing by default
+    // Check to see if the node is a standard node
+    if (element != null && element.nodeType == 1) {
+      // This switch currently only works with select tags
+      if (this.tagName.toLowerCase() == "select") {
+	// If switchOn matches selected element, then do the toggling
+	if (switchOn.indexOf(this.options[this.selectedIndex].value) > -1) {
+	  switchActive = true;
+	}
+      }
+    }
+  }
+  // If element found and switch active, do the toggling
+  if (element != null && switchActive) {
+    if (how == "toggle") {
+      element.style.display = (element.style.display != 'block') ? 'block' : 'none';
+    }
+    else if (how == "on") {
+      element.style.display = 'block';
+    }
+    else if (how == "off") {
+      element.style.display = 'none';
+    }
+  } 
+}
+
 //////////////////////////////////////////////////////////////////////
 // Main Page functions
 
@@ -158,13 +197,17 @@ function submit_go(subpage){
     if (elms[i].name == "subpage" || elms[i].name=="delivery" || elms[i].name=="customize") {
       form.removeChild(elms[i]);
     }
-  } 
+  }
+  // Create link to new page
   var inp = document.createElement('input');
   inp.type= "hidden";
   inp.name= "subpage";
   inp.value=subpage
   form.appendChild(inp);
   form.submit();
+  // TJT 2014-08-21: Set url to new page
+  //var newPage = "matrix.cgi?subpage=" + subpage;
+  //window.location.href = newPage;
 }
 
 
@@ -365,7 +408,7 @@ function prev_div(n, name)
 // Worker function that clones the invisible tempate of an iterator,
 // replaces any iterator variables with the proper values, and inserts
 // the copy into the page.
-function do_clone_region(id, iter_var, check, bAnim, bShow)
+function do_clone_region(id, iter_var, bAnim, bShow)
 {
 
   var d = document.getElementById(id + '_TEMPLATE');
@@ -373,12 +416,12 @@ function do_clone_region(id, iter_var, check, bAnim, bShow)
   var p = prev_div(a, id);
   
   // Show/hide options based on previous choices
-  if (check) {
-    toShow = d.getElementById(check);
-    if (toShow) {
-      toShow.style.display = "block";
-    }
-  }
+  //if (check) {
+  //  toShow = d.getElementById(check);
+  //  if (toShow) {
+  //    toShow.style.display = "block";
+  //  }
+  //}
 
   var cur = 1;
   if (p && p.id) {
@@ -422,30 +465,31 @@ function do_clone_region(id, iter_var, check, bAnim, bShow)
 
 // clone_region()
 // Clone a region and expand using animation
-function clone_region(id, iter_var, check, bShow)
+function clone_region(id, iter_var, bShow)
 {
   //original
-  //do_clone_region(id, iter_var, true, bShow);
-  if (check) {
-    do_clone_region(id, iter_var, check, true, bShow);
-  }
-  else {
-    do_clone_region(id, iter_var, false, true, bShow);
-  }
+  do_clone_region(id, iter_var, true, bShow);
+  //if (check) {
+  //  do_clone_region(id, iter_var, check, true, bShow);
+  //}
+  //else {
+  //  do_clone_region(id, iter_var, false, true, bShow);
+  //}
 }
 
 // clone_region()
 // Clone a region and expand *without* animation
-function clone_region_noanim(id, iter_var, check)
+function clone_region_noanim(id, iter_var)
+//function clone_region_noanim(id, iter_var, check)
 {
   //original
-  //do_clone_region(id, iter_var, false);
-  if (check) {
-    do_clone_region(id, iter_var, check, false);
-  }
-  else {
-    do_clone_region(id, iter_var, false, false);
-  }
+  do_clone_region(id, iter_var, false);
+  //if (check) {
+  //  do_clone_region(id, iter_var, check, false);
+  //}
+  //else {
+  //  do_clone_region(id, iter_var, false, false);
+  //}
 }
 
 // remove_region()
@@ -495,19 +539,50 @@ function remove_element_all(id, suffix)
 }
 
 // check_radio_button(_name, _type)
-function check_radio_button(_name, _type)
-{
-	var _radio = document.getElementsByName(_name);
+// TJT 2014-09-02:
+// Type can be left out, "yes", "no", "last", or a number
+// If left out, _type will default to "yes"
+function check_radio_button(name, mode, switchOn) {
+        
+	mode = mode || 'yes';
+	switchOn = switchOn || null;
+	switchActive = true;
+	var radio = document.getElementsByName(name);
 	
-	if(_type == 'no')
-	{
-		_radio[0].checked = true;
-		_radio[1].checked = false;
+	// TJT 2014-09-03: Adding switch to only execute on particular selection
+	if (switchOn) {
+	  switchActive = false; // If switchOn, do nothing by default
+	  // Check to see if the node is a standard node
+	  if (element != null && element.nodeType == 1) {
+	    // This switch currently only works with select tags
+	    if (this.tagName.toLowerCase() == "select") {
+	      // If switchOn matches selected element, then do the toggling
+	      if (switchOn.indexOf(this.options[this.selectedIndex].value) > -1) {
+		switchActive = true;
+	      }
+	    }
+	  }
 	}
-	else
-	{
-		_radio[0].checked = false;
-		_radio[1].checked = true;
+	
+	if (switchActive) {
+	  if(mode == 'no') {
+	      radio[0].checked = true;
+	      //radio[1].checked = false;
+	    }
+	  // TJT 2014-09-03: Check a radio button by number
+	  else if (typeof mode == 'number') {
+	    if (mode < radio.length) {
+	      radio[mode].checked = true;
+	    }
+	  }
+	  // TJT 2014-09-03: Check the last radio button
+	  else if (mode == 'last') {
+	    radio[radio.length-1].checked = true;
+	  }
+	  else {
+	    //radio[0].checked = false;
+	    radio[1].checked = true;
+	  }
 	}
 }
 
@@ -1312,35 +1387,6 @@ function nav_customize(type) {
 
   f.removeChild(t);
   f.removeChild(i);
-}
-
-////////
-// Morphology Subpage (for adjectives)
-////////
-
-// set_incorporation(n) // Show or hide incorporation option depending on Lexicon choice
-function show_hidden(n)
-{
-  document.write(document.forms["choices_form"])
-  var divs = document.getElementsByClassName("incorp_switch");
-	for(var i=0; i<divs.length;i++){
-          var d = divs[i];
-          d.style.display = 'none';
-	}
-  var d = null;
-  //if option on lexicon page ticked
-  if (document.forms["choices_form"]["incorp"]) {
-    document.getElementById(n).style.display = "block";
-  }
-  else {
-    document.getElementById(n).style.display = "none";
-  }
-}
-
-// Display warning on radio choice
-function show(id) {
-  alert(id);
-  document.getElementById(id).setAttribute("style", "display: block");
 }
 
 

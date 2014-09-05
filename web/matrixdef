@@ -283,7 +283,7 @@ Label "<p>Blake (2001) defines <span class=\"dfn\">case</span> as
 they bear to their heads.&quot; For example, case commonly marks the
 subject or the direct object of a verb. The marking might consist of
 affixation or some other morpholological process that marks words, or
-it might be a adposition that marks whole noun phrases.</p>"
+it might be an adposition that marks whole noun phrases.</p>"
 
 Label "<p>This questionnaire allows you to describe <span
 class=\"dfn\">core case marking</span> in your language; that is, the
@@ -755,7 +755,7 @@ BeginIter feature{i} "a Feature" 1
   Radio new "Value {i} type" "" ""
   . no "existing" "" " use an existing value type: " "remove_element_all('feature{i}', 'value');" 
 
-  Select existing "existing" "" "<br>" "remove_element_all('feature{i}', 'value');check_radio_button('feature{i}_new', 'no');"
+  Select existing "existing" "" "<br>" "remove_element_all('feature{i}', 'value'); check_radio_button('feature{i}_new', 'no');"
   fillregex p=(existing_value_type[0-9]+_name) n=1  
   fillnames2 c=both 
 
@@ -860,7 +860,7 @@ Radio neg-order "Negative adverb order" "and appears " ""
 
 Text neg-adv-orth "Negative adverb spelling" "...and which is spelled: " "</p>" 20
 
-Check comp-neg "Negation by selected complement" "<p>" "A adverb like particle which is a selected complement.  This option will create a non-inflecting lexical rule that maps plain Vs to Vs which select for negation in addition to their regular COMPS.</p>" "neg_comp()"
+Check comp-neg "Negation by selected complement" "<p>" "An adverb like particle which is a selected complement.  This option will create a non-inflecting lexical rule that maps plain Vs to Vs which select for negation in addition to their regular COMPS.</p>" "neg_comp()"
 
 Label "<div style='margin-left:10px'>"
 Radio comp-neg-head "neg selected by" "Is neg selected by" "<br />"
@@ -1077,31 +1077,30 @@ grammar produced will not support coordination.</p>"
 
 BeginIter cs{i} "a Coordination Strategy" 1
 
-Label "<p>Coordination Strategy {i}:<br>&nbsp;&nbsp;&nbsp;&nbsp;in
-which"
+  Label "<p>Coordination Strategy {i}:<br>&nbsp;&nbsp;&nbsp;&nbsp;in which"
 
-Check n "Coordination Strategy {i} coordinates Ns" "" "nouns "
-Check np "Coordination Strategy {i} coordinates NPs" "" "NPs "
-Check vp "Coordination Strategy {i} coordinates VPs" "" "VPs "
-Check s "Coordination Strategy {i} coordinates Ss" "" "sentences<br>"
+  Check n "Coordination Strategy {i} coordinates Ns" "" "nouns "
+  Check np "Coordination Strategy {i} coordinates NPs" "" "NPs "
+  Check vp "Coordination Strategy {i} coordinates VPs" "" "VPs "
+  Check s "Coordination Strategy {i} coordinates Ss" "" "sentences<br>"
 
-Radio pat "Coordination Strategy {i} pattern" "&nbsp;&nbsp;&nbsp;&nbsp;are marked in a " ""
-. mono "Monosyndeton" "" "monosyndeton "
-. poly "Polysyndeton" "" "polysyndeton "
-. omni "Omnisyndeton" "" "omnisyndeton "
-. a "Asyndeton" "" "asyndeton &nbsp; pattern<br>"
+  Radio pat "Coordination Strategy {i} pattern" "&nbsp;&nbsp;&nbsp;&nbsp;are marked in a " ""
+  . mono "Monosyndeton" "" "monosyndeton "
+  . poly "Polysyndeton" "" "polysyndeton "
+  . omni "Omnisyndeton" "" "omnisyndeton "
+  . a "Asyndeton" "" "asyndeton &nbsp; pattern<br>"
 
-Radio mark "Coordination Strategy {i} mark" "&nbsp;&nbsp;&nbsp;&nbsp;by a " ""
-. word "Word" "" "word "
-. affix "Affix" "" "affix "
+  Radio mark "Coordination Strategy {i} mark" "&nbsp;&nbsp;&nbsp;&nbsp;by a " ""
+  . word "Word" "" "word "
+  . affix "Affix" "" "affix spelled "
 
-Text orth "Coordination Strategy {i} spelling" "spelled " "" 10
+  Text orth "Coordination Strategy {i} spelling" "" "" 10
 
-Radio order "Coordination Strategy {i} order" "that comes " ""
-. before "Before" "" "before "
-. after "After" "" "after the coordinand"
+  Radio order "Coordination Strategy {i} order" "that comes " ""
+  . before "Before" "" "before "
+  . after "After" "" "after the coordinand"
 
-Label "</p>"
+  Label "</p>"
 
 EndIter cs
 
@@ -1441,9 +1440,9 @@ Label "<a id=\"toggle_all_lex_button\" onclick=\"toggle_all_display_lex(1)\">&#9
 Separator
 
 Label "<h3 style='display:inline'>Noun Types</h3>"
-Label "<span>| <a href='#' onclick=\"draw_hierarchy('noun')\">visualize noun hierarchy</a> (experimental)</span><br />"
+Label "<span>| <a href='javascript:void(0);' onclick=\"draw_hierarchy('noun')\">visualize noun hierarchy</a> (experimental)</span><br />"
 
-Check adj_incorp "Noun {i} adj_incorp" "<p>Some adjectives in this language take adjectives as affixes: " "</p>"
+Check adj_incorp "adj_incorp" "<p>Some nouns in this language take adjectives as incorporated affixes: " "</p>"
 
 BeginIter noun{i} "a Noun Type" 1 1
 
@@ -1506,7 +1505,7 @@ EndIter noun
 Separator
 
 Label "<h3 style='display:inline'>Verb Types</h3>"
-Label "<span>| <a href='#' onclick=\"draw_hierarchy('verb')\">visualize verb hierarchy</a> (experimental)</span><br />"
+Label "<span>| <a href='javascript:void(0);' onclick=\"draw_hierarchy('verb')\">visualize verb hierarchy</a> (experimental)</span><br />"
 
 BeginIter verb{i} "a Verb Type" 1 2
 
@@ -1586,7 +1585,7 @@ EndIter verb
 Separator
 
 Label "<h3 style='display:inline'>Adjective Types</h3>"
-Label "<span>| <a href='#' onclick=\"draw_hierarchy('adj')\">visualize adjective hierarchy</a> (experimental)</span><br />"
+Label "<span>| <a href='javascript:void(0);' onclick=\"draw_hierarchy('adj')\">visualize adjective hierarchy</a> (experimental)</span><br />"
 
 BeginIter adj{i} "an Adjective Type" 1
 
@@ -1600,16 +1599,17 @@ BeginIter adj{i} "an Adjective Type" 1
   fillregex p=adj(?!{i})[0-9]+_name
 
   Label "<p>Adjectives in constructions are described as <span class=\"dfn\">attributive</span>:
-  those that directly modify nouns (e.g. \"the <b>big</b> dog\"); <br>
-  and <span class=\"dfn\">predicative</span>, those that modify their subject (e.g. \"the dog is <b>big</b>\").
-  <br>Many adjectives in many languages can be either predicative or attributive.</p>"
+  those that modify nouns (e.g. \"the <b>big</b> dog\"); <br>
+  and <span class=\"dfn\">predicative</span>, those that predicate their subject (e.g. \"the dog is <b>big</b>\").
+  <br>Many adjectives in many languages can be both predicative or attributive.</p>"
 
-  Radio mod "Adjective {i} structure" "<p>This type of adjective can be " "</p>"
-  . attr "Attributive" "" "attributive "
-  . pred "Predicative" "" "predicative "
+  Radio mod "Adjective {i} structure" "<p>This type of adjective is " "</p>"
+  . attr "attributive" "" "attributive "
+  . pred "predicative" "" "predicative "
   . both "both" "" "both "
+  . none "unspecified" "" "unspecified"
 
-  Label "Features:"
+  Label "<p>Features:<br>  Specify agreement features of the adjective by selecting one of the argument choices;<br>  specify inflection for predicative adjectives by selecting a feature to be specified on \"the adjective\".<br></p>"
 
   BeginIter feat{j} "a Feature"
 
@@ -1619,25 +1619,32 @@ BeginIter adj{i} "an Adjective Type" 1
     MultiSelect value "Adjective {i} feature {j} value" "Value: " ""
     fillvalues p=adj{i}_feat{j}_name
 
-    Select head "Adjective {i} feature {j} head" "Specified on: " ""
+    Select head "Adjective {i} feature {j} head" "Specified on: " "" "" "toggle_element.call(this, 'adj{i}_adj_pc_note', 'on', ['subj', 'mod']); check_radio_button.call(this, 'adj{i}_mod', 'last', ['subj', 'mod']);"
     . adj "The adjective" "the adjective"
     . subj "The subject" "the subject NP"
-    . mod "The modified" "the modified NP"
+    . mod "The modified noun" "the modified NP"
+    . xarg "Both positions" "both"
 
   EndIter feat
 
-  Radio modpos "Adjective {i} attributive structure" "<p>This type of adjective behaving
-  attributively modifies items immediately to its <br>" "</p>"
-  . right "Right-modifying" "" "right <br>"
-  . left "Left-modifying" "" "left <br>"
-  . either "Either-modifying" "" "either <br>"
-  . other "Other-mod" "" "some other position: this option is not currently supported" "" True
+  Label "<p id='adj{i}_adj_pc_note' style='display:none;'>  NOTE: Specifying agreement features on \"the subject\" or \"the modified noun\" will create a new<br>  position class on the Morphology page with specified features on \"both positions\" and without an affix<br>  to facilitate this functionality.<br>  The type of this adjective has also been changed to 'unspecified' to support this. Specify adjective types<br>  on the Morphology page when using this feature.<br></p>"
 
-  Radio predcop "Adjective {i} predicative structure" "<p>Adjectives of this type behaving predicatively
-  appear as the complement of a copula:<br>" "</p>"
+  Radio modpos "Adjective {i} attributive structure" "<p>This type of adjective behaving
+  attributively modifies items immediately <br>" "</p>"
+  . after "After-modifying" "" " after the adjective <br>"
+  . before "Before-modifying" "" " before the adjective <br>"
+  . either "Either-modifying" "" " either position <br>"
+  . other "Other-mod" "" " some other position: this option is not currently supported" "" x
+
+  Check modunique "Adjective {i} unique modification" "" " This type of adjective behaving
+  attributively must be the only modifier of its modificand"
+
+  Radio predcop "Adjective {i} predicative structure" "<p>Adjectives of this type behaving predicatively appear as the complement of a copula:<br>" "</p>"
   . obl "Obligatorily" "" " obligatorily<br>"
-  . opt "Optionally" "" " optionally<br>"
+  . opt "Optionally" "" " optionally<br>" "toggle_element.call(this, 'adj{i}_opt_note', 'on')"
   . imp "Impossibly" "" " impossibly<br>"
+
+  Label "<p id='adj{i}_opt_note' style='display:none;'>  NOTE: Specifying adjectives as optionally appearing as a copula complement will create a<br>  new position class on the Morphology page with a \"copula complement\" lexical rule and <br>\"stative predicate\" lexical rule to facilitate this functionality.<br></p>"
 
   Label "Stems:"
   BeginIter stem{j} "a Stem" 0 1
@@ -1777,9 +1784,9 @@ BeginIter aux{i} "an Auxiliary Type" 1
 
 EndIter aux
 
-Label "<p>Define a copula form to introduce complements.</p>"
+Label "<p>Define a copula to introduce complements.</p>"
 
-Label "<span><a href='#' onclick=\"draw_hierarchy('cop')\">visualize copula hierarchy</a> (experimental)</span><br /><br />"
+Label "<span><a href='javascript:void(0);' onclick=\"draw_hierarchy('cop')\">visualize copula hierarchy</a> (experimental)</span><br /><br />"
 
 BeginIter cop{i} "a Copula Type" 1
 
@@ -1789,17 +1796,25 @@ BeginIter cop{i} "a Copula Type" 1
 
   Text name "Cop {i} type name" "Type name: " "<br>" 30
   
-  Label "<br>"
+  Label "<br />"
   
-  MultiSelect supertypes "Adjective type {i}" "Supertypes: " "<br />"
+  MultiSelect supertypes "Copula type {i}" "Supertypes: " "<br />"
   fillregex p=cop(?!{i})[0-9]+_name
   
-  Label "<br>Copula features:"
+  Label "<br />Complement Type: What kind of complements does this copula allow?<br />"
+
+  MultiSelect comptype "Cop {i} comptype" "Type: " ""
+  fillvalues p=cop{i}_feat{j}_name
+  . np "NPs" "NPs" "" x
+  . pp "PPs" "PPs" "" x
+  . ap  "APs" "APs"
+  
+  Label "<br /><br />Copula features:"
 
   BeginIter feat{j} "a copula feature"
 
      Select name "Cop {i} feature {j} name" "Name: " ""
-     fillnames c=noun
+     fillnames c=both
 
      MultiSelect value "Cop {i} feature {j} value" "Value: " ""
      fillvalues p=cop{i}_feat{j}_name
@@ -1807,29 +1822,9 @@ BeginIter cop{i} "a Copula Type" 1
      Select head "Cop {i} feature {j} head" "Specified on: " ""
      . cop "The copula" "the copula"
      . subj "The subject" "the subject NP"
-     . obj  "The object" "the object NP"
+     . comp  "The complement" "the complement"
 
   EndIter feat
-  
-  Label "<br /><br />Complement Type: What kind of complements does this copula allow?<br />"
-
-  MultiSelect comptype "Cop {i} comptype" "Type: " ""
-  fillvalues p=cop{i}_feat{j}_name
-  . np "NP" "NPs" x
-  . pp "PP" "PPs" x
-  . ap  "AP" "APs"
-
-  Label complabel "<br><br>Complement Features:<br>"
-
-  BeginIter compfeature{j} "a complement feature" 0 0
-
-    Select name "Cop {i} complement feature {j} name" "Name: " ""
-    fillnames c=noun
-
-    MultiSelect value "Cop {i} complement feature {j} value" "Value: " ""
-    fillvalues p=cop{i}_compfeature{j}_name
-
-  EndIter compfeature
 
   Label "<br><br>Stems:"
 
@@ -1961,7 +1956,7 @@ Label "<a id=\"toggle_all_lex_button\" onclick=\"toggle_all_display_lex(1)\">&#9
 
 Label "<h3>Noun Inflection</h3>"
 
-BeginIter noun-pc{i} "a Position Class" 1 0 "incorp_switch"
+BeginIter noun-pc{i} "a Position Class" 1 0
 
   Text name "Noun Position Class {i} Name" "<b>Noun Position Class {i}</b>:<br/>Position Class Name: " " " 20
 
@@ -1998,7 +1993,7 @@ BeginIter noun-pc{i} "a Position Class" 1 0 "incorp_switch"
 
   Label "<p>Lexical Rule Types that appear in this Position Class:</p>"
 
-  BeginIter lrt{j} "a Lexical Rule Type" 1 1
+  BeginIter lrt{j} "a Lexical Rule Type" 1 0
 
     Text name "Noun Position Class {i} Lexical Rule Type {j} Name" "<b>Lexical Rule Type {j}</b>:<br/>Name: " "" 20
 
@@ -2010,7 +2005,7 @@ BeginIter noun-pc{i} "a Position Class" 1 0 "incorp_switch"
     BeginIter feat{k} "a Feature"
 
       Select name "Noun Position Class {i} Lexical Rule Type {j} Feature {k} Name" "Name: " " "
-      fillnames c=noun
+      fillnames c=both
 
       MultiSelect value "Noun Position Class {i} Lexical Rule Type {j} Feature {k} Value" "Value: " ""
       fillvalues p=noun-pc{i}_lrt{j}_feat{k}_name
@@ -2043,22 +2038,20 @@ BeginIter noun-pc{i} "a Position Class" 1 0 "incorp_switch"
 
       Radio inflecting "Noun Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Has Orthography" "Instance {k}" ""
       . no "No" "" "No affix"
-      . yes "Yes" "" "Affix"
+      . yes "Yes" "" "Affix spelled"
 
-      Text orth "Noun Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Spelling" "spelled" "" 20
+      Text orth "Noun Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Spelling" "" "" 20
 
     EndIter lri
 
   EndIter lrt
 
-  Label "<div class='incorp_switch'>"
-
-  BeginIter is-lrt{j} "an Incorporated Stem Lexical Rule Type" 0 0
+  BeginIter is-lrt{j} "an Incorporated Stem Lexical Rule Type" 1 0 "adj_incorp"
 
     Text name "Noun Position Class {i} Lexical Rule Type {j} Name" "<b>Incorporated Stem Lexical Rule Type {j}</b>:<br/>Name: " "" 20
 
     MultiSelect supertypes "Noun Position Class {i} Lexical Rule Type {j} Supertype" "<br/>Supertypes: " ""
-    fillregex p=noun-pc{i}_lrt[0-9]+_name
+    fillregex p=noun-pc{i}_is-lrt[0-9]+_name
 
     Label "<p>Features:</p>"
 
@@ -2068,7 +2061,11 @@ BeginIter noun-pc{i} "a Position Class" 1 0 "incorp_switch"
       fillnames c=noun
 
       MultiSelect value "Noun Position Class {i} Lexical Rule Type {j} Feature {k} Value" "Value: " ""
-      fillvalues p=noun-pc{i}_lrt{j}_feat{k}_name
+      fillvalues p=noun-pc{i}_is-lrt{j}_feat{k}_name
+
+      Select head "Noun Position Class {i} Lexical Rule Type {j} Feature {k} Head" "Specified on: " ""
+      . noun "The noun" "the noun"
+      . adj "The adjective" "the adjective"
 
     EndIter feat
 
@@ -2078,7 +2075,7 @@ BeginIter noun-pc{i} "a Position Class" 1 0 "incorp_switch"
 
       MultiSelect others "Noun Position Class {i} Lexical Rule Type {j} Requires" "Lexical Rule Type {j} requires one of the following: " ""
       fillcache c=nouns
-      fillregex p=noun-pc[0-9]+(_lrt[0-9]+)?_name
+      fillregex p=noun-pc[0-9]+(_is-lrt[0-9]+)?_name
       . noun "Any noun" "any noun"
 
     EndIter require
@@ -2087,7 +2084,7 @@ BeginIter noun-pc{i} "a Position Class" 1 0 "incorp_switch"
 
       Select others "Noun Position Class {i} Lexical Rule Type {j} forbids" "Lexical Rule Type {j} forbids the following: " ""
       fillcache c=nouns
-      fillregex p=noun-pc[0-9]+(_lrt[0-9]+)?_name
+      fillregex p=noun-pc[0-9]+(_is-lrt[0-9]+)?_name
       . noun "Any noun" "any noun"
 
     EndIter forbid
@@ -2098,16 +2095,14 @@ BeginIter noun-pc{i} "a Position Class" 1 0 "incorp_switch"
 
       Radio inflecting "Noun Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Has Orthography" "Instance {k}<br>" ""
       . no "No" "" "No affix<br>"
-      . yes "Yes" "" "Affix"
+      . yes "Yes" "" "Affix spelled"
 
-      Text orth "Noun Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Spelling" "spelled" "" 20
-      Text orth "Noun Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Predicate" "predicate" "" 20
+      Text orth "Noun Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Spelling" "" "" 20 "fill_pred('noun-pc{i}_is-lrt{j}_lri{k}', 'a')"
+      Text pred "Noun Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Predicate" "Predicate: " "" 20
 
     EndIter lri
 
   EndIter is-lrt
-
-  Label "</div>"
 
 EndIter noun-pc
 
@@ -2224,9 +2219,9 @@ BeginIter verb-pc{i} "a Position Class" 1
 
       Radio inflecting "Verb Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Has Orthography" "Instance {k}" ""
       . no "No" "" "No affix"
-      . yes "Yes" "" "Affix"
+      . yes "Yes" "" "Affix spelled"
 
-      Text orth "Verb Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Spelling" "spelled" "" 20
+      Text orth "Verb Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Spelling" "" "" 20
 
     EndIter lri
 
@@ -2252,6 +2247,8 @@ BeginIter adj-pc{i} "a Position Class" 1
   fillcache c=adjs
   fillregex p=adj-pc[0-9]+(_lrt[0-9]+)?_name
   . adj "Any Adjective" "any adjective"
+
+  Check switching "Adjective Position Class {i} Switching" "<div style=\"display:none;\">" "</div>"
 
   Label "<p>Morphotactic Constraints:</p>"
 
@@ -2282,7 +2279,7 @@ BeginIter adj-pc{i} "a Position Class" 1
     MultiSelect supertypes "Adjective Position Class {i} Lexical Rule Type {j} Supertype" "<br/>Supertypes: " ""
     fillregex p=adj-pc{i}_lrt[0-9]+_name
 
-    Label "<p>Features:</p>"
+    Label "<p>Features:<br>  Specify agreement features of the adjective by selecting one of the argument choices;<br>  specify inflection for predicative adjectives by selecting a feature to be specified on \"the adjective\".<br></p>"
 
     BeginIter feat{k} "a Feature"
 
@@ -2292,12 +2289,28 @@ BeginIter adj-pc{i} "a Position Class" 1
       MultiSelect value "Adjective Position Class {i} Lexical Rule Type {j} Feature {k} Value" "Value: " ""
       fillvalues p=adj-pc{i}_lrt{j}_feat{k}_name
 
-      Select head "Adjective Position Class {i} Lexical Rule Type {j} Feature {k} Head" "Specified on: " ""
+      Select head "Adjective Position Class {i} Lexical Rule Type {j} Feature {k} Head" "Specified on: " "" "" "toggle_element.call(this, 'adj-pc{i}_lrt{j}_adj_pc_note', 'on', ['subj', 'mod'])"
       . adj "The adjective" "the adjective"
       . subj "The subject" "the subject NP"
       . mod "The modified noun" "the modified NP"
+      . xarg "Both positions" "both"
 
     EndIter feat
+
+    Label "<p id='adj-pc{i}_lrt{j}_adj_pc_note' style='display:none;'>   NOTE: Specifying agreement features on \"the subject\" or \"the modified noun\" will create a new position<br>  class with specified features on \"both positions\" and without an affix to facilitate this functionality. If this<br>  is one of those position classes, make sure the \"specified on\" choice is set to \"both positions\"<br></p>"
+
+    Radio mod "Adjective Position Class {i} Lexical Rule Type {j} structure" "<p>Instances of this Lexical Rule Type can be " "</p>" "adj-pc{i}_switching"
+    . attr "Attributive" "" "attributive "
+    . pred "Predicative" "" "predicative "
+    . both "both" "" "both "
+
+    Radio modpos "Adjective Position Class {i} Lexical Rule Type {j} modification direction" "<p>Instances of this Lexical Rule Type behaving attributively modify nouns directly<br>" "</p>" "adj-pc{i}_switching"
+    . after "After-modifying" "" " after the adjective <br>"
+    . before "Before-modifying" "" " before the adjective <br>"
+    . either "Either-modifying" "" " either position <br>"
+    . other "Other-mod" "" " some other position: this option is not currently supported" "" x
+
+    Check predcop "Adjective Position Class {i} Lexical Rule Type {j} Stative Predicate or Copula Complement" "" " Instances of this Lexical Rule Type behaving predicatively appear as copula complements" "" "adj-pc{i}_switching"
 
     Label "<p>Morphotactic Constraints:</p>"
 
@@ -2325,9 +2338,9 @@ BeginIter adj-pc{i} "a Position Class" 1
 
       Radio inflecting "Adjective Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Has Orthography" "Instance {k}" ""
       . no "No" "" "No affix"
-      . yes "Yes" "" "Affix"
+      . yes "Yes" "" "Affix spelled"
 
-      Text orth "Adjective Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Spelling" "spelled" "" 20
+      Text orth "Adjective Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Spelling" "" "" 20
 
     EndIter lri
 

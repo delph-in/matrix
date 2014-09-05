@@ -4,7 +4,7 @@
 # imports
 
 import re
-import sys
+#import sys
 from gmcs.util.misc import safe_int, get_valid_lines
 from gmcs.linglib import case
 
@@ -98,7 +98,8 @@ class ChoiceDict(ChoiceCategory, dict):
   def __delitem__(self, key):
     cur, remaining = get_next_key(key)
     if remaining:
-      del self[cur][remaining]
+      #del self[cur][cur+remaining] # TJT 2014-09-02: This isn't working for some reason
+      del self[cur][remaining] # TJT 2014-09-02: This isn't working for some reason
     elif cur in self:
       dict.__delitem__(self, cur)
 
@@ -110,7 +111,7 @@ class ChoiceDict(ChoiceCategory, dict):
     return None
 
   def split_value(self, key):
-    return [x for x in self[key].split(', ') if x != ''] 
+    return [x for x in self[key].split(', ') if x != '']
 
   def walk(self, intermediates=False):
     if intermediates and self.full_key != None:
@@ -267,12 +268,12 @@ def get_next_key(complex_key):
   """
   Split a key grouping it by non-numbers and numbers.
   """
-  # if the key is just a number, just return the number
-  if isinstance(complex_key, int):
-    return complex_key, ''
   # given a blank key, return None
   if not complex_key:
     return None, None
+  # if the key is just a number, just return the number
+  if isinstance(complex_key, int):
+    return complex_key, ''
   try:
     subkeys = next_key_cache[complex_key]
   except KeyError:
@@ -426,6 +427,9 @@ class ChoicesFile:
     if key not in self:
       return
     for i, c in enumerate(self[key]):
+      # TJT 2014-09-02: Enumerate starts at 0,
+      # so add 1 to i
+      i += 1
       c_type = type(c)
       if c_type is ChoiceDict:
         c.full_key = key + str(i)
@@ -607,7 +611,7 @@ class ChoicesFile:
 
   def has_adp_only_infostr(self):
     """
-    Returns True iff the target language has information structural adpositions 
+    Returns True iff the target language has information structural adpositions
     without case-marking.
     If the check_opt argument is True, only return True
     if the adposition is optional.
@@ -984,13 +988,13 @@ class ChoicesFile:
     return [[situation['name']] for situation in self.get('situation')]
 
   # moods()
-  #   Create and return a list containing information about the values 
+  #   Create and return a list containing information about the values
   #   of the MOOD feature implied by the current choices.
   #   This list consists of tuples:
   #      [mood name]
   def moods(self):
     moods = []
-    
+
     for md in self.get('mood'):
       moods += [[md['name']]]
 
@@ -1033,16 +1037,16 @@ class ChoicesFile:
   #   list consists of tuples with four strings:
   #       [feature name, list of values, feature geometry, category]
   #   Note that the feature geometry is empty if the feature requires
-  #   more complex treatment that just FEAT=VAL (e.g. negation).  
+  #   more complex treatment that just FEAT=VAL (e.g. negation).
   #   The list of values is separated by semicolons, and each item in the
   #   list of values is a pair of the form 'name|friendly name'.
-  #   The category string can have the values 'noun' or 'verb' or 'both' depending 
+  #   The category string can have the values 'noun' or 'verb' or 'both' depending
   #   whether the features are appropriate for "nouny" or "verby" things.
 
-  #   SSH (2012-06-20) 
+  #   SSH (2012-06-20)
   #   A flag feature 'customized' is added, which indicates whether the feature
   #   is created in the customization system by users. A feature is specified as
-  #   either 'customized=y' or 'customized=n'. 
+  #   either 'customized=y' or 'customized=n'.
 
   def features(self):
     features = []
@@ -1105,7 +1109,7 @@ class ChoicesFile:
     infostr_values = 'focus|focus;topic|topic;contrast|contrast;semantic-focus|non-contrastive-focus;contrast-focus|contrastive-focus;aboutness-topic|non-contrastive-topic;contrast-topic|contrastive-topic;frame-setting-topic|frame-setting-topic;focus-or-topic|focus-or-topic;contrast-or-focus|contrast-or-focus;contrast-or-topic|contrast-or-topic;non-topic|non-topic;non-focus|non-focus;bg|background'
     mkg_values = 'fc|focus;tp|topic;fc-only|focus-only;tp-only|topic-only;fc-+-tp|focus-and-topic;non-tp|non-topic;non-fc|non-focus;unmkg|unmarking'
     features += [ ['information-structure marking', mkg_values, 'LOCAL.CAT.MKG', 'both', 'n'] ]
-    features += [ ['information-structure meaning', infostr_values, 'LOCAL.CONT.HOOK.ICONS-KEY', 'both', 'n'] ]  
+    features += [ ['information-structure meaning', infostr_values, 'LOCAL.CONT.HOOK.ICONS-KEY', 'both', 'n'] ]
 
     # Argument Optionality
     if 'subj-drop' in self.choices or 'obj-drop' in self.choices:
@@ -1180,7 +1184,7 @@ class ChoicesFile:
         geom = 'LOCAL.CAT.HEAD.' + feat_name.upper()
       else:
         geom = 'LOCAL.CONT.HOOK.INDEX.PNG.' + feat_name.upper()
-        
+
       if len(values) > 0:
         features += [ [feat_name, values, geom, feat_cat, 'y'] ]
 
@@ -1963,17 +1967,17 @@ class ChoicesFile:
     key.
     """
     if self.get('punctuation-chars'):
-      self.convert_key('punctuation-chars', 'punctuation-chars-list') 
+      self.convert_key('punctuation-chars', 'punctuation-chars-list')
       self['punctuation-chars'] = 'keep-list'
 
   def convert_25_to_26(self):
-    """ 
-    This uprev converts the old choices that do not work with mtr.tdl and do not 
-    contain feature#_cat and feature#_new in the Other Feature. 
+    """
+    This uprev converts the old choices that do not work with mtr.tdl and do not
+    contain feature#_cat and feature#_new in the Other Feature.
     Some choices files have vlaue names that should be used only in mtr.tdl, which include
-    a, u, i, etc. The names should be changed. On the other hand, nouny vs. verby / 
+    a, u, i, etc. The names should be changed. On the other hand, nouny vs. verby /
     existing vs. new are required on the Other Feature.
-    
+
     This uprev also adds exp=1 to old choices files so that they are compatible
     with the new negation library.
     """
@@ -1986,7 +1990,7 @@ class ChoicesFile:
       if name in mtr:
         self.convert_value(g.full_key + '_name', name, '_'+name)
 
-    inproper_case_names = [ 'a', 'o', 's', 'A', 'O', 'S' ]    
+    inproper_case_names = [ 'a', 'o', 's', 'A', 'O', 'S' ]
 
     cm = self.get('case-marking')
     for name in inproper_case_names:
@@ -2018,7 +2022,7 @@ class ChoicesFile:
         tmp = ''
         delimiter = '-'
         if valence.find('+') > -1:
-          delimiter = '+'          
+          delimiter = '+'
         argst = valence.split(delimiter)
         for i in range(0, len(argst)):
           if argst[i] in inproper_case_names:
@@ -2029,7 +2033,7 @@ class ChoicesFile:
             tmp += delimiter
         lex_type['valence'] = tmp
 
-          
+
       for pc in self[lex_cat + '-pc']:
         for lrt in pc['lrt']:
           for feat in lrt['feat']:
@@ -2065,7 +2069,7 @@ class ChoicesFile:
         feature['cat'] = 'both'
 
   def convert_26_to_27(self):
-    """ 
+    """
     This uprev converts the names involving topicality in other features.
     """
     for feature in self.get('feature'):
