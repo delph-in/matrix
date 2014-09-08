@@ -31,11 +31,11 @@ adv-neg=on
 bineg-type=comp-mod
 neg1-type=fc
 neg2-type=fm
-comp-neg-head=v
-comp-neg-order=before
+comp-neg-head-comp-mod=v
+comp-neg-order-comp-mod=before
 comp-neg-orth=neg1
-neg-mod=vp
-neg-mod-order=after
+neg-mod-comp-mod-neg=vp
+neg-mod-order-comp-mod-neg=after
 neg-mod-orth=neg2
 
 section=coordination

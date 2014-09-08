@@ -24,9 +24,16 @@ if [ -z "${CUSTOMIZATIONROOT}" ]; then
   exit 1
 fi
 
-if [ -z "${ACEROOT}" ]; then
-  echo "run-regression-tests: unable to determine \$ACEROOT directory; exit."
-  exit 1
+if ! hash ace 2>/dev/null; then
+  echo "run-regression-tests: no ace command in \$PATH, checking \$ACEROOT..."
+  if [ -z "${ACEROOT}" ]; then
+    echo "run-regression-tests: unable to determine \$ACEROOT directory; exit."
+    exit 1
+  else
+    ACECMD="$ACEROOT/ace"
+  fi
+else
+  ACECMD="ace"
 fi
 
 logon32=''
@@ -209,7 +216,7 @@ do
     subdir=`ls -d $grammardir/*/`
     dat_file=$subdir/${lgname}.dat
     config_file=$subdir/ace/config.tdl
-    $ACEROOT/ace -G $dat_file -g $config_file 1>/dev/null 2>/dev/null
+    $ACECMD -G $dat_file -g $config_file 1>/dev/null 2>/dev/null
 
     #echo "Running ACE with $lgname..."
 
@@ -224,7 +231,7 @@ do
     touch $tsdbhome/$target/preference
     touch $tsdbhome/$target/tree
     cp $skeleton/item $tsdbhome/$target/item
-    cut -d@ -f7 $skeleton/item | ${CUSTOMIZATIONROOT}/regression_tests/art-static-prerelease -a "$ACEROOT/ace -g $dat_file 2>/dev/null" $tsdbhome/$target 1>/dev/null
+    cut -d@ -f7 $skeleton/item | ${CUSTOMIZATIONROOT}/regression_tests/art-static-prerelease -a "$ACECMD -g $dat_file 2>/dev/null" $tsdbhome/$target 1>/dev/null
     echo "DONE"	
 
     #echo "Working on ACE is done!!!"

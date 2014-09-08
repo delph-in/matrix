@@ -110,8 +110,8 @@ def customize_other_features(mylang, hierarchies):
     if feat not in ('case', 'person', 'number', 'pernum', 'gender',
                     'form', 'tense', 'aspect', 'situation', 'mood'):
       if type == 'head':
-        mylang.add('head :+ [ ' + feat.upper() + ' ' + feat + ' ].',
-                   section='addenda')
+          mylang.add('head :+ [ ' + feat.upper() + ' ' + feat + ' ].',
+                     section='addenda')
       else:
         mylang.add('png :+ [ ' + feat.upper() + ' ' + feat + ' ].',
                    section='addenda')

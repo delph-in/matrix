@@ -29,11 +29,11 @@ section=sentential-negation
 neg-exp=2
 infl-neg=on
 adv-neg=on
-neg-mod=vp
+neg-mod-infl-mod-neg=vp
 bineg-type=infl-mod
 neg1-type=b
 neg2-type=fm
-neg-mod-order=after
+neg-mod-order-infl-mod-neg=after
 neg-mod-orth=negadv
 
 section=coordination

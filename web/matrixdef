@@ -904,11 +904,11 @@ Label "<div id='infl-head-neg' class='bineg_switch' style='display:none'><p>You 
 
 Label "<div id='infl-comp-neg' class='bineg_switch' style='display:none'><p>You have selected a construction with a negative inflectional rule and a negative selected complement.  Define your lexical rule on the morphology subpage and indicate it with [negation plus].  Please provide some specifics about the negative complement here:</p>"
 
-Radio comp-neg-head "neg selected by" "Is neg selected by" "<br />"
+Radio comp-neg-head-infl-comp-neg "neg selected by" "Is neg selected by" "<br />"
 . aux "aux" "" "a (sub-)class of aux-verbs" "neg_comp()"
 . v   "v"   "" "any (finite) verb" "neg_comp()"
 
-Radio comp-neg-order "neg ordered" "How is neg ordered with resepct to other COMPS?" "<br />(NB: After other complements order is only available for non-argument composing auxiliaries.)<br />"
+Radio comp-neg-order-infl-head "neg ordered" "How is neg ordered with resepct to other COMPS?" "<br />(NB: After other complements order is only available for non-argument composing auxiliaries.)<br />"
 . before "before" "" "before "
 . after "after" "" "after "
 
@@ -917,12 +917,12 @@ Label "</div>"
 
 Label "<div id='infl-mod-neg' class='bineg_switch' style='display:none'><p>You have selected a negation construction with a negative inflectional rule and a negative word attached through a head-modifier rule.  Define your lexical rule on the morphology subpage and indicate it with [negation plus].  Please provide some further information about the negative modifier here:</p><p>"
 
-Radio neg-mod "negative adv modifies" "NEG adverb modifies:" "<br />"
+Radio neg-mod-infl-mod-neg "negative adv modifies" "NEG adverb modifies:" "<br />"
 . s "S" "" "S "
 . vp "VP" "" "VP "
 . v "V" "" "V "
 
-Radio neg-mod-order "negative adverb order" "NEG adverb is ordered: " ""
+Radio neg-mod-order-infl-mod-neg "negative adverb order" "NEG adverb is ordered: " ""
 . before "before" "" "before "
 . after "after" "" "after "
 . either "either" "" "on either side of the category it modifies.<br>"
@@ -939,7 +939,7 @@ Label "<div id='head-comp-neg' class='bineg_switch' style='display:none'><p>You 
 # . aux "aux" "" "a (sub-)class of aux-verbs" "neg_comp()"
 # . v   "v"   "" "any (finite) verb" "neg_comp()"
 
-Radio comp-neg-order "neg ordered" "How is NEG complement ordered with resepct to other COMPS?" "<br />(NB: After other complements order is only available for non-argument composing auxiliaries.)<br />"
+Radio comp-neg-order-head-comp "neg ordered" "How is NEG complement ordered with resepct to other COMPS?" "<br />(NB: After other complements order is only available for non-argument composing auxiliaries.)<br />"
 . before "before" "" "before "
 . after "after" "" "after "
 
@@ -948,12 +948,12 @@ Label "</div>"
 
 Label "<div id='head-mod-neg' class='bineg_switch' style='display:none'><p>You have selected a negation construction with a negative auxiliary verb and a negative adverb attached through a head-modifier rule.  The negative auxiliary verb will be created for you on the lexicon page where you can further specify its syntax.  Please provide some further information about the negative modifier here:</p>"
 
-Radio neg-mod "negative adv modifies" "NEG adverb modifies:" "<br />"
+Radio neg-mod-head-mod-neg "negative adv modifies" "NEG adverb modifies:" "<br />"
 . s "S" "" "S "
 . vp "VP" "" "VP "
 . v "V" "" "V "
 
-Radio neg-mod-order "negative adverb order" "NEG adverb is ordered: " ""
+Radio neg-mod-order-head-mod-neg "negative adverb order" "NEG adverb is ordered: " ""
 . before "before" "" "before "
 . after "after" "" "after "
 . either "either" "" "on either side of the category it modifies.<br>"
@@ -986,22 +986,22 @@ Label "</div>"
 
 Label "<div id='comp-mod-neg' class='bineg_switch' style='display:none'><p>You have selected a negation construction with a negative complement and a negative modifier.  Please provide some further information here:</p><p>"
 
-Radio comp-neg-head "neg selected by" "Is NEG complement selected by" "<br />"
+Radio comp-neg-head-comp-mod "neg selected by" "Is NEG complement selected by" "<br />"
 . aux "aux" "" "a (sub-)class of aux-verbs" "neg_comp()"
 . v   "v"   "" "any (finite) verb" "neg_comp()"
 
-Radio comp-neg-order "neg ordered" "How is NEG ordered with resepct to other COMPS?" "<br />(NB: After other complements order is only available for non-argument composing auxiliaries.)<br />"
+Radio comp-neg-order-comp-mod "neg ordered" "How is NEG ordered with resepct to other COMPS?" "<br />(NB: After other complements order is only available for non-argument composing auxiliaries.)<br />"
 . before "before" "" "before "
 . after "after" "" "after "
 
 Text comp-neg-orth "neg spelling" "What's the ORTH value for the NEG complement?" "</p><p>" 20
 
-Radio neg-mod "negative adv modifies" "NEG adverb modifies:" "<br />"
+Radio neg-mod-comp-mod-neg "negative adv modifies" "NEG adverb modifies:" "<br />"
 . s "S" "" "S "
 . vp "VP" "" "VP "
 . v "V" "" "V "
 
-Radio neg-mod-order "negative adverb order" "NEG adverb is ordered: " ""
+Radio neg-mod-order-comp-mod-neg "negative adverb order" "NEG adverb is ordered: " ""
 . before "before" "" "before "
 . after "after" "" "after "
 . either "either" "" "on either side of the category it modifies.<br>"
