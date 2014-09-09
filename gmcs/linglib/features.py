@@ -75,7 +75,10 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     # is agreeing with
     head = feat.get('head','')
     if head in head_map: # TJT 2014-08-15: changing this to map for speed/easy reading
-      geom_prefix += head_map[head]
+      if head in ('higher', 'lower'):
+        geom_prefix = head_map[head] # TJT 2014-09-09: Higher/lower replace prefix
+      else:
+        geom_prefix += head_map[head]
 
     # If auxcomplement, add additional definition on top of any head definition
     if pos == 'auxcomplement':
