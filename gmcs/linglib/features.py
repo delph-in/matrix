@@ -55,7 +55,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     'lower': 'SC-ARGS.REST.FIRST.',
     'xarg': 'LOCAL.CONT.HOOK.XARG.',  # XARG for adjectives
     'mod': 'LOCAL.CAT.HEAD.MOD < [ ',  # MOD for adjectives
-    'comp': 'LOCAL.CAT.VAL.COMPS.FIRST.', # COMP for copulas
+    'comp': 'LOCAL.CAT.VAL.COMPS.FIRST.' # COMP for copulas
   }
 
   for feat in ch_dict.get(iter_feat,[]):
@@ -185,10 +185,11 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
       # and HOOK to be copied up explicitly
       # also, we specify FORM negform on the complement
       tdlfile.add(type_name + ''':= [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL [ CAT [ VAL #val,
-                                    HEAD.FORM negform ],
-                                CONT.HOOK #hook ],
-                            DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL [ CAT.VAL #val,
-                                                  CONT.HOOK #hook ] ]. ''', merge=True)
+                                                                                     HEAD.FORM negform ],
+                                                                               CONT.HOOK #hook ],
+                                      DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL [ CAT.VAL #val,
+                                                                                   CONT.HOOK #hook ] ]. ''',
+                  merge=True)
       tdlfile.add(type_name + ':= [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].',
                   merge=True)
 
