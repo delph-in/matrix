@@ -21,20 +21,11 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     tdlfile = mylang
 
   # TJT 2014-08-15: changing this to a map for readability/speed
-  prefix_map = {
-    'det': 'SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.',
-    'con': 'HEAD-DTR.SYNSEM.',
-    'auxcomplement': 'SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.',
-  }
-  if pos in prefix_map:
-    pos_geom_prefix = prefix_map[pos]
-  else:
-    pos_geom_prefix = 'SYNSEM.'
+  prefix_map = { 'det': 'SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.',
+                 'con': 'HEAD-DTR.SYNSEM.'  }
+  pos_geom_prefix = prefix_map[pos] if pos in prefix_map else 'SYNSEM.'
 
-  if pos == 'auxcomplement':
-    iter_feat = 'compfeature'
-  else:
-    iter_feat = 'feat'
+  iter_feat = 'feat' if pos != 'auxcomplement' else 'compfeature'
 
   basic_infl_neg_def = ''':= \
                    [ C-CONT [ HOOK [ XARG #xarg,\
@@ -68,11 +59,12 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
   }
 
   for feat in ch_dict.get(iter_feat,[]):
-
     n = feat.get('name','')
     v = feat.get('value','').split(', ')
+
     if n == 'case':
       v = [case.canon_to_abbr(c, cases) for c in v]
+
     geom_prefix = pos_geom_prefix
 
     # The 'head' choice only appears on verb pcs, and allows the
@@ -81,12 +73,14 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     # adjectives, copulas, and their lexical rules, allowing
     # the user to specify which argument the adjective or copula
     # is agreeing with
-    head = feat.get('head','').lower()
-    if head:  # TJT 2014-08-15: changing this to map for speed/easy reading
-      if head in head_map:
-        geom_prefix += head_map[head]
+    head = feat.get('head','')
+    if head in head_map: # TJT 2014-08-15: changing this to map for speed/easy reading
+      geom_prefix += head_map[head]
 
-    # TJT 2014-05-08 Moving the "if pos == "auxcomplement"" up out of loop
+    # If auxcomplement, add additional definition on top of any head definition
+    if pos == 'auxcomplement':
+      geom_prefix += 'LOCAL.CAT.VAL.COMPS.FIRST.'
+
     # TJT 2014-05-08 adding the break and moving the concatenation up
     geom = ''
     for f in features:

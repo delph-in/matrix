@@ -2322,9 +2322,15 @@ norm-hook-lex-item := norm-ltop-lex-item &
 ; well as scopal modifiers, or just the scopal guys.
 
 ; TJT 2014-04-24 raise-index-mod-lex-item should not be used for
-; adjectives or adverbs as the MOD...INDEX is identified with the
+; intersective adjectives or adverbs as the MOD...INDEX is identified with the
 ; CONT.HOOK.XARG, not the CONT.HOOK.INDEX. Removing raise-index-mod-lex-item.
-; See ERG as example of not using this.
+; See ERG as example of not using this for intersectives.
+
+; TJT 2014-09-05 raise-index-mod-lex-item is used for scopal adverbs like negation (and maybe scopal adjectives?). Adding back in.
+
+raise-index-mod-lex-item := norm-ltop-lex-item &
+  [ SYNSEM.LOCAL [ CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX #index ] >,
+				   CONT.HOOK.INDEX #index ] ].
 
 ; Furthermore, most lexical items contribute only one relation, and
 ; have empty HCONS values.
@@ -3056,14 +3062,16 @@ basic-scopal-mod-adposition-lex := basic-mod-adp-lex & scopal-mod-lex.
 basic-int-mod-adposition-lex := basic-mod-adp-lex & intersective-mod-lex.
 basic-nomod-adposition-lex := basic-adposition-lex & no-mod-lex & norm-hook-lex-item.
 
-; TJT 2014-05-01 Removing raise-index-mod-lex-item from basic-adverb-lex.
-; See other 2014-05-01 note for details
+; TJT 2014-04-24 Removing raise-index-mod-lex-item from basic-adverb-lex: replacing with norm-ltop-lex-item. See below for more info.
 
-basic-adverb-lex := single-rel-lex-item & basic-icons-lex-item &
+basic-adverb-lex := single-rel-lex-item & norm-ltop-lex-item &
   [ SYNSEM [ LOCAL.CAT.HEAD adv,
-	     LKEYS.KEYREL event-relation ]].
+	     LKEYS.KEYREL event-relation ] ].
 
-basic-scopal-adverb-lex := basic-adverb-lex & scopal-mod-lex.
+; TJT 2014-09-05 As a scopal modifier, basic-scopal-adverb-lex needs to
+; identify its MOD's INDEX with its own INDEX: adding raise-index-mod-lex-item.
+
+basic-scopal-adverb-lex := basic-adverb-lex & scopal-mod-lex & raise-index-mod-lex-item.
 basic-int-adverb-lex := basic-adverb-lex & intersective-mod-lex.
 
 ; Anticipate subtypes of basic-noun-lex for common nouns,

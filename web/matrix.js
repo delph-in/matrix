@@ -841,6 +841,7 @@ function multi_create(select)
   select.style.display = 'none';
   select.onfocus();
 
+  // Create the text box to show choices while not open
   var t = document.createElement('input');
   t.id = select.name + '_multitext';
   t.type = 'text';
@@ -856,6 +857,7 @@ function multi_create(select)
   t.onkeypress = function(e) { return multi_keypress(e, select.name); }
   select.parentNode.insertBefore(t, select.nextSibling);
 
+  // Create button to prompt users to open multi_select
   var b = document.createElement('input');
   b.type = 'button';
   b.id = select.name + '_multibutton';
@@ -915,18 +917,27 @@ function multi_open(select_name)
       if (span.firstChild) {
         span.appendChild(document.createElement('br'));
       }
-
+      
+      // TJT 2014-09-05: Making text node into label for checkbox so that clicking on
+      // text makes the checkbox checked
+      // output: <label><input type="checkbox" id="id">text</label>
+      var label = document.createElement("label");
+      label.setAttribute("class","checkLabel");
       var check = document.createElement('input');
       check.type = 'checkbox';
       check.id = select_name + '__' + ops[i].value;
       check.onkeypress = function(e) { return multi_keypress(e, select.name); }
-      span.appendChild(check);
-      if (indexOf(vals, ops[i].value) != -1) {
-        check.checked = true;  // Must be done AFTER insertion on IE
+      if (ops[i].disabled) { // TJT 2014-09-05: Get disabled
+	check.disabled = true;
+	label.style.color = "#888"; // TJT 2014-09-05: Grey out disabled text
       }
-
-      var label = document.createTextNode(' ' + ops[i].innerHTML);
+      check.onkeypress = function(e) { return multi_keypress(e, select.name); }
+      label.appendChild(check); // TJT 2014-09-05: Add check to label, label to span
+      label.innerHTML = label.innerHTML + " " + ops[i].innerHTML;
       span.appendChild(label);
+      if (indexOf(vals, ops[i].value) != -1) {
+        label.firstChild.checked = true;  // Must be done AFTER insertion on IE
+      }
     }
   }
 
@@ -965,23 +976,27 @@ function multi_close(select_name)
   // Concatenate the selected checkboxes into a comma-separated string
   var ivalue = '';   // internal value
   var fvalue = '';   // friendly value
-  for (var check = box.firstChild; check; check = check.nextSibling) {
-    if (check.tagName == 'INPUT' && check.checked) {
-      if (ivalue.length) {
-        ivalue += ', ';
-        fvalue += ', ';
+  for (var label = box.firstChild; label; label = label.nextSibling) {
+    // TJT 2014-09-05: Unwrap "<label>"
+    if (label.tagName == 'LABEL') {
+      check = label.firstChild;
+      if (check.tagName == 'INPUT' && check.checked) {
+	if (ivalue.length) {
+	  ivalue += ', ';
+	  fvalue += ', ';
+	}
+  
+	var v = check.id.replace(/.*__/, '');
+	ivalue += v;
+  
+	for (var i = 0; i < ops.length; i++) {
+	  if (v == ops[i].value) {
+	    v = ops[i].innerHTML;
+	  }
+	}
+  
+	fvalue += v;
       }
-
-      var v = check.id.replace(/.*__/, '');
-      ivalue += v;
-
-      for (var i = 0; i < ops.length; i++) {
-        if (v == ops[i].value) {
-          v = ops[i].innerHTML;
-        }
-      }
-
-      fvalue += v;
     }
   }
 

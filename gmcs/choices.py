@@ -620,7 +620,7 @@ class ChoicesFile:
       return False
 
     for adp in self.get('adp'):
-      opt = adp.get('opt')
+      #opt = adp.get('opt')
       for feat in adp.get('feat', []):
         if feat['name'] == 'information-structure meaning':
           return True
@@ -636,15 +636,16 @@ class ChoicesFile:
     if the adposition is optional.
     """
 
-    result = False
-
+    # TJT 2014-09-08: Rearranged this logic to check opt/check_opt minimally,
+    # and return once a case-marking adposition is found
     for adp in self.get('adp'):
       opt = adp.get('opt')
-      for feat in adp.get('feat', []):
-        result = result or (self.has_case(feat, case) and \
-                            (opt or not check_opt))
+      if opt or not check_opt:
+        for feat in adp.get('feat', []):
+          if self.has_case(feat, case):
+            return True
 
-    return result
+    return False
 
 
   def has_optadp_case(self, case = ''):

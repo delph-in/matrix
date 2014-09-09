@@ -880,22 +880,6 @@ def customize_cops(mylang, ch, lexicon, hierarchies, trigger):
         if stype_def: stype_def += " & "
         if stype_def: lst = ""
 
-      ## Calculate supertypes
-#      stypes = adj.get('supertypes').split(', ')
-#      if '' in stypes: # Found root
-#        root = True
-#      # Set up root supertypes
-#      if root:
-#        stype_def = lst_map[mode]
-#      # Set up defined supertypes
-#      else:
-#        stype_names = [adj_id(ch[st]) for st in stypes if st]
-#        if mode in ('attr','pred'): # Add pred-only and attr-only types
-#          stype_names.append("%s-only-adj-lex") % mode
-#          adj_types["%s_only" % mode] = True # Add proper type to mylanguage.tdl
-#        stype_def = " & ".join(stype_names) or ""
-#        if stype_def: stype_def += " & "
-
       features.customize_feature_values(mylang, ch, hierarchies, cop, ctype, 'cop')
 
       # Add the lexical types

@@ -691,10 +691,10 @@ def run_unit_tests():
   import gmcs.linglib.tests.testToolboxImport
   runner.run(loader.loadTestsFromModule(gmcs.linglib.tests.testToolboxImport))
 
-  #print_line()
-  #print 'Linglib/Morphotactics tests:'
-  #import gmcs.linglib.tests.testMorphotactics
-  #runner.run(loader.loadTestsFromModule(gmcs.linglib.tests.testMorphotactics))
+#   print_line()
+#   print 'Linglib/Morphotactics tests:'
+#   import gmcs.linglib.tests.testMorphotactics
+#   runner.run(loader.loadTestsFromModule(gmcs.linglib.tests.testMorphotactics))
 
   print_line()
 

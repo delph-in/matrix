@@ -2,7 +2,7 @@ from gmcs.linglib import case
 #from gmcs.linglib import lexical_items
 from gmcs.utils import get_name
 from gmcs.linglib.lexbase import LexicalType, PositionClass
-#from gmcs.linglib.lexbase import ALL_LEX_TYPES
+from gmcs.linglib.lexbase import ALL_LEX_TYPES
 from gmcs.linglib.lexbase import LEXICAL_CATEGORIES
 from gmcs.linglib.lexbase import LEXICAL_SUPERTYPES
 
@@ -31,10 +31,8 @@ def lexical_type_hierarchy(choices, lexical_supertype):
   for lst in lts_to_add:
     for lt in choices[lst]:
       st = get_lexical_supertype(lt.full_key, choices)
-      try:
-        lth.add_node(LexicalType(lt.full_key, get_lt_name(lt.full_key, choices),
-                                 parents={st:lth.nodes[st]}))
-      except: raise Exception(lth.nodes)
+      lth.add_node(LexicalType(lt.full_key, get_lt_name(lt.full_key, choices),
+                               parents={st:lth.nodes[st]}))
       # If we're dealing with a verb add nodes for all lexical entries
       # because bistems can give rise to flags that need to appear on
       # all verbs.
@@ -56,7 +54,7 @@ def get_lexical_supertype(lt_key, choices):
     return 'verb'
   elif lexical_category == 'verb':
     return case.interpret_verb_valence(choices[lt_key]['valence'])
-  elif lexical_category in ('noun', 'det', 'aux', 'adj', 'cop'): # TJT Added cop
+  elif lexical_category in ('noun', 'det', 'adj', 'cop'): # TJT Added adj, cop, removed aux
     return lexical_category
   return None
 
@@ -95,11 +93,8 @@ def used_lexical_supertypes(choices):
   Return a list of lexical supertypes (as defined in
   lexical_supertypes) that will actually be used in the grammar.
   """
-  used = set()
-  # TJT 2014-09-03: Adding copula here
-  for x in ['noun','aux','adj','det','cop']:
-    if x in choices:
-      used.add(x)
+  # TJT 2014-09-08: Changing this to set comprehension and adding "cop"
+  used = {item for item in ('noun','aux','adj','det','cop') if item in choices}
   if 'verb' in choices:
     used.add('verb')
     used.update([case.interpret_verb_valence(v['valence'])
@@ -123,13 +118,13 @@ def get_lexical_supertypes(lrt_key, choices):
     elif lrt_key =='aux': return ['verb']
     else: return []
   # otherwise we have a lexical type (e.g. noun1, verb2, etc)
+  elif lexical_category in ('noun', 'det', 'adj', 'cop'): # TJT 2014-09-03: Adding cop, moving up
+    return [lexical_category]
   elif lexical_category == 'verb':
     verb_type = case.interpret_verb_valence(choices[lrt_key]['valence'])
     return [verb_type] + get_lexical_supertypes(verb_type, choices)
   elif lexical_category == 'aux':
     return ['verb']
-  elif lexical_category in ('noun', 'det', 'adj', 'cop'): # TJT 2014-09-03: Adding copulas
-    return [lexical_category]
   return []
 
 # TJT 2014-09-03
@@ -238,7 +233,7 @@ def validate_lexicon(ch, vr):
   # also, every noun type needs a path to the root
 
   for n in ch.get('noun'):
-    st_anc = [] # used to make sure we don't have an lkb err as 
+    st_anc = [] # used to make sure we don't have an lkb err as
                 # described in comments above
     root = False
     det = n.get('det')
@@ -286,7 +281,7 @@ def validate_lexicon(ch, vr):
             if det == '':
               det = pdet
             elif det != pdet:
-              vr.err(n.full_key + '_det', 
+              vr.err(n.full_key + '_det',
                   "This noun type inherits a conflict in answer"+\
                   " to the determiner question.", concat=False)
 
@@ -301,7 +296,7 @@ def validate_lexicon(ch, vr):
                   st_anc.append(q)
                 if q in r:
                   vr.err(n.full_key + '_supertypes', "This hierarchy "+
-                         "contains a cycle.  The type _"+q+"_ was found "+ 
+                         "contains a cycle.  The type _"+q+"_ was found "+
                          "at multiple points in the inheritance path: "+
                          str(r + [q]))
                 else:
@@ -330,7 +325,7 @@ def validate_lexicon(ch, vr):
       vr.err(n.full_key + '_supertypes',
              "This noun type doesn't inherit from noun-lex or a descendent.")
 
-    # Now check for the lkb err about vacuous inheritance using goodmami's 
+    # Now check for the lkb err about vacuous inheritance using goodmami's
     #  method: find the intersection of supertypes and supertypes's ancestors
     for t in ntsts[n.full_key]:
       if t in st_anc:
@@ -339,7 +334,7 @@ def validate_lexicon(ch, vr):
                '_ is both an immediate supertype of'+n.full_key+' and also '+
                'an ancestor of another supertype.')
 
-    # Now we can check whether there's an answer to the question about 
+    # Now we can check whether there's an answer to the question about
     # determiners?
     # but I only really care about types with stems (right??)
     s = n.get('stem', [])
@@ -410,7 +405,7 @@ def validate_lexicon(ch, vr):
   seenIntrans = False
 
   for v in ch.get('verb'):
-    st_anc = [] # used to make sure we don't have an lkb err as 
+    st_anc = [] # used to make sure we don't have an lkb err as
                 # described in comments above
     root = False
     val = v.get('valence')
@@ -697,6 +692,11 @@ def validate_lexicon(ch, vr):
                    ('%s on choice of %s. ' % (supertype, name_map[choice])) +\
                    ('type choice: %s; supertype choice: %s.' % (adj.get(choice), super_type_value)))
 
+    # TODO: These
+    # Check for clashes between inherited features and specified features
+
+    # Give info boxes on inherited features
+
     # Each stem needs a predicate / each predicate needs a stem
     message = 'Every stem requires both a spelling and predicate'
     for stem in adj.get('stem',''):
@@ -836,7 +836,8 @@ def validate_lexicon(ch, vr):
 
   # Features on all lexical types
   # TJT 2014-09-02: Adding adj and cop
-  for lextype in ('noun', 'verb', 'adj', 'aux', 'cop', 'det', 'adp'):
+  # TJT 2014-09-08: Changing to ALL_LEX_TYPES here to support future development
+  for lextype in ALL_LEX_TYPES + ('adp',):
     for lt in ch.get(lextype):
       for feat in lt.get('feat', []):
         if not feat.get('name'):

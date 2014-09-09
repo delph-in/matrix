@@ -298,9 +298,10 @@ def html_info_mark(vm):
 # surrounding text
 # TJT 2014-05-07 Adding randid to html_input to pass random number
 # matching radio buttons to their labels along
+# TJT 2014-09-05 Getting rid of randid to wrap entire radio option in label
 def html_input(vr, type, name, value, checked, before = '', after = '',
-               size = '', onclick = '', disabled = False, onchange = '',
-               randid = None):
+               size = '', onclick = '', disabled = False, onchange = ''):
+               #randid = None):
   chkd = ''
   if checked:
     chkd = ' checked="checked"'
@@ -317,10 +318,10 @@ def html_input(vr, type, name, value, checked, before = '', after = '',
   if onchange:
     onchange = ' onchange="' + onchange + '"'
 
-  if randid:
-    randid = ' id="' + randid + '"'
-  else:
-    randid = ''
+#  if randid:
+#    randid = ' id="' + randid + '"'
+#  else:
+#    randid = ''
 
   dsabld = ''
   if disabled:
@@ -341,14 +342,20 @@ def html_input(vr, type, name, value, checked, before = '', after = '',
   if type == 'textarea':
     value = value.replace('\\n','\n')
     return '%s%s<TextArea name="%s"%s%s>%s</TextArea>%s' % \
-         (before, mark, name, size, randid, value, after)
+         (before, mark, name, size, value, after)
 
   else:
     if value:
       value = ' value="' + value + '"'
-    return '%s%s<input type="%s" name="%s" %s%s%s%s%s%s%s>%s' % \
-         (before, mark, type, name, value, randid, chkd, size, dsabld,
+    if name:
+      name = ' name="' + name + '"'
+    # TJT 2014-09-05: If checkbox
+    output = '%s%s<input type="%s" %s%s%s%s%s%s%s>%s' % \
+         (before, mark, type, name, value, chkd, size, dsabld,
           onclick, onchange, after)
+    if type in ('checkbox','radio'):
+      return "<label>%s</label>" % output
+    return output
 
 
 # Return an HTML <select> tag with the specified name
@@ -907,8 +914,9 @@ class MatrixDefFile:
             rval, rfrn, rbef, raft = word[1:5]
             # Format choice name
             # TJT 2014-05-07: Wrapping radio buttons in label to make text clickable
-            radio_unique_id = str(randrange(99999))
-            choice_name = "<label for=\"%s\">%s</label>" % (radio_unique_id, raft)
+            # TJT 2014-09-05: Wrapping entire input in label is better
+            #randid = rangerange(999999)
+            #choice_name = "<label for=\"%s\">%s</label>" % (raft, randid)
             if choices.get(vn) == rval: # If previously marked, mark as checked again
               checked = True
             if len(word) >= 6:
@@ -916,8 +924,8 @@ class MatrixDefFile:
             if len(word) >= 7: # TJT 2014-03-19: option for disabled radio buttons
               if word[6]: # If something here...
                 dis = True
-            html += html_input(vr, 'radio', vn, rval, checked, rbef, choice_name,
-                               onclick=js, disabled=dis, randid=radio_unique_id) + '\n'
+            html += html_input(vr, 'radio', vn, rval, checked, rbef, raft,
+                               onclick=js, disabled=dis) + '\n'
             i += 1
           html += af + '\n'
         else:
@@ -1524,6 +1532,11 @@ class MatrixDefFile:
     # The section isn't really a form field, but save it for later
     section = form_data['section'].value
 
+    # TODO: Figure this saving issue out
+    # New choices vs Old choices
+    # old_choices is saved to pages other than "section" variable above
+    # new_choices is saved to the "section" variable above's page
+
     # Copy the form_data into a choices object
     new_choices = ChoicesFile('')
     for k in form_data.keys():
@@ -1599,6 +1612,7 @@ class MatrixDefFile:
 #              if not any(pc.get('name','') == pc_name for pc in old_choices['adj-pc']):
 #                feats_to_add[pc_name].append(feat)
 
+      # TODO: "check old_choices" -- doesn't seem to delete upon immediate change
       # With features collected, add them to choices dict
       for adj in feats_to_add:
         # Add zero rules
@@ -1615,10 +1629,10 @@ class MatrixDefFile:
         mod_only = argument_agreement_pc+'_lrt2'
         # Write subject agreement rule
         old_choices[subj_only+'_name'] = "%s_subj_agr" % adj
-        old_choices[subj_only+'_mod'] = 'pred' # TODO: Make this work
+        old_choices[subj_only+'_mod'] = 'pred'
         # Write modificand agreement rule
         old_choices[mod_only+"_name"] = "%s_mod_agr" % adj
-        old_choices[mod_only+"_mod"] = "attr" # TODO: Make this work
+        old_choices[mod_only+"_mod"] = "attr"
         # Add features from lexicon page to morphology page
         feat_count = 1
         for feat in feats_to_add[adj]:

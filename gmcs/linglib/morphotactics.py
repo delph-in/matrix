@@ -161,7 +161,7 @@ def customize_lexical_rules(choices):
   #  3. find the unique input for each PC (and create intermediate rules)
   #      (all_inputs() depends on forward-looking require constraints)
   #  4. determine and create flags based on constraints
-  pch = position_class_hierarchy(choices)
+  pch = position_class_hierarchy(choices) # TODO: PCH seems to be deleting synth from choices file
   interpret_constraints(choices)
   create_flags()
   calculate_supertypes(pch)
@@ -194,8 +194,9 @@ def position_class_hierarchy(choices):
     if pc_lrt_mergeable(pc):
       pc_lrt_merge(cur_pc, pc)
     # Fill the lexical rule types with the information we know
-    create_lexical_rule_types(cur_pc, pc)
+    create_lexical_rule_types(cur_pc, pc) # TODO: THIS IS CHANGING CHOICES
   # now assign pc inputs
+  # SYNTH HAS BEEN DELETED HERE
   for pc in pc_inputs:
     for inp in pc_inputs[pc]:
       if inp not in _mns and inp in LEXICAL_CATEGORIES:
@@ -205,7 +206,6 @@ def position_class_hierarchy(choices):
 
 def add_lexical_type_hierarchy(pch, choices):
   for lex_cat in LEXICAL_CATEGORIES:
-    # __contains__ does not properly get "adj"
     if lex_cat not in choices: continue
     lth = lexicon.lexical_type_hierarchy(choices, lex_cat)
     _mns[lth.key] = lth
@@ -229,7 +229,7 @@ def pc_lrt_merge(cur_pc, pc):
 def create_lexical_rule_types(cur_pc, pc):
   # TJT 2014-08-21 Check incorporated stems too
   lrt_parents = {}
-  all_lrts = (pc.get('lrt'), pc.get('is-lrt'))
+  all_lrts = (pc.get('lrt',[]), pc.get('is-lrt',[]))
   for lrts in all_lrts:
     for j, lrt in enumerate(lrts):
       mtx_supertypes = set()
@@ -238,7 +238,7 @@ def create_lexical_rule_types(cur_pc, pc):
         mtx_supertypes = set(lrt.split_value('supertypes')).difference(
                            lrt_parents.get(lrt.full_key,set()))
       # default name uses name of PC with _lrtX
-      if '_name' not in lrt:
+      if 'name' not in lrt:
         lrt['name'] = cur_pc.name + lrt.full_key.replace(cur_pc.key, '', 1)
       cur_lrt = create_lexical_rule_type(lrt, mtx_supertypes, cur_pc)
       # the ordering should only mess up if there are 100+ lrts

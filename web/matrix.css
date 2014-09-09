@@ -17,15 +17,47 @@ html { overflow: scroll }
 .delbutton {
   color: black;
   float: left;
-  padding: 0px 0px 0px 0px;
-  width: 1.5em;
+  width: 1.8em;
+  height: 1.8em;
+  /* TJT 5-24-14: To fix the giant padding on the left of the button */
+  border: 1px gray solid; /* this is the key value to get rid of standard border */
+  padding: 0.1em 0.2em;
+  margin-top: 1px;
+  /* TJT 5-24-14: Make delbutton pretty again */
+  border-radius: 5px;
+  font-size: 12px;
+  line-height: 0.8;
+  
+  /* Background color based on webkit and gecko buttons */
+  background-color: rgb(225, 225, 225); /* fallback for old browsers */
+  background: -moz-linear-gradient(top,  rgb(255,255,255) 31%, rgb(232,233,232) 54%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(31%,rgb(255,255,255)), color-stop(54%,rgb(232,233,232))); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  rgb(255,255,255) 31%,rgb(232,233,232) 54%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  rgb(255,255,255) 31%,rgb(232,233,232) 54%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  rgb(255,255,255) 31%,rgb(232,233,232) 54%); /* IE10+ */
+  background: linear-gradient(to bottom,  rgb(255,255,255) 31%,rgb(232,233,232) 54%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e8e9e8',GradientType=0 ); /* IE6-9 */
+
+}
+
+.delbutton:active {
+  /* emulate onclick color of webkit and gecko buttons */
+  border-color: rgb(47,87,173);
+  background: rgb(166,189,250); /* Old browsers */
+  background: -moz-linear-gradient(top,  rgb(166,189,250) 0%, rgb(110,158,235) 5%, rgb(110,158,235) 37%, rgb(56,125,226) 50%, rgb(80,151,232) 68%, rgb(80,151,232) 92%, rgb(153,186,252) 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgb(166,189,250)), color-stop(5%,rgb(110,158,235)), color-stop(37%,rgb(110,158,235)), color-stop(50%,rgb(56,125,226)), color-stop(68%,rgb(80,151,232)), color-stop(92%,rgb(80,151,232)), color-stop(100%,rgb(153,186,252))); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  rgb(166,189,250) 0%,rgb(110,158,235) 5%,rgb(110,158,235) 37%,rgb(56,125,226) 50%,rgb(80,151,232) 68%,rgb(80,151,232) 92%,rgb(153,186,252) 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  rgb(166,189,250) 0%,rgb(110,158,235) 5%,rgb(110,158,235) 37%,rgb(56,125,226) 50%,rgb(80,151,232) 68%,rgb(80,151,232) 92%,rgb(153,186,252) 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  rgb(166,189,250) 0%,rgb(110,158,235) 5%,rgb(110,158,235) 37%,rgb(56,125,226) 50%,rgb(80,151,232) 68%,rgb(80,151,232) 92%,rgb(153,186,252) 100%); /* IE10+ */
+  background: linear-gradient(to bottom,  rgb(166,189,250) 0%,rgb(110,158,235) 5%,rgb(110,158,235) 37%,rgb(56,125,226) 50%,rgb(80,151,232) 68%,rgb(80,151,232) 92%,rgb(153,186,252) 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a6bdfa', endColorstr='#99bafc',GradientType=0 ); /* IE6-9 */
 }
 
 div.anchor { display: none }
 
 div.iterframe {
   padding-left: 2px;
-  margin: 4px 0px 4px 20px;
+  margin: 4px 0px 4px 23px;
   border-left-width: 3px;
   border-left-style: solid;
 }
@@ -84,6 +116,10 @@ div.iterframe div.iterframe div.iterframe div.iterframe div.iterframe div.iterfr
   vertical-align:top;
 }
 
-.incorp_switch {
-  display: none;
+.checkLabel {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
 }

@@ -7,6 +7,7 @@ from gmcs.lib import Hierarchy, HierarchyNode
 ################################
 
 # all types of lexical items (on lexicon page)
+# TJT 2014-08-15: adding "cop"
 # TJT 2014-08-15: changing to tuple for speed
 ALL_LEX_TYPES = ('noun', 'verb', 'det', 'aux', 'adj', 'cop')
 

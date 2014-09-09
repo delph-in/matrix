@@ -185,12 +185,13 @@ function draw_hierarchy(type) {
   // TJT 2014-09-05: Add background element to remove drawing
   var background = document.createElement("div");
   background.id = "drawing_background";
-  // Basic display properties
+  // Basic display properties to fill screen
   background.style.display = "block";
-  background.style.position = "absolute";
+  background.style.position = "fixed";
   background.style.height = "100%";
   background.style.width = "100%";
-  background.style.top = window.scrollY+"px"; // Set to underneath drawing
+  background.style.top = 0;
+  background.style.left = 0;
   // Put behind drawing
   background.style.zIndex = "1";
   // Add event listener

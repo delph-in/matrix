@@ -40,7 +40,7 @@ def case_names(ch):
     user.append(ch[cm + '-a-case-name'])
     canon.append('o_case')
     user.append(ch[cm + '-o-case-name'])
-  elif cm in ['fluid-s']:   
+  elif cm in ['fluid-s']:
     canon.append('a_case+o_case')
     user.append('fluid')
     canon.append('a_case')
@@ -167,13 +167,13 @@ def customize_trigger_rules(adp_type, trigger):
 
     trigger.add(grdef1)
     trigger.add(grdef2)
-    trigger.add(grdef3)  
+    trigger.add(grdef3)
 
 # customize_case_adpositions()
 #   Create the appropriate types for case-marking adpositions
 def customize_case_adpositions(mylang, lexicon, trigger, ch):
   cases = case_names(ch)
-  features = ch.features()
+  #features = ch.features()
   to_cfv = []
 
   if ch.has_adp_case():
@@ -250,17 +250,17 @@ def customize_case_adpositions(mylang, lexicon, trigger, ch):
       has_inforstr_feat = False
       for feat in adp.get('feat', []):
         if feat['name'] == "information-structure meaning":
-          has_inforstr_feat = True 
+          has_inforstr_feat = True
           typedef = \
           adp_type + ' := [ SYNSEM.LOCAL [ CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX #target ] >, \
                                            CONT [ HOOK.ICONS-KEY #icons, \
                                                   ICONS <! info-str & #icons & [ TARGET #target ] !> ] ] ] ].'
-          lexicon.add(typedef)          
+          lexicon.add(typedef)
           break
       if not has_inforstr_feat:
         typedef = \
         adp_type + ' := [ SYNSEM.LOCAL.CONT [ HOOK [ ICONS-KEY.CLAUSE #clause, CLAUSE-KEY #clause ], ICONS <! !> ] ].'
-        lexicon.add(typedef)          
+        lexicon.add(typedef)
 
       if cn.strip() != '':
         customize_trigger_rules(adp_type, trigger)
@@ -295,7 +295,8 @@ def add_lexrules(ch):
   if not ch.has_mixed_case():
     return
   for pc in ch['noun-pc']:
-    if 'case' in [feat['name'] for lrt in pc['lrt'] for feat in lrt['feat']]:
+    # TJT 2014-09-08: changing to set comprehension for speed
+    if 'case' in {feat['name'] for lrt in pc['lrt'] for feat in lrt['feat']}:
       for c in case_names(ch):
         if ch.has_adp_case(c[0]):
           idx = ch[pc.full_key + '_lrt'].next_iter_num()
@@ -368,7 +369,7 @@ def customize_verb_case(mylang, ch):
         mylang.add(typedef)
 
         # constrain the case of the agent/subject
-        if a_case:          
+        if a_case:
           typedef = \
             t_type + ' := \
             [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + a_case + ' ].'
