@@ -1,5 +1,7 @@
 from gmcs.linglib import case
 
+import sys # TODO: DELETEME
+
 ######################################################################
 # customize_feature_values(ch_dict, type_name, pos, features, cases)
 #   In the passed-in choices dictionary, go through the 'feat'
@@ -89,13 +91,16 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     for f in features:
       if f[0] == n:
         value = f[2]
-        # TJT 2014-05-08 XARG is of type individual, others are of
-        # type local-min, therefore, strip off the extra path
-        if head == 'xarg':
+        # If choice defined not to have value, don't define a geometry
+        # and therefore skip to n==X specific code
+        if value:
+          # TJT 2014-05-08 XARG is of type individual, others are of
+          # type local-min, therefore, strip off the extra path
+          if head == 'xarg':
             value = value[len("LOCAL.CONT.HOOK.INDEX."):]
-        geom = geom_prefix + value
-        if head == 'mod':
-          geom += "] >"  # TJT 2014-05-27: close MOD
+          geom = geom_prefix + value
+          if head == 'mod':
+            geom += "] >"  # TJT 2014-05-27: close MOD
         break # TJT 2014-05-08 stop looking!
 
     # If the feature has a geometry, just specify its value;
