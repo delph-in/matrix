@@ -77,24 +77,27 @@ shift $((OPTIND-1))
 rtestdir="${CUSTOMIZATIONROOT}/regression_tests/"
 gold="$rtestdir/home/gold/"
 scratch="$rtestdir/scratch/"
-grammar="$scratch/grammar"
+log="$rtestdir/logs/ace.$(date "+%Y-%m-%d")" # TJT 2014-09-12: Specify the log
+grammar="$scratch/grammars"
 lgname=$3
 
+# Make grammar directories # TJT 2014-09-12: Make sure the grammar directory exists
+mkdir -p $grammar
 
 # Check for existence of choices file
 if [ ! -e $1 ]; then
   echo "ERROR!"
   echo "$lgname choices file does not exist: $choicesfile" >> $log
-  continue
+  exit 1
 fi
 
 # Validate
 if [[ $validate ]]; then
   $matrix_cmd v $1
   if [ $? != 0 ]; then
-echo "INVALID!"
-echo "$lgname choices file did not pass validation." >> $log
-continue
+    echo "INVALID!"
+    echo "$lgname choices file did not pass validation." >> $log
+    exit 1
   fi
 fi
 
@@ -102,17 +105,22 @@ fi
 if [[ $customize || $performance ]]; then
   $matrix_cmd --cheap-hack cf $1 $grammar
   if [[ $customize && $? != 0 ]]; then
-echo "FAIL!"
-echo "There was an error during the customization of the grammar." >> $log
-continue
+    echo "FAIL!"
+    echo "There was an error during the customization of the grammar." >> $log
+    exit 1
   fi
 fi
-
 
 dat_file=$grammar/${lgname}/${lgname}.dat
 config_file=$grammar/${lgname}/ace/config.tdl
 
 $ACEROOT/ace -G $dat_file -g $config_file 1>/dev/null 2>/dev/null
+# TJT 2014-09-12: Check to see if ACE succeeded in making the grammar
+if [[ ! -f $dat_file ]]; then
+  echo "FAIL!"
+  echo "There was an error creating the grammar with ACE." >> $log
+  exit 1
+fi
 
 mkdir -p $gold/$lgname
 cp ${LOGONROOT}/lingo/lkb/src/tsdb/skeletons/english/Relations $gold/$lgname/relations
