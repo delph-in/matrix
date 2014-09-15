@@ -550,7 +550,6 @@ def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
   # Add basic adjective definition
   if ch.get('adj',[]):
     mylang.add("adj-lex := basic-intersective-adjective-lex.")
-  else: return
 
   # Check which rules need to be added to rules.tdl
   adj_rules = {'adj_head': False, 'head_adj': False}
@@ -809,14 +808,14 @@ def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
   # If adjective incorporation, add to mylanguage.tdl
   if ch.get("adj_incorp",False):
     mylang.add('''adj_incorporation-lex-rule := add-only-rule &
-  [ C-CONT [ RELS <! arg1-ev-relation &
-                     [ LBL #ltop,
-		               ARG1 #index ] !>,
-	         HOOK #hook ],
-    DTR.SYNSEM.LOCAL [ CAT.HEAD noun,
-  		               CONT.HOOK #hook &
-    			                 [ LTOP #ltop,
-			                       INDEX #index ] ] ].''',
+                    [ C-CONT [ RELS <! arg1-ev-relation &
+                                       [ LBL #ltop,
+		                                 ARG1 #index ] !>,
+	                           HOOK #hook ],
+                      DTR.SYNSEM.LOCAL [ CAT.HEAD noun,
+  		                                 CONT.HOOK #hook &
+    			                                   [ LTOP #ltop,
+			                                         INDEX #index ] ] ].''',
             comment='Adjective Incorporation',
             section='lexrules')
 
@@ -872,18 +871,18 @@ def customize_cops(mylang, ch, lexicon, hierarchies, trigger):
 
       ## Calculate supertypes
       stypes = cop.get('supertypes').split(', ')
+      stype_def = ''
       if '' in stypes: # Found root
-        lst = 'adj-comp-copula-verb-lex' # Change for new complement types
+        stype_def = 'adj-comp-copula-verb-lex & ' # Change for new complement types
       else:
         stype_names = [cop_id(ch[st]) for st in filter(None,stypes)]
         stype_def = " & ".join(stype_names) or ""
         if stype_def: stype_def += " & "
-        if stype_def: lst = ""
 
       features.customize_feature_values(mylang, ch, hierarchies, cop, ctype, 'cop')
 
       # Add the lexical types
-      mylang.add(ctype + ' := ' + lst + stype_def + '.')
+      mylang.add(ctype + ' := ' + stype_def + '.')
 
       for stem in cop.get('stem'):
         orthstr = orth_encode(stem.get('orth'))

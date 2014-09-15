@@ -868,10 +868,13 @@ def validate_lexicon(ch, vr):
               vr.err(feat.full_key + '_head', mess)
           # Head features must be defined on the main predicate
           elif feat.get('name') in head_features:
-            predicate = {"verb":"verb", "adj":"adjective", "cop":"copula"}[lextype]
-            mess = 'This feature is associated with predicates. ' +\
-                   'Please select "the %s" to use this feature.' % predicate
-            vr.err(feat.full_key + '_head', mess)
+            # Head features can be defined on adjective complements
+            # TODO: TJT 2014-09-15: Additional complement types will need to be more clever about this
+            if not feat.get('head') == 'comp':
+              predicate = {"verb":"verb", "adj":"adjective", "cop":"copula"}[lextype]
+              mess = 'This feature is associated with predicates. ' +\
+                     'Please select "the %s" to use this feature.' % predicate
+              vr.err(feat.full_key + '_head', mess)
 
         if not ch.has_dirinv() and feat.get('head') in ['higher', 'lower']:
           mess = 'That choice is not available in languages ' +\

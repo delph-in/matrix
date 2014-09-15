@@ -937,8 +937,7 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
           if input_def.get('mod','') in ('pred', 'both'):
             predcop_map = {'on':'obl', 'off':'imp'} # Converge type names
             input_predcop = input_def.get('predcop','off')
-            if input_predcop in predcop_map:
-              input_predcop = predcop_map[input_predcop]
+            input_predcop = predcop_map[input_predcop] if input_predcop in predcop_map else input_predcop
             if input_predcop and input_predcop != 'opt':
               type_predcop = predcop_map[predcop] if predcop in predcop_map else predcop
               if type_predcop != input_predcop:
@@ -960,15 +959,15 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
                 ('%s. This choice will be ignored, or you ' % inverse_mode_name) +\
                 'can change the adjective\'s behavoir to enable this choice above.'
       if mode != 'attr':
-        if lrt.get('modpos'):
+        if modpos:
           vr.warn(lrt.full_key+'_modpos', message)
       if mode != 'pred':
-        if lrt.get('predcop'):
+        if predcop == "on":
           vr.warn(lrt.full_key+'_predcop', message)
 
     # Adjectives defined as a copula complement are unusuable without a copula defined
     if mode in ('pred', 'both'):
-      if predcop:
+      if predcop == "on":
         if not choices.get('cop',False):
           vr.warn(lrt.full_key+'_predcop',
                   'An adjective defined as a copula complement is ' +\

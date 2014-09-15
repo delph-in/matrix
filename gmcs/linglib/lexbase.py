@@ -26,7 +26,7 @@ LEXICAL_SUPERTYPES = {'noun':'noun-lex',
                       'iverb':'intransitive-verb-lex',
                       'tverb':'transitive-verb-lex',
                       'mverb':'main-verb-lex',
-                      'cop':'copula-verb-lex',
+                      'cop':'cop-lex',
                       'det':'determiner-lex',
                       'aux':'aux-lex',
                       'adj':'adj-lex'}

@@ -301,7 +301,6 @@ def html_info_mark(vm):
 # TJT 2014-09-05 Getting rid of randid to wrap entire radio option in label
 def html_input(vr, type, name, value, checked, before = '', after = '',
                size = '', onclick = '', disabled = False, onchange = ''):
-               #randid = None):
   chkd = ''
   if checked:
     chkd = ' checked="checked"'
@@ -317,11 +316,6 @@ def html_input(vr, type, name, value, checked, before = '', after = '',
 
   if onchange:
     onchange = ' onchange="' + onchange + '"'
-
-#  if randid:
-#    randid = ' id="' + randid + '"'
-#  else:
-#    randid = ''
 
   dsabld = ''
   if disabled:
@@ -341,7 +335,7 @@ def html_input(vr, type, name, value, checked, before = '', after = '',
 
   if type == 'textarea':
     value = value.replace('\\n','\n')
-    return '%s%s<TextArea name="%s"%s%s>%s</TextArea>%s' % \
+    return '%s%s<TextArea name="%s"%s>%s</TextArea>%s' % \
          (before, mark, name, size, value, after)
 
   else:
@@ -349,10 +343,10 @@ def html_input(vr, type, name, value, checked, before = '', after = '',
       value = ' value="' + value + '"'
     if name:
       name = ' name="' + name + '"'
-    # TJT 2014-09-05: If checkbox
     output = '%s%s<input type="%s" %s%s%s%s%s%s%s>%s' % \
          (before, mark, type, name, value, chkd, size, dsabld,
           onclick, onchange, after)
+    # TJT 2014-09-05: If checkbox
     if type in ('checkbox','radio'):
       return "<label>%s</label>" % output
     return output
@@ -913,16 +907,12 @@ class MatrixDefFile:
             # TJT 2014-05-07 Rearranged this logic (hoping for speed)
             rval, rfrn, rbef, raft = word[1:5]
             # Format choice name
-            # TJT 2014-05-07: Wrapping radio buttons in label to make text clickable
-            # TJT 2014-09-05: Wrapping entire input in label is better
-            #randid = rangerange(999999)
-            #choice_name = "<label for=\"%s\">%s</label>" % (raft, randid)
             if choices.get(vn) == rval: # If previously marked, mark as checked again
               checked = True
             if len(word) >= 6:
               js = word[5]
             if len(word) >= 7: # TJT 2014-03-19: option for disabled radio buttons
-              if word[6]: # If something here...
+              if word[6]: # If anything here...
                 dis = True
             html += html_input(vr, 'radio', vn, rval, checked, rbef, raft,
                                onclick=js, disabled=dis) + '\n'
