@@ -199,12 +199,12 @@ def main():
       subprocess.call(['svn', '-q', 'add'] +\
                       [os.path.join(rpath, 'home/gold', lg),
                        os.path.join(rpath, 'skeletons', lg)])
+      """
       subprocess.call(['svn', '-q', 'add'] +\
                       [os.path.join(rpath, 'home/gold', lg, '/[a-z]*'),
                        os.path.join(rpath, 'skeletons', lg, '/[a-z]*'),
                        os.path.join(rpath, 'choices', lg),
                        os.path.join(rpath, 'txt-suites', lg)])
-      """
       print 'Succeeded adding files to Subversion. Be sure to commit!'
     except ValueError, er:
       print "Error adding regression test."

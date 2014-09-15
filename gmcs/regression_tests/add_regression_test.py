@@ -83,7 +83,6 @@ def add(choices_file, txt_suite):
   subprocess.call([cmd, choices_file, txt_suite, lg_name], env=os.environ);
 
   # Add line to regression-test-index
-
   index_file = open(rt_root + "regression-test-index", 'a')
   index_file.write(lg_name + "=" + comment + "\n")
   index_file.close()
@@ -91,7 +90,6 @@ def add(choices_file, txt_suite):
   # Copy choices file, txt-suite and profile to the appropriate places.
   shutil.copy(choices_file, rt_root + "choices/" + lg_name)
   shutil.copy(txt_suite, rt_root + "txt-suites/" + lg_name)
-  #shutil.copytree(rt_root + "home/current/" + lg_name, rt_root + "home/gold/" + lg_name)
 
   # Create skeleton
   os.mkdir(rt_root + "skeletons/" + lg_name)
