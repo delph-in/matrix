@@ -22,6 +22,7 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "adj-1adj-n") (:content . "adj-1adj-n: Test for adjective incorporation with one prefix position class."))
 ((:path . "adj-1adjn") (:content . "adj-1adjn: Test for adjectives being the only modifier of their modificand."))
 ((:path . "adj-adjn") (:content . "adj-adjn: Basic test for attributive only adjectives modifying nouns after the adjective."))
 ((:path . "infostr-top-mod-after-noun") (:content . "infostr-top-mod-after-noun: infostr"))
