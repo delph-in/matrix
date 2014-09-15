@@ -359,3 +359,4 @@ infostr-top-mod-after-noun=infostr
 adj-adjn=Basic test for attributive only adjectives modifying nouns after the adjective.
 adj-1adjn=Test for adjectives being the only modifier of their modificand.
 adj-1adj-n=Test for adjective incorporation with one prefix position class.
+adj-1n-adj=Test for adjective incorporation with one suffix position class.
