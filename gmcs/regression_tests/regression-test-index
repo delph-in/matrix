@@ -358,3 +358,4 @@ infostr-foc-vso-prev=infostr
 infostr-top-mod-after-noun=infostr
 adj-1adj-n=Test for adjective incorporation with one prefix position class.
 adj-1n-adj=Test for adjective incorporation with one suffix position class.
+adj-1adjn=Test for adjectives being the only modifier of their modificand.
