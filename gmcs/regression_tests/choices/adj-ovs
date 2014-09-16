@@ -1,0 +1,68 @@
+
+version=28
+
+section=general
+language=adj-ovs
+
+section=word-order
+word-order=ovs
+has-dets=yes
+noun-det-order=det-noun
+has-aux=no
+
+section=number
+
+section=person
+person=none
+
+section=gender
+
+section=case
+case-marking=none
+
+section=direct-inverse
+scale-equal=Direct
+
+section=tense-aspect-mood
+
+section=other-features
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=info-str
+
+section=arg-opt
+
+section=lexicon
+  noun1_det=opt
+    noun1_stem1_orth=n
+    noun1_stem1_pred=_n_n_rel
+  verb1_name=iv
+  verb1_valence=intrans
+    verb1_stem1_orth=iv
+    verb1_stem1_pred=_iv_v_rel
+  verb2_name=tv
+  verb2_valence=trans
+    verb2_stem1_orth=tv
+    verb2_stem1_pred=_tv_v_rel
+  adj1_name=adj
+  adj1_mod=attr
+  adj1_modpos=after
+    adj1_stem1_orth=adj
+    adj1_stem1_pred=_adj_a_rel
+    det1_stem1_orth=det
+    det1_stem1_pred=_det_q_rel
+
+section=morphology
+
+section=toolbox-import
+
+section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon

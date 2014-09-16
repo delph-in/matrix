@@ -22,6 +22,11 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "adj-vso") (:content . "adj-vso: Test for attributive adjectives modifying nouns in a language with VSO word order."))
+((:path . "adj-vos") (:content . "adj-vos: Test for attributive adjectives modifying nouns in a language with VOS word order."))
+((:path . "adj-sov") (:content . "adj-sov: Test for attributive adjectives modifying nouns in a language with SOV word order."))
+((:path . "adj-osv") (:content . "adj-osv: Test for attributive adjectives modifying nouns in a language with OSV word order."))
+((:path . "adj-ovs") (:content . "adj-ovs: Test for attributive adjectives modifying nouns in a language with OVS word order."))
 ((:path . "adj-adjn") (:content . "adj-adjn: Basic test for attributive only adjectives modifying nouns after the adjective."))
 ((:path . "adj-1n-adj") (:content . "adj-1n-adj: Test for adjective incorporation with one suffix position class."))
 ((:path . "adj-1adj-n") (:content . "adj-1adj-n: Test for adjective incorporation with one prefix position class."))
