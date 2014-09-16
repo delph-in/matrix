@@ -2064,7 +2064,7 @@ BeginIter noun-pc{i} "a Position Class" 1 0
       fillvalues p=noun-pc{i}_is-lrt{j}_feat{k}_name
 
       Select head "Noun Position Class {i} Lexical Rule Type {j} Feature {k} Head" "Specified on: " ""
-      . noun "The noun" "the noun"
+      . dtr "The noun" "the noun"
       . adj "The adjective" "the adjective"
 
     EndIter feat

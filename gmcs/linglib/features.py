@@ -24,7 +24,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
 
   # TJT 2014-08-15: changing this to a map for readability/speed
   prefix_map = { 'det': 'SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.',
-                 'con': 'HEAD-DTR.SYNSEM.'  }
+                 'con': 'HEAD-DTR.SYNSEM.' }
   pos_geom_prefix = prefix_map[pos] if pos in prefix_map else 'SYNSEM.'
 
   iter_feat = 'feat' if pos != 'auxcomplement' else 'compfeature'
@@ -57,7 +57,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     'lower': 'SC-ARGS.REST.FIRST.',
     'xarg': 'LOCAL.CONT.HOOK.XARG.',  # XARG for adjectives
     'mod': 'LOCAL.CAT.HEAD.MOD < [ ',  # MOD for adjectives
-    'comp': 'LOCAL.CAT.VAL.COMPS.FIRST.' # COMP for copulas
+    'comp': 'LOCAL.CAT.VAL.COMPS.FIRST.', # COMP for copulas
   }
 
   for feat in ch_dict.get(iter_feat,[]):
@@ -81,6 +81,9 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
         geom_prefix = head_map[head] # TJT 2014-09-09: Higher/lower replace prefix
       else:
         geom_prefix += head_map[head]
+    # TJT 2014-09-16: DTR is for incorporated adjectives
+    if head == 'dtr':
+      geom_prefix = "DTR." + geom_prefix
 
     # If auxcomplement, add additional definition on top of any head definition
     if pos == 'auxcomplement':
