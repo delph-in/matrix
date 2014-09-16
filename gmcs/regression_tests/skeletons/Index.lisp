@@ -22,6 +22,14 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "adj-infl-subj_post_cop") (:content . "adj-infl-subj_post_cop: Test for adjectives that only agree with their subjects, appear as copula complements, and are post-head modifiers."))
+((:path . "adj-infl-subj_pre_cop") (:content . "adj-infl-subj_pre_cop: Test for adjectives that only agree with their subjects, appear as copula complements, and are pre-head modifiers."))
+((:path . "adj-infl-subj_post_stative") (:content . "adj-infl-subj_post_stative: Test for adjectives that only agree with their subjects, appear as stative predicates, and are post-head modifiers."))
+((:path . "adj-infl-subj_pre_stative") (:content . "adj-infl-subj_pre_stative: Test for adjectives that only agree with their subjects, appear as stative predicates, and are pre-head modifiers."))
+((:path . "adj-infl-mod_post_cop") (:content . "adj-infl-mod_post_cop: Test for adjectives that only agree with their modificands, appear as copula complements, and are post-head modifiers."))
+((:path . "adj-infl-mod_pre_cop") (:content . "adj-infl-mod_pre_cop: Test for adjectives that only agree with their modificands, appear as copula complements, and are pre-head modifiers."))
+((:path . "adj-infl-mod_post_stative") (:content . "adj-infl-mod_post_stative: Test for adjectives that only agree with their modificands, appear as stative predicates, and are post-head modifiers."))
+((:path . "adj-infl-mod_pre_stative") (:content . "adj-infl-mod_pre_stative: Test for adjectives that only agree with their modificands, appear as stative predicates, and are pre-head modifiers."))
 ((:path . "adj-adj-agr-n") (:content . "adj-adj-agr-n: Test for adjective incorporation with one prefix position class with daughter agreement."))
 ((:path . "adj-2n-adj") (:content . "adj-2n-adj: Test for adjective incorporation with two suffix position classes."))
 ((:path . "adj-2adj-n") (:content . "adj-2adj-n: Test for adjective incorporation with two prefix position classes."))
