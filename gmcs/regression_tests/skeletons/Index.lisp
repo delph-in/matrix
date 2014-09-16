@@ -22,6 +22,14 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "adj-split_cop") (:content . "adj-split_cop: Test for split copulas where different copulas take different complement sets."))
+((:path . "adj-cop_agr_adj_agr_2") (:content . "adj-cop_agr_adj_agr_2: Test for copula and complement agreeing with each other and subject."))
+((:path . "adj-cop_agr_adj_agr_1") (:content . "adj-cop_agr_adj_agr_1: Test for copula and complement agreeing with each other and subject."))
+((:path . "adj-cop_infl_adj_agr") (:content . "adj-cop_infl_adj_agr: Test for copula inflection with copula complement agreeing with subject."))
+((:path . "adj-cop_infl") (:content . "adj-cop_infl: Test for copula inflection."))
+((:path . "adj-cop_agr") (:content . "adj-cop_agr: Test for copula agreement with subject."))
+((:path . "adj-cop_comp") (:content . "adj-cop_comp: Basic test for copula before its complement."))
+((:path . "adj-comp_cop") (:content . "adj-comp_cop: Basic test for copula after its complement."))
 ((:path . "adj-both-pre-cop") (:content . "adj-both-pre-cop: Test for adjectives that is a pre-head attributive modifier and can appear as a copula complement."))
 ((:path . "adj-both-pre-stative") (:content . "adj-both-pre-stative: Test for adjectives that is a pre-head attributive modifier and can appear as a stative predicate."))
 ((:path . "adj-both-post-stative") (:content . "adj-both-post-stative: Test for adjectives that is a post-head attributive modifier and can appear as a stative predicate."))

@@ -1,0 +1,13 @@
+n coppres adj
+n coppast adj
+*n cop adj
+*n adj coppres
+*coppres n adj
+*coppres adj n
+*adj n coppres
+*adj coppres n
+*n adj coppast
+*coppast n adj
+*coppast adj n
+*adj n coppast
+*adj coppast n

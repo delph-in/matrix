@@ -1,0 +1,4 @@
+n cop1 adj1
+n cop2 adj2
+*n cop1 adj2
+*n cop2 adj1
