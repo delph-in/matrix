@@ -1,0 +1,72 @@
+1@unknown@formal@none@1@@nadj1 tv n@@@@@@@dantiston@2014-09-16
+2@unknown@formal@none@1@@nadj2 tv n@@@@@@@dantiston@2014-09-16
+3@unknown@formal@none@1@@nadj1adj2 tv n@@@@@@@dantiston@2014-09-16
+4@unknown@formal@none@1@@det nadj1 tv n@@@@@@@dantiston@2014-09-16
+5@unknown@formal@none@1@@det nadj2 tv n@@@@@@@dantiston@2014-09-16
+6@unknown@formal@none@1@@det nadj1adj2 tv n@@@@@@@dantiston@2014-09-16
+7@unknown@formal@none@1@@nadj1 iv@@@@@@@dantiston@2014-09-16
+8@unknown@formal@none@1@@nadj2 iv@@@@@@@dantiston@2014-09-16
+9@unknown@formal@none@1@@nadj1adj2 iv@@@@@@@dantiston@2014-09-16
+10@unknown@formal@none@1@@det nadj1 iv@@@@@@@dantiston@2014-09-16
+11@unknown@formal@none@1@@det nadj2 iv@@@@@@@dantiston@2014-09-16
+12@unknown@formal@none@1@@det nadj1adj2 iv@@@@@@@dantiston@2014-09-16
+13@unknown@formal@none@1@@delphin tv nadj1@@@@@@@dantiston@2014-09-16
+14@unknown@formal@none@1@@delphin tv nadj2@@@@@@@dantiston@2014-09-16
+15@unknown@formal@none@1@@delphin tv nadj1adj2@@@@@@@dantiston@2014-09-16
+16@unknown@formal@none@1@@delphin tv det nadj1@@@@@@@dantiston@2014-09-16
+17@unknown@formal@none@1@@delphin tv det nadj2@@@@@@@dantiston@2014-09-16
+18@unknown@formal@none@1@@delphin tv det nadj1adj2@@@@@@@dantiston@2014-09-16
+19@unknown@formal@none@1@@nadj2adj1 tv n@@@@@@@dantiston@2014-09-16
+20@unknown@formal@none@1@@det nadj2adj1 tv n@@@@@@@dantiston@2014-09-16
+21@unknown@formal@none@1@@nadj2adj1 iv@@@@@@@dantiston@2014-09-16
+22@unknown@formal@none@1@@det nadj2adj1 iv@@@@@@@dantiston@2014-09-16
+23@unknown@formal@none@1@@delphin tv nadj2adj1@@@@@@@dantiston@2014-09-16
+24@unknown@formal@none@1@@delphin tv det nadj2adj1@@@@@@@dantiston@2014-09-16
+25@unknown@formal@none@1@S@adj1n tv n@@@@@@@dantiston@2014-09-16
+26@unknown@formal@none@1@S@adj2n tv n@@@@@@@dantiston@2014-09-16
+27@unknown@formal@none@1@S@det adj1n tv n@@@@@@@dantiston@2014-09-16
+28@unknown@formal@none@1@S@det adj2n tv n@@@@@@@dantiston@2014-09-16
+29@unknown@formal@none@1@S@adj1adj2n tv n@@@@@@@dantiston@2014-09-16
+30@unknown@formal@none@1@@adj2adj1n tv n@@@@@@@dantiston@2014-09-16
+31@unknown@formal@none@1@S@det adj1adj2n tv n@@@@@@@dantiston@2014-09-16
+32@unknown@formal@none@1@@det adj2adj1n tv n@@@@@@@dantiston@2014-09-16
+33@unknown@formal@none@1@S@n tv adj1n@@@@@@@dantiston@2014-09-16
+34@unknown@formal@none@1@S@n tv adj2n@@@@@@@dantiston@2014-09-16
+35@unknown@formal@none@1@S@n tv det adj1n@@@@@@@dantiston@2014-09-16
+36@unknown@formal@none@1@S@n tv det adj2n@@@@@@@dantiston@2014-09-16
+37@unknown@formal@none@1@S@n tv adj1adj2n@@@@@@@dantiston@2014-09-16
+38@unknown@formal@none@1@@delphin tv adj2adj1n@@@@@@@dantiston@2014-09-16
+39@unknown@formal@none@1@S@n tv det adj1adj2n@@@@@@@dantiston@2014-09-16
+40@unknown@formal@none@1@@delphin tv det adj2adj1n@@@@@@@dantiston@2014-09-16
+41@unknown@formal@none@1@S@adj1n iv@@@@@@@dantiston@2014-09-16
+42@unknown@formal@none@1@S@adj2n iv@@@@@@@dantiston@2014-09-16
+43@unknown@formal@none@1@S@det adj1n iv@@@@@@@dantiston@2014-09-16
+44@unknown@formal@none@1@S@det adj2n iv@@@@@@@dantiston@2014-09-16
+45@unknown@formal@none@1@S@adj1adj2n iv@@@@@@@dantiston@2014-09-16
+46@unknown@formal@none@1@@adj2adj1n iv@@@@@@@dantiston@2014-09-16
+47@unknown@formal@none@1@S@det adj1adj2n iv@@@@@@@dantiston@2014-09-16
+48@unknown@formal@none@1@@det adj2adj1n iv@@@@@@@dantiston@2014-09-16
+49@unknown@formal@none@1@@adj1nadj1 tv n@@@@@@@dantiston@2014-09-16
+50@unknown@formal@none@1@@adj1nadj2 tv n@@@@@@@dantiston@2014-09-16
+51@unknown@formal@none@1@@adj2nadj1 tv n@@@@@@@dantiston@2014-09-16
+52@unknown@formal@none@1@@adj2nadj2 tv n@@@@@@@dantiston@2014-09-16
+53@unknown@formal@none@1@@det adj1nadj1 tv n@@@@@@@dantiston@2014-09-16
+54@unknown@formal@none@1@@det adj1nadj2 tv n@@@@@@@dantiston@2014-09-16
+55@unknown@formal@none@1@@det adj2nadj1 tv n@@@@@@@dantiston@2014-09-16
+56@unknown@formal@none@1@@det adj2nadj2 tv n@@@@@@@dantiston@2014-09-16
+57@unknown@formal@none@1@@adj1nadj1 iv@@@@@@@dantiston@2014-09-16
+58@unknown@formal@none@1@@adj1nadj2 iv@@@@@@@dantiston@2014-09-16
+59@unknown@formal@none@1@@adj2nadj1 iv@@@@@@@dantiston@2014-09-16
+60@unknown@formal@none@1@@adj2nadj2 iv@@@@@@@dantiston@2014-09-16
+61@unknown@formal@none@1@@det adj1nadj1 iv@@@@@@@dantiston@2014-09-16
+62@unknown@formal@none@1@@det adj1nadj2 iv@@@@@@@dantiston@2014-09-16
+63@unknown@formal@none@1@@det adj2nadj1 iv@@@@@@@dantiston@2014-09-16
+64@unknown@formal@none@1@@det adj2nadj2 iv@@@@@@@dantiston@2014-09-16
+65@unknown@formal@none@1@@delphin tv adj1nadj1@@@@@@@dantiston@2014-09-16
+66@unknown@formal@none@1@@delphin tv adj1nadj2@@@@@@@dantiston@2014-09-16
+67@unknown@formal@none@1@@delphin tv adj2nadj1@@@@@@@dantiston@2014-09-16
+68@unknown@formal@none@1@@delphin tv adj2nadj2@@@@@@@dantiston@2014-09-16
+69@unknown@formal@none@1@@delphin tv det adj1nadj1@@@@@@@dantiston@2014-09-16
+70@unknown@formal@none@1@@delphin tv det adj1nadj2@@@@@@@dantiston@2014-09-16
+71@unknown@formal@none@1@@delphin tv det adj2nadj1@@@@@@@dantiston@2014-09-16
+72@unknown@formal@none@1@@delphin tv det adj2nadj2@@@@@@@dantiston@2014-09-16

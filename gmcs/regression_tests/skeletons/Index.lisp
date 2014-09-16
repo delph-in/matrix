@@ -22,6 +22,10 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "adj-2n-adj") (:content . "adj-2n-adj: Test for adjective incorporation with two suffix position classes."))
+((:path . "adj-2adj-n") (:content . "adj-2adj-n: Test for adjective incorporation with two prefix position classes."))
+((:path . "adj-adj_n_agr") (:content . "adj-adj_n_agr: Test for adjective agreement with prehead attributive adjectives."))
+((:path . "adj-adj-n-adj") (:content . "adj-adj-n-adj: Test for adjective incorporation with one prefix position class and one suffix position class."))
 ((:path . "adj-split_cop") (:content . "adj-split_cop: Test for split copulas where different copulas take different complement sets."))
 ((:path . "adj-cop_agr_adj_agr_2") (:content . "adj-cop_agr_adj_agr_2: Test for copula and complement agreeing with each other and subject."))
 ((:path . "adj-cop_agr_adj_agr_1") (:content . "adj-cop_agr_adj_agr_1: Test for copula and complement agreeing with each other and subject."))
