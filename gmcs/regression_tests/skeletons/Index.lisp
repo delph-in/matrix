@@ -22,6 +22,12 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "adj-adj_n") (:content . "adj-adj_n: Test for stative predicate adjectives in AS word order."))
+((:path . "adj-n_adj_subj_agr") (:content . "adj-n_adj_subj_agr: Test for stative predicate adjectives with subject agreement in SA word order."))
+((:path . "adj-adj_n_subj_agr") (:content . "adj-adj_n_subj_agr: Test for stative predicate adjectives with subject agreement in AS word order."))
+((:path . "adj-n_adj_infl") (:content . "adj-n_adj_infl: Test for stative predicate adjectives with inflection features in SA word order."))
+((:path . "adj-adj_n_infl") (:content . "adj-adj_n_infl: Test for stative predicate adjectives with inflection features in AS word order."))
+((:path . "adj-cop_adj_agr") (:content . "adj-cop_adj_agr: Test for adjective agreeing with subject in copula complement constructions."))
 ((:path . "adj-infl-subj_post_cop") (:content . "adj-infl-subj_post_cop: Test for adjectives that only agree with their subjects, appear as copula complements, and are post-head modifiers."))
 ((:path . "adj-infl-subj_pre_cop") (:content . "adj-infl-subj_pre_cop: Test for adjectives that only agree with their subjects, appear as copula complements, and are pre-head modifiers."))
 ((:path . "adj-infl-subj_post_stative") (:content . "adj-infl-subj_post_stative: Test for adjectives that only agree with their subjects, appear as stative predicates, and are post-head modifiers."))
