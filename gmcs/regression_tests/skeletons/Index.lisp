@@ -22,6 +22,13 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "adj-both-pre-cop") (:content . "adj-both-pre-cop: Test for adjectives that is a pre-head attributive modifier and can appear as a copula complement."))
+((:path . "adj-both-pre-stative") (:content . "adj-both-pre-stative: Test for adjectives that is a pre-head attributive modifier and can appear as a stative predicate."))
+((:path . "adj-both-post-stative") (:content . "adj-both-post-stative: Test for adjectives that is a post-head attributive modifier and can appear as a stative predicate."))
+((:path . "adj-both-post-cop") (:content . "adj-both-post-cop: Test for adjectives that is a post-head attributive modifier and can appear as a copula complement."))
+((:path . "adj-both-either-stative") (:content . "adj-both-either-stative: Test for adjectives that can be either be a pre-head or post-head attributive modifier and can appear as a stative predicate."))
+((:path . "adj-both-either-cop") (:content . "adj-both-either-cop: Test for adjectives that can be either be a pre-head or post-head attributive modifier and can appear as a copula complement."))
+((:path . "adj-both-either-cop") (:content . "adj-both-either-cop: "))
 ((:path . "adj-vso") (:content . "adj-vso: Test for attributive adjectives modifying nouns in a language with VSO word order."))
 ((:path . "adj-vos") (:content . "adj-vos: Test for attributive adjectives modifying nouns in a language with VOS word order."))
 ((:path . "adj-sov") (:content . "adj-sov: Test for attributive adjectives modifying nouns in a language with SOV word order."))
