@@ -383,3 +383,4 @@ adj-adj-n-adj=Test for adjective incorporation with one prefix position class an
 adj-adj_n_agr=Test for adjective agreement with prehead attributive adjectives.
 adj-2adj-n=Test for adjective incorporation with two prefix position classes.
 adj-2n-adj=Test for adjective incorporation with two suffix position classes.
+adj-adj-agr-n=Test for adjective incorporation with one prefix position class with daughter agreement.
