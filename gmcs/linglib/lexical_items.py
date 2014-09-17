@@ -561,10 +561,10 @@ def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
   adj_types = {item: False for item in adj_types}
 
   # Lexical super types of different adjective types
-  lst_map = {"both": "attr-adj-lex & ",
-             "attr": "attr-adj-lex & ",
-             "pred": "adj-lex & ",
-             "none": "adj-lex & " }
+  lst_map = {"both": "attr-adj-lex",
+             "attr": "attr-only-adj-lex",
+             "pred": "pred-only-adj-lex",
+             "none": "adj-lex" }
 
   # Go through adjective position classes...
   for adj_pc in ch.get('adj-pc',[]):
@@ -666,19 +666,22 @@ def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
 
     ## Calculate supertypes
     stypes = adj.get('supertypes').split(', ')
+    stype_names = []
     if '' in stypes: # Found root
       root = True
     # Set up root supertypes
     if root:
-      stype_def = lst_map[mode]
+      stype_names = [lst_map[mode]]
     # Set up defined supertypes
     else:
       stype_names = [adj_id(ch[st]) for st in stypes if st]
-      if mode in ('attr','pred'): # Add pred-only and attr-only types
-        stype_names.append("%s-only-adj-lex") % mode
-        adj_types["%s_only" % mode] = True # Add proper type to mylanguage.tdl
-      stype_def = " & ".join(stype_names) or ""
-      if stype_def: stype_def += " & "
+    # Format supertypes
+    stype_def = " & ".join(stype_names) or ""
+    if stype_def: stype_def += " & "
+    # Set up proper rules to be added
+    if mode in ('attr','pred'): # Add pred-only and attr-only types
+      stype_names.append("%s-only-adj-lex" % mode)
+      adj_types["%s_only" % mode] = True # Add proper type to mylanguage.tdl
 
     # For attributive adjectives...
     if mode in ("both", "attr"):
@@ -771,10 +774,11 @@ def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
                       {'type_name':'attr-only-adj-lex-rule := attr-adj-lex-rule & ',
                        'section':'lexrules'} }
     for sort in ('attr_word', 'attr_lex'):
-      mylang.add('''%s [ SYNSEM.LOCAL.CAT [ HEAD.PRD -,
-                                            VAL.SUBJ < > ] ].''' % \
-                    attr_only_map[sort]['type_name'],
-                    section=attr_only_map[sort]['section'])
+      if adj_types[sort]:
+        mylang.add('''%s [ SYNSEM.LOCAL.CAT [ HEAD.PRD -,
+                                              VAL.SUBJ < > ] ].''' % \
+                      attr_only_map[sort]['type_name'],
+                      section=attr_only_map[sort]['section'])
 
   ## Add predicative-only adjective types
   if adj_types['pred_only']:
