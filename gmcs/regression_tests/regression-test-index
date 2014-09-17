@@ -400,3 +400,7 @@ adj-n_adj_subj_agr=Test for stative predicate adjectives with subject agreement 
 adj-adj_n=Test for stative predicate adjectives in AS word order.
 adj-n_adj=Test for stative predicate adjectives in SA word order.
 adj-switching_cop=Test for optionally copula complement adjective.
+adj-switching_infl_cop=Test for switching predicative adjectives between copula and stative predicate with inflection.
+adj-switching_infl_cop_infl=Test for switching predicative adjectives between copula with inflection and stative predicate with inflection.
+adj-switching_infl_1=Test for stative predicate adjective with optional inflection in AS order.
+adj-switching_infl_2=Test for stative predicate adjective with optional inflection in SA order.

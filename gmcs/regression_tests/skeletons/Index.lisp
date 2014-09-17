@@ -22,6 +22,10 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "adj-switching_infl_2") (:content . "adj-switching_infl_2: Test for stative predicate adjective with optional inflection in SA order."))
+((:path . "adj-switching_infl_1") (:content . "adj-switching_infl_1: Test for stative predicate adjective with optional inflection in AS order."))
+((:path . "adj-switching_infl_cop_infl") (:content . "adj-switching_infl_cop_infl: Test for switching predicative adjectives between copula with inflection and stative predicate with inflection."))
+((:path . "adj-switching_infl_cop") (:content . "adj-switching_infl_cop: Test for switching predicative adjectives between copula and stative predicate with inflection."))
 ((:path . "adj-switching_cop") (:content . "adj-switching_cop: Test for optionally copula complement adjective."))
 ((:path . "adj-n_adj") (:content . "adj-n_adj: Test for stative predicate adjectives in SA word order."))
 ((:path . "adj-adj_n") (:content . "adj-adj_n: Test for stative predicate adjectives in AS word order."))
