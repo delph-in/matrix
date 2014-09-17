@@ -195,6 +195,7 @@ def main():
       lg = gmcs.regression_tests.add_regression_test.add(choices, txtsuite)
       print 'Succeeded copying files for %s.' % lg
 
+      # TJT 2014-09-14: Fixing this: it was not adding files to subversion
       rpath = os.path.join(os.environ['CUSTOMIZATIONROOT'], 'regression_tests')
       """
       subprocess.call(['svn', '-q', 'add'] +\
