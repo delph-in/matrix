@@ -415,3 +415,5 @@ adj-split_infl_cop_mix=Test for predicative adjectives where some adjectives are
 adj-2adjn=Test for two attributive adjectives modifying nouns in either posthead or prehead word orders.
 adj-n_adj_agr=Test for adjective agreement with posthead attributive adjectives.
 adj-either_adj_n=Test for attributive adjective appearing prehead or posthead.
+adj-nadj=Basic test for attributive only adjectives modifying nouns before the adjective.
+adj-split-both+attr=Test for adjectives where some adjectives are attributive only and others can be both attributive and predicative.

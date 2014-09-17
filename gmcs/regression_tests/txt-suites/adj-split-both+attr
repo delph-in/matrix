@@ -1,0 +1,60 @@
+adj1 n iv
+n tv adj1 n
+adj1 n tv adj1 n
+adj1 adj1 n iv
+n cop adj1
+adj1 n cop adj1
+adj1 adj1 n cop adj1
+*adj1 iv
+*adj1 cop
+*cop adj1
+*iv adj1
+*n tv adj1
+*n adj1 iv
+*n iv adj1
+*n adj1 adj1
+*n tv n adj1
+*n adj1 tv n
+*n adj1 tv adj1 n
+*adj1 n tv n adj1
+*adj1 n adj1 iv
+*n adj1 adj1 iv
+*n adj1 cop
+*adj1 n cop
+*adj1 cop n
+*cop n adj1
+*cop adj1 n
+*n cop adj1 adj1
+*n adj1 cop adj1
+*n adj1 adj1 cop
+*adj1 n adj1 cop adj1
+adj2 n iv
+n tv adj2 n
+adj2 n tv adj2 n
+adj2 adj2 n iv
+*n cop adj2
+*adj2 n cop adj2
+*adj2 adj2 n cop adj2
+*adj2 iv
+*adj2 cop
+*cop adj2
+*iv adj2
+*n tv adj2
+*n adj2 iv
+*n iv adj2
+*n adj2 adj2
+*n tv n adj2
+*n adj2 tv n
+*n adj2 tv adj2 n
+*adj2 n tv n adj2
+*adj2 n adj2 iv
+*n adj2 adj2 iv
+*n adj2 cop
+*adj2 n cop
+*adj2 cop n
+*cop n adj2
+*cop adj2 n
+*n cop adj2 adj2
+*n adj2 cop adj2
+*n adj2 adj2 cop
+*adj2 n adj2 cop adj2

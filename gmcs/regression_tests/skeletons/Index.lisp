@@ -22,6 +22,8 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "adj-split-both+attr") (:content . "adj-split-both+attr: Test for adjectives where some adjectives are attributive only and others can be both attributive and predicative."))
+((:path . "adj-nadj") (:content . "adj-nadj: Basic test for attributive only adjectives modifying nouns before the adjective."))
 ((:path . "adj-either_adj_n") (:content . "adj-either_adj_n: Test for attributive adjective appearing prehead or posthead."))
 ((:path . "adj-n_adj_agr") (:content . "adj-n_adj_agr: Test for adjective agreement with posthead attributive adjectives."))
 ((:path . "adj-2adjn") (:content . "adj-2adjn: Test for two attributive adjectives modifying nouns in either posthead or prehead word orders."))
