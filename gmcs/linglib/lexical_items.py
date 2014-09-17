@@ -855,7 +855,8 @@ def customize_cops(mylang, ch, lexicon, hierarchies, trigger):
                                                                   COMPS < > ],
                                                             HEAD noun ] ] ] >,
                                      COMPS < [ LOCAL.CAT [ HEAD.PRD +,
-                                                           VAL.COMPS < > ] ] >,
+                                                           VAL [ SUBJ < >,
+                                                                 COMPS < > ] ] ] >,
                                      SPR < >,
                                      SPEC < > ],
                            CONT.HOOK.XARG #xarg ] ].''' % LEXICAL_SUPERTYPES['cop'])

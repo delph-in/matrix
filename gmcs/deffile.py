@@ -28,7 +28,7 @@ from gmcs.utils import tokenize_def, get_name
 from gmcs import generate
 from gmcs.validate import ValidationMessage
 
-from random import randrange
+#from random import randrange
 from collections import defaultdict
 
 ######################################################################

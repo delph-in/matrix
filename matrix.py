@@ -7,7 +7,7 @@ import random
 from gmcs.choices import ChoicesFile
 from gmcs.deffile import MatrixDefFile
 
-import cgi
+#import cgi
 
 ### matrix.py
 ### A general-purpose script for running Matrix code.
