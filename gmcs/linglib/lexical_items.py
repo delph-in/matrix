@@ -748,7 +748,7 @@ def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
   ### Add the proper lexical types to mylanguage.tdl
   ## Add attributive adjective types
   if adj_types['attr_word']:
-    mylang.add('''attr-adj-lex := basic-intersective-adjective-lex & intersective-mod-lex &
+    mylang.add('''attr-adj-lex := adj-lex & intersective-mod-lex &
                     [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT [ HEAD noun,
 			      	  	                                             VAL.SPR cons ] ] > ].''',
                comment='Basic attributive adjective definition')
@@ -779,14 +779,14 @@ def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
   ## Add predicative-only adjective types
   if adj_types['pred_only']:
     if adj_types['pred_word']:
-      mylang.add('''pred-only-adj-lex := basic-intersective-adjective-lex & no-mod-lex.''')
+      mylang.add('''pred-only-adj-lex := adj-lex & no-mod-lex.''')
     if adj_types['pred_lex']:
       mylang.add('''pred-only-adj-lex-rule := add-only-no-ccont-rule & no-mod-lex.''')
 
   ## Add additional types
   # If there are stative predicates, add the proper rule and supertype
   pred_adj_map = {'stative_word':
-                    {'supertype':'stative-pred-adj-lex := basic-intersective-adjective-lex &',
+                    {'supertype':'stative-pred-adj-lex := adj-lex &',
                      'comment':'Stative predicate adjective definition',
                      'section':''},
                   'stative_lex':
