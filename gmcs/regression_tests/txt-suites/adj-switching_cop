@@ -1,0 +1,21 @@
+n cop adj
+n adj
+*n copinfl adj
+*n adjinfl
+*adj n
+*adjinfl n
+*n adjinfl cop
+*cop adjinfl n
+*cop n adjinfl
+*adjinfl n cop
+*adjinfl cop n
+*n adj copinfl
+*copinfl adj n
+*copinfl n adj
+*adj n copinfl
+*adj copinfl n
+*n adj cop
+*cop adj n
+*cop n adj
+*adj cop n
+*adj n cop
