@@ -22,6 +22,8 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "adj-either_adj_n") (:content . "adj-either_adj_n: Test for attributive adjective appearing prehead or posthead."))
+((:path . "adj-n_adj_agr") (:content . "adj-n_adj_agr: Test for adjective agreement with posthead attributive adjectives."))
 ((:path . "adj-2adjn") (:content . "adj-2adjn: Test for two attributive adjectives modifying nouns in either posthead or prehead word orders."))
 ((:path . "adj-split_infl_cop_mix") (:content . "adj-split_infl_cop_mix: Test for predicative adjectives where some adjectives are copula complements and some are stative predicates, some of each appear with inflection, some of each without."))
 ((:path . "adj-split_infl_cop") (:content . "adj-split_infl_cop: Test for predicative adjectives where all predicative adjectives have event type inflection and some appear as copula complements."))
