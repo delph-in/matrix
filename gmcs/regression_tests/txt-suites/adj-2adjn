@@ -1,0 +1,72 @@
+adj1 n tv n
+det adj1 n tv n
+adj1 adj1 n tv n
+det adj1 adj1 n tv n
+n tv adj1 n
+n tv det adj1 n
+n tv adj1 adj1 n
+n tv det adj1 adj1 n
+adj1 n iv
+det adj1 n iv
+adj1 adj1 n iv
+det adj1 adj1 n iv
+*adj2 n tv n
+*det adj2 n tv n
+*adj2 adj2 n tv n
+*det adj2 adj2 n tv n
+*n tv adj2 n
+*n tv det adj2 n
+*n tv adj2 adj2 n
+*n tv det adj2 adj2 n
+*adj2 n iv
+*det adj2 n iv
+*adj2 adj2 n iv
+*det adj2 adj2 n iv
+n tv n adj2
+n tv det n adj2
+n tv n adj2 adj2
+n tv det n adj2 adj2
+det n adj2 iv
+det n adj2 adj2 iv
+n adj2 adj2 iv
+n adj2 iv
+det n adj2 adj2 tv n
+n adj2 adj2 tv n
+det n adj2 tv n
+n adj2 tv n
+*n tv n adj1
+*n tv det n adj1
+*n tv n adj1 adj1
+*n tv det n adj1 adj1
+*det n adj1 iv
+*det n adj1 adj1 iv
+*n adj1 adj1 iv
+*n adj1 iv
+*det n adj1 adj1 tv n
+*n adj1 adj1 tv n
+*det n adj1 tv n
+*n adj1 tv n
+adj1 n adj2 tv n
+n tv adj1 n adj2
+adj1 n adj2 iv
+det adj1 n adj2 tv n
+n tv det adj1 n adj2
+det adj1 n adj2 iv
+*adj2 n adj1 tv n
+*n tv adj2 n adj1
+*adj2 n adj1 iv
+*det adj2 n adj1 tv n
+*n tv det adj2 n adj1
+*det adj2 n adj1 iv
+*adj1 n adj1 tv n
+*n tv adj1 n adj1
+*adj1 n adj1 iv
+*det adj1 n adj1 tv n
+*n tv det adj1 n adj1
+*det adj1 n adj1 iv
+*adj2 n adj2 tv n
+*n tv adj2 n adj2
+*adj2 n adj2 iv
+*det adj2 n adj2 tv n
+*n tv det adj2 n adj2
+*det adj2 n adj2 iv

@@ -412,3 +412,4 @@ adj-split_zero_adj_n_adj-infl=Test for predicative adjectives where all predicat
 adj-split_cop_stative_infl=Test for predicative adjectives where some adjectives appear as copula complements with copula inflection and others as stative predicates with event type inflection.
 adj-split_infl_cop=Test for predicative adjectives where all predicative adjectives have event type inflection and some appear as copula complements.
 adj-split_infl_cop_mix=Test for predicative adjectives where some adjectives are copula complements and some are stative predicates, some of each appear with inflection, some of each without.
+adj-2adjn=Test for two attributive adjectives modifying nouns in either posthead or prehead word orders.
