@@ -22,6 +22,14 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "adj-split_infl_cop_mix") (:content . "adj-split_infl_cop_mix: Test for predicative adjectives where some adjectives are copula complements and some are stative predicates, some of each appear with inflection, some of each without."))
+((:path . "adj-split_infl_cop") (:content . "adj-split_infl_cop: Test for predicative adjectives where all predicative adjectives have event type inflection and some appear as copula complements."))
+((:path . "adj-split_cop_stative_infl") (:content . "adj-split_cop_stative_infl: Test for predicative adjectives where some adjectives appear as copula complements with copula inflection and others as stative predicates with event type inflection."))
+((:path . "adj-split_zero_adj_n_adj-infl") (:content . "adj-split_zero_adj_n_adj-infl: Test for predicative adjectives where all predicative adjectives as stative predicates and some require event type inflection."))
+((:path . "adj-split_adj_zero_adj-infl_n") (:content . "adj-split_adj_zero_adj-infl_n: Test for predicative adjectives where all predicative adjectives as stative predicates and some require event type inflection."))
+((:path . "adj-split_adj_cop_infl") (:content . "adj-split_adj_cop_infl: Test for predicative adjectives where some adjectives appear as copula complements and others as stative predicates with event type inflection."))
+((:path . "adj-split_cop_adj_n_adj") (:content . "adj-split_cop_adj_n_adj: Test for predicative adjectives where some adjectives appear as copula complements and others as stative predicates."))
+((:path . "adj-split_adj_cop_n_adj") (:content . "adj-split_adj_cop_n_adj: Test for predicative adjectives where some adjectives appear as copula complements and others as stative predicates."))
 ((:path . "adj-switching_infl_2") (:content . "adj-switching_infl_2: Test for stative predicate adjective with optional inflection in SA order."))
 ((:path . "adj-switching_infl_1") (:content . "adj-switching_infl_1: Test for stative predicate adjective with optional inflection in AS order."))
 ((:path . "adj-switching_infl_cop_infl") (:content . "adj-switching_infl_cop_infl: Test for switching predicative adjectives between copula with inflection and stative predicate with inflection."))

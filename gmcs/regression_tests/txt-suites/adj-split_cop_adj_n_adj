@@ -1,0 +1,30 @@
+n cop adj1
+n adj2
+*n adj2 cop
+*n adj1
+*adj1 n
+*adj2 n
+*n adj1 cop
+*cop adj1 n
+*cop n adj1
+*adj1 n cop
+*adj1 cop n
+*n cop adj2
+*cop adj2 n
+*cop n adj2
+*adj2 n cop
+*adj2 cop n
+*n adj1-infl
+*adj1-infl n
+*n adj2-infl
+*adj2-infl n
+*n adj1-infl cop
+*cop adj1-infl n
+*cop n adj1-infl
+*adj1-infl n cop
+*adj1-infl cop n
+*n cop adj2-infl
+*cop adj2-infl n
+*cop n adj2-infl
+*adj2-infl n cop
+*adj2-infl cop n
