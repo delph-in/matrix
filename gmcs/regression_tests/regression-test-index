@@ -398,3 +398,4 @@ adj-n_adj_infl=Test for stative predicate adjectives with inflection features in
 adj-adj_n_subj_agr=Test for stative predicate adjectives with subject agreement in AS word order.
 adj-n_adj_subj_agr=Test for stative predicate adjectives with subject agreement in SA word order.
 adj-adj_n=Test for stative predicate adjectives in AS word order.
+adj-n_adj=Test for stative predicate adjectives in SA word order.
