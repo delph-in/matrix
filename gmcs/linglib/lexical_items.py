@@ -623,6 +623,11 @@ def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
     # Pivot on unique modification
     modunique = adj.get('modunique',False)
 
+    # Optionally copula complement and adjectives that only agree
+    # in only position must be unspecified at the lexical level
+    if predcop == "opt":
+      mode = "none"
+
     # Check for redundancies and collisions
     def_error = " ".join('''Collision found in supertype at %s!
                             Validate your choices file and try again.
@@ -658,7 +663,6 @@ def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
           if supertype_predcop:
             if predcop == supertype_predcop:
               supertype_redundancies['predcop'] = True
-            # TODO: CHECK TO SEE IF THIS WORKS
             elif supertype_predcop == 'opt' and predcop in ('opt', 'obl'):
               pass
             else:
@@ -680,7 +684,11 @@ def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
     if stype_def: stype_def += " & "
     # Set up proper rules to be added
     if mode in ('attr','pred'): # Add pred-only and attr-only types
-      stype_names.append("%s-only-adj-lex" % mode)
+      if mode == 'pred':
+        if predcop != "opt":
+          stype_names.append("pred-only-adj-lex")
+      else:
+        stype_names.append("attr-only-adj-lex")
       adj_types["%s_only" % mode] = True # Add proper type to mylanguage.tdl
 
     # For attributive adjectives...
