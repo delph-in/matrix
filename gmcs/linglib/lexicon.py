@@ -354,10 +354,12 @@ def validate_lexicon(ch, vr):
 
     # or if they said the noun takes an obligatory determiner, did they
     # provide any determiners?
-    if det == 'obl' and (not 'det' in ch):
-      mess = 'You defined a noun that obligatorily takes a determiner, ' +\
-             'but you haven\'t yet defined any determiners.'
-      vr.warn(n.full_key + '_det', mess)
+    if det in ('obl', 'opt') and (not 'det' in ch):
+      message_map = {'obl': ('obligatorily', ''),
+                     'opt': ('optionally', 'with a determiner ') }
+      mess = 'A noun defined as %s taking a determiner is unusable %s' +\
+             'without any determiners defined.'
+      vr.warn(n.full_key + '_det', mess % message_map[det])
 
     for stem in s:
       orth = stem.get('orth')
@@ -549,8 +551,6 @@ def validate_lexicon(ch, vr):
     vr.warn('verb1_valence', mess)
     vr.warn('verb2_valence', mess)
 
-  # TODO: Adjectives: TJT 2014-08-25
-
   # Adjectives TJT 2014-08-25
   # First, gather switching adjective position classes' inputs
   adj_pc_switching_inputs = set()
@@ -587,7 +587,7 @@ def validate_lexicon(ch, vr):
              'Every adjective requires a choice of mode (attributive, ' +\
              'predicative, or both)')
 
-    # If mode unspecified, mode must be defined on a position class accepting
+    # If mode 'unspecified', mode must be defined on a position class accepting
     # this as its input
     if mode == 'none':
       if adj.full_key not in adj_pc_switching_inputs:
@@ -634,7 +634,7 @@ def validate_lexicon(ch, vr):
       inverse_mode_name = {'pred':'attributively', 'attr':'predicatively'}[mode]
       message = 'This choice is only applicable to adjectives behaving ' +\
                 ('%s. This choice will be ignored, or you ' % inverse_mode_name) +\
-                'can change the adjective\'s behavoir to enable this choice above.'
+                'can change the adjective\'s behavoir above to enable this choice.'
       if mode != 'attr':
         if adj.get('modpos'):
           vr.warn(adj.full_key+'_modpos', message)
@@ -693,9 +693,11 @@ def validate_lexicon(ch, vr):
                    ('type choice: %s; supertype choice: %s.' % (adj.get(choice), super_type_value)))
 
     # TODO: These
-    # Check for clashes between inherited features and specified features
+    # Check for clashes between inherited choices and specified choices
 
-    # Give info boxes on inherited features
+    # Print info boxes on inherited choices
+
+    # Print info boxes on inherited features
 
     # Each stem needs a predicate / each predicate needs a stem
     message = 'Every stem requires both a spelling and predicate'

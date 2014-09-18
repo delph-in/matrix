@@ -12,9 +12,6 @@ from gmcs.lib import Hierarchy
 from gmcs.utils import get_name
 #from gmcs.utils import TDLencode
 
-
-import sys # TODO: DELETEME; save until done!
-
 ### Contents
 # 1. Module Variables
 # 2. Helper functions
@@ -772,7 +769,7 @@ def write_i_or_l_rules(irules, lrules, lrt, order):
 def validate(choices, vr):
   index_feats = choices.index_features()
   # TJT 2014-09-03: Generators are exhausted after use, so make this a list!
-  all_pcs = filter(None,all_position_classes(choices))
+  all_pcs = list(all_position_classes(choices))
   warn_merged_pcs(all_pcs, vr)
   for pc in all_pcs:
     basic_pc_validation(choices, pc, vr)
@@ -812,14 +809,14 @@ def basic_pc_validation(choices, pc, vr):
                'Every lexical type, lexical rule type, or position class ' +\
                'that serves as the input to a position class must be ' +\
                'defined somewhere in the questionnaire.')
-  # TODO: TJT 2014-09-02: test this
   # ALL inputs must be defined: if input is set to "Any X", and a POS type
   # of that X is not defined, the system fails but there is no validation
   if any(inp in NON_ESSENTIAL_LEX_CATEGORIES and inp not in choices
          for inp in pc.get('inputs','').split(', ')):
       vr.err(pc.full_key + '_inputs',
              'You have specified morphology for a part of speech ' +\
-             'that does not have any lexical types defined.')
+             'that does not have any lexical types defined. You ' +\
+             'can define lexical types on the Lexicon page.')
   # Check for 0 or 1 LRTs, and warn appropriately
   # TJT 2014-08-20: At least one LRT of IS-LRT type is required
   if ('lrt' not in pc or len(pc.get('lrt',[])) == 0) and \
@@ -837,6 +834,14 @@ def basic_pc_validation(choices, pc, vr):
                'no name will be merged with their position class, and ' +\
                'therefore cannot themselves take constraints. Apply the ' +\
                'constraints to the position class, instead.')
+  # TJT 2014-09-18: PCs should be either incorporated stems or inflection...
+  # this seems true from adjective typology survey, but might not be right
+  # for future incorporated stems
+  if 'is-lrt' in pc and 'lrt' in pc:
+    vr.err(pc.full_key+'_lrt', 'Each position class should either have ' +\
+             'incorporated stems or regular lexical rule types. If your ' +\
+             'language has incorporated stems and lexical rules types ' +\
+             'in a minimal pair, let the developers know!')
 
 # TJT 2014-08-21: incorp argument for incorporated stem lexical rule validation
 def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), switching=False):
@@ -866,7 +871,7 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
         vr.err(feat.full_key + '_head',
                'This feature is associated with nouns, ' +\
                'please select one of the NP options.')
-  orths = {}
+  orths = set()
   for lri in lrt.get('lri', []):
     orth = lri.get('orth', '')
     if lri['inflecting'] == 'yes' and orth == '':
@@ -880,7 +885,7 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
     if orth in orths:
       vr.err(lri.full_key + '_orth',
              "This affix duplicates another, which is not allowed.")
-    orths[orth] = True
+    orths.add(orth)
 
   # TJT 2014-08-21: Incorporated Adjective validation
   if incorp:

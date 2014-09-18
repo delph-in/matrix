@@ -763,16 +763,18 @@ class MatrixDefFile:
     zip_checked = False
 
     # the buttons after the subpages
+    print "<p>" # TJT 2014-09-18: Converting these radios to new set up
     print html_input(vr, 'hidden', 'customize', 'customize', False, '', '')
     print html_input(vr, 'radio', 'delivery', 'tgz', tgz_checked,
-                     '<p>Archive type: ', ' .tar.gz')
+                     'Archive type: ', ' .tar.gz')
     print html_input(vr, 'radio', 'delivery', 'zip', zip_checked,
                      ' ', ' .zip<br>')
     print html_input(vr, 'submit', 'create_grammar_submit', 'Create Grammar',
                      False, '', '', '', '', vr.has_errors())
 
     print html_input(vr, 'submit', 'sentences', 'Test by Generation', False,
-                     '', '</p>', '', '', vr.has_errors())
+                     '', '', '', '', vr.has_errors())
+    print "</p>"
 
     print '<hr>\n'
 

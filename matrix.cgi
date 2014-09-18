@@ -79,18 +79,38 @@ if cookie and not os.path.exists(session_path):
 # if the 'choices' field is defined, we have either the contents of an
 # uploaded choices file or the name of a sample choices file (which
 # will begin with 'sample-choices/') to replace the current choices.
+# TJT 2014-09-18: Get choices files from Language CoLLAGE links
 if form_data.has_key('choices'):
   choices = form_data['choices'].value
   if choices:
+    data = ''
     if choices.startswith('web/sample-choices/'):
       f = open(choices, 'r')
       data = f.read()
       f.close()
+    elif choices.startswith('collage/'):
+      # Get choices files from CoLLAGE
+      # should be 3 letter keys... doesn't work for longer keys
+      if len(choices) == (len('collage/') + 3):
+	import urllib2, tarfile, StringIO
+        choices = 'http://www.delph-in.net/matrix/language-'+choices+'/choices-final.tgz'
+	try:
+          tar = urllib2.urlopen(choices)
+          with tarfile.open(mode = 'r|*', fileobj = StringIO.StringIO(tar.read())) as tar:
+            for tarinfo in tar:
+              if tarinfo.isreg() and tarinfo.name[-len('choices'):] == 'choices':
+                choicesData = tar.extractfile(tarinfo)
+                data = choicesData.read()
+                choicesData.close()
+                break # Found the choices file...
+	except (urllib2.HTTPError, urllib2.URLError, tarfile.TarError):
+          data = ''
     else:
       data = choices
-    f = open(os.path.join(session_path, 'choices'), 'w')
-    f.write(data)
-    f.close()
+    if data:
+      f = open(os.path.join(session_path, 'choices'), 'w')
+      f.write(data)
+      f.close()
 
 # if the 'section' field is defined, we have submitted values to save
 if form_data.has_key('section'):

@@ -1,7 +1,5 @@
 from gmcs.linglib import case
 
-import sys # TODO: DELETEME
-
 ######################################################################
 # customize_feature_values(ch_dict, type_name, pos, features, cases)
 #   In the passed-in choices dictionary, go through the 'feat'
@@ -316,11 +314,13 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
       #  tdlfile.add(type_name + ':= obj-drop-verb-lex.', merge = True)
 
     elif n == 'OPT':
-      bool_val = {'plus': '+', 'minus': '-'}[v[0].lower()]
-      val_geom = {'subj': 'SUBJ', 'obj': 'COMPS'}[head.lower()]
-      tdlfile.add('%(id)s := [SYNSEM.LOCAL.CAT.VAL.%(vg)s.FIRST.OPT %(bv)s].' \
-                  % {'id': type_name, 'vg': val_geom, 'bv': bool_val},
-                  merge=True)
+      geom_map = {'subj': 'SUBJ', 'obj': 'COMPS'}
+      if head in geom_map:
+        bool_val = {'plus': '+', 'minus': '-'}[v[0].lower()]
+        val_geom = geom_map[head.lower()]
+        tdlfile.add('%(id)s := [SYNSEM.LOCAL.CAT.VAL.%(vg)s.FIRST.OPT %(bv)s].' \
+                    % {'id': type_name, 'vg': val_geom, 'bv': bool_val},
+                    merge=True)
 
     elif n == 'direction':
       if v[0] == 'dir':
