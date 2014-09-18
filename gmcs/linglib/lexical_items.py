@@ -212,12 +212,9 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
     auxorder = ch.get('aux-comp-order')
     vcluster = determine_vcluster(auxcomp, auxorder, wo, ch)
 
-    # TODO: CHECK THIS
     typedef = \
-      'verb-lex := no-mod-lex & \
+      'verb-lex := non-mod-lex-item & \
                  [ SYNSEM.LOCAL.CAT.HEAD verb ].'
-#      'verb-lex := non-mod-lex-item & \
-#                 [ SYNSEM.LOCAL.CAT.HEAD verb ].'
     mylang.add(typedef)
     typedef = \
       'main-verb-lex := verb-lex & basic-verb-lex & \
@@ -233,9 +230,7 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
   else:
     #mainorverbtype = 'verb-lex'
     vcluster = False
-    # TODO: CHECK THIS
-    mylang.add('verb-lex := basic-verb-lex & no-mod-lex.')
-#    mylang.add('verb-lex := basic-verb-lex & non-mod-lex-item.')
+    mylang.add('verb-lex := basic-verb-lex & non-mod-lex-item.')
 
   typedef = mainorverbtype + ' :=  \
        [ SYNSEM.LOCAL [ CAT.VAL [ SPR < >, \
@@ -365,9 +360,7 @@ def customize_determiners(mylang, ch, lexicon, hierarchies):
                                    SUBJ < > ]].'
     mylang.add(typedef)
 
-    # TODO: CHECK THIS
-    mylang.add('determiner-lex := no-mod-lex.')
-#    mylang.add('determiner-lex := non-mod-lex-item.')
+    mylang.add('determiner-lex := non-mod-lex-item.')
 
   # Determiners
   if 'det' in ch:
@@ -449,8 +442,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
   mylang.add(typedef)
 
   # Adding empty MOD on general definitiion for noun-lex
-  mylang.add('noun-lex := no-mod-lex.')
-#  mylang.add('noun-lex := non-mod-lex-item.')
+  mylang.add('noun-lex := non-mod-lex-item.')
 
   # singlentype means there's only one type of n in the hierarchy.
   if singlentype:
@@ -919,11 +911,9 @@ def customize_cops(mylang, ch, lexicon, hierarchies, trigger):
 
 def customize_lexicon(mylang, ch, lexicon, trigger, hierarchies, rules):
 
-  # TODO: CHECK THIS
-  # Getting rid of this type as an experiment...
-#  comment = '''Type assigning empty mod list. Added to basic types for nouns, verbs and determiners.'''
-#  mylang.add('non-mod-lex-item := lex-item & \
-#               [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].',comment)
+  comment = '''Type assigning empty mod list. Added to basic types for nouns, verbs and determiners.'''
+  mylang.add('non-mod-lex-item := lex-item & \
+               [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].',comment)
 
   mylang.set_section('nounlex')
   customize_nouns(mylang, ch, lexicon, hierarchies)
