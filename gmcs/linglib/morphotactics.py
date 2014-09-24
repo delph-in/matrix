@@ -585,6 +585,8 @@ def write_rules(pch, mylang, irules, lrules, lextdl, choices):
             # This is the stative predicate LRT
             # This only fires if "mod" is ("both" or "pred") and "pred" not checked
             lrt.supertypes.add('stative-pred-lex-rule')
+            # TJT: 2014-09-24: Stative predicate lexical rule is PRD -
+            mylang.add(lrt.identifier() + ''' := [ SYNSEM.LOCAL.CAT.HEAD.PRD - ].''')
       # merged LRT/PCs have the same identifier, so don't write supertypes here
       if lrt.identifier() != pc.identifier():
         # Add Information Structure supertypes
