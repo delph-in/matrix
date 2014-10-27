@@ -191,9 +191,8 @@ def position_class_hierarchy(choices):
     if pc_lrt_mergeable(pc):
       pc_lrt_merge(cur_pc, pc)
     # Fill the lexical rule types with the information we know
-    create_lexical_rule_types(cur_pc, pc) # TODO: THIS IS CHANGING CHOICES
+    create_lexical_rule_types(cur_pc, pc)
   # now assign pc inputs
-  # SYNTH HAS BEEN DELETED HERE
   for pc in pc_inputs:
     for inp in pc_inputs[pc]:
       if inp not in _mns and inp in LEXICAL_CATEGORIES:
@@ -224,8 +223,8 @@ def pc_lrt_merge(cur_pc, pc):
     cur_pc.identifier_suffix = 'lex-rule'
 
 def create_lexical_rule_types(cur_pc, pc):
-  # TJT 2014-08-21 Check incorporated stems too
   lrt_parents = {}
+  # TJT 2014-08-21 Check incorporated stems too
   all_lrts = (pc.get('lrt',[]), pc.get('is-lrt',[]))
   for lrts in all_lrts:
     for j, lrt in enumerate(lrts):
@@ -568,7 +567,7 @@ def write_rules(pch, mylang, irules, lrules, lextdl, choices):
           if modpos:
             posthead = {'before':'+', 'after':'-'}[modpos]
             mylang.add(lrt.identifier() + (' := [ SYNSEM.LOCAL.CAT.POSTHEAD %s ].' % posthead))
-          #elif lrt.features['modpos'] == 'both': Do nothing
+          #elif lrt.features['modpos'] == 'both': # Do nothing
         if lrt.features['mod'] in ('both', 'pred'):
           if lrt.features['mod'] == "pred":
             # Predicative only
@@ -918,18 +917,17 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
                'a behavoir for the adjective.')
 
     # Mode must not clash with any of its inputs
-    # TODO: Check for clash on modpos, predcop
     for key in inputs:
       input_def = choices.get(key,False)
       if input_def:
         # Check mode
         if mode != 'both':
           input_mode = input_def.get('mod','')
-          if input_mode and input_mode != 'none':
-            if mode != input_mode:
-              vr.err(lrt.full_key+'_mod',
-                     'This behavoir conflicts with this lexical rule type\'s ' +\
-                     'input %s on the input\'s behavoir' % (input_def.get('name','')))
+          # Only pred and attr conflict with each other
+          if input_mode in ("pred", "attr") and mode != input_mode:
+            vr.err(lrt.full_key+'_mod',
+                   'This behavoir conflicts with this lexical rule type\'s ' +\
+                   'input %s on the input\'s behavoir' % (input_def.get('name','')))
         # Check modpos
         if mode in ('attr', 'both'):
           if modpos and modpos != 'either':

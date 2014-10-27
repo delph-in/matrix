@@ -846,7 +846,7 @@ Check neg-aux "Negation by auxiliary verb" "<p>" "Negative auxiliary verb: Check
 
 Text neg-aux-index "index for neg aux" "<span style='display:none'>" "</span>" 1
 
-Check adv-neg "Adverbial negation" "<p>" "An adverb which is a modifier of:<br />"
+Check adv-neg "Adverbial negation" "" "An adverb which is a modifier of:<br />"
 
 Radio neg-mod "Negative adverb modifies" "" ""
 . s "S" "" "S "
@@ -858,7 +858,7 @@ Radio neg-order "Negative adverb order" "and appears " ""
 . after "after" "" "after "
 . either "either" "" "on either side of the category it modifies.<br>"
 
-Text neg-adv-orth "Negative adverb spelling" "...and which is spelled: " "</p>" 20
+Text neg-adv-orth "Negative adverb spelling" "...and which is spelled: " "" 20
 
 Check comp-neg "Negation by selected complement" "<p>" "An adverb like particle which is a selected complement.  This option will create a non-inflecting lexical rule that maps plain Vs to Vs which select for negation in addition to their regular COMPS.</p>" "neg_comp()"
 

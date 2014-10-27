@@ -679,16 +679,16 @@ def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
     # Set up defined supertypes
     else:
       stype_names = [adj_id(ch[st]) for st in stypes if st]
+    	  # Add pred-only or attr-only types
+      if mode == 'pred' and predcop != 'opt':
+        stype_names.append("pred-only-adj-lex")
+      elif mode == 'attr':
+        stype_names.append("attr-only-adj-lex")
     # Format supertypes
     stype_def = " & ".join(stype_names) or ""
     if stype_def: stype_def += " & "
-    # Set up proper rules to be added
-    if mode in ('attr','pred'): # Add pred-only and attr-only types
-      if mode == 'pred':
-        if predcop != "opt":
-          stype_names.append("pred-only-adj-lex")
-      else:
-        stype_names.append("attr-only-adj-lex")
+    # Add pred-only and attr-only types if applicable
+    if mode in ('attr','pred'):
       adj_types["%s_only" % mode] = True # Add proper type to mylanguage.tdl
 
     # For attributive adjectives...
@@ -714,26 +714,26 @@ def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
 
     if not supertype_redundancies['predcop']:
       # For predicative adjectives...
-      if mode in ("both", "pred"):
+      if mode in ('both', 'pred'):
         # Set up proper rule for mylanguage.tdl
         # Pivot on copula complement
-        if predcop == "obl":
+        if predcop == 'obl':
           # Adjective only appears as copula complement
-          pred = "+"
-          subj = "VAL.SUBJ < >"
-          adj_types['pred_word'] = True
-        elif predcop == "opt":
+          pred = '+'
+          subj = 'VAL.SUBJ < >'
+          if mode == 'pred': adj_types['pred_word'] = True
+        elif predcop == 'opt':
           # Switching between copula complement and inflection
           # See deffile.py for zero affixes added here
           adj_types['stative_lex'] = True
           adj_types['pred_lex'] = True
-        elif predcop == "imp":
+        elif predcop == 'imp':
           # Adjective only appears as stative predicate
-          pred = "-"
+          pred = '-'
           adj_types['stative_word'] = True
           adj_types['pred_word'] = True
           # Add additional supertype
-          if root: stype_def += "stative-pred-adj-lex & "
+          if root: stype_def += 'stative-pred-adj-lex & '
 
     # If input is "any adjective", add adj-lex supertype
     # to hook up inflection flags
@@ -761,7 +761,7 @@ def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
   if adj_types['attr_word']:
     mylang.add('''attr-adj-lex := adj-lex & intersective-mod-lex &
                     [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT [ HEAD noun,
-			      	  	                                             VAL.SPR cons ] ] > ].''',
+                                                                VAL.SPR < > ] ] > ].''',
                comment='Basic attributive adjective definition')
   if adj_types['attr_lex']:
     mylang.add('''attr-adj-lex-rule := add-only-no-ccont-rule &
@@ -903,6 +903,8 @@ def customize_cops(mylang, ch, lexicon, hierarchies, trigger):
         typedef = TDLencode(name) + ' := ' + ctype + ' & \
                         [ STEM < "' + orthstr + '" > ].'
         lexicon.add(typedef)
+
+        # TODO: Add copula types to trigger.mtr
 
 ######################################################################
 # customize_lexicon()

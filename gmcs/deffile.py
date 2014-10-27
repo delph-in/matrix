@@ -1522,10 +1522,10 @@ class MatrixDefFile:
   # in order.
   def save_choices(self, form_data, choices_file):
     # The section isn't really a form field, but save it for later
+    # section is page user is leaving (or clicking "save and stay" on)
     section = form_data['section'].value
 
-    # TODO: Figure this saving issue out
-    # New choices vs Old choices
+    ## New choices vs Old choices
     # old_choices is saved to pages other than "section" variable above
     # new_choices is saved to the "section" variable above's page
 
@@ -1547,10 +1547,13 @@ class MatrixDefFile:
     # Read the current choices file (if any) into old_choices
     old_choices = ChoicesFile(choices_file)
 
+    # Keep track of features
+    if section in ('lexicon', 'morphology'): feats_to_add = defaultdict(list)
+
     # TJT: 2014-08-26: If optionally copula complement,
     # add zero rules to choices
     if section == 'lexicon':
-      for adj in old_choices.get('adj', []):
+      for adj in new_choices.get('adj', []): # check NEW values
         if adj.get('predcop') == "opt":
           atype = get_name(adj)
           pc_name = "%s_opt_cop" % atype
@@ -1578,53 +1581,54 @@ class MatrixDefFile:
             #old_choices[aToV+"_predcop"] = "off" # Unchecked is off
             old_choices[aToV+"_mod"] = "pred"
 
+
     # TJT: 2014-08-26: If adjective agrees only with one argument,
     # add zero rules to choices
-    if section in ('lexicon', 'morphology'):
-      feats_to_add = defaultdict(list) # Keep track of features
+    #if section == 'lexicon': # already in lexicon
       # Check lexicon for argument agreement
-      for adj in old_choices.get('adj',[]):
+      for adj in new_choices.get('adj',[]): # check NEW values
         for feat in adj.get('feat',[]):
-          if feat.get('head','').lower() in ('subj','mod'):
+          if feat.get('head','') in ('subj','mod'):
             atype = get_name(adj)
             pc_name = "%s_argument_agreement" % atype
             # Skip if already added
             if not any(pc.get('name','') == pc_name for pc in old_choices['adj-pc']):
               feats_to_add[atype].append(feat)
 
-      # TODO: This doesn't seem to work
+    elif section == 'morphology':
       # Check morphology for argument agreement
-#      for adj_pc in old_choices.get('adj-pc',[]):
-#        for lrt in adj_pc.get('lrt',[]):
-#          for feat in lrt.get('feat',[]):
-#            if feat.get('head','') in ('subj','obj'):
-#              apc = adj_pc.get('name','')
-#              pc_name = "%s_argument_agreement" % apc
-#              # Skip if already added
-#              if not any(pc.get('name','') == pc_name for pc in old_choices['adj-pc']):
-#                feats_to_add[pc_name].append(feat)
+      for adj_pc in new_choices.get('adj-pc',[]): # check NEW values
+        for lrt in adj_pc.get('lrt',[]):
+          for feat in lrt.get('feat',[]):
+            if feat.get('head','') in ('subj','mod'):
+              apc = adj_pc.full_key
+              pc_name = "%s_argument_agreement" % apc
+              # Skip if already added
+              if not any(pc.get('name','') == pc_name for pc in old_choices['adj-pc']):
+                feats_to_add[apc].append(feat)
 
-      # TODO: "check old_choices" -- doesn't seem to delete upon immediate change
+    if section in ('lexicon', 'morphology'):
       # With features collected, add them to choices dict
+      target_page_choices = old_choices if section == "lexicon" else new_choices
       for adj in feats_to_add:
         # Add zero rules
         argument_agreement_pc = "adj-pc%d" % (old_choices['adj-pc'].next_iter_num()
                                               if old_choices['adj-pc'] else 1)
         # Set up position class
-        old_choices[argument_agreement_pc+'_name'] = "%s_argument_agreement" % adj
-        old_choices[argument_agreement_pc+'_obligatory'] = 'on'
-        old_choices[argument_agreement_pc+'_inputs'] = adj
+        target_page_choices[argument_agreement_pc+'_name'] = "%s_argument_agreement" % adj
+        target_page_choices[argument_agreement_pc+'_obligatory'] = 'on'
+        target_page_choices[argument_agreement_pc+'_inputs'] = adj
         # Set up new position class as a "switching" pc
-        old_choices[argument_agreement_pc+'_switching'] = 'on'
+        target_page_choices[argument_agreement_pc+'_switching'] = 'on'
         # Define lexical rule types
         subj_only = argument_agreement_pc+'_lrt1'
         mod_only = argument_agreement_pc+'_lrt2'
         # Write subject agreement rule
-        old_choices[subj_only+'_name'] = "%s_subj_agr" % adj
-        old_choices[subj_only+'_mod'] = 'pred'
+        target_page_choices[subj_only+'_name'] = "%s_subj_agr" % adj
+        target_page_choices[subj_only+'_mod'] = 'pred'
         # Write modificand agreement rule
-        old_choices[mod_only+"_name"] = "%s_mod_agr" % adj
-        old_choices[mod_only+"_mod"] = "attr"
+        target_page_choices[mod_only+"_name"] = "%s_mod_agr" % adj
+        target_page_choices[mod_only+"_mod"] = "attr"
         # Add features from lexicon page to morphology page
         feat_count = 1
         for feat in feats_to_add[adj]:
@@ -1636,17 +1640,14 @@ class MatrixDefFile:
             elif head == 'mod':
               # Copy object agreement features
               feature_vn = mod_only+"_feat%d" % feat_count
-            old_choices[feature_vn+'_name'] = feat.get('name')
-            old_choices[feature_vn+'_value'] = feat.get('value')
+            target_page_choices[feature_vn+'_name'] = feat.get('name')
+            target_page_choices[feature_vn+'_value'] = feat.get('value')
             # Adjectives' MOD, XARG, and SUBJ identified
             # so just agree with the XARG
-            old_choices[feature_vn+'_head'] = 'xarg'
-            # Delete this feature from old choices
+            target_page_choices[feature_vn+'_head'] = 'xarg'
+            # Delete this feature from current page
             new_choices.delete(feat.full_key+'_name')
             new_choices.delete(feat.full_key+'_value')
-            # Getting rid of this True
-            # TODO: Setting delete's 2nd argument to "True" seems to
-            # start assigning numbers from 0 instead of 1!
             new_choices.delete(feat.full_key+'_head', prune=True)
             feat_count += 1
 

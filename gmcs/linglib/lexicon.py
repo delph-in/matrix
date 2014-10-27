@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from gmcs.linglib import case
 #from gmcs.linglib import lexical_items
 from gmcs.utils import get_name
@@ -594,10 +596,10 @@ def validate_lexicon(ch, vr):
         vr.err(adj.full_key+'_mod',
                'Unspecified adjectives must be specified for mode by ' +\
                'some position class on the Morphology page enabled by using ' +\
-               'argument agreement choices on the feature section below.' +\
-               (' The current full_key is: %s' % adj.full_key) +\
-               (' full_key in adj_pc_switching_inputs: %s' % str(adj.full_key in adj_pc_switching_inputs)) +\
-               ' The switching position class inputs are: %s' % adj_pc_switching_inputs)
+               'argument agreement choices on the feature section below.')
+               #(' The current full_key is: %s' % adj.full_key) +\
+               #(' full_key in adj_pc_switching_inputs: %s' % str(adj.full_key in adj_pc_switching_inputs)) +\
+               #' The switching position class inputs are: %s' % adj_pc_switching_inputs)
 
     # Enforce feature specifications to unify with mode
     illegal_heads = {'attr':'subj', 'pred':'mod'}
@@ -618,16 +620,6 @@ def validate_lexicon(ch, vr):
                'page. If you are encountering this error, make sure you have ' +\
                'JavaScript enabled, or try deleting this feature and checking the ' +\
                'Morphology page.')
-
-    # Choices required for a given mode must be specified
-    if mode in ('both', 'attr'):
-      message = 'This choice is required for adjectives that can be attributive'
-      if not adj.get('modpos'):
-        vr.err(adj.full_key+"_modpos", message)
-    if mode in ('both', 'pred'):
-      message = 'This choice is required for adjectives that can be predicative'
-      if not adj.get('predcop'):
-        vr.err(adj.full_key+"_predcop", message)
 
     # Mode specific adjective choices are disregarded without the proper mode
     if mode in ('pred', 'attr'):
@@ -664,40 +656,68 @@ def validate_lexicon(ch, vr):
              'descendant, where a type inherits from adj-lex if it is' +\
              'defined without a supertype.')
 
-    # Type definitions must unify with their supertype's definitions
+    # Check supertypes for collisions
     name_map = {'mod':'adjective mode', 'modpos':'attributive modification direction',
                 'modunique':'unique modification', 'predcop':'copula complement'}
+    for choice in name_map:
+      adj_value = adj.get(choice,False)
+      for supertype in supertypes:
+        if adj_value:
+          supertype_def = ch.get(supertype,False)
+          if supertype_def:
+            supertype_value = supertype_def.get(choice,False)
+            if supertype_value:
+              # Type definitions must unify with their supertype's definitions
+              if supertype_value != adj.get(choice):
+                # Both and predicative/attributive unify
+                if supertype_value == 'both' and \
+                   adj.get(choice) in ('pred', 'attr'):
+                  continue
+                # Either position and before/after unify
+                if supertype_value == 'either' and \
+                   adj.get(choice) in ('before', 'after'):
+                  continue
+                # modunique underspecified can be the parent of modunique +
+                if supertype_def.get(choice,'missing') == 'missing' and \
+                   adj.get(choice,'') == 'on':
+                  continue
+                # Found collision
+                vr.err(adj.full_key+'_supertypes',
+                       'This adjective definition clashes with its supertype ' +\
+                       ('%s on choice of %s. ' % (supertype, name_map[choice])) +\
+                       ('type choice: %s; supertype choice: %s.' % (adj.get(choice), supertype_value)))
+            # else: if supertype doesn't make the choice, then the choice
+            # would not be required on its children, so no need to do anything here
+
+    # If no supertypes, check for required choices
+    if not supertypes:
+      if mode in ('both', 'attr'):
+        if not adj.get('modpos'):
+          message = 'This choice is required for adjectives that can be attributive'
+          vr.err(adj.full_key+"_modpos", message)
+      if mode in ('both', 'pred'):
+        if not adj.get('predcop'):
+          message = 'This choice is required for adjectives that can be predicative'
+          vr.err(adj.full_key+"_predcop", message)
+
+    # Check for clashes between inherited features and specified features
+    inherited_feats = defaultdict(dict) # name -> 'value' -> value, 'specified on' -> head
+    name_map = {'xarg':'Both positions', 'mod':'The modified noun',
+                'subj':'The subject', 'adj': 'The adjective'}
     for supertype in supertypes:
-      super_type_def = ch.get(supertype,False)
-      if not super_type_def: continue
-      for choice in name_map:
-        super_type_value = super_type_def.get(choice,False)
-        if super_type_value:
-          if super_type_value != adj.get(choice):
-            # Both and predicative/attributive unify
-            if super_type_def.get(choice) == 'both' and \
-               adj.get(choice) in ('pred', 'attr'):
-              continue
-            # Either position and before/after unify
-            if super_type_def.get(choice) == 'either' and \
-               adj.get(choice) in ('before', 'after'):
-              continue
-            # modunique underspecified can be the parent of modunique +
-            if super_type_def.get(choice,'missing') == 'missing' and \
-               adj.get(choice,'') == 'on':
-              continue
-            # Found collision
-            vr.err(adj.full_key+'_supertypes',
-                   'This adjective definition clashes with its supertype ' +\
-                   ('%s on choice of %s. ' % (supertype, name_map[choice])) +\
-                   ('type choice: %s; supertype choice: %s.' % (adj.get(choice), super_type_value)))
+      supertype_def = ch.get(supertype,False)
+      if not supertype_def: continue
+      for feature in supertype_def.get('feat',[]):
+        inherited_feats[feature.get('name')]['value'] = feature.get('value')
+        head = feature.get('head')
+        inherited_feats[feature.get('name')]['specified on'] = name_map[head] if head in name_map else head
 
-    # TODO: These
-    # Check for clashes between inherited choices and specified choices
-
-    # Print info boxes on inherited choices
+    # Print info boxes on inherited choices # TODO: This
 
     # Print info boxes on inherited features
+    if len(inherited_feats) > 0:
+      vr.info(adj.full_key + '_feat', "inherited features are: "+
+                str(dict(inherited_feats)))
 
     # Each stem needs a predicate / each predicate needs a stem
     message = 'Every stem requires both a spelling and predicate'
