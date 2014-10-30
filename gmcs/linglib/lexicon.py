@@ -661,21 +661,21 @@ def validate_lexicon(ch, vr):
                 'modunique':'unique modification', 'predcop':'copula complement'}
     for choice in name_map:
       adj_value = adj.get(choice,False)
-      for supertype in supertypes:
-        if adj_value:
+      if adj_value:
+        for supertype in supertypes:
           supertype_def = ch.get(supertype,False)
           if supertype_def:
             supertype_value = supertype_def.get(choice,False)
             if supertype_value:
               # Type definitions must unify with their supertype's definitions
-              if supertype_value != adj.get(choice):
+              if supertype_value != adj_value:
                 # Both and predicative/attributive unify
                 if supertype_value == 'both' and \
-                   adj.get(choice) in ('pred', 'attr'):
+                   adj_value in ('pred', 'attr'):
                   continue
                 # Either position and before/after unify
                 if supertype_value == 'either' and \
-                   adj.get(choice) in ('before', 'after'):
+                   adj_value in ('before', 'after'):
                   continue
                 # modunique underspecified can be the parent of modunique +
                 if supertype_def.get(choice,'missing') == 'missing' and \
@@ -814,13 +814,43 @@ def validate_lexicon(ch, vr):
              "The following supertypes are not defined: "
              "%s." % ', '.join(undefined_supertypes))
 
-    # Copulas must have a complement type specified
-    if not cop.get('comptype',False):
-      vr.err(cop.full_key+'_comptype',
-             'Every copula must have at least one complement type defined.')
-
     ## Get path to root and supertypes to check
     supertypes, pathToRoot = get_all_supertypes(cop, ch)
+    inherited_choices = defaultdict(dict)
+
+    # Check supertypes for collisions
+    name_map = {'comptype':'complement type'}
+    for choice in name_map:
+      cop_value = cop.get(choice,False)
+      if cop_value:
+        for supertype in supertypes:
+          supertype_def = ch.get(supertype,False)
+          if supertype_def:
+            supertype_value = supertype_def.get(choice,False)
+            if supertype_value:
+              # Type definitions must unify with their supertype's definitions
+              if supertype_value != cop_value:
+                # Found collision
+                vr.err(cop.full_key+'_supertypes',
+                       'This adjective definition clashes with its supertype ' +\
+                       ('%s on choice of %s. ' % (supertype, name_map[choice])) +\
+                       ('type choice: %s; supertype choice: %s.' % (cop_value, supertype_value)))
+              # Keep track of inherited values
+              inherited_choices[choice][supertype_def.get('name')] = supertype_value
+
+    # Copulas must have a complement type specified
+    if not inherited_choices:
+      if not cop.get('comptype',False):
+        vr.err(cop.full_key+'_comptype',
+               'Every copula must have at least one complement type defined.')
+
+    # Print infos on inherited choices
+    else:
+      for choice in inherited_choices:
+        #values = [inherited_choices[choice][supertype] for supertype in inherited_choices[choice]]
+        values = list(map(str,inherited_choices[choice]))
+        vr.info('%s_%s' % (cop.full_key, choice),
+                'inherited choices are: %s' % (values))
 
     # Each Copula needs a path to root
     if not pathToRoot:
