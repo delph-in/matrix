@@ -869,7 +869,7 @@ def validate_lexicon(ch, vr):
 #        supertype_features = supertype.get('feats',[])
 #        for feat in supertype_features:
 
-  raise DELETEME # TODO: DELETEME
+  raise Exception(DELETEME) # TODO: DELETEME
 
   # Determiners
   for det in ch.get('det',[]):
