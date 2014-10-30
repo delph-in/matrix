@@ -797,6 +797,7 @@ def validate_lexicon(ch, vr):
 
   # TODO: Copulas: TJT 2014-08-25
 
+  DELETEME = {} # TODO: DELETEME
   # Copulas
   for cop in ch.get('cop',[]):
     # Names can't have illegal characters
@@ -837,8 +838,8 @@ def validate_lexicon(ch, vr):
                        ('type choice: %s; supertype choice: %s.' % (cop_value, supertype_value)))
               # Keep track of inherited values
               inherited_choices[choice][supertype_def.get('name')] = supertype_value
+              DELETEME[cop.full_key] = inherited_choices # TODO: DELETEME
 
-    raise Exception(inherited_choices)
     # Copulas must have a complement type specified
     if not inherited_choices:
       if not cop.get('comptype',False):
@@ -868,6 +869,7 @@ def validate_lexicon(ch, vr):
 #        supertype_features = supertype.get('feats',[])
 #        for feat in supertype_features:
 
+  raise DELETEME # TODO: DELETEME
 
   # Determiners
   for det in ch.get('det',[]):
