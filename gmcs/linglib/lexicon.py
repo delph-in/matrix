@@ -825,13 +825,13 @@ def validate_lexicon(ch, vr):
       cop_value = cop.get(choice,False)
       if cop_value:
         # 1
+        if supertypes: raise Exception("I found a supertype value! Supertypes: %s" % supertypes)
         for supertype in supertypes:
           supertype_def = ch.get(supertype,False)
           if supertype_def:
             supertype_value = supertype_def.get(choice,False)
             if supertype_value:
               # 2
-              if supertypes: raise Exception("I found a supertype value!")
               # Type definitions must unify with their supertype's definitions
               if supertype_value != cop_value:
                 # Found collision
