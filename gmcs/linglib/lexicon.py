@@ -818,7 +818,7 @@ def validate_lexicon(ch, vr):
     ## Get path to root and supertypes to check
     supertypes, pathToRoot = get_all_supertypes(cop, ch)
     inherited_choices = defaultdict(dict)
-    raise Exception("Supertypes: %s" % supertypes)
+    if supertypes: raise Exception("Supertypes: %s" % supertypes)
 
     # Check supertypes for collisions
     name_map = {'comptype':'complement type'}
