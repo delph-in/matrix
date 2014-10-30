@@ -827,12 +827,13 @@ def validate_lexicon(ch, vr):
           if supertype_value:
             # Type definitions must unify with their supertype's definitions
             cop_value = cop.get(choice,False)
-            if supertype_value != cop_value:
-              # Found collision
-              vr.err(cop.full_key+'_supertypes',
-                     'This adjective definition clashes with its supertype ' +\
-                     ('%s on choice of %s. ' % (supertype, name_map[choice])) +\
-                     ('type choice: %s; supertype choice: %s.' % (cop_value, supertype_value)))
+            if cop_value:
+              if supertype_value != cop_value:
+                # Found collision
+                vr.err(cop.full_key+'_supertypes',
+                       'This adjective definition clashes with its supertype ' +\
+                       ('%s on choice of %s. ' % (supertype, name_map[choice])) +\
+                       ('type choice: %s; supertype choice: %s.' % (cop_value, supertype_value)))
             # Keep track of inherited values
             inherited_choices[choice][supertype_def.get('name')] = supertype_value
 
@@ -846,7 +847,7 @@ def validate_lexicon(ch, vr):
     else:
       for choice in inherited_choices:
         #values = [inherited_choices[choice][supertype] for supertype in inherited_choices[choice]]
-        values = list(map(str,inherited_choices[choice]))
+        values = list(map(repr,inherited_choices[choice]))
         vr.info('%s_%s' % (cop.full_key, choice),
                 'inherited choices are: %s' % (values))
 
