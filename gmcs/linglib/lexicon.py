@@ -824,6 +824,7 @@ def validate_lexicon(ch, vr):
     for choice in name_map:
       cop_value = cop.get(choice,False)
       if cop_value:
+        raise Exception("I found a copula value!")
         for supertype in supertypes:
           supertype_def = ch.get(supertype,False)
           if supertype_def:
