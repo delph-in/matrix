@@ -838,6 +838,7 @@ def validate_lexicon(ch, vr):
               # Keep track of inherited values
               inherited_choices[choice][supertype_def.get('name')] = supertype_value
 
+    raise Exception(inherited_choices)
     # Copulas must have a complement type specified
     if not inherited_choices:
       if not cop.get('comptype',False):
