@@ -847,7 +847,7 @@ def validate_lexicon(ch, vr):
     else:
       for choice in inherited_choices:
         #values = [inherited_choices[choice][supertype] for supertype in inherited_choices[choice]]
-        values = list(map(repr,inherited_choices[choice]))
+        values = list(inherited_choices[choice])
         vr.info('%s_%s' % (cop.full_key, choice),
                 'inherited choices are: %s' % (values))
 
