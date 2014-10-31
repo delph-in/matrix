@@ -583,24 +583,6 @@ def validate_lexicon(ch, vr):
              "The following supertypes are not defined: "
              "%s" % ', '.join(undefined_supertypes))
 
-    # Adjectives must have a mode defined
-    if not mode:
-      vr.err(adj.full_key+'_mod',
-             'Every adjective requires a choice of mode (attributive, ' +\
-             'predicative, or both)')
-
-    # If mode 'unspecified', mode must be defined on a position class accepting
-    # this as its input
-    if mode == 'none':
-      if adj.full_key not in adj_pc_switching_inputs:
-        vr.err(adj.full_key+'_mod',
-               'Unspecified adjectives must be specified for mode by ' +\
-               'some position class on the Morphology page enabled by using ' +\
-               'argument agreement choices on the feature section below.')
-               #(' The current full_key is: %s' % adj.full_key) +\
-               #(' full_key in adj_pc_switching_inputs: %s' % str(adj.full_key in adj_pc_switching_inputs)) +\
-               #' The switching position class inputs are: %s' % adj_pc_switching_inputs)
-
     # Enforce feature specifications to unify with mode
     illegal_heads = {'attr':'subj', 'pred':'mod'}
     if mode in illegal_heads:
@@ -656,28 +638,30 @@ def validate_lexicon(ch, vr):
              'descendant, where a type inherits from adj-lex if it is' +\
              'defined without a supertype.')
 
-    # Check supertypes for collisions
+    # Check supertypes for inherited features and collisions
+    inherited_choices = defaultdict(dict)
     name_map = {'mod':'adjective mode', 'modpos':'attributive modification direction',
                 'modunique':'unique modification', 'predcop':'copula complement'}
     for choice in name_map:
       adj_value = adj.get(choice,False)
-      if adj_value:
-        for supertype in supertypes:
-          supertype_def = ch.get(supertype,False)
-          if supertype_def:
-            supertype_value = supertype_def.get(choice,False)
-            if supertype_value:
-              # Type definitions must unify with their supertype's definitions
+      for supertype in supertypes:
+        supertype_def = ch.get(supertype,False)
+        if supertype_def:
+          supertype_value = supertype_def.get(choice,False)
+          if supertype_value:
+            # Type definitions must unify with their supertype's definitions
+            if adj_value:
               if supertype_value != adj_value:
-                # Both and predicative/attributive unify
+                # Check for unifiable constraints
+                ## Both and predicative/attributive unify
                 if supertype_value == 'both' and \
                    adj_value in ('pred', 'attr'):
                   continue
-                # Either position and before/after unify
+                ## Either position and before/after unify
                 if supertype_value == 'either' and \
                    adj_value in ('before', 'after'):
                   continue
-                # modunique underspecified can be the parent of modunique +
+                ## modunique underspecified can be the parent of modunique +
                 if supertype_def.get(choice,'missing') == 'missing' and \
                    adj.get(choice,'') == 'on':
                   continue
@@ -686,8 +670,35 @@ def validate_lexicon(ch, vr):
                        'This adjective definition clashes with its supertype ' +\
                        ('%s on choice of %s. ' % (supertype, name_map[choice])) +\
                        ('type choice: %s; supertype choice: %s.' % (adj.get(choice), supertype_value)))
-            # else: if supertype doesn't make the choice, then the choice
-            # would not be required on its children, so no need to do anything here
+            # Keep track of inherited values
+            inherited_choices[choice][supertype_def.get('name')] = supertype_value
+          # else: if supertype doesn't make the choice, then the choice
+          # would not be required on its children, so no need to do anything here
+
+    if not inherited_choices:
+      # Adjectives must have a mode defined or a supertype
+      if not mode:
+        vr.err(adj.full_key+'_mod',
+               'Every adjective requires a choice of mode (attributive, ' +\
+               'predicative, or both)')
+
+      # If mode 'unspecified', mode must be defined on a position class accepting
+      # this as its input
+      if mode == 'none':
+        if adj.full_key not in adj_pc_switching_inputs:
+          vr.err(adj.full_key+'_mod',
+                 'Unspecified adjectives must be specified for mode by ' +\
+                 'some position class on the Morphology page enabled by using ' +\
+                 'argument agreement choices on the feature section below.')
+                 #(' The current full_key is: %s' % adj.full_key) +\
+                 #(' full_key in adj_pc_switching_inputs: %s' % str(adj.full_key in adj_pc_switching_inputs)) +\
+                 #' The switching position class inputs are: %s' % adj_pc_switching_inputs)
+
+    # Print info boxes on inherited choices
+    else:
+      for choice in inherited_choices:
+        vr.info('%s_%s' % (adj.full_key, choice),
+                'inherited choices are: %s' % (inherited_choices[choice]))
 
     # If no supertypes, check for required choices
     if not supertypes:
@@ -711,8 +722,6 @@ def validate_lexicon(ch, vr):
         inherited_feats[feature.get('name')]['value'] = feature.get('value')
         head = feature.get('head')
         inherited_feats[feature.get('name')]['specified on'] = name_map[head] if head in name_map else head
-
-    # Print info boxes on inherited choices # TODO: This
 
     # Print info boxes on inherited features
     if len(inherited_feats) > 0:
@@ -820,13 +829,13 @@ def validate_lexicon(ch, vr):
     # Check supertypes for inherited features and collisions
     name_map = {'comptype':'complement type'}
     for choice in name_map:
+      cop_value = cop.get(choice,False)
       for supertype in supertypes:
         supertype_def = ch.get(supertype,False)
         if supertype_def:
           supertype_value = supertype_def.get(choice,False)
           if supertype_value:
             # Type definitions must unify with their supertype's definitions
-            cop_value = cop.get(choice,False)
             if cop_value:
               if supertype_value != cop_value:
                 # Found collision
@@ -846,10 +855,8 @@ def validate_lexicon(ch, vr):
     # Print infos on inherited choices
     else:
       for choice in inherited_choices:
-        #values = [inherited_choices[choice][supertype] for supertype in inherited_choices[choice]]
-        values = inherited_choices[choice]
         vr.info('%s_%s' % (cop.full_key, choice),
-                'inherited choices are: %s' % (values))
+                'inherited choices are: %s' % (inherited_choices[choice]))
 
     # Each Copula needs a path to root
     if not pathToRoot:
