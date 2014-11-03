@@ -29,7 +29,6 @@ def get_subj_comps_types(j, scale_size, direc, equal):
 ##########################
 
 def customize_direct_inverse(choices, mylang, hierarchies):
-  sys.stderr.write("CUSTOMIZING DIRECT INVERSE") # TODO: DELETEME
   if not choices.has_dirinv():
       return
   write_dir_inv_types(choices, mylang, hierarchies)
