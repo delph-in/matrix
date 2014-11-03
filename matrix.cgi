@@ -92,9 +92,9 @@ if form_data.has_key('choices'):
       # Get choices files from CoLLAGE
       # should be 3 letter keys... doesn't work for longer keys
       if len(choices) == (len('collage/') + 3):
-	    import urllib2, tarfile, StringIO
+	import urllib2, tarfile, StringIO
         choices = 'http://www.delph-in.net/matrix/language-'+choices+'/choices-final.tgz'
-	    try:
+        try:
           tar = urllib2.urlopen(choices)
           with tarfile.open(mode = 'r|*', fileobj = StringIO.StringIO(tar.read())) as tar:
             for tarinfo in tar:
@@ -102,12 +102,12 @@ if form_data.has_key('choices'):
                 choicesData = tar.extractfile(tarinfo)
                 data = choicesData.read()
                 choicesData.close()
-                break # Found the choices file...
-	    except (urllib2.HTTPError, urllib2.URLError, tarfile.TarError):
-	      data = ''
-      else: # Uploaded choices data
-        data = choices
-    if data or choices.endswith('empty'):
+                break # Found the choices file...e
+        except (urllib2.HTTPError, urllib2.URLError, tarfile.TarError):
+          data = ''
+    else: # Uploaded choices data
+      data = choices
+    if data or choices.endswith('/empty'):
       f = open(os.path.join(session_path, 'choices'), 'w')
       f.write(data)
       f.close()
