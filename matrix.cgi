@@ -105,8 +105,8 @@ if form_data.has_key('choices'):
                 break # Found the choices file...
 	    except (urllib2.HTTPError, urllib2.URLError, tarfile.TarError):
 	      data = ''
-      #else:
-      #  data = choices
+      else: # Uploaded choices data
+        data = choices
     if data or choices.endswith('empty'):
       f = open(os.path.join(session_path, 'choices'), 'w')
       f.write(data)
