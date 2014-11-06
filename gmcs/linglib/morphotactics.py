@@ -179,7 +179,7 @@ def position_class_hierarchy(choices):
 
   # Create PositionClasses for lexical types so they can take flags
   add_lexical_type_hierarchy(pch, choices)
-  raise Exception(pch.nodes.values())
+  raise Exception([pc.nodes.values() for pc in pch.nodes.values()])
   #raise Exception([lrt.features for pc in pch.nodes.values() if pc.is_lex_rule for lrt in pc.nodes.values()]) # DELETEME
 
   # We can't set parents until we have created all MN objects.
