@@ -576,11 +576,10 @@ def write_rules(pch, mylang, irules, lrules, lextdl, choices):
           #elif lrt.features['mod'] == "both":
             # Do nothing... gets PRD or stative predicate from below
           # TJT 2014-08-27: Making 'predcop' dependent on 'mod: pred or both'
-          if lrt.features['predcop'] == 'on':
+          if 'predcop' in lrt.features:
             # This is the copula complement LRT
-            if lrt.features['predcop']:
-              mylang.add(lrt.identifier() + ''' := [ SYNSEM.LOCAL.CAT [ HEAD.PRD +
-                                                                        VAL.SUBJ < > ] ].''')
+            mylang.add(lrt.identifier() + ''' := [ SYNSEM.LOCAL.CAT [ HEAD.PRD +
+                                                                      VAL.SUBJ < > ] ].''')
           else:
             # This is the stative predicate LRT
             # This only fires if "mod" is ("both" or "pred") and "pred" not checked
