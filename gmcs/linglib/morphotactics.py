@@ -172,9 +172,6 @@ def position_class_hierarchy(choices):
   regarding position classes and lexical types.
   """
 
-  # TJT 2014-11-06: Issue: gets rid of mod:both on switching position classes...
-  #raise Exception([lrt.features for pc in pch.nodes.values() if pc.is_lex_rule for lrt in pc.nodes.values()]) # DELETEME
-
   pch = Hierarchy()
 
   # Create PositionClasses for lexical types so they can take flags
@@ -183,7 +180,6 @@ def position_class_hierarchy(choices):
   # We can't set parents until we have created all MN objects.
   pc_inputs = {}
   # Now create the actual position classes
-  raise Exception(filter(None,all_position_classes(choices)))
   for i, pc in enumerate(all_position_classes(choices)):
     # these PCs are ChoiceDicts
     if len(pc.get('inputs', '')) > 0:
@@ -268,11 +264,9 @@ def create_lexical_rule_type(lrt, mtx_supertypes, cur_pc):
   if 'adj-pc' in lrt.full_key:
     if lrt.get('mod'):
       mode = lrt.get('mod')
-      if mode == "attr":
-        new_lrt.features['mod'] = 'attr'
-      elif mode == "pred":
-        new_lrt.features['mod'] = 'pred'
-      #elif mode == "both": do nothing
+      # TJT 2014-11-06: Always copy mode...
+      if mode in ('attr','pred','both'):
+        new_lrt.features['mod'] = mode
     if lrt.get('predcop'):
       new_lrt.features['predcop'] = 'on'
   # TJT 2014-08-21: Keep track of preds for adjective incorporation
@@ -538,7 +532,6 @@ def percolate_supertypes(pc):
 ######################
 
 def write_rules(pch, mylang, irules, lrules, lextdl, choices):
-  #raise Exception([lrt.features for pc in pch.nodes.values() if pc.is_lex_rule for lrt in pc.nodes.values()]) # DELETEME
   all_flags = get_all_flags('out').union(get_all_flags('in'))
   write_inflected_avms(mylang, all_flags)
   mylang.set_section('lexrules')
