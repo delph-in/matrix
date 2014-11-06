@@ -267,8 +267,14 @@ def create_lexical_rule_type(lrt, mtx_supertypes, cur_pc):
       # TJT 2014-11-06: Always copy mode...
       if mode in ('attr','pred','both'):
         new_lrt.features['mod'] = mode
-    if lrt.get('predcop'):
-      new_lrt.features['predcop'] = 'on'
+#    if lrt.get('modpos'):
+#      new_lrt.features('modpos') = lrt.get('modpos')
+#    if lrt.get('predcop'):
+#      new_lrt.features['predcop'] = 'on'
+    for choice in ('modpos','predcop'):
+      lrt_choice = lrt.get(choice,False)
+      if lrt_choice:
+        new_lrt.features[choice] = lrt_choice
   # TJT 2014-08-21: Keep track of preds for adjective incorporation
   # using new LexicalRuleInstance class
   new_lrt.lris = [LexicalRuleInstance(lri['orth'], lri['pred']) \
