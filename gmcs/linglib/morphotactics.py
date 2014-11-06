@@ -563,19 +563,20 @@ def write_rules(pch, mylang, irules, lrules, lextdl, choices):
                                             HEAD.PRD - ] ].''')
         if lrt.features['mod'] in ('both', 'attr'):
           # Modification direction
-          modpos = choices.get(lrt.key+'_modpos',False)
-          if modpos:
+          modpos = choices.get(lrt.key+'_modpos','')
+          # Options are adjective modifying nouns "before the adjective",
+          # "after the adjective", or "either position"
+          if modpos in ('before','after'):
             posthead = {'before':'+', 'after':'-'}[modpos]
             mylang.add(lrt.identifier() + (' := [ SYNSEM.LOCAL.CAT.POSTHEAD %s ].' % posthead))
-          #elif lrt.features['modpos'] == 'both': # Do nothing
         if lrt.features['mod'] in ('both', 'pred'):
           if lrt.features['mod'] == "pred":
             # Predicative only
             mylang.add(lrt.identifier() + " := [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].")
           #elif lrt.features['mod'] == "both":
-            # do nothing for 'both'
+            # Do nothing... gets PRD or stative predicate from below
           # TJT 2014-08-27: Making 'predcop' dependent on 'mod: pred or both'
-          if 'predcop' in lrt.features:
+          if lrt.features['predcop'] == 'on':
             # This is the copula complement LRT
             if lrt.features['predcop']:
               mylang.add(lrt.identifier() + ''' := [ SYNSEM.LOCAL.CAT [ HEAD.PRD +
