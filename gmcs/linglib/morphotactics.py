@@ -533,7 +533,7 @@ def percolate_supertypes(pc):
 ######################
 
 def write_rules(pch, mylang, irules, lrules, lextdl, choices):
-  raise Exception([lrt.features for pc in pch.nodes.values() if not pc.is_lex_rule for lrt in pc.nodes.values()]) # DELETEME
+  raise Exception([lrt.features for pc in pch.nodes.values() if pc.is_lex_rule for lrt in pc.nodes.values()]) # DELETEME
   all_flags = get_all_flags('out').union(get_all_flags('in'))
   write_inflected_avms(mylang, all_flags)
   mylang.set_section('lexrules')
