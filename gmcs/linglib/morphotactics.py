@@ -158,6 +158,7 @@ def customize_lexical_rules(choices):
   #  3. find the unique input for each PC (and create intermediate rules)
   #      (all_inputs() depends on forward-looking require constraints)
   #  4. determine and create flags based on constraints
+  raise Exception(choices) # DELETEME
   pch = position_class_hierarchy(choices) # TODO: PCH seems to be deleting synth from choices file
   raise Exception([lrt.features for pc in pch.nodes.values() if pc.is_lex_rule for lrt in pc.nodes.values()]) # DELETEME
   interpret_constraints(choices)
