@@ -183,7 +183,7 @@ def position_class_hierarchy(choices):
   # We can't set parents until we have created all MN objects.
   pc_inputs = {}
   # Now create the actual position classes
-  raise Exception(all_position_classes(choices))
+  raise Exception(filter(None,all_position_classes(choices)))
   for i, pc in enumerate(all_position_classes(choices)):
     # these PCs are ChoiceDicts
     if len(pc.get('inputs', '')) > 0:
