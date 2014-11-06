@@ -158,9 +158,7 @@ def customize_lexical_rules(choices):
   #  3. find the unique input for each PC (and create intermediate rules)
   #      (all_inputs() depends on forward-looking require constraints)
   #  4. determine and create flags based on constraints
-#  raise Exception(choices) # DELETEME
   pch = position_class_hierarchy(choices) # TODO: PCH seems to be deleting synth from choices file
-#  raise Exception([lrt.features for pc in pch.nodes.values() if pc.is_lex_rule for lrt in pc.nodes.values()]) # DELETEME
   interpret_constraints(choices)
   create_flags()
   calculate_supertypes(pch)
@@ -173,10 +171,15 @@ def position_class_hierarchy(choices):
   Create and return the data structures to hold the information
   regarding position classes and lexical types.
   """
+
+  # TJT 2014-11-06: Issue: gets rid of mod:both on switching position classes...
+  #raise Exception([lrt.features for pc in pch.nodes.values() if pc.is_lex_rule for lrt in pc.nodes.values()]) # DELETEME
+
   pch = Hierarchy()
 
   # Create PositionClasses for lexical types so they can take flags
   add_lexical_type_hierarchy(pch, choices)
+  raise Exception([lrt.features for pc in pch.nodes.values() if pc.is_lex_rule for lrt in pc.nodes.values()]) # DELETEME
 
   # We can't set parents until we have created all MN objects.
   pc_inputs = {}
