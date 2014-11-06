@@ -533,6 +533,7 @@ def percolate_supertypes(pc):
 ######################
 
 def write_rules(pch, mylang, irules, lrules, lextdl, choices):
+  raise Exception(pch) # DELETEME
   all_flags = get_all_flags('out').union(get_all_flags('in'))
   write_inflected_avms(mylang, all_flags)
   mylang.set_section('lexrules')
@@ -555,7 +556,7 @@ def write_rules(pch, mylang, irules, lrules, lextdl, choices):
       write_i_or_l_rules(irules, lrules, lrt, pc.order)
       # TJT 2014-08-27: Write adjective position class features
       # TODO: Only do this for root pcs
-      if str(lrt.key).startswith('adj'): raise Exception(str(lrt.features))
+      if str(lrt.key).startswith('adj'): raise Exception(str(lrt.features)) # TODO: DELETEME
       if 'mod' in lrt.features:
         if lrt.features['mod'] in ('both', 'attr'):
           # Basic attributive behavoir
