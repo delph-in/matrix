@@ -555,8 +555,7 @@ def write_rules(pch, mylang, irules, lrules, lextdl, choices):
       write_i_or_l_rules(irules, lrules, lrt, pc.order)
       # TJT 2014-08-27: Write adjective position class features
       # TODO: Only do this for root pcs
-      raise Exception(str(lrt.key))
-      if str(lrt)[:3] == "adj": raise Exception(str(lrt.features))
+      if str(lrt.key).beginswith("adj"): raise Exception(str(lrt.features))
       if 'mod' in lrt.features:
         if lrt.features['mod'] in ('both', 'attr'):
           # Basic attributive behavoir
