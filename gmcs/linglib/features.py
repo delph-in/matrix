@@ -20,6 +20,15 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
   if not tdlfile:
     tdlfile = mylang
 
+
+  # TJT 2014-11-05: moving this up to get the proper geometry for case
+  # get the feature geometry of CASE
+  if cases:
+    for f in features:
+      if f[0] == 'case':
+        case_geom = f[2]
+        break # Stop looking! TJT 2014-08-27
+
   # TJT 2014-08-15: changing this to a map for readability/speed
   prefix_map = { 'det': 'SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.',
                  'con': 'HEAD-DTR.SYNSEM.' }
@@ -54,7 +63,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     'higher': 'SC-ARGS.FIRST.',
     'lower': 'SC-ARGS.REST.FIRST.',
     'xarg': 'LOCAL.CONT.HOOK.XARG.',  # XARG for adjectives
-    'mod': 'LOCAL.CAT.HEAD.MOD < [ ',  # MOD for adjectives
+    'mod': 'LOCAL.CAT.HEAD.MOD.FIRST.',  # MOD for adjectives
     'comp': 'LOCAL.CAT.VAL.COMPS.FIRST.', # COMP for copulas
   }
 
@@ -95,13 +104,17 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
         # If choice defined not to have value, don't define a geometry
         # and therefore skip to n==X specific code
         if value:
-          # TJT 2014-05-08 XARG is of type individual, others are of
+          # TJT 2014-05-08: XARG is of type individual, others are of
           # type local-min, therefore, strip off the extra path
           if head == 'xarg':
             value = value[len("LOCAL.CONT.HOOK.INDEX."):]
+          # TJT 2014-11-05: case on adjectives only works for attributive
+          # constructions and has a different geometry
+          if head in ('xarg','mod') and n == 'case':
+            geom_prefix = 'SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.HEAD.CASE'
           geom = geom_prefix + value
-          if head == 'mod':
-            geom += "] >"  # TJT 2014-05-27: close MOD
+#          if head == 'mod':
+#            geom += "] >"  # TJT 2014-05-27: close MOD
         break # TJT 2014-05-08 stop looking!
 
     # If the feature has a geometry, just specify its value;
@@ -127,12 +140,6 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
       tdlfile.add(type_name + ' := [ ARG-ST #arg-st, DTR.ARG-ST #arg-st ].',
                   merge=True)
 
-      # get the feature geometry of CASE
-      for f in features:
-        if f[0] == 'case':
-          geom = f[2]
-          break # Stop looking! TJT 2014-08-27
-
       for argst in v:
         # specify the subj/comps CASE values
         c = argst.split('-')
@@ -141,8 +148,8 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
           a_case = o_case = ''
           # otherwise use the geometry and case name
           if len(c) > 1:
-            a_case = geom + ' ' + case.canon_to_abbr(c[0], cases)
-            o_case = geom + ' ' + case.canon_to_abbr(c[1], cases)
+            a_case = case_geom + ' ' + case.canon_to_abbr(c[0], cases)
+            o_case = case_geom + ' ' + case.canon_to_abbr(c[1], cases)
           tdlfile.add(type_name + \
                       ' := [ ARG-ST < [ ' + a_case + '], ' +\
                                      '[ ' + o_case + '] > ].',
@@ -150,7 +157,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
         else:
           c = c[0]
           s_case = '' if c == 'intrans' \
-                      else (geom + ' ' + case.canon_to_abbr(c, cases))
+                      else (case_geom + ' ' + case.canon_to_abbr(c, cases))
           tdlfile.add(type_name + \
                       ' := [ ARG-ST < [ ' + s_case + '] > ].',
                       merge=True)
