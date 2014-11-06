@@ -179,12 +179,11 @@ def position_class_hierarchy(choices):
 
   # Create PositionClasses for lexical types so they can take flags
   add_lexical_type_hierarchy(pch, choices)
-  raise Exception([pc.nodes.values() for pc in pch.nodes.values()])
-  #raise Exception([lrt.features for pc in pch.nodes.values() if pc.is_lex_rule for lrt in pc.nodes.values()]) # DELETEME
 
   # We can't set parents until we have created all MN objects.
   pc_inputs = {}
   # Now create the actual position classes
+  raise Exception(all_position_classes(choices))
   for i, pc in enumerate(all_position_classes(choices)):
     # these PCs are ChoiceDicts
     if len(pc.get('inputs', '')) > 0:
