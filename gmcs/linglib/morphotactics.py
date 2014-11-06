@@ -261,17 +261,9 @@ def create_lexical_rule_type(lrt, mtx_supertypes, cur_pc):
   # TODO: Move to output function
   # TJT 2014-08-27: For adjective position classes,
   # check for additional choices to copy to features
+  # TJT 2014-11-06: Simplifying... just copy all choices
   if 'adj-pc' in lrt.full_key:
-    if lrt.get('mod'):
-      mode = lrt.get('mod')
-      # TJT 2014-11-06: Always copy mode...
-      if mode in ('attr','pred','both'):
-        new_lrt.features['mod'] = mode
-#    if lrt.get('modpos'):
-#      new_lrt.features('modpos') = lrt.get('modpos')
-#    if lrt.get('predcop'):
-#      new_lrt.features['predcop'] = 'on'
-    for choice in ('modpos','predcop'):
+    for choice in ('modpos','predcop','mod'):
       lrt_choice = lrt.get(choice,False)
       if lrt_choice:
         new_lrt.features[choice] = lrt_choice
