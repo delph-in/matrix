@@ -159,6 +159,7 @@ def customize_lexical_rules(choices):
   #      (all_inputs() depends on forward-looking require constraints)
   #  4. determine and create flags based on constraints
   pch = position_class_hierarchy(choices) # TODO: PCH seems to be deleting synth from choices file
+  raise Exception([lrt.features for pc in pch.nodes.values() if pc.is_lex_rule for lrt in pc.nodes.values()]) # DELETEME
   interpret_constraints(choices)
   create_flags()
   calculate_supertypes(pch)
@@ -533,7 +534,7 @@ def percolate_supertypes(pc):
 ######################
 
 def write_rules(pch, mylang, irules, lrules, lextdl, choices):
-  raise Exception([lrt.features for pc in pch.nodes.values() if pc.is_lex_rule for lrt in pc.nodes.values()]) # DELETEME
+  #raise Exception([lrt.features for pc in pch.nodes.values() if pc.is_lex_rule for lrt in pc.nodes.values()]) # DELETEME
   all_flags = get_all_flags('out').union(get_all_flags('in'))
   write_inflected_avms(mylang, all_flags)
   mylang.set_section('lexrules')
