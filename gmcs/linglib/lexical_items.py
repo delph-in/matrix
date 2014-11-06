@@ -582,7 +582,8 @@ def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
           if adj_pc_mod == 'pred':
             adj_types['stative_lex'] = True
             adj_types['pred_lex'] = True
-          elif adj_pc_mod == 'attr':
+          # TJT 11-06-14: "both" lexical rule types are attributive
+          elif adj_pc_mod in ('attr','both'):
             adj_types['attr_lex'] = True
         # Check modification direction to get rules to add
         if not (adj_rules['head_adj'] and adj_rules['adj_head']):

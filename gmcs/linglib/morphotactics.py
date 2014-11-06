@@ -556,12 +556,14 @@ def write_rules(pch, mylang, irules, lrules, lextdl, choices):
       # TJT 2014-08-27: Write adjective position class features
       # TODO: Only do this for root pcs
       if 'mod' in lrt.features:
-        if lrt.features['mod'] == "attr":
-          # Attributive only
-          mylang.add(lrt.identifier() + ''' := attr-adj-lex-rule &
-                       [ SYNSEM.LOCAL.CAT [ VAL.SUBJ < >,
-                                            HEAD.PRD - ] ].''')
         if lrt.features['mod'] in ('both', 'attr'):
+          # Basic attributive behavoir
+          mylang.add(lrt.identifier() + " := attr-adj-lex-rule.")
+          # Attributive only
+          if lrt.features['mod'] == "attr":
+            mylang.add(lrt.identifier() + ''' := attr-adj-lex-rule &
+                         [ SYNSEM.LOCAL.CAT [ VAL.SUBJ < >,
+                                              HEAD.PRD - ] ].''')
           # Modification direction
           modpos = choices.get(lrt.key+'_modpos','')
           # Options are adjective modifying nouns "before the adjective",
