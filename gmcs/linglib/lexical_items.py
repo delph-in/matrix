@@ -579,12 +579,12 @@ def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
         # check its mode to get lexical types to add
         if not (adj_types['stative_lex'] and adj_types['attr_lex']):
           adj_pc_mod = lrt.get('mod','')
-          if adj_pc_mod == 'pred':
-            adj_types['stative_lex'] = True
-            adj_types['pred_lex'] = True
-          # TJT 11-06-14: "both" lexical rule types are attributive
-          elif adj_pc_mod in ('attr','both'):
-            adj_types['attr_lex'] = True
+          if adj_pc_mod:
+            if adj_pc_mod == 'pred':
+              adj_types['pred_lex'] = True
+            # TJT 11-06-14: "both" lexical rule types are attributive
+            elif adj_pc_mod in ('attr','both'):
+              adj_types['attr_lex'] = True
         # Check modification direction to get rules to add
         if not (adj_rules['head_adj'] and adj_rules['adj_head']):
           lrt_modpos = lrt.get('modpos',False)
@@ -596,6 +596,10 @@ def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
             elif lrt_modpos == 'either':
               adj_rules['head_adj'] = True
               adj_rules['adj_head'] = True
+        # Check predicative behavoir to get rules to add
+        if not adj_rules['stative_lex']:
+          if lrt.get('predcop',False):
+            adj_types['stative_lex'] = True
 
   # Add the lextypes to mylanguage.tdl
   for adj in ch.get('adj',[]):
