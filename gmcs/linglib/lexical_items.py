@@ -597,7 +597,7 @@ def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
               adj_rules['head_adj'] = True
               adj_rules['adj_head'] = True
         # Check predicative behavoir to get rules to add
-        if not adj_rules['stative_lex']:
+        if not adj_types['stative_lex']:
           if lrt.get('predcop',False):
             adj_types['stative_lex'] = True
 
