@@ -766,7 +766,7 @@ def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
   if adj_types['attr_word']:
     mylang.add('''attr-adj-lex := adj-lex & intersective-mod-lex &
                     [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT [ HEAD noun,
-                                                                VAL.SPR < > ] ] > ].''',
+                                                                VAL.SPR cons ] ] > ].''',
                comment='Basic attributive adjective definition')
   if adj_types['attr_lex']:
     mylang.add('''attr-adj-lex-rule := add-only-no-ccont-rule &
