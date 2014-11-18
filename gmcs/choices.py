@@ -138,8 +138,8 @@ class ChoiceList(ChoiceCategory, list):
 
   def __getitem__(self, key):
     index, remaining = get_next_key(key)
-    raise Exception(index, remaining) # TODO: DELETEME
     try:
+      raise Exception(index, remaining) # TODO: DELETEME
       # subtract 1 for 1-based indices
       retval = list.__getitem__(self, index - 1)
       if remaining:
