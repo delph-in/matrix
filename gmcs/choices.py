@@ -138,6 +138,11 @@ class ChoiceList(ChoiceCategory, list):
 
   def __getitem__(self, key):
     index, remaining = get_next_key(key)
+    # TODO: Fix this
+    # TJT 2014-11-18: this errors if get_next_key returns a string...
+    # not sure why a string is ever returned. Need to investigate.
+    if not isinstance(index, int):
+      raise KeyError('Something went wrong with the backend system. Please contact the developers at matrix-dev@u.washington.edu')
     try:
       # subtract 1 for 1-based indices
       retval = list.__getitem__(self, index - 1)
@@ -148,8 +153,6 @@ class ChoiceList(ChoiceCategory, list):
         retval = ChoiceDict()
       else:
         raise e
-    except:
-      raise Exception(index, remaining) # TODO: DELETEME
     return retval
 
   def __setitem__(self, key, value):
