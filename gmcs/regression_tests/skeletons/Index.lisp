@@ -22,6 +22,7 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "infostr-foc-affix-subj-obj-hier") (:content . "infostr-foc-affix-subj-obj-hier: regression test for Yukaghir-like grammars"))
 ((:path . "infostr-top-mod-after-noun") (:content . "infostr-top-mod-after-noun: infostr"))
 ((:path . "infostr-foc-vso-prev") (:content . "infostr-foc-vso-prev: infostr"))
 ((:path . "infostr-foc-vso-postv") (:content . "infostr-foc-vso-postv: infostr"))

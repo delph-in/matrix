@@ -34,8 +34,10 @@ from gmcs.utils import TDLencode
 _mns = {}
 _dtrs = set()
 _infostr_lrt = []
-_infostr_pc = {}
 _infostr_head = {}
+_id_key_tbl = {}
+_nonleaves = []
+_supertypes = {}
 
 ########################
 ### HELPER FUNCTIONS ###
@@ -241,17 +243,10 @@ def create_lexical_rule_types(cur_pc, pc):
 
 def create_lexical_rule_type(lrt, mtx_supertypes, cur_pc):
   new_lrt = LexicalRuleType(lrt.full_key, get_name(lrt))
+  _id_key_tbl[new_lrt.identifier()] = lrt.full_key
   for feat in lrt.get('feat'):
     new_lrt.features[feat['name']] = {'value': feat['value'],
                                       'head': feat.get('head')}
-    if feat['name'] == "information-structure meaning":
-      if new_lrt.identifier() not in _infostr_lrt:
-        _infostr_lrt.append(new_lrt.identifier())
-        _infostr_pc[new_lrt.identifier()] = cur_pc.identifier()
-      if new_lrt.identifier() not in _infostr_head.keys():
-        _infostr_head[new_lrt.identifier()] = []
-      if feat.get('head') not in _infostr_head[new_lrt.identifier()]:
-        _infostr_head[new_lrt.identifier()].append(feat.get('head'))        
   new_lrt.lris = [lri['orth'] if lri['inflecting'] == 'yes' else ''
                   for lri in lrt.get('lri',[])]
   # Fill out the obvious supertypes (later we'll finish)
@@ -470,10 +465,7 @@ def percolate_supertypes(pc):
   def validate_supertypes(x):
     if pc.is_lex_rule:
       if not any(st in LEX_RULE_SUPERTYPES for st in x.supertypes):
-        if str(pc.identifier()) in _infostr_pc.values():
-          x.supertypes.add('add-only-no-rels-hcons-rule')
-        else:
-          x.supertypes.add('add-only-no-ccont-rule')
+        x.supertypes.add('add-only-no-rels-hcons-rule')
 
   for r in pc.roots():
     r.percolate_down(items=lambda x: x.supertypes,
@@ -506,7 +498,36 @@ def percolate_supertypes(pc):
 ### OUTPUT METHODS ###
 ######################
 
+def get_infostr_constraint(k, cur):
+  if not _supertypes.has_key(k): return
+  for st in _supertypes[k]:
+      if _infostr_head.has_key(cur) and _infostr_head.has_key(st):
+        for h in _infostr_head[st]:
+          if h not in _infostr_head[cur]: _infostr_head[cur].append(h)
+          get_infostr_constraint(st, k)
+
+def get_infostr_constraints(choices):
+  for i, pc in enumerate(all_position_classes(choices)):
+    for j, lrt in enumerate(pc.get('lrt')):
+      _supertypes[lrt.full_key] = lrt.split_value('supertypes')
+      for st in _supertypes[lrt.full_key]:
+        if st not in _nonleaves:
+          _nonleaves.append(st)
+      if not _infostr_head.has_key(lrt.full_key):
+        _infostr_head[lrt.full_key] = []
+      for feat in lrt.get('feat'):
+        if feat['name'] == "information-structure meaning":
+          if lrt.full_key not in _infostr_lrt:
+            _infostr_lrt.append(lrt.full_key)
+          if feat.get('head') in ['subj', 'obj', 'verb']:
+            _infostr_head[lrt.full_key].append(feat.get('head'))
+  for i, pc in enumerate(all_position_classes(choices)):
+    for j, lrt in enumerate(pc.get('lrt')):
+      get_infostr_constraint(lrt.full_key, lrt.full_key)
+
+
 def write_rules(pch, mylang, irules, lrules, lextdl, choices):
+  get_infostr_constraints(choices)
   all_flags = get_all_flags('out').union(get_all_flags('in'))
   write_inflected_avms(mylang, all_flags)
   mylang.set_section('lexrules')
@@ -529,9 +550,9 @@ def write_rules(pch, mylang, irules, lrules, lextdl, choices):
       write_i_or_l_rules(irules, lrules, lrt, pc.order)
       # merged LRT/PCs have the same identifier, so don't write supertypes here
       if lrt.identifier() != pc.identifier():
-        if str(pc.identifier()) in _infostr_pc.values():
-          if lrt.identifier() in _infostr_lrt:
-            _hlist = _infostr_head[lrt.identifier()]
+        if _id_key_tbl.has_key(lrt.identifier()) and _id_key_tbl[lrt.identifier()] not in _nonleaves:
+          if _infostr_head.has_key(_id_key_tbl[lrt.identifier()]):
+            _hlist = _infostr_head[_id_key_tbl[lrt.identifier()]]
             if 'subj' in _hlist and 'obj' in _hlist and 'verb' in _hlist:
               lrt.supertypes.add('add-icons-subj-comp-verb-rule')
             elif 'subj' in _hlist and 'obj' in _hlist:
@@ -544,10 +565,12 @@ def write_rules(pch, mylang, irules, lrules, lextdl, choices):
               lrt.supertypes.add('add-icons-subj-rule')
             elif 'obj' in _hlist:
               lrt.supertypes.add('add-icons-comp-rule')
-            else:
+            elif _id_key_tbl[lrt.identifier()] in _infostr_lrt:
               lrt.supertypes.add('add-icons-rule')
+            else:
+              lrt.supertypes.add('no-icons-lexrule')
           else:
-            lrt.supertypes.add('no-icons-rule')
+            lrt.supertypes.add('no-icons-lexrule')
         write_supertypes(mylang, lrt.identifier(), lrt.all_supertypes())
     write_daughter_types(mylang, pc)
   # features need to be written later
