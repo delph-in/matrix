@@ -577,7 +577,7 @@ def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
       # For each switching adjective...
       for lrt in adj_pc.get('lrt',[]):
         # Check its mode to get lexical types to add
-        if not (adj_types['stative_lex'] and adj_types['attr_lex']):
+        if not (adj_types['pred_lex'] and adj_types['attr_lex']):
           adj_pc_mod = lrt.get('mod','')
           if adj_pc_mod:
             # TJT 12-05-14: "both" lexical rule types are predicative, too!
@@ -599,7 +599,7 @@ def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
               adj_rules['adj_head'] = True
         # Check predicative behavoir to get rules to add
         if not adj_types['stative_lex']:
-          if lrt.get('predcop',False):
+          if not lrt.get('predcop',False):
             adj_types['stative_lex'] = True
 
   # Add the lextypes to mylanguage.tdl
