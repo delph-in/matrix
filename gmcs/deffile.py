@@ -348,7 +348,7 @@ def html_input(vr, type, name, value, checked, before = '', after = '',
           onclick, onchange, after)
     # TJT 2014-09-05: If checkbox
     if type in ('checkbox','radio'):
-      return "<label>%s<\/label>" % output
+      return "<label>%s</label>" % output
     return output
 
 
