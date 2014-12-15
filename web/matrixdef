@@ -295,7 +295,7 @@ the patient (or object) of a transitive verb; and S refers to the lone
 argument (or subject) of intransitive verbs.</p>"
 
 Radio case-marking "Core case marking" "<p>What type of core case marking does your language exhibit?</p>" ""
-. none "None" "<p style=\"margin-left:20px;text-indent:-20px\"></p>" "<p><b>None</b><br>(Verbal argument roles are determined only by word order, by intonation, or pragmatically.)</p>"
+. none "None" "<p style=\"margin-left:20px;text-indent:-20px\"></p>" "<b>None</b><br><p>(Verbal argument roles are determined only by word order, by intonation, or pragmatically.)</p>"
 . nom-acc "Nominative-accusative" "<p style=\"margin-left:20px;text-indent:-20px\"></p>" "<b>Nominative-accusative</b><br>"
 
 Text nom-acc-nom-case-name "Nominative case name" "S and A take a case named the " " (e.g. nominative, subjective)<br>" 20
