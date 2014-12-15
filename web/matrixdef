@@ -379,13 +379,13 @@ Text split-v-abs-case-name "Absolutive case name" "S and O take a case named the
 Radio case-marking "Core case marking" "" ""
 . focus "Focus" "<p style=\"margin-left:20px;text-indent:-20px\">" "<b>Focus-case</b><br>"
 
-Label "<p>(A number of Austronesian languages, including several
+Label "(A number of Austronesian languages, including several
 Philippine languages, have a system where A and O are marked by cases.
 An additional case, sometimes called the <span
 class=\"dfn\">focus</span>, is mandatory in every clause and has its
 grammatical role assigned by the morphology of the verb.  You will
 have an opportunity to define this morphology on the Lexicon
-page.)</p><br>"
+page.)<br>"
 
 Text focus-focus-case-name "Focus case name" "The focus case is named the " "<br>" 20
 
