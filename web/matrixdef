@@ -295,8 +295,8 @@ the patient (or object) of a transitive verb; and S refers to the lone
 argument (or subject) of intransitive verbs.</p>"
 
 Radio case-marking "Core case marking" "<p>What type of core case marking does your language exhibit?</p>" ""
-. none "None" "<p style=\"margin-left:20px\">" "<b>None</b><br>(Verbal argument roles are determined only by word order, by intonation, or pragmatically.)</p>"
-. nom-acc "Nominative-accusative" "<p style=\"margin-left:20px;margin-bottom:0px\">" "<b>Nominative-accusative</b><br></p>"
+. none "None" "<p style=\"margin-left:20px;text-indent:-20px\">" "<b>None</b><br>(Verbal argument roles are determined only by word order, by intonation, or pragmatically.)</p>"
+. nom-acc "Nominative-accusative" "<p style=\"margin-left:20px;margin-bottom:0px;text-indent:-20px\">" "<b>Nominative-accusative</b><br></p>"
 
 Label "<p style=\"margin-left:20px;margin-top:0px\">"
 Text nom-acc-nom-case-name "Nominative case name" "S and A take a case named the " " (e.g. nominative, subjective)<br>" 20
@@ -305,7 +305,7 @@ Label "</p>"
 
 
 Radio case-marking "Core case marking" "" ""
-. erg-abs "Ergative-absolutive" "<p style=\"margin-left:20px;margin-bottom:0px\">" "<b>Ergative-absolutive</b><br></p>"
+. erg-abs "Ergative-absolutive" "<p style=\"margin-left:20px;margin-bottom:0px;text-indent:-20px\">" "<b>Ergative-absolutive</b><br></p>"
 
 Label "<p style=\"margin-left:20px;margin-top:0px\">"
 Text erg-abs-erg-case-name "Ergative case name" "A takes a case named the " " (e.g. ergative, relative, narrative)<br>" 20
@@ -314,7 +314,7 @@ Label "</p>"
 
 
 Radio case-marking "Core case marking" "" ""
-. tripartite "Tripartite" "<p style=\"margin-left:20px;margin-bottom:0px\">" "<b>Tripartite</b><br></p>"
+. tripartite "Tripartite" "<p style=\"margin-left:20px;margin-bottom:0px;text-indent:-20px\">" "<b>Tripartite</b><br></p>"
 
 Label "<p style=\"margin-left:20px;margin-top:0px\">"
 Text tripartite-s-case-name "S case name" "S takes a case named the " " (e.g. nominative, subjective)<br>" 20
@@ -324,11 +324,11 @@ Label "</p>"
 
 
 Radio case-marking "Core case marking" "" ""
-. split-s "Split-S" "<p style=\"margin-left:20px;margin-bottom:0px\">" "<b>Split-S</b><br></p>"
+. split-s "Split-S" "<p style=\"margin-left:20px;margin-bottom:0px;text-indent:-20px\">" "<b>Split-S</b><br></p>"
 
-Label "(The S argument of some intransitive verbs is marked by the
+Label "<p style=\"margin:0px\">(The S argument of some intransitive verbs is marked by the
 same case as the agent of transitives, while for other verbs the S
-argument is marked by the same case as the patient.)<br>"
+argument is marked by the same case as the patient.)</p>"
 
 Label "<p style=\"margin-left:20px;margin-top:0px\">"
 Text split-s-a-case-name "A case name" "A takes a case named the " " (e.g. ergative, agentive)<br>" 20
@@ -337,14 +337,14 @@ Label "</p>"
 
 
 Radio case-marking "Core case marking" "" ""
-. fluid-s "Fluid-S" "<p style=\"margin-left:20px;margin-bottom:0px\">" "<b>Fluid-S</b><br></p>"
+. fluid-s "Fluid-S" "<p style=\"margin-left:20px;margin-bottom:0px;text-indent:-20px\">" "<b>Fluid-S</b><br></p>"
 
-Label "(The S argument of some intransitive verbs is marked by the
+Label "<p style=\"margin:0px\">(The S argument of some intransitive verbs is marked by the
 same case as the agent of transitives, while for other verbs the S
 argument is marked by the same case as the patient, and for still
 other verbs the S argument can be marked by either case, depending on
 pragmatic factors (e.g. whether the S is perceived as being in control
-of the action.)<br>"
+of the action.)</p>"
 
 Label "<p style=\"margin-left:20px;margin-top:0px\">"
 Text fluid-s-a-case-name "A case name" "A takes a case named the " " (e.g. ergative, agentive)<br>" 20
@@ -353,12 +353,12 @@ Label "</p>"
 
 
 Radio case-marking "Core case marking" "" ""
-. split-n "Split N" "<p style=\"margin-left:20px;margin-bottom:0px\">" "<b>Split conditioned on features of the noun phrase arguments</b><br></p>"
+. split-n "Split N" "<p style=\"margin-left:20px;margin-bottom:0px;text-indent:-20px\">" "<b>Split conditioned on features of the noun phrase arguments</b><br></p>"
 
-Label "(Some classes of noun phrases (e.g. pronouns) show a
+Label "<p style=\"margin:0px\">(Some classes of noun phrases (e.g. pronouns) show a
 nominative-accusative pattern, while others (e.g. common nouns) show
 an ergative-absolutive pattern.  You will have an opportunity to
-define these classes on the Lexicon page.)<br>"
+define these classes on the Lexicon page.)</p>"
 
 Label "<p style=\"margin-left:20px;margin-top:0px\">"
 Text split-n-nom-case-name "Nominative case name" "S and A take a case named the " " (e.g. nominative, subjective)<br>" 20
@@ -369,13 +369,13 @@ Label "</p>"
 
 
 Radio case-marking "Core case marking" "" ""
-. split-v "Split V" "<p style=\"margin-left:20px;margin-bottom:0px\">" "<b>Split conditioned on features of the verb</b><br></p>"
+. split-v "Split V" "<p style=\"margin-left:20px;margin-bottom:0px;text-indent:-20px\">" "<b>Split conditioned on features of the verb</b><br></p>"
 
-Label "(Depending on some feature of the verb (e.g. tense or aspect),
+Label "<p style=\"margin:0px\">(Depending on some feature of the verb (e.g. tense or aspect),
 the core arguments are sometimes marked in a nominative-accusative
 pattern and other times in an ergative-absolutive pattern.  You will
 have an opportunity to define these features on the Lexicon
-page.)<br>"
+page.)</p>"
 
 Label "<p style=\"margin-left:20px;margin-top:0px\">"
 Text split-v-nom-case-name "Nominative case name" "S and A take a case named the " " (e.g. nominative, subjective)<br>" 20
@@ -386,15 +386,15 @@ Label "</p>"
 
 
 Radio case-marking "Core case marking" "" ""
-. focus "Focus" "<p style=\"margin-left:20px;margin-bottom:0px\">" "<b>Focus-case</b><br></p>"
+. focus "Focus" "<p style=\"margin-left:20px;margin-bottom:0px;text-indent:-20px\">" "<b>Focus-case</b><br></p>"
 
-Label "(A number of Austronesian languages, including several
+Label "<p style=\"margin:0px\">(A number of Austronesian languages, including several
 Philippine languages, have a system where A and O are marked by cases.
 An additional case, sometimes called the <span
 class=\"dfn\">focus</span>, is mandatory in every clause and has its
 grammatical role assigned by the morphology of the verb.  You will
 have an opportunity to define this morphology on the Lexicon
-page.)<br>"
+page.)</p>"
 
 Label "<p style=\"margin-left:20px;margin-top:0px\">"
 Text focus-focus-case-name "Focus case name" "The focus case is named the " "<br>" 20
