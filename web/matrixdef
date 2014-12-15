@@ -1427,6 +1427,7 @@ Section lexicon "Lexicon"
 Cache nounlrs noun-pc[0-9]+(_lrt[0-9]+)?$ name
 Cache verbpcs verb-pc[0-9]+$ name
 Cache verblrs verb-pc[0-9]+(_lrt[0-9]+)?$ name
+Cache adjlrs adj-pc[0-9]+(_lrt[0-9]+)?$ name
 Cache detlrs det-pc[0-9]+(_lrt[0-9]+)?$ name
 
 Label "<p>On this page you will define <span class=\"dfn\">lexical
