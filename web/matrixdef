@@ -326,7 +326,7 @@ Label "</p>"
 Radio case-marking "Core case marking" "" ""
 . split-s "Split-S" "<p style=\"margin-left:20px;margin-bottom:0px;text-indent:-20px\">" "<b>Split-S</b><br></p>"
 
-Label "<p style=\"margin: 20px 0px 0px 0px\">(The S argument of some intransitive verbs is marked by the
+Label "<p style=\"margin: 0px 0px 0px 20px\">(The S argument of some intransitive verbs is marked by the
 same case as the agent of transitives, while for other verbs the S
 argument is marked by the same case as the patient.)</p>"
 
@@ -339,7 +339,7 @@ Label "</p>"
 Radio case-marking "Core case marking" "" ""
 . fluid-s "Fluid-S" "<p style=\"margin-left:20px;margin-bottom:0px;text-indent:-20px\">" "<b>Fluid-S</b><br></p>"
 
-Label "<p style=\"margin: 20px 0px 0px 0px\">(The S argument of some intransitive verbs is marked by the
+Label "<p style=\"margin: 0px 0px 0px 20px\">(The S argument of some intransitive verbs is marked by the
 same case as the agent of transitives, while for other verbs the S
 argument is marked by the same case as the patient, and for still
 other verbs the S argument can be marked by either case, depending on
@@ -355,7 +355,7 @@ Label "</p>"
 Radio case-marking "Core case marking" "" ""
 . split-n "Split N" "<p style=\"margin-left:20px;margin-bottom:0px;text-indent:-20px\">" "<b>Split conditioned on features of the noun phrase arguments</b><br></p>"
 
-Label "<p style=\"margin: 20px 0px 0px 0px\">(Some classes of noun phrases (e.g. pronouns) show a
+Label "<p style=\"margin: 0px 0px 0px 20px\">(Some classes of noun phrases (e.g. pronouns) show a
 nominative-accusative pattern, while others (e.g. common nouns) show
 an ergative-absolutive pattern.  You will have an opportunity to
 define these classes on the Lexicon page.)</p>"
@@ -371,7 +371,7 @@ Label "</p>"
 Radio case-marking "Core case marking" "" ""
 . split-v "Split V" "<p style=\"margin-left:20px;margin-bottom:0px;text-indent:-20px\">" "<b>Split conditioned on features of the verb</b><br></p>"
 
-Label "<p style=\"margin: 20px 0px 0px 0px\">(Depending on some feature of the verb (e.g. tense or aspect),
+Label "<p style=\"margin: 0px 0px 0px 20px\">(Depending on some feature of the verb (e.g. tense or aspect),
 the core arguments are sometimes marked in a nominative-accusative
 pattern and other times in an ergative-absolutive pattern.  You will
 have an opportunity to define these features on the Lexicon
@@ -388,7 +388,7 @@ Label "</p>"
 Radio case-marking "Core case marking" "" ""
 . focus "Focus" "<p style=\"margin-left:20px;margin-bottom:0px;text-indent:-20px\">" "<b>Focus-case</b><br></p>"
 
-Label "<p style=\"margin: 20px 0px 0px 0px\">(A number of Austronesian languages, including several
+Label "<p style=\"margin: 0px 0px 0px 20px\">(A number of Austronesian languages, including several
 Philippine languages, have a system where A and O are marked by cases.
 An additional case, sometimes called the <span
 class=\"dfn\">focus</span>, is mandatory in every clause and has its
