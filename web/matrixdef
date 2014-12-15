@@ -304,7 +304,7 @@ Label "</p>"
 
 
 Radio case-marking "Core case marking" "" ""
-. erg-abs "Ergative-absolutive" "<p style=\"margin-left:20px;text-indent:-20px\"></p>" "<b>Ergative-absolutive</b><br>"
+. erg-abs "Ergative-absolutive" "<p style=\"margin-left:20px;text-indent:-20px\">" "<b>Ergative-absolutive</b><br>"
 
 Text erg-abs-erg-case-name "Ergative case name" "A takes a case named the " " (e.g. ergative, relative, narrative)<br>" 20
 Text erg-abs-abs-case-name "Absolutive case name" "S and O take a case named the " " (e.g. absolutive, nominative)<br>" 20
@@ -312,7 +312,7 @@ Label "</p>"
 
 
 Radio case-marking "Core case marking" "" ""
-. tripartite "Tripartite" "<p style=\"margin-left:20px;text-indent:-20px\"></p>" "<b>Tripartite</b><br>"
+. tripartite "Tripartite" "<p style=\"margin-left:20px;text-indent:-20px\">" "<b>Tripartite</b><br>"
 
 Text tripartite-s-case-name "S case name" "S takes a case named the " " (e.g. nominative, subjective)<br>" 20
 Text tripartite-a-case-name "A case name" "A takes a case named the " " (e.g. ergative, agentive)<br>" 20
@@ -321,7 +321,7 @@ Label "</p>"
 
 
 Radio case-marking "Core case marking" "" ""
-. split-s "Split-S" "<p style=\"margin-left:20px;text-indent:-20px\"></p>" "<b>Split-S</b><br>"
+. split-s "Split-S" "<p style=\"margin-left:20px;text-indent:-20px\">" "<b>Split-S</b><br>"
 
 Label "(The S argument of some intransitive verbs is marked by the
 same case as the agent of transitives, while for other verbs the S
@@ -333,7 +333,7 @@ Label "</p>"
 
 
 Radio case-marking "Core case marking" "" ""
-. fluid-s "Fluid-S" "<p style=\"margin-left:20px;text-indent:-20px\"></p>" "<b>Fluid-S</b><br>"
+. fluid-s "Fluid-S" "<p style=\"margin-left:20px;text-indent:-20px\">" "<b>Fluid-S</b><br>"
 
 Label "(The S argument of some intransitive verbs is marked by the
 same case as the agent of transitives, while for other verbs the S
@@ -348,7 +348,7 @@ Label "</p>"
 
 
 Radio case-marking "Core case marking" "" ""
-. split-n "Split N" "<p style=\"margin-left:20px;text-indent:-20px\"></p>" "<b>Split conditioned on features of the noun phrase arguments</b><br>"
+. split-n "Split N" "<p style=\"margin-left:20px;text-indent:-20px\">" "<b>Split conditioned on features of the noun phrase arguments</b><br>"
 
 Label "(Some classes of noun phrases (e.g. pronouns) show a
 nominative-accusative pattern, while others (e.g. common nouns) show
@@ -363,7 +363,7 @@ Label "</p>"
 
 
 Radio case-marking "Core case marking" "" ""
-. split-v "Split V" "<p style=\"margin-left:20px;text-indent:-20px\"></p>" "<b>Split conditioned on features of the verb</b><br>"
+. split-v "Split V" "<p style=\"margin-left:20px;text-indent:-20px\">" "<b>Split conditioned on features of the verb</b><br>"
 
 Label "(Depending on some feature of the verb (e.g. tense or aspect),
 the core arguments are sometimes marked in a nominative-accusative
@@ -379,7 +379,7 @@ Label "</p>"
 
 
 Radio case-marking "Core case marking" "" ""
-. focus "Focus" "<p style=\"margin-left:20px;text-indent:-20px\"></p>" "<b>Focus-case</b><br>"
+. focus "Focus" "<p style=\"margin-left:20px;text-indent:-20px\">" "<b>Focus-case</b><br>"
 
 Label "<p>(A number of Austronesian languages, including several
 Philippine languages, have a system where A and O are marked by cases.
