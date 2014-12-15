@@ -302,21 +302,23 @@ Text nom-acc-nom-case-name "Nominative case name" "S and A take a case named the
 Text nom-acc-acc-case-name "Accusative case name" "O takes a case named the " " (e.g. accusative, objective)<br>" 20
 Label "</p>"
 
+
 Radio case-marking "Core case marking" "" ""
 . erg-abs "Ergative-absolutive" "<p style=\"margin-left:20px;text-indent:-20px\"></p>" "<b>Ergative-absolutive</b><br>"
 
 Text erg-abs-erg-case-name "Ergative case name" "A takes a case named the " " (e.g. ergative, relative, narrative)<br>" 20
-
 Text erg-abs-abs-case-name "Absolutive case name" "S and O take a case named the " " (e.g. absolutive, nominative)<br>" 20
+Label "</p>"
+
 
 Radio case-marking "Core case marking" "" ""
 . tripartite "Tripartite" "<p style=\"margin-left:20px;text-indent:-20px\"></p>" "<b>Tripartite</b><br>"
 
 Text tripartite-s-case-name "S case name" "S takes a case named the " " (e.g. nominative, subjective)<br>" 20
-
 Text tripartite-a-case-name "A case name" "A takes a case named the " " (e.g. ergative, agentive)<br>" 20
-
 Text tripartite-o-case-name "O case name" "O takes a case named the " " (e.g. absolutive, patientive)<br>" 20
+Label "</p>"
+
 
 Radio case-marking "Core case marking" "" ""
 . split-s "Split-S" "<p style=\"margin-left:20px;text-indent:-20px\"></p>" "<b>Split-S</b><br>"
@@ -326,8 +328,9 @@ same case as the agent of transitives, while for other verbs the S
 argument is marked by the same case as the patient.)<br>"
 
 Text split-s-a-case-name "A case name" "A takes a case named the " " (e.g. ergative, agentive)<br>" 20
-
 Text split-s-o-case-name "O case name" "O takes a case named the " " (e.g. absolutive, patientive)<br>" 20
+Label "</p>"
+
 
 Radio case-marking "Core case marking" "" ""
 . fluid-s "Fluid-S" "<p style=\"margin-left:20px;text-indent:-20px\"></p>" "<b>Fluid-S</b><br>"
@@ -340,8 +343,9 @@ pragmatic factors (e.g. whether the S is perceived as being in control
 of the action.)<br>"
 
 Text fluid-s-a-case-name "A case name" "A takes a case named the " " (e.g. ergative, agentive)<br>" 20
-
 Text fluid-s-o-case-name "O case name" "O takes a case named the " " (e.g. absolutive, patientive)<br>" 20
+Label "</p>"
+
 
 Radio case-marking "Core case marking" "" ""
 . split-n "Split N" "<p style=\"margin-left:20px;text-indent:-20px\"></p>" "<b>Split conditioned on features of the noun phrase arguments</b><br>"
@@ -352,12 +356,11 @@ an ergative-absolutive pattern.  You will have an opportunity to
 define these classes on the Lexicon page.)<br>"
 
 Text split-n-nom-case-name "Nominative case name" "S and A take a case named the " " (e.g. nominative, subjective)<br>" 20
-
 Text split-n-acc-case-name "Accusative case name" "O takes a case named the " " (e.g. accusative, objective)<br>" 20
-
 Text split-n-erg-case-name "Ergative case name" "A takes a case named the " " (e.g. ergative, relative, narrative)<br>" 20
-
 Text split-n-abs-case-name "Absolutive case name" "S and O take a case named the " " (e.g. absolutive, nominative)<br>" 20
+Label "</p>"
+
 
 Radio case-marking "Core case marking" "" ""
 . split-v "Split V" "<p style=\"margin-left:20px;text-indent:-20px\"></p>" "<b>Split conditioned on features of the verb</b><br>"
@@ -369,12 +372,11 @@ have an opportunity to define these features on the Lexicon
 page.)<br>"
 
 Text split-v-nom-case-name "Nominative case name" "S and A take a case named the " " (e.g. nominative, subjective)<br>" 20
-
 Text split-v-acc-case-name "Accusative case name" "O takes a case named the " " (e.g. accusative, objective)<br>" 20
-
 Text split-v-erg-case-name "Ergative case name" "A takes a case named the " " (e.g. ergative, relative, narrative)<br>" 20
-
 Text split-v-abs-case-name "Absolutive case name" "S and O take a case named the " " (e.g. absolutive, nominative)<br>" 20
+Label "</p>"
+
 
 Radio case-marking "Core case marking" "" ""
 . focus "Focus" "<p style=\"margin-left:20px;text-indent:-20px\"></p>" "<b>Focus-case</b><br>"
@@ -388,10 +390,10 @@ have an opportunity to define this morphology on the Lexicon
 page.)</p><br>"
 
 Text focus-focus-case-name "Focus case name" "The focus case is named the " "<br>" 20
-
 Text focus-a-case-name "A case name" "A takes a case named the " " (e.g. ergative, relative, narrative)<br>" 20
-
 Text focus-o-case-name "O case name" "O takes a case named the " " (e.g. accusative, objective)<br>" 20
+Label "</p>"
+
 
 Label "<p><b>Additional Cases</b></p><p>If your language has any
 additional cases not covered above that occur in simple intransitive
