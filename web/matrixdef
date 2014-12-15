@@ -296,8 +296,9 @@ argument (or subject) of intransitive verbs.</p>"
 
 Radio case-marking "Core case marking" "<p>What type of core case marking does your language exhibit?</p>" ""
 . none "None" "<p style=\"margin-left:20px;text-indent:-20px\">" "<b>None</b><br>(Verbal argument roles are determined only by word order, by intonation, or pragmatically.)</p>"
-. nom-acc "Nominative-accusative" "<p style=\"margin-left:20px;text-indent:-20px\">" "<b>Nominative-accusative</b><br>"
+. nom-acc "Nominative-accusative" "<p style=\"margin-left:20px;text-indent:-20px\">" "<b>Nominative-accusative</b><br></p>"
 
+Label "<p style=\"margin-left:20px;text-indent:-20px\">"
 Text nom-acc-nom-case-name "Nominative case name" "S and A take a case named the " " (e.g. nominative, subjective)<br>" 20
 Text nom-acc-acc-case-name "Accusative case name" "O takes a case named the " " (e.g. accusative, objective)<br>" 20
 Label "</p>"
