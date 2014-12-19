@@ -554,11 +554,14 @@ def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
   # Check which rules need to be added to rules.tdl
   adj_rules = {'adj_head': False, 'head_adj': False}
   # Check which types need to be added to mylanguage.tdl
-  adj_types = ('pred_word', 'pred_lex', 'pred_only',
-               'attr_word', 'attr_lex', 'attr_only',
-               'stative_word', 'stative_lex', 'any_adj')
+  adj_type_base = ('pred_word', 'pred_lex', 'pred_only',
+                   'attr_word', 'attr_lex', 'attr_only',
+                   'stative_word', 'stative_lex', 'any_adj')
   # Convert into dictionary with False default values
-  adj_types = {item: False for item in adj_types}
+  #adj_types = {item: False for item in adj_types}
+  adj_types = dict()
+  for item in adj_type_base:
+    adj_types[item] = False
 
   # Lexical super types of different adjective types
   lst_map = {"both": "attr-adj-lex",

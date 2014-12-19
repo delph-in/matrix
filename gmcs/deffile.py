@@ -628,10 +628,17 @@ class MatrixDefFile:
     # Switch contains choice name and value
     # split on the rightmost "=" just in case...
     switches = [switch.rsplit('=',1) if "=" in switch else switch
-                                     for switch in switches]
+                for switch in switches]
     # Default to true
-    skip_it = {switch[0] if isinstance(switch, list) else switch: True
-                         for switch in switches}
+    #skip_it = {switch[0] if isinstance(switch, list) else switch: True
+    #           for switch in switches}
+    # TJT: 12-19-14 changing this to loop instead of comprehension
+    skip_it = {}
+    for switch in switches:
+      if isinstance(switch, list):
+        skip_it[switch[0]] = True
+      else:
+        skip_it[switch] = True
     for instance in switches:
       if isinstance(instance, list):
         switch = instance[0].strip()

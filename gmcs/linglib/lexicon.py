@@ -96,7 +96,8 @@ def used_lexical_supertypes(choices):
   lexical_supertypes) that will actually be used in the grammar.
   """
   # TJT 2014-09-08: Changing this to set comprehension and adding "cop"
-  used = {item for item in ('noun','aux','adj','det','cop') if item in choices}
+  # TJT 2014-12-19: Changing back to loop for older versions of python
+  used = set([item for item in ('noun','aux','adj','det','cop') if item in choices])
   if 'verb' in choices:
     used.add('verb')
     used.update([case.interpret_verb_valence(v['valence'])
@@ -184,8 +185,10 @@ def validate_lexicon(ch, vr):
   # both nominal and verbal constraints to constrain adjective agreement and
   # inflection properly
 
-  index_features = {'person', 'number','gender'}
-  head_features = {'tense', 'aspect', 'mood'}
+  # TJT 2014-12-19: Changing these set declarations to list declarations for
+  # older versions of python
+  index_features = set(['person', 'number','gender'])
+  head_features = set(['tense', 'aspect', 'mood'])
   for feature in ch.get('feature'):
     if 'name' in feature:
       if feature.get('type') == 'index':

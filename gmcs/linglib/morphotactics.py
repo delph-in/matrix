@@ -412,7 +412,7 @@ def set_req_bkwd_initial_flags(lex_pc, flag_tuple):
 ### SUPERTYPES ###
 
 # add possible supertypes here
-ALL_LEX_RULE_SUPERTYPES = {'cat-change-only-lex-rule',
+ALL_LEX_RULE_SUPERTYPES = ['cat-change-only-lex-rule',
                            'same-agr-lex-rule',
                            'cont-change-only-lex-rule',
                            'add-only-no-rels-hcons-rule',
@@ -421,16 +421,20 @@ ALL_LEX_RULE_SUPERTYPES = {'cat-change-only-lex-rule',
                            'head-change-only-lex-rule',
                            'infl-lex-rule',
                            'const-lex-rule',
-                           'lex-rule'}
+                           'lex-rule']
 
-LEX_RULE_SUPERTYPES = {'cat-change-only-lex-rule',
+LEX_RULE_SUPERTYPES = ['cat-change-only-lex-rule',
                        'val-and-cont-change-lex-rule',
                        'add-only-rule',
                        'same-head-lex-rule',
                        'val-change-only-lex-rule',
                        'head-change-only-lex-rule',
                        'cont-change-only-lex-rule',
-                       'add-only-no-ccont-rule'}
+                       'add-only-no-ccont-rule']
+
+# TJT 2014-12-19: Make these sets for performance
+ALL_LEX_RULE_SUPERTYPES = set(ALL_LEX_RULE_SUPERTYPES)
+LEX_RULE_SUPERTYPES = set(LEX_RULE_SUPERTYPES)
 
 def set_lexical_rule_supertypes(lrt, mtx_supertypes):
   """
@@ -1039,10 +1043,18 @@ def warn_merged_pcs(all_pcs, vr):
       for inp in pc.get('inputs',[]):
         input_map[inp][order].add(pc_name)
   # Warn for each obligatory position class with equal inputs and orders
-  pcs_to_be_merged = {pc for inp in input_map
-                      for order in input_map[inp]
-                      for pc in input_map[inp][order]
-                      if len(input_map[inp][order]) > 1}
+#   pcs_to_be_merged = {pc for inp in input_map
+#                       for order in input_map[inp]
+#                       for pc in input_map[inp][order]
+#                       if len(input_map[inp][order]) > 1}
+  # TJT 2014-12-19: Converting above set comprehension 
+  # to loop for older python versions
+  pcs_to_be_merged = set()
+  for inp in input_map:
+    for order in input_map[inp]:
+      if len(input_map[inp][order]) > 1:
+        for pc in input_map[inp][order]:
+          pcs_to_be_merged.add(pc)
   for pc in pcs_to_be_merged:
     difference = pcs_to_be_merged.copy()
     difference.remove(pc)

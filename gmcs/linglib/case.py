@@ -296,7 +296,12 @@ def add_lexrules(ch):
     return
   for pc in ch['noun-pc']:
     # TJT 2014-09-08: changing to set comprehension for speed
-    if 'case' in {feat['name'] for lrt in pc['lrt'] for feat in lrt['feat']}:
+    #feature_names = {feat['name'] for lrt in pc['lrt'] for feat in lrt['feat']}
+    feature_names = set()
+    for lrt in pc['lrt']:
+      for feat in lrt['feat']:
+        feature_names.add(feat['name'])
+    if 'case' in feature_names:
       for c in case_names(ch):
         if ch.has_adp_case(c[0]):
           idx = ch[pc.full_key + '_lrt'].next_iter_num()
