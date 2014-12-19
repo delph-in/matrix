@@ -67,6 +67,45 @@ function is_displayed(node)
   return true;
 }
 
+// TJT 2014-08-26
+// toggle_element(id, how="toggle", switchOn=null)
+// Toggle display none/block on id
+//  id (string): which id to toggle
+//  how (string): toggle, turn on, or turn off div with id
+//  switchOn ([string, ...]): list of options able to activate toggle in select
+function toggle_element(id, how, switchOn) {
+  how = how || "toggle"; // set default to "toggle"
+  switchOn = switchOn || null; // set default to null
+  switchActive = true; // Ignore switch unless switchOn activates
+  // Get element to toggle
+  element = document.getElementById(id);
+  if (switchOn) {
+    switchActive = false; // If switchOn, do nothing by default
+    // Check to see if the node is a standard node
+    if (element != null && element.nodeType == 1) {
+      // This switch currently only works with select tags
+      if (this.tagName.toLowerCase() == "select") {
+	// If switchOn matches selected element, then do the toggling
+	if (switchOn.indexOf(this.options[this.selectedIndex].value) > -1) {
+	  switchActive = true;
+	}
+      }
+    }
+  }
+  // If element found and switch active, do the toggling
+  if (element != null && switchActive) {
+    if (how == "toggle") {
+      element.style.display = (element.style.display != 'block') ? 'block' : 'none';
+    }
+    else if (how == "on") {
+      element.style.display = 'block';
+    }
+    else if (how == "off") {
+      element.style.display = 'none';
+    }
+  } 
+}
+
 //////////////////////////////////////////////////////////////////////
 // Main Page functions
 
@@ -158,13 +197,17 @@ function submit_go(subpage){
     if (elms[i].name == "subpage" || elms[i].name=="delivery" || elms[i].name=="customize") {
       form.removeChild(elms[i]);
     }
-  } 
+  }
+  // Create link to new page
   var inp = document.createElement('input');
   inp.type= "hidden";
   inp.name= "subpage";
   inp.value=subpage
   form.appendChild(inp);
   form.submit();
+  // TJT 2014-08-21: Set url to new page
+  //var newPage = "matrix.cgi?subpage=" + subpage;
+  //window.location.href = newPage;
 }
 
 
@@ -371,6 +414,14 @@ function do_clone_region(id, iter_var, bAnim, bShow)
   var d = document.getElementById(id + '_TEMPLATE');
   var a = document.getElementById(id + '_ANCHOR');
   var p = prev_div(a, id);
+  
+  // Show/hide options based on previous choices
+  //if (check) {
+  //  toShow = d.getElementById(check);
+  //  if (toShow) {
+  //    toShow.style.display = "block";
+  //  }
+  //}
 
   var cur = 1;
   if (p && p.id) {
@@ -416,14 +467,29 @@ function do_clone_region(id, iter_var, bAnim, bShow)
 // Clone a region and expand using animation
 function clone_region(id, iter_var, bShow)
 {
-    do_clone_region(id, iter_var, true, bShow);
+  //original
+  do_clone_region(id, iter_var, true, bShow);
+  //if (check) {
+  //  do_clone_region(id, iter_var, check, true, bShow);
+  //}
+  //else {
+  //  do_clone_region(id, iter_var, false, true, bShow);
+  //}
 }
 
 // clone_region()
 // Clone a region and expand *without* animation
 function clone_region_noanim(id, iter_var)
+//function clone_region_noanim(id, iter_var, check)
 {
+  //original
   do_clone_region(id, iter_var, false);
+  //if (check) {
+  //  do_clone_region(id, iter_var, check, false);
+  //}
+  //else {
+  //  do_clone_region(id, iter_var, false, false);
+  //}
 }
 
 // remove_region()
@@ -473,19 +539,50 @@ function remove_element_all(id, suffix)
 }
 
 // check_radio_button(_name, _type)
-function check_radio_button(_name, _type)
-{
-	var _radio = document.getElementsByName(_name);
+// TJT 2014-09-02:
+// Type can be left out, "yes", "no", "last", or a number
+// If left out, _type will default to "yes"
+function check_radio_button(name, mode, switchOn) {
+        
+	mode = mode || 'yes';
+	switchOn = switchOn || null;
+	switchActive = true;
+	var radio = document.getElementsByName(name);
 	
-	if(_type == 'no')
-	{
-		_radio[0].checked = true;
-		_radio[1].checked = false;
+	// TJT 2014-09-03: Adding switch to only execute on particular selection
+	if (switchOn) {
+	  switchActive = false; // If switchOn, do nothing by default
+	  // Check to see if the node is a standard node
+	  if (element != null && element.nodeType == 1) {
+	    // This switch currently only works with select tags
+	    if (this.tagName.toLowerCase() == "select") {
+	      // If switchOn matches selected element, then do the toggling
+	      if (switchOn.indexOf(this.options[this.selectedIndex].value) > -1) {
+		switchActive = true;
+	      }
+	    }
+	  }
 	}
-	else
-	{
-		_radio[0].checked = false;
-		_radio[1].checked = true;
+	
+	if (switchActive) {
+	  if(mode == 'no') {
+	      radio[0].checked = true;
+	      //radio[1].checked = false;
+	    }
+	  // TJT 2014-09-03: Check a radio button by number
+	  else if (typeof mode == 'number') {
+	    if (mode < radio.length) {
+	      radio[mode].checked = true;
+	    }
+	  }
+	  // TJT 2014-09-03: Check the last radio button
+	  else if (mode == 'last') {
+	    radio[radio.length-1].checked = true;
+	  }
+	  else {
+	    //radio[0].checked = false;
+	    radio[1].checked = true;
+	  }
 	}
 }
 
@@ -744,6 +841,7 @@ function multi_create(select)
   select.style.display = 'none';
   select.onfocus();
 
+  // Create the text box to show choices while not open
   var t = document.createElement('input');
   t.id = select.name + '_multitext';
   t.type = 'text';
@@ -759,6 +857,7 @@ function multi_create(select)
   t.onkeypress = function(e) { return multi_keypress(e, select.name); }
   select.parentNode.insertBefore(t, select.nextSibling);
 
+  // Create button to prompt users to open multi_select
   var b = document.createElement('input');
   b.type = 'button';
   b.id = select.name + '_multibutton';
@@ -818,18 +917,27 @@ function multi_open(select_name)
       if (span.firstChild) {
         span.appendChild(document.createElement('br'));
       }
-
+      
+      // TJT 2014-09-05: Making text node into label for checkbox so that clicking on
+      // text makes the checkbox checked
+      // output: <label><input type="checkbox" id="id">text</label>
+      var label = document.createElement("label");
+      label.setAttribute("class","checkLabel");
       var check = document.createElement('input');
       check.type = 'checkbox';
       check.id = select_name + '__' + ops[i].value;
       check.onkeypress = function(e) { return multi_keypress(e, select.name); }
-      span.appendChild(check);
-      if (indexOf(vals, ops[i].value) != -1) {
-        check.checked = true;  // Must be done AFTER insertion on IE
+      if (ops[i].disabled) { // TJT 2014-09-05: Get disabled
+	check.disabled = true;
+	label.style.color = "#888"; // TJT 2014-09-05: Grey out disabled text
       }
-
-      var label = document.createTextNode(' ' + ops[i].innerHTML);
+      check.onkeypress = function(e) { return multi_keypress(e, select.name); }
+      label.appendChild(check); // TJT 2014-09-05: Add check to label, label to span
+      label.innerHTML = label.innerHTML + " " + ops[i].innerHTML;
       span.appendChild(label);
+      if (indexOf(vals, ops[i].value) != -1) {
+        label.firstChild.checked = true;  // Must be done AFTER insertion on IE
+      }
     }
   }
 
@@ -868,23 +976,27 @@ function multi_close(select_name)
   // Concatenate the selected checkboxes into a comma-separated string
   var ivalue = '';   // internal value
   var fvalue = '';   // friendly value
-  for (var check = box.firstChild; check; check = check.nextSibling) {
-    if (check.tagName == 'INPUT' && check.checked) {
-      if (ivalue.length) {
-        ivalue += ', ';
-        fvalue += ', ';
+  for (var label = box.firstChild; label; label = label.nextSibling) {
+    // TJT 2014-09-05: Unwrap "<label>"
+    if (label.tagName == 'LABEL') {
+      check = label.firstChild;
+      if (check.tagName == 'INPUT' && check.checked) {
+	if (ivalue.length) {
+	  ivalue += ', ';
+	  fvalue += ', ';
+	}
+  
+	var v = check.id.replace(/.*__/, '');
+	ivalue += v;
+  
+	for (var i = 0; i < ops.length; i++) {
+	  if (v == ops[i].value) {
+	    v = ops[i].innerHTML;
+	  }
+	}
+  
+	fvalue += v;
       }
-
-      var v = check.id.replace(/.*__/, '');
-      ivalue += v;
-
-      for (var i = 0; i < ops.length; i++) {
-        if (v == ops[i].value) {
-          v = ops[i].innerHTML;
-        }
-      }
-
-      fvalue += v;
     }
   }
 
@@ -1020,10 +1132,14 @@ function import_toolbox_lexicon()
   submit_main();
 }
 ////////////////////////////////////////////////////////////
-// Special functions for Sentential Negation Subpage 
+// Special functions for Subpages
 ////////////////////////////////////////////////////////////
 
-// set_negexp(n)
+////////
+// Sentential Negation Subpage
+////////
+
+// set_negexp(n) automatically hide and show section based on radio choice
 //
 function set_negexp(n)
 {
@@ -1287,3 +1403,5 @@ function nav_customize(type) {
   f.removeChild(t);
   f.removeChild(i);
 }
+
+

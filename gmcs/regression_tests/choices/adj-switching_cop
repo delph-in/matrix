@@ -1,0 +1,76 @@
+
+version=28
+
+section=general
+language=adj-switching_cop
+archive=yes
+
+section=word-order
+word-order=svo
+has-dets=no
+has-aux=no
+
+section=number
+
+section=person
+person=none
+
+section=gender
+
+section=case
+case-marking=none
+
+section=direct-inverse
+
+section=tense-aspect-mood
+
+section=other-features
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=info-str
+
+section=arg-opt
+
+section=lexicon
+  noun1_det=imp
+    noun1_stem1_orth=n
+    noun1_stem1_pred=_n_n_rel
+  verb1_valence=intrans
+    verb1_stem1_orth=iv
+    verb1_stem1_pred=_iv_v_rel
+  verb2_valence=trans
+    verb2_stem1_orth=tv
+    verb2_stem1_pred=_tv_v_rel
+  adj1_mod=pred
+  adj1_predcop=opt
+    adj1_stem1_orth=adj
+    adj1_stem1_pred=_adj_a_rel
+  cop1_comptype=ap
+    cop1_stem1_orth=cop
+
+section=morphology
+  adj-pc1_name=adj1_opt_cop
+  adj-pc1_obligatory=on
+  adj-pc1_order=suffix
+  adj-pc1_inputs=adj1
+  adj-pc1_switching=on
+    adj-pc1_lrt1_name=adj1_cop_comp
+    adj-pc1_lrt1_mod=pred
+    adj-pc1_lrt1_predcop=on
+      adj-pc1_lrt1_lri1_inflecting=no
+    adj-pc1_lrt2_name=adj1_stative_pred
+    adj-pc1_lrt2_mod=pred
+      adj-pc1_lrt2_lri1_inflecting=no
+
+section=toolbox-import
+
+section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon

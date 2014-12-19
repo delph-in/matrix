@@ -1,0 +1,6 @@
+adjpres n
+adjpast n
+*n adjpres
+*n adjpast
+*adj n
+*n adj

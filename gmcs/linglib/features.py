@@ -20,19 +20,21 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
   if not tdlfile:
     tdlfile = mylang
 
-  pos_geom_prefix = ''
 
-  if pos == 'det':
-    pos_geom_prefix = 'SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.'
-  elif pos == 'con':
-    pos_geom_prefix = 'HEAD-DTR.SYNSEM.'
-  else:
-    pos_geom_prefix = 'SYNSEM.'
+  # TJT 2014-11-05: moving this up to get the proper geometry for case
+  # get the feature geometry of CASE
+  if cases:
+    for f in features:
+      if f[0] == 'case':
+        case_geom = f[2]
+        break # Stop looking! TJT 2014-08-27
 
-  if pos == 'auxcomplement':
-    iter_feat = 'compfeature'
-  else:
-    iter_feat = 'feat'
+  # TJT 2014-08-15: changing this to a map for readability/speed
+  prefix_map = { 'det': 'SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.',
+                 'con': 'HEAD-DTR.SYNSEM.' }
+  pos_geom_prefix = prefix_map[pos] if pos in prefix_map else 'SYNSEM.'
+
+  iter_feat = 'feat' if pos != 'auxcomplement' else 'compfeature'
 
   basic_infl_neg_def = ''':= \
                    [ C-CONT [ HOOK [ XARG #xarg,\
@@ -50,8 +52,20 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                     LOCAL [ CONT.HOOK [ XARG #xarg,\
                                               INDEX #ind,\
                                         LTOP #larg ],\
-                          CAT.HEAD verb]]]].
+                          CAT.HEAD verb ] ] ] ].
   '''
+
+  # TJT Initializing head -> geom_prefix map outside of loop for speed
+  # Map from head value to geometry prefix
+  head_map = {
+    'subj': 'LOCAL.CAT.VAL.SUBJ.FIRST.',
+    'obj': 'LOCAL.CAT.VAL.COMPS.FIRST.',
+    'higher': 'SC-ARGS.FIRST.',
+    'lower': 'SC-ARGS.REST.FIRST.',
+    'xarg': 'LOCAL.CONT.HOOK.XARG.',  # XARG for adjectives
+    'mod': 'LOCAL.CAT.HEAD.MOD.FIRST.',  # MOD for adjectives
+    'comp': 'LOCAL.CAT.VAL.COMPS.FIRST.', # COMP for copulas
+  }
 
   for feat in ch_dict.get(iter_feat,[]):
     n = feat.get('name','')
@@ -62,28 +76,46 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
 
     geom_prefix = pos_geom_prefix
 
-    # The 'head' choice only appears on verb pcs, and allows the user
-    # to specify features on the subject and object as well
-    h = feat.get('head','')
-    if h == 'subj':
-      geom_prefix += 'LOCAL.CAT.VAL.SUBJ.FIRST.'
-    elif h == 'obj':
-      geom_prefix += 'LOCAL.CAT.VAL.COMPS.FIRST.'
-    elif h == 'higher':
-      geom_prefix = 'SC-ARGS.FIRST.'
-    elif h == 'lower':
-      geom_prefix = 'SC-ARGS.REST.FIRST.'
+    # The 'head' choice only appears on verb pcs, and allows the
+    # user to specify features on the subject and object as well
+    # TJT 2014-08-15: the 'head' choice now also appears on
+    # adjectives, copulas, and their lexical rules, allowing
+    # the user to specify which argument the adjective or copula
+    # is agreeing with
+    head = feat.get('head','')
+    if head in head_map: # TJT 2014-08-15: changing this to map for speed/easy reading
+      if head in ('higher', 'lower'):
+        geom_prefix = head_map[head] # TJT 2014-09-09: Higher/lower replace prefix
+      else:
+        geom_prefix += head_map[head]
+    # TJT 2014-09-16: DTR is for incorporated adjectives
+    if head == 'dtr':
+      geom_prefix = "DTR." + geom_prefix
 
+    # If auxcomplement, add additional definition on top of any head definition
     if pos == 'auxcomplement':
       geom_prefix += 'LOCAL.CAT.VAL.COMPS.FIRST.'
 
+    # TJT 2014-05-08 adding the break and moving the concatenation up
     geom = ''
     for f in features:
       if f[0] == n:
-        geom = f[2]
-
-    if geom:
-      geom = geom_prefix + geom
+        value = f[2]
+        # If choice defined not to have value, don't define a geometry
+        # and therefore skip to n==X specific code
+        if value:
+          # TJT 2014-05-08: XARG is of type individual, others are of
+          # type local-min, therefore, strip off the extra path
+          if head == 'xarg':
+            value = value[len("LOCAL.CONT.HOOK.INDEX."):]
+          # TJT 2014-11-05: case on adjectives only works for attributive
+          # constructions and has a different geometry
+          if head in ('xarg','mod') and n == 'case':
+            geom_prefix = 'SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.HEAD.CASE'
+          geom = geom_prefix + value
+#          if head == 'mod':
+#            geom += "] >"  # TJT 2014-05-27: close MOD
+        break # TJT 2014-05-08 stop looking!
 
     # If the feature has a geometry, just specify its value;
     # otherwise, handle it specially.
@@ -108,11 +140,6 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
       tdlfile.add(type_name + ' := [ ARG-ST #arg-st, DTR.ARG-ST #arg-st ].',
                   merge=True)
 
-      # get the feature geometry of CASE
-      for f in features:
-        if f[0] == 'case':
-          geom = f[2]
-
       for argst in v:
         # specify the subj/comps CASE values
         c = argst.split('-')
@@ -121,8 +148,8 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
           a_case = o_case = ''
           # otherwise use the geometry and case name
           if len(c) > 1:
-            a_case = geom + ' ' + case.canon_to_abbr(c[0], cases)
-            o_case = geom + ' ' + case.canon_to_abbr(c[1], cases)
+            a_case = case_geom + ' ' + case.canon_to_abbr(c[0], cases)
+            o_case = case_geom + ' ' + case.canon_to_abbr(c[1], cases)
           tdlfile.add(type_name + \
                       ' := [ ARG-ST < [ ' + a_case + '], ' +\
                                      '[ ' + o_case + '] > ].',
@@ -130,7 +157,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
         else:
           c = c[0]
           s_case = '' if c == 'intrans' \
-                      else (geom + ' ' + case.canon_to_abbr(c, cases))
+                      else (case_geom + ' ' + case.canon_to_abbr(c, cases))
           tdlfile.add(type_name + \
                       ' := [ ARG-ST < [ ' + s_case + '] > ].',
                       merge=True)
@@ -153,31 +180,32 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
         tdlfile.add(type_name + ':= [ SYNSEM.LOCAL.CAT.HEAD.NEGATED + ].',merge=True)
 
     elif (n == 'negation' and v[0] == 'b'):
-    # this is a negation lex rule that also requires negform on its
-    # complement, should only attach to aux
+      # this is a negation lex rule that also requires negform on its
+      # complement, should only attach to aux
 
-    # to make the neg-rule a little more elegant we can define a form-and-cont-change-rule
-    # and use it as a supertype for this rule
+      # to make the neg-rule a little more elegant we can define a form-and-cont-change-rule
+      # and use it as a supertype for this rule
 
-      tdlfile.add('''val-and-cont-change-lex-rule := same-head-lex-rule & same-hc-light-lex-rule & 
-                     same-posthead-lex-rule & same-mc-lex-rule & same-ctxt-lex-rule & 
+      tdlfile.add('''val-and-cont-change-lex-rule := same-head-lex-rule & same-hc-light-lex-rule &
+                     same-posthead-lex-rule & same-mc-lex-rule & same-ctxt-lex-rule &
                      same-modified-lex-rule & same-light-lex-rule & same-non-local-lex-rule &
                      [ SYNSEM.LOCAL.CAT.VAL [ SPR #spr,
-                                              SUBJ #subj, 
+                                              SUBJ #subj,
                                               SPEC #spec ],
                        DTR.SYNSEM.LOCAL.CAT.VAL [ SPR #spr,
                                                   SUBJ #subj,
                                                   SPEC #spec ] ].''',section='addenda')
-                         
+
       tdlfile.add(type_name + basic_infl_neg_def, merge=True)
-      # because this is a val changing rule, we need the complement verbs VAL 
+      # because this is a val changing rule, we need the complement verbs VAL
       # and HOOK to be copied up explicitly
       # also, we specify FORM negform on the complement
       tdlfile.add(type_name + ''':= [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL [ CAT [ VAL #val,
-     HEAD.FORM negform ], 
- CONT.HOOK #hook ],
-     DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL [ CAT.VAL #val,
-                                                  CONT.HOOK #hook ] ]. ''', merge=True)
+                                                                                     HEAD.FORM negform ],
+                                                                               CONT.HOOK #hook ],
+                                      DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL [ CAT.VAL #val,
+                                                                                   CONT.HOOK #hook ] ]. ''',
+                  merge=True)
       tdlfile.add(type_name + ':= [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].',
                   merge=True)
 
@@ -185,17 +213,17 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
 #    elif (n == 'negation' and v[0] == 'c'):
 #   'c'  is deprecated!
     elif (n == 'negation' and v[0] == 'd'):
-    # this is a comps changing lex rule which adds a negadv to the 
-    # comps list
+      # this is a comps changing lex rule which adds a negadv to the
+      # comps list
 
-    ## shouldn't have to apply to AUXes
-    #  tdlfile.add(type_name + ':= [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].',
-    #              merge=True)
+      ## shouldn't have to apply to AUXes
+      #  tdlfile.add(type_name + ':= [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].',
+      #              merge=True)
       tdlfile.add(type_name + ''':= [
         SYNSEM.LOCAL [ CAT.VAL [ SPR #spr,
                                  SPEC #spec,
-                                 SUBJ #subj,   
-                                 COMPS < canonical-synsem & 
+                                 SUBJ #subj,
+                                 COMPS < canonical-synsem &
                                          [ LOCAL.CAT.HEAD [ NEGATED +,
                                          MOD < [ LOCAL.CONT.HOOK #hook ] > ] ]
                                          . #oldcomps > ] ],
@@ -206,12 +234,12 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                            CONT.HOOK #hook ] ].''', merge=True)
 
     elif (n == 'negation' and v[0] == 'e'):
-    # negation lex rule to set NEG-SAT to -
+    #  negation lex rule to set NEG-SAT to -
       tdlfile.add(type_name + ':= [ SYNSEM.NEG-SAT - ].')
 
     elif (n == 'negation' and v[0] == 'f'):
-    # negation lex rule to add negative complement and
-    # require that original comps is NEGATED +
+      # negation lex rule to add negative complement and
+      # require that original comps is NEGATED +
       tdlfile.add(type_name + ''':= [ SYNSEM.LOCAL.CAT.VAL [ SPR #spr,
                            SPEC #spec,
                            SUBJ #subj,
@@ -233,10 +261,10 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                          CONT.HOOK #hook ] ] ].''', merge=True)
 
     elif (n == 'negation' and v[0] == 'g'):
-    # negation lex rule to add dummy negative complement and
-    # only apply to lexical verbs 
+      # negation lex rule to add dummy negative complement and
+      # only apply to lexical verbs
 
-    # also, flip negated + value
+      # also, flip negated + value
       tdlfile.add(type_name +''':= [ SYNSEM.LOCAL.CAT [ VAL [ SPR #spr,
                              SPEC #spec,
                              SUBJ #subj,
@@ -260,8 +288,8 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
         SYNSEM [ NEG-SAT -,
                  LOCAL [ CAT.VAL [ SPR #spr,
                                  SPEC #spec,
-                                 SUBJ #subj,   
-                                 COMPS < canonical-synsem & 
+                                 SUBJ #subj,
+                                 COMPS < canonical-synsem &
                                          [ LOCAL.CAT.HEAD [ NEGATED +,
                                          MOD < [ LOCAL.CONT.HOOK #hook ] > ] ]
                                          . #oldcomps > ] ] ],
@@ -271,11 +299,11 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                                      COMPS #oldcomps ],
                            CONT.HOOK #hook ] ].''', merge=True)
     elif (n == 'negation' and v[0] == 'minus'):
-      # JDC 2011-01-11 Users specify negation minus to indicate that a 
+      # JDC 2011-01-11 Users specify negation minus to indicate that a
       # lexical type is not compatible with negation
       if ch.get('neg-head-feature') == 'on':
         tdlfile.add(type_name + ':= [ ARGS.FIRST.SYNSEM.LOCAL.CAT.HEAD.NEGATED - ].',merge=True)
-    
+
     elif (n == 'question' and v[0] == 'plus'):
       # ERB 2009-07-01 Adding in semantics for question affixes
       tdlfile.add(type_name + ':= \
@@ -293,11 +321,13 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
       #  tdlfile.add(type_name + ':= obj-drop-verb-lex.', merge = True)
 
     elif n == 'OPT':
-      bool_val = {'plus': '+', 'minus': '-'}[v[0].lower()]
-      val_geom = {'subj': 'SUBJ', 'obj': 'COMPS'}[h.lower()]
-      tdlfile.add('%(id)s := [SYNSEM.LOCAL.CAT.VAL.%(vg)s.FIRST.OPT %(bv)s].' \
-                  % {'id': type_name, 'vg': val_geom, 'bv': bool_val},
-                  merge=True)
+      geom_map = {'subj': 'SUBJ', 'obj': 'COMPS'}
+      if head in geom_map:
+        bool_val = {'plus': '+', 'minus': '-'}[v[0].lower()]
+        val_geom = geom_map[head.lower()]
+        tdlfile.add('%(id)s := [SYNSEM.LOCAL.CAT.VAL.%(vg)s.FIRST.OPT %(bv)s].' \
+                    % {'id': type_name, 'vg': val_geom, 'bv': bool_val},
+                    merge=True)
 
     elif n == 'direction':
       if v[0] == 'dir':
@@ -306,9 +336,9 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
         tdlfile.add(type_name + ' := inv-lex-rule.')
     elif n == 'dirinv-type':
       d = v[0]
-      if h == 'subj':
+      if head == 'subj':
         tdlfile.add(type_name + ' := [SYNSEM.LOCAL.CAT.VAL.SUBJ < '+d+' > ].')
-      elif h == 'obj':
+      elif head == 'obj':
         tdlfile.add(type_name + ' := [SYNSEM.LOCAL.CAT.VAL.COMPS < '+d+' > ].')
 
 # Note: customize case code is now in gmcs/linglib/case.py

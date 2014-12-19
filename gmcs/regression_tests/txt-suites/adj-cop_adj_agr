@@ -1,0 +1,21 @@
+nm cop adjm
+nf cop adjf
+*nm cop adjf
+*nf cop adjm
+*nm adjm cop
+*cop adjm nm
+*cop nm adjm
+*adjm nm cop
+*adjm cop nm
+*nf adjf cop
+*cop adjf nf
+*cop nf adjf
+*adjf nf cop
+*adjf cop nf
+*nm adjm
+*adjm nm
+*nf adjf
+*adjf nf
+*n adj
+*n adjm
+*nm adj

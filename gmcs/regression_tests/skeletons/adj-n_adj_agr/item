@@ -1,0 +1,126 @@
+1@unknown@formal@none@1@S@n-m adj-m tv n-m@@@@@@@dantiston@2014-09-17
+2@unknown@formal@none@1@S@det n-m adj-m tv n-m@@@@@@@dantiston@2014-09-17
+3@unknown@formal@none@1@S@n-m adj-m adj-m tv n-m@@@@@@@dantiston@2014-09-17
+4@unknown@formal@none@1@S@det n-m adj-m adj-m tv n-m@@@@@@@dantiston@2014-09-17
+5@unknown@formal@none@1@S@n-m tv n-m adj-m@@@@@@@dantiston@2014-09-17
+6@unknown@formal@none@1@S@n-m tv det n-m adj-m@@@@@@@dantiston@2014-09-17
+7@unknown@formal@none@1@S@n-m tv n-m adj-m adj-m@@@@@@@dantiston@2014-09-17
+8@unknown@formal@none@1@S@n-m tv det n-m adj-m adj-m@@@@@@@dantiston@2014-09-17
+9@unknown@formal@none@1@S@n-m adj-m iv@@@@@@@dantiston@2014-09-17
+10@unknown@formal@none@1@S@det n-m adj-m iv@@@@@@@dantiston@2014-09-17
+11@unknown@formal@none@1@S@n-m adj-m adj-m iv@@@@@@@dantiston@2014-09-17
+12@unknown@formal@none@1@S@det n-m adj-m adj-m iv@@@@@@@dantiston@2014-09-17
+13@unknown@formal@none@1@S@n-f adj-f tv n-f@@@@@@@dantiston@2014-09-17
+14@unknown@formal@none@1@S@det n-f adj-f tv n-f@@@@@@@dantiston@2014-09-17
+15@unknown@formal@none@1@S@n-f adj-f adj-f tv n-f@@@@@@@dantiston@2014-09-17
+16@unknown@formal@none@1@S@det n-f adj-f adj-f tv n-f@@@@@@@dantiston@2014-09-17
+17@unknown@formal@none@1@S@n-f tv n-f adj-f@@@@@@@dantiston@2014-09-17
+18@unknown@formal@none@1@S@n-f tv det n-f adj-f@@@@@@@dantiston@2014-09-17
+19@unknown@formal@none@1@S@n-f tv n-f adj-f adj-f@@@@@@@dantiston@2014-09-17
+20@unknown@formal@none@1@S@n-f tv det n-f adj-f adj-f@@@@@@@dantiston@2014-09-17
+21@unknown@formal@none@1@S@n-f adj-f iv@@@@@@@dantiston@2014-09-17
+22@unknown@formal@none@1@S@det n-f adj-f iv@@@@@@@dantiston@2014-09-17
+23@unknown@formal@none@1@S@n-f adj-f adj-f iv@@@@@@@dantiston@2014-09-17
+24@unknown@formal@none@1@S@det n-f adj-f adj-f iv@@@@@@@dantiston@2014-09-17
+25@unknown@formal@none@1@@adj-m n-m tv n-m@@@@@@@dantiston@2014-09-17
+26@unknown@formal@none@1@@det adj-m n-m tv n-m@@@@@@@dantiston@2014-09-17
+27@unknown@formal@none@1@@adj-m adj-m n-m tv n-m@@@@@@@dantiston@2014-09-17
+28@unknown@formal@none@1@@n-m tv adj-m n-m@@@@@@@dantiston@2014-09-17
+29@unknown@formal@none@1@@n-m tv det adj-m n-m@@@@@@@dantiston@2014-09-17
+30@unknown@formal@none@1@@n-m tv adj-m adj-m n-m@@@@@@@dantiston@2014-09-17
+31@unknown@formal@none@1@@n-m tv det adj-m adj-m n-m@@@@@@@dantiston@2014-09-17
+32@unknown@formal@none@1@@adj-m n-m iv@@@@@@@dantiston@2014-09-17
+33@unknown@formal@none@1@@det adj-m n-m iv@@@@@@@dantiston@2014-09-17
+34@unknown@formal@none@1@@adj-m adj-m n-m iv@@@@@@@dantiston@2014-09-17
+35@unknown@formal@none@1@@det adj-m adj-m n-m iv@@@@@@@dantiston@2014-09-17
+36@unknown@formal@none@1@@adj-f n-f tv n-m@@@@@@@dantiston@2014-09-17
+37@unknown@formal@none@1@@det adj-f n-f tv n-m@@@@@@@dantiston@2014-09-17
+38@unknown@formal@none@1@@adj-f adj-f n-f tv n-m@@@@@@@dantiston@2014-09-17
+39@unknown@formal@none@1@@det adj-f adj-f n-f tv n-m@@@@@@@dantiston@2014-09-17
+40@unknown@formal@none@1@@n-m tv adj-f n-f@@@@@@@dantiston@2014-09-17
+41@unknown@formal@none@1@@n-m tv det adj-f n-f@@@@@@@dantiston@2014-09-17
+42@unknown@formal@none@1@@n-m tv adj-f adj-f n-f@@@@@@@dantiston@2014-09-17
+43@unknown@formal@none@1@@n-m tv det adj-f adj-f n-f@@@@@@@dantiston@2014-09-17
+44@unknown@formal@none@1@@adj-f n-f iv@@@@@@@dantiston@2014-09-17
+45@unknown@formal@none@1@@det adj-f n-f iv@@@@@@@dantiston@2014-09-17
+46@unknown@formal@none@1@@adj-f adj-f n-f iv@@@@@@@dantiston@2014-09-17
+47@unknown@formal@none@1@@det adj-f adj-f n-f iv@@@@@@@dantiston@2014-09-17
+48@unknown@formal@none@1@@adj n-m tv n-m@@@@@@@dantiston@2014-09-17
+49@unknown@formal@none@1@@det adj n-m tv n-m@@@@@@@dantiston@2014-09-17
+50@unknown@formal@none@1@@adj adj n-m tv n-m@@@@@@@dantiston@2014-09-17
+51@unknown@formal@none@1@@det adj adj n-m tv n-m@@@@@@@dantiston@2014-09-17
+52@unknown@formal@none@1@@n-m tv adj n-m@@@@@@@dantiston@2014-09-17
+53@unknown@formal@none@1@@n-m tv det adj n-m@@@@@@@dantiston@2014-09-17
+54@unknown@formal@none@1@@n-m tv adj adj n-m@@@@@@@dantiston@2014-09-17
+55@unknown@formal@none@1@@n-m tv det adj adj n-m@@@@@@@dantiston@2014-09-17
+56@unknown@formal@none@1@@adj n-m iv@@@@@@@dantiston@2014-09-17
+57@unknown@formal@none@1@@det adj n-m iv@@@@@@@dantiston@2014-09-17
+58@unknown@formal@none@1@@adj adj n-m iv@@@@@@@dantiston@2014-09-17
+59@unknown@formal@none@1@@det adj adj n-m iv@@@@@@@dantiston@2014-09-17
+60@unknown@formal@none@1@@adj-m n-f tv n-m@@@@@@@dantiston@2014-09-17
+61@unknown@formal@none@1@@det adj-m n-f tv n-m@@@@@@@dantiston@2014-09-17
+62@unknown@formal@none@1@@adj-m adj-m n-f tv n-m@@@@@@@dantiston@2014-09-17
+63@unknown@formal@none@1@@det adj-m adj-m n-f tv n-m@@@@@@@dantiston@2014-09-17
+64@unknown@formal@none@1@@n-m tv adj-m n-f@@@@@@@dantiston@2014-09-17
+65@unknown@formal@none@1@@n-m tv det adj-m n-f@@@@@@@dantiston@2014-09-17
+66@unknown@formal@none@1@@n-m tv adj-m adj-m n-f@@@@@@@dantiston@2014-09-17
+67@unknown@formal@none@1@@n-m tv det adj-m adj-m n-f@@@@@@@dantiston@2014-09-17
+68@unknown@formal@none@1@@adj-m n-f iv@@@@@@@dantiston@2014-09-17
+69@unknown@formal@none@1@@det adj-m n-f iv@@@@@@@dantiston@2014-09-17
+70@unknown@formal@none@1@@adj-m adj-m n-f iv@@@@@@@dantiston@2014-09-17
+71@unknown@formal@none@1@@det adj-m adj-m n-f iv@@@@@@@dantiston@2014-09-17
+72@unknown@formal@none@1@@adj-m adj-f n-f tv n-m@@@@@@@dantiston@2014-09-17
+73@unknown@formal@none@1@@det adj-m adj-f n-f tv n-m@@@@@@@dantiston@2014-09-17
+74@unknown@formal@none@1@@n-m tv adj-m adj-f n-f@@@@@@@dantiston@2014-09-17
+75@unknown@formal@none@1@@n-m tv det adj-m adj-f n-f@@@@@@@dantiston@2014-09-17
+76@unknown@formal@none@1@@adj-m adj-f n-f iv@@@@@@@dantiston@2014-09-17
+77@unknown@formal@none@1@@det adj-m adj-f n-f iv@@@@@@@dantiston@2014-09-17
+78@unknown@formal@none@1@@adj-f adj-m n-f tv n-m@@@@@@@dantiston@2014-09-17
+79@unknown@formal@none@1@@det adj-f adj-m n-f tv n-m@@@@@@@dantiston@2014-09-17
+80@unknown@formal@none@1@@n-m tv adj-f adj-m n-f@@@@@@@dantiston@2014-09-17
+81@unknown@formal@none@1@@n-m tv det adj-f adj-m n-f@@@@@@@dantiston@2014-09-17
+82@unknown@formal@none@1@@adj-f adj-m n-f iv@@@@@@@dantiston@2014-09-17
+83@unknown@formal@none@1@@det adj-f adj-m n-f iv@@@@@@@dantiston@2014-09-17
+84@unknown@formal@none@1@@n-m adj tv n-m@@@@@@@dantiston@2014-09-17
+85@unknown@formal@none@1@@adj n-m adj tv n-m@@@@@@@dantiston@2014-09-17
+86@unknown@formal@none@1@@n-m adj adj tv n-m@@@@@@@dantiston@2014-09-17
+87@unknown@formal@none@1@@det n-m adj tv n-m@@@@@@@dantiston@2014-09-17
+88@unknown@formal@none@1@@det n-m adj adj tv n-m@@@@@@@dantiston@2014-09-17
+89@unknown@formal@none@1@@det adj n-m adj tv n-m@@@@@@@dantiston@2014-09-17
+90@unknown@formal@none@1@@n-m adj iv@@@@@@@dantiston@2014-09-17
+91@unknown@formal@none@1@@adj n-m adj iv@@@@@@@dantiston@2014-09-17
+92@unknown@formal@none@1@@n-m adj adj iv@@@@@@@dantiston@2014-09-17
+93@unknown@formal@none@1@@det n-m adj iv@@@@@@@dantiston@2014-09-17
+94@unknown@formal@none@1@@det n-m adj adj iv@@@@@@@dantiston@2014-09-17
+95@unknown@formal@none@1@@det adj n-m adj iv@@@@@@@dantiston@2014-09-17
+96@unknown@formal@none@1@@n-m tv n-m adj@@@@@@@dantiston@2014-09-17
+97@unknown@formal@none@1@@n-m tv det n-m adj@@@@@@@dantiston@2014-09-17
+98@unknown@formal@none@1@@n-m tv adj n-m adj@@@@@@@dantiston@2014-09-17
+99@unknown@formal@none@1@@n-m tv det adj n-m adj@@@@@@@dantiston@2014-09-17
+100@unknown@formal@none@1@@n-m tv n-m adj adj@@@@@@@dantiston@2014-09-17
+101@unknown@formal@none@1@@n-m tv det n-m adj adj@@@@@@@dantiston@2014-09-17
+102@unknown@formal@none@1@@adj-m n-m adj tv n-m@@@@@@@dantiston@2014-09-17
+103@unknown@formal@none@1@@det adj-m n-m adj-m tv n-m@@@@@@@dantiston@2014-09-17
+104@unknown@formal@none@1@@adj-m n-m adj-m iv@@@@@@@dantiston@2014-09-17
+105@unknown@formal@none@1@@det adj-m n-m adj-m iv@@@@@@@dantiston@2014-09-17
+106@unknown@formal@none@1@@n-m tv adj n-m adj-m@@@@@@@dantiston@2014-09-17
+107@unknown@formal@none@1@@n-m tv det adj-m n-m adj-m@@@@@@@dantiston@2014-09-17
+108@unknown@formal@none@1@@det adj-m adj-m n-m tv n-m@@@@@@@dantiston@2014-09-17
+109@unknown@formal@none@1@@n-m adj-f tv n-m@@@@@@@dantiston@2014-09-17
+110@unknown@formal@none@1@@adj-f n-m adj tv n-m@@@@@@@dantiston@2014-09-17
+111@unknown@formal@none@1@@n-m adj-f adj-f tv n-m@@@@@@@dantiston@2014-09-17
+112@unknown@formal@none@1@@det n-m adj-f tv n-m@@@@@@@dantiston@2014-09-17
+113@unknown@formal@none@1@@det n-m adj-f adj-f tv n-m@@@@@@@dantiston@2014-09-17
+114@unknown@formal@none@1@@det adj-f n-m adj-f tv n-m@@@@@@@dantiston@2014-09-17
+115@unknown@formal@none@1@@n-m adj-f iv@@@@@@@dantiston@2014-09-17
+116@unknown@formal@none@1@@adj-f n-m adj-f iv@@@@@@@dantiston@2014-09-17
+117@unknown@formal@none@1@@n-m adj-f adj-f iv@@@@@@@dantiston@2014-09-17
+118@unknown@formal@none@1@@det n-m adj-f iv@@@@@@@dantiston@2014-09-17
+119@unknown@formal@none@1@@det n-m adj-f adj-f iv@@@@@@@dantiston@2014-09-17
+120@unknown@formal@none@1@@det adj-f n-m adj-f iv@@@@@@@dantiston@2014-09-17
+121@unknown@formal@none@1@@n-m tv n-m adj-f@@@@@@@dantiston@2014-09-17
+122@unknown@formal@none@1@@n-m tv det n-m adj-f@@@@@@@dantiston@2014-09-17
+123@unknown@formal@none@1@@n-m tv adj-f n-m adj-f@@@@@@@dantiston@2014-09-17
+124@unknown@formal@none@1@@n-m tv det adj-f n-m adj-f@@@@@@@dantiston@2014-09-17
+125@unknown@formal@none@1@@n-m tv n-m adj-f adj-f@@@@@@@dantiston@2014-09-17
+126@unknown@formal@none@1@@n-m tv det n-m adj-f adj-f@@@@@@@dantiston@2014-09-17

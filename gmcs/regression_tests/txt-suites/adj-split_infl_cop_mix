@@ -1,0 +1,106 @@
+n adj1pres
+n adj1past
+*n adj2pres
+*n adj2past
+*n adj3pres
+*n adj3past
+*n adj4pres
+*n adj4past
+*adj1pres n
+*adj1past n
+*adj2pres n
+*adj2past n
+*adj3pres n
+*adj3past n
+*adj4pres n
+*adj4past n
+*n adj1
+n adj2
+*n adj3
+*n adj4
+*adj1 n
+*adj2 n
+*adj3 n
+*adj4 n
+*n cop adj1
+*n cop adj2
+n cop adj3
+*n cop adj4
+*n adj1 cop
+*cop adj1 n
+*cop n adj1
+*adj1 n cop
+*adj1 cop n
+*n adj2 cop
+*cop adj2 n
+*cop n adj2
+*adj2 n cop
+*adj2 cop n
+*n adj3 cop
+*cop adj3 n
+*cop n adj3
+*adj3 n cop
+*adj3 cop n
+*n adj4 cop
+*cop adj4 n
+*cop n adj4
+*adj4 n cop
+*adj4 cop n
+*n cop
+*cop n
+*cop adj1
+*adj1 cop
+*cop adj2
+*adj2 cop
+*cop adj3
+*adj3 cop
+*cop adj4
+*adj4 cop
+*n cop adj1pres
+*n cop adj1past
+*n cop adj2pres
+*n cop adj2past
+*n cop adj3pres
+*n cop adj3past
+n cop adj4pres
+n cop adj4past
+*n adj1pres cop
+*cop adj1pres n
+*cop n adj1pres
+*adj1pres n cop
+*adj1pres cop n
+*n adj2pres cop
+*cop adj2pres n
+*cop n adj2pres
+*adj2pres n cop
+*adj2pres cop n
+*n adj3pres cop
+*cop adj3pres n
+*cop n adj3pres
+*adj3pres n cop
+*adj3pres cop n
+*n adj4pres cop
+*cop adj4pres n
+*cop n adj4pres
+*adj4pres n cop
+*adj4pres cop n
+*n adj1past cop
+*cop adj1past n
+*cop n adj1past
+*adj1past n cop
+*adj1past cop n
+*n adj2past cop
+*cop adj2past n
+*cop n adj2past
+*adj2past n cop
+*adj2past cop n
+*n adj3past cop
+*cop adj3past n
+*cop n adj3past
+*adj3past n cop
+*adj3past cop n
+*n adj4past cop
+*cop adj4past n
+*cop n adj4past
+*adj4past n cop
+*adj4past cop n

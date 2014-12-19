@@ -1,0 +1,24 @@
+*adjm nm iv
+*adjf nf iv
+*adjf nm iv
+*adjm nf iv
+*adj nm iv
+*adj nf iv
+*nm adj
+*nf adj
+*nm adjm
+*nf adjf
+*nf adjm
+*nm adjf
+*nm adjm iv
+*nf adjf iv
+*nf adjm iv
+*nm adjf iv
+nm adj iv
+nf adj iv
+nm cop adjm
+nf cop adjf
+*nm cop adjf
+*nf cop adjm
+*nm cop adj
+*nf cop adj

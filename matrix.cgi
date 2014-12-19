@@ -79,18 +79,38 @@ if cookie and not os.path.exists(session_path):
 # if the 'choices' field is defined, we have either the contents of an
 # uploaded choices file or the name of a sample choices file (which
 # will begin with 'sample-choices/') to replace the current choices.
+# TJT 2014-09-18: Get choices files from Language CoLLAGE links
 if form_data.has_key('choices'):
   choices = form_data['choices'].value
   if choices:
+    data = ''
     if choices.startswith('web/sample-choices/'):
       f = open(choices, 'r')
       data = f.read()
       f.close()
-    else:
+    elif choices.startswith('collage/'):
+      # Get choices files from CoLLAGE
+      # should be 3 letter keys... doesn't work for longer keys
+      if len(choices) == (len('collage/') + 3):
+	import urllib2, tarfile, StringIO
+        choices = 'http://www.delph-in.net/matrix/language-'+choices+'/choices-final.tgz'
+        try:
+          tar = urllib2.urlopen(choices)
+          with tarfile.open(mode = 'r|*', fileobj = StringIO.StringIO(tar.read())) as tar:
+            for tarinfo in tar:
+              if tarinfo.isreg() and tarinfo.name[-len('choices'):] == 'choices':
+                choicesData = tar.extractfile(tarinfo)
+                data = choicesData.read()
+                choicesData.close()
+                break # Found the choices file...e
+        except (urllib2.HTTPError, urllib2.URLError, tarfile.TarError):
+          data = ''
+    else: # Uploaded choices data
       data = choices
-    f = open(os.path.join(session_path, 'choices'), 'w')
-    f.write(data)
-    f.close()
+    if data or choices.endswith('/empty'):
+      f = open(os.path.join(session_path, 'choices'), 'w')
+      f.write(data)
+      f.close()
 
 # if the 'section' field is defined, we have submitted values to save
 if form_data.has_key('section'):
@@ -98,7 +118,7 @@ if form_data.has_key('section'):
 
 # if we have recieved toolbox files, then we want to add these lexical items after saving the toolbox configuration (done above).
 if form_data.has_key('import_toolbox'):
-  toolbox_files = [] 
+  toolbox_files = []
   for key in form_data.keys():
     if key[-10:] == 'tbfilename' and form_data[key].value != "":
       fout = tempfile.NamedTemporaryFile(dir=session_path)
@@ -119,7 +139,7 @@ if form_data.has_key('verbpred'):
 # choices.  If the current choices are valid, the list will be empty.
 # --
 # no longer true, there can now be validation info messages.
-# nothing seems to depend on the list being empty #14 feb 2012 
+# nothing seems to depend on the list being empty #14 feb 2012
 try:
   vr = validate_choices(os.path.join(session_path, 'choices'))
 except:
@@ -135,7 +155,7 @@ if form_data.has_key('customize'):
     arch_type = form_data['delivery'].value
   else:
     arch_type = ''
-  if arch_type not in [ 'tgz', 'zip' ]:
+  if arch_type not in ( 'tgz', 'zip' ):
     vr.err('delivery', 'You must specify an archive type.')
 
   if vr.has_errors():

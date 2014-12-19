@@ -273,8 +273,11 @@ head-min := avm.
 ; semantic information encoded in EVENT.E accessible via the head
 ; path.)
 
+; TJT 2014-04-24 Adding PRD for predicatives (such as predicative adjectives)
+
 head := head-min &
   [ MOD list,
+    PRD bool,
     KEYS keys_min ].
 
 ; (ERB 2004-08-19) We had previously shied away from defining head
@@ -369,7 +372,7 @@ semsort :< sort.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; CONT values
 ;
-;   HOOK                   : Externally visible attributes of a sign
+;   HOOK                   ; Externally visible attributes of a sign
 ;   RELS diff-list         ; List of semantic relations
 ;   HCONS diff-list        ; Scope constraints: list of qeq's
 ;   ICONS diff-list        ; Individual constraints: list of icons
@@ -2327,10 +2330,16 @@ norm-hook-lex-item := norm-ltop-lex-item &
 ; Also, reconsider whether I want to do this for intersective as
 ; well as scopal modifiers, or just the scopal guys.
 
+; TJT 2014-04-24 raise-index-mod-lex-item should not be used for
+; intersective adjectives or adverbs as the MOD...INDEX is identified with the
+; CONT.HOOK.XARG, not the CONT.HOOK.INDEX. Removing raise-index-mod-lex-item.
+; See ERG as example of not using this for intersectives.
+
+; TJT 2014-09-05 raise-index-mod-lex-item is used for scopal adverbs like negation (and maybe scopal adjectives?). Adding back in.
+
 raise-index-mod-lex-item := norm-ltop-lex-item &
   [ SYNSEM.LOCAL [ CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.INDEX #index ] >,
-		   CONT.HOOK.INDEX #index ] ].
-
+				   CONT.HOOK.INDEX #index ] ].
 
 ; Furthermore, most lexical items contribute only one relation, and
 ; have empty HCONS values.
@@ -2377,8 +2386,6 @@ two-icons-lex-item := lex-item & [ SYNSEM.LOCAL.CONT.ICONS <! info-str & [ ], in
 ; messages). HCONS should now (in most cases) be constrained
 ; by the linking types.
 
-
-
 norm-sem-lex-item := norm-hook-lex-item & single-rel-lex-item.
 
 hcons-lex-item := norm-hook-lex-item & single-rel-lex-item.
@@ -2388,6 +2395,7 @@ hcons-lex-item := norm-hook-lex-item & single-rel-lex-item.
 ; These all take HOOK from their first complements.
 
 ; SSH 2012-03-03 
+
 raise-sem-lex-item := no-hcons-lex-item & 
   [ SYNSEM.LOCAL [ CONT [ RELS <! !>,
 			  HOOK #hook ],
@@ -2945,21 +2953,7 @@ spr-trans-first-arg-control-lex-item := basic-three-arg & basic-icons-lex-item &
 
 ; Possibly more types related to the above.
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Modifiers
-
-; Modifiers which can be used either attributively or predicatively 
-; identify their XARG with their MOD..IND, so that the modified element
-; or the subject play the same role.  Assume other constraints will block
-; a modifier from picking up a subject (in the ERG, this is done by
-; not giving them any SUBJ ever, since adjectives and PPs require
-; the support of the copula to function as predicates; in a language
-; which doesn't use the copula in these contexts, something else would
-; need to be done.
-
-attrib-or-pred-lex-item := lex-item &
-  [ SYNSEM.LOCAL [ CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX #ind,
-		   CONT.HOOK.XARG #ind ] ].
+; TJT 2014-04-24 Editing out "Modifiers" for new adjective hierarchy; See below
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Part of speech
@@ -2968,6 +2962,8 @@ attrib-or-pred-lex-item := lex-item &
 ; many closed-class items have linking constraints which are particular
 ; to the part of speech class, and so some linking constraints are
 ; included.
+
+;;; Verbs
 
 ; Bringing in norm-sem-lex-item here where relevant, although this
 ; might be too stringent.
@@ -2979,9 +2975,13 @@ attrib-or-pred-lex-item := lex-item &
 ; ERB 2007-01-21 Moving to constructionally introduced SF values.
 ; Removing that constraint on now defunct feature MESG.
 
-basic-verb-lex := norm-sem-lex-item & 
-  [ SYNSEM [ LOCAL.CAT.HEAD verb,
-	     LKEYS.KEYREL event-relation ] ].
+; TJT 2014-04-26 Creating basic-verb-lex-super for copula
+
+basic-verb-lex-super := norm-hook-lex-item & 
+  [ SYNSEM.LOCAL.CAT.HEAD verb ].
+
+basic-verb-lex := basic-verb-lex-super & single-rel-lex-item & 
+  [ SYNSEM.LKEYS.KEYREL event-relation ].
 
 ; ERB 2004-08-26 Put in qeq, assuming that for all scopal modifiers
 ; the relevant argument position is ARG1, and there will be
@@ -3010,9 +3010,11 @@ intersective-mod-lex := no-hcons-lex-item &
 no-mod-lex := no-hcons-lex-item &
   [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].
 
-basic-adjective-lex := single-rel-lex-item &
-  [ SYNSEM [ LOCAL.CAT.HEAD adj,
-	     LKEYS.KEYREL event-relation ]].
+;;; Adjectives
+
+;basic-adjective-lex := single-rel-lex-item &
+;  [ SYNSEM [ LOCAL.CAT.HEAD adj,
+;	     LKEYS.KEYREL event-relation ]].
 
 ; ERB 2007-02-26 New type raise-index-mod-lex-item to get the
 ; INDEX value right on modifiers.  Attributive adjectives should
@@ -3024,10 +3026,38 @@ basic-adjective-lex := single-rel-lex-item &
 ; (event for adj, index for nouns) preventing coordination from working
 ; changed to norm-sem-lex-item.
 
-basic-mod-adj-lex := basic-adjective-lex & norm-sem-lex-item.
-basic-scopal-mod-adj-lex := basic-mod-adj-lex & scopal-mod-lex.
-basic-int-mod-adj-lex := basic-mod-adj-lex & intersective-mod-lex.
-basic-nomod-adj-lex := basic-adjective-lex & no-mod-lex & norm-hook-lex-item.
+; TJT 2014-05-01 raise-index-mod-lex-item incorrectly identifies the
+; modificand's index with the modifier's index, which is incorrect. The MOD
+; value's index should be the XARG / ARG1 of the modifier,
+; as in intersective-mod-lex
+
+;basic-mod-adj-lex := basic-adjective-lex & norm-sem-lex-item.
+;basic-scopal-mod-adj-lex := basic-mod-adj-lex & scopal-mod-lex.
+;basic-int-mod-adj-lex := basic-mod-adj-lex & intersective-mod-lex.
+;basic-nomod-adj-lex := basic-adjective-lex & no-mod-lex & norm-hook-lex-item.
+
+; TJT 2014-04-24 New adjective hierarchy
+; TJT 2014-09-04 Most of the adjective hierarchy is now calculated for mylanguage.tdl in order to accomodate argument agreement languages.
+
+basic-adjective-lex := norm-sem-lex-item &
+  [ SYNSEM [ LOCAL [ CAT [ HEAD adj,
+                           VAL [ COMPS < >,
+				 SPEC < >,
+                                 SPR.FIRST.LOCAL.CONT.HOOK.XARG #index ] ] ],
+             LKEYS.KEYREL event-relation & 
+	      		  [ ARG0 #index ] ] ].
+
+basic-intersective-adjective-lex := basic-adjective-lex &
+  [ SYNSEM [ LOCAL.CONT.HOOK.XARG ref-ind & #xarg,
+    	     LKEYS.KEYREL.ARG1 #xarg ] ].
+
+; Scopal Adjectives
+; TJT 2014-05-07 Trying to fit scopals back into new hierarchy.
+; Use with caution!
+
+basic-scopal-mod-adj-lex := basic-adjective-lex & scopal-mod-lex.
+
+;;; Adpositions
 
 basic-adposition-lex := single-rel-lex-item & basic-icons-lex-item &
   [ SYNSEM [ LOCAL [ CAT [ HEAD adp,
@@ -3041,11 +3071,16 @@ basic-scopal-mod-adposition-lex := basic-mod-adp-lex & scopal-mod-lex.
 basic-int-mod-adposition-lex := basic-mod-adp-lex & intersective-mod-lex.
 basic-nomod-adposition-lex := basic-adposition-lex & no-mod-lex & norm-hook-lex-item.
 
-basic-adverb-lex := raise-index-mod-lex-item & single-rel-lex-item & basic-icons-lex-item &
-  [ SYNSEM [ LOCAL.CAT.HEAD adv,
-	     LKEYS.KEYREL event-relation ]].
+; TJT 2014-04-24 Removing raise-index-mod-lex-item from basic-adverb-lex: replacing with norm-ltop-lex-item. See below for more info.
 
-basic-scopal-adverb-lex := basic-adverb-lex & scopal-mod-lex.
+basic-adverb-lex := single-rel-lex-item & norm-ltop-lex-item &
+  [ SYNSEM [ LOCAL.CAT.HEAD adv,
+	     LKEYS.KEYREL event-relation ] ].
+
+; TJT 2014-09-05 As a scopal modifier, basic-scopal-adverb-lex needs to
+; identify its MOD's INDEX with its own INDEX: adding raise-index-mod-lex-item.
+
+basic-scopal-adverb-lex := basic-adverb-lex & scopal-mod-lex & raise-index-mod-lex-item.
 basic-int-adverb-lex := basic-adverb-lex & intersective-mod-lex.
 
 ; Anticipate subtypes of basic-noun-lex for common nouns,
@@ -3156,10 +3191,18 @@ basic-subord-conjunction-lex := basic-one-arg &
 ;
 ; null-coord-rel: used when a conjunction contributes *no* relation.
 
+; TJT 2014-05-07 Changing to "implicit_coord_rel" and "null_coord_rel" at
+; ACE's suggestion, which claims the unquoted versions are deprecated
+
+;implicit-coord-rel := coordination-relation &
+;  [ PRED 'implicit_coord_rel ].
+;null-coord-rel := coordination-relation &
+;  [ PRED 'null_coord_rel ].
+
 implicit-coord-rel := coordination-relation &
-  [ PRED 'implicit_coord_rel ].
+  [ PRED "implicit_coord_rel" ].
 null-coord-rel := coordination-relation &
-  [ PRED 'null_coord_rel ].
+  [ PRED "null_coord_rel" ].
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Conjunction parts of speech

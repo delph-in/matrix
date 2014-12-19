@@ -1,0 +1,32 @@
+adj n tv n
+det adj n tv n
+adj adj n tv n
+det adj adj n tv n
+n tv adj n
+n tv det adj n
+n tv adj adj n
+n tv det adj adj n
+adj n iv
+det adj n iv
+adj adj n iv
+det adj adj n iv
+n adj tv n
+adj n adj tv n
+n adj adj tv n
+det n adj tv n
+det n adj adj tv n
+det adj n adj tv n
+n adj iv
+adj n adj iv
+n adj adj iv
+det n adj iv
+det n adj adj iv
+det adj n adj iv
+n tv n adj
+n tv det n adj
+n tv adj n adj
+n tv det adj n adj
+n tv n adj adj
+n tv det n adj adj
+*adj det n tv
+*det n tv adj

@@ -7,7 +7,7 @@ import random
 from gmcs.choices import ChoicesFile
 from gmcs.deffile import MatrixDefFile
 
-import cgi
+#import cgi
 
 ### matrix.py
 ### A general-purpose script for running Matrix code.
@@ -194,17 +194,21 @@ def main():
     try:
       lg = gmcs.regression_tests.add_regression_test.add(choices, txtsuite)
       print 'Succeeded copying files for %s.' % lg
-      """ 	
+
+      # TJT 2014-09-14: Fixing this: it was not adding files to subversion
       rpath = os.path.join(os.environ['CUSTOMIZATIONROOT'], 'regression_tests')
+      """
       subprocess.call(['svn', '-q', 'add'] +\
                       [os.path.join(rpath, 'home/gold', lg),
                        os.path.join(rpath, 'skeletons', lg)])
+      """
+      # os.path.join doesn't want paths at the beginning of the list elements
+      # http://stackoverflow.com/questions/1945920/os-path-join-python
       subprocess.call(['svn', '-q', 'add'] +\
-                      [os.path.join(rpath, 'home/gold', lg, '/[a-z]*'),
-                       os.path.join(rpath, 'skeletons', lg, '/[a-z]*'),
+                      [os.path.join(rpath, 'home/gold', lg),
+                       os.path.join(rpath, 'skeletons', lg),
                        os.path.join(rpath, 'choices', lg),
                        os.path.join(rpath, 'txt-suites', lg)])
-      """
       print 'Succeeded adding files to Subversion. Be sure to commit!'
     except ValueError, er:
       print "Error adding regression test."
@@ -691,10 +695,10 @@ def run_unit_tests():
   import gmcs.linglib.tests.testToolboxImport
   runner.run(loader.loadTestsFromModule(gmcs.linglib.tests.testToolboxImport))
 
-  #print_line()
-  #print 'Linglib/Morphotactics tests:'
-  #import gmcs.linglib.tests.testMorphotactics
-  #runner.run(loader.loadTestsFromModule(gmcs.linglib.tests.testMorphotactics))
+#   print_line()
+#   print 'Linglib/Morphotactics tests:'
+#   import gmcs.linglib.tests.testMorphotactics
+#   runner.run(loader.loadTestsFromModule(gmcs.linglib.tests.testMorphotactics))
 
   print_line()
 

@@ -1,0 +1,126 @@
+n-m adj-m tv n-m
+det n-m adj-m tv n-m
+n-m adj-m adj-m tv n-m
+det n-m adj-m adj-m tv n-m
+n-m tv n-m adj-m
+n-m tv det n-m adj-m
+n-m tv n-m adj-m adj-m
+n-m tv det n-m adj-m adj-m
+n-m adj-m iv
+det n-m adj-m iv
+n-m adj-m adj-m iv
+det n-m adj-m adj-m iv
+n-f adj-f tv n-f
+det n-f adj-f tv n-f
+n-f adj-f adj-f tv n-f
+det n-f adj-f adj-f tv n-f
+n-f tv n-f adj-f
+n-f tv det n-f adj-f
+n-f tv n-f adj-f adj-f
+n-f tv det n-f adj-f adj-f
+n-f adj-f iv
+det n-f adj-f iv
+n-f adj-f adj-f iv
+det n-f adj-f adj-f iv
+*adj-m n-m tv n-m
+*det adj-m n-m tv n-m
+*adj-m adj-m n-m tv n-m
+*n-m tv adj-m n-m
+*n-m tv det adj-m n-m
+*n-m tv adj-m adj-m n-m
+*n-m tv det adj-m adj-m n-m
+*adj-m n-m iv
+*det adj-m n-m iv
+*adj-m adj-m n-m iv
+*det adj-m adj-m n-m iv
+*adj-f n-f tv n-m
+*det adj-f n-f tv n-m
+*adj-f adj-f n-f tv n-m
+*det adj-f adj-f n-f tv n-m
+*n-m tv adj-f n-f
+*n-m tv det adj-f n-f
+*n-m tv adj-f adj-f n-f
+*n-m tv det adj-f adj-f n-f
+*adj-f n-f iv
+*det adj-f n-f iv
+*adj-f adj-f n-f iv
+*det adj-f adj-f n-f iv
+*adj n-m tv n-m
+*det adj n-m tv n-m
+*adj adj n-m tv n-m
+*det adj adj n-m tv n-m
+*n-m tv adj n-m
+*n-m tv det adj n-m
+*n-m tv adj adj n-m
+*n-m tv det adj adj n-m
+*adj n-m iv
+*det adj n-m iv
+*adj adj n-m iv
+*det adj adj n-m iv
+*adj-m n-f tv n-m
+*det adj-m n-f tv n-m
+*adj-m adj-m n-f tv n-m
+*det adj-m adj-m n-f tv n-m
+*n-m tv adj-m n-f
+*n-m tv det adj-m n-f
+*n-m tv adj-m adj-m n-f
+*n-m tv det adj-m adj-m n-f
+*adj-m n-f iv
+*det adj-m n-f iv
+*adj-m adj-m n-f iv
+*det adj-m adj-m n-f iv
+*adj-m adj-f n-f tv n-m
+*det adj-m adj-f n-f tv n-m
+*n-m tv adj-m adj-f n-f
+*n-m tv det adj-m adj-f n-f
+*adj-m adj-f n-f iv
+*det adj-m adj-f n-f iv
+*adj-f adj-m n-f tv n-m
+*det adj-f adj-m n-f tv n-m
+*n-m tv adj-f adj-m n-f
+*n-m tv det adj-f adj-m n-f
+*adj-f adj-m n-f iv
+*det adj-f adj-m n-f iv
+*n-m adj tv n-m
+*adj n-m adj tv n-m
+*n-m adj adj tv n-m
+*det n-m adj tv n-m
+*det n-m adj adj tv n-m
+*det adj n-m adj tv n-m
+*n-m adj iv
+*adj n-m adj iv
+*n-m adj adj iv
+*det n-m adj iv
+*det n-m adj adj iv
+*det adj n-m adj iv
+*n-m tv n-m adj
+*n-m tv det n-m adj
+*n-m tv adj n-m adj
+*n-m tv det adj n-m adj
+*n-m tv n-m adj adj
+*n-m tv det n-m adj adj
+*adj-m n-m adj tv n-m
+*det adj-m n-m adj-m tv n-m
+*adj-m n-m adj-m iv
+*det adj-m n-m adj-m iv
+*n-m tv adj n-m adj-m
+*n-m tv det adj-m n-m adj-m
+*det adj-m adj-m n-m tv n-m
+*n-m adj-f tv n-m
+*adj-f n-m adj tv n-m
+*n-m adj-f adj-f tv n-m
+*det n-m adj-f tv n-m
+*det n-m adj-f adj-f tv n-m
+*det adj-f n-m adj-f tv n-m
+*n-m adj-f iv
+*adj-f n-m adj-f iv
+*n-m adj-f adj-f iv
+*det n-m adj-f iv
+*det n-m adj-f adj-f iv
+*det adj-f n-m adj-f iv
+*n-m tv n-m adj-f
+*n-m tv det n-m adj-f
+*n-m tv adj-f n-m adj-f
+*n-m tv det adj-f n-m adj-f
+*n-m tv n-m adj-f adj-f
+*n-m tv det n-m adj-f adj-f

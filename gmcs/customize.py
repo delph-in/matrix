@@ -8,20 +8,20 @@ import os
 import datetime
 import shutil
 import tdl
-import tarfile
-import gzip
-import zipfile
+#import tarfile
+#import gzip
+#import zipfile
 import sys
-import re
+#import re
 import codecs
 from subprocess import call
 
 from gmcs.choices import ChoicesFile
-from gmcs.utils import TDLencode
-from gmcs.utils import get_name
+#from gmcs.utils import TDLencode
+#from gmcs.utils import get_name
 from gmcs.utils import format_comment_block
 
-from gmcs.lib import TDLHierarchy
+#from gmcs.lib import TDLHierarchy
 
 from gmcs.linglib import morphotactics
 from gmcs.linglib import information_structure
@@ -314,8 +314,22 @@ def customize_roots():
   # and question particles, we're going to need to make sure that FORM is
   # compatible with comp.
 
-  if ch.get('q-part'):
+  # TJT 2014-08-16 set root condition to the proper head including
+  # adjective if language contains stative predicate adjectives
+  has_stative_predicate_adjectives = False
+  for (key, value) in ch.walk():
+      if "predcop" in key.lower():
+          if ch.get(key).lower() in ("imp", "opt"):
+              has_stative_predicate_adjectives = True
+              break
+  has_question_particles = bool(ch.get('q-part'))
+
+  if has_question_particles and has_stative_predicate_adjectives:
+    roots.add('root := [ SYNSEM.LOCAL.CAT.HEAD +vjc ].')
+  elif has_question_particles:
     roots.add('root := [ SYNSEM.LOCAL.CAT.HEAD +vc ].')
+  elif has_stative_predicate_adjectives:
+    roots.add('root := [ SYNSEM.LOCAL.CAT.HEAD +vj ].')
   else:
     roots.add('root := [ SYNSEM.LOCAL.CAT.HEAD verb ].')
 
@@ -456,7 +470,7 @@ def customize_matrix(path, arch_type, destination=None):
 
   # Create TDL object for each output file
   global mylang, rules, irules, lrules, lexicon, roots
-  mylang =  tdl.TDLfile(os.path.join(grammar_path, language.lower() + '.tdl'))
+  mylang = tdl.TDLfile(os.path.join(grammar_path, language.lower() + '.tdl'))
   mylang.define_sections([['addenda', 'Matrix Type Addenda', True, False],
                           ['features', 'Features', True, False],
                           ['dirinv', 'Direct-Inverse', True, False],
@@ -464,6 +478,8 @@ def customize_matrix(path, arch_type, destination=None):
                           ['nounlex', 'Nouns', False, False],
                           ['verblex', 'Verbs', False, False],
                           ['auxlex', 'Auxiliaries', False, False],
+                          ['coplex', 'Copulas', False, False],
+                          ['adjlex', 'Adjectives', False, False],
                           ['otherlex', 'Others', False, False],
                           ['lexrules', 'Lexical Rules', True, False],
                           ['phrases', 'Phrasal Types', True, False],
@@ -500,8 +516,8 @@ def customize_matrix(path, arch_type, destination=None):
     ';;;\n' + format_comment_block(ch.get('comment')) + '\n' +
     ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;')
 
-  # BUT, put the date/time of the Matrix version in Version.lsp (along
-  # with the name of the language.
+  # Put the date/time of the Matrix version in Version.lsp (along
+  # with the name of the language).
   global version_lsp
   version_lsp = tdl.TDLfile(os.path.join(grammar_path, 'Version.lsp'))
 
@@ -540,7 +556,7 @@ def customize_matrix(path, arch_type, destination=None):
   # The following might modify hierarchies in some way, so it's best
   # to customize those components and only have them contribute their
   # information to lexical rules when we customize inflection.
-  lexical_items.customize_lexicon(mylang, ch, lexicon, trigger, hierarchies)
+  lexical_items.customize_lexicon(mylang, ch, lexicon, trigger, hierarchies, rules)
   information_structure.customize_information_structure(mylang, ch, rules, irules, lexicon, trigger, hierarchies)
   argument_optionality.customize_arg_op(mylang, ch, rules, hierarchies)
   direct_inverse.customize_direct_inverse(ch, mylang, hierarchies)

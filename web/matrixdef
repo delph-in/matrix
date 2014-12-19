@@ -283,7 +283,7 @@ Label "<p>Blake (2001) defines <span class=\"dfn\">case</span> as
 they bear to their heads.&quot; For example, case commonly marks the
 subject or the direct object of a verb. The marking might consist of
 affixation or some other morpholological process that marks words, or
-it might be a adposition that marks whole noun phrases.</p>"
+it might be an adposition that marks whole noun phrases.</p>"
 
 Label "<p>This questionnaire allows you to describe <span
 class=\"dfn\">core case marking</span> in your language; that is, the
@@ -296,102 +296,112 @@ argument (or subject) of intransitive verbs.</p>"
 
 Radio case-marking "Core case marking" "<p>What type of core case marking does your language exhibit?</p>" ""
 . none "None" "<p style=\"margin-left:20px;text-indent:-20px\">" "<b>None</b><br>(Verbal argument roles are determined only by word order, by intonation, or pragmatically.)</p>"
-. nom-acc "Nominative-accusative" "<p style=\"margin-left:20px;text-indent:-20px\">" "<b>Nominative-accusative</b><br>"
+. nom-acc "Nominative-accusative" "<p style=\"margin-left:20px;margin-bottom:0px;text-indent:-20px\">" "<b>Nominative-accusative</b><br></p>"
 
+Label "<p style=\"margin-left:20px;margin-top:0px\">"
 Text nom-acc-nom-case-name "Nominative case name" "S and A take a case named the " " (e.g. nominative, subjective)<br>" 20
-
 Text nom-acc-acc-case-name "Accusative case name" "O takes a case named the " " (e.g. accusative, objective)<br>" 20
+Label "</p>"
+
 
 Radio case-marking "Core case marking" "" ""
-. erg-abs "Ergative-absolutive" "<p style=\"margin-left:20px;text-indent:-20px\">" "<b>Ergative-absolutive</b><br>"
+. erg-abs "Ergative-absolutive" "<p style=\"margin-left:20px;margin-bottom:0px;text-indent:-20px\">" "<b>Ergative-absolutive</b><br></p>"
 
+Label "<p style=\"margin-left:20px;margin-top:0px\">"
 Text erg-abs-erg-case-name "Ergative case name" "A takes a case named the " " (e.g. ergative, relative, narrative)<br>" 20
-
 Text erg-abs-abs-case-name "Absolutive case name" "S and O take a case named the " " (e.g. absolutive, nominative)<br>" 20
+Label "</p>"
+
 
 Radio case-marking "Core case marking" "" ""
-. tripartite "Tripartite" "<p style=\"margin-left:20px;text-indent:-20px\">" "<b>Tripartite</b><br>"
+. tripartite "Tripartite" "<p style=\"margin-left:20px;margin-bottom:0px;text-indent:-20px\">" "<b>Tripartite</b><br></p>"
 
+Label "<p style=\"margin-left:20px;margin-top:0px\">"
 Text tripartite-s-case-name "S case name" "S takes a case named the " " (e.g. nominative, subjective)<br>" 20
-
 Text tripartite-a-case-name "A case name" "A takes a case named the " " (e.g. ergative, agentive)<br>" 20
-
 Text tripartite-o-case-name "O case name" "O takes a case named the " " (e.g. absolutive, patientive)<br>" 20
+Label "</p>"
+
 
 Radio case-marking "Core case marking" "" ""
-. split-s "Split-S" "<p style=\"margin-left:20px;text-indent:-20px\">" "<b>Split-S</b><br>"
+. split-s "Split-S" "<p style=\"margin-left:20px;margin-bottom:0px;text-indent:-20px\">" "<b>Split-S</b><br></p>"
 
-Label "(The S argument of some intransitive verbs is marked by the
+Label "<p style=\"margin: 0px 0px 0px 20px\">(The S argument of some intransitive verbs is marked by the
 same case as the agent of transitives, while for other verbs the S
-argument is marked by the same case as the patient.)<br>"
+argument is marked by the same case as the patient.)</p>"
 
+Label "<p style=\"margin-left:20px;margin-top:0px\">"
 Text split-s-a-case-name "A case name" "A takes a case named the " " (e.g. ergative, agentive)<br>" 20
-
 Text split-s-o-case-name "O case name" "O takes a case named the " " (e.g. absolutive, patientive)<br>" 20
+Label "</p>"
+
 
 Radio case-marking "Core case marking" "" ""
-. fluid-s "Fluid-S" "<p style=\"margin-left:20px;text-indent:-20px\">" "<b>Fluid-S</b><br>"
+. fluid-s "Fluid-S" "<p style=\"margin-left:20px;margin-bottom:0px;text-indent:-20px\">" "<b>Fluid-S</b><br></p>"
 
-Label "(The S argument of some intransitive verbs is marked by the
+Label "<p style=\"margin: 0px 0px 0px 20px\">(The S argument of some intransitive verbs is marked by the
 same case as the agent of transitives, while for other verbs the S
 argument is marked by the same case as the patient, and for still
 other verbs the S argument can be marked by either case, depending on
 pragmatic factors (e.g. whether the S is perceived as being in control
-of the action.)<br>"
+of the action.)</p>"
 
+Label "<p style=\"margin-left:20px;margin-top:0px\">"
 Text fluid-s-a-case-name "A case name" "A takes a case named the " " (e.g. ergative, agentive)<br>" 20
-
 Text fluid-s-o-case-name "O case name" "O takes a case named the " " (e.g. absolutive, patientive)<br>" 20
+Label "</p>"
+
 
 Radio case-marking "Core case marking" "" ""
-. split-n "Split N" "<p style=\"margin-left:20px;text-indent:-20px\">" "<b>Split conditioned on features of the noun phrase arguments</b><br>"
+. split-n "Split N" "<p style=\"margin-left:20px;margin-bottom:0px;text-indent:-20px\">" "<b>Split conditioned on features of the noun phrase arguments</b><br></p>"
 
-Label "(Some classes of noun phrases (e.g. pronouns) show a
+Label "<p style=\"margin: 0px 0px 0px 20px\">(Some classes of noun phrases (e.g. pronouns) show a
 nominative-accusative pattern, while others (e.g. common nouns) show
 an ergative-absolutive pattern.  You will have an opportunity to
-define these classes on the Lexicon page.)<br>"
+define these classes on the Lexicon page.)</p>"
 
+Label "<p style=\"margin-left:20px;margin-top:0px\">"
 Text split-n-nom-case-name "Nominative case name" "S and A take a case named the " " (e.g. nominative, subjective)<br>" 20
-
 Text split-n-acc-case-name "Accusative case name" "O takes a case named the " " (e.g. accusative, objective)<br>" 20
-
 Text split-n-erg-case-name "Ergative case name" "A takes a case named the " " (e.g. ergative, relative, narrative)<br>" 20
-
 Text split-n-abs-case-name "Absolutive case name" "S and O take a case named the " " (e.g. absolutive, nominative)<br>" 20
+Label "</p>"
+
 
 Radio case-marking "Core case marking" "" ""
-. split-v "Split V" "<p style=\"margin-left:20px;text-indent:-20px\">" "<b>Split conditioned on features of the verb</b><br>"
+. split-v "Split V" "<p style=\"margin-left:20px;margin-bottom:0px;text-indent:-20px\">" "<b>Split conditioned on features of the verb</b><br></p>"
 
-Label "(Depending on some feature of the verb (e.g. tense or aspect),
+Label "<p style=\"margin: 0px 0px 0px 20px\">(Depending on some feature of the verb (e.g. tense or aspect),
 the core arguments are sometimes marked in a nominative-accusative
 pattern and other times in an ergative-absolutive pattern.  You will
 have an opportunity to define these features on the Lexicon
-page.)<br>"
+page.)</p>"
 
+Label "<p style=\"margin-left:20px;margin-top:0px\">"
 Text split-v-nom-case-name "Nominative case name" "S and A take a case named the " " (e.g. nominative, subjective)<br>" 20
-
 Text split-v-acc-case-name "Accusative case name" "O takes a case named the " " (e.g. accusative, objective)<br>" 20
-
 Text split-v-erg-case-name "Ergative case name" "A takes a case named the " " (e.g. ergative, relative, narrative)<br>" 20
-
 Text split-v-abs-case-name "Absolutive case name" "S and O take a case named the " " (e.g. absolutive, nominative)<br>" 20
+Label "</p>"
+
 
 Radio case-marking "Core case marking" "" ""
-. focus "Focus" "<p style=\"margin-left:20px;text-indent:-20px\">" "<b>Focus-case</b><br>"
+. focus "Focus" "<p style=\"margin-left:20px;margin-bottom:0px;text-indent:-20px\">" "<b>Focus-case</b><br></p>"
 
-Label "(A number of Austronesian languages, including several
+Label "<p style=\"margin: 0px 0px 0px 20px\">(A number of Austronesian languages, including several
 Philippine languages, have a system where A and O are marked by cases.
 An additional case, sometimes called the <span
 class=\"dfn\">focus</span>, is mandatory in every clause and has its
 grammatical role assigned by the morphology of the verb.  You will
 have an opportunity to define this morphology on the Lexicon
-page.)<br>"
+page.)</p>"
 
+Label "<p style=\"margin-left:20px;margin-top:0px\">"
 Text focus-focus-case-name "Focus case name" "The focus case is named the " "<br>" 20
-
 Text focus-a-case-name "A case name" "A takes a case named the " " (e.g. ergative, relative, narrative)<br>" 20
-
 Text focus-o-case-name "O case name" "O takes a case named the " " (e.g. accusative, objective)<br>" 20
+Label "</p>"
+
 
 Label "<p><b>Additional Cases</b></p><p>If your language has any
 additional cases not covered above that occur in simple intransitive
@@ -755,7 +765,7 @@ BeginIter feature{i} "a Feature" 1
   Radio new "Value {i} type" "" ""
   . no "existing" "" " use an existing value type: " "remove_element_all('feature{i}', 'value');" 
 
-  Select existing "existing" "" "<br>" "remove_element_all('feature{i}', 'value');check_radio_button('feature{i}_new', 'no');"
+  Select existing "existing" "" "<br>" "remove_element_all('feature{i}', 'value'); check_radio_button('feature{i}_new', 'no');"
   fillregex p=(existing_value_type[0-9]+_name) n=1  
   fillnames2 c=both 
 
@@ -846,7 +856,7 @@ Check neg-aux "Negation by auxiliary verb" "<p>" "Negative auxiliary verb: Check
 
 Text neg-aux-index "index for neg aux" "<span style='display:none'>" "</span>" 1
 
-Check adv-neg "Adverbial negation" "<p>" "An adverb which is a modifier of:<br />"
+Check adv-neg "Adverbial negation" "" "An adverb which is a modifier of:<br />"
 
 Radio neg-mod "Negative adverb modifies" "" ""
 . s "S" "" "S "
@@ -858,9 +868,9 @@ Radio neg-order "Negative adverb order" "and appears " ""
 . after "after" "" "after "
 . either "either" "" "on either side of the category it modifies.<br>"
 
-Text neg-adv-orth "Negative adverb spelling" "...and which is spelled: " "</p>" 20
+Text neg-adv-orth "Negative adverb spelling" "...and which is spelled: " "" 20
 
-Check comp-neg "Negation by selected complement" "<p>" "A adverb like particle which is a selected complement.  This option will create a non-inflecting lexical rule that maps plain Vs to Vs which select for negation in addition to their regular COMPS.</p>" "neg_comp()"
+Check comp-neg "Negation by selected complement" "<p>" "An adverb like particle which is a selected complement.  This option will create a non-inflecting lexical rule that maps plain Vs to Vs which select for negation in addition to their regular COMPS.</p>" "neg_comp()"
 
 Label "<div style='margin-left:10px'>"
 Radio comp-neg-head "neg selected by" "Is neg selected by" "<br />"
@@ -1077,31 +1087,30 @@ grammar produced will not support coordination.</p>"
 
 BeginIter cs{i} "a Coordination Strategy" 1
 
-Label "<p>Coordination Strategy {i}:<br>&nbsp;&nbsp;&nbsp;&nbsp;in
-which"
+  Label "<p>Coordination Strategy {i}:<br>&nbsp;&nbsp;&nbsp;&nbsp;in which"
 
-Check n "Coordination Strategy {i} coordinates Ns" "" "nouns "
-Check np "Coordination Strategy {i} coordinates NPs" "" "NPs "
-Check vp "Coordination Strategy {i} coordinates VPs" "" "VPs "
-Check s "Coordination Strategy {i} coordinates Ss" "" "sentences<br>"
+  Check n "Coordination Strategy {i} coordinates Ns" "" "nouns "
+  Check np "Coordination Strategy {i} coordinates NPs" "" "NPs "
+  Check vp "Coordination Strategy {i} coordinates VPs" "" "VPs "
+  Check s "Coordination Strategy {i} coordinates Ss" "" "sentences<br>"
 
-Radio pat "Coordination Strategy {i} pattern" "&nbsp;&nbsp;&nbsp;&nbsp;are marked in a " ""
-. mono "Monosyndeton" "" "monosyndeton "
-. poly "Polysyndeton" "" "polysyndeton "
-. omni "Omnisyndeton" "" "omnisyndeton "
-. a "Asyndeton" "" "asyndeton &nbsp; pattern<br>"
+  Radio pat "Coordination Strategy {i} pattern" "&nbsp;&nbsp;&nbsp;&nbsp;are marked in a " ""
+  . mono "Monosyndeton" "" "monosyndeton "
+  . poly "Polysyndeton" "" "polysyndeton "
+  . omni "Omnisyndeton" "" "omnisyndeton "
+  . a "Asyndeton" "" "asyndeton &nbsp; pattern<br>"
 
-Radio mark "Coordination Strategy {i} mark" "&nbsp;&nbsp;&nbsp;&nbsp;by a " ""
-. word "Word" "" "word "
-. affix "Affix" "" "affix "
+  Radio mark "Coordination Strategy {i} mark" "&nbsp;&nbsp;&nbsp;&nbsp;by a " ""
+  . word "Word" "" "word "
+  . affix "Affix" "" "affix spelled "
 
-Text orth "Coordination Strategy {i} spelling" "spelled " "" 10
+  Text orth "Coordination Strategy {i} spelling" "" "" 10
 
-Radio order "Coordination Strategy {i} order" "that comes " ""
-. before "Before" "" "before "
-. after "After" "" "after the coordinand"
+  Radio order "Coordination Strategy {i} order" "that comes " ""
+  . before "Before" "" "before "
+  . after "After" "" "after the coordinand"
 
-Label "</p>"
+  Label "</p>"
 
 EndIter cs
 
@@ -1418,6 +1427,7 @@ Section lexicon "Lexicon"
 Cache nounlrs noun-pc[0-9]+(_lrt[0-9]+)?$ name
 Cache verbpcs verb-pc[0-9]+$ name
 Cache verblrs verb-pc[0-9]+(_lrt[0-9]+)?$ name
+Cache adjlrs adj-pc[0-9]+(_lrt[0-9]+)?$ name
 Cache detlrs det-pc[0-9]+(_lrt[0-9]+)?$ name
 
 Label "<p>On this page you will define <span class=\"dfn\">lexical
@@ -1441,7 +1451,9 @@ Label "<a id=\"toggle_all_lex_button\" onclick=\"toggle_all_display_lex(1)\">&#9
 Separator
 
 Label "<h3 style='display:inline'>Noun Types</h3>"
-Label "<span>| <a href='#' onclick=\"draw_hierarchy('noun')\">visualize noun hierarchy</a> (experimental)</span><br />"
+Label "<span>| <a href='javascript:void(0);' onclick=\"draw_hierarchy('noun')\">visualize noun hierarchy</a> (experimental)</span><br />"
+
+Check adj_incorp "adj_incorp" "<p>Some nouns in this language take adjectives as incorporated affixes: " "</p>"
 
 BeginIter noun{i} "a Noun Type" 1 1
 
@@ -1451,7 +1463,7 @@ BeginIter noun{i} "a Noun Type" 1 1
 
   Text name "Noun {i} name" "Type name: " "<br /><br />" 20
 
-  MultiSelect supertypes "Noun type {i}" "Supertypes: " "<br /><br />"
+  MultiSelect supertypes "Noun type {i}" "Supertypes: " "<br />"
   fillregex p=noun(?!{i}_)[0-9]+_name
 
   Label "Features:"
@@ -1466,10 +1478,10 @@ BeginIter noun{i} "a Noun Type" 1 1
 
   EndIter feat
 
-  Radio det "Noun {i} determiner" "<p>For nouns of this type, a determiner is " "</p>"
-  . obl "Obligatory" "" "obligatory "
-  . opt "Optional" "" "optional "
-  . imp "Impossible" "" "impossible "
+  Radio det "Noun {i} determiner" "<p>For nouns of this type, a determiner is: " "</p>"
+  . obl "Obligatory" "" " obligatory"
+  . opt "Optional" "" " optional"
+  . imp "Impossible" "" " impossible"
 
   Label "Stems:"
 
@@ -1504,7 +1516,7 @@ EndIter noun
 Separator
 
 Label "<h3 style='display:inline'>Verb Types</h3>"
-Label "<span>| <a href='#' onclick=\"draw_hierarchy('verb')\">visualize verb hierarchy</a> (experimental)</span><br />"
+Label "<span>| <a href='javascript:void(0);' onclick=\"draw_hierarchy('verb')\">visualize verb hierarchy</a> (experimental)</span><br />"
 
 BeginIter verb{i} "a Verb Type" 1 2
 
@@ -1532,7 +1544,7 @@ BeginIter verb{i} "a Verb Type" 1 2
     . subj "The subject" "the subject NP"
     . obj "The object" "the object NP"
     . higher "Higher-ranked" "the higher-ranked NP"
-    . lower "Higher-ranked" "the lower-ranked NP"
+    . lower "Lower-ranked" "the lower-ranked NP"
 
   EndIter feat
 
@@ -1583,8 +1595,101 @@ EndIter verb
 
 Separator
 
+Label "<h3 style='display:inline'>Adjective Types</h3>"
+Label "<span>| <a href='javascript:void(0);' onclick=\"draw_hierarchy('adj')\">visualize adjective hierarchy</a> (experimental)</span><br />"
+
+BeginIter adj{i} "an Adjective Type" 1
+
+  Label "<b>Adjective type {i}</b>:"
+
+  Label "<div style=\"padding-left: 16px\">"
+
+  Text name "Adjective {i} name" "Type name: " "<br /><br />" 20
+
+  MultiSelect supertypes "Adjective type {i}" "Supertypes: " "<br />"
+  fillregex p=adj(?!{i})[0-9]+_name
+
+  Label "<p>Adjectives in constructions are described as <span class=\"dfn\">attributive</span>:
+  those that modify nouns (e.g. \"the <b>big</b> dog\"); <br>
+  and <span class=\"dfn\">predicative</span>, those that predicate their subject (e.g. \"the dog is <b>big</b>\").
+  <br>Many adjectives in many languages can be both predicative or attributive.</p>"
+
+  Radio mod "Adjective {i} structure" "<p>This type of adjective is " "</p>"
+  . attr "attributive" "" "attributive "
+  . pred "predicative" "" "predicative "
+  . both "both" "" "both "
+  . none "unspecified" "" "unspecified"
+
+  Label "<p>Features:<br>  Specify agreement features of the adjective by selecting one of the argument choices;<br>  specify inflection for predicative adjectives by selecting a feature to be specified on \"the adjective\".<br></p>"
+
+  BeginIter feat{j} "a Feature"
+
+    Select name "Adjective {i} feature {j} name" "Name: " " "
+    fillnames c=both
+
+    MultiSelect value "Adjective {i} feature {j} value" "Value: " ""
+    fillvalues p=adj{i}_feat{j}_name
+
+    Select head "Adjective {i} feature {j} head" "Specified on: " "" "" "toggle_element.call(this, 'adj{i}_adj_pc_note', 'on', ['subj', 'mod']); check_radio_button.call(this, 'adj{i}_mod', 'last', ['subj', 'mod']);"
+    . adj "The adjective" "the adjective"
+    . subj "The subject" "the subject NP"
+    . mod "The modified noun" "the modified NP"
+    . xarg "Both positions" "both"
+
+  EndIter feat
+
+  Label "<p id='adj{i}_adj_pc_note' style='display:none;'>  NOTE: Specifying agreement features on \"the subject\" or \"the modified noun\" will create a new<br>  position class on the Morphology page with specified features on \"both positions\" and without an affix<br>  to facilitate this functionality.<br>  The type of this adjective has also been changed to 'unspecified' to support this. Specify adjective types<br>  on the Morphology page when using this feature.<br></p>"
+
+  Radio modpos "Adjective {i} attributive structure" "<p>This type of adjective behaving
+  attributively modifies items immediately <br>" "</p>"
+  . after "After-modifying" "" " after the adjective <br>"
+  . before "Before-modifying" "" " before the adjective <br>"
+  . either "Either-modifying" "" " either position <br>"
+  . other "Other-mod" "" " some other position: this option is not currently supported" "" x
+
+  Check modunique "Adjective {i} unique modification" "" " This type of adjective behaving
+  attributively must be the only modifier of its modificand"
+
+  Radio predcop "Adjective {i} predicative structure" "<p>Adjectives of this type behaving predicatively appear as the complement of a copula:<br>" "</p>"
+  . obl "Obligatorily" "" " obligatorily<br>"
+  . opt "Optionally" "" " optionally<br>" "toggle_element.call(this, 'adj{i}_opt_note', 'on')"
+  . imp "Impossibly" "" " impossibly<br>"
+
+  Label "<p id='adj{i}_opt_note' style='display:none;'>  NOTE: Specifying adjectives as optionally appearing as a copula complement will create a<br>  new position class on the Morphology page with a \"copula complement\" lexical rule and <br>\"stative predicate\" lexical rule to facilitate this functionality.<br></p>"
+
+  Label "Stems:"
+  BeginIter stem{j} "a Stem" 0 1
+
+    Text orth "Adjective {i} stem {j} spelling" "Spelling: " "" 30 "fill_pred('adj{i}_stem{j}', 'a')"
+
+    Text pred "Adjective {i} stem {j} predicate" " Predicate: " "" 30
+
+  EndIter stem
+
+  Label "<p>Morphotactic Constraints:</p>"
+
+  BeginIter require{j} "a Require constraint"
+
+    MultiSelect others "Adjective {i} requires" "Adjective {i} requires one of the following position classes: " ""
+    fillcache c=adjlrs
+
+  EndIter require
+
+  BeginIter forbid{j} "a Forbid constraint"
+
+    Select others "Adjective {i} forbids" "Adjective {i} forbids the following position class: " ""
+    fillcache c=adjlrs
+
+  EndIter forbid
+
+  Label "</div>"
+
+EndIter adj
+
+Separator
+
 Label "<h3>"
-Label auxlabel "Auxiliary Verb Types</h3>"
+Label auxlabel "Auxiliary Verb and Copula Types</h3>"
 
   Label "<p>Auxiliaries may contribute an independent predicate, e.g.,
   English modal <i>can</i>. If you define a type that contributes a
@@ -1613,6 +1718,8 @@ BeginIter aux{i} "an Auxiliary Type" 1
   . no-pred "No predicate" "" "No predicate.<br>"
   . add-pred "Predicate" "" "An independent predicate."
 
+  Label "</div>"
+
   Label "<br>Auxiliary features:"
 
   BeginIter feat{j} "an auxiliary feature"
@@ -1631,7 +1738,8 @@ BeginIter aux{i} "an Auxiliary Type" 1
      . lower "Lower-ranked" "the lower-ranked NP"
 
   EndIter feat
-  Label "</div>"
+
+  Label "<br><br>"
 
   Radio subj "Aux {i} subject" "If this auxiliary type takes a VP or V complement, select the subject type:<br>" ""
   . np "Noun phrase" "" "noun phrase without case restrictions <br>"
@@ -1686,6 +1794,76 @@ BeginIter aux{i} "an Auxiliary Type" 1
   Label "</div>"
 
 EndIter aux
+
+Label "<p>Define a copula to introduce complements.</p>"
+
+Label "<span><a href='javascript:void(0);' onclick=\"draw_hierarchy('cop')\">visualize copula hierarchy</a> (experimental)</span><br /><br />"
+
+BeginIter cop{i} "a Copula Type" 1
+
+  Label "<b>Copula type {i}</b>:"
+
+  Label "<div style=\"padding-left: 16px\">"
+
+  Text name "Cop {i} type name" "Type name: " "<br>" 30
+  
+  Label "<br />"
+  
+  MultiSelect supertypes "Copula type {i}" "Supertypes: " "<br />"
+  fillregex p=cop(?!{i})[0-9]+_name
+  
+  Label "<br />Complement Type: What kind of complements does this copula allow?<br />"
+
+  MultiSelect comptype "Cop {i} comptype" "Type: " ""
+  fillvalues p=cop{i}_feat{j}_name
+  . np "NPs" "NPs" "" x
+  . pp "PPs" "PPs" "" x
+  . ap  "APs" "APs"
+  
+  Label "<br /><br />Copula features:"
+
+  BeginIter feat{j} "a copula feature"
+
+     Select name "Cop {i} feature {j} name" "Name: " ""
+     fillnames c=both
+
+     MultiSelect value "Cop {i} feature {j} value" "Value: " ""
+     fillvalues p=cop{i}_feat{j}_name
+
+     Select head "Cop {i} feature {j} head" "Specified on: " ""
+     . cop "The copula" "the copula"
+     . subj "The subject" "the subject NP"
+     . comp  "The complement" "the complement"
+
+  EndIter feat
+
+  Label "<br><br>Stems:"
+
+  BeginIter stem{j} "a Stem" 0 1
+
+    Text orth "Cop {i} stem {j} spelling" "Spelling: " "" 30 "aux_fill_pred('cop{i}', 'stem{j}', 'v')"
+
+  EndIter stem
+
+  Label "<p>Morphotactic Constraints:</p>"
+
+  BeginIter require{j} "a Require constraint"
+
+    MultiSelect others "Cop {i} requires" "Copula {i} requires one of the following position classes: " ""
+    fillcache c=verblrs
+
+  EndIter require
+
+  BeginIter forbid{j} "a Forbid constraint"
+
+    Select others "Aux {i} forbids" "Copula {i} forbids the following position class: " ""
+    fillcache c=verblrs
+
+  EndIter forbid
+  
+  Label "</div>"
+
+EndIter cop
 
 Separator
 
@@ -1771,6 +1949,8 @@ Cache nouns noun[0-9]+$ name
 Cache verbs verb[0-9]+$ name
 Cache auxes aux[0-9]+$ name
 Cache dets det[0-9]+$ name
+Cache adjs adj[0-9]+$ name
+Cache cops cop[0-9]+$ name
 
 Label "<p>Here you can define inflectional morphology for nouns, verbs, and
 determiners.  To do so, first define one or more inflectional <span
@@ -1787,7 +1967,7 @@ Label "<a id=\"toggle_all_lex_button\" onclick=\"toggle_all_display_lex(1)\">&#9
 
 Label "<h3>Noun Inflection</h3>"
 
-BeginIter noun-pc{i} "a Position Class" 1
+BeginIter noun-pc{i} "a Position Class" 1 0
 
   Text name "Noun Position Class {i} Name" "<b>Noun Position Class {i}</b>:<br/>Position Class Name: " " " 20
 
@@ -1824,7 +2004,7 @@ BeginIter noun-pc{i} "a Position Class" 1
 
   Label "<p>Lexical Rule Types that appear in this Position Class:</p>"
 
-  BeginIter lrt{j} "a Lexical Rule Type" 1 1
+  BeginIter lrt{j} "a Lexical Rule Type" 1 0
 
     Text name "Noun Position Class {i} Lexical Rule Type {j} Name" "<b>Lexical Rule Type {j}</b>:<br/>Name: " "" 20
 
@@ -1836,7 +2016,7 @@ BeginIter noun-pc{i} "a Position Class" 1
     BeginIter feat{k} "a Feature"
 
       Select name "Noun Position Class {i} Lexical Rule Type {j} Feature {k} Name" "Name: " " "
-      fillnames c=noun
+      fillnames c=both
 
       MultiSelect value "Noun Position Class {i} Lexical Rule Type {j} Feature {k} Value" "Value: " ""
       fillvalues p=noun-pc{i}_lrt{j}_feat{k}_name
@@ -1869,13 +2049,71 @@ BeginIter noun-pc{i} "a Position Class" 1
 
       Radio inflecting "Noun Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Has Orthography" "Instance {k}" ""
       . no "No" "" "No affix"
-      . yes "Yes" "" "Affix"
+      . yes "Yes" "" "Affix spelled"
 
-      Text orth "Noun Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Spelling" "spelled" "" 20
+      Text orth "Noun Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Spelling" "" "" 20
 
     EndIter lri
 
   EndIter lrt
+
+  BeginIter is-lrt{j} "an Incorporated Stem Lexical Rule Type" 1 0 "adj_incorp"
+
+    Text name "Noun Position Class {i} Lexical Rule Type {j} Name" "<b>Incorporated Stem Lexical Rule Type {j}</b>:<br/>Name: " "" 20
+
+    MultiSelect supertypes "Noun Position Class {i} Lexical Rule Type {j} Supertype" "<br/>Supertypes: " ""
+    fillregex p=noun-pc{i}_is-lrt[0-9]+_name
+
+    Label "<p>Features:</p>"
+
+    BeginIter feat{k} "a Feature"
+
+      Select name "Noun Position Class {i} Lexical Rule Type {j} Feature {k} Name" "Name: " " "
+      fillnames c=noun
+
+      MultiSelect value "Noun Position Class {i} Lexical Rule Type {j} Feature {k} Value" "Value: " ""
+      fillvalues p=noun-pc{i}_is-lrt{j}_feat{k}_name
+
+      Select head "Noun Position Class {i} Lexical Rule Type {j} Feature {k} Head" "Specified on: " ""
+      . dtr "The noun" "the noun"
+      . adj "The adjective" "the adjective"
+
+    EndIter feat
+
+    Label "<p>Morphotactic Constraints:</p>"
+
+    BeginIter require{k} "a Require constraint"
+
+      MultiSelect others "Noun Position Class {i} Lexical Rule Type {j} Requires" "Lexical Rule Type {j} requires one of the following: " ""
+      fillcache c=nouns
+      fillregex p=noun-pc[0-9]+(_is-lrt[0-9]+)?_name
+      . noun "Any noun" "any noun"
+
+    EndIter require
+
+    BeginIter forbid{k} "a Forbid constraint"
+
+      Select others "Noun Position Class {i} Lexical Rule Type {j} forbids" "Lexical Rule Type {j} forbids the following: " ""
+      fillcache c=nouns
+      fillregex p=noun-pc[0-9]+(_is-lrt[0-9]+)?_name
+      . noun "Any noun" "any noun"
+
+    EndIter forbid
+
+    Label "<p>Lexical Rule Instances:</p>"
+
+    BeginIter lri{k} "a Lexical Rule Instance" 0 1
+
+      Radio inflecting "Noun Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Has Orthography" "Instance {k}<br>" ""
+      . no "No" "" "No affix<br>"
+      . yes "Yes" "" "Affix spelled"
+
+      Text orth "Noun Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Spelling" "" "" 20 "fill_pred('noun-pc{i}_is-lrt{j}_lri{k}', 'a')"
+      Text pred "Noun Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Predicate" "Predicate: " "" 20
+
+    EndIter lri
+
+  EndIter is-lrt
 
 EndIter noun-pc
 
@@ -1954,7 +2192,7 @@ BeginIter verb-pc{i} "a Position Class" 1
       . subj "The subject" "the subject NP"
       . obj "The object" "the object NP"
       . higher "Higher-ranked" "the higher-ranked NP"
-      . lower "Higher-ranked" "the lower-ranked NP"
+      . lower "Lower-ranked" "the lower-ranked NP"
 
     EndIter feat
 
@@ -1992,15 +2230,235 @@ BeginIter verb-pc{i} "a Position Class" 1
 
       Radio inflecting "Verb Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Has Orthography" "Instance {k}" ""
       . no "No" "" "No affix"
-      . yes "Yes" "" "Affix"
+      . yes "Yes" "" "Affix spelled"
 
-      Text orth "Verb Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Spelling" "spelled" "" 20
+      Text orth "Verb Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Spelling" "" "" 20
 
     EndIter lri
 
   EndIter lrt
 
 EndIter verb-pc
+
+Separator
+
+Label "<h3>Adjective Inflection</h3>"
+
+BeginIter adj-pc{i} "a Position Class" 1
+
+  Text name "Adjective Position Class {i} Name" "<b> Adjective Position Class {i}</b>:<br/>Position Class Name: " " " 20
+
+  Check obligatory "Adjective Position Class {i} Obligatory" "<br/>Obligatorily occurs:" ""
+
+  Select order "Adjective Position Class {i} Order" "<br/>Appears as a prefix or suffix:" ""
+  . prefix "Prefix" "prefix"
+  . suffix "Suffix" "suffix"
+
+  MultiSelect inputs "Adjective Position Class {i} Input" "<br/>Possible inputs:" ""
+  fillcache c=adjs
+  fillregex p=adj-pc[0-9]+(_lrt[0-9]+)?_name
+  . adj "Any Adjective" "any adjective"
+
+  Check switching "Adjective Position Class {i} Switching" "<div style=\"display:none;\">" "</div>"
+
+  Label "<p>Morphotactic Constraints:</p>"
+
+  BeginIter require{j} "a Require constraint"
+
+    MultiSelect others "Adjective Position Class {i} Requires" "Adjective Position Class {i} requires one of the following: " ""
+    fillcache c=adjs
+    fillregex p=adj-pc[0-9]+(_lrt[0-9]+)?_name
+    . adj "Any Adjective" "any adjective"
+
+  EndIter require
+
+  BeginIter forbid{j} "a Forbid constraint"
+
+    Select others "Adjective Position Class {i} Forbids" "Adjective Position Class {i} forbids the following: " ""
+    fillcache c=adjs
+    fillregex p=adj-pc[0-9]+(_lrt[0-9]+)?_name
+    . adj "Any Adjective" "any adjective"
+
+  EndIter forbid
+
+  Label "<p>Lexical Rule Types that appear in this Position Class:</p>"
+
+  BeginIter lrt{j} "a Lexical Rule Type" 1 1
+
+    Text name "Adjective Position Class {i} Lexical Rule Type {j} Name" "<b>Lexical Rule Type {j}</b>:<br/>Name: " "" 20
+
+    MultiSelect supertypes "Adjective Position Class {i} Lexical Rule Type {j} Supertype" "<br/>Supertypes: " ""
+    fillregex p=adj-pc{i}_lrt[0-9]+_name
+
+    Label "<p>Features:<br>  Specify agreement features of the adjective by selecting one of the argument choices;<br>  specify inflection for predicative adjectives by selecting a feature to be specified on \"the adjective\".<br></p>"
+
+    BeginIter feat{k} "a Feature"
+
+      Select name "Adjective Position Class {i} Lexical Rule Type {j} Feature {k} Name" "Name: " " "
+      fillnames c=both
+
+      MultiSelect value "Adjective Position Class {i} Lexical Rule Type {j} Feature {k} Value" "Value: " ""
+      fillvalues p=adj-pc{i}_lrt{j}_feat{k}_name
+
+      Select head "Adjective Position Class {i} Lexical Rule Type {j} Feature {k} Head" "Specified on: " "" "" "toggle_element.call(this, 'adj-pc{i}_lrt{j}_adj_pc_note', 'on', ['subj', 'mod'])"
+      . adj "The adjective" "the adjective"
+      . subj "The subject" "the subject NP"
+      . mod "The modified noun" "the modified NP"
+      . xarg "Both positions" "both"
+
+    EndIter feat
+
+    Label "<p id='adj-pc{i}_lrt{j}_adj_pc_note' style='display:none;'>   NOTE: Specifying agreement features on \"the subject\" or \"the modified noun\" will create a new position<br>  class with specified features on \"both positions\" and without an affix to facilitate this functionality. If this<br>  is one of those position classes, make sure the \"specified on\" choice is set to \"both positions\"<br></p>"
+
+    Radio mod "Adjective Position Class {i} Lexical Rule Type {j} structure" "<p>Instances of this Lexical Rule Type can be " "</p>" "adj-pc{i}_switching"
+    . attr "Attributive" "" "attributive "
+    . pred "Predicative" "" "predicative "
+    . both "both" "" "both "
+
+    Radio modpos "Adjective Position Class {i} Lexical Rule Type {j} modification direction" "<p>Instances of this Lexical Rule Type behaving attributively modify nouns directly<br>" "</p>" "adj-pc{i}_switching"
+    . after "After-modifying" "" " after the adjective <br>"
+    . before "Before-modifying" "" " before the adjective <br>"
+    . either "Either-modifying" "" " either position <br>"
+    . other "Other-mod" "" " some other position: this option is not currently supported" "" x
+
+    Check predcop "Adjective Position Class {i} Lexical Rule Type {j} Stative Predicate or Copula Complement" "" " Instances of this Lexical Rule Type behaving predicatively appear as copula complements" "" "adj-pc{i}_switching"
+
+    Label "<p>Morphotactic Constraints:</p>"
+
+    BeginIter require{k} "a Require constraint"
+
+      MultiSelect others "Adjective Position Class {i} Lexical Rule Type {j} Requires" "Lexical Rule Type {j} requires one of the following: " ""
+      fillcache c=adjs
+      fillregex p=adj-pc[0-9]+(_lrt[0-9]+)?_name
+      . adj "Any adjective" "any adjective"
+
+    EndIter require
+
+    BeginIter forbid{k} "a Forbid constraint"
+
+      Select others "Adjective Position Class {i} Lexical Rule Type {j} forbids" "Lexical Rule Type {j} forbids the following: " ""
+      fillcache c=adjs
+      fillregex p=adj-pc[0-9]+(_lrt[0-9]+)?_name
+      . adj "Any adjective" "any adjective"
+
+    EndIter forbid
+
+    Label "<p>Lexical Rule Instances:</p>"
+
+    BeginIter lri{k} "a Lexical Rule Instance" 0 1
+
+      Radio inflecting "Adjective Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Has Orthography" "Instance {k}" ""
+      . no "No" "" "No affix"
+      . yes "Yes" "" "Affix spelled"
+
+      Text orth "Adjective Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Spelling" "" "" 20
+
+    EndIter lri
+
+  EndIter lrt
+
+EndIter adj-pc
+
+Separator
+
+Label "<h3>Copula Inflection</h3>"
+
+BeginIter cop-pc{i} "a Position Class" 1
+
+  Text name "Copula Position Class {i} Name" "<b> Copula Position Class {i}</b>:<br/>Position Class Name: " " " 20
+
+  Check obligatory "Copula Position Class {i} Obligatory" "<br/>Obligatorily occurs:" ""
+
+  Select order "Copula Position Class {i} Order" "<br/>Appears as a prefix or suffix:" ""
+  . prefix "Prefix" "prefix"
+  . suffix "Suffix" "suffix"
+
+  MultiSelect inputs "Copula Position Class {i} Input" "<br/>Possible inputs:" ""
+  fillcache c=cops
+  fillregex p=cop-pc[0-9]+(_lrt[0-9]+)?_name
+  . cop "Any Copula" "any copula"
+
+  Label "<p>Morphotactic Constraints:</p>"
+
+  BeginIter require{j} "a Require constraint"
+
+    MultiSelect others "Copula Position Class {i} Requires" "Copula Position Class {i} requires one of the following: " ""
+    fillcache c=cops
+    fillregex p=cop-pc[0-9]+(_lrt[0-9]+)?_name
+    . cop "Any Copula" "any copula"
+
+  EndIter require
+
+  BeginIter forbid{j} "a Forbid constraint"
+
+    Select others "Copula Position Class {i} Forbids" "Copula Position Class {i} forbids the following: " ""
+    fillcache c=cops
+    fillregex p=cop-pc[0-9]+(_lrt[0-9]+)?_name
+    . cop "Any Copula" "any copula"
+
+  EndIter forbid
+
+  Label "<p>Lexical Rule Types that appear in this Position Class:</p>"
+
+  BeginIter lrt{j} "a Lexical Rule Type" 1 1
+
+    Text name "Copula Position Class {i} Lexical Rule Type {j} Name" "<b>Lexical Rule Type {j}</b>:<br/>Name: " "" 20
+
+    MultiSelect supertypes "Copula Position Class {i} Lexical Rule Type {j} Supertype" "<br/>Supertypes: " ""
+    fillregex p=cop-pc{i}_lrt[0-9]+_name
+
+    Label "<p>Features:</p>"
+
+    BeginIter feat{k} "a Feature"
+
+      Select name "Copula Position Class {i} Lexical Rule Type {j} Feature {k} Name" "Name: " " "
+      fillnames c=both
+
+      MultiSelect value "Copula Position Class {i} Lexical Rule Type {j} Feature {k} Value" "Value: " ""
+      fillvalues p=cop-pc{i}_lrt{j}_feat{k}_name
+
+      Select head "Copula Position Class {i} Lexical Rule Type {j} Feature {k} Head" "Specified on: " ""
+      . cop "The copula" "the copula"
+      . subj "The subject" "the subject NP"
+      . mod "The complement" "the complement"
+
+    EndIter feat
+
+    Label "<p>Morphotactic Constraints:</p>"
+
+    BeginIter require{k} "a Require constraint"
+
+      MultiSelect others "Copula Position Class {i} Lexical Rule Type {j} Requires" "Lexical Rule Type {j} requires one of the following: " ""
+      fillcache c=cops
+      fillregex p=cop-pc[0-9]+(_lrt[0-9]+)?_name
+      . cop "Any copula" "any copula"
+
+    EndIter require
+
+    BeginIter forbid{k} "a Forbid constraint"
+
+      Select others "Copula Position Class {i} Lexical Rule Type {j} forbids" "Lexical Rule Type {j} forbids the following: " ""
+      fillcache c=cops
+      fillregex p=cop-pc[0-9]+(_lrt[0-9]+)?_name
+      . cop "Any copula" "any copula"
+
+    EndIter forbid
+
+    Label "<p>Lexical Rule Instances:</p>"
+
+    BeginIter lri{k} "a Lexical Rule Instance" 0 1
+
+      Radio inflecting "Copula Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Has Orthography" "Instance {k}" ""
+      . no "No" "" "No affix"
+      . yes "Yes" "" "Affix"
+
+      Text orth "Copula Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Spelling" "spelled" "" 20
+
+    EndIter lri
+
+  EndIter lrt
+
+EndIter cop-pc
 
 Separator
 

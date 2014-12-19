@@ -83,10 +83,10 @@ rtestdir="${CUSTOMIZATIONROOT}/regression_tests/"
 gold="$rtestdir/home/gold/"
 scratch="$rtestdir/scratch/"
 log="$rtestdir/logs/ace.$(date "+%Y-%m-%d")" # TJT 2014-09-12: Specify the log
-grammar="$scratch/grammar"
+grammar="$scratch/grammars"
 lgname=$3
 
-# TJT 2014-09-12: Make sure the grammar directory exists
+# Make grammar directories # TJT 2014-09-12: Make sure the grammar directory exists
 mkdir -p $grammar
 
 # Check for existence of choices file

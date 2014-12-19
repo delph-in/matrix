@@ -1,0 +1,25 @@
+*adj n
+n adj
+*n adj-infl
+*adj-infl n
+*n adj cop
+*n cop adj
+*cop adj n
+*cop n adj
+*adj n cop
+*adj cop n
+*n-adj
+*n-adj-infl
+*n-infl-adj
+*n-infl-adj-infl
+*adj-n
+*adj-infl-n
+*infl-adj-n
+*infl-adj-infl-n
+*adj-n-adj
+*adj-n-adj-infl
+*adj-n-infl-adj
+*adj-n-infl-adj-infl
+*adj-infl-n-adj
+*infl-adj-n-adj
+*infl-adj-infl-n-adj

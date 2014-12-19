@@ -4,7 +4,7 @@
 # imports
 
 import sys
-import os
+#import os
 import copy
 
 ###########################################################################
@@ -153,7 +153,7 @@ class TDLelem(object):
       if not isinstance(c, TDLelem_coref) and not isinstance(c, TDLelem_type):
         new_child.append(c)
     self.child = new_child
-        
+
 
 ###########################################################################
 # A TDLelem_literal is an unprocessed string.  It's used for things like
@@ -221,7 +221,7 @@ class TDLelem_typedef(TDLelem):
 
     if debug_write:
       TDLwrite('typedef\n')
-      
+
     TDLwrite(self.type + " " + self.op + " ")
     TDLset_indent(2)
     for ch in self.child:
@@ -298,17 +298,20 @@ class TDLelem_conj(TDLelem):
         ch.write()
         last_was_feat = (isinstance(ch, TDLelem_feat));
     for ch in self.child[1:]:
-      cur_is_feat = (isinstance(ch, TDLelem_feat));
-      # don't print empty AVMs ([]) unless it's the only thing
-      if cur_is_feat and len(ch.child) == 0: continue
-      if cur_is_feat or last_was_feat:
-        TDLwrite(' &\n')
-        for i in range(old_i):
-          TDLwrite(' ')
-      else:
-        TDLwrite(' & ')
-      ch.write()
-      last_was_feat = cur_is_feat
+      # TJT 2014-05-07 Changed to check for Nones; probably not the best
+      # This might be the cause of a regression
+      if ch:
+          cur_is_feat = (isinstance(ch, TDLelem_feat));
+          # don't print empty AVMs ([]) unless it's the only thing
+          if cur_is_feat and len(ch.child) == 0: continue
+          if cur_is_feat or last_was_feat:
+            TDLwrite(' &\n')
+            for i in range(old_i):
+              TDLwrite(' ')
+          else:
+            TDLwrite(' & ')
+          ch.write()
+          last_was_feat = cur_is_feat
 
 
 ###########################################################################
@@ -547,7 +550,7 @@ def TDLparse_list():
 
   # otherwise, deal with the contents of the child list
   elem = None
-  
+
   # loop through all but the last child, constructing a list as we go
   for i in range(len(child) - 1):
     if elem == None:
@@ -601,7 +604,7 @@ def TDLparse_list():
       temp = TDLelem_type('null')
       cur.add(temp)
       cur = temp
-  
+
   return elem
 
 def TDLparse_dlist():
@@ -640,10 +643,14 @@ def TDLparse_conj():
 def TDLparse_typedef():
   global tok
   type = tok.pop(0) # the type name
-  op = tok.pop(0)
-  while not op in (':=', ':<', ':+'):
-    type += '_' + op  # turn spaces in the type name to _'s
-    op = tok.pop(0)
+  try:
+    op = tok.pop(0) # the operator
+    while not op in (':=', ':<', ':+'):
+      type += '_' + op  # turn spaces in the type name to _'s
+      op = tok.pop(0)
+  except IndexError:
+    raise IndexError("Pop from empty list: the TDL defined probably " +\
+                     "is missing the operator (:= or :+)")
   elem = TDLelem_typedef(type, op)
   elem.add(TDLparse_conj())
   tok.pop(0) # '.'
@@ -849,7 +856,7 @@ class TDLfile(object):
           t.write()
           TDLwrite('\n')
           last_was_one_line = t.one_line
-    
+
     f.close()
 
 

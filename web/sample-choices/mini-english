@@ -1,4 +1,5 @@
-version=20
+
+version=27
 
 section=general
 language=mini English
@@ -26,7 +27,7 @@ case-marking=none
 
 section=direct-inverse
 
-section=tense-aspect
+section=tense-aspect-mood
 
 section=other-features
 
@@ -35,6 +36,8 @@ section=sentential-negation
 section=coordination
 
 section=matrix-yes-no
+
+section=info-str
 
 section=arg-opt
 
@@ -55,16 +58,6 @@ section=lexicon
   noun2_det=imp
     noun2_stem1_orth=I
     noun2_stem1_pred=_pronoun_n_rel
-  noun-slot1_name=num
-  noun-slot1_order=after
-    noun-slot1_input1_type=noun1
-    noun-slot1_morph1_name=singular
-      noun-slot1_morph1_feat1_name=number
-      noun-slot1_morph1_feat1_value=sg
-    noun-slot1_morph2_name=plural
-    noun-slot1_morph2_orth=s
-      noun-slot1_morph2_feat1_name=number
-      noun-slot1_morph2_feat1_value=pl
   verb1_name=itr
   verb1_valence=intrans
     verb1_stem1_orth=sleep
@@ -73,28 +66,61 @@ section=lexicon
   verb2_valence=trans
     verb2_stem1_orth=chase
     verb2_stem1_pred=_chase_v_rel
-  verb-slot1_name=pernum
-  verb-slot1_order=after
-    verb-slot1_input1_type=verb
-    verb-slot1_morph1_name=3sg
-    verb-slot1_morph1_orth=s
-      verb-slot1_morph1_feat1_name=person
-      verb-slot1_morph1_feat1_value=3rd
-      verb-slot1_morph1_feat1_head=subj
-      verb-slot1_morph1_feat2_name=number
-      verb-slot1_morph1_feat2_value=sg
-      verb-slot1_morph1_feat2_head=subj
-    verb-slot1_morph2_name=pl
-      verb-slot1_morph2_feat1_name=number
-      verb-slot1_morph2_feat1_value=pl
-      verb-slot1_morph2_feat1_head=subj
-    verb-slot1_morph3_name=non-3rd
-      verb-slot1_morph3_feat1_name=person
-      verb-slot1_morph3_feat1_value=1st, 2nd
-      verb-slot1_morph3_feat1_head=subj
+  adj1_name=regular
+  adj1_mod=both
+  adj1_modpos=right
+  adj1_predcop=obl
+    adj1_stem1_orth=big
+    adj1_stem1_pred=_big_a_rel
+    adj1_stem2_orth=small
+    adj1_stem2_pred=_small_a_rel
     det1_stem1_orth=the
     det1_stem1_pred=_def_q_rel
+
+section=morphology
+  noun-pc1_name=num
+  noun-pc1_obligatory=on
+  noun-pc1_order=suffix
+  noun-pc1_inputs=noun1
+    noun-pc1_lrt1_name=singular
+      noun-pc1_lrt1_feat1_name=number
+      noun-pc1_lrt1_feat1_value=sg
+      noun-pc1_lrt1_lri1_inflecting=no
+    noun-pc1_lrt2_name=plural
+      noun-pc1_lrt2_feat1_name=number
+      noun-pc1_lrt2_feat1_value=pl
+      noun-pc1_lrt2_lri1_inflecting=yes
+      noun-pc1_lrt2_lri1_orth=s
+  verb-pc1_name=pernum
+  verb-pc1_obligatory=on
+  verb-pc1_order=suffix
+  verb-pc1_inputs=verb
+    verb-pc1_lrt1_name=3sg
+      verb-pc1_lrt1_feat1_name=person
+      verb-pc1_lrt1_feat1_value=3rd
+      verb-pc1_lrt1_feat1_head=subj
+      verb-pc1_lrt1_feat2_name=number
+      verb-pc1_lrt1_feat2_value=sg
+      verb-pc1_lrt1_feat2_head=subj
+      verb-pc1_lrt1_lri1_inflecting=yes
+      verb-pc1_lrt1_lri1_orth=s
+    verb-pc1_lrt2_name=pl
+      verb-pc1_lrt2_feat1_name=number
+      verb-pc1_lrt2_feat1_value=pl
+      verb-pc1_lrt2_feat1_head=subj
+      verb-pc1_lrt2_lri1_inflecting=no
+    verb-pc1_lrt3_name=non-3rd
+      verb-pc1_lrt3_feat1_name=person
+      verb-pc1_lrt3_feat1_value=1st, 2nd
+      verb-pc1_lrt3_feat1_head=subj
+      verb-pc1_lrt3_lri1_inflecting=no
+
+section=toolbox-import
 
 section=test-sentences
   sentence1_orth=the cat chases the dog
   sentence2_orth=the dogs sleep
+
+section=gen-options
+
+section=ToolboxLexicon

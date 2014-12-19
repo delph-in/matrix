@@ -1,0 +1,21 @@
+n n tv
+adj n n tv
+n adj n tv
+adj n adj n tv
+*n n tv adj
+*n n adj tv
+*n tv n
+*n tv adj n
+*adj n tv n
+*adj n tv adj n
+*n tv n adj
+*n adj tv n
+*n adj tv n adj
+*adj n tv n adj
+*n adj tv adj n
+*tv n n
+*tv adj n n
+*tv n adj n
+*tv adj n adj n
+*adj tv n n
+*tv n n adj

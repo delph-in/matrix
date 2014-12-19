@@ -1,15 +1,16 @@
 from collections import defaultdict
 
 from gmcs.linglib import lexicon
-from gmcs.linglib.lexbase import (MorphotacticNode, PositionClass,
-                                  LexicalRuleType, LexicalType,
+from gmcs.linglib.lexbase import (PositionClass, LexicalRuleType,
+                                  #MorphotacticNode, LexicalType,
+                                  LexicalRuleInstance,
                                   ALL_LEX_TYPES,
                                   LEXICAL_CATEGORIES,
-                                  LEXICAL_SUPERTYPES)
+                                  LEXICAL_SUPERTYPES,
+                                  NON_ESSENTIAL_LEX_CATEGORIES)
 from gmcs.lib import Hierarchy
 from gmcs.utils import get_name
-from gmcs.utils import TDLencode
-
+#from gmcs.utils import TDLencode
 
 ### Contents
 # 1. Module Variables
@@ -56,13 +57,13 @@ def defined_lexrule_sts(lrt,pc):
   """
   sts = lrt.split_value('supertypes')
   to_return = []
-  for lrt in pc['lrt']: 
+  for lrt in pc['lrt']:
     if lrt.full_key in sts:
       to_return.append(lrt.full_key)
   return to_return
 #  for st in lrt.split_value('supertypes'):
 #    print st in [[l.full_key] for l in pc['lrt']]
-  #return [st for st in lrt.split_value('supertypes') if st in [[l.full_key] for l in pc['lrt']]] 
+  #return [st for st in lrt.split_value('supertypes') if st in [[l.full_key] for l in pc['lrt']]]
   #return [st for st in lrt.split_value('supertypes') if st in pc['lrt']]
 
 def disjunctive_typename(mns):
@@ -135,8 +136,8 @@ def customize_inflection(choices, add_methods, mylang, irules, lrules, lextdl):
   """
   # first call other libraries' add_lexrules methods to see if they
   # have anything to add to the choices file before we begin
-  # TODO: negation.py should be called later but should use 
-  # one of these add_methods 
+  # TODO: negation.py should be called later but should use
+  # one of these add_methods
   for method in add_methods:
     method(choices)
   # now create the hierarchy
@@ -159,7 +160,7 @@ def customize_lexical_rules(choices):
   #  3. find the unique input for each PC (and create intermediate rules)
   #      (all_inputs() depends on forward-looking require constraints)
   #  4. determine and create flags based on constraints
-  pch = position_class_hierarchy(choices)
+  pch = position_class_hierarchy(choices) # TODO: PCH seems to be deleting synth from choices file
   interpret_constraints(choices)
   create_flags()
   calculate_supertypes(pch)
@@ -172,6 +173,7 @@ def position_class_hierarchy(choices):
   Create and return the data structures to hold the information
   regarding position classes and lexical types.
   """
+
   pch = Hierarchy()
 
   # Create PositionClasses for lexical types so they can take flags
@@ -181,6 +183,7 @@ def position_class_hierarchy(choices):
   pc_inputs = {}
   # Now create the actual position classes
   for i, pc in enumerate(all_position_classes(choices)):
+    # these PCs are ChoiceDicts
     if len(pc.get('inputs', '')) > 0:
       pc_inputs[pc.full_key] = set(pc.get('inputs').split(', '))
     cur_pc = pch.add_node(PositionClass(pc.full_key, get_name(pc),
@@ -224,19 +227,22 @@ def pc_lrt_merge(cur_pc, pc):
 
 def create_lexical_rule_types(cur_pc, pc):
   lrt_parents = {}
-  for j, lrt in enumerate(pc.get('lrt')):
-    mtx_supertypes = set()
-    if 'supertypes' in lrt:
-      lrt_parents[lrt.full_key] = set(defined_lexrule_sts(lrt,pc))
-      mtx_supertypes = set(lrt.split_value('supertypes')).difference(
-                         lrt_parents.get(lrt.full_key,set()))
-    # default name uses name of PC with _lrtX
-    if 'name' not in lrt:
-      lrt['name'] = cur_pc.name + lrt.full_key.replace(cur_pc.key, '', 1)
-    cur_lrt = create_lexical_rule_type(lrt, mtx_supertypes, cur_pc)
-    # the ordering should only mess up if there are 100+ lrts
-    cur_lrt.tdl_order = cur_pc.tdl_order + (0.01 * j)
-    cur_pc.add_node(cur_lrt)
+  # TJT 2014-08-21 Check incorporated stems too
+  all_lrts = (pc.get('lrt',[]), pc.get('is-lrt',[]))
+  for lrts in all_lrts:
+    for j, lrt in enumerate(lrts):
+      mtx_supertypes = set()
+      if 'supertypes' in lrt:
+        lrt_parents[lrt.full_key] = set(defined_lexrule_sts(lrt,pc))
+        mtx_supertypes = set(lrt.split_value('supertypes')).difference(
+                           lrt_parents.get(lrt.full_key,set()))
+      # default name uses name of PC with _lrtX
+      if 'name' not in lrt:
+        lrt['name'] = cur_pc.name + lrt.full_key.replace(cur_pc.key, '', 1)
+      cur_lrt = create_lexical_rule_type(lrt, mtx_supertypes, cur_pc)
+      # the ordering should only mess up if there are 100+ lrts
+      cur_lrt.tdl_order = cur_pc.tdl_order + (0.01 * j)
+      cur_pc.add_node(cur_lrt)
   for child in lrt_parents:
     for parent in lrt_parents[child]:
       cur_pc.relate_parent_child(_mns[parent], _mns[child])
@@ -246,8 +252,20 @@ def create_lexical_rule_type(lrt, mtx_supertypes, cur_pc):
   _id_key_tbl[new_lrt.identifier()] = lrt.full_key
   for feat in lrt.get('feat'):
     new_lrt.features[feat['name']] = {'value': feat['value'],
-                                      'head': feat.get('head')}
-  new_lrt.lris = [lri['orth'] if lri['inflecting'] == 'yes' else ''
+                                      'head': feat['head']}
+  # TODO: Move to output function
+  # TJT 2014-08-27: For adjective position classes,
+  # check for additional choices to copy to features
+  # TJT 2014-11-06: Simplifying... just copy all choices
+  if 'adj-pc' in lrt.full_key:
+    for choice in ('modpos','predcop','mod'):
+      lrt_choice = lrt.get(choice,False)
+      if lrt_choice:
+        new_lrt.features[choice] = lrt_choice
+  # TJT 2014-08-21: Keep track of preds for adjective incorporation
+  # using new LexicalRuleInstance class
+  new_lrt.lris = [LexicalRuleInstance(lri['orth'], lri['pred']) \
+                  if lri['inflecting'] == 'yes' else LexicalRuleInstance('')
                   for lri in lrt.get('lri',[])]
   # Fill out the obvious supertypes (later we'll finish)
   set_lexical_rule_supertypes(new_lrt, mtx_supertypes)
@@ -394,25 +412,25 @@ def set_req_bkwd_initial_flags(lex_pc, flag_tuple):
 ### SUPERTYPES ###
 
 # add possible supertypes here
-ALL_LEX_RULE_SUPERTYPES = set(['cat-change-only-lex-rule',
-                               'same-agr-lex-rule',
-                               'cont-change-only-lex-rule',
-                               'add-only-no-rels-hcons-rule',
-                               'add-only-no-ccont-rule',
-                               'val-change-only-lex-rule',
-                               'head-change-only-lex-rule',
-                               'infl-lex-rule',
-                               'const-lex-rule',
-                               'lex-rule'])
-
-LEX_RULE_SUPERTYPES = set(['cat-change-only-lex-rule',
-                           'val-and-cont-change-lex-rule',
-                           'add-only-rule',
-                           'same-head-lex-rule',
+ALL_LEX_RULE_SUPERTYPES = {'cat-change-only-lex-rule',
+                           'same-agr-lex-rule',
+                           'cont-change-only-lex-rule',
+                           'add-only-no-rels-hcons-rule',
+                           'add-only-no-ccont-rule',
                            'val-change-only-lex-rule',
                            'head-change-only-lex-rule',
-                           'cont-change-only-lex-rule',
-                           'add-only-no-ccont-rule'])
+                           'infl-lex-rule',
+                           'const-lex-rule',
+                           'lex-rule'}
+
+LEX_RULE_SUPERTYPES = {'cat-change-only-lex-rule',
+                       'val-and-cont-change-lex-rule',
+                       'add-only-rule',
+                       'same-head-lex-rule',
+                       'val-change-only-lex-rule',
+                       'head-change-only-lex-rule',
+                       'cont-change-only-lex-rule',
+                       'add-only-no-ccont-rule'}
 
 def set_lexical_rule_supertypes(lrt, mtx_supertypes):
   """
@@ -432,7 +450,7 @@ def set_lexical_rule_supertypes(lrt, mtx_supertypes):
 #  if ('value', 'a') in lrt.features.get('negation',{}).items():
 #    lrt.supertypes.add('cont-change-only-lex-rule')
   # add other special cases here
-  
+
 def calculate_supertypes(pch):
   # calculate daughter types first, because we want to percolate them
   calculate_daughter_types(pch)
@@ -445,10 +463,11 @@ def calculate_supertypes(pch):
 def calculate_daughter_types(pch):
   inp_map = get_input_map(pch)
   for inp_set in inp_map:
-    dtr_name = inp_set[0].identifier()
     pcs = inp_map[inp_set]
+    if len(inp_set) == 1:
+      dtr_name = inp_set[0].identifier()
     # if there are multiple inputs, create an intermediate rule
-    if len(inp_set) > 1:
+    elif len(inp_set) > 1:
       dtr_name = disjunctive_typename(pcs) + '-rule-dtr'
       # each input should inherit from the intermediate type
       for inp in inp_set:
@@ -465,7 +484,14 @@ def percolate_supertypes(pc):
   def validate_supertypes(x):
     if pc.is_lex_rule:
       if not any(st in LEX_RULE_SUPERTYPES for st in x.supertypes):
-        x.supertypes.add('add-only-no-rels-hcons-rule')
+        # if str(pc.identifier()) in _infostr_pc.values():
+        #   x.supertypes.add('add-only-no-rels-hcons-rule')
+        if pc.has_incorporated_stems():
+          # TJT 2014-08-21: Incorporated Adjective lexical rule supertypes
+          x.supertypes.add('add-only-rule')
+          x.supertypes.add('adj_incorporation-lex-rule')
+        else:
+          x.supertypes.add('add-only-no-ccont-rule')
 
   for r in pc.roots():
     r.percolate_down(items=lambda x: x.supertypes,
@@ -548,29 +574,59 @@ def write_rules(pch, mylang, irules, lrules, lextdl, choices):
     write_pc_flags(mylang, lextdl, pc, all_flags, choices)
     for lrt in sorted(pc.nodes.values(), key=lambda x: x.tdl_order):
       write_i_or_l_rules(irules, lrules, lrt, pc.order)
+      # TJT 2014-08-27: Write adjective position class features
+      # TODO: Only do this for root pcs
+      if 'mod' in lrt.features:
+        if lrt.features['mod'] in ('both', 'attr'):
+          # Basic attributive behavoir
+          mylang.add(lrt.identifier() + " := attr-adj-lex-rule.")
+          # Attributive only
+          if lrt.features['mod'] == "attr":
+            mylang.add(lrt.identifier() + ''' := attr-adj-lex-rule &
+                         [ SYNSEM.LOCAL.CAT [ VAL.SUBJ < >,
+                                              HEAD.PRD - ] ].''')
+          # Modification direction
+          modpos = choices.get(lrt.key+'_modpos','')
+          # Options are adjective modifying nouns "before the adjective",
+          # "after the adjective", or "either position"
+          if modpos in ('before','after'):
+            posthead = {'before':'+', 'after':'-'}[modpos]
+            mylang.add(lrt.identifier() + (' := [ SYNSEM.LOCAL.CAT.POSTHEAD %s ].' % posthead))
+        if lrt.features['mod'] in ('both', 'pred'):
+          if lrt.features['mod'] == "pred":
+            # Predicative only
+            mylang.add(lrt.identifier() + " := [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].")
+          #elif lrt.features['mod'] == "both":
+            # Do nothing... gets PRD or stative predicate from below
+          # TJT 2014-08-27: Making 'predcop' dependent on 'mod: pred or both'
+          if 'predcop' in lrt.features:
+            # This is the copula complement LRT
+            mylang.add(lrt.identifier() + ''' := [ SYNSEM.LOCAL.CAT [ HEAD.PRD +
+                                                                      VAL.SUBJ < > ] ].''')
+          else:
+            # This is the stative predicate LRT
+            # This only fires if "mod" is ("both" or "pred") and "pred" not checked
+            lrt.supertypes.add('stative-pred-lex-rule')
+            # TJT: 2014-09-24: Stative predicate lexical rule is PRD -
+            mylang.add(lrt.identifier() + ''' := [ SYNSEM.LOCAL.CAT.HEAD.PRD - ].''')
       # merged LRT/PCs have the same identifier, so don't write supertypes here
       if lrt.identifier() != pc.identifier():
-        if _id_key_tbl.has_key(lrt.identifier()) and _id_key_tbl[lrt.identifier()] not in _nonleaves:
-          if _infostr_head.has_key(_id_key_tbl[lrt.identifier()]):
-            _hlist = _infostr_head[_id_key_tbl[lrt.identifier()]]
-            if 'subj' in _hlist and 'obj' in _hlist and 'verb' in _hlist:
-              lrt.supertypes.add('add-icons-subj-comp-verb-rule')
-            elif 'subj' in _hlist and 'obj' in _hlist:
-              lrt.supertypes.add('add-icons-subj-comp-rule')
-            elif 'subj' in _hlist and 'verb' in _hlist:
-              lrt.supertypes.add('add-icons-subj-verb-rule')
-            elif 'obj' in _hlist and 'verb' in _hlist:
-              lrt.supertypes.add('add-icons-comp-verb-rule')
-            elif 'subj' in _hlist:
-              lrt.supertypes.add('add-icons-subj-rule')
-            elif 'obj' in _hlist:
-              lrt.supertypes.add('add-icons-comp-rule')
-            elif _id_key_tbl[lrt.identifier()] in _infostr_lrt:
-              lrt.supertypes.add('add-icons-rule')
-            else:
-              lrt.supertypes.add('no-icons-lexrule')
-          else:
-            lrt.supertypes.add('no-icons-lexrule')
+        # Add Information Structure supertypes
+        # TODO: Move this to a supertype calculation function
+        # if str(pc.identifier()) in _infostr_pc.values():
+        #   if lrt.identifier() in _infostr_lrt:
+        #     _hlist = _infostr_head[lrt.identifier()]
+        #     # TJT 2014-08-27: Changing verbose if/else chain
+        #     # to string formatting for clarity
+        #     icons_map = { "verb":"-verb",
+        #                   "subj":"-subj",
+        #                   "obj":"-comp" }
+        #     st_map = {key: icons_map[key] if key in _hlist else '' for key in icons_map}
+        #     # Requires at least object or verb
+        #     if not (st_map["subj"] or st_map["obj"]): st_map = {key: '' for key in st_map}
+        #     lrt.supertypes.add("add-icons%(subj)s%(obj)s%(verb)s-rule" % st_map)
+        #   else:
+        #     lrt.supertypes.add('no-icons-lexrule')
         write_supertypes(mylang, lrt.identifier(), lrt.all_supertypes())
     write_daughter_types(mylang, pc)
   # features need to be written later
@@ -587,6 +643,7 @@ def write_intermediate_types(mylang):
 def get_section_from_pc(pc):
   """
   Given a PC, return the section in which its rules should be written.
+  Note: needs to be updated with future POS types (adverbs, prepositions, etc.)
   """
   if not pc.is_lex_rule:
     # get section for lexical type
@@ -594,6 +651,8 @@ def get_section_from_pc(pc):
       return 'nounlex'
     elif 'verb' in pc.key:
       return 'verblex'
+    elif 'adj' in pc.key:
+      return 'adjlex'
     else:
       return 'otherlex'
   else:
@@ -713,9 +772,13 @@ def write_i_or_l_rules(irules, lrules, lrt, order):
     # if there's only one LRI don't give the rule a number
     num = [''] if len(lrt.lris) == 1 else range(1, len(lrt.lris) + 1)
     for i, lri in enumerate(lrt.lris):
+      # TJT 2014-08-20: Adding incorporated adjective stems
+      pred = ''
+      if lri.pred:
+        pred = " &\n  [ C-CONT.RELS.LIST.FIRST.PRED \"%s\" ]" % lri.pred
       rule = '\n'.join(['-'.join([lrt.name, order + str(num[i])]) + ' :=',
-                      r'%' + order + ' (* ' + lri + ')',
-                      lrt.identifier()]) + '.'
+                       r'%' + order + ' (* ' + lri.name + ')',
+                       lrt.identifier() + pred]) + '.'
       irules.add_literal(rule)
   else:
     # lexical rules
@@ -729,11 +792,26 @@ def write_i_or_l_rules(irules, lrules, lrt, order):
 
 def validate(choices, vr):
   index_feats = choices.index_features()
-  for pc in all_position_classes(choices):
+  # TJT 2014-09-03: Generators are exhausted after use, so make this a list!
+  all_pcs = list(all_position_classes(choices))
+  warn_merged_pcs(all_pcs, vr)
+  for pc in all_pcs:
     basic_pc_validation(choices, pc, vr)
     cooccurrence_validation(pc, choices, vr)
+    # TJT 2014-09-04: Calculate switching inputs
+    switching = pc.get('switching',False)
+    pc_switching_inputs = set()
+    if pc.get('switching',''):
+      inputs = pc.get('inputs',[]).split(', ')
+      if isinstance(inputs, basestring):
+        pc_switching_inputs.add(inputs)
+      else: # assume list
+        pc_switching_inputs.update(inputs)
     for lrt in pc.get('lrt', []):
-      lrt_validation(lrt, vr, index_feats, choices)
+      lrt_validation(lrt, vr, index_feats, choices, inputs=pc_switching_inputs, switching=switching)
+    # TJT 2014-08-21: Validate incorporated stems
+    for lrt in pc.get('is-lrt', []):
+      lrt_validation(lrt, vr, index_feats, choices, incorp=True, inputs=pc_switching_inputs, switching=switching)
   cycle_validation(choices, vr)
 
 def basic_pc_validation(choices, pc, vr):
@@ -741,23 +819,35 @@ def basic_pc_validation(choices, pc, vr):
   if not 'order' in pc:
     vr.err(pc.full_key + '_order',
            'You must specify an order for every position class you define.')
-  if pc.get('inputs','') == '':
-    vr.warn(pc.full_key + '_inputs',
-            'A position class without any inputs is unusable unless you ' +\
-            'define inputs during hand-development of the grammar.')
+  if not pc.get('inputs',''):
+    # TJT 2014-09-01: Changing this to an error as the system crashes without an input
+    vr.err(pc.full_key + '_inputs',
+            #'A position class without any inputs is unusable unless you ' +\
+            #'define inputs during hand-development of the grammar.')
+            'Each position class must have at least one input defined.')
   else:
-    # All inputs must be defined
+    # All user-defined inputs must be defined
     if any(inp not in choices and inp not in LEXICAL_SUPERTYPES
            for inp in pc.get('inputs','').split(', ')):
         vr.err(pc.full_key + '_inputs',
                'Every lexical type, lexical rule type, or position class ' +\
                'that serves as the input to a position class must be ' +\
                'defined somewhere in the questionnaire.')
+  # ALL inputs must be defined: if input is set to "Any X", and a POS type
+  # of that X is not defined, the system fails but there is no validation
+  if any(inp in NON_ESSENTIAL_LEX_CATEGORIES and inp not in choices
+         for inp in pc.get('inputs','').split(', ')):
+      vr.err(pc.full_key + '_inputs',
+             'You have specified morphology for a part of speech ' +\
+             'that does not have any lexical types defined. You ' +\
+             'can define lexical types on the Lexicon page.')
   # Check for 0 or 1 LRTs, and warn appropriately
-  if 'lrt' not in pc or len(pc.get('lrt', [])) == 0:
+  # TJT 2014-08-20: At least one LRT of IS-LRT type is required
+  if ('lrt' not in pc or len(pc.get('lrt',[])) == 0) and \
+     ('is-lrt' not in pc or len(pc.get('is-lrt',[])) == 0):
     vr.warn(pc.full_key + '_lrt', 'A position class without any defined ' +\
-            'lexical rule types is unusable, though it can be later ' +\
-            'defined by hand.')
+              'lexical rule types is unusable, though it can be later ' +\
+              'defined by hand.')
   elif len(pc.get('lrt', [])) == 1:
     lrt = pc['lrt'].get_first()
     if lrt.get('name', '') == '' or pc.get('name', '') == '':
@@ -768,8 +858,17 @@ def basic_pc_validation(choices, pc, vr):
                'no name will be merged with their position class, and ' +\
                'therefore cannot themselves take constraints. Apply the ' +\
                'constraints to the position class, instead.')
+  # TJT 2014-09-18: PCs should be either incorporated stems or inflection...
+  # this seems true from adjective typology survey, but might not be right
+  # for future incorporated stems
+  if 'is-lrt' in pc and 'lrt' in pc:
+    vr.err(pc.full_key+'_lrt', 'Each position class should either have ' +\
+             'incorporated stems or regular lexical rule types. If your ' +\
+             'language has incorporated stems and lexical rules types ' +\
+             'in a minimal pair, let the developers know!')
 
-def lrt_validation(lrt, vr, index_feats, choices):
+# TJT 2014-08-21: incorp argument for incorporated stem lexical rule validation
+def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), switching=False):
   # No supertype means it's a root type within a PC class (no longer an error)
   #if 'supertypes' not in lrt:
   #  vr.err(lrt.full_key + '_supertypes',
@@ -782,18 +881,21 @@ def lrt_validation(lrt, vr, index_feats, choices):
     if 'value' not in feat:
       vr.err(feat.full_key + '_value',
              'You must choose a value for each feature you specify.')
-    if lrt.full_key.startswith('verb-pc'):
+    # TJT 2014-08-22: check head for adjectives and incorporated stems
+    if lrt.full_key.startswith('verb-pc') or \
+     lrt.full_key.startswith('adj-pc') or \
+     'is-lrt' in lrt.full_key:
       if 'head' not in feat:
         vr.err(feat.full_key + '_head',
                'You must choose where the feature is specified.')
-      elif feat.get('head') in ['higher', 'lower'] and not choices.get('scale'):
+      elif feat['head'] in ['higher', 'lower'] and not choices.get('scale'):
         vr.err(feat.full_key + '_head',
-               'To use higher/lower ranked NP, please define a scale on the direct-inverse page.') 
+               'To use higher/lower ranked NP, please define a scale on the direct-inverse page.')
       elif feat['head'] == 'verb' and feat.get('name','') in index_feats:
         vr.err(feat.full_key + '_head',
                'This feature is associated with nouns, ' +\
-               'please select one of the NP-options.')
-  orths = {}
+               'please select one of the NP options.')
+  orths = set()
   for lri in lrt.get('lri', []):
     orth = lri.get('orth', '')
     if lri['inflecting'] == 'yes' and orth == '':
@@ -807,7 +909,97 @@ def lrt_validation(lrt, vr, index_feats, choices):
     if orth in orths:
       vr.err(lri.full_key + '_orth',
              "This affix duplicates another, which is not allowed.")
-    orths[orth] = True
+    orths.add(orth)
+
+  # TJT 2014-08-21: Incorporated Adjective validation
+  if incorp:
+    for lri in lrt.get('lri', []):
+      pred = lri.get('pred', '')
+      if not pred:
+        vr.err(lri.full_key+'_pred',
+               "Each Incorporated Stem instance must have a pred " +\
+               "value associated with it. If you do not require a " +\
+               "pred value, use a regular lexical rule type + instances.")
+      if pred[-len("_a_rel"):] != "_a_rel":
+          vr.warn(lri.full_key+'_pred',
+               "The Customization System currently only supports " +\
+               "adjectival incorporated stems. Note that this pred " +\
+               "value (%s) has not been defined as a \"_a_rel\" stem." % pred)
+
+  # TJT 2014-09-04: Swithing position class validation
+  if switching:
+    mode = lrt.get('mod','')
+    modpos = lrt.get('modpos','')
+    predcop = lrt.get('predcop','off')
+
+    # Mode or some input must have mode defined
+    if not mode:
+      if not inputs:
+        vr.err(lrt.full_key+'_mod',
+               'Every position class or one of its inputs must define ' +\
+               'a behavoir for the adjective.')
+
+    # Mode must not clash with any of its inputs
+    for key in inputs:
+      input_def = choices.get(key,False)
+      if input_def:
+        # Check mode
+        if mode != 'both':
+          input_mode = input_def.get('mod','')
+          # Only pred and attr conflict with each other
+          if input_mode in ("pred", "attr") and mode != input_mode:
+            vr.err(lrt.full_key+'_mod',
+                   'This behavoir conflicts with this lexical rule type\'s ' +\
+                   'input %s on the input\'s behavoir' % (input_def.get('name','')))
+        # Check modpos
+        if mode in ('attr', 'both'):
+          if modpos and modpos != 'either':
+            input_modpos = input_def.get('modpos',False)
+            if input_modpos:
+              if modpos != input_modpos:
+                vr.err(lrt.full_key+'_modpos',
+                       'This modification direction conflicts with this ' +\
+                       'lexical rule type\'s input %s' % (input_def.get('name','')))
+        # Check predcop
+        if mode in ('pred', 'both'):
+          if input_def.get('mod','') in ('pred', 'both'):
+            predcop_map = {'on':'obl', 'off':'imp'} # Converge type names
+            input_predcop = input_def.get('predcop','off')
+            input_predcop = predcop_map[input_predcop] if input_predcop in predcop_map else input_predcop
+            if input_predcop and input_predcop != 'opt':
+              type_predcop = predcop_map[predcop] if predcop in predcop_map else predcop
+              if type_predcop != input_predcop:
+                vr.err(lrt.full_key+'_predcop',
+                       'This copula complementation choice conflicts with this ' +\
+                       'lexical rule type\'s input %s' % (input_def.get('name','')))
+
+    # Applicable choices for each mode must be made
+    if mode in ('attr', 'both'):
+      if not modpos:
+        vr.err(lrt.full_key+'_modpos',
+               'Every position class able to be attributive must have a ' +\
+               'modification direction defined.')
+
+    # Mode specific adjective choices are disregarded without the proper mode
+    if mode in ('pred', 'attr'):
+      inverse_mode_name = {'pred':'attributively', 'attr':'predicatively'}[mode]
+      message = 'This choice is only applicable to adjectives behaving ' +\
+                ('%s. This choice will be ignored, or you ' % inverse_mode_name) +\
+                'can change the adjective\'s behavoir to enable this choice above.'
+      if mode != 'attr':
+        if modpos:
+          vr.warn(lrt.full_key+'_modpos', message)
+      if mode != 'pred':
+        if predcop == "on":
+          vr.warn(lrt.full_key+'_predcop', message)
+
+    # Adjectives defined as a copula complement are unusuable without a copula defined
+    if mode in ('pred', 'both'):
+      if predcop == "on":
+        if not choices.get('cop',False):
+          vr.warn(lrt.full_key+'_predcop',
+                  'An adjective defined as a copula complement is ' +\
+                  'unusable without a copula defined on the Lexicon page.')
 
 def cycle_validation(choices, vr):
   try:
@@ -831,3 +1023,34 @@ def cooccurrence_validation(lrt, choices, vr):
   #  + reqs violating explicit inputs
   #     (e.g. A > B > C, A > C, A reqs B)
 
+# TJT 2014-08-26: Warn about merging obligatory position classes
+# with same inputs and positions
+def warn_merged_pcs(all_pcs, vr):
+  input_map = defaultdict(lambda: defaultdict(set))
+  # Gather map of inputs to position classes
+  for pc in all_pcs:
+    pc_name = pc.full_key
+    order = pc.get('order','') # prefix or suffix
+    inputs = pc.get('inputs',[])
+    # Not sure why inputs is a string instead of a list...
+    if isinstance(inputs, basestring):
+      input_map[inputs][order].add(pc_name)
+    else:
+      for inp in pc.get('inputs',[]):
+        input_map[inp][order].add(pc_name)
+  # Warn for each obligatory position class with equal inputs and orders
+  pcs_to_be_merged = {pc for inp in input_map
+                      for order in input_map[inp]
+                      for pc in input_map[inp][order]
+                      if len(input_map[inp][order]) > 1}
+  for pc in pcs_to_be_merged:
+    difference = pcs_to_be_merged.copy()
+    difference.remove(pc)
+    if len(difference) == 1:
+      warningString = "another position class"
+    else: warningString = "other position classes"
+    differenceString = ", ".join(difference)
+    vr.warn(pc+'_inputs', # putting this on inputs...
+            "This position class has the same inputs and order " +\
+            "as %s (%s). " % (warningString, differenceString) +\
+            "Therefore, they will be merged in the output grammar.")

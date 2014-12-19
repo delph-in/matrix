@@ -1,0 +1,30 @@
+adjn tv n
+det adjn tv n
+n tv adjn
+n tv det adjn
+adjn iv
+det adjn iv
+*adjadjn tv n
+*det adjadjn tv n
+*n tv adjadjn
+*n tv det adjadjn
+*adjadjn iv
+*det adjadjn iv
+*nadj tv n
+*adjnadj tv n
+*nadjadj tv n
+*det nadj tv n
+*det nadjadj tv n
+*det adjnadj tv n
+*nadj iv
+*adjnadj iv
+*nadjadj iv
+*det nadj iv
+*det nadjadj iv
+*det adjnadj iv
+*n tv nadj
+*n tv det nadj
+*n tv adjnadj
+*n tv det adjnadj
+*n tv nadjadj
+*n tv det nadjadj

@@ -1,0 +1,72 @@
+*nadj1 tv n
+*nadj2 tv n
+*nadj1adj2 tv n
+*det nadj1 tv n
+*det nadj2 tv n
+*det nadj1adj2 tv n
+*nadj1 iv
+*nadj2 iv
+*nadj1adj2 iv
+*det nadj1 iv
+*det nadj2 iv
+*det nadj1adj2 iv
+*n tv nadj1
+*n tv nadj2
+*n tv nadj1adj2
+*n tv det nadj1
+*n tv det nadj2
+*n tv det nadj1adj2
+*nadj2adj1 tv n
+*det nadj2adj1 tv n
+*nadj2adj1 iv
+*det nadj2adj1 iv
+*n tv nadj2adj1
+*n tv det nadj2adj1
+adj1n tv n
+adj2n tv n
+det adj1n tv n
+det adj2n tv n
+adj1adj2n tv n
+*adj2adj1n tv n
+det adj1adj2n tv n
+*det adj2adj1n tv n
+n tv adj1n
+n tv adj2n
+n tv det adj1n
+n tv det adj2n
+n tv adj1adj2n
+*n tv adj2adj1n
+n tv det adj1adj2n
+*n tv det adj2adj1n
+adj1n iv
+adj2n iv
+det adj1n iv
+det adj2n iv
+adj1adj2n iv
+*adj2adj1n iv
+det adj1adj2n iv
+*det adj2adj1n iv
+*adj1nadj1 tv n
+*adj1nadj2 tv n
+*adj2nadj1 tv n
+*adj2nadj2 tv n
+*det adj1nadj1 tv n
+*det adj1nadj2 tv n
+*det adj2nadj1 tv n
+*det adj2nadj2 tv n
+*adj1nadj1 iv
+*adj1nadj2 iv
+*adj2nadj1 iv
+*adj2nadj2 iv
+*det adj1nadj1 iv
+*det adj1nadj2 iv
+*det adj2nadj1 iv
+*det adj2nadj2 iv
+*n tv adj1nadj1
+*n tv adj1nadj2
+*n tv adj2nadj1
+*n tv adj2nadj2
+*n tv det adj1nadj1
+*n tv det adj1nadj2
+*n tv det adj2nadj1
+*n tv det adj2nadj2

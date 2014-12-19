@@ -23,8 +23,8 @@ def add(choices_file, txt_suite):
   # Check whether arguments correspond to existing files
 
   rt_root = cust_root + "/regression_tests/"
-  #choices_file = os.path.join(rt_root, 'scratch', choices_file)
-  #txt_suite = os.path.join(rt_root, 'scratch', txt_suite)
+  choices_file = os.path.join(rt_root, 'scratch', choices_file)
+  txt_suite = os.path.join(rt_root, 'scratch', txt_suite)
 
   if not os.path.exists(cust_root):
       raise ValueError, "Invalid path name for customization root."
@@ -56,8 +56,10 @@ def add(choices_file, txt_suite):
   # name, and if not, if there are any files in the way anyway.
 
   if index.exists(lg_name):
-      raise ValueError, "A regression test with that language name already exists.  If you must remove it, be sure to edit regression-test-index."
-
+      # TJT 2014-09-11: Updating this error to suggest using matrix.py to remove test
+      #raise ValueError, "A regression test with that language name already exists.  If you must remove it, be sure to edit regression-test-index."
+      raise ValueError, "A regression test with that language name already exists.  If you need to remove the existing test, use matrix.py rr TEST"
+      
   if os.path.exists(rt_root + "choices/" + lg_name):
       raise ValueError, "Move regression_tests/choices/" + lg_name +", it is in the way."
 
@@ -79,11 +81,11 @@ def add(choices_file, txt_suite):
       raise ValueError, 'Double-quotes are not allowed in the comment.'
 
   # Make the profile
+  # TODO: DELETEME: this doesn't seem to work...
   cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'], 'regression_tests/add_regression_test.sh')
   subprocess.call([cmd, choices_file, txt_suite, lg_name], env=os.environ);
 
   # Add line to regression-test-index
-
   index_file = open(rt_root + "regression-test-index", 'a')
   index_file.write(lg_name + "=" + comment + "\n")
   index_file.close()
@@ -91,7 +93,6 @@ def add(choices_file, txt_suite):
   # Copy choices file, txt-suite and profile to the appropriate places.
   shutil.copy(choices_file, rt_root + "choices/" + lg_name)
   shutil.copy(txt_suite, rt_root + "txt-suites/" + lg_name)
-  #shutil.copytree(rt_root + "home/current/" + lg_name, rt_root + "home/gold/" + lg_name)
 
   # Create skeleton
   os.mkdir(rt_root + "skeletons/" + lg_name)

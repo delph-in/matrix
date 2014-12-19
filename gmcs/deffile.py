@@ -12,7 +12,7 @@
 ######################################################################
 # imports
 
-import sys
+#import sys
 import os
 import cgitb
 import glob
@@ -20,13 +20,16 @@ import re
 import tarfile
 import gzip
 import zipfile
-import gmcs.tdl
+#import gmcs.tdl
 
 from gmcs import choices
 from gmcs.choices import ChoicesFile
-from gmcs.utils import tokenize_def
+from gmcs.utils import tokenize_def, get_name
 from gmcs import generate
 from gmcs.validate import ValidationMessage
+
+#from random import randrange
+from collections import defaultdict
 
 ######################################################################
 # HTML blocks, used to create web pages
@@ -89,7 +92,7 @@ HTML_toggle_visible_js = '''<script type="text/javascript">
 
 HTML_mainprebody = '''<body onload="animate()">
 <h1>LinGO Grammar Matrix</h1>
-<h1 style="display:inline">Matrix customization and download page</h1> 
+<h1 style="display:inline">Matrix customization and download page</h1>
 <span class="tt">[<a href="http://moin.delph-in.net/MatrixDocTop" target="matrixdoc">help</a>]</span>
 <h2>Version of %s</h2>
 
@@ -155,7 +158,7 @@ on the appropriate subpage.</p>
 
 HTML_customprebody = '''<h3>Customized Matrix</h3>
 
-<p>A customized copy of the Matrix has been created for you.  
+<p>A customized copy of the Matrix has been created for you.
 Please download it <a href="%s">here</a>.
 
 <p>This file will be removed from the system in 24 hours.
@@ -239,6 +242,7 @@ HTML_prebody = '''<body onload="animate(); focus_all_fields(); multi_init(); fil
 HTML_prebody_sn = '''<body onload="animate(); focus_all_fields(); multi_init(); fill_hidden_errors();display_neg_form();scalenav();">'''
 
 HTML_method = 'post'
+
 HTML_preform = '<form action="matrix.cgi" method="' + HTML_method + '" enctype="multipart/form-data" name="choices_form">'
 
 HTML_postform = '</form>'
@@ -277,7 +281,7 @@ def html_mark(mark, vm):
     if mark == '#':
       return '<a href="%s" style="text-decoration:none"><span class="info" title="%s">%s</span></a>' %\
            (vm.name, vm.message.replace('"', '&quot;'), mark)
-    else: 
+    else:
       return '<a name="%s" style="text-decoration:none"><span class="error" title="%s">%s</span></a>' %\
            (vm.name, vm.message.replace('"', '&quot;'), mark)
 
@@ -292,6 +296,9 @@ def html_info_mark(vm):
 
 # Return an HTML <input> tag with the specified attributes and
 # surrounding text
+# TJT 2014-05-07 Adding randid to html_input to pass random number
+# matching radio buttons to their labels along
+# TJT 2014-09-05 Getting rid of randid to wrap entire radio option in label
 def html_input(vr, type, name, value, checked, before = '', after = '',
                size = '', onclick = '', disabled = False, onchange = ''):
   chkd = ''
@@ -330,17 +337,24 @@ def html_input(vr, type, name, value, checked, before = '', after = '',
     value = value.replace('\\n','\n')
     return '%s%s<TextArea name="%s"%s>%s</TextArea>%s' % \
          (before, mark, name, size, value, after)
-    
+
   else:
     if value:
       value = ' value="' + value + '"'
-    return '%s%s<input type="%s" name="%s" %s%s%s%s%s%s>%s' % \
+    if name:
+      name = ' name="' + name + '"'
+    output = '%s%s<input type="%s" %s%s%s%s%s%s%s>%s' % \
          (before, mark, type, name, value, chkd, size, dsabld,
           onclick, onchange, after)
+    # TJT 2014-09-05: If checkbox
+    if type in ('checkbox','radio'):
+      return "<label>%s</label>" % output
+    return output
 
 
 # Return an HTML <select> tag with the specified name
-def html_select(vr, name, multi, onfocus = ''):
+# TJT 2014-08-26: Adding onchange
+def html_select(vr, name, multi=False, onfocus='', onchange=''):
   mark = ''
   if name in vr.errors:
     mark = html_error_mark(vr.errors[name])
@@ -356,24 +370,33 @@ def html_select(vr, name, multi, onfocus = ''):
   if onfocus:
     onfocus = ' onfocus="' + onfocus + '"'
 
-  return '%s<select name="%s"%s%s>' % \
-         (mark, name, multi_attr, onfocus)
+  if onchange:
+    onchange = ' onchange="' + onchange + '"'
+
+  return '%s<select name="%s"%s%s%s>' % \
+         (mark, name, multi_attr, onfocus, onchange)
 
 
 # Return an HTML <option> tag with the specified attributes and
 # surrounding text
-def html_option(vr, name, selected, html, temp=False):
-  sld = ''
+def html_option(vr, name, selected, html, temp=False, strike=False):
   if selected:
-    sld = ' selected'
+    selected = ' selected'
+  else: selected = ''
+
+  # TJT 2014-03-19: adding disabled option for always-disabled "future work"
+  # TODO: javascript cuts this out, need to change javascript
+  if strike:
+    strike = ' disabled'
+    html = '<p style="display:inline;color:#ADADAD"> %s</p>' % html
+  else: strike = ''
 
   if temp:
     temp = ' class="temp"'
-  else:
-    temp = ''
+  else: temp = ''
 
-  return '<option value="%s"%s%s>%s</option>' % \
-         (name, sld, temp, html)
+  return '<option value="%s"%s%s%s>%s</option>' % \
+         (name, selected, temp, strike, html)
 
 
 def html_delbutton(id):
@@ -382,9 +405,9 @@ def html_delbutton(id):
   iterator "id"
   """
   # Various Unicode exxes:
-  # xD7:   Multiplication Sign
+  # xD7:   Multiplication Sign (old)
   # x2169: Roman Numeral Ten
-  # x2179: Small Roman Numeral Ten
+  # x2179: Small Roman Numeral Ten (good)
   # x2573: Box Drawings Light Diagonal Cross
   # x2613: Saltire
   # x2715: Multiplication X
@@ -392,8 +415,10 @@ def html_delbutton(id):
   # x2717: Ballot X
   # x2718: Heavy Ballot X
   return '<input type="button" class="delbutton" ' + \
-         'value="&#xD7;" name="" title="Delete" ' + \
+         'value="X" name="" title="Delete" ' + \
          'onclick="remove_element(\'' + id + '\')">\n'
+  # TJT 2014-5-27 Regular capital X looks the best + most compliant
+  #'value="&#x2169;" name="" title="Delete" ' + \
 
 
 # given a list of lines of text, some of which may contain
@@ -483,7 +508,7 @@ def js_array(list):
 
 # From a list of triples of strings [string1, string2, ...], return
 # a string containing a JavaScript-formatted list of strings of the
-# form 'string1:string2:string3'. This is used to convey features, 
+# form 'string1:string2:string3'. This is used to convey features,
 # values and category (category of feature).
 def js_array3(list):
   val = ''
@@ -494,7 +519,7 @@ def js_array3(list):
 
 # From a list of triples of strings [string1, string2, ...], return
 # a string containing a JavaScript-formatted list of strings of the
-# form 'string1:string2:string3:string4'. This is used to convey features, 
+# form 'string1:string2:string3:string4'. This is used to convey features,
 # values, category (category of feature), a flag feature 'customized'.
 def js_array4(list):
   val = ''
@@ -510,7 +535,7 @@ def js_array4(list):
 # on the contents, to produce HTML pages and save choices files.
 
 class MatrixDefFile:
-  # links between names and friendly names for 
+  # links between names and friendly names for
   # use in links on html navigation menu
   sections = { 'general':'General Information',
   'word-order':'Word Order', 'number':'Number',
@@ -525,7 +550,7 @@ class MatrixDefFile:
   'ToolboxLexicon':'Toolbox Lexicon'}
 
   # used to link section names to their documentation
-  # page name in the delp-in wiki
+  # page name in the delph-in wiki
   doclinks = { 'general':'GeneralInfo',
   'word-order':'WordOrder', 'number':'Number',
   'person':'Person', 'gender':'Gender', 'case':'Case',
@@ -544,13 +569,13 @@ class MatrixDefFile:
   def __init__(self, def_file):
     self.def_file = def_file
     f = open(self.def_file)
-    self.def_lines = merge_quoted_strings(f.readlines()) 
+    self.def_lines = merge_quoted_strings(f.readlines())
     f.close()
     self.make_name_map()
 
   ######################################################################
   # Variable/friendly name mapping
-  
+
   # initialize the v2f and f2v dicts
   def make_name_map(self):
     for l in self.def_lines:
@@ -561,8 +586,8 @@ class MatrixDefFile:
           ty = w[0]
           vn = w[1]
           fn = w[2]
-          if ty in ['Text', 'TextArea', 'Check', 'Radio',
-                    'Select', 'MultiSelect', '.']:
+          if ty in ('Text', 'TextArea', 'Check', 'Radio',
+                    'Select', 'MultiSelect', '.'):
             self.v2f[vn] = fn
             self.f2v[fn] = vn
 
@@ -581,6 +606,57 @@ class MatrixDefFile:
       return self.f2v[f]
     else:
       return f
+
+
+  ######################################################################
+  # Utility methods
+
+  # TJT 2014-08-28: Adding method to find if some choice exists
+  # in order to enable skipping UI elements based on this choice
+  def check_choice_switch(self, switch, choices):
+    """
+    This method checks to see if a given string or regex (the switch)
+    is in a given choices file. This method is used to see if a given
+    UI element should be skipped. As such, the boolean return value
+    is a little bit backwards. The function returns True if the switch
+    is not found, and false if it is found.
+    """
+    if not switch:
+      return True
+    # Switch can have multiple variable names
+    switches = switch.strip('"').split('|')
+    # Switch contains choice name and value
+    # split on the rightmost "=" just in case...
+    switches = [switch.rsplit('=',1) if "=" in switch else switch
+                                     for switch in switches]
+    # Default to true
+    skip_it = {switch[0] if isinstance(switch, list) else switch: True
+                         for switch in switches}
+    for instance in switches:
+      if isinstance(instance, list):
+        switch = instance[0].strip()
+        values = instance[1].strip().strip("()").split(',') # Get multiple values
+      else:
+        switch = instance
+        values = False # set default
+      results = choices.get_regex(switch)
+      if results:
+        # Found a match
+        if not values:
+          # If no value, then switching on a key,
+          # which was found, so don't skip it!
+          skip_it[switch] = False
+        else:
+          for item in results:
+            if item[1] in values:
+              skip_it[switch] = False
+              break
+    # if all false, don't skip it
+    # else, skip it
+    return any(skip_it.values())
+
+  ######################################################################
+  # HTML output methods
 
   # Create and print the main matrix page.  The argument is a cookie
   # that determines where to look for the choices file.
@@ -687,16 +763,18 @@ class MatrixDefFile:
     zip_checked = False
 
     # the buttons after the subpages
+    print "<p>" # TJT 2014-09-18: Converting these radios to new set up
     print html_input(vr, 'hidden', 'customize', 'customize', False, '', '')
     print html_input(vr, 'radio', 'delivery', 'tgz', tgz_checked,
-                     '<p>Archive type: ', ' .tar.gz')
+                     'Archive type: ', ' .tar.gz')
     print html_input(vr, 'radio', 'delivery', 'zip', zip_checked,
                      ' ', ' .zip<br>')
     print html_input(vr, 'submit', 'create_grammar_submit', 'Create Grammar',
                      False, '', '', '', '', vr.has_errors())
 
     print html_input(vr, 'submit', 'sentences', 'Test by Generation', False,
-                     '', '</p>', '', '', vr.has_errors())
+                     '', '', '', '', vr.has_errors())
+    print "</p>"
 
     print '<hr>\n'
 
@@ -745,6 +823,8 @@ class MatrixDefFile:
   # containing HTML.
   def defs_to_html(self, lines, choices, vr, prefix, vars):
 
+    html = ''
+
     http_cookie = os.getenv('HTTP_COOKIE')
 
     cookie = {}
@@ -752,7 +832,6 @@ class MatrixDefFile:
       (name, value) = c.split('=', 1)
       cookie[name.strip()] = value
 
-    html = ''
     i = 0
     while i < len(lines):
       word = tokenize_def(replace_vars(lines[i], vars))
@@ -776,71 +855,99 @@ class MatrixDefFile:
       elif word[0] == 'Separator':
         html += '<hr>'
       elif word[0] == 'Check':
-        if len(word) > 5:
-          (vn, fn, bf, af, js) = word[1:]
+        if len(word) < 5: continue # TJT 2014-08-28: Syntax error!
+        js = ''
+        if len(word) >= 5:
+          (vn, fn, bf, af) = word[1:5]
+        if len(word) >= 6:
+          js = word[5]
+        # TJT 2014-08-28: Adding switch here to ignore entire check definition
+        # based on some other choice
+        skip_this_check = False
+        if len(word) >= 7:
+          # matrixdef contains name of choice to switch on
+          switch = word[6]
+          skip_this_check = self.check_choice_switch(switch, choices)
+        if not skip_this_check:
           vn = prefix + vn
           checked = choices.get(vn)
           html += html_input(vr, 'checkbox', vn, '', checked,
                              bf, af, onclick=js) + '\n'
-        else:
-          (vn, fn, bf, af) = word[1:]
-          vn = prefix + vn
-          checked = choices.get(vn)
-          html += html_input(vr, 'checkbox', vn, '', checked,
-                             bf, af) + '\n'
       elif word[0] == 'Radio':
-        dis = ''
-        if len(word) > 5:
-          (vn, fn, bf, af, dis) = word[1:]
-        else:
-          (vn, fn, bf, af) = word[1:]
+        # TJT 2014-03-19: Removed disabled flag that was on the entire radio
+        # definition instead of on individual choices. See below
+        if len(word) >= 5:
+          (vn, fn, bf, af) = word[1:5]
+        else: continue # TJT 2014-08-28: Syntax error
         vn = prefix + vn
-        # it's nicer to put vrs for radio buttons on the entire 
+        # TJT 2014-08-28: Adding switch here to ignore entire radio definition
+        # based on some other choice
+        skip_this_radio = False
+        if len(word) >= 6:
+          # matrixdef contains name of choice to switch on
+          switch = word[5]
+          skip_this_radio = self.check_choice_switch(switch, choices)
+        # it's nicer to put vrs for radio buttons on the entire
         # collection of inputs, rather than one for each button
-        mark =''
-        if vn in vr.errors:
-          mark = html_error_mark(vr.errors[vn])
-        elif vn in vr.warnings:
-          mark = html_warning_mark(vr.warnings[vn])
-        if vn in vr.infos:
-          mark = html_info_mark(vr.infos[vn])
-        
-        html += bf + mark + '\n'
-        i += 1
-        while lines[i] != '\n':
-          word = tokenize_def(replace_vars(lines[i], vars))
-          checked = False
-          if len(word) > 5:
-            (rval, rfrn, rbef, raft, js) = word[1:]
-            if choices.get(vn) == rval:
-              checked = True
-            if dis:
-              html += html_input(vr, 'radio', vn, rval, checked,
-                               rbef, raft, onclick=js, disabled=True) + '\n'
-            else:
-              html += html_input(vr, 'radio', vn, rval, checked,
-                               rbef, raft, onclick=js) + '\n'
-          else:
-            (rval, rfrn, rbef, raft) = word[1:]
-            if choices.get(vn) == rval:
-              checked = True
-            html += html_input(vr, 'radio', vn, rval, checked,
-                             rbef, raft) + '\n'
+        if not skip_this_radio:
+          mark =''
+          if vn in vr.errors:
+            mark = html_error_mark(vr.errors[vn])
+          elif vn in vr.warnings:
+            mark = html_warning_mark(vr.warnings[vn])
+          if vn in vr.infos:
+            mark = html_info_mark(vr.infos[vn])
+
+          html += bf + mark + '\n'
           i += 1
-        html += af + '\n'
-      elif word[0] in ['Select', 'MultiSelect']:
+          # TJT 2014-08-28: changing this to "startswith" to enforce syntax
+          while lines[i].strip().startswith('.'):
+            # Reset flags on each item
+            dis, js = '', ''
+            checked = False
+            word = tokenize_def(replace_vars(lines[i], vars))
+            # TJT 2014-05-07 Rearranged this logic (hoping for speed)
+            rval, rfrn, rbef, raft = word[1:5]
+            # Format choice name
+            if choices.get(vn) == rval: # If previously marked, mark as checked again
+              checked = True
+            if len(word) >= 6:
+              js = word[5]
+            if len(word) >= 7: # TJT 2014-03-19: option for disabled radio buttons
+              if word[6]: # If anything here...
+                dis = True
+            html += html_input(vr, 'radio', vn, rval, checked, rbef, raft,
+                               onclick=js, disabled=dis) + '\n'
+            i += 1
+          html += af + '\n'
+        else:
+          # TJT 2014-08-28: skipping radio buttons,
+          # so skip the button definitions
+          while lines[i].strip().startswith('.'):
+            i += 1
+
+      elif word[0] in ('Select', 'MultiSelect'):
         multi = (word[0] == 'MultiSelect')
         (vn, fn, bf, af) = word[1:5]
 
-	onfocus = ""
-	if len(word) > 5: 
-	  onfocus = word[5]
+        onfocus, onchange = '', ''
+        if len(word) > 5: onfocus = word[5]
+        if len(word) > 6: onchange = word[6]
 
         vn = prefix + vn
 
         html += bf + '\n'
 
         fillers=[]
+
+        # TJT 2014-08-26: Moving this out of while loop for efficiency's sake
+        fillstrings = {'fillregex':'fill_regex(%(args)s)',
+                         'fillnames':'fill_feature_names(%(args)s)',
+                         'fillnames2':'fill_feature_names_only_customized(%(args)s)',
+                         'fillvalues':'fill_feature_values(%(args)s)',
+                         'fillverbpat':'fill_case_patterns(false)',
+                         'fillnumbers':'fill_numbers()',
+                         'fillcache':'fill_cache(%(args)s)'}
         # look ahead and see if we have an auto-filled drop-down
         i += 1
         while lines[i].strip().startswith('fill'):
@@ -850,33 +957,46 @@ class MatrixDefFile:
           #note: possible cat values are "noun", "verb" or "both"
           argstring = ','.join(['true' if a in ('n', 'l') else "'%s'" % x
                                 for (a, x) in [w.split('=') for w in word[1:]]])
-          fillstrings = {'fillregex':'fill_regex(%(args)s)',
-                         'fillnames':'fill_feature_names(%(args)s)',
-                         'fillnames2':'fill_feature_names_only_customized(%(args)s)',
-                         'fillvalues':'fill_feature_values(%(args)s)',
-                         'fillverbpat':'fill_case_patterns(false)',
-                         'fillnumbers':'fill_numbers()',
-                         'fillcache':'fill_cache(%(args)s)'}
           fillers += [fillstrings[word[0]] % {'args':argstring}]
           i += 1
 
+        # Section variables:
+        # SVAL: selected option variable name, e.g. "verb", "subj",
+        #     i.e. the variable name of value previously selected
+        # VN: variable name, e.g. "verb1_feat1_head"
+        # self.f(VN): friendly name, e.g. "The verb", "The subject"
+        # OFRN: option friendly name, e.g. "The verb", "The subject"
+        # OVAL: option variable name, e.g. "verb", "subj"
+        # OHTML: option HTML after, e.g. "the verb", some javascript, etc.
+
+        # Get previously selected item
+        # TJT 2014-05-08 always get selected value, even if not using fillers
+        sval = choices.get(vn)
         if fillers:
           fillcmd = "fill('%s', [].concat(%s));" % (vn, ','.join(fillers))
-          html += html_select(vr, vn, multi, fillcmd+onfocus) + '\n'
-          # Add previously selected item
-          if choices.get(vn):
-            sval = choices.get(vn)
-            html += html_option(vr, sval, True, sval, True) + '\n'
+          html += html_select(vr, vn, multi, fillcmd+onfocus, onchange=onchange) + '\n'
+          # Mark previously selected filled item as selected
+          # This is necessary because the value is not in the deffile
+          if sval:
+              html += html_option(vr, sval, True, self.f(sval), True) + '\n'
         else:
-          html += html_select(vr, vn, multi) + '\n'
-        html += html_option(vr, '', False, '') + '\n'
+          # If not using fillers, previously selected value
+          # will be marked during option processing below
+          html += html_select(vr, vn, multi, onchange=onchange) + '\n'
         # Add individual items, if applicable
         while lines[i].strip().startswith('.'):
+          sstrike = False # Reset variable
           word = tokenize_def(replace_vars(lines[i], vars))
-          (sval, sfrn, shtml) = word[1:]
-          selected = (choices.get(vn) == sval)
-          html += html_option(vr, sval, selected, shtml) + '\n'
+          # select/multiselect options
+          oval, ofrn, ohtml = word[1:4]
+          # TJT 2014-03-19: add disabled option to allow for always-disabled
+          # If there's anything in this slot, disable option
+          if len(word) >= 5: sstrike = True
+          # Add option and mark "selected" if previously selected
+          html += html_option(vr, oval, (sval == oval), ofrn, strike=sstrike) + '\n'
           i += 1
+        # add empty option
+        html += html_option(vr, '', False, '') + '\n'
         html += '</select>'
         html += af + '\n'
 
@@ -886,8 +1006,20 @@ class MatrixDefFile:
         else:
           (vn, fn, bf, af, sz) = word[1:]
           oc = ''
+        # TJT 2014-08-27: Prepend auto onchange events (instead of assinging)
         if vn == "name":
-          oc = "fill_display_name('"+prefix[:-1]+"')"
+          oc = "fill_display_name('"+prefix[:-1]+"');" + oc
+        # TJT 2014-08-26: Adding auto check radio button
+        # on morphology page affixes
+        elif vn == "orth":
+          # Previous line usually empty; find previous non-empty line
+          checker = int(i-1)
+          while lines[checker] == "\n":
+            checker -= 1
+          # If previous non-empty line a radio definition, add check radio
+          # button function to onChange
+          if lines[checker].strip().startswith("."):
+            oc = "check_radio_button('"+prefix[:-1]+"_inflecting', 'yes'); " + oc
         vn = prefix + vn
         value = choices.get(vn)
         html += html_input(vr, word[0].lower(), vn, value, False,
@@ -896,7 +1028,7 @@ class MatrixDefFile:
         (vn, fn) = word[1:]
         value = choices.get(vn)
         html += html_input(vr, word[0].lower(), vn, value, False,
-                           '', '', 0) + '\n' 
+                           '', '', 0) + '\n'
       elif word[0] == 'File':
         (vn, fn, bf, af) = word[1:]
         vn = prefix + vn
@@ -917,6 +1049,13 @@ class MatrixDefFile:
         iter_min = 0
         if len(word) > 4:
           iter_min = int(word[4])
+	    # TJT 2014-08-20: adding option to only do iter based on other choice
+        skip_this_iter = False
+        if len(word) > 5:
+          # matrixdef contains name of choice to switch on
+          switch = word[5]
+          skip_this_iter = self.check_choice_switch(switch, choices)
+
         i += 1
 
         # collect the lines that are between BeginIter and EndIter
@@ -930,98 +1069,102 @@ class MatrixDefFile:
           i += 1
         end = i
 
-        # write out the (invisible) template for the iterator
-        # (this will be copied by JavaScript on the client side when
-        # the user clicks the "Add" button)
-        html += '<div class="iterator" style="display: none" id="' + \
-                prefix + iter_name + '_TEMPLATE">\n'
-        html += html_delbutton(prefix + iter_name + '{' + iter_var + '}')
-        html += '<div class="iterframe">'
-        html += self.defs_to_html(lines[beg:end],
-                                  choices, vr,
-                                  prefix + iter_orig + '_', vars)
-        html += '</div>\n'
-        html += '</div>\n\n'
+        # TJT 2014-08-20: if skipping iter, skip this whole section
+        if not skip_this_iter:
 
-        # write out as many copies of the iterator as called for by
-        # the current choices file OR iter_min copies, whichever is
-        # greater
-        c = 0
-        iter_num = 0;
-        chlist = [x for x in choices.get(prefix + iter_name) if x]
-        while (chlist and c < len(chlist)) or c < iter_min:
-          show_name = "";
-          if c < len(chlist):
-            iter_num = str(chlist[c].iter_num())
-            show_name = chlist[c]["name"]
-          else:
-            iter_num = str(int(iter_num)+1)
-          new_prefix = prefix + iter_name + iter_num + '_'
-          vars[iter_var] = iter_num
-
-          # new_prefix[:-1] trims the trailing '_'
-
-          # the show/hide button gets placed before each iterator
-          # as long as it's not a stem/feature/forbid/require/lri iterator
-          if show_hide:
-#          if new_prefix[:-1].find('feat')==-1 and \
-#                  new_prefix[:-1].find('stem')==-1 and \
-#                  new_prefix[:-1].find('require')==-1 and \
-#                  new_prefix[:-1].find('forbid')==-1 and \
-#                  new_prefix[:-1].find('lri')==-1:
-#            html += ''
-            if show_name:
-              name = show_name+" ("+new_prefix[:-1]+")"
-            else:
-              name = new_prefix[:-1]
-            html += '<span id="'+new_prefix[:-1]+'_errors" class="error" '
-            if cookie.get(new_prefix[:-1]+'button','block') != 'none':
-              html += 'style="display: none"'
-            html += '></span>'+'<a id="' + new_prefix[:-1] + 'button" ' + \
-                'onclick="toggle_display_lex(\'' + \
-                new_prefix[:-1] + '\',\'' + new_prefix[:-1] + 'button\')">'
-
-            if cookie.get(new_prefix[:-1]+'button','block') == 'none':
-              html += '&#9658; '+name+'<br /></a>'
-            else:
-              html += '&#9660; '+name+'</a>'
-          if cookie.get(new_prefix[:-1], 'block') == 'block':
-            html += '<div class="iterator" id="' + new_prefix[:-1] + '">\n'
-          else:
-            html += '<div class="iterator" style="display: none" id="' + new_prefix[:-1] + '">\n'
-          html += html_delbutton(new_prefix[:-1])
+          # write out the (invisible) template for the iterator
+          # (this will be copied by JavaScript on the client side when
+          # the user clicks the "Add" button)
+          html += '<div class="iterator" style="display: none" id="' + \
+                  prefix + iter_name + '_TEMPLATE">\n'
+          html += html_delbutton(prefix + iter_name + '{' + iter_var + '}')
           html += '<div class="iterframe">'
           html += self.defs_to_html(lines[beg:end],
                                     choices, vr,
-                                    new_prefix, vars)
+                                    prefix + iter_orig + '_', vars)
           html += '</div>\n'
-          html += '</div>\n'
+          html += '</div>\n\n'
 
-          del vars[iter_var]
-          c += 1
+          # write out as many copies of the iterator as called for by
+          # the current choices file OR iter_min copies, whichever is
+          # greater
+          c = 0
+          iter_num = 0;
+          chlist = [x for x in choices.get(prefix + iter_name) if x]
+          while (chlist and c < len(chlist)) or c < iter_min:
+            show_name = "";
+            if c < len(chlist):
+              iter_num = str(chlist[c].iter_num())
+              show_name = chlist[c]["name"]
+            else:
+              iter_num = str(int(iter_num)+1)
+            new_prefix = prefix + iter_name + iter_num + '_'
+            vars[iter_var] = iter_num
 
-        # write out the "anchor" marking the end of the iterator and
-        # the "Add" button
-        html += '<div class="anchor" id="' + \
-                prefix + iter_name + '_ANCHOR"></div>\n<p>'
-        # add any iterator-nonspecific errors here
-        if prefix + iter_name in vr.errors:
-          html += html_error_mark(vr.errors[prefix + iter_name])
-        elif prefix + iter_name in vr.warnings:
-          html += html_warning_mark(vr.warnings[prefix + iter_name])
-        elif prefix + iter_name in vr.infos:
-          html += html_info_mark(vr.infos[prefix + iter_name])
-        # finally add the button
-        html += '<input type="button" name="" ' + \
-                'value="Add ' + label + '" ' + \
-                'onclick="clone_region(\'' + \
-                prefix + iter_name + '\', \'' + \
-                iter_var + '\','
-        if show_hide:
-          html += 'true)">'
-        else:
-          html += 'false)">'
-        
+            # new_prefix[:-1] trims the trailing '_'
+
+            # the show/hide button gets placed before each iterator
+            # as long as it's not a stem/feature/forbid/require/lri iterator
+            if show_hide:
+  #          if new_prefix[:-1].find('feat')==-1 and \
+  #                  new_prefix[:-1].find('stem')==-1 and \
+  #                  new_prefix[:-1].find('require')==-1 and \
+  #                  new_prefix[:-1].find('forbid')==-1 and \
+  #                  new_prefix[:-1].find('lri')==-1:
+  #            html += ''
+              if show_name:
+                name = show_name+" ("+new_prefix[:-1]+")"
+              else:
+                name = new_prefix[:-1]
+              html += '<span id="'+new_prefix[:-1]+'_errors" class="error" '
+              if cookie.get(new_prefix[:-1]+'button','block') != 'none':
+                html += 'style="display: none"'
+              html += '></span>'+'<a id="' + new_prefix[:-1] + 'button" ' + \
+                  'onclick="toggle_display_lex(\'' + \
+                  new_prefix[:-1] + '\',\'' + new_prefix[:-1] + 'button\')">'
+
+              if cookie.get(new_prefix[:-1]+'button','block') == 'none':
+                html += '&#9658; '+name+'<br /></a>'
+              else:
+                html += '&#9660; '+name+'</a>'
+            if cookie.get(new_prefix[:-1], 'block') == 'block':
+              html += '<div class="iterator" id="' + new_prefix[:-1] + '">\n'
+            else:
+              html += '<div class="iterator" style="display: none" id="' + new_prefix[:-1] + '">\n'
+            html += html_delbutton(new_prefix[:-1])
+            html += '<div class="iterframe">'
+            html += self.defs_to_html(lines[beg:end],
+                                      choices, vr,
+                                      new_prefix, vars)
+            html += '</div>\n'
+            html += '</div>\n'
+
+            del vars[iter_var]
+            c += 1
+
+          # write out the "anchor" marking the end of the iterator and
+          # the "Add" button
+          html += '<div class="anchor" id="' + \
+                  prefix + iter_name + '_ANCHOR"></div>\n<p>'
+          # add any iterator-nonspecific errors here
+          if prefix + iter_name in vr.errors:
+            html += html_error_mark(vr.errors[prefix + iter_name])
+          elif prefix + iter_name in vr.warnings:
+            html += html_warning_mark(vr.warnings[prefix + iter_name])
+          elif prefix + iter_name in vr.infos:
+            html += html_info_mark(vr.infos[prefix + iter_name])
+          # finally add the button
+          html += '<input type="button" name="" ' + \
+                  'value="Add ' + label + '" ' + \
+                    'onclick="clone_region(\'' + \
+                  prefix + iter_name + '\', \'' + \
+                  iter_var + '\','
+          if show_hide:
+            html += 'true'
+          else:
+            html += 'false'
+          html += ')">'
+
       i += 1
 
     return html
@@ -1038,7 +1181,7 @@ class MatrixDefFile:
 
     choices_file = 'sessions/' + cookie + '/choices'
     choices = ChoicesFile(choices_file)
-    
+
 
     section_begin = -1
     section_end = -1
@@ -1089,20 +1232,20 @@ class MatrixDefFile:
       prefix = ''
       sec_links = []
       n = -1
-      printed = False 
+      printed = False
       for l in self.def_lines:
         word = tokenize_def(l)
         cur_sec = ''
         if len(word) < 2 or word[0][0] == '#':
           pass
         elif len(word) == 4 and word[3] == '0':
-          # don't print links to sections that are marked 0 
+          # don't print links to sections that are marked 0
           pass
         elif word[0] == 'Section':
           printed = False
           cur_sec = word[1]
           # disable the link if this is the page we're on
-          if cur_sec == section: 
+          if cur_sec == section:
             sec_links.append('</span><span class="navlinks">'+self.sections[cur_sec]+'</span>')
           else:
             sec_links.append('</span><a class="navlinks" href="#" onclick="submit_go(\''+cur_sec+'\')">'+self.sections[cur_sec]+'</a>')
@@ -1122,26 +1265,28 @@ class MatrixDefFile:
             for k in vr.errors.keys():
               if re.search(pat, k):
                 sec_links[n] = '*'+sec_links[n]
-                printed = True 
+                printed = True
                 break
           if not printed:
             for k in vr.warnings.keys():
               if re.search(pat, k):
                 sec_links[n] = '?'+sec_links[n]
-                printed = True 
+                printed = True
                 break
-            
+
       print '<a href="." onclick="submit_main()" class="navleft">Main page</a><br />'
       print '<hr />'
-      for l in sec_links: 
+      for l in sec_links:
         print '<span style="color:#ff0000;" class="navleft">'+l+'<br />'
 
       print '<hr />'
       print '<a href="' + choices_file + '" class="navleft">Choices file</a><br /><div class="navleft" style="margin-bottom:0;padding-bottom:0">(right-click to download)</div>'
       print '<a href="#stay" onclick="document.forms[0].submit()" class="navleft">Save &amp; stay</a><br />'
+      # TJT 2014-05-28: Not sure why the following doesn't work -- need to do more investigation
+      #print '<a href="?subpage=%s" onclick="document.forms[0].submit()" class="navleft">Save &amp; stay</a><br />' % section
       print '<a href="#clear" onclick="clear_form()" class="navleft">Clear form</a><br />'
 
-      ## if there are errors, then we print the links in red and  
+      ## if there are errors, then we print the links in red and
       ## unclickable
       if not vr.has_errors() == 0:
         print '<span class="navleft">Create grammar:'
@@ -1150,7 +1295,7 @@ class MatrixDefFile:
               'grammar customization.',''))
         print '</span><br />'
         print '<span class="navleft" style="padding-left:15px">tgz</span>, <span class="navleft">zip</span>'
-      else: 
+      else:
         print '<span class="navleft">Create grammar:</span><br />'
         print '<a href="#" onclick="nav_customize(\'tgz\')" class="navleft" style="padding-left:15px">tgz</a>, <a href="#customize" onclick="nav_customize(\'zip\')" class="navleft">zip</a>'
       print '</div>'
@@ -1158,8 +1303,7 @@ class MatrixDefFile:
 
       print '<div id="form_holder">'
       print HTML_preform
-      print html_input(vr, 'hidden', 'section', section,
-                       False, '', '\n')
+      print html_input(vr, 'hidden', 'section', section, False, '', '\n')
       print html_input(vr, 'hidden', 'subpage', section, False, '', '\n')
       print self.defs_to_html(self.def_lines[section_begin:section_end],
                               choices, vr,
@@ -1335,8 +1479,9 @@ class MatrixDefFile:
       word = tokenize_def(lines[i])
       if len(word) == 0:
         pass
-      elif word[0] in ['Check', 'Text', 'TextArea',
-                       'Radio', 'Select', 'MultiSelect', 'File','Hidden']:
+      # TJT 2014-5-27: changing this from list to tuple
+      elif word[0] in ('Check', 'Text', 'TextArea',
+                       'Radio', 'Select', 'MultiSelect', 'File','Hidden'):
         vn = word[1]
         if prefix + vn not in already_saved:
           already_saved[prefix + vn] = True
@@ -1346,8 +1491,7 @@ class MatrixDefFile:
             if word[0] == 'TextArea':
                 val = '\\n'.join(val.splitlines())
           if vn and val:
-            for j in range(iter_level):
-              f.write('  ')
+            f.write('  '*iter_level) # TJT 2014-09-01: Changing this to one write from loop
             f.write(prefix + vn + '=' + val + '\n')
       elif word[0] == 'BeginIter':
         (iter_name, iter_var) = word[1].replace('}', '').split('{', 1)
@@ -1378,15 +1522,20 @@ class MatrixDefFile:
   # in order.
   def save_choices(self, form_data, choices_file):
     # The section isn't really a form field, but save it for later
+    # section is page user is leaving (or clicking "save and stay" on)
     section = form_data['section'].value
+
+    ## New choices vs Old choices
+    # old_choices is saved to pages other than "section" variable above
+    # new_choices is saved to the "section" variable above's page
 
     # Copy the form_data into a choices object
     new_choices = ChoicesFile('')
     for k in form_data.keys():
       if k:
-        # on sentential negation page, some choices are hidden in 
-        # more than one place, so the FieldStorage object at [k] can 
-        # be a list, but in these cases only one item on the list 
+        # on sentential negation page, some choices are hidden in
+        # more than one place, so the FieldStorage object at [k] can
+        # be a list, but in these cases only one item on the list
         # should ever have a value
         if type(form_data[k]) == list:
           for l in form_data[k]:
@@ -1396,9 +1545,113 @@ class MatrixDefFile:
           new_choices[k] = form_data[k].value
 
     # Read the current choices file (if any) into old_choices
-    # but if neg-aux=on exists, create side-effect in lexicon.
-
     old_choices = ChoicesFile(choices_file)
+
+    # Keep track of features
+    if section in ('lexicon', 'morphology'): feats_to_add = defaultdict(list)
+
+    # TJT: 2014-08-26: If optionally copula complement,
+    # add zero rules to choices
+    if section == 'lexicon':
+      for adj in new_choices.get('adj', []): # check NEW values
+        if adj.get('predcop') == "opt":
+          atype = get_name(adj)
+          pc_name = "%s_opt_cop" % atype
+          # Skip if already added
+          if not any(pc.get('name','') == pc_name
+                     for pc in old_choices['adj-pc']):
+            # TODO: make this a function
+            switching_pc = "adj-pc%d" % (old_choices['adj-pc'].next_iter_num()
+                                         if old_choices['adj-pc'] else 1)
+            # Set up position class
+            old_choices[switching_pc+"_name"] = pc_name
+            old_choices[switching_pc+"_obligatory"] = "on"
+            old_choices[switching_pc+"_inputs"] = atype
+            # Set up new position class as a "switching" pc
+            old_choices[switching_pc+'_switching'] = "on"
+            # Define lexical rule types
+            aToA = switching_pc+'_lrt1'
+            aToV = switching_pc+'_lrt2'
+            # Write adjective to adjective rule
+            old_choices[aToA+"_name"] = "%s_cop_comp" % atype
+            old_choices[aToA+"_predcop"] = "on"
+            old_choices[aToA+"_mod"] = "pred"
+            # Write adjective to verb rule
+            old_choices[aToV+"_name"] = "%s_stative_pred" % atype
+            #old_choices[aToV+"_predcop"] = "off" # Unchecked is off
+            old_choices[aToV+"_mod"] = "pred"
+
+
+    # TJT: 2014-08-26: If adjective agrees only with one argument,
+    # add zero rules to choices
+    #if section == 'lexicon': # already in lexicon
+      # Check lexicon for argument agreement
+      for adj in new_choices.get('adj',[]): # check NEW values
+        for feat in adj.get('feat',[]):
+          if feat.get('head','') in ('subj','mod'):
+            atype = get_name(adj)
+            pc_name = "%s_argument_agreement" % atype
+            # Skip if already added
+            if not any(pc.get('name','') == pc_name for pc in old_choices['adj-pc']):
+              feats_to_add[atype].append(feat)
+
+    elif section == 'morphology':
+      # Check morphology for argument agreement
+      for adj_pc in new_choices.get('adj-pc',[]): # check NEW values
+        for lrt in adj_pc.get('lrt',[]):
+          for feat in lrt.get('feat',[]):
+            if feat.get('head','') in ('subj','mod'):
+              apc = adj_pc.full_key
+              pc_name = "%s_argument_agreement" % apc
+              # Skip if already added
+              if not any(pc.get('name','') == pc_name for pc in old_choices['adj-pc']):
+                feats_to_add[apc].append(feat)
+
+    if section in ('lexicon', 'morphology'):
+      # With features collected, add them to choices dict
+      target_page_choices = old_choices if section == "lexicon" else new_choices
+      for adj in feats_to_add:
+        # Add zero rules
+        argument_agreement_pc = "adj-pc%d" % (old_choices['adj-pc'].next_iter_num()
+                                              if old_choices['adj-pc'] else 1)
+        # Set up position class
+        target_page_choices[argument_agreement_pc+'_name'] = "%s_argument_agreement" % adj
+        target_page_choices[argument_agreement_pc+'_obligatory'] = 'on'
+        target_page_choices[argument_agreement_pc+'_inputs'] = adj
+        # Set up new position class as a "switching" pc
+        target_page_choices[argument_agreement_pc+'_switching'] = 'on'
+        # Define lexical rule types
+        subj_only = argument_agreement_pc+'_lrt1'
+        mod_only = argument_agreement_pc+'_lrt2'
+        # Write subject agreement rule
+        target_page_choices[subj_only+'_name'] = "%s_subj_agr" % adj
+        target_page_choices[subj_only+'_mod'] = 'pred'
+        # Write modificand agreement rule
+        target_page_choices[mod_only+"_name"] = "%s_mod_agr" % adj
+        target_page_choices[mod_only+"_mod"] = "attr"
+        # Add features from lexicon page to morphology page
+        feat_count = 1
+        for feat in feats_to_add[adj]:
+          head = feat.get('head','').lower()
+          if head in ('subj', 'mod'):
+            if head == 'subj':
+              # Copy subject agreement features
+              feature_vn = subj_only+"_feat%d" % feat_count
+            elif head == 'mod':
+              # Copy object agreement features
+              feature_vn = mod_only+"_feat%d" % feat_count
+            target_page_choices[feature_vn+'_name'] = feat.get('name')
+            target_page_choices[feature_vn+'_value'] = feat.get('value')
+            # Adjectives' MOD, XARG, and SUBJ identified
+            # so just agree with the XARG
+            target_page_choices[feature_vn+'_head'] = 'xarg'
+            # Delete this feature from current page
+            new_choices.delete(feat.full_key+'_name')
+            new_choices.delete(feat.full_key+'_value')
+            new_choices.delete(feat.full_key+'_head', prune=True)
+            feat_count += 1
+
+    # if neg-aux=on exists, create side-effect in lexicon.
     if section == 'sentential-negation' \
       and ('neg-aux' in form_data.keys() \
       or ('bineg-type' in form_data.keys() \
@@ -1423,7 +1676,7 @@ class MatrixDefFile:
 
     # add FORM subtype for neg1b-neg2b analysis
     # also add it for infl-head neg analysis
-    if section == 'sentential-negation': 
+    if section == 'sentential-negation':
       keys = form_data.keys()
       if 'neg1b-neg2b' in keys or \
         ('neg1-type' in keys and 'neg2-type' in keys and form_data['neg1-type'].value == 'fh' and form_data['neg2-type'].value == 'b') or \
@@ -1436,7 +1689,7 @@ class MatrixDefFile:
             if nfs['name'] == 'negform':
               found_negform = True
         if not found_negform:
-          old_choices['nf-subform%d_name' % next_n ] = 'negform' 
+          old_choices['nf-subform%d_name' % next_n ] = 'negform'
 
     # Now pass through the def file, writing out either the old choices
     # for each section or, for the section we're saving, the new choices
@@ -1492,7 +1745,7 @@ class MatrixDefFile:
       nli['compfeature1_name']='form'
       nli['compfeature1_value']='negform'
 
-    # if auxiliaries are off, turn them on 
+    # if auxiliaries are off, turn them on
     choices['has-aux'] = 'yes'
     return choices, next_n
 
@@ -1506,14 +1759,14 @@ class MatrixDefFile:
       vpc['lrt1_name'] = 'neg'
       lrt = old_choices['verb-pc'].get_last()['lrt'].get_last()
       new_choices['vpc-0-neg'] = 'verb-pc'+str(next_n)
-      
+
     else:
       next_n = old_choices[vpc]['lrt'].next_iter_num() if old_choices[vpc]['lrt'] else 1
     # create new lrt in this position class
       old_choices[vpc]['lrt%d_name' % next_n] = 'neg'
       # add some features for negation and empty PHON
       lrt = old_choices[vpc]['lrt'].get_last()
-    
+
     lrt['feat1_name']= 'negation'
     lrt['feat1_value'] = 'plus'
     lrt['feat1_head'] = 'verb'

@@ -155,18 +155,20 @@ function draw_hierarchy(type) {
   if(document.getElementById("result")){
     r = document.getElementById("result");
     r.style.display = "block";
+    r.style.top=window.scrollY+20+"px"; // TJT 2014-09-05: Update top position
   } else {
     r = document.createElement("div");
     r.style.position="absolute";
     r.style.border="1px solid black";
     r.style.margin="20px";
     r.id="result";
-    r.style.top=0;
+    r.style.top=window.scrollY+20+"px"; // TJT 2014-09-05: Changing this to current scroll top + 20 margin
     r.style.left=0;
     r.style.background="white";
     r.style.padding="5px";
     r.style.height="80%";
     r.style.width="80%";
+    r.style.zIndex="2"; // TJT 2014-09-05: Putting this on top of the background click out
     r.innerHTML+="<button onclick=\"remove_drawing()\">hide</button>";
     document.body.appendChild(r);
   }
@@ -178,8 +180,23 @@ function draw_hierarchy(type) {
     c = document.createElement("canvas");
     c.id="cnvs";
     r.appendChild(c);
- }
-
+  }
+ 
+  // TJT 2014-09-05: Add background element to remove drawing
+  var background = document.createElement("div");
+  background.id = "drawing_background";
+  // Basic display properties to fill screen
+  background.style.display = "block";
+  background.style.position = "fixed";
+  background.style.height = "100%";
+  background.style.width = "100%";
+  background.style.top = 0;
+  background.style.left = 0;
+  // Put behind drawing
+  background.style.zIndex = "1";
+  // Add event listener
+  background.onclick = remove_drawing;
+  document.body.appendChild(background);
 
   var h = r.clientHeight - 50;
   var w = r.clientWidth - 50;
@@ -405,6 +422,8 @@ function graph(r, nts, ntsups) {
 
 function remove_drawing() {
   var d = document.getElementById("result");
-  d.style.display="none"; 
+  d.style.display="none";
+  var b = document.getElementById("drawing_background");
+  b.parentNode.removeChild(b);
   return;
 }
