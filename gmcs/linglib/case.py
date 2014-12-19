@@ -254,12 +254,12 @@ def customize_case_adpositions(mylang, lexicon, trigger, ch):
           typedef = \
           adp_type + ' := [ SYNSEM.LOCAL [ CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX #target ] >, \
                                            CONT [ HOOK.ICONS-KEY #icons, \
-                                                  ICONS <! info-str & #icons & [ TARGET #target ] !> ] ] ] ].'
+                                                  ICONS <! info-str & #icons & [ IARG2 #target ] !> ] ] ] ].'
           lexicon.add(typedef)
           break
       if not has_inforstr_feat:
         typedef = \
-        adp_type + ' := [ SYNSEM.LOCAL.CONT [ HOOK [ ICONS-KEY.CLAUSE #clause, CLAUSE-KEY #clause ], ICONS <! !> ] ].'
+        adp_type + ' := [ SYNSEM.LOCAL.CONT [ HOOK [ ICONS-KEY.IARG1 #clause, CLAUSE-KEY #clause ], ICONS <! !> ] ].'
         lexicon.add(typedef)
 
       if cn.strip() != '':

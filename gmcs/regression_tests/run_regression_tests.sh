@@ -161,7 +161,7 @@ done
 profiles=""
 comparison=""
 
-echo "== All grammar(s) are being created. =="      
+echo "== All grammars are being created. =="      
 
 for lgname in $lgnames
 do
@@ -253,7 +253,7 @@ do
 done
 
 
-echo "== All profile(s) are being compared to the gold standards. =="      
+echo "== All profiles are being compared to the gold standards. =="      
 
 {
   options=":error :exit :wait 300"

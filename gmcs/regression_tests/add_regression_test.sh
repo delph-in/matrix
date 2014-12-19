@@ -29,6 +29,11 @@ if [ -z "${ACEROOT}" ]; then
   exit 1
 fi
 
+if [ ! -d "${ACEROOT}" ]; then
+  echo "run-regression-tests: the \$ACEROOT does not point to the directory; exit."
+  exit 1
+fi
+
 logon32=''
 if [ ! -z "${LOGON32}" ]; then
   echo "The regression test with ACE is not currently possible on a 32-bit machine; exit."

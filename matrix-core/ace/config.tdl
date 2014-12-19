@@ -47,6 +47,6 @@ ortho-max-rules := 20.
 
 enable-icons := yes.
 mrs-icons-list := ICONS LIST.
-icons-left := CLAUSE.
-icons-right := TARGET.
+icons-left := IARG1.
+icons-right := IARG2.
 

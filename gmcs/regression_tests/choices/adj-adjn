@@ -1,33 +1,64 @@
-adj n tv n
-det adj n tv n
-adj adj n tv n
-det adj adj n tv n
-n tv adj n
-n tv det adj n
-n tv adj adj n
-n tv det adj adj n
-adj n iv
-det adj n iv
-adj adj n iv
-det adj adj n iv
 
-*n adj tv n
-*adj n adj tv n
-*n adj adj tv n
-*det n adj tv n
-*det n adj adj tv n
-*det adj n adj tv n
-*n adj iv
-*adj n adj iv
-*n adj adj iv
-*det n adj iv
-*det n adj adj iv
-*det adj n adj iv
-*n tv n adj
-*n tv det n adj
-*n tv adj n adj
-*n tv det adj n adj
-*n tv n adj adj
-*n tv det n adj adj
+version=28
 
+section=general
+language=adj-adjn
 
+section=word-order
+word-order=svo
+has-dets=yes
+noun-det-order=det-noun
+has-aux=no
+
+section=number
+
+section=person
+person=none
+
+section=gender
+
+section=case
+case-marking=none
+
+section=direct-inverse
+
+section=tense-aspect-mood
+
+section=other-features
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=info-str
+
+section=arg-opt
+
+section=lexicon
+  noun1_det=opt
+    noun1_stem1_orth=n
+    noun1_stem1_pred=_n_n_rel
+  verb1_valence=intrans
+    verb1_stem1_orth=iv
+    verb1_stem1_pred=_iv_v_rel
+  verb2_valence=trans
+    verb2_stem1_orth=tv
+    verb2_stem1_pred=_tv_v_rel
+  adj1_mod=attr
+  adj1_modpos=after
+    adj1_stem1_orth=adj
+    adj1_stem1_pred=_adj_a_rel
+    det1_stem1_orth=det
+    det1_stem1_pred=_det_q_rel
+
+section=morphology
+
+section=toolbox-import
+
+section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon
