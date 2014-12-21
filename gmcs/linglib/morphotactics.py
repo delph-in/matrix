@@ -556,6 +556,10 @@ def get_infostr_constraints(choices):
 
 
 def write_rules(pch, mylang, irules, lrules, lextdl, choices):
+  # Set up irules.tdl
+  irules.define_sections([['regular','Inflecting Lexical Rule Instances',False,False],
+                          ['incorp','Incorporated Stem Lexical Rule Instances',False,False]])
+  # Set up inflectional flags
   get_infostr_constraints(choices)
   all_flags = get_all_flags('out').union(get_all_flags('in'))
   write_inflected_avms(mylang, all_flags)
@@ -727,13 +731,17 @@ def write_i_or_l_rules(irules, lrules, lrt, order):
     num = [''] if len(lrt.lris) == 1 else range(1, len(lrt.lris) + 1)
     for i, lri in enumerate(lrt.lris):
       # TJT 2014-08-20: Adding incorporated adjective stems
-      pred = ''
+      # TJT 2014-12-21: Adding sections to irules.tdl
       if lri.pred:
         pred = " &\n  [ C-CONT.RELS.LIST.FIRST.PRED \"%s\" ]" % lri.pred
+        section = "incorp"
+      else:
+        pred = ''
+        section = "regular"
       rule = '\n'.join(['-'.join([lrt.name, order + str(num[i])]) + ' :=',
                        r'%' + order + ' (* ' + lri.name + ')',
                        lrt.identifier() + pred]) + '.'
-      irules.add_literal(rule)
+      irules.add_literal(rule, section=section)
   else:
     # lexical rules # TJT 2014-12-21: cleaning this up
     lrt_id = lrt.identifier()
