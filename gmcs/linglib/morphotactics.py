@@ -253,7 +253,6 @@ def create_lexical_rule_type(lrt, mtx_supertypes, cur_pc):
   for feat in lrt.get('feat'):
     new_lrt.features[feat['name']] = {'value': feat['value'],
                                       'head': feat['head']}
-  # TODO: Move to output function
   # TJT 2014-08-27: For adjective position classes,
   # check for additional choices to copy to features
   # TJT 2014-11-06: Simplifying... just copy all choices
@@ -741,7 +740,7 @@ def write_i_or_l_rules(irules, lrules, lrt, order):
     lrules.add(lrt_id.rsplit('-rule',1)[0] + ' := ' + lrt_id + '.')
 
 def write_pc_adj_syntactic_behavior(lrt, mylang, choices):
-  # TODO: Only do this for root pcs
+  # TODO: Don't do this if a supertype is specified
   if 'mod' in lrt.features:
     if lrt.features['mod'] in ('both', 'attr'):
       # Basic attributive behavoir
