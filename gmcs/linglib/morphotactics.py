@@ -160,11 +160,10 @@ def customize_lexical_rules(choices):
   #  3. find the unique input for each PC (and create intermediate rules)
   #      (all_inputs() depends on forward-looking require constraints)
   #  4. determine and create flags based on constraints
-  pch = position_class_hierarchy(choices) # TODO: PCH seems to be deleting synth from choices file
+  pch = position_class_hierarchy(choices)
   interpret_constraints(choices)
   create_flags()
   calculate_supertypes(pch)
-  sys.stderr.write("**** CHOICES AFTER: ****\n" + str(choices) + "\n\n")
   return pch
 
 ### POSITION CLASSES AND LEXICAL RULE TYPES ###
@@ -583,22 +582,6 @@ def write_rules(pch, mylang, irules, lrules, lextdl, choices):
       write_pc_adj_syntactic_behavior(lrt, mylang, choices)
       # merged LRT/PCs have the same identifier, so don't write supertypes here
       if lrt.identifier() != pc.identifier():
-        # Add Information Structure supertypes
-        # TODO: Move this to a supertype calculation function
-        # if str(pc.identifier()) in _infostr_pc.values():
-        #   if lrt.identifier() in _infostr_lrt:
-        #     _hlist = _infostr_head[lrt.identifier()]
-        #     # TJT 2014-08-27: Changing verbose if/else chain
-        #     # to string formatting for clarity
-        #     icons_map = { "verb":"-verb",
-        #                   "subj":"-subj",
-        #                   "obj":"-comp" }
-        #     st_map = {key: icons_map[key] if key in _hlist else '' for key in icons_map}
-        #     # Requires at least object or verb
-        #     if not (st_map["subj"] or st_map["obj"]): st_map = {key: '' for key in st_map}
-        #     lrt.supertypes.add("add-icons%(subj)s%(obj)s%(verb)s-rule" % st_map)
-        #   else:
-        #     lrt.supertypes.add('no-icons-lexrule')
         write_supertypes(mylang, lrt.identifier(), lrt.all_supertypes())
     write_daughter_types(mylang, pc)
   # features need to be written later
