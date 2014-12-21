@@ -580,7 +580,7 @@ def write_rules(pch, mylang, irules, lrules, lextdl, choices):
     for lrt in sorted(pc.nodes.values(), key=lambda x: x.tdl_order):
       write_i_or_l_rules(irules, lrules, lrt, pc.order)
       # TJT 2014-08-27: Write adjective position class features
-      write_pc_adj_syntactic_behavior(lrt, mylang)
+      write_pc_adj_syntactic_behavior(lrt, mylang, choices)
       # merged LRT/PCs have the same identifier, so don't write supertypes here
       if lrt.identifier() != pc.identifier():
         # Add Information Structure supertypes
@@ -747,7 +747,7 @@ def write_i_or_l_rules(irules, lrules, lrt, order):
       lrt_id = lrt.identifier()
       lrules.add(lrt_id.rsplit('-rule',1)[0] + ' := ' + lrt_id + '.')
 
-def write_pc_adj_syntactic_behavior(lrt, mylang):
+def write_pc_adj_syntactic_behavior(lrt, mylang, choices):
   # TODO: Only do this for root pcs
   if 'mod' in lrt.features:
     if lrt.features['mod'] in ('both', 'attr'):
