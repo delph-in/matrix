@@ -164,6 +164,7 @@ def customize_lexical_rules(choices):
   interpret_constraints(choices)
   create_flags()
   calculate_supertypes(pch)
+  sys.stderr.write("**** CHOICES AFTER: ****\n" + str(choices) + "\n\n")
   return pch
 
 ### POSITION CLASSES AND LEXICAL RULE TYPES ###
@@ -412,7 +413,7 @@ def set_req_bkwd_initial_flags(lex_pc, flag_tuple):
 ### SUPERTYPES ###
 
 # add possible supertypes here
-ALL_LEX_RULE_SUPERTYPES = {'cat-change-only-lex-rule',
+ALL_LEX_RULE_SUPERTYPES = ['cat-change-only-lex-rule',
                            'same-agr-lex-rule',
                            'cont-change-only-lex-rule',
                            'add-only-no-rels-hcons-rule',
@@ -421,16 +422,20 @@ ALL_LEX_RULE_SUPERTYPES = {'cat-change-only-lex-rule',
                            'head-change-only-lex-rule',
                            'infl-lex-rule',
                            'const-lex-rule',
-                           'lex-rule'}
+                           'lex-rule']
 
-LEX_RULE_SUPERTYPES = {'cat-change-only-lex-rule',
+LEX_RULE_SUPERTYPES = ['cat-change-only-lex-rule',
                        'val-and-cont-change-lex-rule',
                        'add-only-rule',
                        'same-head-lex-rule',
                        'val-change-only-lex-rule',
                        'head-change-only-lex-rule',
                        'cont-change-only-lex-rule',
-                       'add-only-no-ccont-rule'}
+                       'add-only-no-ccont-rule']
+
+# TJT 2014-12-19: Make these sets for performance
+ALL_LEX_RULE_SUPERTYPES = set(ALL_LEX_RULE_SUPERTYPES)
+LEX_RULE_SUPERTYPES = set(LEX_RULE_SUPERTYPES)
 
 def set_lexical_rule_supertypes(lrt, mtx_supertypes):
   """
@@ -553,17 +558,9 @@ def get_infostr_constraints(choices):
 
 
 def write_rules(pch, mylang, irules, lrules, lextdl, choices):
-<<<<<<< .mine
-  # Set up irules.tdl
-  irules.define_sections([['regular','Inflecting Lexical Rule Instances',False,False],
-                          ['incorp','Incorporated Stem Lexical Rule Instances',False,False]])
-  # Set up inflectional flags
-=======
   get_infostr_constraints(choices)
->>>>>>> .r33352
   all_flags = get_all_flags('out').union(get_all_flags('in'))
   write_inflected_avms(mylang, all_flags)
-  # Write lexical rules to mylang.tdl, lrules.tdl, and irules.tdl
   mylang.set_section('lexrules')
   # First write any intermediate types (keep them together)
   write_intermediate_types(mylang)
@@ -583,13 +580,10 @@ def write_rules(pch, mylang, irules, lrules, lextdl, choices):
     for lrt in sorted(pc.nodes.values(), key=lambda x: x.tdl_order):
       write_i_or_l_rules(irules, lrules, lrt, pc.order)
       # TJT 2014-08-27: Write adjective position class features
-      write_pc_adj_syntactic_behavior(lrt, mylang)
+      write_pc_adj_syntactic_behavior(lrt, mylang, choices)
       # merged LRT/PCs have the same identifier, so don't write supertypes here
       if lrt.identifier() != pc.identifier():
         # Add Information Structure supertypes
-<<<<<<< .mine
-        lrt = add_infostr_supertypes(lrt)
-=======
         # TODO: Move this to a supertype calculation function
         # if str(pc.identifier()) in _infostr_pc.values():
         #   if lrt.identifier() in _infostr_lrt:
@@ -605,7 +599,6 @@ def write_rules(pch, mylang, irules, lrules, lextdl, choices):
         #     lrt.supertypes.add("add-icons%(subj)s%(obj)s%(verb)s-rule" % st_map)
         #   else:
         #     lrt.supertypes.add('no-icons-lexrule')
->>>>>>> .r33352
         write_supertypes(mylang, lrt.identifier(), lrt.all_supertypes())
     write_daughter_types(mylang, pc)
   # features need to be written later
@@ -752,23 +745,19 @@ def write_i_or_l_rules(irules, lrules, lrt, order):
     num = [''] if len(lrt.lris) == 1 else range(1, len(lrt.lris) + 1)
     for i, lri in enumerate(lrt.lris):
       # TJT 2014-08-20: Adding incorporated adjective stems
+      pred = ''
       if lri.pred:
         pred = " &\n  [ C-CONT.RELS.LIST.FIRST.PRED \"%s\" ]" % lri.pred
-        section = "incorp"
-      else:
-        pred = ''
-        section = "regular"
       rule = '\n'.join(['-'.join([lrt.name, order + str(num[i])]) + ' :=',
                        r'%' + order + ' (* ' + lri.name + ')',
                        lrt.identifier() + pred]) + '.'
-      irules.add_literal(rule, section=section)
+      irules.add_literal(rule)
   else:
-    # lexical rules
-    for lri in lrt.lris:
-      lrt_id = lrt.identifier()
-      lrules.add(lrt_id.rsplit('-rule',1)[0] + ' := ' + lrt_id + '.')
+    # lexical rules # TJT 2014-12-21: cleaning this up
+    lrt_id = lrt.identifier()
+    lrules.add(lrt_id.rsplit('-rule',1)[0] + ' := ' + lrt_id + '.')
 
-def write_pc_adj_syntactic_behavior(lrt, mylang):
+def write_pc_adj_syntactic_behavior(lrt, mylang, choices):
   # TODO: Only do this for root pcs
   if 'mod' in lrt.features:
     if lrt.features['mod'] in ('both', 'attr'):
@@ -803,23 +792,6 @@ def write_pc_adj_syntactic_behavior(lrt, mylang):
         lrt.supertypes.add('stative-pred-lex-rule')
         # TJT: 2014-09-24: Stative predicate lexical rule is PRD -
         mylang.add(lrt.identifier() + ''' := [ SYNSEM.LOCAL.CAT.HEAD.PRD - ].''')
-
-def add_infostr_supertypes(lrt):
-  if str(pc.identifier()) in _infostr_pc.values():
-    if lrt.identifier() in _infostr_lrt:
-      _hlist = _infostr_head[lrt.identifier()]
-      # TJT 2014-08-27: Changing verbose if/else chain
-      # to string formatting for clarity
-      icons_map = { "verb":"-verb",
-                    "subj":"-subj",
-                    "obj":"-comp" }
-      st_map = {key: icons_map[key] if key in _hlist else '' for key in icons_map}
-      # Requires at least object or verb
-      if not (st_map["subj"] or st_map["obj"]): st_map = {key: '' for key in st_map}
-      lrt.supertypes.add("add-icons%(subj)s%(obj)s%(verb)s-rule" % st_map)
-    else:
-      lrt.supertypes.add('no-icons-rule')
-  return lrt
 
 ##################
 ### VALIDATION ###
@@ -1074,10 +1046,18 @@ def warn_merged_pcs(all_pcs, vr):
       for inp in pc.get('inputs',[]):
         input_map[inp][order].add(pc_name)
   # Warn for each obligatory position class with equal inputs and orders
-  pcs_to_be_merged = {pc for inp in input_map
-                      for order in input_map[inp]
-                      for pc in input_map[inp][order]
-                      if len(input_map[inp][order]) > 1}
+#   pcs_to_be_merged = {pc for inp in input_map
+#                       for order in input_map[inp]
+#                       for pc in input_map[inp][order]
+#                       if len(input_map[inp][order]) > 1}
+  # TJT 2014-12-19: Converting above set comprehension 
+  # to loop for older python versions
+  pcs_to_be_merged = set()
+  for inp in input_map:
+    for order in input_map[inp]:
+      if len(input_map[inp][order]) > 1:
+        for pc in input_map[inp][order]:
+          pcs_to_be_merged.add(pc)
   for pc in pcs_to_be_merged:
     difference = pcs_to_be_merged.copy()
     difference.remove(pc)
