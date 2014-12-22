@@ -160,7 +160,7 @@ def customize_lexical_rules(choices):
   #  3. find the unique input for each PC (and create intermediate rules)
   #      (all_inputs() depends on forward-looking require constraints)
   #  4. determine and create flags based on constraints
-  pch = position_class_hierarchy(choices) # TODO: PCH seems to be deleting synth from choices file
+  pch = position_class_hierarchy(choices)
   interpret_constraints(choices)
   create_flags()
   calculate_supertypes(pch)
@@ -253,7 +253,6 @@ def create_lexical_rule_type(lrt, mtx_supertypes, cur_pc):
   for feat in lrt.get('feat'):
     new_lrt.features[feat['name']] = {'value': feat['value'],
                                       'head': feat['head']}
-  # TODO: Move to output function
   # TJT 2014-08-27: For adjective position classes,
   # check for additional choices to copy to features
   # TJT 2014-11-06: Simplifying... just copy all choices
@@ -557,6 +556,10 @@ def get_infostr_constraints(choices):
 
 
 def write_rules(pch, mylang, irules, lrules, lextdl, choices):
+  # Set up irules.tdl
+  irules.define_sections([['regular','Inflecting Lexical Rule Instances',False,False],
+                          ['incorp','Incorporated Stem Lexical Rule Instances',False,False]])
+  # Set up inflectional flags
   get_infostr_constraints(choices)
   all_flags = get_all_flags('out').union(get_all_flags('in'))
   write_inflected_avms(mylang, all_flags)
@@ -579,58 +582,9 @@ def write_rules(pch, mylang, irules, lrules, lextdl, choices):
     for lrt in sorted(pc.nodes.values(), key=lambda x: x.tdl_order):
       write_i_or_l_rules(irules, lrules, lrt, pc.order)
       # TJT 2014-08-27: Write adjective position class features
-      # TODO: Only do this for root pcs
-      if 'mod' in lrt.features:
-        if lrt.features['mod'] in ('both', 'attr'):
-          # Basic attributive behavoir
-          mylang.add(lrt.identifier() + " := attr-adj-lex-rule.")
-          # Attributive only
-          if lrt.features['mod'] == "attr":
-            mylang.add(lrt.identifier() + ''' := attr-adj-lex-rule &
-                         [ SYNSEM.LOCAL.CAT [ VAL.SUBJ < >,
-                                              HEAD.PRD - ] ].''')
-          # Modification direction
-          modpos = choices.get(lrt.key+'_modpos','')
-          # Options are adjective modifying nouns "before the adjective",
-          # "after the adjective", or "either position"
-          if modpos in ('before','after'):
-            posthead = {'before':'+', 'after':'-'}[modpos]
-            mylang.add(lrt.identifier() + (' := [ SYNSEM.LOCAL.CAT.POSTHEAD %s ].' % posthead))
-        if lrt.features['mod'] in ('both', 'pred'):
-          if lrt.features['mod'] == "pred":
-            # Predicative only
-            mylang.add(lrt.identifier() + " := [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].")
-          #elif lrt.features['mod'] == "both":
-            # Do nothing... gets PRD or stative predicate from below
-          # TJT 2014-08-27: Making 'predcop' dependent on 'mod: pred or both'
-          if 'predcop' in lrt.features:
-            # This is the copula complement LRT
-            mylang.add(lrt.identifier() + ''' := [ SYNSEM.LOCAL.CAT [ HEAD.PRD +
-                                                                      VAL.SUBJ < > ] ].''')
-          else:
-            # This is the stative predicate LRT
-            # This only fires if "mod" is ("both" or "pred") and "pred" not checked
-            lrt.supertypes.add('stative-pred-lex-rule')
-            # TJT: 2014-09-24: Stative predicate lexical rule is PRD -
-            mylang.add(lrt.identifier() + ''' := [ SYNSEM.LOCAL.CAT.HEAD.PRD - ].''')
+      write_pc_adj_syntactic_behavior(lrt, mylang, choices)
       # merged LRT/PCs have the same identifier, so don't write supertypes here
       if lrt.identifier() != pc.identifier():
-        # Add Information Structure supertypes
-        # TODO: Move this to a supertype calculation function
-        # if str(pc.identifier()) in _infostr_pc.values():
-        #   if lrt.identifier() in _infostr_lrt:
-        #     _hlist = _infostr_head[lrt.identifier()]
-        #     # TJT 2014-08-27: Changing verbose if/else chain
-        #     # to string formatting for clarity
-        #     icons_map = { "verb":"-verb",
-        #                   "subj":"-subj",
-        #                   "obj":"-comp" }
-        #     st_map = {key: icons_map[key] if key in _hlist else '' for key in icons_map}
-        #     # Requires at least object or verb
-        #     if not (st_map["subj"] or st_map["obj"]): st_map = {key: '' for key in st_map}
-        #     lrt.supertypes.add("add-icons%(subj)s%(obj)s%(verb)s-rule" % st_map)
-        #   else:
-        #     lrt.supertypes.add('no-icons-lexrule')
         write_supertypes(mylang, lrt.identifier(), lrt.all_supertypes())
     write_daughter_types(mylang, pc)
   # features need to be written later
@@ -777,18 +731,57 @@ def write_i_or_l_rules(irules, lrules, lrt, order):
     num = [''] if len(lrt.lris) == 1 else range(1, len(lrt.lris) + 1)
     for i, lri in enumerate(lrt.lris):
       # TJT 2014-08-20: Adding incorporated adjective stems
-      pred = ''
+      # TJT 2014-12-21: Adding sections to irules.tdl
       if lri.pred:
         pred = " &\n  [ C-CONT.RELS.LIST.FIRST.PRED \"%s\" ]" % lri.pred
+        section = "incorp"
+      else:
+        pred = ''
+        section = "regular"
       rule = '\n'.join(['-'.join([lrt.name, order + str(num[i])]) + ' :=',
                        r'%' + order + ' (* ' + lri.name + ')',
                        lrt.identifier() + pred]) + '.'
-      irules.add_literal(rule)
+      irules.add_literal(rule, section=section)
   else:
-    # lexical rules
-    for lri in lrt.lris:
-      lrt_id = lrt.identifier()
-      lrules.add(lrt_id.rsplit('-rule',1)[0] + ' := ' + lrt_id + '.')
+    # lexical rules # TJT 2014-12-21: cleaning this up
+    lrt_id = lrt.identifier()
+    lrules.add(lrt_id.rsplit('-rule',1)[0] + ' := ' + lrt_id + '.')
+
+def write_pc_adj_syntactic_behavior(lrt, mylang, choices):
+  # TODO: Don't do this if a supertype is specified
+  if 'mod' in lrt.features:
+    if lrt.features['mod'] in ('both', 'attr'):
+      # Basic attributive behavoir
+      mylang.add(lrt.identifier() + " := attr-adj-lex-rule.")
+      # Attributive only
+      if lrt.features['mod'] == "attr":
+        mylang.add(lrt.identifier() + ''' := attr-adj-lex-rule &
+                     [ SYNSEM.LOCAL.CAT [ VAL.SUBJ < >,
+                                          HEAD.PRD - ] ].''')
+      # Modification direction
+      modpos = choices.get(lrt.key+'_modpos','')
+      # Options are adjective modifying nouns "before the adjective",
+      # "after the adjective", or "either position"
+      if modpos in ('before','after'):
+        posthead = {'before':'+', 'after':'-'}[modpos]
+        mylang.add(lrt.identifier() + (' := [ SYNSEM.LOCAL.CAT.POSTHEAD %s ].' % posthead))
+    if lrt.features['mod'] in ('both', 'pred'):
+      if lrt.features['mod'] == "pred":
+        # Predicative only
+        mylang.add(lrt.identifier() + " := [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].")
+      #elif lrt.features['mod'] == "both":
+        # Do nothing... gets PRD or stative predicate from below
+      # TJT 2014-08-27: Making 'predcop' dependent on 'mod: pred or both'
+      if 'predcop' in lrt.features:
+        # This is the copula complement LRT
+        mylang.add(lrt.identifier() + ''' := [ SYNSEM.LOCAL.CAT [ HEAD.PRD +
+                                                                  VAL.SUBJ < > ] ].''')
+      else:
+        # This is the stative predicate LRT
+        # This only fires if "mod" is ("both" or "pred") and "pred" not checked
+        lrt.supertypes.add('stative-pred-lex-rule')
+        # TJT: 2014-09-24: Stative predicate lexical rule is PRD -
+        mylang.add(lrt.identifier() + ''' := [ SYNSEM.LOCAL.CAT.HEAD.PRD - ].''')
 
 ##################
 ### VALIDATION ###
