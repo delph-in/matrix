@@ -799,7 +799,7 @@ def validate(choices, vr):
     switching = pc.get('switching',False)
     pc_switching_inputs = set()
     if pc.get('switching',''):
-      inputs = pc.get('inputs',[]).split(', ')
+      inputs = pc.get('inputs','').split(', ')
       if isinstance(inputs, basestring):
         pc_switching_inputs.add(inputs)
       else: # assume list
