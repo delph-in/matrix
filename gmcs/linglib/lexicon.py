@@ -558,7 +558,7 @@ def validate_lexicon(ch, vr):
   adj_pc_switching_inputs = set()
   for adj_pc in ch.get('adj-pc',[]):
     if adj_pc.get('switching',''):
-      inputs = adj_pc.get('inputs',[]).split(', ')
+      inputs = adj_pc.get('inputs','').split(', ')
       if isinstance(inputs, basestring):
         adj_pc_switching_inputs.add(inputs)
         continue
