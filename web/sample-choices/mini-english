@@ -1,5 +1,5 @@
 
-version=27
+version=28
 
 section=general
 language=mini English
@@ -74,6 +74,21 @@ section=lexicon
     adj1_stem1_pred=_big_a_rel
     adj1_stem2_orth=small
     adj1_stem2_pred=_small_a_rel
+  cop1_name=3rd-sg
+  cop1_comptype=ap
+    cop1_feat1_name=number
+    cop1_feat1_value=sg
+    cop1_feat1_head=subj
+    cop1_feat2_name=person
+    cop1_feat2_value=3rd
+    cop1_feat2_head=subj
+    cop1_stem1_orth=is
+  cop2_name=pl
+  cop2_comptype=ap
+    cop2_feat1_name=number
+    cop2_feat1_value=pl
+    cop2_feat1_head=subj
+    cop2_stem1_orth=are
     det1_stem1_orth=the
     det1_stem1_pred=_def_q_rel
 
