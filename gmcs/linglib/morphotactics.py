@@ -808,7 +808,7 @@ def validate(choices, vr):
       lrt_validation(lrt, vr, index_feats, choices, inputs=pc_switching_inputs, switching=switching)
     # TJT 2014-08-21: Validate incorporated stems
     for lrt in pc.get('is-lrt', []):
-      lrt_validation(lrt, vr, index_feats, choices, incorp=True, inputs=pc_switching_inputs, switching=switching)
+      lrt_validation(lrt, vr, index_feats, choices, inputs=pc_switching_inputs, switching=switching, incorp=True)
   cycle_validation(choices, vr)
 
 def basic_pc_validation(choices, pc, vr):
