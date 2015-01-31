@@ -1923,6 +1923,8 @@ basic-head-opt-comp-phrase := head-valence-phrase & head-only &
 ; down to decl-head-opt-subj-phrase, since we might *not* want it for
 ; imperatives.
 
+; TJT 1-30-15: adding HEAD-DTR...HEAD.MOD < > to keep from applying to attributive adjectives.
+
 basic-head-opt-subj-phrase := head-valence-phrase & head-only &
   [ INFLECTED #infl,
     SYNSEM canonical-synsem &
@@ -1933,7 +1935,8 @@ basic-head-opt-subj-phrase := head-valence-phrase & head-only &
 			    POSTHEAD #ph ],
 		MODIFIED #mod ],
     HEAD-DTR [ INFLECTED #infl & infl-satisfied,
-	       SYNSEM [ LOCAL [ CAT [ VAL [ SUBJ < unexpressed-reg &
+	       SYNSEM [ LOCAL [ CAT [ HEAD.MOD < >,
+	       	      	      	      VAL [ SUBJ < unexpressed-reg &
 						   [ OPT +,
 						     LOCAL.CONT.HOOK [ INDEX #index & [ COG-ST in-foc ],
 								       ICONS-KEY #ikey,
