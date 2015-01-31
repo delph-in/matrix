@@ -745,10 +745,6 @@ def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
           # Add additional supertype
           if root: stype_def += 'stative-pred-adj-lex & '
 
-    # If input is "any adjective", add adj-lex supertype
-    # to hook up inflection flags
-    if adj_types['any_adj']: stype_def += "adj-lex & "
-
     # Calculate HEAD value
     head = ''
     if pred and modunique:
