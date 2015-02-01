@@ -1,3 +1,4 @@
+
 ;;; -*- Mode: TDL; Package: LKB -*-
 ;;;
 ;;; HPSG Grammar Matrix
@@ -1923,8 +1924,6 @@ basic-head-opt-comp-phrase := head-valence-phrase & head-only &
 ; down to decl-head-opt-subj-phrase, since we might *not* want it for
 ; imperatives.
 
-; TJT 1-30-15: adding HEAD-DTR...HEAD.MOD < > to keep from applying to attributive adjectives.
-
 basic-head-opt-subj-phrase := head-valence-phrase & head-only &
   [ INFLECTED #infl,
     SYNSEM canonical-synsem &
@@ -1935,7 +1934,7 @@ basic-head-opt-subj-phrase := head-valence-phrase & head-only &
 			    POSTHEAD #ph ],
 		MODIFIED #mod ],
     HEAD-DTR [ INFLECTED #infl & infl-satisfied,
-	       SYNSEM [ LOCAL [ CAT [ HEAD.MOD < >,
+	       SYNSEM [ LOCAL [ CAT [ HEAD.MOD olist,
 	       	      	      	      VAL [ SUBJ < unexpressed-reg &
 						   [ OPT +,
 						     LOCAL.CONT.HOOK [ INDEX #index & [ COG-ST in-foc ],
@@ -2157,7 +2156,8 @@ extracted-adj-phrase := basic-extracted-adj-phrase &
 ; be matched to head-daughters LIGHT value.
 ; ASF (2008-11-03) for the v2 analysis, the MC feature cannot be shared between
 ; mother and non-head-daughter, token-identity removed
-
+; TJT 2015-01-31 Adding [MOD.OPT -] to NON-HEAD-DTR to keep predicative
+; adjectives out of optional subject constructions
 
 basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
   [ SYNSEM [ LOCAL.CAT.MKG #mkg,
@@ -2186,9 +2186,10 @@ basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
                                                       MC #hmc ],
                                                 AGR #agr,
                                                 CONT.HOOK #hdhook ],
-                                        NON-LOCAL #nonloc,
-					LIGHT #light,
-                                        MODIFIED #modif ] > ],
+                                          NON-LOCAL #nonloc,
+					  LIGHT #light,
+                                          MODIFIED #modif,
+					  OPT - ] > ],
 			   VAL [ COMPS olist, 
 				 SPR olist ], 
                            MKG #mkg ],
