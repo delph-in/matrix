@@ -799,7 +799,7 @@ def validate(choices, vr):
     switching = pc.get('switching',False)
     pc_switching_inputs = set()
     if pc.get('switching',''):
-      inputs = pc.get('inputs','').split(', ')
+      inputs = pc.get('inputs',[]).split(', ')
       if isinstance(inputs, basestring):
         pc_switching_inputs.add(inputs)
       else: # assume list
@@ -808,7 +808,7 @@ def validate(choices, vr):
       lrt_validation(lrt, vr, index_feats, choices, inputs=pc_switching_inputs, switching=switching)
     # TJT 2014-08-21: Validate incorporated stems
     for lrt in pc.get('is-lrt', []):
-      lrt_validation(lrt, vr, index_feats, choices, inputs=pc_switching_inputs, switching=switching, incorp=True)
+      lrt_validation(lrt, vr, index_feats, choices, incorp=True, inputs=pc_switching_inputs, switching=switching)
   cycle_validation(choices, vr)
 
 def basic_pc_validation(choices, pc, vr):
@@ -892,6 +892,11 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
         vr.err(feat.full_key + '_head',
                'This feature is associated with nouns, ' +\
                'please select one of the NP options.')
+  # TJT 2015-02-02: Any given LRT should be either inflecting or non-inflecting
+  if len(filter(get('inflecting'), lrt.get('lri',[]))) != len(lrt.get('lri',[])):
+    vr.err(lrt.full_key + '_name',
+           'Any given Lexical Rule Type should contain either inflecting Lexical Rule Instances ' +\
+           'or non-inflecting Lexical Rule Instances.')
   orths = set()
   for lri in lrt.get('lri', []):
     orth = lri.get('orth', '')
