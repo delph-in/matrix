@@ -893,9 +893,8 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
                'This feature is associated with nouns, ' +\
                'please select one of the NP options.')
   # TJT 2015-02-02: Any given LRT should be either inflecting or non-inflecting
-  value = len(filter(None, [lri.get('inflecting')=="yes" for lri in lrt.get('lri',[])]))
-  #raise Exception(value)
-  if value not in (0, len(lrt.get('lri',[]))):
+  inflecting_count = len(filter(None, [lri.get('inflecting')=="yes" for lri in lrt.get('lri',[])]))
+  if inflecting_count not in (0, len(lrt.get('lri',[]))):
     vr.err(lrt.full_key + '_name',
            'Any given Lexical Rule Type should contain either inflecting Lexical Rule Instances ' +\
            'or non-inflecting Lexical Rule Instances.')
