@@ -894,7 +894,7 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
                'please select one of the NP options.')
   # TJT 2015-02-02: Any given LRT should be either inflecting or non-inflecting
   value = len(filter(None, [lri.get('inflecting')=="on" for lri in lrt.get('lri',[])]))
-  raise Exception(value)
+  #raise Exception(value)
   if value != len(lrt.get('lri',[])):
     vr.err(lrt.full_key + '_name',
            'Any given Lexical Rule Type should contain either inflecting Lexical Rule Instances ' +\
