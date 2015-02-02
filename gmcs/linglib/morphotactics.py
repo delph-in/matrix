@@ -893,7 +893,7 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
                'This feature is associated with nouns, ' +\
                'please select one of the NP options.')
   # TJT 2015-02-02: Any given LRT should be either inflecting or non-inflecting
-  value = len(filter(None, [lri.get('inflecting')=="on" for lri in lrt.get('lri',[])]))
+  value = len(filter(None, [lri.get('inflecting')=="yes" for lri in lrt.get('lri',[])]))
   #raise Exception(value)
   if value != len(lrt.get('lri',[])):
     vr.err(lrt.full_key + '_name',
