@@ -3042,12 +3042,14 @@ no-mod-lex := no-hcons-lex-item &
 
 ; TJT 2014-04-24 New adjective hierarchy
 ; TJT 2014-09-04 Most of the adjective hierarchy is now calculated for mylanguage.tdl in order to accomodate argument agreement languages.
+; TJT 2015-02-03 Adjective's specifiers are degree words, currently modeled as adverbs. One day a degree word category should probably be made...
 
 basic-adjective-lex := norm-sem-lex-item &
   [ SYNSEM [ LOCAL [ CAT [ HEAD adj,
                            VAL [ COMPS < >,
 				 SPEC < >,
-                                 SPR.FIRST.LOCAL.CONT.HOOK.XARG #index ] ] ],
+                                 SPR.FIRST.LOCAL [ CAT.HEAD adv,
+						   CONT.HOOK.XARG #index ] ] ] ],
              LKEYS.KEYREL event-relation & 
 	      		  [ ARG0 #index ] ] ].
 
