@@ -96,7 +96,8 @@ def used_lexical_supertypes(choices):
   lexical_supertypes) that will actually be used in the grammar.
   """
   # TJT 2014-09-08: Changing this to set comprehension and adding "cop"
-  used = {item for item in ('noun','aux','adj','det','cop') if item in choices}
+  # TJT 2014-12-19: Changing back to loop for older versions of python
+  used = set([item for item in ('noun','aux','adj','det','cop') if item in choices])
   if 'verb' in choices:
     used.add('verb')
     used.update([case.interpret_verb_valence(v['valence'])
@@ -184,8 +185,10 @@ def validate_lexicon(ch, vr):
   # both nominal and verbal constraints to constrain adjective agreement and
   # inflection properly
 
-  index_features = {'person', 'number','gender'}
-  head_features = {'tense', 'aspect', 'mood'}
+  # TJT 2014-12-19: Changing these set declarations to list declarations for
+  # older versions of python
+  index_features = set(['person', 'number','gender'])
+  head_features = set(['tense', 'aspect', 'mood'])
   for feature in ch.get('feature'):
     if 'name' in feature:
       if feature.get('type') == 'index':
@@ -555,15 +558,28 @@ def validate_lexicon(ch, vr):
 
   # Adjectives TJT 2014-08-25
   # First, gather switching adjective position classes' inputs
+  # TJT 2015-02-05: adding adj_switching_dict to map lexical types to position classes
   adj_pc_switching_inputs = set()
+  adj_switching_dict = defaultdict(list) # lt -> pc
   for adj_pc in ch.get('adj-pc',[]):
     if adj_pc.get('switching',''):
-      inputs = adj_pc.get('inputs','').split(', ')
+      inputs = adj_pc.get('inputs',[]).split(', ')
       if isinstance(inputs, basestring):
         adj_pc_switching_inputs.add(inputs)
-        continue
-      # Else, assume list
-      adj_pc_switching_inputs.update(inputs)
+        if isinstance(inputs, LexicalType):
+          adj_switching_dict[inputs].append(adj_pc)
+      else:
+        # Else, assume list
+        adj_pc_switching_inputs.update(inputs)
+        lexicalTypes = (isinstance(mn, LexicalType) for mn in inputs)
+        for lt in lexicalTypes:
+          adj_switching_dict[lt].extend(adj_pc)
+
+  # TJT 2015-02-05: Check for conflicts between switching position classes and their
+  # input lexical types
+  # CHECKS EACH LEXICAL TYPE THAT IS INPUT TO SWITCHING CLASS
+  #for adj in adj_switching_dict:
+    
 
   for adj in ch.get('adj',[]):
     mode = adj.get('mod','')
@@ -654,16 +670,13 @@ def validate_lexicon(ch, vr):
               if supertype_value != adj_value:
                 # Check for unifiable constraints
                 ## Both and predicative/attributive unify
-                if supertype_value == 'both' and \
-                   adj_value in ('pred', 'attr'):
+                if supertype_value == 'both' and adj_value in ('pred', 'attr'):
                   continue
                 ## Either position and before/after unify
-                if supertype_value == 'either' and \
-                   adj_value in ('before', 'after'):
+                elif supertype_value == 'either' and adj_value in ('before', 'after'):
                   continue
                 ## modunique underspecified can be the parent of modunique +
-                if supertype_def.get(choice,'missing') == 'missing' and \
-                   adj.get(choice,'') == 'on':
+                if supertype_def.get(choice,'missing') == 'missing' and adj.get(choice,'') == 'on':
                   continue
                 # Found collision
                 vr.err(adj.full_key+'_supertypes',
@@ -710,6 +723,22 @@ def validate_lexicon(ch, vr):
         if not adj.get('predcop'):
           message = 'This choice is required for adjectives that can be predicative'
           vr.err(adj.full_key+"_predcop", message)
+
+    # If adjective is 
+    # CHECK THAT EACH LT IS FULLY FORMED HERE OR IN A POSITION CLASS
+    # TODO: this
+    if predcop == "opt":
+      if adj not in adj_switching_dict:
+        vr.err(adj.full_key+'_predcop',
+               'Adjective types specified as optionally copula complement must ' +\
+               'be the input to a position class on the Morphology page ' +\
+               'that enables this functionality.')
+
+    # if any(feat.get('head','') in ('subj','mod') for feat in adj.get('feat',[])):
+    #   if adj not in adj_switching_dict:
+    #     vr.err(adj.full_key+'_',
+    #            '')
+      
 
     # Check for clashes between inherited features and specified features
     inherited_feats = defaultdict(dict) # name -> 'value' -> value, 'specified on' -> head
