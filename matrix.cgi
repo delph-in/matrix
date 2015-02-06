@@ -91,7 +91,7 @@ if form_data.has_key('choices'):
     elif choices.startswith('collage/'):
       # Get choices files from CoLLAGE
       # should be 3 or 7 letter keys... doesn't work for other length keys
-      if len(choices) in ((len('collage/') + 3), (len('collage/') + 7):
+      if len(choices) in ((len('collage/') + 3), (len('collage/') + 7)):
 	import urllib2, tarfile, StringIO
         choices = 'http://www.delph-in.net/matrix/language-'+choices+'/choices-final.tgz'
         try:
