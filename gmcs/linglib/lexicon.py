@@ -573,8 +573,6 @@ def validate_lexicon(ch, vr):
         for name in inputs:
           adj_switching_dict[name].extend(adj_pc)
 
-  raise Exception(adj_switching_dict)
-
   # TJT 2015-02-05: Check for conflicts between switching position classes and their
   # input lexical types
   # CHECKS EACH LEXICAL TYPE THAT IS INPUT TO SWITCHING CLASS
