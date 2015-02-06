@@ -575,7 +575,7 @@ def validate_lexicon(ch, vr):
   for adj in adj_pc_switching_inputs:
     for pc in adj_pc_switching_inputs.get(adj):
       if not (ch.get(adj, ChoiceDict()).get('mod','') == 'none' or ch.get(adj, ChoiceDict()).get('predcop','') == 'opt'):
-        vr.err(pc+'_name',
+        vr.err(pc.full_key+'_name',
                'This position class was created to enable behavior on ' +\
                'an adjectival lexical type on the Lexicon page which is ' +\
                'no longer configured to require this position class. You ' +\
