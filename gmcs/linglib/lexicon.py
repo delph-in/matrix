@@ -558,26 +558,28 @@ def validate_lexicon(ch, vr):
 
   # Adjectives TJT 2014-08-25
   # First, gather switching adjective position classes' inputs
-  # TJT 2015-02-05: adding adj_switching_dict to map lexical types to position classes
-  adj_pc_switching_inputs = set()
-  adj_switching_dict = defaultdict(list) # lt -> pc
+  adj_pc_switching_inputs = defaultdict(list)
   for adj_pc in ch.get('adj-pc',[]):
     if adj_pc.get('switching',''):
       inputs = adj_pc.get('inputs',[]).split(', ')
       if isinstance(inputs, basestring):
-        adj_pc_switching_inputs.add(inputs)
-        adj_switching_dict[inputs].append(adj_pc)
+        adj_pc_switching_inputs[inputs].append(adj_pc)
       else:
         # Else, assume list
-        adj_pc_switching_inputs.update(inputs)
-        for name in inputs:
-          adj_switching_dict[name].extend(adj_pc)
+        for item in inputs:
+          adj_pc_switching_inputs[item].append(adj_pc)
 
-  # TJT 2015-02-05: Check for conflicts between switching position classes and their
-  # input lexical types
-  # CHECKS EACH LEXICAL TYPE THAT IS INPUT TO SWITCHING CLASS
-  #for adj in adj_switching_dict:
-    
+  # TJT 2015-02-05: Check for conflicts between switching position classes
+  # and their input lexical types
+  for adj in adj_pc_switching_inputs:
+    for pc in adj_pc_switching_inputs.get(adj):
+      if not (ch.get(adj).get('mod','') == 'none' or ch.get(adj).get('predcop','') == 'opt'):
+        vr.err(pc+'_name',
+               'This position class was created to enable behavior on ' +\
+               'an adjectival lexical type on the Lexicon page which is ' +\
+               'no longer configured to require this position class. You ' +\
+               'should either delete this position class or double check ' +\
+               'your types on the Lexicon page.')
 
   for adj in ch.get('adj',[]):
     mode = adj.get('mod','')
@@ -701,9 +703,6 @@ def validate_lexicon(ch, vr):
                  'Unspecified adjectives must be specified for mode by ' +\
                  'some position class on the Morphology page enabled by using ' +\
                  'argument agreement choices on the feature section below.')
-                 #(' The current full_key is: %s' % adj.full_key) +\
-                 #(' full_key in adj_pc_switching_inputs: %s' % str(adj.full_key in adj_pc_switching_inputs)) +\
-                 #' The switching position class inputs are: %s' % adj_pc_switching_inputs)
 
     # Print info boxes on inherited choices
     else:
@@ -725,11 +724,18 @@ def validate_lexicon(ch, vr):
     # If adjective is optionally a copula complement, it must have an associated
     # switching position class defined on the Morphology page.
     if adj.get('predcop','') == "opt":
-      if adj.full_key not in adj_switching_dict:
+      if adj.full_key not in adj_pc_switching_inputs:
         vr.err(adj.full_key+'_predcop',
                'Adjective types specified as optionally copula complement must ' +\
                'be the input to a position class on the Morphology page ' +\
                'that enables this functionality.')
+
+    # if adj.get('mod','') == 'none':
+    #   if adj.full_key not in adj_pc_switching_inputs:
+    #     vr.err(adj.full_key+'_mod',
+    #            'Adjective types with unspecified syntactic behavior must ' +\
+    #            'be the input to a position class on the Morphology page ' +\
+    #            'that enables this functionality.')      
 
     # Check for clashes between inherited features and specified features
     inherited_feats = defaultdict(dict) # name -> 'value' -> value, 'specified on' -> head
