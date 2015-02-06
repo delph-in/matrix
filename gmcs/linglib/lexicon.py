@@ -566,14 +566,15 @@ def validate_lexicon(ch, vr):
       inputs = adj_pc.get('inputs',[]).split(', ')
       if isinstance(inputs, basestring):
         adj_pc_switching_inputs.add(inputs)
-        if isinstance(inputs, LexicalType):
-          adj_switching_dict[inputs].append(adj_pc)
+        adj_switching_dict[inputs].append(adj_pc)
       else:
         # Else, assume list
         adj_pc_switching_inputs.update(inputs)
         lexicalTypes = (isinstance(mn, LexicalType) for mn in inputs)
         for lt in lexicalTypes:
           adj_switching_dict[lt].extend(adj_pc)
+
+  raise Exception(adj_switching_dict)
 
   # TJT 2015-02-05: Check for conflicts between switching position classes and their
   # input lexical types
@@ -732,7 +733,7 @@ def validate_lexicon(ch, vr):
         vr.err(adj.full_key+'_predcop',
                'Adjective types specified as optionally copula complement must ' +\
                'be the input to a position class on the Morphology page ' +\
-               'that enables this functionality. %s' %adj_switching_dict.keys())
+               'that enables this functionality. %s' % adj_switching_dict.keys())
 
     # if any(feat.get('head','') in ('subj','mod') for feat in adj.get('feat',[])):
     #   if adj not in adj_switching_dict:
