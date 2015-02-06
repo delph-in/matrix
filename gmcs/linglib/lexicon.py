@@ -3,7 +3,8 @@ from collections import defaultdict
 from gmcs.linglib import case
 #from gmcs.linglib import lexical_items
 from gmcs.utils import get_name
-from gmcs.linglib.lexbase import LexicalType, PositionClass, ChoiceDict
+from choices import ChoiceDict
+from gmcs.linglib.lexbase import LexicalType, PositionClass
 from gmcs.linglib.lexbase import ALL_LEX_TYPES
 from gmcs.linglib.lexbase import LEXICAL_CATEGORIES
 from gmcs.linglib.lexbase import LEXICAL_SUPERTYPES
