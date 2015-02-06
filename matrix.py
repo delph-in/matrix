@@ -205,7 +205,7 @@ def main():
       # os.path.join doesn't want paths at the beginning of the list elements
       # http://stackoverflow.com/questions/1945920/os-path-join-python
       subprocess.call(['svn', '-q', 'add'] +\
-                      [os.path.join(rpath, 'home/gold', lg),
+                      [os.path.join(rpath, 'home', 'gold', lg),
                        os.path.join(rpath, 'skeletons', lg),
                        os.path.join(rpath, 'choices', lg),
                        os.path.join(rpath, 'txt-suites', lg)])

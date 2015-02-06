@@ -15,22 +15,22 @@ unset LUI
 ###
 
 if [ -z "${LOGONROOT}" ]; then
-  echo "run-regression-tests: unable to determine \$LOGONROOT directory; exit."
+  echo "add-regression-tests: unable to determine \$LOGONROOT directory; exit."
   exit 1
 fi
 
 if [ -z "${CUSTOMIZATIONROOT}" ]; then
-  echo "run-regression-tests: unable to determine \$CUSTOMIZATIONROOT directory; exit."
+  echo "add-regression-tests: unable to determine \$CUSTOMIZATIONROOT directory; exit."
   exit 1
 fi
 
 if [ -z "${ACEROOT}" ]; then
-  echo "run-regression-tests: unable to determine \$ACEROOT directory; exit."
+  echo "add-regression-tests: unable to determine \$ACEROOT directory; exit."
   exit 1
 fi
 
 if [ ! -d "${ACEROOT}" ]; then
-  echo "run-regression-tests: the \$ACEROOT does not point to the directory; exit."
+  echo "add-regression-tests: the \$ACEROOT does not point to the directory; exit."
   exit 1
 fi
 

@@ -1933,7 +1933,8 @@ basic-head-opt-subj-phrase := head-valence-phrase & head-only &
 			    POSTHEAD #ph ],
 		MODIFIED #mod ],
     HEAD-DTR [ INFLECTED #infl & infl-satisfied,
-	       SYNSEM [ LOCAL [ CAT [ VAL [ SUBJ < unexpressed-reg &
+	       SYNSEM [ LOCAL [ CAT [ HEAD.MOD olist,
+	       	      	      	      VAL [ SUBJ < unexpressed-reg &
 						   [ OPT +,
 						     LOCAL.CONT.HOOK [ INDEX #index & [ COG-ST in-foc ],
 								       ICONS-KEY #ikey,
@@ -2154,7 +2155,8 @@ extracted-adj-phrase := basic-extracted-adj-phrase &
 ; be matched to head-daughters LIGHT value.
 ; ASF (2008-11-03) for the v2 analysis, the MC feature cannot be shared between
 ; mother and non-head-daughter, token-identity removed
-
+; TJT 2015-01-31 Adding [MOD.OPT -] to NON-HEAD-DTR to keep predicative
+; adjectives out of optional subject constructions
 
 basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
   [ SYNSEM [ LOCAL.CAT.MKG #mkg,
@@ -2183,9 +2185,10 @@ basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
                                                       MC #hmc ],
                                                 AGR #agr,
                                                 CONT.HOOK #hdhook ],
-                                        NON-LOCAL #nonloc,
-					LIGHT #light,
-                                        MODIFIED #modif ] > ],
+                                          NON-LOCAL #nonloc,
+					  LIGHT #light,
+                                          MODIFIED #modif,
+					  OPT - ] > ],
 			   VAL [ COMPS olist, 
 				 SPR olist ], 
                            MKG #mkg ],
@@ -2966,9 +2969,8 @@ spr-trans-first-arg-control-lex-item := basic-three-arg & basic-icons-lex-item &
 ;;; Verbs
 
 ; TJT 2014-04-26 Creating basic-verb-lex-super for copula
-; TJT 2015-02-05 Changing supertype from norm-hook-lex-item to lex-item
-; since norm-hook-lex-item constrains the KEYREL and copulas do not have 
-; any rels
+; TJT 2015-02-05 Changing supertype of basic-verb-lex-super to lex-item
+; because copulas do not have a KEYREL (or any REL)
 
 basic-verb-lex-super := lex-item & 
   [ SYNSEM.LOCAL.CAT.HEAD verb ].
@@ -3041,12 +3043,14 @@ no-mod-lex := no-hcons-lex-item &
 
 ; TJT 2014-04-24 New adjective hierarchy
 ; TJT 2014-09-04 Most of the adjective hierarchy is now calculated for mylanguage.tdl in order to accomodate argument agreement languages.
+; TJT 2015-02-03 Adjective's specifiers are degree words, currently modeled as adverbs. One day a degree word category should probably be made...
 
 basic-adjective-lex := norm-sem-lex-item &
   [ SYNSEM [ LOCAL [ CAT [ HEAD adj,
                            VAL [ COMPS < >,
 				 SPEC < >,
-                                 SPR.FIRST.LOCAL.CONT.HOOK.XARG #index ] ] ],
+                                 SPR.FIRST.LOCAL [ CAT.HEAD adv,
+						   CONT.HOOK.XARG #index ] ] ] ],
              LKEYS.KEYREL event-relation & 
 	      		  [ ARG0 #index ] ] ].
 
