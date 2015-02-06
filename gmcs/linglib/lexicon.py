@@ -570,18 +570,6 @@ def validate_lexicon(ch, vr):
         for item in inputs:
           adj_pc_switching_inputs[item].append(adj_pc)
 
-  # TJT 2015-02-05: Check for conflicts between switching position classes
-  # and their input lexical types
-  for adj in adj_pc_switching_inputs:
-    for pc in adj_pc_switching_inputs.get(adj):
-      if not (ch.get(adj, ChoiceDict()).get('mod','') == 'none' or ch.get(adj, ChoiceDict()).get('predcop','') == 'opt'):
-        vr.err(pc.full_key+'_name',
-               'This position class was created to enable behavior on ' +\
-               'an adjectival lexical type on the Lexicon page which is ' +\
-               'no longer configured to require this position class. You ' +\
-               'should either delete this position class or double check ' +\
-               'your types on the Lexicon page.')
-
   for adj in ch.get('adj',[]):
     mode = adj.get('mod','')
 
