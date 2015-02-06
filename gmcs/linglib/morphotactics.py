@@ -939,14 +939,15 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
     # Switching position classes must be obligatory
     if lrt.get('obligatory','off') == "off":
       vr.err(lrt.full_key+'_obligatory',
-             'This position class controls the syntactic behavior of its input. It must be obligatory')
+             'This position class controls the syntactic behavior of its ' +\
+             'input. It must be obligatory')
 
     # Mode or some input must have mode defined
     if not mode:
       if not inputs:
         vr.err(lrt.full_key+'_mod',
-               'Every adjective position class or one of its inputs must define ' +\
-               'a syntactic behavoir.')
+               'Every adjective position class or one of its inputs must ' +\
+               'define a syntactic behavoir.')
 
     # Mode must not clash with any of its inputs
     for key in inputs:
