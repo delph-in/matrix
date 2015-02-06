@@ -566,13 +566,12 @@ def validate_lexicon(ch, vr):
       inputs = adj_pc.get('inputs',[]).split(', ')
       if isinstance(inputs, basestring):
         adj_pc_switching_inputs.add(inputs)
-        adj_switching_dict[ch.get(inputs)].append(adj_pc)
+        adj_switching_dict[inputs].append(adj_pc)
       else:
         # Else, assume list
         adj_pc_switching_inputs.update(inputs)
-        lexicalTypes = [ch.get(name) for name in inputs]
-        for lt in lexicalTypes:
-          adj_switching_dict[lt].extend(adj_pc)
+        for name in inputs:
+          adj_switching_dict[name].extend(adj_pc)
 
   raise Exception(adj_switching_dict)
 
