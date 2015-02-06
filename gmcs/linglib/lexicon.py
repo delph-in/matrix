@@ -727,7 +727,7 @@ def validate_lexicon(ch, vr):
     # If adjective is 
     # CHECK THAT EACH LT IS FULLY FORMED HERE OR IN A POSITION CLASS
     # TODO: this
-    if predcop == "opt":
+    if adj.get('predcop','') == "opt":
       if adj not in adj_switching_dict:
         vr.err(adj.full_key+'_predcop',
                'Adjective types specified as optionally copula complement must ' +\
