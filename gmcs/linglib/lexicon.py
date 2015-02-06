@@ -732,7 +732,7 @@ def validate_lexicon(ch, vr):
         vr.err(adj.full_key+'_predcop',
                'Adjective types specified as optionally copula complement must ' +\
                'be the input to a position class on the Morphology page ' +\
-               'that enables this functionality.')
+               'that enables this functionality. ' + adj_switching_dict.keys())
 
     # if any(feat.get('head','') in ('subj','mod') for feat in adj.get('feat',[])):
     #   if adj not in adj_switching_dict:
