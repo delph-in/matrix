@@ -726,7 +726,7 @@ def validate_lexicon(ch, vr):
     # CHECK THAT EACH LT IS FULLY FORMED HERE OR IN A POSITION CLASS
     # TODO: this
     if adj.get('predcop','') == "opt":
-      if adj.get('name','') not in adj_switching_dict.keys():
+      if adj.full_key not in adj_switching_dict.keys():
         vr.err(adj.full_key+'_predcop',
                'Adjective types specified as optionally copula complement must ' +\
                'be the input to a position class on the Morphology page ' +\
