@@ -722,21 +722,14 @@ def validate_lexicon(ch, vr):
           message = 'This choice is required for adjectives that can be predicative'
           vr.err(adj.full_key+"_predcop", message)
 
-    # If adjective is 
-    # CHECK THAT EACH LT IS FULLY FORMED HERE OR IN A POSITION CLASS
-    # TODO: this
+    # If adjective is optionally a copula complement, it must have an associated
+    # switching position class defined on the Morphology page.
     if adj.get('predcop','') == "opt":
-      if adj.full_key not in adj_switching_dict.keys():
+      if adj.full_key not in adj_switching_dict:
         vr.err(adj.full_key+'_predcop',
                'Adjective types specified as optionally copula complement must ' +\
                'be the input to a position class on the Morphology page ' +\
-               'that enables this functionality. %s not in %s' % (adj.get('name',''), adj_switching_dict.keys()))
-
-    # if any(feat.get('head','') in ('subj','mod') for feat in adj.get('feat',[])):
-    #   if adj not in adj_switching_dict:
-    #     vr.err(adj.full_key+'_',
-    #            '')
-      
+               'that enables this functionality.')
 
     # Check for clashes between inherited features and specified features
     inherited_feats = defaultdict(dict) # name -> 'value' -> value, 'specified on' -> head
