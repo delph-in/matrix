@@ -202,10 +202,10 @@ def main():
                       [os.path.join(rpath, 'home/gold', lg),
                        os.path.join(rpath, 'skeletons', lg)])
       """
-      # os.path.join doesn't want paths at the beginning of the list elements
+      # os.path.join doesn't want slashes in the list elements
       # http://stackoverflow.com/questions/1945920/os-path-join-python
       subprocess.call(['svn', '-q', 'add'] +\
-                      [os.path.join(rpath, 'home/gold', lg),
+                      [os.path.join(rpath, 'home', 'gold', lg),
                        os.path.join(rpath, 'skeletons', lg),
                        os.path.join(rpath, 'choices', lg),
                        os.path.join(rpath, 'txt-suites', lg)])
@@ -227,6 +227,10 @@ def main():
     print "better than the gold standard. Only continue if you have done this!"
     if utils.verify():
       subprocess.call([cmd, test], env=os.environ)
+      # TJT 2015-02-06: Add to SVN
+      rpath = os.path.join(os.environ['CUSTOMIZATIONROOT'], 'regression_tests')
+      subprocess.call(['svn', '-q', 'add'] +\
+                      [os.path.join(rpath, 'home', 'gold', test)])
     else:
       print "Aborted."
     sys.exit(1)

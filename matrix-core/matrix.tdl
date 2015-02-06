@@ -2968,6 +2968,13 @@ spr-trans-first-arg-control-lex-item := basic-three-arg & basic-icons-lex-item &
 
 ;;; Verbs
 
+; TJT 2014-04-26 Creating basic-verb-lex-super for copula
+; TJT 2015-02-05 Changing supertype of basic-verb-lex-super to lex-item
+; because copulas do not have a KEYREL (or any REL)
+
+basic-verb-lex-super := lex-item & 
+  [ SYNSEM.LOCAL.CAT.HEAD verb ].
+
 ; Bringing in norm-sem-lex-item here where relevant, although this
 ; might be too stringent.
 
@@ -2978,12 +2985,7 @@ spr-trans-first-arg-control-lex-item := basic-three-arg & basic-icons-lex-item &
 ; ERB 2007-01-21 Moving to constructionally introduced SF values.
 ; Removing that constraint on now defunct feature MESG.
 
-; TJT 2014-04-26 Creating basic-verb-lex-super for copula
-
-basic-verb-lex-super := norm-hook-lex-item & 
-  [ SYNSEM.LOCAL.CAT.HEAD verb ].
-
-basic-verb-lex := basic-verb-lex-super & single-rel-lex-item & 
+basic-verb-lex := basic-verb-lex-super & norm-sem-lex-item &
   [ SYNSEM.LKEYS.KEYREL event-relation ].
 
 ; ERB 2004-08-26 Put in qeq, assuming that for all scopal modifiers
