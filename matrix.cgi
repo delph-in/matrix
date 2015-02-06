@@ -96,15 +96,17 @@ if form_data.has_key('choices'):
         choices = 'http://www.delph-in.net/matrix/language-'+choices+'/choices-final.tgz'
         try:
           tar = urllib2.urlopen(choices)
-          with tarfile.open(mode = 'r|*', fileobj = StringIO.StringIO(tar.read())) as tar:
-            for tarinfo in tar:
-              if tarinfo.isreg() and tarinfo.name[-len('choices'):] == 'choices':
-                choicesData = tar.extractfile(tarinfo)
-                data = choicesData.read()
-                choicesData.close()
-                break # Found the choices file...e
+          tar = tarfile.open(mode = 'r|*', fileobj = StringIO.StringIO(tar.read()))
+          for tarinfo in tar:
+            if tarinfo.isreg() and tarinfo.name[-len('choices'):] == 'choices':
+              choicesData = tar.extractfile(tarinfo)
+              data = choicesData.read()
+              choicesData.close()
+              break # Found the choices file...
+	  tar.close()
         except (urllib2.HTTPError, urllib2.URLError, tarfile.TarError):
           data = ''
+	  tar.close()
     else: # Uploaded choices data
       data = choices
     if data or choices.endswith('/empty'):
