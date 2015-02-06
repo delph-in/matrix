@@ -570,7 +570,8 @@ def validate_lexicon(ch, vr):
       else:
         # Else, assume list
         adj_pc_switching_inputs.update(inputs)
-        lexicalTypes = filter(None, (isinstance(mn, LexicalType) for mn in inputs))
+        raise Exception([choices.get(name) for name in inputs])
+        lexicalTypes = filter(None, (isinstance(choices.get(name), LexicalType) for name in inputs))
         for lt in lexicalTypes:
           adj_switching_dict[lt].extend(adj_pc)
 
