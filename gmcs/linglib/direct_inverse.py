@@ -130,6 +130,20 @@ def write_dir_inv_types(choices, mylang, hierarchies):
 
     supertype = type
 
+  # generate subtypes to patch the direct-inverse/unexpressed type conflict
+  mylang.add_literal(';;; Direct-inverse/unexpressed subtypes for compatibility with argument optionality')
+
+  # add subtypes for each left-branching leaf on the scale
+  for i in range(1, scale_len):
+    type = 'dir-inv-' + str(i)
+    subtype = type + '-unexpressed'
+    mylang.add(subtype + ' := ' + type + ' & unexpressed.')
+
+  # now add the last, right-branching leaf
+  type = 'dir-inv-non-' + str(scale_len-1)
+  subtype = type + '-unexpressed'
+  mylang.add(subtype + ' := ' + type + ' & unexpressed.')
+
 ############################
 ### LEXICAL RULE METHODS ###
 ############################
