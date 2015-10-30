@@ -2055,15 +2055,13 @@ basic-bare-np-phrase := head-only &
 			    CONT.HOOK [ INDEX #index,
 					LTOP #larg ] ],
     C-CONT [ RELS <! quant-relation &
-		   [ LBL #ltop,
-		     ARG0 #index,
+		   [ ARG0 #index,
 		     RSTR #harg ] !>,
 	     HCONS <! qeq & 
 		    [ HARG #harg,
 		      LARG #larg ] !>,
 	     ICONS <! !>,
-	     HOOK [ INDEX #index,
-		    LTOP #ltop ] ] ].
+	     HOOK [ INDEX #index ] ] ].
 
 ; Unary rules for extraction
 
