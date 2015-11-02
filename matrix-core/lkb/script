@@ -87,21 +87,6 @@
 ;;;
 (lkb-load-lisp (this-directory) "mrsglobals.lsp" t)
 
-
-;;;
-;;; Matrix-derived grammars often have stable enough semantic 
-;;; representations that the grammar can usefully be tested
-;;; by generating from them.  The function index-for-generator()
-;;; must be called for generation to be enabled.  In grammars with
-;;; small lexica, this takes a trivial amount of time.  If
-;;; generation is not being used regularly, and the indexing
-;;; is taking too long, comment out the following.  index-for-generator()
-;;; can also be run from the expanded LKB top menu, under
-;;; Generate.
-;;;
-
-(index-for-generator)
-
 (mt:read-vpm (lkb-pathname (parent-directory) "semi.vpm") :semi)
 
 (lkb-load-lisp (this-directory) "mt.lsp" t)
@@ -123,6 +108,19 @@
   "Generation trigger rules"
   :filter nil :task :trigger :recurse nil :edges 200 :subsume nil)
 
+;;;
+;;; Matrix-derived grammars often have stable enough semantic
+;;; representations that the grammar can usefully be tested
+;;; by generating from them.  The function index-for-generator()
+;;; must be called for generation to be enabled.  In grammars with
+;;; small lexica, this takes a trivial amount of time.  If
+;;; generation is not being used regularly, and the indexing
+;;; is taking too long, comment out the following.  index-for-generator()
+;;; can also be run from the expanded LKB top menu, under
+;;; Generate.
+;;;
+
+(index-for-generator)
 
 ;;;
 ;;; The following overwrites the LKB's default for what 
