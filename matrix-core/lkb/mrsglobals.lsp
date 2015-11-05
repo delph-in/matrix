@@ -93,13 +93,13 @@
 (setf *rel-name-path* `(,(vsym "PRED") ))
 
 ;;;
-;;; MWG 2013-05-16: adding to allow generation with [incr tsdb()]
-;;;
-
-(setf *show-lnk-p* nil)
-
-;;;
 ;;; MWG 2013-05-21: block the LKB's default var type mappings (use the SEMI)
 ;;;
 
 (setf *variable-type-mapping* :semi)
+
+;;;
+;;; MWG 2013-05-16: adding to allow generation with [incr tsdb()]
+;;;
+
+(setf *show-lnk-p* nil)
