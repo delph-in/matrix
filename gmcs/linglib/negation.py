@@ -442,7 +442,9 @@ def customize_head_comp_neg(mylang,ch,lexicon, hierarchies):
   # need to add type and instance for semantically empty neg-comp
   mylang.set_section('otherlex')
   mylang.add('''neg-comp-lex := norm-zero-arg &
-                 [ SYNSEM.LOCAL [ CAT.HEAD adv & [ NEGATED + ],
+                 [ SYNSEM.LOCAL [ CAT [ HEAD adv & [ NEGATED + ],
+                                        VAL [ SUBJ < >,
+                                              COMPS < > ] ],
                                   CONT [ RELS <! !>,
                                          HCONS <! !> ]]].''',
              '''Type for negative selected comps. 
