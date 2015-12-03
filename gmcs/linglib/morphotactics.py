@@ -795,6 +795,7 @@ def validate(choices, vr):
   for pc in all_pcs:
     basic_pc_validation(choices, pc, vr)
     cooccurrence_validation(pc, choices, vr)
+    hierarchy_validation(choices, pc, vr)
     # TJT 2014-09-04: Calculate switching inputs
     switching = pc.get('switching',False)
     pc_switching_inputs = set()
@@ -892,6 +893,7 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
         vr.err(feat.full_key + '_head',
                'This feature is associated with nouns, ' +\
                'please select one of the NP options.')
+
   # TJT 2015-02-02: Any given LRT should be either inflecting or non-inflecting
   inflecting_count = len(filter(None, [lri.get('inflecting')=="yes" for lri in lrt.get('lri',[])]))
   if inflecting_count not in (0, len(lrt.get('lri',[]))):
@@ -1004,6 +1006,41 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
                   'An adjective defined as a copula complement is ' +\
                   'unusable without a copula defined on the Lexicon page.')
 
+def hierarchy_validation(choices, pc, vr):
+  # LLD 2015-11-22 Supertype LRTs should not have non-affixing LRIs if subtype
+  # LRTs have spelling-changing LRIs.
+
+  # sts_dict is a dict of lrt names->lists of supertypes of LRTs that have spelling-changing LRIs
+  # has_no_affix_lri is a set of lrts with a "No Affix" lri
+  # has_affix_lri is a set of lrts with at least one affixing lri
+  sts_dict = {}
+  has_no_affix_lri = set()
+  has_affix_lri = set()
+
+  for lrt in pc.get('lrt', []):
+    for lri in lrt.get('lri', []):
+      if lri:
+        if lri['inflecting'] == 'no':
+          has_no_affix_lri.add(lrt.full_key)
+        if lri['inflecting'] == 'yes':
+          has_affix_lri.add(lrt.full_key)
+          sts = lrt.get('supertypes', '').split(", ")
+          if sts:
+            sts_dict[lrt.full_key] = sts
+  for lrt, sts in sts_dict.items():
+    for st in sts:
+      if st in has_no_affix_lri:
+        has_no_affix_lri.remove(st)  # because we won't need to warn about this LRT again
+        vr.err(st + '_lri1_inflecting',
+               "A lexical rule type should not contain a 'no affix' lexical rule instance if it " +\
+               "is a supertype to a lexical rule type that applies an affix.")
+      if st in has_affix_lri:
+        has_affix_lri.remove(st)  # because we won't need to warn about this LRT again
+        vr.warn(st + '_lri1_inflecting',
+               "This lexical rule type has both instances and subtypes, which will lead to " +\
+               "greater ambiguity in realization (generation). If that was not your intention, " +\
+               "consider moving the affixing lexical rule instance to a subtype LRT.")
+
 def cycle_validation(choices, vr):
   try:
     pch = position_class_hierarchy(choices)
@@ -1015,6 +1052,7 @@ def cycle_validation(choices, vr):
     if len(cyclic_inps) > 0:
       vr.err(pc.key + '_inputs', 'The inputs of this position class might ' +\
              'cause a cycle. Please review: ' + ', '.join(cyclic_inps))
+
 
 def cooccurrence_validation(lrt, choices, vr):
   # if A constrains B, A must precede or be preceded by B
