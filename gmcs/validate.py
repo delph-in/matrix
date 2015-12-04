@@ -451,12 +451,14 @@ your installation root directory as iso.tab to enable iso validation:
               'If a comma appears in the string, it will become parsable.')
 
   # check punctuation chars in all orth fields.
+  # LLD 12-03-2015 Excluded test sentences from this check, since they often
+  # contain punctuation that is meant to be discarded.
   non_chars = [re.escape(c)
                for c in u'!"&\'()*+,−./\;<>?@[]^`{|}~。！？…．　○●◎＊☆★◇◆'
                if c not in chars]
   char_re = re.compile(r'(' + r'|'.join(non_chars) + r')')
   for (key, val) in ch.walk():
-    if key.endswith('orth'):
+    if key.endswith('orth') and not key.startswith('sentence'):
       if char_re.search(unicode(val, 'utf8')):
         vr.warn(key, 'String contains an unparsable punctuation character.' +\
                    ' Please see the General subpage.')
