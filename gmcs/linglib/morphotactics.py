@@ -833,7 +833,12 @@ def basic_pc_validation(choices, pc, vr):
                'defined somewhere in the questionnaire.')
   # ALL inputs must be defined: if input is set to "Any X", and a POS type
   # of that X is not defined, the system fails but there is no validation
-  if any(inp in NON_ESSENTIAL_LEX_CATEGORIES and inp not in choices
+
+  # LLD 2015-12-09: modified to check for ALL_LEX_TYPES, so we check that verb,
+  # aux, noun, etc. are defined if needed (not just det, adj, cop).
+  #if any(inp in NON_ESSENTIAL_LEX_CATEGORIES  and inp not in choices
+  #        for inp in pc.get('inputs','').split(', ')):
+  if any(inp in ALL_LEX_TYPES and inp not in choices
          for inp in pc.get('inputs','').split(', ')):
       vr.err(pc.full_key + '_inputs',
              'You have specified morphology for a part of speech ' +\
