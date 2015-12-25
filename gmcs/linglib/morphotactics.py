@@ -1046,6 +1046,98 @@ def hierarchy_validation(choices, pc, vr):
                "greater ambiguity in realization (generation). If that was not your intention, " +\
                "consider moving the affixing lexical rule instance to a subtype LRT.")
 
+  # LLD 2015-12-09 Building hierarchy validation similar to what is in lexicon.py
+  lrtsts = {}
+  feats = {}
+  inherited_feats = {}
+
+  for lrt in pc.get('lrt', []):
+    sts = lrt.get('supertypes', '').split(", ")
+    if sts:
+      lrtsts[lrt.full_key] = sts
+    feats[lrt.full_key] = {}
+    for f in lrt.get('feat'):
+      feats[lrt.full_key][f.get('head') + " " + f.get('name')] = f.get('value')
+
+  # now to figure out inherited features, check for cycles, check for hierarchy issues
+  for lrt in pc.get('lrt', []):
+    st_anc = [] #used to check for subsumption errors
+    seen = []
+    paths = []
+    for st in lrtsts[lrt.full_key]:
+      paths.append([lrt.full_key, st])
+    parents = lrtsts[lrt.full_key]
+    inherited_feats[lrt.full_key] = {}
+    while (True):
+      next_parents = []
+      for p in parents:
+        if p:
+          ptype = choices.get(p)
+          if not ptype: continue
+          for f in feats[p]:
+            # see if this feature conflicts with what we know
+            if f in feats[lrt.full_key] and feats[p][f] != feats[lrt.full_key][f]:
+              # inherited feature conflicts with self defined feature
+              vr.warn(lrt.full_key + '_feat', "The feature defined here, \'"+f+"="+\
+                      str(feats[lrt.full_key][f])+"\', may confict with the value"+\
+                      " defined on the supertype "+ptype.get('name')+" ("+p+"). "+\
+                      "It is up to you to make sure that these values are compatible.",
+                      concat=False)
+            elif f in inherited_feats[lrt.full_key] and \
+                  feats[p][f] != inherited_feats[lrt.full_key][f]:
+              vr.warn(lrt.full_key + '_supertypes',
+                      "This inherited feature value, \'" +f+"="+\
+                      str(inherited_feats[lrt.full_key][f])+\
+                      "\', may conflict with the value defined on the supertype "+\
+                      ptype.get('name')+" ("+p+"). "+\
+                      "It is up to you to make sure that these values are compatible.",
+                      concat=False)
+              inherited_feats[lrt.full_key][f] = "! "+\
+                inherited_feats[lrt.full_key][f]+" && "+feats[p][f]
+            else:
+              inherited_feats[lrt.full_key][f] = feats[p][f]
+
+          # add sts to the next generation
+          to_be_seen = []
+          for r in paths:
+            if r[-1] == p: #this is the path to extend,
+              paths.remove(r)
+              for q in lrtsts[p]: #go through all sts
+                # q is a st_anc of the lrt
+                if q not in st_anc:
+                  st_anc.append(q)
+                if q in r:
+                  vr.err(lrt.full_key + '_supertypes', "This hierarchy "+
+                         "contains a cycle. The type "+q+" was found "+
+                         "at multiple points in the inheritance path: "+
+                         str(r+[q]))
+                else:
+                  new_path = r + [q]
+                  paths.append(new_path)
+                if (q != ''):
+                  if not (q in seen):
+                    next_parents.append(q)
+                    to_be_seen.append(q)
+          seen = seen + to_be_seen
+
+      # if there aren't any next parents, we're done
+      if len(next_parents) == 0:
+        break
+
+      # otherwise we go again
+      parents = next_parents
+
+    # Now check for the lkb err about vacuous inheritance using goodmami's
+    #  method: find the intersection of supertypes and supertypes's ancestors
+    for t in lrtsts[lrt.full_key]:
+      if t in st_anc:
+        vr.err(lrt.full_key + '_supertypes', "This LRT hierarchy contains a "+
+               "redundant link that will result in an LKB error.  "+t+
+               " is both an immediate supertype of "+lrt.full_key+" and also "+
+               "an ancestor of another supertype.")
+
+
+# check for a cycle in the inputs
 def cycle_validation(choices, vr):
   try:
     pch = position_class_hierarchy(choices)
