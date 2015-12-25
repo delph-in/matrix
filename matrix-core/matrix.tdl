@@ -1416,13 +1416,13 @@ ternary-head-middle-phrase := ternary-headed-phrase &
     ARGS.REST.FIRST #head ].
 
 
-; For more effecient parsing, designate one argument or the other
+; For more efficient parsing, designate one argument or the other
 ; as the KEY-ARG: that which should be unified with first.
 
-binary-rule-left-to-right := rule &
+binary-rule-left-to-right := basic-binary-phrase &
   [ ARGS < [ KEY-ARG + ] , [ KEY-ARG bool ] > ].
 
-binary-rule-right-to-left := rule &
+binary-rule-right-to-left := basic-binary-phrase &
   [ ARGS < [ KEY-ARG bool ], [ KEY-ARG + ] > ].
 
 ; ERB 2005-05-04 If messages are introduced by unary rules at the
