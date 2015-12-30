@@ -1065,6 +1065,14 @@ def validate_features(ch, vr):
       value_list += \
        [[ feat.full_key + '_value', feat.get('name'), feat.get('value') ]]
 
+  # LLD 12-29-2015: Where we're able to define supertypes for features, those supertypes
+  # also need to be valid features.
+  for featprefix in ('number', 'gender'):
+    for feat in ch.get(featprefix):
+      for st in feat.get('supertype', []):
+        name_list += \
+        [[ st.full_key + '_name', st.get('name') ]]
+
   # Check the name list to ensure they're all valid features
   features = ch.features()
   for item in name_list:
