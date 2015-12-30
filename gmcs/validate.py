@@ -1040,7 +1040,7 @@ def validate_features(ch, vr):
       value_list += \
         [[ feat.full_key + '_value', feat.get('name'), feat.get('value') ]]
 
-  for lexprefix in ('noun', 'verb', 'det', 'aux'):
+  for lexprefix in ('noun', 'verb', 'det', 'aux', 'adj'):
     for lex in ch.get(lexprefix):
       for feat in lex.get('feat', []):
         name_list += \
@@ -1048,7 +1048,7 @@ def validate_features(ch, vr):
         value_list += \
           [[ feat.full_key + '_value', feat.get('name'), feat.get('value') ]]
 
-  for pcprefix in ('noun', 'verb', 'det', 'aux'):
+  for pcprefix in ('noun', 'verb', 'det', 'aux', 'adj'):
     for pc in ch.get(pcprefix + '-pc'):
       for lrt in pc.get('lrt', []):
         for feat in lrt.get('feat', []):
@@ -1094,7 +1094,7 @@ def validate_features(ch, vr):
       if not valid:
         break
     if not valid:
-      vr.err(var, 'You have selected an invalid feature value.')
+      vr.err(var, 'You have selected an invalid feature value (' + subval + ').')
 
 def validate_arg_opt(ch, vr):
   """Check to see if the user completed the necessary portions of the arg
