@@ -1076,8 +1076,8 @@ def validate_features(ch, vr):
   for featprefix in ('number', 'gender'):
     for feat in ch.get(featprefix):
       for st in feat.get('supertype', []):
-        name_list += \
-        [[ st.full_key + '_name', st.get('name') ]]
+        value_list += \
+        [[ st.full_key + '_name', featprefix, st.get('name') ]]
 
   # Check the name list to ensure they're all valid features
   features = ch.features()
