@@ -1048,12 +1048,6 @@ def validate_features(ch, vr):
         value_list += \
           [[ feat.full_key + '_value', feat.get('name'), feat.get('value') ]]
 
-  ## LLD 12-29-2015 Check that argument structure choices are currently defined
-  for lex in ch.get('verb'):
-    if lex.get('valence', []):
-      value_list += \
-      [[ lex.full_key + '_valence', 'argument structure', lex.get('valence') ]]
-
   for pcprefix in ('noun', 'verb', 'det', 'aux', 'adj'):
     for pc in ch.get(pcprefix + '-pc'):
       for lrt in pc.get('lrt', []):
@@ -1071,13 +1065,11 @@ def validate_features(ch, vr):
       value_list += \
        [[ feat.full_key + '_value', feat.get('name'), feat.get('value') ]]
 
-  # LLD 12-29-2015: Where we're able to define supertypes for features, those supertypes
-  # also need to be valid features.
-  for featprefix in ('number', 'gender'):
-    for feat in ch.get(featprefix):
-      for st in feat.get('supertype', []):
-        value_list += \
-        [[ st.full_key + '_name', featprefix, st.get('name') ]]
+  ## LLD 12-29-2015 Check that argument structure choices are currently defined
+  for lex in ch.get('verb'):
+    if lex.get('valence', []):
+      value_list += \
+      [[ lex.full_key + '_valence', 'argument structure', lex.get('valence') ]]
 
   # Check the name list to ensure they're all valid features
   features = ch.features()
@@ -1110,6 +1102,46 @@ def validate_features(ch, vr):
     if not valid:
       vr.err(var, 'You have selected an invalid feature value.')
 
+
+def validate_hierarchy(ch, vr):
+  """
+  Check that hierarchies are well-formed. Check for subsumption errors,
+  possible feature conflicts where appropriate, cycles, and supertypes that
+  are not defined in the current choices.
+  """
+
+  # Check that supertypes have been defined. This needs to be handled slightly differently
+  # across categories.
+  for section in ['number', 'gender']:
+    valid_types = ['number', 'gender']
+    for feat in ch.get(section, []):
+      valid_types += [feat.get('name')]
+    for feat in ch.get(section, []):
+      for st in feat.get('supertype', []):
+        if st.get('name') not in valid_types:
+          vr.err(st.full_key + '_name', 'You have specified an invalid supertype.')
+
+  for section in ['feature']:
+    valid_types = []
+    for feat in ch.get(section, []):
+      valid_types += [feat.get('name')]
+      for value in feat.get('value'):
+        valid_types += [value.get('name')]
+    for feat in ch.get(section, []):
+      for value in feat.get('value', []):
+        for st in value.get('supertype', []):
+          if st.get('name') not in valid_types:
+            vr.err(st.full_key + '_name', 'You have specified an invalid supertype.')
+
+  # Adjectives have a similar check already in place.
+  for lexprefix in ['verb', 'noun']:
+    valid_types = ['']
+    for lex in ch.get(lexprefix, []):
+      valid_types += [lex.full_key]
+    for lex in ch.get(lexprefix, []):
+      for st in lex.get('supertypes', '').split(", "):
+        if st not in valid_types:
+          vr.err(lex.full_key + '_supertypes', 'You have specified an invalid supertype.')
 
 def validate_arg_opt(ch, vr):
   """Check to see if the user completed the necessary portions of the arg
@@ -1176,6 +1208,7 @@ def validate(ch, extra = False):
 
   validate_types(ch, vr)
   validate_features(ch, vr)
+  validate_hierarchy(ch, vr)
   validate_arg_opt(ch, vr)
 
   if extra:
