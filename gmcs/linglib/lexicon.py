@@ -917,6 +917,29 @@ def validate_lexicon(ch, vr):
       mess = 'You should specify a value for at least one feature (e.g., CASE).'
       vr.warn(adp.full_key + '_feat1_name', mess)
 
+  # LLD 1-3-2016
+  cases = []
+  not_covered = []
+  for p in ch.patterns():
+    p = p[0].split(',')
+    c = p[0].split('-')
+    cases += [c[0], c[1]] if len(c) > 1 else [c[0]]
+  cases.remove('trans')
+  cases.remove('intrans')
+  # if adpositions are not marked optional...
+  if ch.has_adp_case() and not ch.has_optadp_case():
+    for case in cases:
+      # each case must be contributed by an adposition or noun case somewhere.
+      if not (ch.has_adp_case(case) or ch.has_noun_case(case)):
+        if case not in not_covered:
+          not_covered += [case]
+    if len(not_covered) > 0:
+      mess = 'You have case-marking adpositions marked non-optional, but not all ' +\
+              'core cases are contributed by adpositions, inflection, or lexical types. ' +\
+              'Please account for these cases: ' + ', '.join(not_covered) + '.'
+      vr.err('adp1_opt', mess)
+
+
 
   # Features on all lexical types
   # TJT 2014-09-02: Adding adj and cop

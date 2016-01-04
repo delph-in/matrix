@@ -582,7 +582,8 @@ class ChoicesFile:
     """
     Return true if the feature has matching case or if case is empty.
     """
-    return feat['name'] == 'case' and (feat['value'] == case or case == '')
+    return feat['name'] == 'case' and (feat['value'] == case or case == '' \
+                      or any(case == value for value in feat['value'].split(', ')))
 
   def has_noun_case(self, case = ''):
     """
