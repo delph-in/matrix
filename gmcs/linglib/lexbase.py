@@ -208,7 +208,10 @@ class LexicalRuleType(MorphotacticNode):
     parents = [lrt.identifier() for lrt in self.parents().values()]
     if len(parents) == 0:
       parents = [self.pc.identifier()]
-    return set(parents).union(self.supertypes)
+    # LLD 1-3-2016 Now returns only supertypes that are not shared by the PC (to
+    # prevent vacuous inheritance errors)
+    # return set(parents).union(self.supertypes)
+    return set(parents).union(self.supertypes).difference(self.pc.supertypes)
 
 # TJT 2014-08-21: Class for keeping Lexical Rule Instances and their
 # predicates together
