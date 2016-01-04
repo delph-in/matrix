@@ -1105,15 +1105,15 @@ def validate_features(ch, vr):
 
 def validate_hierarchy(ch, vr):
   """
-  Check that hierarchies are well-formed. Check for subsumption errors,
-  possible feature conflicts where appropriate, cycles, and supertypes that
-  are not defined in the current choices.
+  Check that hierarchies are well-formed. Check for vacuous inheritance, cycles,
+  and supertypes that are not defined in the current choices.
   """
 
+  # LLD 1-3-2016
   # Check that supertypes have been defined. This needs to be handled slightly differently
   # across categories.
   for section in ['number', 'gender']:
-    valid_types = ['number', 'gender']
+    valid_types = [section]
     for feat in ch.get(section, []):
       valid_types += [feat.get('name')]
     for feat in ch.get(section, []):
@@ -1142,6 +1142,71 @@ def validate_hierarchy(ch, vr):
       for st in lex.get('supertypes', '').split(", "):
         if st not in valid_types:
           vr.err(lex.full_key + '_supertypes', 'You have specified an invalid supertype.')
+
+
+  # LLD 1-3-2016 Check for cycles and vacuous inheritance. The lexicon section has its own
+  # version of this code, so I left those alone for now.
+
+  # xsts is a dictionary that contains some item x's supertypes.
+  xsts = {}
+  for type in ['number', 'gender']:
+    xsts[type] = [] # 'number' and 'gender' can be supertypes, so they need a dict entry.
+    for x in ch.get(type, []):
+      sts = []
+      for st in x.get('supertype',''):
+        sts.append(st.get('name'))
+
+      xsts[x.get('name')] = sts
+
+    for x in ch.get(type, []):
+      st_anc = [] #used to check for vacuous inheritance
+      seen = []
+      paths = []
+      xkey = x.get('name','')
+
+      for st in xsts[xkey]:
+        paths.append([xkey, st])
+      parents = xsts[xkey]
+      while (True):
+        next_parents = []
+        for p in parents:
+          if p:
+            # add sts to the next generation
+            to_be_seen = []
+            for r in paths:
+              if r[-1] == p: #this is the path to extend
+                paths.remove(r)
+                if p in xsts:
+                  for q in xsts[p]:
+                    if q not in st_anc:
+                      st_anc.append(q)
+                    if q in r:
+                      vr.err(x.full_key + '_name', "This hierarchy "+
+                             "contains a cycle. The type "+q+" was found "+
+                             "at multiple points in the inheritance path: "+
+                             str(r+[q]), concat=False)
+                    else:
+                      new_path = r + [q]
+                      paths.append(new_path)
+                    if (q != ''):
+                      if not (q in seen):
+                        next_parents.append(q)
+                        to_be_seen.append(q)
+            seen = seen + to_be_seen
+
+        if len(next_parents) == 0:
+          break
+
+        parents = next_parents
+
+      # Check for vacuous inheritance by finding the intersection of supertypes
+      # and the supertypes's ancestors
+      for t in xsts[xkey]:
+        if t in st_anc:
+          vr.err(x.full_key + '_name', "This hierarchy contains a "+
+                 "redundant link that will result in an LKB error. The type '"+t+
+                 "' is an immediate supertype of '"+x.get('name','')+"' and also "+
+                 "an ancestor of another supertype.")
 
 def validate_arg_opt(ch, vr):
   """Check to see if the user completed the necessary portions of the arg
