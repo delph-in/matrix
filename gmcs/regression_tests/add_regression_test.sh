@@ -24,16 +24,9 @@ if [ -z "${CUSTOMIZATIONROOT}" ]; then
   exit 1
 fi
 
-if ! hash ace 2>/dev/null; then
-  echo "run-regression-tests: no ace command in \$PATH, checking \$ACEROOT..."
-  if [ -z "${ACEROOT}" ]; then
-    echo "run-regression-tests: unable to determine \$ACEROOT directory; exit."
-    exit 1
-  else
-    ACECMD="$ACEROOT/ace"
-  fi
-else
-  ACECMD="ace"
+if [ -z "${ACEROOT}" ]; then
+  echo "add-regression-tests: unable to determine \$ACEROOT directory; exit."
+  exit 1
 fi
 
 if [ ! -d "${ACEROOT}" ]; then
@@ -126,7 +119,7 @@ fi
 dat_file=$grammar/${lgname}/${lgname}.dat
 config_file=$grammar/${lgname}/ace/config.tdl
 
-$ACECMD -G $dat_file -g $config_file 1>/dev/null 2>/dev/null
+$ACEROOT/ace -G $dat_file -g $config_file 1>/dev/null 2>/dev/null
 # TJT 2014-09-12: Check to see if ACE succeeded in making the grammar
 if [[ ! -f $dat_file ]]; then
   echo "FAIL!"
@@ -158,7 +151,7 @@ do
   fi
 done < $2 > $gold/$lgname/item
 
-cut -d@ -f7 $gold/$lgname/item | ${CUSTOMIZATIONROOT}/regression_tests/art-static-prerelease -a "$ACECMD -g $dat_file 2>/dev/null" $gold/$lgname 1>/dev/null
+cut -d@ -f7 $gold/$lgname/item | ${CUSTOMIZATIONROOT}/regression_tests/art-static-prerelease -a "$ACEROOT/ace -g $dat_file 2>/dev/null" $gold/$lgname 1>/dev/null
 
 sed "s;@@;@0@;g" $gold/$lgname/parse > $gold/$lgname/tmp
 mv -f $gold/$lgname/tmp $gold/$lgname/parse

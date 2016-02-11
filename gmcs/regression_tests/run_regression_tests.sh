@@ -24,6 +24,17 @@ if [ -z "${CUSTOMIZATIONROOT}" ]; then
   exit 1
 fi
 
+if ! hash ace 2>/dev/null; then
+  echo "run-regression-tests: no ace command in \$PATH, checking \$ACEROOT..."
+  if [ -z "${ACEROOT}" ]; then
+    echo "run-regression-tests: unable to determine \$ACEROOT directory; exit."
+    exit 1
+  else
+    ACECMD="$ACEROOT/ace"
+  fi
+else
+  ACECMD="ace"
+fi
 
 logon32=''
 if [ ! -z "${LOGON32}" ]; then
