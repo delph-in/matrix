@@ -367,7 +367,7 @@ keys := keys_min &
 ; One of a grammatically salient inventory of semantic sorts, such as
 ; 'animate' or 'time'
 
-semsort :< sort.
+semsort := sort.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; CONT values
