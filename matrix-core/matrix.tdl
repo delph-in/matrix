@@ -3460,8 +3460,8 @@ omni-mid-coord-rule := omni-coord-phrase &
 ; N Coordination rules
 
 n-coord-phrase := coord-phrase &
-  [ SYNSEM.LOCAL.CAT.VAL.SPR < [ ] >,
-    SYNSEM.LOCAL.CAT.HEAD noun,
+  [ SYNSEM.LOCAL.CAT [ HEAD noun,
+    		       VAL.SPR < [ ] > ],
     LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD noun,
     RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD noun ].
 
@@ -3485,8 +3485,8 @@ n-bottom-coord-phrase := bottom-coord-phrase &
 ; NP Coordination rules
 
 np-coord-phrase := coord-phrase &
-  [ SYNSEM.LOCAL.CAT.VAL.SPR < >,
-    SYNSEM.LOCAL.CAT.HEAD noun,
+  [ SYNSEM.LOCAL.CAT [ HEAD noun,
+    		       VAL.SPR < > ],
     LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD noun,
     RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD noun ].
 
@@ -3573,8 +3573,8 @@ adv-bottom-coord-phrase := bottom-coord-phrase &
 ; VP Coordination rules
 
 vp-coord-phrase := event-coord-phrase &
-  [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ ] >,
-    SYNSEM.LOCAL.CAT.HEAD verb,
+  [ SYNSEM.LOCAL.CAT [ HEAD verb,
+    		       VAL.SUBJ < [ ] > ],
     LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD verb,
     RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD verb ].
 
@@ -3597,8 +3597,8 @@ vp-bottom-coord-phrase := bottom-coord-phrase &
 ; S Coordination rules
 
 s-coord-phrase := event-coord-phrase &
-  [ SYNSEM.LOCAL.CAT.VAL.SUBJ < >,
-    SYNSEM.LOCAL.CAT.HEAD verb,
+  [ SYNSEM.LOCAL.CAT [ HEAD verb, 
+    		       VAL.SUBJ < > ],
     LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD verb,
     RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD verb ].
 
