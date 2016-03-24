@@ -1700,8 +1700,7 @@ nc-head-filler-phrase := nc-filler-phrase & head-compositional.
 basic-head-subj-phrase := head-valence-phrase & head-compositional & 
 			  basic-binary-headed-phrase & 
   [ SYNSEM phr-synsem & 
-		   [ LOCAL.CAT [ POSTHEAD +,
-				 HC-LIGHT -,
+		   [ LOCAL.CAT [ HC-LIGHT -,
 				 VAL [ SUBJ < >,
 				       COMPS #comps,
 				       SPR #spr ] ] ],
@@ -1727,7 +1726,6 @@ basic-head-subj-nmc-phrase := head-valence-phrase & basic-binary-headed-phrase &
 			      declarative-clause & 
   [ SYNSEM phr-synsem & 
 		   [ LOCAL.CAT [ MC -,
-				 POSTHEAD +,
 				 HC-LIGHT -,
 				 VAL [ SUBJ < >,
 		                       COMPS < >,
