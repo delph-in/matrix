@@ -2218,11 +2218,12 @@ adj-head-phrase := basic-head-mod-phrase-simple & head-final &
 ;;    HEAD-DTR.SYNSEM.MODIFIED notmod-or-rmod,
 ;; As Antske Fokkens points out in an e-mail to matrix-dev,
 ;;   this is an english-specific leftover ---JDC
+;;; LLD 2016-3-25 removed SYNSEM.LOCAL.CAT.POSTHEAD +, which
+;; EMB pointed out as another english-specific leftover.
 head-adj-phrase := basic-head-mod-phrase-simple & head-initial & phrasal &
-  [ SYNSEM [ LOCAL.CAT.POSTHEAD +,
-	     MODIFIED rmod ],
+  [ SYNSEM.MODIFIED rmod,
     NON-HEAD-DTR.SYNSEM [ LOCAL.CAT.POSTHEAD +,
-			  NON-LOCAL.QUE 0-dlist ] ].
+    			  NON-LOCAL.QUE 0-dlist ] ].
 
 ; We split head-adj-phrase and adj-head-phrase into two each,
 ; one for intersective modifiers and one for scopal modifiers, in order to
