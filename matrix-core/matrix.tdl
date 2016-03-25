@@ -1937,7 +1937,7 @@ basic-head-opt-subj-phrase := head-valence-phrase & head-only &
 						     LOCAL.CONT.HOOK [ INDEX #index & [ COG-ST in-foc ],
 								       ICONS-KEY #ikey,
 								       CLAUSE-KEY #ckey ] ] >,
-					    COMPS #comps & < >,
+					    COMPS #comps,
 					    SPR #spr,
 					    SPEC #spec ],
 				      POSTHEAD #ph ],
