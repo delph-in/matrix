@@ -1615,15 +1615,14 @@ imperative-clause := basic-non-rel-clause &
 ; We provide a subtype, basic-head-filler-phrase, below, which does.
 
 basic-filler-phrase := binary-phrase & phrasal &
-  [ SYNSEM [ LOCAL [ CAT [ VAL [ COMPS < >,
-                                 SPR < > ],
-			         POSTHEAD + ] ],
-			 NON-LOCAL.SLASH 0-dlist ],
+  [ SYNSEM [ LOCAL.CAT.VAL [ COMPS < >,
+                             SPR < > ],
+	     NON-LOCAL.SLASH 0-dlist ],
     ARGS < [ SYNSEM [ LOCAL #slash & local &
 			    [ CAT.VAL [ SUBJ olist,
 					COMPS olist,
 					SPR olist ],
-			      CTXT.ACTIVATED + ],
+			      CTXT.ACTIVATED + ],	
 		      NON-LOCAL.SLASH 0-dlist ] ],
 	   [ SYNSEM [ LOCAL.CAT [ VAL.COMPS olist ],
 		      NON-LOCAL [ SLASH 1-dlist &
@@ -1640,10 +1639,9 @@ basic-head-filler-phrase := basic-filler-phrase & head-compositional.
 
 ; SSH 2013-04-08 non-cannonical filler-phrase (Rigth Dislocation, etc.)
 nc-filler-phrase := binary-phrase & phrasal &
-  [ SYNSEM [ LOCAL [ CAT [ VAL [ COMPS < >,
-                                 SPR < > ],
-			         POSTHEAD + ] ],
-			 NON-LOCAL.SLASH 0-dlist ],
+  [ SYNSEM [ LOCAL.CAT.VAL [ COMPS < >,
+                             SPR < > ],
+	     NON-LOCAL.SLASH 0-dlist ],
     ARGS <  [ SYNSEM [ LOCAL.CAT [ VAL.COMPS olist ],
 		       NON-LOCAL [ SLASH 1-dlist &
 					 [ LIST [ FIRST #slash,
