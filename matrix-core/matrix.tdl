@@ -2121,8 +2121,7 @@ extracted-adj-phrase := basic-extracted-adj-phrase &
   [ SYNSEM [ LOCAL.CAT [ POSTHEAD #ph,
                          MC #mc ],
 	     NON-LOCAL.SLASH 1-dlist &
-		   <! [ CAT [ POSTHEAD +,
-                              HEAD [ MOD < [ LOCAL intersective-mod &
+		   <! [ CAT [ HEAD [ MOD < [ LOCAL intersective-mod &
                                                    [ CAT [ HEAD #head,
                                                            VAL #val,
                                                            POSTHEAD #ph,
