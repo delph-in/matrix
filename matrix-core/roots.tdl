@@ -8,7 +8,7 @@
 ;;; is legal to have multiple start symbols, but they all need to be listed as
 ;;; the value of `*start-symbol' (see `lkb/user-fns.lsp').
 
-root := phrase &
+root := phrase & non-local-none &
 [ SYNSEM.LOCAL [ CAT [ HEAD verb,
 		       MC +,
                        VAL [ SUBJ < >,
