@@ -1750,7 +1750,7 @@ basic-head-subj-nmc-phrase := head-valence-phrase & basic-binary-headed-phrase &
 ; ERB 2007-01-21 Removing non-clause, which doesn't seem to be doing
 ; any work any more.
 
-basic-head-spec-phrase := head-valence-phrase & phrasal &
+basic-head-spec-phrase-super := head-valence-phrase & phrasal &
 			  binary-headed-phrase & 
   [ INFLECTED infl-satisfied,
     SYNSEM [ LOCAL.CAT [ VAL [ SUBJ #subj,
@@ -1775,10 +1775,13 @@ basic-head-spec-phrase := head-valence-phrase & phrasal &
 	                                              VAL.COMPS #comps ],
 						CONT.HOOK #hdhook ],
 					MODIFIED #hmodif ] >,
-		               COMPS #spcomps ] ],
-		   CONT.HOOK #hook ],
+		               COMPS #spcomps ] ] ],
            MODIFIED #modif ],
-    C-CONT [ HOOK #hook, RELS <! !>, HCONS <! !>, ICONS <! !> ] ].
+    C-CONT [ RELS <! !>, HCONS <! !>, ICONS <! !> ] ].
+
+basic-head-spec-phrase := basic-head-spec-phrase-super &
+  [ NON-HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK #hook,
+    C-CONT.HOOK #hook ].
 
 ; Value of LIGHT comes from head-daughter's specification in HC-LIGHT.
 
