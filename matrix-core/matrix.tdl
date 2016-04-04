@@ -2097,7 +2097,10 @@ basic-extracted-subj-phrase := basic-extracted-arg-phrase & head-compositional &
 						       [ CONT.HOOK.INDEX ref-ind ] ] >,
         				COMPS olist ],
 				  MC na ],
-		      NON-LOCAL.SLASH.LIST < #local > ] ].
+		      NON-LOCAL.SLASH.LIST < #local > ],
+    C-CONT [ RELS <! !>,
+	     HCONS <! !>,
+	     ICONS <! !> ] ].
 
 ; ERB 2004-05-05 Allow modifiers to attach to things with
 ; non-empty comps lists.  The head-mod-phrase will pass up
