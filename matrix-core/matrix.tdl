@@ -2038,7 +2038,7 @@ marker-final-phrase := basic-binary-marker-phrase &
 
 ; SSH 2012-03-03 ICONS
 ; SSH 2013-02-19 deleting ICONS ?
-basic-bare-np-phrase := head-only &
+basic-bare-np-phrase := head-only & head-valence-phrase &
   [ SYNSEM.LOCAL.CAT.VAL [ SPR < >,
 			   SUBJ < >,
 			   COMPS < >,
