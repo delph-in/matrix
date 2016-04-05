@@ -3214,7 +3214,7 @@ null-coord-rel := coordination-relation &
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Conjunction parts of speech
 
-basic-conj-lex := basic-zero-arg & no-hcons-lex-item &
+basic-conj-lex := norm-zero-arg & no-hcons-lex-item &
   [ CFORM string ].
 
 conj-lex := basic-conj-lex & single-rel-lex-item &
