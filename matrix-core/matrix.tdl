@@ -3080,7 +3080,7 @@ basic-nomod-adposition-lex := basic-adposition-lex & no-mod-lex & norm-hook-lex-
 
 ; TJT 2014-04-24 Removing raise-index-mod-lex-item from basic-adverb-lex: replacing with norm-ltop-lex-item. See below for more info.
 
-basic-adverb-lex := single-rel-lex-item & norm-ltop-lex-item &
+basic-adverb-lex := single-rel-lex-item & norm-ltop-lex-item & norm-zero-arg &
   [ SYNSEM [ LOCAL.CAT.HEAD adv,
 	     LKEYS.KEYREL event-relation ] ].
 
