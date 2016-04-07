@@ -3242,14 +3242,17 @@ nosem-conj-lex := basic-conj-lex &
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Coordination phrases and rules
 coord-phrase := binary-phrase &
-  [ SYNSEM.LOCAL [ COORD-STRAT #cstrat,
+  [ SYNSEM [ LOCAL [ COORD-STRAT #cstrat,
                    CAT [ HEAD.MOD #mod,
-                         VAL #val ]],
-    LCOORD-DTR #ldtr & sign & [ SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
-                                                     VAL #val ]]],
-    RCOORD-DTR #rdtr & sign & [ SYNSEM.LOCAL [ COORD-STRAT #cstrat,
+                         VAL #val ] ],
+	     NON-LOCAL #nl ],
+    LCOORD-DTR #ldtr & sign & [ SYNSEM [ LOCAL [ CAT [ HEAD.MOD #mod,
+                                                     VAL #val ] ], 
+				         NON-LOCAL #nl ] ],
+    RCOORD-DTR #rdtr & sign & [ SYNSEM [ LOCAL [ COORD-STRAT #cstrat,
                                                CAT [ HEAD.MOD #mod,
-                                                     VAL #val ]]],
+                                                     VAL #val ] ],
+					 NON-LOCAL #nl ] ],
     ARGS < #ldtr, #rdtr > ].
 
 topormid-coord-phrase := coord-phrase &
@@ -3269,8 +3272,9 @@ mid-coord-rule := topormid-coord-phrase &
                    COORD-REL implicit-coord-rel ]].
 
 bottom-coord-phrase := phrase &
-  [ CONJ-DTR sign,
-    NONCONJ-DTR sign ].
+  [ SYNSEM.NON-LOCAL #nl,
+    CONJ-DTR sign,
+    NONCONJ-DTR sign & [ SYNSEM.NON-LOCAL #nl ] ].
 
 unary-bottom-coord-rule := bottom-coord-phrase & unary-phrase &
   [ SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
