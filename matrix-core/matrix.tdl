@@ -3473,8 +3473,7 @@ n-coord-phrase := coord-phrase &
     RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD noun ].
 
 basic-n-top-coord-rule := n-coord-phrase &
-  [ SYNSEM.LOCAL.CAT.VAL.SPR < [ ] >,
-    C-CONT [ RELS <! !>,
+  [ C-CONT [ RELS <! !>,
 	     HCONS <! !> ]].
 
 basic-n-mid-coord-rule := n-coord-phrase &
@@ -3498,8 +3497,7 @@ np-coord-phrase := coord-phrase &
     RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD noun ].
 
 basic-np-top-coord-rule := np-coord-phrase &
-  [ SYNSEM.LOCAL.CAT.VAL.SPR < >,
-    C-CONT [ HOOK [ LTOP #ltop,
+  [ C-CONT [ HOOK [ LTOP #ltop,
                     INDEX #ind ],
              RELS <! [ PRED "exist_q_rel", ARG0 #ind, RSTR #ltop ] !>,
 	     HCONS <! !> ]].
