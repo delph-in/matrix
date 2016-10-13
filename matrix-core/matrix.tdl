@@ -2431,13 +2431,13 @@ raise-sem-lex-item := no-hcons-lex-item &
 basic-zero-arg := lex-item &
   [ ARG-ST < > ].
 
-zero-arg-nonslash := lex-item &
+zero-arg-nonslash := lex-item & basic-zero-arg &
   [ SYNSEM.NON-LOCAL.SLASH 0-dlist ].
 
-zero-arg-nonrel := lex-item &
+zero-arg-nonrel := lex-item & basic-zero-arg &
   [ SYNSEM.NON-LOCAL.REL 0-dlist ].
 
-zero-arg-nonque := lex-item &
+zero-arg-nonque := lex-item & basic-zero-arg &
   [ SYNSEM.NON-LOCAL.QUE 0-dlist ].
 
 ; Non-argument taking items which introduce no non-local values.
