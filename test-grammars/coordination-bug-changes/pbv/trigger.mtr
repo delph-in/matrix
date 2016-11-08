@@ -1,0 +1,93 @@
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+;;; Semantically Empty Lexical Entries
+
+gen-marker_gr_1 := arg0e_gtr &
+  [ CONTEXT.RELS <! [ ARG1 individual & #i ] !>,
+    FLAGS [ SUBSUME < #i >,
+            TRIGGER "gen-marker" ] ].
+
+gen-marker_gr_2 := arg0e_gtr &
+  [ CONTEXT.RELS <! [ ARG2 individual & #i ] !>,
+    FLAGS [ SUBSUME < #i >,
+            TRIGGER "gen-marker" ] ].
+
+gen-marker_gr_3 := arg0e_gtr &
+  [ CONTEXT.RELS <! [ ARG3 individual & #i ] !>,
+    FLAGS [ SUBSUME < #i >,
+            TRIGGER "gen-marker" ] ].
+
+abl-marker_gr_1 := arg0e_gtr &
+  [ CONTEXT.RELS <! [ ARG1 individual & #i ] !>,
+    FLAGS [ SUBSUME < #i >,
+            TRIGGER "abl-marker" ] ].
+
+abl-marker_gr_2 := arg0e_gtr &
+  [ CONTEXT.RELS <! [ ARG2 individual & #i ] !>,
+    FLAGS [ SUBSUME < #i >,
+            TRIGGER "abl-marker" ] ].
+
+abl-marker_gr_3 := arg0e_gtr &
+  [ CONTEXT.RELS <! [ ARG3 individual & #i ] !>,
+    FLAGS [ SUBSUME < #i >,
+            TRIGGER "abl-marker" ] ].
+
+all-marker_gr_1 := arg0e_gtr &
+  [ CONTEXT.RELS <! [ ARG1 individual & #i ] !>,
+    FLAGS [ SUBSUME < #i >,
+            TRIGGER "all-marker" ] ].
+
+all-marker_gr_2 := arg0e_gtr &
+  [ CONTEXT.RELS <! [ ARG2 individual & #i ] !>,
+    FLAGS [ SUBSUME < #i >,
+            TRIGGER "all-marker" ] ].
+
+all-marker_gr_3 := arg0e_gtr &
+  [ CONTEXT.RELS <! [ ARG3 individual & #i ] !>,
+    FLAGS [ SUBSUME < #i >,
+            TRIGGER "all-marker" ] ].
+
+loc-marker_gr_1 := arg0e_gtr &
+  [ CONTEXT.RELS <! [ ARG1 individual & #i ] !>,
+    FLAGS [ SUBSUME < #i >,
+            TRIGGER "loc-marker" ] ].
+
+loc-marker_gr_2 := arg0e_gtr &
+  [ CONTEXT.RELS <! [ ARG2 individual & #i ] !>,
+    FLAGS [ SUBSUME < #i >,
+            TRIGGER "loc-marker" ] ].
+
+loc-marker_gr_3 := arg0e_gtr &
+  [ CONTEXT.RELS <! [ ARG3 individual & #i ] !>,
+    FLAGS [ SUBSUME < #i >,
+            TRIGGER "loc-marker" ] ].
+
+ben-marker_gr_1 := arg0e_gtr &
+  [ CONTEXT.RELS <! [ ARG1 individual & #i ] !>,
+    FLAGS [ SUBSUME < #i >,
+            TRIGGER "ben-marker" ] ].
+
+ben-marker_gr_2 := arg0e_gtr &
+  [ CONTEXT.RELS <! [ ARG2 individual & #i ] !>,
+    FLAGS [ SUBSUME < #i >,
+            TRIGGER "ben-marker" ] ].
+
+ben-marker_gr_3 := arg0e_gtr &
+  [ CONTEXT.RELS <! [ ARG3 individual & #i ] !>,
+    FLAGS [ SUBSUME < #i >,
+            TRIGGER "ben-marker" ] ].
+
+dang_gr := arg0e_gtr &
+  [ CONTEXT.RELS <! [ ARG0.E.ASPECT PROG ] !>,
+    FLAGS.TRIGGER "dang" ].
+
+jooh_gr := arg0e_gtr &
+  [ CONTEXT.RELS <! [ ARG0.E.ASPECT HAB ] !>,
+    FLAGS.TRIGGER "jooh" ].
+
+daep_gr := arg0e_gtr &
+  [ CONTEXT.RELS <! [ ARG0.E.ASPECT PERF ] !>,
+    FLAGS.TRIGGER "daep" ].
+
+mo_gr := generator_rule &
+  [ CONTEXT.RELS <! [ ARG0.SF ques ] !>,
+    FLAGS.TRIGGER "mo" ].
