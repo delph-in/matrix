@@ -49,8 +49,8 @@ person := *top* & [ 1ST bool,
 
 ;;; Number
 
-number := *top* & diff-list.
-sg := number & <! *top* !>.
+number := diff-list.
+sg := number & 1-dlist.
 pl := number & 2+-dlist.
 
 ;; for nouns, pl = 2 things on diff list
@@ -91,13 +91,13 @@ head-spec-phrase := basic-head-spec-phrase & head-final &
 pn-noun-lex := noun-lex.
 
 1st-noun-lex := noun-lex &
-  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 1st ].
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER.1ST + ].
 
 2nd-noun-lex := noun-lex &
-  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 2nd ].
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER.2ND + ].
 
 3rd-noun-lex := noun-lex &
-  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 3rd ].
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER.3RD + ].
 
 sg-noun-lex := noun-lex &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM sg ].

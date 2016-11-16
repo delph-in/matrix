@@ -841,6 +841,19 @@ diff-list := avm &
 	 [ REST #rest ],
     LAST #rest ].
 
+;;; There's at least 2 things on this list, perhaps more
+2+-dlist := diff-list &
+  [ LIST 1-plus-list ].
+
+;;; There are at least 2 things on the sub-list (thus 3+ things)
+3+-dlist := 2+-dlist &
+  [ LIST.REST 1-plus-list ].
+
+;;; There are exactly 2 things on this list
+2-dlist := 2+-dlist &
+  [ LIST.REST 1-list & 
+	      [ REST #rest ],
+    LAST #rest ].
 
 ; This type shows the basic form for diff-list appends.
 ; It is not meant to be used as a supertype.  Actual instances
@@ -2431,13 +2444,13 @@ raise-sem-lex-item := no-hcons-lex-item &
 basic-zero-arg := lex-item &
   [ ARG-ST < > ].
 
-zero-arg-nonslash := lex-item & basic-zero-arg &
+zero-arg-nonslash := basic-zero-arg &
   [ SYNSEM.NON-LOCAL.SLASH 0-dlist ].
 
-zero-arg-nonrel := lex-item & basic-zero-arg &
+zero-arg-nonrel := basic-zero-arg &
   [ SYNSEM.NON-LOCAL.REL 0-dlist ].
 
-zero-arg-nonque := lex-item & basic-zero-arg &
+zero-arg-nonque := basic-zero-arg &
   [ SYNSEM.NON-LOCAL.QUE 0-dlist ].
 
 ; Non-argument taking items which introduce no non-local values.
