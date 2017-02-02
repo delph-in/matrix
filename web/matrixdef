@@ -393,7 +393,7 @@ Philippine languages, have a system where A and O are marked by cases.
 An additional case, sometimes called the <span
 class=\"dfn\">focus</span>, is mandatory in every clause and has its
 grammatical role assigned by the morphology of the verb.  You will
-have an opportunity to define this morphology on the Lexicon
+have an opportunity to define this morphology on the Morphology
 page.)</p>"
 
 Label "<p style=\"margin-left:20px;margin-top:0px\">"
@@ -797,7 +797,7 @@ Section sentential-negation "Sentential Negation"
 
 Cache verbpcs verb-pc[0-9]+$ name
 
-Label "<p>On this page you can select a strategy that your language uses for sentential negation.  In most cases, morpheme classes that you can further modify will be created on the lexicon page.</p>"
+Label "<p>On this page you can select a strategy that your language uses for sentential negation.  In most cases, morpheme classes that you can further modify will be created on the morphology page.</p>"
 
 Label "<p>Sentential negation constructions can be classified based on the number of overt morphemes required by the construction.  What's the morphosyntactic exponence of the negation construction you'd like to model?<p>"
 
@@ -841,7 +841,7 @@ Label "</div><hr />"
 
 Label "<div id='zero-neg' class='neg_exp_switch' style='display:none'><p>Negation without an overt marker.  In some south Dravidian languages such as (Historical Kannada [kan]), sentential negation was marked by the <em>absence</em> of the tense marking morpheme that appeared in the corresponding affirmative.  This sort of phenomenon is typologically rare.</p><p>You can model omissive negation as a phonologically empty inflectional rule ('lexical rule type/instance') which targets a particular position class in your morphotactic system.  You'll then have to specify at least one other morpheme that canuoccur in this position class so that negation is indicated by the lack of phonological material in this position.</p>"
 
-Select vpc-0-neg "0 neg vpc" "<p>I can create a phonologically empty negation affix for you here.  Choose a position class from the verbal position classes that you've defined (on the lexicon page), or choose \"create\" to create a new pc for use with zero neg:" "  You'll see the result of this choice as a lexical rule instance with no affix and a feature called [NEGATION] with the value \"plus\".  This 'feature' is not a grammatical one---it won't appear in your grammar, it only indicates to the customization system that negative semantics should be added to this morpheme at customize time.</p>"
+Select vpc-0-neg "0 neg vpc" "<p>I can create a phonologically empty negation affix for you here.  Choose a position class from the verbal position classes that you've defined (on the morphology page), or choose \"create\" to create a new pc for use with zero neg:" "  You'll see the result of this choice as a lexical rule instance with no affix and a feature called [NEGATION] with the value \"plus\".  This 'feature' is not a grammatical one---it won't appear in your grammar, it only indicates to the customization system that negative semantics should be added to this morpheme at customize time.</p>"
 fillcache c=verbpcs
 . create "Create" "create new pc"
 
@@ -850,7 +850,7 @@ Label "</div>"
 
 Label "<div id='uni-neg' class='neg_exp_switch' style='display:none'><p> Negation can be indicated by the presence of a single negative morpheme.  Your negative morpheme might be bound (negation by inflection) or it might be free (one of the other choices). Your free negator might be a syntactic head (a verb), or it might be a dependent (a complement or a modifier).  Specify it's syntax below.</p>"
 
-Check infl-neg "Negation by inflection" "<p>" "Inflectional negation: Checking this box enables a feature called <span class=\"feat\">negation</span> with possible value <span class=\"tt\">plus</span> for use in defining morphemes on the lexicon page.  Defining morphemes that specify [<span class=\"feat\">negation</span> <span class=\"tt\">plus</span>] will produce lexical rules that add the semantics of negation.</p>" 
+Check infl-neg "Negation by inflection" "<p>" "Inflectional negation: Checking this box enables a feature called <span class=\"feat\">negation</span> with possible value <span class=\"tt\">plus</span> for use in defining morphemes on the morphology page.  Defining morphemes that specify [<span class=\"feat\">negation</span> <span class=\"tt\">plus</span>] will produce lexical rules that add the semantics of negation.</p>" 
 
 Check neg-aux "Negation by auxiliary verb" "<p>" "Negative auxiliary verb: Checking this box creates a neg-aux type which contributes a neg_rel that outscopes it's complement's handle.  This lexical type will show up on the lexicon page where you'll need to further specify its syntax.</p>"
 
@@ -907,7 +907,7 @@ Radio neg2-type "NEG2 type" "NEG2" ""
 . fm "free-mod" "" "free, syntactic modifier" "display_neg_form()"
 
 
-Label "<div id=\"infl-infl-neg\" class='bineg_switch' style='display:none'><p>If both NEG2 and NEG2 are bound to the same root, you can set up the dendency using the morphotactics system on the lexicon page. Only specify that one of your LRIs is 'negation plus' (you only need one <em>neg_rel</em>), and set up a requires relation between the two morphemes.</p><p>If NEG1 is bound to an auxiliary and NEG2 is bound to a lexical verb, check the box below.  This will enable several options for you as you define your lexical rules for NEG1 and NEG2 on the morphotactics page.  A value for FORM 'negform' will be added to your grammar (as a subtype of nonfinite).  Indicate the lexical rule corresponding to NEG1 by setting [NEGATION +] (this adds the negative semantics) and the requirement that the complement be [FORM negform].  For the second negator, you can create it in the normal way using the morphotactics page.  Be sure that the FORM value for your NEG2 morpheme is set to negform.   This will set up the NEG2 lexical rule to change the FORM value on its head to negform.  In this way, auxiliary verbs inflected by NEG1 will require their complement to be headed by a verb which has been inflected by NEG2.</p>"
+Label "<div id=\"infl-infl-neg\" class='bineg_switch' style='display:none'><p>If both NEG1 and NEG2 are bound to the same root, you can set up the dendency using the morphotactics system on the morphology page. Only specify that one of your LRIs is 'negation plus' (you only need one <em>neg_rel</em>), and set up a requires relation between the two morphemes.</p><p>If NEG1 is bound to an auxiliary and NEG2 is bound to a lexical verb, check the box below.  This will enable several options for you as you define your lexical rules for NEG1 and NEG2 on the morphology page.  A value for FORM 'negform' will be added to your grammar (as a subtype of nonfinite).  Indicate the lexical rule corresponding to NEG1 by setting [NEGATION +] (this adds the negative semantics) and the requirement that the complement be [FORM negform].  For the second negator, you can create it in the normal way using the morphology page.  Be sure that the FORM value for your NEG2 morpheme is set to negform.   This will set up the NEG2 lexical rule to change the FORM value on its head to negform.  In this way, auxiliary verbs inflected by NEG1 will require their complement to be headed by a verb which has been inflected by NEG2.</p>"
 Check neg1b-neg2b "neg1 bound to aux requires neg2 bound to lexical verb" "neg1 bound to aux requires neg2 bound to lexical verb" "</div>" 
 
 Label "<div id='infl-head-neg' class='bineg_switch' style='display:none'><p>You have selected a negation construction with a negative auxiliary verb and an inflectional rule.  When you save this page, the negative auxiliary will be created for you on the lexicon page (where you can further define and constrain its syntax.  A subtype of nonfinite (part of the FORM value hierarchy) called 'negform' has also been created and your negative auxiliary should select for a complement which is [FORM negform].  Indicate your negation lexical rule by marking it as [negation plus] on the morphology subpage.  This rule will change the FORM of verbs to which it attaches to [FORM negform].</p></div>"
@@ -1318,7 +1318,7 @@ Radio subj-mark-no-drop "Subj Mark No Drop" "<p>When a subject is overt (not dro
 . subj-mark-no-drop-opt "Subj Mark Opt" "" "optional<br>"
 . subj-mark-no-drop-not "Subj Mark Not" "" "not permitted"
 
-Label "<p>NOTE: When completing the lexicon page, for each morpheme
+Label "<p>NOTE: When completing the morphology page, for each morpheme
 that is optional or required when a subject is dropped and not
 permitted when an overt subject is present, select <span
 class=\"feat\">overt-arg</span> not permitted and marked on the
@@ -1391,7 +1391,7 @@ Radio obj-mark-no-drop "Obj Mark Drop" "<p>When an object is overt (not dropped)
 . obj-mark-no-drop-opt "Obj Mark Opt" "" "optional<br>"
 . obj-mark-no-drop-not "Obj Mark Not" "" "not permitted<br>"
 
-Label "<p>NOTE: When completing the lexicon page, for each morpheme
+Label "<p>NOTE: When completing the morphology page, for each morpheme
 that is optional or required when an object is dropped and not
 permitted when an overt object is present, select <span
 class=\"feat\">overt-arg</span> not permitted and marked on the

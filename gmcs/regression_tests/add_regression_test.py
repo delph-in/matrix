@@ -21,7 +21,7 @@ def add(choices_file, txt_suite):
   cust_root = os.environ.get("CUSTOMIZATIONROOT")
 
   # Check whether arguments correspond to existing files
-
+  print "Checking paths..." ##CMC
   rt_root = cust_root + "/regression_tests/"
   choices_file = os.path.join(rt_root, 'scratch', choices_file)
   txt_suite = os.path.join(rt_root, 'scratch', txt_suite)
@@ -49,7 +49,7 @@ def add(choices_file, txt_suite):
       raise ValueError, 'Double-quotes are not allowed in the language name.'
 
   # Load up the current regression test index
-
+  print "Checking index..." ##CMC
   index = RegressionTestIndex(rt_root + "regression-test-index")
 
   # Check whether we already have a regression-test with that
@@ -79,12 +79,16 @@ def add(choices_file, txt_suite):
   # For now this is just double-quotes "
   if any(c in ('"',) for c in comment):
       raise ValueError, 'Double-quotes are not allowed in the comment.'
-
+  
+  print "Creating profile..."  
   # Make the profile
   # TODO: DELETEME: this doesn't seem to work...
   cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'], 'regression_tests/add_regression_test.sh')
-  subprocess.call([cmd, choices_file, txt_suite, lg_name], env=os.environ);
-
+  retval = subprocess.call([cmd, choices_file, txt_suite, lg_name], env=os.environ);
+  #if retval != 0:
+  #  print "Error creating regression test... (possible missing gold results?)"
+  print "Profile created (retval=" + str(retval) + ")"
+  
   # Add line to regression-test-index
   index_file = open(rt_root + "regression-test-index", 'a')
   index_file.write(lg_name + "=" + comment + "\n")

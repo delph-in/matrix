@@ -367,7 +367,7 @@ keys := keys_min &
 ; One of a grammatically salient inventory of semantic sorts, such as
 ; 'animate' or 'time'
 
-semsort :< sort.
+semsort := sort.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; CONT values
@@ -1615,15 +1615,14 @@ imperative-clause := basic-non-rel-clause &
 ; We provide a subtype, basic-head-filler-phrase, below, which does.
 
 basic-filler-phrase := binary-phrase & phrasal &
-  [ SYNSEM [ LOCAL [ CAT [ VAL [ COMPS < >,
-                                 SPR < > ],
-			         POSTHEAD + ] ],
-			 NON-LOCAL.SLASH 0-dlist ],
+  [ SYNSEM [ LOCAL.CAT.VAL [ COMPS < >,
+                             SPR < > ],
+	     NON-LOCAL.SLASH 0-dlist ],
     ARGS < [ SYNSEM [ LOCAL #slash & local &
 			    [ CAT.VAL [ SUBJ olist,
 					COMPS olist,
 					SPR olist ],
-			      CTXT.ACTIVATED + ],
+			      CTXT.ACTIVATED + ],	
 		      NON-LOCAL.SLASH 0-dlist ] ],
 	   [ SYNSEM [ LOCAL.CAT [ VAL.COMPS olist ],
 		      NON-LOCAL [ SLASH 1-dlist &
@@ -1640,10 +1639,9 @@ basic-head-filler-phrase := basic-filler-phrase & head-compositional.
 
 ; SSH 2013-04-08 non-cannonical filler-phrase (Rigth Dislocation, etc.)
 nc-filler-phrase := binary-phrase & phrasal &
-  [ SYNSEM [ LOCAL [ CAT [ VAL [ COMPS < >,
-                                 SPR < > ],
-			         POSTHEAD + ] ],
-			 NON-LOCAL.SLASH 0-dlist ],
+  [ SYNSEM [ LOCAL.CAT.VAL [ COMPS < >,
+                             SPR < > ],
+	     NON-LOCAL.SLASH 0-dlist ],
     ARGS <  [ SYNSEM [ LOCAL.CAT [ VAL.COMPS olist ],
 		       NON-LOCAL [ SLASH 1-dlist &
 					 [ LIST [ FIRST #slash,
@@ -1700,8 +1698,7 @@ nc-head-filler-phrase := nc-filler-phrase & head-compositional.
 basic-head-subj-phrase := head-valence-phrase & head-compositional & 
 			  basic-binary-headed-phrase & 
   [ SYNSEM phr-synsem & 
-		   [ LOCAL.CAT [ POSTHEAD +,
-				 HC-LIGHT -,
+		   [ LOCAL.CAT [ HC-LIGHT -,
 				 VAL [ SUBJ < >,
 				       COMPS #comps,
 				       SPR #spr ] ] ],
@@ -1727,7 +1724,6 @@ basic-head-subj-nmc-phrase := head-valence-phrase & basic-binary-headed-phrase &
 			      declarative-clause & 
   [ SYNSEM phr-synsem & 
 		   [ LOCAL.CAT [ MC -,
-				 POSTHEAD +,
 				 HC-LIGHT -,
 				 VAL [ SUBJ < >,
 		                       COMPS < >,
@@ -1754,7 +1750,7 @@ basic-head-subj-nmc-phrase := head-valence-phrase & basic-binary-headed-phrase &
 ; ERB 2007-01-21 Removing non-clause, which doesn't seem to be doing
 ; any work any more.
 
-basic-head-spec-phrase := head-valence-phrase & phrasal &
+basic-head-spec-phrase-super := head-valence-phrase & phrasal &
 			  binary-headed-phrase & 
   [ INFLECTED infl-satisfied,
     SYNSEM [ LOCAL.CAT [ VAL [ SUBJ #subj,
@@ -1779,10 +1775,13 @@ basic-head-spec-phrase := head-valence-phrase & phrasal &
 	                                              VAL.COMPS #comps ],
 						CONT.HOOK #hdhook ],
 					MODIFIED #hmodif ] >,
-		               COMPS #spcomps ] ],
-		   CONT.HOOK #hook ],
+		               COMPS #spcomps ] ] ],
            MODIFIED #modif ],
-    C-CONT [ HOOK #hook, RELS <! !>, HCONS <! !>, ICONS <! !> ] ].
+    C-CONT [ RELS <! !>, HCONS <! !>, ICONS <! !> ] ].
+
+basic-head-spec-phrase := basic-head-spec-phrase-super &
+  [ NON-HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK #hook,
+    C-CONT.HOOK #hook ].
 
 ; Value of LIGHT comes from head-daughter's specification in HC-LIGHT.
 
@@ -1939,7 +1938,7 @@ basic-head-opt-subj-phrase := head-valence-phrase & head-only &
 						     LOCAL.CONT.HOOK [ INDEX #index & [ COG-ST in-foc ],
 								       ICONS-KEY #ikey,
 								       CLAUSE-KEY #ckey ] ] >,
-					    COMPS #comps & < >,
+					    COMPS #comps,
 					    SPR #spr,
 					    SPEC #spec ],
 				      POSTHEAD #ph ],
@@ -2042,13 +2041,14 @@ marker-final-phrase := basic-binary-marker-phrase &
 
 ; SSH 2012-03-03 ICONS
 ; SSH 2013-02-19 deleting ICONS ?
-basic-bare-np-phrase := head-only &
+basic-bare-np-phrase := head-only & head-valence-phrase &
   [ SYNSEM.LOCAL.CAT.VAL [ SPR < >,
 			   SUBJ < >,
 			   COMPS < >,
 			   SPEC < > ],
     HEAD-DTR.SYNSEM.LOCAL [ CAT [ HEAD noun,
-				  VAL [ SPR < [ LOCAL.CAT.HEAD det,
+				  VAL [ SPR < unexpressed & 
+				      	      [ LOCAL.CAT.HEAD det,
 						OPT + ] >,
 					SUBJ < >,
 					COMPS < > ] ],
@@ -2101,7 +2101,10 @@ basic-extracted-subj-phrase := basic-extracted-arg-phrase & head-compositional &
 						       [ CONT.HOOK.INDEX ref-ind ] ] >,
         				COMPS olist ],
 				  MC na ],
-		      NON-LOCAL.SLASH.LIST < #local > ] ].
+		      NON-LOCAL.SLASH.LIST < #local > ],
+    C-CONT [ RELS <! !>,
+	     HCONS <! !>,
+	     ICONS <! !> ] ].
 
 ; ERB 2004-05-05 Allow modifiers to attach to things with
 ; non-empty comps lists.  The head-mod-phrase will pass up
@@ -2123,8 +2126,7 @@ extracted-adj-phrase := basic-extracted-adj-phrase &
   [ SYNSEM [ LOCAL.CAT [ POSTHEAD #ph,
                          MC #mc ],
 	     NON-LOCAL.SLASH 1-dlist &
-		   <! [ CAT [ POSTHEAD +,
-                              HEAD [ MOD < [ LOCAL intersective-mod &
+		   <! [ CAT [ HEAD [ MOD < [ LOCAL intersective-mod &
                                                    [ CAT [ HEAD #head,
                                                            VAL #val,
                                                            POSTHEAD #ph,
@@ -2220,11 +2222,12 @@ adj-head-phrase := basic-head-mod-phrase-simple & head-final &
 ;;    HEAD-DTR.SYNSEM.MODIFIED notmod-or-rmod,
 ;; As Antske Fokkens points out in an e-mail to matrix-dev,
 ;;   this is an english-specific leftover ---JDC
+;;; LLD 2016-3-25 removed SYNSEM.LOCAL.CAT.POSTHEAD +, which
+;; EMB pointed out as another english-specific leftover.
 head-adj-phrase := basic-head-mod-phrase-simple & head-initial & phrasal &
-  [ SYNSEM [ LOCAL.CAT.POSTHEAD +,
-	     MODIFIED rmod ],
+  [ SYNSEM.MODIFIED rmod,
     NON-HEAD-DTR.SYNSEM [ LOCAL.CAT.POSTHEAD +,
-			  NON-LOCAL.QUE 0-dlist ] ].
+    			  NON-LOCAL.QUE 0-dlist ] ].
 
 ; We split head-adj-phrase and adj-head-phrase into two each,
 ; one for intersective modifiers and one for scopal modifiers, in order to
@@ -2428,13 +2431,13 @@ raise-sem-lex-item := no-hcons-lex-item &
 basic-zero-arg := lex-item &
   [ ARG-ST < > ].
 
-zero-arg-nonslash := lex-item &
+zero-arg-nonslash := basic-zero-arg &
   [ SYNSEM.NON-LOCAL.SLASH 0-dlist ].
 
-zero-arg-nonrel := lex-item &
+zero-arg-nonrel := basic-zero-arg &
   [ SYNSEM.NON-LOCAL.REL 0-dlist ].
 
-zero-arg-nonque := lex-item &
+zero-arg-nonque := basic-zero-arg &
   [ SYNSEM.NON-LOCAL.QUE 0-dlist ].
 
 ; Non-argument taking items which introduce no non-local values.
@@ -3078,7 +3081,7 @@ basic-nomod-adposition-lex := basic-adposition-lex & no-mod-lex & norm-hook-lex-
 
 ; TJT 2014-04-24 Removing raise-index-mod-lex-item from basic-adverb-lex: replacing with norm-ltop-lex-item. See below for more info.
 
-basic-adverb-lex := single-rel-lex-item & norm-ltop-lex-item &
+basic-adverb-lex := single-rel-lex-item & norm-ltop-lex-item & norm-zero-arg &
   [ SYNSEM [ LOCAL.CAT.HEAD adv,
 	     LKEYS.KEYREL event-relation ] ].
 
@@ -3212,7 +3215,7 @@ null-coord-rel := coordination-relation &
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Conjunction parts of speech
 
-basic-conj-lex := basic-zero-arg & no-hcons-lex-item &
+basic-conj-lex := norm-zero-arg & no-hcons-lex-item &
   [ CFORM string ].
 
 conj-lex := basic-conj-lex & single-rel-lex-item &
@@ -3239,14 +3242,17 @@ nosem-conj-lex := basic-conj-lex &
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Coordination phrases and rules
 coord-phrase := binary-phrase &
-  [ SYNSEM.LOCAL [ COORD-STRAT #cstrat,
+  [ SYNSEM [ LOCAL [ COORD-STRAT #cstrat,
                    CAT [ HEAD.MOD #mod,
-                         VAL #val ]],
-    LCOORD-DTR #ldtr & sign & [ SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
-                                                     VAL #val ]]],
-    RCOORD-DTR #rdtr & sign & [ SYNSEM.LOCAL [ COORD-STRAT #cstrat,
+                         VAL #val ] ],
+	     NON-LOCAL #nl ],
+    LCOORD-DTR #ldtr & sign & [ SYNSEM [ LOCAL [ CAT [ HEAD.MOD #mod,
+                                                     VAL #val ] ], 
+				         NON-LOCAL #nl ] ],
+    RCOORD-DTR #rdtr & sign & [ SYNSEM [ LOCAL [ COORD-STRAT #cstrat,
                                                CAT [ HEAD.MOD #mod,
-                                                     VAL #val ]]],
+                                                     VAL #val ] ],
+					 NON-LOCAL #nl ] ],
     ARGS < #ldtr, #rdtr > ].
 
 topormid-coord-phrase := coord-phrase &
@@ -3266,8 +3272,9 @@ mid-coord-rule := topormid-coord-phrase &
                    COORD-REL implicit-coord-rel ]].
 
 bottom-coord-phrase := phrase &
-  [ CONJ-DTR sign,
-    NONCONJ-DTR sign ].
+  [ SYNSEM.NON-LOCAL #nl,
+    CONJ-DTR sign,
+    NONCONJ-DTR sign & [ SYNSEM.NON-LOCAL #nl ] ].
 
 unary-bottom-coord-rule := bottom-coord-phrase & unary-phrase &
   [ SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
@@ -3460,14 +3467,13 @@ omni-mid-coord-rule := omni-coord-phrase &
 ; N Coordination rules
 
 n-coord-phrase := coord-phrase &
-  [ SYNSEM.LOCAL.CAT.VAL.SPR < [ ] >,
-    SYNSEM.LOCAL.CAT.HEAD noun,
+  [ SYNSEM.LOCAL.CAT [ HEAD noun,
+    		       VAL.SPR < [ ] > ],
     LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD noun,
     RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD noun ].
 
 basic-n-top-coord-rule := n-coord-phrase &
-  [ SYNSEM.LOCAL.CAT.VAL.SPR < [ ] >,
-    C-CONT [ RELS <! !>,
+  [ C-CONT [ RELS <! !>,
 	     HCONS <! !> ]].
 
 basic-n-mid-coord-rule := n-coord-phrase &
@@ -3485,14 +3491,13 @@ n-bottom-coord-phrase := bottom-coord-phrase &
 ; NP Coordination rules
 
 np-coord-phrase := coord-phrase &
-  [ SYNSEM.LOCAL.CAT.VAL.SPR < >,
-    SYNSEM.LOCAL.CAT.HEAD noun,
+  [ SYNSEM.LOCAL.CAT [ HEAD noun,
+    		       VAL.SPR < > ],
     LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD noun,
     RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD noun ].
 
 basic-np-top-coord-rule := np-coord-phrase &
-  [ SYNSEM.LOCAL.CAT.VAL.SPR < >,
-    C-CONT [ HOOK [ LTOP #ltop,
+  [ C-CONT [ HOOK [ LTOP #ltop,
                     INDEX #ind ],
              RELS <! [ PRED "exist_q_rel", ARG0 #ind, RSTR #ltop ] !>,
 	     HCONS <! !> ]].
@@ -3573,8 +3578,8 @@ adv-bottom-coord-phrase := bottom-coord-phrase &
 ; VP Coordination rules
 
 vp-coord-phrase := event-coord-phrase &
-  [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ ] >,
-    SYNSEM.LOCAL.CAT.HEAD verb,
+  [ SYNSEM.LOCAL.CAT [ HEAD verb,
+    		       VAL.SUBJ < [ ] > ],
     LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD verb,
     RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD verb ].
 
@@ -3597,8 +3602,8 @@ vp-bottom-coord-phrase := bottom-coord-phrase &
 ; S Coordination rules
 
 s-coord-phrase := event-coord-phrase &
-  [ SYNSEM.LOCAL.CAT.VAL.SUBJ < >,
-    SYNSEM.LOCAL.CAT.HEAD verb,
+  [ SYNSEM.LOCAL.CAT [ HEAD verb, 
+    		       VAL.SUBJ < > ],
     LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD verb,
     RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD verb ].
 

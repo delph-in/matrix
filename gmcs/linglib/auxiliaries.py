@@ -132,7 +132,7 @@ def define_arg_str_and_valency(aux, auxcomp, ch, mylang, negaux):
                      [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >, \
                        ARG-ST < [ ], \
                                 #comps & \
-                                [ LOCAL.CAT [ VAL [ SUBJ < [ ] >, \
+                                [ LOCAL.CAT [ VAL [ SUBJ < unexpressed >, \
                                                     COMPS < >, \
                                                     SPR < >, \
                                                     SPEC < > ], \
@@ -144,7 +144,7 @@ def define_arg_str_and_valency(aux, auxcomp, ch, mylang, negaux):
                        [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps, #negcomp >, \
                          ARG-ST < [ LOCAL.CONT.HOOK.INDEX #ind ], \
                                   #comps & \
-                                  [ LOCAL [ CAT [ VAL [ SUBJ < [ ] >, \
+                                  [ LOCAL [ CAT [ VAL [ SUBJ < unexpressed >, \
                                                       COMPS < >, \
                                                       SPR < >, \
                                                       SPEC < > ], \
@@ -160,7 +160,7 @@ def define_arg_str_and_valency(aux, auxcomp, ch, mylang, negaux):
                                   #negcomp & \
                                   [ LOCAL.CAT.HEAD.NEGATED + ], \
                                   #comps & \
-                                  [ LOCAL [ CAT [ VAL [ SUBJ < [ ] >, \
+                                  [ LOCAL [ CAT [ VAL [ SUBJ < unexpressed >, \
                                                       COMPS < >, \
                                                       SPR < >, \
                                                       SPEC < > ], \

@@ -37,7 +37,7 @@ from gmcs.linglib import negation
 from gmcs.linglib import coordination
 from gmcs.linglib import yes_no_questions
 from gmcs.linglib import toolboximport
-
+from gmcs.linglib import valence_change
 
 ######################################################################
 # globals
@@ -569,6 +569,7 @@ def customize_matrix(path, arch_type, destination=None):
   negation.customize_sentential_negation(mylang, ch, lexicon, rules, lrules, hierarchies)
 
   add_lexrules_methods = [case.add_lexrules,
+                          valence_change.add_lexrules,
                           argument_optionality.add_lexrules,
                           direct_inverse.add_lexrules]
   to_cfv = morphotactics.customize_inflection(ch, add_lexrules_methods,
@@ -579,6 +580,8 @@ def customize_matrix(path, arch_type, destination=None):
 
   features.process_cfv_list(mylang, ch, hierarchies, to_cfv)
 
+  
+  
   # Call the other customization functions
  # customize_person_and_number()
  # customize_gender()
@@ -590,6 +593,7 @@ def customize_matrix(path, arch_type, destination=None):
  # customize_situation()
  # customize_mood()
   verbal_features.customize_verbal_features(mylang, hierarchies)
+  valence_change.customize_valence_change(mylang, ch, lexicon, rules, lrules)
   word_order.customize_word_order(mylang, ch, rules)
   coordination.customize_coordination(mylang, ch, lexicon, rules, irules)
   yes_no_questions.customize_yesno_questions(mylang, ch, rules, lrules, hierarchies)

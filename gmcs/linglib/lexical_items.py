@@ -352,9 +352,10 @@ def customize_determiners(mylang, ch, lexicon, hierarchies):
       ';;; Determiners\n' + \
       ';;; SPEC is non-empty, and already specified by basic-determiner-lex.'
     mylang.add_literal(comment)
-
+    
+    # LLD 2016-04-04 changed basic-zero-arg to norm-zero-arg
     typedef = \
-      'determiner-lex := basic-determiner-lex & basic-zero-arg & \
+      'determiner-lex := basic-determiner-lex & norm-zero-arg & \
           [ SYNSEM.LOCAL.CAT.VAL [ SPR < >, \
                                    COMPS < >, \
                                    SUBJ < > ]].'

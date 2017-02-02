@@ -1122,6 +1122,9 @@ class ChoicesFile:
     if 'subj-drop' in self.choices or 'obj-drop' in self.choices:
       features +=[['OPT', 'plus|plus;minus|minus', '', 'verb', 'y']]
 
+    #if 'valchg-subj-rem' in self.choices:
+    features += [ ['valchg-subj-rem', 'plus|plus;minus|minus', '', 'verb', 'y'] ]
+      
     perm_notperm_string = 'permitted|permitted;not-permitted|not-permitted'
     # Overt Argument
     if self.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt' and \
