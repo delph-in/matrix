@@ -9,7 +9,7 @@ from gmcs.utils import orth_encode
 ######################################################################
 # define_coord_strat: a utility function, defines a strategy
 
-def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, mylang, rules, irules):
+def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, mylang, rules, irules, cs):
   mylang.add_literal(';;; Coordination Strategy ' + num)
 
   pn = pos + num
@@ -18,20 +18,63 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, mylang, rules, i
   else:
     headtype = 'verb'
 
+  # TODO for the names of the rules and supertypes we need:
+  # TODO per = '-' + p1 + '-' + p2 (which all go in the rule name between 'pn' and the ending of the rule name)
+  # TODO p1 + '-' + p2 + '-per-coord-rule &\ (each supertype) (for this one I need to know the name of the feature...
+  # TODO ...or at least what I called the rule.)
+  # TODO the rest is the same for mid and top rules
+  resrules = []
+  for feat in ('pers', 'num', 'gend'):  # TODO custom features/other features
+    if cs.get(feat + "_rule"): # TODO try to do this without using cs (bringing a list into this function?)
+      featlist = cs.get(feat + "_rule")
+      templist = []
+      for rule in featlist:
+        ch1, ch2, par = tuple(rule['value'].split(", "))
+
+        nm = '-' + ch1 + '-' + ch2
+
+        if feat == 'gend':
+          st = ch1 + '-' + ch2 + '-gend-coord-rule & '
+        elif feat == 'pers':
+          st = ch1 + '-' + ch2 + '-per-coord-rule & '
+        elif feat == 'num':
+          st = ch1 + '-' + ch2 + '-num-coord-rule & '
+
+        templist += [(nm, st)]
+
+      newlist = []
+      if resrules: # if we have rules already, iterate through them
+        for rule in resrules:
+          for temp in templist:
+            newlist += [(rule[0]+temp[0], rule[1]+temp[1])]
+        resrules = newlist
+      else:
+        resrules = templist
+  # TODO check - AT THIS POINT we should have a list, "rules", which contains all the combinations of the...
+  # TODO ...various feature resolution rules
+
+
+
   # First define the rules in mylang.  Every strategy has a
   # top rule and a bottom rule, but only some have a mid rule, so if
   # the mid prefix argument $mid is empty, don't emit a rule.
   # Similarly, not all strategies have a left rule.
-
-  mylang.add(pn + '-top-coord-rule :=\
-               basic-' + pos + '-top-coord-rule &\
-               ' + top + 'top-coord-rule &\
-               [ SYNSEM.LOCAL.COORD-STRAT "' + num + '" ].')
-  if mid:
-    mylang.add(pn + '-mid-coord-rule :=\
-                 basic-' + pos + '-mid-coord-rule &\
-                 ' + mid + 'mid-coord-rule &\
-                 [ SYNSEM.LOCAL.COORD-STRAT "' + num + '" ].')
+  # TODO could I just have a list of feature lists, and not worry about the name of them?
+  # TODO for list in lists: for child1, child2, parent in list:
+  # TODO probably not, because I do have to specify the correct path for the feature
+  # TODO this may get tricky for languages that define their own features
+  for nm, st in resrules:
+    mylang.add(pn + nm + '-top-coord-rule :=\
+                 basic-' + pos + '-top-coord-rule &\
+                 ' + top + 'top-coord-rule &\
+                 ' + st +\
+                 '[ SYNSEM.LOCAL.COORD-STRAT "' + num + '" ].')
+    if mid:
+      mylang.add(pn + nm + '-mid-coord-rule :=\
+                   basic-' + pos + '-mid-coord-rule &\
+                   ' + mid + 'mid-coord-rule &\
+                   ' + st +\
+                   '[ SYNSEM.LOCAL.COORD-STRAT "' + num + '" ].')
 
   if pre or suf:
     # first the rule in mylang
@@ -52,7 +95,7 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, mylang, rules, i
   else:
     rule = pn + '-bottom-coord-rule :=\
            ' + bot + 'bottom-coord-rule &\
-           ' + pos + '-bottom-coord-phrase &\
+           ' + pos + '-bottom-coord-phrase & pass-up-png-coord-rule &\
            [ SYNSEM.LOCAL.COORD-STRAT "' + num + '" ].'
     mylang.add(rule)
     if bot == 'unary-':
@@ -84,14 +127,61 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, mylang, rules, i
 
   # Now define the rule instances into rules.tdl.  As above, the mid
   # or left rule may not be necessary.
-
-  rules.add(pn + '-top-coord := ' + pn + '-top-coord-rule.')
-  if mid:
-    rules.add(pn + '-mid-coord := ' + pn + '-mid-coord-rule.')
+  for nm, st in resrules:
+      rules.add(pn + nm + '-top-coord := ' + pn + nm + '-top-coord-rule.')
+      if mid:
+        rules.add(pn + nm + '-mid-coord := ' + pn + nm + '-mid-coord-rule.')
   rules.add(pn + '-bottom-coord := ' + pn + '-bottom-coord-rule.')
   if left:
     rules.add(pn + '-left-coord := ' + pn + '-left-coord-rule.')
 
+def customize_feature_resolution(mylang, ch, cs):
+  # TODO handle more than pseudospanish
+  # TODO some of the more general types might be shared between coordination strategies
+  # TODO handle empty lists
+  # TODO handle the custom features
+
+  mylang.add_literal(';;; Feature Resolution Rules')
+
+  for feat in ('pers', 'num', 'gend'): # TODO custom features/other features
+    if cs.get(feat + "_rule"):
+      featlist = cs.get(feat + "_rule")
+      for rule in featlist:
+        ch1, ch2, par = tuple(rule['value'].split(", "))
+
+        if feat == 'gend':
+          tn = ch1 + '-' + ch2 + '-gend-coord-rule:= coord-phrase &\
+                       [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND ' + par + ','
+          if ch1 != 'any':
+            tn += 'LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND ' + ch1 + ','
+          if ch2 != 'any':
+            tn += 'RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND ' + ch2 + '].'
+
+        elif feat == 'pers':
+          tn = ch1 + '-' + ch2 + '-per-coord-rule:= coord-phrase &\
+                      [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER ' + par + ','
+          if ch1 != 'any':
+            tn += 'LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER ' + ch1 + ','
+          if ch2 != 'any':
+            tn += 'RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER ' + ch2 + '].'
+
+        elif feat == 'num':
+          if (ch1 != 'any' and ch2 != 'any'):
+            tn = ch1 + '-' + ch2 + '-num-coord-rule:= coord-phrase &\
+                        [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM ' + par + ','
+          else: # TODO this handles if "any" is in both children and should be replicated for all
+            tn = ch1 + '-' + ch2 + '-num-coord-rule:= coord-phrase &\
+                        [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM ' + par + '].'
+          if ch1 != 'any':
+            tn += 'LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM ' + ch1 + ','
+          if ch2 != 'any':
+            tn += 'RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM ' + ch2 + '].'
+
+        mylang.add(tn) # TODO what if there isn't a tn here?
+
+  mylang.add('pass-up-png-coord-rule:= bottom-coord-phrase &\
+                 [SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png,\
+                 NONCONJ-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png ].')
 
 def customize_coordination(mylang, ch, lexicon, rules, irules):
   """
@@ -163,6 +253,9 @@ def customize_coordination(mylang, ch, lexicon, rules, irules):
           if left:
             left += 'conj-last-'
 
+    if cs.get('agr') == 'resolution':
+      customize_feature_resolution(mylang, ch, cs)
+
     for pos in ('n', 'np', 'vp', 's'):
       if cs.get(pos):
-        define_coord_strat(csnum, pos, top, mid, bot, left, pre, suf, mylang, rules, irules)
+        define_coord_strat(csnum, pos, top, mid, bot, left, pre, suf, mylang, rules, irules, cs)

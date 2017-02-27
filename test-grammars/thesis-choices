@@ -43,18 +43,6 @@ section=coordination
   cs1_mark=word
   cs1_orth=and
   cs1_order=before
-  cs1_agr=resolution
-    cs1_pers_rule1=any, 1st, 1st
-    cs1_pers_rule2=1st, 2nd, 1st
-    cs1_pers_rule3=1st, 3rd, 1st
-    cs1_pers_rule4=2nd, 2nd, 2nd
-    cs1_pers_rule5=3rd, 2nd, 2nd
-    cs1_pers_rule6=2nd, 3rd, 2nd
-    cs1_pers_rule7=3rd, 3rd, 3rd
-    cs1_num_rule1=any, any, pl
-    cs1_gend_rule1=f, f, f
-    cs1_gend_rule2=m, f, m
-    cs1_gend_rule3=any, m, m
 
 section=matrix-yes-no
 

@@ -1,0 +1,293 @@
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Grammar of PNG coordination test
+;;; created at:
+;;;     Wed Oct 12 04:21:31 UTC 2016
+;;; based on Matrix customization system version of:
+;;;     unknown time
+;;;
+;;; 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+; Type assigning empty mod list. Added to basic types for nouns, verbs and determiners.
+
+non-mod-lex-item := lex-item &
+  [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].
+
+;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Matrix Type Addenda
+;;;;;;;;;;;;;;;;;;;;;;;;;
+
+inflected :+ [ PNG-SUFFIX-FLAG luk ].
+
+infl-satisfied :+ [ PNG-SUFFIX-FLAG na-or-+ ].
+
+png :+ [ PER person,
+    NUM number,
+    GEND gender ].
+
+basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.MC #mc,
+    HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
+
+basic-head-mod-phrase-simple :+ [ SYNSEM.LOCAL.CAT.MC #mc,
+    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
+
+basic-head-opt-subj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
+
+;;;;;;;;;;;;;;
+;;; Features
+;;;;;;;;;;;;;;
+
+;;; Person
+
+person := *top* & [ 1ST bool,
+       	  	    2ND bool,
+		    3RD bool ].
+1st := person & [ 1ST + ].
+2nd := person & [ 2ND + ].
+3rd := person & [ 3RD + ].
+
+;;; Number
+
+number := diff-list.
+sg := number & 1-dlist.
+pl := number & 2+-dlist.
+
+;; for nouns, pl = 2 things on diff list
+;; for verbs, we specify at least 2 things on the diff list (2+-dlist)
+
+;;; Gender
+
+gender := *top* & [ M bool,
+       	  	    F bool ].
+m := gender & [ M + ].
+f := gender.
+
+;;;;;;;;;;;;;;;;;;;
+;;; Lexical Types
+;;;;;;;;;;;;;;;;;;;
+
+;;; Nouns
+
+noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & non-mod-lex-item &
+  [ ARG-ST < #spr >,
+    SYNSEM.LOCAL.CAT.VAL [ COMPS < >,
+                           SUBJ < >,
+                           SPEC < >,
+                           SPR < #spr &
+                                 [ LOCAL.CAT.HEAD det,
+                                   OPT + ] > ] ].
+
+; Nouns which cannot take specifiers mark their SPR requirement
+; as OPT +.  Making the non-head daughter OPT - in this rule
+; keeps such nouns out.
+; 
+; Rules for building NPs.  Note that the Matrix uses SPR for
+; the specifier of nouns and SUBJ for the subject (specifier) of verbs.
+
+head-spec-phrase := basic-head-spec-phrase & head-final &
+  [ NON-HEAD-DTR.SYNSEM.OPT - ].
+
+pn-noun-lex := noun-lex.
+
+1st-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER.1ST + ].
+
+2nd-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER.2ND + ].
+
+3rd-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER.3RD + ].
+
+sg-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM sg ].
+
+pl-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM pl ].
+
+f-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND.F + ].
+
+m-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND.M + ].
+
+1st-sg-pron-noun-lex := pn-noun-lex & 1st-noun-lex & sg-noun-lex.
+
+2nd-sg-pron-noun-lex := pn-noun-lex & 2nd-noun-lex & sg-noun-lex.
+
+3rd-sg-f-pron-noun-lex := pn-noun-lex & 3rd-noun-lex & sg-noun-lex & f-noun-lex.
+
+3rd-sg-m-pron-noun-lex := pn-noun-lex & 3rd-noun-lex & sg-noun-lex & m-noun-lex.
+
+1st-pl-m-pron-noun-lex := pn-noun-lex & 1st-noun-lex & pl-noun-lex & m-noun-lex.
+
+2nd-pl-m-pron-noun-lex := pn-noun-lex & 2nd-noun-lex & pl-noun-lex & m-noun-lex.
+
+3rd-pl-m-pron-noun-lex := pn-noun-lex & 3rd-noun-lex & pl-noun-lex & m-noun-lex.
+
+3rd-pl-f-pron-noun-lex := pn-noun-lex & 3rd-noun-lex & pl-noun-lex & f-noun-lex.
+
+2nd-pl-f-pron-noun-lex := pn-noun-lex & 2nd-noun-lex & pl-noun-lex & f-noun-lex.
+
+1st-pl-f-pron-noun-lex := pn-noun-lex & 1st-noun-lex & pl-noun-lex & f-noun-lex.
+
+;;; Verbs
+
+verb-lex := basic-verb-lex & non-mod-lex-item & png-suffix-rule-dtr &
+  [ SYNSEM.LOCAL [ CAT.VAL [ SPR < >,
+                             SPEC < >,
+                             SUBJ < #subj > ],
+                   CONT.HOOK.XARG #xarg ],
+    ARG-ST.FIRST #subj &
+                 [ LOCAL [ CAT.VAL [ SPR < >,
+                                     COMPS < > ],
+                           CONT.HOOK.INDEX #xarg ] ] ].
+
+intransitive-verb-lex := verb-lex & intransitive-lex-item &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < >,
+    ARG-ST.FIRST.LOCAL.CAT.HEAD noun,
+    INFLECTED.PNG-SUFFIX-FLAG - ].
+
+transitive-verb-lex := verb-lex & transitive-lex-item &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >,
+    ARG-ST < [ LOCAL.CAT.HEAD noun ],
+             #comps &
+             [ LOCAL.CAT [ VAL [ SPR < >,
+                                 COMPS < > ],
+                           HEAD noun ] ] >,
+    INFLECTED.PNG-SUFFIX-FLAG - ].
+
+intr-verb-lex-verb-lex := intransitive-verb-lex.
+
+tr-verb-lex-verb-lex := transitive-verb-lex.
+
+;;; Others
+
+;;; Determiners
+;;; SPEC is non-empty, and already specified by basic-determiner-lex.
+
+determiner-lex := basic-determiner-lex & norm-zero-arg & non-mod-lex-item &
+  [ SYNSEM.LOCAL.CAT.VAL [ SPR < >,
+                           COMPS < >,
+                           SUBJ < > ] ].
+
+;;;;;;;;;;;;;;;;;;;
+;;; Lexical Rules
+;;;;;;;;;;;;;;;;;;;
+
+;;; Intermediate rule types
+
+png-suffix-rule-dtr := word-or-lexrule.
+
+;;; Lexical rule types
+
+png-suffix-lex-rule-super := add-only-no-ccont-rule & infl-lex-rule &
+  [ INFLECTED.PNG-SUFFIX-FLAG +,
+    DTR png-suffix-rule-dtr ].
+
+1st-lex-rule := png-suffix-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PER.1ST + ].
+
+2nd-lex-rule := png-suffix-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PER [ 1ST -,
+    								    2ND + ] ].
+
+3rd-lex-rule := png-suffix-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PER [ 1ST -,
+								    2ND -,
+								    3RD + ] ].
+
+sg-lex-rule := png-suffix-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.NUM 1-dlist ].
+
+pl-lex-rule := png-suffix-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.NUM 2+-dlist ].
+
+1st-sg-lex-rule := 1st-lex-rule & sg-lex-rule.
+
+1st-pl-lex-rule := 1st-lex-rule & pl-lex-rule.
+
+2nd-sg-lex-rule := 2nd-lex-rule & sg-lex-rule.
+
+2nd-pl-lex-rule := 2nd-lex-rule & pl-lex-rule.
+
+3rd-sg-lex-rule := 3rd-lex-rule & sg-lex-rule.
+
+3rd-pl-lex-rule := 3rd-lex-rule & pl-lex-rule.
+
+;;;;;;;;;;;;;;;;;;;
+;;; Phrasal Types
+;;;;;;;;;;;;;;;;;;;
+
+;Constraint on MC used to be part of matrix.tdl
+;;it applies to all wo implementations, except for v2
+
+head-comp-phrase := basic-head-1st-comp-phrase & head-initial.
+
+subj-head-phrase := decl-head-subj-phrase & head-final &
+  [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
+
+; Bare NP phrase.  Consider modifying the PRED value of the quantifier relation
+; introduced to match the semantic effect of bare NPs in your language.
+
+bare-np-phrase := basic-bare-np-phrase &
+  [ C-CONT.RELS <! [ PRED "exist_q_rel" ] !> ].
+
+;;;;;;;;;;;;;;;;;;
+;;; Coordination
+;;;;;;;;;;;;;;;;;;
+
+;;; Try using different 'and's (sg + sg = du, sg + pl = pl)
+;;; this will be complicated with asyndeton, where we will still probably ahve to multiply out the rules
+;;; this will help avoid multiplying out a ton of rules, and makes things more flexible for other conjunctions (and vs. or)
+
+;;; Used in top rules only, to pass up their PNG values.
+;;; We shouldn't pass up INDEX values becuase of possibly conflicting combinations, I think (TODO check this?)
+;;; are person, number, gender AND case all in PNG?
+
+
+;;TODO try switching the NUM features on RCOORD and LCOORD (so they append differently)
+;;TODO this rule should combine two non-and nodes.
+;;;TODO separate a rule for combining "and" with a conjunct
+;;; TODO then it will be the "right kind of broken"
+coord-png-rule := coord-phrase &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PER #rper & #lper,
+    				       GEND #rgend & #lgend ],
+    LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PER #rper,
+    						  GEND #rgend ],
+    RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PER #lper,
+    						  GEND #lgend ] ].
+
+combine-num-rule := coord-phrase &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM [ LIST #first,
+    					   LAST #last ],
+    LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM [ LIST #first,
+    						      LAST #between ],
+    RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM [ LIST #between,
+    						      LAST #last ] ].
+
+pass-up-num-rule := bottom-coord-phrase &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM #num,
+    NONCONJ-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM #num ].
+
+;;; Coordination Strategy 1
+
+n1-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & coord-png-rule & combine-num-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ].
+
+n1-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ].
+
+n1-bottom-coord-rule := conj-first-bottom-coord-rule & n-bottom-coord-phrase & pass-up-num-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ].
+
+;;; Coordination Strategy 1
+
+np1-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & coord-png-rule & combine-num-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ].
+
+np1-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ].
+
+np1-bottom-coord-rule := conj-first-bottom-coord-rule & np-bottom-coord-phrase & pass-up-num-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ].
