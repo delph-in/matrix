@@ -299,15 +299,12 @@ def customize_roots():
   # questions, but it's hard to see how this could hurt in general,
   # so let's just put it in.
 
-  # CMC 2017-02-26 Changed root from phrase to sign.
-  # Also added corrected non-local-none constraint from (spurious) roots.tdl
   typedef = \
-    'root := sign & \
-       [ SYNSEM [ LOCAL [ CAT [ VAL [ SUBJ < >, \
-                                      COMPS < > ], \
-                                MC + ],\
-                          COORD - ], \
-                  NON-LOCAL non-local-none ] ].'
+    'root := phrase & \
+       [ SYNSEM.LOCAL [ CAT [ VAL [ SUBJ < >, \
+                                    COMPS < > ], \
+                              MC + ],\
+                        COORD - ] ].'
   roots.add(typedef, comment)
 
   if ch.get('has-aux') == 'yes' or 'noaux-fin-nf' in ch:
