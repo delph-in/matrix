@@ -1,0 +1,21 @@
+;;; -*- Mode: TDL; Package: LKB -*-
+;;;
+;;; $Id: roots.tdl,v 1.8 2008-05-23 01:44:21 sfd Exp $
+;;;
+;;; A sample start symbol: Accept fully-saturated verbal projections only; if
+;;; a grammar makes use of the head-subject and head-complement types as
+;;; provided by the Matrix, this should be a good starting point.  Note that it
+;;; is legal to have multiple start symbols, but they all need to be listed as
+;;; the value of `*start-symbol' (see `lkb/user-fns.lsp').
+
+root := phrase & non-local-none &
+[ SYNSEM.LOCAL [ CAT [ HEAD verb,
+		       MC +,
+                       VAL [ SUBJ < >,
+                             COMPS < > ] ],
+                 COORD - ] ].
+
+;;; This start symbol allows you to parse single words as stand-alone
+;;; utterances.  This can be useful for grammar debugging purposes.
+
+lex-root := word-or-lexrule.
