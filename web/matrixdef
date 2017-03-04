@@ -1114,6 +1114,41 @@ BeginIter cs{i} "a Coordination Strategy" 1
 
 EndIter cs
 
+Label "<p>You may describe how agreement works in coordination.
+You may also leave this section blank, in which case the mother will be underspecified for features such as person, number, and gender.</p>"
+
+BeginIter ap{i} "Agreement Pattern" 1
+  
+  Label "<p>Agreement pattern {i} uses a: <br> "
+
+  Radio agr "agr pat" "" ""
+  . conj "Conjunct" "" "closest/distinguished conjunct" "set_agr('conj')"
+  . res "Resolved" "" "feature resolution pattern<br>" "set_agr('res')"
+
+  Label "<p>Feature: "
+
+  BeginIter feat{j} "a Feature"
+
+    Select name "Agreement Pattern {i} feature {j} name" "Feature: " " "
+    fillnames c=noun
+    
+    BeginIter rule{k} "a Rule"
+
+      Select ch1 "Agreement Pattern {i} feature {j} value" "Child 1: " ""
+      fillvalues p=ap{i}_feat{j}_name    
+
+      Select ch2 "Agreement Pattern {i} feature {j} value" "Child 2:" ""
+      fillvalues p=ap{i}_feat{j}_name
+
+      Select par "Agreement Pattern {i} feature {j} value" "Parent: " ""
+      fillvalues p=ap{i}_feat{j}_name
+
+    EndIter rule
+
+  EndIter feat
+
+EndIter ap
+
 
 Section matrix-yes-no "Matrix Yes/No Questions"
 

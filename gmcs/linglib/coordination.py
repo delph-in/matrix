@@ -18,26 +18,22 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, mylang, rules, i
   else:
     headtype = 'verb'
 
-  # TODO for the names of the rules and supertypes we need:
-  # TODO per = '-' + p1 + '-' + p2 (which all go in the rule name between 'pn' and the ending of the rule name)
-  # TODO p1 + '-' + p2 + '-per-coord-rule &\ (each supertype) (for this one I need to know the name of the feature...
-  # TODO ...or at least what I called the rule.)
-  # TODO the rest is the same for mid and top rules
+  # TODO what if it's not resolution? move this outside this function, I'd say
   resrules = []
-  for feat in ('pers', 'num', 'gend'):  # TODO custom features/other features
-    if cs.get(feat + "_rule"): # TODO try to do this without using cs (bringing a list into this function?)
-      featlist = cs.get(feat + "_rule")
+  if cs.get('feat'):
+    for feat in cs.get('feat'):  # TODO custom features/other features
+      v = feat.get('value')
       templist = []
-      for rule in featlist:
+      for rule in feat.get('rule'): # TODO try to do this without using cs (bringing a list into this function?)
         ch1, ch2, par = tuple(rule['value'].split(", "))
 
         nm = '-' + ch1 + '-' + ch2
 
-        if feat == 'gend':
+        if v == 'gend': # TODO fix this so it's less specific/more generalizable
           st = ch1 + '-' + ch2 + '-gend-coord-rule & '
-        elif feat == 'pers':
+        elif v == 'pers':
           st = ch1 + '-' + ch2 + '-per-coord-rule & '
-        elif feat == 'num':
+        elif v == 'num':
           st = ch1 + '-' + ch2 + '-num-coord-rule & '
 
         templist += [(nm, st)]
@@ -143,41 +139,42 @@ def customize_feature_resolution(mylang, ch, cs):
 
   mylang.add_literal(';;; Feature Resolution Rules')
 
-  for feat in ('pers', 'num', 'gend'): # TODO custom features/other features
-    if cs.get(feat + "_rule"):
-      featlist = cs.get(feat + "_rule")
-      for rule in featlist:
-        ch1, ch2, par = tuple(rule['value'].split(", "))
+  if cs.get('feat'):
+    for feat in cs.get('feat'): # TODO custom features/other features
+        v = feat.get('value')
+        for rule in feat.get('rule'):
+          ch1, ch2, par = tuple(rule['value'].split(", "))
 
-        if feat == 'gend':
-          tn = ch1 + '-' + ch2 + '-gend-coord-rule:= coord-phrase &\
-                       [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND ' + par + ','
-          if ch1 != 'any':
-            tn += 'LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND ' + ch1 + ','
-          if ch2 != 'any':
-            tn += 'RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND ' + ch2 + '].'
+          if v == 'gend': # TODO see if I can generate the feature path using just the name of the feature
+            tn = ch1 + '-' + ch2 + '-gend-coord-rule:= coord-phrase &\
+                         [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND ' + par + ','
+            if ch1 != 'any':
+              tn += 'LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND ' + ch1 + ','
+            if ch2 != 'any':
+              tn += 'RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND ' + ch2 + '].'
 
-        elif feat == 'pers':
-          tn = ch1 + '-' + ch2 + '-per-coord-rule:= coord-phrase &\
-                      [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER ' + par + ','
-          if ch1 != 'any':
-            tn += 'LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER ' + ch1 + ','
-          if ch2 != 'any':
-            tn += 'RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER ' + ch2 + '].'
+          elif v == 'pers':
+            tn = ch1 + '-' + ch2 + '-per-coord-rule:= coord-phrase &\
+                        [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER ' + par + ','
+            if ch1 != 'any':
+              tn += 'LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER ' + ch1 + ','
+            if ch2 != 'any':
+              tn += 'RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER ' + ch2 + '].'
 
-        elif feat == 'num':
-          if (ch1 != 'any' and ch2 != 'any'):
-            tn = ch1 + '-' + ch2 + '-num-coord-rule:= coord-phrase &\
-                        [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM ' + par + ','
-          else: # TODO this handles if "any" is in both children and should be replicated for all
-            tn = ch1 + '-' + ch2 + '-num-coord-rule:= coord-phrase &\
-                        [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM ' + par + '].'
-          if ch1 != 'any':
-            tn += 'LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM ' + ch1 + ','
-          if ch2 != 'any':
-            tn += 'RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM ' + ch2 + '].'
+          elif v == 'num':
+            if (ch1 != 'any' and ch2 != 'any'):
+              tn = ch1 + '-' + ch2 + '-num-coord-rule:= coord-phrase &\
+                          [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM ' + par + ','
+            else: # TODO this handles if "any" is in both children and should be replicated for all
+              # TODO but more ideally, this function should be more generalized
+              tn = ch1 + '-' + ch2 + '-num-coord-rule:= coord-phrase &\
+                          [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM ' + par + '].'
+            if ch1 != 'any':
+              tn += 'LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM ' + ch1 + ','
+            if ch2 != 'any':
+              tn += 'RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM ' + ch2 + '].'
 
-        mylang.add(tn) # TODO what if there isn't a tn here?
+          mylang.add(tn) # TODO what if there isn't a tn here?
 
   mylang.add('pass-up-png-coord-rule:= bottom-coord-phrase &\
                  [SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png,\
@@ -258,4 +255,5 @@ def customize_coordination(mylang, ch, lexicon, rules, irules):
 
     for pos in ('n', 'np', 'vp', 's'):
       if cs.get(pos):
+        # TODO move the features resolution rules function so I can remove cs from the below function
         define_coord_strat(csnum, pos, top, mid, bot, left, pre, suf, mylang, rules, irules, cs)

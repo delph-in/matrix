@@ -1,26 +1,6 @@
-;;; -*- Mode: TDL; Coding: utf-8 -*-
-;;; Inflecting Lexical Rule Instances
+; File for spelling preserving lexical rules, i.e., instances
+; of (subtypes of) infl-ltol-rule and infl-ltow-rule.
 
-1st-sg-suffix :=
-%suffix (* -1sg)
-1st-sg-lex-rule.
+; Every rule in this file should have a %suffix line.  Those
+; that don't belong in lrules.tdl.
 
-1st-pl-suffix :=
-%suffix (* -1pl)
-1st-pl-lex-rule.
-
-2nd-sg-suffix :=
-%suffix (* -2sg)
-2nd-sg-lex-rule.
-
-2nd-pl-suffix :=
-%suffix (* -2pl)
-2nd-pl-lex-rule.
-
-3rd-sg-suffix :=
-%suffix (* -3sg)
-3rd-sg-lex-rule.
-
-3rd-pl-suffix :=
-%suffix (* -3pl)
-3rd-pl-lex-rule.
