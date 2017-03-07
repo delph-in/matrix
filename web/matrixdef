@@ -1134,10 +1134,10 @@ BeginIter ap{i} "Agreement Pattern" 1
     
     BeginIter rule{k} "a Rule"
 
-      Select ch1 "Agreement Pattern {i} feature {j} value" "Child 1: " ""
+      Select left "Agreement Pattern {i} feature {j} value" "Child 1: " ""
       fillvalues p=ap{i}_feat{j}_name    
 
-      Select ch2 "Agreement Pattern {i} feature {j} value" "Child 2:" ""
+      Select right "Agreement Pattern {i} feature {j} value" "Child 2:" ""
       fillvalues p=ap{i}_feat{j}_name
 
       Select par "Agreement Pattern {i} feature {j} value" "Parent: " ""
