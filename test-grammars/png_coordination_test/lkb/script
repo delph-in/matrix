@@ -22,28 +22,28 @@
 ;(load-irregular-spellings (lkb-pathname (parent-directory) "irregs.tab"))
 
 ;;;
-;;; Now the core grammar, which will typically be spread out 
-;;; across multiple files.  The Matrix provides matrix.tdl, 
+;;; Now the core grammar, which will typically be spread out
+;;; across multiple files.  The Matrix provides matrix.tdl,
 ;;; defining most of the matrix types and head-types.tdl, which
 ;;; contains the intermediate types in the subhierarchy under head
 ;;; (as they would unnecessarily clutter matrix.tdl).  You should
 ;;; rename my_language.tdl to something appropriate, and enter
 ;;; language-specific types there.  In larger grammars, it is common
 ;;; to separate out e.g. lexical types from construction types
-;;; into distinct files.  All files containing types used in 
+;;; into distinct files.  All files containing types used in
 ;;; the grammar should be mentioned in the following command.
 
 ;;;
-;;; (2004-06-08) transfer.tdl includes some types which support 
+;;; (2004-06-08) transfer.tdl includes some types which support
 ;;; transfer rules.  Still under development -- ignore for the
 ;;; time being.
 ;;;
 (read-tdl-type-files-aux
-  (list 
-   (lkb-pathname (parent-directory) "matrix.tdl")
-   (lkb-pathname (parent-directory) "head-types.tdl")
-;;; Modules: LOAD my_language.tdl
-   (lkb-pathname (parent-directory) "mtr.tdl")   
+(list
+(lkb-pathname (parent-directory) "matrix.tdl")
+(lkb-pathname (parent-directory) "head-types.tdl")
+   (lkb-pathname (parent-directory) "png coordination test.tdl")
+(lkb-pathname (parent-directory) "mtr.tdl")
 ))
 
 ;;;
@@ -51,10 +51,10 @@
 ;;; (some grammars with larger lexica organize them into multiple files).
 ;;;
 
-(read-tdl-lex-file-aux (list (lkb-pathname (parent-directory) "lexicon.tdl")))			     
+(read-tdl-lex-file-aux (list (lkb-pathname (parent-directory) "lexicon.tdl")))
 
 ;;; For grammars with small lexicons, no need to use a cache file:
-;;; Once your lexicon has >1000 words or so, consider using the 
+;;; Once your lexicon has >1000 words or so, consider using the
 ;;; cache file:
 
 ;(read-cached-lex-if-available (lkb-pathname (parent-directory) "lexicon.tdl"))
@@ -103,10 +103,10 @@
 ;;;
 
 (mt:read-transfer-rules
- (list
-  (lkb-pathname (parent-directory) "trigger.mtr"))
-  "Generation trigger rules"
-  :filter nil :task :trigger :recurse nil :edges 200 :subsume nil)
+(list
+(lkb-pathname (parent-directory) "trigger.mtr"))
+"Generation trigger rules"
+:filter nil :task :trigger :recurse nil :edges 200 :subsume nil)
 
 ;;;
 ;;; Matrix-derived grammars often have stable enough semantic
@@ -123,11 +123,12 @@
 (index-for-generator)
 
 ;;;
-;;; The following overwrites the LKB's default for what 
+;;; The following overwrites the LKB's default for what
 ;;; appears in the parse input dialog box.  Putting a
 ;;; short list of basic sentences from your language
 ;;; in that position may be helpful.
 ;;;
 
-;;; Modules: Default sentences
+(if (eq (length *last-parses*) 1)
+(setf *last-parses* '("")))
 

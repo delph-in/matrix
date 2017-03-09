@@ -1,0 +1,180 @@
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+head-comp := head-comp-phrase.
+
+subj-head := subj-head-phrase.
+
+head-spec := head-spec-phrase.
+
+bare-np := bare-np-phrase.
+
+n1-any-any-any-1st-any-m-top-coord := n1-any-any-any-1st-any-m-top-coord-rule.
+
+n1-any-any-any-1st-any-m-mid-coord := n1-any-any-any-1st-any-m-mid-coord-rule.
+
+n1-any-any-any-1st-m-f-top-coord := n1-any-any-any-1st-m-f-top-coord-rule.
+
+n1-any-any-any-1st-m-f-mid-coord := n1-any-any-any-1st-m-f-mid-coord-rule.
+
+n1-any-any-any-1st-f-f-top-coord := n1-any-any-any-1st-f-f-top-coord-rule.
+
+n1-any-any-any-1st-f-f-mid-coord := n1-any-any-any-1st-f-f-mid-coord-rule.
+
+n1-any-any-1st-2nd-any-m-top-coord := n1-any-any-1st-2nd-any-m-top-coord-rule.
+
+n1-any-any-1st-2nd-any-m-mid-coord := n1-any-any-1st-2nd-any-m-mid-coord-rule.
+
+n1-any-any-1st-2nd-m-f-top-coord := n1-any-any-1st-2nd-m-f-top-coord-rule.
+
+n1-any-any-1st-2nd-m-f-mid-coord := n1-any-any-1st-2nd-m-f-mid-coord-rule.
+
+n1-any-any-1st-2nd-f-f-top-coord := n1-any-any-1st-2nd-f-f-top-coord-rule.
+
+n1-any-any-1st-2nd-f-f-mid-coord := n1-any-any-1st-2nd-f-f-mid-coord-rule.
+
+n1-any-any-1st-3rd-any-m-top-coord := n1-any-any-1st-3rd-any-m-top-coord-rule.
+
+n1-any-any-1st-3rd-any-m-mid-coord := n1-any-any-1st-3rd-any-m-mid-coord-rule.
+
+n1-any-any-1st-3rd-m-f-top-coord := n1-any-any-1st-3rd-m-f-top-coord-rule.
+
+n1-any-any-1st-3rd-m-f-mid-coord := n1-any-any-1st-3rd-m-f-mid-coord-rule.
+
+n1-any-any-1st-3rd-f-f-top-coord := n1-any-any-1st-3rd-f-f-top-coord-rule.
+
+n1-any-any-1st-3rd-f-f-mid-coord := n1-any-any-1st-3rd-f-f-mid-coord-rule.
+
+n1-any-any-2nd-2nd-any-m-top-coord := n1-any-any-2nd-2nd-any-m-top-coord-rule.
+
+n1-any-any-2nd-2nd-any-m-mid-coord := n1-any-any-2nd-2nd-any-m-mid-coord-rule.
+
+n1-any-any-2nd-2nd-m-f-top-coord := n1-any-any-2nd-2nd-m-f-top-coord-rule.
+
+n1-any-any-2nd-2nd-m-f-mid-coord := n1-any-any-2nd-2nd-m-f-mid-coord-rule.
+
+n1-any-any-2nd-2nd-f-f-top-coord := n1-any-any-2nd-2nd-f-f-top-coord-rule.
+
+n1-any-any-2nd-2nd-f-f-mid-coord := n1-any-any-2nd-2nd-f-f-mid-coord-rule.
+
+n1-any-any-2nd-3rd-any-m-top-coord := n1-any-any-2nd-3rd-any-m-top-coord-rule.
+
+n1-any-any-2nd-3rd-any-m-mid-coord := n1-any-any-2nd-3rd-any-m-mid-coord-rule.
+
+n1-any-any-2nd-3rd-m-f-top-coord := n1-any-any-2nd-3rd-m-f-top-coord-rule.
+
+n1-any-any-2nd-3rd-m-f-mid-coord := n1-any-any-2nd-3rd-m-f-mid-coord-rule.
+
+n1-any-any-2nd-3rd-f-f-top-coord := n1-any-any-2nd-3rd-f-f-top-coord-rule.
+
+n1-any-any-2nd-3rd-f-f-mid-coord := n1-any-any-2nd-3rd-f-f-mid-coord-rule.
+
+n1-any-any-3rd-2nd-any-m-top-coord := n1-any-any-3rd-2nd-any-m-top-coord-rule.
+
+n1-any-any-3rd-2nd-any-m-mid-coord := n1-any-any-3rd-2nd-any-m-mid-coord-rule.
+
+n1-any-any-3rd-2nd-m-f-top-coord := n1-any-any-3rd-2nd-m-f-top-coord-rule.
+
+n1-any-any-3rd-2nd-m-f-mid-coord := n1-any-any-3rd-2nd-m-f-mid-coord-rule.
+
+n1-any-any-3rd-2nd-f-f-top-coord := n1-any-any-3rd-2nd-f-f-top-coord-rule.
+
+n1-any-any-3rd-2nd-f-f-mid-coord := n1-any-any-3rd-2nd-f-f-mid-coord-rule.
+
+n1-any-any-3rd-3rd-any-m-top-coord := n1-any-any-3rd-3rd-any-m-top-coord-rule.
+
+n1-any-any-3rd-3rd-any-m-mid-coord := n1-any-any-3rd-3rd-any-m-mid-coord-rule.
+
+n1-any-any-3rd-3rd-m-f-top-coord := n1-any-any-3rd-3rd-m-f-top-coord-rule.
+
+n1-any-any-3rd-3rd-m-f-mid-coord := n1-any-any-3rd-3rd-m-f-mid-coord-rule.
+
+n1-any-any-3rd-3rd-f-f-top-coord := n1-any-any-3rd-3rd-f-f-top-coord-rule.
+
+n1-any-any-3rd-3rd-f-f-mid-coord := n1-any-any-3rd-3rd-f-f-mid-coord-rule.
+
+n1-bottom-coord := n1-bottom-coord-rule.
+
+np1-any-any-any-1st-any-m-top-coord := np1-any-any-any-1st-any-m-top-coord-rule.
+
+np1-any-any-any-1st-any-m-mid-coord := np1-any-any-any-1st-any-m-mid-coord-rule.
+
+np1-any-any-any-1st-m-f-top-coord := np1-any-any-any-1st-m-f-top-coord-rule.
+
+np1-any-any-any-1st-m-f-mid-coord := np1-any-any-any-1st-m-f-mid-coord-rule.
+
+np1-any-any-any-1st-f-f-top-coord := np1-any-any-any-1st-f-f-top-coord-rule.
+
+np1-any-any-any-1st-f-f-mid-coord := np1-any-any-any-1st-f-f-mid-coord-rule.
+
+np1-any-any-1st-2nd-any-m-top-coord := np1-any-any-1st-2nd-any-m-top-coord-rule.
+
+np1-any-any-1st-2nd-any-m-mid-coord := np1-any-any-1st-2nd-any-m-mid-coord-rule.
+
+np1-any-any-1st-2nd-m-f-top-coord := np1-any-any-1st-2nd-m-f-top-coord-rule.
+
+np1-any-any-1st-2nd-m-f-mid-coord := np1-any-any-1st-2nd-m-f-mid-coord-rule.
+
+np1-any-any-1st-2nd-f-f-top-coord := np1-any-any-1st-2nd-f-f-top-coord-rule.
+
+np1-any-any-1st-2nd-f-f-mid-coord := np1-any-any-1st-2nd-f-f-mid-coord-rule.
+
+np1-any-any-1st-3rd-any-m-top-coord := np1-any-any-1st-3rd-any-m-top-coord-rule.
+
+np1-any-any-1st-3rd-any-m-mid-coord := np1-any-any-1st-3rd-any-m-mid-coord-rule.
+
+np1-any-any-1st-3rd-m-f-top-coord := np1-any-any-1st-3rd-m-f-top-coord-rule.
+
+np1-any-any-1st-3rd-m-f-mid-coord := np1-any-any-1st-3rd-m-f-mid-coord-rule.
+
+np1-any-any-1st-3rd-f-f-top-coord := np1-any-any-1st-3rd-f-f-top-coord-rule.
+
+np1-any-any-1st-3rd-f-f-mid-coord := np1-any-any-1st-3rd-f-f-mid-coord-rule.
+
+np1-any-any-2nd-2nd-any-m-top-coord := np1-any-any-2nd-2nd-any-m-top-coord-rule.
+
+np1-any-any-2nd-2nd-any-m-mid-coord := np1-any-any-2nd-2nd-any-m-mid-coord-rule.
+
+np1-any-any-2nd-2nd-m-f-top-coord := np1-any-any-2nd-2nd-m-f-top-coord-rule.
+
+np1-any-any-2nd-2nd-m-f-mid-coord := np1-any-any-2nd-2nd-m-f-mid-coord-rule.
+
+np1-any-any-2nd-2nd-f-f-top-coord := np1-any-any-2nd-2nd-f-f-top-coord-rule.
+
+np1-any-any-2nd-2nd-f-f-mid-coord := np1-any-any-2nd-2nd-f-f-mid-coord-rule.
+
+np1-any-any-2nd-3rd-any-m-top-coord := np1-any-any-2nd-3rd-any-m-top-coord-rule.
+
+np1-any-any-2nd-3rd-any-m-mid-coord := np1-any-any-2nd-3rd-any-m-mid-coord-rule.
+
+np1-any-any-2nd-3rd-m-f-top-coord := np1-any-any-2nd-3rd-m-f-top-coord-rule.
+
+np1-any-any-2nd-3rd-m-f-mid-coord := np1-any-any-2nd-3rd-m-f-mid-coord-rule.
+
+np1-any-any-2nd-3rd-f-f-top-coord := np1-any-any-2nd-3rd-f-f-top-coord-rule.
+
+np1-any-any-2nd-3rd-f-f-mid-coord := np1-any-any-2nd-3rd-f-f-mid-coord-rule.
+
+np1-any-any-3rd-2nd-any-m-top-coord := np1-any-any-3rd-2nd-any-m-top-coord-rule.
+
+np1-any-any-3rd-2nd-any-m-mid-coord := np1-any-any-3rd-2nd-any-m-mid-coord-rule.
+
+np1-any-any-3rd-2nd-m-f-top-coord := np1-any-any-3rd-2nd-m-f-top-coord-rule.
+
+np1-any-any-3rd-2nd-m-f-mid-coord := np1-any-any-3rd-2nd-m-f-mid-coord-rule.
+
+np1-any-any-3rd-2nd-f-f-top-coord := np1-any-any-3rd-2nd-f-f-top-coord-rule.
+
+np1-any-any-3rd-2nd-f-f-mid-coord := np1-any-any-3rd-2nd-f-f-mid-coord-rule.
+
+np1-any-any-3rd-3rd-any-m-top-coord := np1-any-any-3rd-3rd-any-m-top-coord-rule.
+
+np1-any-any-3rd-3rd-any-m-mid-coord := np1-any-any-3rd-3rd-any-m-mid-coord-rule.
+
+np1-any-any-3rd-3rd-m-f-top-coord := np1-any-any-3rd-3rd-m-f-top-coord-rule.
+
+np1-any-any-3rd-3rd-m-f-mid-coord := np1-any-any-3rd-3rd-m-f-mid-coord-rule.
+
+np1-any-any-3rd-3rd-f-f-top-coord := np1-any-any-3rd-3rd-f-f-top-coord-rule.
+
+np1-any-any-3rd-3rd-f-f-mid-coord := np1-any-any-3rd-3rd-f-f-mid-coord-rule.
+
+np1-bottom-coord := np1-bottom-coord-rule.

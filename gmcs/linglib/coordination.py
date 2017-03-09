@@ -9,7 +9,7 @@ from gmcs.utils import orth_encode
 ######################################################################
 # define_coord_strat: a utility function, defines a strategy
 
-def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, mylang, rules, irules, cs):
+def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, mylang, rules, irules, resrules=[('','')]):
   mylang.add_literal(';;; Coordination Strategy ' + num)
 
   pn = pos + num
@@ -18,48 +18,14 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, mylang, rules, i
   else:
     headtype = 'verb'
 
-  # TODO what if it's not resolution? move this outside this function, I'd say
-  resrules = []
-  if cs.get('feat'):
-    for feat in cs.get('feat'):  # TODO custom features/other features
-      v = feat.get('value')
-      templist = []
-      for rule in feat.get('rule'): # TODO try to do this without using cs (bringing a list into this function?)
-        ch1, ch2, par = tuple(rule['value'].split(", "))
-
-        nm = '-' + ch1 + '-' + ch2
-
-        if v == 'gend': # TODO fix this so it's less specific/more generalizable
-          st = ch1 + '-' + ch2 + '-gend-coord-rule & '
-        elif v == 'pers':
-          st = ch1 + '-' + ch2 + '-per-coord-rule & '
-        elif v == 'num':
-          st = ch1 + '-' + ch2 + '-num-coord-rule & '
-
-        templist += [(nm, st)]
-
-      newlist = []
-      if resrules: # if we have rules already, iterate through them
-        for rule in resrules:
-          for temp in templist:
-            newlist += [(rule[0]+temp[0], rule[1]+temp[1])]
-        resrules = newlist
-      else:
-        resrules = templist
-  # TODO check - AT THIS POINT we should have a list, "rules", which contains all the combinations of the...
-  # TODO ...various feature resolution rules
-
-
-
   # First define the rules in mylang.  Every strategy has a
   # top rule and a bottom rule, but only some have a mid rule, so if
   # the mid prefix argument $mid is empty, don't emit a rule.
   # Similarly, not all strategies have a left rule.
   # TODO could I just have a list of feature lists, and not worry about the name of them?
-  # TODO for list in lists: for child1, child2, parent in list:
   # TODO probably not, because I do have to specify the correct path for the feature
-  # TODO this may get tricky for languages that define their own features
-  for nm, st in resrules:
+  # TODO double check that this is all correct for custom features
+  for nm, st in resrules: # TODO handle cases where we don't have nm and st
     mylang.add(pn + nm + '-top-coord-rule :=\
                  basic-' + pos + '-top-coord-rule &\
                  ' + top + 'top-coord-rule &\
@@ -131,7 +97,8 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, mylang, rules, i
   if left:
     rules.add(pn + '-left-coord := ' + pn + '-left-coord-rule.')
 
-def customize_feature_resolution(mylang, ch, cs):
+
+def customize_feature_resolution(mylang, ap):
   # TODO handle more than pseudospanish
   # TODO some of the more general types might be shared between coordination strategies
   # TODO handle empty lists
@@ -139,13 +106,36 @@ def customize_feature_resolution(mylang, ch, cs):
 
   mylang.add_literal(';;; Feature Resolution Rules')
 
-  if cs.get('feat'):
-    for feat in cs.get('feat'): # TODO custom features/other features
-        v = feat.get('value')
+  if ap.get('feat'):
+    for feat in ap.get('feat'): # TODO custom features/other features
+        v = feat.get('name')
         for rule in feat.get('rule'):
-          ch1, ch2, par = tuple(rule['value'].split(", "))
+          ch1= rule.get('left') if rule.get ('left') else 'any'
+          ch2 = rule.get('right') if rule.get('right') else 'any'
+          par = rule.get('par') if rule.get ('par') else 'any' # TODO although it should always have parent
 
-          if v == 'gend': # TODO see if I can generate the feature path using just the name of the feature
+          # TODO to get the features (and thereby paths) from other-features:
+          # for feature in ch.get('feature', []):
+          #   feat = feature.get('name', '')
+          #   type = feature.get('type', '')
+          #   hier = TDLHierarchy(feat, type)
+          #
+          #   if feature.get('new', '') == 'yes':
+          #     for value in feature.get('value', []):
+          #       val = value.get('name')
+          #       for supertype in value.get('supertype', []):
+          #         stype = supertype.get('name')
+          #         hier.add(val, stype) # TODO what does this do?
+          #   else:
+          #     if type == 'head':
+          #       mylang.add('head :+ [ ' + feat.upper() + ' ' + feature.get('existing', '') + ' ].',
+          #                  section='addenda')
+          #     else:
+          #       mylang.add('png :+ [ ' + feat.upper() + ' ' + feature.get('existing', '') + ' ].',
+          #                  section='addenda')
+
+          if v == 'gender': # TODO see if I can generate the feature path using just the name of the feature
+            # TODO person, number, gender, pernum
             tn = ch1 + '-' + ch2 + '-gend-coord-rule:= coord-phrase &\
                          [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND ' + par + ','
             if ch1 != 'any':
@@ -153,7 +143,7 @@ def customize_feature_resolution(mylang, ch, cs):
             if ch2 != 'any':
               tn += 'RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND ' + ch2 + '].'
 
-          elif v == 'pers':
+          elif v == 'person':
             tn = ch1 + '-' + ch2 + '-per-coord-rule:= coord-phrase &\
                         [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER ' + par + ','
             if ch1 != 'any':
@@ -161,7 +151,7 @@ def customize_feature_resolution(mylang, ch, cs):
             if ch2 != 'any':
               tn += 'RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER ' + ch2 + '].'
 
-          elif v == 'num':
+          elif v == 'number':
             if (ch1 != 'any' and ch2 != 'any'):
               tn = ch1 + '-' + ch2 + '-num-coord-rule:= coord-phrase &\
                           [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM ' + par + ','
@@ -179,6 +169,43 @@ def customize_feature_resolution(mylang, ch, cs):
   mylang.add('pass-up-png-coord-rule:= bottom-coord-phrase &\
                  [SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png,\
                  NONCONJ-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png ].')
+
+
+def get_feature_resolution_names(ap):
+  # TODO what if it's not resolution? move this outside this function, I'd say
+  resrules = []
+  if ap.get('feat'):
+    for feat in ap.get('feat'):  # TODO custom features/other features
+      v = feat.get('name')
+
+      templist = []
+      for rule in feat.get('rule'):
+        ch1 = rule.get('left') if rule.get('left') else 'any'
+        ch2 = rule.get('right') if rule.get('right') else 'any'
+        par = rule.get('par') if rule.get('par') else 'any'
+
+        nm = '-' + ch1 + '-' + ch2
+
+        if v == 'gender':  # TODO fix this so it's less specific/more generalizable
+          st = ch1 + '-' + ch2 + '-gend-coord-rule & '
+        elif v == 'person':
+          st = ch1 + '-' + ch2 + '-per-coord-rule & '
+        elif v == 'number':
+          st = ch1 + '-' + ch2 + '-num-coord-rule & '
+
+        templist += [(nm, st)]
+
+      # add the rules to resrules
+      newlist = []
+      if resrules:  # if we have rules already, iterate through them
+        for rule in resrules:
+          for temp in templist:
+            newlist += [(rule[0] + temp[0], rule[1] + temp[1])]
+        resrules = newlist
+      else:
+        resrules = templist
+    return resrules
+
 
 def customize_coordination(mylang, ch, lexicon, rules, irules):
   """
@@ -250,10 +277,14 @@ def customize_coordination(mylang, ch, lexicon, rules, irules):
           if left:
             left += 'conj-last-'
 
-    if cs.get('agr') == 'resolution':
-      customize_feature_resolution(mylang, ch, cs)
+    # TODO below: maybe not a for loop? maybe add the connection to strategy in teh website and THEN change this code
+    for ap in ch.get('ap'):# TODO make this so that specific agreement patterns can be linked to coord strategies
+      if ap.get('agr') == 'resolution':
+        customize_feature_resolution(mylang, ap) # TODO fix these, since the choices file format changed
+        resol_rules = get_feature_resolution_names(ap) # TODO this one too
+      elif ap.get('agr') == 'conjunct':
+        pass # TODO don't pass
 
     for pos in ('n', 'np', 'vp', 's'):
       if cs.get(pos):
-        # TODO move the features resolution rules function so I can remove cs from the below function
-        define_coord_strat(csnum, pos, top, mid, bot, left, pre, suf, mylang, rules, irules, cs)
+        define_coord_strat(csnum, pos, top, mid, bot, left, pre, suf, mylang, rules, irules, resol_rules)

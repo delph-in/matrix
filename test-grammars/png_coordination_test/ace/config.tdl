@@ -1,6 +1,6 @@
 ;;; files to load
 
-grammar-top               := "%(mylanguage)s".
+grammar-top               := "../png coordination test-pet.tdl".
 variable-property-mapping := "../semi.vpm".
 preprocessor              := "../repp/vanilla.rpp".
 ;generation-ignore-signs   := "generation.ignore".
@@ -49,4 +49,5 @@ enable-icons := yes.
 mrs-icons-list := ICONS LIST.
 icons-left := IARG1.
 icons-right := IARG2.
+
 
