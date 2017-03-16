@@ -795,6 +795,19 @@ def validate_coordination(ch, vr):
       vr.err(cs.full_key + '_mark', mess)
 
 
+    # TODO laurie VALIDATION coordination and agreement stuff
+
+    # TODO no feature in agreement pattern more than once
+
+    # TODO only one agreement type (conjunct vs. features)
+
+    # TODO no non-existent features
+
+    # TODO no conflicting rules?
+
+    # TODO no setting a cs to an agreement strategy that doesn't exist
+
+
 ######################################################################
 # validate_yesno_questions(ch, vr)
 #   Validate the user's choices about matrix yes/no questions.

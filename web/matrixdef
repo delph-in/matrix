@@ -1122,8 +1122,8 @@ BeginIter ap{i} "Agreement Pattern" 1
   Label "<p>Agreement pattern {i} uses a: <br> "
 
   Radio agr "agr pat" "" ""
-  . conjunct "Conjunct" "" "closest/distinguished conjunct" "set_agr('conj')"
-  . resolution "Resolved" "" "feature resolution pattern<br>" "set_agr('res')"
+  . conjunct "Conjunct" "" "closest/distinguished conjunct" ""
+  . resolution "Resolved" "" "feature resolution pattern<br>" ""
 
   Label "<p>Feature: "
 

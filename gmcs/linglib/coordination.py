@@ -9,7 +9,7 @@ from gmcs.utils import orth_encode
 ######################################################################
 # define_coord_strat: a utility function, defines a strategy
 
-def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, mylang, rules, irules, resrules=[('','')]):
+def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, mylang, rules, irules, resrules):
   mylang.add_literal(';;; Coordination Strategy ' + num)
 
   pn = pos + num
@@ -277,13 +277,16 @@ def customize_coordination(mylang, ch, lexicon, rules, irules):
           if left:
             left += 'conj-last-'
 
-    # TODO below: maybe not a for loop? maybe add the connection to strategy in teh website and THEN change this code
+    # TODO below: maybe not a for loop if I'm connecting to specific agreement patterns?
+    # TODO maybe add the connection to strategy in teh website and THEN change this code
     for ap in ch.get('ap'):# TODO make this so that specific agreement patterns can be linked to coord strategies
       if ap.get('agr') == 'resolution':
-        customize_feature_resolution(mylang, ap) # TODO fix these, since the choices file format changed
-        resol_rules = get_feature_resolution_names(ap) # TODO this one too
+        customize_feature_resolution(mylang, ap)
+        resol_rules = get_feature_resolution_names(ap)
       elif ap.get('agr') == 'conjunct':
         pass # TODO don't pass
+    if not ch.get('ap'):
+      resol_rules = [('', '')]
 
     for pos in ('n', 'np', 'vp', 's'):
       if cs.get(pos):
