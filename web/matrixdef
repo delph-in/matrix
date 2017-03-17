@@ -1064,6 +1064,8 @@ Label "<h5>References</h5>
 
 Section coordination "Coordination"
 
+Cache pats (fr|cconj)[0-9]+$ name
+
 Label "<p>Languages can have multiple strategies for marking
 coordination that differ among the various parts of speech. The Matrix
 supports both lexical and morphological marking of coordination and
@@ -1108,7 +1110,15 @@ BeginIter cs{i} "a Coordination Strategy" 1
 
   Radio order "Coordination Strategy {i} order" "that comes " ""
   . before "Before" "" "before "
-  . after "After" "" "after the coordinand"
+  . after "After" "" "after the coordinand<br>"
+
+  Select subjpat "Coordination Strategy {i} subject agreement" "&nbsp;&nbsp;&nbsp;&nbsp;and uses the " ""
+  fillcache c=pats
+
+  Select objpat "Coordination Strategy {i} object agreement" "agreement pattern for the subject and the " ""
+  fillcache c=pats
+
+  Label "pattern for the object."
 
   Label "</p>"
 
@@ -1117,37 +1127,47 @@ EndIter cs
 Label "<p>You may describe how agreement works in coordination.
 You may also leave this section blank, in which case the mother will be underspecified for features such as person, number, and gender.</p>"
 
-BeginIter ap{i} "Agreement Pattern" 1
+BeginIter fr{i} "Feature resolution pattern" 1
   
-  Label "<p>Agreement pattern {i} uses a: <br> "
-
-  Radio agr "agr pat" "" ""
-  . conjunct "Conjunct" "" "closest/distinguished conjunct" ""
-  . resolution "Resolved" "" "feature resolution pattern<br>" ""
-
-  Label "<p>Feature: "
+  Label "<p>This feature resolution pattern uses the following features: <br> "
 
   BeginIter feat{j} "a Feature"
 
-    Select name "Agreement Pattern {i} feature {j} name" "Feature: " " "
+    Select name "Feature resolution pattern {i} feature {j} name" "Feature: " " "
     fillnames c=noun
     
     BeginIter rule{k} "a Rule"
 
-      Select left "Agreement Pattern {i} feature {j} value" "Child 1: " ""
-      fillvalues p=ap{i}_feat{j}_name    
+      Select left "Feature resolution pattern {i} feature {j} value" "Child 1: " ""
+      fillvalues p=fr{i}_feat{j}_name 
+        . any "any" "any"   
 
-      Select right "Agreement Pattern {i} feature {j} value" "Child 2:" ""
-      fillvalues p=ap{i}_feat{j}_name
+      Select right "Feature resolution pattern {i} feature {j} value" "Child 2:" ""
+      fillvalues p=fr{i}_feat{j}_name
+        . any "any" "any"   
 
-      Select par "Agreement Pattern {i} feature {j} value" "Parent: " ""
-      fillvalues p=ap{i}_feat{j}_name
+      Select par "Feature resolution pattern {i} feature {j} value" "Parent: " ""
+      fillvalues p=fr{i}_feat{j}_name
+        . any "any" "any"   
 
     EndIter rule
 
   EndIter feat
 
-EndIter ap
+EndIter fr
+
+BeginIter cconj{i} "Closest/distinguished conjunct pattern" 1
+  
+  Label "<p>This agreement pattern uses agreement features from the<br> "
+
+  Radio order "Coordination Strategy {i} order" "" ""
+  . first "Before" "" "first "
+  . last "After" "" "last conjunct"
+  . closest "After" "" "closest conjunct to the verb"
+  
+  Label "<p>Closest/distinguished conjunct agreement is under construction!</p>"
+
+EndIter cconj
 
 
 Section matrix-yes-no "Matrix Yes/No Questions"
