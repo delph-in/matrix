@@ -133,36 +133,36 @@ def customize_feature_resolution(mylang, ap):
           #     else:
           #       mylang.add('png :+ [ ' + feat.upper() + ' ' + feature.get('existing', '') + ' ].',
           #                  section='addenda')
+          featname = 'GEND' if v == 'gender' \
+            else 'PER' if v == 'person' \
+            else 'NUM' if v == 'number' \
+            else 'PERNUM' if v == 'pernum' \
+            else v.upper()
 
-          if v == 'gender': # TODO see if I can generate the feature path using just the name of the feature
-            # TODO person, number, gender, pernum
-            tn = ch1 + '-' + ch2 + '-gend-coord-rule:= coord-phrase &\
-                         [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND ' + par + ','
-            if ch1 != 'any':
-              tn += 'LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND ' + ch1 + ','
-            if ch2 != 'any':
-              tn += 'RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND ' + ch2 + '].'
+          # check whether a custom feature is semantic or syntactic
+          if v.upper() == featname:
+            for feature in ch.get('feature', []):
+              feat = feature.get('name', '')
+              type = feature.get('type', '')
+              if feat == v:
+                if type == 'head':
+                  pass
+                else:
+                  pass # TODO if it's a syntactic feature we want it to go through the main portion
+                      # TODO I could make (the lower part) its own function or get the featpath here
 
-          elif v == 'person':
-            tn = ch1 + '-' + ch2 + '-per-coord-rule:= coord-phrase &\
-                        [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER ' + par + ','
-            if ch1 != 'any':
-              tn += 'LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER ' + ch1 + ','
-            if ch2 != 'any':
-              tn += 'RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER ' + ch2 + '].'
+          if not (ch1 == 'any' and ch2 == 'any'):
+            tn = ch1 + '-' + ch2 + '-' + featname.lower() + 'coord-rule:= coord-phrase &\
+                         [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.' + featname + ' ' + par + ','
+          else: # this handles the case where both children are 'any'/underspecified
+            tn = ch1 + '-' + ch2 + '-' + featname.lower() + 'coord-rule:= coord-phrase &\
+              [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.' + featname + ' ' + par + '].'
+          if ch1 != 'any':
+            tn += 'LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.' + featname + ' ' + ch1 + ','
+          if ch2 != 'any':
+            tn += 'RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.' + featname + ' ' + ch2 + '].'
 
-          elif v == 'number':
-            if (ch1 != 'any' and ch2 != 'any'):
-              tn = ch1 + '-' + ch2 + '-num-coord-rule:= coord-phrase &\
-                          [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM ' + par + ','
-            else: # TODO this handles if "any" is in both children and should be replicated for all
-              # TODO but more ideally, this function should be more generalized
-              tn = ch1 + '-' + ch2 + '-num-coord-rule:= coord-phrase &\
-                          [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM ' + par + '].'
-            if ch1 != 'any':
-              tn += 'LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM ' + ch1 + ','
-            if ch2 != 'any':
-              tn += 'RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM ' + ch2 + '].'
+          # TODO if a custom feature is on HEAD rather than PNG
 
           mylang.add(tn) # TODO what if there isn't a tn here?
 
@@ -172,7 +172,6 @@ def customize_feature_resolution(mylang, ap):
 
 
 def get_feature_resolution_names(ap):
-  # TODO what if it's not resolution? move this outside this function, I'd say
   resrules = []
   if ap.get('feat'):
     for feat in ap.get('feat'):  # TODO custom features/other features
@@ -186,12 +185,13 @@ def get_feature_resolution_names(ap):
 
         nm = '-' + ch1 + '-' + ch2
 
-        if v == 'gender':  # TODO fix this so it's less specific/more generalizable
-          st = ch1 + '-' + ch2 + '-gend-coord-rule & '
-        elif v == 'person':
-          st = ch1 + '-' + ch2 + '-per-coord-rule & '
-        elif v == 'number':
-          st = ch1 + '-' + ch2 + '-num-coord-rule & '
+        featname = 'gend' if v == 'gender' \
+          else 'per' if v == 'person' \
+          else 'num' if v == 'number' \
+          else 'pernum' if v == 'pernum' \
+          else v.lower()
+
+        st = ch1 + '-' + ch2 + '-' + featname + '-coord-rule & '
 
         templist += [(nm, st)]
 
@@ -205,6 +205,15 @@ def get_feature_resolution_names(ap):
       else:
         resrules = templist
     return resrules
+
+
+def customize_agreement_pattern(mylang, agr): # TODO make this so that specific agreement patterns can be linked to coord strategies
+    if agr.full_key.startswith('fr'):
+      customize_feature_resolution(mylang, agr)
+      rules = get_feature_resolution_names(agr) # TODO fix this cs.get
+    elif agr.full_key.startswith('cconj'):
+      pass  # TODO don't pass
+    return rules
 
 
 def customize_coordination(mylang, ch, lexicon, rules, irules):
@@ -279,15 +288,18 @@ def customize_coordination(mylang, ch, lexicon, rules, irules):
 
     # TODO below: maybe not a for loop if I'm connecting to specific agreement patterns?
     # TODO maybe add the connection to strategy in teh website and THEN change this code
-    for ap in ch.get('ap'):# TODO make this so that specific agreement patterns can be linked to coord strategies
-      if ap.get('agr') == 'resolution':
-        customize_feature_resolution(mylang, ap)
-        resol_rules = get_feature_resolution_names(ap)
-      elif ap.get('agr') == 'conjunct':
-        pass # TODO don't pass
-    if not ch.get('ap'):
-      resol_rules = [('', '')]
+    if not cs.get('subjpat') and not cs.get('objpat'):
+      agrrules = [('', '')]
+    else:
+      if cs.get('subjpat') == cs.get('objpat'):
+        pat = cs.get('subjpat')
+        agrrules = customize_agreement_pattern(mylang, ch.get(pat))
+      else:
+        subjpat = cs.get('subjpat')
+        objpat = cs.get('objpat')
+        agrrules = customize_agreement_pattern(mylang, ch.get(subjpat)) + customize_agreement_pattern(mylang, ch.get(objpat))
+
 
     for pos in ('n', 'np', 'vp', 's'):
       if cs.get(pos):
-        define_coord_strat(csnum, pos, top, mid, bot, left, pre, suf, mylang, rules, irules, resol_rules)
+        define_coord_strat(csnum, pos, top, mid, bot, left, pre, suf, mylang, rules, irules, agrrules)

@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of PNG coordination test
 ;;; created at:
-;;;     Fri Mar 10 05:59:42 UTC 2017
+;;;     Wed Mar 22 02:01:03 UTC 2017
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -232,56 +232,70 @@ bare-np-phrase := basic-bare-np-phrase &
 
 ;;; Feature Resolution Rules
 
-any-any-num-coord-rule := coord-phrase &
+any-any-numcoord-rule := coord-phrase &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM pl ].
 
-any-1st-per-coord-rule := coord-phrase &
+any-1st-percoord-rule := coord-phrase &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 1st,
     RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 1st ].
 
-1st-2nd-per-coord-rule := coord-phrase &
+1st-2nd-percoord-rule := coord-phrase &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 1st,
     LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 1st,
     RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 2nd ].
 
-1st-3rd-per-coord-rule := coord-phrase &
+1st-3rd-percoord-rule := coord-phrase &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 1st,
     LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 1st,
     RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 3rd ].
 
-2nd-2nd-per-coord-rule := coord-phrase &
+2nd-2nd-percoord-rule := coord-phrase &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 2nd,
     LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 2nd,
     RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 2nd ].
 
-2nd-3rd-per-coord-rule := coord-phrase &
+2nd-3rd-percoord-rule := coord-phrase &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 2nd,
     LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 2nd,
     RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 3rd ].
 
-3rd-2nd-per-coord-rule := coord-phrase &
+3rd-2nd-percoord-rule := coord-phrase &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 2nd,
     LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 3rd,
     RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 2nd ].
 
-3rd-3rd-per-coord-rule := coord-phrase &
+3rd-3rd-percoord-rule := coord-phrase &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 3rd,
     LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 3rd,
     RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 3rd ].
 
-any-m-gend-coord-rule := coord-phrase &
+any-m-gendcoord-rule := coord-phrase &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND m,
     RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND m ].
 
-m-f-gend-coord-rule := coord-phrase &
+m-f-gendcoord-rule := coord-phrase &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND f,
     LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND m,
     RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND f ].
 
-f-f-gend-coord-rule := coord-phrase &
+f-f-gendcoord-rule := coord-phrase &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND f,
     LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND f,
     RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND f ].
+
+any-+-huggedcoord-rule := coord-phrase &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.HUGGED +,
+    RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.HUGGED + ].
+
++---huggedcoord-rule := coord-phrase &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.HUGGED +,
+    LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.HUGGED +,
+    RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.HUGGED - ].
+
+----huggedcoord-rule := coord-phrase &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.HUGGED -,
+    LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.HUGGED -,
+    RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.HUGGED - ].
 
 pass-up-png-coord-rule := bottom-coord-phrase &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png,
@@ -289,382 +303,382 @@ pass-up-png-coord-rule := bottom-coord-phrase &
 
 ;;; Coordination Strategy 1
 
-n1-any-any-any-1st-any-m-any-+-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-any-1st-any-m-any-+-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & any-m-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-any-1st-any-m-any-+-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-any-1st-any-m-any-+-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & any-m-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-any-1st-any-m-+---top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-any-1st-any-m-+---top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & any-m-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-any-1st-any-m-+---mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-any-1st-any-m-+---mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & any-m-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-any-1st-any-m-----top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-any-1st-any-m-----top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & any-m-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-any-1st-any-m-----mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-any-1st-any-m-----mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & any-m-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-any-1st-m-f-any-+-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-any-1st-m-f-any-+-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & m-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-any-1st-m-f-any-+-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-any-1st-m-f-any-+-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & m-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-any-1st-m-f-+---top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-any-1st-m-f-+---top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & m-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-any-1st-m-f-+---mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-any-1st-m-f-+---mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & m-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-any-1st-m-f-----top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-any-1st-m-f-----top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & m-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-any-1st-m-f-----mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-any-1st-m-f-----mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & m-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-any-1st-f-f-any-+-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-any-1st-f-f-any-+-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & f-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-any-1st-f-f-any-+-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-any-1st-f-f-any-+-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & f-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-any-1st-f-f-+---top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-any-1st-f-f-+---top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & f-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-any-1st-f-f-+---mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-any-1st-f-f-+---mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & f-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-any-1st-f-f-----top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-any-1st-f-f-----top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & f-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-any-1st-f-f-----mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-any-1st-f-f-----mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & f-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-1st-2nd-any-m-any-+-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-1st-2nd-any-m-any-+-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & any-m-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-1st-2nd-any-m-any-+-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-1st-2nd-any-m-any-+-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & any-m-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-1st-2nd-any-m-+---top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-1st-2nd-any-m-+---top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & any-m-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-1st-2nd-any-m-+---mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-1st-2nd-any-m-+---mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & any-m-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-1st-2nd-any-m-----top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-1st-2nd-any-m-----top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & any-m-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-1st-2nd-any-m-----mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-1st-2nd-any-m-----mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & any-m-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-1st-2nd-m-f-any-+-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-1st-2nd-m-f-any-+-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & m-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-1st-2nd-m-f-any-+-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-1st-2nd-m-f-any-+-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & m-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-1st-2nd-m-f-+---top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-1st-2nd-m-f-+---top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & m-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-1st-2nd-m-f-+---mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-1st-2nd-m-f-+---mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & m-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-1st-2nd-m-f-----top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-1st-2nd-m-f-----top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & m-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-1st-2nd-m-f-----mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-1st-2nd-m-f-----mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & m-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-1st-2nd-f-f-any-+-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-1st-2nd-f-f-any-+-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & f-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-1st-2nd-f-f-any-+-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-1st-2nd-f-f-any-+-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & f-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-1st-2nd-f-f-+---top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-1st-2nd-f-f-+---top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & f-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-1st-2nd-f-f-+---mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-1st-2nd-f-f-+---mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & f-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-1st-2nd-f-f-----top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-1st-2nd-f-f-----top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & f-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-1st-2nd-f-f-----mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-1st-2nd-f-f-----mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & f-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-1st-3rd-any-m-any-+-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-1st-3rd-any-m-any-+-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & any-m-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-1st-3rd-any-m-any-+-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-1st-3rd-any-m-any-+-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & any-m-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-1st-3rd-any-m-+---top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-1st-3rd-any-m-+---top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & any-m-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-1st-3rd-any-m-+---mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-1st-3rd-any-m-+---mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & any-m-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-1st-3rd-any-m-----top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-1st-3rd-any-m-----top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & any-m-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-1st-3rd-any-m-----mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-1st-3rd-any-m-----mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & any-m-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-1st-3rd-m-f-any-+-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-1st-3rd-m-f-any-+-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & m-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-1st-3rd-m-f-any-+-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-1st-3rd-m-f-any-+-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & m-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-1st-3rd-m-f-+---top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-1st-3rd-m-f-+---top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & m-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-1st-3rd-m-f-+---mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-1st-3rd-m-f-+---mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & m-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-1st-3rd-m-f-----top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-1st-3rd-m-f-----top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & m-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-1st-3rd-m-f-----mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-1st-3rd-m-f-----mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & m-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-1st-3rd-f-f-any-+-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-1st-3rd-f-f-any-+-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & f-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-1st-3rd-f-f-any-+-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-1st-3rd-f-f-any-+-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & f-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-1st-3rd-f-f-+---top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-1st-3rd-f-f-+---top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & f-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-1st-3rd-f-f-+---mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-1st-3rd-f-f-+---mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & f-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-1st-3rd-f-f-----top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-1st-3rd-f-f-----top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & f-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-1st-3rd-f-f-----mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-1st-3rd-f-f-----mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & f-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-2nd-2nd-any-m-any-+-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-2nd-2nd-any-m-any-+-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & any-m-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-2nd-2nd-any-m-any-+-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-2nd-2nd-any-m-any-+-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & any-m-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-2nd-2nd-any-m-+---top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-2nd-2nd-any-m-+---top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & any-m-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-2nd-2nd-any-m-+---mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-2nd-2nd-any-m-+---mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & any-m-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-2nd-2nd-any-m-----top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-2nd-2nd-any-m-----top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & any-m-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-2nd-2nd-any-m-----mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-2nd-2nd-any-m-----mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & any-m-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-2nd-2nd-m-f-any-+-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-2nd-2nd-m-f-any-+-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & m-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-2nd-2nd-m-f-any-+-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-2nd-2nd-m-f-any-+-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & m-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-2nd-2nd-m-f-+---top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-2nd-2nd-m-f-+---top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & m-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-2nd-2nd-m-f-+---mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-2nd-2nd-m-f-+---mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & m-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-2nd-2nd-m-f-----top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-2nd-2nd-m-f-----top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & m-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-2nd-2nd-m-f-----mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-2nd-2nd-m-f-----mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & m-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-2nd-2nd-f-f-any-+-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-2nd-2nd-f-f-any-+-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & f-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-2nd-2nd-f-f-any-+-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-2nd-2nd-f-f-any-+-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & f-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-2nd-2nd-f-f-+---top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-2nd-2nd-f-f-+---top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & f-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-2nd-2nd-f-f-+---mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-2nd-2nd-f-f-+---mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & f-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-2nd-2nd-f-f-----top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-2nd-2nd-f-f-----top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & f-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-2nd-2nd-f-f-----mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-2nd-2nd-f-f-----mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & f-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-2nd-3rd-any-m-any-+-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-2nd-3rd-any-m-any-+-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & any-m-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-2nd-3rd-any-m-any-+-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-2nd-3rd-any-m-any-+-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & any-m-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-2nd-3rd-any-m-+---top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-2nd-3rd-any-m-+---top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & any-m-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-2nd-3rd-any-m-+---mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-2nd-3rd-any-m-+---mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & any-m-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-2nd-3rd-any-m-----top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-2nd-3rd-any-m-----top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & any-m-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-2nd-3rd-any-m-----mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-2nd-3rd-any-m-----mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & any-m-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-2nd-3rd-m-f-any-+-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-2nd-3rd-m-f-any-+-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & m-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-2nd-3rd-m-f-any-+-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-2nd-3rd-m-f-any-+-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & m-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-2nd-3rd-m-f-+---top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-2nd-3rd-m-f-+---top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & m-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-2nd-3rd-m-f-+---mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-2nd-3rd-m-f-+---mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & m-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-2nd-3rd-m-f-----top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-2nd-3rd-m-f-----top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & m-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-2nd-3rd-m-f-----mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-2nd-3rd-m-f-----mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & m-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-2nd-3rd-f-f-any-+-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-2nd-3rd-f-f-any-+-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & f-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-2nd-3rd-f-f-any-+-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-2nd-3rd-f-f-any-+-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & f-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-2nd-3rd-f-f-+---top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-2nd-3rd-f-f-+---top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & f-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-2nd-3rd-f-f-+---mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-2nd-3rd-f-f-+---mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & f-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-2nd-3rd-f-f-----top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-2nd-3rd-f-f-----top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & f-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-2nd-3rd-f-f-----mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-2nd-3rd-f-f-----mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & f-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-3rd-2nd-any-m-any-+-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-3rd-2nd-any-m-any-+-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & any-m-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-3rd-2nd-any-m-any-+-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-3rd-2nd-any-m-any-+-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & any-m-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-3rd-2nd-any-m-+---top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-3rd-2nd-any-m-+---top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & any-m-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-3rd-2nd-any-m-+---mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-3rd-2nd-any-m-+---mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & any-m-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-3rd-2nd-any-m-----top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-3rd-2nd-any-m-----top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & any-m-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-3rd-2nd-any-m-----mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-3rd-2nd-any-m-----mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & any-m-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-3rd-2nd-m-f-any-+-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-3rd-2nd-m-f-any-+-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & m-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-3rd-2nd-m-f-any-+-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-3rd-2nd-m-f-any-+-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & m-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-3rd-2nd-m-f-+---top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-3rd-2nd-m-f-+---top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & m-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-3rd-2nd-m-f-+---mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-3rd-2nd-m-f-+---mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & m-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-3rd-2nd-m-f-----top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-3rd-2nd-m-f-----top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & m-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-3rd-2nd-m-f-----mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-3rd-2nd-m-f-----mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & m-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-3rd-2nd-f-f-any-+-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-3rd-2nd-f-f-any-+-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & f-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-3rd-2nd-f-f-any-+-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-3rd-2nd-f-f-any-+-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & f-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-3rd-2nd-f-f-+---top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-3rd-2nd-f-f-+---top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & f-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-3rd-2nd-f-f-+---mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-3rd-2nd-f-f-+---mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & f-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-3rd-2nd-f-f-----top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-3rd-2nd-f-f-----top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & f-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-3rd-2nd-f-f-----mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-3rd-2nd-f-f-----mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & f-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-3rd-3rd-any-m-any-+-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-3rd-3rd-any-m-any-+-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & any-m-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-3rd-3rd-any-m-any-+-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-3rd-3rd-any-m-any-+-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & any-m-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-3rd-3rd-any-m-+---top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-3rd-3rd-any-m-+---top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & any-m-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-3rd-3rd-any-m-+---mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-3rd-3rd-any-m-+---mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & any-m-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-3rd-3rd-any-m-----top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-3rd-3rd-any-m-----top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & any-m-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-3rd-3rd-any-m-----mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-3rd-3rd-any-m-----mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & any-m-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-3rd-3rd-m-f-any-+-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-3rd-3rd-m-f-any-+-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & m-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-3rd-3rd-m-f-any-+-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-3rd-3rd-m-f-any-+-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & m-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-3rd-3rd-m-f-+---top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-3rd-3rd-m-f-+---top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & m-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-3rd-3rd-m-f-+---mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-3rd-3rd-m-f-+---mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & m-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-3rd-3rd-m-f-----top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-3rd-3rd-m-f-----top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & m-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-3rd-3rd-m-f-----mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-3rd-3rd-m-f-----mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & m-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-3rd-3rd-f-f-any-+-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-3rd-3rd-f-f-any-+-top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & f-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-3rd-3rd-f-f-any-+-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-3rd-3rd-f-f-any-+-mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & f-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-3rd-3rd-f-f-+---top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-3rd-3rd-f-f-+---top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & f-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-3rd-3rd-f-f-+---mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-3rd-3rd-f-f-+---mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & f-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-3rd-3rd-f-f-----top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-3rd-3rd-f-f-----top-coord-rule := basic-n-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & f-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-n1-any-any-3rd-3rd-f-f-----mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+n1-any-any-3rd-3rd-f-f-----mid-coord-rule := basic-n-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & f-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
 n1-bottom-coord-rule := conj-first-bottom-coord-rule & n-bottom-coord-phrase & pass-up-png-coord-rule &
@@ -672,382 +686,382 @@ n1-bottom-coord-rule := conj-first-bottom-coord-rule & n-bottom-coord-phrase & p
 
 ;;; Coordination Strategy 1
 
-np1-any-any-any-1st-any-m-any-+-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-any-1st-any-m-any-+-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & any-m-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-any-1st-any-m-any-+-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-any-1st-any-m-any-+-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & any-m-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-any-1st-any-m-+---top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-any-1st-any-m-+---top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & any-m-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-any-1st-any-m-+---mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-any-1st-any-m-+---mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & any-m-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-any-1st-any-m-----top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-any-1st-any-m-----top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & any-m-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-any-1st-any-m-----mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-any-1st-any-m-----mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & any-m-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-any-1st-m-f-any-+-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-any-1st-m-f-any-+-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & m-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-any-1st-m-f-any-+-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-any-1st-m-f-any-+-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & m-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-any-1st-m-f-+---top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-any-1st-m-f-+---top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & m-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-any-1st-m-f-+---mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-any-1st-m-f-+---mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & m-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-any-1st-m-f-----top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-any-1st-m-f-----top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & m-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-any-1st-m-f-----mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-any-1st-m-f-----mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & m-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-any-1st-f-f-any-+-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-any-1st-f-f-any-+-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & f-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-any-1st-f-f-any-+-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-any-1st-f-f-any-+-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & f-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-any-1st-f-f-+---top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-any-1st-f-f-+---top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & f-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-any-1st-f-f-+---mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-any-1st-f-f-+---mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & f-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-any-1st-f-f-----top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-any-1st-f-f-----top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & f-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-any-1st-f-f-----mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-any-1st-f-f-----mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & any-1st-per-coord-rule & f-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-1st-2nd-any-m-any-+-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-1st-2nd-any-m-any-+-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & any-m-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-1st-2nd-any-m-any-+-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-1st-2nd-any-m-any-+-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & any-m-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-1st-2nd-any-m-+---top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-1st-2nd-any-m-+---top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & any-m-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-1st-2nd-any-m-+---mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-1st-2nd-any-m-+---mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & any-m-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-1st-2nd-any-m-----top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-1st-2nd-any-m-----top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & any-m-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-1st-2nd-any-m-----mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-1st-2nd-any-m-----mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & any-m-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-1st-2nd-m-f-any-+-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-1st-2nd-m-f-any-+-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & m-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-1st-2nd-m-f-any-+-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-1st-2nd-m-f-any-+-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & m-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-1st-2nd-m-f-+---top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-1st-2nd-m-f-+---top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & m-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-1st-2nd-m-f-+---mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-1st-2nd-m-f-+---mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & m-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-1st-2nd-m-f-----top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-1st-2nd-m-f-----top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & m-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-1st-2nd-m-f-----mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-1st-2nd-m-f-----mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & m-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-1st-2nd-f-f-any-+-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-1st-2nd-f-f-any-+-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & f-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-1st-2nd-f-f-any-+-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-1st-2nd-f-f-any-+-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & f-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-1st-2nd-f-f-+---top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-1st-2nd-f-f-+---top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & f-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-1st-2nd-f-f-+---mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-1st-2nd-f-f-+---mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & f-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-1st-2nd-f-f-----top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-1st-2nd-f-f-----top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & f-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-1st-2nd-f-f-----mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-1st-2nd-f-f-----mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-2nd-per-coord-rule & f-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-1st-3rd-any-m-any-+-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-1st-3rd-any-m-any-+-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & any-m-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-1st-3rd-any-m-any-+-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-1st-3rd-any-m-any-+-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & any-m-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-1st-3rd-any-m-+---top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-1st-3rd-any-m-+---top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & any-m-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-1st-3rd-any-m-+---mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-1st-3rd-any-m-+---mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & any-m-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-1st-3rd-any-m-----top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-1st-3rd-any-m-----top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & any-m-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-1st-3rd-any-m-----mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-1st-3rd-any-m-----mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & any-m-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-1st-3rd-m-f-any-+-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-1st-3rd-m-f-any-+-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & m-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-1st-3rd-m-f-any-+-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-1st-3rd-m-f-any-+-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & m-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-1st-3rd-m-f-+---top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-1st-3rd-m-f-+---top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & m-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-1st-3rd-m-f-+---mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-1st-3rd-m-f-+---mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & m-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-1st-3rd-m-f-----top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-1st-3rd-m-f-----top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & m-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-1st-3rd-m-f-----mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-1st-3rd-m-f-----mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & m-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-1st-3rd-f-f-any-+-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-1st-3rd-f-f-any-+-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & f-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-1st-3rd-f-f-any-+-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-1st-3rd-f-f-any-+-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & f-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-1st-3rd-f-f-+---top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-1st-3rd-f-f-+---top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & f-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-1st-3rd-f-f-+---mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-1st-3rd-f-f-+---mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & f-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-1st-3rd-f-f-----top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-1st-3rd-f-f-----top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & f-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-1st-3rd-f-f-----mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-1st-3rd-f-f-----mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 1st-3rd-per-coord-rule & f-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-2nd-2nd-any-m-any-+-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-2nd-2nd-any-m-any-+-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & any-m-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-2nd-2nd-any-m-any-+-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-2nd-2nd-any-m-any-+-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & any-m-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-2nd-2nd-any-m-+---top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-2nd-2nd-any-m-+---top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & any-m-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-2nd-2nd-any-m-+---mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-2nd-2nd-any-m-+---mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & any-m-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-2nd-2nd-any-m-----top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-2nd-2nd-any-m-----top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & any-m-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-2nd-2nd-any-m-----mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-2nd-2nd-any-m-----mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & any-m-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-2nd-2nd-m-f-any-+-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-2nd-2nd-m-f-any-+-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & m-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-2nd-2nd-m-f-any-+-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-2nd-2nd-m-f-any-+-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & m-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-2nd-2nd-m-f-+---top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-2nd-2nd-m-f-+---top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & m-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-2nd-2nd-m-f-+---mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-2nd-2nd-m-f-+---mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & m-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-2nd-2nd-m-f-----top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-2nd-2nd-m-f-----top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & m-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-2nd-2nd-m-f-----mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-2nd-2nd-m-f-----mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & m-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-2nd-2nd-f-f-any-+-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-2nd-2nd-f-f-any-+-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & f-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-2nd-2nd-f-f-any-+-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-2nd-2nd-f-f-any-+-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & f-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-2nd-2nd-f-f-+---top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-2nd-2nd-f-f-+---top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & f-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-2nd-2nd-f-f-+---mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-2nd-2nd-f-f-+---mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & f-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-2nd-2nd-f-f-----top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-2nd-2nd-f-f-----top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & f-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-2nd-2nd-f-f-----mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-2nd-2nd-f-f-----mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-2nd-per-coord-rule & f-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-2nd-3rd-any-m-any-+-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-2nd-3rd-any-m-any-+-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & any-m-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-2nd-3rd-any-m-any-+-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-2nd-3rd-any-m-any-+-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & any-m-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-2nd-3rd-any-m-+---top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-2nd-3rd-any-m-+---top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & any-m-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-2nd-3rd-any-m-+---mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-2nd-3rd-any-m-+---mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & any-m-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-2nd-3rd-any-m-----top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-2nd-3rd-any-m-----top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & any-m-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-2nd-3rd-any-m-----mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-2nd-3rd-any-m-----mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & any-m-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-2nd-3rd-m-f-any-+-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-2nd-3rd-m-f-any-+-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & m-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-2nd-3rd-m-f-any-+-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-2nd-3rd-m-f-any-+-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & m-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-2nd-3rd-m-f-+---top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-2nd-3rd-m-f-+---top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & m-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-2nd-3rd-m-f-+---mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-2nd-3rd-m-f-+---mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & m-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-2nd-3rd-m-f-----top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-2nd-3rd-m-f-----top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & m-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-2nd-3rd-m-f-----mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-2nd-3rd-m-f-----mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & m-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-2nd-3rd-f-f-any-+-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-2nd-3rd-f-f-any-+-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & f-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-2nd-3rd-f-f-any-+-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-2nd-3rd-f-f-any-+-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & f-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-2nd-3rd-f-f-+---top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-2nd-3rd-f-f-+---top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & f-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-2nd-3rd-f-f-+---mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-2nd-3rd-f-f-+---mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & f-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-2nd-3rd-f-f-----top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-2nd-3rd-f-f-----top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & f-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-2nd-3rd-f-f-----mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-2nd-3rd-f-f-----mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 2nd-3rd-per-coord-rule & f-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-3rd-2nd-any-m-any-+-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-3rd-2nd-any-m-any-+-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & any-m-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-3rd-2nd-any-m-any-+-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-3rd-2nd-any-m-any-+-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & any-m-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-3rd-2nd-any-m-+---top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-3rd-2nd-any-m-+---top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & any-m-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-3rd-2nd-any-m-+---mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-3rd-2nd-any-m-+---mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & any-m-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-3rd-2nd-any-m-----top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-3rd-2nd-any-m-----top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & any-m-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-3rd-2nd-any-m-----mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-3rd-2nd-any-m-----mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & any-m-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-3rd-2nd-m-f-any-+-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-3rd-2nd-m-f-any-+-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & m-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-3rd-2nd-m-f-any-+-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-3rd-2nd-m-f-any-+-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & m-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-3rd-2nd-m-f-+---top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-3rd-2nd-m-f-+---top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & m-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-3rd-2nd-m-f-+---mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-3rd-2nd-m-f-+---mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & m-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-3rd-2nd-m-f-----top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-3rd-2nd-m-f-----top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & m-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-3rd-2nd-m-f-----mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-3rd-2nd-m-f-----mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & m-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-3rd-2nd-f-f-any-+-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-3rd-2nd-f-f-any-+-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & f-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-3rd-2nd-f-f-any-+-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-3rd-2nd-f-f-any-+-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & f-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-3rd-2nd-f-f-+---top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-3rd-2nd-f-f-+---top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & f-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-3rd-2nd-f-f-+---mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-3rd-2nd-f-f-+---mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & f-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-3rd-2nd-f-f-----top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-3rd-2nd-f-f-----top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & f-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-3rd-2nd-f-f-----mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-3rd-2nd-f-f-----mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-2nd-per-coord-rule & f-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-3rd-3rd-any-m-any-+-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-3rd-3rd-any-m-any-+-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & any-m-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-3rd-3rd-any-m-any-+-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-3rd-3rd-any-m-any-+-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & any-m-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-3rd-3rd-any-m-+---top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-3rd-3rd-any-m-+---top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & any-m-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-3rd-3rd-any-m-+---mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-3rd-3rd-any-m-+---mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & any-m-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-3rd-3rd-any-m-----top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-3rd-3rd-any-m-----top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & any-m-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-3rd-3rd-any-m-----mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & any-m-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-3rd-3rd-any-m-----mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & any-m-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-3rd-3rd-m-f-any-+-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-3rd-3rd-m-f-any-+-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & m-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-3rd-3rd-m-f-any-+-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-3rd-3rd-m-f-any-+-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & m-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-3rd-3rd-m-f-+---top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-3rd-3rd-m-f-+---top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & m-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-3rd-3rd-m-f-+---mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-3rd-3rd-m-f-+---mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & m-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-3rd-3rd-m-f-----top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-3rd-3rd-m-f-----top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & m-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-3rd-3rd-m-f-----mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & m-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-3rd-3rd-m-f-----mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & m-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-3rd-3rd-f-f-any-+-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-3rd-3rd-f-f-any-+-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & f-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-3rd-3rd-f-f-any-+-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-3rd-3rd-f-f-any-+-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & f-f-gend-coord-rule & any-+-hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-3rd-3rd-f-f-+---top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-3rd-3rd-f-f-+---top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & f-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-3rd-3rd-f-f-+---mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-3rd-3rd-f-f-+---mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & f-f-gend-coord-rule & +---hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-3rd-3rd-f-f-----top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-3rd-3rd-f-f-----top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & f-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
-np1-any-any-3rd-3rd-f-f-----mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & f-f-gend-coord-rule & f-f-gend-coord-rule &
+np1-any-any-3rd-3rd-f-f-----mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule & any-any-num-coord-rule & 3rd-3rd-per-coord-rule & f-f-gend-coord-rule & ----hugged-coord-rule &
   [ SYNSEM.LOCAL.COORD-STRAT "1" ].
 
 np1-bottom-coord-rule := conj-first-bottom-coord-rule & np-bottom-coord-phrase & pass-up-png-coord-rule &
