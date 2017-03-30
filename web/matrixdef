@@ -1129,6 +1129,10 @@ You may also leave this section blank, in which case the mother will be underspe
 
 BeginIter fr{i} "Feature resolution pattern" 1
   
+  Label "<p>(Optionally) give this pattern a name: "
+  
+  Text name "Feature resolution agreement pattern {i}'s name: " "" "" 10
+
   Label "<p>This feature resolution pattern uses the following features: <br> "
 
   BeginIter feat{j} "a Feature"
@@ -1158,6 +1162,10 @@ EndIter fr
 
 BeginIter cconj{i} "Closest/distinguished conjunct pattern" 1
   
+  Label "<p>(Optionally) give this pattern a name: "
+
+  Text name "Distinguished conjunct pattern {i}'s name: " "" "" 10
+
   Label "<p>This agreement pattern uses agreement features from the<br> "
 
   Radio order "Coordination Strategy {i} order" "" ""
