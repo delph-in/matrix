@@ -1112,11 +1112,16 @@ BeginIter cs{i} "a Coordination Strategy" 1
   . before "Before" "" "before "
   . after "After" "" "after the coordinand<br>"
 
-  Select subjpat "Coordination Strategy {i} subject agreement" "&nbsp;&nbsp;&nbsp;&nbsp;and uses the " ""
-  fillcache c=pats
 
-  Select objpat "Coordination Strategy {i} object agreement" "agreement pattern for the subject and the " ""
-  fillcache c=pats
+  BeginIter csap{j} "This coordination strategy's agreement patterns" 1
+
+    Select subjpat "Coordination Strategy {i} subject agreement" "&nbsp;&nbsp;&nbsp;&nbsp;and uses the " ""
+    fillcache c=pats
+
+    Select objpat "Coordination Strategy {i} object agreement" "agreement pattern for " ""
+      . all "All arguments" "all"
+
+  EndIter csap
 
   Label "pattern for the object."
 
