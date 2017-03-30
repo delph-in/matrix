@@ -1128,7 +1128,9 @@ BeginIter cs{i} "a Coordination Strategy" 1
 
 EndIter cs
 
-Label "<p>You may describe how agreement features work in coordinated structures. You can then link coordination strategies with a defined agreement pattern. You may also leave this section blank, in which case the mother will be underspecified for features such as person, number, and gender.</p>"
+Label "<p>You may describe how agreement features work in coordinated structures. You can then link coordination strategies with a defined agreement pattern. You may also leave this section blank and not attach any agreement patterns to a coordination strategy, in which case the top node of coordinated phrases will be underspecified for agreement features.</p>"
+
+Label "<p>You can describe a <b>feature resolution</b> pattern below, in which the feature value of a coordinated phrase is derived from the values of the child nodes. <p>For example, in many languages, person values follow a hierarchy in which any coordinated structure with a 1st person conjunct will have 1st person value in the top node, phrases with a 2nd person conjunct but no 1st person conjunct will be 2nd person, and phrases with only 3rd person conjuncts will be 3rd person. You may also define feature resolution patterns for features such as gender and number. <p> You'll have to specify the rules that apply to each feature you wish to model.</p>"
 
 BeginIter fr{i} "a feature resolution pattern" 1
   
@@ -1162,6 +1164,8 @@ BeginIter fr{i} "a feature resolution pattern" 1
   EndIter feat
 
 EndIter fr
+
+Label "<p>You can describe a <b>distinguished conjunct</b> pattern below, in which the feature value of a coordinated phrase is the same asthe value of a particular conjunct. Typically, this conjunct is either the closest one to the verb (closest conjunct), or always in a particular position (first or last conjunct)."
 
 BeginIter dconj{i} "a distinguished conjunct pattern" 1
   
