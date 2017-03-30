@@ -34,7 +34,7 @@ section=tense-aspect-mood
 
 section=other-features
   feature1_name=hugged
-  feature1_type=head
+  feature1_type=index
   feature1_cat=noun
   feature1_new=no
   feature1_existing=bool
@@ -48,8 +48,9 @@ section=coordination
   cs1_mark=word
   cs1_orth=and
   cs1_order=before
-  cs1_subjpat=fr1
-  cs1_objpat=fr1
+    cs1_csap1_pat=fr1
+    cs1_csap1_target=all
+  fr1_name=resolved
     fr1_feat1_name=number
       fr1_feat1_rule1_left=any
       fr1_feat1_rule1_right=any
@@ -96,7 +97,8 @@ section=coordination
       fr1_feat4_rule3_left=-
       fr1_feat4_rule3_right=-
       fr1_feat4_rule3_par=-
-  cconj1_order=closest
+  dconj1_name=distinguished
+  dconj1_order=closest
 
 section=matrix-yes-no
 

@@ -1064,7 +1064,7 @@ Label "<h5>References</h5>
 
 Section coordination "Coordination"
 
-Cache pats (fr|cconj)[0-9]+$ name
+Cache pats (fr|dconj)[0-9]+$ name
 
 Label "<p>Languages can have multiple strategies for marking
 coordination that differ among the various parts of speech. The Matrix
@@ -1112,27 +1112,25 @@ BeginIter cs{i} "a Coordination Strategy" 1
   . before "Before" "" "before "
   . after "After" "" "after the coordinand<br>"
 
+  BeginIter csap{j} "an agreement pattern (optional)" 1
 
-  BeginIter csap{j} "This coordination strategy's agreement patterns" 1
-
-    Select subjpat "Coordination Strategy {i} subject agreement" "&nbsp;&nbsp;&nbsp;&nbsp;and uses the " ""
+    Select pat "Coordination Strategy {i} subject agreement" "&nbsp;&nbsp;&nbsp;&nbsp;and uses the " ""
     fillcache c=pats
 
-    Select objpat "Coordination Strategy {i} object agreement" "agreement pattern for " ""
-      . all "All arguments" "all"
+    Select target "Coordination Strategy {i} object agreement" "agreement pattern for " ""
+      . all "all arguments" "all"
+      . subj "subjects only" "subj"
+      . obj "objects only" "obj"
 
   EndIter csap
-
-  Label "pattern for the object."
 
   Label "</p>"
 
 EndIter cs
 
-Label "<p>You may describe how agreement works in coordination.
-You may also leave this section blank, in which case the mother will be underspecified for features such as person, number, and gender.</p>"
+Label "<p>You may describe how agreement features work in coordinated structures. You can then link coordination strategies with a defined agreement pattern. You may also leave this section blank, in which case the mother will be underspecified for features such as person, number, and gender.</p>"
 
-BeginIter fr{i} "Feature resolution pattern" 1
+BeginIter fr{i} "a feature resolution pattern" 1
   
   Label "<p>(Optionally) give this pattern a name: "
   
@@ -1165,7 +1163,7 @@ BeginIter fr{i} "Feature resolution pattern" 1
 
 EndIter fr
 
-BeginIter cconj{i} "Closest/distinguished conjunct pattern" 1
+BeginIter dconj{i} "a distinguished conjunct pattern" 1
   
   Label "<p>(Optionally) give this pattern a name: "
 
@@ -1180,7 +1178,7 @@ BeginIter cconj{i} "Closest/distinguished conjunct pattern" 1
   
   Label "<p>Closest/distinguished conjunct agreement is under construction!</p>"
 
-EndIter cconj
+EndIter dconj
 
 
 Section matrix-yes-no "Matrix Yes/No Questions"

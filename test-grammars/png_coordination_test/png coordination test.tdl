@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of PNG coordination test
 ;;; created at:
-;;;     Wed Mar 22 02:01:03 UTC 2017
+;;;     Thu Mar 30 08:27:53 UTC 2017
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -18,15 +18,14 @@ non-mod-lex-item := lex-item &
 ;;; Matrix Type Addenda
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 
-head :+ [ HUGGED bool ].
+png :+ [ HUGGED bool,
+    PER person,
+    NUM number,
+    GEND gender ].
 
 inflected :+ [ PNG-SUFFIX-FLAG luk ].
 
 infl-satisfied :+ [ PNG-SUFFIX-FLAG na-or-+ ].
-
-png :+ [ PER person,
-    NUM number,
-    GEND gender ].
 
 basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.MC #mc,
     HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
@@ -232,67 +231,67 @@ bare-np-phrase := basic-bare-np-phrase &
 
 ;;; Feature Resolution Rules
 
-any-any-numcoord-rule := coord-phrase &
+any-any-num-coord-rule := coord-phrase &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM pl ].
 
-any-1st-percoord-rule := coord-phrase &
+any-1st-per-coord-rule := coord-phrase &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 1st,
     RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 1st ].
 
-1st-2nd-percoord-rule := coord-phrase &
+1st-2nd-per-coord-rule := coord-phrase &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 1st,
     LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 1st,
     RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 2nd ].
 
-1st-3rd-percoord-rule := coord-phrase &
+1st-3rd-per-coord-rule := coord-phrase &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 1st,
     LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 1st,
     RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 3rd ].
 
-2nd-2nd-percoord-rule := coord-phrase &
+2nd-2nd-per-coord-rule := coord-phrase &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 2nd,
     LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 2nd,
     RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 2nd ].
 
-2nd-3rd-percoord-rule := coord-phrase &
+2nd-3rd-per-coord-rule := coord-phrase &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 2nd,
     LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 2nd,
     RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 3rd ].
 
-3rd-2nd-percoord-rule := coord-phrase &
+3rd-2nd-per-coord-rule := coord-phrase &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 2nd,
     LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 3rd,
     RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 2nd ].
 
-3rd-3rd-percoord-rule := coord-phrase &
+3rd-3rd-per-coord-rule := coord-phrase &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 3rd,
     LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 3rd,
     RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 3rd ].
 
-any-m-gendcoord-rule := coord-phrase &
+any-m-gend-coord-rule := coord-phrase &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND m,
     RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND m ].
 
-m-f-gendcoord-rule := coord-phrase &
+m-f-gend-coord-rule := coord-phrase &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND f,
     LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND m,
     RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND f ].
 
-f-f-gendcoord-rule := coord-phrase &
+f-f-gend-coord-rule := coord-phrase &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND f,
     LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND f,
     RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND f ].
 
-any-+-huggedcoord-rule := coord-phrase &
+any-+-hugged-coord-rule := coord-phrase &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.HUGGED +,
     RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.HUGGED + ].
 
-+---huggedcoord-rule := coord-phrase &
++---hugged-coord-rule := coord-phrase &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.HUGGED +,
     LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.HUGGED +,
     RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.HUGGED - ].
 
-----huggedcoord-rule := coord-phrase &
+----hugged-coord-rule := coord-phrase &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.HUGGED -,
     LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.HUGGED -,
     RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.HUGGED - ].

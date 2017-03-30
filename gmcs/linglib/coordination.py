@@ -98,7 +98,7 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, mylang, rules, i
     rules.add(pn + '-left-coord := ' + pn + '-left-coord-rule.')
 
 
-def customize_feature_resolution(mylang, ap):
+def customize_feature_resolution(mylang, ch, ap):
   # TODO handle more than pseudospanish
   # TODO some of the more general types might be shared between coordination strategies
   # TODO handle empty lists
@@ -139,7 +139,7 @@ def customize_feature_resolution(mylang, ap):
             else 'PERNUM' if v == 'pernum' \
             else v.upper()
 
-          # check whether a custom feature is semantic or syntactic
+          # if a custom feature, check whether it is semantic or syntactic
           if v.upper() == featname:
             for feature in ch.get('feature', []):
               feat = feature.get('name', '')
@@ -152,10 +152,10 @@ def customize_feature_resolution(mylang, ap):
                       # TODO I could make (the lower part) its own function or get the featpath here
 
           if not (ch1 == 'any' and ch2 == 'any'):
-            tn = ch1 + '-' + ch2 + '-' + featname.lower() + 'coord-rule:= coord-phrase &\
+            tn = ch1 + '-' + ch2 + '-' + featname.lower() + '-coord-rule:= coord-phrase &\
                          [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.' + featname + ' ' + par + ','
           else: # this handles the case where both children are 'any'/underspecified
-            tn = ch1 + '-' + ch2 + '-' + featname.lower() + 'coord-rule:= coord-phrase &\
+            tn = ch1 + '-' + ch2 + '-' + featname.lower() + '-coord-rule:= coord-phrase &\
               [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.' + featname + ' ' + par + '].'
           if ch1 != 'any':
             tn += 'LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.' + featname + ' ' + ch1 + ','
@@ -207,11 +207,11 @@ def get_feature_resolution_names(ap):
     return resrules
 
 
-def customize_agreement_pattern(mylang, agr): # TODO make this so that specific agreement patterns can be linked to coord strategies
+def customize_agreement_pattern(mylang, ch, agr): # TODO make this so that specific agreement patterns can be linked to coord strategies
     if agr.full_key.startswith('fr'):
-      customize_feature_resolution(mylang, agr)
+      customize_feature_resolution(mylang, ch, agr)
       rules = get_feature_resolution_names(agr) # TODO fix this cs.get
-    elif agr.full_key.startswith('cconj'):
+    elif agr.full_key.startswith('dconj'):
       pass  # TODO don't pass
     return rules
 
@@ -286,18 +286,15 @@ def customize_coordination(mylang, ch, lexicon, rules, irules):
           if left:
             left += 'conj-last-'
 
-    # TODO below: maybe not a for loop if I'm connecting to specific agreement patterns?
-    # TODO maybe add the connection to strategy in teh website and THEN change this code
-    if not cs.get('subjpat') and not cs.get('objpat'):
+    # hook the coord strat to some agreement patterns, or not.
+    if not cs.get('csap'):
       agrrules = [('', '')]
     else:
-      if cs.get('subjpat') == cs.get('objpat'):
-        pat = cs.get('subjpat')
-        agrrules = customize_agreement_pattern(mylang, ch.get(pat))
-      else:
-        subjpat = cs.get('subjpat')
-        objpat = cs.get('objpat')
-        agrrules = customize_agreement_pattern(mylang, ch.get(subjpat)) + customize_agreement_pattern(mylang, ch.get(objpat))
+      agrrules = []
+      for csap in cs.get('csap'): # get the agreement patterns used
+        agrrules += customize_agreement_pattern(mylang, ch, ch.get(csap.get('pat'))) # fetch the ap rules
+        # TODO differentiate subjects and objects
+
 
 
     for pos in ('n', 'np', 'vp', 's'):
