@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of PNG coordination test
 ;;; created at:
-;;;     Thu Mar 30 08:27:53 UTC 2017
+;;;     Wed Apr 05 03:15:12 UTC 2017
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -18,14 +18,15 @@ non-mod-lex-item := lex-item &
 ;;; Matrix Type Addenda
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 
-png :+ [ HUGGED bool,
-    PER person,
-    NUM number,
-    GEND gender ].
+head :+ [ HUGGED bool ].
 
 inflected :+ [ PNG-SUFFIX-FLAG luk ].
 
 infl-satisfied :+ [ PNG-SUFFIX-FLAG na-or-+ ].
+
+png :+ [ PER person,
+    NUM number,
+    GEND gender ].
 
 basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.MC #mc,
     HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
@@ -283,18 +284,18 @@ f-f-gend-coord-rule := coord-phrase &
     RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND f ].
 
 any-+-hugged-coord-rule := coord-phrase &
-  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.HUGGED +,
-    RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.HUGGED + ].
+  [ SYNSEM.LOCAL.CAT.HEAD.HUGGED +,
+    RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.HUGGED + ].
 
 +---hugged-coord-rule := coord-phrase &
-  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.HUGGED +,
-    LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.HUGGED +,
-    RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.HUGGED - ].
+  [ SYNSEM.LOCAL.CAT.HEAD.HUGGED +,
+    LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.HUGGED +,
+    RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.HUGGED - ].
 
 ----hugged-coord-rule := coord-phrase &
-  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.HUGGED -,
-    LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.HUGGED -,
-    RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.HUGGED - ].
+  [ SYNSEM.LOCAL.CAT.HEAD.HUGGED -,
+    LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.HUGGED -,
+    RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.HUGGED - ].
 
 pass-up-png-coord-rule := bottom-coord-phrase &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png,

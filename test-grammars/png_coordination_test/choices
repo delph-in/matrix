@@ -34,7 +34,7 @@ section=tense-aspect-mood
 
 section=other-features
   feature1_name=hugged
-  feature1_type=index
+  feature1_type=head
   feature1_cat=noun
   feature1_new=no
   feature1_existing=bool

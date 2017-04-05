@@ -139,28 +139,27 @@ def customize_feature_resolution(mylang, ch, ap):
             else 'PERNUM' if v == 'pernum' \
             else v.upper()
 
+          path = 'SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.' # this is default, but we might change it for custom features
+
           # if a custom feature, check whether it is semantic or syntactic
           if v.upper() == featname:
-            for feature in ch.get('feature', []):
+            for feature in ch.get('feature', []): # find the right custom feature
               feat = feature.get('name', '')
               type = feature.get('type', '')
               if feat == v:
-                if type == 'head':
-                  pass
-                else:
-                  pass # TODO if it's a syntactic feature we want it to go through the main portion
-                      # TODO I could make (the lower part) its own function or get the featpath here
-
+                path = 'SYNSEM.LOCAL.CAT.HEAD.' if type == 'head' else 'SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.'
+                # TODO the above is kind of clumsy
+                      
           if not (ch1 == 'any' and ch2 == 'any'):
             tn = ch1 + '-' + ch2 + '-' + featname.lower() + '-coord-rule:= coord-phrase &\
-                         [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.' + featname + ' ' + par + ','
+                         [ ' + path + featname + ' ' + par + ','
           else: # this handles the case where both children are 'any'/underspecified
             tn = ch1 + '-' + ch2 + '-' + featname.lower() + '-coord-rule:= coord-phrase &\
-              [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.' + featname + ' ' + par + '].'
+              [ ' + path + featname + ' ' + par + '].'
           if ch1 != 'any':
-            tn += 'LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.' + featname + ' ' + ch1 + ','
+            tn += 'LCOORD-DTR.' + path + featname + ' ' + ch1 + ','
           if ch2 != 'any':
-            tn += 'RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.' + featname + ' ' + ch2 + '].'
+            tn += 'RCOORD-DTR.' + path + featname + ' ' + ch2 + '].'
 
           # TODO if a custom feature is on HEAD rather than PNG
 
