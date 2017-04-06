@@ -33,11 +33,6 @@ section=direct-inverse
 section=tense-aspect-mood
 
 section=other-features
-  feature1_name=hugged
-  feature1_type=head
-  feature1_cat=noun
-  feature1_new=no
-  feature1_existing=bool
 
 section=sentential-negation
 
@@ -87,18 +82,6 @@ section=coordination
       fr1_feat3_rule3_left=f
       fr1_feat3_rule3_right=f
       fr1_feat3_rule3_par=f
-    fr1_feat4_name=hugged
-      fr1_feat4_rule1_left=any
-      fr1_feat4_rule1_right=+
-      fr1_feat4_rule1_par=+
-      fr1_feat4_rule2_left=+
-      fr1_feat4_rule2_right=-
-      fr1_feat4_rule2_par=+
-      fr1_feat4_rule3_left=-
-      fr1_feat4_rule3_right=-
-      fr1_feat4_rule3_par=-
-  dconj1_name=distinguished
-  dconj1_order=closest
 
 section=matrix-yes-no
 

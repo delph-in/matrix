@@ -149,7 +149,7 @@ def customize_feature_resolution(mylang, ch, ap):
               if feat == v:
                 path = 'SYNSEM.LOCAL.CAT.HEAD.' if type == 'head' else 'SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.'
                 # TODO the above is kind of clumsy
-                      
+
           if not (ch1 == 'any' and ch2 == 'any'):
             tn = ch1 + '-' + ch2 + '-' + featname.lower() + '-coord-rule:= coord-phrase &\
                          [ ' + path + featname + ' ' + par + ','
