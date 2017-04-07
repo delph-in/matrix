@@ -583,9 +583,8 @@ def write_rules(pch, mylang, irules, lrules, lextdl, choices):
       write_i_or_l_rules(irules, lrules, lrt, pc.order)
       # TJT 2014-08-27: Write adjective position class features
       write_pc_adj_syntactic_behavior(lrt, mylang, choices)
-      # merged LRT/PCs have the same identifier, so don't write supertypes here
-      if lrt.identifier() != pc.identifier():
-        write_supertypes(mylang, lrt.identifier(), lrt.all_supertypes())
+      # CMC 2017-04-07 moved merged LRT/PCs handling to write_supertypes
+      write_supertypes(mylang, lrt.identifier(), lrt.all_supertypes())
     write_daughter_types(mylang, pc)
   # features need to be written later
   return [(mn.key, mn.identifier(), mn.key.split('-')[0])
@@ -622,8 +621,9 @@ def get_section_from_pc(pc):
 
 def write_supertypes(mylang, identifier, supertypes=None):
   if supertypes is not None and len(supertypes) > 0:
+    # CMC 2017-04-07 Handling for merged LRT/PCs: omit (same) identifier from list of supertypes written
     mylang.add('''%(id)s := %(sts)s.''' %\
-               {'id': identifier, 'sts': ' & '.join(sorted(supertypes))})
+               {'id': identifier, 'sts': ' & '.join(sorted([st for st in supertypes if st != identifier]))})
 
 def write_daughter_types(mylang, pc):
   """
