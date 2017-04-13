@@ -1,0 +1,4 @@
+n1 tv n2
+*n1 tv-addobj n2
+n1 tv-addobj n3 n2
+

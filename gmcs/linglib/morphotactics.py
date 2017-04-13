@@ -8,6 +8,7 @@ from gmcs.linglib.lexbase import (PositionClass, LexicalRuleType,
                                   LEXICAL_CATEGORIES,
                                   LEXICAL_SUPERTYPES,
                                   NON_ESSENTIAL_LEX_CATEGORIES)
+
 from gmcs.lib import Hierarchy
 from gmcs.utils import get_name
 #from gmcs.utils import TDLencode
@@ -253,6 +254,10 @@ def create_lexical_rule_type(lrt, mtx_supertypes, cur_pc):
   for feat in lrt.get('feat'):
     new_lrt.features[feat['name']] = {'value': feat['value'],
                                       'head': feat['head']}
+
+  # CMC 2017-03-24 Populate valence change operations
+  new_lrt.valchgops = lrt.get('valchg',[])
+
   # TJT 2014-08-27: For adjective position classes,
   # check for additional choices to copy to features
   # TJT 2014-11-06: Simplifying... just copy all choices
@@ -493,6 +498,10 @@ def percolate_supertypes(pc):
           # TJT 2014-08-21: Incorporated Adjective lexical rule supertypes
           x.supertypes.add('add-only-rule')
           x.supertypes.add('adj_incorporation-lex-rule')
+        elif pc.has_valchg_ops():
+          # CMC 2017-02-20: Valence-changing operations need 
+          # less-constrained supertype
+          x.supertypes.add('val-change-no-cont-lex-rule')
         else:
           x.supertypes.add('add-only-no-ccont-rule')
 
@@ -583,9 +592,10 @@ def write_rules(pch, mylang, irules, lrules, lextdl, choices):
       write_i_or_l_rules(irules, lrules, lrt, pc.order)
       # TJT 2014-08-27: Write adjective position class features
       write_pc_adj_syntactic_behavior(lrt, mylang, choices)
-      # merged LRT/PCs have the same identifier, so don't write supertypes here
-      if lrt.identifier() != pc.identifier():
-        write_supertypes(mylang, lrt.identifier(), lrt.all_supertypes())
+      # CMC 2017-03-28 Write valence change operations rules
+      write_valence_change_behavior(lrt, mylang, choices)
+      # CMC 2017-04-07 moved merged LRT/PCs handling to write_supertypes
+      write_supertypes(mylang, lrt.identifier(), lrt.all_supertypes())
     write_daughter_types(mylang, pc)
   # features need to be written later
   return [(mn.key, mn.identifier(), mn.key.split('-')[0])
@@ -622,8 +632,9 @@ def get_section_from_pc(pc):
 
 def write_supertypes(mylang, identifier, supertypes=None):
   if supertypes is not None and len(supertypes) > 0:
+    # CMC 2017-04-07 Handling for merged LRT/PCs: omit (same) identifier from list of supertypes written
     mylang.add('''%(id)s := %(sts)s.''' %\
-               {'id': identifier, 'sts': ' & '.join(sorted(supertypes))})
+               {'id': identifier, 'sts': ' & '.join(sorted([st for st in supertypes if st != identifier]))})
 
 def write_daughter_types(mylang, pc):
   """
@@ -747,6 +758,35 @@ def write_i_or_l_rules(irules, lrules, lrt, order):
     lrt_id = lrt.identifier()
     lrules.add(lrt_id.rsplit('-rule',1)[0] + ' := ' + lrt_id + '.')
 
+def write_valence_change_behavior(lrt, mylang, choices):
+  from gmcs.linglib.valence_change import lexrule_name
+  for op in lrt.valchgops:
+    operation = op.get('operation','').lower()
+    
+    # NB: non-scopal always need same-cont added!
+    if operation != 'subj-add':
+      lrt.supertypes.add('same-cont-lex-rule')
+    
+    if operation == 'subj-rem':
+      lrt.supertypes.add('local-change-only-lex-rule')
+      mylang.add(lrt.identifier() + ' := ' + lexrule_name('subj-rem-op') + '.') #'''subj-rem-op-lex-rule.''')
+    elif operation == 'obj-rem':
+      lrt.supertypes.add('local-change-only-lex-rule')
+      mylang.add(lrt.identifier() + ' := ' + lexrule_name('obj-rem-op') + '.') #obj-rem-op-lex-rule.''')
+    elif operation == 'obj-add':
+      if op['argpos'].lower() == 'pre':
+        lrt.supertypes.add(lexrule_name('added-arg-applicative', 2, 3)) #'added-arg2of3-applicative-lex-rule')
+        lrt.supertypes.add(lexrule_name('added-arg-head-type', 2, op['argtype'].lower()))
+      else:
+        lrt.supertypes.add(lexrule_name('added-arg-applicative', 3, 3)) #'added-arg3of3-applicative-lex-rule')
+        lrt.supertypes.add(lexrule_name('added-arg-head-type', 3, op['argtype'].lower()))
+      predname = op.get('predname','undef_pred')
+      mylang.add(lrt.identifier() + ' := [ C-CONT.RELS <! [ PRED "' + predname +'" ] !> ].')
+    elif operation.lower() == 'subj-add':
+      lrt.supertypes.add('causative-lex-rule')
+      predname = op.get('predname','causative_rel')
+      mylang.add(lrt.identifier() + ' := [ C-CONT.RELS <! [ PRED "' + predname + '" ] !> ].')
+    
 def write_pc_adj_syntactic_behavior(lrt, mylang, choices):
   # TODO: Don't do this if a supertype is specified
   if 'mod' in lrt.features:
@@ -920,6 +960,20 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
       vr.err(lri.full_key + '_orth',
              "This affix duplicates another, which is not allowed.")
     orths.add(orth)
+    
+  # CMC 2017-04-07: Valence-changing operations validateion
+  for vchop in lrt.get('valchg',[]):
+    optype = vchop.get('operation','')
+    if not optype:
+      vr.err(vchop.full_key+'_operation','A valence-changing lexical rule must specify an operation.')
+    elif optype == 'obj-add':
+      if vchop.get('argpos') not in ['pre','post']:
+        vr.err(vchop.full_key+'_argpos','An argument can only be added at the front ' +\
+               'or end of the complements list.')
+      if vchop.get('argtype') not in ['np','pp']:
+        vr.warn(vchop.full_key+'_argtype','The type of the added argument ({}) is unconstrained.'.format(vchop.get('argtype','')))
+      if not vchop.get('predname'):
+        vr.warn(vchop.full_key+'_predname','The added predicated should have a name specified.')
 
   # TJT 2014-08-21: Incorporated Adjective validation
   if incorp:
