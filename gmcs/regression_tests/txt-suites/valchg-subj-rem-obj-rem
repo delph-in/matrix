@@ -1,0 +1,17 @@
+n1 iv
+*iv n2
+*iv-nosubj n2
+iv-nosubj
+*n1 iv-nosubj
+*n1 iv-nosubj n2
+n1 tv n2
+tv-nosubj n2
+*n1 tv-nosubj n2
+n1 tv n2
+*n1 tv-noobj n2
+n1 tv-noobj
+*tv-noobj
+*tv-noobj n2
+*iv-noobj
+tv-nosubj-noobj
+
