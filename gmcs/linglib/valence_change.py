@@ -199,32 +199,22 @@ class FnWrapper:
 
 
 class LexRuleBuilder:
-    def __init__(self,mylang):
-        self.mylang = mylang
+    def __init__(self):
         self.rules = set()
     def add(self,rule_name,rulegen,*rulegen_args):
         self.rules.add(FnWrapper(rule_name,rulegen,*rulegen_args))
-    def generate_tdl(self):
-        prev_section = self.mylang.section
-        self.mylang.set_section('lexrules')
+    def generate_tdl(self,mylang):
+        prev_section = mylang.section
+        mylang.set_section('lexrules')
         for rule in self.rules:
-            print('adding rule: ' + rule())
-            self.mylang.add(rule())
-        self.mylang.set_section(prev_section)
+            mylang.add(rule())
+        mylang.set_section(prev_section)
             
 ####### MAIN INTERFACE ##########
 
 def customize_valence_change(mylang, ch, lexicon, rules, irules, lrules):
     from gmcs.linglib.morphotactics import all_position_classes
-    has_pre_applicative = False
-    has_post_applicative = False
-    has_iverb_causative = False
-    has_tverb_causative = False
-    has_np_arg = False
-    has_pp_arg = False
-    has_subj_rem = False
-    has_obj_rem = False
-    rules = LexRuleBuilder(mylang)
+    rules = LexRuleBuilder()
     for pc in all_position_classes(ch):
         pc_key = pc.full_key
         pc_inputs = pc.get('inputs',[])
@@ -254,7 +244,7 @@ def customize_valence_change(mylang, ch, lexicon, rules, irules, lrules):
                     if 'verb' in pc_inputs or 'tverb' in pc_inputs:
                         rules.add('added-arg-non-local', added_arg_non_local_lex_rule, 1, 3)
 
-    rules.generate_tdl()
+    rules.generate_tdl(mylang)
 
 # don't need to do anything to LRTs in choices
 def add_lexrules(choices):
