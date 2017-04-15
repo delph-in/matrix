@@ -1,5 +1,6 @@
 from gmcs.utils import TDLencode
 from gmcs.utils import orth_encode
+from gmcs.lib import TDLHierarchy
 
 ######################################################################
 # Coordination
@@ -99,53 +100,32 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, mylang, rules, i
 
 
 def customize_feature_resolution(mylang, ch, ap):
-  # TODO handle more than pseudospanish
   # TODO some of the more general types might be shared between coordination strategies
   # TODO handle empty lists
-  # TODO handle the custom features
 
   mylang.add_literal(';;; Feature Resolution Rules')
 
   if ap.get('feat'):
-    for feat in ap.get('feat'): # TODO custom features/other features
+    for feat in ap.get('feat'):
         v = feat.get('name')
         for rule in feat.get('rule'):
           ch1= rule.get('left') if rule.get ('left') else 'any'
           ch2 = rule.get('right') if rule.get('right') else 'any'
-          par = rule.get('par') if rule.get ('par') else 'any' # TODO although it should always have parent
+          par = rule.get('par') if rule.get ('par') else 'any' # the rule should always have a parent, but just in case
 
-          # TODO to get the features (and thereby paths) from other-features:
-          # for feature in ch.get('feature', []):
-          #   feat = feature.get('name', '')
-          #   type = feature.get('type', '')
-          #   hier = TDLHierarchy(feat, type)
-          #
-          #   if feature.get('new', '') == 'yes':
-          #     for value in feature.get('value', []):
-          #       val = value.get('name')
-          #       for supertype in value.get('supertype', []):
-          #         stype = supertype.get('name')
-          #         hier.add(val, stype) # TODO what does this do?
-          #   else:
-          #     if type == 'head':
-          #       mylang.add('head :+ [ ' + feat.upper() + ' ' + feature.get('existing', '') + ' ].',
-          #                  section='addenda')
-          #     else:
-          #       mylang.add('png :+ [ ' + feat.upper() + ' ' + feature.get('existing', '') + ' ].',
-          #                  section='addenda')
           featname = 'GEND' if v == 'gender' \
             else 'PER' if v == 'person' \
             else 'NUM' if v == 'number' \
             else 'PERNUM' if v == 'pernum' \
             else v.upper()
 
-          path = 'SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.' # this is default, but we might change it for custom features
+          path = 'SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.' # this is default path, but it might change for custom features
 
-          # if a custom feature, check whether it is semantic or syntactic
+          # if this is a custom feature, check whether it is semantic or syntactic
           if v.upper() == featname:
-            for feature in ch.get('feature', []): # find the right custom feature
+            for feature in ch.get('feature', []): # find the right custom feature in the list...
               feat = feature.get('name', '')
-              type = feature.get('type', '')
+              type = feature.get('type', '') # ...and check the type
               if feat == v:
                 path = 'SYNSEM.LOCAL.CAT.HEAD.' if type == 'head' else 'SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.'
                 # TODO the above is kind of clumsy
@@ -153,7 +133,7 @@ def customize_feature_resolution(mylang, ch, ap):
           if not (ch1 == 'any' and ch2 == 'any'):
             tn = ch1 + '-' + ch2 + '-' + featname.lower() + '-coord-rule:= coord-phrase &\
                          [ ' + path + featname + ' ' + par + ','
-          else: # this handles the case where both children are 'any'/underspecified
+          else: # this handles the case where BOTH children are 'any' or underspecified
             tn = ch1 + '-' + ch2 + '-' + featname.lower() + '-coord-rule:= coord-phrase &\
               [ ' + path + featname + ' ' + par + '].'
           if ch1 != 'any':
@@ -161,19 +141,13 @@ def customize_feature_resolution(mylang, ch, ap):
           if ch2 != 'any':
             tn += 'RCOORD-DTR.' + path + featname + ' ' + ch2 + '].'
 
-          # TODO if a custom feature is on HEAD rather than PNG
-
           mylang.add(tn) # TODO what if there isn't a tn here?
-
-  mylang.add('pass-up-png-coord-rule:= bottom-coord-phrase &\
-                 [SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png,\
-                 NONCONJ-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png ].')
 
 
 def get_feature_resolution_names(ap):
   resrules = []
   if ap.get('feat'):
-    for feat in ap.get('feat'):  # TODO custom features/other features
+    for feat in ap.get('feat'):
       v = feat.get('name')
 
       templist = []
@@ -196,7 +170,7 @@ def get_feature_resolution_names(ap):
 
       # add the rules to resrules
       newlist = []
-      if resrules:  # if we have rules already, iterate through them
+      if resrules:  # if we have rules already, iterate through them and combine with all the new ones
         for rule in resrules:
           for temp in templist:
             newlist += [(rule[0] + temp[0], rule[1] + temp[1])]
@@ -206,12 +180,130 @@ def get_feature_resolution_names(ap):
     return resrules
 
 
-def customize_agreement_pattern(mylang, ch, agr): # TODO make this so that specific agreement patterns can be linked to coord strategies
+def customize_conj_wo(mylang, ch, agr, csap):
+
+  # get some values for the pattern we're modeling
+  subj_on = True if csap.get('target') == ('all' or 'subject') else False
+  obj_on = True if csap.get('target') == ('all' or 'object') else False
+
+  # "before" is the side (l/r) that the verb agrees with if the consistutent is before the verb. "After" is similar.
+  if agr.get('order') == 'closest':
+    before = 'r' # TODO make before/after into sets if I need to model multiple types of cca
+    after = 'l' # TODO what about erg/abs???????????
+  elif agr.get('order') == 'first':
+    before = 'l'
+    after = 'l'
+  elif agr.get('order') == 'last':
+    before = 'r'
+    after = 'r'
+
+  # now, figure out which word order phrase rules we're modifying.
+
+  wo = ch.get('word-order')
+
+  hc = ''
+  hs = ''
+
+  # Head-comp order
+  if obj_on == True:
+    if wo == 'sov' or wo == 'osv' or wo == 'ovs' or wo == 'v-final':
+      hc = 'comp-head'
+      mylang.add(hc + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR '+ before + '].') # TODO if I do this multiple times I'll need a loop
+
+    if wo == 'svo' or wo == 'vos' or wo == 'vso' or wo == 'v-initial':
+      hc = 'head-comp'
+      mylang.add(hc + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR '+ after + '].')
+
+  # Head-subj order
+
+  if subj_on == True:
+    if wo == 'osv' or wo == 'sov' or wo == 'svo' or wo == 'v-final':
+      hs = 'subj-head'
+      mylang.add(hs + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR '+ before + '].')
+
+    if wo == 'ovs' or wo == 'vos' or wo == 'vso' or wo == 'v-initial':
+      hs = 'head-subj'
+      mylang.add(hs + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR '+ after + '].')
+
+  if wo == 'free' or wo == 'v2':
+    if subj_on == True:
+      mylang.add('head-subj-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR '+ after + '].')
+      mylang.add('subj-head-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR '+ before + '].')
+    if obj_on == True:
+      mylang.add('head-comp-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR '+ after + '].')
+      mylang.add('comp-head-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR '+ before + '].')
+      mylang.add('head-comp-phrase-2 := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR '+ after + '].')
+      mylang.add('comp-head-phrase-2 := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR '+ before + '].')
+
+  # TODO if this works, continue with the other functions in word_order
+
+
+# add everything to the grammar that's needed for distinguished conjunct agreement
+def customize_conjunct_agreement(mylang, ch, agr, csap):
+    # type addendum for distinguished conjunct
+    mylang.add('local-min:+ [COORDAGR dir].', section='addenda')
+
+    # define the COORDAGR feature
+    mylang.set_section('features')
+    mylang.add_literal(';;; Distinguished Conjunct Directon')
+    mylang.add('dir := *top*.', '', True)
+    mylang.add('l := dir.', '', True)
+    mylang.add('r := dir.', '', True)
+    mylang.add('res := dir.', '', True) # TODO only add this if there is also feature resolution
+
+    mylang.add('bare-np-rule := [ SYNSEM.LOCAL.COORDAGR #cagr,'
+                'HEAD-DTR.SYNSEM.LOCAL.COORDAGR #cagr ].')
+    mylang.add('bare-np-rule := [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png,'
+                'HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png ].')
+
+    mylang.add('pass-up-png-rule := [ SYNSEM.LOCAL.COORDAGR #cagr,'
+               'NONCONJ-DTR.SYNSEM.LOCAL.COORDAGR #cagr ].')
+
+
+    # the coordination section rules
+    mylang.set_section('coord')
+    mylang.add_literal(';;; Distinguished Conjunct Rules')
+
+    top_and_mid_rules = []
+
+    mylang.add('same-coordagr-rule := coord-phrase &\
+                [ SYNSEM.LOCAL.COORDAGR #cagr,\
+                  RCOORD-DTR.SYNSEM.LOCAL.COORDAGR #cagr,\
+                  LCOORD-DTR.SYNSEM.LOCAL.COORDAGR #cagr ].')
+
+    if agr.get('order') == 'closest' or 'last': # TODO clean up this section
+      top_and_mid_rules += [('-right-conjunct', 'right-conjunct-coord-rule &')]
+      mylang.add('right-conjunct-coord-rule := same-coordagr-rule &\
+                  [ SYNSEM.LOCAL [ COORDAGR r,\
+                                   CONT.HOOK.INDEX.PNG #png ],\
+                    RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png ].')
+
+    if agr.get('order') == 'closest' or 'first':
+      top_and_mid_rules += [('-left-conjunct', 'left-conjunct-coord-rule &')]
+      mylang.add('left-conjunct-coord-rule := same-coordagr-rule &\
+                  [ SYNSEM.LOCAL [ COORDAGR l,\
+                                   CONT.HOOK.INDEX.PNG #png ],\
+                    LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png ].')
+
+    #now the word order stuff
+    customize_conj_wo(mylang, ch, agr, csap)
+    return top_and_mid_rules
+
+
+def customize_agreement_pattern(mylang, ch, csap):
+    rules = [('', '')]
+
+    agr = ch.get(csap.get('pat'))  # agr has "name," "order," "full_key" for dconj, or has feature rules for resolution
+
     if agr.full_key.startswith('fr'):
-      customize_feature_resolution(mylang, ch, agr)
-      rules = get_feature_resolution_names(agr) # TODO fix this cs.get
+      customize_feature_resolution(mylang, ch, agr) # add the parent rules to the grammar
+      rules = get_feature_resolution_names(agr) # get the names of the rules to attach to the cs
     elif agr.full_key.startswith('dconj'):
-      pass  # TODO don't pass
+      rules = customize_conjunct_agreement(mylang, ch, agr, csap)
+
+    mylang.add('pass-up-png-coord-rule := bottom-coord-phrase & \
+        [SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png,\
+        NONCONJ-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png ].')
     return rules
 
 
@@ -285,15 +377,13 @@ def customize_coordination(mylang, ch, lexicon, rules, irules):
           if left:
             left += 'conj-last-'
 
-    # hook the coord strat to some agreement patterns, or not.
-    if not cs.get('csap'):
-      agrrules = [('', '')]
-    else:
+    # hook this coord strat up to some agreement patterns, or not, if we have no info.
+    if cs.get('csap'):
       agrrules = []
-      for csap in cs.get('csap'): # get the agreement patterns used
-        agrrules += customize_agreement_pattern(mylang, ch, ch.get(csap.get('pat'))) # fetch the ap rules
-        # TODO differentiate subjects and objects
-
+      for csap in cs.get('csap'):  # get the agreement patterns used
+        agrrules += customize_agreement_pattern(mylang, ch, csap)  # fetch the agreement rules
+    else:
+      agrrules = [('', '')]
 
 
     for pos in ('n', 'np', 'vp', 's'):

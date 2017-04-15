@@ -1114,10 +1114,10 @@ BeginIter cs{i} "a Coordination Strategy" 1
 
   BeginIter csap{j} "an agreement pattern (optional)" 1
 
-    Select pat "Coordination Strategy {i} subject agreement" "&nbsp;&nbsp;&nbsp;&nbsp;and uses the " ""
+    Select pat "Coordination Strategy {i} agreement name" "&nbsp;&nbsp;&nbsp;&nbsp;and uses the " ""
     fillcache c=pats
 
-    Select target "Coordination Strategy {i} object agreement" "agreement pattern for " ""
+    Select target "Coordination Strategy {i} agreement target" "agreement pattern for " ""
       . all "all arguments" "all"
       . subj "subjects only" "subj"
       . obj "objects only" "obj"
@@ -1185,8 +1185,6 @@ BeginIter dconj{i} "a distinguished conjunct pattern" 1
   . first "Before" "" "first "
   . last "After" "" "last conjunct"
   . closest "After" "" "closest conjunct to the verb"
-  
-  Label "<p>Closest/distinguished conjunct agreement is under construction!</p>"
 
 EndIter dconj
 

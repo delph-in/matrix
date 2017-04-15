@@ -1,9 +1,0 @@
-;;;
-;;; Basic repp file, partially customized according
-;;; to your choices file.
-;;;
-;;; 
-:[ \t!"#$%&'()\*\+,\./:;<=>?@\[\]\^_`{|}~\\]
-!^(.+)$								 \1 
-!\t								 
-!  +								 
