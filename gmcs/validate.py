@@ -795,6 +795,81 @@ def validate_coordination(ch, vr):
       vr.err(cs.full_key + '_mark', mess)
 
 
+    # setup for tracking whether subjects or objects have been accounted for too often
+    subj = False
+    obj = False
+    valid = True
+
+    for csap in cs.get('csap'):
+      if not ch.get(csap.get('pat')):
+        mess = 'You have set this coordination strategy to use an agreement pattern that ' \
+             'doesn\'t exist.'
+        vr.err(csap.full_key+"_pat", mess)
+
+      # only one dconj pattern per subject/object per cs
+      if csap.get('pat').startswith('dconj'):
+        target = csap.get('target')
+        if target == 'all':
+          if (subj == True or obj == True):
+            valid = False
+          subj = True
+          obj = True
+        elif target == 'subj':
+          if subj == True:
+            valid = False
+          subj = True
+        elif target == 'obj':
+          if obj == True:
+            valid = False
+          obj = True
+        if not valid:
+          valid = True
+          mess = 'You can\'t choose more than one distinguished conjunct pattern for subject or objects \
+                  within one coordination strategy.'
+          vr.err(csap.full_key+"_pat", mess)
+
+  # feature resolution validation
+  for fr in ch.get('fr'):
+    feats = set()
+    features = ch.features()
+    for feat in fr.get('feat'):
+
+      # no feature in agreement pattern more than once
+      if feat['name'] in feats:
+        mess = 'You have used this feature more than once in the same feature resolution pattern.'
+        vr.err(feat.full_key + '_name', mess)
+      feats.add(feat['name'])
+
+      # features must exist in the grammar
+      valid = False
+      for f in features:
+        if f[0] == feat['name']:
+          valid = True
+      if not valid:
+        mess = 'You have chosen a feature that does not exist in the grammar.'
+        vr.err(feat.full_key + '_name', mess)
+
+      # feature values must also exist
+      values = ['any', ' ']
+      for f in features:
+        if f[0] == feat['name']:
+          for v in f[1].split(';'):
+            (vn, vf) = v.split('|')
+            values += [vn]
+
+      # check all feature values used in rules
+      for rule in feat.get('rule'):
+        if not (rule.get('left') and rule.get('right') and rule.get('par')) in values:
+          mess = 'This rule contains an invalid feature value.'
+          vr.err(rule.full_key + "_par", mess)
+
+    # TODO no conflicting rules? 1 + 2 = 3, 1 + 2 = 2
+
+  for dconj in ch.get('dconj'):
+    pass
+
+
+
 ######################################################################
 # validate_yesno_questions(ch, vr)
 #   Validate the user's choices about matrix yes/no questions.

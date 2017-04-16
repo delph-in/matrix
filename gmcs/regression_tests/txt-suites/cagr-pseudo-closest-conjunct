@@ -1,0 +1,110 @@
+1sg VERB-1sg
+2sg VERB-2sg
+3sgf VERB-3sg
+1plf VERB-1pl
+1plm VERB-1pl
+2plf VERB-2pl
+2plm VERB-2pl
+3plf VERB-3pl
+3plm VERB-3pl
+*1sg VERB-2sg
+*1sg VERB-3sg
+*2sg VERB-1sg
+*2sg VERB-3sg
+*3sgf VERB-1sg
+*3sgf VERB-2sg
+*1sg VERB-1pl
+*1plf VERB-1sg
+*2sg VERB-2pl
+*2plf VERB-2sg
+*3sgf VERB-3pl
+*3plf VERB-3sg
+1sg and 1sg VERB-1sg
+2sg and 1sg VERB-1sg
+3sgf and 1sg VERB-1sg
+1plf and 1sg VERB-1sg
+2plf and 1sg VERB-1sg
+3plf and 1sg VERB-1sg
+3sgf and 1sg VERB-1sg
+1sg and 2sg VERB-2sg
+1sg and 3sgf VERB-3sg
+1sg and 1plf VERB-1pl
+1sg and 2plf VERB-2pl
+1sg and 3plf VERB-3pl
+1sg and 1plm VERB-1pl
+1sg and 1plf VERB-1pl
+1plm and 1plf VERB-1pl
+2plf and 1sg VERB-1sg
+3plf and 1sg VERB-1sg
+2sg and 2plf VERB-2pl
+2sg and 2plm VERB-2pl
+2plf and 2plm VERB-2pl
+3plm and 2sg VERB-2sg
+3plm and 2plf VERB-2pl
+3sgf and 3plf VERB-3pl
+3sgf and 3plm VERB-3pl
+3plm and 3plf VERB-3pl
+3sgf and 1sg and 1sg VERB-1sg
+3sgf and 2sg and 1sg VERB-1sg
+2sg and 3sgf and 1sg VERB-1sg
+2sg and 1plf and 1sg VERB-1sg
+2sg and 2plf and 1sg VERB-1sg
+2sg and 3plf and 1sg VERB-1sg
+2sg and 3sgf and 1sg VERB-1sg
+2plf and 1sg and 2sg VERB-2sg
+2sg and 1sg and 3sgf VERB-3sg
+2sg and 1sg and 1plf VERB-1pl
+2sg and 1sg and 2plf VERB-2pl
+2sg and 1sg and 3plf VERB-3pl
+*1sg and 1sg VERB-1pl
+*1sg and 1plf VERB-1sg
+*2sg and 1sg VERB-2pl
+*3sgf and 1sg VERB-3pl
+*2sg and 2sg VERB-2pl
+*2sg and 2plf VERB-2sg
+*2sg and 3sgf VERB-2pl
+*3sgf and 3sgf VERB-3pl
+*3sgf and 3plf VERB-3sg
+*3sgf and 1sg VERB-3sg
+*2sg and 1sg VERB-2sg
+*2sg and 1sg VERB-2pl
+*3sgf and 2sg VERB-1pl 
+*3sgf and 2sg VERB-1sg
+*3sgf and 3sgf VERB-1pl
+*3sgf and 3sgf VERB-1sg
+*3plf and 3sgf VERB-1pl
+*3plf and 3sgf VERB-1sg
+*3sgf and 3sgf VERB-2pl
+*3sgf and 3sgf VERB-2sg
+*3plf and 3sgf VERB-2pl
+*3plf and 3sgf VERB-2sg
+*3plf and 1sg VERB-3pl
+*3plf and 1sg VERB-3sg
+*2plf and 1sg VERB-2pl
+*2plf and 1sg VERB-2sg
+*3plf and 2sg VERB-1pl
+*3plf and 2sg VERB-1sg
+1sg and 1sg TRVB-1sg-2sg 2sg and 1plf
+2sg and 1sg TRVB-1sg-3sg 3sgf and 1plf
+3sgf and 1sg TRVB-1sg-1sg 1sg and 3sgf
+1plf and 1sg TRVB-1sg-1pl 1plf and 2sg
+2plf and 1sg TRVB-1sg-2pl 2plf and 3sgf
+3plf and 1sg TRVB-1sg-3pl 3plf and 1sg
+3sgf and 1sg TRVB-1sg-2sg 2sg and 1plf and 3sgf
+1sg and 2sg TRVB-2sg-3sg 3sgf and 1plf and 1plf
+1sg and 3sgf TRVB-3sg-1sg 1sg and 3sgf and 3sgm
+1sg and 1plf TRVB-1pl-1pl 1plf and 2sg and 2plf
+1sg and 2plf TRVB-2pl-2pl 2plf and 3sgf and 2sg
+1sg and 3plf TRVB-3pl-3pl 3plf and 1sg and 1sg
+*1sg and 1sg TRVB-1sg-2sg 1sg and 2sg
+*2sg and 1sg TRVB-1sg-3sg 1sg and 3sgf
+*3sgf and 1sg TRVB-1sg-1sg 3sgf and 1sg
+*1plf and 1sg TRVB-1sg-1pl 1sg and 1plf
+*2plf and 1sg TRVB-1sg-2pl 1sg and 2plf
+*3plf and 1sg TRVB-1sg-3pl 1sg and 3plf
+*1sg and 1sg TRVB-1sg-2sg 1sg and 2sg and 1sg
+*2sg and 1sg TRVB-1sg-3sg 1sg and 3sgf and 1sg
+*3sgf and 1sg TRVB-1sg-1sg 3sgf and 1sg and 2sg
+*1plf and 1sg TRVB-1sg-1pl 1sg and 1plf and 3sgf
+*2plf and 1sg TRVB-1sg-2pl 1sg and 2plf and 1sg
+*3plf and 1sg TRVB-1sg-3pl 1sg and 3plf and 1sg

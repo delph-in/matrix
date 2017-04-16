@@ -1064,6 +1064,8 @@ Label "<h5>References</h5>
 
 Section coordination "Coordination"
 
+Cache pats (fr|dconj)[0-9]+$ name
+
 Label "<p>Languages can have multiple strategies for marking
 coordination that differ among the various parts of speech. The Matrix
 supports both lexical and morphological marking of coordination and
@@ -1108,11 +1110,83 @@ BeginIter cs{i} "a Coordination Strategy" 1
 
   Radio order "Coordination Strategy {i} order" "that comes " ""
   . before "Before" "" "before "
-  . after "After" "" "after the coordinand"
+  . after "After" "" "after the coordinand<br>"
+
+  BeginIter csap{j} "an agreement pattern (optional)" 1
+
+    Select pat "Coordination Strategy {i} agreement name" "&nbsp;&nbsp;&nbsp;&nbsp;and uses the " ""
+    fillcache c=pats
+
+    Select target "Coordination Strategy {i} agreement target" "agreement pattern for " ""
+      . all "all arguments" "all"
+      . subj "subjects only" "subj"
+      . obj "objects only" "obj"
+
+  EndIter csap
 
   Label "</p>"
 
 EndIter cs
+
+Label "<h3 style='display:inline'>Agreement Features in Coordinated Phrases</h3>"
+
+Label "<p>You may describe how agreement features work in coordinated structures. You can then link coordination strategies with a defined agreement pattern. You may also leave this section blank and not attach any agreement patterns to a coordination strategy, in which case the top node of coordinated phrases will be underspecified for agreement features.</p>"
+
+Label "<b>Feature Resolution</b>"
+
+Label "<p>In a <b>feature resolution</b> pattern, the feature value of a coordinated phrase is derived from the values of both the child nodes. <p>For example, in many languages, person values follow a hierarchy in which any coordinated phrase with a 1st person conjunct will have 1st person value in the top node, phrases with a 2nd person conjunct (but no 1st person conjunct) will be 2nd person, and phrases with only 3rd person conjuncts will be 3rd person. You may also define feature resolution patterns for features such as gender and number. <p> You'll have to specify the rules that apply to each feature you wish to model.</p>"
+
+BeginIter fr{i} "a feature resolution pattern" 1
+  
+  Label "<p>(Optionally) give this pattern a name: "
+  
+  Text name "Feature resolution agreement pattern {i}'s name: " "" "" 10
+
+  Label "<p>This feature resolution pattern uses the following features: <br> "
+
+  BeginIter feat{j} "a Feature"
+
+    Select name "Feature resolution pattern {i} feature {j} name" "Feature: " " "
+    fillnames c=noun
+    
+    BeginIter rule{k} "a Rule"
+
+      Select left "Feature resolution pattern {i} feature {j} value" "Child 1: " ""
+      fillvalues p=fr{i}_feat{j}_name 
+        . any "any" "any"   
+
+      Select right "Feature resolution pattern {i} feature {j} value" "Child 2:" ""
+      fillvalues p=fr{i}_feat{j}_name
+        . any "any" "any"   
+
+      Select par "Feature resolution pattern {i} feature {j} value" "Parent: " ""
+      fillvalues p=fr{i}_feat{j}_name
+        . any "any" "any"   
+
+    EndIter rule
+
+  EndIter feat
+
+EndIter fr
+
+Label "<p><b>Distinguished Conjunct</b>"
+
+Label "<p>In a <b>distinguished conjunct</b> pattern, the feature value of a coordinated phrase is the same as the value of a particular conjunct. Typically, this conjunct is either the closest one to the verb (closest conjunct), or always in a particular position (first or last conjunct)."
+
+BeginIter dconj{i} "a distinguished conjunct pattern" 1
+  
+  Label "<p>(Optionally) give this pattern a name: "
+
+  Text name "Distinguished conjunct pattern {i}'s name: " "" "" 10
+
+  Label "<p>This agreement pattern uses agreement features from the<br> "
+
+  Radio order "Coordination Strategy {i} order" "" ""
+  . first "Before" "" "first "
+  . last "After" "" "last conjunct"
+  . closest "After" "" "closest conjunct to the verb"
+
+EndIter dconj
 
 
 Section matrix-yes-no "Matrix Yes/No Questions"
