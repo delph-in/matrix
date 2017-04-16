@@ -1,5 +1,5 @@
 from gmcs.lib import Hierarchy, HierarchyNode
-
+import sys
 # Base class for lexical types (lexicon.py) and lexical rules (morphotatics.py)
 
 ################################
@@ -127,6 +127,9 @@ class PositionClass(MorphotacticNode):
     # TJT 2014-08-21: Keep track of whether position
     # class has incorporated stems
     self._has_is = None
+    # CMC 2017-02-20: Keep track of whether position
+    # class has valence-changing operations 
+    self._has_vcops = None
 
   def __repr__(self):
     return 'PositionClass(' + self.identifier() + ')'
@@ -158,6 +161,17 @@ class PositionClass(MorphotacticNode):
     # TODO: implement these later.. try to be efficient
     return all_inps
 
+  def has_valchg_ops(self):
+    # 2017-02-20 CMC: Keep track of whether a position class has
+    # valence-changing operations in its rules
+    if self._has_vcops == None:
+      for lrt in self.nodes.values():
+        if len(lrt.valchgops) > 0:
+          self._has_vcops = True
+          return self._has_vcops
+      self._has_vcops = False
+    return self._has_vcops
+  
   def has_incorporated_stems(self):
     # 2014-08-21 TJT: Keep track of whether a PositionClass has
     # Incorporated Stem Lexical Rule Instances
@@ -193,6 +207,8 @@ class LexicalRuleType(MorphotacticNode):
     self.features = {}
     self.lris = []
     self.identifier_suffix = 'lex-rule'
+    # CMC 2017-03-24 Valence change operations are new property of LRT
+    self.valchgops = []
 
   def __repr__(self):
     return 'LexicalRuleType(' + self.key + ')'

@@ -24,8 +24,11 @@
  ;;; new-regression-test-here
 ((:path . "cagr-pseudospanish-feature-resolution") (:content . "cagr-pseudospanish-feature-resolution: tests the part of coordination and agreement that creates feature resolution (using a grammar loosely based on Spanish)"))
 ((:path . "cagr-pseudo-closest-conjunct") (:content . "cagr-pseudo-closest-conjunct: tests the part of coordination and agreement that creates closest conjunct rules"))
-((:path . "pseudospanish_feature_resolution") (:content . "pseudospanish_feature_resolution: Tests feature resolution using a grammar somewhat based on Spanish (Spain)"))
-((:path . "pseudo-closest-conjunct") (:content . "pseudo-closest-conjunct: tests closest conjunct agreement rules"))
+((:path . "valchg-obj-add-post-np") (:content . "valchg-obj-add-post-np: object-adding valence change, new object added at end of comps"))
+((:path . "valchg-obj-add-pre-np") (:content . "valchg-obj-add-pre-np: object-adding valence change, np added at front of comps"))
+((:path . "valchg-subj-rem-obj-rem") (:content . "valchg-subj-rem-obj-rem: combining subject-removing and object-removing valence change"))
+((:path . "valchg-subj-rem") (:content . "valchg-subj-rem: simple subject-removing valence change"))
+((:path . "valchg-obj-rem") (:content . "valchg-obj-rem: simple object-removing valence change"))
 ((:path . "adj-adjn") (:content . "adj-adjn: Basic test for attributive adjectives."))
 ((:path . "infostr-foc-affix-subj-obj-hier") (:content . "infostr-foc-affix-subj-obj-hier: regression test for Yukaghir-like grammars"))
 ((:path . "adj-split-both+attr+pred") (:content . "adj-split-both+attr+pred: Test for adjectives where some adjectives are attributive only, some predicative only, and others can be both attributive and predicative."))

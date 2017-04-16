@@ -37,7 +37,7 @@ from gmcs.linglib import negation
 from gmcs.linglib import coordination
 from gmcs.linglib import yes_no_questions
 from gmcs.linglib import toolboximport
-
+from gmcs.linglib import valence_change
 
 ######################################################################
 # globals
@@ -287,7 +287,7 @@ def customize_roots():
     'head-complement types as provided by the Matrix, this should be a\n' + \
     'good starting point.  Note that it is legal to have multiple start\n' + \
     'symbols, but they all need to be listed as the value of\n' + \
-    '`*start-symbol\' (see `lkb/user-fns.lsp\').'
+    '`*start-symbol*\' (see `lkb/user-fns.lsp\').'
 # ERB 2006-10-05 Removing if statement from within string
 
 #  verb_addendum = ''
@@ -299,12 +299,15 @@ def customize_roots():
   # questions, but it's hard to see how this could hurt in general,
   # so let's just put it in.
 
+  # CMC 2017-02-26 Changed root from phrase to sign.
+  # Also added corrected non-local-none constraint from (spurious) roots.tdl
   typedef = \
-    'root := phrase & \
-       [ SYNSEM.LOCAL [ CAT [ VAL [ SUBJ < >, \
-                                    COMPS < > ], \
-                              MC + ],\
-                        COORD - ] ].'
+    'root := sign & \
+       [ SYNSEM [ LOCAL [ CAT [ VAL [ SUBJ < >, \
+                                      COMPS < > ], \
+                                MC + ],\
+                          COORD - ], \
+                  NON-LOCAL non-local-none ] ].'
   roots.add(typedef, comment)
 
   if ch.get('has-aux') == 'yes' or 'noaux-fin-nf' in ch:
@@ -569,6 +572,7 @@ def customize_matrix(path, arch_type, destination=None):
   negation.customize_sentential_negation(mylang, ch, lexicon, rules, lrules, hierarchies)
 
   add_lexrules_methods = [case.add_lexrules,
+                          valence_change.add_lexrules,
                           argument_optionality.add_lexrules,
                           direct_inverse.add_lexrules]
   to_cfv = morphotactics.customize_inflection(ch, add_lexrules_methods,
@@ -579,6 +583,8 @@ def customize_matrix(path, arch_type, destination=None):
 
   features.process_cfv_list(mylang, ch, hierarchies, to_cfv)
 
+  
+  
   # Call the other customization functions
  # customize_person_and_number()
  # customize_gender()
@@ -590,6 +596,7 @@ def customize_matrix(path, arch_type, destination=None):
  # customize_situation()
  # customize_mood()
   verbal_features.customize_verbal_features(mylang, hierarchies)
+  valence_change.customize_valence_change(mylang, ch, lexicon, rules, irules, lrules)
   word_order.customize_word_order(mylang, ch, rules)
   coordination.customize_coordination(mylang, ch, lexicon, rules, irules)
   yes_no_questions.customize_yesno_questions(mylang, ch, rules, lrules, hierarchies)

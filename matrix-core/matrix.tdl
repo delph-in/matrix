@@ -982,6 +982,24 @@ same-val-lex-rule := lex-rule &
   [ SYNSEM.LOCAL.CAT.VAL #val,
     DTR.SYNSEM.LOCAL.CAT.VAL #val ].
 
+; CMC 2017-03-19 adding finer granularity for VAL
+
+same-subj-lex-rule := lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ #subj,
+    DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ #subj ].
+
+same-spr-lex-rule := lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SPR #spr,
+    DTR.SYNSEM.LOCAL.CAT.VAL.SPR #spr ].
+
+same-spec-lex-rule := lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SPEC #spec,
+    DTR.SYNSEM.LOCAL.CAT.VAL.SPEC #spec ].
+
+same-comps-lex-rule := lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS #comps,
+    DTR.SYNSEM.LOCAL.CAT.VAL.COMPS #comps ].
+
 same-hc-light-lex-rule := lex-rule &
   [ SYNSEM.LOCAL.CAT.HC-LIGHT #hcl,
     DTR.SYNSEM.LOCAL.CAT.HC-LIGHT #hcl ].
@@ -1069,6 +1087,30 @@ val-change-only-lex-rule := cat-change-only-lex-rule &
 			    same-hc-light-lex-rule &
 			    same-posthead-lex-rule &
 			    same-mc-lex-rule.
+
+; CMC 2017-03-21 Additional convenience subtypes for
+; valence-changing operations, e.g., may need to change
+; local, non-local, and ccont.
+; CMC 2017-04-10 Revised to be less-constrained for scopal predicates
+
+cat-change-no-cont-lex-rule := same-modified-lex-rule &
+                               same-light-lex-rule &
+                               same-ctxt-lex-rule &
+                               same-agr-lex-rule.
+
+val-change-no-cont-lex-rule := cat-change-no-cont-lex-rule &
+                               same-head-lex-rule &
+                               same-hc-light-lex-rule &
+                               same-posthead-lex-rule &
+                               same-mc-lex-rule.
+
+comps-change-only-lex-rule := same-subj-lex-rule &
+                              same-spr-lex-rule &
+                              same-spec-lex-rule.
+
+subj-change-only-lex-rule := same-comps-lex-rule &
+                             same-spr-lex-rule &
+                             same-spec-lex-rule.
 
 ; ERB 2007-02-13 These two should only be inherited by ltol types,
 ; since they are redundant with constraints on lexeme-to-word-rule.
@@ -2431,13 +2473,13 @@ raise-sem-lex-item := no-hcons-lex-item &
 basic-zero-arg := lex-item &
   [ ARG-ST < > ].
 
-zero-arg-nonslash := lex-item & basic-zero-arg &
+zero-arg-nonslash := basic-zero-arg &
   [ SYNSEM.NON-LOCAL.SLASH 0-dlist ].
 
-zero-arg-nonrel := lex-item & basic-zero-arg &
+zero-arg-nonrel := basic-zero-arg &
   [ SYNSEM.NON-LOCAL.REL 0-dlist ].
 
-zero-arg-nonque := lex-item & basic-zero-arg &
+zero-arg-nonque := basic-zero-arg &
   [ SYNSEM.NON-LOCAL.QUE 0-dlist ].
 
 ; Non-argument taking items which introduce no non-local values.
