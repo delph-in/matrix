@@ -272,3 +272,5 @@ adj-split-both+attr=Test for adjectives where some adjectives are attributive on
 adj-split-both+pred=Test for adjectives where some adjectives are predicative only and others can be both attributive and predicative.
 adj-split-both+attr+pred=Test for adjectives where some adjectives are attributive only, some predicative only, and others can be both attributive and predicative.
 adj-adjn=Basic test for attributive adjectives.
+cagr-pseudo-closest-conjunct=tests the part of coordination and agreement that creates closest conjunct rules
+cagr-pseudospanish-feature-resolution=tests the part of coordination and agreement that creates feature resolution (using a grammar loosely based on Spanish)

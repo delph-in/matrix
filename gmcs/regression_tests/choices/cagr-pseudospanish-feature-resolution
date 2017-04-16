@@ -1,0 +1,221 @@
+
+version=28
+
+section=general
+language=cagr-pseudospanish-feature-resolution
+punctuation-chars=keep-list
+punctuation-chars-list=-
+
+section=word-order
+word-order=svo
+has-dets=yes
+noun-det-order=det-noun
+has-aux=no
+aux-comp-order=before
+
+section=number
+  number1_name=sg
+  number2_name=pl
+
+section=person
+person=1-2-3
+first-person=none
+
+section=gender
+  gender1_name=m
+  gender2_name=f
+
+section=case
+case-marking=none
+
+section=direct-inverse
+
+section=tense-aspect-mood
+
+section=other-features
+
+section=sentential-negation
+
+section=coordination
+  cs1_n=on
+  cs1_np=on
+  cs1_pat=mono
+  cs1_mark=word
+  cs1_orth=and
+  cs1_order=before
+    cs1_csap1_pat=fr1
+    cs1_csap1_target=all
+  fr1_name=resolved
+    fr1_feat1_name=number
+      fr1_feat1_rule1_left=any
+      fr1_feat1_rule1_right=any
+      fr1_feat1_rule1_par=pl
+    fr1_feat2_name=person
+      fr1_feat2_rule1_left=any
+      fr1_feat2_rule1_right=1st
+      fr1_feat2_rule1_par=1st
+      fr1_feat2_rule2_left=1st
+      fr1_feat2_rule2_right=2nd
+      fr1_feat2_rule2_par=1st
+      fr1_feat2_rule3_left=1st
+      fr1_feat2_rule3_right=3rd
+      fr1_feat2_rule3_par=1st
+      fr1_feat2_rule4_left=2nd
+      fr1_feat2_rule4_right=2nd
+      fr1_feat2_rule4_par=2nd
+      fr1_feat2_rule5_left=2nd
+      fr1_feat2_rule5_right=3rd
+      fr1_feat2_rule5_par=2nd
+      fr1_feat2_rule6_left=3rd
+      fr1_feat2_rule6_right=2nd
+      fr1_feat2_rule6_par=2nd
+      fr1_feat2_rule7_left=3rd
+      fr1_feat2_rule7_right=3rd
+      fr1_feat2_rule7_par=3rd
+    fr1_feat3_name=gender
+      fr1_feat3_rule1_left=any
+      fr1_feat3_rule1_right=m
+      fr1_feat3_rule1_par=m
+      fr1_feat3_rule2_left=m
+      fr1_feat3_rule2_right=f
+      fr1_feat3_rule2_par=f
+      fr1_feat3_rule3_left=f
+      fr1_feat3_rule3_right=f
+      fr1_feat3_rule3_par=f
+
+section=matrix-yes-no
+
+section=info-str
+
+section=arg-opt
+
+section=lexicon
+  noun1_name=pn
+  noun1_det=imp
+  noun2_name=1st
+    noun2_feat1_name=person
+    noun2_feat1_value=1st
+  noun3_name=2nd
+    noun3_feat1_name=person
+    noun3_feat1_value=2nd
+  noun4_name=3rd
+    noun4_feat1_name=person
+    noun4_feat1_value=3rd
+  noun5_name=sg
+    noun5_feat1_name=number
+    noun5_feat1_value=sg
+  noun6_name=pl
+    noun6_feat1_name=number
+    noun6_feat1_value=pl
+  noun7_name=f
+    noun7_feat1_name=gender
+    noun7_feat1_value=f
+  noun8_name=m
+    noun8_feat1_name=gender
+    noun8_feat1_value=m
+  noun9_name=1st-sg-pron
+  noun9_supertypes=noun1, noun2, noun5
+    noun9_stem1_orth=1sg
+    noun9_stem1_pred=_1st-sg-pron_n_rel
+  noun10_name=2nd-sg-pron
+  noun10_supertypes=noun1, noun3, noun5
+    noun10_stem1_orth=2sg
+    noun10_stem1_pred=_2nd-sg-pron_n_rel
+  noun11_name=3rd-sg-f-pron
+  noun11_supertypes=noun1, noun4, noun5, noun7
+    noun11_stem1_orth=3sgf
+    noun11_stem1_pred=_3rd-sg-f-pron_n_rel
+  noun12_name=3rd-sg-m-pron
+  noun12_supertypes=noun1, noun4, noun5, noun8
+    noun12_stem1_orth=3sgm
+    noun12_stem1_pred=_3rd-sg-m-pron_n_rel
+  noun13_name=1st-pl-m-pron
+  noun13_supertypes=noun1, noun2, noun6, noun8
+    noun13_stem1_orth=1plm
+    noun13_stem1_pred=_1st-pl-m-pron_n_rel
+  noun14_name=2nd-pl-m-pron
+  noun14_supertypes=noun1, noun3, noun6, noun8
+    noun14_stem1_orth=2plm
+    noun14_stem1_pred=_2nd-pl-m-pron_n_rel
+  noun15_name=3rd-pl-m-pron
+  noun15_supertypes=noun1, noun4, noun6, noun8
+    noun15_stem1_orth=3plm
+    noun15_stem1_pred=_3rd-pl-m-pron_n_1_rel
+  noun16_name=3rd-pl-f-pron
+  noun16_supertypes=noun1, noun4, noun6, noun7
+    noun16_stem1_orth=3plf
+    noun16_stem1_pred=_3rd-pl-f-pron_n_2_rel
+  noun17_name=2nd-pl-f-pron
+  noun17_supertypes=noun1, noun3, noun6, noun7
+    noun17_stem1_orth=2plf
+    noun17_stem1_pred=_2nd-pl-f-pron_n_rel
+  noun18_name=1st-pl-f-pron
+  noun18_supertypes=noun1, noun2, noun6, noun7
+    noun18_stem1_orth=1plf
+    noun18_stem1_pred=_1st-pl-f-pron_n_rel
+  verb1_name=intr-verb-lex
+  verb1_valence=intrans
+    verb1_stem1_orth=VERB
+    verb1_stem1_pred=_VERB_v_rel
+  verb2_name=tr-verb-lex
+  verb2_valence=trans
+    verb2_stem1_orth=TRVB
+    verb2_stem1_pred=_TRVB_v_rel
+
+section=morphology
+  verb-pc1_name=png-suffix
+  verb-pc1_obligatory=on
+  verb-pc1_order=suffix
+  verb-pc1_inputs=iverb, tverb
+    verb-pc1_lrt1_name=1st
+      verb-pc1_lrt1_feat1_name=person
+      verb-pc1_lrt1_feat1_value=1st
+      verb-pc1_lrt1_feat1_head=subj
+    verb-pc1_lrt2_name=2nd
+      verb-pc1_lrt2_feat1_name=person
+      verb-pc1_lrt2_feat1_value=2nd
+      verb-pc1_lrt2_feat1_head=subj
+    verb-pc1_lrt3_name=3rd
+      verb-pc1_lrt3_feat1_name=person
+      verb-pc1_lrt3_feat1_value=3rd
+      verb-pc1_lrt3_feat1_head=subj
+    verb-pc1_lrt4_name=sg
+      verb-pc1_lrt4_feat1_name=number
+      verb-pc1_lrt4_feat1_value=sg
+      verb-pc1_lrt4_feat1_head=subj
+    verb-pc1_lrt5_name=pl
+      verb-pc1_lrt5_feat1_name=number
+      verb-pc1_lrt5_feat1_value=pl
+      verb-pc1_lrt5_feat1_head=subj
+    verb-pc1_lrt6_name=1st-sg
+    verb-pc1_lrt6_supertypes=verb-pc1_lrt1, verb-pc1_lrt4
+      verb-pc1_lrt6_lri1_inflecting=yes
+      verb-pc1_lrt6_lri1_orth=-1sg
+    verb-pc1_lrt7_name=1st-pl
+    verb-pc1_lrt7_supertypes=verb-pc1_lrt1, verb-pc1_lrt5
+      verb-pc1_lrt7_lri1_inflecting=yes
+      verb-pc1_lrt7_lri1_orth=-1pl
+    verb-pc1_lrt8_name=2nd-sg
+    verb-pc1_lrt8_supertypes=verb-pc1_lrt2, verb-pc1_lrt4
+      verb-pc1_lrt8_lri1_inflecting=yes
+      verb-pc1_lrt8_lri1_orth=-2sg
+    verb-pc1_lrt9_name=2nd-pl
+    verb-pc1_lrt9_supertypes=verb-pc1_lrt2, verb-pc1_lrt5
+      verb-pc1_lrt9_lri1_inflecting=yes
+      verb-pc1_lrt9_lri1_orth=-2pl
+    verb-pc1_lrt10_name=3rd-sg
+    verb-pc1_lrt10_supertypes=verb-pc1_lrt3, verb-pc1_lrt4
+      verb-pc1_lrt10_lri1_inflecting=yes
+      verb-pc1_lrt10_lri1_orth=-3sg
+    verb-pc1_lrt11_name=3rd-pl
+    verb-pc1_lrt11_supertypes=verb-pc1_lrt3, verb-pc1_lrt5
+      verb-pc1_lrt11_lri1_inflecting=yes
+      verb-pc1_lrt11_lri1_orth=-3pl
+
+section=toolbox-import
+
+section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon

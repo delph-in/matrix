@@ -267,9 +267,11 @@ def customize_conjunct_agreement(mylang, ch, agr, csap):
     mylang.add('r := dir.', '', True)
     mylang.add('res := dir.', '', True) # TODO only add this if there is both feature resolution and dist. conjunct
 
-    mylang.add('bare-np-rule := [ SYNSEM.LOCAL.COORDAGR #cagr,'
+    mylang.set_section('phrases')
+
+    mylang.add('bare-np-phrase := [ SYNSEM.LOCAL.COORDAGR #cagr,'
                 'HEAD-DTR.SYNSEM.LOCAL.COORDAGR #cagr ].')
-    mylang.add('bare-np-rule := [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png,'
+    mylang.add('bare-np-phrase := [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png,'
                 'HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png ].')
 
     mylang.add('pass-up-png-coord-rule := [ SYNSEM.LOCAL.COORDAGR #cagr,'

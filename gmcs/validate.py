@@ -794,16 +794,19 @@ def validate_coordination(ch, vr):
              'on phrases (NPs, VPs, or sentences)'
       vr.err(cs.full_key + '_mark', mess)
 
+
+    # setup for tracking whether subjects or objects have been accounted for too often
+    subj = False
+    obj = False
+    valid = True
+
     for csap in cs.get('csap'):
       if not ch.get(csap.get('pat')):
         mess = 'You have set this coordination strategy to use an agreement pattern that ' \
              'doesn\'t exist.'
-        vr.err(csap.get('pat').full_key, mess)
+        vr.err(csap.full_key+"_pat", mess)
 
       # only one dconj pattern per subject/object per cs
-      subj = False # TODO there's gotta be a cleaner way to do this
-      obj = False
-      valid = True
       if csap.get('pat').startswith('dconj'):
         target = csap.get('target')
         if target == 'all':
@@ -821,8 +824,9 @@ def validate_coordination(ch, vr):
           obj = True
         if not valid:
           valid = True
-          mess = 'You can\'t choose more than one distinguished conjunct pattern for a subject or object.'
-          vr.err(csap.get('pat').full_key, mess)
+          mess = 'You can\'t choose more than one distinguished conjunct pattern for subject or objects \
+                  within one coordination strategy.'
+          vr.err(csap.full_key+"_pat", mess)
 
   # feature resolution validation
   for fr in ch.get('fr'):
@@ -832,7 +836,7 @@ def validate_coordination(ch, vr):
 
       # no feature in agreement pattern more than once
       if feat['name'] in feats:
-        mess = 'You appear to have used this feature more than once in the same feature resolution pattern.'
+        mess = 'You have used this feature more than once in the same feature resolution pattern.'
         vr.err(feat.full_key + '_name', mess)
       feats.add(feat['name'])
 
@@ -857,7 +861,7 @@ def validate_coordination(ch, vr):
       for rule in feat.get('rule'):
         if not (rule.get('left') and rule.get('right') and rule.get('par')) in values:
           mess = 'This rule contains an invalid feature value.'
-          vr.err(rule.full_key, mess)
+          vr.err(rule.full_key + "_par", mess)
 
     # TODO no conflicting rules? 1 + 2 = 3, 1 + 2 = 2
 

@@ -22,6 +22,10 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "cagr-pseudospanish-feature-resolution") (:content . "cagr-pseudospanish-feature-resolution: tests the part of coordination and agreement that creates feature resolution (using a grammar loosely based on Spanish)"))
+((:path . "cagr-pseudo-closest-conjunct") (:content . "cagr-pseudo-closest-conjunct: tests the part of coordination and agreement that creates closest conjunct rules"))
+((:path . "pseudospanish_feature_resolution") (:content . "pseudospanish_feature_resolution: Tests feature resolution using a grammar somewhat based on Spanish (Spain)"))
+((:path . "pseudo-closest-conjunct") (:content . "pseudo-closest-conjunct: tests closest conjunct agreement rules"))
 ((:path . "adj-adjn") (:content . "adj-adjn: Basic test for attributive adjectives."))
 ((:path . "infostr-foc-affix-subj-obj-hier") (:content . "infostr-foc-affix-subj-obj-hier: regression test for Yukaghir-like grammars"))
 ((:path . "adj-split-both+attr+pred") (:content . "adj-split-both+attr+pred: Test for adjectives where some adjectives are attributive only, some predicative only, and others can be both attributive and predicative."))
