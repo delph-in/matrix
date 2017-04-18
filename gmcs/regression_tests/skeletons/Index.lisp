@@ -22,6 +22,8 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "cagr-pseudospanish-feature-resolution") (:content . "cagr-pseudospanish-feature-resolution: tests the part of coordination and agreement that creates feature resolution (using a grammar loosely based on Spanish)"))
+((:path . "cagr-pseudo-closest-conjunct") (:content . "cagr-pseudo-closest-conjunct: tests the part of coordination and agreement that creates closest conjunct rules"))
 ((:path . "valchg-obj-add-post-np") (:content . "valchg-obj-add-post-np: object-adding valence change, new object added at end of comps"))
 ((:path . "valchg-obj-add-pre-np") (:content . "valchg-obj-add-pre-np: object-adding valence change, np added at front of comps"))
 ((:path . "valchg-subj-rem-obj-rem") (:content . "valchg-subj-rem-obj-rem: combining subject-removing and object-removing valence change"))

@@ -1013,7 +1013,7 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
           # Only pred and attr conflict with each other
           if input_mode in ("pred", "attr") and mode != input_mode:
             vr.err(lrt.full_key+'_mod',
-                   'This behavoir conflicts with this lexical rule type\'s ' +\
+                   'This behavior conflicts with this lexical rule type\'s ' +\
                    'input %s on the input\'s behavoir' % (input_def.get('name','')))
         # Check modpos
         if mode in ('attr', 'both'):
