@@ -134,8 +134,9 @@ def customize_feature_resolution(mylang, ch, ap):
           else: # otherwise we add LCOORD and RCOORD constraints.
             tn = ch1 + '-' + ch2 + '-' + featname.lower() + '-coord-rule:= coord-phrase &\
                              [ ' + path + featname + ' ' + par + ','
+          punct = ',' if ch2 != 'any' else '].'
           if ch1 != 'any':
-            tn += 'LCOORD-DTR.' + path + featname + ' ' + ch1 + ','
+            tn += 'LCOORD-DTR.' + path + featname + ' ' + ch1 + punct
           if ch2 != 'any':
             tn += 'RCOORD-DTR.' + path + featname + ' ' + ch2 + '].'
 
