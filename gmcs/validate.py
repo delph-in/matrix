@@ -866,7 +866,7 @@ def validate_coordination(ch, vr):
     # TODO no conflicting rules? 1 + 2 = 3, 1 + 2 = 2
 
   for dconj in ch.get('dconj'):
-    pass
+    pass # no validation for closest conjunct yet
 
 
 

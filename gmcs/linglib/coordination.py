@@ -130,7 +130,6 @@ def customize_feature_resolution(mylang, ch, ap):
           ch2 = rule.get('right') if rule.get('right') else 'any'
           par = rule.get('par') if rule.get('par') else 'any' # the rule should always have a parent, but just in case
 
-          # TODO list for left child
           if "," in ch1:
             ch1_list = ch1.split(", ")
             if ch2 == "nonmatching":
@@ -144,24 +143,23 @@ def customize_feature_resolution(mylang, ch, ap):
           else: # ch1 is not a list
             write_coord_rule(ch1, ch2, par, path, featname, mylang)
 
-          # TODO change the code for getting the names of rules similarly
           # TODO add validation for "nonmatching" but not a list on the left
 
 
 def write_coord_rule(ch1, ch2, par, path, featname, mylang):
   # now, write the phrase rule that corresponds to the ch1, ch2, par given in the choices file.
-  par = "#" + featname.lower() if par == "same" else par # TODO I don't like how clumsy this is
 
-  if (ch1 == 'any' and ch2 == 'any'):  # if both children are 'any', we just constrain the parent.
-    tn = ch1 + '-' + ch2 + '-' + featname.lower() + '-coord-rule:= coord-phrase &\
-            [ ' + path + featname + ' ' + par + '].'
-  else:  # otherwise we add LCOORD and RCOORD constraints.
-    tn = ch1 + '-' + ch2 + '-' + featname.lower() + '-coord-rule:= coord-phrase &\
-                         [ ' + path + featname + ' ' + par + ','
+  tn = ch1 + '-' + ch2 + '-' + par + '-' + featname.lower() + '-coord-rule:= coord-phrase &'
 
   # the "same" value means we should identify whichever values are indicated to be "the same".
+  par = "#" + featname.lower() if par == "same" else par  # TODO I don't like how clumsy this is
   ch1 = "#" + featname.lower() if ch1 == "same" else ch1
   ch2 = "#" + featname.lower() if ch2 == "same" else ch2
+
+  if (ch1 == 'any' and ch2 == 'any'):  # if both children are 'any', we just constrain the parent.
+    tn += ' [ ' + path + featname + ' ' + par + '].'
+  else:  # otherwise we add LCOORD and RCOORD constraints.
+    tn += ' [ ' + path + featname + ' ' + par + ','
 
   punct = ',' if ch2 != 'any' else '].'
 
@@ -200,17 +198,17 @@ def get_feature_resolution_names(ap):
             for ch1 in ch1_list:
               for ch2 in ch1_list:
                 if ch1 != ch2:
-                  nm = '-' + ch1 + '-' + ch2
-                  st = ch1 + '-' + ch2 + '-' + featname + '-coord-rule & '
+                  nm = '-' + ch1 + '-' + ch2 + '-' + par
+                  st = ch1 + '-' + ch2 + '-' + par + '-' + featname + '-coord-rule & '
                   templist += [(nm, st)]
           else:  # ch1 is a list but ch2 is some more normal value
             for ch1 in ch1_list:
-              nm = '-' + ch1 + '-' + ch2
-              st = ch1 + '-' + ch2 + '-' + featname + '-coord-rule & '
+              nm = '-' + ch1 + '-' + ch2 + '-' + par
+              st = ch1 + '-' + ch2 + '-' + par + '-' + featname + '-coord-rule & '
               templist += [(nm, st)]
         else:  # ch1 is not a list
-          nm = '-' + ch1 + '-' + ch2
-          st = ch1 + '-' + ch2 + '-' + featname + '-coord-rule & '
+          nm = '-' + ch1 + '-' + ch2 + '-' + par
+          st = ch1 + '-' + ch2 + '-' + par + '-' + featname + '-coord-rule & '
           templist += [(nm, st)]
 
 
