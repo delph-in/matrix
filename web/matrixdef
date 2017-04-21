@@ -1151,17 +1151,21 @@ BeginIter fr{i} "a feature resolution pattern" 1
     
     BeginIter rule{k} "a Rule"
 
-      Select left "Feature resolution pattern {i} feature {j} value" "Child 1: " ""
+      MultiSelect left "Feature resolution pattern {i} feature {j} value" "Child 1: " ""
       fillvalues p=fr{i}_feat{j}_name 
-        . any "any" "any"   
+        . any "any" "any"  
+	. same "the same" "the same" 
 
       Select right "Feature resolution pattern {i} feature {j} value" "Child 2:" ""
       fillvalues p=fr{i}_feat{j}_name
-        . any "any" "any"   
+        . any "any" "any" 
+	. same "the same" "the same"  
+	. nonmatching "any non-matching value in that list" "any non-matching value in that list"
 
       Select par "Feature resolution pattern {i} feature {j} value" "Parent: " ""
       fillvalues p=fr{i}_feat{j}_name
-        . any "any" "any"   
+        . any "any" "any" 
+	. same "the same" "the same"  
 
     EndIter rule
 
