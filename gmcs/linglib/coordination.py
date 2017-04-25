@@ -156,8 +156,10 @@ def write_coord_rule(ch1, ch2, par, path, featname, mylang):
   ch1 = "#" + featname.lower() if ch1 == "same" else ch1
   ch2 = "#" + featname.lower() if ch2 == "same" else ch2
 
-  if (ch1 == 'any' and ch2 == 'any'):  # if both children are 'any', we just constrain the parent.
+  if (ch1 == 'any' and ch2 == 'any' and par != 'any'):  # if both children are 'any', we just constrain the parent.
     tn += ' [ ' + path + featname + ' ' + par + '].'
+  elif par == 'any':
+    tn += ' [ '
   else:  # otherwise we add LCOORD and RCOORD constraints.
     tn += ' [ ' + path + featname + ' ' + par + ','
 
