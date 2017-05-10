@@ -457,5 +457,6 @@ def customize_coordination(mylang, ch, lexicon, rules, irules):
 
 
     for pos in ('n', 'np', 'vp', 's'):
+      agrrules = [('', '')] if pos in ('vp', 's') else agrrules
       if cs.get(pos):
         define_coord_strat(csnum, pos, top, mid, bot, left, pre, suf, mylang, rules, irules, agrrules)
