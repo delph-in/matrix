@@ -835,9 +835,9 @@ def validate_coordination(ch, vr):
     for feat in fr.get('feat'):
 
       # no feature in agreement pattern more than once
-      if feat['name'] in feats:
-        mess = 'You have used this feature more than once in the same feature resolution pattern.'
-        vr.err(feat.full_key + '_name', mess)
+      if feat['name'] in feats and feat['name'] != 'pernum':
+          mess = 'You have used this feature more than once in the same feature resolution pattern.'
+          vr.err(feat.full_key + '_name', mess)
       feats.add(feat['name'])
 
       # features must exist in the grammar
