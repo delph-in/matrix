@@ -501,7 +501,7 @@ def percolate_supertypes(pc):
         elif pc.has_valchg_ops():
           # CMC 2017-02-20: Valence-changing operations need 
           # less-constrained supertype
-          x.supertypes.add('val-change-no-cont-lex-rule')
+          x.supertypes.add('val-change-with-ccont-lex-rule')
         else:
           x.supertypes.add('add-only-no-ccont-rule')
 

@@ -70,24 +70,23 @@ def added_arg_non_local_lex_rule(added_arg, total_args):
     if added_arg > total_args or total_args == 1 or total_args > 3:
         raise Exception('Bad argument count ({} of {})'.format(added_arg, total_args))
 
-    rulename = 'added-arg{}of{}-non-local-lex-rule'.format(added_arg, total_args)
-    arglist = []
-    for i in range(1,total_args+1):
+    rulevars = {}
+    rulevars['rulename'] = 'added-arg{}of{}-non-local-lex-rule'.format(added_arg, total_args)
+    compslist = []
+    for i in range(2,total_args+1):
         if i == added_arg:
-            arglist.append(NEW_NON_LOCAL_FRAGMENT)
+            compslist.append(NEW_NON_LOCAL_FRAGMENT)
         else: 
-            arglist.append('[ ]')
-    arg_st = ',\n             '.join(arglist)
-    rulevars = { 'rulename': rulename, 'arg-st': arg_st }
+            compslist.append('[ ]')
+    rulevars['comps'] = ', '.join(compslist)
     rule = '''{rulename} := lex-rule &
-  [ SYNSEM.NON-LOCAL [ SLASH [ LIST #sfirst,
-			       LAST #slast ],
-		       REL [ LIST #rfirst,
-			     LAST #rlast ],
-		       QUE [ LIST #qfirst,
-			     LAST #qlast ] ],
-    ARG-ST < {arg-st} >,
-             
+  [ SYNSEM [ LOCAL.CAT.VAL.COMPS < {comps} >,
+             NON-LOCAL [ SLASH [ LIST #sfirst,
+                                 LAST #slast ],
+		         REL [ LIST #rfirst,
+			       LAST #rlast ],
+		         QUE [ LIST #qfirst,
+			       LAST #qlast ] ] ],
     DTR.SYNSEM.NON-LOCAL [ SLASH [ LIST #sfirst,
                                    LAST #smiddle ],
 			   REL [ LIST #rfirst,
@@ -175,24 +174,23 @@ def added_arg_head_lex_rule(arg,head):
 
 
 
-ADDED_ARG_APPLICATIVE_FRAGMENT = ''' #ncomp & [ LOCAL [ CAT [ VAL [ SPR < >,
-                                                                    COMPS < > ] ],
-                                                        CONT.HOOK.INDEX #nind ] ]'''
+ADDED_ARG_APPLICATIVE_FRAGMENT = ''' [ LOCAL [ CAT [ VAL [ SPR < >,
+                                                           COMPS < > ] ],
+                                               CONT.HOOK.INDEX #nind ] ]'''
                             
 # Generates the valence-specific applicative LR supertype.     
 # Inherits from the valence-specific non-local rule and the generic applicative rule.   
 def added_arg_applicative_lex_rule(added_arg, total_args):
     rulevars = {}
-    arglist = ['#arg1']
+    compslist = []
     for i in range(1,total_args+1):
         if i == 1:
             continue
         elif i == added_arg:
-            arglist.append(ADDED_ARG_APPLICATIVE_FRAGMENT)
+            compslist.append(ADDED_ARG_APPLICATIVE_FRAGMENT)
         else: 
-            arglist.append('#ocomp')
-    rulevars['arg-st'] = ', '.join(arglist)
-    rulevars['comps'] = '#ncomp, #ocomp' if added_arg == 2 else '#ocomp, #ncomp'
+            compslist.append('#ocomp')
+    rulevars['comps'] = ', '.join(compslist)
     rulevars['rulename'] = lexrule_name('added-arg-applicative', added_arg, total_args)
     rulevars['basic-applicative-rule'] = lexrule_name('basic-applicative')
     rulevars['added-arg-non-local-rule'] = lexrule_name('added-arg-non-local', added_arg, total_args)
@@ -200,9 +198,7 @@ def added_arg_applicative_lex_rule(added_arg, total_args):
     rule = '''{rulename} := {basic-applicative-rule} & {added-arg-non-local-rule} &
   [ SYNSEM.LOCAL.CAT.VAL.COMPS < {comps} >,
     C-CONT [ RELS <! [ ARG2 #nind ] !> ],
-    DTR [ SYNSEM.LOCAL [ CAT.VAL.COMPS < #ocomp > ],
-	  ARG-ST < #arg1, #ocomp > ],
-    ARG-ST < {arg-st} > ].'''.format(**rulevars)
+    DTR [ SYNSEM.LOCAL [ CAT.VAL.COMPS < #ocomp > ] ] ].'''.format(**rulevars)
     return rule
 
 # Small helper to get proper set semantics
