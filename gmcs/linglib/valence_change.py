@@ -6,7 +6,7 @@ from functools import partial
 
 
 ### RULE NAME GENERATORS ###
-
+# These functions return the name the rule generator will use
 def added_arg_non_local_lex_rule_name(added_arg, total_args):
     return 'added-arg{}of{}-non-local-lex-rule'.format(added_arg, total_args)
 
@@ -24,12 +24,14 @@ def added_arg_head_lex_rule_name(added_arg, head_constraint):
 
 
 # These are the shorthand names used to generate rules and rule names
+# NB: the values here are *functions* that return the rule name.
 rulenamefns = { 'subj-rem-op': (lambda: 'subj-rem-op-lex-rule'),
                 'obj-rem-op': (lambda: 'obj-rem-op-lex-rule'),
                 'added-arg-non-local': added_arg_non_local_lex_rule_name,
                 'added-arg-applicative': added_arg_applicative_lex_rule_name,
                 'added-arg-head-type': added_arg_head_lex_rule_name,
-                'basic-applicative': (lambda: 'basic-applicative-lex-rule') }
+                'basic-applicative': (lambda: 'basic-applicative-lex-rule'),
+                'causative': (lambda: 'causative-lex-rule')}
 
 # A little  bit of machinery to make it easy to find the names of generated rules
 # (Gets called from morphotactics.py)
@@ -42,12 +44,12 @@ def lexrule_name(rule_type,*args):
 ############ RULE BUILDERS ################
 
 def subj_rem_op_lex_rule():
-  return  lexrule_name('subj-rem-op') + ''' := subj-change-only-lex-rule &
+  return  lexrule_name('subj-rem-op') + ''' := subj-change-only-lex-rule & no-ccont-lex-rule &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ < >,
     DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < unexpressed > ].'''
 
 def obj_rem_op_lex_rule():
-  return lexrule_name('obj-rem-op') + ''' := comps-change-only-lex-rule &
+  return lexrule_name('obj-rem-op') + ''' := comps-change-only-lex-rule & no-ccont-lex-rule &
   [ SYNSEM.LOCAL.CAT.VAL.COMPS #comps,
     DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < unexpressed . #comps > ].'''
 
@@ -95,15 +97,14 @@ def added_arg_non_local_lex_rule(added_arg, total_args):
     return rule
 
 
-## General applicative lexrules
+## General argument-adding lexrules
 
-# non-scopal
-## NOTE: This expects to have val-change-ccont-lex-rule in its ancestry 
+## NOTE: These expects to have val-change-ccont-lex-rule in its ancestry 
 ## somewhere. Normally that should be handled by the morphotactics library, 
 ## which uses val-change-ccont-lex-rule as the base supertype
 ## for any position class with valence-changing lexical rules.
 
-# Generates the generic applicative rule
+# Generates the generic applicative (non-scopal) rule
 def basic_applicative_lex_rule():
     return  '''{rulename} := comps-change-only-lex-rule &
   [ C-CONT [ RELS <! event-relation &
@@ -111,8 +112,25 @@ def basic_applicative_lex_rule():
              HCONS <! !> ],
     DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX #evt ].'''.format(rulename=lexrule_name('basic-applicative'))
 
-CAUSATIVE_LEX_RULE = '''causative-lex-rule := val-change-no-cont-lex-rule &
-    same-spr-lex-rule &
+
+# Generates the generic causative rule
+def causative_lex_rule(demoted_pos):
+    rulevars = {}
+    OSUBJ_ARG_FRAG = '#osubj & [ LOCAL.CONT.HOOK.INDEX #causee ]'
+    arglist = ['#nsubj & [ LOCAL.CONT.HOOK.INDEX #causer ]']
+    if demoted_pos.lower() == 'pre':
+        # erstwhile subject should be LESS oblique than the object
+        arglist.append(OSUBJ_ARG_FRAG)
+        arglist.append('#comp')
+        comps = '#osubj, #comp'
+    else:
+        arglist.append('#comp')
+        arglist.append(OSUBJ_ARG_FRAG)
+        comps = '#comp, #osubj'
+    rulevars['rulename'] = lexrule_name('causative')
+    rulevars['arg-st'] = ',\n             '.join(arglist)
+    rulevars['comps'] = comps
+    rule =  '''{rulename} := same-spr-lex-rule &
     same-spec-lex-rule &
   [ C-CONT [ RELS <! event-relation &
                    [ LBL #ltop,
@@ -125,16 +143,16 @@ CAUSATIVE_LEX_RULE = '''causative-lex-rule := val-change-no-cont-lex-rule &
              HOOK [ LTOP #ltop,
                     INDEX #hidx,
                     XARG #causer ] ],
-    SYNSEM.LOCAL.CAT.VAL [ SUBJ < #nsubj >,
-                           COMPS < #osubj, #comp > ],
-    ARG-ST < #nsubj & [ LOCAL.CONT.HOOK.INDEX #causer ],
-             #osubj & [ LOCAL.CONT.HOOK.INDEX #causee ],
-             #comp >,
+    SYNSEM.LOCAL.CAT.VAL [ SUBJ < #nsubj & [ LOCAL.CAT.VAL [ SPR < >,
+                                                             COMPS < > ] ] >,
+                           COMPS < {comps} > ],
+    ARG-ST < {arg-st}  >,
     DTR [ ARG-ST < #osubj, 
                    #comp >,
           SYNSEM.LOCAL [ CAT.VAL [ SUBJ < #osubj >,
                                    COMPS < #comp > ],
-                         CONT.HOOK.LTOP #larg ] ] ].'''
+                         CONT.HOOK.LTOP #larg ] ] ].'''.format(**rulevars)
+    return rule
 
 
 # Generates the valence-specific constraint on the type of an added argument.
@@ -239,6 +257,8 @@ def customize_valence_change(mylang, ch, lexicon, rules, irules, lrules):
                         rules.add('added-arg-applicative', added_arg_applicative_lex_rule, 3, 3)
                         rules.add('added-arg-non-local', added_arg_non_local_lex_rule, 3, 3)
                 if opname == 'subj-add':
+                    position = vchop.get('argpos','').lower()
+                    rules.add('causative', causative_lex_rule, position)
                     if 'verb' in pc_inputs or 'iverb' in pc_inputs:
                         rules.add('added-arg-non-local', added_arg_non_local_lex_rule, 1, 2)
                     if 'verb' in pc_inputs or 'tverb' in pc_inputs:

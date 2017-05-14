@@ -769,20 +769,20 @@ def write_valence_change_behavior(lrt, mylang, choices):
     
     if operation == 'subj-rem':
       lrt.supertypes.add('local-change-only-lex-rule')
-      mylang.add(lrt.identifier() + ' := ' + lexrule_name('subj-rem-op') + '.') #'''subj-rem-op-lex-rule.''')
+      mylang.add(lrt.identifier() + ' := ' + lexrule_name('subj-rem-op') + '.')
     elif operation == 'obj-rem':
       lrt.supertypes.add('local-change-only-lex-rule')
-      mylang.add(lrt.identifier() + ' := ' + lexrule_name('obj-rem-op') + '.') #obj-rem-op-lex-rule.''')
+      mylang.add(lrt.identifier() + ' := ' + lexrule_name('obj-rem-op') + '.') 
     elif operation == 'obj-add':
       if op['argpos'].lower() == 'pre':
-        lrt.supertypes.add(lexrule_name('added-arg-applicative', 2, 3)) #'added-arg2of3-applicative-lex-rule')
+        lrt.supertypes.add(lexrule_name('added-arg-applicative', 2, 3)) 
         lrt.supertypes.add(lexrule_name('added-arg-head-type', 2, op['argtype'].lower()))
       else:
-        lrt.supertypes.add(lexrule_name('added-arg-applicative', 3, 3)) #'added-arg3of3-applicative-lex-rule')
+        lrt.supertypes.add(lexrule_name('added-arg-applicative', 3, 3)) 
         lrt.supertypes.add(lexrule_name('added-arg-head-type', 3, op['argtype'].lower()))
       predname = op.get('predname','undef_pred')
       mylang.add(lrt.identifier() + ' := [ C-CONT.RELS <! [ PRED "' + predname +'" ] !> ].')
-    elif operation.lower() == 'subj-add':
+    elif operation == 'subj-add':
       lrt.supertypes.add('causative-lex-rule')
       predname = op.get('predname','causative_rel')
       mylang.add(lrt.identifier() + ' := [ C-CONT.RELS <! [ PRED "' + predname + '" ] !> ].')

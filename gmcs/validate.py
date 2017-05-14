@@ -850,7 +850,7 @@ def validate_coordination(ch, vr):
         vr.err(feat.full_key + '_name', mess)
 
       # feature values must also exist
-      values = ['any', ' ']
+      values = ['any', 'same', 'nonmatching', ' ']
       for f in features:
         if f[0] == feat['name']:
           for v in f[1].split(';'):
@@ -858,7 +858,7 @@ def validate_coordination(ch, vr):
             values += [vn]
 
       # check all feature values used in rules
-      for rule in feat.get('rule'):
+      for rule in feat.get('rule'): # TODO rule.get('left') will now be a list, potentially
         if not (rule.get('left') and rule.get('right') and rule.get('par')) in values:
           mess = 'This rule contains an invalid feature value.'
           vr.err(rule.full_key + "_par", mess)
@@ -866,7 +866,7 @@ def validate_coordination(ch, vr):
     # TODO no conflicting rules? 1 + 2 = 3, 1 + 2 = 2
 
   for dconj in ch.get('dconj'):
-    pass
+    pass # no validation for closest conjunct yet
 
 
 

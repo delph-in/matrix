@@ -1092,17 +1092,20 @@ val-change-only-lex-rule := cat-change-only-lex-rule &
 ; valence-changing operations, e.g., may need to change
 ; local, non-local, and ccont.
 ; CMC 2017-04-10 Revised to be less-constrained for scopal predicates
+; CMC 2017-05-08 Renamed to reduce confusion of rule intent. Note that these two
+; rules (cat-change-with-ccont-lex-rule and val-change-with-ccont-lex-rule)
+; also leave local and non-local unconstrained.
 
-cat-change-no-cont-lex-rule := same-modified-lex-rule &
-                               same-light-lex-rule &
-                               same-ctxt-lex-rule &
-                               same-agr-lex-rule.
+cat-change-with-ccont-lex-rule := same-modified-lex-rule &
+                                  same-light-lex-rule &
+                                  same-ctxt-lex-rule &
+                                  same-agr-lex-rule.
 
-val-change-no-cont-lex-rule := cat-change-no-cont-lex-rule &
-                               same-head-lex-rule &
-                               same-hc-light-lex-rule &
-                               same-posthead-lex-rule &
-                               same-mc-lex-rule.
+val-change-with-ccont-lex-rule := cat-change-with-ccont-lex-rule &
+                                  same-head-lex-rule &
+                                  same-hc-light-lex-rule &
+                                  same-posthead-lex-rule &
+                                  same-mc-lex-rule.
 
 comps-change-only-lex-rule := same-subj-lex-rule &
                               same-spr-lex-rule &

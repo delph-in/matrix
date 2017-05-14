@@ -104,43 +104,72 @@ def customize_feature_resolution(mylang, ch, ap):
 
   if ap.get('feat'):
     for feat in ap.get('feat'):
+        # figure some stuff out about the feature
         v = feat.get('name')
+
+        featname = 'GEND' if v == 'gender' \
+          else 'PER' if v == 'person' \
+          else 'NUM' if v == 'number' \
+          else 'PERNUM' if v == 'pernum' \
+          else v.upper()
+
+        path = 'SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.'  # this is default path, but it might change for custom features
+
+        # if this is a custom feature, check whether it is semantic or syntactic
+        if v.upper() == featname:
+          for feature in ch.get('feature', []):  # find the right custom feature in the list...
+            feat = feature.get('name', '')
+            type = feature.get('type', '')  # ...and check the type
+            if feat == v:
+              if type == 'head':
+                path = 'SYNSEM.LOCAL.CAT.HEAD.'
+
+        # now go through the rules and add them to the grammar
         for rule in feat.get('rule'):
-          ch1= rule.get('left') if rule.get ('left') else 'any'
+          ch1 = rule.get('left') if rule.get('left') else 'any'
           ch2 = rule.get('right') if rule.get('right') else 'any'
-          par = rule.get('par') if rule.get ('par') else 'any' # the rule should always have a parent, but just in case
+          par = rule.get('par') if rule.get('par') else 'any' # the rule should always have a parent, but just in case
 
-          featname = 'GEND' if v == 'gender' \
-            else 'PER' if v == 'person' \
-            else 'NUM' if v == 'number' \
-            else 'PERNUM' if v == 'pernum' \
-            else v.upper()
+          if "," in ch1:
+            ch1_list = ch1.split(", ")
+            if ch2 == "nonmatching":
+              for ch1 in ch1_list:
+                for ch2 in ch1_list:
+                  if ch1 != ch2:
+                    write_coord_rule(ch1, ch2, par, path, featname, mylang)
+            else: # ch1 is a list but ch2 is some more normal value
+              for ch1 in ch1_list:
+                write_coord_rule(ch1, ch2, par, path, featname, mylang)
+          else: # ch1 is not a list
+            write_coord_rule(ch1, ch2, par, path, featname, mylang)
 
-          path = 'SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.' # this is default path, but it might change for custom features
+          # TODO add validation for "nonmatching" but not a list on the left
 
-          # if this is a custom feature, check whether it is semantic or syntactic
-          if v.upper() == featname:
-            for feature in ch.get('feature', []): # find the right custom feature in the list...
-              feat = feature.get('name', '')
-              type = feature.get('type', '') # ...and check the type
-              if feat == v:
-                if type == 'head':
-                  path = 'SYNSEM.LOCAL.CAT.HEAD.'
 
-          # now, write the phrase rule that corresponds to the ch1, ch2, par given in the choices file.
-          if (ch1 == 'any' and ch2 == 'any'): # if both children are 'any', we just constrain the parent.
-            tn = ch1 + '-' + ch2 + '-' + featname.lower() + '-coord-rule:= coord-phrase &\
-                [ ' + path + featname + ' ' + par + '].'
-          else: # otherwise we add LCOORD and RCOORD constraints.
-            tn = ch1 + '-' + ch2 + '-' + featname.lower() + '-coord-rule:= coord-phrase &\
-                             [ ' + path + featname + ' ' + par + ','
-          if ch1 != 'any':
-            tn += 'LCOORD-DTR.' + path + featname + ' ' + ch1 + ','
-          if ch2 != 'any':
-            tn += 'RCOORD-DTR.' + path + featname + ' ' + ch2 + '].'
+def write_coord_rule(ch1, ch2, par, path, featname, mylang):
+  # now, write the phrase rule that corresponds to the ch1, ch2, par given in the choices file.
 
-          if tn:
-            mylang.add(tn)
+  tn = ch1 + '-' + ch2 + '-' + par + '-' + featname.lower() + '-coord-rule:= coord-phrase &'
+
+  # the "same" value means we should identify whichever values are indicated to be "the same".
+  par = "#" + featname.lower() if par == "same" else par  # TODO I don't like how clumsy this is
+  ch1 = "#" + featname.lower() if ch1 == "same" else ch1
+  ch2 = "#" + featname.lower() if ch2 == "same" else ch2
+
+  if (ch1 == 'any' and ch2 == 'any'):  # if both children are 'any', we just constrain the parent.
+    tn += ' [ ' + path + featname + ' ' + par + '].'
+  else:  # otherwise we add LCOORD and RCOORD constraints.
+    tn += ' [ ' + path + featname + ' ' + par + ','
+
+  punct = ',' if ch2 != 'any' else '].'
+
+  if ch1 != 'any':
+    tn += 'LCOORD-DTR.' + path + featname + ' ' + ch1 + punct
+  if ch2 != 'any':
+    tn += 'RCOORD-DTR.' + path + featname + ' ' + ch2 + '].'
+
+  if tn:
+    mylang.add(tn)
 
 
 def get_feature_resolution_names(ap):
@@ -149,23 +178,40 @@ def get_feature_resolution_names(ap):
     for feat in ap.get('feat'):
       v = feat.get('name')
 
+      featname = 'gend' if v == 'gender' \
+        else 'per' if v == 'person' \
+        else 'num' if v == 'number' \
+        else 'pernum' if v == 'pernum' \
+        else v.lower()
+
       templist = []
       for rule in feat.get('rule'):
         ch1 = rule.get('left') if rule.get('left') else 'any'
         ch2 = rule.get('right') if rule.get('right') else 'any'
         par = rule.get('par') if rule.get('par') else 'any'
 
-        nm = '-' + ch1 + '-' + ch2
+        # if ch1 or ch2 is "same", that's fine, no changes needed.
 
-        featname = 'gend' if v == 'gender' \
-          else 'per' if v == 'person' \
-          else 'num' if v == 'number' \
-          else 'pernum' if v == 'pernum' \
-          else v.lower()
+        if "," in ch1:
+          ch1_list = ch1.split(", ")
+          if ch2 == "nonmatching":
+            for ch1 in ch1_list:
+              for ch2 in ch1_list:
+                if ch1 != ch2:
+                  nm = '-' + ch1 + '-' + ch2 + '-' + par
+                  st = ch1 + '-' + ch2 + '-' + par + '-' + featname + '-coord-rule & '
+                  templist += [(nm, st)]
+          else:  # ch1 is a list but ch2 is some more normal value
+            for ch1 in ch1_list:
+              nm = '-' + ch1 + '-' + ch2 + '-' + par
+              st = ch1 + '-' + ch2 + '-' + par + '-' + featname + '-coord-rule & '
+              templist += [(nm, st)]
+        else:  # ch1 is not a list
+          nm = '-' + ch1 + '-' + ch2 + '-' + par
+          st = ch1 + '-' + ch2 + '-' + par + '-' + featname + '-coord-rule & '
+          templist += [(nm, st)]
 
-        st = ch1 + '-' + ch2 + '-' + featname + '-coord-rule & '
 
-        templist += [(nm, st)]
 
       # add the rules to resrules
       newlist = []
