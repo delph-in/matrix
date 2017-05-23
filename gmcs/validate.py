@@ -739,6 +739,7 @@ def validate_word_order(ch, vr):
 #   Validate the user's choices about coordination.
 
 def validate_coordination(ch, vr):
+  used_patterns = set() # used later to check which aps were used in a cs
   for cs in ch.get('cs'):
     csnum = str(cs.iter_num())
 
@@ -794,6 +795,9 @@ def validate_coordination(ch, vr):
              'on phrases (NPs, VPs, or sentences)'
       vr.err(cs.full_key + '_mark', mess)
 
+    ##########################################################
+    ### validation for agreement patterns attached to a cs ###
+    ##########################################################
 
     # setup for tracking whether subjects or objects have been accounted for too often
     subj = False
@@ -801,10 +805,21 @@ def validate_coordination(ch, vr):
     valid = True
 
     for csap in cs.get('csap'):
+      used_patterns.add(csap.get('pat')) # used to check for unused aps later
+
+      # aps must exist
       if not ch.get(csap.get('pat')):
         mess = 'You have set this coordination strategy to use an agreement pattern that ' \
              'doesn\'t exist.'
         vr.err(csap.full_key+"_pat", mess)
+
+      # an ap must apply to N or NPs to do anything (although it won't break anything)
+      if not (cs_n or cs_np):
+        mess = 'You have attached an agreement pattern to this coordination strategy, but it won\'t do anything because ' \
+               'the coordination strategy doesn\'t coordinate nouns or NPs.'
+        vr.warn(csap.full_key + "_pat", mess)
+
+      # TODO flag if a cs has an ap but doesn't use them for all arguments (this is probably a mistake)
 
       # only one dconj pattern per subject/object per cs
       if csap.get('pat').startswith('dconj'):
@@ -832,9 +847,21 @@ def validate_coordination(ch, vr):
   for fr in ch.get('fr'):
     feats = set()
     features = ch.features()
-    for feat in fr.get('feat'):
 
-      # no feature in agreement pattern more than once
+    # warn if a fr has been defined but not used
+    if fr.full_key not in used_patterns:
+      mess = "You defined an agreement pattern but didn't attach it to a coordination strategy. You must attach it to a" \
+             " coordination strategy before the rules will apply to coordinated N/NPs."
+      vr.warn(fr.full_key+ '_name', mess)
+
+    # have to have features defined
+    # TODO not sure whether this actually needs to be an error instead of a warning (does it crash?)
+    if not fr.get('feat'):
+      mess = 'You have defined an agreement pattern but not added any features or rules.'
+      vr.err(fr.full_key+'_name', mess)
+
+    for feat in fr.get('feat'):
+      # no feature in the same agreement pattern more than once
       if feat['name'] in feats and feat['name'] != 'pernum':
           mess = 'You have used this feature more than once in the same feature resolution pattern.'
           vr.err(feat.full_key + '_name', mess)
@@ -858,15 +885,74 @@ def validate_coordination(ch, vr):
             values += [vn]
 
       # check all feature values used in rules
-      for rule in feat.get('rule'): # TODO rule.get('left') will now be a list, potentially
-        if not (rule.get('left') and rule.get('right') and rule.get('par')) in values:
+      for rule in feat.get('rule'):
+        # break up the list into its constituent values
+        left_rule_list = rule.get('left').split(", ")
+
+        # no "any" in a list
+        if len(left_rule_list) > 1 and "any" in left_rule_list:
+          mess = 'This list of feature values contains \"any,\" which shouldn\'t be necessary.' \
+                'The \'any\' value means that the value is underspecified, which should encompass all other values of that' \
+                 ' feature, so a list shouldn\'t be necessary.'
+          vr.err(rule.full_key + "_left", mess)
+
+        # no "same" in a list
+        if len(left_rule_list) > 1 and "same" in left_rule_list:
+          mess = "This list contains \'the same,\' which is a special value that shouldn't be in a list. " \
+                 "See the MatrixDoc pages for more information on how to use it."
+          vr.err(rule.full_key + "_left", mess)
+
+        # no list + "the same" - possibly a misunderstanding of how to use "the same"
+        if len(left_rule_list) > 1 and rule.get('right') == "same":
+          mess = 'You defined a list of feature values, then said the other child in the rule should be "the same."' \
+                 ' If you meant to create a rule using identified values, choose "the same" for each identified value.'
+          vr.err(rule.full_key + "_left", mess)
+
+        # must be at least 2 "the same" for identification to work
+        if rule.get('right') == "same" or rule.get('left') == "same" or rule.get('par') == "same":
+          samecount = 0
+          for dir in ['left', 'right', 'par']:
+            if rule.get(dir) == "same":
+              samecount += 1
+          if samecount == 1:
+            mess = "You defined only one value as 'the same', but there must be at least two for identification to work properly."
+            vr.err(rule.full_key + "_left", mess)
+
+        # don't allow values that don't exist (handle the list separately)
+        if not (rule.get('right') and rule.get('par')) in values:
           mess = 'This rule contains an invalid feature value.'
-          vr.err(rule.full_key + "_par", mess)
+          vr.err(rule.full_key + "_left", mess)
+
+        for left in left_rule_list:
+          # don't allow values that don't exist
+          if not left in values:
+            mess = 'This rule contains an invalid feature value. (But if you open the list, then click save & stay, ' \
+                   'it will disappear automatically.)'
+            vr.err(rule.full_key + "_left", mess)
+
+          # no any + any = any rules
+          if (left == 'any' and rule.get('right') == 'any' and rule.get('par') == 'any'):
+            mess = 'An any+any=any rule doesn\'t constrain or add any feature information,' \
+              'and will add to the complexity of your grammar. You should remove it.'
+            vr.warn(rule.full_key + "_left", mess)
+
+
+    # TODO make sure they split up PERNUM into person and number
+
+    # TODO 'nonmatching' must have a list to the left
+
+    # TODO if they defined a feature, must also have rules
+
+    # TODO all non-optional fields should be defined
 
     # TODO no conflicting rules? 1 + 2 = 3, 1 + 2 = 2
 
   for dconj in ch.get('dconj'):
-    pass # no validation for closest conjunct yet
+    # warn if a dconj pattern has been defined but not used
+    if dconj.full_key not in used_patterns:
+      mess = "You defined an agreement pattern but didn't attach it to a coordination strategy. You must attach it to a" \
+             " coordination strategy before the rules will apply to coordinated N/NPs."
+      vr.warn(dconj.full_key + "_name", mess)
 
 
 
