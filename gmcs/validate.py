@@ -799,6 +799,26 @@ def validate_coordination(ch, vr):
     ### validation for agreement patterns attached to a cs ###
     ##########################################################
 
+    # first, quickly check whether a cs has an ap but not for all arguments
+    subj = False
+    obj = False
+    for csap in cs.get('csap'):
+      target = csap.get('target')
+      if target == 'all':
+        subj = True
+        obj = True
+      elif target == 'subj':
+        subj = True
+      elif target == 'obj':
+        obj = True
+    if cs.get('csap') and (subj == False or obj == False):
+      mess = 'You have added an agreement pattern but have not accounted for both subjects and objects. ' \
+             'In general, \'subject/object only\' is used with languages that, for example, use distinguished conjunct for ' \
+             'subject and feature resolution for the object. \'All arguments\' should be the default in most other cases.'
+      vr.warn(csap.full_key+'_target', mess)
+
+
+
     # setup for tracking whether subjects or objects have been accounted for too often
     subj = False
     obj = False
@@ -807,7 +827,7 @@ def validate_coordination(ch, vr):
     for csap in cs.get('csap'):
       used_patterns.add(csap.get('pat')) # used to check for unused aps later
 
-      # aps must exist
+      # ap named in a cs must exist
       if not ch.get(csap.get('pat')):
         mess = 'You have set this coordination strategy to use an agreement pattern that ' \
              'doesn\'t exist.'
