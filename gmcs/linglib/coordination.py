@@ -111,18 +111,27 @@ def customize_feature_resolution(mylang, ch, ap):
           else 'PER' if v == 'person' \
           else 'NUM' if v == 'number' \
           else 'PERNUM' if v == 'pernum' \
+          else 'CASE' if v == 'case' \
           else v.upper()
 
-        path = 'SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.'  # this is default path, but it might change for custom features
+        path = 'SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.'  # this is default path, but it might change for custom features, also for case
 
         # if this is a custom feature, check whether it is semantic or syntactic
-        if v.upper() == featname:
+        if v.upper() == featname and (v != 'case' and v!= 'pernum'):
           for feature in ch.get('feature', []):  # find the right custom feature in the list...
             feat = feature.get('name', '')
             type = feature.get('type', '')  # ...and check the type
             if feat == v:
               if type == 'head':
                 path = 'SYNSEM.LOCAL.CAT.HEAD.'
+
+        if v == 'case':
+          path = 'SYNSEM.LOCAL.CAT.HEAD.' # special path for case
+          mylang.add('bare-np-phrase := [ SYNSEM.LOCAL.CAT.HEAD.CASE #case,'  # TODO is there any reason I can't use this for fr as well?
+            'HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case ].')
+          mylang.add('pass-up-png-coord-rule := bottom-coord-phrase & \
+              [  SYNSEM.LOCAL.CAT.HEAD.CASE #case,'
+              'NONCONJ-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case ].')
 
         # now go through the rules and add them to the grammar
         for rule in feat.get('rule'):
@@ -143,7 +152,6 @@ def customize_feature_resolution(mylang, ch, ap):
           else: # ch1 is not a list
             write_coord_rule(ch1, ch2, par, path, featname, mylang)
 
-          # TODO add validation for "nonmatching" but not a list on the left
 
 
 def write_coord_rule(ch1, ch2, par, path, featname, mylang):
@@ -319,8 +327,6 @@ def customize_conjunct_agreement(mylang, ch, agr, csap):
 
     mylang.add('bare-np-phrase := [ SYNSEM.LOCAL.COORDAGR #cagr,'
                 'HEAD-DTR.SYNSEM.LOCAL.COORDAGR #cagr ].')
-    mylang.add('bare-np-phrase := [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png,'
-                'HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png ].')
 
     mylang.add('pass-up-png-coord-rule := [ SYNSEM.LOCAL.COORDAGR #cagr,'
                'NONCONJ-DTR.SYNSEM.LOCAL.COORDAGR #cagr ].')
@@ -370,6 +376,8 @@ def customize_agreement_pattern(mylang, ch, csap):
     elif agr.full_key.startswith('dconj'):
       rules = customize_conjunct_agreement(mylang, ch, agr, csap)
 
+    mylang.add('bare-np-phrase := [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png,'  # TODO is there any reason I can't use this for fr as well?
+      'HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png ].')
     mylang.add('pass-up-png-coord-rule := bottom-coord-phrase & \
         [SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png,\
         NONCONJ-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png ].')

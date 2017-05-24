@@ -959,6 +959,8 @@ def validate_coordination(ch, vr):
 
     # TODO make sure they split up PERNUM into person and number
 
+    # TODO add validation for "nonmatching" but not a list on the left
+
     # TODO 'nonmatching' must have a list to the left
 
     # TODO if they defined a feature, must also have rules
