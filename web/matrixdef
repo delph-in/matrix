@@ -68,10 +68,7 @@ Radio word-order "Basic word order" "Please indicate which pattern best describe
 . v-initial "Verb-initial" "" "V-initial<br>"
 . free "Free word order" "" "free (pragmatically determined word order)<br>"
 . v2 "v2 word order" "" "finite verb or auxiliary in second position, else free word order"
-
-Label "<p>Note: Modules for V2 order (finite verb second, non-finite
-verb clause-finally) and differing word order between matrix and
-subordinate clauses are currently under development.</p>"
+. v2 "v2 word order" "" "finite verb second, non-finite verb clause-finally"
 
 Separator
 
