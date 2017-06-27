@@ -416,25 +416,29 @@ def set_req_bkwd_initial_flags(lex_pc, flag_tuple):
 ### SUPERTYPES ###
 
 # add possible supertypes here
-ALL_LEX_RULE_SUPERTYPES = ['cat-change-only-lex-rule',
-                           'same-agr-lex-rule',
-                           'cont-change-only-lex-rule',
-                           'add-only-no-rels-hcons-rule',
-                           'add-only-no-ccont-rule',
-                           'val-change-only-lex-rule',
-                           'head-change-only-lex-rule',
-                           'infl-lex-rule',
-                           'const-lex-rule',
-                           'lex-rule']
-
+# CMC 2017-05-16: Simplifying and clarifying these lists.
+# Based on input from goodmami, the intent of these lists is
+# * LEX_RULE_SUPERTYPES should be all supertypes that can be specified
+#   by the customization system, i.e., if some part of the code here
+#   can choose it as a supertype, it should go on this list.
+# * ALL_LEX_RULE_SUPERTYPES should be the union of LEX_RULE_SUPERTYPES
+#   and the three generic 'supertypes of last resort'.
+# Changed the code to make the relationship explicit.
 LEX_RULE_SUPERTYPES = ['cat-change-only-lex-rule',
+                       'same-agr-lex-rule',
+                       'cont-change-only-lex-rule',
+                       'add-only-no-rels-hcons-rule',
+                       'add-only-no-ccont-rule',
                        'val-and-cont-change-lex-rule',
                        'add-only-rule',
                        'same-head-lex-rule',
                        'val-change-only-lex-rule',
                        'head-change-only-lex-rule',
-                       'cont-change-only-lex-rule',
-                       'add-only-no-ccont-rule']
+                       'cont-change-only-lex-rule']
+
+ALL_LEX_RULE_SUPERTYPES = LEX_RULE_SUPERTYPES + ['infl-lex-rule',
+                                                 'const-lex-rule',
+                                                 'lex-rule']
 
 # TJT 2014-12-19: Make these sets for performance
 ALL_LEX_RULE_SUPERTYPES = set(ALL_LEX_RULE_SUPERTYPES)
@@ -501,7 +505,7 @@ def percolate_supertypes(pc):
         elif pc.has_valchg_ops():
           # CMC 2017-02-20: Valence-changing operations need 
           # less-constrained supertype
-          x.supertypes.add('val-change-no-cont-lex-rule')
+          x.supertypes.add('val-change-with-ccont-lex-rule')
         else:
           x.supertypes.add('add-only-no-ccont-rule')
 

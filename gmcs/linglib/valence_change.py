@@ -111,7 +111,7 @@ def basic_applicative_lex_rule():
              HCONS <! !> ],
     DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX #evt ].'''.format(rulename=lexrule_name('basic-applicative'))
 
-CAUSATIVE_LEX_RULE = '''causative-lex-rule := val-change-no-cont-lex-rule &
+CAUSATIVE_LEX_RULE = '''causative-lex-rule := val-change-with-ccont-lex-rule &
     same-spr-lex-rule &
     same-spec-lex-rule &
   [ C-CONT [ RELS <! event-relation &
