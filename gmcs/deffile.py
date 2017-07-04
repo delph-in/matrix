@@ -544,7 +544,8 @@ class MatrixDefFile:
   'other-features':'Other Features', 'sentential-negation':'Sentential Negation',
   'coordination':'Coordination', 'matrix-yes-no':'Matrix Yes/No Questions',
   'info-str':'Information Structure',
-  'arg-opt':'Argument Optionality', 'lexicon':'Lexicon',
+  'arg-opt':'Argument Optionality',
+  'clausalmods':'Clausal Modifiers', 'lexicon':'Lexicon',
   'morphology':'Morphology','toolbox-import':'Toolbox Import',
   'test-sentences':'Test Sentences','gen-options':'TbG Options',
   'ToolboxLexicon':'Toolbox Lexicon'}
@@ -558,7 +559,8 @@ class MatrixDefFile:
   'other-features':'OtherFeatures', 'sentential-negation':'SententialNegation',
   'coordination':'Coordination', 'matrix-yes-no':'YesNoQ',
   'info-str':'InformationStructure',
-  'arg-opt':'ArgumentOptionality', 'lexicon':'Lexicon',
+  'arg-opt':'ArgumentOptionality',
+  'clausalmods':'Clausal Modifiers', 'lexicon':'Lexicon',
   'morphology':'Morphology','toolbox-import':'ImportToolboxLexicon',
   'test-sentences':'TestSentences','gen-options':'TestByGeneration',
   'ToolboxLexicon':'ImportToolboxLexicon'}

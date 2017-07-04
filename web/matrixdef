@@ -67,7 +67,7 @@ Radio word-order "Basic word order" "Please indicate which pattern best describe
 . v-final "Verb-final" "" "V-final<br>"
 . v-initial "Verb-initial" "" "V-initial<br>"
 . free "Free word order" "" "free (pragmatically determined word order)<br>"
-. v2 "v2 word order" "" "finite verb or auxiliary in second position, else free word order"
+. v2 "v2 word order" "" "finite verb or auxiliary in second position, else free word order<br>"
 . v2 "v2 word order" "" "finite verb second, non-finite verb clause-finally"
 
 Separator
@@ -1496,6 +1496,45 @@ href=\"http://wals.info/feature/description/101\">http://wals.info/feature/descr
 Label "<p> Vainikka, A and Levy, Y. 1999. \"Empty Subjects in Finnish
 and Hebrew.\" Natural Language and Linguistic Theory 17: 614-71.</p>"
 Label "</div>"
+
+Section clausalmods "Clausal Modifiers"
+
+Cache pats (fr|dconj)[0-9]+$ name
+
+Label "<p>There are several possible strategies for clausal subordination, 
+many of which may be exhibited in clausal modifiers. The Matrix
+supports both lexical and morphological marking of clausal modifiers, as well
+as other subordination strategies (which may be combined) including:</p>"
+
+Label "<div style=\"padding-left: 16px\"><p><span
+class=\"dfn\">Free Subordinating Morpheme</span><br>&nbsp;&nbsp;&nbsp;&nbsp;A free morpheme
+that marks the subordinate clause<br><span
+class=\"dfn\">Special Verbal Morphology</span><br>&nbsp;&nbsp;&nbsp;&nbsp;Either a bound morpheme 
+marking the verb in the subordinate clause that adds a semantic predication or a non-finite form 
+that pairs with another subordination strategy that adds a predication<br><span
+class=\"dfn\">Free Subordinating Morpheme Pair</span><br>&nbsp;&nbsp;&nbsp;&nbsp;A pair of subordinator 
+morphemes, one  of which marks the subordinate clause, the other of which marks the matrix clause<br><span
+class=\"dfn\">Special Word Order</span><br>&nbsp;&nbsp;&nbsp;&nbsp;A word order that is unique to
+clausal modifiers (or subordinate clauses)</div>"
+
+Label "<p>You may define any number of clausal modifier strategies below.
+You may also leave this section blank, in which case the starter
+grammar produced will not support clausal modifiers.</p>"
+
+BeginIter cms{i} "a Clausal Modifier Strategy" 1
+
+  Label "<p>Clausal Modifier Strategy {i}:<br>&nbsp;&nbsp;&nbsp;&nbsp;check the properties of clausal
+modifiers that are present in this strategy"
+
+  Radio subord "Clausal Modifier Strategy {i} requires:"
+  . subord "Subordinator" "" "a free subordinator morpheme  "
+  . subord-pair "Subordinator Pair" "" "a free subordinator morpheme pair  "
+  . no-subord "No Free Subordinator Morpheme" "" "no free subordinator morpheme<br>"
+
+
+
+EndIter cms
+
 
 Section lexicon "Lexicon"
 
