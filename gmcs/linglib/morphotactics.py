@@ -416,25 +416,29 @@ def set_req_bkwd_initial_flags(lex_pc, flag_tuple):
 ### SUPERTYPES ###
 
 # add possible supertypes here
-ALL_LEX_RULE_SUPERTYPES = ['cat-change-only-lex-rule',
-                           'same-agr-lex-rule',
-                           'cont-change-only-lex-rule',
-                           'add-only-no-rels-hcons-rule',
-                           'add-only-no-ccont-rule',
-                           'val-change-only-lex-rule',
-                           'head-change-only-lex-rule',
-                           'infl-lex-rule',
-                           'const-lex-rule',
-                           'lex-rule']
-
+# CMC 2017-05-16: Simplifying and clarifying these lists.
+# Based on input from goodmami, the intent of these lists is
+# * LEX_RULE_SUPERTYPES should be all supertypes that can be specified
+#   by the customization system, i.e., if some part of the code here
+#   can choose it as a supertype, it should go on this list.
+# * ALL_LEX_RULE_SUPERTYPES should be the union of LEX_RULE_SUPERTYPES
+#   and the three generic 'supertypes of last resort'.
+# Changed the code to make the relationship explicit.
 LEX_RULE_SUPERTYPES = ['cat-change-only-lex-rule',
+                       'same-agr-lex-rule',
+                       'cont-change-only-lex-rule',
+                       'add-only-no-rels-hcons-rule',
+                       'add-only-no-ccont-rule',
                        'val-and-cont-change-lex-rule',
                        'add-only-rule',
                        'same-head-lex-rule',
                        'val-change-only-lex-rule',
                        'head-change-only-lex-rule',
-                       'cont-change-only-lex-rule',
-                       'add-only-no-ccont-rule']
+                       'cont-change-only-lex-rule']
+
+ALL_LEX_RULE_SUPERTYPES = LEX_RULE_SUPERTYPES + ['infl-lex-rule',
+                                                 'const-lex-rule',
+                                                 'lex-rule']
 
 # TJT 2014-12-19: Make these sets for performance
 ALL_LEX_RULE_SUPERTYPES = set(ALL_LEX_RULE_SUPERTYPES)
@@ -762,18 +766,22 @@ def write_valence_change_behavior(lrt, mylang, choices):
   from gmcs.linglib.valence_change import lexrule_name
   for op in lrt.valchgops:
     operation = op.get('operation','').lower()
+    transitive = 'trans' in op.get('inputs','').split(',')
     
     # NB: non-scopal always need same-cont added!
-    if operation != 'subj-add':
-      lrt.supertypes.add('same-cont-lex-rule')
+    #if operation != 'subj-add':
+    #  lrt.supertypes.add('same-cont-lex-rule')
     
     if operation == 'subj-rem':
-      lrt.supertypes.add('local-change-only-lex-rule')
-      mylang.add(lrt.identifier() + ' := ' + lexrule_name('subj-rem-op') + '.')
+      lrt.supertypes.add('local-change-only-lex-rule')  # includes no-ccont
+      lrt.supertypes.add('xarg-change-only-ccont-lex-rule' if transitive else 'same-cont-lex-rule')
+      mylang.add(lrt.identifier() + ' := ' + lexrule_name('subj-rem-op', transitive) + '.')
     elif operation == 'obj-rem':
-      lrt.supertypes.add('local-change-only-lex-rule')
+      lrt.supertypes.add('same-cont-lex-rule')
+      lrt.supertypes.add('local-change-only-lex-rule') # includes no-ccont
       mylang.add(lrt.identifier() + ' := ' + lexrule_name('obj-rem-op') + '.') 
     elif operation == 'obj-add':
+      lrt.supertypes.add('same-cont-lex-rule')
       if op['argpos'].lower() == 'pre':
         lrt.supertypes.add(lexrule_name('added-arg-applicative', 2, 3)) 
         lrt.supertypes.add(lexrule_name('added-arg-head-type', 2, op['argtype'].lower()))
@@ -783,9 +791,11 @@ def write_valence_change_behavior(lrt, mylang, choices):
       predname = op.get('predname','undef_pred')
       mylang.add(lrt.identifier() + ' := [ C-CONT.RELS <! [ PRED "' + predname +'" ] !> ].')
     elif operation == 'subj-add':
-      lrt.supertypes.add('causative-lex-rule')
+      lrt.supertypes.add('same-non-local-lex-rule')
+      lrt.supertypes.add(lexrule_name('causative', transitive))
       predname = op.get('predname','causative_rel')
       mylang.add(lrt.identifier() + ' := [ C-CONT.RELS <! [ PRED "' + predname + '" ] !> ].')
+       
     
 def write_pc_adj_syntactic_behavior(lrt, mylang, choices):
   # TODO: Don't do this if a supertype is specified
@@ -966,7 +976,7 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
     optype = vchop.get('operation','')
     if not optype:
       vr.err(vchop.full_key+'_operation','A valence-changing lexical rule must specify an operation.')
-    elif optype == 'obj-add':
+    elif optype == 'obj-add' or optype == 'subj-add':
       if vchop.get('argpos') not in ['pre','post']:
         vr.err(vchop.full_key+'_argpos','An argument can only be added at the front ' +\
                'or end of the complements list.')

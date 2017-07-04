@@ -2282,15 +2282,23 @@ including changes to e.g. case frames or adding predicates. (<b>Experimental</b>
     BeginIter valchg{k} "a valence-changing operation"
 
       Select operation "Verb Position Class {i} Lexical Rule Type {j} Valence-changing Operation {k} Type" "Type: " "<br/>" "" ""
+      . subj-add "Subject-adding (e.g. causative)" "subject-adding"
       . subj-rem "Subject-removing" "subject-removing"
       . obj-rem "Object-removing" "object-removing"
-      . obj-add "Object-adding" "object-adding"
+      . obj-add "Object-adding (e.g. applicative)" "object-adding"
+
+      Label "<p>Most valence-changing operations currently must operate on a known input valence. If both intransitive and transitive
+inputs are possible, these need to be created as two separate lexical rule types. (This may change in the future).</p>"
+
+      Select inputs  "Verb Position Class {i} Lexical Rule Type {j} Valence-changing Operation {k} Target Valence" "Should apply to: " " targets"
+      . intrans "Intransitive" "intransitive"
+      . trans "Transitive" "transitive"
 
       Label "<p>Object-adding operations currently only support strict transitive verbs as inputs.<br/>
-        For object-adding operations, also specify (ignored for other operations):</P>"
+        For subject- and object-adding operations, also specify (ignored for other operations):</P>"
       Text predname "Verb Position Class {i} Lexical Rule Type {j} Valence-changing Operation {k} Predicate Name" "Predicate: " "<br/> " 20
 
-      Select argpos "Verb Position Class {i} Lexical Rule Type {j} Valence-changing Operation {k} Complement Position" "The added argument is at the: " " of the complements list.<br/>"
+      Select argpos "Verb Position Class {i} Lexical Rule Type {j} Valence-changing Operation {k} Complement Position" "The added argument/erstwhile subject is at the: " " of the complements list.<br/>"
       . pre "front" "front"
       . post "end" "end" 
 
