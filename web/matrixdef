@@ -1499,8 +1499,6 @@ Label "</div>"
 
 Section clausalmods "Clausal Modifiers"
 
-Cache pats (fr|dconj)[0-9]+$ name
-
 Label "<p>There are several possible strategies for clausal subordination, 
 many of which may be exhibited in clausal modifiers. The Matrix
 supports both lexical and morphological marking of clausal modifiers, as well
@@ -1523,17 +1521,41 @@ grammar produced will not support clausal modifiers.</p>"
 
 BeginIter cms{i} "a Clausal Modifier Strategy" 1
 
-  Label "<p>Clausal Modifier Strategy {i}:<br>&nbsp;&nbsp;&nbsp;&nbsp;check the properties of clausal
-modifiers that are present in this strategy"
+  Label "<p>Clausal Modifier Strategy {i}:<br>"
 
-  Radio subord "Clausal Modifier Strategy {i} requires:"
-  . subord "Subordinator" "" "a free subordinator morpheme  "
-  . subord-pair "Subordinator Pair" "" "a free subordinator morpheme pair  "
+  Radio pat "Clausal Modifier Strategy {i} pattern" "&nbsp;&nbsp;&nbsp;&nbsp;clausal modifiers require a:<br>" ""
+  . subord "Subordinator" "" "a free subordinator morpheme<br>"
+  . subord-pair "Subordinator Pair" "" "a free subordinator morpheme pair: one in the subordinate clause and one in the main clause<br>"
   . no-subord "No Free Subordinator Morpheme" "" "no free subordinator morpheme<br>"
+  
+  BeginIter subord{i} "a Class of Subordinator" 1
+  Text name "Subordinator {i} Class" "<b>Subordinator Class {i}</b>:<br/>Subordinator Class Name: " " " 20
 
 
+  EndIter subord
+
+  BeginIter subpair{i} "a Subordinator Pair" 1
+  Text name "Subordinator Pair {i} Class" "<b>Subordinator Pair Class {i}</b>:<br/>Subordinator Pair Class Name: " " " 20
+
+
+  EndIter subpair
+
+  Label "<p>check the properties of clausal modifiers that are present in this strategy<br>"
+  Check sm "Clausal Modifier Strategy {i} requires special verbal morphology" "" "Special Verbal Morphology<br>"
+  Check swo "Clausal Modifier Strategy {i} requires special word order" "" "Special Word Order<br>"
+  Check nom "Clausal Modifier Strategy {i} nominalization of the clausal modifier" "" "Nominalization of the Clausal Modifier<br>"
+
+  Label "<p>Does this strategy allow subject raising?<br>"
+  Radio pat "Coordination Strategy {i} pattern" "" ""
+  . opt "Optional" "" "yes, subject raising is optional<br>"
+  . obl "Obligatory" "" "yes, subject raising is obligatory<br>"
+  . no "Not Allowed" "" "no, subjects cannot raise<br>"
+
+
+  Label "</p>"
 
 EndIter cms
+
 
 
 Section lexicon "Lexicon"
