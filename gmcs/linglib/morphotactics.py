@@ -776,6 +776,10 @@ def write_valence_change_behavior(lrt, mylang, choices):
       lrt.supertypes.add('local-change-only-lex-rule')  # includes no-ccont
       lrt.supertypes.add('xarg-change-only-ccont-lex-rule' if transitive else 'same-cont-lex-rule')
       mylang.add(lrt.identifier() + ' := ' + lexrule_name('subj-rem-op', transitive) + '.')
+    elif operation == 'subj-dem':
+      lrt.supertypes.add('local-change-only-lex-rule')
+      lrt.supertypes.add('xarg-change-only-ccont-lex-rule') # must be transitive
+      mylang.add(lrt.identifier() + ' := ' + lexrule_name('subj-dem-op'))
     elif operation == 'obj-rem':
       lrt.supertypes.add('same-cont-lex-rule')
       lrt.supertypes.add('local-change-only-lex-rule') # includes no-ccont

@@ -22,6 +22,12 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "valchg-obj-add-post-np-sov") (:content . "valchg-obj-add-post-np-sov: obj-add for SOV with post-append"))
+((:path . "valchg-obj-add-pre-np-sov") (:content . "valchg-obj-add-pre-np-sov: obj-add for SOV with pre-append"))
+((:path . "valchg-obj-rem-osv") (:content . "valchg-obj-rem-osv: simple obj-rem for OSV"))
+((:path . "valchg-subj-rem-osv") (:content . "valchg-subj-rem-osv: simple subj-rem for OSV"))
+((:path . "valchg-obj-rem-sov") (:content . "valchg-obj-rem-sov: simple obj-rem for SOV"))
+((:path . "valchg-subj-rem-sov") (:content . "valchg-subj-rem-sov: basic subject-removing for SOV"))
 ((:path . "valchg-subj-rem") (:content . "valchg-subj-rem: simple subject-removing valence change"))
 ((:path . "cagr-pseudospanish-feature-resolution") (:content . "cagr-pseudospanish-feature-resolution: tests the part of coordination and agreement that creates feature resolution (using a grammar loosely based on Spanish)"))
 ((:path . "cagr-pseudo-closest-conjunct") (:content . "cagr-pseudo-closest-conjunct: tests the part of coordination and agreement that creates closest conjunct rules"))
