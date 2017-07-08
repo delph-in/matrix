@@ -17,14 +17,14 @@ def added_arg_non_local_lex_rule_name(added_arg, total_args):
 def added_arg_applicative_lex_rule_name(added_arg, total_args):
     return 'added-arg{}of{}-applicative-lex-rule'.format(added_arg, total_args)
 
-def added_arg_head_lex_rule_name(added_arg, head_constraint):
+def added_arg_head_lex_rule_name(added_arg, total_args, head_constraint):
     if head_constraint:
         hc = head_constraint.lower()
         if hc == 'np' or hc == 'noun':
             head = 'np'
         elif hc == 'pp' or hc == 'adp':
             head = 'pp'
-    return 'added-arg{}-{}-head-lex-rule'.format(added_arg, head)
+    return 'added-arg{}of{}-{}-head-lex-rule'.format(added_arg, total_args, head)
 
 def causative_lex_rule_name(transitive):
     if transitive:
@@ -253,19 +253,27 @@ def causative_lex_rule(demoted_pos, transitive=True):
     return rule
 
 # Generates the valence-specific constraint on the type of an added argument.
-def added_arg_head_lex_rule(arg, head):
-    rulename = lexrule_name('added-arg-head-type', arg, head)
+def added_arg_head_lex_rule(argnum, numargs, head):
+    rulename = lexrule_name('added-arg-head-type', argnum, numargs, head)
     hc = head.lower()
     if hc == 'np':
         head_type = 'noun'
     elif hc == 'pp':
         head_type = 'adp'
-    if arg == 1:
-        constraint = '  [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CAT.HEAD {} ] > ].'.format(head_type)
-    elif arg == 2:
-        constraint = '  [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD {} ], [ ] > ].'.format(head_type)
-    elif arg == 3:
-        constraint = '  [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ ], [ LOCAL.CAT.HEAD {} ] > ].'.format(head_type)
+    head_constraint =  '[ LOCAL.CAT.HEAD {} ]'.format(head_type)
+    if argnum == 1:
+        constraint = '  [ SYNSEM.LOCAL.CAT.VAL.SUBJ < {} > ].'.format(head_constraint)
+    elif argnum == 2 or argnum == 3:
+        comps = head_constraint
+        if argnum == 2 and numargs == 3:
+            comps = comps + ', [  ]'
+        elif argnum == 3 and numargs == 3:
+            comps = '[ ], ' + comps
+        constraint = '  [ SYNSEM.LOCAL.CAT.VAL.COMPS < {} > ].'.format(comps)
+#    elif argnum == 2:
+#        constraint = '  [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD {} ], [ ] > ].'.format(head_type)
+#    elif argnum == 3:
+#        constraint = '  [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ ], [ LOCAL.CAT.HEAD {} ] > ].'.format(head_type)
     
     return rulename + ' := lex-rule &\n' + constraint
     
@@ -281,10 +289,8 @@ ADDED_ARG_APPLICATIVE_FRAGMENT = ''' [ LOCAL [ CAT [ VAL [ SPR < >,
 def added_arg_applicative_lex_rule(added_arg, total_args):
     rulevars = {}
     compslist = []
-    for i in range(1, total_args+1):
-        if i == 1:
-            continue
-        elif i == added_arg:
+    for i in range(2, total_args+1):
+        if i == added_arg:
             compslist.append(ADDED_ARG_APPLICATIVE_FRAGMENT)
         else: 
             compslist.append('#ocomp')
@@ -350,7 +356,9 @@ class LexRuleWrapper(object):
         self.name = gen_rulename(rule_type, *args)
         self.body = gen_rulebody(rule_type, *args)
     def __hash__(self):
-        return hash(self.name)
+        return hash(str(self.name))
+    def __eq__(self, other):
+        return str(self.name) == str(other.name)
 
 class LexRuleBuilder(object):
     def __init__(self):
@@ -365,18 +373,27 @@ class LexRuleBuilder(object):
         mylang.set_section(prev_section)
         
 
-class OldLexRuleBuilder(object):
-    def __init__(self):
-        self.rules = set()
-    def add(self, rule_label, rulegen, *rulegen_args):
-        self.rules.add(FnWrapper(rule_label, rulegen, *rulegen_args))
-    def generate_tdl(self, mylang):
-        prev_section = mylang.section
-        mylang.set_section('lexrules')
-        for rule in self.rules:
-            mylang.add(rule())
-        mylang.set_section(prev_section)
+#class OldLexRuleBuilder(object):
+#    def __init__(self):
+#        self.rules = set()
+#    def add(self, rule_label, rulegen, *rulegen_args):
+#        self.rules.add(FnWrapper(rule_label, rulegen, *rulegen_args))
+#    def generate_tdl(self, mylang):
+#        prev_section = mylang.section
+#        mylang.set_section('lexrules')
+#        for rule in self.rules:
+#            mylang.add(rule())
+#        mylang.set_section(prev_section)
 
+# currently only intransitive and strict transitive
+def added_argnum_for_vchop(vchop):
+    position = vchop.get('argpos','post').lower() # default to post
+    inputs = vchop.get('inputs','').split(',') 
+    transitive = 'trans' in inputs or (len(inputs) == 1 and inputs[0] == '') # default to transitive
+    numargs = 3 if transitive else 2
+    argnum = numargs - (1 if (transitive and position == 'pre') else 0)
+    return (argnum, numargs)
+    
 ####### MAIN INTERFACE ##########
 
 # Add generic rules
@@ -390,7 +407,8 @@ def customize_valence_change(mylang, ch, lexicon, rules, irules, lrules):
         for lrt in pc.get('lrt', []):
             for vchop in lrt.get('valchg', []):
                 inputs = vchop.get('inputs','').split(',')
-                transitive = 'trans' in inputs or (len(inputs) == 1 and inputs[0] == '') # default to transitive
+                # default to transitive
+                transitive = 'trans' in inputs or (len(inputs) == 1 and inputs[0] == '')
                 opname = vchop['operation'].lower()
                 if opname == 'subj-rem':
                     rules.add('subj-rem-op', transitive)
@@ -402,13 +420,14 @@ def customize_valence_change(mylang, ch, lexicon, rules, irules, lrules):
                 if opname == 'obj-add':
                     #rules.add('basic-applicative', basic_applicative_lex_rule)
                     rules.add('basic-applicative')
-                    position = vchop.get('argpos', '').lower()
-                    numargs = 3 if transitive else 2
-                    argnum = numargs if position == 'post' else (numargs - 1)
+                    #position = vchop.get('argpos', '').lower()
+                    #numargs = 3 if transitive else 2
+                    #argnum = numargs if (not(transitive) or position == 'post') else (numargs - 1)
+                    argnum, numargs = added_argnum_for_vchop(vchop)
                     rules.add('added-arg-applicative', argnum, numargs)
                     rules.add('added-arg-non-local', argnum, numargs)
                     argtype = vchop.get('argtype','').lower()
-                    rules.add('added-arg-head-type', argnum, argtype)
+                    rules.add('added-arg-head-type', argnum, numargs, argtype)
 #                    if position == 'pre':
 #                        argpos = numargs - 1
 #                        #rules.add('added-arg-head-type', added_arg_head_lex_rule, 2, argtype)

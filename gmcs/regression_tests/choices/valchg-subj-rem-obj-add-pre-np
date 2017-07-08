@@ -1,0 +1,90 @@
+
+version=28
+
+section=general
+language=valchg-subj-rem-obj-add-pre-np
+archive=no
+
+section=word-order
+word-order=svo
+has-dets=no
+has-aux=no
+
+section=number
+
+section=person
+person=none
+
+section=gender
+
+section=case
+case-marking=none
+
+section=direct-inverse
+
+section=tense-aspect-mood
+
+section=other-features
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=info-str
+
+section=arg-opt
+
+section=lexicon
+  noun1_name=n1
+    noun1_stem1_orth=n1
+    noun1_stem1_pred=_n1_n_rel
+  noun1_det=imp
+  noun2_name=n2
+    noun2_stem1_orth=n2
+    noun2_stem1_pred=_n2_n_rel
+  noun2_det=imp
+  noun3_name=n3
+    noun3_stem1_orth=n3
+    noun3_stem1_pred=_n3_n_rel
+  noun3_det=imp
+  verb1_valence=intrans
+    verb1_stem1_orth=iv
+    verb1_stem1_pred=_iv_v_rel
+  verb2_valence=trans
+    verb2_stem1_orth=tv
+    verb2_stem1_pred=_tv_v_rel
+
+section=morphology
+  verb-pc1_order=suffix
+  verb-pc1_inputs=verb
+    verb-pc1_lrt1_name=subjrem
+      verb-pc1_lrt1_valchg1_operation=subj-rem
+      verb-pc1_lrt1_valchg1_inputs=trans
+      verb-pc1_lrt1_lri1_inflecting=yes
+      verb-pc1_lrt1_lri1_orth=-nosubj
+  verb-pc2_order=suffix
+  verb-pc2_inputs=verb-pc1_lrt1
+    verb-pc2_lrt1_name=obj-add-tr
+    verb-pc2_lrt1_valchg1_operation=obj-add
+    verb-pc2_lrt1_valchg1_inputs=trans
+    verb-pc2_lrt1_valchg1_argtype=np
+    verb-pc2_lrt1_valchg1_argpos=pre
+    verb-pc2_lrt1_lri1_inflecting=yes
+    verb-pc2_lrt1_lri1_orth=-addobj
+    verb-pc2_lrt2_name=obj-add-itr
+    verb-pc2_lrt2_valchg1_operation=obj-add
+    verb-pc2_lrt2_valchg1_inputs=intrans
+    verb-pc2_lrt2_valchg1_argtype=np
+    verb-pc2_lrt2_valchg1_argpos=pre
+    verb-pc2_lrt2_lri1_inflecting=yes
+    verb-pc2_lrt2_lri1_orth=-addobj
+
+section=toolbox-import
+
+section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon

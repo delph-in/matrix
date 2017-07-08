@@ -22,6 +22,8 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "valchg-subj-rem-obj-add-post-np-sov") (:content . "valchg-subj-rem-obj-add-post-np-sov: sub-rem and obj-add for SOV"))
+((:path . "valchg-subj-rem-obj-add-pre-np") (:content . "valchg-subj-rem-obj-add-pre-np: combining subj-rem and obj-add"))
 ((:path . "valchg-obj-add-post-np-sov") (:content . "valchg-obj-add-post-np-sov: obj-add for SOV with post-append"))
 ((:path . "valchg-obj-add-pre-np-sov") (:content . "valchg-obj-add-pre-np-sov: obj-add for SOV with pre-append"))
 ((:path . "valchg-obj-rem-osv") (:content . "valchg-obj-rem-osv: simple obj-rem for OSV"))

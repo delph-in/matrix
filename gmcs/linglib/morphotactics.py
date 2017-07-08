@@ -434,7 +434,8 @@ LEX_RULE_SUPERTYPES = ['cat-change-only-lex-rule',
                        'same-head-lex-rule',
                        'val-change-only-lex-rule',
                        'head-change-only-lex-rule',
-                       'cont-change-only-lex-rule']
+                       'cont-change-only-lex-rule',
+                       'val-change-with-ccont-lex-rule']
 
 ALL_LEX_RULE_SUPERTYPES = LEX_RULE_SUPERTYPES + ['infl-lex-rule',
                                                  'const-lex-rule',
@@ -763,7 +764,7 @@ def write_i_or_l_rules(irules, lrules, lrt, order):
     lrules.add(lrt_id.rsplit('-rule',1)[0] + ' := ' + lrt_id + '.')
 
 def write_valence_change_behavior(lrt, mylang, choices):
-  from gmcs.linglib.valence_change import lexrule_name
+  from gmcs.linglib.valence_change import lexrule_name, added_argnum_for_vchop
   for op in lrt.valchgops:
     operation = op.get('operation','').lower()
     transitive = 'trans' in op.get('inputs','').split(',')
@@ -786,12 +787,9 @@ def write_valence_change_behavior(lrt, mylang, choices):
       mylang.add(lrt.identifier() + ' := ' + lexrule_name('obj-rem-op') + '.') 
     elif operation == 'obj-add':
       lrt.supertypes.add('same-cont-lex-rule')
-      if op['argpos'].lower() == 'pre':
-        lrt.supertypes.add(lexrule_name('added-arg-applicative', 2, 3)) 
-        lrt.supertypes.add(lexrule_name('added-arg-head-type', 2, op['argtype'].lower()))
-      else:
-        lrt.supertypes.add(lexrule_name('added-arg-applicative', 3, 3)) 
-        lrt.supertypes.add(lexrule_name('added-arg-head-type', 3, op['argtype'].lower()))
+      argnum, numargs = added_argnum_for_vchop(op)
+      lrt.supertypes.add(lexrule_name('added-arg-applicative', argnum, numargs))
+      lrt.supertypes.add(lexrule_name('added-arg-head-type', argnum, numargs, op['argtype'].lower()))
       predname = op.get('predname','undef_pred')
       mylang.add(lrt.identifier() + ' := [ C-CONT.RELS <! [ PRED "' + predname +'" ] !> ].')
     elif operation == 'subj-add':

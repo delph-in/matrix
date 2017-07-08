@@ -1,0 +1,16 @@
+n1 iv
+*iv n2
+n1 iv-addobj n2
+*iv-nosubj n2
+*iv-nosubj
+*n1 iv-nosubj
+*n1 iv-nosubj n2
+*n2 iv-nosubj-addobj
+n1 tv n2
+n2 tv-nosubj
+*n2 tv-nosubj-addobj
+*n1 tv-nosubj n2
+*n1 tv-addobj
+*n1 tv-addobj n2
+n1 tv-addobj n3 n2
+n2 tv-nosubj-addobj n3
