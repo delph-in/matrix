@@ -1,0 +1,8 @@
+nom n1 iv
+*nom n2 iv dat n1
+nom n2 iv-caus dat n1
+nom n1 tv acc n2
+*nom n3 tv dat n1 acc n2
+nom n3 tv-caus dat n1 acc n2
+*nom n3 tv-caus acc n1 acc n2
+*nom n3 tv-caus acc n1 dat n2

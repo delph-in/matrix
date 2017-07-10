@@ -793,8 +793,9 @@ def write_valence_change_behavior(lrt, mylang, choices):
       predname = op.get('predname','undef_pred')
       mylang.add(lrt.identifier() + ' := [ C-CONT.RELS <! [ PRED "' + predname +'" ] !> ].')
     elif operation == 'subj-add':
+      argnum, _ = added_argnum_for_vchop(op)
       lrt.supertypes.add('same-non-local-lex-rule')
-      lrt.supertypes.add(lexrule_name('causative', transitive))
+      lrt.supertypes.add(lexrule_name('subj-add', argnum, transitive))
       predname = op.get('predname','causative_rel')
       mylang.add(lrt.identifier() + ' := [ C-CONT.RELS <! [ PRED "' + predname + '" ] !> ].')
        

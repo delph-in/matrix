@@ -287,3 +287,7 @@ valchg-obj-add-pre-np-sov=obj-add for SOV with pre-append
 valchg-obj-add-post-np-sov=obj-add for SOV with post-append
 valchg-subj-rem-obj-add-pre-np=combining subj-rem and obj-add
 valchg-subj-rem-obj-add-post-np-sov=sub-rem and obj-add for SOV
+valchg-subj-add-pre=subject-adding, prepend, SVO
+valchg-subj-add-post=subject-adding, postpend, SVO
+valchg-subj-add-pre-sov=subject-adding, prepend, SOV
+valchg-subj-add-pre-case=subject-adding, with case constraints

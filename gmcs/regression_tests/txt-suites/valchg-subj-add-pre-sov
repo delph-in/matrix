@@ -1,0 +1,7 @@
+n1 iv
+*n2 n1 iv
+n2 n1 iv-caus
+n1 n2 tv
+*n3 n2 n1 tv
+n3 n2 n1 tv-caus
+

@@ -4,8 +4,20 @@ from gmcs.utils import TDLencode
 from string import join
 from functools import partial
 
+#### UTILITIES ####
 
-### RULE NAME GENERATORS ###
+# currently only intransitive and strict transitive
+def added_argnum_for_vchop(vchop):
+    position = vchop.get('argpos','post').lower() # default to post
+    inputs = vchop.get('inputs','').split(',') 
+    transitive = 'trans' in inputs or (len(inputs) == 1 and inputs[0] == '') # default to transitive
+    numargs = 3 if transitive else 2
+    argnum = numargs - (1 if (transitive and position == 'pre') else 0)
+    return (argnum, numargs)
+    
+
+####  RULE NAME GENERATORS ####
+ 
 # These functions return the name the rule generator will use
 def subj_rem_op_lex_rule_name(transitive):
     tr_itr = 'tr' if transitive else 'itr'
@@ -26,11 +38,13 @@ def added_arg_head_lex_rule_name(added_arg, total_args, head_constraint):
             head = 'pp'
     return 'added-arg{}of{}-{}-head-lex-rule'.format(added_arg, total_args, head)
 
-def causative_lex_rule_name(transitive):
-    if transitive:
-        return 'causative-transitive-lex-rule'
-    else:
-        return 'causative-intransitive-lex-rule'
+def causative_lex_rule_name(demoted_argnum, transitive):    
+    return 'causative-to-arg{}-{}-op-lex-rule'.format(demoted_argnum,
+                                                      'tr' if transitive else 'itr')
+#    if transitive:
+#        return 'causative-to-arg{}-transitive-lex-rule'
+#    else:
+#        return 'causative-to-intransitive-lex-rule'
 
 # These are the shorthand names used to generate rules and rule names
 # NB: the values here are *functions* that return the rule name.
@@ -41,7 +55,8 @@ rulenamefns = {'subj-rem-op': subj_rem_op_lex_rule_name,
                'added-arg-applicative': added_arg_applicative_lex_rule_name,
                'added-arg-head-type': added_arg_head_lex_rule_name,
                'basic-applicative': (lambda: 'basic-applicative-lex-rule'),
-               'causative': causative_lex_rule_name}
+               'subj-add': causative_lex_rule_name,
+               'scopal-rel': (lambda: 'scopal-rel-lex-rule')}
 
 # A little  bit of machinery to make it easy to find the names of generated rules
 # (Gets called from morphotactics.py)
@@ -176,59 +191,67 @@ def basic_applicative_lex_rule():
     DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX #evt ].'''.format(rulename=lexrule_name('basic-applicative'))
 
 
-# Generates the generic causative rule
-def causative2_lex_rule(demoted_pos, transitive=True):
-    rulevars = {}
-    OSUBJ_ARG_FRAG = '#osubj & [ LOCAL.CONT.HOOK.INDEX #causee ]'
-    arglist = ['#nsubj & [ LOCAL.CONT.HOOK.INDEX #causer ]']
-    if demoted_pos.lower() == 'pre':
-        # 'pre' => erstwhile subject should be LESS oblique than the object
-        arglist.append(OSUBJ_ARG_FRAG)
-        arglist.append('#comp')
-        comps = '#osubj, #comp'
-    else:
-        arglist.append('#comp')
-        arglist.append(OSUBJ_ARG_FRAG)
-        comps = '#comp, #osubj'
-    rulevars['rulename'] = lexrule_name('causative')
-    rulevars['arg-st'] = ',\n             '.join(arglist)
-    rulevars['comps'] = comps
-    rule = '''{rulename} := same-spr-lex-rule &
-    same-spec-lex-rule &
+OSUBJ_ARG_FRAG = ''' [ LOCAL [ CONT.HOOK.INDEX #causee,
+                               CAT [ HEAD [ MOD #mod,
+                                            KEYS #keys ],
+                                     VAL #val ] ],
+                       NON-LOCAL #nl ]'''
+
+OSUBJ_ARG_FRAG_MIN = ''' [ LOCAL [ CONT.HOOK.INDEX #causee,
+                                   CAT [ HEAD [ MOD #mod,
+                                                KEYS #keys ],
+                                         VAL #val ] ],
+                           NON-LOCAL #nl ]'''
+
+SCOPAL_REL_LEX_RULE = '''scopal-rel-lex-rule := lex-rule &
   [ C-CONT [ RELS <! event-relation &
                    [ LBL #ltop,
                      ARG0 #hidx,
                      ARG1 #causer,
                      ARG2 #causee,
-                     ARG3 #harg ] !>,
-             HCONS <! qeq & [ HARG #harg,
-                              LARG #larg ] !>,
+                     ARG3 #charg ] !>,
              HOOK [ LTOP #ltop,
                     INDEX #hidx,
-                    XARG #causer ] ],
-    SYNSEM.LOCAL.CAT.VAL [ SUBJ < #nsubj & [ LOCAL.CAT.VAL [ SPR < >,
-                                                             COMPS < > ] ] >,
+                    XARG #causer ],
+             HCONS <! qeq & [ HARG #charg,
+                              LARG #caused ] !> ],
+    SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX #causer ] >,
+    DTR.SYNSEM.LOCAL [ CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX #causee ] >,
+                       CONT.HOOK.LTOP #caused ] ].'''          
+
+def scopal_rel_lex_rule_gen():
+    return SCOPAL_REL_LEX_RULE
+
+def causative_lex_rule_gen(demoted_argnum, transitive=True):
+    rulevars = {}
+    compslist = [OSUBJ_ARG_FRAG_MIN]
+    if transitive:
+        # argnum 2 -> erst. SUBJ is prepend -> erst. COMP append/insert(1)
+        # argnum 3 -> erst. SUBJ is append -> erst. COMP prepent/insert(0)
+        compslist.insert(3 - demoted_argnum, '#comp')       
+    rulevars['rulename'] = gen_rulename('subj-add', demoted_argnum, transitive)
+    rulevars['osubj'] = OSUBJ_ARG_FRAG_MIN
+    rulevars['comps'] = ', '.join(compslist)
+    rulevars['dtr-comps'] = '#comp' if transitive else ''
+    rule = '''{rulename} := scopal-rel-lex-rule & same-spr-lex-rule & same-spec-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < [ LOCAL.CAT.VAL [ SPR < >,
+                                                    COMPS < > ] ] >,
                            COMPS < {comps} > ],
-    ARG-ST < {arg-st}  >,
-    DTR [ ARG-ST < #osubj, 
-                   #comp >,
-          SYNSEM.LOCAL [ CAT.VAL [ SUBJ < #osubj >,
-                                   COMPS < #comp > ],
-                         CONT.HOOK.LTOP #larg ] ] ].'''.format(**rulevars)
+    DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ < {osubj} >,
+                               COMPS < {dtr-comps} > ] ].'''.format(**rulevars)
     return rule
 
-def causative_lex_rule(demoted_pos, transitive=True):
+# Generates the generic causative rule
+def ocausative_lex_rule_gen(demoted_argnum, transitive=True):
     rulevars = {}
-    OSUBJ_ARG_FRAG = '#osubj & [ LOCAL.CONT.HOOK.INDEX #causee ]'
-    compslist = []
-    if demoted_pos.lower() == 'pre':
-        # erstwhile subject should be LESS oblique than the object
-        compslist.append(OSUBJ_ARG_FRAG)
-        if transitive: compslist.append('#comp')
-    else:
-        if transitive: compslist.append('#comp')
-        compslist.append(OSUBJ_ARG_FRAG)
-    rulevars['rulename'] = lexrule_name('causative', transitive)
+    #OSUBJ_ARG_FRAG = '#osubj & [ LOCAL.CONT.HOOK.INDEX #causee ]'
+    compslist = [OSUBJ_ARG_FRAG]
+    if transitive:
+        # argnum 2 -> erst. SUBJ is prepend -> erst. COMP append/insert(1)
+        # argnum 3 -> erst. SUBJ is append -> erst. COMP prepent/insert(0)
+        compslist.insert(3 - demoted_argnum, '#comp')
+    rulevars['rulename'] = gen_rulename('subj-add', demoted_argnum, transitive)
+    rulevars['osubj'] = OSUBJ_ARG_FRAG
     rulevars['comps'] = ', '.join(compslist)
     rulevars['dtr-comps'] = '#comp' if transitive else ''
     rule = '''{rulename} := same-spr-lex-rule & same-spec-lex-rule &
@@ -247,7 +270,7 @@ def causative_lex_rule(demoted_pos, transitive=True):
                                                       COMPS < > ],
                                             CONT.HOOK.INDEX #causer ] ] >,
                            COMPS < {comps} > ],
-    DTR [ SYNSEM.LOCAL [ CAT.VAL [ SUBJ < #osubj >,
+    DTR [ SYNSEM.LOCAL [ CAT.VAL [ SUBJ < {osubj} >,
                                    COMPS < {dtr-comps} > ],
                          CONT.HOOK.LTOP #larg ] ] ].'''.format(**rulevars)
     return rule
@@ -327,8 +350,12 @@ rule_generators = {'subj-rem-op': {'name': subj_rem_op_lex_rule_name,
                                              'rule': added_arg_applicative_lex_rule_gen},
                    'added-arg-non-local': {'name': added_arg_non_local_lex_rule_name,
                                            'rule': added_arg_non_local_lex_rule_gen},
-                   'added-arg-head-type':{'name': added_arg_head_lex_rule_name,
-                                          'rule': added_arg_head_lex_rule_gen}}
+                   'added-arg-head-type': {'name': added_arg_head_lex_rule_name,
+                                           'rule': added_arg_head_lex_rule_gen},
+                   'subj-add': {'name': causative_lex_rule_name,
+                                'rule': causative_lex_rule_gen},
+                   'scopal-rel':{'name': (lambda: 'scopal-rel-lex-rule'),
+                                 'rule': scopal_rel_lex_rule_gen}}
 
 
 def gen_rulename(rule_type, *args):
@@ -342,14 +369,14 @@ def gen_rulebody(rule_type, *args):
 
 # Small helper classes to get proper set semantics:
 # We want to create a set of all the generated rules, but we only want 
-class FnWrapper(object):
-    def __init__(self, label, fn, *args):
-        self.label = label
-        self.fn = fn if len(args) == 0 else partial(fn, *args)
-    def __hash__(self):
-        return hash(self.label)
-    def __call__(self):
-        return self.fn()
+#class FnWrapper(object):
+#    def __init__(self, label, fn, *args):
+#        self.label = label
+#        self.fn = fn if len(args) == 0 else partial(fn, *args)
+#    def __hash__(self):
+#        return hash(self.label)
+#    def __call__(self):
+#        return self.fn()
 
 class LexRuleWrapper(object):
     def __init__(self, rule_type, *args):
@@ -360,6 +387,8 @@ class LexRuleWrapper(object):
     def __eq__(self, other):
         return str(self.name) == str(other.name)
 
+#from sys import stderr
+
 class LexRuleBuilder(object):
     def __init__(self):
         self.rules = set()
@@ -369,31 +398,12 @@ class LexRuleBuilder(object):
         prev_section = mylang.section
         mylang.set_section('lexrules')
         for rule in self.rules:
+#            print >> stderr, "Adding rule: " + str(rule.name)
             mylang.add(rule.body)
         mylang.set_section(prev_section)
-        
 
-#class OldLexRuleBuilder(object):
-#    def __init__(self):
-#        self.rules = set()
-#    def add(self, rule_label, rulegen, *rulegen_args):
-#        self.rules.add(FnWrapper(rule_label, rulegen, *rulegen_args))
-#    def generate_tdl(self, mylang):
-#        prev_section = mylang.section
-#        mylang.set_section('lexrules')
-#        for rule in self.rules:
-#            mylang.add(rule())
-#        mylang.set_section(prev_section)
 
-# currently only intransitive and strict transitive
-def added_argnum_for_vchop(vchop):
-    position = vchop.get('argpos','post').lower() # default to post
-    inputs = vchop.get('inputs','').split(',') 
-    transitive = 'trans' in inputs or (len(inputs) == 1 and inputs[0] == '') # default to transitive
-    numargs = 3 if transitive else 2
-    argnum = numargs - (1 if (transitive and position == 'pre') else 0)
-    return (argnum, numargs)
-    
+
 ####### MAIN INTERFACE ##########
 
 # Add generic rules
@@ -412,45 +422,22 @@ def customize_valence_change(mylang, ch, lexicon, rules, irules, lrules):
                 opname = vchop['operation'].lower()
                 if opname == 'subj-rem':
                     rules.add('subj-rem-op', transitive)
-                    #rules.add('subj-rem-tr-op', subj_rem_op_lex_rule, True)
-                    #rules.add('subj-rem-itr-op', subj_rem_op_lex_rule, False)
                 if opname == 'obj-rem':
-                    #rules.add('obj-rem-op', obj_rem_op_lex_rule)
                     rules.add('obj-rem-op')
                 if opname == 'obj-add':
-                    #rules.add('basic-applicative', basic_applicative_lex_rule)
                     rules.add('basic-applicative')
-                    #position = vchop.get('argpos', '').lower()
-                    #numargs = 3 if transitive else 2
-                    #argnum = numargs if (not(transitive) or position == 'post') else (numargs - 1)
                     argnum, numargs = added_argnum_for_vchop(vchop)
                     rules.add('added-arg-applicative', argnum, numargs)
                     rules.add('added-arg-non-local', argnum, numargs)
                     argtype = vchop.get('argtype','').lower()
                     rules.add('added-arg-head-type', argnum, numargs, argtype)
-#                    if position == 'pre':
-#                        argpos = numargs - 1
-#                        #rules.add('added-arg-head-type', added_arg_head_lex_rule, 2, argtype)
-#                        rules.add('added-arg-head-type', argpos, argtype)
-#                        #rules.add('added-arg-applicative', added_arg_applicative_lex_rule, 2, numargs)
-#                        rules.add('added-arg-applicative', argpos, numargs)
-#                        #rules.add('added-arg-non-local', added_arg_non_local_lex_rule, 2, numargs)
-#                        rules.add('added-arg-non-local', argpos, numargs)
-#                    elif position == 'post':
-#                        argpos = numargs
-#                        #rules.add('added-arg-head-type', added_arg_head_lex_rule, 3, argtype)
-#                        rules.add('added-arg-head-type', argpos, argtype)
-#                        #rules.add('added-arg-applicative', added_arg_applicative_lex_rule, 3, numargs)
-#                        rules.add('added-arg-applicative', argpos, numargs)
-#                        #rules.add('added-arg-non-local', added_arg_non_local_lex_rule, 3, numargs)
-#                        rules.add('added-arg-non-local', argpos, numargs)
                 if opname == 'subj-add':
+                    rules.add('scopal-rel')
                     position = vchop.get('argpos', '').lower()
                     inputval = vchop.get('input', '').lower()
-                    if 'iverb' in pc_inputs:
-                        rules.add('causative-intrans', causative_lex_rule, position, False)
-                    if 'tverb' in pc_inputs:
-                        rules.add('causative-trans', causative_lex_rule, position, True)
+                    argnum, _ = added_argnum_for_vchop(vchop)
+                    rules.add('subj-add', argnum, transitive)
+
     rules.generate_tdl(mylang)
 
 # Add new rule specifications (e.g. for transitive/intransitive variants)
