@@ -1,0 +1,116 @@
+
+version=28
+
+section=general
+language=nominal-clause
+punctuation-chars=discard-all
+archive=no
+
+section=word-order
+word-order=sov
+has-dets=no
+has-aux=yes
+aux-comp-order=before
+aux-comp=s
+
+section=number
+
+section=person
+person=none
+
+section=gender
+
+section=case
+case-marking=nom-acc
+nom-acc-nom-case-name=nominative
+nom-acc-acc-case-name=accusative
+  case1_name=genitive
+
+section=direct-inverse
+
+section=tense-aspect-mood
+
+section=other-features
+  feature1_name=NMZ
+  feature1_type=head
+  feature1_cat=verb
+  feature1_new=no
+  feature1_existing=bool
+
+section=sentential-negation
+neg-exp=1
+vpc-0-neg=create
+adv-neg=on
+neg-mod=s
+neg-order=after
+neg-adv-orth=neg
+comp-neg-orth=neg
+
+section=coordination
+
+section=matrix-yes-no
+
+section=info-str
+
+section=arg-opt
+
+section=lexicon
+  noun1_name=noun
+  noun1_det=imp
+    noun1_stem1_orth=noun1
+    noun1_stem1_pred=_noun1_n_rel
+    noun1_stem2_orth=noun2
+    noun1_stem2_pred=_noun2_n_rel
+  verb1_name=verb
+  verb1_valence=intrans
+    verb1_stem1_orth=verb1
+    verb1_stem1_pred=_verb1_v_rel
+    verb1_stem2_orth=verb2
+    verb1_stem2_pred=_verb2_v_rel
+  aux1_name=aux
+  aux1_sem=no-pred
+  aux1_subj=np
+    aux1_compfeature1_name=form
+    aux1_compfeature1_value=finite
+    aux1_stem1_orth=aux
+
+section=morphology
+  noun-pc1_name=case
+  noun-pc1_obligatory=on
+  noun-pc1_order=suffix
+  noun-pc1_inputs=noun
+    noun-pc1_lrt1_name=nom
+      noun-pc1_lrt1_feat1_name=case
+      noun-pc1_lrt1_feat1_value=nom
+      noun-pc1_lrt1_lri1_inflecting=yes
+      noun-pc1_lrt1_lri1_orth=nom
+    noun-pc1_lrt2_name=acc
+      noun-pc1_lrt2_feat1_name=case
+      noun-pc1_lrt2_feat1_value=acc
+      noun-pc1_lrt2_lri1_inflecting=yes
+      noun-pc1_lrt2_lri1_orth=acc
+    noun-pc1_lrt3_name=gen
+      noun-pc1_lrt3_feat1_name=case
+      noun-pc1_lrt3_feat1_value=genitive
+      noun-pc1_lrt3_lri1_inflecting=yes
+      noun-pc1_lrt3_lri1_orth=gen
+  verb-pc1_name=nominalized
+  verb-pc1_order=suffix
+  verb-pc1_inputs=verb
+    verb-pc1_lrt1_name=nominal
+      verb-pc1_lrt1_feat1_name=NMZ
+      verb-pc1_lrt1_feat1_value=+
+      verb-pc1_lrt1_feat1_head=verb
+      verb-pc1_lrt1_valchg1_operation=subj-rem
+      verb-pc1_lrt1_valchg1_argpos=pre
+      verb-pc1_lrt1_valchg1_argtype=np
+      verb-pc1_lrt1_lri1_inflecting=yes
+      verb-pc1_lrt1_lri1_orth=nmz
+
+section=toolbox-import
+
+section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon

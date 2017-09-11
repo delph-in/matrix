@@ -1,0 +1,20 @@
+subord-lex-item
+lexical entry
+comp-head rule
+head-comp-phrase
+comp-head-phrase
+head += INIT
+clausal-mod-phrase (use the one in open-closed (it has MC - in the parent)
+verb-lex needs INFLECTED.INFLECTION-FLAG -  in the ones with morphology
+
+make sure that the index is the same as the matrix verb in the simple mrs
+makes sure the ltop is the same in the local avm for s
+
+special-morph2 uses non-branching rules to add semantics
+special-morph3 adds semantics in the rule
+
+right now all the subords are scopal-mod-with-comp-lex
+-i guess i need to allow for complementizers vs adverbs
+
+for subord paris, PAIR is passed around due to changes made in matrix.tdl
+PAIR nopair needs togo on every lex item except the subordinators

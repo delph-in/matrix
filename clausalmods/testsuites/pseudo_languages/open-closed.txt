@@ -1,0 +1,6 @@
+#some subordinators are in open clauses and some closed
+*noun1 verb1 verb2simul
+noun1 verb1 noun1 verb2simul
+*noun1 verb1 noun1 verb2purp
+*noun1 verb1 noun2 verb2purp
+noun1 verb1 verb2purp
