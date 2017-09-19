@@ -1527,7 +1527,7 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
   . after "After" "" "after the matrix clause<br>"
   . either "Either" "" "either before or after the matrix clause<br><br>"
 
-    Radio strategy "Clausal Modifier Strategy {i} pattern" "<b>The subordinate predication is contributed by:</b><br><br>" ""
+    Radio subordinator "Clausal Modifier Strategy {i} pattern" "<b>The subordinate predication is contributed by:</b><br><br>" ""
   . free "Free Subordinator" "" "a free subordinator morpheme<br>"
     Label "<p>Free Subordinator Morpheme{i}:<br>"
 
