@@ -9,22 +9,39 @@ from gmcs.lib import TDLHierarchy
 
 ######################################################################
 
-def add_free_subordinator_to_lexicon(lexicon, freemorph):
+def add_free_subordinator_to_lexicon(lexicon, freemorph, pos, subpos):
   """
   Add free subordinators to the lexicon
   """
 
-  for word in orth.get('freemorph'):
-    orth = word.get('orth')
-    orthstr = orth_encode(orth)
-    pred = word.get('pred')
-    predstr = pred_encode(pred)
-    lexicon.add(orthstr + ':= subord-lex &\
-                          [ STEM < "' + orthstr + '" >,\
-                        SYNSEM.LKEYS.KEYREL.PRED "' + predstr + '",\
-                        CFORM "' + cmsnum + '" ].')
+  orth = freemorph.get('orth')
+  orthstr = orth_encode(orth)
+  pred = freemorph.get('pred')
+  #todo add all options
+  if pos == 'before':
+    if subpos == 'before':
+      lextype = 'clause-init-prehead-subord-lex-item'
+    elif subpos == 'after':
+      lextype = 'clause-final-prehead-subord-lex-item'
+  elif pos == 'after':
+    if subpos == 'before':
+      lextype = 'clause-init-posthead-subord-lex-item'
+    elif subpos == 'after':
+      lextype = 'clause-final-posthead-subord-lex-item'
+  elif pos == 'either':
+    if subpos == 'before':
+      lextype = 'clause-init-subord-lex-item'
+    elif subpos == 'after':
+      lextype = 'clause-final-subord-lex-item'
 
-def add_subord_lex_item(mylang, subpos):
+  lexicon.add(orthstr + ':= ' +lextype + ' &\
+                        [ STEM < "' + orthstr + '" >,\
+                     SYNSEM.LKEYS.KEYREL.PRED "' + pred + '"].\\')
+
+def add_subord_lex_item(mylang, pos, subpos):
+  """
+  add the type definition for the lexical item to mylang
+  """
   mylang.set_section('subordlex')
   mylang.add('scopal-mod-with-comp-lex := single-rel-lex-item & norm-ltop-lex-item &\
   [ SYNSEM [ LOCAL [ CAT [ HEAD.MOD < [ LOCAL scopal-mod &\
@@ -54,12 +71,33 @@ def add_subord_lex_item(mylang, subpos):
 			     COMPS < #comps > ]],\
     ARG-ST < #comps &\
     	     [ LOCAL.CAT [ MC - ]] > ].\\')
-  if subpos == 'before':
-    mylang.add('clause-init-subord-lex-item := subord-lex-item &\
-  [ SYNSEM.LOCAL.CAT.HEAD.INIT + ].\\')
-  elif subpos == 'after':
-    mylang.add('clause-init-subord-lex-item := subord-lex-item &\
-        [ SYNSEM.LOCAL.CAT.HEAD.INIT - ].\\')
+
+  if pos == 'before':
+    if subpos == 'before':
+      mylang.add('clause-init-prehead-subord-lex-item := subord-lex-item &\
+      [ SYNSEM.LOCAL.CAT.HEAD.INIT +,\
+      SYNSEM.LOCAL.CAT.POSTHEAD - ].\\')
+    elif subpos == 'after':
+      mylang.add('clause-final-prehead-subord-lex-item := subord-lex-item &\
+            [ SYNSEM.LOCAL.CAT.HEAD.INIT - ],\
+      SYNSEM.LOCAL.CAT.POSTHEAD - ].\\')
+  elif pos == 'after':
+    if subpos == 'before':
+      mylang.add('clause-init-posthead-subord-lex-item := subord-lex-item &\
+      [ SYNSEM.LOCAL.CAT.HEAD.INIT +,\
+      SYNSEM.LOCAL.CAT.POSTHEAD + ].\\')
+    elif subpos == 'after':
+      mylang.add('clause-final-posthead-subord-lex-item := subord-lex-item &\
+            [ SYNSEM.LOCAL.CAT.HEAD.INIT -,\
+      SYNSEM.LOCAL.CAT.POSTHEAD + ].\\')
+  elif pos == 'either':
+    if subpos == 'before':
+      mylang.add('clause-init-subord-lex-item := subord-lex-item &\
+      [ SYNSEM.LOCAL.CAT.HEAD.INIT + ].\\')
+    elif subpos == 'after':
+      mylang.add('clause-final-subord-lex-item := subord-lex-item &\
+            [ SYNSEM.LOCAL.CAT.HEAD.INIT - ].\\')
+
   mylang.set_section('addenda')
   mylang.add('head :+ [ INIT bool ].')
 
@@ -76,9 +114,9 @@ def customize_clausalmods(mylang, ch, lexicon, rules, irules):
     pos = cms.get('position')
     subord = cms.get('subordinator')
     subpos = cms.get('subposition')
-    freemorph = cms.get('freemorph')
 
     if subord == 'free':
-      #add_free_subordinator_to_lexicon(lexicon, freemorph)
-      add_subord_lex_item(mylang, subpos)
+      for subord in cms.get('freemorph'):
+        add_free_subordinator_to_lexicon(lexicon, subord, pos, subpos)
+      add_subord_lex_item(mylang, pos, subpos)
 
