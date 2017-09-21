@@ -1527,11 +1527,11 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
   . after "After" "" "after the matrix clause<br>"
   . either "Either" "" "either before or after the matrix clause<br><br>"
 
-    Radio subordinator "Clausal Modifier Strategy {i} pattern" "<b>The subordinate predication is contributed by:</b><br><br>" ""
+  Radio subordinator "Clausal Modifier Strategy {i} pattern" "<b>The subordinate predication is contributed by:</b><br><br>" ""
   . free "Free Subordinator" "" "a free subordinator morpheme<br>"
     Label "<p>Free Subordinator Morpheme{i}:<br>"
 
-    Radio subposition "Subordinator Position" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The free subordinator morpheme is positioned:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
+  Radio subposition "Subordinator Position" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The free subordinator morpheme is positioned:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
   . before "Before" "" "at the beginning of the subordinate clause<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
   . after "After" "" "at the end of the subordinate clause<br>"
 
@@ -1544,7 +1544,7 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
 
 
     Radio pat "Clausal Modifier Strategy {i} pattern" "<br><br>" ""
-    . subord-morph "Bound Subordinator" "" "a bound subordinator morpheme<br>"
+    . bound "Bound Subordinator" "" "a bound subordinator morpheme<br>"
     Label "<p>Bound Subordinator Morpheme{i}:<br>"
         BeginIter boundmorph{j} "a Bound Subordinator Morpheme" 0
             Label "<p>Bound Subordinator Morpheme {i}:<br>"
@@ -1553,7 +1553,7 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
          EndIter boundmorph
 
     Radio pat "Clausal Modifier Strategy {i} pattern" "<br><br>" ""
-  . subord-pair "Subordinator Pair" "" "a free subordinator morpheme pair: one in the subordinate clause and one in the main clause<br>"
+    . pair "Subordinator Pair" "" "a free subordinator morpheme pair: one in the subordinate clause and one in the main clause<br>"
     Label "<p>Free Subordinator Morpheme Pair{i}:<br>"
         BeginIter morphpair{j} "a Free Subordinator Morpheme Pair" 0
 
