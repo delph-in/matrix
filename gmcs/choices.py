@@ -1103,7 +1103,7 @@ class ChoicesFile:
       features += [ ['direction', 'dir|direct;inv|inverse', '', 'verb', 'y'] ]
 
     # Negation
-    if  'infl-neg' in self.choices or 'neg-aux' in self.choices:
+    if  'infl-neg' or 'neg-aux' in self.choices:
       features += [ ['negation', 'plus|plus;minus|minus', '', 'verb', 'y'] ]
     # if 'neg1b-neg2b' in self.choices:
     #  features += [ ['neg2', 'plus|plus', '', 'verb' ] ]

@@ -533,7 +533,6 @@ adj-head-scop-phrase
 adj-label
 adj-mid-label
 adj-top-label
-adjective-lex
 adp
 adv
 adv-bottom-coord-phrase
@@ -559,7 +558,6 @@ arg1234-ev-relation
 arg1234-relation
 aspect
 atom
-attrib-or-pred-lex-item
 avm
 basic-adj-mid-coord-rule
 basic-adj-top-coord-rule
@@ -568,8 +566,6 @@ basic-adposition-lex
 basic-adv-mid-coord-rule
 basic-adv-top-coord-rule
 basic-adverb-lex
-basic-attr-adj-lex
-basic-attr-only-adj-lex
 basic-bare-np-phrase
 basic-binary-headed-phrase
 basic-binary-marker-phrase
@@ -591,18 +587,17 @@ basic-head-mod-phrase-simple
 basic-head-opt-comp-phrase
 basic-head-opt-subj-phrase
 basic-head-spec-phrase
+basic-head-spec-phrase-super
 basic-head-subj-nmc-phrase
 basic-head-subj-phrase
 basic-icons-lex-item
 basic-int-adverb-lex
-basic-int-mod-adj-lex
 basic-int-mod-adposition-lex
+basic-intersective-adjective-lex
 basic-marker-comp-phrase
-basic-mod-adj-lex
 basic-mod-adp-lex
 basic-n-mid-coord-rule
 basic-n-top-coord-rule
-basic-nomod-adj-lex
 basic-nomod-adposition-lex
 basic-non-rel-clause
 basic-noun-lex
@@ -610,8 +605,6 @@ basic-np-mid-coord-rule
 basic-np-top-coord-rule
 basic-one-arg
 basic-one-arg-no-hcons
-basic-pred-adj-lex
-basic-pred-only-adj-lex
 basic-s-mid-coord-rule
 basic-s-top-coord-rule
 basic-scopal-adverb-lex
@@ -626,6 +619,7 @@ basic-two-arg
 basic-two-arg-no-hcons
 basic-unary-phrase
 basic-verb-lex
+basic-verb-lex-super
 basic-vp-mid-coord-rule
 basic-vp-top-coord-rule
 basic-zero-arg
@@ -641,6 +635,7 @@ c-label
 canonical-synsem
 cat
 cat-change-only-lex-rule
+cat-change-with-ccont-lex-rule
 cat-min
 clausal-arg-intrans-lex-item
 clausal-expl-arg-lex-item
@@ -651,6 +646,7 @@ clause
 cog-st
 comm
 comp
+comps-change-only-lex-rule
 conj
 conj-first-bottom-coord-rule
 conj-label
@@ -691,10 +687,10 @@ declarative-clause
 det
 det-label
 diff-list
-distrans-second-arg-raising-lex-item
 ditrans-first-arg-control-lex-item
 ditrans-first-arg-raising-lex-item
 ditrans-second-arg-control-lex-item
+ditrans-second-arg-raising-lex-item
 ditransitive-lex-item
 dl-append
 event
@@ -777,7 +773,6 @@ keys_min
 label
 lex-item
 lex-or-phrase-synsem
-lex-root
 lex-rule
 lex-synsem
 lexkeys
@@ -821,16 +816,14 @@ nc-filler-phrase
 nc-head-filler-phrase
 no-alts
 no-ccont-lex-rule
-no-ccont-rule
 no-hcons-lex-item
 no-icons-lex-item
-no-icons-rule
+no-icons-lexrule
 no-mod-lex
 no-pred
 no-rels-hcons-icons-lex-item
 no-rels-hcons-lex-item
 no-rels-hcons-lex-rule
-no-rels-hcons-rule
 nocoord
 nom-obj
 non-affix-bearing
@@ -903,7 +896,6 @@ raise-sem-lex-item
 ref-ind
 relation
 rmod
-root
 rule
 s-bottom-coord-phrase
 s-bottom-label
@@ -913,6 +905,7 @@ s-mid-label
 s-top-label
 same-agr-lex-rule
 same-cat-lex-rule
+same-comps-lex-rule
 same-cont-lex-rule
 same-ctxt-lex-rule
 same-hc-light-lex-rule
@@ -924,12 +917,16 @@ same-mkg-phrase
 same-modified-lex-rule
 same-non-local-lex-rule
 same-posthead-lex-rule
+same-spec-lex-rule
+same-spr-lex-rule
+same-subj-lex-rule
 same-val-lex-rule
 scopal-mod
 scopal-mod-lex
 scopal-mod-phrase
 semantic-focus
 semarg
+semsort
 sform
 sign
 sign-min
@@ -939,6 +936,7 @@ spr-plus-clausal-arg-lex-item
 spr-plus-one-arg-lex-item
 spr-trans-first-arg-control-lex-item
 string
+subj-change-only-lex-rule
 subord-or-coord-relation
 subord-relation
 synsem
@@ -979,6 +977,7 @@ v-label
 v-mid-label
 v-top-label
 val-change-only-lex-rule
+val-change-with-ccont-lex-rule
 valence
 valence-min
 verb

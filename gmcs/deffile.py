@@ -14,6 +14,7 @@
 
 #import sys
 import os
+import cgi
 import cgitb
 import glob
 import re
@@ -90,6 +91,7 @@ HTML_toggle_visible_js = '''<script type="text/javascript">
 </script>
 '''
 
+#gravy note: mainbody
 HTML_mainprebody = '''<body onload="animate()">
 <h1>LinGO Grammar Matrix</h1>
 <h1 style="display:inline">Matrix customization and download page</h1>
@@ -258,6 +260,8 @@ HTML_postbody = '''</body>
 
 </html>'''
 
+
+#<a href="http://www.delph-in.net/matrix/">Back to Matrix main page</a><br>
 
 ######################################################################
 # Stupid: The Python syntax coloring in Emacs doesn't properly handle
@@ -796,6 +800,7 @@ class MatrixDefFile:
                      '<p>', '')
     print html_input(vr, 'file', 'choices', '', False, '', '</p>', '')
     print HTML_uploadpostform
+    #print HTML_new_cookie
 
     print '<hr>\n'
 
@@ -1176,6 +1181,50 @@ class MatrixDefFile:
 
     return html
 
+  def verification(self):
+   # Note, In previous parts of this site the html bits are configured outside of the
+   # function and pipped in as global variables. I don't like this. So i'm confining variables
+   # locally. But I don't want to leave things messy, so I've divided it into sections to keep
+   # things more "clean" looking.
+   ### Setup ###
+    verify_form = cgi.FieldStorage()
+    HTML_google_api = "<script src='https://www.google.com/recaptcha/api.js'></script> \n"
+    HTML_verify_form_prebody = """
+<html>
+  <head>
+    <title>Grammar Matrix: Session Verification Page</title>
+     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+     <script>
+       function onSubmit(token) {
+         document.getElementById("verify-form").submit();
+       }
+     </script>
+  </head>
+"""
+    HTML_verify_form_body = """
+<body>
+	We were unable to detect a valid session for you. In order to create a new session,<br>
+	please use the verify button below to confirm you are not a bot. Once this is done you will be<br>
+	redirected to the main page where you can begin using the grammar matrix.<br><br>
+</body>
+"""
+    HTML_verify_form_postbody = """
+      <form id='verify-form' action="matrix.cgi" method="POST">
+      <button class="g-recaptcha" data-sitekey="6LfEeisUAAAAAGdbbNlfjxKjkRxcSWhSovyq9oik" data-callback='onSubmit'>Verify</button>
+      <br/>
+    </form>
+</html>
+
+
+   """
+    
+   ### Execution ###
+    print HTTP_header + '\n'
+    print HTML_pretitle
+    print HTML_verify_form_prebody
+    print HTML_verify_form_body
+    print HTML_verify_form_postbody
+    print HTML_postbody
 
   # Create and print the matrix subpage for the specified section
   # based on the arguments, which are the name of the section and

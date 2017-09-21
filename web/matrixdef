@@ -1,5 +1,9 @@
 ### $Id: matrixdef,v 1.37 2008-09-30 23:50:02 lpoulson Exp $
 
+#Section verify "Verification Page"
+#Label "<h3>Verification</h3>"
+#Text test "This is a test"
+
 Section general "General Information"
 
 Label "<h3>Language</h3>"

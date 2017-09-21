@@ -238,8 +238,8 @@ def get_feature_resolution_names(ap):
 def customize_conj_wo(mylang, ch, agr, csap):
 
   # get some values for the pattern we're modeling
-  subj_on = True if (csap.get('target') == 'all' or csap.get('target') == 'subj') else False
-  obj_on = True if (csap.get('target') == 'all' or csap.get('target') == 'obj') else False
+  subj_on = True if csap.get('target') == ('all' or 'subject') else False
+  obj_on = True if csap.get('target') == ('all' or 'object') else False
 
   # if we ever want to handle multiple types (first conjunct, closest conjunct) of distinguished conjunct in a subject
   # or object, "before" and "after" should be sets, and you might need to use subtypes of phrase rules that inherit
