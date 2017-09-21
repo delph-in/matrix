@@ -101,12 +101,32 @@ def add_subord_lex_item(mylang, pos, subpos):
   mylang.set_section('addenda')
   mylang.add('head :+ [ INIT bool ].')
 
+def add_phrasal_types(mylang, rules, pos, subpos):
+  """
+  Add the phrase type definitions
+  """
+  mylang.set_section('phrases')
+  if pos == 'before':
+    rules.add('adj-head-scop := adj-head-scop-phrase.')
+  elif pos == 'after':
+    rules.add('head-adj-scop := head-adj-scop-phrase.')
+  elif pos == 'either':
+    rules.add('adj-head-scop := adj-head-scop-phrase.')
+    rules.add('head-adj-scop := head-adj-scop-phrase.')
+  mylang.add('head-comp-phrase := basic-head-1st-comp-phrase & head-initial &\
+  [HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT + ].')
+  mylang.add('comp-head-phrase := basic-head-1st-comp-phrase & head-final&\
+      [HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT - ].')
+  if subpos == 'before':
+    rules.add('head-comp := head-comp-phrase.')
+  elif subpos == 'after':
+    rules.add('comp-head := comp-head-phrase.')
 
 def customize_clausalmods(mylang, ch, lexicon, rules, irules):
   """
   The main clausal modifier customization routine
   """
-  mylang.set_section('clausalmods')
+  mylang.add('+nvcdmo :+ [ MOD < > ].')
 
   for cms in ch.get('cms'):
     cmsnum = str(cms.iter_num())
@@ -115,8 +135,10 @@ def customize_clausalmods(mylang, ch, lexicon, rules, irules):
     subord = cms.get('subordinator')
     subpos = cms.get('subposition')
 
+
     if subord == 'free':
       for subord in cms.get('freemorph'):
         add_free_subordinator_to_lexicon(lexicon, subord, pos, subpos)
       add_subord_lex_item(mylang, pos, subpos)
+      add_phrasal_types(mylang, rules, pos, subpos)
 
