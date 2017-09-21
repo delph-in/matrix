@@ -24,7 +24,6 @@ from gmcs.choices import ChoicesFile
 from gmcs.linglib.toolboximport import import_toolbox_lexicon
 
 from gmcs.deffile import HTTP_header
-from recaptcha.client import captcha
 import requests
 
 ######################################################################
