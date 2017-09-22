@@ -141,4 +141,7 @@ def customize_clausalmods(mylang, ch, lexicon, rules, irules):
         add_free_subordinator_to_lexicon(lexicon, subord, pos, subpos)
       add_subord_lex_item(mylang, pos, subpos)
       add_phrasal_types(mylang, rules, pos, subpos)
+    if subord == 'pair':
+      for pair in cms.get('morphpair'):
+        
 
