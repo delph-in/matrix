@@ -143,5 +143,3 @@ def customize_clausalmods(mylang, ch, lexicon, rules, irules):
       add_phrasal_types(mylang, rules, pos, subpos)
     # if subord == 'pair':
     #   for pair in cms.get('morphpair'):
-
-
