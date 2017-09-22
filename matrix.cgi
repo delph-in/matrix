@@ -26,6 +26,10 @@ from gmcs.linglib.toolboximport import import_toolbox_lexicon
 from gmcs.deffile import HTTP_header
 import requests
 
+
+#Production Check
+disable_captcha = True
+
 ######################################################################
 # beginning of main program
 
@@ -54,23 +58,30 @@ if http_cookie:
       need_verify=False
       break
 
-#gravy note: Potential split area.
+# This area has been modified to support captcha code
+def create_cookie():
+    need_verify=False
+    cookie = str(randint(1000,9999))
+    while os.path.exists('sessions/' + cookie):
+      cookie = str(randint(1000,9999))
+
 if not cookie:
   if form_data.has_key('g-recaptcha-response'):
-     #test = form_data['g-recaptcha-response'].value
-     #test = form_data['g-recaptcha-challenge']
      public  = "6LfEeisUAAAAAGdbbNlfjxKjkRxcSWhSovyq9oik"
      private = "6LfEeisUAAAAAKb8ODRb6c06-TER8MhdmJ3Rkx9u"
      response = form_data['g-recaptcha-response'].value
      clientIP = os.environ["REMOTE_ADDR"]
-     #     check_url = "https://www.google.com/recaptcha/api/siteverify?secret=" + private + "&response="+response + "&remoteip="+clientIP
      check_url = "https://www.google.com/recaptcha/api/siteverify"
      req = requests.get(check_url, params={"secret" : private, "response": response, "remoteip" : clientIP}) 
      if req.json()['success']:
-        need_verify=False
-        cookie = str(randint(1000,9999))
-        while os.path.exists('sessions/' + cookie):
-          cookie = str(randint(1000,9999))
+       create_cookie()
+#        need_verify=False
+#        cookie = str(randint(1000,9999))
+#        while os.path.exists('sessions/' + cookie):
+#          cookie = str(randint(1000,9999))
+  elif disable_captcha:
+    create_cookie()
+  	
   else:
      need_verify=True
 
@@ -166,11 +177,12 @@ except:
   matrixdef.choices_error_page(os.path.join(session_path, 'choices'), exc)
   sys.exit()
 
-# if the 'customize' field is defined, create a customized copy of the matrix
-# based on the current choices file
+# modified to support captcha
 if need_verify:
   matrixdef.verification()
 elif form_data.has_key('customize'):
+	# if the 'customize' field is defined, create a customized copy of the matrix
+	# based on the current choices file
   # ERB 2006-10-03 Checking has_key here to enable local debugging.
   if form_data.has_key('delivery'):
     arch_type = form_data['delivery'].value
