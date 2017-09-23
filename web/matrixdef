@@ -1558,14 +1558,8 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
         BeginIter morphpair{j} "a Free Subordinator Morpheme Pair" 0
             Label "<p>Free Subordinator Morpheme Pair{i}:<br>"
                 Text orth "matrix {i} stem {j} spelling" "Matrix Clause Morpheme Spelling: " "" 30<br> "fill_pred('subord{i}_stem{j}', 's')"
-		Radio pat "Clausal Modifier Strategy {i} pattern" "<br><br>" ""
-    		. comp "Complementizer" "" "the subordinator morpheme in the matrix clause is a complementizer"
-		. adv "Adverb" "" "the subordinator morpheme in the matrix clause is an adverb"
 		BeginIter type{j} "
                 Text orth "subordinate {i} stem {j} spelling" "<br>Subordinate Clause Morpheme Spelling: " "" 30<br> "fill_pred('subord{i}_stem{j}', 's')"
-		Radio pat "Clausal Modifier Strategy {i} pattern" "<br><br>" ""
-    		. comp "Complementizer" "" "the subordinator morpheme in the subordiate clause is a complementizer"
-		. adv "Adverb" "" "the subordinator morpheme in the subordinate clause is an adverb"
                 Text pred "matrix {i} stem {j} predicate" "<br>Predicate: " "" 30
          EndIter morphpair
 
