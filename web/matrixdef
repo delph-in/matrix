@@ -1,4 +1,4 @@
-### $Id: matrixdef,v 1.37 2008-09-30 23:50:02 lpoulson Exp $
+## $Id: matrixdef,v 1.37 2008-09-30 23:50:02 lpoulson Exp $
 
 Section general "General Information"
 
@@ -1551,7 +1551,7 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
                 Text orth "subord {i} stem {j} spelling" "Spelling: " "" 30 "fill_pred('subord{i}_stem{j}', 's')"
                 Text pred "subord {i} stem {j} predicate" " Predicate: " "" 30
          EndIter boundmorph
-
+	 
     Radio pat "Clausal Modifier Strategy {i} pattern" "<br><br>" ""
     . pair "Subordinator Pair" "" "a free subordinator morpheme pair: one in the subordinate clause and one in the main clause<br>"
     Label "<p>Free Subordinator Morpheme Pair{i}:<br>"
