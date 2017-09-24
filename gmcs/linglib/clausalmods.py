@@ -160,5 +160,5 @@ def customize_clausalmods(mylang, ch, lexicon, rules, irules):
       subordtype = cms.gete('subordtype')
       for pair in cms.get('morphpair'):
         add subordinator_pair_to_lexicon(lexicon, matrixtype, subordtype, pair)
-      add_pair_lex_items()
-      add_pair_phrasal_types()
+      # add_pair_lex_items()
+      # add_pair_phrasal_types()
