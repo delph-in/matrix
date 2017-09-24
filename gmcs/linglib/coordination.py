@@ -480,7 +480,9 @@ def customize_coordination(mylang, ch, lexicon, rules, irules):
 
     # If this CS uses feature resolution, we will set up closest conjunct as a mixed strategy
     # (with additional rules and specifications).
-    mixed_strategy = True if any([csap.get('pat').startswith('fr') for csap in cs.get('csap')]) else False
+    mixed_strategy = True if any([csap.get('pat').startswith('fr') for csap in cs.get('csap')])\
+                          and any([csap.get('pat').startswith('dconj') for csap in cs.get('csap')])\
+                          else False
 
     # make a list of the agreement rules for this coord strat
     if cs.get('csap'):
