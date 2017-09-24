@@ -122,14 +122,14 @@ def add_subord_phrasal_types(mylang, rules, pos, subpos):
   elif subpos == 'after':
     rules.add('comp-head := comp-head-phrase.')
 
-def add_subordinator_pair_to_lexicon(lexicon, matrixtype, subordtype, pair):
-  """
-  Adds each member of a subordinator pair to the lexicon
-  """
-  if matrixtype == 'adv':
-    lexicon.add(matrixorth + ':= subpair-adv-lex-item &\
-  [ STEM < "' + matrixorth '" >,\
-    SYNSEM.LKEYS.KEYREL.PRED "' + pred '" ].')
+# def add_subordinator_pair_to_lexicon(lexicon, matrixtype, subordtype, pair):
+#   """
+#   Adds each member of a subordinator pair to the lexicon
+#   """
+#   if matrixtype == 'adv':
+#     lexicon.add(matrixorth + ':= subpair-adv-lex-item &\
+#   [ STEM < "' + matrixorth '" >,\
+#     SYNSEM.LKEYS.KEYREL.PRED "' + pred '" ].')
   #elif matrixtype == 'comp'
 
   #if subordtype == 'comp':
@@ -158,7 +158,7 @@ def customize_clausalmods(mylang, ch, lexicon, rules, irules):
     if subord == 'pair':
       matrixtype = cms.get('matrixtype')
       subordtype = cms.gete('subordtype')
-      for pair in cms.get('morphpair'):
-        add subordinator_pair_to_lexicon(lexicon, matrixtype, subordtype, pair)
+      # for pair in cms.get('morphpair'):
+      #   add subordinator_pair_to_lexicon(lexicon, matrixtype, subordtype, pair)
       # add_pair_lex_items()
       # add_pair_phrasal_types()
