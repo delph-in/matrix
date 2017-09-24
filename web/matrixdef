@@ -1556,11 +1556,11 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
   . pair "Subordinator Pair" "" "a free subordinator morpheme pair: one in the subordinate clause and one in the main clause<br>"
     Label "<p>Free Subordinator Morpheme Pair{i}:<br>"
 
-		Radio matrixtype "Clausal Modifier Strategy {i} pattern" "<br>In this strategy, the subordinator morpheme in the matrix clause is <br>" ""
+		Radio matrixtype "Clausal Modifier Strategy {i} pattern" "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;In this strategy, the subordinator morpheme in the matrix clause is <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
     		. comp "Complementizer" "" "a complementizer"
 		. adv "Adverb" "" "an adverb"
 
-		Radio subordtype "Clausal Modifier Strategy {i} pattern" "<br>and the subordinator morpheme in the subordinate clause is <br>" ""
+		Radio subordtype "Clausal Modifier Strategy {i} pattern" "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and the subordinator morpheme in the subordinate clause is <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
 		. comp "Complementizer" "" "a complementizer"
 		. adv "Adverb" "" "an adverb"
 
