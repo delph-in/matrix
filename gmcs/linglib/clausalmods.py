@@ -132,8 +132,8 @@ def add_subordinator_pair_to_lexicon(lexicon, matrixtype, subordtype, pair):
     SYNSEM.LKEYS.KEYREL.PRED "' + pred '" ].')
   #elif matrixtype == 'comp'
 
-  if subordtype == 'comp':
-    lexicon.add()
+  #if subordtype == 'comp':
+   # lexicon.add()
 
 def customize_clausalmods(mylang, ch, lexicon, rules, irules):
   """
