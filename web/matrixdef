@@ -1582,13 +1582,16 @@ Label "<p>Select additional characteristics that apply to this clausal modificat
 
 Check specialmorph "Special Morphology" "" "Special Morphology<br>"
 
-    Select name "Scale entry feature name" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FORM: " " "
-    fillnames c=both
+BeginIter feat{k} "a Feature"
 
-    Select value "Scale entry feature value" "Value: " ""
-    fillvalues p=scale_feat_name
+	Select name "Clausal Modifier Strategy {i} Morphological Feature {k} Name" "Name: " ""
+		fillnames2 c=verb
 
-Label "<br>"
+	MultiSelect value "Clausal Modifier Strategy {i} Morphological Feature {k} Value" "Value: " ""
+		fillvalues p=cms{i}_feat{k}_name
+
+EndIter feat
+
 Check nominalization "Nominalization" "" "Nominalization<br>"
 
 Check wordorder "Special Word Order" "" "Special Word Order<br>"

@@ -122,18 +122,62 @@ def add_subord_phrasal_types(mylang, rules, pos, subpos):
   elif subpos == 'after':
     rules.add('comp-head := comp-head-phrase.')
 
-# def add_subordinator_pair_to_lexicon(lexicon, matrixtype, subordtype, pair):
-#   """
-#   Adds each member of a subordinator pair to the lexicon
-#   """
-#   if matrixtype == 'adv':
-#     lexicon.add(matrixorth + ':= subpair-adv-lex-item &\
-#   [ STEM < "' + matrixorth '" >,\
-#     SYNSEM.LKEYS.KEYREL.PRED "' + pred '" ].')
+def add_subordinator_pair_to_lexicon(lexicon, matrixtype, subordtype, pair):
+  """
+  Adds each member of a subordinator pair to the lexicon
+  """
+  if matrixtype == 'adv':
+    lexicon.add(pair.get('matrixorth') + ':= subpair-adv-lex-item &\
+  [ STEM < "' + pair.get('matrixorth') + '" >,\
+    SYNSEM.LKEYS.KEYREL.PRED "' + pair.get('matrixpred') + '" ].')
   #elif matrixtype == 'comp'
 
-  #if subordtype == 'comp':
-   # lexicon.add()
+  if subordtype == 'comp':
+    lexicon.add(pair.get('subordorth') + ':= subpair-adv-lex-item &\
+     [ STEM < "' + pair.get('subordorth') + '" >,\
+       SYNSEM.LKEYS.KEYREL.PRED "' + pair.get('subordpred') + '" ].')
+  #elif subordtype == 'adv':
+
+def create_subpair_feature(mylang, morphpair):
+  """
+  adds the subpair feature to canonical synsem as well as adding constraints
+  to phrase types to pass it and mc up
+  """
+  mylang.set_section('addenda')
+  mylang.add('canonical-synsem :+ [ SUBPAIR subpair ].')
+  mylang.add('basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.MC #mc,\
+    HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].')
+  mylang.add('basic-head-mod-phrase-simple :+    [ SYNSEM.LOCAL.CAT.MC #mc,\
+      NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.MOD < [ SUBPAIR #subpair ] >,\
+				      MC #mc ],\
+      HEAD-DTR.SYNSEM.SUBPAIR #subpair ].')
+
+  mylang.add('basic-head-opt-subj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].')
+  mylang.add('basic-head-spec-phrase-super :+ [ SYNSEM.SUBPAIR #subpair,\
+				  HEAD-DTR.SYNSEM.SUBPAIR #subpair,\
+				  NON-HEAD-DTR.SYNSEM [ SUBPAIR #pair,\
+							LOCAL.CAT.VAL [ SPEC < [ SUBPAIR #pair ] > ]]].')
+  mylang.add('basic-head-opt-comp-phrase :+ [ SYNSEM.SUBPAIR #subpair,\
+				HEAD-DTR.SYNSEM.SUBPAIR #subpair ].')
+  mylang.add('basic-head-opt-subj-phrase :+ [ SYNSEM.SUBPAIR #subpair,\
+				HEAD-DTR.SYNSEM.SUBPAIR #subpair ].')
+  mylang.add('adj-head-scop-phrase :+ [ SYNSEM.SUBPAIR #subpair,\
+			  NON-HEAD-DTR.SYNSEM.SUBPAIR #subpair ].')
+  mylang.add('adj-head-phrase :+ [ SYNSEM.SUBPAIR #subpair,\
+		     NON-HEAD-DTR.SYNSEM.SUBPAIR #subpair ].')
+
+  mylang.set_section('features')
+  #mylang.add(';;; Subordinator Pair Features')
+  mylang.add('subpair := *top*.')
+  mylang.add('nopair := subpair.')
+  for pair in morphpair:
+    subpair = pair.get('subordpred')
+    mylang.add(subpair + ' := subpair.')
+
+# def add_pair_lex_items(mylang):
+#   """
+#   Adds the lexical types for subordinator pairs
+#   """
 
 def customize_clausalmods(mylang, ch, lexicon, rules, irules):
   """
@@ -157,8 +201,9 @@ def customize_clausalmods(mylang, ch, lexicon, rules, irules):
 
     if subord == 'pair':
       matrixtype = cms.get('matrixtype')
-      subordtype = cms.gete('subordtype')
-      # for pair in cms.get('morphpair'):
-      #   add subordinator_pair_to_lexicon(lexicon, matrixtype, subordtype, pair)
-      # add_pair_lex_items()
-      # add_pair_phrasal_types()
+      subordtype = cms.get('subordtype')
+      create_subpair_feature(mylang, cms.get('morphpair'))
+      for pair in cms.get('morphpair'):
+        add_subordinator_pair_to_lexicon(lexicon, matrixtype, subordtype, pair)
+      #add_pair_lex_items()
+      #add_pair_phrasal_types()
