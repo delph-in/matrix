@@ -9,39 +9,14 @@ from gmcs.lib import TDLHierarchy
 
 ######################################################################
 
-def add_free_subordinator_to_lexicon(lexicon, freemorph, pos, subpos):
-  """
-  Add free subordinators to the lexicon
-  """
 
-  orth = freemorph.get('orth')
-  orthstr = orth_encode(orth)
-  pred = freemorph.get('pred')
-  #todo add all options
-  if pos == 'before':
-    if subpos == 'before':
-      lextype = 'clause-init-prehead-subord-lex-item'
-    elif subpos == 'after':
-      lextype = 'clause-final-prehead-subord-lex-item'
-  elif pos == 'after':
-    if subpos == 'before':
-      lextype = 'clause-init-posthead-subord-lex-item'
-    elif subpos == 'after':
-      lextype = 'clause-final-posthead-subord-lex-item'
-  elif pos == 'either':
-    if subpos == 'before':
-      lextype = 'clause-init-subord-lex-item'
-    elif subpos == 'after':
-      lextype = 'clause-final-subord-lex-item'
-
-  lexicon.add(orthstr + ':= ' +lextype + ' &\
-                        [ STEM < "' + orthstr + '" >,\
-                     SYNSEM.LKEYS.KEYREL.PRED "' + pred + '"].\\')
-
-def add_subord_lex_item(mylang, pos, subpos):
+def add_subord_lex(mylang, lexicon, cms):
   """
   add the type definition for the lexical item to mylang
+  and the lexical entries to lexicon
   """
+  mylang.set_section('addenda')
+  mylang.add('head :+ [ INIT bool ].')
   mylang.set_section('subordlex')
   mylang.add('scopal-mod-with-comp-lex := single-rel-lex-item & norm-ltop-lex-item &\
   [ SYNSEM [ LOCAL [ CAT [ HEAD.MOD < [ LOCAL scopal-mod &\
@@ -72,39 +47,45 @@ def add_subord_lex_item(mylang, pos, subpos):
     ARG-ST < #comps &\
     	     [ LOCAL.CAT [ MC - ]] > ].\\')
 
+  pos = cms.get('position')
+  subpos = cms.get('subposition')
+  lextype = ''
+  constraints = ''
+  if subpos == 'before':
+      lextype += 'clause-init'
+      constraints += '[ SYNSEM.LOCAL.CAT.HEAD.INIT +'
+  elif subpos == 'after':
+      lextype += 'clause-final'
+      constraints += '[ SYNSEM.LOCAL.CAT.HEAD.INIT -'
   if pos == 'before':
-    if subpos == 'before':
-      mylang.add('clause-init-prehead-subord-lex-item := subord-lex-item &\
-      [ SYNSEM.LOCAL.CAT.HEAD.INIT +,\
-      SYNSEM.LOCAL.CAT.POSTHEAD - ].\\')
-    elif subpos == 'after':
-      mylang.add('clause-final-prehead-subord-lex-item := subord-lex-item &\
-            [ SYNSEM.LOCAL.CAT.HEAD.INIT - ],\
-      SYNSEM.LOCAL.CAT.POSTHEAD - ].\\')
+      lextype += '-prehead'
+      constraints += ',\SYNSEM.LOCAL.CAT.POSTHEAD -'
   elif pos == 'after':
-    if subpos == 'before':
-      mylang.add('clause-init-posthead-subord-lex-item := subord-lex-item &\
-      [ SYNSEM.LOCAL.CAT.HEAD.INIT +,\
-      SYNSEM.LOCAL.CAT.POSTHEAD + ].\\')
-    elif subpos == 'after':
-      mylang.add('clause-final-posthead-subord-lex-item := subord-lex-item &\
-            [ SYNSEM.LOCAL.CAT.HEAD.INIT -,\
-      SYNSEM.LOCAL.CAT.POSTHEAD + ].\\')
-  elif pos == 'either':
-    if subpos == 'before':
-      mylang.add('clause-init-subord-lex-item := subord-lex-item &\
-      [ SYNSEM.LOCAL.CAT.HEAD.INIT + ].\\')
-    elif subpos == 'after':
-      mylang.add('clause-final-subord-lex-item := subord-lex-item &\
-            [ SYNSEM.LOCAL.CAT.HEAD.INIT - ].\\')
+      lextype += '-posthead'
+      constraints += ',\SYNSEM.LOCAL.CAT.POSTHEAD +'
+  if cms.get('specialmorph') == 'on':
+      for feat in cms.get('feat'):
+          lextype += '-' + feat.get('value')
+          #is this a problem? can the feature be in not head?
+          constraints += (',\SYNSEM.LOCAL.CAT.HEAD.' + feat.get('name') + '.' + feat.get('value'))
+  lextype += '-lex-item'
+  constraints += ' ].\\'
+  mylang.add(lextype + ' := subord-lex-item &\\' + constraints)
+  for freemorph in cms.get('freemorph'):
+      orth = freemorph.get('orth')
+      orthstr = orth_encode(orth)
+      pred = freemorph.get('pred')
+      lexicon.add(orthstr + ':= ' + lextype + ' &\
+                              [ STEM < "' + orthstr + '" >,\
+                           SYNSEM.LKEYS.KEYREL.PRED "' + pred + '"].\\')
 
-  mylang.set_section('addenda')
-  mylang.add('head :+ [ INIT bool ].')
 
-def add_subord_phrasal_types(mylang, rules, pos, subpos):
+def add_subord_phrasal_types(mylang, rules, cms):
   """
   Add the phrase type definitions
   """
+  pos = cms.get('position')
+  subpos = cms.get('subposition')
   mylang.set_section('phrases')
   if pos == 'before':
     rules.add('adj-head-scop := adj-head-scop-phrase.')
@@ -188,16 +169,12 @@ def customize_clausalmods(mylang, ch, lexicon, rules, irules):
   for cms in ch.get('cms'):
     cmsnum = str(cms.iter_num())
 
-    pos = cms.get('position')
     subord = cms.get('subordinator')
 
 
     if subord == 'free':
-      subpos = cms.get('subposition')
-      for subord in cms.get('freemorph'):
-        add_free_subordinator_to_lexicon(lexicon, subord, pos, subpos)
-      add_subord_lex_item(mylang, pos, subpos)
-      add_subord_phrasal_types(mylang, rules, pos, subpos)
+      add_subord_lex(mylang, lexicon, cms)
+      add_subord_phrasal_types(mylang, rules, cms)
 
     if subord == 'pair':
       matrixtype = cms.get('matrixtype')
