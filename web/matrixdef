@@ -1584,18 +1584,6 @@ Check wordorder "Special Word Order" "" "Special Word Order<br>"
 
 Check subjraise "Subject Raising" "" "Subject Raising<br>" 
 
-Check specialmorph "Special Morphology" "" "Special Morphology<br>"
-
-BeginIter feat{k} "a Feature"
-
-	Select name "Clausal Modifier Strategy {i} Morphological Feature {k} Name" "Name: " ""
-		fillnames2 c=verb
-
-	MultiSelect value "Clausal Modifier Strategy {i} Morphological Feature {k} Value" "Value: " ""
-		fillvalues p=cms{i}_feat{k}_name
-
-EndIter feat
-
 Check nominalization "<br>Nominalization" "" "Nominalization<br>"
 Radio nominalization "Clausal Modifier Strategy {i} pattern" "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if the subordinate clause in nominalized, the nominalization is presumed to happen <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
 		. low "Low" "" "at V"
@@ -1607,6 +1595,18 @@ Radio nmzRel "Clausal Modifier Strategy {i} pattern" "<br>&nbsp;&nbsp;&nbsp;&nbs
 		. mid "Mid" "" "at VP"
 		. mid "Mid" "" "at S" 
 
+
+Check specialmorph "Special Morphology" "" "Special Morphology<br>"
+
+BeginIter feat{k} "a Feature"
+
+	Select name "Clausal Modifier Strategy {i} Morphological Feature {k} Name" "Name: " ""
+		fillnames2 c=verb
+
+	MultiSelect value "Clausal Modifier Strategy {i} Morphological Feature {k} Value" "Value: " ""
+		fillvalues p=cms{i}_feat{k}_name
+
+EndIter feat
 EndIter cms
 
 
