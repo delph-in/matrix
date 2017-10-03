@@ -1593,7 +1593,7 @@ Radio nominalization "Clausal Modifier Strategy {i} pattern" "&nbsp;&nbsp;&nbsp;
 Radio nmzRel "Clausal Modifier Strategy {i} pattern" "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Does the semantics structure of nominalized clauses include a nominalization_rel <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
 		. low "Low" "" "at V"
 		. mid "Mid" "" "at VP"
-		. mid "Mid" "" "at S" 
+		. mid "Mid" "" "at S<br>" 
 
 Check specialmorph "Special Morphology" "" "Special Morphology<br>"
 
