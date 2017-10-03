@@ -1585,7 +1585,7 @@ Check wordorder "Special Word Order" "" "Special Word Order<br>"
 Check subjraise "Subject Raising" "" "Subject Raising<br>" 
 
 Check nominalization "<br>Nominalization" "" "Nominalization<br>"
-Radio nominalization "Clausal Modifier Strategy {i} pattern" "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if the subordinate clause in nominalized, the nominalization is presumed to happen <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
+Radio nominalization "Clausal Modifier Strategy {i} pattern" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if the subordinate clause in nominalized, the nominalization is presumed to happen <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
 		. low "Low" "" "at V"
 		. mid "Mid" "" "at VP"
 		. mid "Mid" "" "at S"
@@ -1594,7 +1594,6 @@ Radio nmzRel "Clausal Modifier Strategy {i} pattern" "<br>&nbsp;&nbsp;&nbsp;&nbs
 		. low "Low" "" "at V"
 		. mid "Mid" "" "at VP"
 		. mid "Mid" "" "at S" 
-
 
 Check specialmorph "Special Morphology" "" "Special Morphology<br>"
 
