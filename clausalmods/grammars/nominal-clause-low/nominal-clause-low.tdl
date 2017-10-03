@@ -276,8 +276,11 @@ comp-head-phrase := basic-head-1st-comp-phrase & head-final &
   [ SYNSEM.LOCAL.CAT.HEAD.AUX -,
     HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT - ].
 
-subj-head-phrase := decl-head-subj-phrase & head-final &
-  [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < >].
+subj-head-phrase := basic-head-subj-phrase & head-final &
+  [ SYNSEM.LOCAL.CAT.HEAD [ FORM #form ],
+    HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD [ FORM #form ],
+				       VAL.COMPS < >],
+    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPR < > ].
 
 ; Bare NP phrase.  Consider modifying the PRED value of the quantifier relation
 ; introduced to match the semantic effect of bare NPs in your language.

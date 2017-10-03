@@ -1580,6 +1580,10 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
 
 Label "<p>Select additional characteristics that apply to this clausal modification strategy<br></p?"
 
+Check wordorder "Special Word Order" "" "Special Word Order<br>"
+
+Check subjraise "Subject Raising" "" "Subject Raising<br>" 
+
 Check specialmorph "Special Morphology" "" "Special Morphology<br>"
 
 BeginIter feat{k} "a Feature"
@@ -1593,10 +1597,15 @@ BeginIter feat{k} "a Feature"
 EndIter feat
 
 Check nominalization "Nominalization" "" "Nominalization<br>"
+Radio nominalization "Clausal Modifier Strategy {i} pattern" "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if the subordinate clause in nominalized, the nominalization is presumed to happen <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
+		. low "Low" "" "at V"
+		. mid "Mid" "" "at VP"
+		. mid "Mid" "" "at S"
 
-Check wordorder "Special Word Order" "" "Special Word Order<br>"
-
-Check subjraise "Subject Raising" "" "Subject Raising<br>"  
+Radio nmzRel "Clausal Modifier Strategy {i} pattern" "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Does the semantics structure of nominalized clauses include a nominalization_rel <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
+		. low "Low" "" "at V"
+		. mid "Mid" "" "at VP"
+		. mid "Mid" "" "at S" 
 
 EndIter cms
 
