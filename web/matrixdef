@@ -1592,7 +1592,7 @@ Radio nominalization "Clausal Modifier Strategy {i} pattern" "&nbsp;&nbsp;&nbsp;
 
 Radio nmzRel "Clausal Modifier Strategy {i} pattern" "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Does the semantics structure of nominalized clauses include a nominalization_rel <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
 		. yes "Yes" "" "Yes"
-		. no "No" "" "No"
+		. no "No" "" "No<br>"
 
 Check specialmorph "Special Morphology" "" "Special Morphology<br>"
 
