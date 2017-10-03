@@ -1596,7 +1596,7 @@ BeginIter feat{k} "a Feature"
 
 EndIter feat
 
-Check nominalization "Nominalization" "" "Nominalization<br>"
+Check nominalization "<br>Nominalization" "" "Nominalization<br>"
 Radio nominalization "Clausal Modifier Strategy {i} pattern" "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if the subordinate clause in nominalized, the nominalization is presumed to happen <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
 		. low "Low" "" "at V"
 		. mid "Mid" "" "at VP"
