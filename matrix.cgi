@@ -64,6 +64,7 @@ def create_cookie():
     cookie = str(randint(1000,9999))
     while os.path.exists('sessions/' + cookie):
       cookie = str(randint(1000,9999))
+    return cookie
 
 if not cookie:
   if form_data.has_key('g-recaptcha-response'):
@@ -74,13 +75,13 @@ if not cookie:
      check_url = "https://www.google.com/recaptcha/api/siteverify"
      req = requests.get(check_url, params={"secret" : private, "response": response, "remoteip" : clientIP}) 
      if req.json()['success']:
-       create_cookie()
+       cookie = create_cookie()
 #        need_verify=False
 #        cookie = str(randint(1000,9999))
 #        while os.path.exists('sessions/' + cookie):
 #          cookie = str(randint(1000,9999))
   elif disable_captcha:
-    create_cookie()
+    cookie = create_cookie()
   	
   else:
      need_verify=True

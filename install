@@ -41,7 +41,8 @@ while [ "$1" = -r -o "$1" = -lkb -o "$1" = -iso ]
 do
     if [ "$1" = -r ]
     then
-        dest_prefix="uwcl@homer.u.washington.edu:~/public_html/"
+        dest_prefix="patas.ling.washington.edu:/home2/www-matrix/html/"
+        #dest_prefix="uwcl@homer.u.washington.edu:~/public_html/"
     elif [ "$1" = -iso ]
     then
         get_iso=1
@@ -81,7 +82,7 @@ tempdir=/tmp/matrix.$$
 
 # the following will create the tempdir directory and fill it with
 # with everything in the directories besides what's excluded.
-rsync -a --exclude={CVS/,.svn/,delphin/,regression_tests/,tests/,sql_profiles/,gmmt/,lisp/,*.pyc,.*,*.tmp~,local_testing,Version.lsp,install,matrix.py,def_check.py,profiles.py,randgram.py,tdltest.py} ${CUSTOMIZATIONROOT}/../ $tempdir
+rsync -a -o --exclude={CVS/,.svn/,delphin/,regression_tests/,tests/,sql_profiles/,gmmt/,lisp/,*.pyc,.*,*.tmp~,local_testing,Version.lsp,install,matrix.py,def_check.py,profiles.py,randgram.py,tdltest.py} ${CUSTOMIZATIONROOT}/../ $tempdir
 
 # create datestamp, matrix-types, and head-types files
 date -u > $tempdir/datestamp
