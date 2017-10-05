@@ -1509,7 +1509,7 @@ BeginIter ns{i} "a Nominalization Strategy" 1
 
   Text name "Nominalization Strategy {i} Name" "<b>Nominalization Strategy {i}</b>:<br/>Nominalization Strategy Name: " " " 20
 
-    Radio level "Nominalization Strategy {i} Level" "<b>The nominalization of the clause happens:</b><br>" ""
+    Radio level "Nominalization Strategy {i} Level" "<br><b>The nominalization of the clause happens:</b><br>" ""
   . low "Low" "" "at V"
   . mid "Mid" "" "at VP"
   . high "High" "" "at S"
