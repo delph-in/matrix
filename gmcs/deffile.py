@@ -561,6 +561,7 @@ class MatrixDefFile:
   'coordination':'Coordination', 'matrix-yes-no':'YesNoQ',
   'info-str':'InformationStructure',
   'arg-opt':'ArgumentOptionality',
+  'nominalclause':'Nominalized Clauses'
   'clausalmods':'Clausal Modifiers', 'lexicon':'Lexicon',
   'morphology':'Morphology','toolbox-import':'ImportToolboxLexicon',
   'test-sentences':'TestSentences','gen-options':'TestByGeneration',
