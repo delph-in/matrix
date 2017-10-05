@@ -1505,19 +1505,19 @@ Morphology pages.</p>"
 
 BeginIter ns{i} "a Nominalization Strategy" 1
 
-    Label "<p> Nominalization Strategy {i}:<br>"
+  Label "<p> Nominalization Strategy {i}:<br>"
 
-        Radio level "Nominalization Strategy {i} Level" "<b>The nominalization of the clause happens:</b><br>" ""
-      . low "Low" "" "at V"
-      . mid "Mid" "" "at VP"
-      . high "High" "" "at S"
+    Radio level "Nominalization Strategy {i} Level" "<b>The nominalization of the clause happens:</b><br>" ""
+  . low "Low" "" "at V"
+  . mid "Mid" "" "at VP"
+  . high "High" "" "at S"
 
-	Radio nmzRel "Nominalization Strategy {i} Relation" "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Does the semantics structure of nominalized clauses include a nominalization_rel
-	<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
-      . yes "Yes" "" "Yes"
-      . no "No" "" "No<br>"
+  Radio nmzRel "Nominalization Strategy {i} Relation" "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Does the semantics structure of nominalized clauses include a nominalization_rel
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
+    . yes "Yes" "" "Yes"
+    . no "No" "" "No<br>"
 
-EndIter ns
+  EndIter ns
 
 Section clausalmods "Clausal Modifiers"
 
