@@ -1503,21 +1503,7 @@ Label "<p>If your languages has nominalized clauses, you may define the strategi
 here. These strategies will be available to you on the Clausal Complements, Clausal Modifers, and 
 Morphology pages.</p>"
 
-BeginIter ns{i} "a Nominalization Strategy" 1
 
-  Label "<p> Nominalization Strategy {i}:<br>"
-
-    Radio level "Nominalization Strategy {i} Level" "<b>The nominalization of the clause happens:</b><br>" ""
-  . low "Low" "" "at V"
-  . mid "Mid" "" "at VP"
-  . high "High" "" "at S"
-
-  Radio nmzRel "Nominalization Strategy {i} Relation" "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Does the semantics structure of nominalized clauses include a nominalization_rel
-  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
-    . yes "Yes" "" "Yes"
-    . no "No" "" "No<br>"
-
-  EndIter ns
 
 Section clausalmods "Clausal Modifiers"
 
