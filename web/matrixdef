@@ -1507,12 +1507,12 @@ BeginIter ns{i} "a Nominalization Strategy" 1
 
     Label "<p> Nominalization Strategy {i}:<br>"
 
-        Radio level "Clause Level" "<b>The nominalization of the clause happens:</b><br>" ""
+        Radio level "Nominalization Strategy {i} Level" "<b>The nominalization of the clause happens:</b><br>" ""
       . low "Low" "" "at V"
       . mid "Mid" "" "at VP"
       . high "High" "" "at S"
 
-	Radio nmzRel "Clausal Modifier Strategy {i} pattern" "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Does the semantics structure of nominalized clauses include a nominalization_rel
+	Radio nmzRel "Nominalization Strategy {i} Relation" "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Does the semantics structure of nominalized clauses include a nominalization_rel
 	<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
       . yes "Yes" "" "Yes"
       . no "No" "" "No<br>"
