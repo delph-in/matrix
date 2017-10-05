@@ -545,6 +545,7 @@ class MatrixDefFile:
   'coordination':'Coordination', 'matrix-yes-no':'Matrix Yes/No Questions',
   'info-str':'Information Structure',
   'arg-opt':'Argument Optionality',
+  'nominalclause':'Nominalized Clauses',
   'clausalmods':'Clausal Modifiers', 'lexicon':'Lexicon',
   'morphology':'Morphology','toolbox-import':'Toolbox Import',
   'test-sentences':'Test Sentences','gen-options':'TbG Options',

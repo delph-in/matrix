@@ -1497,6 +1497,11 @@ Label "<p> Vainikka, A and Levy, Y. 1999. \"Empty Subjects in Finnish
 and Hebrew.\" Natural Language and Linguistic Theory 17: 614-71.</p>"
 Label "</div>"
 
+Section nominalclause "Nominalized Clauses"
+
+Label "<p>If your languages has nominalized clauses, you may define the strategies for nominalization
+here. These strategies will be available to you on the Clausal Complements, Clausal Modifers, and 
+Morphology pages.</p>"
 
 Section clausalmods "Clausal Modifiers"
 
