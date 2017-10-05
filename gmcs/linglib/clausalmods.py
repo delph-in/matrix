@@ -68,7 +68,7 @@ def add_subord_lex(mylang, lexicon, cms):
           lextype += '-' + feat.get('value')
           #is this a problem? can the feature be in not head?
           constraints += (',\SYNSEM.LOCAL.CAT.HEAD.' + feat.get('name') + '.' + feat.get('value'))
-  lextype += '-lex-item'
+  lextype += '-subord-lex-item'
   constraints += ' ].\\'
   mylang.add(lextype + ' := subord-lex-item &\\' + constraints)
   for freemorph in cms.get('freemorph'):

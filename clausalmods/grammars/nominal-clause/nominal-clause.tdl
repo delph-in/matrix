@@ -238,8 +238,10 @@ nominal-lex-rule := nominalized-lex-rule-super & cat-change-only-lex-rule &
 			      AUX #aux,
 			      INIT #init,
 			      MOD #mod ],
-		       VAL [ SUBJ < [ LOCAL.CAT.HEAD noun &
-						   [ CASE gen ] ] >,
+		       VAL [ SUBJ < [ LOCAL [ CAT [ HEAD noun &
+						   [ CASE gen ],
+						  VAL.SPR < > ],
+						CONT.HOOK.INDEX #subj]] >,
 			     COMPS #comps,
 			     SPR #spr,
 			     SPEC #spec ],
@@ -251,7 +253,8 @@ nominal-lex-rule := nominalized-lex-rule-super & cat-change-only-lex-rule &
 				 AUX #aux,
 				 INIT #init,
 				 MOD #mod ],
-			   VAL [ COMPS #comps,
+			   VAL [ SUBJ < [ LOCAL.CONT.HOOK.INDEX #subj ] >,
+				COMPS #comps,
 				 SPR #spr,
 				 SPEC #spec ],
 			   MC #mc,
@@ -288,7 +291,7 @@ head-comp-phrase := basic-head-1st-comp-phrase & head-initial &
 
 nominalized-clause-phrase := basic-unary-phrase &
   [ SYNSEM.LOCAL.CAT [ HEAD noun,
-		       VAL.SPR < > ],
+		       VAL [ SPR < [ OPT + ] > ]],
     C-CONT [ RELS <! [ PRED "nominalized_rel",
 		       LBL #ltop,
 		       ARG0 ref-ind & #arg0,
