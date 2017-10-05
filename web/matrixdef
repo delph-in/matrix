@@ -1517,6 +1517,8 @@ BeginIter ns{i} "a Nominalization Strategy" 1
       . yes "Yes" "" "Yes"
       . no "No" "" "No<br>"
 
+EndIter ns
+
 Section clausalmods "Clausal Modifiers"
 
 Label "<p>There are several possible strategies for clausal subordination, 
