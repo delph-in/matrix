@@ -1497,6 +1497,26 @@ Label "<p> Vainikka, A and Levy, Y. 1999. \"Empty Subjects in Finnish
 and Hebrew.\" Natural Language and Linguistic Theory 17: 614-71.</p>"
 Label "</div>"
 
+Section nominalclause "Nominalized Clauses"
+
+Label "<p>If your languages has nominalized clauses, you may define the strategies for nominalization
+here. These strategies will be available to you on the Clausal Complements, Clausal Modifers, and 
+Morphology pages.</p>"
+
+BeginIter ns{i} "a Nominalization Strategy" 1
+
+    Label "<p> Nominalization Strategy {i}:<br>"
+
+        Radio level "Clause Level" "<b>The nominalization of the clause happens:</b><br>" ""
+      . low "Low" "" "at V"
+      . mid "Mid" "" "at VP"
+      . high "High" "" "at S"
+
+	Radio nmzRel "Clausal Modifier Strategy {i} pattern" "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Does the semantics structure of nominalized clauses include a nominalization_rel
+	<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
+      . yes "Yes" "" "Yes"
+      . no "No" "" "No<br>"
+
 Section clausalmods "Clausal Modifiers"
 
 Label "<p>There are several possible strategies for clausal subordination, 
@@ -1585,14 +1605,6 @@ Check wordorder "Special Word Order" "" "Special Word Order<br>"
 Check subjraise "Subject Raising" "" "Subject Raising<br>" 
 
 Check nominalization "<br>Nominalization" "" "Nominalization<br>"
-Radio nominalization "Clausal Modifier Strategy {i} pattern" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if the subordinate clause in nominalized, the nominalization is presumed to happen <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
-		. low "Low" "" "at V"
-		. mid "Mid" "" "at VP"
-		. mid "Mid" "" "at S"
-
-Radio nmzRel "Clausal Modifier Strategy {i} pattern" "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Does the semantics structure of nominalized clauses include a nominalization_rel <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
-		. yes "Yes" "" "Yes"
-		. no "No" "" "No<br>"
 
 Check specialmorph "Special Morphology" "" "Special Morphology<br>"
 
