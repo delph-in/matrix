@@ -46,6 +46,7 @@ do
     if [ "$1" = -r ]
     then
         dest_prefix="$username@patas.ling.washington.edu:/home/www-matrix/html/"
+	enable_captcha=1
         #dest_prefix="uwcl@homer.u.washington.edu:~/public_html/"
     elif [ "$1" = -iso ]
     then
@@ -116,6 +117,11 @@ then
     echo "Downloading iso code table file from sil.org."
     echo ""
     wget http://www.sil.org/iso639-3/iso-639-3_20120206.tab -O "$tempdir/iso.tab"
+fi
+
+if [ $enable_captcha ]
+then
+    sed -i 's/^disable_captcha = True/disable_captcha = False/' $tempdir/matrix.cgi
 fi
 
 #Finally rsync the tempdir to the destination
