@@ -1511,10 +1511,11 @@ BeginIter ns{i} "a Nominalization Strategy" 1
   . mid "Mid" "" "at VP"
   . high "High" "" "at S"
 
-  Radio nmzRel "Nominalization Strategy {i} Relation" "<br><b>Does the semantics structure of nominalized clauses include a nominalization_rel
+  Radio nmzRel "Nominalization Strategy {i} Relation" "<br><b>If nominalization happens at the clause level (if you selected S above), is the nominalization syntactic only or should it also be reflected in the semantics?
   </b><br>" ""
-    . yes "Yes" "" "Yes"
-    . no "No" "" "No<br>"
+
+    . no "No" "" "Nominalization is syntactic only<br>"
+    . yes "Yes" "" "Nominalization should be reflected in the semantics<br>"
 
 EndIter ns
 
