@@ -1499,13 +1499,10 @@ Label "</div>"
 
 Section nominalclause "Nominalized Clauses"
 
-Label "<p>If your languages has nominalized clauses, you may define the strategies for nominalization
-here. These strategies will be available to you on the Clausal Complements, Clausal Modifers, and 
-Morphology pages.</p>"
+Label "<p>If your language uses nominalization in the context of clausal complements
+and/or clausal modifiers, define the nomminalization strategies here. They will then be available on the Clausal Complements, Clausal Modifers, and Morphology pages.</p>"
 
 BeginIter ns{i} "a Nominalization Strategy" 1
-
-  Label "<p> Nominalization Strategy {i}:<br>"
 
   Text name "Nominalization Strategy {i} Name" "<b>Nominalization Strategy {i}</b>:<br/>Nominalization Strategy Name: " " " 20
 
