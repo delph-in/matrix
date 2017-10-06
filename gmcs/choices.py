@@ -1126,7 +1126,7 @@ class ChoicesFile:
           if nom_types == '':
             nom_types.append(name)
           else:
-            nom_types.append('|'+name)
+            nom_types += ('|' + name)
       features += [ ['nominalization', nom_types, '', 'verb', 'y'] ]
 
     # Argument Optionality
