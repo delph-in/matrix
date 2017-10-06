@@ -1124,7 +1124,7 @@ class ChoicesFile:
       for ns in self.choices.get('ns'):
         for name in ns.get('name'):
           if nom_types == '':
-            nom_types.append(name)
+            nom_types += name
           else:
             nom_types += ('|' + name)
       features += [ ['nominalization', nom_types, '', 'verb', 'y'] ]
