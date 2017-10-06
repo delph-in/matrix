@@ -1123,9 +1123,9 @@ class ChoicesFile:
       nom_types = ''
       for ns in self.choices.get('ns'):
         if nom_types == '':
-          nom_types += ns.get('name')
+          nom_types += (ns.get('name') + '|' + ns.get('name'))
         else:
-          nom_types += ('|' + ns.get('name'))
+          nom_types += (';' + ns.get('name') + '|' + ns.get('name'))
       features += [ ['nominalization', nom_types, '', 'verb', 'y'] ]
 
     # Argument Optionality
