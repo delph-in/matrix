@@ -1118,6 +1118,14 @@ class ChoicesFile:
     #features += [ ['information-structure marking', mkg_values, 'LOCAL.CAT.MKG', 'both', 'n'] ]
     features += [ ['information-structure meaning', infostr_values, 'LOCAL.CONT.HOOK.ICONS-KEY', 'both', 'n'] ]
 
+    # Nominalization
+    if 'ns' in self.choices:
+      nom_types = []
+      for ns in self.choices.get('ns'):
+        for name in ns.get('name'):
+          nom_types.append(name)
+      features += [ ['nominalization', nom_types, '', 'verb', 'y'] ]
+
     # Argument Optionality
     if 'subj-drop' in self.choices or 'obj-drop' in self.choices:
       features +=[['OPT', 'plus|plus;minus|minus', '', 'verb', 'y']]
