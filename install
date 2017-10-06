@@ -37,11 +37,15 @@ then
 fi
 
 # parse command line
+
+echo "Please enter your patas username:"
+read username
+
 while [ "$1" = -r -o "$1" = -lkb -o "$1" = -iso ]
 do
     if [ "$1" = -r ]
     then
-        dest_prefix="patas.ling.washington.edu:/home2/www-matrix/html/"
+        dest_prefix="$username@patas.ling.washington.edu:/home/www-matrix/html/"
         #dest_prefix="uwcl@homer.u.washington.edu:~/public_html/"
     elif [ "$1" = -iso ]
     then
@@ -104,7 +108,7 @@ echo "Option -Indexes" >> \
 
 if [ $install_lkb ]
 then
-    rsync -a --exclude=.svn/ $delphin_dir $tempdir
+    rsync -a --exclude=.svn/ $delphin_dir $tempdir --omit-dir-times
 fi
 
 if [ $get_iso ]
@@ -122,13 +126,18 @@ fi
 #      -l copy symlinks as symlinks
 #      -t timestamps (may cause error messages during copy, but they
 #                     are apparently necessary for web-tests)
-rsync -Kvzrlt $tempdir/ $dest
+rsync -Kvzrlt $tempdir/ $dest --omit-dir-times
 # The following command will also delete files at the destination that
 # do not exist in tempdir. Not using for now because an incorrect
 # destination could delete more than expected. This means that files
 # such as sample-choices deleted locally won't be deleted remotely unless
 # you do it manually.
 #rsync -az --delete $tempdir/ $dest
+
+# fix permissions:
+echo "Fixing permissions (you will be prompted for your password once more)."
+
+ssh $username@patas.ling.washington.edu 'sudo /home/www-matrix/fixperm.sh'
 
 # and clean up
 rm -rf $tempdir
