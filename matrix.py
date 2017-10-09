@@ -727,7 +727,7 @@ def vivify(force):
   #     since the last vivification.
   #  2. There are no remaining modifications not checked into SVN.
   cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'], '../install')
-  subprocess.call([cmd, '-lkb','-iso','-r', 'matrix/customize'], env=os.environ)
+  subprocess.call([cmd, '-lkb','-iso','-r', 'customize'], env=os.environ)
 
 def run_web_tests():
   ensure_customization_root_set()

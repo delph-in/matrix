@@ -91,7 +91,6 @@ HTML_toggle_visible_js = '''<script type="text/javascript">
 </script>
 '''
 
-#gravy note: mainbody
 HTML_mainprebody = '''<body onload="animate()">
 <h1>LinGO Grammar Matrix</h1>
 <h1 style="display:inline">Matrix customization and download page</h1>
@@ -260,8 +259,6 @@ HTML_postbody = '''</body>
 
 </html>'''
 
-
-#<a href="http://www.delph-in.net/matrix/">Back to Matrix main page</a><br>
 
 ######################################################################
 # Stupid: The Python syntax coloring in Emacs doesn't properly handle
@@ -800,7 +797,6 @@ class MatrixDefFile:
                      '<p>', '')
     print html_input(vr, 'file', 'choices', '', False, '', '</p>', '')
     print HTML_uploadpostform
-    #print HTML_new_cookie
 
     print '<hr>\n'
 

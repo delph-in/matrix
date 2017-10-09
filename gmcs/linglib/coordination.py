@@ -10,7 +10,8 @@ from gmcs.lib import TDLHierarchy
 ######################################################################
 # define_coord_strat: a utility function, defines a strategy
 
-def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, mylang, rules, irules, resrules):
+def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, mylang,
+                       rules, irules, resrules, mixed_strat=False):
   mylang.add_literal(';;; Coordination Strategy ' + num)
 
   pn = pos + num
@@ -30,13 +31,13 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, mylang, rules, i
                  basic-' + pos + '-top-coord-rule &\
                  ' + top + 'top-coord-rule &\
                  ' + st +\
-                 '[ SYNSEM.LOCAL.COORD-STRAT "' + num + '" ].')
+                 coord_strat_features(num, nm, mixed_strat))
     if mid:
       mylang.add(pn + nm + '-mid-coord-rule :=\
                    basic-' + pos + '-mid-coord-rule &\
                    ' + mid + 'mid-coord-rule &\
                    ' + st +\
-                   '[ SYNSEM.LOCAL.COORD-STRAT "' + num + '" ].')
+                   coord_strat_features(num, nm, mixed_strat))
 
   if pre or suf:
     # first the rule in mylang
@@ -97,6 +98,15 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, mylang, rules, i
   if left:
     rules.add(pn + '-left-coord := ' + pn + '-left-coord-rule.')
 
+
+def coord_strat_features(num, nm, mixed_strat):
+  """Gets either just the COORD-STRAT number, or also the COORDAGR value,
+   which is only used in a mixed strategy language"""
+  if mixed_strat and 'conjunct' not in nm:
+    return '[ SYNSEM.LOCAL [ COORDAGR res, ' \
+           'COORD-STRAT "' + num + '" ] ].'
+  else:
+    return '[ SYNSEM.LOCAL.COORD-STRAT "' + num + '" ].'
 
 def customize_feature_resolution(mylang, ch, ap):
 
@@ -236,10 +246,9 @@ def get_feature_resolution_names(ap):
 
 
 def customize_conj_wo(mylang, ch, agr, csap):
-
   # get some values for the pattern we're modeling
-  subj_on = True if csap.get('target') == ('all' or 'subject') else False
-  obj_on = True if csap.get('target') == ('all' or 'object') else False
+  subj_on = True if (csap.get('target') == 'all' or csap.get('target') == 'subj') else False
+  obj_on = True if (csap.get('target') == 'all' or csap.get('target') == 'obj') else False
 
   # if we ever want to handle multiple types (first conjunct, closest conjunct) of distinguished conjunct in a subject
   # or object, "before" and "after" should be sets, and you might need to use subtypes of phrase rules that inherit
@@ -256,8 +265,23 @@ def customize_conj_wo(mylang, ch, agr, csap):
     before = 'r'
     after = 'r'
 
-  # now, figure out which word order phrase rules we're modifying.
+  # it looks like this type addendum is all we'll need for head-mod
+  mylang.add('head-mod-phrase :+\
+              [ SYNSEM.LOCAL.COORDAGR #cagr,\
+                HEAD-DTR.SYNSEM.LOCAL.COORDAGR #cagr ].', '', section='addenda')
 
+  # head-spec
+
+  if ch.get('has-dets') == 'yes':
+    if ch.get('noun-det-order') == 'noun-det':
+      mylang.add('head-spec-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR ' + after + '].')
+    if ch.get('noun-det-order') == 'det-noun':
+      mylang.add('head-spec-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR ' + before + '].')
+
+  customize_coordagr_word_order(ch, mylang, before, after, subj_on, obj_on)
+
+def customize_coordagr_word_order(ch, mylang, before, after, subj_on, obj_on):
+  # now, figure out which word order phrase rules we're modifying.
   wo = ch.get('word-order')
 
   hc = ''
@@ -294,24 +318,19 @@ def customize_conj_wo(mylang, ch, agr, csap):
       mylang.add('head-comp-phrase-2 := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR '+ after + '].')
       mylang.add('comp-head-phrase-2 := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR '+ before + '].')
 
-  # head-spec
+def customize_mixed_strat_resolution(ch, mylang, target):
+    subj_on = True if target == 'subj' else False
+    obj_on = True if target == 'obj' else False
 
-  if ch.get('has-dets') == 'yes':
-    if ch.get('noun-det-order') == 'noun-det':
-      mylang.add('head-spec-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR '+ after + '].')
-    if ch.get('noun-det-order') == 'det-noun':
-      mylang.add('head-spec-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR '+ before + '].')
+    # the word order module is directional to handle the r/l orders of closest conjunct
+    # but we only need to add `res` for resolution here. It's kind of a hack.
+    before = 'res'
+    after = 'res'
 
-  # it looks like this type addendum is all we'll need for head-mod
-  mylang.add('head-mod-phrase :+\
-              [ SYNSEM.LOCAL.COORDAGR #cagr,\
-                HEAD-DTR.SYNSEM.LOCAL.COORDAGR #cagr ].', '', section='addenda')
+    customize_coordagr_word_order(ch, mylang, before, after, subj_on, obj_on)
 
-  # TODO triple check for other phrase types that need to be handled. aux-comp phrase?
-
-
-# add everything to the grammar that's needed for distinguished conjunct agreement
-def customize_conjunct_agreement(mylang, ch, agr, csap):
+def customize_conjunct_agreement(mylang, ch, agr, csap, cs):
+    """add everything to the grammar that's needed for distinguished conjunct agreement"""
     # type addendum for distinguished conjunct
     mylang.add('local-min:+ [COORDAGR dir].', section='addenda')
 
@@ -321,7 +340,13 @@ def customize_conjunct_agreement(mylang, ch, agr, csap):
     mylang.add('dir := *top*.', '', True)
     mylang.add('l := dir.', '', True)
     mylang.add('r := dir.', '', True)
-    mylang.add('res := dir.', '', True) # TODO only add this if there is both feature resolution and dist. conjunct
+
+    # do we have a mixed strategy language? if so, what's the target on the fr pattern?
+    for csap in cs.get('csap'):
+      if csap.get('pat').startswith('fr'):
+        mylang.add('res := dir.', '', True)
+        mixed_strat_target = csap.get('target')
+        customize_mixed_strat_resolution(ch, mylang, mixed_strat_target)
 
     mylang.set_section('phrases')
 
@@ -361,9 +386,7 @@ def customize_conjunct_agreement(mylang, ch, agr, csap):
     customize_conj_wo(mylang, ch, agr, csap)
     return top_and_mid_rules
 
-
-
-def customize_agreement_pattern(mylang, ch, csap):
+def customize_agreement_pattern(mylang, ch, csap, cs):
     rules = [('', '')]
 
     agr = ch.get(csap.get('pat'))  # agr has "name," "order," "full_key" for dconj, or has feature rules for resolution
@@ -374,7 +397,7 @@ def customize_agreement_pattern(mylang, ch, csap):
       rules = get_feature_resolution_names(agr)
     # for dist. conjunct, we can create the parent rules and just get the rule names at the same time.
     elif agr.full_key.startswith('dconj'):
-      rules = customize_conjunct_agreement(mylang, ch, agr, csap)
+      rules = customize_conjunct_agreement(mylang, ch, agr, csap, cs)
 
     mylang.add('bare-np-phrase := [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png,'  # TODO is there any reason I can't use this for fr as well?
       'HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png ].')
@@ -455,16 +478,26 @@ def customize_coordination(mylang, ch, lexicon, rules, irules):
           if left:
             left += 'conj-last-'
 
-    # hook this coord strat up to some agreement patterns, or not, if we have no info.
+    # If this CS uses feature resolution, we will set up closest conjunct as a mixed strategy
+    # (with additional rules and specifications).
+    mixed_strategy = True if any([csap.get('pat').startswith('fr') for csap in cs.get('csap')])\
+                          and any([csap.get('pat').startswith('dconj') for csap in cs.get('csap')])\
+                          else False
+
+    # make a list of the agreement rules for this coord strat
     if cs.get('csap'):
       agrrules = []
-      for csap in cs.get('csap'):  # get the agreement patterns used
-        agrrules += customize_agreement_pattern(mylang, ch, csap)  # fetch the agreement rules
+      for csap in cs.get('csap'):  # iterate through the agreement patterns used
+        agrrules += customize_agreement_pattern(mylang, ch, csap, cs)
+    # use an empty list if no agreement pattern is defined
     else:
       agrrules = [('', '')]
 
 
     for pos in ('n', 'np', 'vp', 's'):
+      # don't use noun-y agreement rules with VP or S
       agrrules = [('', '')] if pos in ('vp', 's') else agrrules
+      # now write the rules
       if cs.get(pos):
-        define_coord_strat(csnum, pos, top, mid, bot, left, pre, suf, mylang, rules, irules, agrrules)
+        define_coord_strat(csnum, pos, top, mid, bot, left, pre, suf, mylang,
+                           rules, irules, agrrules, mixed_strategy)
