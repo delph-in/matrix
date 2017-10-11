@@ -572,6 +572,7 @@ def customize_matrix(path, arch_type, destination=None):
   # but provide the methods the components above have for their own
   # contributions to the lexical rules
 
+  nominalized_clauses.customize_nmcs(mylang, ch, rules, lrules)
   negation.customize_sentential_negation(mylang, ch, lexicon, rules, lrules, hierarchies)
 
   add_lexrules_methods = [case.add_lexrules,
@@ -603,7 +604,6 @@ def customize_matrix(path, arch_type, destination=None):
   word_order.customize_word_order(mylang, ch, rules)
   coordination.customize_coordination(mylang, ch, lexicon, rules, irules)
   yes_no_questions.customize_yesno_questions(mylang, ch, rules, lrules, hierarchies)
-  nominalized_clauses.customize_nmcs(mylang, ch, rules, irules)
   clausalmods.customize_clausalmods(mylang, ch, lexicon, rules, irules)
   customize_punctuation(grammar_path)
   customize_test_sentences(grammar_path)
