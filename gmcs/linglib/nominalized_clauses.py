@@ -12,10 +12,10 @@ def customize_nmcs(mylang, ch, rules, lrules):
             for vpc in ch['verb-pc']:
                 for lrt in vpc['lrt']:
                     for f in lrt['feat']:
-                        if 'nominalization' in f['name']:
+                         if 'nominalization' in f['name']:
                             if 'supertypes' in lrt:
                                 lrt['supertypes'] += ', nominalization-lex-rule'
-                            else:
+                         else:
                                 lrt['supertypes'] = 'nominalization-lex-rule'
             mylang.set_section('verblex')
             mylang.add('nominalization-lex-rule := cat-change-with-ccont-lex-rule &\
@@ -24,9 +24,8 @@ def customize_nmcs(mylang, ch, rules, lrules):
 			      AUX #aux,\
 			      INIT #init,\
 			      MOD #mod ],\
-		       VAL [ SUBJ < [ LOCAL [ CAT [ HEAD noun &\
-						   [ CASE gen ],\
-						    VAL.SPR < > ],\
+		       VAL [ SUBJ < [ LOCAL [ CAT [ HEAD noun,\
+		                            VAL.SPR < > ],\
 				      	      CONT.HOOK.INDEX #subj ]] >,\
 			     COMPS #comps,\
 			     SPEC #spec,\
@@ -56,7 +55,7 @@ def customize_nmcs(mylang, ch, rules, lrules):
 			     HC-LIGHT #hc-light,\
 			     POSTHEAD #posthead ],\
 		       CONT.HOOK [ LTOP #larg ]]].')
-            print('got here')
+            lrules.add('nominalized-lex-rule')
         elif level == 'mid':
             print('todo- mid')
         elif level == 'high':
