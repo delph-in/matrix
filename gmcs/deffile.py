@@ -14,7 +14,6 @@
 
 #import sys
 import os
-import cgi
 import cgitb
 import glob
 import re
@@ -92,7 +91,7 @@ HTML_toggle_visible_js = '''<script type="text/javascript">
 '''
 
 HTML_mainprebody = '''<body onload="animate()">
-<h1>LinGO Grammar Matrix</h1>
+<h1>LinGO Grammar Matrix (Olga's test instance)</h1>
 <h1 style="display:inline">Matrix customization and download page</h1>
 <span class="tt">[<a href="http://moin.delph-in.net/MatrixDocTop" target="matrixdoc">help</a>]</span>
 <h2>Version of %s</h2>
@@ -545,7 +544,10 @@ class MatrixDefFile:
   'other-features':'Other Features', 'sentential-negation':'Sentential Negation',
   'coordination':'Coordination', 'matrix-yes-no':'Matrix Yes/No Questions',
   'info-str':'Information Structure',
-  'arg-opt':'Argument Optionality', 'lexicon':'Lexicon',
+  'arg-opt':'Argument Optionality',
+  'clausal-comp':'Clausal Complements', 'lexicon':'Lexicon',
+  'nominalclause':'Nominalized Clauses',
+  'clausalmods':'Clausal Modifiers', 'lexicon':'Lexicon',
   'morphology':'Morphology','toolbox-import':'Toolbox Import',
   'test-sentences':'Test Sentences','gen-options':'TbG Options',
   'ToolboxLexicon':'Toolbox Lexicon'}
@@ -559,7 +561,10 @@ class MatrixDefFile:
   'other-features':'OtherFeatures', 'sentential-negation':'SententialNegation',
   'coordination':'Coordination', 'matrix-yes-no':'YesNoQ',
   'info-str':'InformationStructure',
-  'arg-opt':'ArgumentOptionality', 'lexicon':'Lexicon',
+  'arg-opt':'ArgumentOptionality', 
+  'clausal-comp':'ClausalComplements','lexicon':'Lexicon',
+  'nominalclause':'Nominalized Clauses',
+  'clausalmods':'Clausal Modifiers', 'lexicon':'Lexicon',
   'morphology':'Morphology','toolbox-import':'ImportToolboxLexicon',
   'test-sentences':'TestSentences','gen-options':'TestByGeneration',
   'ToolboxLexicon':'ImportToolboxLexicon'}
@@ -581,6 +586,10 @@ class MatrixDefFile:
   def make_name_map(self):
     for l in self.def_lines:
       l = l.strip()
+      if l.startswith('The embedded verb has the following features'):
+        #import pdb
+        #pdb.set_trace()
+        x= 5
       if len(l):
         w = tokenize_def(l)
         if len(w) >= 3:
@@ -1177,50 +1186,6 @@ class MatrixDefFile:
 
     return html
 
-  def verification(self):
-   # Note, In previous parts of this site the html bits are configured outside of the
-   # function and pipped in as global variables. I don't like this. So i'm confining variables
-   # locally. But I don't want to leave things messy, so I've divided it into sections to keep
-   # things more "clean" looking.
-   ### Setup ###
-    verify_form = cgi.FieldStorage()
-    HTML_google_api = "<script src='https://www.google.com/recaptcha/api.js'></script> \n"
-    HTML_verify_form_prebody = """
-<html>
-  <head>
-    <title>Grammar Matrix: Session Verification Page</title>
-     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-     <script>
-       function onSubmit(token) {
-         document.getElementById("verify-form").submit();
-       }
-     </script>
-  </head>
-"""
-    HTML_verify_form_body = """
-<body>
-	We were unable to detect a valid session for you. In order to create a new session,<br>
-	please use the verify button below to confirm you are not a bot. Once this is done you will be<br>
-	redirected to the main page where you can begin using the grammar matrix.<br><br>
-</body>
-"""
-    HTML_verify_form_postbody = """
-      <form id='verify-form' action="matrix.cgi" method="POST">
-      <button class="g-recaptcha" data-sitekey="6LfEeisUAAAAAGdbbNlfjxKjkRxcSWhSovyq9oik" data-callback='onSubmit'>Verify</button>
-      <br/>
-    </form>
-</html>
-
-
-   """
-    
-   ### Execution ###
-    print HTTP_header + '\n'
-    print HTML_pretitle
-    print HTML_verify_form_prebody
-    print HTML_verify_form_body
-    print HTML_verify_form_postbody
-    print HTML_postbody
 
   # Create and print the matrix subpage for the specified section
   # based on the arguments, which are the name of the section and
