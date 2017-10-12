@@ -7,6 +7,17 @@ def customize_nmcs(mylang, ch, rules, lrules):
         level = ns.get('level')
         nmzrel = ns.get('nmzRel')
 
+        mylang.set_section('addenda')
+        mylang.add('+nvcdmo :+ [ MOD < > ].')
+        mylang.add('head :+ [ NMZ bool,\
+	                        FORM form,\
+	                        AUX bool,\
+	                        INIT bool ].')
+        mylang.set_section('features')
+        mylang.add('form := *top*.')
+        mylang.add('nonfinite := form.')
+        mylang.add('finite := form.')
+
         if level == 'low':
             print('todo- low')
             for vpc in ch['verb-pc']:
@@ -15,16 +26,16 @@ def customize_nmcs(mylang, ch, rules, lrules):
                          if 'nominalization' in f['name']:
                             if 'supertypes' in lrt:
                                 lrt['supertypes'] += ', nominalization-lex-rule'
-                         else:
+                            else:
                                 lrt['supertypes'] = 'nominalization-lex-rule'
             mylang.set_section('verblex')
             mylang.add('nominalization-lex-rule := cat-change-with-ccont-lex-rule &\
-  [ SYNSEM.LOCAL.CAT [ HEAD noun & \
+                [ SYNSEM.LOCAL.CAT [ HEAD noun & \
 			    [ FORM #form,\
 			      AUX #aux,\
 			      INIT #init,\
 			      MOD #mod ],\
-		       VAL [ SUBJ < [ LOCAL [ CAT [ HEAD noun,\
+		        VAL [ SUBJ < [ LOCAL [ CAT [ HEAD noun,\
 		                            VAL.SPR < > ],\
 				      	      CONT.HOOK.INDEX #subj ]] >,\
 			     COMPS #comps,\
@@ -34,16 +45,16 @@ def customize_nmcs(mylang, ch, rules, lrules):
 		       MKG #mkg,\
 		       HC-LIGHT #hc-light,\
 		       POSTHEAD #posthead ],\
-    C-CONT [ RELS <! [ PRED "nominalized_rel",\
+                C-CONT [ RELS <! [ PRED "nominalized_rel",\
 		       LBL #ltop,\
 		       ARG0 ref-ind & #arg0,\
 		       ARG1 #arg1 ] !>,\
-	     HCONS <! qeq &\
-		    [ HARG #arg1,\
+	            HCONS <! qeq &\
+		        [ HARG #arg1,\
 		      LARG #larg ] !>,\
-	     HOOK [ INDEX #arg0,\
-		    LTOP #ltop ]],\
-    DTR.SYNSEM.LOCAL [ CAT [ HEAD [ FORM #form,\
+	            HOOK [ INDEX #arg0,\
+		        LTOP #ltop ]],\
+                DTR.SYNSEM.LOCAL [ CAT [ HEAD [ FORM #form,\
 				    AUX #aux,\
 				    INIT #init,\
 				    MOD #mod ],\
@@ -55,7 +66,7 @@ def customize_nmcs(mylang, ch, rules, lrules):
 			     HC-LIGHT #hc-light,\
 			     POSTHEAD #posthead ],\
 		       CONT.HOOK [ LTOP #larg ]]].')
-            lrules.add('nominalized-lex-rule')
+            lrules.add('nom-lex-rule := nominalized-lex-rule.')
         elif level == 'mid':
             print('todo- mid')
         elif level == 'high':
