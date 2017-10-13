@@ -18,6 +18,15 @@ def customize_nmcs(mylang, ch, rules, lrules):
         mylang.add('nonfinite := form.')
         mylang.add('finite := form.')
 
+        for vpc in ch['verb-pc']:
+            for lrt in vpc['lrt']:
+                for f in lrt['feat']:
+                    if 'nominalization' in f['name']:
+                        if 'supertypes' in lrt:
+                            lrt['supertypes'] += ', nominalization-lex-rule'
+                        else:
+                            lrt['supertypes'] = 'nominalization-lex-rule'
+
         if level == 'low' or 'mid':
             mylang.set_section('phrases')
             mylang.add('non-event-subj-head-phrase := basic-head-subj-phrase & head-final &\
@@ -29,18 +38,44 @@ def customize_nmcs(mylang, ch, rules, lrules):
                                                                 REL 0-dlist ]]\
                                 NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPR < > ].')
             rules.add('non-event-subj-head := non-event-subj-head-phrase.')
+        if level == 'mid' or 'high':
+            mylang.set_section('lexrules')
+            mylang.add('nominalization-lex-rule := cat-change-with-ccont-lex-rule &\
+  [ SYNSEM.LOCAL [ CONT.HOOK.INDEX event,\
+                    CAT [ HEAD verb & \
+			    [ NMZ +,\
+			      FORM #form,\
+			      AUX #aux,\
+			      INIT #init,\
+			      MOD #mod ],\
+		       VAL [ SUBJ < [ LOCAL [ CAT [ HEAD noun &\
+						   [ CASE gen ],\
+						  VAL.SPR < > ],\
+						CONT.HOOK.INDEX #subj]] >,\
+			     COMPS #comps,\
+			     SPR #spr,\
+			     SPEC #spec ],\
+		       MC #mc,\
+		       MKG #mkg,\
+		       HC-LIGHT #hc-light,\
+		       POSTHEAD #posthead ]],\
+    DTR.SYNSEM.LOCAL.CAT [ HEAD [ FORM #form,\
+				 AUX #aux,\
+				 INIT #init,\
+				 MOD #mod ],\
+			   VAL [ SUBJ < [ LOCAL.CONT.HOOK.INDEX #subj ] >,\
+				COMPS #comps,\
+				 SPR #spr,\
+				 SPEC #spec ],\
+			   MC #mc,\
+			   MKG #mkg,\
+			   HC-LIGHT #hc-light,\
+			   POSTHEAD #posthead ]].')
+            lrules.add('nom-lex-rule := nominalized-lex-rule.')
 
         if level == 'low':
             print('todo- low')
-            for vpc in ch['verb-pc']:
-                for lrt in vpc['lrt']:
-                    for f in lrt['feat']:
-                         if 'nominalization' in f['name']:
-                            if 'supertypes' in lrt:
-                                lrt['supertypes'] += ', nominalization-lex-rule'
-                            else:
-                                lrt['supertypes'] = 'nominalization-lex-rule'
-            mylang.set_section('verblex')
+            mylang.set_section('lexrules')
             mylang.add('nominalization-lex-rule := cat-change-with-ccont-lex-rule &\
                 [ SYNSEM.LOCAL.CAT [ HEAD noun & \
 			    [ FORM #form,\
@@ -111,7 +146,10 @@ def customize_nmcs(mylang, ch, rules, lrules):
             elif nmzrel == 'yes':
                 mylang.add('nominalized-clause-phrase := basic-unary-phrase &\
                         [ SYNSEM.LOCAL.CAT [ HEAD noun,\
-		                VAL.SPR < > ],\
+		                VAL [ SPR < >,\
+		                        COMPS < >,\
+		                        SPEC < >,\
+		                        SUBJ < > ]],\
                         C-CONT [ RELS <! [ PRED "nominalized_rel",\
 	    	            LBL #ltop,\
 		                ARG0 ref-ind & #arg0,\
