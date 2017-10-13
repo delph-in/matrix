@@ -26,8 +26,7 @@ def add_subord_lex(mylang, lexicon, cms):
 							    COMPS < > ]],\
 						CONT.HOOK [ LTOP #mod,\
 							    INDEX #index ]]] >,\
-			   VAL.COMPS < [ LOCAL [ CAT [ HEAD verb,\
-							VAL [ SUBJ < >,\
+			   VAL.COMPS < [ LOCAL [ CAT [ VAL [ SUBJ < >,\
 							      SPR < >,\
 							      COMPS < > ]],\
 						  CONT.HOOK.LTOP #comps ]] > ],\
@@ -40,12 +39,23 @@ def add_subord_lex(mylang, lexicon, cms):
 			    HOOK.INDEX #index ]],\
 	     LKEYS.KEYREL [ ARG1 #h1,\
 			    ARG2 #h2 ]]].\\')
-  mylang.add('subord-lex-item := scopal-mod-with-comp-lex &\
-  [ SYNSEM.LOCAL.CAT [ VAL [ SUBJ < >,\
+  # add lexical type. if nomminalization is on, restrict the complement to be noun- otherwise, verb
+  if cms.get('nominalization') == 'on':
+    mylang.add('subord-lex-item := scopal-mod-with-comp-lex &\
+        [ SYNSEM.LOCAL.CAT [ VAL [ SUBJ < >,\
+      			     SPR < >,\
+      			     COMPS < #comps > ]],\
+          ARG-ST < #comps &\
+          	     [ LOCAL.CAT [ HEAD noun,\
+                               MC - ]] > ].\\')
+  else:
+    mylang.add('subord-lex-item := scopal-mod-with-comp-lex &\
+      [ SYNSEM.LOCAL.CAT [ VAL [ SUBJ < >,\
 			     SPR < >,\
 			     COMPS < #comps > ]],\
-    ARG-ST < #comps &\
-    	     [ LOCAL.CAT [ MC - ]] > ].\\')
+        ARG-ST < #comps &\
+    	     [ LOCAL.CAT [ HEAD verb,\
+                         MC - ]] > ].\\')
 
   pos = cms.get('position')
   subpos = cms.get('subposition')
@@ -98,10 +108,9 @@ def add_subord_phrasal_types(mylang, rules, cms):
   [HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT + ].')
   mylang.add('comp-head-phrase := basic-head-1st-comp-phrase & head-final&\
       [HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT - ].')
-  if subpos == 'before':
-    rules.add('head-comp := head-comp-phrase.')
-  elif subpos == 'after':
-    rules.add('comp-head := comp-head-phrase.')
+  rules.add('head-comp := head-comp-phrase.')
+  rules.add('comp-head := comp-head-phrase.')
+  #rules.add('subj-head := subj-head-phrase.')
 
 def add_subordinator_pair_to_lexicon(lexicon, matrixtype, subordtype, pair):
   """

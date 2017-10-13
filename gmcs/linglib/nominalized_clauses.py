@@ -8,11 +8,11 @@ def customize_nmcs(mylang, ch, rules, lrules):
         nmzrel = ns.get('nmzRel')
 
         mylang.set_section('addenda')
-        mylang.add('+nvcdmo :+ [ MOD < > ].')
         mylang.add('head :+ [ NMZ bool,\
 	                        FORM form,\
 	                        AUX bool,\
 	                        INIT bool ].')
+        mylang.add('+nvcdmo :+ [ MOD < > ].')
         mylang.set_section('features')
         mylang.add('form := *top*.')
         mylang.add('nonfinite := form.')
@@ -67,6 +67,16 @@ def customize_nmcs(mylang, ch, rules, lrules):
 			     POSTHEAD #posthead ],\
 		       CONT.HOOK [ LTOP #larg ]]].')
             lrules.add('nom-lex-rule := nominalized-lex-rule.')
+            mylang.set_section('phrases')
+            mylang.add('non-event-subj-head-phrase := basic-head-subj-phrase & head-final &\
+                            [ SYNSEM.LOCAL.CAT.HEAD [ FORM #form ],\
+                                HEAD-DTR.SYNSEM [ LOCAL [ CONT.HOOK.INDEX ref-ind,\
+                                                        CAT [ HEAD [ FORM #form ],\
+            				                                VAL.COMPS < > ]],\
+                                                  NON-LOCAL [ QUE 0-dlist,\
+                                                                REL 0-dlist ]]\
+                                NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPR < > ].')
+            rules.add('non-event-subj-head := non-event-subj-head-phrase.')
         elif level == 'mid':
             print('todo- mid')
         elif level == 'high':
