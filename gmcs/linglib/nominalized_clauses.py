@@ -142,7 +142,18 @@ def customize_nmcs(mylang, ch, rules, lrules):
             if nmzrel == 'no':
                 mylang.add('nominalized-clause-phrase := basic-unary-phrase &\
                                         [ SYNSEM.LOCAL.CAT [ HEAD noun,\
-                		                VAL.SPR < > ] ].')
+                		                VAL [ SPR < >,\
+                		                        COMPS < >,\
+                		                        SPEC < >,\
+                		                        SUBJ < > ]],\
+                                        ARGS < [ SYNSEM [ LOCAL [ CAT [ HEAD verb &\
+                					     [ NMZ + ],\
+                    				    VAL [ COMPS < >,\
+                	    				  SUBJ < >,\
+                		    			  SPR < >,\
+                			    		  SPEC < > ]],\
+                			            CONT.HOOK [ LTOP #larg ]]]] > ].')
+                rules.add('nominalized-clause := nominalized-clause-phrase.')
             elif nmzrel == 'yes':
                 mylang.add('nominalized-clause-phrase := basic-unary-phrase &\
                         [ SYNSEM.LOCAL.CAT [ HEAD noun,\
