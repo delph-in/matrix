@@ -18,6 +18,18 @@ def customize_nmcs(mylang, ch, rules, lrules):
         mylang.add('nonfinite := form.')
         mylang.add('finite := form.')
 
+        if level == 'low' or 'mid':
+            mylang.set_section('phrases')
+            mylang.add('non-event-subj-head-phrase := basic-head-subj-phrase & head-final &\
+                            [ SYNSEM.LOCAL.CAT.HEAD [ FORM #form ],\
+                                HEAD-DTR.SYNSEM [ LOCAL [ CONT.HOOK.INDEX ref-ind,\
+                                                        CAT [ HEAD [ FORM #form ],\
+            				                                VAL.COMPS < > ]],\
+                                                  NON-LOCAL [ QUE 0-dlist,\
+                                                                REL 0-dlist ]]\
+                                NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPR < > ].')
+            rules.add('non-event-subj-head := non-event-subj-head-phrase.')
+
         if level == 'low':
             print('todo- low')
             for vpc in ch['verb-pc']:
@@ -67,18 +79,29 @@ def customize_nmcs(mylang, ch, rules, lrules):
 			     POSTHEAD #posthead ],\
 		       CONT.HOOK [ LTOP #larg ]]].')
             lrules.add('nom-lex-rule := nominalized-lex-rule.')
-            mylang.set_section('phrases')
-            mylang.add('non-event-subj-head-phrase := basic-head-subj-phrase & head-final &\
-                            [ SYNSEM.LOCAL.CAT.HEAD [ FORM #form ],\
-                                HEAD-DTR.SYNSEM [ LOCAL [ CONT.HOOK.INDEX ref-ind,\
-                                                        CAT [ HEAD [ FORM #form ],\
-            				                                VAL.COMPS < > ]],\
-                                                  NON-LOCAL [ QUE 0-dlist,\
-                                                                REL 0-dlist ]]\
-                                NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPR < > ].')
-            rules.add('non-event-subj-head := non-event-subj-head-phrase.')
         elif level == 'mid':
-            print('todo- mid')
+            mylang.set_section('phrases')
+            mylang.add('nominalized-clause-phrase := basic-unary-phrase &\
+                                    [ SYNSEM.LOCAL.CAT [ HEAD noun,\
+            		                VAL [ SPR < >,\
+            		                        SUBJ < #subj > ]],\
+                                    C-CONT [ RELS <! [ PRED "nominalized_rel",\
+            	    	            LBL #ltop,\
+            		                ARG0 ref-ind & #arg0,\
+            		                ARG1 #arg1 ] !>,\
+            	                    HCONS <! qeq &\
+                		            [ HARG #arg1,\
+            	    	            LARG #larg ] !>,\
+            	                    HOOK [ INDEX #arg0,\
+            		                LTOP #ltop ]],\
+                                    ARGS < [ SYNSEM [ LOCAL [ CAT [ HEAD verb &\
+            					     [ NMZ + ],\
+                				    VAL [ COMPS < >,\
+            	    				  SUBJ < #subj >,\
+            		    			  SPR < >,\
+            			    		  SPEC < > ]],\
+            			            CONT.HOOK [ LTOP #larg ]]]] > ].')
+            rules.add('nominalized-clause := nominalized-clause-phrase.')
         elif level == 'high':
             mylang.set_section('phrases')
             if nmzrel == 'no':
@@ -105,3 +128,4 @@ def customize_nmcs(mylang, ch, rules, lrules):
 		    			  SPR < >,\
 			    		  SPEC < > ]],\
 			            CONT.HOOK [ LTOP #larg ]]]] > ].')
+                rules.add('nominalized-clause := nominalized-clause-phrase.')

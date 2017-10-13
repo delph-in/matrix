@@ -39,14 +39,17 @@ def add_subord_lex(mylang, lexicon, cms):
 			    HOOK.INDEX #index ]],\
 	     LKEYS.KEYREL [ ARG1 #h1,\
 			    ARG2 #h2 ]]].\\')
-  # add lexical type. if nomminalization is on, restrict the complement to be noun- otherwise, verb
+  # add lexical type. if nomminalization is on, restrict the complement to be a nominalized verb otherwise, verb
   if cms.get('nominalization') == 'on':
+    mylang.set_section('noun-lex')
+    mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT.HEAD.NMZ - ].')
+    mylang.set_section('phrases')
     mylang.add('subord-lex-item := scopal-mod-with-comp-lex &\
         [ SYNSEM.LOCAL.CAT [ VAL [ SUBJ < >,\
       			     SPR < >,\
       			     COMPS < #comps > ]],\
           ARG-ST < #comps &\
-          	     [ LOCAL.CAT [ HEAD noun,\
+          	     [ LOCAL.CAT [ HEAD noun & [ NMZ + ],\
                                MC - ]] > ].\\')
   else:
     mylang.add('subord-lex-item := scopal-mod-with-comp-lex &\
