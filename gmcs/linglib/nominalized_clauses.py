@@ -6,6 +6,7 @@ def customize_nmcs(mylang, ch, rules, lrules):
         name = ns.get('name')
         level = ns.get('level')
         nmzrel = ns.get('nmzRel')
+        print(nmzrel)
 
         mylang.set_section('addenda')
         mylang.add('head :+ [ NMZ bool,\
@@ -142,7 +143,7 @@ def customize_nmcs(mylang, ch, rules, lrules):
             if nmzrel == 'no':
                 mylang.add('nominalized-clause-phrase := basic-unary-phrase &\
                                         [ SYNSEM.LOCAL.CAT [ HEAD noun,\
-                		                VAL [ SPR < >,\
+                		                VAL [ SPR < [ OPT + ] >,\
                 		                        COMPS < >,\
                 		                        SPEC < >,\
                 		                        SUBJ < > ]],\
@@ -156,25 +157,25 @@ def customize_nmcs(mylang, ch, rules, lrules):
                 rules.add('nominalized-clause := nominalized-clause-phrase.')
             elif nmzrel == 'yes':
                 mylang.add('nominalized-clause-phrase := basic-unary-phrase &\
-                        [ SYNSEM.LOCAL.CAT [ HEAD noun,\
-		                VAL [ SPR < >,\
-		                        COMPS < >,\
-		                        SPEC < >,\
-		                        SUBJ < > ]],\
-                        C-CONT [ RELS <! [ PRED "nominalized_rel",\
-	    	            LBL #ltop,\
-		                ARG0 ref-ind & #arg0,\
-		                ARG1 #arg1 ] !>,\
-	                    HCONS <! qeq &\
-    		            [ HARG #arg1,\
-	    	            LARG #larg ] !>,\
-	                    HOOK [ INDEX #arg0,\
-		                LTOP #ltop ]],\
-                        ARGS < [ SYNSEM [ LOCAL [ CAT [ HEAD verb &\
-					     [ NMZ + ],\
-    				    VAL [ COMPS < >,\
-	    				  SUBJ < >,\
-		    			  SPR < >,\
-			    		  SPEC < > ]],\
-			            CONT.HOOK [ LTOP #larg ]]]] > ].')
+                          [ SYNSEM.LOCAL.CAT [ HEAD noun,\
+		       VAL [ SPR < [ OPT + ] >,'
+                           'COMPS < >,\
+					  SUBJ < >,\
+					  SPEC < > ]],\
+    C-CONT [ RELS <! [ PRED "nominalized_rel",\
+		       LBL #ltop,\
+		       ARG0 ref-ind & #arg0,\
+		       ARG1 #arg1 ] !>,\
+	     HCONS <! qeq &\
+		    [ HARG #arg1,\
+		      LARG #larg ] !>,\
+	     HOOK [ INDEX #arg0,\
+		    LTOP #ltop ]],\
+    ARGS < [ SYNSEM [ LOCAL [ CAT [ HEAD verb &\
+					 [ NMZ + ],\
+				    VAL [ COMPS < >,\
+					  SUBJ < >,\
+					  SPR < >,\
+					  SPEC < > ]],\
+			      CONT.HOOK [ LTOP #larg ]]]] > ].')
                 rules.add('nominalized-clause := nominalized-clause-phrase.')
