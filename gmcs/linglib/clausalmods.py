@@ -17,47 +17,82 @@ def add_subord_lex(mylang, lexicon, cms):
   """
   mylang.set_section('addenda')
   mylang.add('head :+ [ INIT bool ].')
-  mylang.set_section('subordlex')
-  mylang.add('scopal-mod-with-comp-lex := single-rel-lex-item & norm-ltop-lex-item &\
-  [ SYNSEM [ LOCAL [ CAT [ HEAD.MOD < [ LOCAL scopal-mod &\
+
+  # [ SYNSEM [ LOCAL [ CAT [ HEAD.MOD < [ LOCAL scopal-mod &\
+	# 				      [ CAT [ HEAD verb,\
+	# 					      VAL [ SUBJ < >,\
+	# 						    SPR < >,\
+	# 						    COMPS < > ]],\
+	# 					CONT.HOOK [ LTOP #mod,\
+	# 						    INDEX #index ]]] >,\
+	# 		   VAL.COMPS < [ LOCAL [ CAT [ VAL [ SUBJ < >,\
+	# 						      SPR < > ]]]] > ],\
+	# 	     CONT [ HCONS <! qeq & \
+	# 			 [ HARG #h1,\
+	# 			   LARG #mod ] !>,\
+	# 		    HOOK.INDEX #index ]],\
+	#      LKEYS.KEYREL [ ARG1 #h1 ]]].\\')
+  # add lexical type. if nomminalization is on, restrict the complement to be a nominalized verb otherwise, verb
+  if cms.get('nominalization') == 'on':
+    mylang.set_section('noun-lex')
+    mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT.HEAD.NMZ - ].')
+    mylang.set_section('subordlex')
+    mylang.add('scopal-mod-with-comp-lex := single-rel-lex-item & norm-ltop-lex-item &\
+      [ SYNSEM [ LOCAL [ CAT [ HEAD.MOD < [ LOCAL scopal-mod &\
+               [CAT[HEAD verb,\
+    VAL[SUBJ < >,\
+        SPR < >,\
+        COMPS < >]],\
+    CONT.HOOK[LTOP  # mod,\
+    INDEX  # index ]]] >,\
+    VAL.COMPS < [LOCAL[CAT[HEAD noun,\
+                 VAL[SUBJ < >,\
+                     SPR < >,\
+                     COMPS < >]],\
+    CONT.HOOK.INDEX  # h2 ]] > ],\
+    CONT[HCONS <! qeq &\
+                  [HARG  # h1,\
+                   LARG  # mod ] !>,\
+                   HOOK.INDEX  # index ]],\
+                   LKEYS.KEYREL[ARG0 event,\
+                   ARG1  # h1,\
+                   ARG2  # h2 ]]].')
+    mylang.add('subord-lex-item := scopal-mod-with-comp-lex &\
+        [ SYNSEM.LOCAL.CAT [ VAL [ SUBJ < >,\
+      			     SPR < > ],\
+          ARG-ST < [ LOCAL.CAT [ HEAD noun & [ NMZ + ],\
+                               MC - ]] > ].\\')
+  else:
+    mylang.set_section('subordlex')
+    mylang.add('scopal-mod-with-comp-lex := single-rel-lex-item & norm-ltop-lex-item &\
+            [ SYNSEM [ LOCAL [ CAT [ HEAD.MOD < [ LOCAL scopal-mod &\
 					      [ CAT [ HEAD verb,\
 						      VAL [ SUBJ < >,\
 							    SPR < >,\
 							    COMPS < > ]],\
 						CONT.HOOK [ LTOP #mod,\
 							    INDEX #index ]]] >,\
-			   VAL.COMPS < [ LOCAL [ CAT [ VAL [ SUBJ < >,\
-							      SPR < > ]]]] > ],\
+			   VAL.COMPS < [ LOCAL [ CAT [ HEAD verb,\
+							VAL [ SUBJ < >,\
+							      SPR < >,\
+							      COMPS < > ]],\
+						  CONT.HOOK.LTOP #comps ]] > ],\
 		     CONT [ HCONS <! qeq & \
 				 [ HARG #h1,\
-				   LARG #mod ] !>,\
+				   LARG #mod ],\
+				 qeq &\
+				 [ HARG #h2,\
+				   LARG #comps ] !>,\
 			    HOOK.INDEX #index ]],\
-	     LKEYS.KEYREL [ ARG1 #h1 ]]].\\')
-  # add lexical type. if nomminalization is on, restrict the complement to be a nominalized verb otherwise, verb
-  if cms.get('nominalization') == 'on':
-    mylang.set_section('noun-lex')
-    mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT.HEAD.NMZ - ].')
-    mylang.set_section('subordlex')
+	     LKEYS.KEYREL [ ARG1 #h1,\
+			    ARG2 #h2 ]]].')
     mylang.add('subord-lex-item := scopal-mod-with-comp-lex &\
-        [ SYNSEM [ LOCAL.CAT [ VAL [ SUBJ < >,\
-      			     SPR < >,\
-      			     COMPS < #comps & [ LOCAL.CONT.HOOK.INDEX #arg2 ] > ]],\
-              LKEYS.KEYREL [ ARG2 #arg2 ]],\
-          ARG-ST < #comps &\
-          	     [ LOCAL.CAT [ HEAD noun & [ NMZ + ],\
-                               MC - ]] > ].\\')
-  else:
-    mylang.add('subord-lex-item := scopal-mod-with-comp-lex &\
-      [ SYNSEM [ LOCAL.CAT [ VAL [ SUBJ < >,\
-			     SPR < >,\
-			     COMPS < [ CONT.HOOK.LTOP #comps ] > ],\
-			     LKEYS.KEYREL [ ARG2 #h2 ]],\
-        ARG-ST < #comps &\
-    	     [ LOCAL.CAT [ HEAD verb,\
-                         MC - ]] >,\
-          CONT [ HCONS <! qeq &\
-                  [ HARG #h2,\
-				   LARG #comps ] !> ]]].')
+    [ SYNSEM.LOCAL [ CAT [ VAL [ SUBJ < >,\
+                                SPR < >,\
+                                COMPS <  #comps > ]]],\
+      ARG - ST <  #comps &\
+                  [LOCAL.CAT[ HEAD verb,\
+                              MC -]] > ].')
 
   pos = cms.get('position')
   subpos = cms.get('subposition')
@@ -65,24 +100,26 @@ def add_subord_lex(mylang, lexicon, cms):
   constraints = ''
   if subpos == 'before':
       lextype += 'clause-init'
-      constraints += '[ SYNSEM.LOCAL.CAT.HEAD.INIT +'
+      constraints += '[ SYNSEM.LOCAL.CAT [ HEAD.INIT +'
   elif subpos == 'after':
       lextype += 'clause-final'
-      constraints += '[ SYNSEM.LOCAL.CAT.HEAD.INIT -'
+      constraints += '[ SYNSEM.LOCAL.CAT [ HEAD.INIT -'
   if pos == 'before':
       lextype += '-prehead'
-      constraints += ',\SYNSEM.LOCAL.CAT.POSTHEAD -'
+      constraints += ', POSTHEAD -'
   elif pos == 'after':
       lextype += '-posthead'
-      constraints += ',\SYNSEM.LOCAL.CAT.POSTHEAD +'
+      constraints += ', POSTHEAD +'
   if cms.get('specialmorph') == 'on':
       for feat in cms.get('feat'):
           lextype += '-' + feat.get('value')
           #is this a problem? can the feature be in not head?
-          constraints += (',\SYNSEM.LOCAL.CAT.HEAD.' + feat.get('name') + '.' + feat.get('value'))
+          constraints += (', SYNSEM.LOCAL.CAT.HEAD.' + feat.get('name') + '.' + feat.get('value'))
   lextype += '-subord-lex-item'
-  constraints += ' ].\\'
-  mylang.add(lextype + ' := subord-lex-item &\\' + constraints)
+  constraints += ' ]].'
+  print(lextype)
+  print(constraints)
+  mylang.add(lextype + ' := subord-lex-item &' + constraints)
   for freemorph in cms.get('freemorph'):
       orth = freemorph.get('orth')
       orthstr = orth_encode(orth)
