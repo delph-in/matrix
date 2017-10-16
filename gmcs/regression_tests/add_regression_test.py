@@ -64,7 +64,7 @@ def add(choices_file, txt_suite):
       # TJT 2014-09-11: Updating this error to suggest using matrix.py to remove test
       #raise ValueError, "A regression test with that language name already exists.  If you must remove it, be sure to edit regression-test-index."
       raise ValueError, "A regression test with that language name already exists.  If you need to remove the existing test, use matrix.py rr TEST"
-      
+
   if os.path.exists(os.path.join(rt_root, "choices", lg_name)):
       raise ValueError, "Move regression_tests/choices/" + lg_name +", it is in the way."
   

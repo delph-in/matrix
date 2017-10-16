@@ -39,27 +39,27 @@ def add_subord_lex(mylang, lexicon, cms):
     mylang.set_section('subordlex')
     mylang.add('scopal-mod-with-comp-lex := single-rel-lex-item & norm-ltop-lex-item &\
       [ SYNSEM [ LOCAL [ CAT [ HEAD.MOD < [ LOCAL scopal-mod &\
-               [CAT[HEAD verb,\
-    VAL[SUBJ < >,\
+               [CAT [HEAD verb,\
+    VAL [SUBJ < >,\
         SPR < >,\
         COMPS < >]],\
-    CONT.HOOK[LTOP  # mod,\
-    INDEX  # index ]]] >,\
+    CONT.HOOK[LTOP  #mod,\
+    INDEX  #index ]]] >,\
     VAL.COMPS < [LOCAL[CAT[HEAD noun,\
                  VAL[SUBJ < >,\
                      SPR < >,\
                      COMPS < >]],\
-    CONT.HOOK.INDEX  # h2 ]] > ],\
+    CONT.HOOK.INDEX  #h2 ]] > ],\
     CONT[HCONS <! qeq &\
-                  [HARG  # h1,\
-                   LARG  # mod ] !>,\
-                   HOOK.INDEX  # index ]],\
+                  [HARG  #h1,\
+                   LARG  #mod ] !>,\
+                   HOOK.INDEX  #index ]],\
                    LKEYS.KEYREL[ARG0 event,\
-                   ARG1  # h1,\
-                   ARG2  # h2 ]]].')
+                   ARG1  #h1,\
+                   ARG2  #h2 ]]].')
     mylang.add('subord-lex-item := scopal-mod-with-comp-lex &\
         [ SYNSEM.LOCAL.CAT [ VAL [ SUBJ < >,\
-      			     SPR < > ],\
+      			     SPR < > ]],\
           ARG-ST < [ LOCAL.CAT [ HEAD noun & [ NMZ + ],\
                                MC - ]] > ].\\')
   else:
