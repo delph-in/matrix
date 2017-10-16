@@ -22,6 +22,8 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "pre-head-subord") (:content . "pre-head-subord: clausal modifiers for which the free subordinator morpheme attaches at the beginning of the clause"))
+((:path . "pre-head-mod") (:content . "pre-head-mod: clausal modifiers that attach before the clause they modify"))
 ((:path . "post-head-subord") (:content . "post-head-subord: clausal modifiers with for which the free subordinator morpheme attaches to the end of the clause"))
 ((:path . "post-head-mod") (:content . "post-head-mod: post head clausal modifiers"))
 ((:path . "cagr-pseudospanish-feature-resolution") (:content . "cagr-pseudospanish-feature-resolution: tests the part of coordination and agreement that creates feature resolution (using a grammar loosely based on Spanish)"))

@@ -281,3 +281,5 @@ cagr-pseudo-closest-conjunct=tests the part of coordination and agreement that c
 cagr-pseudospanish-feature-resolution=tests the part of coordination and agreement that creates feature resolution (using a grammar loosely based on Spanish)
 post-head-mod=post head clausal modifiers
 post-head-subord=clausal modifiers with for which the free subordinator morpheme attaches to the end of the clause
+pre-head-mod=clausal modifiers that attach before the clause they modify
+pre-head-subord=clausal modifiers for which the free subordinator morpheme attaches at the beginning of the clause
