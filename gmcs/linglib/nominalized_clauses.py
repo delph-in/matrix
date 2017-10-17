@@ -28,7 +28,7 @@ def customize_nmcs(mylang, ch, rules, lrules):
                         else:
                             lrt['supertypes'] = 'nominalization-lex-rule'
 
-        if level == 'low' or 'mid':
+        if level == 'low' or level == 'mid':
             mylang.set_section('phrases')
             mylang.add('non-event-subj-head-phrase := basic-head-subj-phrase & head-final &\
                             [ SYNSEM.LOCAL.CAT.HEAD [ FORM #form ],\
@@ -39,39 +39,41 @@ def customize_nmcs(mylang, ch, rules, lrules):
                                                                 REL 0-dlist ]]\
                                 NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPR < > ].')
             rules.add('non-event-subj-head := non-event-subj-head-phrase.')
-        if level == 'mid' or 'high':
+        if level == 'mid' or level == 'high':
             mylang.set_section('lexrules')
             mylang.add('nominalization-lex-rule := cat-change-with-ccont-lex-rule &\
-  [ SYNSEM.LOCAL [ CONT.HOOK.INDEX event,\
-                    CAT [ HEAD verb & \
-			    [ NMZ +,\
-			      FORM #form,\
-			      AUX #aux,\
-			      INIT #init,\
-			      MOD #mod ],\
-		       VAL [ SUBJ < [ LOCAL [ CAT [ HEAD noun &\
-						   [ CASE gen ],\
-						  VAL.SPR < > ],\
-						CONT.HOOK.INDEX #subj]] >,\
-			     COMPS #comps,\
-			     SPR #spr,\
-			     SPEC #spec ],\
-		       MC #mc,\
-		       MKG #mkg,\
-		       HC-LIGHT #hc-light,\
-		       POSTHEAD #posthead ]],\
-    DTR.SYNSEM.LOCAL.CAT [ HEAD [ FORM #form,\
-				 AUX #aux,\
-				 INIT #init,\
-				 MOD #mod ],\
-			   VAL [ SUBJ < [ LOCAL.CONT.HOOK.INDEX #subj ] >,\
-				COMPS #comps,\
-				 SPR #spr,\
-				 SPEC #spec ],\
-			   MC #mc,\
-			   MKG #mkg,\
-			   HC-LIGHT #hc-light,\
-			   POSTHEAD #posthead ]].')
+    [ SYNSEM.LOCAL [ CONT [ HOOK [ INDEX event,\
+				 LTOP #ltop ]],\
+		   CAT [ HEAD verb &\
+			      [ NMZ +,\
+                                FORM #form,\
+                                AUX #aux,\
+                                INIT #init,\
+                                MOD #mod ],\
+                         VAL [ SUBJ < [ LOCAL [ CAT [ HEAD noun,\
+                                                      VAL.SPR < > ],\
+                                                CONT.HOOK.INDEX #subj ] ] >,\
+                               COMPS #comps,\
+                               SPR #spr,\
+                               SPEC #spec ],\
+                         MC #mc,\
+                         MKG #mkg,\
+                         HC-LIGHT #hc-light,\
+                         POSTHEAD #posthead ] ],\
+    DTR.SYNSEM.LOCAL [ CAT [ HEAD [ FORM #form,\
+                                  AUX #aux,\
+                                  INIT #init,\
+                                  MOD #mod ],\
+                           VAL [ SUBJ < [ LOCAL.CONT.HOOK.INDEX #subj ] >,\
+                                 COMPS #comps,\
+                                 SPR #spr,\
+                                 SPEC #spec ],\
+                           MC #mc,\
+                           MKG #mkg,\
+                           HC-LIGHT #hc-light,\
+                           POSTHEAD #posthead ],\
+			CONT.HOOK.LTOP #ltop ],\
+   C-CONT [ RELS <! !>, HCONS <! !> ] ].')
             lrules.add('nom-lex-rule := nominalized-lex-rule.')
 
         if level == 'low':
@@ -142,18 +144,19 @@ def customize_nmcs(mylang, ch, rules, lrules):
             mylang.set_section('phrases')
             if nmzrel == 'no':
                 mylang.add('nominalized-clause-phrase := basic-unary-phrase &\
-                                        [ SYNSEM.LOCAL.CAT [ HEAD noun,\
-                		                VAL [ SPR < [ OPT + ] >,\
-                		                        COMPS < >,\
-                		                        SPEC < >,\
-                		                        SUBJ < > ]],\
-                                        ARGS < [ SYNSEM [ LOCAL [ CAT [ HEAD verb &\
-                					     [ NMZ + ],\
-                    				    VAL [ COMPS < >,\
-                	    				  SUBJ < >,\
-                		    			  SPR < >,\
-                			    		  SPEC < > ]],\
-                			            CONT.HOOK [ LTOP #larg ]]]] > ].')
+                          [ SYNSEM.LOCAL [ CONT.HOOK.LTOP #ltop,\
+                          CAT [ HEAD noun,\
+		       VAL [ SPR < [ OPT + ] >,\
+                           COMPS < >,\
+					  SUBJ < >,\
+					  SPEC < > ]]],\
+    ARGS < [ SYNSEM [ LOCAL [ CAT [ HEAD verb &\
+					 [ NMZ + ],\
+				    VAL [ COMPS < >,\
+					  SUBJ < >,\
+					  SPR < >,\
+					  SPEC < > ]],\
+			      CONT.HOOK [ LTOP #ltop ]]]] > ].')
                 rules.add('nominalized-clause := nominalized-clause-phrase.')
             elif nmzrel == 'yes':
                 mylang.add('nominalized-clause-phrase := basic-unary-phrase &\
