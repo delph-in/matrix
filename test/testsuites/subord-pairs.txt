@@ -1,0 +1,9 @@
+# the subordinator pairs with a complementizer in the matrix clause
+subord1a noun1 verb1 subord1b noun2 verb2
+*subord1a noun1 verb1 noun2 verb2
+*subord1a noun1 verb1 subord2b noun2 verb2
+*subord1a noun1 verb1 subord1a noun2 verb2
+*subord1b noun1 verb1 subord1b noun2 verb2
+
+subord2a noun1 verb1 subord2b noun2 verb2
+*subord2a noun1 verb1 subord1b noun2 verb2

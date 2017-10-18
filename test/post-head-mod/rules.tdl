@@ -1,0 +1,10 @@
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+head-comp := head-comp-phrase.
+
+subj-head := subj-head-phrase.
+
+bare-np := bare-np-phrase.
+
+head-adj-scop := head-adj-scop-phrase.
+
+comp-head := comp-head-phrase.
