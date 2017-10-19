@@ -10,7 +10,7 @@ from gmcs.lib import TDLHierarchy
 ######################################################################
 
 
-def add_subord_lex(mylang, lexicon, cms):
+def add_subord_lex(mylang, lexicon, cms, ch):
   """
   add the type definition for the lexical item to mylang
   and the lexical entries to lexicon
@@ -58,10 +58,12 @@ def add_subord_lex(mylang, lexicon, cms):
                    ARG1  #h1,\
                    ARG2  #h2 ]]].')
     mylang.add('subord-lex-item := scopal-mod-with-comp-lex &\
-        [ SYNSEM.LOCAL.CAT [ VAL [ SUBJ < >,\
-      			     SPR < > ]],\
-          ARG-ST < [ LOCAL.CAT [ HEAD noun & [ NMZ + ],\
-                               MC - ]] > ].\\')
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >,\
+                           SPR < > ,\
+			   COMPS < [ LOCAL.CAT [ HEAD noun &\
+                                			[ NMZ + ],\
+                           			MC - ] ] > ]].')
+    #CONT.HOOK.LTOP  #h2 was INDEX #h2
   else:
     mylang.set_section('subordlex')
     mylang.add('scopal-mod-with-comp-lex := single-rel-lex-item & norm-ltop-lex-item &\
@@ -222,7 +224,7 @@ def customize_clausalmods(mylang, ch, lexicon, rules, irules):
 
     if subord == 'free':
       add_subord_lex(mylang, lexicon, cms)
-      add_subord_phrasal_types(mylang, rules, cms)
+      add_subord_phrasal_types(mylang, rules, cms, ch)
 
     if subord == 'pair':
       matrixtype = cms.get('matrixtype')

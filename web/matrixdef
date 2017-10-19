@@ -1556,6 +1556,15 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
   . before "Before" "" "at the beginning of the subordinate clause<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
   . after "After" "" "at the end of the subordinate clause<br>"
 
+  Radio subordinator_type "Subordinator Position" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Is the free subordinator morpheme treated as the head of its clause or as and adverbial?:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
+  . head "Head" "" "it is the head of the subordinate clause<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+  . adverb "Adverb" "" "it is an adverb (not the head of its clause)<br>"
+
+  Radio adverb_attaches "Subordinator Position" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If the subordinator is an adverb, does it attach to VP, S or both?:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
+  . vp "VP" "" "VP<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+  . s "S" "" "S<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+  . both "Both" "" "Both VP and S"
+
         BeginIter freemorph{j} "a Free Subordinator Morpheme" 0
 
             Label "<p>Free Subordinator Morpheme {i}:<br>"
@@ -1577,13 +1586,28 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
   . pair "Subordinator Pair" "" "a free subordinator morpheme pair: one in the subordinate clause and one in the main clause<br>"
     Label "<p>Free Subordinator Morpheme Pair{i}:<br>"
 
-		Radio matrixtype "Clausal Modifier Strategy {i} pattern" "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;In this strategy, the subordinator morpheme in the matrix clause is <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
-    		. comp "Complementizer" "" "a complementizer"
-		. adv "Adverb" "" "an adverb"
+  Radio subposition "Subordinator Position" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Does the morpheme in the subordinate clause attach to the beginning or end of the clause?:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
+  . before "Before" "" "at the beginning of the subordinate clause<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+  . after "After" "" "at the end of the subordinate clause<br>"
 
-		Radio subordtype "Clausal Modifier Strategy {i} pattern" "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and the subordinator morpheme in the subordinate clause is <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
-		. comp "Complementizer" "" "a complementizer"
-		. adv "Adverb" "" "an adverb"
+  Radio subordinator_type "Subordinator Position" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Is the morpheme in the subordinate clause treated as the head of its clause or as and adverbial?:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
+  . head "Head" "" "it is the head of the subordinate clause<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+  . adverb "Adverb" "" "it is an adverb (not the head of its clause)<br>"
+
+  Radio adverb_attaches "Subordinator Position" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If the morpheme in the subordinate clause is an adverb, does it attach to VP, S or both?:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
+  . vp "VP" "" "VP<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+  . s "S" "" "S<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+  . both "Both" "" "Both VP and S"
+
+  Radio subposition "Subordinator Position" "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Does the morpheme in the matrix clause attach to the beginning or end of the clause?:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
+  . before "Before" "" "at the beginning of the subordinate clause<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+  . after "After" "" "at the end of the subordinate clause<br>"
+
+  Radio adverb_attaches "Subordinator Position" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Does the morpheme in the matrix clause attach to VP, S or both?:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
+  . vp "VP" "" "VP<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+  . s "S" "" "S<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+  . both "Both" "" "Both VP and S"
+
 
         BeginIter morphpair{j} "a Free Subordinator Morpheme Pair" 0
             Label "<p>Free Subordinator Morpheme Pair{i}:<br>"
