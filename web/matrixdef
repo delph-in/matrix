@@ -1621,7 +1621,6 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
 
          EndIter morphpair
 
-  Label "</p>"
 
 Label "<p>Select additional characteristics that apply to this clausal modification strategy<br></p?"
 
@@ -1629,19 +1628,10 @@ Check wordorder "Special Word Order" "" "Special Word Order<br>"
 
 Check subjraise "Subject Raising" "" "Subject Raising<br>" 
 
-Check nominalization "<br>Nominalization" "" "Nominalization<br>"
-
 Check specialmorph "Special Morphology" "" "Special Morphology<br>"
 
-BeginIter feat{k} "a Feature"
+Check nominalization "<br>Nominalization" "" "Nominalization<br>"
 
-	Select name "Clausal Modifier Strategy {i} Morphological Feature {k} Name" "Name: " ""
-		fillnames2 c=verb
-
-	MultiSelect value "Clausal Modifier Strategy {i} Morphological Feature {k} Value" "Value: " ""
-		fillvalues p=cms{i}_feat{k}_name
-
-EndIter feat
 EndIter cms
 
 
