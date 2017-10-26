@@ -6,8 +6,6 @@ def customize_nmcs(mylang, ch, rules, lrules):
         name = ns.get('name')
         level = ns.get('level')
         nmzrel = ns.get('nmzRel')
-        print(nmzrel)
-
         mylang.set_section('addenda')
         mylang.add('head :+ [ NMZ bool,\
 	                        FORM form,\
@@ -75,7 +73,6 @@ def customize_nmcs(mylang, ch, rules, lrules):
             lrules.add('nom-lex-rule := nominalized-lex-rule.')
 
         if level == 'low':
-            print('todo- low')
             mylang.set_section('lexrules')
             mylang.add('nominalization-lex-rule := cat-change-with-ccont-lex-rule &\
                 [ SYNSEM.LOCAL.CAT [ HEAD noun & \
@@ -119,7 +116,7 @@ def customize_nmcs(mylang, ch, rules, lrules):
             mylang.set_section('phrases')
             mylang.add('nominalized-clause-phrase := basic-unary-phrase &\
                                     [ SYNSEM.LOCAL.CAT [ HEAD noun,\
-            		                VAL [ SPR < >,\
+            		                VAL [ SPR < [ OPT + ] >,\
             		                        SUBJ < #subj > ]],\
                                     C-CONT [ RELS <! [ PRED "nominalized_rel",\
             	    	            LBL #ltop,\

@@ -39,6 +39,7 @@ section=arg-opt
 section=nominalclause
   ns1_name=nom-low
   ns1_level=low
+  ns1_nmzRel=yes
 
 section=clausalmods
   cms1_position=before
@@ -47,6 +48,7 @@ section=clausalmods
     cms1_freemorph1_orth=subord
     cms1_freemorph1_pred=subord_rel
   cms1_nominalization=on
+  cms1_nominalization_strategy=nom-low
 
 section=lexicon
   noun1_name=noun

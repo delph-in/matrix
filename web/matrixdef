@@ -1630,7 +1630,10 @@ Check subjraise "Subject Raising" "" "Subject Raising<br>"
 
 Check specialmorph "Special Morphology" "" "Special Morphology<br>"
 
-Check nominalization "<br>Nominalization" "" "Nominalization<br>"
+Check nominalization "Nominalization" "" "Nominalization<br>"
+
+Select nominalization_strategy "Clausal Modifier strategy {i} Nominalization Strategy {j}" "If your language uses nominalization, select a nominalization strategy: " " "
+    fillvalues p=nominalization l=1
 
 EndIter cms
 
