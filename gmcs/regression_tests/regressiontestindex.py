@@ -7,7 +7,6 @@ class RegressionTestIndex:
   # initialize by passing either a file name or ???file handle
   def __init__(self, index_file):
     self.file_name = index_file
-    print(index_file)
     self.tests = {}
 
     f = open(index_file,'r')
@@ -16,7 +15,6 @@ class RegressionTestIndex:
     for l in lines:
         l = l.strip()
         if l:
-            #print(l)
             (testname, comment) = l.split('=')
             self.set(testname, comment)
 

@@ -22,14 +22,6 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
-((:path . "nominalization-no-rel") (:content . "nominalization-no-rel: clausal modifiers that undergo nominalization high in the tree and do not have an independent nominalization_rel"))
-((:path . "nominalization-high") (:content . "nominalization-high: clausal modifiers that undergo nominalization high in the tree (at S) and have a nominalization_rel"))
-((:path . "nominalization-mid") (:content . "nominalization-mid: clausal modifiers that undergo nominalization low in the tree (at V)"))
-((:path . "nominalization-low") (:content . "nominalization-low: clausal modifiers that undergo nominalization low in the tree (at V)"))
-((:path . "pre-head-subord") (:content . "pre-head-subord: clausal modifiers for which the free subordinator morpheme attaches at the beginning of the clause"))
-((:path . "pre-head-mod") (:content . "pre-head-mod: clausal modifiers that attach before the clause they modify"))
-((:path . "post-head-subord") (:content . "post-head-subord: clausal modifiers with for which the free subordinator morpheme attaches to the end of the clause"))
-((:path . "post-head-mod") (:content . "post-head-mod: post head clausal modifiers"))
 ((:path . "cagr-pseudospanish-feature-resolution") (:content . "cagr-pseudospanish-feature-resolution: tests the part of coordination and agreement that creates feature resolution (using a grammar loosely based on Spanish)"))
 ((:path . "cagr-pseudo-closest-conjunct") (:content . "cagr-pseudo-closest-conjunct: tests the part of coordination and agreement that creates closest conjunct rules"))
 ((:path . "valchg-obj-add-post-np") (:content . "valchg-obj-add-post-np: object-adding valence change, new object added at end of comps"))
