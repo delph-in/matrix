@@ -38,7 +38,7 @@ Show details
 version=28
 
 section=general
-language=subord-pairs
+language=clausalmods-subord-pairs
 
 section=word-order
 word-order=svo

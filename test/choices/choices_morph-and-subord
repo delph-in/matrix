@@ -2,7 +2,7 @@
 version=28
 
 section=general
-language=morph-and-subord
+language=clausalmods-morph-and-subord
 
 section=word-order
 word-order=svo

@@ -22,6 +22,15 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "clausalmods-post-head-subord") (:content . "clausalmods-post-head-subord: clausal mods with a subordinator that must occur at the end of the clause"))
+((:path . "clausalmods-pre-head-subord") (:content . "clausalmods-pre-head-subord: clausal mods with a subordinator that must occur at the beginning of the clause"))
+((:path . "clausalmods-pre-head-mod") (:content . "clausalmods-pre-head-mod: clausal mods that must occur before the matrix clause"))
+((:path . "clausalmods-post-head-mod") (:content . "clausalmods-post-head-mod: clausal modifiers that must occur after the matrix clause"))
+((:path . "clausalmods-nom-no-rel") (:content . "clausalmods-nom-no-rel: clausal mods that are nominalized high in the tree (at S) and do NOT have an independent nominalization_rel"))
+((:path . "clausalmods-nom-low") (:content . "clausalmods-nom-low: clausal mods that are nominalized low in the tree (at V) and have an independent nominalization_rel"))
+((:path . "clausalmods-nom-mid") (:content . "clausalmods-nom-mid: clausal mods that are nominalized midway through the tree (at VP) and have an independent nominalizat_rel"))
+((:path . "clausalmods-nom-high") (:content . "clausalmods-nom-high: clausal mods that are nominalized high in the tree (at S) and have an independent nominalization_rel"))
+((:path . "clausalmods-free-fixed-mod") (:content . "clausalmods-free-fixed-mod: clausal modifiers that must occur strictly before, strictly after or before and after the matrix clause"))
 ((:path . "cagr-pseudospanish-feature-resolution") (:content . "cagr-pseudospanish-feature-resolution: tests the part of coordination and agreement that creates feature resolution (using a grammar loosely based on Spanish)"))
 ((:path . "cagr-pseudo-closest-conjunct") (:content . "cagr-pseudo-closest-conjunct: tests the part of coordination and agreement that creates closest conjunct rules"))
 ((:path . "valchg-obj-add-post-np") (:content . "valchg-obj-add-post-np: object-adding valence change, new object added at end of comps"))

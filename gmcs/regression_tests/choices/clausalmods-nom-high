@@ -2,7 +2,7 @@
 version=28
 
 section=general
-language=clausalmods-nom-mid
+language=clausalmods-nom-high
 
 section=word-order
 word-order=svo
@@ -39,8 +39,8 @@ section=info-str
 section=arg-opt
 
 section=nominalclause
-  ns1_name=nom-mid
-  ns1_level=mid
+  ns1_name=nom-high
+  ns1_level=high
   ns1_nmzRel=yes
 
 section=clausalmods
@@ -50,7 +50,7 @@ section=clausalmods
     cms1_freemorph1_orth=subord
     cms1_freemorph1_pred=subord_rel
   cms1_nominalization=on
-  cms1_nominalization_strategy=nom-mid
+  cms1_nominalization_strategy=nom-high
 
 section=lexicon
   noun1_name=noun
@@ -91,7 +91,7 @@ section=morphology
   verb-pc1_inputs=verb
     verb-pc1_lrt1_name=NMZ
       verb-pc1_lrt1_feat1_name=nominalization
-      verb-pc1_lrt1_feat1_value=nom-mid
+      verb-pc1_lrt1_feat1_value=nom-high
       verb-pc1_lrt1_feat1_head=verb
       verb-pc1_lrt1_feat2_name=case
       verb-pc1_lrt1_feat2_value=gen
