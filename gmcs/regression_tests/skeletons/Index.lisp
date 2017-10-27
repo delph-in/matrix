@@ -22,6 +22,10 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "nominalization-no-rel") (:content . "nominalization-no-rel: clausal modifiers that undergo nominalization high in the tree and do not have an independent nominalization_rel"))
+((:path . "nominalization-high") (:content . "nominalization-high: clausal modifiers that undergo nominalization high in the tree (at S) and have a nominalization_rel"))
+((:path . "nominalization-mid") (:content . "nominalization-mid: clausal modifiers that undergo nominalization low in the tree (at V)"))
+((:path . "nominalization-low") (:content . "nominalization-low: clausal modifiers that undergo nominalization low in the tree (at V)"))
 ((:path . "pre-head-subord") (:content . "pre-head-subord: clausal modifiers for which the free subordinator morpheme attaches at the beginning of the clause"))
 ((:path . "pre-head-mod") (:content . "pre-head-mod: clausal modifiers that attach before the clause they modify"))
 ((:path . "post-head-subord") (:content . "post-head-subord: clausal modifiers with for which the free subordinator morpheme attaches to the end of the clause"))

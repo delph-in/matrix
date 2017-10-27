@@ -283,3 +283,7 @@ post-head-mod=post head clausal modifiers
 post-head-subord=clausal modifiers with for which the free subordinator morpheme attaches to the end of the clause
 pre-head-mod=clausal modifiers that attach before the clause they modify
 pre-head-subord=clausal modifiers for which the free subordinator morpheme attaches at the beginning of the clause
+nominalization-low=clausal modifiers that undergo nominalization low in the tree (at V)
+nominalization-mid=clausal modifiers that undergo nominalization low in the tree (at V)
+nominalization-high=clausal modifiers that undergo nominalization high in the tree (at S) and have a nominalization_rel
+nominalization-no-rel=clausal modifiers that undergo nominalization high in the tree and do not have an independent nominalization_rel
