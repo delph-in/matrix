@@ -1011,6 +1011,21 @@ class ChoicesFile:
 
     return moods
 
+  def evidentials(self):
+    evidentials = []
+
+    evidential_definition = self.get('evidential-definition')
+
+    if evidential_definition == 'choose':
+      for evid in ('firsthand', 'nonfirsthand', 'visual', 'nonvisual', 'inferntial', 'reported', 'quotative', 'everythingelse'):
+        if evid in self.choices:
+          evidentials += [[evid]]
+    elif evidential_definition == 'build':
+      for evid in self.get('evidential'):
+        evidentials += [ [evid['name']] ]
+
+    return evidentials
+
   def types(self):
     """
     Create and return a list containing type names. FIX - these are
@@ -1098,6 +1113,9 @@ class ChoicesFile:
     #Mood
     features += self.__get_features(self.moods(), 0, 0, 'mood',
                                     'LOCAL.CONT.HOOK.INDEX.E.MOOD', 'verb', 'y')
+    # Evidentials
+    features += self.__get_features(self.evidentials(), 0, 0, 'evidential',
+                                    '', 'verb', 'y')
     # Direction
     if self.has_dirinv():
       features += [ ['direction', 'dir|direct;inv|inverse', '', 'verb', 'y'] ]
