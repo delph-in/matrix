@@ -1797,7 +1797,7 @@ basic-head-spec-phrase-super := head-valence-phrase & phrasal &
   [ INFLECTED infl-satisfied,
     SYNSEM [ LOCAL.CAT [ VAL [ SUBJ #subj,
                                COMPS #spcomps,
-                               SPR #spr & < [ OPT - ] >,
+                               SPR #spr,
                                SPEC #spec ],
 			 POSTHEAD #ph,
 			 HC-LIGHT - ],
