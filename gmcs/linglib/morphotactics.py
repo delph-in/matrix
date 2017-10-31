@@ -252,8 +252,11 @@ def create_lexical_rule_type(lrt, mtx_supertypes, cur_pc):
   new_lrt = LexicalRuleType(lrt.full_key, get_name(lrt))
   _id_key_tbl[new_lrt.identifier()] = lrt.full_key
   for feat in lrt.get('feat'):
-    new_lrt.features[feat['name']] = {'value': feat['value'],
-                                      'head': feat['head']}
+    if feat['name'] == 'evidential':
+      new_lrt.evidential = feat['value']
+    else:
+      new_lrt.features[feat['name']] = {'value': feat['value'],
+                                        'head': feat['head']}
 
   # CMC 2017-03-24 Populate valence change operations
   new_lrt.valchgops = lrt.get('valchg',[])
@@ -506,6 +509,8 @@ def percolate_supertypes(pc):
           # CMC 2017-02-20: Valence-changing operations need 
           # less-constrained supertype
           x.supertypes.add('val-change-with-ccont-lex-rule')
+        elif pc.has_evidential():
+          x.supertypes.add('cont-change-only-lex-rule')
         else:
           x.supertypes.add('add-only-no-ccont-rule')
 
@@ -598,6 +603,8 @@ def write_rules(pch, mylang, irules, lrules, lextdl, choices):
       write_pc_adj_syntactic_behavior(lrt, mylang, choices)
       # CMC 2017-03-28 Write valence change operations rules
       write_valence_change_behavior(lrt, mylang, choices)
+      # MTH 2017-10-16 Write evidential behavior
+      write_evidential_behavior(lrt, mylang, choices)
       # CMC 2017-04-07 moved merged LRT/PCs handling to write_supertypes
       write_supertypes(mylang, lrt.identifier(), lrt.all_supertypes())
     write_daughter_types(mylang, pc)
@@ -761,6 +768,10 @@ def write_i_or_l_rules(irules, lrules, lrt, order):
     # lexical rules # TJT 2014-12-21: cleaning this up
     lrt_id = lrt.identifier()
     lrules.add(lrt_id.rsplit('-rule',1)[0] + ' := ' + lrt_id + '.')
+
+def write_evidential_behavior(lrt, mylang, choices):
+  if lrt.evidential:
+    lrt.supertypes.add(lrt.evidential + '-evidential-lex-rule')
 
 def write_valence_change_behavior(lrt, mylang, choices):
   from gmcs.linglib.valence_change import lexrule_name

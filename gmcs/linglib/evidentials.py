@@ -13,7 +13,7 @@ EVIDENTIAL_LEX_RULE = '''evidential-lex-rule := cont-change-only-lex-rule &
 	same-spec-lex-rule &
   [ C-CONT [ RELS <! event-relation &
 				   [ LBL #ltop,
-					 ARG0 #evidev,
+					 ARG0 event,
 					 ARG1 individual,
 					 ARG2 #harg,
 					 ARG3 handle ] !>,
@@ -21,7 +21,10 @@ EVIDENTIAL_LEX_RULE = '''evidential-lex-rule := cont-change-only-lex-rule &
 							  LARG #larg ] !>,
 			 HOOK [ LTOP #ltop,
 					INDEX #mainev,
-					XARG #mainagent ] ] ].
+					XARG #mainagent ] ],
+	DTR.SYNSEM.LOCAL.CONT.HOOK [ LTOP #larg,
+	                        XARG #mainagent,
+	                        INDEX #mainev ] ].
 '''
 '''	RELS <! event-relation &
 				   [ LBL #ltop,
@@ -41,7 +44,7 @@ def customize_evidentials(mylang, ch, lexicon, rules, lrules, hierarchies):
 		if evidential_definition == 'choose':
 			for term in default_choices:
 				if ch.get(term) == 'on':
-					evidential_inventory.add(term)
+					evidential_inventory.append(term)
 	#   deal with variable names
 		elif evidential_definition == 'build':
 			for term in ch['evidential']:
@@ -53,8 +56,7 @@ def customize_evidentials(mylang, ch, lexicon, rules, lrules, hierarchies):
 		mylang.add(EVIDENTIAL_LEX_RULE)
 		for term in evidential_inventory:
 			infl_evid_def = term + '''-evidential-lex-rule := evidential-lex-rule & 
-				[ RELS <! [ PRED "ev_''' + term + '''_rel" ] !> ].
+				[ C-CONT.RELS <! [ PRED "ev_''' + term + '''_rel" ] !> ].
 				'''
 			mylang.add(infl_evid_def)
 		mylang.set_section(prev_section)
-		

@@ -1017,7 +1017,7 @@ class ChoicesFile:
     evidential_definition = self.get('evidential-definition')
 
     if evidential_definition == 'choose':
-      for evid in ('firsthand', 'nonfirsthand', 'visual', 'nonvisual', 'inferntial', 'reported', 'quotative', 'everythingelse'):
+      for evid in ('firsthand', 'nonfirsthand', 'visual', 'nonvisual', 'inferential', 'reported', 'quotative', 'everythingelse'):
         if evid in self.choices:
           evidentials += [[evid]]
     elif evidential_definition == 'build':
