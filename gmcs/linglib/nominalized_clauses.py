@@ -70,7 +70,6 @@ def customize_nmcs(mylang, ch, rules, lrules):
                            HC-LIGHT #hc-light,\
                            POSTHEAD #posthead ]],\
    C-CONT [ RELS <! !>, HCONS <! !> ] ].')
-            lrules.add('nom-lex-rule := nominalization-lex-rule.')
 
         if level == 'low':
             mylang.set_section('lexrules')
@@ -111,7 +110,6 @@ def customize_nmcs(mylang, ch, rules, lrules):
 			     HC-LIGHT #hc-light,\
 			     POSTHEAD #posthead ],\
 		       CONT.HOOK [ LTOP #larg ]]].')
-            lrules.add('nom-lex-rule := nominalization-lex-rule.')
         elif level == 'mid':
             mylang.set_section('phrases')
             mylang.add('nominalized-clause-phrase := basic-unary-phrase &\
