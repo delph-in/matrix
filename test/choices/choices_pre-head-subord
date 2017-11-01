@@ -2,7 +2,7 @@
 version=28
 
 section=general
-language=pre-head-subord
+language=clausalmods-pre-head-subord
 
 section=word-order
 word-order=svo
@@ -44,6 +44,7 @@ section=clausalmods
 
 section=lexicon
   noun1_name=noun
+  noun1_det=imp
     noun1_stem1_orth=noun1
     noun1_stem1_pred=_noun1_n_rel
     noun1_stem2_orth=noun2
