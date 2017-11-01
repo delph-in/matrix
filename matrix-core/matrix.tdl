@@ -2090,7 +2090,7 @@ basic-bare-np-phrase := head-only & head-valence-phrase &
 			   SPEC < > ],
     HEAD-DTR.SYNSEM.LOCAL [ CAT [ HEAD noun,
 				  VAL [ SPR < unexpressed & 
-				      	      [ LOCAL.CAT.HEAD det,
+				      	      [ LOCAL.CAT.HEAD +nd,
 						OPT + ] >,
 					SUBJ < >,
 					COMPS < > ] ],

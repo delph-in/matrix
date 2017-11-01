@@ -91,7 +91,7 @@ HTML_toggle_visible_js = '''<script type="text/javascript">
 '''
 
 HTML_mainprebody = '''<body onload="animate()">
-<h1>LinGO Grammar Matrix (Olga's test instance)</h1>
+<h1>LinGO Grammar Matrix</h1>
 <h1 style="display:inline">Matrix customization and download page</h1>
 <span class="tt">[<a href="http://moin.delph-in.net/MatrixDocTop" target="matrixdoc">help</a>]</span>
 <h2>Version of %s</h2>
@@ -586,10 +586,6 @@ class MatrixDefFile:
   def make_name_map(self):
     for l in self.def_lines:
       l = l.strip()
-      if l.startswith('The embedded verb has the following features'):
-        #import pdb
-        #pdb.set_trace()
-        x= 5
       if len(l):
         w = tokenize_def(l)
         if len(w) >= 3:
