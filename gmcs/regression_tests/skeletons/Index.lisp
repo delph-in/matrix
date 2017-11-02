@@ -22,6 +22,10 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "clausalmods-nom-no-rel") (:content . "clausalmods-nom-no-rel: clausal modifiers that are nominalized high in the tree (at S) and do NOT have a separate nominalized cluse predication"))
+((:path . "clausalmods-nom-low") (:content . "clausalmods-nom-low: clausal modifiers that are nominalized low in the tree (at V) and contain a separate nominalized_rel predication"))
+((:path . "clausalmods-nom-mid") (:content . "clausalmods-nom-mid: clausal modifiers thae nominalized at VP and contain a separate nominalized_rel predication"))
+((:path . "clausalmods-nom-high") (:content . "clausalmods-nom-high: clausal modifiers that are nominlaized high (at S) and contain a separate nominalized_rel predication"))
 ((:path . "clausalmods-post-head-subord") (:content . "clausalmods-post-head-subord: clausal mods with a subordinator that must occur at the end of the clause"))
 ((:path . "clausalmods-pre-head-subord") (:content . "clausalmods-pre-head-subord: clausal mods with a subordinator that must occur at the beginning of the clause"))
 ((:path . "clausalmods-pre-head-mod") (:content . "clausalmods-pre-head-mod: clausal mods that must occur before the matrix clause"))

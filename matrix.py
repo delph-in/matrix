@@ -396,6 +396,7 @@ def ensure_customization_root_set():
   """
   cwd = os.getcwd()
   if 'CUSTOMIZATIONROOT' in os.environ:
+    print(os.environ['CUSTOMIZATIONROOT'])
     if not os.path.exists(os.path.join(os.environ['CUSTOMIZATIONROOT'],
                                        'customize.py')):
       print "CUSTOMIZATIONROOT is incorrectly set."

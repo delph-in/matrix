@@ -1548,13 +1548,18 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
   . after "After" "" "after the matrix clause<br>"
   . either "Either" "" "either before or after the matrix clause<br><br>"
 
+    Radio modifier_attachment "Clause Position" "<b>Does the clausal modifier attach to/modify a VP or an S?:</b><br>" ""
+  . vp "VP" "" "it modifies a VP<br>"
+  . s "S" "" "it modifies an S<br>"
+  . either "Either" "" "it can modify either a VP or an S <br><br>"
+
     Radio subordinator "Clausal Modifier Strategy {i} pattern" "<b>The subordinate predication is contributed by:</b><br><br>" ""
   . free "Free Subordinator" "" "a free subordinator morpheme<br>"
     Label "<p>Free Subordinator Morpheme{i}:<br>"
 
   Radio subposition "Subordinator Position" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The free subordinator morpheme is positioned:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
-  . before "Before" "" "at the beginning of the subordinate clause<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-  . after "After" "" "at the end of the subordinate clause<br>"
+  . before "Before" "" "before the VP or S it attaches to<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+  . after "After" "" "after the VP or S it attaches to<br>"
 
   Radio subordinator_type "Subordinator Position" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Is the free subordinator morpheme treated as the head of its clause or as and adverbial?:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
   . head "Head" "" "it is the head of the subordinate clause<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
@@ -1574,21 +1579,12 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
 
 
     Radio subordinator "Clausal Modifier Strategy {i} pattern" "<br><br>" ""
-    . bound "Bound Subordinator" "" "a bound subordinator morpheme<br>"
-    Label "<p>Bound Subordinator Morpheme{i}:<br>"
-        BeginIter boundmorph{j} "a Bound Subordinator Morpheme" 0
-            Label "<p>Bound Subordinator Morpheme {i}:<br>"
-                Text orth "subord {i} stem {j} spelling" "Spelling: " "" 30 "fill_pred('subord{i}_stem{j}', 's')"
-                Text pred "subord {i} stem {j} predicate" " Predicate: " "" 30
-         EndIter boundmorph
-	 
-    Radio subordinator "Clausal Modifier Strategy {i} pattern" "<br><br>" ""
   . pair "Subordinator Pair" "" "a free subordinator morpheme pair: one in the subordinate clause and one in the main clause<br>"
     Label "<p>Free Subordinator Morpheme Pair{i}:<br>"
 
   Radio subposition "Subordinator Position" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Does the morpheme in the subordinate clause attach to the beginning or end of the clause?:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
-  . before "Before" "" "at the beginning of the subordinate clause<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-  . after "After" "" "at the end of the subordinate clause<br>"
+  . before "Before" "" "before the VP or S it attaches to<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+  . after "After" "" "after the VP or S it attaches to<br>"
 
   Radio subordinator_type "Subordinator Position" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Is the morpheme in the subordinate clause treated as the head of its clause or as and adverbial?:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
   . head "Head" "" "it is the head of the subordinate clause<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
@@ -1600,8 +1596,8 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
   . both "Both" "" "Both VP and S"
 
   Radio subposition "Subordinator Position" "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Does the morpheme in the matrix clause attach to the beginning or end of the clause?:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
-  . before "Before" "" "at the beginning of the subordinate clause<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-  . after "After" "" "at the end of the subordinate clause<br>"
+  . before "Before" "" "before the VP or S it attaches to<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+  . after "After" "" "after the VP or S it attaches to<br>"
 
   Radio adverb_attaches "Subordinator Position" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Does the morpheme in the matrix clause attach to VP, S or both?:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
   . vp "VP" "" "VP<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
@@ -1622,7 +1618,17 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
          EndIter morphpair
 
 
-Label "<p>Select additional characteristics that apply to this clausal modification strategy<br></p?"
+    Radio subordinator "Clausal Modifier Strategy {i} pattern" "<br><br>" ""
+    . bound "Bound Subordinator" "" "a bound subordinator morpheme<br>"
+    Label "<p>Bound Subordinator Morpheme{i}:<br>"
+        BeginIter boundmorph{j} "a Bound Subordinator Morpheme" 0
+            Label "<p>Bound Subordinator Morpheme {i}:<br>"
+                Text orth "subord {i} stem {j} spelling" "Spelling: " "" 30 "fill_pred('subord{i}_stem{j}', 's')"
+                Text pred "subord {i} stem {j} predicate" " Predicate: " "" 30
+         EndIter boundmorph
+	 
+
+Label "<p><b>Select additional characteristics that apply to this clausal modification strategy</b><br></p?"
 
 Check wordorder "Special Word Order" "" "Special Word Order<br>"
 
