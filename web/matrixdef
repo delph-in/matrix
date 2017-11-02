@@ -108,10 +108,8 @@ or S) varies depending on the auxiliary please let us know.)<br><br>"
   . yes "Yes" "" "yes<br>"
   . no "No" "" "no<br><br>"
 
-Label "NOTE: If your language has free word order and allows more than one auxiliary 
-per clause, we assume that the verbal group forms a cluster (i.e. that all verbal forms 
-are adjacent to each other). If your language reveals different behavior, 
-please let us know."
+Label "NOTE: If your language has free word order and allows more than one auxiliary per clause, we assume that the verbal group forms a cluster (i.e. that all verbal forms are adjacent to each other). If your language reveals different behavior, please let us know."
+
 
 Label "<p><span style=\"color:red\">NOTE: As Modules for V2 order are
 still under development, relative order of auxiliaries and their
@@ -811,8 +809,7 @@ Section sentential-negation "Sentential Negation"
 
 Cache verbpcs verb-pc[0-9]+$ name
 
-Label "<p>On this page you can select a Type that your language uses for sentential negation.  
-In most cases, morpheme classes that you can further modify will be created on the morphology page.</p>"
+Label "<p>On this page you can select a strategy that your language uses for sentential negation.  In most cases, morpheme classes that you can further modify will be created on the morphology page.</p>"
 
 Label "<p>Sentential negation constructions can be classified based on the number 
 of overt morphemes required by the construction.  
@@ -1188,37 +1185,37 @@ Label "<p>You may define any number of coordination strategies below.
 You may also leave this section blank, in which case the starter
 grammar produced will not support coordination.</p>"
 
-BeginIter cs{i} "a Coordination Type" 1
+BeginIter cs{i} "a Coordination Strategy" 1
 
-  Label "<p>Coordination Type {i}:<br>&nbsp;&nbsp;&nbsp;&nbsp;in which"
+  Label "<p>Coordination Strategy {i}:<br>&nbsp;&nbsp;&nbsp;&nbsp;in which"
 
-  Check n "Coordination Type {i} coordinates Ns" "" "nouns "
-  Check np "Coordination Type {i} coordinates NPs" "" "NPs "
-  Check vp "Coordination Type {i} coordinates VPs" "" "VPs "
-  Check s "Coordination Type {i} coordinates Ss" "" "sentences<br>"
+  Check n "Coordination Strategy {i} coordinates Ns" "" "nouns "
+  Check np "Coordination Strategy {i} coordinates NPs" "" "NPs "
+  Check vp "Coordination Strategy {i} coordinates VPs" "" "VPs "
+  Check s "Coordination Strategy {i} coordinates Ss" "" "sentences<br>"
 
-  Radio pat "Coordination Type {i} pattern" "&nbsp;&nbsp;&nbsp;&nbsp;are marked in a " ""
+  Radio pat "Coordination Strategy {i} pattern" "&nbsp;&nbsp;&nbsp;&nbsp;are marked in a " ""
   . mono "Monosyndeton" "" "monosyndeton "
   . poly "Polysyndeton" "" "polysyndeton "
   . omni "Omnisyndeton" "" "omnisyndeton "
   . a "Asyndeton" "" "asyndeton &nbsp; pattern<br>"
 
-  Radio mark "Coordination Type {i} mark" "&nbsp;&nbsp;&nbsp;&nbsp;by a " ""
+  Radio mark "Coordination Strategy {i} mark" "&nbsp;&nbsp;&nbsp;&nbsp;by a " ""
   . word "Word" "" "word "
   . affix "Affix" "" "affix spelled "
 
-  Text orth "Coordination Type {i} spelling" "" "" 10
+  Text orth "Coordination Strategy {i} spelling" "" "" 10
 
-  Radio order "Coordination Type {i} order" "that comes " ""
+  Radio order "Coordination Strategy {i} order" "that comes " ""
   . before "Before" "" "before "
   . after "After" "" "after the coordinand<br>"
 
   BeginIter csap{j} "an agreement pattern (optional)" 1
 
-    Select pat "Coordination Type {i} agreement name" "&nbsp;&nbsp;&nbsp;&nbsp;and uses the " ""
+    Select pat "Coordination Strategy {i} agreement name" "&nbsp;&nbsp;&nbsp;&nbsp;and uses the " ""
     fillcache c=pats
 
-    Select target "Coordination Type {i} agreement target" "agreement pattern for " ""
+    Select target "Coordination Strategy {i} agreement target" "agreement pattern for " ""
       . all "all arguments" "all"
       . subj "subjects only" "subj"
       . obj "objects only" "obj"
@@ -1286,7 +1283,7 @@ BeginIter dconj{i} "a distinguished conjunct pattern" 1
 
   Label "<p>This agreement pattern uses agreement features from the<br> "
 
-  Radio order "Coordination Type {i} order" "" ""
+  Radio order "Coordination Strategy {i} order" "" ""
   . first "Before" "" "first "
   . last "After" "" "last conjunct"
   . closest "After" "" "closest conjunct to the verb"
@@ -1296,9 +1293,9 @@ EndIter dconj
 
 Section matrix-yes-no "Matrix Yes/No Questions"
 
-Label "<p>Please indicate which Type your language uses to form
+Label "<p>Please indicate which strategy your language uses to form
 matrix yes-no questions.  You may leave this section blank, in which
-case your grammar will not include a question-forming Type.</p>"
+case your grammar will not include a question-forming strategy.</p>"
 
 Check q-part "Yes/No question particle" "" "A separate question particle: "
 
@@ -1652,13 +1649,27 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
   . after "After" "" "after the matrix clause<br>"
   . either "Either" "" "either before or after the matrix clause<br><br>"
 
+    Radio modifier_attachment "Clause Position" "<b>Does the clausal modifier attach to/modify a VP or an S?:</b><br>" ""
+  . vp "VP" "" "it modifies a VP<br>"
+  . s "S" "" "it modifies an S<br>"
+  . either "Either" "" "it can modify either a VP or an S <br><br>"
+
     Radio subordinator "Clausal Modifier Strategy {i} pattern" "<b>The subordinate predication is contributed by:</b><br><br>" ""
   . free "Free Subordinator" "" "a free subordinator morpheme<br>"
     Label "<p>Free Subordinator Morpheme{i}:<br>"
 
   Radio subposition "Subordinator Position" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The free subordinator morpheme is positioned:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
-  . before "Before" "" "at the beginning of the subordinate clause<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-  . after "After" "" "at the end of the subordinate clause<br>"
+  . before "Before" "" "before the VP or S it attaches to<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+  . after "After" "" "after the VP or S it attaches to<br>"
+
+  Radio subordinator_type "Subordinator Position" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Is the free subordinator morpheme treated as the head of its clause or as and adverbial?:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
+  . head "Head" "" "it is the head of the subordinate clause<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+  . adverb "Adverb" "" "it is an adverb (not the head of its clause)<br>"
+
+  Radio adverb_attaches "Subordinator Position" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If the subordinator is an adverb, does it attach to VP, S or both?:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
+  . vp "VP" "" "VP<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+  . s "S" "" "S<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+  . both "Both" "" "Both VP and S"
 
         BeginIter freemorph{j} "a Free Subordinator Morpheme" 0
 
@@ -1669,25 +1680,31 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
 
 
     Radio subordinator "Clausal Modifier Strategy {i} pattern" "<br><br>" ""
-    . bound "Bound Subordinator" "" "a bound subordinator morpheme<br>"
-    Label "<p>Bound Subordinator Morpheme{i}:<br>"
-        BeginIter boundmorph{j} "a Bound Subordinator Morpheme" 0
-            Label "<p>Bound Subordinator Morpheme {i}:<br>"
-                Text orth "subord {i} stem {j} spelling" "Spelling: " "" 30 "fill_pred('subord{i}_stem{j}', 's')"
-                Text pred "subord {i} stem {j} predicate" " Predicate: " "" 30
-         EndIter boundmorph
-	 
-    Radio subordinator "Clausal Modifier Strategy {i} pattern" "<br><br>" ""
   . pair "Subordinator Pair" "" "a free subordinator morpheme pair: one in the subordinate clause and one in the main clause<br>"
     Label "<p>Free Subordinator Morpheme Pair{i}:<br>"
 
-		Radio matrixtype "Clausal Modifier Strategy {i} pattern" "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;In this strategy, the subordinator morpheme in the matrix clause is <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
-    		. comp "Complementizer" "" "a complementizer"
-		. adv "Adverb" "" "an adverb"
+  Radio subposition "Subordinator Position" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Does the morpheme in the subordinate clause attach to the beginning or end of the clause?:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
+  . before "Before" "" "before the VP or S it attaches to<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+  . after "After" "" "after the VP or S it attaches to<br>"
 
-		Radio subordtype "Clausal Modifier Strategy {i} pattern" "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and the subordinator morpheme in the subordinate clause is <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
-		. comp "Complementizer" "" "a complementizer"
-		. adv "Adverb" "" "an adverb"
+  Radio subordinator_type "Subordinator Position" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Is the morpheme in the subordinate clause treated as the head of its clause or as and adverbial?:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
+  . head "Head" "" "it is the head of the subordinate clause<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+  . adverb "Adverb" "" "it is an adverb (not the head of its clause)<br>"
+
+  Radio adverb_attaches "Subordinator Position" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If the morpheme in the subordinate clause is an adverb, does it attach to VP, S or both?:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
+  . vp "VP" "" "VP<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+  . s "S" "" "S<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+  . both "Both" "" "Both VP and S"
+
+  Radio subposition "Subordinator Position" "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Does the morpheme in the matrix clause attach to the beginning or end of the clause?:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
+  . before "Before" "" "before the VP or S it attaches to<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+  . after "After" "" "after the VP or S it attaches to<br>"
+
+  Radio adverb_attaches "Subordinator Position" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Does the morpheme in the matrix clause attach to VP, S or both?:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
+  . vp "VP" "" "VP<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+  . s "S" "" "S<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+  . both "Both" "" "Both VP and S"
+
 
         BeginIter morphpair{j} "a Free Subordinator Morpheme Pair" 0
             Label "<p>Free Subordinator Morpheme Pair{i}:<br>"
@@ -1701,9 +1718,18 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
 
          EndIter morphpair
 
-  Label "</p>"
 
-Label "<p>Select additional characteristics that apply to this clausal modification strategy<br></p?"
+    Radio subordinator "Clausal Modifier Strategy {i} pattern" "<br><br>" ""
+    . bound "Bound Subordinator" "" "a bound subordinator morpheme<br>"
+    Label "<p>Bound Subordinator Morpheme{i}:<br>"
+        BeginIter boundmorph{j} "a Bound Subordinator Morpheme" 0
+            Label "<p>Bound Subordinator Morpheme {i}:<br>"
+                Text orth "subord {i} stem {j} spelling" "Spelling: " "" 30 "fill_pred('subord{i}_stem{j}', 's')"
+                Text pred "subord {i} stem {j} predicate" " Predicate: " "" 30
+         EndIter boundmorph
+	 
+
+Label "<p><b>Select additional characteristics that apply to this clausal modification strategy</b><br></p?"
 
 Check wordorder "Special Word Order" "" "Special Word Order<br>"
 
@@ -1716,15 +1742,6 @@ Check nominalization "Nominalization" "" "Nominalization<br>"
 Select nominalization_strategy "Clausal Modifier strategy {i} Nominalization Strategy {j}" "If your language uses nominalization, select a nominalization strategy: " " "
     fillvalues p=nominalization l=1
 
-BeginIter feat{k} "a Feature"
-
-	Select name "Clausal Modifier Strategy {i} Morphological Feature {k} Name" "Name: " ""
-		fillnames2 c=verb
-
-	MultiSelect value "Clausal Modifier Strategy {i} Morphological Feature {k} Value" "Value: " ""
-		fillvalues p=cms{i}_feat{k}_name
-
-EndIter feat
 EndIter cms
 
 
