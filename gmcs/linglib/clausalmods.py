@@ -113,7 +113,7 @@ def add_subord_lex(mylang, lexicon, cms, ch):
     [ SYNSEM.LOCAL [ CAT [ VAL [ SUBJ < >,\
                                 SPR < >,\
                                 COMPS <  #comps > ]]],\
-      ARG - ST <  #comps &\
+      ARG-ST <  #comps &\
                   [LOCAL.CAT[ HEAD verb,\
                               MC -]] > ].')
 
