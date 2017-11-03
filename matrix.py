@@ -362,7 +362,7 @@ def main():
 
   elif args[0] in ('i', 'install', 'ih', 'install-homer'):
     # args[1] is the install target location
-    if args[1].strip('/') == 'matrix/customize':
+    if args[1].strip('/') == 'customize':
       # Installations to the live site require validations, so abort.
       print "Error: For installation to the live site, please use:"
       print "  matrix.py vivify"
@@ -424,6 +424,8 @@ def validate_args(args):
     if len(args) < 2: usage(command='customize')
   elif args[0] in ('cf', 'customize-and-flop'):
     if len(args) < 2: usage(command='customize-and-flop')
+  elif args[0] in ('cd', 'customize-to-destination'):
+    if len(args) < 3: usage(command='customize-to-destination')
   elif args[0] in ('uc', 'update-choices'):
     if len(args) < 2: usage(command='update-choices')
   elif args[0] in ('v', 'validate'):
@@ -511,6 +513,14 @@ def usage(command=None, exitcode=2):
     p("            choices file or a directory that contains a choices file.")
     examples += ["  matrix.py customize-and-flop ../choices/Finnish",
                  "  matrix.py cf ../choices/Finnish"]
+    something_printed = True
+  if command in ('customize-to-destination', 'cd', 'all'):
+    p("customize-to-destination (cd) PATH DEST")
+    p("            Customize the grammar at PATH, with the output")
+    p("            written directly to DEST. PATH points to a")
+    p("            choices file or a directory that contains a choices file.")
+    examples += ["  matrix.py customize-to-destination ../choices/Finnish ../grammars/Finnish",
+                 "  matrix.py cd ../choices/Finnish ../grammars/Finnish"]
     something_printed = True
   if command in ('update-choices', 'uc', 'all'):
     p("update-choices (uc) PATH")
