@@ -396,7 +396,6 @@ def ensure_customization_root_set():
   """
   cwd = os.getcwd()
   if 'CUSTOMIZATIONROOT' in os.environ:
-    print(os.environ['CUSTOMIZATIONROOT'])
     if not os.path.exists(os.path.join(os.environ['CUSTOMIZATIONROOT'],
                                        'customize.py')):
       print "CUSTOMIZATIONROOT is incorrectly set."
@@ -728,7 +727,7 @@ def vivify(force):
   #     since the last vivification.
   #  2. There are no remaining modifications not checked into SVN.
   cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'], '../install')
-  subprocess.call([cmd, '-lkb','-iso','-r', 'matrix/customize'], env=os.environ)
+  subprocess.call([cmd, '-lkb','-iso','-r', 'customize'], env=os.environ)
 
 def run_web_tests():
   ensure_customization_root_set()

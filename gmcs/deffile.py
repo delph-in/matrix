@@ -545,6 +545,7 @@ class MatrixDefFile:
   'coordination':'Coordination', 'matrix-yes-no':'Matrix Yes/No Questions',
   'info-str':'Information Structure',
   'arg-opt':'Argument Optionality',
+  'clausal-comp':'Clausal Complements', 'lexicon':'Lexicon',
   'nominalclause':'Nominalized Clauses',
   'clausalmods':'Clausal Modifiers', 'lexicon':'Lexicon',
   'morphology':'Morphology','toolbox-import':'Toolbox Import',
@@ -560,7 +561,8 @@ class MatrixDefFile:
   'other-features':'OtherFeatures', 'sentential-negation':'SententialNegation',
   'coordination':'Coordination', 'matrix-yes-no':'YesNoQ',
   'info-str':'InformationStructure',
-  'arg-opt':'ArgumentOptionality',
+  'arg-opt':'ArgumentOptionality', 
+  'clausal-comp':'ClausalComplements','lexicon':'Lexicon',
   'nominalclause':'Nominalized Clauses',
   'clausalmods':'Clausal Modifiers', 'lexicon':'Lexicon',
   'morphology':'Morphology','toolbox-import':'ImportToolboxLexicon',
@@ -1232,7 +1234,7 @@ class MatrixDefFile:
 
       print '<h2 style="display:inline">' + section_friendly + '</h2>'
       doclink = '<a href="http://moin.delph-in.net/MatrixDoc/' + \
-                self.doclinks[section] + '" target="matrixdoc">help</a>'
+                self.doclinks[section] + '" target="matrixdoc">instructions</a>'
       print '<span class="tt">['+doclink+']</span><br />'
 
 
