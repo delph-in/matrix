@@ -85,6 +85,13 @@ def main():
       dest = args[2]
     customize_grammar(args[1], destination=dest, cheaphack=cheaphack)
 
+  elif args[0] in ('cd', 'customize-to-destination'):
+    dest = None
+    if len(args) > 2:
+      dest = args[2]
+    customize_grammar(path=args[1], destination=dest, cheaphack=cheaphack,force_dest=True)
+
+
   elif args[0] in ('cf', 'customize-and-flop'):
     dest = None
     if len(args) > 2:
@@ -637,7 +644,7 @@ def verify_force():
   print "   Aborted."
   sys.exit(1)
 
-def customize_grammar(path, destination=None, flop=False, cheaphack=False):
+def customize_grammar(path, destination=None, flop=False, cheaphack=False, force_dest=False):
   """
   Customize a grammar for the choices file at directory, and if flop
   is True, run flop on the resulting lang-pet.tdl file in the grammar
@@ -652,7 +659,7 @@ def customize_grammar(path, destination=None, flop=False, cheaphack=False):
     path = os.path.join(path, 'choices')
   if not os.path.exists(path):
     sys.exit("Error: No choices file found at " + path)
-  grammar_dir = gmcs.customize.customize_matrix(path, 'tgz', destination)
+  grammar_dir = gmcs.customize.customize_matrix(path=path, arch_type='tgz', destination=destination, force_dest=force_dest)
   # To work around a bug in cheap, we can add a blank morphological rule
   if cheaphack:
     irules_path = os.path.join(grammar_dir, 'irules.tdl')

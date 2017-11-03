@@ -98,8 +98,8 @@ vpm = None
 def customize_punctuation(grammar_path):
   '''sets up repp preprocessing for lkb according to one of
      three choices on the questionnaire.  '''
-    # TODO: pet.set output needs to be updated for
-    # current questionnaire choices and for repp!
+  # TODO: pet.set output needs to be updated for
+  # current questionnaire choices and for repp!
 
   default_splits_str = ' \\t!"#$%&\'()\*\+,-\./:;<=>?@\[\]\^_`{|}~\\\\'.encode('utf-8')
 
@@ -134,8 +134,8 @@ def customize_punctuation(grammar_path):
     for line in lines:
       if line.startswith(':'):
         line = line[2:-2]
-      # NOTE: repp syntax says that the line that starts with ':'
-      # defines a list of chars to split on
+        # NOTE: repp syntax says that the line that starts with ':'
+        # defines a list of chars to split on
         for c in chars:
           # \ char needs some special treatment
           # so do the other escaped chars!
@@ -288,12 +288,12 @@ def customize_roots():
     'good starting point.  Note that it is legal to have multiple start\n' + \
     'symbols, but they all need to be listed as the value of\n' + \
     '`*start-symbol*\' (see `lkb/user-fns.lsp\').'
-# ERB 2006-10-05 Removing if statement from within string
+  # ERB 2006-10-05 Removing if statement from within string
 
-#  verb_addendum = ''
-#  if has_auxiliaries_p():
-#    verb_addendum = ' & [ FORM fin ]'
-#[ HEAD verb' + verb_addendum + ', \
+  #  verb_addendum = ''
+  #  if has_auxiliaries_p():
+  #    verb_addendum = ' & [ FORM fin ]'
+  #[ HEAD verb' + verb_addendum + ', \
 
   # ERB 2007-01-21 Need to add [MC +] for inversion strategy for
   # questions, but it's hard to see how this could hurt in general,
@@ -321,10 +321,10 @@ def customize_roots():
   # adjective if language contains stative predicate adjectives
   has_stative_predicate_adjectives = False
   for (key, value) in ch.walk():
-      if "predcop" in key.lower():
-          if ch.get(key).lower() in ("imp", "opt"):
-              has_stative_predicate_adjectives = True
-              break
+    if "predcop" in key.lower():
+      if ch.get(key).lower() in ("imp", "opt"):
+        has_stative_predicate_adjectives = True
+        break
   has_question_particles = bool(ch.get('q-part'))
 
   if has_question_particles and has_stative_predicate_adjectives:
@@ -434,7 +434,7 @@ def setup_vcs(ch, grammar_path):
 #   the choices file in the directory 'path'.  This function
 #   assumes that validation of the choices has already occurred.
 
-def customize_matrix(path, arch_type, destination=None):
+def customize_matrix(path, arch_type, destination=None, force_dest=False):
   if os.path.isdir(path):
     path = os.path.join(path, 'choices')
   # if no destination dir is specified, just use the choices file's dir
@@ -445,10 +445,13 @@ def customize_matrix(path, arch_type, destination=None):
 
   language = ch['language']
 
-  grammar_path = get_grammar_path(ch.get('iso-code', language).lower(),
-                                  language.lower(), destination)
+  if force_dest:
+    grammar_path = destination
+  else:
+    grammar_path = get_grammar_path(ch.get('iso-code', language).lower(),
+                                    language.lower(), destination)
 
-  # delete any existing contents at grammar path
+    # delete any existing contents at grammar path
   if os.path.exists(grammar_path):
     shutil.rmtree(grammar_path)
   # the rsync command won't create the target dirs, so do it now
@@ -483,6 +486,7 @@ def customize_matrix(path, arch_type, destination=None):
                           ['auxlex', 'Auxiliaries', False, False],
                           ['coplex', 'Copulas', False, False],
                           ['adjlex', 'Adjectives', False, False],
+                          ['subordlex', 'Subordinators', True, False],
                           ['otherlex', 'Others', False, False],
                           ['lexrules', 'Lexical Rules', True, False],
                           ['phrases', 'Phrasal Types', True, False],
@@ -530,17 +534,17 @@ def customize_matrix(path, arch_type, destination=None):
 
   # Initialize various type hierarchies
   case.init_case_hierarchy(ch, hierarchies)
- # init_person_hierarchy()
- # init_number_hierarchy()
- # init_pernum_hierarchy()
- # init_gender_hierarchy()
- # init_other_hierarchies()
+  # init_person_hierarchy()
+  # init_number_hierarchy()
+  # init_pernum_hierarchy()
+  # init_gender_hierarchy()
+  # init_other_hierarchies()
   agreement_features.init_agreement_hierarchies(ch, mylang, hierarchies)
- # init_tense_hierarchy()
- # init_aspect_hierarchy()
- # init_situation_hierarchy()
- # init_mood_hierarchy()
- # init_form_hierarchy()
+  # init_tense_hierarchy()
+  # init_aspect_hierarchy()
+  # init_situation_hierarchy()
+  # init_mood_hierarchy()
+  # init_form_hierarchy()
   verbal_features.init_verbal_hierarchies(ch, hierarchies)
 
 
@@ -583,18 +587,18 @@ def customize_matrix(path, arch_type, destination=None):
 
   features.process_cfv_list(mylang, ch, hierarchies, to_cfv)
 
-  
-  
+
+
   # Call the other customization functions
- # customize_person_and_number()
- # customize_gender()
- #  customize_other_features()
+  # customize_person_and_number()
+  # customize_gender()
+  #  customize_other_features()
   agreement_features.customize_agreement_features(mylang, hierarchies)
- # customize_form()
- # customize_tense()
- # customize_aspect()
- # customize_situation()
- # customize_mood()
+  # customize_form()
+  # customize_tense()
+  # customize_aspect()
+  # customize_situation()
+  # customize_mood()
   verbal_features.customize_verbal_features(mylang, hierarchies)
   valence_change.customize_valence_change(mylang, ch, lexicon, rules, irules, lrules)
   word_order.customize_word_order(mylang, ch, rules)
@@ -632,6 +636,7 @@ def get_matrix_core_path():
   cr = os.environ.get('CUSTOMIZATIONROOT','')
   if cr: cr = os.path.join(cr, '..')
   return os.path.join(cr, 'matrix-core')
+
 
 def get_grammar_path(isocode, language, destination):
   '''
