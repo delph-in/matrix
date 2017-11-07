@@ -1273,7 +1273,7 @@ class MatrixDefFile:
 
       print '<h2 style="display:inline">' + section_friendly + '</h2>'
       doclink = '<a href="http://moin.delph-in.net/MatrixDoc/' + \
-                self.doclinks[section] + '" target="matrixdoc">help</a>'
+                self.doclinks[section] + '" target="matrixdoc">documentation</a>'
       print '<span class="tt">['+doclink+']</span><br />'
 
 
