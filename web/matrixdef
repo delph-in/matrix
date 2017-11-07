@@ -1775,9 +1775,11 @@ BeginIter comps{i} "a Clausal Complement Type" 1
   . opt "Optional Complementizer" "" "optional or"
   . oblig "Obligatory Complementizer" ""  "obligatory."
 
-  BeginIter comp{j} "a Complementizer"
-     Text stem "spelling" "spelling:" "" 10
-  EndIter comp
+        BeginIter complementizer{j} "a Complementizer" 0
+
+                Text orth "subord {i} stem {j} spelling" "Spelling: " "" 30 ""
+
+         EndIter complementizer
 
   Label "<p> The embedded verb has the following features 
   (e.g. finite, nonfinite (define in Other Features), nominalization:</p>"

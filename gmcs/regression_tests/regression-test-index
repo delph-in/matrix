@@ -288,3 +288,4 @@ clausalmods-nom-high=clausal modifiers that are nominlaized high (at S) and cont
 clausalmods-nom-mid=clausal modifiers thae nominalized at VP and contain a separate nominalized_rel predication
 clausalmods-nom-low=clausal modifiers that are nominalized low in the tree (at V) and contain a separate nominalized_rel predication
 clausalmods-nom-no-rel=clausal modifiers that are nominalized high in the tree (at S) and do NOT have a separate nominalized cluse predication
+v2-orig=Check that basic V2 order works: subject can attach on either side of the verb and the verb cannot be in first or final position.
