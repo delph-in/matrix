@@ -94,7 +94,7 @@ HTML_toggle_visible_js = '''<script type="text/javascript">
 HTML_mainprebody = '''<body onload="animate()">
 <h1>LinGO Grammar Matrix</h1>
 <h1 style="display:inline">Matrix customization and download page</h1>
-<span class="tt">[<a href="http://moin.delph-in.net/MatrixDocTop" target="matrixdoc">help</a>]</span>
+<span class="tt">[<a href="http://moin.delph-in.net/MatrixDocTop" target="matrixdoc">documentation</a>]</span>
 <h2>Version of %s</h2>
 
 <p>The <a href="http://www.delph-in.net/matrix">LinGO Grammar
