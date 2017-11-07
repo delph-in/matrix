@@ -1720,7 +1720,7 @@ class MatrixDefFile:
         new_choices["neg-aux-index"] = str(neg_aux_index) if neg_aux_index > 0 else str(1)
 
     # create a zero-neg lri in choices
-    if section == 'sentential-negation' \
+    if section == 'sentential-negation' and 'neg-exp' in form_data\
                and form_data['neg-exp'].value == '0' \
                and 'vpc-0-neg' in form_data.keys():
       if form_data['vpc-0-neg'].value != "":
