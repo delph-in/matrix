@@ -223,7 +223,7 @@ def create_semantics(sem, aux, auxcomp, mylang, ch, hierarchies, negaux):
   for feat in aux.get('feat',[]):
         if feat.get('name') == 'evidential':
           evid_present = True
-  if sem == 'add-pred' or evidential_present:
+  if sem == 'add-pred' or evid_present:
     auxtypename = supertypename + '-with-pred'
     basic_typedef = auxtypename + ' := ' + supertypename + '.' 
     if auxcomp == 'vp':
@@ -345,8 +345,17 @@ def add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon, trigger):
                        [ STEM < "' + orth + '" > ].'
     lexicon.add(typedef)
 
-    if sem == 'add-pred':
-      pred = stem.get('pred')
+
+    evid_present = False
+    evid_value = None
+    for feat in aux.get('feat',[]):
+        if feat.get('name') == 'evidential':
+          evid_present = True
+          evid_value = feat.get('value')
+    if sem == 'add-pred' or evid_present:
+      pred = 'ev_' + evid_value + '_rel'
+      if not evid_present:
+        pred = stem.get('pred')
       typedef = TDLencode(id) + \
                     ' := [ SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
       lexicon.add(typedef, merge=True)
@@ -366,10 +375,8 @@ def add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon, trigger):
       grdef = TDLencode(id) +'_gr := arg0e_gtr & \
                     [ CONTEXT [ RELS <! [ '
 
-      if tense == '' and aspect == '' and mood == '' and evidential = '':
+      if tense == '' and aspect == '' and mood == '':
         grdef += 'PRED "non_existing_rel" ] !> ],'
-      elif evidential != '':
-        grdef += 'PRED "ev_' + evidential + '_rel" ] !> ],'
       else:
         grdef += 'ARG0.E [ '
 	if tense != '':
