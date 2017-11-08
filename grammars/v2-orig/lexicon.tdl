@@ -2,11 +2,11 @@
 ;;; Nouns
 
 subject := noun-noun-lex &
-  [ STEM < "n1" >,
+  [ STEM < "subject" >,
     SYNSEM.LKEYS.KEYREL.PRED "_subject_n_rel" ].
 
 complement := noun-noun-lex &
-  [ STEM < "n2" >,
+  [ STEM < "complement" >,
     SYNSEM.LKEYS.KEYREL.PRED "_complement_n_rel" ].
 
 ;;; Adjectives
@@ -18,5 +18,5 @@ v1 := intran-verb-lex &
     SYNSEM.LKEYS.KEYREL.PRED "_v1_v_rel" ].
 
 verb := tran-verb-lex &
-  [ STEM < "v2" >,
+  [ STEM < "verb" >,
     SYNSEM.LKEYS.KEYREL.PRED "_verb_v_rel" ].
