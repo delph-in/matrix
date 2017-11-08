@@ -1234,7 +1234,7 @@ class MatrixDefFile:
 
       print '<h2 style="display:inline">' + section_friendly + '</h2>'
       doclink = '<a href="http://moin.delph-in.net/MatrixDoc/' + \
-                self.doclinks[section] + '" target="matrixdoc">instructions</a>'
+                self.doclinks[section] + '" target="matrixdoc">documentation</a>'
       print '<span class="tt">['+doclink+']</span><br />'
 
 
@@ -1680,8 +1680,8 @@ class MatrixDefFile:
         old_choices, neg_aux_index = self.create_neg_aux_choices(old_choices,form_data)
         new_choices["neg-aux-index"] = str(neg_aux_index) if neg_aux_index > 0 else str(1)
 
-    # create a zero-neg lri in choices
-    if section == 'sentential-negation' \
+    # # create a zero-neg lri in choices
+    if section == 'sentential-negation' and 'neg-exp' in form_data\
                and form_data['neg-exp'].value == '0' \
                and 'vpc-0-neg' in form_data.keys():
       if form_data['vpc-0-neg'].value != "":
