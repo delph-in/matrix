@@ -353,7 +353,7 @@ def add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon, trigger):
           evid_present = True
           evid_value = feat.get('value')
     if sem == 'add-pred' or evid_present:
-      pred = 'ev_' + evid_value + '_rel'
+      pred = 'ev_' + str(evid_value) + '_rel'
       if not evid_present:
         pred = stem.get('pred')
       typedef = TDLencode(id) + \
