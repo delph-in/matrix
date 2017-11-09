@@ -1,0 +1,35 @@
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+;;; Nouns
+
+noun1 := noun-noun-lex &
+  [ STEM < "noun1" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_noun1_n_rel" ].
+
+noun2 := noun-noun-lex &
+  [ STEM < "noun2" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_noun2_n_rel" ].
+
+;;; Adjectives
+
+;;; Verbs
+
+verb1 := verb-verb-lex &
+  [ STEM < "verb1" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_verb1_v_rel" ].
+
+verb2 := verb-verb-lex &
+  [ STEM < "verb2" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_verb2_v_rel" ].
+
+subord-head := clause-init-prehead-subord-lex-item &
+  [ STEM < "subord-head" >,
+    SYNSEM.LKEYS.KEYREL.PRED "subord-head_rel" ].
+
+subord-adv-s := clause-init-prehead-s-adv-subord-lex-item &
+  [ STEM < "subord-adv-s" > ].
+
+subord-adv-vp := clause-init-prehead-vp-adv-subord-lex-item &
+  [ STEM < "subord-adv-vp" > ].
+
+subord-adv-vp-and-s := clause-init-prehead-vp-and-s-adv-subord-lex-item &
+  [ STEM < "subord-adv-vp-and-s" > ].

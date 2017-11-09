@@ -1,0 +1,20 @@
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+head-comp := head-comp-phrase.
+
+subj-head := subj-head-phrase.
+
+bare-np := bare-np-phrase.
+
+adj-head-scop := adj-head-scop-phrase.
+
+comp-head := comp-head-phrase.
+
+advs-modifying-clause := advs-modifying-clause-phrase.
+
+advvp-modifying-clause := advvp-modifying-clause-phrase.
+
+advvps-modifying-clause := advvps-modifying-clause-phrase.
+
+head-adj-int := head-adj-int-phrase.
+
+adj-head-int := adj-head-int-phrase.

@@ -18,16 +18,17 @@ def add_subord_lex(mylang, lexicon, cms, ch):
   mylang.set_section('addenda')
   mylang.add('head :+ [ INIT bool ].')
 
-  if cms.get('nominalization') == 'on':
-    mylang.set_section('noun-lex')
-    mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT.HEAD.NMZ - ].')
-    mylang.set_section('subordlex')
-    nom_strategy = cms.get('nominalization_strategy')
-    for ns in ch.get('ns'):
-      if ns.get('name') == nom_strategy:
-        nmzRel = ns.get('nmzRel')
-    if nmzRel == 'no':
-      mylang.add('scopal-mod-with-nominalized-comp-no-rel-lex := single-rel-lex-item & norm-ltop-lex-item &\
+  if cms.get('subordinator-type') == 'head':
+    if cms.get('nominalization') == 'on':
+      mylang.set_section('noun-lex')
+      mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT.HEAD.NMZ - ].')
+      mylang.set_section('subordlex')
+      nom_strategy = cms.get('nominalization_strategy')
+      for ns in ch.get('ns'):
+        if ns.get('name') == nom_strategy:
+          nmzRel = ns.get('nmzRel')
+      if nmzRel == 'no':
+        mylang.add('scopal-mod-with-nominalized-comp-no-rel-lex := single-rel-lex-item & norm-ltop-lex-item &\
         [ SYNSEM [ LOCAL [ CAT [ HEAD.MOD < [ LOCAL scopal-mod &\
                  [CAT [HEAD verb,\
       VAL [SUBJ < >,\
@@ -51,14 +52,14 @@ def add_subord_lex(mylang, lexicon, cms, ch):
                      ARG1  #h1,\
                      ARG2  #h2 ]]].')
 
-      mylang.add('nom-no-rel-subord-lex-item := scopal-mod-with-nominalized-comp-no-rel-lex &\
+        mylang.add('nom-no-rel-subord-lex-item := scopal-mod-with-nominalized-comp-no-rel-lex &\
                 [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >,\
                                    SPR < > ,\
         			   COMPS < [ LOCAL [ CAT [ HEAD noun &\
                                         			[ NMZ + ],\
                                    			MC - ] ] ] > ]].')
-    else:
-      mylang.add('scopal-mod-with-nominalized-comp-lex := single-rel-lex-item & norm-ltop-lex-item &\
+      else:
+        mylang.add('scopal-mod-with-nominalized-comp-lex := single-rel-lex-item & norm-ltop-lex-item &\
       [ SYNSEM [ LOCAL [ CAT [ HEAD.MOD < [ LOCAL scopal-mod &\
                [CAT [HEAD verb,\
     VAL [SUBJ < >,\
@@ -79,15 +80,15 @@ def add_subord_lex(mylang, lexicon, cms, ch):
                    ARG1  #h1,\
                    ARG2  #comp ]]].')
 
-      mylang.add('nom-subord-lex-item := scopal-mod-with-nominalized-comp-lex &\
+        mylang.add('nom-subord-lex-item := scopal-mod-with-nominalized-comp-lex &\
                 [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >,\
                                    SPR < > ,\
         			   COMPS < [ LOCAL [ CAT [ HEAD noun &\
                                         			[ NMZ + ],\
                                    			MC - ] ] ] > ]].')
-  else:
-    mylang.set_section('subordlex')
-    mylang.add('scopal-mod-with-comp-lex := single-rel-lex-item & norm-ltop-lex-item &\
+    else:
+      mylang.set_section('subordlex')
+      mylang.add('scopal-mod-with-comp-lex := single-rel-lex-item & norm-ltop-lex-item &\
             [ SYNSEM [ LOCAL [ CAT [ HEAD.MOD < [ LOCAL scopal-mod &\
 					      [ CAT [ HEAD verb,\
 						      VAL [ SUBJ < >,\
@@ -109,13 +110,23 @@ def add_subord_lex(mylang, lexicon, cms, ch):
 			    HOOK.INDEX #index ]],\
 	     LKEYS.KEYREL [ ARG1 #h1,\
 			    ARG2 #h2 ]]].')
-    mylang.add('subord-lex-item := scopal-mod-with-comp-lex &\
+      mylang.add('subord-lex-item := scopal-mod-with-comp-lex &\
     [ SYNSEM.LOCAL [ CAT [ VAL [ SUBJ < >,\
                                 SPR < >,\
                                 COMPS <  #comps > ]]],\
       ARG-ST <  #comps &\
                   [LOCAL.CAT[ HEAD verb,\
                               MC -]] > ].')
+
+  elif cms.get('subordinator-type') == 'adverb':
+    if cms.get('nominalization') == 'on':
+      print('todo')
+      #i need to add a testsuite and make sure this works
+    else:
+      mylang.set_section('subordlex')
+
+
+
 
   pos = cms.get('position')
   subpos = cms.get('subposition')
@@ -196,6 +207,37 @@ def add_subordinator_pair_to_lexicon(lexicon, matrixtype, subordtype, pair):
        SYNSEM.LKEYS.KEYREL.PRED "' + pair.get('subordpred') + '" ].')
   #elif subordtype == 'adv':
 
+def create_subordinated_feature(mylang, cms):
+  """
+  adds the SUBORDINATED feature to SYNSEM, adds the addenda to make sure
+  it is tracked through the grammar, and appropriately constrains verb-lex
+  """
+  mylang.set_section('addenda')
+  mylang.add('canonical-synsem :+ [ SUBORDINATED xsubord ].')
+  mylang.add('xsubord := *top*.')
+  mylang.add('none := xsubord.')
+  for adverb in cms.get('freemorph'):
+    pred = adverb.get('pred')
+    value = pred.split('_')[0]
+    mylang.add(value + ' := xsubord')
+  mylang.add('basic-head-subj-phrase :+\
+  [ SYNSEM.SUBORDINATED #subord,\
+    HEAD-DTR.SYNSEM.SUBORDINATED #subord ].')
+  mylang.add('basic-head-comp-phrase :+\
+  [ SYNSEM.SUBORDINATED #subord,\
+    HEAD-DTR.SYNSEM.SUBORDINATED #subord ].')
+  mylang.add('basic-head-opt-comp-phrase :+\
+  [ SYNSEM.SUBORDINATED #subord,\
+    HEAD-DTR.SYNSEM.SUBORDINATED #subord ].')
+  mylang.add('basic-head-opt-subj-phrase :+\
+  [ SYNSEM.SUBORDINATED #subord,\
+    HEAD-DTR.SYNSEM.SUBORDINATED #subord ].')
+  mylang.add('adj-head-phrase :+\
+  [ SYNSEM.SUBORDINATED #subord,\
+    NON-HEAD-DTR.SYNSEM.SUBORDINATED #subord ].')
+  mylang.set_section('verb-lex')
+  mylang.add('noun-lex := [ SYNSEM.SUBORDINATED none ].')
+
 def create_subpair_feature(mylang, morphpair):
   """
   adds the subpair feature to canonical synsem as well as adding constraints
@@ -252,6 +294,7 @@ def customize_clausalmods(mylang, ch, lexicon, rules, irules):
     if subord == 'free':
       add_subord_lex(mylang, lexicon, cms, ch)
       add_subord_phrasal_types(mylang, rules, cms)
+      create_subordinated_feature(mylang, cms)
 
     if subord == 'pair':
       matrixtype = cms.get('matrixtype')

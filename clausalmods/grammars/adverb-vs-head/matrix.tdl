@@ -1,4 +1,3 @@
-
 ;;; -*- Mode: TDL; Package: LKB -*-
 ;;;
 ;;; HPSG Grammar Matrix
@@ -21,14 +20,6 @@
 ;;;
 ;;;  JACY Grammar: fundamentals.tdl, mrsbasic.tdl
 ;;;  Developed by Melanie Siegel, Emily M. Bender
-
-
-;;; CAT-SAT DEV COPY
-;;; Current changes: added cat-sat definition, added as feature to each arg in
-;;; intransitive, transitive, and ditransitive lex items. 
-;;; With changes listed here, currently passes all regression tests 11/2/17
-
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
 ;;
@@ -269,12 +260,6 @@ cat := cat-min &
     HC-LIGHT luk,
     POSTHEAD bool ].
 
-cat-sat := cat & 
- [ VAL [ SPR olist,
-       	 SPEC olist,
-	 COMPS olist,
-	 SUBJ olist ],
-  HEAD.MOD olist ].
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;  HEAD 
@@ -2098,10 +2083,6 @@ marker-final-phrase := basic-binary-marker-phrase &
 
 ; SSH 2012-03-03 ICONS
 ; SSH 2013-02-19 deleting ICONS ?
-
-; CHANGING: trying changing the head type of the SPR of the head dtr from det to +nd
-; Kristen thinks this may be causing problems with their nmlzation lib.
-
 basic-bare-np-phrase := head-only & head-valence-phrase &
   [ SYNSEM.LOCAL.CAT.VAL [ SPR < >,
 			   SUBJ < >,
@@ -2271,7 +2252,7 @@ basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
 adj-head-phrase := basic-head-mod-phrase-simple & head-final &
   [ SYNSEM [ LOCAL.CAT.POSTHEAD #ph,
 	     MODIFIED lmod & [ PERIPH #periph ],
-             LIGHT #light ],
+	     LIGHT #light ],
     HEAD-DTR.SYNSEM [ LOCAL.CAT.POSTHEAD #ph,
                       LIGHT #light ],
     NON-HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL.COMPS < > ],
@@ -2539,7 +2520,6 @@ basic-one-arg := lex-item &
 		       REL #rel,
 		       QUE #que ] ].
 
-
 basic-two-arg := lex-item &
   [ ARG-ST < [ NON-LOCAL [ SLASH [ LIST #smiddle,
 				   LAST #slast ],
@@ -2664,12 +2644,9 @@ basic-three-arg-no-hcons := basic-three-arg & no-hcons-lex-item.
 
 ; (Kim is a student requires an analysis of predicative NPs.)
 
-; CHANGING: add cat-sat to args here (PASSES all reg tests)
-
 intransitive-lex-item := basic-one-arg-no-hcons & basic-icons-lex-item &
-  [ ARG-ST < [ LOCAL [ CAT cat-sat, 
-    	       	       CONT.HOOK [ INDEX ref-ind & #ind,
-				 ICONS-KEY.IARG1 #clause ] ] ]>,
+  [ ARG-ST < [ LOCAL.CONT.HOOK [ INDEX ref-ind & #ind,
+				 ICONS-KEY.IARG1 #clause ] ] >,
     SYNSEM [ LKEYS.KEYREL.ARG1 #ind,
 	     LOCAL.CONT.HOOK.CLAUSE-KEY #clause ] ].
 
@@ -2679,22 +2656,17 @@ intransitive-lex-item := basic-one-arg-no-hcons & basic-icons-lex-item &
 ; SSH 2013-12-11 Expletives cannot be topic or focus.
 
 expl-arg-only-lex-item := basic-one-arg-no-hcons & basic-icons-lex-item &
-   [ ARG-ST < [ LOCAL [ CONT.HOOK.INDEX expl-ind,
-     	      	      	CAT cat-sat ] ] > ].
+   [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX expl-ind ] > ].
 
 ; Kim eats lunch.  Kim is fond of apples.
 ; Kim ga hiru gohan wo taberu.  
 ; Kim mange le dejeuner.  
 
-; CHANGING: add cat-sat to args here (PASSES all reg tests)
-
 transitive-lex-item := basic-two-arg-no-hcons & basic-icons-lex-item &
-   [ ARG-ST < [ LOCAL [ CAT cat-sat,
-     	      	      	CONT.HOOK [ INDEX ref-ind & #ind1,
-				  ICONS-KEY.IARG1 #clause ] ] ],
-	      [ LOCAL [ CAT cat-sat,
-	      	      	CONT.HOOK [ INDEX ref-ind & #ind2,
-				  ICONS-KEY.IARG1 #clause ] ] ]>,
+   [ ARG-ST < [ LOCAL.CONT.HOOK [ INDEX ref-ind & #ind1,
+				  ICONS-KEY.IARG1 #clause ] ],
+	      [ LOCAL.CONT.HOOK [ INDEX ref-ind & #ind2,
+				  ICONS-KEY.IARG1 #clause ] ] >,
      SYNSEM [ LKEYS.KEYREL [ ARG1 #ind1,
 			     ARG2 #ind2 ],
 	      LOCAL.CONT.HOOK.CLAUSE-KEY #clause ] ].
@@ -2703,18 +2675,13 @@ transitive-lex-item := basic-two-arg-no-hcons & basic-icons-lex-item &
 ; Kim ga Sandy ni hon wo ageru.
 ; Kim donne un livre a Sandy.
 
-; CHANGING: add cat-sat to args here  (PASSES all reg tests)
-
 ditransitive-lex-item := basic-three-arg-no-hcons & basic-icons-lex-item &
-   [ ARG-ST < [ LOCAL [ CAT cat-sat,
-     	      	      	CONT.HOOK [ INDEX ref-ind & #ind1,
-				  ICONS-KEY.IARG1 #clause ] ] ],
-	      [ LOCAL [ CAT cat-sat,
-	      	      	CONT.HOOK [ INDEX ref-ind & #ind2,
-				  ICONS-KEY.IARG1 #clause ] ] ],
-	      [ LOCAL [ CAT cat-sat,
-	      	      	CONT.HOOK [ INDEX ref-ind & #ind3,
-				  ICONS-KEY.IARG1 #clause ] ] ] >,
+   [ ARG-ST < [ LOCAL.CONT.HOOK [ INDEX ref-ind & #ind1,
+				  ICONS-KEY.IARG1 #clause ] ],
+	      [ LOCAL.CONT.HOOK [ INDEX ref-ind & #ind2,
+				  ICONS-KEY.IARG1 #clause ] ],
+	      [ LOCAL.CONT.HOOK [ INDEX ref-ind & #ind3,
+				  ICONS-KEY.IARG1 #clause ] ] >,
      SYNSEM [ LKEYS.KEYREL [ ARG1 #ind1,
 			     ARG2 #ind2,
 			     ARG3 #ind3 ],
@@ -2730,8 +2697,6 @@ ditransitive-lex-item := basic-three-arg-no-hcons & basic-icons-lex-item &
 ; intervening.
 
 
-; Changing: planning on adding cat-sat to all arguments that have ref-ind indexes from here on.
-
 clausal-arg-intrans-lex-item := basic-one-arg & one-icons-lex-item & 
    [ ARG-ST < [ LOCAL.CONT.HOOK [ LTOP #larg,
 				  INDEX #target ] ] >,
@@ -2746,14 +2711,12 @@ clausal-arg-intrans-lex-item := basic-one-arg & one-icons-lex-item &
 ; ERB 2007-01-22 Inserting qeqs now that we no longer have messages
 ; intervening.
 
-; changing: added cat-sat (PASSES all reg tests)
 
 clausal-first-arg-trans-lex-item := basic-two-arg & one-icons-lex-item & 
    [ ARG-ST < [ LOCAL.CONT.HOOK [ LTOP #larg,
 				  INDEX #target ] ],
-	      [ LOCAL [ CAT cat-sat,
-	      	      	CONT.HOOK [ INDEX ref-ind & #ind,
-				  ICONS-KEY.IARG1 #clause ] ] ]>,
+	      [ LOCAL.CONT.HOOK [ INDEX ref-ind & #ind,
+				  ICONS-KEY.IARG1 #clause ] ] >,
      SYNSEM [ LOCAL.CONT [ HOOK.CLAUSE-KEY #clause,
 			   HCONS <! qeq & [ HARG #harg,
 					    LARG #larg ] !>,
@@ -2768,12 +2731,9 @@ clausal-first-arg-trans-lex-item := basic-two-arg & one-icons-lex-item &
 ; ERB 2007-01-22 Inserting qeqs now that we no longer have messages
 ; intervening.
 
-; changing: added cat-sat (PASSES all reg tests)
-
 clausal-second-arg-trans-lex-item := basic-two-arg & one-icons-lex-item & 
-   [ ARG-ST < [ LOCAL [ CAT cat-sat,
-     	      	      	CONT.HOOK [ INDEX ref-ind & #ind,
-				  ICONS-KEY.IARG1 #clause ] ] ],
+   [ ARG-ST < [ LOCAL.CONT.HOOK [ INDEX ref-ind & #ind,
+				  ICONS-KEY.IARG1 #clause ] ],
 	      [ LOCAL.CONT.HOOK [ LTOP #larg,
 				  INDEX #target ] ] >,
      SYNSEM [ LOCAL.CONT [ HOOK.CLAUSE-KEY #clause,
@@ -2790,15 +2750,11 @@ clausal-second-arg-trans-lex-item := basic-two-arg & one-icons-lex-item &
 ; ERB 2007-01-22 Inserting qeqs now that we no longer have messages
 ; intervening.
 
-; changing: added cat-sat (PASSES all reg tests)
-
 clausal-third-arg-ditrans-lex-item := basic-three-arg & one-icons-lex-item & 
-   [ ARG-ST < [ LOCAL [ CAT cat-sat,
-     	      	      	CONT.HOOK [ INDEX ref-ind & #ind1,
-				  ICONS-KEY.IARG1 #clause ] ] ],
-	      [ LOCAL [ CAT cat-sat,
-	      	      	CONT.HOOK [ INDEX ref-ind & #ind2,
-				  ICONS-KEY.IARG1 #clause ] ] ],
+   [ ARG-ST < [ LOCAL.CONT.HOOK [ INDEX ref-ind & #ind1,
+				  ICONS-KEY.IARG1 #clause ] ],
+	      [ LOCAL.CONT.HOOK [ INDEX ref-ind & #ind2,
+				  ICONS-KEY.IARG1 #clause ] ],
 	      [ LOCAL.CONT.HOOK [ LTOP #larg,
 				  INDEX #target ] ] >,
      SYNSEM [ LOCAL.CONT [ HOOK.CLAUSE-KEY #clause,
@@ -2819,11 +2775,8 @@ clausal-third-arg-ditrans-lex-item := basic-three-arg & one-icons-lex-item &
 ; ERB 2007-01-22 Inserting qeqs now that we no longer have messages
 ; intervening.
 
-; changing: added cat-sat (PASSES all reg tests)
-
 clausal-expl-arg-lex-item := basic-two-arg & one-icons-lex-item & 
-   [ ARG-ST < [ LOCAL [ CAT cat-sat,
-     	      	      	CONT.HOOK.INDEX expl-ind ] ],  
+   [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX expl-ind ],  
 	      [ LOCAL.CONT.HOOK [ LTOP #larg,
 				  INDEX #target ] ] >,
      SYNSEM [ LOCAL.CONT [ HOOK.CLAUSE-KEY #clause,
@@ -2834,14 +2787,9 @@ clausal-expl-arg-lex-item := basic-two-arg & one-icons-lex-item &
 
 ; Kim seems to sleep; Kim is sleeping.
 
-
-; changing: added cat-sat (PASSES all reg tests)
-
 trans-first-arg-raising-lex-item := basic-two-arg &
-   [ ARG-ST < [ LOCAL [ CAT cat-sat,
-     	      	      	CONT.HOOK.INDEX #ind ] ],
-	      [ LOCAL [ CAT cat-sat,
-	      	      	CONT.HOOK.XARG #ind ] ] > ].
+   [ ARG-ST < [ LOCAL.CONT.HOOK.INDEX #ind ],
+	      [ LOCAL.CONT.HOOK.XARG #ind ] > ].
 
 ; Variant expecting a relation introduced by the raising
 ; predicate.  Adding qeq between ARG1 and LTOP.  Can't
@@ -2854,8 +2802,6 @@ trans-first-arg-raising-lex-item := basic-two-arg &
 ; ERB (2007-02-20) They should be able to now that things
 ; are de-messaged, since basic-verb-lex no longer inherits
 ; from no-hcons-lex-item.
-
-; changing: added cat-sat  (PASSES all regression tests)
 
 trans-first-arg-raising-lex-item-1 := trans-first-arg-raising-lex-item & 
 				      basic-icons-lex-item &  
@@ -2885,10 +2831,9 @@ trans-first-arg-raising-lex-item-2 := trans-first-arg-raising-lex-item &
 ; ERB 2007-01-22 Adding in qeq here.
 
 trans-first-arg-control-lex-item := basic-two-arg & basic-icons-lex-item &
-   [ ARG-ST < [ LOCAL [ CAT cat-sat,
-     	      	      	CONT.HOOK [ INDEX ref-ind & #ind,
+   [ ARG-ST < [ LOCAL.CONT.HOOK [ INDEX ref-ind & #ind,
 				  ICONS-KEY.IARG1 #clause,
-				  CLAUSE-KEY #clause ] ] ],
+				  CLAUSE-KEY #clause ] ],
 	      [ LOCAL.CONT.HOOK [ XARG #ind,
 				  LTOP #larg,
 				  ICONS-KEY.IARG1 #clause,
@@ -2904,16 +2849,13 @@ trans-first-arg-control-lex-item := basic-two-arg & basic-icons-lex-item &
 
 ; ERB 2007-01-22 Adding in qeq here.
 
-; changing: added cat-sat  (PASSES all regression tests)
-
 ditrans-first-arg-raising-lex-item := basic-three-arg & basic-icons-lex-item &
    [ ARG-ST < [ LOCAL.CONT.HOOK [ INDEX #ind1,
 				  ICONS-KEY.IARG1 #clause,
 				  CLAUSE-KEY #clause ] ],
-	      [ LOCAL [ CAT cat-sat,
-	      	      	CONT.HOOK [ INDEX ref-ind & #ind2,
+	      [ LOCAL.CONT.HOOK [ INDEX ref-ind & #ind2,
 				  ICONS-KEY.IARG1 #clause,
-				  CLAUSE-KEY #clause ] ] ],
+				  CLAUSE-KEY #clause ] ],
 	      [ LOCAL.CONT.HOOK [ XARG #ind1,
 				  LTOP #larg,
 				  ICONS-KEY.IARG1 #clause,
@@ -2928,22 +2870,17 @@ ditrans-first-arg-raising-lex-item := basic-three-arg & basic-icons-lex-item &
 
 ; ERB 2007-01-22 Adding in qeq here.
 
-; changing: added cat-sat  (PASSES all regression tests)
-
 ditrans-first-arg-control-lex-item := basic-three-arg & basic-icons-lex-item &
-   [ ARG-ST < [ LOCAL [ CAT cat-sat,
-     	      	      	CONT.HOOK [ INDEX ref-ind & #ind1,
+   [ ARG-ST < [ LOCAL.CONT.HOOK [ INDEX ref-ind & #ind1,
 				  ICONS-KEY.IARG1 #clause,
-				  CLAUSE-KEY #clause ] ] ],
-	      [ LOCAL [ CAT cat-sat,
-	      	      	CONT.HOOK [ INDEX ref-ind & #ind2,
+				  CLAUSE-KEY #clause ] ],
+	      [ LOCAL.CONT.HOOK [ INDEX ref-ind & #ind2,
 				  ICONS-KEY.IARG1 #clause,
-				  CLAUSE-KEY #clause ] ] ],
-	      [ LOCAL [ 
-	      	      	CONT.HOOK [ XARG #ind1,
+				  CLAUSE-KEY #clause ] ],
+	      [ LOCAL.CONT.HOOK [ XARG #ind1,
 				  LTOP #larg,
 				  ICONS-KEY.IARG1 #clause,
-				  CLAUSE-KEY #clause ] ] ]>,
+				  CLAUSE-KEY #clause ] ] >,
      SYNSEM [ LOCAL.CONT [ HOOK.CLAUSE-KEY #clause,
 			   HCONS <! qeq & [ HARG #harg,
 					    LARG #larg ] !> ],
@@ -2956,13 +2893,10 @@ ditrans-first-arg-control-lex-item := basic-three-arg & basic-icons-lex-item &
 
 ; ERB 2007-01-22 Adding in qeq here.
 
-; changing: added cat-sat  (PASSES all reg tests)
-
 ditrans-second-arg-raising-lex-item := basic-three-arg & basic-icons-lex-item &
-   [ ARG-ST < [ LOCAL [ CAT cat-sat,
-     	      	      	CONT.HOOK [ INDEX ref-ind & #ind1,
+   [ ARG-ST < [ LOCAL.CONT.HOOK [ INDEX ref-ind & #ind1,
 				  ICONS-KEY.IARG1 #clause,
-				  CLAUSE-KEY #clause ] ] ],
+				  CLAUSE-KEY #clause ] ],
 	      [ LOCAL.CONT.HOOK [ INDEX #ind2,
 				  ICONS-KEY.IARG1 #clause,
 				  CLAUSE-KEY #clause ] ],
@@ -2981,14 +2915,12 @@ ditrans-second-arg-raising-lex-item := basic-three-arg & basic-icons-lex-item &
 ; ERB 2007-01-22 Adding in qeq here.
 
 ditrans-second-arg-control-lex-item := basic-three-arg & basic-icons-lex-item &
-   [ ARG-ST < [ LOCAL [ CAT cat-sat,
-     	      	      	CONT.HOOK [ INDEX ref-ind & #ind1,
+   [ ARG-ST < [ LOCAL.CONT.HOOK [ INDEX ref-ind & #ind1,
 				  ICONS-KEY.IARG1 #clause,
-				  CLAUSE-KEY #clause ] ] ],
-	      [ LOCAL [ CAT cat-sat,
-	      	      	CONT.HOOK [ INDEX ref-ind & #ind2,
+				  CLAUSE-KEY #clause ] ],
+	      [ LOCAL.CONT.HOOK [ INDEX ref-ind & #ind2,
 				  ICONS-KEY.IARG1 #clause,
-				  CLAUSE-KEY #clause ] ] ],
+				  CLAUSE-KEY #clause ] ],
 	      [ LOCAL.CONT.HOOK [ XARG #ind2,
 				  LTOP #larg,
 				  ICONS-KEY.IARG1 #clause,
@@ -3177,13 +3109,10 @@ basic-scopal-mod-adj-lex := basic-adjective-lex & scopal-mod-lex.
 
 ;;; Adpositions
 
-;CHANGING: added cat-sat to complement of adposition (PASSES all regression tests)
-
 basic-adposition-lex := single-rel-lex-item & basic-icons-lex-item &
   [ SYNSEM [ LOCAL [ CAT [ HEAD adp,
-			   VAL.COMPS < [ LOCAL [ CAT cat-sat,
-			   	       	       	 CONT.HOOK [ INDEX #ind,
-							   ICONS-KEY.IARG1 #clause ] ] ] > ],
+			   VAL.COMPS < [ LOCAL.CONT.HOOK [ INDEX #ind,
+							   ICONS-KEY.IARG1 #clause ] ] > ],
 		     CONT.HOOK.CLAUSE-KEY #clause ],
 	     LKEYS.KEYREL arg12-ev-relation & [ ARG2 #ind ] ] ].
 
