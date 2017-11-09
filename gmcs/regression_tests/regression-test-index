@@ -289,3 +289,4 @@ clausalmods-nom-mid=clausal modifiers thae nominalized at VP and contain a separ
 clausalmods-nom-low=clausal modifiers that are nominalized low in the tree (at V) and contain a separate nominalized_rel predication
 clausalmods-nom-no-rel=clausal modifiers that are nominalized high in the tree (at S) and do NOT have a separate nominalized cluse predication
 v2-orig=Basic order for verb in second position: verb must be in second position but arguments can go on either side
+vfinal=Basic order for verb in final position and subject and complement taking either spot in front of it.
