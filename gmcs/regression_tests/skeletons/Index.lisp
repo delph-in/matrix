@@ -22,6 +22,7 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "v2-basic-order") (:content . "v2-basic-order: V2 basic word order: verb in second position, subject and object on either side."))
 ((:path . "vfinal") (:content . "vfinal: V-final basic word order: verb in final position, subject and object in either position in front."))
 ((:path . "cagr-pseudospanish-feature-resolution") (:content . "cagr-pseudospanish-feature-resolution: tests the part of coordination and agreement that creates feature resolution (using a grammar loosely based on Spanish)"))
 ((:path . "cagr-pseudo-closest-conjunct") (:content . "cagr-pseudo-closest-conjunct: tests the part of coordination and agreement that creates closest conjunct rules"))

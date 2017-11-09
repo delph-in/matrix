@@ -281,3 +281,4 @@ cagr-pseudo-closest-conjunct=tests the part of coordination and agreement that c
 cagr-pseudospanish-feature-resolution=tests the part of coordination and agreement that creates feature resolution (using a grammar loosely based on Spanish)
 vfinal=V-final basic word order: verb in final position, subject and object in either position in front.
 
+v2-basic-order=V2 basic word order: verb in second position, subject and object on either side.
