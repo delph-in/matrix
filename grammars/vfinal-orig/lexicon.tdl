@@ -13,10 +13,6 @@ noun2 := noun-noun-lex &
 
 ;;; Verbs
 
-v1 := intran-verb-lex &
-  [ STEM < "v1" >,
-    SYNSEM.LKEYS.KEYREL.PRED "_v1_v_rel" ].
-
-verb := tran-verb-lex &
+verb := verb-verb-lex &
   [ STEM < "verb" >,
     SYNSEM.LKEYS.KEYREL.PRED "_verb_v_rel" ].
