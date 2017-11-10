@@ -83,7 +83,7 @@ complementizer-lex-item := raise-sem-lex-item & basic-one-arg &
                              SUBJ < >,
                              COMPS < #comps > ] ],
     ARG-ST < #comps & 
-             [ LOCAL.CAT [ HEAD verb,
+             [ LOCAL.CAT [ HEAD verb, MC -,
                            VAL [ SUBJ < >,
                                  COMPS < > ] ] ] > ].
 
@@ -106,7 +106,7 @@ head-initial-head-nexus := head-initial &
     HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
 
 head-final-head-nexus := head-final &
-  [ SYNSEM.LOCAL.CAT.MC bool,
+  [ SYNSEM.LOCAL.CAT.MC + ,
     HEAD-DTR.SYNSEM.LOCAL.CAT.MC na ].
 
 head-subj-phrase := decl-head-subj-phrase & head-initial-head-nexus.
@@ -124,11 +124,11 @@ comp-head-phrase-2 := basic-head-2nd-comp-phrase & head-final-head-nexus.
 ; Phrase structure rules for subordinate clauses
 
 subord-comp-head-phrase := basic-head-1st-comp-phrase & head-final &
-[ SYNSEM.LOCAL.CAT [ VAL.SUBJ < >, 
+[ SYNSEM.LOCAL.CAT [ ;VAL.SUBJ < >, 
                      MC - ] ].
 
 subord-subj-head-phrase := decl-head-subj-phrase & head-final &
-[ SYNSEM.LOCAL.CAT [ VAL.COMPS < >,
+[ SYNSEM.LOCAL.CAT [ ;VAL.COMPS < >,
                      MC - ] ].
 
 
