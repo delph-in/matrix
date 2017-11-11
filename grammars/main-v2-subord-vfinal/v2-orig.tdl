@@ -123,13 +123,14 @@ comp-head-phrase-2 := basic-head-2nd-comp-phrase & head-final-head-nexus.
 
 ; Phrase structure rules for subordinate clauses
 
-subord-comp-head-phrase := basic-head-1st-comp-phrase & head-final &
-[ SYNSEM.LOCAL.CAT.MC - , 
-  HEAD-DTR.SYNSEM.LOCAL.CAT.MC - ].
+subord-phrase := head-final & 
+[ SYNSEM.LOCAL.CAT.MC #mc & - , 
+  HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
 
-subord-subj-head-phrase := decl-head-subj-phrase & head-final &
-[ SYNSEM.LOCAL.CAT.MC - , 
-  HEAD-DTR.SYNSEM.LOCAL.CAT.MC - ].
+
+subord-comp-head-phrase := basic-head-1st-comp-phrase & head-final.
+
+subord-subj-head-phrase := decl-head-subj-phrase & head-final.
 
 
 ; Bare NP phrase.  Consider modifying the PRED value of the quantifier relation
