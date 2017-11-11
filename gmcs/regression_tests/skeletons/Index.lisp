@@ -22,6 +22,7 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "clausal-mods-adv-or-head") (:content . "clausal-mods-adv-or-head: clausal modifiers with an adverbial subordinator attaching to the vp, s or both; compared with a subordinator that is the head of its clause"))
 ((:path . "clausalmods-nom-no-rel") (:content . "clausalmods-nom-no-rel: clausal modifiers that are nominalized high in the tree (at S) and do NOT have a separate nominalized cluse predication"))
 ((:path . "clausalmods-nom-low") (:content . "clausalmods-nom-low: clausal modifiers that are nominalized low in the tree (at V) and contain a separate nominalized_rel predication"))
 ((:path . "clausalmods-nom-mid") (:content . "clausalmods-nom-mid: clausal modifiers thae nominalized at VP and contain a separate nominalized_rel predication"))

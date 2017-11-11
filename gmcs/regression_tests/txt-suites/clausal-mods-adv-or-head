@@ -1,0 +1,13 @@
+# adverb vs head (complementizer or preposition) distribution
+subord-head noun1 verb1 noun2 verb2
+*noun1 subord-head verb1 noun2 verb2
+*noun1 verb1 subord-head noun2 verb2
+subord-adv-s noun1 verb1 noun2 verb2
+*noun1 subord-adv-s verb1 noun2 verb2
+*noun1 verb1 subord-adv-s noun2 verb2
+noun1 subord-adv-vp verb1 noun2 verb2
+*subord-adv-vp noun1 verb1 noun2 verb2
+*noun1 verb1 subord-adv-vp noun2 verb2
+subord-adv-vp-and-s noun1 verb1 noun2 verb2
+noun1 subord-adv-vp-and-s verb1 noun2 verb2
+*noun1 verb1 subord-adv-vp-and-s noun2 verb2

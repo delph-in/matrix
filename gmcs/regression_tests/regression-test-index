@@ -288,3 +288,4 @@ clausalmods-nom-high=clausal modifiers that are nominlaized high (at S) and cont
 clausalmods-nom-mid=clausal modifiers thae nominalized at VP and contain a separate nominalized_rel predication
 clausalmods-nom-low=clausal modifiers that are nominalized low in the tree (at V) and contain a separate nominalized_rel predication
 clausalmods-nom-no-rel=clausal modifiers that are nominalized high in the tree (at S) and do NOT have a separate nominalized cluse predication
+clausal-mods-adv-or-head=clausal modifiers with an adverbial subordinator attaching to the vp, s or both; compared with a subordinator that is the head of its clause
