@@ -119,54 +119,130 @@ def add_subord_lex(mylang, lexicon, cms, ch):
                               MC -]] > ].')
 
   elif cms.get('subordinator-type') == 'adverb':
+    mylang.set_section('subordlex')
     if cms.get('nominalization') == 'on':
-      print('todo')
+      print('todo: fix nominalization')
       #i need to add a testsuite and make sure this works
+      #and of course a lot more needs to be done (rel vs. no-rel, etc)
+      mylang.add('intersective-mod-subord-lex-item := no-rels-hcons-lex-item &\
+        [ SYNSEM [ LOCAL [ CAT [ VAL [ COMPS < >,\
+      				 SPR < >,\
+      				 SUBJ < > ],\
+      			   HEAD.MOD < [ LOCAL intersective-mod &\
+                                                    [ CAT [ HEAD noun &\
+                                        			[ NMZ + ] ] ] ] > ] ] ]].')
     else:
-      mylang.set_section('subordlex')
+      mylang.add('intersective-mod-subord-lex-item := no-rels-hcons-lex-item &\
+  [ SYNSEM [ LOCAL [ CAT [ VAL [ COMPS < >,\
+				 SPR < >,\
+				 SUBJ < > ],\
+			   HEAD.MOD < [ LOCAL intersective-mod &\
+                                              [ CAT [ HEAD verb ] ] ] > ] ] ]].')
 
-
-
-
+  lextype = []
+  constraints = []
   pos = cms.get('position')
   subpos = cms.get('subposition')
-  lextype = ''
-  constraints = ''
   if subpos == 'before':
-      lextype += 'clause-init'
-      constraints += '[ SYNSEM.LOCAL.CAT [ HEAD.INIT +'
+    lextype.append('clause-init')
+    constraints.append('SYNSEM.LOCAL.CAT.HEAD.INIT +')
   elif subpos == 'after':
-      lextype += 'clause-final'
-      constraints += '[ SYNSEM.LOCAL.CAT [ HEAD.INIT -'
+    lextype.append('clause-final')
+    constraints.append('SYNSEM.LOCAL.CAT.HEAD.INIT -')
   if pos == 'before':
-      lextype += '-prehead'
-      constraints += ', POSTHEAD -'
+    lextype.append('prehead')
+    constraints.append('SYNSEM.LOCAL.CAT.POSTHEAD -')
   elif pos == 'after':
-      lextype += '-posthead'
-      constraints += ', POSTHEAD +'
+    lextype.append('posthead')
+    constraints.append('SYNSEM.LOCAL.CAT.POSTHEAD +')
   if cms.get('specialmorph') == 'on':
-      for feat in cms.get('feat'):
-          lextype += '-' + feat.get('value')
-          #is this a problem? can the feature be in not head?
-          constraints += (', SYNSEM.LOCAL.CAT.HEAD.' + feat.get('name') + '.' + feat.get('value'))
-  constraints += ' ]].'
-  if cms.get('nominalization') == 'on':
-    if nmzRel == 'no':
-      lextype += '-nom-no-rel-subord-lex-item'
-      mylang.add(lextype + ' := nom-no-rel-subord-lex-item &' + constraints)
+    for feat in cms.get('feat'):
+          lextype.append(feat.get('value'))
+          constraints.append('SYNSEM.LOCAL.CAT.HEAD.' + feat.get('name') + '.' + feat.get('value'))
+  if cms.get('subordinator-type') == 'head':
+    type = build_lex_type(lextype)
+    #const = build_constraints(constraints)
+    if cms.get('nominalization') == 'on':
+      if nmzRel == 'no':
+        type += '-nom-no-rel-subord-lex-item'
+        mylang.add(type + ' := nom-no-rel-subord-lex-item & [ ' + constraints.pop() + ' ].')
+        while constraints != []:
+          mylang.add(type + ' := [ ' + constraints.pop() + ' ].')
+      else:
+        type += '-nom-subord-lex-item'
+        #mylang.add(type + ' := nom-subord-lex-item &' + const)
+        mylang.add(type + ' := nom-subord-lex-item & [ ' + constraints.pop() + ' ].')
+        while constraints != []:
+          mylang.add(type + ' := [ ' + constraints.pop() + ' ].')
     else:
-      lextype += '-nom-subord-lex-item'
-      mylang.add(lextype + ' := nom-subord-lex-item &' + constraints)
-  else:
-    lextype += '-subord-lex-item'
-    mylang.add(lextype + ' := subord-lex-item &' + constraints)
-  for freemorph in cms.get('freemorph'):
+      type += '-subord-lex-item'
+      #mylang.add(type + ' := subord-lex-item & ' + const)
+      mylang.add(type + ' := subord-lex-item & [ ' + constraints.pop() + ' ].')
+      while constraints != []:
+        mylang.add(type + ' := [ ' + constraints.pop() + ' ].')
+    for freemorph in cms.get('freemorph'):
       orth = freemorph.get('orth')
       orthstr = orth_encode(orth)
       pred = freemorph.get('pred')
-      lexicon.add(orthstr + ':= ' + lextype + ' &\
-                              [ STEM < "' + orthstr + '" >,\
-                           SYNSEM.LKEYS.KEYREL.PRED "' + pred + '"].\\')
+      lexicon.add(orthstr + ':= ' + type + ' &\
+                                  [ STEM < "' + orthstr + '" >,\
+                               SYNSEM.LKEYS.KEYREL.PRED "' + pred + '"].\\')
+
+  elif cms.get('subordinator-type') == 'adverb':
+    for adverb in cms.get('freemorph'):
+      pred = adverb.get('pred')
+      value = pred.split('_')[0]
+      lextype = [value ] + lextype
+      constraints.append('SYNSEM.SUBORDINATED ' + value)
+      if cms.get('adverb-attaches') == 's':
+        constraints.append('SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL [ SUBJ < >, COMPS < > ]] >')
+      elif cms.get('adverb-attaches') == 'vp':
+        constraints.append('SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL [ SUBJ < [ ] >, COMPS < > ]] >')
+      if cms.get('adverb-attaches') == 'both':
+        constraints.append('SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL [ COMPS < > ]] >')
+      type = build_lex_type(lextype)
+      #const = build_constraints(constraints)
+      if cms.get('nominalization') == 'on':
+        if nmzRel == 'no':
+          type += '-nom-no-rel-adv-subord-lex-item'
+          #mylang.add(type + ' := nom-no-rel-subord-lex-item &' + const) #todo this won't be the right type
+          mylang.add(type + ' := nom-no-rel-subord-lex-item & [ ' + constraints.pop() + ' ].')#todo this won't be the right type
+          while constraints != []:
+            mylang.add(type + ' := [ ' + constraints.pop() + ' ].')
+        else:
+          type += '-nom-adv-subord-lex-item'
+          #mylang.add(type + ' := nom-subord-lex-item &' + const) #todo this won't be the right type
+          mylang.add(
+            type + ' := nom-subord-lex-item & [ ' + constraints.pop() + ' ].')  # todo this won't be the right type
+          while constraints != []:
+            mylang.add(type + ' := [ ' + constraints.pop() + ' ].')
+      else:
+        type += '-adv-subord-lex-item'
+        #mylang.add(type + ' := intersective-mod-subord-lex-item & ' + const)
+        mylang.add(type + ' := intersective-mod-subord-lex-item & [ ' + constraints.pop() + ' ].')
+        while constraints != []:
+          mylang.add(type + ' := [ ' + constraints.pop() + ' ].')
+      orth = adverb.get('orth')
+      orthstr = orth_encode(orth)
+      lexicon.add(orthstr + ':= ' + type + ' &\
+                                          [ STEM < "' + orthstr + '" > ].\\')
+
+def build_lex_type(lextype):
+  type = ''
+  type += lextype.pop()
+  for s in lextype:
+    type += '-' + s
+  return type
+
+# def build_constraints(constraints):
+#   const = '[ '
+#   if constraints != []:
+#     const = const + constraints.pop()
+#   for each in constraints:
+#     const = const + ', ' + each
+#   const = const + ' ].'
+#   print(const)
+#   return const
 
 
 def add_subord_phrasal_types(mylang, rules, cms):
@@ -191,6 +267,46 @@ def add_subord_phrasal_types(mylang, rules, cms):
   rules.add('comp-head := comp-head-phrase.')
   #rules.add('subj-head := subj-head-phrase.')
 
+  if cms.get('subordinator-type') == 'adverb':
+    if cms.get('subposition') == 'before':
+      rules.add('adj-head-int := adj-head-int-phrase.')
+    elif cms.get('subposition') == 'after':
+      rules.add('head-adj-int := head-adj-int-phrase.')
+    else:
+      rules.add('adj-head-int := adj-head-int-phrase.')
+      rules.add('head-adj-int := head-adj-int-phrase.')
+    mylang.add('adv-marked-subord-clause-phrase := basic-unary-phrase &\
+  [ SYNSEM [ LOCAL [ CAT [ HEAD [ MOD < [ LOCAL scopal-mod &\
+						[ CAT [ HEAD verb,\
+							VAL [ SUBJ < >,\
+							      SPR < >,\
+							      COMPS < > ]],\
+						  CONT.HOOK [ LTOP #mcl,\
+								INDEX #index ]]] > ]]]],\
+    C-CONT [ RELS <! arg12-ev-relation &\
+		   [ ARG1 #mch,\
+		     ARG2 #sch ] !>,\
+	     HCONS <! qeq &\
+		    [ HARG #mch,\
+		      LARG #mcl ],\
+		    [ HARG #sch,\
+		      LARG #scl ] !>,\
+    		HOOK.INDEX #index ],\
+    ARGS < [ SYNSEM [ LOCAL [ CAT [ HEAD verb,\
+				    VAL [ SUBJ < >,\
+					  SPR < >,\
+					  COMPS < > ]],\
+			    CONT.HOOK.LTOP #scl ],\
+                      NON-LOCAL [ REL 0-dlist ] ] ] > ].')
+    for adverb in cms.get('freemorph'):
+      pred = adverb.get('pred')
+      value = pred.split('_')[0]
+      lextype = value + '-modifying-clause-phrase'
+      mylang.add(lextype + ' := adv-marked-subord-clause-phrase &\
+  [ C-CONT.RELS <! [ PRED "' + pred + '" ] !>,\
+    ARGS < [ SYNSEM.SUBORDINATED ' + value + ' ] > ].')
+      rules.add(value + '-modifying-clause := ' + lextype + '.')
+
 def add_subordinator_pair_to_lexicon(lexicon, matrixtype, subordtype, pair):
   """
   Adds each member of a subordinator pair to the lexicon
@@ -207,7 +323,7 @@ def add_subordinator_pair_to_lexicon(lexicon, matrixtype, subordtype, pair):
        SYNSEM.LKEYS.KEYREL.PRED "' + pair.get('subordpred') + '" ].')
   #elif subordtype == 'adv':
 
-def create_subordinated_feature(mylang, cms):
+def create_subordinated_feature(mylang, roots, cms):
   """
   adds the SUBORDINATED feature to SYNSEM, adds the addenda to make sure
   it is tracked through the grammar, and appropriately constrains verb-lex
@@ -219,7 +335,7 @@ def create_subordinated_feature(mylang, cms):
   for adverb in cms.get('freemorph'):
     pred = adverb.get('pred')
     value = pred.split('_')[0]
-    mylang.add(value + ' := xsubord')
+    mylang.add(value + ' := xsubord.')
   mylang.add('basic-head-subj-phrase :+\
   [ SYNSEM.SUBORDINATED #subord,\
     HEAD-DTR.SYNSEM.SUBORDINATED #subord ].')
@@ -236,7 +352,16 @@ def create_subordinated_feature(mylang, cms):
   [ SYNSEM.SUBORDINATED #subord,\
     NON-HEAD-DTR.SYNSEM.SUBORDINATED #subord ].')
   mylang.set_section('verb-lex')
-  mylang.add('noun-lex := [ SYNSEM.SUBORDINATED none ].')
+  mylang.add('verb-lex := [ SYNSEM.SUBORDINATED none ].')
+  mylang.add('same-subordinated-lex-rule := lex-rule &\
+  [ SYNSEM.SUBORDIANTED #subord,\
+    DTR.SYNSEM.SUBORDIANTED #subord ].')
+  mylang.add('non-local-change-only-lex-rule := same-subordinated-lex-rule.')
+  mylang.add('local-change-only-lex-rule := same-subordinated-lex-rule.')
+  mylang.add('cont-change-only-lex-rule := same-subordinated-lex-rule.')
+  mylang.add('cat-change-with-ccont-lex-rule := same-subordinated-lex-rule.')
+  mylang.add('add-only-rule := same-subordinated-lex-rule.')
+  roots.add('root := [ SYNSEM.SUBORDINATED none ].')
 
 def create_subpair_feature(mylang, morphpair):
   """
@@ -279,10 +404,11 @@ def create_subpair_feature(mylang, morphpair):
 #   Adds the lexical types for subordinator pairs
 #   """
 
-def customize_clausalmods(mylang, ch, lexicon, rules, irules):
+def customize_clausalmods(mylang, ch, lexicon, rules, roots):
   """
   The main clausal modifier customization routine
   """
+  mylang.set_section ('addenda')
   mylang.add('+nvcdmo :+ [ MOD < > ].')
 
   for cms in ch.get('cms'):
@@ -292,9 +418,10 @@ def customize_clausalmods(mylang, ch, lexicon, rules, irules):
 
 
     if subord == 'free':
+      if cms.get('subordinator-type') == 'adverb':
+        create_subordinated_feature(mylang, roots, cms)
       add_subord_lex(mylang, lexicon, cms, ch)
       add_subord_phrasal_types(mylang, rules, cms)
-      create_subordinated_feature(mylang, cms)
 
     if subord == 'pair':
       matrixtype = cms.get('matrixtype')
