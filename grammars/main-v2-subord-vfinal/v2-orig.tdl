@@ -128,9 +128,9 @@ subord-phrase := head-final &
   HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
 
 
-subord-comp-head-phrase := basic-head-1st-comp-phrase & head-final.
+subord-comp-head-phrase := subord-phrase & basic-head-1st-comp-phrase.
 
-subord-subj-head-phrase := decl-head-subj-phrase & head-final.
+subord-subj-head-phrase := subord-phrase & decl-head-subj-phrase.
 
 
 ; Bare NP phrase.  Consider modifying the PRED value of the quantifier relation
