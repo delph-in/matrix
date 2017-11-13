@@ -119,7 +119,7 @@ Separator
 
 Label "<p>The word order in subordinate clauses is:</p>"
 
-  Radio clause-order "Clausal Complement Type {i} clause word order" "" ""
+  Radio subord-word-order "Clausal Complement Type {i} clause word order" "" ""
   . same "same as in indicative" "" "Same as in the matrix clause<br>" 
   . vfinal "Verb Final" "" "Verb-final (assuming matrix order is V2, like in German)"
   
