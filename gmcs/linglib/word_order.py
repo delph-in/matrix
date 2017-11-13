@@ -35,7 +35,8 @@ def customize_word_order(mylang, ch, rules):
 
   orders = determine_consistent_order(wo,hc,ch)
   specialize_word_order(hc,orders,mylang,ch,rules)
-  customize_subord_word_order(mylang,ch,rules)
+
+  customize_subord_word_order(mylang,ch,wo,rules)
 
 
 
@@ -732,19 +733,17 @@ def customize_np_word_order(mylang, ch, rules):
 # with V-final subordinate order. If the subordinate word order is the same
 # as in the matrix clause, no work needs to be done here.
 
-def customize_subord_word_order(mylang,ch,rules):
-  if ch.get('subord-word-order') and ch.get('word-oder') == 'v2':
-    mylang.add('; Phrase structure rules for subordinate clauses.\n' +
-               'subord-phrase := head-final &\n' +
-               '[ SYNSEM.LOCAL.CAT.MC #mc & - ,\n' +
-               '  HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].\n' +
-               '\n' +
-               'subord-comp-head-phrase := subord-phrase & basic-head-1st-comp-phrase.\n' +
-               '\n' +
-               'subord-subj-head-phrase := subord-phrase & decl-head-subj-phrase.')
+def customize_subord_word_order(mylang,ch,wo,rules):
+  if 'subord-word-order' in ch:
+    if ch.get('subord-word-order') == 'vfinal' and wo == 'v2':
+      mylang.add('subord-phrase := head-final &\n'
+                 ' [ SYNSEM.LOCAL.CAT.MC #mc & - ,\n  HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].',
+                 'Phrase structure rules for subordinate clauses')
+      mylang.add('subord-comp-head-phrase := subord-phrase & basic-head-1st-comp-phrase.')
+      mylang.add('subord-subj-head-phrase := subord-phrase & decl-head-subj-phrase.')
 
-    rules.add('subord-comp-head := subord-comp-head-phrase.')
-    rules.add('subord-subj-head := subord-subj-head-phrase.')
+      rules.add('subord-comp-head := subord-comp-head-phrase.')
+      rules.add('subord-subj-head := subord-subj-head-phrase.')
 
 # ERB 2006-09-14 Subroutine for figuring out the relationship of major
 # constituent order to adpositions and auxiliaries.  Returns two values:
