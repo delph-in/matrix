@@ -234,9 +234,18 @@ in for head-adjunct phrases here:',
     mylang.add('head-initial-head-nexus := head-initial & \
                 [ SYNSEM.LOCAL.CAT.MC na & #mc, \
                   HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].')
-    mylang.add('head-final-head-nexus := head-final & \
-                [ SYNSEM.LOCAL.CAT.MC bool, \
-                  HEAD-DTR.SYNSEM.LOCAL.CAT.MC na ].')
+    # OZ 2017-11-13 [ MC bool ] is to allow v2 order in subordinate clauses, like in Wabmbaya.
+    if not ch.get('subord-word-order') or ch.get('subord-word-order') == 'same':
+      mylang.add('head-final-head-nexus := head-final & \
+                  [ SYNSEM.LOCAL.CAT.MC bool, \
+                    HEAD-DTR.SYNSEM.LOCAL.CAT.MC na ].')
+    # OZ 2017-11-13 For strict subordinate order, like in formal German,
+    # need [ MC + ] for the head-final phrase.
+    else:
+      mylang.add('head-final-head-nexus := head-final & \
+            [ SYNSEM.LOCAL.CAT.MC +, \
+              HEAD-DTR.SYNSEM.LOCAL.CAT.MC na ].')
+
 
 #rules shared among free and v2
 
@@ -717,6 +726,24 @@ def customize_np_word_order(mylang, ch, rules):
 
   rules.add('bare-np := bare-np-phrase.')
 
+# OZ 2017-11-13 A subroutine to create appropriate phrase structure rules
+# for subordinate clauses, if needed. Currently only supports V2 matrix order
+# with V-final subordinate order. If the subordinate word order is the same
+# as in the matrix clause, no work needs to be done here.
+
+def customize_subord_word_order(mylang,ch,rules):
+  if ch.get('subord-word-order') and ch.get('word-oder') == 'v2':
+    mylang.add('; Phrase structure rules for subordinate clauses.\n' +
+               'subord-phrase := head-final &\n' +
+               '[ SYNSEM.LOCAL.CAT.MC #mc & - ,\n' +
+               '  HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].\n' +
+               '\n' +
+               'subord-comp-head-phrase := subord-phrase & basic-head-1st-comp-phrase.\n' +
+               '\n' +
+               'subord-subj-head-phrase := subord-phrase & decl-head-subj-phrase.')
+
+    rules.add('subord-comp-head := subord-comp-head-phrase.')
+    rules.add('subord-subj-head := subord-subj-head-phrase.')
 
 # ERB 2006-09-14 Subroutine for figuring out the relationship of major
 # constituent order to adpositions and auxiliaries.  Returns two values:
@@ -810,4 +837,5 @@ def determine_consistent_order(wo,hc,ch):
    # return what we learned
 
   return {'adp': adp, 'aux': aux, 'qpart_order': qpart_order} #TODO: verify key
+
 
