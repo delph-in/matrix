@@ -12,6 +12,7 @@ from gmcs.linglib.parameters import determine_vcluster
 from gmcs.linglib.lexbase import ALL_LEX_TYPES, LEXICAL_SUPERTYPES
 from gmcs.linglib.lexicon import get_all_supertypes
 
+
 # helper functions
 def verb_id(item):
   """Return the identifier for a verb lexical item."""
@@ -238,8 +239,8 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
                                   SUBJ < #subj > ], \
                         CONT.HOOK.XARG #xarg ], \
          ARG-ST < #subj & \
-                  [ LOCAL [ CAT.VAL [ SPR < >, \
-                                      COMPS < > ], \
+                  [ LOCAL [ CAT cat-sat & [ VAL [ SPR < >, \
+                                      COMPS < > ] ], \
                             CONT.HOOK.INDEX #xarg ] ], ... > ].'
   mylang.add(typedef)
 
@@ -265,14 +266,15 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
        [ SYNSEM.LOCAL.CAT.VAL.COMPS < > ].'
   mylang.add(typedef)
 
+
   # transitive verb lexical type
   typedef = \
     'transitive-verb-lex := ' + mainorverbtype + ' & transitive-lex-item & \
        [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >, \
          ARG-ST < [ ], \
                   #comps & \
-                  [ LOCAL.CAT [ VAL [ SPR < >, \
-                                      COMPS < > ] ] ] > ].'
+                  [ LOCAL [ CAT cat-sat & [ VAL [ SPR < >, \
+                                      COMPS < > ] ] ] ] > ].'
   mylang.add(typedef)
 
   case.customize_verb_case(mylang, ch)
@@ -870,10 +872,10 @@ def customize_cops(mylang, ch, lexicon, hierarchies, trigger):
     # Core definition
     mylang.add('''%s := basic-verb-lex-super & trans-first-arg-raising-lex-item-2 &
           [ SYNSEM.LOCAL [ CAT.VAL [ SUBJ < [ LOCAL [ CONT.HOOK.INDEX #xarg,
-                                                      CAT [ VAL [ SPR < >,
+                                                      CAT cat-sat & [ VAL [ SPR < >,
                                                                   COMPS < > ],
                                                             HEAD noun ] ] ] >,
-                                     COMPS < [ LOCAL.CAT [ HEAD.PRD +,
+                                     COMPS < [ LOCAL.CAT cat-sat & [ HEAD.PRD +,
                                                            VAL [ SUBJ < >,
                                                                  COMPS < > ] ] ] >,
                                      SPR < >,

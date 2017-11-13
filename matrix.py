@@ -85,6 +85,13 @@ def main():
       dest = args[2]
     customize_grammar(args[1], destination=dest, cheaphack=cheaphack)
 
+  elif args[0] in ('cd', 'customize-to-destination'):
+    dest = None
+    if len(args) > 2:
+      dest = args[2]
+    customize_grammar(path=args[1], destination=dest, cheaphack=cheaphack,force_dest=True)
+
+
   elif args[0] in ('cf', 'customize-and-flop'):
     dest = None
     if len(args) > 2:
@@ -355,7 +362,7 @@ def main():
 
   elif args[0] in ('i', 'install', 'ih', 'install-homer'):
     # args[1] is the install target location
-    if args[1].strip('/') == 'matrix/customize':
+    if args[1].strip('/') == 'customize':
       # Installations to the live site require validations, so abort.
       print "Error: For installation to the live site, please use:"
       print "  matrix.py vivify"
@@ -417,6 +424,8 @@ def validate_args(args):
     if len(args) < 2: usage(command='customize')
   elif args[0] in ('cf', 'customize-and-flop'):
     if len(args) < 2: usage(command='customize-and-flop')
+  elif args[0] in ('cd', 'customize-to-destination'):
+    if len(args) < 3: usage(command='customize-to-destination')
   elif args[0] in ('uc', 'update-choices'):
     if len(args) < 2: usage(command='update-choices')
   elif args[0] in ('v', 'validate'):
@@ -504,6 +513,14 @@ def usage(command=None, exitcode=2):
     p("            choices file or a directory that contains a choices file.")
     examples += ["  matrix.py customize-and-flop ../choices/Finnish",
                  "  matrix.py cf ../choices/Finnish"]
+    something_printed = True
+  if command in ('customize-to-destination', 'cd', 'all'):
+    p("customize-to-destination (cd) PATH DEST")
+    p("            Customize the grammar at PATH, with the output")
+    p("            written directly to DEST. PATH points to a")
+    p("            choices file or a directory that contains a choices file.")
+    examples += ["  matrix.py customize-to-destination ../choices/Finnish ../grammars/Finnish",
+                 "  matrix.py cd ../choices/Finnish ../grammars/Finnish"]
     something_printed = True
   if command in ('update-choices', 'uc', 'all'):
     p("update-choices (uc) PATH")
@@ -637,7 +654,7 @@ def verify_force():
   print "   Aborted."
   sys.exit(1)
 
-def customize_grammar(path, destination=None, flop=False, cheaphack=False):
+def customize_grammar(path, destination=None, flop=False, cheaphack=False, force_dest=False):
   """
   Customize a grammar for the choices file at directory, and if flop
   is True, run flop on the resulting lang-pet.tdl file in the grammar
@@ -652,7 +669,7 @@ def customize_grammar(path, destination=None, flop=False, cheaphack=False):
     path = os.path.join(path, 'choices')
   if not os.path.exists(path):
     sys.exit("Error: No choices file found at " + path)
-  grammar_dir = gmcs.customize.customize_matrix(path, 'tgz', destination)
+  grammar_dir = gmcs.customize.customize_matrix(path=path, arch_type='tgz', destination=destination, force_dest=force_dest)
   # To work around a bug in cheap, we can add a blank morphological rule
   if cheaphack:
     irules_path = os.path.join(grammar_dir, 'irules.tdl')
@@ -727,7 +744,7 @@ def vivify(force):
   #     since the last vivification.
   #  2. There are no remaining modifications not checked into SVN.
   cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'], '../install')
-  subprocess.call([cmd, '-lkb','-iso','-r', 'matrix/customize'], env=os.environ)
+  subprocess.call([cmd, '-lkb','-iso','-r', 'customize'], env=os.environ)
 
 def run_web_tests():
   ensure_customization_root_set()

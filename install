@@ -37,11 +37,17 @@ then
 fi
 
 # parse command line
+
+echo "Please enter your patas username:"
+read username
+
 while [ "$1" = -r -o "$1" = -lkb -o "$1" = -iso ]
 do
     if [ "$1" = -r ]
     then
-        dest_prefix="uwcl@homer.u.washington.edu:~/public_html/"
+        dest_prefix="$username@patas.ling.washington.edu:/home/www-matrix/html/"
+	enable_captcha=1
+        #dest_prefix="uwcl@homer.u.washington.edu:~/public_html/"
     elif [ "$1" = -iso ]
     then
         get_iso=1
@@ -81,7 +87,7 @@ tempdir=/tmp/matrix.$$
 
 # the following will create the tempdir directory and fill it with
 # with everything in the directories besides what's excluded.
-rsync -a --exclude={CVS/,.svn/,delphin/,regression_tests/,tests/,sql_profiles/,gmmt/,lisp/,*.pyc,.*,*.tmp~,local_testing,Version.lsp,install,matrix.py,def_check.py,profiles.py,randgram.py,tdltest.py} ${CUSTOMIZATIONROOT}/../ $tempdir
+rsync -a -o --exclude={CVS/,.svn/,delphin/,regression_tests/,tests/,sql_profiles/,gmmt/,lisp/,*.pyc,.*,*.tmp~,local_testing,Version.lsp,install,matrix.py,def_check.py,profiles.py,randgram.py,tdltest.py} ${CUSTOMIZATIONROOT}/../ $tempdir
 
 # create datestamp, matrix-types, and head-types files
 date -u > $tempdir/datestamp
@@ -103,7 +109,7 @@ echo "Option -Indexes" >> \
 
 if [ $install_lkb ]
 then
-    rsync -a --exclude=.svn/ $delphin_dir $tempdir
+    rsync -a --exclude=.svn/ $delphin_dir $tempdir --omit-dir-times
 fi
 
 if [ $get_iso ]
@@ -111,6 +117,11 @@ then
     echo "Downloading iso code table file from sil.org."
     echo ""
     wget http://www.sil.org/iso639-3/iso-639-3_20120206.tab -O "$tempdir/iso.tab"
+fi
+
+if [ $enable_captcha ]
+then
+    sed -i 's/^disable_captcha = True/disable_captcha = False/' $tempdir/matrix.cgi
 fi
 
 #Finally rsync the tempdir to the destination
@@ -121,13 +132,18 @@ fi
 #      -l copy symlinks as symlinks
 #      -t timestamps (may cause error messages during copy, but they
 #                     are apparently necessary for web-tests)
-rsync -Kvzrlt $tempdir/ $dest
+rsync -Kvzrlt $tempdir/ $dest --omit-dir-times
 # The following command will also delete files at the destination that
 # do not exist in tempdir. Not using for now because an incorrect
 # destination could delete more than expected. This means that files
 # such as sample-choices deleted locally won't be deleted remotely unless
 # you do it manually.
 #rsync -az --delete $tempdir/ $dest
+
+# fix permissions:
+echo "Fixing permissions (you will be prompted for your password once more)."
+
+ssh $username@patas.ling.washington.edu 'sudo /home/www-matrix/fixperm.sh'
 
 # and clean up
 rm -rf $tempdir

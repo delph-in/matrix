@@ -71,10 +71,11 @@ def lexrule_name(rule_type, *args):
 
 # this rule enforces COMPS to make sure the input really is intransitive.
 # (subject-change-only-lex-rule copies mother/daughter comps value)
-SUBJ_REM_OP_ITR_RULE_TEMPLATE = '''{} := subj-change-only-lex-rule &
+SUBJ_REM_OP_ITR_RULE_TEMPLATE = '''{} := subj-change-only-lex-rule & no-ccont-lex-rule &
   [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >,
                            COMPS < > ],
-    DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < unexpressed > ].'''
+    DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ < unexpressed >,
+                               COMPS < > ] ].'''
 
 SUBJ_REM_OP_TR_RULE_TEMPLATE = '''{} := subj-and-comps-change-only-lex-rule &
   [ SYNSEM [ LOCAL.CAT.VAL [ SUBJ < [ LOCAL [ CONT.HOOK.INDEX #sind,

@@ -291,3 +291,5 @@ valchg-subj-add-pre=subject-adding, prepend, SVO
 valchg-subj-add-post=subject-adding, postpend, SVO
 valchg-subj-add-pre-sov=subject-adding, prepend, SOV
 valchg-subj-add-pre-case=subject-adding, with case constraints
+vfinal=V-final basic word order: verb in final position, subject and object in either position in front.
+v2-basic-order=V2 basic word order: verb in second position, subject and object on either side.
