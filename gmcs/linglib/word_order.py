@@ -35,6 +35,7 @@ def customize_word_order(mylang, ch, rules):
 
   orders = determine_consistent_order(wo,hc,ch)
   specialize_word_order(hc,orders,mylang,ch,rules)
+  customize_subord_word_order(mylang,ch,rules)
 
 
 
