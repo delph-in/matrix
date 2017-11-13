@@ -14,9 +14,7 @@ EVIDENTIAL_LEX_RULE = '''evidential-lex-rule := cont-change-only-lex-rule &
   [ C-CONT [ RELS <! event-relation &
 				   [ LBL #ltop,
 					 ARG0 event,
-					 ARG1 individual,
-					 ARG2 #harg,
-					 ARG3 handle ] !>,
+					 ARG1 #harg ] !>,
 			 HCONS <! qeq & [ HARG #harg,
 							  LARG #larg ] !>,
 			 HOOK [ LTOP #ltop,

@@ -604,7 +604,7 @@ def write_rules(pch, mylang, irules, lrules, lextdl, choices):
       # CMC 2017-03-28 Write valence change operations rules
       write_valence_change_behavior(lrt, mylang, choices)
       # MTH 2017-10-16 Write evidential behavior
-      write_evidential_behavior(lrt, mylang, choices)
+      write_evidential_behavior(lrt, mylang, choices, pc.has_evidential())
       # CMC 2017-04-07 moved merged LRT/PCs handling to write_supertypes
       write_supertypes(mylang, lrt.identifier(), lrt.all_supertypes())
     write_daughter_types(mylang, pc)
@@ -769,9 +769,11 @@ def write_i_or_l_rules(irules, lrules, lrt, order):
     lrt_id = lrt.identifier()
     lrules.add(lrt_id.rsplit('-rule',1)[0] + ' := ' + lrt_id + '.')
 
-def write_evidential_behavior(lrt, mylang, choices):
+def write_evidential_behavior(lrt, mylang, choices, pc_evidential):
   if lrt.evidential:
     lrt.supertypes.add(lrt.evidential + '-evidential-lex-rule')
+  elif pc_evidential:
+    lrt.supertypes.add("add-only-no-ccont-rule")
 
 def write_valence_change_behavior(lrt, mylang, choices):
   from gmcs.linglib.valence_change import lexrule_name
