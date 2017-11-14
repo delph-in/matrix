@@ -435,7 +435,8 @@ LEX_RULE_SUPERTYPES = ['cat-change-only-lex-rule',
                        'val-change-only-lex-rule',
                        'head-change-only-lex-rule',
                        'cont-change-only-lex-rule',
-                       'nominalization-lex-rule']
+                       'high-or-mid-nominalization-lex-rule',
+                       'low-nominalization-lex-rule']
 
 ALL_LEX_RULE_SUPERTYPES = LEX_RULE_SUPERTYPES + ['infl-lex-rule',
                                                  'const-lex-rule',

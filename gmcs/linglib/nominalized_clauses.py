@@ -2,6 +2,21 @@ def customize_nmcs(mylang, ch, rules, lrules):
     """
     the main nominalized clause customization routine
     """
+    for vpc in ch['verb-pc']:
+        for lrt in vpc['lrt']:
+            for f in lrt['feat']:
+                if 'nominalization' in f['name']:
+                    for ns in ch.get('ns'):
+                        if ns.get('name') == f['value']:
+                            level = ns.get('level')
+                    if level == 'mid' or level == 'high':
+                        lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') + \
+                                                      ['high-or-mid-nominalization-lex-rule'])
+                    if level == 'low':
+                        lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') + \
+                                                  ['low-nominalization-lex-rule'])
+
+
     for ns in ch.get('ns'):
         name = ns.get('name')
         level = ns.get('level')
@@ -17,14 +32,6 @@ def customize_nmcs(mylang, ch, rules, lrules):
         mylang.add('nonfinite := form.')
         mylang.add('finite := form.')
 
-        for vpc in ch['verb-pc']:
-            for lrt in vpc['lrt']:
-                for f in lrt['feat']:
-                    if 'nominalization' in f['name']:
-                        if 'supertypes' in lrt:
-                            lrt['supertypes'] += ', nominalization-lex-rule'
-                        else:
-                            lrt['supertypes'] = 'nominalization-lex-rule'
 
         if level == 'low' or level == 'mid':
             mylang.set_section('phrases')
@@ -39,7 +46,7 @@ def customize_nmcs(mylang, ch, rules, lrules):
             rules.add('non-event-subj-head := non-event-subj-head-phrase.')
         if level == 'mid' or level == 'high':
             mylang.set_section('lexrules')
-            mylang.add('nominalization-lex-rule := cat-change-with-ccont-lex-rule & same-cont-lex-rule &\
+            mylang.add('high-or-mid-nominalization-lex-rule := cat-change-with-ccont-lex-rule & same-cont-lex-rule &\
     [ SYNSEM.LOCAL [ CONT [ HOOK [ INDEX event ]],\
 		   CAT [ HEAD verb &\
 			      [ NMZ +,\
@@ -73,7 +80,7 @@ def customize_nmcs(mylang, ch, rules, lrules):
 
         if level == 'low':
             mylang.set_section('lexrules')
-            mylang.add('nominalization-lex-rule := cat-change-with-ccont-lex-rule &\
+            mylang.add('low-nominalization-lex-rule := cat-change-with-ccont-lex-rule &\
                 [ SYNSEM.LOCAL.CAT [ HEAD noun & \
 			    [ FORM #form,\
 			      AUX #aux,\
@@ -112,7 +119,7 @@ def customize_nmcs(mylang, ch, rules, lrules):
 		       CONT.HOOK [ LTOP #larg ]]].')
         elif level == 'mid':
             mylang.set_section('phrases')
-            mylang.add('nominalized-clause-phrase := basic-unary-phrase &\
+            mylang.add(level + '-nominalized-clause-phrase := basic-unary-phrase &\
                                     [ SYNSEM.LOCAL.CAT [ HEAD noun,\
             		                VAL [ SPR < [ OPT + ] >,\
             		                        SUBJ < #subj > ]],\
@@ -132,11 +139,11 @@ def customize_nmcs(mylang, ch, rules, lrules):
             		    			  SPR < >,\
             			    		  SPEC < > ]],\
             			            CONT.HOOK [ LTOP #larg ]]]] > ].')
-            rules.add('nominalized-clause := nominalized-clause-phrase.')
+            rules.add(level + '-nominalized-clause := ' + level + '-nominalized-clause-phrase.')
         elif level == 'high':
             mylang.set_section('phrases')
             if nmzrel == 'no':
-                mylang.add('nominalized-clause-phrase := basic-unary-phrase &\
+                mylang.add(level + '-no-rel-nominalized-clause-phrase := basic-unary-phrase &\
   [ SYNSEM [ LOCAL.CAT [ HEAD noun,\
                          VAL [ SPR < > ]]],\
     C-CONT [ RELS <! !>,\
@@ -149,9 +156,9 @@ def customize_nmcs(mylang, ch, rules, lrules):
                                         SPR < >,\
                                         SPEC < > ] ],\
 		CONT.HOOK [ LTOP #ltop ] ] ] ] > ].')
-                rules.add('nominalized-clause := nominalized-clause-phrase.')
+                rules.add(level + '-no-rel-nominalized-clause := ' + level + '-no-rel-nominalized-clause-phrase.')
             elif nmzrel == 'yes':
-                mylang.add('nominalized-clause-phrase := basic-unary-phrase &\
+                mylang.add(level + '-nominalized-clause-phrase := basic-unary-phrase &\
                           [ SYNSEM.LOCAL.CAT [ HEAD noun,\
 		       VAL [ SPR < [ OPT + ] >,'
                            'COMPS < >,\
@@ -173,4 +180,4 @@ def customize_nmcs(mylang, ch, rules, lrules):
 					  SPR < >,\
 					  SPEC < > ]],\
 			      CONT.HOOK [ LTOP #larg ]]]] > ].')
-                rules.add('nominalized-clause := nominalized-clause-phrase.')
+                rules.add(level + '-nominalized-clause := ' + level + '-nominalized-clause-phrase.')

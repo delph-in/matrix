@@ -121,10 +121,7 @@ def add_subord_lex(mylang, lexicon, cms, ch):
   elif cms.get('subordinator-type') == 'adverb':
     mylang.set_section('subordlex')
     if cms.get('nominalization') == 'on':
-      print('todo: fix nominalization')
-      #i need to add a testsuite and make sure this works
-      #and of course a lot more needs to be done (rel vs. no-rel, etc)
-      mylang.add('intersective-mod-subord-lex-item := no-rels-hcons-lex-item &\
+      mylang.add('intersective-mod-nominalized-subord-lex-item := no-rels-hcons-lex-item &\
         [ SYNSEM [ LOCAL [ CAT [ VAL [ COMPS < >,\
       				 SPR < >,\
       				 SUBJ < > ],\
@@ -192,7 +189,7 @@ def add_subord_lex(mylang, lexicon, cms, ch):
     for adverb in cms.get('freemorph'):
       pred = adverb.get('pred')
       value = pred.split('_')[0]
-      lextype = [value ] + lextype
+      lextype = [ value ] + lextype
       constraints.append('SYNSEM.SUBORDINATED ' + value)
       if cms.get('adverb-attaches') == 's':
         constraints.append('SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL [ SUBJ < >, COMPS < > ]] >')
@@ -202,24 +199,32 @@ def add_subord_lex(mylang, lexicon, cms, ch):
         constraints.append('SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL [ COMPS < > ]] >')
       type = build_lex_type(lextype)
       #const = build_constraints(constraints)
-      if cms.get('nominalization') == 'on':
-        if nmzRel == 'no':
-          type += '-nom-no-rel-adv-subord-lex-item'
-          #mylang.add(type + ' := nom-no-rel-subord-lex-item &' + const) #todo this won't be the right type
-          mylang.add(type + ' := nom-no-rel-subord-lex-item & [ ' + constraints.pop() + ' ].')#todo this won't be the right type
-          while constraints != []:
-            mylang.add(type + ' := [ ' + constraints.pop() + ' ].')
-        else:
-          type += '-nom-adv-subord-lex-item'
+      # if cms.get('nominalization') == 'on':
+      #   nom_strategy = cms.get('nominalization_strategy')
+      #   for ns in ch.get('ns'):
+      #     if ns.get('name') == nom_strategy:
+      #       nmzRel = ns.get('nmzRel')
+      #   if nmzRel == 'no':
+      #     type += '-nom-no-rel-adv-subord-lex-item'
+      #     #mylang.add(type + ' := nom-no-rel-subord-lex-item &' + const) #todo this won't be the right type
+      #     mylang.add(type + ' := nom-no-rel-adv-subord-lex-item & [ ' + constraints.pop() + ' ].')#todo this won't be the right type
+      #     while constraints != []:
+      #       mylang.add(type + ' := [ ' + constraints.pop() + ' ].')
+      #   else:
+      #     type += '-nom-adv-subord-lex-item'
           #mylang.add(type + ' := nom-subord-lex-item &' + const) #todo this won't be the right type
-          mylang.add(
-            type + ' := nom-subord-lex-item & [ ' + constraints.pop() + ' ].')  # todo this won't be the right type
-          while constraints != []:
-            mylang.add(type + ' := [ ' + constraints.pop() + ' ].')
+      if cms.get('nominalization') == 'on':
+        type += '-nom-adv-subord-lex-item'
+        mylang.add(type + ' := intersective-mod-nominalized-subord-lex-item & [ ' + constraints.pop() + ' ].')
+        while constraints != []:
+          mylang.add(type + ' := [ ' + constraints.pop() + ' ].')
       else:
         type += '-adv-subord-lex-item'
         #mylang.add(type + ' := intersective-mod-subord-lex-item & ' + const)
-        mylang.add(type + ' := intersective-mod-subord-lex-item & [ ' + constraints.pop() + ' ].')
+        if cms.get('nominalization') ==  'on':
+          mylang.add(type + ' := intersective-mod-subord-lex-item & [ ' + constraints.pop() + ' ].')
+        else:
+          mylang.add(type + ' := intersective-mod-nominalized-subord-lex-item & [ ' + constraints.pop() + ' ].')
         while constraints != []:
           mylang.add(type + ' := [ ' + constraints.pop() + ' ].')
       orth = adverb.get('orth')
@@ -245,7 +250,7 @@ def build_lex_type(lextype):
 #   return const
 
 
-def add_subord_phrasal_types(mylang, rules, cms):
+def add_subord_phrasal_types(mylang, rules, cms, ch):
   """
   Add the phrase type definitions
   """
@@ -275,7 +280,71 @@ def add_subord_phrasal_types(mylang, rules, cms):
     else:
       rules.add('adj-head-int := adj-head-int-phrase.')
       rules.add('head-adj-int := head-adj-int-phrase.')
-    mylang.add('adv-marked-subord-clause-phrase := basic-unary-phrase &\
+
+    if cms.get('nominalization') == 'on':
+      nom_strategy = cms.get('nominalization_strategy')
+      for ns in ch.get('ns'):
+        if ns.get('name') == nom_strategy:
+          nmzRel = ns.get('nmzRel')
+      if nmzRel == 'no':
+        supertype = 'adv-marked-nominalized-no-rel-subord-clause-phrase'
+        mylang.add(supertype + ' := basic-unary-phrase &\
+                  [ SYNSEM [ LOCAL [ CAT [ HEAD [ MOD < [ LOCAL scopal-mod &\
+                						[ CAT [ HEAD verb,\
+                							VAL [ SUBJ < >,\
+                							      SPR < >,\
+                							      COMPS < > ]],\
+                						  CONT.HOOK [ LTOP #mcl,\
+                								INDEX #index ]]] > ]]]],\
+                    C-CONT [ RELS <! arg12-ev-relation &\
+                		   [ ARG1 #mch,\
+                		     ARG2 #sch ] !>,\
+                	     HCONS <! qeq &\
+                		    [ HARG #mch,\
+                		      LARG #mcl ], \
+                                qeq &\
+                		    [ HARG #sch,\
+                		      LARG #scl ] !>,\
+                    		HOOK.INDEX #index ],\
+                    ARGS < [ SYNSEM [ LOCAL [ CAT [ HEAD noun & \
+                                                        [ NMZ + ],\
+                                                  MC -,\
+                				    VAL [ SUBJ < >,\
+                					  SPR < >,\
+                					  COMPS < > ]],\
+                			    CONT.HOOK.LTOP #scl ],\
+                                      NON-LOCAL [ REL 0-dlist ] ] ] > ].')
+      else:
+        supertype = 'adv-marked-nominalized-subord-clause-phrase'
+        mylang.add(supertype + ' := basic-unary-phrase &\
+          [ SYNSEM [ LOCAL [ CAT [ HEAD [ MOD < [ LOCAL scopal-mod &\
+        						[ CAT [ HEAD verb,\
+        							VAL [ SUBJ < >,\
+        							      SPR < >,\
+        							      COMPS < > ]],\
+        						  CONT.HOOK [ LTOP #mcl,\
+        								INDEX #index ]]] > ]]]],\
+            C-CONT [ RELS <! arg12-ev-relation &\
+        		   [ ARG1 #mch,\
+        		     ARG2 #sch ] !>,\
+        	     HCONS <! qeq &\
+        		    [ HARG #mch,\
+        		      LARG #mcl ],\
+                          qeq &\
+        		    [ HARG #sch,\
+        		      LARG #scl ] !>,\
+            		HOOK.INDEX #index ],\
+            ARGS < [ SYNSEM [ LOCAL [ CAT [ HEAD noun & \
+                                                [ NMZ + ],\
+                                          MC -,\
+        				    VAL [ SUBJ < >,\
+        					  SPR < >,\
+        					  COMPS < > ]],\
+        			    CONT.HOOK.INDEX #scl ],\
+                              NON-LOCAL [ REL 0-dlist ] ] ] > ].')
+    else:
+      supertype = 'adv-marked-subord-clause-phrase'
+      mylang.add(supertype + ' := basic-unary-phrase &\
   [ SYNSEM [ LOCAL [ CAT [ HEAD [ MOD < [ LOCAL scopal-mod &\
 						[ CAT [ HEAD verb,\
 							VAL [ SUBJ < >,\
@@ -289,6 +358,7 @@ def add_subord_phrasal_types(mylang, rules, cms):
 	     HCONS <! qeq &\
 		    [ HARG #mch,\
 		      LARG #mcl ],\
+              qeq &\
 		    [ HARG #sch,\
 		      LARG #scl ] !>,\
     		HOOK.INDEX #index ],\
@@ -302,7 +372,7 @@ def add_subord_phrasal_types(mylang, rules, cms):
       pred = adverb.get('pred')
       value = pred.split('_')[0]
       lextype = value + '-modifying-clause-phrase'
-      mylang.add(lextype + ' := adv-marked-subord-clause-phrase &\
+      mylang.add(lextype + ' := ' + supertype + ' &\
   [ C-CONT.RELS <! [ PRED "' + pred + '" ] !>,\
     ARGS < [ SYNSEM.SUBORDINATED ' + value + ' ] > ].')
       rules.add(value + '-modifying-clause := ' + lextype + '.')
@@ -421,7 +491,7 @@ def customize_clausalmods(mylang, ch, lexicon, rules, roots):
       if cms.get('subordinator-type') == 'adverb':
         create_subordinated_feature(mylang, roots, cms)
       add_subord_lex(mylang, lexicon, cms, ch)
-      add_subord_phrasal_types(mylang, rules, cms)
+      add_subord_phrasal_types(mylang, rules, cms, ch)
 
     if subord == 'pair':
       matrixtype = cms.get('matrixtype')
