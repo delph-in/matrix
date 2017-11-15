@@ -1,40 +1,3 @@
-
-Conversation opened. 2 messages. 1 message unread.
-
-Skip to content
-Using Gmail with screen readers
-Click here to enable desktop notifications for Gmail.   Learn more  Hide
- 
- 
-More 
-1 of 7,308
- 
-choices file
-Inbox
-	x
-Kristen Howell	
- 
-	Attachments12:02 PM (27 minutes ago)
-Kristen Howell
-	
-Attachments12:25 PM (4 minutes ago)
-	
-to me
-On Sun, Sep 24, 2017 at 12:02 PM, Kristen Howell <kphowell@uw.edu> wrote:
-Attachments area
-	
-Click here to Reply or Forward
-2.99 GB (19%) of 15 GB used
-Manage
-Terms - Privacy
-Last account activity: 13 minutes ago
-Details
-	
-	
-	Kristen Piepgrass
-kphowell@uw.edu
-Show details
-
 version=28
 
 section=general
@@ -74,16 +37,22 @@ section=arg-opt
 section=clausalmods
   cms1_position=before
   cms1_subordinator=pair
-  cms1_matrixtype=adv
-  cms1_subordtype=comp
-    cms1_morphpair1_matrixorth=subord1b
+  cms1_subordinator-type=head
+  cms1_matrix_subposition=before
+  cms1_matrix_adverb_attaches=s
+    cms1_morphpair1_matrixorth=subord1b-sadv
     cms1_morphpair1_matrixpred=subord1b
-    cms1_morphpair1_subordorth=subord1a
+    cms1_morphpair1_subordorth=subord1a-head
     cms1_morphpair1_subordpred=subord1a+subord1b
-    cms1_morphpair2_matrixorth=subord2b
-    cms1_morphpair2_matrixpred=subord2b
-    cms1_morphpair2_subordorth=subord2a
-    cms1_morphpair2_subordpred=subord2a_subord2b
+  cms2_subordinator=pair
+  cms2_subordinator-type=adverb
+  cms2_adverb_attaches=both
+  cms2_matrix_subposition=before
+  cms2_matrix_adverb_attaches=vp
+    cms2_morphpair1_matrixorth=subord2b-sadv
+    cms2_morphpair1_matrixpred=subord2b
+    cms2_morphpair1_subordorth=subord2b-vpadv
+    cms2_morphpair1_subordpred=subord2a+subord2b
 
 section=lexicon
   noun1_name=noun

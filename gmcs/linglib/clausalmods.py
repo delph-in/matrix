@@ -165,6 +165,8 @@ def add_subord_lex(mylang, lexicon, cms, ch):
     for feat in cms.get('feat'):
           lextype.append(feat.get('value'))
           constraints.append('SYNSEM.LOCAL.CAT.HEAD.' + feat.get('name') + '.' + feat.get('value'))
+  saved_constraints = constraints
+  saved_lextype = lextype
   if cms.get('subordinator-type') == 'head':
     if cms.get('subordinator') == 'free':
       type = build_lex_type(lextype)
@@ -187,12 +189,12 @@ def add_subord_lex(mylang, lexicon, cms, ch):
         mylang.add(type + ' := subord-lex-item & [ ' + constraints.pop() + ' ].')
         while constraints != []:
           mylang.add(type + ' := [ ' + constraints.pop() + ' ].')
-      if cms.get('subordinator') == 'free'
+      if cms.get('subordinator') == 'free':
         for freemorph in cms.get('freemorph'):
           orth = freemorph.get('orth')
           orthstr = orth_encode(orth)
           pred = freemorph.get('pred')
-          lexicon.add(orthstr + ':= ' + type + ' &\
+          lexicon.add(orthstr + ' := ' + type + ' &\
                                   [ STEM < "' + orthstr + '" >,\
                                SYNSEM.LKEYS.KEYREL.PRED "' + pred + '"].\\')
     elif cms.get('subordinator') == 'pair':
@@ -225,39 +227,43 @@ def add_subord_lex(mylang, lexicon, cms, ch):
           orth = morphpair.get('subordorth')
           orthstr = orth_encode(orth)
           pred = morphpair.get('subordpred')
-          lexicon.add(orthstr + ':= ' + type + ' &\
+          lexicon.add(orthstr + ' := ' + type + ' &\
                                   [ STEM < "' + orthstr + '" >,\
                                SYNSEM.LKEYS.KEYREL.PRED "' + pred + '"].\\')
 
   elif cms.get('subordinator-type') == 'adverb':
     if cms.get('subordinator') == 'free':
       for adverb in cms.get('freemorph'):
+        constraints = saved_constraints
+        lextype = saved_lextype
         pred = adverb.get('pred')
         value = pred.split('_')[0]
         lextype = [ value ] + lextype
         constraints.append('SYNSEM.SUBORDINATED ' + value)
         if cms.get('subordinator') == 'pair':
           constraints.append('SYNSEM.SUBPAIR ' + value)
-        if cms.get('adverb-attaches') == 's':
+        if cms.get('adverb_attaches') == 's':
           constraints.append('SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL [ SUBJ < >, COMPS < > ]] >')
-        elif cms.get('adverb-attaches') == 'vp':
+        elif cms.get('adverb_attaches') == 'vp':
           constraints.append('SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL [ SUBJ < [ ] >, COMPS < > ]] >')
-        if cms.get('adverb-attaches') == 'both':
+        if cms.get('adverb_attaches') == 'both':
           constraints.append('SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL [ COMPS < > ]] >')
         type = build_lex_type(lextype)
     if cms.get('subordinator') == 'pair':
       for adverb in cms.get('morphpair'):
+        constraints = saved_constraints
+        lextype = saved_lextype
         pred = adverb.get('subordpred')
         value = pred.split('_')[0]
         lextype = [ value ] + lextype
         constraints.append('SYNSEM.SUBORDINATED ' + value)
         if cms.get('subordinator') == 'pair':
           constraints.append('SYNSEM.SUBPAIR ' + value)
-        if cms.get('adverb-attaches') == 's':
+        if cms.get('adverb_attaches') == 's':
           constraints.append('SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL [ SUBJ < >, COMPS < > ]] >')
-        elif cms.get('adverb-attaches') == 'vp':
+        elif cms.get('adverb_attaches') == 'vp':
           constraints.append('SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL [ SUBJ < [ ] >, COMPS < > ]] >')
-        if cms.get('adverb-attaches') == 'both':
+        if cms.get('adverb_attaches') == 'both':
           constraints.append('SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL [ COMPS < > ]] >')
         type = build_lex_type(lextype)
       #const = build_constraints(constraints)
@@ -282,17 +288,12 @@ def add_subord_lex(mylang, lexicon, cms, ch):
           mylang.add(type + ' := [ ' + constraints.pop() + ' ].')
       else:
         type += '-adv-subord-lex-item'
-        #mylang.add(type + ' := intersective-mod-subord-lex-item & ' + const)
-        if cms.get('nominalization') ==  'on':
-          mylang.add(type + ' := intersective-mod-subord-lex-item & [ ' + constraints.pop() + ' ].')
-        else:
-          mylang.add(type + ' := intersective-mod-nominalized-subord-lex-item & [ ' + constraints.pop() + ' ].')
+        mylang.add(type + ' := intersective-mod-subord-lex-item & [ ' + constraints.pop() + ' ].')
         while constraints != []:
           mylang.add(type + ' := [ ' + constraints.pop() + ' ].')
-      orth = adverb.get('orth')
+      orth = adverb.get('subordorth')
       orthstr = orth_encode(orth)
-      lexicon.add(orthstr + ':= ' + type + ' &\
-                                          [ STEM < "' + orthstr + '" > ].\\')
+      lexicon.add(orthstr + ' := ' + type + ' & [ STEM < "' + orthstr + '" > ].\\')
 
 def build_lex_type(lextype):
   type = ''
@@ -434,7 +435,8 @@ def add_subord_phrasal_types(mylang, rules, cms, ch):
                       NON-LOCAL [ REL 0-dlist ] ] ] > ].')
     if cms.get('subordinator') == 'pair':
       mylang.add(supertype + ' := [ SYNSEM [ SUBPAIR #subpair,\
-                                  LOCAL.CAT.HEAD.MOD < [ SUBPAIR #subpair ] > ]].')
+                                  LOCAL.CAT.HEAD.MOD < [ SUBPAIR #subpair ] > ],\
+                                  ARGS < [ SYNSEM.SUBPAIR #subpair ] > ].')
     if cms.get('subordinator') == 'free':
       for adverb in cms.get('freemorph'):
         pred = adverb.get('pred')
@@ -454,53 +456,52 @@ def add_subord_phrasal_types(mylang, rules, cms, ch):
     ARGS < [ SYNSEM.SUBORDINATED ' + value + ' ] > ].')
         rules.add(value + '-modifying-clause := ' + lextype + '.')
 
-def add_subordinators_matrix_pair_to_lexicon(lexicon, matrixtype, subordtype, pair):
+def add_subordinators_matrix_pair_to_lexicon(mylang, lexicon, cms, ch):
   """
   Adds the matrix member of a subordinator pair to the lexicon
   """
-  mylang.add('intersective-mod-subord-lex-item := no-rels-hcons-lex-item &\
+  mylang.add('intersective-mod-matrix-lex-item := no-rels-hcons-lex-item &\
     [ SYNSEM [ LOCAL [ CAT [ VAL [ COMPS < >,\
   				 SPR < >,\
   				 SUBJ < > ],\
   			   HEAD.MOD < [ LOCAL intersective-mod &\
                                                 [ CAT [ HEAD verb ] ] ] > ] ] ]].')
-
-  lextype = []
-  constraints = []
-  advpos = cms.get('adverb_attaches')
-  if advpos == 'before':
-    lextype.append('clause-init')
-    constraints.append('SYNSEM.LOCAL.CAT.HEAD.INIT +')
-  elif subpos == 'after':
-    lextype.append('clause-final')
-    constraints.append('SYNSEM.LOCAL.CAT.HEAD.INIT -')
+  #if the subordinated feature is introduced by any of the strategies, we need to set it to none for this type
+  for strategy in ch.get('cms'):
+    if strategy.get('subordinator-type') == 'adverb':
+      mylang.set_section('subordlex')
+      mylang.add('intersective-mod-matrix-lex-item := [ SYNSEM.SUBORDINATED none ].')
   for adverb in cms.get('morphpair'):
+    lextype = []
+    constraints = []
+    advpos = cms.get('matrix_subposition')
+    if advpos == 'before':
+      lextype.append('clause-init')
+      constraints.append('SYNSEM.LOCAL.CAT.HEAD.INIT +')
+    elif subpos == 'after':
+      lextype.append('clause-final')
+      constraints.append('SYNSEM.LOCAL.CAT.HEAD.INIT -')
     subordpred = adverb.get('subordpred')
-    subpair = pred.split('_')[0]
+    subpair = subordpred.split('_')[0]
     matrixpred = adverb.get('matrixpred')
     pred = matrixpred.split('_')[0]
     lextype = [ pred ] + lextype
-    constraints.append('SYNSEM.SUBORDINATED ' + subpair)
-    if cms.get('subordinator') == 'pair':
-      constraints.append('SYNSEM.SUBPAIR ' + subpair)
-    if cms.get('adverb-attaches') == 's':
+    constraints.append('SYNSEM.SUBPAIR ' + subpair)
+    if cms.get('matrix_adverb_attaches') == 's':
       constraints.append('SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL [ SUBJ < >, COMPS < > ]] >')
-    elif cms.get('adverb-attaches') == 'vp':
+    elif cms.get('matrix_adverb_attaches') == 'vp':
       constraints.append('SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL [ SUBJ < [ ] >, COMPS < > ]] >')
-    elif cms.get('adverb-attaches') == 'both':
+    elif cms.get('matrix_adverb_attaches') == 'both':
       constraints.append('SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL [ COMPS < > ]] >')
     type = build_lex_type(lextype)
-      type += '-adv-subord-lex-item'
-      #mylang.add(type + ' := intersective-mod-subord-lex-item & ' + const)
-      if cms.get('nominalization') ==  'on':
-        mylang.add(type + ' := intersective-mod-subord-lex-item & [ ' + constraints.pop() + ' ].')
-      else:
-        mylang.add(type + ' := intersective-mod-nominalized-subord-lex-item & [ ' + constraints.pop() + ' ].')
-      while constraints != []:
-        mylang.add(type + ' := [ ' + constraints.pop() + ' ].')
-    orth = adverb.get('orth')
+    type += '-pair-lex-item'
+    #mylang.add(type + ' := intersective-mod-subord-lex-item & ' + const)
+    mylang.add(type + ' := intersective-mod-matrix-lex-item & [ ' + constraints.pop() + ' ].')
+    while constraints != []:
+      mylang.add(type + ' := [ ' + constraints.pop() + ' ].')
+    orth = adverb.get('matrixorth')
     orthstr = orth_encode(orth)
-    lexicon.add(orthstr + ':= ' + type + ' &\
+    lexicon.add(orthstr + ' := ' + type + ' &\
                                           [ STEM < "' + orthstr + '" > ].\\')
 
 
@@ -513,10 +514,16 @@ def create_subordinated_feature(mylang, roots, cms):
   mylang.add('canonical-synsem :+ [ SUBORDINATED xsubord ].')
   mylang.add('xsubord := *top*.')
   mylang.add('none := xsubord.')
-  for adverb in cms.get('freemorph'):
-    pred = adverb.get('pred')
-    value = pred.split('_')[0]
-    mylang.add(value + ' := xsubord.')
+  if cms.get('subordinator') == 'free':
+    for adverb in cms.get('freemorph'):
+      pred = adverb.get('pred')
+      value = pred.split('_')[0]
+      mylang.add(value + ' := xsubord.')
+  elif cms.get('subordinator') == 'pair':
+    for adverb in cms.get('morphpair'):
+      pred = adverb.get('subordpred')
+      value = pred.split('_')[0]
+      mylang.add(value + ' := xsubord.')
   mylang.add('basic-head-subj-phrase :+\
   [ SYNSEM.SUBORDINATED #subord,\
     HEAD-DTR.SYNSEM.SUBORDINATED #subord ].')
@@ -529,7 +536,7 @@ def create_subordinated_feature(mylang, roots, cms):
   mylang.add('basic-head-opt-subj-phrase :+\
   [ SYNSEM.SUBORDINATED #subord,\
     HEAD-DTR.SYNSEM.SUBORDINATED #subord ].')
-  mylang.add('adj-head-phrase :+\
+  mylang.add('basic-head-mod-phrase-simple :+\
   [ SYNSEM.SUBORDINATED #subord,\
     NON-HEAD-DTR.SYNSEM.SUBORDINATED #subord ].')
   mylang.set_section('verb-lex')
@@ -553,10 +560,16 @@ def create_subpair_feature(mylang, morphpair):
   mylang.add('canonical-synsem :+ [ SUBPAIR subpair ].')
   mylang.add('basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.MC #mc,\
     HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].')
-  mylang.add('basic-head-mod-phrase-simple :+    [ SYNSEM.LOCAL.CAT.MC #mc,\
-      NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.MOD < [ SUBPAIR #subpair ] >,\
-				      MC #mc ],\
+  mylang.add('basic-head-subj-phrase :+\
+    [ SYNSEM.SUBPAIR #subpair,\
       HEAD-DTR.SYNSEM.SUBPAIR #subpair ].')
+  mylang.add('basic-head-comp-phrase :+\
+    [ SYNSEM.SUBPAIR #subpair,\
+      HEAD-DTR.SYNSEM.SUBPAIR #subpair ].')
+  mylang.add('basic-head-mod-phrase-simple :+    [ SYNSEM [ SUBPAIR #subpair,\
+                                                            LOCAL.CAT.MC #mc ],\
+      NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.MOD < [ SUBPAIR #subpair ] >,\
+				      MC #mc ] ].')
 
   mylang.add('basic-head-opt-subj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].')
   mylang.add('basic-head-spec-phrase-super :+ [ SYNSEM.SUBPAIR #subpair,\
@@ -600,19 +613,15 @@ def customize_clausalmods(mylang, ch, lexicon, rules, roots):
 
     subord = cms.get('subordinator')
 
+    if cms.get('subordinator-type') == 'adverb':
+      create_subordinated_feature(mylang, roots, cms)
 
     if subord == 'free':
-      if cms.get('subordinator-type') == 'adverb':
-        create_subordinated_feature(mylang, roots, cms)
       add_subord_lex(mylang, lexicon, cms, ch)
       add_subord_phrasal_types(mylang, rules, cms, ch)
 
     if subord == 'pair':
-      matrixtype = cms.get('matrixtype')
-      subordtype = cms.get('subordtype')
       create_subpair_feature(mylang, cms.get('morphpair'))
-      for pair in cms.get('morphpair'):
-        add_subord_lex(mylang, lexicon, cms, ch)
-        add_subordinators_matrix_pair_to_lexicon(lexicon, matrixtype, subordtype, pair)
-      #add_pair_lex_items()
-      #add_pair_phrasal_types()
+      add_subord_lex(mylang, lexicon, cms, ch)
+      add_subordinators_matrix_pair_to_lexicon(mylang, lexicon, cms,ch)
+      add_subord_phrasal_types(mylang, rules, cms, ch)
