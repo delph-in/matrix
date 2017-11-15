@@ -85,6 +85,29 @@ if not cookie:
   	
   else:
      need_verify=True
+    while os.path.exists('sessions/' + cookie):
+      cookie = str(randint(1000,9999))
+    return cookie
+
+if not cookie:
+  if form_data.has_key('g-recaptcha-response'):
+     public  = "6LfEeisUAAAAAGdbbNlfjxKjkRxcSWhSovyq9oik"
+     private = "6LfEeisUAAAAAKb8ODRb6c06-TER8MhdmJ3Rkx9u"
+     response = form_data['g-recaptcha-response'].value
+     clientIP = os.environ["REMOTE_ADDR"]
+     check_url = "https://www.google.com/recaptcha/api/siteverify"
+     req = requests.get(check_url, params={"secret" : private, "response": response, "remoteip" : clientIP}) 
+     if req.json()['success']:
+       cookie = create_cookie()
+#        need_verify=False
+#        cookie = str(randint(1000,9999))
+#        while os.path.exists('sessions/' + cookie):
+#          cookie = str(randint(1000,9999))
+  elif disable_captcha:
+    cookie = create_cookie()
+  	
+  else:
+     need_verify=True
 
 # make the sessions directory if necessary
 if not os.path.exists('sessions'):

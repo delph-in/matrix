@@ -23,12 +23,6 @@
 ;;;  Developed by Melanie Siegel, Emily M. Bender
 
 
-;;; CAT-SAT DEV COPY
-;;; Current changes: added cat-sat definition, added as feature to each arg in
-;;; intransitive, transitive, and ditransitive lex items. 
-;;; With changes listed here, currently passes all regression tests 11/2/17
-
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
 ;;
@@ -2099,8 +2093,7 @@ marker-final-phrase := basic-binary-marker-phrase &
 ; SSH 2012-03-03 ICONS
 ; SSH 2013-02-19 deleting ICONS ?
 
-; CHANGING: trying changing the head type of the SPR of the head dtr from det to +nd
-; Kristen thinks this may be causing problems with their nmlzation lib.
+
 
 basic-bare-np-phrase := head-only & head-valence-phrase &
   [ SYNSEM.LOCAL.CAT.VAL [ SPR < >,
@@ -2790,7 +2783,6 @@ clausal-second-arg-trans-lex-item := basic-two-arg & one-icons-lex-item &
 ; ERB 2007-01-22 Inserting qeqs now that we no longer have messages
 ; intervening.
 
-; changing: added cat-sat (PASSES all reg tests)
 
 clausal-third-arg-ditrans-lex-item := basic-three-arg & one-icons-lex-item & 
    [ ARG-ST < [ LOCAL [ CAT cat-sat,
@@ -2819,7 +2811,6 @@ clausal-third-arg-ditrans-lex-item := basic-three-arg & one-icons-lex-item &
 ; ERB 2007-01-22 Inserting qeqs now that we no longer have messages
 ; intervening.
 
-; changing: added cat-sat (PASSES all reg tests)
 
 clausal-expl-arg-lex-item := basic-two-arg & one-icons-lex-item & 
    [ ARG-ST < [ LOCAL [ CAT cat-sat,
@@ -2834,8 +2825,6 @@ clausal-expl-arg-lex-item := basic-two-arg & one-icons-lex-item &
 
 ; Kim seems to sleep; Kim is sleeping.
 
-
-; changing: added cat-sat (PASSES all reg tests)
 
 trans-first-arg-raising-lex-item := basic-two-arg &
    [ ARG-ST < [ LOCAL [ CAT cat-sat,
@@ -2855,7 +2844,6 @@ trans-first-arg-raising-lex-item := basic-two-arg &
 ; are de-messaged, since basic-verb-lex no longer inherits
 ; from no-hcons-lex-item.
 
-; changing: added cat-sat  (PASSES all regression tests)
 
 trans-first-arg-raising-lex-item-1 := trans-first-arg-raising-lex-item & 
 				      basic-icons-lex-item &  
@@ -2904,7 +2892,6 @@ trans-first-arg-control-lex-item := basic-two-arg & basic-icons-lex-item &
 
 ; ERB 2007-01-22 Adding in qeq here.
 
-; changing: added cat-sat  (PASSES all regression tests)
 
 ditrans-first-arg-raising-lex-item := basic-three-arg & basic-icons-lex-item &
    [ ARG-ST < [ LOCAL.CONT.HOOK [ INDEX #ind1,
@@ -2928,7 +2915,6 @@ ditrans-first-arg-raising-lex-item := basic-three-arg & basic-icons-lex-item &
 
 ; ERB 2007-01-22 Adding in qeq here.
 
-; changing: added cat-sat  (PASSES all regression tests)
 
 ditrans-first-arg-control-lex-item := basic-three-arg & basic-icons-lex-item &
    [ ARG-ST < [ LOCAL [ CAT cat-sat,
@@ -2956,7 +2942,6 @@ ditrans-first-arg-control-lex-item := basic-three-arg & basic-icons-lex-item &
 
 ; ERB 2007-01-22 Adding in qeq here.
 
-; changing: added cat-sat  (PASSES all reg tests)
 
 ditrans-second-arg-raising-lex-item := basic-three-arg & basic-icons-lex-item &
    [ ARG-ST < [ LOCAL [ CAT cat-sat,
@@ -3177,7 +3162,6 @@ basic-scopal-mod-adj-lex := basic-adjective-lex & scopal-mod-lex.
 
 ;;; Adpositions
 
-;CHANGING: added cat-sat to complement of adposition (PASSES all regression tests)
 
 basic-adposition-lex := single-rel-lex-item & basic-icons-lex-item &
   [ SYNSEM [ LOCAL [ CAT [ HEAD adp,

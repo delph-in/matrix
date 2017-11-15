@@ -12,7 +12,6 @@ from gmcs.linglib.parameters import determine_vcluster
 from gmcs.linglib.lexbase import ALL_LEX_TYPES, LEXICAL_SUPERTYPES
 from gmcs.linglib.lexicon import get_all_supertypes
 
-#CHANGING: require cat-sat on verbal arguments. Must test.
 
 # helper functions
 def verb_id(item):
@@ -269,7 +268,6 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
        [ SYNSEM.LOCAL.CAT.VAL.COMPS < > ].'
   mylang.add(typedef)
 
-# CHANGING: Adding cat-sat to the complement of a transitive verb:
 
   # transitive verb lexical type
   typedef = \

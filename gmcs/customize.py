@@ -436,7 +436,7 @@ def setup_vcs(ch, grammar_path):
 #   the choices file in the directory 'path'.  This function
 #   assumes that validation of the choices has already occurred.
 
-def customize_matrix(path, arch_type, destination=None):
+def customize_matrix(path, arch_type, destination=None, force_dest=False):
   if os.path.isdir(path):
     path = os.path.join(path, 'choices')
   # if no destination dir is specified, just use the choices file's dir
@@ -447,8 +447,11 @@ def customize_matrix(path, arch_type, destination=None):
 
   language = ch['language']
 
-  grammar_path = get_grammar_path(ch.get('iso-code', language).lower(),
-                                  language.lower(), destination)
+  if force_dest:
+    grammar_path = destination
+  else:
+    grammar_path = get_grammar_path(ch.get('iso-code', language).lower(),
+                                    language.lower(), destination)
 
   # delete any existing contents at grammar path
   if os.path.exists(grammar_path):
@@ -604,7 +607,7 @@ def customize_matrix(path, arch_type, destination=None):
   word_order.customize_word_order(mylang, ch, rules)
   coordination.customize_coordination(mylang, ch, lexicon, rules, irules)
   yes_no_questions.customize_yesno_questions(mylang, ch, rules, lrules, hierarchies)
-  clausalmods.customize_clausalmods(mylang, ch, lexicon, rules, roots)
+  clausalmods.customize_clausalmods(mylang, ch, lexicon, rules, irules)
   customize_punctuation(grammar_path)
   customize_test_sentences(grammar_path)
   customize_itsdb(grammar_path)
@@ -637,6 +640,7 @@ def get_matrix_core_path():
   cr = os.environ.get('CUSTOMIZATIONROOT','')
   if cr: cr = os.path.join(cr, '..')
   return os.path.join(cr, 'matrix-core')
+
 
 def get_grammar_path(isocode, language, destination):
   '''

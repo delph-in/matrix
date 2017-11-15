@@ -734,6 +734,15 @@ def validate_word_order(ch, vr):
            'The general word order and aux-comp order ' +
            'are not compatible with vp complements.')
 
+#OZ 2017-11-13 Validate subordinate clauses word order.
+
+  if (ch.get('subord-word-order')):
+    if not (wo == 'v2' or ch.get('subord-word-order') == 'same'):
+      vr.err('subord-word-order',
+             'V-final subordinate word order is ' +
+             'only supported with V2 matrix order.')
+
+
 ######################################################################
 # validate_coordination(ch, vr)
 #   Validate the user's choices about coordination.
