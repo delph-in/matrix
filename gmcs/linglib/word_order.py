@@ -744,8 +744,6 @@ def customize_subord_word_order(mylang,ch,wo,rules):
 
       rules.add('subord-comp-head := subord-comp-head-phrase.')
       rules.add('subord-subj-head := subord-subj-head-phrase.')
-    if ch.get('has-aux') == 'yes':
-      mylang.add('aux-aux-lex := [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.MC na-or-- ].', merge=True)
 
 # ERB 2006-09-14 Subroutine for figuring out the relationship of major
 # constituent order to adpositions and auxiliaries.  Returns two values:
