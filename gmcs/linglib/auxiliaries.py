@@ -327,6 +327,10 @@ def customize_users_auxtype(auxtypename, aux, ch, mylang, hierarchies):
   features.customize_feature_values(mylang, ch, hierarchies, aux, userstypename, 'aux')
   features.customize_feature_values(mylang, ch, hierarchies, aux, userstypename, 'auxcomplement')
   mylang.add(userstypename + ':= ' + auxtypename + '.')
+  if ch.get('word-order') == 'v2' and ch.get('subord-word-order') == 'vfinal':
+    mylang.add(userstypename + ':='+ auxtypename
+               + '& [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.MC na-or-- ].')
+
 
 def get_users_type_name(aux):
   name = aux.get('name', '')

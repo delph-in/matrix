@@ -1740,6 +1740,7 @@ Select nominalization_strategy "Clausal Modifier strategy {i} Nominalization Str
 EndIter cms
 
 
+Section clausal-comp "Clausal Complements"
 
 Define strategies for <b>sentential,
 or clausal, complements</b> here.<br><br> 
