@@ -17,7 +17,20 @@ def customize_clausalcomps(mylang,ch,lexicon,rules,irules):
         return None
 
     add_complementizers_to_lexicon(lexicon,ch)
-    add_verb_types(mylang,lexicon)
+    add_ctp_to_lexicon(mylang,lexicon)
+    add_complementizer_type_to_grammar(mylang,ch,rules)
+
+def add_complementizer_type_to_grammar(mylang,ch,rules):
+    mylang.add('complementizer-lex-item := raise-sem-lex-item & basic-one-arg &\
+  [ SYNSEM.LOCAL.CAT [ HEAD comp &\
+                            [ MOD < > ],\
+                       VAL [ SPR < >,\
+                             SUBJ < >,\
+                             COMPS < #comps > ] ],\
+    ARG-ST < #comps & \
+             [ LOCAL.CAT [ HEAD verb, MC -,\
+                           VAL [ SUBJ < >,\
+                                 COMPS < > ] ] ] > ].',section='Complementizer')
 
 def add_complementizers_to_lexicon(lexicon,ch):
     lexicon.add_literal(';;; Complementizers')
@@ -29,5 +42,5 @@ def add_complementizers_to_lexicon(lexicon,ch):
 
             lexicon.add(typedef)
 
-def add_verb_types(mylang,lexicon):
+def add_ctp_to_lexicon(mylang,lexicon):
     pass
