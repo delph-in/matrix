@@ -21,16 +21,24 @@ def customize_clausalcomps(mylang,ch,lexicon,rules,irules):
     add_complementizer_type_to_grammar(mylang,ch,rules)
 
 def add_complementizer_type_to_grammar(mylang,ch,rules):
-    mylang.add('complementizer-lex-item := raise-sem-lex-item & basic-one-arg &\
-  [ SYNSEM.LOCAL.CAT [ HEAD comp &\
-                            [ MOD < > ],\
-                       VAL [ SPR < >,\
-                             SUBJ < >,\
-                             COMPS < #comps > ] ],\
-    ARG-ST < #comps & \
-             [ LOCAL.CAT [ HEAD verb, MC -,\
-                           VAL [ SUBJ < >,\
-                                 COMPS < > ] ] ] > ].',section='Complementizer')
+    mylang.set_section('complex')
+    for cs in ch.get('comps'):
+        id = cs.full_key
+        typename = id + '-lex-item'
+        mylang.add(typename + ' := raise-sem-lex-item & basic-one-arg &\
+      [ SYNSEM.LOCAL.CAT [ HEAD comp &\
+                                [ MOD < > ],\
+                           VAL [ SPR < >,\
+                                 SUBJ < >,\
+                                 COMPS < #comps > ] ],\
+        ARG-ST < #comps & \
+                 [ LOCAL.CAT [ HEAD verb, MC -,\
+                               VAL [ SUBJ < >,\
+                                     COMPS < > ] ] ] > ].',section='complex')
+        # merge feature information in
+        for f in cs['feat']:
+            if f['name'] == 'form':
+                mylang.add(typename + ' := raise-sem-lex-item & basic-one-arg & [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM ' + f['value'] + ' ].',merge=True)
 
 def add_complementizers_to_lexicon(lexicon,ch):
     lexicon.add_literal(';;; Complementizers')

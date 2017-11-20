@@ -490,6 +490,7 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
                           ['coplex', 'Copulas', False, False],
                           ['adjlex', 'Adjectives', False, False],
                           ['subordlex', 'Subordinators', True, False],
+                          ['complex', 'Complementizers', False, True],
                           ['otherlex', 'Others', False, False],
                           ['lexrules', 'Lexical Rules', True, False],
                           ['phrases', 'Phrasal Types', True, False],
