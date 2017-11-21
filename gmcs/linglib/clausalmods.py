@@ -196,7 +196,10 @@ def add_subord_lex(mylang, lexicon, cms, ch):
     elif cms.get('subordinator') == 'pair':
       for morphpair in cms.get('morphpair'):
         pred = morphpair.get('subordpred')
-        value = pred.split('_')[1]
+        if pred.split('_')[0] == '':
+          value = pred.split('_')[1]
+        else:
+          value = pred.split('_')[0]
         lextype = [value] + lextype
         type = build_lex_type(lextype)
         constraints.append('SYNSEM.LOCAL.CAT.SUBPAIR ' + value)
@@ -231,10 +234,15 @@ def add_subord_lex(mylang, lexicon, cms, ch):
     if cms.get('subordinator') == 'free':
       for adverb in cms.get('freemorph'):
         constraints = saved_constraints
+        print(constraints)
         lextype = saved_lextype
         pred = adverb.get('pred')
-        value = pred.split('_')[1]
+        if pred.split('_')[0] == '':
+          value = pred.split('_')[1]
+        else:
+          value = pred.split('_')[0]
         lextype = [ value ] + lextype
+        print(lextype)
         constraints.append('SYNSEM.SUBORDINATED ' + value)
         if cms.get('subordinator') == 'pair':
           constraints.append('SYNSEM.LOCAL.CAT.SUBPAIR ' + value)
@@ -245,12 +253,22 @@ def add_subord_lex(mylang, lexicon, cms, ch):
         if cms.get('adverb_attaches') == 'both':
           constraints.append('SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL [ COMPS < > ]] >')
         type = build_lex_type(lextype)
+        type += '-adv-subord-lex-item'
+        mylang.add(type + ' := intersective-mod-subord-lex-item & [ ' + constraints.pop() + ' ].')
+        while constraints != []:
+          mylang.add(type + ' := [ ' + constraints.pop() + ' ].')
+        orth = adverb.get('orth')
+        orthstr = orth_encode(orth)
+        lexicon.add(orthstr + ' := ' + type + ' & [ STEM < "' + orthstr + '" > ].')
     if cms.get('subordinator') == 'pair':
       for adverb in cms.get('morphpair'):
         constraints = saved_constraints
         lextype = saved_lextype
         pred = adverb.get('subordpred')
-        value = pred.split('_')[1]
+        if pred.split('_')[0]:
+          value = pred.split('_')[1]
+        else:
+          value = pred.split('_')[0]
         lextype = [ value ] + lextype
         constraints.append('SYNSEM.SUBORDINATED ' + value)
         constraints.append('SYNSEM.LOCAL.CAT.SUBPAIR ' + value)
@@ -261,13 +279,15 @@ def add_subord_lex(mylang, lexicon, cms, ch):
         if cms.get('adverb_attaches') == 'both':
           constraints.append('SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL [ COMPS < > ]] >')
         type = build_lex_type(lextype)
-      type += '-adv-subord-lex-item'
-      mylang.add(type + ' := intersective-mod-subord-lex-item & [ ' + constraints.pop() + ' ].')
-      while constraints != []:
-        mylang.add(type + ' := [ ' + constraints.pop() + ' ].')
-      orth = adverb.get('subordorth')
-      orthstr = orth_encode(orth)
-      lexicon.add(orthstr + ' := ' + type + ' & [ STEM < "' + orthstr + '" > ].')
+        type += '-adv-subord-lex-item'
+        mylang.add(type + ' := intersective-mod-subord-lex-item & [ ' + constraints.pop() + ' ].')
+        while constraints != []:
+          mylang.add(type + ' := [ ' + constraints.pop() + ' ].')
+        orth = adverb.get('subordorth')
+        orthstr = orth_encode(orth)
+        lexicon.add(orthstr + ' := ' + type + ' & [ STEM < "' + orthstr + '" > ].')
+
+
 
 def build_lex_type(lextype):
   type = ''
@@ -351,7 +371,10 @@ def add_subord_phrasal_types(mylang, rules, cms, ch):
     if cms.get('subordinator') == 'free':
       for adverb in cms.get('freemorph'):
         pred = adverb.get('pred')
-        value = pred.split('_')[1]
+        if pred.split('_')[0] == '':
+          value = pred.split('_')[1]
+        else:
+          value = pred.split('_')[0]
         lextype = value + '-modifying-clause-phrase'
         mylang.add(lextype + ' := ' + supertype + ' &\
   [ C-CONT.RELS <! [ PRED "' + pred + '" ] !>,\
@@ -360,7 +383,10 @@ def add_subord_phrasal_types(mylang, rules, cms, ch):
     elif cms.get('subordinator') == 'pair':
       for adverb in cms.get('morphpair'):
         pred = adverb.get('subordpred')
-        value = pred.split('_')[1]
+        if pred.split('_')[0] == '':
+          value = pred.split('_')[1]
+        else:
+          value = pred.split('_')[0]
         lextype = value + '-modifying-clause-phrase'
         mylang.add(lextype + ' := ' + supertype + ' &\
   [ C-CONT.RELS <! [ PRED "' + pred + '" ] !>,\
@@ -399,9 +425,15 @@ def add_subordinators_matrix_pair_to_lexicon(mylang, lexicon, cms, ch):
       lextype.append('clause-final')
       constraints.append('SYNSEM.LOCAL.CAT.HEAD.INIT -')
     subordpred = adverb.get('subordpred')
-    subpair = subordpred.split('_')[1]
+    if subordpred.split('_')[0] == '':
+      subpair = subordpred.split('_')[1]
+    else:
+      subpair = subordpred.split('_')[0]
     matrixpred = adverb.get('matrixpred')
-    pred = matrixpred.split('_')[1]
+    if matrixpred.split('_')[0] == '':
+      pred = matrixpred.split('_')[1]
+    else:
+      pred = matrixpred.split('_')[0]
     lextype = [ pred ] + lextype
     constraints.append('SYNSEM.LOCAL.CAT.SUBPAIR ' + subpair)
     if cms.get('matrix_adverb_attaches') == 's':
@@ -435,13 +467,18 @@ def create_subordinated_feature(mylang, roots, cms):
   if cms.get('subordinator') == 'free':
     for adverb in cms.get('freemorph'):
       pred = adverb.get('pred')
-      value = pred.split('_')[1]
+      if pred.split('_')[0] == '':
+        value = pred.split('_')[1]
+      else:
+        value = pred.split('_')[0]
       mylang.add(value + ' := xsubord.')
   elif cms.get('subordinator') == 'pair':
     for adverb in cms.get('morphpair'):
       pred = adverb.get('subordpred')
-      value = pred.split('_')[1]
-      print(value)
+      if pred.split('_')[0] == '':
+        value = pred.split('_')[1]
+      else:
+        value = pred.split('_')[0]
       mylang.add(value + ' := xsubord.')
   mylang.add('basic-head-subj-phrase :+\
   [ SYNSEM.SUBORDINATED #subord,\
@@ -514,7 +551,10 @@ def create_subpair_feature(mylang, morphpair):
   mylang.add('nopair := subpair.')
   for pair in morphpair:
     subpair = pair.get('subordpred')
-    value = subpair.split('_')[1]
+    if subpair.split('_')[0] == '':
+      value = subpair.split('_')[1]
+    else:
+      value = subpair.split('_')[0]
     mylang.add(value + ' := subpair.')
 
   mylang.set_section('verb-lex')
