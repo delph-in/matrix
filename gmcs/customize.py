@@ -503,7 +503,6 @@ def customize_matrix(path, arch_type, destination=None):
     shutil.rmtree(grammar_path)
   # the rsync command won't create the target dirs, so do it now
   os.makedirs(grammar_path)
-  
   # creating a climb directory
   
   os.makedirs(grammar_path + '/climb')

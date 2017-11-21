@@ -376,7 +376,6 @@ in for head-adjunct phrases here:\n' +
 
 
 # Add rule definitions for major constituent order.
-
   if wo == 'free' or wo == 'v2':
     rules.add('head-comp := head-comp-phrase.')
     rules.add('head-subj := head-subj-phrase.')
