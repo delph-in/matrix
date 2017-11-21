@@ -322,10 +322,8 @@ def add_subord_phrasal_types(mylang, rules, cms, ch):
     supertype = 'adv-marked-subord-clause-phrase'
     mylang.add(supertype + ' := basic-unary-phrase &\
   [ SYNSEM [ LOCAL [ CAT [ MC -,\
-                          SUBPAIR #subpair,\
-                        HEAD [ MOD < [ LOCAL scopal-mod &\
-						[ CAT [ SUBPAIR #subpair,\
-						      HEAD verb,\
+                          HEAD [ MOD < [ LOCAL scopal-mod &\
+						[ CAT [ HEAD verb,\
 							VAL [ SUBJ < >,\
 							      SPR < >,\
 							      COMPS < > ]],\
@@ -341,8 +339,7 @@ def add_subord_phrasal_types(mylang, rules, cms, ch):
 		    [ HARG #sch,\
 		      LARG #scl ] !>,\
     		HOOK.INDEX #index ],\
-    ARGS < [ SYNSEM [ LOCAL [ CAT [ SUBPAIR #subpair,\
-                                  HEAD verb,\
+    ARGS < [ SYNSEM [ LOCAL [ CAT [ HEAD verb,\
 				    VAL [ SUBJ < >,\
 					  SPR < >,\
 					  COMPS < > ]],\
@@ -374,14 +371,23 @@ def add_subordinators_matrix_pair_to_lexicon(mylang, lexicon, cms, ch):
   """q
   Adds the matrix member of a subordinator pair to the lexicon
   """
-  mylang.add('intersective-mod-matrix-lex-item := basic-adverb-lex & intersective-mod-lex &\
-    [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT [ MC +,\
-                                                HEAD verb ] ] > ].')
+  mylang.add('scopal-mod-matrix-lex-item := basic-adverb-lex &\
+    [ SYNSEM [ LOCAL [ CAT [ VAL [ SUBJ < >,\
+                              SPR < >,\
+                              COMPS < > ],\
+                        HEAD.MOD < [ LOCAL scopal-mod & [ CAT [ SUBPAIR nopair,\
+                                                MC +,\
+                                                HEAD verb ],\
+                                            CONT.HOOK.LTOP #mod ]] > ],\
+                      CONT.HCONS <! qeq &\
+                                    [ HARG #h1,\
+                                      LARG #mod ] !> ],\
+                LKEYS.KEYREL.ARG1 #h1 ]].')
   #if the subordinated feature is introduced by any of the strategies, we need to set it to none for this type
   for strategy in ch.get('cms'):
     if strategy.get('subordinator-type') == 'adverb':
       mylang.set_section('subordlex')
-      mylang.add('intersective-mod-matrix-lex-item := [ SYNSEM.SUBORDINATED none ].')
+      mylang.add('scopal-mod-matrix-lex-item := [ SYNSEM.SUBORDINATED none ].')
   for adverb in cms.get('morphpair'):
     lextype = []
     constraints = []
@@ -407,7 +413,7 @@ def add_subordinators_matrix_pair_to_lexicon(mylang, lexicon, cms, ch):
     type = build_lex_type(lextype)
     type += '-pair-lex-item'
     #mylang.add(type + ' := intersective-mod-subord-lex-item & ' + const)
-    mylang.add(type + ' := intersective-mod-matrix-lex-item & [ ' + constraints.pop() + ' ].')
+    mylang.add(type + ' := scopal-mod-matrix-lex-item & [ ' + constraints.pop() + ' ].')
     while constraints != []:
       mylang.add(type + ' := [ ' + constraints.pop() + ' ].')
     orth = adverb.get('matrixorth')
@@ -479,9 +485,9 @@ def create_subpair_feature(mylang, morphpair):
   mylang.add('basic-head-comp-phrase :+\
     [ SYNSEM.LOCAL.CAT.SUBPAIR #subpair,\
       HEAD-DTR.SYNSEM.LOCAL.CAT.SUBPAIR #subpair ].')
-  mylang.add('basic-head-mod-phrase-simple :+    [ SYNSEM [ LOCAL.CAT [ SUBPAIR #subpair ]],\
-      NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ SUBPAIR #subpair ] ].')
-  mylang.add('scopal-mod-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.SUBPAIR #subpair,\
+  #mylang.add('basic-head-mod-phrase-simple :+    [ SYNSEM [ LOCAL.CAT [ SUBPAIR #subpair ]],\
+   #   NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ SUBPAIR #subpair ] ].')
+  mylang.add('scopal-mod-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.SUBPAIR #subpair ] >,\
                                         HEAD-DTR.SYNSEM.LOCAL.CAT.SUBPAIR #subpair ].')
 
   mylang.add('basic-head-opt-subj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].')
@@ -493,10 +499,14 @@ def create_subpair_feature(mylang, morphpair):
 				HEAD-DTR.SYNSEM.LOCAL.CAT.SUBPAIR #subpair ].')
   mylang.add('basic-head-opt-subj-phrase :+ [ SYNSEM.LOCAL.CAT.SUBPAIR #subpair,\
 				HEAD-DTR.SYNSEM.LOCAL.CAT.SUBPAIR #subpair ].')
-  mylang.add('adj-head-scop-phrase :+ [ SYNSEM.LOCAL.CAT.SUBPAIR #subpair,\
-			  NON-HEAD-DTR.SYNSEM.LOCAL.CAT.SUBPAIR #subpair ].')
-  mylang.add('adj-head-phrase :+ [ SYNSEM.LOCAL.CAT.SUBPAIR #subpair,\
-		     NON-HEAD-DTR.SYNSEM.LOCAL.CAT.SUBPAIR #subpair ].')
+  #mylang.add('adj-head-scop-phrase :+ [ SYNSEM.LOCAL.CAT.SUBPAIR #subpair,\
+	#		  NON-HEAD-DTR.SYNSEM.LOCAL.CAT.SUBPAIR #subpair ].')
+  mylang.add('adj-head-phrase :+ [ SYNSEM.LOCAL.CAT.MC #mc,\
+		     HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].')
+  mylang.add('adj-head-int-phrase :+ [ SYNSEM.LOCAL.CAT.SUBPAIR #subpair,\
+  		     NON-HEAD-DTR.SYNSEM.LOCAL.CAT.SUBPAIR #subpair].')
+  mylang.add('head-adj-int-phrase :+ [ SYNSEM.LOCAL.CAT.SUBPAIR #subpair,\
+  		     NON-HEAD-DTR.SYNSEM.LOCAL.CAT.SUBPAIR #subpair].')
 
   mylang.set_section('features')
   #mylang.add(';;; Subordinator Pair Features')
