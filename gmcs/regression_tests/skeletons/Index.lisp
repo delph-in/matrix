@@ -22,6 +22,7 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "clausalmods-pseudo-german") (:content . "clausalmods-pseudo-german: Clausal Modifiers with v2 word order in the main clause and vf in the subordinate clause. The subordinator is an adverb."))
 ((:path . "clausalmods-adv-or-head") (:content . "clausalmods-adv-or-head: Clausal modifiers containing an adverbial subordinator compared with a head (P or "))
 ((:path . "clausalmods-subord-pairs") (:content . "clausalmods-subord-pairs: Clausal Modifiers with a subordinator pair (two obligatory morphemes- one in the matrix clause and one in the subordinate clause)"))
 ((:path . "vfinal") (:content . "vfinal: Basic order for verb in final position and subject and complement taking either spot in front of it."))

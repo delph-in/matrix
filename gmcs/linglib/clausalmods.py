@@ -313,6 +313,9 @@ def add_subord_phrasal_types(mylang, rules, cms, ch):
   """
   Add the phrase type definitions
   """
+  mylang.set_section('addenda')
+  mylang.add('basic-head-mod-phrase-simple :+ [ SYNSEM.LOCAL.CAT.MC #mc,\
+      HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].')
   pos = cms.get('position')
   subpos = cms.get('subposition')
   mylang.set_section('phrases')
@@ -535,6 +538,7 @@ def create_subpair_feature(mylang, morphpair):
   """
   mylang.set_section('addenda')
   mylang.add('cat :+ [ SUBPAIR subpair ].')
+  #can i comment this out?? it might cause problems witht he german analysis
   mylang.add('basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.MC #mc,\
     HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].')
   mylang.add('basic-head-subj-phrase :+\

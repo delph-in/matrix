@@ -292,3 +292,4 @@ v2-orig=Basic order for verb in second position: verb must be in second position
 vfinal=Basic order for verb in final position and subject and complement taking either spot in front of it.
 clausalmods-subord-pairs=Clausal Modifiers with a subordinator pair (two obligatory morphemes- one in the matrix clause and one in the subordinate clause)
 clausalmods-adv-or-head=Clausal modifiers containing an adverbial subordinator compared with a head (P or 
+clausalmods-pseudo-german=Clausal Modifiers with v2 word order in the main clause and vf in the subordinate clause. The subordinator is an adverb.
