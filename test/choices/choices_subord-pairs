@@ -44,6 +44,7 @@ section=clausalmods
     cms1_morphpair1_matrixpred=_subord1b_a_rel
     cms1_morphpair1_subordorth=subord1a-head
     cms1_morphpair1_subordpred=_subord1a+subord1b_a_rel
+  cms2_position=before
   cms2_subordinator=pair
   cms2_subordinator-type=adverb
   cms2_adverb_attaches=both

@@ -144,23 +144,36 @@ def add_subord_lex(mylang, lexicon, cms, ch):
   constraints = []
   pos = cms.get('position')
   subpos = cms.get('subposition')
-  if subpos == 'before':
-    lextype.append('clause-init')
-    constraints.append('SYNSEM.LOCAL.CAT.HEAD.INIT +')
-  elif subpos == 'after':
-    lextype.append('clause-final')
-    constraints.append('SYNSEM.LOCAL.CAT.HEAD.INIT -')
-  if pos == 'before':
-    lextype.append('prehead')
-    constraints.append('SYNSEM.LOCAL.CAT.POSTHEAD -')
-  elif pos == 'after':
-    lextype.append('posthead')
-    constraints.append('SYNSEM.LOCAL.CAT.POSTHEAD +')
+  if cms.get('subordinator-type') == 'head':
+    if subpos == 'before':
+      lextype.append('clause-init')
+      constraints.append('SYNSEM.LOCAL.CAT.HEAD.INIT +')
+    elif subpos == 'after':
+      lextype.append('clause-final')
+      constraints.append('SYNSEM.LOCAL.CAT.HEAD.INIT -')
+    if pos == 'before':
+      lextype.append('prehead')
+      constraints.append('SYNSEM.LOCAL.CAT.POSTHEAD -')
+    elif pos == 'after':
+      lextype.append('posthead')
+      constraints.append('SYNSEM.LOCAL.CAT.POSTHEAD +')
+  elif cms.get('subordinator-type') == 'adverb':
+    if subpos == 'before':
+      lextype.append('clause-init')
+      constraints.append('SYNSEM.LOCAL.CAT.POSTHEAD -')
+    elif subpos == 'after':
+      lextype.append('clause-final')
+      constraints.append('SYNSEM.LOCAL.CAT.POSTHEAD +')
+    if pos == 'before':
+      lextype.append('prehead')
+    elif pos == 'after':
+      lextype.append('posthead')
   if cms.get('specialmorph') == 'on':
     for feat in cms.get('feat'):
-          lextype.append(feat.get('value'))
-          lextype.append(feat.get('value'))
-          constraints.append('SYNSEM.LOCAL.CAT.HEAD.' + feat.get('name') + '.' + feat.get('value'))
+      lextype.append(feat.get('value'))
+      lextype.append(feat.get('value'))
+      constraints.append('SYNSEM.LOCAL.CAT.HEAD.' + feat.get('name') + '.' + feat.get('value'))
+
   saved_constraints = constraints
   saved_lextype = lextype
   if cms.get('subordinator-type') == 'head':
@@ -234,7 +247,6 @@ def add_subord_lex(mylang, lexicon, cms, ch):
     if cms.get('subordinator') == 'free':
       for adverb in cms.get('freemorph'):
         constraints = saved_constraints
-        print(constraints)
         lextype = saved_lextype
         pred = adverb.get('pred')
         if pred.split('_')[0] == '':
@@ -242,7 +254,6 @@ def add_subord_lex(mylang, lexicon, cms, ch):
         else:
           value = pred.split('_')[0]
         lextype = [ value ] + lextype
-        print(lextype)
         constraints.append('SYNSEM.SUBORDINATED ' + value)
         if cms.get('subordinator') == 'pair':
           constraints.append('SYNSEM.LOCAL.CAT.SUBPAIR ' + value)
@@ -312,6 +323,7 @@ def add_subord_phrasal_types(mylang, rules, cms, ch):
   elif pos == 'either':
     rules.add('adj-head-scop := adj-head-scop-phrase.')
     rules.add('head-adj-scop := head-adj-scop-phrase.')
+
   #do i even need the following?
   if ch.get('word-order') == 'free' or ch.get('word-order') == 'v2':
     mylang.add('head-comp-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus &\
@@ -368,6 +380,7 @@ def add_subord_phrasal_types(mylang, rules, cms, ch):
     if cms.get('subordinator') == 'pair':
       mylang.add(supertype + ' := [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.SUBPAIR #subpair ] >,\
                                   ARGS < [ SYNSEM.LOCAL.CAT.SUBPAIR #subpair ] > ].')
+    pos = cms.get('position')
     if cms.get('subordinator') == 'free':
       for adverb in cms.get('freemorph'):
         pred = adverb.get('pred')
@@ -379,6 +392,10 @@ def add_subord_phrasal_types(mylang, rules, cms, ch):
         mylang.add(lextype + ' := ' + supertype + ' &\
   [ C-CONT.RELS <! [ PRED "' + pred + '" ] !>,\
     ARGS < [ SYNSEM.SUBORDINATED ' + value + ' ] > ].')
+        if pos == 'before':
+          mylang.add(lextype + ' := [ SYNSEM.LOCAL.CAT.POSTHEAD - ].')
+        elif pos == 'after':
+          mylang.add(lextype + ' := [ SYNSEM.LOCAL.CAT.POSTHEAD + ].')
         rules.add(value + '-modifying-clause := ' + lextype + '.')
     elif cms.get('subordinator') == 'pair':
       for adverb in cms.get('morphpair'):
@@ -391,6 +408,10 @@ def add_subord_phrasal_types(mylang, rules, cms, ch):
         mylang.add(lextype + ' := ' + supertype + ' &\
   [ C-CONT.RELS <! [ PRED "' + pred + '" ] !>,\
     ARGS < [ SYNSEM.SUBORDINATED ' + value + ' ] > ].')
+        if pos == 'before':
+          mylang.add(lextype + ' := [ SYNSEM.LOCAL.CAT.POSTHEAD - ].')
+        elif pos == 'after':
+          mylang.add(lextype + ' := [ SYNSEM.LOCAL.CAT.POSTHEAD + ].')
         rules.add(value + '-modifying-clause := ' + lextype + '.')
 
 def add_subordinators_matrix_pair_to_lexicon(mylang, lexicon, cms, ch):
@@ -420,10 +441,10 @@ def add_subordinators_matrix_pair_to_lexicon(mylang, lexicon, cms, ch):
     advpos = cms.get('matrix_subposition')
     if advpos == 'before':
       lextype.append('clause-init')
-      constraints.append('SYNSEM.LOCAL.CAT.HEAD.INIT +')
+      constraints.append('SYNSEM.LOCAL.CAT.POSTHEAD -')
     elif advpos == 'after':
       lextype.append('clause-final')
-      constraints.append('SYNSEM.LOCAL.CAT.HEAD.INIT -')
+      constraints.append('SYNSEM.LOCAL.CAT.POSTHEAD +')
     subordpred = adverb.get('subordpred')
     if subordpred.split('_')[0] == '':
       subpair = subordpred.split('_')[1]
@@ -538,7 +559,7 @@ def create_subpair_feature(mylang, morphpair):
 				HEAD-DTR.SYNSEM.LOCAL.CAT.SUBPAIR #subpair ].')
   #mylang.add('adj-head-scop-phrase :+ [ SYNSEM.LOCAL.CAT.SUBPAIR #subpair,\
 	#		  NON-HEAD-DTR.SYNSEM.LOCAL.CAT.SUBPAIR #subpair ].')
-  mylang.add('adj-head-phrase :+ [ SYNSEM.LOCAL.CAT.MC #mc,\
+  mylang.add('basic-head-mod-phrase-simple :+ [ SYNSEM.LOCAL.CAT.MC #mc,\
 		     HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].')
   mylang.add('adj-head-int-phrase :+ [ SYNSEM.LOCAL.CAT.SUBPAIR #subpair,\
   		     NON-HEAD-DTR.SYNSEM.LOCAL.CAT.SUBPAIR #subpair].')

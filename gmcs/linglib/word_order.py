@@ -86,10 +86,10 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
 # KPH 2017-11-17 Commented out the MC identity in basic-head-mod-phrase-simple because
 # it doesn't have any impact on the existing regression test and makes wrong predictions
 # for clausal modifiers, in which case the MC value should come from the HEAD-Daughter.
-    #mylang.add('basic-head-mod-phrase-simple :+\
-     #           [ SYNSEM.LOCAL.CAT.MC #mc, \
-      #            NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].',
-       #        section='addenda')a
+    mylang.add('basic-head-mod-phrase-simple :+\
+               [ SYNSEM.LOCAL.CAT.MC #mc, \
+                  HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].',
+               section='addenda')
 
 
 # Head-comp order

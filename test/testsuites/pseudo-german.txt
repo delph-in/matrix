@@ -1,4 +1,4 @@
-noun1 aux1 noun2 tverb
-*noun1 noun2 tverb aux1
-noun1 iverb subord noun2 noun3 tverb aux1
-noun1 iverb subord noun2 aux1 noun3 tverb
+noun1 aux noun2 tverb
+*noun1 noun2 tverb aux
+noun1 iverb subord noun2 noun3 tverb aux
+noun1 iverb subord noun2 aux noun3 tverb
