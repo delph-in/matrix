@@ -510,6 +510,9 @@ def percolate_supertypes(pc):
           # less-constrained supertype
           x.supertypes.add('val-change-with-ccont-lex-rule')
         elif pc.has_evidential():
+          # MTH 2017-11-13: Lexical rule types that contribute
+          # evidential semantics must be able to add a predicate
+          # in CCONT
           x.supertypes.add('cont-change-only-lex-rule')
         else:
           x.supertypes.add('add-only-no-ccont-rule')
