@@ -984,7 +984,7 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
                'please select one of the NP options.')
 
     # MTH 2017-11-27: check to make sure that only one evidential value is selected
-    if feat['name'] == 'evidential' and len(feat.get('value')) > 1:
+    if feat['name'] == 'evidential' and len(feat.get('value').split(',')) > 1:
       vr.err(feat.full_key + '_value',
              'Choose only one evidential term.')
 

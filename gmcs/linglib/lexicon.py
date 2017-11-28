@@ -799,7 +799,7 @@ def validate_lexicon(ch, vr):
           mess = 'You must specify a value for this feature.'
           vr.err(feat.full_key + '_value', mess)
     for feat in aux.get('feat', []):
-      if feat['name'] == 'evidential' and len(feat.get('value')) > 1:
+      if feat['name'] == 'evidential' and len(feat.get('value').split(',')) > 1:
         vr.err(feat.full_key + '_value',
            'Choose only one evidential term.') # + str(feat.get('value')))
 
