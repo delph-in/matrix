@@ -773,8 +773,32 @@ def write_i_or_l_rules(irules, lrules, lrt, order):
     lrules.add(lrt_id.rsplit('-rule',1)[0] + ' := ' + lrt_id + '.')
 
 def write_evidential_behavior(lrt, mylang, choices, pc_evidential):
+  EVIDENTIAL_LEX_RULE = '''evidential-lex-rule := cont-change-only-lex-rule &
+  same-spr-lex-rule &
+  same-spec-lex-rule &
+[ C-CONT [ RELS <! event-relation &
+           [ LBL #ltop,
+           ARG0 event,
+           ARG1 #harg ] !>,
+       HCONS <! qeq & [ HARG #harg,
+                LARG #larg ] !>,
+       HOOK [ LTOP #ltop,
+          INDEX #mainev,
+          XARG #mainagent ] ],
+  DTR.SYNSEM.LOCAL.CONT.HOOK [ LTOP #larg,
+                          XARG #mainagent,
+                          INDEX #mainev ] ].
+'''
   if lrt.evidential:
     lrt.supertypes.add(lrt.evidential + '-evidential-lex-rule')
+    prev_section = mylang.section
+    mylang.set_section('lexrules')
+    mylang.add(EVIDENTIAL_LEX_RULE)
+    infl_evid_def = lrt.evidential + '''-evidential-lex-rule := evidential-lex-rule & 
+        [ C-CONT.RELS <! [ PRED "ev_''' + lrt.evidential + '''_rel" ] !> ].
+        '''
+    mylang.add(infl_evid_def)
+    mylang.set_section(prev_section)
   elif pc_evidential:
     lrt.supertypes.add("add-only-no-ccont-rule")
 
@@ -958,6 +982,11 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
         vr.err(feat.full_key + '_head',
                'This feature is associated with nouns, ' +\
                'please select one of the NP options.')
+
+    # MTH 2017-11-27: check to make sure that only one evidential value is selected
+    if feat['name'] == 'evidential' and len(feat.get('value')) > 1:
+      vr.err(feat.full_key + '_value',
+             'Choose only one evidential term.')
 
   # TJT 2015-02-02: Any given LRT should be either inflecting or non-inflecting
   inflecting_count = len(filter(None, [lri.get('inflecting')=="yes" for lri in lrt.get('lri',[])]))
