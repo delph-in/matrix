@@ -2824,6 +2824,7 @@ EndIter imported-entry
 
 Section adnom-poss "Adnominal Possession" 
 
+Cache nouns noun[0-9]+$ name
 Cache nounlrs noun-pc[0-9]+(_lrt[0-9]+)?$ name
 
 Label "<h3>Define a possessive strategy:</h3>"
@@ -2861,11 +2862,19 @@ BeginIter poss-strategy{i} "a Possessive strategy"
 
 	Radio possessor-agreement-with "Possessor marker {j} agrees with" "<br>and " ""
 	. possessor-agree "Possessor agreement" "" "does "
-	. possessor-non-agree "Possessor non-agreement" "" "does not agree with the possessum "
+	. possessor-non-agree "Possessor non-agreement" "" "does not agree with the possessum."
 
-	Select agr-features "Possessor marker {j} agreement features" "in " " " fillnames c=noun
+	BeginIter feat{k} "an agreement feature"
 
-    	 Label "</p>"
+      	    Select name "Noun Position Class {i} Lexical Rule Type {j} Feature {k} Name" "Name: " " "
+      	    fillnames c=both
+
+      	    MultiSelect value "Noun Position Class {i} Lexical Rule Type {j} Feature {k} Value" "Value: " ""
+      	    fillvalues p=poss-strategy{i}_possessor-mark{j}_feat{k}_name
+
+    	EndIter feat
+
+    	Label "</p>"
 
 
      EndIter possessor-mark
@@ -2888,7 +2897,9 @@ BeginIter poss-strategy{i} "a Possessive strategy"
 	. possessum-agree "Possessum agreement" "" "does "
 	. possessum-non-agree "Possessum non-agreement" "" "does not agree with the possessor "
 
-	Select agr-features "Possessor marker {j} agreement features" "in " " " fillnames c=noun
+	Select possessum-agr-features "Possessum marker {j} agreement features" "in " " "
+	fillnames c=noun
+
 
     	 Label "</p></div>"
 
