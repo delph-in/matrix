@@ -1,0 +1,187 @@
+
+version=28
+
+section=general
+language=evidentials-infl-aux-shp
+punctuation-chars=keep-all
+archive=no
+
+section=word-order
+word-order=v2
+has-dets=no
+has-aux=yes
+aux-comp-order=before
+aux-comp=vp
+multiple-aux=no
+
+section=number
+  number1_name=singular
+  number2_name=plural
+
+section=person
+person=1-2-3
+first-person=none
+
+section=gender
+
+section=case
+case-marking=erg-abs
+erg-abs-erg-case-name=ergative
+erg-abs-abs-case-name=absolutive
+
+section=direct-inverse
+
+section=tense-aspect-mood
+  aspect1_name=completive
+    aspect1_supertype1_name=aspect
+  aspect2_name=incompletive
+    aspect2_supertype1_name=aspect
+
+section=evidentials
+evidential-definition=choose
+firsthand=on
+inferential=on
+reported=on
+
+section=other-features
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=info-str
+
+section=arg-opt
+subj-drop=subj-drop-all
+subj-mark-drop=subj-mark-drop-req
+subj-mark-no-drop=subj-mark-no-drop-req
+subj-con=subj-con-always
+
+section=lexicon
+  noun1_name=common-noun
+  noun1_det=imp
+    noun1_stem1_orth=joni
+    noun1_stem1_pred=_person_n_rel
+    noun1_stem2_orth=rono
+    noun1_stem2_pred=_snake_n_rel
+  noun2_name=pronoun-1s
+    noun2_feat1_name=number
+    noun2_feat1_value=singular
+    noun2_feat2_name=person
+    noun2_feat2_value=1st
+  noun2_det=imp
+    noun2_stem1_orth=ea
+    noun2_stem1_pred=_prn_n_rel
+  noun3_name=pronoun-1p
+    noun3_feat1_name=number
+    noun3_feat1_value=plural
+    noun3_feat2_name=person
+    noun3_feat2_value=1st
+  noun3_det=imp
+    noun3_stem1_orth=no
+    noun3_stem1_pred=_prn_n_rel
+  noun4_name=pronoun-3
+    noun4_feat1_name=person
+    noun4_feat1_value=3rd
+  noun4_det=imp
+    noun4_stem1_orth=ja
+    noun4_stem1_pred=_prn_n_rel
+  verb1_name=tr-verb
+  verb1_valence=erg-abs
+    verb1_stem1_orth=natex
+    verb1_stem1_pred=_bite_v_rel
+  verb2_name=itr-verb
+  verb2_valence=abs
+    verb2_stem1_orth=yaka
+    verb2_stem1_pred=_be.sitting_v_rel
+  aux1_name=fh-aux
+  aux1_sem=no-pred
+    aux1_feat1_name=evidential
+    aux1_feat1_value=firsthand
+    aux1_feat1_head=verb
+  aux1_subj=np-comp-case
+    aux1_compfeature1_name=form
+    aux1_compfeature1_value=finite
+    aux1_stem1_orth==ra
+  aux2_name=rep-aux
+  aux2_sem=no-pred
+    aux2_feat1_name=evidential
+    aux2_feat1_value=reported
+    aux2_feat1_head=verb
+  aux2_subj=np-comp-case
+    aux2_compfeature1_name=form
+    aux2_compfeature1_value=finite
+    aux2_stem1_orth==ronki
+    aux2_stem2_orth==ki
+
+section=morphology
+  noun-pc1_name=case
+  noun-pc1_obligatory=on
+  noun-pc1_order=suffix
+  noun-pc1_inputs=noun, noun-pc2
+    noun-pc1_lrt1_name=abs
+      noun-pc1_lrt1_feat1_name=case
+      noun-pc1_lrt1_feat1_value=abs
+      noun-pc1_lrt1_lri1_inflecting=no
+    noun-pc1_lrt2_name=erg
+      noun-pc1_lrt2_feat1_name=case
+      noun-pc1_lrt2_feat1_value=erg
+      noun-pc1_lrt2_lri1_inflecting=yes
+      noun-pc1_lrt2_lri1_orth=-n
+  noun-pc2_name=number
+  noun-pc2_obligatory=on
+  noun-pc2_order=suffix
+  noun-pc2_inputs=noun1, noun3
+    noun-pc2_lrt1_name=sg
+      noun-pc2_lrt1_feat1_name=number
+      noun-pc2_lrt1_feat1_value=singular
+      noun-pc2_lrt1_lri1_inflecting=no
+    noun-pc2_lrt2_name=pl
+      noun-pc2_lrt2_feat1_name=number
+      noun-pc2_lrt2_feat1_value=plural
+      noun-pc2_lrt2_lri1_inflecting=yes
+      noun-pc2_lrt2_lri1_orth=-bo
+  verb-pc1_name=aspect
+  verb-pc1_obligatory=on
+  verb-pc1_order=suffix
+  verb-pc1_inputs=iverb, tverb, verb-pc2, verb-pc3
+    verb-pc1_lrt1_name=compl
+      verb-pc1_lrt1_feat1_name=aspect
+      verb-pc1_lrt1_feat1_value=completive
+      verb-pc1_lrt1_feat1_head=verb
+      verb-pc1_lrt1_lri1_inflecting=yes
+      verb-pc1_lrt1_lri1_orth=-ke
+    verb-pc1_lrt2_name=incompl
+      verb-pc1_lrt2_feat1_name=aspect
+      verb-pc1_lrt2_feat1_value=incompletive
+      verb-pc1_lrt2_feat1_head=verb
+      verb-pc1_lrt2_lri1_inflecting=yes
+      verb-pc1_lrt2_lri1_orth=-ai
+  verb-pc2_name=verb-num
+  verb-pc2_order=suffix
+  verb-pc2_inputs=iverb, tverb, verb-pc3
+    verb-pc2_lrt1_name=verb-pl
+      verb-pc2_lrt1_feat1_name=number
+      verb-pc2_lrt1_feat1_value=plural
+      verb-pc2_lrt1_feat1_head=subj
+      verb-pc2_lrt1_lri1_inflecting=yes
+      verb-pc2_lrt1_lri1_orth=-kan
+  verb-pc3_name=evid
+  verb-pc3_order=suffix
+  verb-pc3_inputs=iverb, tverb
+    verb-pc3_lrt1_name=infr
+      verb-pc3_lrt1_feat1_name=evidential
+      verb-pc3_lrt1_feat1_value=inferential
+      verb-pc3_lrt1_feat1_head=verb
+      verb-pc3_lrt1_lri1_inflecting=yes
+      verb-pc3_lrt1_lri1_orth=-bira
+
+section=toolbox-import
+
+section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon

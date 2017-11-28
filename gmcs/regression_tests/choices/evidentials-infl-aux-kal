@@ -1,0 +1,190 @@
+
+version=28
+
+section=general
+language=evidentials-infl-aux-kal
+punctuation-chars=keep-all
+archive=no
+
+section=word-order
+word-order=free
+has-dets=no
+has-aux=yes
+aux-comp-order=before
+aux-comp=s
+multiple-aux=no
+
+section=number
+  number1_name=singular
+  number2_name=plural
+
+section=person
+person=1-2-3
+first-person=none
+
+section=gender
+
+section=case
+case-marking=erg-abs
+erg-abs-erg-case-name=ergative
+erg-abs-abs-case-name=absolutive
+
+section=direct-inverse
+scale-equal=direct
+
+section=tense-aspect-mood
+
+section=evidentials
+evidential-definition=build
+  evidential1_name=auditory
+  evidential2_name=nonfirsthand
+  evidential3_name=sensory-inferential
+  evidential4_name=hearsay-inferential
+  evidential5_name=general-expection
+  evidential6_name=expectation-experience
+  evidential7_name=hearsay-gossip
+
+section=other-features
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=info-str
+
+section=arg-opt
+subj-drop=subj-drop-all
+subj-mark-drop=subj-mark-drop-req
+subj-mark-no-drop=subj-mark-no-drop-req
+subj-con=subj-con-always
+obj-drop=obj-drop-all
+obj-mark-drop=obj-mark-drop-not
+obj-mark-no-drop=obj-mark-no-drop-not
+
+section=lexicon
+  noun1_name=common-noun
+  noun1_det=imp
+    noun1_stem1_orth=ini
+    noun1_stem1_pred=_room_n_rel
+    noun1_stem2_orth=arnaq
+    noun1_stem2_pred=_woman_n_rel
+    noun1_stem3_orth=angut
+    noun1_stem3_pred=_man_n_rel
+    noun1_stem4_orth=qilalugaq
+    noun1_stem4_pred=_beluga_n_rel
+  verb1_name=itr-verb
+  verb1_valence=abs
+    verb1_stem1_orth=qasu
+    verb1_stem1_pred=_be.tired_v_rel
+  verb2_name=tr-verb
+  verb2_valence=erg-abs
+    verb2_stem1_orth=niri
+    verb2_stem1_pred=_eat_v_rel
+    verb2_stem2_orth=pisar
+    verb2_stem2_pred=_catch_v_rel
+  aux1_name=hearsay
+  aux1_sem=no-pred
+    aux1_feat1_name=evidential
+    aux1_feat1_value=hearsay-gossip
+    aux1_feat1_head=verb
+  aux1_subj=np
+    aux1_compfeature1_name=form
+    aux1_compfeature1_value=finite
+    aux1_stem1_orth=unnia
+
+section=morphology
+  noun-pc1_name=case
+  noun-pc1_obligatory=on
+  noun-pc1_order=suffix
+  noun-pc1_inputs=noun
+    noun-pc1_lrt1_name=erg
+      noun-pc1_lrt1_feat1_name=case
+      noun-pc1_lrt1_feat1_value=erg
+      noun-pc1_lrt1_lri1_inflecting=yes
+      noun-pc1_lrt1_lri1_orth=-p
+    noun-pc1_lrt2_name=abs
+      noun-pc1_lrt2_feat1_name=case
+      noun-pc1_lrt2_feat1_value=abs
+      noun-pc1_lrt2_lri1_inflecting=no
+  verb-pc1_name=non-sentential
+  verb-pc1_order=suffix
+  verb-pc1_inputs=iverb, tverb
+    verb-pc1_lrt1_name=aud-pallaC
+      verb-pc1_lrt1_feat1_name=evidential
+      verb-pc1_lrt1_feat1_value=auditory
+      verb-pc1_lrt1_feat1_head=verb
+      verb-pc1_lrt1_lri1_inflecting=yes
+      verb-pc1_lrt1_lri1_orth=-pallac
+    verb-pc1_lrt2_name=nf-paluC
+      verb-pc1_lrt2_feat1_name=evidential
+      verb-pc1_lrt2_feat1_value=nonfirsthand
+      verb-pc1_lrt2_feat1_head=verb
+      verb-pc1_lrt2_lri1_inflecting=yes
+      verb-pc1_lrt2_lri1_orth=-paluc
+  verb-pc2_name=sentential
+  verb-pc2_order=suffix
+  verb-pc2_inputs=iverb, tverb
+    verb-pc2_lrt1_name=sens-infr
+      verb-pc2_lrt1_feat1_name=evidential
+      verb-pc2_lrt1_feat1_value=sensory-inferential
+      verb-pc2_lrt1_feat1_head=verb
+      verb-pc2_lrt1_lri1_inflecting=yes
+      verb-pc2_lrt1_lri1_orth=-gunar
+    verb-pc2_lrt2_name=rep-infr
+      verb-pc2_lrt2_feat1_name=evidential
+      verb-pc2_lrt2_feat1_value=hearsay-inferential
+      verb-pc2_lrt2_feat1_head=verb
+      verb-pc2_lrt2_lri1_inflecting=yes
+      verb-pc2_lrt2_lri1_orth=-sima
+    verb-pc2_lrt3_name=gen-expec
+      verb-pc2_lrt3_feat1_name=evidential
+      verb-pc2_lrt3_feat1_value=general-expection
+      verb-pc2_lrt3_feat1_head=verb
+      verb-pc2_lrt3_lri1_inflecting=yes
+      verb-pc2_lrt3_lri1_orth=-jannarsi
+    verb-pc2_lrt4_name=expec-exper
+      verb-pc2_lrt4_feat1_name=evidential
+      verb-pc2_lrt4_feat1_value=expectation-experience
+      verb-pc2_lrt4_feat1_head=verb
+      verb-pc2_lrt4_lri1_inflecting=yes
+      verb-pc2_lrt4_lri1_orth=-nnguatsiar
+  verb-pc3_name=agr
+  verb-pc3_obligatory=on
+  verb-pc3_order=suffix
+  verb-pc3_inputs=iverb, tverb, verb-pc1, verb-pc2
+    verb-pc3_lrt1_name=3sg+indic
+      verb-pc3_lrt1_feat1_name=person
+      verb-pc3_lrt1_feat1_value=3rd
+      verb-pc3_lrt1_feat1_head=subj
+      verb-pc3_lrt1_feat2_name=number
+      verb-pc3_lrt1_feat2_value=singular
+      verb-pc3_lrt1_feat2_head=subj
+      verb-pc3_lrt1_require1_others=iverb
+      verb-pc3_lrt1_lri1_inflecting=yes
+      verb-pc3_lrt1_lri1_orth=-vuq
+    verb-pc3_lrt2_name=3sg+3sg+indic
+      verb-pc3_lrt2_feat1_name=number
+      verb-pc3_lrt2_feat1_value=singular
+      verb-pc3_lrt2_feat1_head=subj
+      verb-pc3_lrt2_feat2_name=person
+      verb-pc3_lrt2_feat2_value=3rd
+      verb-pc3_lrt2_feat2_head=subj
+      verb-pc3_lrt2_feat3_name=person
+      verb-pc3_lrt2_feat3_value=3rd
+      verb-pc3_lrt2_feat3_head=obj
+      verb-pc3_lrt2_feat4_name=number
+      verb-pc3_lrt2_feat4_value=singular
+      verb-pc3_lrt2_feat4_head=obj
+      verb-pc3_lrt2_require1_others=tverb
+      verb-pc3_lrt2_lri1_inflecting=yes
+      verb-pc3_lrt2_lri1_orth=-aa
+
+section=toolbox-import
+
+section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon
