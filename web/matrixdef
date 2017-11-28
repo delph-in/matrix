@@ -727,7 +727,15 @@ Label "</div>"
 
 Section evidentials "Evidentials"
 
-Label "<p>You may define semantic features related to evidential meanings here.  Evidentials are means by which a language may express the information source that informs a statement.  For example, a verbal suffix may indicate that the speaker learned of the event in question from another person, or that they saw the event firsthand.  Evidential meanings may be expressed either through the grammatical system of the language, a phenomenon called evidentiality, or through its lexicon, or both.</p>"
+Label "<p>Evidentiality refers to the grammatical expression of information source, how the speaker knows what he/she is saying.  Common evidential meanings include \"I heard it from someone else,\" \"I saw it myself,\" \"I inferred it from evidence,\" etc.  Evidentials are most commonly expressed through inflection on the verb or through auxiliary verbs, often described simply as clitics or particles in the literature.</p>"
+
+Label "<p>Here, you may define an inventory of evidential terms.  On the Morphology and Lexicon pages, you may then add an evidential feature either to a lexical rule type on the Morphology page or an auxiliary verb on the Lexicon page.  Note that even though evidentials are specified as features in this interface, in the grammar produced by the Grammar Matrix, evidential semantics will be expressed by an indpendent predicate, not a feature.</p>"
+
+Label "<p>NOTE: For auxiliary verbs expressing evidentials, the evidential feature should be an auxiliary feature, not a complement feature.</p>"
+
+Label "<p>NOTE: For auxiliary verbs expressing evidentials, select \"No predicate.\"  If you specify an evidential feature AND define a predicate for the auxiliary verb, the evidential semantics will overwrite the defined predicate.</p>"
+
+Label "<p>NOTE: You should not specify more than one evidential value on each lexical rule type or auxiliary verb.</p>"
 
 Label "<h3>Semantic Features</h3>"
 
@@ -768,6 +776,12 @@ Label "<div style=\"padding-left: 16px\">"
     Text name "Evidential Term {i} Name" "<b>Evidential Term {i}</b>:<br/>Evidential Term Name: " " " 20
   EndIter evidential
 
+Label "</div>"
+
+Label "<h4>References</h4>"
+Label "<div style=\"font-size:2\">"
+Label "<p>Aikhenvald, A. (2006). Evidentiality. Oxford linguistics. Oxford University Press."
+Label "<p>Murray, S. E. (2017). The Semantics of Evidentials. Oxford University Press."
 Label "</div>"
 
 
