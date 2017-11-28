@@ -2821,3 +2821,77 @@ BeginIter imported-entry{i} "an imported Entry"
     Text aff "Imported-Entry {i} Affix" "Affix:" "<br />" 20
 
 EndIter imported-entry
+
+Section adnom-poss "Adnominal Possession" 
+
+Cache nounlrs noun-pc[0-9]+(_lrt[0-9]+)?$ name
+
+Label "<h3>Define a possessive strategy:</h3>"
+
+BeginIter poss-strategy{i} "a Possessive strategy"
+
+     Radio order "Word order" "<p>The word order within a possessive phrase is:</p>" ""
+     . possessor-first "possessor-first" "" "possessor-first<br>"
+     . possessum-first "possessum-first" "" "possessum-first<br>"
+     . either "either" "" "either<br>"
+
+     Radio mod-spec "Modifier or specifier" "<p>The possessor is more like a </p>" ""
+     . spec "specifier" "" "specifier<br>"
+     . mod "modifier" "" "modifier<br>"
+
+     Radio np-nom "NP or NOM" "<p> Is the possessor more like a full noun phrase (e.g. taking its own determiner) or more like an N'?</p>" ""
+     . np "NP" "" "full noun phrase<br>"
+     . nom "NOM" "" "N'<br>"
+
+     Label "<h4>Give morphemes that mark the possessor and/or possessum in this strategy</h4>"
+
+     BeginIter possessor-mark{j} "a marking on the possessor" 
+     
+	Radio bound-possessor "Bound-possessor" "<p>Is this marking an affix on the possessor or a separate word?</p>" ""
+     	. affix "affix" "" "affix<br>" 
+     	. non-affix "non-affix" "" "separate word<br>"
+	
+	Label "<p>Possessor marker {j}:<br> The word that marks the possessor is spelled"
+	
+	Text orth "Possessor marker {j} spelling" "" "" 10
+	
+	Radio order "Possessor marker {j} order" "<br>and appears " ""
+	. before "Before" "" "before "
+	. after "After" "" "after the possessor "
+
+	Radio possessor-agreement-with "Possessor marker {j} agrees with" "<br>and " ""
+	. possessor-agree "Possessor agreement" "" "does "
+	. possessor-non-agree "Possessor non-agreement" "" "does not agree with the possessum "
+
+	Select agr-features "Possessor marker {j} agreement features" "in " " " fillnames c=noun
+
+    	 Label "</p>"
+
+
+     EndIter possessor-mark
+
+     BeginIter possessum-mark{j} "a marking on the possessum"
+
+     	Radio bound-possessum "Bound-possessum" "<p>Is this marking an affix on the possessum or a separate word?</p>" ""
+     	. affix "affix" "" "affix<br>" "set_possessum('0')"
+     	. non-affix "non-affix" "" "separate word<br>" "set_possessum('1')"
+	
+	Label "<div id='non-affix' class='possessum-affix-switch' style='display:none'><p>Possessum marker {j}: The word that marks the possessum is spelled"
+	
+	Text orth "Possessum marker {j} spelling" "" "" 10
+	
+	Radio order "Possessum marker {j} order" "and appears " ""
+	. before "Before" "" "before "
+	. after "After" "" "after the possessum<br>"
+
+	Radio possessum-agreement-with "Possessum marker {j} agrees with" "<br>and " ""
+	. possessum-agree "Possessum agreement" "" "does "
+	. possessum-non-agree "Possessum non-agreement" "" "does not agree with the possessor "
+
+	Select agr-features "Possessor marker {j} agreement features" "in " " " fillnames c=noun
+
+    	 Label "</p></div>"
+
+     EndIter possessum-mark
+
+EndIter poss-strategy

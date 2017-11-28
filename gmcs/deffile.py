@@ -548,7 +548,7 @@ class MatrixDefFile:
   'arg-opt':'Argument Optionality', 'lexicon':'Lexicon',
   'morphology':'Morphology','toolbox-import':'Toolbox Import',
   'test-sentences':'Test Sentences','gen-options':'TbG Options',
-  'ToolboxLexicon':'Toolbox Lexicon'}
+  'ToolboxLexicon':'Toolbox Lexicon','adnom-poss':'Adnominal Possession' }
 
   # used to link section names to their documentation
   # page name in the delph-in wiki
@@ -562,7 +562,7 @@ class MatrixDefFile:
   'arg-opt':'ArgumentOptionality', 'lexicon':'Lexicon',
   'morphology':'Morphology','toolbox-import':'ImportToolboxLexicon',
   'test-sentences':'TestSentences','gen-options':'TestByGeneration',
-  'ToolboxLexicon':'ImportToolboxLexicon'}
+  'ToolboxLexicon':'ImportToolboxLexicon','adnom-poss':'Adnominal Possession'}
   def_file = ''
   v2f = {}
   f2v = {}
