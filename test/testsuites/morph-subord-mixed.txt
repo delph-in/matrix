@@ -1,5 +1,5 @@
 # some subordinators require special morphology and some don't
-subord1 noun1 verb1-affix noun2 verb2
-*subord1 noun1 verb1 noun2 verb2
-subord2 noun1 verb1 noun2 verb2
-*subord2 noun1 verv1-subord noun2 verb2
+subord noun1 verb1-nonfin noun2 verb2
+*subord noun1 verb1 noun2 verb2
+*subord noun1 verb1-nonfin noun2 verb2-nonfin
+*subord noun1 verb1 noun2 verb2-nonfin
