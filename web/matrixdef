@@ -1730,6 +1730,23 @@ Check wordorder "Special Word Order" "" "Special Word Order<br>"
 
 Check subjraise "Subject Raising" "" "Subject Raising<br>" 
 
+Check nominalization "Nominalization" "" "Nominalization<br>"
+
+Select nominalization_strategy "Clausal Modifier strategy {i} Nominalization Strategy {j}" "If your language uses nominalization, select a nominalization strategy: " " "
+    fillvalues p=nominalization l=1
+
+
+Check specialmorph "Special Morphology" "" "Special Morphology<br>"
+
+    BeginIter feat{k} "a Feature"
+
+      Select name "Clausal Modifier Strategy {i} Embedded Verb Feature {k} Name" "Name: " ""
+	  fillnames2 c=verb
+ 
+      MultiSelect value "Clausal Modifier Strategy {i} Embedded Verb Feature {k} Value" "Value: " ""
+      fillvalues p=comps{i}_feat{k}_name
+
+    EndIter feat
 
 EndIter cms
 
