@@ -800,7 +800,7 @@ class ChoicesFile:
         elif len(w) == 2:
           patterns[i][1] = 'transitive (%s-%s)' % (w[0], w[1])
 
-    # Finally, extend the patterns to include direct-inverse, as needed
+    # extend the patterns to include direct-inverse, as needed
     if self.has_dirinv():
       for i in range(0, len(patterns)):
         if patterns[i][0] == 'trans' or patterns[i][0].find('-') != -1:
@@ -808,6 +808,9 @@ class ChoicesFile:
                           patterns[i][1] + ', direct-inverse',
                           patterns[i][2] ] ]
 
+    # Extend the patterns to include clausal complement strategies
+    for ccs in self['comps']:
+      patterns += [ [ ccs.full_key, 'transitive-clausal-%s (case unspecified)' % (ccs.full_key), False] ]
     return patterns
 
 

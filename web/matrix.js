@@ -773,6 +773,7 @@ function fill_case_patterns(morph)
     var p = pats[i].split(':');
     items.push([p[1], p[0]]);
   }
+  // add clausal complement strategies as possible argument structure
   return items
 }
 

@@ -52,3 +52,7 @@ def add_complementizers_to_lexicon(lexicon,ch):
 
 def add_ctp_to_lexicon(mylang,lexicon):
     pass
+
+def add_arg_structures(mylang, ch, lexicon):
+    for ccs in ch.get('comps'):
+        pass

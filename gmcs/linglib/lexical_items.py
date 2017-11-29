@@ -277,6 +277,16 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
                                       COMPS < > ] ] ] ] > ].'
   mylang.add(typedef)
 
+  # CTP (clausal complement-taking type)
+  typedef = 'ctp-verb-lex := ' + mainorverbtype + '& clausal-second-arg-trans-lex-item &\
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >,\
+    ARG-ST < [LOCAL.CAT.HEAD noun ],\
+    	     #comps &\
+    	     [ LOCAL.CAT [ VAL [ SPR < >, COMPS < > ],' \
+                                                  'HEAD comp ] ] > ].'
+
+  mylang.add(typedef)
+
   case.customize_verb_case(mylang, ch)
 
   # Add constraints to choices to create lex rules for bipartite stems

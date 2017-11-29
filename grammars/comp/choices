@@ -18,7 +18,9 @@ person=none
 section=gender
 
 section=case
-case-marking=none
+case-marking=nom-acc
+nom-acc-nom-case-name=nom
+nom-acc-acc-case-name=acc
 
 section=direct-inverse
 
@@ -75,7 +77,7 @@ section=lexicon
     verb1_stem1_orth=tverb
     verb1_stem1_pred=_tverb_v_rel
   verb2_name=ctp
-  verb2_valence=trans
+  verb2_valence=comps1
     verb2_stem1_orth=cverb
     verb2_stem1_pred=_cverb_v_rel
 
