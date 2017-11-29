@@ -1,0 +1,70 @@
+
+version=28
+
+section=general
+language=v2-basic-order
+
+section=word-order
+word-order=v2
+has-dets=no
+has-aux=no
+
+section=number
+
+section=person
+person=none
+
+section=gender
+
+section=case
+case-marking=none
+
+section=direct-inverse
+
+section=tense-aspect-mood
+
+section=other-features
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=info-str
+
+section=arg-opt
+
+section=nominalclause
+
+section=clausalmods
+
+section=clausal-comp
+
+section=lexicon
+  noun1_name=noun
+  noun1_det=imp
+    noun1_stem1_orth=n1
+    noun1_stem1_pred=_n1_n_rel
+    noun1_stem2_orth=n2
+    noun1_stem2_pred=_n2_n_rel
+    noun1_stem3_orth=n3
+    noun1_stem3_pred=_n3_n_rel
+  verb1_name=intran
+  verb1_valence=intrans
+    verb1_stem1_orth=v1
+    verb1_stem1_pred=_v1_v_rel
+  verb2_name=tran
+  verb2_valence=trans
+    verb2_stem1_orth=v2
+    verb2_stem1_pred=_v2_v_rel
+
+section=morphology
+
+section=toolbox-import
+
+section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon

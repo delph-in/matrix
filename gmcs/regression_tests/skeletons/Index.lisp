@@ -33,6 +33,8 @@
 ((:path . "evidentials-aux-apw") (:content . "evidentials-aux-apw: testing coverage of Western Apache evidentials (aux)"))
 ((:path . "evidentials-infl-cng") (:content . "evidentials-infl-cng: testing coverage of Qiang evidentials (infl)"))
 ((:path . "evidentials-infl-aux-kaz") (:content . "evidentials-infl-aux-kaz: testing coverage of Kazakh evidentials (infl, aux)"))
+((:path . "v2-basic-order") (:content . "v2-basic-order: V2 basic word order: verb in second position, subject and object on either side."))
+((:path . "vfinal") (:content . "vfinal: V-final basic word order: verb in final position, subject and object in either position in front."))
 ((:path . "cagr-pseudospanish-feature-resolution") (:content . "cagr-pseudospanish-feature-resolution: tests the part of coordination and agreement that creates feature resolution (using a grammar loosely based on Spanish)"))
 ((:path . "cagr-pseudo-closest-conjunct") (:content . "cagr-pseudo-closest-conjunct: tests the part of coordination and agreement that creates closest conjunct rules"))
 ((:path . "valchg-obj-add-post-np") (:content . "valchg-obj-add-post-np: object-adding valence change, new object added at end of comps"))

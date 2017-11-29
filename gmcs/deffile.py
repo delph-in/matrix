@@ -94,7 +94,7 @@ HTML_toggle_visible_js = '''<script type="text/javascript">
 HTML_mainprebody = '''<body onload="animate()">
 <h1>LinGO Grammar Matrix</h1>
 <h1 style="display:inline">Matrix customization and download page</h1>
-<span class="tt">[<a href="http://moin.delph-in.net/MatrixDocTop" target="matrixdoc">help</a>]</span>
+<span class="tt">[<a href="http://moin.delph-in.net/MatrixDocTop" target="matrixdoc">documentation</a>]</span>
 <h2>Version of %s</h2>
 
 <p>The <a href="http://www.delph-in.net/matrix">LinGO Grammar
@@ -1273,7 +1273,7 @@ class MatrixDefFile:
 
       print '<h2 style="display:inline">' + section_friendly + '</h2>'
       doclink = '<a href="http://moin.delph-in.net/MatrixDoc/' + \
-                self.doclinks[section] + '" target="matrixdoc">help</a>'
+                self.doclinks[section] + '" target="matrixdoc">documentation</a>'
       print '<span class="tt">['+doclink+']</span><br />'
 
 
@@ -1720,7 +1720,7 @@ class MatrixDefFile:
         new_choices["neg-aux-index"] = str(neg_aux_index) if neg_aux_index > 0 else str(1)
 
     # create a zero-neg lri in choices
-    if section == 'sentential-negation' \
+    if section == 'sentential-negation' and 'neg-exp' in form_data\
                and form_data['neg-exp'].value == '0' \
                and 'vpc-0-neg' in form_data.keys():
       if form_data['vpc-0-neg'].value != "":

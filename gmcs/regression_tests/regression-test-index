@@ -290,3 +290,6 @@ evidentials-inflection-choose=testing evidential verbal inflection with selected
 evidentials-inflection-build=testing evidential verbal inflection with user-input evidential inventory
 evidentials-auxiliary-build=testing evidential auxiliary verbs with user-input evidential inventory
 evidentials-auxiliary-choose=testing evidential auxiliary verbs with selected evidential inventory
+vfinal=V-final basic word order: verb in final position, subject and object in either position in front.
+
+v2-basic-order=V2 basic word order: verb in second position, subject and object on either side.
