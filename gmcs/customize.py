@@ -611,15 +611,15 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
   yes_no_questions.customize_yesno_questions(mylang, ch, rules, lrules, hierarchies)
   clausalmods.customize_clausalmods(mylang, ch, lexicon, rules, irules)
   clausalcomps.customize_clausalcomps(mylang,ch,lexicon,rules,irules)
-  # customize_punctuation(grammar_path)
-  # customize_test_sentences(grammar_path)
-  # customize_itsdb(grammar_path)
-  # customize_script(grammar_path)
-  # customize_pettdl(grammar_path)
-  # customize_acetdl(grammar_path)
-  # customize_roots()
-  #
-  # customize_vpm(ch, vpm, hierarchies)
+  customize_punctuation(grammar_path)
+  customize_test_sentences(grammar_path)
+  customize_itsdb(grammar_path)
+  customize_script(grammar_path)
+  customize_pettdl(grammar_path)
+  customize_acetdl(grammar_path)
+  customize_roots()
+
+  customize_vpm(ch, vpm, hierarchies)
 
   # Save the output files
   mylang.save()
