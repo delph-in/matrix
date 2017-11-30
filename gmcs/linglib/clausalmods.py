@@ -32,8 +32,7 @@ def add_subord_lex(mylang, lexicon, cms, ch):
         [ SYNSEM [ LOCAL [ CAT [ MC -,\
                       HEAD.MOD < [ LOCAL scopal-mod &\
                  [CAT [HEAD verb,\
-      VAL [SUBJ < >,\
-          SPR < >,\
+      VAL [ SPR < >,\
           COMPS < >]],\
       CONT.HOOK[LTOP  #mod,\
       INDEX  #index ]]] >,\
@@ -67,8 +66,7 @@ def add_subord_lex(mylang, lexicon, cms, ch):
       [ SYNSEM [ LOCAL [ CAT [ MC -,\
                     HEAD.MOD < [ LOCAL scopal-mod &\
                [CAT [HEAD verb,\
-    VAL [SUBJ < >,\
-        SPR < >,\
+    VAL [SPR < >,\
         COMPS < >]],\
     CONT.HOOK[LTOP  #mod,\
     INDEX  #index ]]] >,\
@@ -100,8 +98,7 @@ def add_subord_lex(mylang, lexicon, cms, ch):
             [ SYNSEM [ LOCAL [ CAT [ MC -,\
                             HEAD.MOD < [ LOCAL scopal-mod &\
 					      [ CAT [ HEAD verb,\
-						      VAL [ SUBJ < >,\
-							    SPR < >,\
+						      VAL [ SPR < >,\
 							    COMPS < > ]],\
 						CONT.HOOK [ LTOP #mod,\
 							    INDEX #index ]]] >,\
@@ -123,8 +120,7 @@ def add_subord_lex(mylang, lexicon, cms, ch):
         mylang.add('scopal-mod-with-comp-lex := [ SYNSEM [ LOCAL.CAT.SUBPAIR #subpair,\
                                     LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.SUBPAIR #subpair ] > ]].')
       mylang.add('subord-lex-item := scopal-mod-with-comp-lex &\
-    [ SYNSEM.LOCAL [ CAT [ VAL [ SUBJ < >,\
-                                SPR < >,\
+    [ SYNSEM.LOCAL [ CAT [ VAL [ SPR < >,\
                                 COMPS <  #comps > ]]],\
       ARG-ST <  #comps &\
                   [LOCAL.CAT[ HEAD verb,\
@@ -144,6 +140,7 @@ def add_subord_lex(mylang, lexicon, cms, ch):
   constraints = []
   pos = cms.get('position')
   subpos = cms.get('subposition')
+  attach = cms.get('modifier_attachment')
   if cms.get('subordinator-type') == 'head':
     if subpos == 'before':
       lextype.append('clause-init')
@@ -157,6 +154,12 @@ def add_subord_lex(mylang, lexicon, cms, ch):
     elif pos == 'after':
       lextype.append('posthead')
       constraints.append('SYNSEM.LOCAL.CAT.POSTHEAD +')
+    if attach == 's':
+      lextype.append('s-attach')
+      constraints.append('SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL.SUBJ < > ] >')
+    elif attach == 'vp':
+      lextype.append('vp-attach')
+      constraints.append('SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL.SUBJ < [ ] > ] >')
   elif cms.get('subordinator-type') == 'adverb':
     if subpos == 'before':
       lextype.append('clause-init')
@@ -168,6 +171,7 @@ def add_subord_lex(mylang, lexicon, cms, ch):
       lextype.append('prehead')
     elif pos == 'after':
       lextype.append('posthead')
+
   if cms.get('specialmorph') == 'on':
     lextype, constraints = add_morphological_constraints(lextype, constraints, cms)
 
@@ -372,6 +376,7 @@ def add_subord_phrasal_types(mylang, rules, cms, ch):
       mylang.add(supertype + ' := [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.SUBPAIR #subpair ] >,\
                                   ARGS < [ SYNSEM.LOCAL.CAT.SUBPAIR #subpair ] > ].')
     pos = cms.get('position')
+    attach =cms.get('modifier_attachment')
     if cms.get('subordinator') == 'free':
       for adverb in cms.get('freemorph'):
         pred = adverb.get('pred')
@@ -379,15 +384,19 @@ def add_subord_phrasal_types(mylang, rules, cms, ch):
           value = pred.split('_')[1]
         else:
           value = pred.split('_')[0]
-        lextype = value + '-modifying-clause-phrase'
+        type = value + '-modifying-clause-phrase'
         mylang.add(lextype + ' := ' + supertype + ' &\
   [ C-CONT.RELS <! [ PRED "' + pred + '" ] !>,\
     ARGS < [ SYNSEM.SUBORDINATED ' + value + ' ] > ].')
         if pos == 'before':
-          mylang.add(lextype + ' := [ SYNSEM.LOCAL.CAT.POSTHEAD - ].')
+          mylang.add(type + ' := [ SYNSEM.LOCAL.CAT.POSTHEAD - ].')
         elif pos == 'after':
-          mylang.add(lextype + ' := [ SYNSEM.LOCAL.CAT.POSTHEAD + ].')
-        rules.add(value + '-modifying-clause := ' + lextype + '.')
+          mylang.add(type + ' := [ SYNSEM.LOCAL.CAT.POSTHEAD + ].')
+        if attach == 's':
+          mylang.add(type + ' := [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL.SUBJ < > ] > ].')
+        elif attach == 'vp':
+          mylang.add(type + ' := [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL.SUBJ < [ ] > ] > ].')
+        rules.add(value + '-modifying-clause := ' + type + '.')
     elif cms.get('subordinator') == 'pair':
       for adverb in cms.get('morphpair'):
         pred = adverb.get('subordpred')
@@ -395,15 +404,19 @@ def add_subord_phrasal_types(mylang, rules, cms, ch):
           value = pred.split('_')[1]
         else:
           value = pred.split('_')[0]
-        lextype = value + '-modifying-clause-phrase'
-        mylang.add(lextype + ' := ' + supertype + ' &\
+        type = value + '-modifying-clause-phrase'
+        mylang.add(type + ' := ' + supertype + ' &\
   [ C-CONT.RELS <! [ PRED "' + pred + '" ] !>,\
     ARGS < [ SYNSEM.SUBORDINATED ' + value + ' ] > ].')
         if pos == 'before':
-          mylang.add(lextype + ' := [ SYNSEM.LOCAL.CAT.POSTHEAD - ].')
+          mylang.add(type + ' := [ SYNSEM.LOCAL.CAT.POSTHEAD - ].')
         elif pos == 'after':
-          mylang.add(lextype + ' := [ SYNSEM.LOCAL.CAT.POSTHEAD + ].')
-        rules.add(value + '-modifying-clause := ' + lextype + '.')
+          mylang.add(type + ' := [ SYNSEM.LOCAL.CAT.POSTHEAD + ].')
+        if attach == 's':
+          mylang.add(type + ' := [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL.SUBJ < > ] > ].')
+        elif attach == 'vp':
+          mylang.add(type + ' := [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL.SUBJ < [ ] > ] > ].')
+        rules.add(value + '-modifying-clause := ' + type + '.')
 
 def add_subordinators_matrix_pair_to_lexicon(mylang, lexicon, cms, ch):
   """q
@@ -588,7 +601,8 @@ def build_lex_type(lextype):
     type += '-' + s
   return type
 
-def add_sematically_empty_subord_rel(mylang, cms, ch, rules):
+def add_morphological_subord_rel(mylang, cms, ch, rules):
+  #todo- make the rel a variable and add subord rel if there is no rel
   """
   adds a non-branching rule that puts in a subord_rel (when no other semantic meaning
   is added via a subordinator) and accounts for special morphology, subject raising, and
@@ -744,8 +758,5 @@ def customize_clausalmods(mylang, ch, lexicon, rules, roots):
       add_subordinators_matrix_pair_to_lexicon(mylang, lexicon, cms,ch)
       add_subord_phrasal_types(mylang, rules, cms, ch)
 
-    #the following is for strategies that do not have a sematically meaninful subordinate
-    #predication. In this case we just add a _subord_rel that takes the verbs in each clause
-    #as args
-    if subord == 'none':
-      add_sematically_empty_subord_rel(mylang, cms, ch, rules)
+    else:
+      add_morphological_subord_rel(mylang, cms, ch, rules)

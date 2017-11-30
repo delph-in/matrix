@@ -1,0 +1,128 @@
+version=28
+
+section=general
+language=clausalmods-semantically-empty
+
+section=word-order
+word-order=vso
+has-dets=no
+has-aux=no
+
+section=number
+
+section=person
+person=none
+
+section=gender
+
+section=case
+case-marking=none
+
+section=direct-inverse
+
+section=tense-aspect-mood
+
+section=other-features
+  feature1_name=gerund
+  feature1_type=head
+  feature1_cat=verb
+  feature1_new=no
+  feature1_existing=bool
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=info-str
+
+section=arg-opt
+
+section=nominalclause
+  ns1_name=nom
+  ns1_level=low
+  ns2_name=nom-norel
+  ns2_level=high
+  ns2_nmzRel=no
+
+section=clausalmods
+  cms1_position=after
+  cms1_modifier_attachment=s
+  cms1_subordinator=none
+  cms1_nominalization=on
+  cms1_nominalization_strategy=nom
+  cms2_position=after
+  cms2_modifier_attachment=s
+  cms2_subordinator=none
+  cms2_nominalization=on
+  cms2_nominalization_strategy=nom-norel
+  cms3_position=after
+  cms3_modifier_attachment=s
+  cms3_subordinator=none
+  cms3_specialmorph=on
+    cms3_feat1_name=gerund
+    cms3_feat1_value=+
+  cms4_position=after
+  cms4_modifier_attachment=s
+  cms4_subordinator=none
+  cms4_subjraise=on
+    cms4_feat1_name=gerund
+    cms4_feat1_value=+
+  cms4_specialmorph=on
+
+section=clausal-comp
+
+section=lexicon
+  noun1_name=noun
+  noun1_det=imp
+    noun1_stem1_orth=noun1
+    noun1_stem1_pred=_noun1_n_rel
+    noun1_stem2_orth=noun2
+    noun1_stem2_pred=_noun2_n_rel
+  verb1_name=verb
+  verb1_valence=intrans
+    verb1_stem1_orth=verb1
+    verb1_stem1_pred=_verb1_v_rel
+    verb1_stem2_orth=verb2
+    verb1_stem2_pred=_verb2_v_rel
+
+section=morphology
+  verb-pc1_name=infl
+  verb-pc1_obligatory=on
+  verb-pc1_order=suffix
+  verb-pc1_inputs=verb
+    verb-pc1_lrt1_name=gerund
+      verb-pc1_lrt1_feat1_name=gerund
+      verb-pc1_lrt1_feat1_value=+
+      verb-pc1_lrt1_feat1_head=verb
+      verb-pc1_lrt1_lri1_inflecting=yes
+      verb-pc1_lrt1_lri1_orth=gerund
+    verb-pc1_lrt2_name=finite
+      verb-pc1_lrt2_feat1_name=gerund
+      verb-pc1_lrt2_feat1_value=-
+      verb-pc1_lrt2_feat1_head=verb
+      verb-pc1_lrt2_lri1_inflecting=no
+  verb-pc2_name=nominalization
+  verb-pc2_order=suffix
+  verb-pc2_inputs=verb-pc1
+    verb-pc2_lrt1_name=nom
+      verb-pc2_lrt1_feat1_name=nominalization
+      verb-pc2_lrt1_feat1_value=nom
+      verb-pc2_lrt1_feat1_head=verb
+      verb-pc2_lrt1_lri1_inflecting=yes
+      verb-pc2_lrt1_lri1_orth=nmz
+    verb-pc2_lrt2_name=nom-norel
+      verb-pc2_lrt2_feat1_name=nominalization
+      verb-pc2_lrt2_feat1_value=nom-norel
+      verb-pc2_lrt2_feat1_head=verb
+      verb-pc2_lrt2_lri1_inflecting=yes
+      verb-pc2_lrt2_lri1_orth=nmz-norel
+
+section=toolbox-import
+
+section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon
