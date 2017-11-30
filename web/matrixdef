@@ -1716,7 +1716,7 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
 
     Radio subordinator "Clausal Modifier Strategy {i} pattern" "<br><br>" ""
 
-Label "<p><b>Is this strategy marked by special verbal morphology?</b><br></p>"
+Label "<b>Is this strategy marked by special verbal morphology?</b><br>"
 
 Check specialmorph "Special Morphology" "" "Yes<br>"
 
@@ -1730,12 +1730,12 @@ BeginIter feat{k} "a Feature"
 
 EndIter feat
 
-Label "<p><b>If a predication is associated with this morphology, enter it below. Otherwise, a generic _subord_rel will be used</b></p>"
+Label "<b>If a predication is associated with this morphology, enter it below. Otherwise, a generic _subord_rel will be used</b><br>"
 
     Text pred "subord {i} stem {j} predicate" " Predicate: " "" 30<br>
 
 
-Label "<p><b>Is the subject of the subordinate clause raised to the main clause?</b></p>"
+Label "<b>Is the subject of the subordinate clause raised to the main clause?</b><br>"
 Check subjraise "Subject Raising" "" "Yes<br>" 
 
 
