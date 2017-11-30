@@ -1730,15 +1730,6 @@ BeginIter feat{k} "a Feature"
 
 EndIter feat
 
-Label "<b>If a predication is associated with this morphology, enter it below. Otherwise, a generic _subord_rel will be used</b><br>"
-
-    Text pred "subord {i} stem {j} predicate" " Predicate: " "" 30<br>
-
-
-Label "<b>Is the subject of the subordinate clause raised to the main clause?</b><br>"
-Check subjraise "Subject Raising" "" "Yes<br>" 
-
-
 EndIter cms
 
 
