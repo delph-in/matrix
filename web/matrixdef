@@ -1720,15 +1720,15 @@ Label "<p><b>Is this strategy marked by special verbal morphology?</b><br></p>"
 
 Check specialmorph "Special Morphology" "" "Yes<br>"
 
-    BeginIter feat{k} "a Feature"
+BeginIter feat{k} "a Feature"
 
-      Select name "Clausal Modifier Strategy {i} Embedded Verb Feature {k} Name" "Name: " ""
-	  fillnames2 c=verb
+    Select name "Clausal Modifier Strategy {i} Embedded Verb Feature {k} Name" "Name: " ""
+      fillnames2 c=verb
  
-      MultiSelect value "Clausal Modifier Strategy {i} Embedded Verb Feature {k} Value" "Value: " ""
+    MultiSelect value "Clausal Modifier Strategy {i} Embedded Verb Feature {k} Value" "Value: " ""
       fillvalues p=comps{i}_feat{k}_name
 
-    EndIter feat
+EndIter feat
 
 Label "<p><b>If a predication is associated with this morphology, enter it below. Otherwise, a generic _subord_rel will be used</b></p>"
 
