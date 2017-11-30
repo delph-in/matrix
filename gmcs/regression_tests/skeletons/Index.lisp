@@ -22,6 +22,17 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "evidentials-auxiliary-choose") (:content . "evidentials-auxiliary-choose: testing evidential auxiliary verbs with selected evidential inventory"))
+((:path . "evidentials-auxiliary-build") (:content . "evidentials-auxiliary-build: testing evidential auxiliary verbs with user-input evidential inventory"))
+((:path . "evidentials-inflection-build") (:content . "evidentials-inflection-build: testing evidential verbal inflection with user-input evidential inventory"))
+((:path . "evidentials-inflection-choose") (:content . "evidentials-inflection-choose: testing evidential verbal inflection with selected evidential inventory"))
+((:path . "evidentials-infl-aux-kal") (:content . "evidentials-infl-aux-kal: testing coverage of Kalaallisut evidentials (infl, aux)"))
+((:path . "evidentials-aux-peb") (:content . "evidentials-aux-peb: testing coverage of Eastern Pommo evidentials (infl)"))
+((:path . "evidentials-infl-yux") (:content . "evidentials-infl-yux: testing coverage of Kolyma Yukaghir evidentials (infl)"))
+((:path . "evidentials-infl-aux-shp") (:content . "evidentials-infl-aux-shp: testing coverage of Shipibo-Konibo evidentials (infl, aux)"))
+((:path . "evidentials-aux-apw") (:content . "evidentials-aux-apw: testing coverage of Western Apache evidentials (aux)"))
+((:path . "evidentials-infl-cng") (:content . "evidentials-infl-cng: testing coverage of Qiang evidentials (infl)"))
+((:path . "evidentials-infl-aux-kaz") (:content . "evidentials-infl-aux-kaz: testing coverage of Kazakh evidentials (infl, aux)"))
 ((:path . "v2-basic-order") (:content . "v2-basic-order: V2 basic word order: verb in second position, subject and object on either side."))
 ((:path . "vfinal") (:content . "vfinal: V-final basic word order: verb in final position, subject and object in either position in front."))
 ((:path . "cagr-pseudospanish-feature-resolution") (:content . "cagr-pseudospanish-feature-resolution: tests the part of coordination and agreement that creates feature resolution (using a grammar loosely based on Spanish)"))
