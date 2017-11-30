@@ -1726,7 +1726,7 @@ BeginIter feat{k} "a Feature"
       fillnames2 c=verb
  
     MultiSelect value "Clausal Modifier Strategy {i} Embedded Verb Feature {k} Value" "Value: " ""
-      fillvalues p=comps{i}_feat{k}_name
+      fillvalues p=cms{i}_feat{k}_name
 
 EndIter feat
 
