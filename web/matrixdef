@@ -1730,13 +1730,12 @@ Check specialmorph "Special Morphology" "" "Yes<br>"
 
     EndIter feat
 
-Label "<p><b>If a predication is associated with this morphology, enter it below. Otherwise, a generic _subord_rel will be used</b><br></p?"
+Label "<p><b>If a predication is associated with this morphology, enter it below. Otherwise, a generic _subord_rel will be used</b><br></p>"
 
     Text pred "subord {i} stem {j} predicate" " Predicate: " "" 30<br>
 
 
-Label "<p><b>Is the subject of the subordinate clause raised to the main clause?</b><br></p?"
-Check subjraise "Subject Raising" "" "Yes<br>" 
+
 
 
 EndIter cms
