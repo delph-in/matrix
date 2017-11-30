@@ -35,7 +35,9 @@ def customize_nmcs(mylang, ch, rules, lrules):
 
         if level == 'low' or level == 'mid':
             mylang.set_section('phrases')
-            mylang.add('non-event-subj-head-phrase := basic-head-subj-phrase & head-final &\
+            wo = ch.get('word-order')
+            if wo == 'osv' or wo == 'sov' or wo == 'svo' or wo == 'v-final':
+                mylang.add('non-event-subj-head-phrase := basic-head-subj-phrase & head-final &\
                             [ SYNSEM.LOCAL.CAT.HEAD [ FORM #form ],\
                                 HEAD-DTR.SYNSEM [ LOCAL [ CONT.HOOK.INDEX ref-ind,\
                                                         CAT [ HEAD [ FORM #form ],\
@@ -43,7 +45,17 @@ def customize_nmcs(mylang, ch, rules, lrules):
                                                   NON-LOCAL [ QUE 0-dlist,\
                                                                 REL 0-dlist ]]\
                                 NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPR < > ].')
-            rules.add('non-event-subj-head := non-event-subj-head-phrase.')
+                rules.add('non-event-subj-head := non-event-subj-head-phrase.')
+            if wo == 'ovs' or wo == 'vos' or wo == 'vso' or wo == 'v-initial':
+                mylang.add('non-event-head-subj-phrase := basic-head-subj-phrase & head-initial &\
+                            [ SYNSEM.LOCAL.CAT.HEAD [ FORM #form ],\
+                                HEAD-DTR.SYNSEM [ LOCAL [ CONT.HOOK.INDEX ref-ind,\
+                                                        CAT [ HEAD [ FORM #form ],\
+            				                                VAL.COMPS < > ]],\
+                                                  NON-LOCAL [ QUE 0-dlist,\
+                                                                REL 0-dlist ]]\
+                                NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPR < > ].')
+                rules.add('non-event-head-subj := non-event-head-subj-phrase.')
         if level == 'mid' or level == 'high':
             mylang.set_section('lexrules')
             mylang.add('high-or-mid-nominalization-lex-rule := cat-change-with-ccont-lex-rule & same-cont-lex-rule &\

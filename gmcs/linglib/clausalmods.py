@@ -169,10 +169,7 @@ def add_subord_lex(mylang, lexicon, cms, ch):
     elif pos == 'after':
       lextype.append('posthead')
   if cms.get('specialmorph') == 'on':
-    for feat in cms.get('feat'):
-      lextype.append(feat.get('value'))
-      lextype.append(feat.get('value'))
-      constraints.append('SYNSEM.LOCAL.CAT.HEAD.' + feat.get('name') + '.' + feat.get('value'))
+    lextype, constraints = add_morphological_constraints(lextype, constraints, cms)
 
   saved_constraints = constraints
   saved_lextype = lextype
@@ -297,15 +294,6 @@ def add_subord_lex(mylang, lexicon, cms, ch):
         orth = adverb.get('subordorth')
         orthstr = orth_encode(orth)
         lexicon.add(orthstr + ' := ' + type + ' & [ STEM < "' + orthstr + '" > ].')
-
-
-
-def build_lex_type(lextype):
-  type = ''
-  type += lextype.pop()
-  for s in lextype:
-    type += '-' + s
-  return type
 
 
 
@@ -585,10 +573,151 @@ def create_subpair_feature(mylang, morphpair):
   mylang.set_section('verb-lex')
   mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.SUBPAIR nopair ].')
 
-# def add_pair_lex_items(mylang):
-#   """
-#   Adds the lexical types for subordinator pairs
-#   """
+def add_morphological_constraints(lextype, constraints, cms):
+  for feat in cms.get('feat'):
+    lextype.append(feat.get('name'))
+    #lextype.append(feat.get('value'))
+    constraints.append('SYNSEM.LOCAL.CAT [ HEAD.' + feat.get('name') + ' #feat,\
+    VAL.COMPS < [ LOCAL.CAT.HEAD.' + feat.get('name') + ' #feat & ' + feat.get('value') + ' ] > ]')
+  return lextype, constraints
+
+def build_lex_type(lextype):
+  type = ''
+  type += lextype.pop()
+  for s in lextype:
+    type += '-' + s
+  return type
+
+def add_sematically_empty_subord_rel(mylang, cms, ch, rules):
+  """
+  adds a non-branching rule that puts in a subord_rel (when no other semantic meaning
+  is added via a subordinator) and accounts for special morphology, subject raising, and
+  nominalization
+  """
+  constraints = []
+  lextype = []
+  pos = cms.get('position')
+  if pos == 'before':
+    lextype.append('prehead')
+    constraints.append('SYNSEM.LOCAL.CAT.POSTHEAD -')
+  elif pos == 'after':
+    lextype.append('posthead')
+    constraints.append('SYNSEM.LOCAL.CAT.POSTHEAD +')
+  if cms.get('specialmorph') == 'on':
+    lextype, constraints = add_morphological_constraints(lextype, constraints, cms)
+  mylang.set_section('phrases')
+  if cms.get('subjraise') == 'on':
+    lextype.append('subj-raising')
+  if cms.get('nominalization') == 'on':
+    mylang.set_section('noun-lex')
+    mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT.HEAD.NMZ - ].')
+    mylang.set_section('phrases')
+    nom_strategy = cms.get('nominalization_strategy')
+    for ns in ch.get('ns'):
+      if ns.get('name') == nom_strategy:
+        nmzRel = ns.get('nmzRel')
+    if nmzRel == 'no':
+      lextype.append('nmz-no-rel')
+      supertype = 'semantically-empty-nominalized-norel-subord-clause-phrase'
+      mylang.add(supertype + ' := basic-unary-phrase &\
+          [ SYNSEM [ LOCAL [ CAT [ MC -,\
+                                  HEAD [ MOD < [ LOCAL scopal-mod &\
+        						[ CAT [ HEAD verb,\
+        							VAL [ SUBJ < >,\
+        							      SPR < >,\
+        							      COMPS < > ]],\
+        						  CONT.HOOK [ LTOP #mcl,\
+        								INDEX #index ]]] > ]]]],\
+            C-CONT [ RELS <! [ PRED "_subord_rel" ] &\
+        		   [ ARG1 #mch,\
+        		     ARG2 #sch ] !>,\
+        	     HCONS <! qeq &\
+        		    [ HARG #mch,\
+        		      LARG #mcl ],\
+                      qeq &\
+        		    [ HARG #sch,\
+        		      LARG #scl ] !>,\
+            		HOOK.INDEX #index ],\
+            ARGS < [ SYNSEM [ LOCAL [ CAT [ HEAD noun,\
+        				    VAL [ SUBJ < >,\
+        					  SPR < >,\
+        					  COMPS < > ]],\
+        			    CONT.HOOK.LTOP #scl ],\
+                              NON-LOCAL [ REL 0-dlist ] ] ] > ].')
+    else:
+      lextype.append('nmz')
+      supertype = 'semantically-empty-nominalized-subord-clause-phrase'
+      mylang.add(supertype + ' := basic-unary-phrase &\
+            [ SYNSEM [ LOCAL [ CAT [ MC -,\
+                                    HEAD [ MOD < [ LOCAL scopal-mod &\
+          						[ CAT [ HEAD verb,\
+          							VAL [ SUBJ < >,\
+          							      SPR < >,\
+          							      COMPS < > ]],\
+          						  CONT.HOOK [ LTOP #mcl,\
+          								INDEX #index ]]] > ]]]],\
+              C-CONT [ RELS <! [ PRED "_subord_rel" ] &\
+          		   [ ARG1 #mch,\
+          		     ARG2 #scl ] !>,\
+          	     HCONS <! qeq &\
+          		    [ HARG #mch,\
+          		      LARG #mcl ] !>,\
+              		HOOK.INDEX #index ],\
+              ARGS < [ SYNSEM [ LOCAL [ CONT.HOOK.INDEX #scl,\
+                                        CAT [ HEAD noun,\
+          				    VAL [ SUBJ < >,\
+          					  SPR < >,\
+          					  COMPS < > ]] ],\
+                                NON-LOCAL [ REL 0-dlist ] ] ] > ].')
+  else:
+    supertype = 'semantically-empty-subord-clause-phrase'
+    mylang.add(supertype + ' := basic-unary-phrase &\
+    [ SYNSEM [ LOCAL [ CAT [ MC -,\
+                            HEAD [ MOD < [ LOCAL scopal-mod &\
+  						[ CAT [ HEAD verb,\
+  							VAL [ SUBJ < >,\
+  							      SPR < >,\
+  							      COMPS < > ]],\
+  						  CONT.HOOK [ LTOP #mcl,\
+  								INDEX #index ]]] > ]]]],\
+      C-CONT [ RELS <! [ PRED "_subord_rel" ] &\
+  		   [ ARG1 #mch,\
+  		     ARG2 #sch ] !>,\
+  	     HCONS <! qeq &\
+  		    [ HARG #mch,\
+  		      LARG #mcl ],\
+                qeq &\
+  		    [ HARG #sch,\
+  		      LARG #scl ] !>,\
+      		HOOK.INDEX #index ],\
+      ARGS < [ SYNSEM [ LOCAL [ CAT [ HEAD verb,\
+  				    VAL [ SUBJ < >,\
+  					  SPR < >,\
+  					  COMPS < > ]],\
+  			    CONT.HOOK.LTOP #scl ],\
+                        NON-LOCAL [ REL 0-dlist ] ] ] > ].')
+  type = build_lex_type(lextype)
+  rules.add(type + '-modifying-clause := ' + type + '-modifying-clause-phrase.')
+  type += '-modifying-clause-phrase'
+  mylang.add(type + ' := ' + supertype + '.')
+  while constraints != []:
+    mylang.add(type + ' := [ ' + constraints.pop() + ' ].')
+
+
+  mylang.set_section('addenda')
+  mylang.add('basic-head-mod-phrase-simple :+ [ SYNSEM.LOCAL.CAT.MC #mc,\
+      HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].')
+  pos = cms.get('position')
+  subpos = cms.get('subposition')
+  mylang.set_section('phrases')
+  if pos == 'before':
+    rules.add('adj-head-scop := adj-head-scop-phrase.')
+  elif pos == 'after':
+    rules.add('head-adj-scop := head-adj-scop-phrase.')
+  elif pos == 'either':
+    rules.add('adj-head-scop := adj-head-scop-phrase.')
+    rules.add('head-adj-scop := head-adj-scop-phrase.')
+
 
 def customize_clausalmods(mylang, ch, lexicon, rules, roots):
   """
@@ -614,3 +743,9 @@ def customize_clausalmods(mylang, ch, lexicon, rules, roots):
       add_subord_lex(mylang, lexicon, cms, ch)
       add_subordinators_matrix_pair_to_lexicon(mylang, lexicon, cms,ch)
       add_subord_phrasal_types(mylang, rules, cms, ch)
+
+    #the following is for strategies that do not have a sematically meaninful subordinate
+    #predication. In this case we just add a _subord_rel that takes the verbs in each clause
+    #as args
+    if subord == 'none':
+      add_sematically_empty_subord_rel(mylang, cms, ch, rules)
