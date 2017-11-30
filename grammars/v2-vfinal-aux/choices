@@ -9,7 +9,7 @@ word-order=v2
 has-dets=no
 has-aux=yes
 aux-comp-order=before
-aux-comp=vp
+aux-comp=v
 multiple-aux=yes
 subord-word-order=vfinal
 
@@ -42,8 +42,18 @@ section=arg-opt
 section=nominalclause
 
 section=clausalmods
+  cms1_position=before
+  cms1_modifier_attachment=either
+  cms1_subordinator=free
+    cms1_freemorph1_orth=subord1
 
 section=clausal-comp
+  comps1_clause-pos-same=on
+  comps1_comp-pos-before=on
+  comps1_comp=oblig
+    comps1_complementizer1_orth=comp1
+    comps1_feat1_name=form
+    comps1_feat1_value=finite
 
 section=lexicon
   noun1_name=noun

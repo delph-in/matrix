@@ -16,3 +16,5 @@ bare-np := bare-np-phrase.
 subord-comp-head := subord-comp-head-phrase.
 
 subord-subj-head := subord-subj-head-phrase.
+
+adj-head-scop := adj-head-scop-phrase.

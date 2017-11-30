@@ -22,10 +22,7 @@ def customize_clausalcomps(mylang,ch,lexicon,rules,irules):
 
 def add_complementizer_type_to_grammar(mylang,ch,rules):
     mylang.set_section('complex')
-    for cs in ch.get('comps'):
-        id = cs.full_key
-        typename = id + '-lex-item'
-        mylang.add(typename + ' := raise-sem-lex-item & basic-one-arg &\
+    mylang.add('comp-lex-item := raise-sem-lex-item & basic-one-arg &\
       [ SYNSEM.LOCAL.CAT [ HEAD comp &\
                                 [ MOD < > ],\
                            VAL [ SPR < >,\
@@ -35,6 +32,11 @@ def add_complementizer_type_to_grammar(mylang,ch,rules):
                  [ LOCAL.CAT [ HEAD verb, MC -,\
                                VAL [ SUBJ < >,\
                                      COMPS < > ] ] ] > ].',section='complex')
+
+    for cs in ch.get('comps'):
+        id = cs.full_key
+        typename = id + '-comp-lex-item'
+        mylang.add(typename + ' := comp-lex-item.', section='complex')
         # merge feature information in
         for f in cs['feat']:
             if f['name'] == 'form':
@@ -45,7 +47,7 @@ def add_complementizers_to_lexicon(lexicon,ch):
     for comp_strategy in ch['comps']:
         for complementizer in comp_strategy['complementizer']:
             orth = complementizer['orth']
-            typedef = 'comp := complementizer-lex-item & \
+            typedef = complementizer.full_key + ' := comp-lex-item & \
                           [ STEM < "' + orth + '" > ].'
 
             lexicon.add(typedef)
