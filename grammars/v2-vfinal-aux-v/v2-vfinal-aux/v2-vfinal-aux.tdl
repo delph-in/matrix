@@ -164,12 +164,12 @@ complementizer-lex-item := raise-sem-lex-item & basic-one-arg &
 ;;; Phrasal Types
 ;;;;;;;;;;;;;;;;;;;
 
-basic-head-1st-comp-phrase-vc := basic-head-1st-comp-phrase & 
-  [ SYNSEM.LOCAL.CAT.VC #vc,
-    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc ].
+basic-unary-phrase :+
+[ SYNSEM.LOCAL.CAT.VC #vc,
+    ARGS.FIRST.SYNSEM.LOCAL.CAT.VC #vc ].
 
-decl-head-subj-phrase-vc := decl-head-subj-phrase & 
-  [ SYNSEM.LOCAL.CAT.VC #vc,
+basic-binary-headed-phrase :+   
+[ SYNSEM.LOCAL.CAT.VC #vc,
     NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc ].
 
 verbal-head-nexus := headed-phrase &
@@ -183,13 +183,13 @@ head-final-head-nexus := head-final &
   [ SYNSEM.LOCAL.CAT.MC +,
     HEAD-DTR.SYNSEM.LOCAL.CAT.MC na ].
 
-head-subj-phrase := decl-head-subj-phrase-vc & head-initial-head-nexus.
+head-subj-phrase := decl-head-subj-phrase & head-initial-head-nexus.
 
-subj-head-phrase := decl-head-subj-phrase-vc & head-final-head-nexus.
+subj-head-phrase := decl-head-subj-phrase & head-final-head-nexus.
 
-head-comp-phrase := basic-head-1st-comp-phrase-vc & head-initial-head-nexus.
+head-comp-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus.
 
-comp-head-phrase := basic-head-1st-comp-phrase-vc & head-final-head-nexus.
+comp-head-phrase := basic-head-1st-comp-phrase & head-final-head-nexus.
 
 head-comp-phrase-2 := basic-head-2nd-comp-phrase & head-initial-head-nexus.
 
@@ -199,9 +199,7 @@ comp-head-phrase-2 := basic-head-2nd-comp-phrase & head-final-head-nexus.
 ; introduced to match the semantic effect of bare NPs in your language.
 
 bare-np-phrase := basic-bare-np-phrase &
-  [ SYNSEM.LOCAL.CAT.VC #vc,
-    HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc,
-    C-CONT.RELS <! [ PRED "exist_q_rel" ] !> ].
+  [ C-CONT.RELS <! [ PRED "exist_q_rel" ] !> ].
 
 ; Phrase structure rules for subordinate clauses
 
@@ -209,16 +207,16 @@ subord-phrase := head-final &
   [ SYNSEM.LOCAL.CAT [ MC #mc & -, VC - ],
     HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
 
-subord-comp-head-phrase := subord-phrase & basic-head-1st-comp-phrase-vc.
+subord-comp-head-phrase := subord-phrase & basic-head-1st-comp-phrase.
 
-subord-subj-head-phrase := subord-phrase & decl-head-subj-phrase-vc.
+subord-subj-head-phrase := subord-phrase & decl-head-subj-phrase.
 
 verb-cluster-phrase := head-final & 
   [ SYNSEM.LOCAL.CAT [ VC +, MC #mc & - ],
     HEAD-DTR.SYNSEM.LOCAL.CAT[ VC +, MC #mc],
     NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].
 
-vc-comp-head-phrase := verb-cluster-phrase & basic-head-1st-comp-phrase-vc.
+vc-comp-head-phrase := verb-cluster-phrase & basic-head-1st-comp-phrase.
 
 ;;;;;;;;;;;;;;;;;;
 ;;; Coordination
