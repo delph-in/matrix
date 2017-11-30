@@ -38,7 +38,6 @@ from gmcs.linglib import coordination
 from gmcs.linglib import yes_no_questions
 from gmcs.linglib import toolboximport
 from gmcs.linglib import valence_change
-#from gmcs.linglib import evidentials
 
 ######################################################################
 # globals
@@ -602,7 +601,6 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
   # customize_mood()
   verbal_features.customize_verbal_features(mylang, hierarchies)
   valence_change.customize_valence_change(mylang, ch, lexicon, rules, lrules, hierarchies)
-  #evidentials.customize_evidentials(mylang, ch, lexicon, rules, irules, lrules)
   word_order.customize_word_order(mylang, ch, rules)
   coordination.customize_coordination(mylang, ch, lexicon, rules, irules)
   yes_no_questions.customize_yesno_questions(mylang, ch, rules, lrules, hierarchies)

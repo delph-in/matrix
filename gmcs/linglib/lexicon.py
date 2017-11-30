@@ -805,7 +805,7 @@ def validate_lexicon(ch, vr):
     for feat in aux.get('feat', []):
       if feat['name'] == 'evidential' and len(feat.get('value').split(',')) > 1:
         vr.err(feat.full_key + '_value',
-           'Choose only one evidential term.') # + str(feat.get('value')))
+           'Choose only one evidential term.')
 
     if comp == 'vp' or comp == 'v':
       if not subj:
