@@ -755,6 +755,12 @@ def customize_subord_word_order(mylang,ch,wo,rules):
         mylang.add('comp-lex-item := [ SYNSEM.LOCAL.CAT.VC - ].', merge=True, section='complex')
       if 'has-adj' in ch:
         mylang.add('adj-lex := [ SYNSEM.LOCAL.CAT.VC - ].', merge=True, section='adjlex')
+      mylang.add('basic-unary-phrase :+\
+                  [ SYNSEM.LOCAL.CAT.VC #vc,\
+                    ARGS.FIRST.SYNSEM.LOCAL.CAT.VC #vc ].',merge=True,section='phrases')
+      mylang.add('basic-binary-headed-phrase :+ '
+                 '[ SYNSEM.LOCAL.CAT.VC #vc,'
+                 'NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc ].',merge=True,section='phrases')
 # ERB 2006-09-14 Subroutine for figuring out the relationship of major
 # constituent order to adpositions and auxiliaries.  Returns two values:
 # for adp and aux.  It takes in the values of wo and hc determined in

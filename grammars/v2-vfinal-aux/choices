@@ -42,10 +42,6 @@ section=arg-opt
 section=nominalclause
 
 section=clausalmods
-  cms1_position=before
-  cms1_modifier_attachment=either
-  cms1_subordinator=free
-    cms1_freemorph1_orth=subord1
 
 section=clausal-comp
   comps1_clause-pos-same=on

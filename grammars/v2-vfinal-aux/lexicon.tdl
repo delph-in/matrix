@@ -31,10 +31,6 @@ aux1 := aux-aux-lex &
   [ STEM < "aux1" >,
     SYNSEM.LKEYS.KEYREL.PRED "aux1" ].
 
-subord1 := -prehead-subord-lex-item &
-  [ STEM < "subord1" >,
-    SYNSEM.LKEYS.KEYREL.PRED "" ].
-
 ;;; Complementizers
 
 comps1_complementizer1 := comp-lex-item &

@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of v2-vfinal-aux
 ;;; created at:
-;;;     Thu Nov 30 00:42:11 UTC 2017
+;;;     Thu Nov 30 20:58:36 UTC 2017
 ;;; based on Matrix customization system version of:
 ;;;     Sun Dec 14 20:42:11 UTC 2014
 ;;;
@@ -19,8 +19,7 @@ non-mod-lex-item := lex-item &
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 
 head :+ [ AUX bool,
-    FORM form,
-    INIT bool ].
+    FORM form ].
 
 basic-head-opt-subj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
 
@@ -147,41 +146,6 @@ aux-aux-lex := arg-comp-aux-with-pred &
   [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT [ HEAD.FORM nonfinite,
                                                  MC na-or-- ] ].
 
-;;;;;;;;;;;;;;;;;;;
-;;; Subordinators
-;;;;;;;;;;;;;;;;;;;
-
-subord-lex-item := scopal-mod-with-comp-lex &
-  [ SYNSEM.LOCAL.CAT [ VC -,
-                       VAL [ SUBJ < >,
-                             SPR < >,
-                             COMPS < #comps > ] ],
-    ARG-ST < #comps &
-             [ LOCAL.CAT [ HEAD verb,
-                           MC - ] ] > ].
-
-scopal-mod-with-comp-lex := single-rel-lex-item & norm-ltop-lex-item &
-  [ SYNSEM [ LOCAL [ CAT [ HEAD.MOD < [ LOCAL scopal-mod &
-                                              [ CAT [ HEAD verb,
-                                                      VAL [ SUBJ < >,
-                                                            SPR < >,
-                                                            COMPS < > ] ],
-                                                CONT.HOOK [ LTOP #mod,
-                                                            INDEX #index ] ] ] >,
-                           VAL.COMPS < [ LOCAL [ CAT [ HEAD verb,
-                                                       VAL [ SUBJ < >,
-                                                             SPR < >,
-                                                             COMPS < > ] ],
-                                                 CONT.HOOK.LTOP #comps ] ] > ],
-                     CONT [ HCONS <! qeq &
-                                     [ HARG #h1,
-                                       LARG #mod ], qeq &
-                                                    [ HARG #h2,
-                                                      LARG #comps ] !>,
-                            HOOK.INDEX #index ] ],
-             LKEYS.KEYREL [ ARG1 #h1,
-                            ARG2 #h2 ] ] ].
-
 ;;; Complementizers
 
 comp-lex-item := raise-sem-lex-item & basic-one-arg &
@@ -225,11 +189,9 @@ head-subj-phrase := decl-head-subj-phrase & head-initial-head-nexus.
 
 subj-head-phrase := decl-head-subj-phrase & head-final-head-nexus.
 
-head-comp-phrase := head-initial-head-nexus & basic-head-1st-comp-phrase & head-initial &
-  [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT + ].
+head-comp-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus.
 
-comp-head-phrase := head-final-head-nexus & basic-head-1st-comp-phrase & head-final &
-  [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT - ].
+comp-head-phrase := basic-head-1st-comp-phrase & head-final-head-nexus.
 
 head-comp-phrase-2 := basic-head-2nd-comp-phrase & head-initial-head-nexus.
 
@@ -250,6 +212,12 @@ subord-phrase := head-final &
 subord-comp-head-phrase := subord-phrase & basic-head-1st-comp-phrase.
 
 subord-subj-head-phrase := subord-phrase & decl-head-subj-phrase.
+
+basic-unary-phrase :+ [ SYNSEM.LOCAL.CAT.VC #vc,
+    ARGS.FIRST.SYNSEM.LOCAL.CAT.VC #vc ].
+
+basic-binary-headed-phrase :+ [ SYNSEM.LOCAL.CAT.VC #vc,
+    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc ].
 
 ;;;;;;;;;;;;;;;;;;
 ;;; Coordination
