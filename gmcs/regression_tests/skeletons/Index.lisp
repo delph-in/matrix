@@ -22,6 +22,7 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "v2-vfinal-aux") (:content . "v2-vfinal-aux: German-like clausal complement: V2 word order in the matrix clause, V-final in the subordinate."))
 ((:path . "vfinal") (:content . "vfinal: Basic order for verb in final position and subject and complement taking either spot in front of it."))
 ((:path . "v2-orig") (:content . "v2-orig: Basic order for verb in second position: verb must be in second position but arguments can go on either side"))
 ((:path . "clausalmods-nom-no-rel") (:content . "clausalmods-nom-no-rel: clausal modifiers that are nominalized high in the tree (at S) and do NOT have a separate nominalized cluse predication"))
