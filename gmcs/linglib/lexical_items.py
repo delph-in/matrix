@@ -169,7 +169,7 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
   hclightallverbs = False
 
   if ch.get('has-aux') == 'yes':
-    vc = determine_vcluster(auxcomp, auxorder, wo, ch)
+    vc = determine_vcluster(auxcomp, auxorder, wo, ch) #TODO: OZ 11-30-2017 Reconcile this with my VC stuff in word_order.py
     if wo == 'vso' or wo == 'osv':
       wo = 'req-hcl-vp'
     if auxcomp == 'v' and hclight != True:
@@ -298,55 +298,72 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
   # Now create the lexical entries for all the defined verb types
   cases = case.case_names(ch)
   for verb in ch.get('verb',[]):
-    stypes = verb.get('supertypes').split(', ')
-    stype_names = [verb_id(ch[st]) for st in stypes if st != '']
+    create_verb_lex_type(cases, ch, hierarchies, lexicon, mylang, verb)
 
-    vtype = verb_id(verb)
-    val = verb.get('valence')
 
-    if not val == '':
-      i = val.find(',')
-      dir_inv = ''
-      tivity = ''
-      if i != -1:
-        val = val[:i]
-        dir_inv = 'dir-inv-'
+def create_verb_lex_type(cases, ch, hierarchies, lexicon, mylang, verb):
+  stypes = verb.get('supertypes').split(', ')
+  stype_names = [verb_id(ch[st]) for st in stypes if st != '']
+  vtype = verb_id(verb)
+  construct_supertype_names(cases, ch, stype_names, verb)
 
-      if val == 'trans':
-        tivity = 'trans'
-      elif val == 'intrans':
-        tivity = 'intrans'
-      elif val.find('-') != -1:
-        c = val.split('-')
-        a_case = case.canon_to_abbr(c[0], cases)
-        o_case = case.canon_to_abbr(c[1], cases)
-        tivity = a_case + '-' + o_case + '-trans'
+  if len(stype_names) == 0:
+    mylang.add(vtype + ' := verb-lex .')
+  else:
+    mylang.add(vtype + ' := ' + ' & '.join(stype_names) + '.')
+
+  features.customize_feature_values(mylang, ch, hierarchies, verb, vtype, 'verb', None, cases)
+
+  stems = verb.get('stem', [])
+  stems.extend(verb.get('bistem', []))
+  for stem in stems:
+    add_stem_to_lexicon(lexicon, stem, vtype)
+
+
+def add_stem_to_lexicon(lexicon, stem, vtype):
+  orthstr = orth_encode(stem.get('orth'))
+  pred = stem.get('pred')
+  name = stem.get('name')
+  typedef = \
+    TDLencode(name) + ' := ' + vtype + ' & \
+                    [ STEM < "' + orthstr + '" >, \
+                      SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
+  lexicon.add(typedef)
+
+
+def construct_supertype_names(cases, ch, stype_names, verb):
+  val = verb.get('valence')
+  if not val == '':
+    i = val.find(',')
+    dir_inv = ''
+    tivity = ''
+    clausalcomp = ''
+
+    if i != -1:
+      val = val[:i]
+      dir_inv = 'dir-inv-'
+
+    if val == 'trans':
+      tivity = 'trans'
+    elif val == 'intrans':
+      tivity = 'intrans'
+    elif val.find('-') != -1:
+      c = val.split('-')
+      a_case = case.canon_to_abbr(c[0], cases)
+      o_case = case.canon_to_abbr(c[1], cases)
+      tivity = a_case + '-' + o_case + '-trans'
+    else:
+      ccs_names = [ccs_name.full_key for ccs_name in list(ch.get('comps'))]
+      if val in ccs_names:
+        clausalcomp = 'ctp'
       else:
         s_case = case.canon_to_abbr(val, cases)
         tivity = s_case + '-intrans'
+    if clausalcomp:
+      stype_names.append(clausalcomp + tivity + '-verb-lex')
+    elif (not dir_inv == '' or not tivity == ''):
+      stype_names.append(dir_inv + tivity + 'itive-verb-lex')
 
-      if not dir_inv == '' or not tivity == '':
-        stype_names.append(dir_inv + tivity + 'itive-verb-lex')
-
-    if len(stype_names) == 0:
-      mylang.add(vtype + ' := verb-lex .')
-    else:
-      mylang.add(vtype + ' := ' + ' & '.join(stype_names) + '.')
-
-    features.customize_feature_values(mylang, ch, hierarchies, verb, vtype, 'verb', None, cases)
-
-    stems = verb.get('stem', [])
-    stems.extend(verb.get('bistem', []))
-
-    for stem in stems:
-      orthstr = orth_encode(stem.get('orth'))
-      pred = stem.get('pred')
-      name = stem.get('name')
-      typedef = \
-        TDLencode(name) + ' := ' + vtype + ' & \
-                    [ STEM < "' + orthstr + '" >, \
-                      SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
-      lexicon.add(typedef)
 
 # Returns the verb type for lexical/main verbs.
 def main_or_verb(ch):

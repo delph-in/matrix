@@ -338,6 +338,8 @@ def customize_verb_case(mylang, ch):
   # Which should get fixed...  - sfd
 
   for p in ch.patterns():
+    if 'clausal'in p[1]:
+      continue
     rule_pattern = p[2]
 
     p = p[0].split(',')  # split off ',dirinv', if present
