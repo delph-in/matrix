@@ -1716,7 +1716,7 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
 
     Radio subordinator "Clausal Modifier Strategy {i} pattern" "<br><br>" ""
 
-Label "<b>Is this strategy marked by special verbal morphology?</b><br>"
+Label "<b>Is this strategy marked by special verbal morphology?</b> Features can be defined on the Other Features page. If this morphological feature cannot head a matrix clause, it should be defined as a FORM feature.<br>"
 
 Check specialmorph "Special Morphology" "" "Yes<br>"
 
@@ -1730,7 +1730,7 @@ BeginIter feat{k} "a Feature"
 
 EndIter feat
 
-Label "<b><br><br>If a predication is associated with this morphology, enter it below. Otherwise, a generic _subord_rel will be used</b><br>"
+Label "<b><br><br>If a predication is associated with this morphology, enter it below.</b> Otherwise, a generic _subord_rel will be used<br>"
 
     Text pred "subord {i} stem {j} predicate" " Predicate: " "" 30<br>
 
