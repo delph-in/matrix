@@ -11,23 +11,23 @@ from gmcs.lib import TDLHierarchy
 
 
 def add_subord_lex(mylang, lexicon, cms, ch):
-  """
-  add the type definition for the lexical item to mylang
-  and the lexical entries to lexicon
-  """
-  mylang.set_section('addenda')
-  mylang.add('head :+ [ INIT bool ].')
+    """
+    add the type definition for the lexical item to mylang
+    and the lexical entries to lexicon
+    """
+    mylang.set_section('addenda')
+    mylang.add('head :+ [ INIT bool ].')
 
-  if cms.get('nominalization') == 'on':
-    mylang.set_section('noun-lex')
-    mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT.HEAD.NMZ - ].')
-    mylang.set_section('subordlex')
-    nom_strategy = cms.get('nominalization_strategy')
-    for ns in ch.get('ns'):
-      if ns.get('name') == nom_strategy:
-        nmzRel = ns.get('nmzRel')
-    if nmzRel == 'no':
-      mylang.add('scopal-mod-with-nominalized-comp-no-rel-lex := single-rel-lex-item & norm-ltop-lex-item &\
+    if cms.get('nominalization') == 'on':
+        mylang.set_section('noun-lex')
+        mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT.HEAD.NMZ - ].')
+        mylang.set_section('subordlex')
+        nom_strategy = cms.get('nominalization_strategy')
+        for ns in ch.get('ns'):
+            if ns.get('name') == nom_strategy:
+                nmzRel = ns.get('nmzRel')
+        if nmzRel == 'no':
+            mylang.add('scopal-mod-with-nominalized-comp-no-rel-lex := single-rel-lex-item & norm-ltop-lex-item &\
         [ SYNSEM [ LOCAL [ CAT [ HEAD.MOD < [ LOCAL scopal-mod &\
                  [CAT [HEAD verb,\
       VAL [SUBJ < >,\
@@ -51,14 +51,14 @@ def add_subord_lex(mylang, lexicon, cms, ch):
                      ARG1  #h1,\
                      ARG2  #h2 ]]].')
 
-      mylang.add('nom-no-rel-subord-lex-item := scopal-mod-with-nominalized-comp-no-rel-lex &\
+            mylang.add('nom-no-rel-subord-lex-item := scopal-mod-with-nominalized-comp-no-rel-lex &\
                 [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >,\
                                    SPR < > ,\
         			   COMPS < [ LOCAL [ CAT [ HEAD noun &\
                                         			[ NMZ + ],\
                                    			MC - ] ] ] > ]].')
-    else:
-      mylang.add('scopal-mod-with-nominalized-comp-lex := single-rel-lex-item & norm-ltop-lex-item &\
+        else:
+            mylang.add('scopal-mod-with-nominalized-comp-lex := single-rel-lex-item & norm-ltop-lex-item &\
       [ SYNSEM [ LOCAL [ CAT [ HEAD.MOD < [ LOCAL scopal-mod &\
                [CAT [HEAD verb,\
     VAL [SUBJ < >,\
@@ -79,15 +79,15 @@ def add_subord_lex(mylang, lexicon, cms, ch):
                    ARG1  #h1,\
                    ARG2  #comp ]]].')
 
-      mylang.add('nom-subord-lex-item := scopal-mod-with-nominalized-comp-lex &\
+            mylang.add('nom-subord-lex-item := scopal-mod-with-nominalized-comp-lex &\
                 [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >,\
                                    SPR < > ,\
         			   COMPS < [ LOCAL [ CAT [ HEAD noun &\
                                         			[ NMZ + ],\
                                    			MC - ] ] ] > ]].')
-  else:
-    mylang.set_section('subordlex')
-    mylang.add('scopal-mod-with-comp-lex := single-rel-lex-item & norm-ltop-lex-item &\
+    else:
+        mylang.set_section('subordlex')
+        mylang.add('scopal-mod-with-comp-lex := single-rel-lex-item & norm-ltop-lex-item &\
             [ SYNSEM [ LOCAL [ CAT [ HEAD.MOD < [ LOCAL scopal-mod &\
 					      [ CAT [ HEAD verb,\
 						      VAL [ SUBJ < >,\
@@ -109,7 +109,7 @@ def add_subord_lex(mylang, lexicon, cms, ch):
 			    HOOK.INDEX #index ]],\
 	     LKEYS.KEYREL [ ARG1 #h1,\
 			    ARG2 #h2 ]]].')
-    mylang.add('subord-lex-item := scopal-mod-with-comp-lex &\
+        mylang.add('subord-lex-item := scopal-mod-with-comp-lex &\
     [ SYNSEM.LOCAL [ CAT [ VAL [ SUBJ < >,\
                                 SPR < >,\
                                 COMPS <  #comps > ]]],\
@@ -117,120 +117,120 @@ def add_subord_lex(mylang, lexicon, cms, ch):
                   [LOCAL.CAT[ HEAD verb,\
                               MC -]] > ].')
 
-  pos = cms.get('position')
-  subpos = cms.get('subposition')
-  lextype = ''
-  constraints = ''
-  if subpos == 'before':
-      lextype += 'clause-init'
-      constraints += '[ SYNSEM.LOCAL.CAT [ HEAD.INIT +'
-  elif subpos == 'after':
-      lextype += 'clause-final'
-      constraints += '[ SYNSEM.LOCAL.CAT [ HEAD.INIT -'
-  if pos == 'before':
-      lextype += '-prehead'
-      constraints += ', POSTHEAD -'
-  elif pos == 'after':
-      lextype += '-posthead'
-      constraints += ', POSTHEAD +'
-  if cms.get('specialmorph') == 'on':
-      for feat in cms.get('feat'):
-          lextype += '-' + feat.get('value')
-          #is this a problem? can the feature be in not head?
-          constraints += (', SYNSEM.LOCAL.CAT.HEAD.' + feat.get('name') + '.' + feat.get('value'))
-  constraints += ' ]].'
-  if cms.get('nominalization') == 'on':
-    if nmzRel == 'no':
-      lextype += '-nom-no-rel-subord-lex-item'
-      mylang.add(lextype + ' := nom-no-rel-subord-lex-item &' + constraints)
+    pos = cms.get('position')
+    subpos = cms.get('subposition')
+    lextype = ''
+    constraints = ''
+    if subpos == 'before':
+        lextype += 'clause-init'
+        constraints += '[ SYNSEM.LOCAL.CAT [ HEAD.INIT +'
+    elif subpos == 'after':
+        lextype += 'clause-final'
+        constraints += '[ SYNSEM.LOCAL.CAT [ HEAD.INIT -'
+    if pos == 'before':
+        lextype += '-prehead'
+        constraints += ', POSTHEAD -'
+    elif pos == 'after':
+        lextype += '-posthead'
+        constraints += ', POSTHEAD +'
+    if cms.get('specialmorph') == 'on':
+        for feat in cms.get('feat'):
+            lextype += '-' + feat.get('value')
+            #is this a problem? can the feature be in not head?
+            constraints += (', SYNSEM.LOCAL.CAT.HEAD.' + feat.get('name') + '.' + feat.get('value'))
+    constraints += ' ]].'
+    if cms.get('nominalization') == 'on':
+        if nmzRel == 'no':
+            lextype += '-nom-no-rel-subord-lex-item'
+            mylang.add(lextype + ' := nom-no-rel-subord-lex-item &' + constraints)
+        else:
+            lextype += '-nom-subord-lex-item'
+            mylang.add(lextype + ' := nom-subord-lex-item &' + constraints)
     else:
-      lextype += '-nom-subord-lex-item'
-      mylang.add(lextype + ' := nom-subord-lex-item &' + constraints)
-  else:
-    lextype += '-subord-lex-item'
-    mylang.add(lextype + ' := subord-lex-item &' + constraints)
-  for freemorph in cms.get('freemorph'):
-      orth = freemorph.get('orth')
-      orthstr = orth_encode(orth)
-      pred = freemorph.get('pred')
-      lexicon.add(orthstr + ':= ' + lextype + ' &\
+        lextype += '-subord-lex-item'
+        mylang.add(lextype + ' := subord-lex-item &' + constraints)
+    for freemorph in cms.get('freemorph'):
+        orth = freemorph.get('orth')
+        orthstr = orth_encode(orth)
+        pred = freemorph.get('pred')
+        lexicon.add(orthstr + ':= ' + lextype + ' &\
                               [ STEM < "' + orthstr + '" >,\
                            SYNSEM.LKEYS.KEYREL.PRED "' + pred + '"].\\')
 
 
 def add_subord_phrasal_types(mylang, rules, cms):
-  """
-  Add the phrase type definitions
-  """
-  pos = cms.get('position')
-  subpos = cms.get('subposition')
-  mylang.set_section('phrases')
-  if pos == 'before':
-    rules.add('adj-head-scop := adj-head-scop-phrase.')
-  elif pos == 'after':
-    rules.add('head-adj-scop := head-adj-scop-phrase.')
-  elif pos == 'either':
-    rules.add('adj-head-scop := adj-head-scop-phrase.')
-    rules.add('head-adj-scop := head-adj-scop-phrase.')
-  mylang.add('head-comp-phrase := basic-head-1st-comp-phrase & head-initial &\
+    """
+    Add the phrase type definitions
+    """
+    pos = cms.get('position')
+    subpos = cms.get('subposition')
+    mylang.set_section('phrases')
+    if pos == 'before':
+        rules.add('adj-head-scop := adj-head-scop-phrase.')
+    elif pos == 'after':
+        rules.add('head-adj-scop := head-adj-scop-phrase.')
+    elif pos == 'either':
+        rules.add('adj-head-scop := adj-head-scop-phrase.')
+        rules.add('head-adj-scop := head-adj-scop-phrase.')
+    mylang.add('head-comp-phrase := basic-head-1st-comp-phrase & head-initial &\
   [HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT + ].')
-  mylang.add('comp-head-phrase := basic-head-1st-comp-phrase & head-final&\
+    mylang.add('comp-head-phrase := basic-head-1st-comp-phrase & head-final&\
       [HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT - ].')
-  rules.add('head-comp := head-comp-phrase.')
-  rules.add('comp-head := comp-head-phrase.')
-  #rules.add('subj-head := subj-head-phrase.')
+    rules.add('head-comp := head-comp-phrase.')
+    rules.add('comp-head := comp-head-phrase.')
+    #rules.add('subj-head := subj-head-phrase.')
 
 def add_subordinator_pair_to_lexicon(lexicon, matrixtype, subordtype, pair):
-  """
-  Adds each member of a subordinator pair to the lexicon
-  """
-  if matrixtype == 'adv':
-    lexicon.add(pair.get('matrixorth') + ':= subpair-adv-lex-item &\
+    """
+    Adds each member of a subordinator pair to the lexicon
+    """
+    if matrixtype == 'adv':
+        lexicon.add(pair.get('matrixorth') + ':= subpair-adv-lex-item &\
   [ STEM < "' + pair.get('matrixorth') + '" >,\
     SYNSEM.LKEYS.KEYREL.PRED "' + pair.get('matrixpred') + '" ].')
-  #elif matrixtype == 'comp'
+    #elif matrixtype == 'comp'
 
-  if subordtype == 'comp':
-    lexicon.add(pair.get('subordorth') + ':= subpair-adv-lex-item &\
+    if subordtype == 'comp':
+        lexicon.add(pair.get('subordorth') + ':= subpair-adv-lex-item &\
      [ STEM < "' + pair.get('subordorth') + '" >,\
        SYNSEM.LKEYS.KEYREL.PRED "' + pair.get('subordpred') + '" ].')
-  #elif subordtype == 'adv':
+        #elif subordtype == 'adv':
 
 def create_subpair_feature(mylang, morphpair):
-  """
-  adds the subpair feature to canonical synsem as well as adding constraints
-  to phrase types to pass it and mc up
-  """
-  mylang.set_section('addenda')
-  mylang.add('canonical-synsem :+ [ SUBPAIR subpair ].')
-  mylang.add('basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.MC #mc,\
+    """
+    adds the subpair feature to canonical synsem as well as adding constraints
+    to phrase types to pass it and mc up
+    """
+    mylang.set_section('addenda')
+    mylang.add('canonical-synsem :+ [ SUBPAIR subpair ].')
+    mylang.add('basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.MC #mc,\
     HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].')
-  mylang.add('basic-head-mod-phrase-simple :+    [ SYNSEM.LOCAL.CAT.MC #mc,\
+    mylang.add('basic-head-mod-phrase-simple :+    [ SYNSEM.LOCAL.CAT.MC #mc,\
       NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.MOD < [ SUBPAIR #subpair ] >,\
 				      MC #mc ],\
       HEAD-DTR.SYNSEM.SUBPAIR #subpair ].')
 
-  mylang.add('basic-head-opt-subj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].')
-  mylang.add('basic-head-spec-phrase-super :+ [ SYNSEM.SUBPAIR #subpair,\
+    mylang.add('basic-head-opt-subj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].')
+    mylang.add('basic-head-spec-phrase-super :+ [ SYNSEM.SUBPAIR #subpair,\
 				  HEAD-DTR.SYNSEM.SUBPAIR #subpair,\
 				  NON-HEAD-DTR.SYNSEM [ SUBPAIR #pair,\
 							LOCAL.CAT.VAL [ SPEC < [ SUBPAIR #pair ] > ]]].')
-  mylang.add('basic-head-opt-comp-phrase :+ [ SYNSEM.SUBPAIR #subpair,\
+    mylang.add('basic-head-opt-comp-phrase :+ [ SYNSEM.SUBPAIR #subpair,\
 				HEAD-DTR.SYNSEM.SUBPAIR #subpair ].')
-  mylang.add('basic-head-opt-subj-phrase :+ [ SYNSEM.SUBPAIR #subpair,\
+    mylang.add('basic-head-opt-subj-phrase :+ [ SYNSEM.SUBPAIR #subpair,\
 				HEAD-DTR.SYNSEM.SUBPAIR #subpair ].')
-  mylang.add('adj-head-scop-phrase :+ [ SYNSEM.SUBPAIR #subpair,\
+    mylang.add('adj-head-scop-phrase :+ [ SYNSEM.SUBPAIR #subpair,\
 			  NON-HEAD-DTR.SYNSEM.SUBPAIR #subpair ].')
-  mylang.add('adj-head-phrase :+ [ SYNSEM.SUBPAIR #subpair,\
+    mylang.add('adj-head-phrase :+ [ SYNSEM.SUBPAIR #subpair,\
 		     NON-HEAD-DTR.SYNSEM.SUBPAIR #subpair ].')
 
-  mylang.set_section('features')
-  #mylang.add(';;; Subordinator Pair Features')
-  mylang.add('subpair := *top*.')
-  mylang.add('nopair := subpair.')
-  for pair in morphpair:
-    subpair = pair.get('subordpred')
-    mylang.add(subpair + ' := subpair.')
+    mylang.set_section('features')
+    #mylang.add(';;; Subordinator Pair Features')
+    mylang.add('subpair := *top*.')
+    mylang.add('nopair := subpair.')
+    for pair in morphpair:
+        subpair = pair.get('subordpred')
+        mylang.add(subpair + ' := subpair.')
 
 # def add_pair_lex_items(mylang):
 #   """
@@ -238,26 +238,26 @@ def create_subpair_feature(mylang, morphpair):
 #   """
 
 def customize_clausalmods(mylang, ch, lexicon, rules, irules):
-  """
-  The main clausal modifier customization routine
-  """
-  mylang.add('+nvcdmo :+ [ MOD < > ].')
+    """
+    The main clausal modifier customization routine
+    """
+    mylang.add('+nvcdmo :+ [ MOD < > ].')
 
-  for cms in ch.get('cms'):
-    cmsnum = str(cms.iter_num())
+    for cms in ch.get('cms'):
+        cmsnum = str(cms.iter_num())
 
-    subord = cms.get('subordinator')
+        subord = cms.get('subordinator')
 
 
-    if subord == 'free':
-      add_subord_lex(mylang, lexicon, cms, ch)
-      add_subord_phrasal_types(mylang, rules, cms)
+        if subord == 'free':
+            add_subord_lex(mylang, lexicon, cms, ch)
+            add_subord_phrasal_types(mylang, rules, cms)
 
-    if subord == 'pair':
-      matrixtype = cms.get('matrixtype')
-      subordtype = cms.get('subordtype')
-      create_subpair_feature(mylang, cms.get('morphpair'))
-      for pair in cms.get('morphpair'):
-        add_subordinator_pair_to_lexicon(lexicon, matrixtype, subordtype, pair)
-      #add_pair_lex_items()
-      #add_pair_phrasal_types()
+        if subord == 'pair':
+            matrixtype = cms.get('matrixtype')
+            subordtype = cms.get('subordtype')
+            create_subpair_feature(mylang, cms.get('morphpair'))
+            for pair in cms.get('morphpair'):
+                add_subordinator_pair_to_lexicon(lexicon, matrixtype, subordtype, pair)
+                #add_pair_lex_items()
+                #add_pair_phrasal_types()

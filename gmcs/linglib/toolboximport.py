@@ -44,7 +44,7 @@ def make_pred(tbentry,stemtag,glosstag,predchoice,lextype):
         print "Error: lex cat isn't verb or noun."
     # Construct stem
     if predchoice == 'stem':
-        pred = TDLencode('_' + tbentry[stemtag] + rel) 
+        pred = TDLencode('_' + tbentry[stemtag] + rel)
     elif predchoice == 'gloss':
         if tbentry[glosstag]:
             pred = TDLencode('_' + tbentry[glosstag] + rel)
@@ -59,7 +59,7 @@ def make_pred(tbentry,stemtag,glosstag,predchoice,lextype):
         print "Error: bad predchoice."
 
     return pred
-  
+
 
 def process_tb_entry(tbentry,lexclasses,stemtag,
                      bistemtag,glosstag,predchoice,choices,affixes,
@@ -81,21 +81,21 @@ def process_tb_entry(tbentry,lexclasses,stemtag,
                 match += 1
 
         if match == len(tvps):
-#            if choices['imported-entry']:
-#                n = choices['imported-entry'].next_iter_num() 
-#            else:
-#                n = 1
+            #            if choices['imported-entry']:
+            #                n = choices['imported-entry'].next_iter_num()
+            #            else:
+            #                n = 1
             prefix = 'imported-entry' + str(n)
             pred = make_pred(tbentry,stemtag,glosstag,predchoice,lextype)
             if stemtag in tbentry.keys():
-#                choices[prefix + '_orth'] = tbentry[stemtag]
+                #                choices[prefix + '_orth'] = tbentry[stemtag]
                 formdata[prefix + '_orth'].value = tbentry[stemtag]
                 if bistemtag in tbentry.keys():
-#                    choices[prefix + '_aff'] = tbentry[bistemtag]
+                    #                    choices[prefix + '_aff'] = tbentry[bistemtag]
                     formdata[prefix + '_aff'].value = tbentry[bistemtag]
                     affixes.append(tbentry[bistemtag])
-#                choices[prefix + '_pred'] = pred
-#                choices[prefix + '_lextype'] = lextype
+                #                choices[prefix + '_pred'] = pred
+                #                choices[prefix + '_lextype'] = lextype
                 formdata[prefix + '_pred'].value = pred
                 formdata[prefix + '_lextype'].value = lextype
             else:
@@ -103,7 +103,7 @@ def process_tb_entry(tbentry,lexclasses,stemtag,
                 continue
 
     return affixes
- 
+
 
 def get_affix_from_entry(tbentry,idtag,stemtag,affixes,affix_strings):
     ''' 
@@ -132,7 +132,7 @@ def insert_affixes(form_data, affix_strings, number):
     '''
     for entry in range(1,number):
         affix_id = form_data['imported-entry'+str(entry)+'_aff'].value
-#        full_key = entry.full_key
+        #        full_key = entry.full_key
         if affix_id in affix_strings.keys():
             form_data['imported-entry'+str(entry)+'_aff'].value = affix_strings[affix_id]
 
@@ -226,7 +226,7 @@ def import_toolbox_lexicon(choicesfile):
                 # FIXME:  Put a break statement here so that we 
                 # don't keep reading the file if we've found all the
                 # affixes (i.e., if affixes == []).
-        
+
 
     # Print new choices file by concatenating input choices
     # with output choices.  FIXME: What about section=?
@@ -261,7 +261,7 @@ def integrate_imported_entries(choices):
 
         if choices[prefix]:
             n = choices[prefix].next_iter_num()
-        else: 
+        else:
             n = 1
 
         prefix = prefix + str(n)
