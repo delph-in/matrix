@@ -17,13 +17,13 @@ def add_subord_lex(mylang, lexicon, cms, ch):
   """
   mylang.set_section('addenda')
   mylang.add('head :+ [ INIT bool ].')
+  nominalized, nom_strategy = is_nominalized(cms)
 
   if cms.get('subordinator-type') == 'head':
-    if cms.get('nominalization') == 'on':
+    if nominalized == 'yes':
       mylang.set_section('noun-lex')
       mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT.HEAD.NMZ - ].')
       mylang.set_section('subordlex')
-      nom_strategy = cms.get('nominalization_strategy')
       for ns in ch.get('ns'):
         if ns.get('name') == nom_strategy:
           nmzRel = ns.get('nmzRel')
@@ -181,7 +181,7 @@ def add_subord_lex(mylang, lexicon, cms, ch):
     if cms.get('subordinator') == 'free':
       type = build_lex_type(lextype)
       #const = build_constraints(constraints)
-      if cms.get('nominalization') == 'on':
+      if nominalized == 'yes':
         if nmzRel == 'no':
           type += '-nom-no-rel-subord-lex-item'
           mylang.add(type + ' := nom-no-rel-subord-lex-item & [ ' + constraints.pop() + ' ].')
@@ -210,15 +210,12 @@ def add_subord_lex(mylang, lexicon, cms, ch):
     elif cms.get('subordinator') == 'pair':
       for morphpair in cms.get('morphpair'):
         pred = morphpair.get('subordpred')
-        if pred.split('_')[0] == '':
-          value = pred.split('_')[1]
-        else:
-          value = pred.split('_')[0]
+        value = shortform_pred(pred)
         lextype = [value] + lextype
         type = build_lex_type(lextype)
         constraints.append('SYNSEM.LOCAL.CAT.SUBPAIR ' + value)
         #const = build_constraints(constraints)
-        if cms.get('nominalization') == 'on':
+        if nominalized == 'yes':
           if nmzRel == 'no':
             type += '-nom-no-rel-subord-lex-item'
             mylang.add(type + ' := nom-no-rel-subord-lex-item & [ ' + constraints.pop() + ' ].')
@@ -250,10 +247,7 @@ def add_subord_lex(mylang, lexicon, cms, ch):
         constraints = saved_constraints
         lextype = saved_lextype
         pred = adverb.get('pred')
-        if pred.split('_')[0] == '':
-          value = pred.split('_')[1]
-        else:
-          value = pred.split('_')[0]
+        value = shortform_pred(pred)
         lextype = [ value ] + lextype
         constraints.append('SYNSEM.SUBORDINATED ' + value)
         if cms.get('subordinator') == 'pair':
@@ -277,10 +271,7 @@ def add_subord_lex(mylang, lexicon, cms, ch):
         constraints = saved_constraints
         lextype = saved_lextype
         pred = adverb.get('subordpred')
-        if pred.split('_')[0]:
-          value = pred.split('_')[1]
-        else:
-          value = pred.split('_')[0]
+        value = shortform_pred(pred)
         lextype = [ value ] + lextype
         constraints.append('SYNSEM.SUBORDINATED ' + value)
         constraints.append('SYNSEM.LOCAL.CAT.SUBPAIR ' + value)
@@ -381,10 +372,7 @@ def add_subord_phrasal_types(mylang, rules, cms, ch):
     if cms.get('subordinator') == 'free':
       for adverb in cms.get('freemorph'):
         pred = adverb.get('pred')
-        if pred.split('_')[0] == '':
-          value = pred.split('_')[1]
-        else:
-          value = pred.split('_')[0]
+        value = shortform_pred(pred)
         type = value + '-modifying-clause-phrase'
         mylang.add(lextype + ' := ' + supertype + ' &\
   [ C-CONT.RELS <! [ PRED "' + pred + '" ] !>,\
@@ -401,10 +389,7 @@ def add_subord_phrasal_types(mylang, rules, cms, ch):
     elif cms.get('subordinator') == 'pair':
       for adverb in cms.get('morphpair'):
         pred = adverb.get('subordpred')
-        if pred.split('_')[0] == '':
-          value = pred.split('_')[1]
-        else:
-          value = pred.split('_')[0]
+        value = shortform_pred(pred)
         type = value + '-modifying-clause-phrase'
         mylang.add(type + ' := ' + supertype + ' &\
   [ C-CONT.RELS <! [ PRED "' + pred + '" ] !>,\
@@ -456,10 +441,7 @@ def add_subordinators_matrix_pair_to_lexicon(mylang, lexicon, cms, ch):
     else:
       subpair = subordpred.split('_')[0]
     matrixpred = adverb.get('matrixpred')
-    if matrixpred.split('_')[0] == '':
-      pred = matrixpred.split('_')[1]
-    else:
-      pred = matrixpred.split('_')[0]
+    pred = shortform_pred(matrixpred)
     lextype = [ pred ] + lextype
     constraints.append('SYNSEM.LOCAL.CAT.SUBPAIR ' + subpair)
     if cms.get('matrix_adverb_attaches') == 's':
@@ -493,18 +475,12 @@ def create_subordinated_feature(mylang, roots, cms):
   if cms.get('subordinator') == 'free':
     for adverb in cms.get('freemorph'):
       pred = adverb.get('pred')
-      if pred.split('_')[0] == '':
-        value = pred.split('_')[1]
-      else:
-        value = pred.split('_')[0]
+      value = shortform_pred(pred)
       mylang.add(value + ' := xsubord.')
   elif cms.get('subordinator') == 'pair':
     for adverb in cms.get('morphpair'):
       pred = adverb.get('subordpred')
-      if pred.split('_')[0] == '':
-        value = pred.split('_')[1]
-      else:
-        value = pred.split('_')[0]
+      value = shortform_pred(pred)
       mylang.add(value + ' := xsubord.')
   mylang.add('basic-head-subj-phrase :+\
   [ SYNSEM.SUBORDINATED #subord,\
@@ -589,10 +565,11 @@ def create_subpair_feature(mylang, morphpair):
 
 def add_morphological_constraints(lextype, constraints, cms):
   for feat in cms.get('feat'):
-    lextype.append(feat.get('name'))
-    #lextype.append(feat.get('value'))
-    constraints.append('SYNSEM.LOCAL.CAT [ HEAD.' + feat.get('name') + ' #feat,\
-    VAL.COMPS < [ LOCAL.CAT.HEAD.' + feat.get('name') + ' #feat & ' + feat.get('value') + ' ] > ]')
+    if feat.get('value') != 'nominalization':
+      #lextype.append(feat.get('name'))
+      lextype.append(feat.get('value'))
+      constraints.append('SYNSEM.LOCAL.CAT [ HEAD.' + feat.get('name') + ' #feat,\
+       VAL.COMPS < [ LOCAL.CAT.HEAD.' + feat.get('name') + ' #feat & ' + feat.get('value') + ' ] > ]')
   return lextype, constraints
 
 def build_lex_type(lextype):
@@ -602,6 +579,22 @@ def build_lex_type(lextype):
     type += '-' + s
   return type
 
+def is_nominalized(cms):
+  nominalized = 'no'
+  nom_strategy = ''
+  for feat in cms.get('feat'):
+    if feat.get('value') == 'nominalization':
+      nominalized = 'yes'
+      nom_strategy = feat.get('name')
+  return nominalized, nom_strategy
+
+def shortform_pred(pred):
+  if pred.split('_')[0] == '':
+    value = pred.split('_')[1]
+  else:
+    value = pred.split('_')[0]
+  return value
+
 def add_morphological_subord_rel(mylang, cms, ch, rules):
   #todo- make the rel a variable and add subord rel if there is no rel
   """
@@ -609,7 +602,7 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
   is added via a subordinator) and accounts for special morphology, subject raising, and
   nominalization
   """
-  print('its morphological')
+  nominalized, nom_strategy = is_nominalized(cms)
   constraints = []
   lextype = []
   pos = cms.get('position')
@@ -624,11 +617,10 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
   mylang.set_section('phrases')
   if cms.get('subjraise') == 'on':
     lextype.append('subj-raising')
-  if cms.get('nominalization') == 'on':
+  if nominalized == 'yes':
     mylang.set_section('noun-lex')
     mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT.HEAD.NMZ - ].')
     mylang.set_section('phrases')
-    nom_strategy = cms.get('nominalization_strategy')
     for ns in ch.get('ns'):
       if ns.get('name') == nom_strategy:
         nmzRel = ns.get('nmzRel')
@@ -686,7 +678,7 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
           					  COMPS < > ]] ],\
                                 NON-LOCAL [ REL 0-dlist ] ] ] > ].')
   else:
-    supertype = 'semantically-empty-subord-clause-phrase'
+    supertype = 'morphological-subord-clause-phrase'
     mylang.add(supertype + ' := basic-unary-phrase &\
     [ SYNSEM [ LOCAL [ CAT [ MC -,\
                             HEAD [ MOD < [ LOCAL scopal-mod &\
@@ -696,8 +688,7 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
   							      COMPS < > ]],\
   						  CONT.HOOK [ LTOP #mcl,\
   								INDEX #index ]]] > ]]]],\
-      C-CONT [ RELS <! [ PRED "_subord_rel" ] &\
-  		   [ ARG1 #mch,\
+      C-CONT [ RELS <! [ ARG1 #mch,\
   		     ARG2 #sch ] !>,\
   	     HCONS <! qeq &\
   		    [ HARG #mch,\
@@ -713,13 +704,20 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
   			    CONT.HOOK.LTOP #scl ],\
                         NON-LOCAL [ REL 0-dlist ] ] ] > ].')
   type = build_lex_type(lextype)
+  pred = cms.get('pred')
+  # if pred != '':
+  #   value = shortform_pred(pred)
+  #   type = value + '-' + type
+  # else:
+  #   pred = '_subord_rel'
+  if pred == '':
+    pred = '_subord_rel'
   rules.add(type + '-modifying-clause := ' + type + '-modifying-clause-phrase.')
-  type += '-modifying-clause-phrase'
+  type = type + '-modifying-clause-phrase'
   mylang.add(type + ' := ' + supertype + '.')
   while constraints != []:
     mylang.add(type + ' := [ ' + constraints.pop() + ' ].')
-
-
+  mylang.add(type + ' := [ C-CONT.RELS <! [ PRED "' + pred + '" ] !> ].')
   mylang.set_section('addenda')
   mylang.add('basic-head-mod-phrase-simple :+ [ SYNSEM.LOCAL.CAT.MC #mc,\
       HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].')

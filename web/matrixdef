@@ -1714,7 +1714,7 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
          EndIter morphpair
 
 
-    Radio subordinator "Clausal Modifier Strategy {i} pattern" "<br><br>" ""
+    Radio subordinator "Clausal Modifier Strategy {i} pattern" "" ""
 
 Radio subordinator "Clausal Modifier Strategy {i} pattern" "<br><br>" ""
   . none "No Subordinator" "" "This strategy does not use a free subordinator morpheme<br>"
