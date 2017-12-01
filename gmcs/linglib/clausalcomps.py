@@ -5,7 +5,7 @@ from gmcs.lib import TDLHierarchy
 from gmcs.linglib import features
 
 ######################################################################
-# Clausal Complamants
+# Clausal Complements
 #   Create the type definitions associated with the user's choices
 #   about clasual complements.
 

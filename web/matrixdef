@@ -756,6 +756,18 @@ class=\"feat\">pernum</span>), and then a series of other values of
 the feature, each of which is the subtype of at least one of the other
 values, possibly the root.</p>"
 
+Label "<p>For example, you can define a FORM feature (a value finite will
+be added by default).</p>"
+
+Radio feature0 "form" "" ""
+. name "name" "" "form" "set_negexp('2')"
+
+
+Label "<div id='bi-neg' class='form_switch' style='display:none'>
+<p> Negation can be indicated by the required presence of two negative morphemes.
+You'll have to specify their morphosyntax and their interactions.</p></div>"
+
+
 Label "<input type=\"hidden\" name=\"existing_value_type1_name\"  value=\"bool\">
 <input type=\"hidden\" name=\"existing_value_type2_name\"  value=\"luk\">"
 
@@ -803,11 +815,13 @@ BeginIter feature{i} "a Feature" 1
 
 EndIter feature
 
+
 Section sentential-negation "Sentential Negation"
 
 Cache verbpcs verb-pc[0-9]+$ name
 
-Label "<p>On this page you can select a strategy that your language uses for sentential negation.  In most cases, morpheme classes that you can further modify will be created on the morphology page.</p>"
+Label "<p>On this page you can select a strategy that your language uses for sentential negation.
+In most cases, morpheme classes that you can further modify will be created on the morphology page.</p>"
 
 Label "<p>Sentential negation constructions can be classified based on the number
 of overt morphemes required by the construction.

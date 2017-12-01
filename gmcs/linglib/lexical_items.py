@@ -980,3 +980,17 @@ def customize_lexicon(mylang, ch, lexicon, trigger, hierarchies, rules):
     mylang.set_section('otherlex')
     customize_determiners(mylang, ch, lexicon, hierarchies)
     customize_misc_lex(ch, lexicon, trigger)
+
+# Used by the word order library, for different matrix-subordinate word order
+# E.g. German: verbs in subordinate clauses cluster at the end of the clause.
+def update_lex_items_vcluster(ch, mylang):
+    mylang.add('cat :+ [ VC bool ].', merge=True, section='addenda')
+    mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT.VC - ].', merge=True, section='nounlex')
+    mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.VC + ].', merge=True, section='verblex')
+    if 'cms' in ch:
+        mylang.add('subord-lex-item := [ SYNSEM.LOCAL.CAT.VC - ].', merge=True, section='subordlex')
+    if 'comps' in ch:
+        mylang.add('comp-lex-item := [ SYNSEM.LOCAL.CAT.VC - ].', merge=True, section='complex')
+    if 'has-adj' in ch:
+        mylang.add('adj-lex := [ SYNSEM.LOCAL.CAT.VC - ].', merge=True, section='adjlex')
+

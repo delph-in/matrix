@@ -1,5 +1,6 @@
 # from sets import Set
 from gmcs.linglib.parameters import determine_vcluster
+from gmcs.linglib.lexical_items import update_lex_items_vcluster
 
 ######################################################################
 # customize_word_order()
@@ -745,22 +746,19 @@ def customize_subord_word_order(mylang,ch,wo,rules):
             rules.add('subord-comp-head := subord-comp-head-phrase.')
             rules.add('subord-subj-head := subord-subj-head-phrase.')
 
+        # For German-like subordinate clauses, we need additional feature VC (verb cluster)
+        # to ensure that verbs and auxiliaries in subordinate clauses cluster at the end.
         if 'has-aux' in ch and ch['has-aux'] == 'yes':
-            mylang.add('cat :+ [ VC bool ].', merge=True, section='addenda')
-            mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT.VC - ].', merge=True, section='nounlex')
-            mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.VC + ].', merge=True, section='verblex')
-            if 'cms' in ch:
-                mylang.add('subord-lex-item := [ SYNSEM.LOCAL.CAT.VC - ].', merge=True, section='subordlex')
-            if 'comps' in ch:
-                mylang.add('comp-lex-item := [ SYNSEM.LOCAL.CAT.VC - ].', merge=True, section='complex')
-            if 'has-adj' in ch:
-                mylang.add('adj-lex := [ SYNSEM.LOCAL.CAT.VC - ].', merge=True, section='adjlex')
+            update_lex_items_vcluster(ch, mylang)
             mylang.add('basic-unary-phrase :+\
-                  [ SYNSEM.LOCAL.CAT.VC #vc,\
-                    ARGS.FIRST.SYNSEM.LOCAL.CAT.VC #vc ].',merge=True,section='phrases')
+                          [ SYNSEM.LOCAL.CAT.VC #vc,\
+                            ARGS.FIRST.SYNSEM.LOCAL.CAT.VC #vc ].', merge=True, section='phrases')
             mylang.add('basic-binary-headed-phrase :+ '
                        '[ SYNSEM.LOCAL.CAT.VC #vc,'
-                       'NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc ].',merge=True,section='phrases')
+                       'NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc ].', merge=True, section='phrases')
+
+
+
 # ERB 2006-09-14 Subroutine for figuring out the relationship of major
 # constituent order to adpositions and auxiliaries.  Returns two values:
 # for adp and aux.  It takes in the values of wo and hc determined in

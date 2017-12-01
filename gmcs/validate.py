@@ -741,6 +741,9 @@ def validate_word_order(ch, vr):
             vr.err('subord-word-order',
                    'V-final subordinate word order is ' +
                    'only supported with V2 matrix order.')
+        elif ch.get('has-aux') == 'yes' and ch.get('aux-comp') != 'v':
+            vr.err('aux-comp','The only supported choice for auxiliary complement '
+                   'type for v2/vfinal word order combination is V.')
 
 
 ######################################################################

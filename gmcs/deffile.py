@@ -1297,7 +1297,7 @@ class MatrixDefFile:
             print '<a href="#stay" onclick="document.forms[0].submit()" class="navleft">Save &amp; stay</a><br />'
             # TJT 2014-05-28: Not sure why the following doesn't work -- need to do more investigation
             #print '<a href="?subpage=%s" onclick="document.forms[0].submit()" class="navleft">Save &amp; stay</a><br />' % section
-            print '<a href="#clear" onclick="clear_form()" class="navleft">Clear form</a><br />'
+            print '<a href="#clear" onclick="clear_form()" class="navleft">Clear current subpage</a><br />'
 
             ## if there are errors, then we print the links in red and
             ## unclickable

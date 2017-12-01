@@ -25,6 +25,3 @@ def determine_vcluster(auxcomp, auxorder, wo, ch):
     if not ch.get('has-aux') == 'yes':
         vcluster = False
     return vcluster
-
-
-
