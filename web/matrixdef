@@ -756,16 +756,12 @@ class=\"feat\">pernum</span>), and then a series of other values of
 the feature, each of which is the subtype of at least one of the other
 values, possibly the root.</p>"
 
-Label "<p>For example, you can define a FORM feature (a value finite will
-be added by default).</p>"
-
-Radio feature0 "form" "" ""
-. addform "name" "" "Add FORM feature" "set_form_feature('2')"
+Radio has-form "form" "" ""
+. yes "form" "" "Add FORM feature" "set_negexp('2')"
 
 
-Label "<div id='bi-neg' class='form_switch' style='display:none'>
-<p> Negation can be indicated by the required presence of two negative morphemes.
-You'll have to specify their morphosyntax and their interactions.</p></div>"
+Label "<div id='bi-neg' class='neg_exp_switch' style='display:none'>
+<p> Custom content, different from what is on the negation page.</p></div>"
 
 
 Label "<input type=\"hidden\" name=\"existing_value_type1_name\"  value=\"bool\">

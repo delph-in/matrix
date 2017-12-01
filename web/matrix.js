@@ -1143,10 +1143,11 @@ function import_toolbox_lexicon()
 
 // set_form_feature automatically hide and show section based on radio choice
 //
-function set_form_feature(n)
+function set_form_feature()
 {
+  n = 2
   var value = n;
-  var divs = document.getElementsByClassName("form_switch");
+  var divs = document.getElementsByClassName("neg_exp_switch");
 	for(var i=0; i<divs.length;i++){
     var d = divs[i];
     d.style.display = 'none';
