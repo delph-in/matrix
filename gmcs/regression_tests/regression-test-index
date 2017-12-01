@@ -291,4 +291,3 @@ clausalmods-nom-no-rel=clausal modifiers that are nominalized high in the tree (
 v2-orig=Basic order for verb in second position: verb must be in second position but arguments can go on either side
 vfinal=Basic order for verb in final position and subject and complement taking either spot in front of it.
 clausalcomp-v2-vfinal-aux=German-like clausal complements: V2 matrix word order, v-final subordinate order.
-v2-vfinal-aux=German-like clausal complement: V2 word order in the matrix clause, V-final in the subordinate.
