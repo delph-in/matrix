@@ -1730,7 +1730,7 @@ BeginIter feat{k} "a Feature"
 
 EndIter feat
 
-Label "<b><br><br>If a predication is associated with this morphology, enter it below.</b> Otherwise, a generic _subord_rel will be used<br>"
+Label "<b><br><br>If a predication is associated with this morphology, enter it below.</b> If no predication has been defined for a free subordinator above and none is defined here, a generic _subord_rel will be used<br>"
 
     Text pred "subord {i} stem {j} predicate" " Predicate: " "" 30<br>
 
