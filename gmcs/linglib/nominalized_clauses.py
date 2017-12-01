@@ -9,11 +9,11 @@ def customize_nmcs(mylang, ch, rules, lrules):
                     for ns in ch.get('ns'):
                         if ns.get('name') == f['value']:
                             level = ns.get('level')
-                    if level == 'mid' or level == 'high':
-                        lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') + \
+                            if level == 'mid' or level == 'high':
+                                lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') + \
                                                       ['high-or-mid-nominalization-lex-rule'])
-                    if level == 'low':
-                        lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') + \
+                            if level == 'low':
+                                lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') + \
                                                   ['low-nominalization-lex-rule'])
 
 

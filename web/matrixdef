@@ -1716,6 +1716,10 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
 
     Radio subordinator "Clausal Modifier Strategy {i} pattern" "<br><br>" ""
 
+Radio subordinator "Clausal Modifier Strategy {i} pattern" "<br><br>" ""
+  . none "No Subordinator" "" "This strategy does not use a free subordinator morpheme<br>"
+    Label "<p>No Subordinator{i}:<br>"
+
 Label "<b>Is this strategy marked by special verbal morphology?</b> Features can be defined on the Other Features page. If this morphological feature cannot head a matrix clause, it should be defined as a FORM feature.<br>"
 
 Check specialmorph "Special Morphology" "" "Yes<br>"

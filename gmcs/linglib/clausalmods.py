@@ -338,6 +338,7 @@ def add_subord_phrasal_types(mylang, rules, cms, ch):
   #rules.add('subj-head := subj-head-phrase.')
 
   if cms.get('subordinator-type') == 'adverb':
+    print('its an adverb')
     if cms.get('subposition') == 'before':
       rules.add('adj-head-int := adj-head-int-phrase.')
     elif cms.get('subposition') == 'after':
@@ -419,7 +420,7 @@ def add_subord_phrasal_types(mylang, rules, cms, ch):
         rules.add(value + '-modifying-clause := ' + type + '.')
 
 def add_subordinators_matrix_pair_to_lexicon(mylang, lexicon, cms, ch):
-  """q
+  """
   Adds the matrix member of a subordinator pair to the lexicon
   """
   mylang.add('scopal-mod-matrix-lex-item := basic-adverb-lex &\
@@ -608,6 +609,7 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
   is added via a subordinator) and accounts for special morphology, subject raising, and
   nominalization
   """
+  print('its morphological')
   constraints = []
   lextype = []
   pos = cms.get('position')
@@ -758,5 +760,5 @@ def customize_clausalmods(mylang, ch, lexicon, rules, roots):
       add_subordinators_matrix_pair_to_lexicon(mylang, lexicon, cms,ch)
       add_subord_phrasal_types(mylang, rules, cms, ch)
 
-    else:
+    if subord == 'none':
       add_morphological_subord_rel(mylang, cms, ch, rules)
