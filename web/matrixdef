@@ -760,7 +760,7 @@ Label "<p>For example, you can define a FORM feature (a value finite will
 be added by default).</p>"
 
 Radio feature0 "form" "" ""
-. name "name" "" "form" "set_negexp('2')"
+. addform "name" "" "Add FORM feature" "set_form_feature('2')"
 
 
 Label "<div id='bi-neg' class='form_switch' style='display:none'>
