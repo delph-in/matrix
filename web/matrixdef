@@ -2860,10 +2860,8 @@ BeginIter poss-strategy{i} "a possessive strategy"
      	   Label "<div id='possessor-affix{i}' style='display:none'> <br><br>Please proceed to the Morphology subpage to finish entering the possessor-marking affix</div>"
 
      	   Label "<div id='possessor-non-affix{i}' style='display:none'>"
-	   
-	   Radio nothing "nothing" "<p>Dummy 2</p>" ""
-	   . yes "yes" "" "yes<br>"
-	   . no "no" "" "no"
+
+	   Text possessor-word-spelling "Possessor word spelling" "The possessor-marking word is spelled" "<br>" 15
 
      	   Label "</div>"
 
