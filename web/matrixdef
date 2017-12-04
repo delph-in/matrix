@@ -2861,7 +2861,29 @@ BeginIter poss-strategy{i} "a possessive strategy"
 
      	   Label "<div id='possessor-non-affix{i}' style='display:none'>"
 
-	   Text possessor-word-spelling "Possessor word spelling" "The possessor-marking word is spelled" "<br>" 15
+	   Text possessor-word-spelling "Possessor word spelling" "<br>The possessor-marking word is spelled " "<br>" 15
+	   
+	   Radio possessor-word-order "Possessor word order" "and appears to the "  " of the possessor<br>" 
+	   . left "left" "" "left"
+	   . right "right" "" "right"
+
+	   Radio possessor-agr "Possessor agreement" " and " " agree with the possessum.<br>"
+	   . possessor-agree "Possessor agree" "" "does" "toggle_element.call(this, 'possessor-agr{i}', 'on')"
+	   . possessor-non-agree "Possessor non agree" "" "does not"  "toggle_element.call(this, 'possessor-agr{i}', 'off')"
+
+	   Label "<div id='possessor-agr{i}' style='display:none'>"
+
+	   BeginIter possessor-feat{k} "an agreement feature"
+
+      	   Select name "Possessive strategy {i} possessor-marking word Feature {k} Name" "Name: " " "
+      	   fillnames c=noun
+
+      	   MultiSelect value "Possessive Strategy {i} possessor-marking word Feature {k} Value" "Value: " ""
+      	   fillvalues p=poss-strategy{i}_possessor-feat{k}_name
+
+    	   EndIter possessor-feat
+
+	   Label "</div>"
 
      	   Label "</div>"
 
@@ -2878,9 +2900,31 @@ BeginIter poss-strategy{i} "a possessive strategy"
 
      	   Label "<div id='possessum-non-affix{i}' style='display:none'>"
      
-	   Radio nothing "nothing" "<p>Dummy 2</p>" ""
-	   . yes "yes" "" "yes<br>"
-	   . no "no" "" "no"
+	   Text possessum-word-spelling "Possessum word spelling" "<br>The possessum-marking word is spelled " "<br>" 15
+	   
+	   Radio possessum-word-order "Possessum word order" "and appears to the "  " of the possessum<br>" 
+	   . left "left" "" "left"
+	   . right "right" "" "right"
+
+	   Radio possessum-agr "Possessum agreement" " and " " agree with the possessor.<br>"
+	   . possessum-agree "Possessum agree" "" "does" "toggle_element.call(this, 'possessum-agr{i}', 'on')"
+	   . possessum-non-agree "Possessum non agree" "" "does not"  "toggle_element.call(this, 'possessum-agr{i}', 'off')"
+
+	   Label "<div id='possessum-agr{i}' style='display:none'>"
+
+	   BeginIter possessum-feat{l} "an agreement feature"
+
+      	   Select name "Possessive strategy {i} possessum-marking word Feature {l} Name" "Name: " " "
+      	   fillnames c=noun
+
+      	   MultiSelect value "Noun Position Class {i} Lexical Rule Type {j} Feature {l} Value" "Value: " ""
+      	   fillvalues p=poss-strategy{i}_possessum-feat{l}_name
+
+    	   EndIter possessum-feat
+
+	   Label "</div>"
+
+
 
      	   Label "</div>"
 
