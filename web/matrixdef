@@ -2853,19 +2853,38 @@ BeginIter poss-strategy{i} "a possessive strategy"
 
      Label "<div id='possessor-morph{i}' style='display:none'>"
      
-     Radio possessor-bound "Possessor bound" "<p>Is the morpheme that marks the <b>possessor</b> an affix or a separate word?</p>" ""
-     . possessor-affix "Possessor affix" "" "affix<br>"
-     . possessor-non-affix "Possessor non-affix" "" "separate word<br>" 
+	Radio possessor-bound "Possessor bound" "<p>Is the morpheme that marks the <b>possessor</b> an affix or a separate word?</p>" ""
+     	. possessor-affix "Possessor affix" "" "affix<br>"  "toggle_element.call(this, 'possessor-affix{i}', 'on'); toggle_element.call(this, 'possessor-non-affix{i}', 'off');"
+     	. possessor-non-affix "Possessor non-affix" "" "separate word<br>" "toggle_element.call(this, 'possessor-affix{i}', 'off'); toggle_element.call(this, 'possessor-non-affix{i}', 'on');"
      
-     Label "</div>"                                                                                                                                                                                         
+     	   Label "<div id='possessor-affix{i}' style='display:none'> <br><br>Please proceed to the Morphology subpage to finish entering the possessor-marking affix</div>"
+
+     	   Label "<div id='possessor-non-affix{i}' style='display:none'>"
+	   
+	   Radio nothing "nothing" "<p>Dummy 2</p>" ""
+	   . yes "yes" "" "yes<br>"
+	   . no "no" "" "no"
+
+     	   Label "</div>"
+
+     Label "</div>"                                                                                                                            
 
      Label "<div id='possessum-morph{i}' style='display:none'>"
      
      Radio possessum-bound "Possessum bound" "<p>Is the morpheme that marks the <b>possessum</b> an affix or a separate word?</p>" ""
-     . possessum-affix "Possessum affix" "" "affix<br>"
-     . possessum-non-affix "Possessum non-affix" "" "separate word<br>" 
+     . possessum-affix "Possessum affix" "" "affix<br>" "toggle_element.call(this, 'possessum-affix{i}', 'on'); toggle_element.call(this, 'possessum-non-affix{i}', 'off');"
+     . possessum-non-affix "Possessum non-affix" "" "separate word<br>"  "toggle_element.call(this, 'possessum-affix{i}', 'off'); toggle_element.call(this, 'possessum-non-affix{i}', 'on');"
      
+
+     	   Label "<div id='possessum-affix{i}' style='display:none'> <br><br>Please proceed to the Morphology subpage to finish entering the possessum-marking affix</div>"
+
+     	   Label "<div id='possessum-non-affix{i}' style='display:none'>"
+     
+	   Radio nothing "nothing" "<p>Dummy 2</p>" ""
+	   . yes "yes" "" "yes<br>"
+	   . no "no" "" "no"
+
+     	   Label "</div>"
+
      Label "</div>"                                                                                                                                                                                         
-
-
 EndIter poss-strategy
