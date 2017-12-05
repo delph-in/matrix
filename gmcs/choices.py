@@ -1117,11 +1117,12 @@ class ChoicesFile:
 
 
     # Adnominal possession
-# poss-strategy1_possessor-bound=possessor-affix
-    if self.get_regex(".*_possessor-bound")[0][1] == 'possessor-affix':
-      features += [ ['possessor', 'plus|plus;minus|minus', '', 'noun', 'y'] ]
-    if self.get_regex(".*_possessum-bound")[0][1] == 'possessum-affix':
-      features += [ ['possessum', 'plus|plus;minus|minus', '', 'noun', 'y'] ]
+    if self.get_regex(".*_possessor-bound"):
+      if self.get_regex(".*_possessor-bound")[0][1] == 'possessor-affix':
+        features += [ ['possessor', 'plus|plus;minus|minus', '', 'noun', 'y'] ]
+    if self.get_regex(".*_possessum-bound"):
+      if self.get_regex(".*_possessum-bound")[0][1] == 'possessum-affix':
+        features += [ ['possessum', 'plus|plus;minus|minus', '', 'noun', 'y'] ]
 
 
     # Information Structure
