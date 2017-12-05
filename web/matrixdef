@@ -2857,7 +2857,7 @@ BeginIter poss-strategy{i} "a possessive strategy"
      	. possessor-affix "Possessor affix" "" "affix<br>"  "toggle_element.call(this, 'possessor-affix{i}', 'on'); toggle_element.call(this, 'possessor-non-affix{i}', 'off');"
      	. possessor-non-affix "Possessor non-affix" "" "separate word<br>" "toggle_element.call(this, 'possessor-affix{i}', 'off'); toggle_element.call(this, 'possessor-non-affix{i}', 'on');"
      
-     	   Label "<div id='possessor-affix{i}' style='display:none'> <br><br>Please proceed to the Morphology subpage to finish entering the possessor-marking affix</div>"
+     	   Label "<div id='possessor-affix{i}' style='display:none'> <br><br>A feature called <span class=\"feat\">possessor</span> with possible values <span class=\"tt\">plus</span> and <span class=\"tt\">minus</span> has been defined for use in defining morphemes on the morphology page.  In order to define a possessor-marking affix, add the appropriate position class and lexical rules, and mark the lexical rules as [<span class=\"feat\">possessor</span> <span class=\"tt\">plus</span>].</div>"
 
      	   Label "<div id='possessor-non-affix{i}' style='display:none'>"
 
@@ -2896,7 +2896,7 @@ BeginIter poss-strategy{i} "a possessive strategy"
      . possessum-non-affix "Possessum non-affix" "" "separate word<br>"  "toggle_element.call(this, 'possessum-affix{i}', 'off'); toggle_element.call(this, 'possessum-non-affix{i}', 'on');"
      
 
-     	   Label "<div id='possessum-affix{i}' style='display:none'> <br><br>Please proceed to the Morphology subpage to finish entering the possessum-marking affix</div>"
+     	   Label "<div id='possessum-affix{i}' style='display:none'> <br><br>A feature called <span class=\"feat\">possessum</span> with possible values <span class=\"tt\">plus</span> and <span class=\"tt\">minus</span> has been defined for use in defining morphemes on the morphology page.  In order to define a possessum-marking affix, add the appropriate position class and lexical rules, and mark the lexical rules as [<span class=\"feat\">possessum</span> <span class=\"tt\">plus</span>].</div>"
 
      	   Label "<div id='possessum-non-affix{i}' style='display:none'>"
      

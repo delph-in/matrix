@@ -383,10 +383,13 @@ class ChoicesFile:
   def get(self, key, default=None):
     return self.choices.get(key, default)
 
+  # NOTE: This function returns a list with one element on it, the tuple (key,val). 
+  # EX: To refer to the value, use get_regex('pattern')[0][1]
   def get_regex(self, pattern):
     pat = re.compile(pattern)
     return [(key, val) for (key, val) in self.walk(intermediates=True)
             if pat.match(key)]
+
 
   # A __getitem__ method so that ChoicesFile can be used with brackets,
   # e.g., ch['language'].
@@ -1111,6 +1114,15 @@ class ChoicesFile:
     # Questions
     if 'q-infl' in self.choices:
       features += [ ['question', 'plus|plus', '', 'verb', 'y'] ]
+
+
+    # Adnominal possession
+# poss-strategy1_possessor-bound=possessor-affix
+    if self.get_regex(".*_possessor-bound")[0][1] == 'possessor-affix':
+      features += [ ['possessor', 'plus|plus;minus|minus', '', 'noun', 'y'] ]
+    if self.get_regex(".*_possessum-bound")[0][1] == 'possessum-affix':
+      features += [ ['possessum', 'plus|plus;minus|minus', '', 'noun', 'y'] ]
+
 
     # Information Structure
     infostr_values = 'focus|focus;topic|topic;contrast|contrast;semantic-focus|non-contrastive-focus;contrast-focus|contrastive-focus;aboutness-topic|non-contrastive-topic;contrast-topic|contrastive-topic;focus-or-topic|focus-or-topic;contrast-or-focus|contrast-or-focus;contrast-or-topic|contrast-or-topic;non-topic|non-topic;non-focus|non-focus;bg|background'
