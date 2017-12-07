@@ -17,6 +17,7 @@ person=none
 section=gender
 
 section=other-features
+form-fin-nf=on
 
 section=case
 case-marking=none
