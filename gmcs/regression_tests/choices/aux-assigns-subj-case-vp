@@ -33,6 +33,7 @@ section=tense-aspect-mood
 section=other-features
 form-fin-nf=on
   form-subtype1_name=infinitive
+  form-subtype1_supertype=nonfinite
 
 section=sentential-negation
 
