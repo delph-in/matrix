@@ -12,7 +12,6 @@
 ######################################################################
 # imports
 
-#import sys
 import os
 import cgitb
 import glob
@@ -20,7 +19,6 @@ import re
 import tarfile
 import gzip
 import zipfile
-#import gmcs.tdl
 
 from gmcs import choices
 from gmcs.choices import ChoicesFile
@@ -28,14 +26,13 @@ from gmcs.utils import tokenize_def, get_name
 from gmcs import generate
 from gmcs.validate import ValidationMessage
 
-#from random import randrange
 from collections import defaultdict
 
 ######################################################################
 # HTML blocks, used to create web pages
 
 def dummy():
-    pass # let emacs know the indentation is 2 spaces
+    pass # let emacs know the indentation is 2 spaces 2017-12-01 OZ: why 2 spaces and not the standard 4?
 
 
 HTTP_header = 'Content-type: text/html;charset=UTF-8'
@@ -45,7 +42,7 @@ HTML_pretitle = '''<!doctype html>
 <head><meta charset="utf-8"/>
 '''
 
-HTML_posttitle = '''<script type="text/javascript" src="web/matrix.js">
+HTML_posttitle = '''<script type="text/javascript" src="web/matrix.js?cachebuster=103">
 </script>
 
 <script type="text/javascript">
@@ -61,6 +58,11 @@ var verb_case_patterns = [
 var numbers = [
 %s
 ];
+
+var forms = [
+%s
+];
+
 </script>
 
 <link rel="stylesheet" href="web/matrix.css">
@@ -236,10 +238,14 @@ HTML_sentencespostbody = '''
 <a href="http://www.delph-in.net/lkb">To the LKB page</a>
 '''
 
-HTML_prebody = '''<body onload="animate(); focus_all_fields(); multi_init(); fill_hidden_errors();scalenav();">
+HTML_prebody = '''<body onload="animate(); focus_all_fields(); multi_init(); fill_hidden_errors(); scalenav();">
 '''
 
-HTML_prebody_sn = '''<body onload="animate(); focus_all_fields(); multi_init(); fill_hidden_errors();display_neg_form();scalenav();set_form_feature();">'''
+HTML_prebody_of = '''<body onload="animate(); focus_all_fields(); multi_init(); fill_hidden_errors(); display_form_choice();scalenav();">
+'''
+
+
+HTML_prebody_sn = '''<body onload="animate(); focus_all_fields(); multi_init(); fill_hidden_errors();display_neg_form();scalenav();">'''
 
 HTML_method = 'post'
 
@@ -678,7 +684,7 @@ class MatrixDefFile:
         print 'Set-cookie: session=' + cookie + '\n'
         print HTML_pretitle
         print '<title>The Matrix</title>'
-        print HTML_posttitle % ('', '', '')
+        print HTML_posttitle % ('', '', '','')
 
         try:
             f = open('datestamp', 'r')
@@ -838,6 +844,7 @@ class MatrixDefFile:
 
         html = ''
 
+        #if not debug:
         http_cookie = os.getenv('HTTP_COOKIE')
 
         cookie = {}
@@ -960,11 +967,16 @@ class MatrixDefFile:
                                'fillvalues':'fill_feature_values(%(args)s)',
                                'fillverbpat':'fill_case_patterns(false)',
                                'fillnumbers':'fill_numbers()',
-                               'fillcache':'fill_cache(%(args)s)'}
+                               'fillcache':'fill_cache(%(args)s)',
+                               'fillforms':'fill_forms()'}
                 # look ahead and see if we have an auto-filled drop-down
                 i += 1
-                while lines[i].strip().startswith('fill'):
+                # OZ 2017-12-05 Adding check that i is not out of array bounds; managed to break it otherwise,
+                # probably by calling it incorrectly, but the check should not hurt.
+                while i < len(lines)-1 and lines[i].strip().startswith('fill'):
                     word = tokenize_def(replace_vars(lines[i], vars))
+                    #if word[0].startswith('fillform'):
+                    #    print(5)
                     # arguments are labeled like p=pattern, l(literal_feature)=1,
                     # n(nameOnly)=1, c=cat
                     #note: possible cat values are "noun", "verb" or "both"
@@ -1051,7 +1063,7 @@ class MatrixDefFile:
             elif word[0] == 'Button':
                 (vn, bf, af, oc) = word[1:]
                 html += html_input(vr, word[0].lower(), '', vn, False,
-                                   bf, af, onclick=oc) + '\n';
+                                   bf, af, onclick=oc) + '\n'
             elif word[0] == 'BeginIter':
                 iter_orig = word[1]
                 (iter_name, iter_var) = word[1].replace('}', '').split('{', 1)
@@ -1102,10 +1114,10 @@ class MatrixDefFile:
                     # the current choices file OR iter_min copies, whichever is
                     # greater
                     c = 0
-                    iter_num = 0;
+                    iter_num = 0
                     chlist = [x for x in choices.get(prefix + iter_name) if x]
                     while (chlist and c < len(chlist)) or c < iter_min:
-                        show_name = "";
+                        show_name = ""
                         if c < len(chlist):
                             iter_num = str(chlist[c].iter_num())
                             show_name = chlist[c]["name"]
@@ -1186,15 +1198,20 @@ class MatrixDefFile:
     # Create and print the matrix subpage for the specified section
     # based on the arguments, which are the name of the section and
     # a cookie that determines where to look for the choices file
-    def sub_page(self, section, cookie, vr):
+    def sub_page(self, section, cookie, vr,ch=None):
         print HTTP_header + '\n'
         print HTML_pretitle
         if section == 'lexicon':
             print "<script type='text/javascript' src='web/draw.js'></script>"
 
-        choices_file = 'sessions/' + cookie + '/choices'
-        choices = ChoicesFile(choices_file)
-
+        if cookie:
+            choices_file = 'sessions/' + cookie + '/choices'
+            choices = ChoicesFile(choices_file)
+        else:
+            if ch:
+                choices = ch
+            else:
+                raise Exception('Calling deffile.sub_page without a cookie and without an explicit choices object')
 
         section_begin = -1
         section_end = -1
@@ -1225,10 +1242,13 @@ class MatrixDefFile:
             print HTML_posttitle % \
                   (js_array4(choices.features()),
                    js_array([c for c in choices.patterns() if not c[2]]),
-                   js_array([n for n in choices.numbers()]))
+                   js_array([n for n in choices.numbers()]),
+                   js_array([n for n in choices.forms()]))
 
             if section == 'sentential-negation':
                 print HTML_prebody_sn
+            #elif section == 'other-features':
+            #    print HTML_prebody_of
             else:
                 print HTML_prebody
 
@@ -1320,7 +1340,7 @@ class MatrixDefFile:
             print html_input(vr, 'hidden', 'subpage', section, False, '', '\n')
             print self.defs_to_html(self.def_lines[section_begin:section_end],
                                     choices, vr,
-                                    '', {})
+                                    prefix='', vars={})
 
         # these buttons are now in the navmenu
         #    print html_input(vr, 'button', '', 'Submit', False, '<p>', '', onclick='submit_main()')
@@ -1792,7 +1812,7 @@ class MatrixDefFile:
         print HTTP_header + '\n'
         print HTML_pretitle
         print '<title>Invalid Choices File</title>'
-        print HTML_posttitle % ('', '', '')
+        print HTML_posttitle % ('', '', '','')
         print HTML_toggle_visible_js
         print HTML_prebody
 
@@ -1820,7 +1840,7 @@ class MatrixDefFile:
         print HTTP_header + '\n'
         print HTML_pretitle
         print '<title>Problem Customizing Grammar</title>'
-        print HTML_posttitle % ('', '', '')
+        print HTML_posttitle % ('', '', '','')
         print HTML_toggle_visible_js
         print HTML_prebody
 

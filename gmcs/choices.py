@@ -829,7 +829,6 @@ class ChoicesFile:
 
         return numbers
 
-
     # persons()
     #   Create and return a list containing information about the values
     #   of the person feature implied by the current choices.
@@ -940,15 +939,26 @@ class ChoicesFile:
     #   This list consists of tuples:
     #     [form name]
     def forms(self):
-        forms = []
-
-        if self.get('has-aux') == 'yes' or self.get('noaux-fin-nf') == 'on':
-            forms += [ ['finite'], ['nonfinite'] ]
-            for p in ['nf', 'fin']:
-                for p_sf in self.get(p + '-subform'):
-                    forms += [[p_sf['name']]]
+        #forms = []
+        #if self.get('has-aux') == 'yes' or self.get('noaux-fin-nf') == 'on':
+        forms = [['finite','form'],['nonfinite','form']]
+        for f in self.get('form-subtype'):
+            name = f['name']
+            #print('name: ' + name)
+            #stype = ';'.join([s['name'] for s in f.get('supertype',[])]) or 'form'
+            stype = f.get('supertype') if f.get('supertype') else 'form'
+            forms += [[name, stype]]
 
         return forms
+        # forms = []
+        #
+        # if self.get('has-aux') == 'yes' or self.get('noaux-fin-nf') == 'on':
+        #     forms += [ ['finite'], ['nonfinite'] ]
+        #     for p in ['nf', 'fin']:
+        #         for p_sf in self.get(p + '-subform'):
+        #             forms += [[p_sf['name']]]
+        #
+        # return forms
 
     # tenses()
     #   Create and return a list containing information about the values
