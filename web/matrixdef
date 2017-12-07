@@ -685,7 +685,7 @@ Label "</div>"
 
 #Label "<div style=\"padding-left: 16px\">"
 #Label "<h4><span class=\"feat\">form</span></h4>"
-#Check noaux-fin-nf "Finite-nonfinite" "" "My language has no auxiliaries but does make a syntactically relevant finite/non-finite distinction.</p>"
+#Check form-fin-nf "Finite-nonfinite" "" "My language has no auxiliaries but does make a syntactically relevant finite/non-finite distinction.</p>"
 
 
 #Label "<div style=\"padding-left: 35px\">"
@@ -751,7 +751,7 @@ class=\"feat\">form</span>. If your language does not have auxiliaries
 you may still include <span class=\"tt\">finite</span> and <span class=\"tt\">nonfinite</span> as values
 of <span class=\"feat\">form</span> in your grammar:<br><br>"
 
-Check noaux-fin-nf "Finite-nonfinite" "" "Add finite/non-finite FORM feature distinction.</p>"
+Check form-fin-nf "Finite-nonfinite" "" "Add finite/non-finite FORM feature distinction.</p>"
 
 Label "<p>It is often the case that languages have multiple non-finite
 forms, e.g., English: infinitive, past participle, present

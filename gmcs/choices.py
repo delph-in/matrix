@@ -940,7 +940,7 @@ class ChoicesFile:
     #     [form name]
     def forms(self):
         #forms = []
-        #if self.get('has-aux') == 'yes' or self.get('noaux-fin-nf') == 'on':
+        #if self.get('has-aux') == 'yes' or self.get('form-fin-nf') == 'on':
         forms = [['finite','form'],['nonfinite','form']]
         for f in self.get('form-subtype'):
             name = f['name']
@@ -952,7 +952,7 @@ class ChoicesFile:
         return forms
         # forms = []
         #
-        # if self.get('has-aux') == 'yes' or self.get('noaux-fin-nf') == 'on':
+        # if self.get('has-aux') == 'yes' or self.get('form-fin-nf') == 'on':
         #     forms += [ ['finite'], ['nonfinite'] ]
         #     for p in ['nf', 'fin']:
         #         for p_sf in self.get(p + '-subform'):

@@ -1145,10 +1145,10 @@ def validate_tanda(ch, vr):
                    'mood subtype you define.')
 
     ## validate form
-    if ch.get('has-aux') == 'yes' and ch.get('noaux-fin-nf') == 'on':
+    if ch.get('has-aux') == 'yes' and not ch.get('form-fin-nf') == 'on':
         mess = 'You have indicated on the word order page that ' + \
                'your language has auxiliaries but have not initialized a FORM hierarchy.'
-        vr.err('noaux-fin-nf', mess)
+        vr.err('form-fin-nf', mess)
 
     # if ch.get('has-aux') == 'no' and not (ch.get('noaux-fin-nf') == 'on'):
     #     if 'nf-subform' in ch:
