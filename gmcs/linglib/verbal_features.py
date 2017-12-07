@@ -169,7 +169,7 @@ def init_verbal_hierarchies(ch, hierarchies):
     init_aspect_hierarchy(ch, hierarchies)
     init_situation_hierarchy(ch, hierarchies)
     init_mood_hierarchy(ch, hierarchies)
-    init_form_hierarchy(ch, hierarchies)
+    #init_form_hierarchy(ch, hierarchies)
 
 def customize_verbal_features(mylang, hierarchies):
     customize_form(mylang, hierarchies)
