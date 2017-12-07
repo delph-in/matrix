@@ -312,6 +312,7 @@ def create_verb_lex_type(cases, ch, hierarchies, lexicon, mylang, verb):
     else:
         mylang.add(vtype + ' := ' + ' & '.join(stype_names) + '.')
 
+
     features.customize_feature_values(mylang, ch, hierarchies, verb, vtype, 'verb', None, cases)
 
     stems = verb.get('stem', [])

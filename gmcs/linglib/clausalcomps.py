@@ -40,7 +40,7 @@ def add_complementizer_type_to_grammar(mylang,ch,rules):
         # merge feature information in
         for f in cs['feat']:
             if f['name'] == 'form':
-                mylang.add(typename + ' := raise-sem-lex-item & basic-one-arg & [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM ' + f['value'] + ' ].',merge=True)
+                mylang.add(typename + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM ' + f['value'] + ' ].',merge=True)
 
 def add_complementizers_to_lexicon(lexicon,ch):
     lexicon.add_literal(';;; Complementizers')

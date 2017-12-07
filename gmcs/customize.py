@@ -313,7 +313,7 @@ def customize_roots():
                       NON-LOCAL non-local-none ] ].'
     roots.add(typedef, comment)
 
-    if ch.get('has-aux') == 'yes' or 'noaux-fin-nf' in ch:
+    if 'form-fin-nf' in ch:
         roots.add('root := [ SYNSEM.LOCAL.CAT.HEAD.FORM finite ].')
 
     # ERB 2006-10-05 I predict a bug here:  If we a language with auxiliaries
