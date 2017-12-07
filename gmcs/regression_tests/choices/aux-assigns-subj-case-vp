@@ -29,12 +29,10 @@ nom-acc-acc-case-name=accusative
 section=direct-inverse
 
 section=tense-aspect-mood
-  nf-subform1_name=infinitive
 
 section=other-features
 form-fin-nf=on
-  form-subtype1_name=subjunctive
-  form-subtype1_supertype=nonfinite
+  form-subtype1_name=infinitive
 
 section=sentential-negation
 
