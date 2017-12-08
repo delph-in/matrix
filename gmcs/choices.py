@@ -1253,8 +1253,17 @@ class ChoicesFile:
             new = '_'.join([key_prefix, new])
         if old in self:
             self[new] = self[old]
-            #self.delete(old, prune=True)
             self.delete(old)
+
+    # For example, combine nf-subform and fin-subform
+    # into one key, 'form-fin-nf', and put the values
+    def combine_keys(self, new, old1, old2):
+        if old1 in self and old2 in self:
+            tmp = self[old1]
+            self[old1].extend(self[old2])
+            self[new] = self[old1]
+            self.delete(old1)
+            self.delete(old2)
 
     def convert_0_to_1(self):
         self.convert_key('wordorder', 'word-order')
@@ -2161,9 +2170,11 @@ class ChoicesFile:
             subtype['supertype'] = 'nonfinite'
         for subtype in self.get('fin-subform'):
             subtype['supertype'] = 'finite'
-        if 'nf-subform' in self:
+        if 'nf-subform' in self and 'fin-subform' in self:
+            self.combine_keys('form-subtype','nf-subform','fin-subform')
+        elif 'nf-subform' in self:
             self.convert_key('nf-subform', 'form-subtype')
-        if 'fin-subform' in self:
+        elif 'fin-subform' in self:
             self.convert_key('fin-subform', 'form-subtype')
 
 
