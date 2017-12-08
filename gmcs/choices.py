@@ -4,7 +4,6 @@
 # imports
 
 import re
-#import sys
 from gmcs.util.misc import safe_int, get_valid_lines
 from gmcs.linglib import case
 
@@ -134,6 +133,15 @@ class ChoiceDict(ChoiceCategory, dict):
                 else str(self[key])
             for key in self)
 
+    def __repr__(self):
+        return '\n'.join(
+            '='.join(['_'.join([self.full_key, key]) if self.full_key else key,
+                      self[key]]) \
+                if not isinstance(self[key], ChoiceList) \
+                else str(self[key])
+            for key in self)
+
+
 class ChoiceList(ChoiceCategory, list):
 
     def __getitem__(self, key):
@@ -234,6 +242,10 @@ class ChoiceList(ChoiceCategory, list):
     def __str__(self):
         return '\n'.join(str(item) for item in self)
 
+    def __repr__(self):
+        return '\n'.join(str(item) for item in self)
+
+
 ######################################################################
 # Helper functions
 
@@ -261,6 +273,7 @@ def get_choice(choice, choices):
 var_delim_re = re.compile(r'(\d+)(?:_|$)')
 # use the following re if we only split when a digit precedes _
 #var_delim_re = re.compile(r'(\d+)(?:_)')
+
 def split_variable_key(key):
     """
     Split a compound variable key into a list of its component parts.
@@ -269,6 +282,7 @@ def split_variable_key(key):
     return [k for k in var_delim_re.split(key) if k]
 
 next_key_cache = {}
+
 def get_next_key(complex_key):
     """
     Split a key grouping it by non-numbers and numbers.
@@ -555,6 +569,9 @@ class ChoicesFile:
             self.convert_26_to_27()
         if self.version < 28:
             self.convert_27_to_28()
+        if self.version < 29:
+            self.convert_28_to_29()
+
         # As we get more versions, add more version-conversion methods, and:
         # if self.version < N:
         #   self.convert_N-1_to_N
@@ -934,31 +951,18 @@ class ChoicesFile:
 
     # forms()
     #   Create and return a list containing the values of the FORM
-    #   feature that constrains the form of auxiliary complements as
+    #   feature that constrains the form of verbs as
     #   defined in the current choices.
     #   This list consists of tuples:
-    #     [form name]
+    #     [name, supertype]
     def forms(self):
-        #forms = []
-        #if self.get('has-aux') == 'yes' or self.get('form-fin-nf') == 'on':
         forms = [['finite','form'],['nonfinite','form']]
         for f in self.get('form-subtype'):
             name = f['name']
-            #print('name: ' + name)
-            #stype = ';'.join([s['name'] for s in f.get('supertype',[])]) or 'form'
             stype = f.get('supertype') if f.get('supertype') else 'form'
             forms += [[name, stype]]
 
         return forms
-        # forms = []
-        #
-        # if self.get('has-aux') == 'yes' or self.get('form-fin-nf') == 'on':
-        #     forms += [ ['finite'], ['nonfinite'] ]
-        #     for p in ['nf', 'fin']:
-        #         for p_sf in self.get(p + '-subform'):
-        #             forms += [[p_sf['name']]]
-        #
-        # return forms
 
     # tenses()
     #   Create and return a list containing information about the values
@@ -1234,7 +1238,7 @@ class ChoicesFile:
     # convert_value(), followed by a sequence of calls to convert_key().
     # That way the calls always contain an old name and a new name.
     def current_version(self):
-        return 28
+        return 29
 
     def convert_value(self, key, old, new, partial=False):
         if key in self:
@@ -2140,6 +2144,27 @@ class ChoicesFile:
 
 
 
+    def convert_28_to_29(self):
+        """
+        Updates the treatment of FORM.
+        FORM will no longerbe implicit with has-aux=yes.
+        It will be explicitly initialized in Other Features section.
+        FORM will no longer be available in Tense, Aspect, and Mood section.
+        FORM will no longer be a special hierarchy but will look much like other features,
+        except finite and nonfinite values will be initialized by default.
+        """
+        if self.get('noaux-fin-nf') == 'on':
+            self.convert_key('noaux-fin-nf','form-fin-nf')
+        for subtype in self.get('nf-subform'):
+            subtype['supertype'] = 'nonfinite'
+        for subtype in self.get('fin-subform'):
+            subtype['supertype'] = 'finite'
+        if 'nf-subform' in self:
+            self.convert_key('nf-subform', 'form-subtype')
+        if 'fin-subform' in self:
+            self.convert_key('fin-subform', 'form-subtype')
+
+
 ########################################################################
 # FormData Class
 # This Class acts like form data which would normally
@@ -2157,18 +2182,15 @@ class FormData:
             return self.data[key]
 
     def __setitem__(self, key, value):
-        self.data[key] = value;
+        self.data[key] = value
 
     def has_key(self, key):
-        if key in self.data:
-            return True;
-        else:
-            return False;
+        return key in self.data
 
     def keys(self):
-        return self.data.keys();
+        return self.data.keys()
 
 class FormInfo:
     def __init__(self, key, value):
-        self.key = key;
-        self.value = value;
+        self.key = key
+        self.value = value
