@@ -2155,6 +2155,8 @@ class ChoicesFile:
         """
         if self.get('noaux-fin-nf') == 'on':
             self.convert_key('noaux-fin-nf','form-fin-nf')
+        elif self.get('has-aux')=='yes' or 'nf-subform' in self or 'fin-subform' in self:
+            self['form-fin-nf'] = 'on'
         for subtype in self.get('nf-subform'):
             subtype['supertype'] = 'nonfinite'
         for subtype in self.get('fin-subform'):
