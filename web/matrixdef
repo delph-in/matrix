@@ -1739,8 +1739,8 @@ Label "<b><br><br>If a predication is associated with this morphology, enter it 
     Text pred "subord {i} stem {j} predicate" " Predicate: " "" 30<br>
 
 
-Label "<b><br><br>Is the subject of the subordinate clause raised to the main clause?</b><br>"
-Check subjraise "Subject Raising" "" "Yes<br>"
+Label "<b><br><br>Is the subject of the subordinate clause unexpressed and shared with the subject of the main clause?</b><br>"
+Check shared-subj "Shared Subject" "" "Yes<br>"
 
 EndIter cms
 

@@ -207,7 +207,7 @@ head-comp-phrase := basic-head-1st-comp-phrase & head-initial &
 clausal-mod-phrase := basic-unary-phrase &
   [ SYNSEM.LOCAL.CAT [ HEAD [ FORM #form,
 			      MOD < [ LOCAL scopal-mod & 
-					    [ CAT.HEAD verb,
+					    [ CAT.HEAD verb, 
 					      CONT.HOOK.INDEX #arg1 ]] > ],
 		       VAL [ SUBJ < >,
 			     COMPS < >,
