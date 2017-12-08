@@ -2,9 +2,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of comp
 ;;; created at:
-;;;     Thu Nov 16 18:41:53 UTC 2017
+;;;     Mon Nov 20 21:01:50 UTC 2017
 ;;; based on Matrix customization system version of:
-;;;     Mon Nov 13 23:03:12 UTC 2017
+;;;     Sun Dec 14 20:42:11 UTC 2014
 ;;;
 ;;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -80,9 +80,25 @@ transitive-verb-lex := verb-lex & transitive-lex-item &
                                  COMPS < > ],
                            HEAD noun ] ] > ].
 
-tran-verb-lex := transitive-verb-lex.
+tverb-verb-lex := transitive-verb-lex &
+  [ SYNSEM.LOCAL.CAT.HEAD.FORM finite ].
 
 ctp-verb-lex := transitive-verb-lex.
+
+;;; Complementizers
+
+comps1-lex-item := raise-sem-lex-item & basic-one-arg &
+  [ ARG-ST < #comps &
+             [ LOCAL.CAT [ HEAD verb,
+                           MC -,
+                           VAL [ SUBJ < >,
+                                 COMPS < > ] ] ] >,
+    SYNSEM.LOCAL.CAT [ HEAD comp &
+                            [ MOD < > ],
+                       VAL [ SPR < >,
+                             SUBJ < >,
+                             COMPS < #comps &
+                                     [ LOCAL.CAT.HEAD.FORM finite ] > ] ] ].
 
 ;;;;;;;;;;;;;;;;;;;
 ;;; Lexical Rules

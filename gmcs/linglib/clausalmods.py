@@ -11,12 +11,12 @@ from gmcs.lib import TDLHierarchy
 
 
 def add_subord_lex(mylang, lexicon, cms, ch):
-  """
-  add the type definition for the lexical item to mylang
-  and the lexical entries to lexicon
-  """
-  mylang.set_section('addenda')
-  mylang.add('head :+ [ INIT bool ].')
+    """
+    add the type definition for the lexical item to mylang
+    and the lexical entries to lexicon
+    """
+    mylang.set_section('addenda')
+    mylang.add('head :+ [ INIT bool ].')
   nominalized, nom_strategy = is_nominalized(cms)
 
   if cms.get('subordinator-type') == 'head':
@@ -772,10 +772,10 @@ def customize_clausalmods(mylang, ch, lexicon, rules, roots):
   mylang.set_section ('addenda')
   mylang.add('+nvcdmo :+ [ MOD < > ].')
 
-  for cms in ch.get('cms'):
-    cmsnum = str(cms.iter_num())
+    for cms in ch.get('cms'):
+        cmsnum = str(cms.iter_num())
 
-    subord = cms.get('subordinator')
+        subord = cms.get('subordinator')
 
     if cms.get('subordinator-type') == 'adverb':
       create_subordinated_feature(mylang, roots, cms)

@@ -50,7 +50,7 @@ one_det_on_n1 = ['wo2','wo5','wo10']    # sentences with a determiner just for n
 one_det_on_n2 = ['wo6','wo9']             # sentences with a determiner just for n2
 
 # sentences with determiners on both nouns
-two_dets_n1_n2 =['wo4','wo8','neg2','neg4','ques2','ques4'] 
+two_dets_n1_n2 =['wo4','wo8','neg2','neg4','ques2','ques4']
 n1_with_det = one_det_on_n1 + two_dets_n1_n2    # sentences with a determiner for n1
 n2_with_det = one_det_on_n2 + two_dets_n1_n2    # sentences with a determiner for n2
 
@@ -87,11 +87,11 @@ n2_subj_ques = ['ques3','ques4']                  # question semantic class with
 # all harvester semantic tags
 # TODO: don't assign to built-in function all
 all = ['wo1', 'wo2', 'wo3', 'wo4', 'wo5', 'wo6', 'wo7', 'wo8', 'wo9', 'wo10', 'neg1', 'neg2', 'neg3',
-                                                                                   'neg4', 'ques1', 'ques2', 'ques3', 'ques4']
+       'neg4', 'ques1', 'ques2', 'ques3', 'ques4']
 
 #semantic class of transitive sentences
 trans = ['wo3', 'wo4', 'wo5', 'wo6', 'wo7', 'wo8', 'wo9', 'wo10', 'neg1', 'neg2', 'neg3', 'neg4',
-                                                                                             'ques1', 'ques2', 'ques3', 'ques4']
+         'ques1', 'ques2', 'ques3', 'ques4']
 intrans = ['wo1','wo2']                 # semantic class of intransitive sentences
 
 # negative semantic class.  TODO: fix this duplication with all_neg

@@ -25,18 +25,13 @@ tverb := tverb-verb-lex &
   [ STEM < "tverb" >,
     SYNSEM.LKEYS.KEYREL.PRED "_tverb_v_rel" ].
 
-cverb := ctp-verb-lex &
-  [ STEM < "cverb" >,
-    SYNSEM.LKEYS.KEYREL.PRED "_cverb_v_rel" ].
-
-;;; Complementizers
-
-comp := complementizer-lex-item & 
-     [ STEM < "comp" > ].
-
-
 ;;; Auxiliaries
 
 aux1 := aux-aux-lex &
   [ STEM < "aux1" >,
     SYNSEM.LKEYS.KEYREL.PRED "aux1" ].
+
+;;; Complementizers
+
+comps1_complementizer1 := comp-lex-item &
+  [ STEM < "comp1" > ].

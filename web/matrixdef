@@ -676,46 +676,29 @@ EndIter mood
 
 Label "</div>"
 
-Separator
+#Separator
 
-Label "<h3>Syntactic Feature</h3>"
+#Label "<h3>Syntactic Feature</h3>"
 
-Label "<div style=\"padding-left: 16px\">"
-Label "<h4><span class=\"feat\">form</span></h4>"
-Label "<p>In addition to the semantic features tense and aspect, your
-grammar may utilize a syntactic feature characterizing the form the
-verb takes. The <span class=\"feat\">form</span> feature distinguishes
-finite from non-finite forms and can be used to constrain auxiliary
-complement forms. If not applicable, you may leave this section
-blank.</p>"clausal
-Label "<p>If you have indicated on the word order page that your
-language has auxiliary verbs, your grammar will include
-<span class=\"tt\">finite</span> and <span class=\"tt\">nonfinite</span> as values of <span
-class=\"feat\">form</span>. If your language does not have auxiliaries
-you may still include <span class=\"tt\">finite</span> and <span class=\"tt\">nonfinite</span> as values
-of <span class=\"feat\">form</span> in your grammar:<br>"
-Check noaux-fin-nf "Finite-nonfinite" "" "My language has no auxiliaries but does make a syntactically relevant finite/non-finite distinction.</p>"
+#Label "<div style=\"padding-left: 16px\">"
+#Label "<h4><span class=\"feat\">form</span></h4>"
+#Check form-fin-nf "Finite-nonfinite" "" "My language has no auxiliaries but does make a syntactically relevant finite/non-finite distinction.</p>"
 
-Label "<p>It is often the case that languages have multiple non-finite
-forms, e.g., English: infinitive, past participle, present
-participle. If applicable, you may expand the hierarchy of verb <span
-class=\"feat\">form</span> values in your grammar by providing
-subtypes of <span class=\"tt\">finite</span> and <span class=\"tt\">nonfinite</span>:</p>"
 
-Label "<div style=\"padding-left: 35px\">"
+#Label "<div style=\"padding-left: 35px\">"
 
-Label "<b>nonfinite</b>:"
-  BeginIter nf-subform{i} "a subtype"
-    Text name "Nonfinite subtype {i} name" "nonfinite subtype name: " "" 20
-  EndIter nf-subform
+#Label "<b>nonfinite</b>:"
+#  BeginIter nf-subform{i} "a subtype"
+#    Text name "Nonfinite subtype {i} name" "nonfinite subtype name: " "" 20
+#  EndIter nf-subform
 
-Label "<br><br><b>finite</b>:"
-  BeginIter fin-subform{i} "a subtype"
-    Text name "Finite subtype {i} name" "finite subtype name: " "" 20
-  EndIter fin-subform
+#Label "<br><br><b>finite</b>:"
+#  BeginIter fin-subform{i} "a subtype"
+#    Text name "Finite subtype {i} name" "finite subtype name: " "" 20
+#  EndIter fin-subform
 
-Label "</div>"
-Label "</div>"
+#Label "</div>"
+#Label "</div>"
 
 Label "<h4>References</h4>"
 Label "<div style=\"font-size:2\">"
@@ -745,13 +728,59 @@ class=\"feat\">pernum</span> instead of <span
 class=\"feat\">person</span> and <span class=\"feat\">number</span>,
 <span class=\"feat\">gendnum</span> instead of <span
 class=\"feat\">gender</span> and <span class=\"feat\">number</span>),
-they can be defined below.</p>"
+they can be defined below.
+<br><br>
+</p>"
 
-Label "<p>For each feature, you will define a type hierarchy, which
+Label "<h3>Syntactic FORM Feature for verbs</h3>"
+
+Label "<p>To start, your
+grammar may utilize a syntactic feature characterizing the form the
+verb takes. The <span class=\"feat\">form</span> feature distinguishes
+finite from non-finite forms and can be used to constrain auxiliary
+complement forms. If not applicable, you may leave this section
+blank.</p>"
+
+Label "<p>If you have indicated on the word order page that your
+language has auxiliary verbs, your grammar will include
+<span class=\"tt\">finite</span> and <span class=\"tt\">nonfinite</span> as values of <span
+class=\"feat\">form</span>. If your language does not have auxiliaries
+you may still include <span class=\"tt\">finite</span> and <span class=\"tt\">nonfinite</span> as values
+of <span class=\"feat\">form</span> in your grammar:<br><br>"
+
+Check form-fin-nf "Finite-nonfinite" "" "Add finite/non-finite FORM feature distinction.</p>"
+
+Label "<p>It is often the case that languages have multiple non-finite
+forms, e.g., English: infinitive, past participle, present
+participle. If applicable, you may expand the hierarchy of verb <span
+class=\"feat\">form</span> values in your grammar by providing
+subtypes of <span class=\"tt\">finite</span> and <span class=\"tt\">nonfinite</span>:</p>"
+
+
+BeginIter form-subtype{i} "a Subtype for FORM"
+
+  Text name "Feature FORM Subtype {i} name" "Name: " "" 20
+
+  MultiSelect supertype "FORM Subtype {i} supertype" " Supertype: " ""
+  fillforms
+
+EndIter form-subtype
+
+
+#Label "<div id='form' class='form_switch' style='display:none'>
+#<p> FORM will be specified as a syntactic feature, and a value \"finite\"
+#will be specified by default. You can add more values below.</p>"
+
+#Label "</div>"
+
+Label "<h3>Other Syntactic and Semantic Features</h3>"
+
+Label "<p>For each additional feature, you will define a type hierarchy, which
 consists of a root type you will name (e.g. <span
 class=\"feat\">pernum</span>), and then a series of other values of
 the feature, each of which is the subtype of at least one of the other
 values, possibly the root.</p>"
+
 
 Label "<input type=\"hidden\" name=\"existing_value_type1_name\"  value=\"bool\">
 <input type=\"hidden\" name=\"existing_value_type2_name\"  value=\"luk\">"
@@ -800,11 +829,13 @@ BeginIter feature{i} "a Feature" 1
 
 EndIter feature
 
+
 Section sentential-negation "Sentential Negation"
 
 Cache verbpcs verb-pc[0-9]+$ name
 
-Label "<p>On this page you can select a strategy that your language uses for sentential negation.  In most cases, morpheme classes that you can further modify will be created on the morphology page.</p>"
+Label "<p>On this page you can select a strategy that your language uses for sentential negation.
+In most cases, morpheme classes that you can further modify will be created on the morphology page.</p>"
 
 Label "<p>Sentential negation constructions can be classified based on the number
 of overt morphemes required by the construction.
@@ -1782,7 +1813,7 @@ BeginIter comps{i} "a Clausal Complement Type" 1
          EndIter complementizer
 
   Label "<p> The embedded verb has the following features 
-  (e.g. finite, nonfinite (define in Other Features), nominalization:</p>"
+  e.g. finite, nonfinite (define in Other Features), nominalization:</p>"
   
     BeginIter feat{k} "a Feature"
 

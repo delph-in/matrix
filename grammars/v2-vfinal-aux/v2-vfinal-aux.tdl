@@ -2,9 +2,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of v2-vfinal-aux
 ;;; created at:
-;;;     Wed Nov 15 00:18:04 UTC 2017
+;;;     Thu Nov 30 20:58:36 UTC 2017
 ;;; based on Matrix customization system version of:
-;;;     Mon Nov 13 23:03:12 UTC 2017
+;;;     Sun Dec 14 20:42:11 UTC 2014
 ;;;
 ;;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -22,6 +22,8 @@ head :+ [ AUX bool,
     FORM form ].
 
 basic-head-opt-subj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
+
+cat :+ [ VC bool ].
 
 ;;;;;;;;;;;;;;
 ;;; Features
@@ -41,19 +43,22 @@ finite := form.
 
 noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & non-mod-lex-item &
   [ ARG-ST < #spr >,
-    SYNSEM.LOCAL.CAT.VAL [ COMPS < >,
-                           SUBJ < >,
-                           SPEC < >,
-                           SPR < #spr &
-                                 [ LOCAL.CAT.HEAD det,
-                                   OPT + ] > ] ].
+    SYNSEM.LOCAL.CAT [ VAL [ COMPS < >,
+                             SUBJ < >,
+                             SPEC < >,
+                             SPR < #spr &
+                                   [ LOCAL.CAT.HEAD det,
+                                     OPT + ] > ],
+                       VC - ] ].
 
 noun-noun-lex := noun-lex.
 
 ;;; Verbs
 
 verb-lex := non-mod-lex-item &
-  [ SYNSEM.LOCAL.CAT.HEAD verb ].
+  [ SYNSEM.LOCAL.CAT [ HEAD verb,
+                       HC-LIGHT -,
+                       VC + ] ].
 
 main-verb-lex := verb-lex & basic-verb-lex &
   [ SYNSEM.LOCAL [ CAT [ HEAD.AUX -,
@@ -83,38 +88,28 @@ transitive-verb-lex := main-verb-lex & transitive-lex-item &
                                  COMPS < > ],
                            HEAD noun ] ] > ].
 
+ctp-verb-lex := main-verb-lex & clausal-second-arg-trans-lex-item &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >,
+    ARG-ST < [ LOCAL.CAT.HEAD noun ],
+             #comps &
+             [ LOCAL.CAT [ VAL [ SPR < >,
+                                 COMPS < > ],
+                           HEAD comp ] ] > ].
+
+comps1-intransitive-verb-lex := intransitive-verb-lex &
+  [ ARG-ST.FIRST.LOCAL.CAT.HEAD noun &
+                                [ CASE comps1 ] ].
+
 iverb-verb-lex := intransitive-verb-lex.
 
 tverb-verb-lex := transitive-verb-lex.
 
-ctp-verb-lex := main-verb-lex & clausal-second-arg-trans-lex-item &
-  [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >,
-    ARG-ST < [LOCAL.CAT.HEAD noun ],
-    	     #comps & 
-    	     [ LOCAL.CAT [ VAL [ SPR < >, COMPS < > ], 
-	       		   HEAD comp ] ] > ].
-
-
-;;; Complementizer
-
-complementizer-lex-item := raise-sem-lex-item & basic-one-arg &
-  [ SYNSEM.LOCAL.CAT [ HEAD comp &
-                            [ MOD < > ],
-                       VAL [ SPR < >,
-                             SUBJ < >,
-                             COMPS < #comps > ] ],
-    ARG-ST < #comps & 
-             [ LOCAL.CAT [ HEAD verb, MC -,
-                           VAL [ SUBJ < >,
-                                 COMPS < > ] ] ] > ].
-
-
 ;;; Auxiliaries
 
-subj-raise-aux := aux-lex & trans-first-arg-raising-lex-item &
+arg-comp-aux := aux-lex & basic-two-arg &
   [ SYNSEM.LOCAL [ CAT.VAL [ SPR < >,
                              SPEC < >,
-                             COMPS < #comps >,
+                             COMPS < #comps . #vcomps >,
                              SUBJ < #subj > ],
                    CONT.HOOK.XARG #xarg ],
     ARG-ST < #subj &
@@ -125,17 +120,49 @@ subj-raise-aux := aux-lex & trans-first-arg-raising-lex-item &
                                    COMPS < > ] ],
                        CONT.HOOK.INDEX #xarg ] ],
              #comps &
-             [ LOCAL.CAT [ VAL [ SUBJ < unexpressed >,
-                                 COMPS < >,
-                                 SPR < >,
-                                 SPEC < > ],
-                           HEAD verb ] ] > ].
+             [ LIGHT +,
+               LOCAL [ CAT [ VAL [ SUBJ < [ ] >,
+                                   COMPS #vcomps ],
+                             HEAD verb ],
+                       CONT.HOOK.XARG #xarg ] ] > ].
 
-subj-raise-aux-with-pred := subj-raise-aux & norm-sem-lex-item & trans-first-arg-raising-lex-item-1.
+; Somewhat surprisingly, this inherits from basic-two-arg, so
+; that the non-local features are amalgamated from subj, the
+; lexical verb complement, but not the other complements, if any.
 
-aux-aux-lex := subj-raise-aux-with-pred &
-  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT [ MC na-or--,
-						 HEAD.FORM nonfinite ] ].
+; Not inheriting from basic-verb-lex, so need to put in
+; event-relation by hand here.
+
+arg-comp-aux-with-pred := arg-comp-aux & hcons-lex-item &
+  [ SYNSEM [ LOCAL.CONT.HCONS <! qeq &
+                                 [ HARG #harg,
+                                   LARG #larg ] !>,
+             LKEYS.KEYREL event-relation &
+                          [ ARG1 #harg ] ],
+    ARG-ST < [ ],
+             [ LOCAL.CONT.HOOK.LTOP #larg ] > ].
+
+aux-aux-lex := arg-comp-aux-with-pred &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT [ HEAD.FORM nonfinite,
+                                                 MC na-or-- ] ].
+
+;;; Complementizers
+
+comp-lex-item := raise-sem-lex-item & basic-one-arg &
+  [ SYNSEM.LOCAL.CAT [ VC -,
+                       HEAD comp &
+                            [ MOD < > ],
+                       VAL [ SPR < >,
+                             SUBJ < >,
+                             COMPS < #comps > ] ],
+    ARG-ST < #comps &
+             [ LOCAL.CAT [ HEAD verb,
+                           MC -,
+                           VAL [ SUBJ < >,
+                                 COMPS < > ] ] ] > ].
+
+comps1-comp-lex-item := comp-lex-item & raise-sem-lex-item & basic-one-arg &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM finite ].
 
 ;;;;;;;;;;;;;;;;;;;
 ;;; Lexical Rules
@@ -185,6 +212,12 @@ subord-phrase := head-final &
 subord-comp-head-phrase := subord-phrase & basic-head-1st-comp-phrase.
 
 subord-subj-head-phrase := subord-phrase & decl-head-subj-phrase.
+
+basic-unary-phrase :+ [ SYNSEM.LOCAL.CAT.VC #vc,
+    ARGS.FIRST.SYNSEM.LOCAL.CAT.VC #vc ].
+
+basic-binary-headed-phrase :+ [ SYNSEM.LOCAL.CAT.VC #vc,
+    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc ].
 
 ;;;;;;;;;;;;;;;;;;
 ;;; Coordination

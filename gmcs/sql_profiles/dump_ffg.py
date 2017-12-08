@@ -14,12 +14,12 @@ cursor = db.cursor()
 cursor.execute('SELECT DISTINCT ffg_fltr_id FROM %s' % (sys.argv[1]))
 ids = []
 for id in cursor.fetchall():
-  ids.append(id[0])
+    ids.append(id[0])
 for i in ids:
-  cursor.execute('SELECT ffg_grp_id FROM %s WHERE ffg_fltr_id = %s' %
-                 (sys.argv[1], i))
-  res = cursor.fetchall()
-  print str(i) + ': ',
-  for r in res:
-    print str(r[0]) + ',',
-  print
+    cursor.execute('SELECT ffg_grp_id FROM %s WHERE ffg_fltr_id = %s' %
+                   (sys.argv[1], i))
+    res = cursor.fetchall()
+    print str(i) + ': ',
+    for r in res:
+        print str(r[0]) + ',',
+    print

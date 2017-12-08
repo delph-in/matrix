@@ -18,7 +18,9 @@ person=none
 section=gender
 
 section=case
-case-marking=none
+case-marking=nom-acc
+nom-acc-nom-case-name=nom
+nom-acc-acc-case-name=acc
 
 section=direct-inverse
 
@@ -50,9 +52,13 @@ section=clausal-comp
   comps1_clause-pos-same=on
   comps1_comp-pos-before=on
   comps1_comp=oblig
-    comps1_complementizer1_orth=comp
+    comps1_complementizer1_orth=comp1
     comps1_feat1_name=form
     comps1_feat1_value=finite
+    comps1_complementizer2_orth=comp2
+    comps1_feat1_name=form
+    comps1_feat1_value=finite
+
 
 section=lexicon
   noun1_name=noun
@@ -63,12 +69,15 @@ section=lexicon
     noun1_stem2_pred=_noun2_n_rel
     noun1_stem3_orth=noun3
     noun1_stem3_pred=_noun3_n_rel
-  verb1_name=tran
+  verb1_name=tverb
+    verb1_feat1_name=form
+    verb1_feat1_value=finite
+    verb1_feat1_head=verb
   verb1_valence=trans
     verb1_stem1_orth=tverb
     verb1_stem1_pred=_tverb_v_rel
   verb2_name=ctp
-  verb2_valence=trans
+  verb2_valence=comps1
     verb2_stem1_orth=cverb
     verb2_stem1_pred=_cverb_v_rel
 

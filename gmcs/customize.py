@@ -40,6 +40,7 @@ from gmcs.linglib import toolboximport
 from gmcs.linglib import valence_change
 from gmcs.linglib import clausalmods
 from gmcs.linglib import nominalized_clauses
+from gmcs.linglib import clausalcomps
 
 ######################################################################
 # globals
@@ -312,7 +313,7 @@ def customize_roots():
                       NON-LOCAL non-local-none ] ].'
     roots.add(typedef, comment)
 
-    if ch.get('has-aux') == 'yes' or 'noaux-fin-nf' in ch:
+    if 'form-fin-nf' in ch:
         roots.add('root := [ SYNSEM.LOCAL.CAT.HEAD.FORM finite ].')
 
     # ERB 2006-10-05 I predict a bug here:  If we a language with auxiliaries
@@ -489,6 +490,7 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
                             ['coplex', 'Copulas', False, False],
                             ['adjlex', 'Adjectives', False, False],
                             ['subordlex', 'Subordinators', True, False],
+                            ['complex', 'Complementizers', False, True],
                             ['otherlex', 'Others', False, False],
                             ['lexrules', 'Lexical Rules', True, False],
                             ['phrases', 'Phrasal Types', True, False],
@@ -608,6 +610,7 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
     coordination.customize_coordination(mylang, ch, lexicon, rules, irules)
     yes_no_questions.customize_yesno_questions(mylang, ch, rules, lrules, hierarchies)
     clausalmods.customize_clausalmods(mylang, ch, lexicon, rules, roots)
+    clausalcomps.customize_clausalcomps(mylang,ch,lexicon,rules,irules)
     customize_punctuation(grammar_path)
     customize_test_sentences(grammar_path)
     customize_itsdb(grammar_path)
@@ -615,7 +618,7 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
     customize_pettdl(grammar_path)
     customize_acetdl(grammar_path)
     customize_roots()
-
+    #
     customize_vpm(ch, vpm, hierarchies)
 
     # Save the output files

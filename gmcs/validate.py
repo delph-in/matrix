@@ -741,6 +741,9 @@ def validate_word_order(ch, vr):
             vr.err('subord-word-order',
                    'V-final subordinate word order is ' +
                    'only supported with V2 matrix order.')
+        elif ch.get('has-aux') == 'yes' and ch.get('aux-comp') != 'v':
+            vr.err('aux-comp','The only supported choice for auxiliary complement '
+                   'type for v2/vfinal word order combination is V.')
 
 
 ######################################################################
@@ -1142,16 +1145,16 @@ def validate_tanda(ch, vr):
                    'mood subtype you define.')
 
     ## validate form
-    if ch.get('has-aux') == 'yes' and ch.get('noaux-fin-nf') == 'on':
+    if ch.get('has-aux') == 'yes' and not ch.get('form-fin-nf') == 'on':
         mess = 'You have indicated on the word order page that ' + \
-               'your language has auxiliaries.'
-        vr.err('noaux-fin-nf', mess)
+               'your language has auxiliaries but have not initialized a FORM hierarchy.'
+        vr.err('form-fin-nf', mess)
 
-    if ch.get('has-aux') == 'no' and not (ch.get('noaux-fin-nf') == 'on'):
-        if 'nf-subform' in ch:
-            mess = 'You have indicated that your language has no auxiliaries ' + \
-                   'but you have entered subforms of finite or non-finite.'
-            vr.err('noaux-fin-nf', mess)
+    # if ch.get('has-aux') == 'no' and not (ch.get('noaux-fin-nf') == 'on'):
+    #     if 'nf-subform' in ch:
+    #         mess = 'You have indicated that your language has no auxiliaries ' + \
+    #                'but you have entered subforms of finite or non-finite.'
+    #         vr.err('noaux-fin-nf', mess)
 
 ######################################################################
 # validate_test_sentences(ch, vr)
@@ -1467,7 +1470,6 @@ def validate(ch, extra = False):
     gmcs.linglib.lexicon.validate_lexicon(ch, vr)
     gmcs.linglib.morphotactics.validate(ch, vr)
     validate_test_sentences(ch, vr)
-    validate_clausal_mods(ch, vr)
 
     validate_types(ch, vr)
     validate_features(ch, vr)

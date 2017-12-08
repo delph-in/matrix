@@ -8,71 +8,71 @@ from gmcs.linglib import toolboximport
 from gmcs.deffile import MatrixDefFile
 
 class TestToolboxImport(unittest.TestCase):
-  def setUp(self):
-    try:
-      #try to close open toolbox temp file handles
-      for toolbox in self.toolbox_files:
-        toolbox.close()
-    except AttributeError:
-      #If we don't have any toolbox_files then just continue
-      pass
-    self.toolbox_files = [];
-    self.c = ChoicesFile()
-    self.gold = ChoicesFile()
-    self.matrixdef = MatrixDefFile('web/matrixdef')
+    def setUp(self):
+        try:
+            #try to close open toolbox temp file handles
+            for toolbox in self.toolbox_files:
+                toolbox.close()
+        except AttributeError:
+            #If we don't have any toolbox_files then just continue
+            pass
+        self.toolbox_files = [];
+        self.c = ChoicesFile()
+        self.gold = ChoicesFile()
+        self.matrixdef = MatrixDefFile('web/matrixdef')
 
-  def save_choices(self, choices):
-    '''This writes a choices file using matrix def.'''
-    tmp = tempfile.NamedTemporaryFile()
-    tmp.write('version=' + str(choices.current_version()) + '\n\n')
-    tmp.write(str(choices))
-    formdata = FormData()
-    formdata["section"] = FormInfo("section", "None")
-    tmp.seek(0)
-    self.matrixdef.save_choices(formdata, tmp.name)
-    return tmp
+    def save_choices(self, choices):
+        '''This writes a choices file using matrix def.'''
+        tmp = tempfile.NamedTemporaryFile()
+        tmp.write('version=' + str(choices.current_version()) + '\n\n')
+        tmp.write(str(choices))
+        formdata = FormData()
+        formdata["section"] = FormInfo("section", "None")
+        tmp.seek(0)
+        self.matrixdef.save_choices(formdata, tmp.name)
+        return tmp
 
-  def add_toolbox_files(self, choices, tb_strings):
-    '''
-    Add toolbox files to 'choices'.
-    tb_strings should be a list of lists, where the inner lists are the contains the files
-    grouped by which configuration they should be loaded with.
-    '''
-    for i in range(len(tb_strings)):
-      for j in range(len(tb_strings[i])):
-        fout = tempfile.NamedTemporaryFile()
-        fout.write(str(tb_strings[i][j]))
-        self.toolbox_files.append(fout);
-        choices["toolboximportconfig"+str(i+1)+"_toolboxfile"+str(j+1)+"_tbfilename"] = fout.name
-    return self.save_choices(choices)
- 
-  def test_empty(self):
-    '''
-    Test loading an empty toolbox lexicon into an empty choices file.
-    '''
-    self.c.load_choices(empty_choices_file.splitlines())
-    choices = self.save_choices(self.c)
-    toolboximport.import_toolbox_lexicon(choices.name)
-    self.c = ChoicesFile(choices.name)
-    choices.close()
-    self.gold.load_choices(empty_choices_file.splitlines())
-    self.assertEqual(self.c, self.gold)
+    def add_toolbox_files(self, choices, tb_strings):
+        '''
+        Add toolbox files to 'choices'.
+        tb_strings should be a list of lists, where the inner lists are the contains the files
+        grouped by which configuration they should be loaded with.
+        '''
+        for i in range(len(tb_strings)):
+            for j in range(len(tb_strings[i])):
+                fout = tempfile.NamedTemporaryFile()
+                fout.write(str(tb_strings[i][j]))
+                self.toolbox_files.append(fout);
+                choices["toolboximportconfig"+str(i+1)+"_toolboxfile"+str(j+1)+"_tbfilename"] = fout.name
+        return self.save_choices(choices)
 
-  def test_import(self):
-    '''
-    Load the mock toolbox file into the test choices file.
-    '''
-    self.c.load_choices(test_choices_file.splitlines())
-    choices = self.add_toolbox_files(self.c, [[test_toolbox_file]])
-    toolboximport.import_toolbox_lexicon(choices.name)
-    self.c = ChoicesFile(choices.name)
-    choices.close()
-    self.c["toolboximportconfig1_toolboxfile1_tbfilename"] = ''
-#    self.c["version"] = str(self.c.current_version())
-    self.gold.load_choices(test_gold_file.splitlines())
-#    self.gold["version"] = str(self.gold.current_version())
-#    try:
-    self.assertEqual(self.c, self.gold)
+    def test_empty(self):
+        '''
+        Test loading an empty toolbox lexicon into an empty choices file.
+        '''
+        self.c.load_choices(empty_choices_file.splitlines())
+        choices = self.save_choices(self.c)
+        toolboximport.import_toolbox_lexicon(choices.name)
+        self.c = ChoicesFile(choices.name)
+        choices.close()
+        self.gold.load_choices(empty_choices_file.splitlines())
+        self.assertEqual(self.c, self.gold)
+
+    def test_import(self):
+        '''
+        Load the mock toolbox file into the test choices file.
+        '''
+        self.c.load_choices(test_choices_file.splitlines())
+        choices = self.add_toolbox_files(self.c, [[test_toolbox_file]])
+        toolboximport.import_toolbox_lexicon(choices.name)
+        self.c = ChoicesFile(choices.name)
+        choices.close()
+        self.c["toolboximportconfig1_toolboxfile1_tbfilename"] = ''
+        #    self.c["version"] = str(self.c.current_version())
+        self.gold.load_choices(test_gold_file.splitlines())
+        #    self.gold["version"] = str(self.gold.current_version())
+        #    try:
+        self.assertEqual(self.c, self.gold)
 #    except:
 #      print "diffs"
 #      diffs = list(set(self.c) - set(self.gold))
@@ -12187,7 +12187,7 @@ section=test-sentences
 
 section=gen-options
 
-section=ToolboxLexicon''' 
+section=ToolboxLexicon'''
 
 test_gold_file = '''
 version=26
@@ -12697,7 +12697,7 @@ section=ToolboxLexicon
   imported-entry133_lextype=noun1
   imported-entry133_orth=4836.3519236004
   imported-entry133_pred=_6172%2E12633457846_n_rel
-''' 
+'''
 
 if __name__ == '__main__':
     unittest.main()
