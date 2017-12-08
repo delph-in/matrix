@@ -18,6 +18,11 @@ section=gender
 
 section=other-features
 form-fin-nf=on
+  form-subtype1_name=nf1
+  form-subtype1_supertype=nonfinite
+  form-subtype2_name=nf2
+  form-subtype2_supertype=nonfinite
+
 
 section=case
 case-marking=none
@@ -49,16 +54,16 @@ aux1_name=aux1
 aux1_orth=nopaux
 aux1_sem=no-pred
 aux1_comp=vp
-aux1_compform=nonfinite
-aux1_nonfincompform=nf1
+aux1_compfeature1_name=form
+aux1_compfeature1_value=nf1
 aux1_subj=np
 aux2_name=aux2
 aux2_orth=paux
 aux2_sem=add-pred
 aux2_pred=_paux_v_rel
 aux2_comp=vp
-aux2_compform=nonfinite
-aux2_nonfincompform=nf2
+aux2_compfeature1_name=form
+aux2_compfeature1_value=nf2
 aux2_subj=np
 verb-slot1_name=tanda
 verb-slot1_order=after

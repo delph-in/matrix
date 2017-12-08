@@ -829,7 +829,7 @@ def validate_lexicon(ch, vr):
                 vr.err(aux.full_key + '_sem', mess)
             if not stem.get('orth'):
                 mess = 'You must specify a spelling for each auxiliary you define.'
-                vr.err(stem.full_key + '_orth', mess);
+                vr.err(stem.full_key + '_orth', mess)
 
     # TODO: Copulas: TJT 2014-08-25
     # Copulas
