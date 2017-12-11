@@ -76,10 +76,10 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
 # KPH 2017-11/17 passing up MC from the non-head-dtr is makes incorrect predictions
 # for clausal modifiers, so I've removed it.
 
-  if not wo == 'v2':
-    mylang.add_literal(';Constraint on MC used to be part of matrix.tdl\n;' +
+    if not wo == 'v2':
+        mylang.add_literal(';Constraint on MC used to be part of matrix.tdl\n;' +
                ';it applies to all wo implementations, except for v2')
-    mylang.add('basic-head-comp-phrase :+\
+        mylang.add('basic-head-comp-phrase :+\
                 [ SYNSEM.LOCAL.CAT.MC #mc,\
                   HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].',
                    section='addenda')

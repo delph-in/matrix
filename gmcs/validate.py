@@ -1444,7 +1444,7 @@ def validate_arg_opt(ch, vr):
 # validate_clausal_mods(ch, vr)
 #   Validate the user's choices clausal modifiers.
 
-def validate_clausal_mods(ch, vr):
+#def validate_clausal_mods(ch, vr):
 
 
 def validate(ch, extra = False):
