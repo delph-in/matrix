@@ -462,9 +462,9 @@ def set_lexical_rule_supertypes(lrt, mtx_supertypes):
 
             # feature-based supertypes
             # JDC 04 June 2012 now negation supertypes are set in features.py
-        #  if ('value', 'a') in lrt.features.get('negation',{}).items():
-        #    lrt.supertypes.add('cont-change-only-lex-rule')
-        # add other special cases here
+            #  if ('value', 'a') in lrt.features.get('negation',{}).items():
+            #    lrt.supertypes.add('cont-change-only-lex-rule')
+            # add other special cases here
 
 def calculate_supertypes(pch):
     # calculate daughter types first, because we want to percolate them
@@ -1280,10 +1280,10 @@ def warn_merged_pcs(all_pcs, vr):
             for inp in pc.get('inputs',[]):
                 input_map[inp][order].add(pc_name)
                 # Warn for each obligatory position class with equal inputs and orders
-            #   pcs_to_be_merged = {pc for inp in input_map
-            #                       for order in input_map[inp]
-            #                       for pc in input_map[inp][order]
-            #                       if len(input_map[inp][order]) > 1}
+                #   pcs_to_be_merged = {pc for inp in input_map
+                #                       for order in input_map[inp]
+                #                       for pc in input_map[inp][order]
+                #                       if len(input_map[inp][order]) > 1}
     # TJT 2014-12-19: Converting above set comprehension
     # to loop for older python versions
     pcs_to_be_merged = set()

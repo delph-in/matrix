@@ -120,10 +120,10 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
         else:
             mylang.add(hc + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].')
 
-        # LLD 2016-03-24 to allow argument optionality with VSO and OSV languages,
-        # we have to move COMPS < > from basic-head-opt-subj-phrase in matrix.tdl and
-        # only add it with languages where O attaches lower than S. To prevent spurious
-        # ambiguity, we add SUBJ < > to head-opt-comp in these languages instead.
+            # LLD 2016-03-24 to allow argument optionality with VSO and OSV languages,
+            # we have to move COMPS < > from basic-head-opt-subj-phrase in matrix.tdl and
+            # only add it with languages where O attaches lower than S. To prevent spurious
+            # ambiguity, we add SUBJ < > to head-opt-comp in these languages instead.
 
     if wo == 'vso' or wo == 'osv':
         mylang.add('basic-head-opt-comp-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].', section='addenda')
