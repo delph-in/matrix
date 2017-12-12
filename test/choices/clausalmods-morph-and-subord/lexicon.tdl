@@ -9,6 +9,10 @@ noun2 := noun-noun-lex &
   [ STEM < "noun2" >,
     SYNSEM.LKEYS.KEYREL.PRED "_noun2_n_rel" ].
 
+noun3 := noun-noun-lex &
+  [ STEM < "noun3" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_noun3_n_rel" ].
+
 ;;; Adjectives
 
 ;;; Verbs
@@ -20,3 +24,7 @@ verb1 := verb-verb-lex &
 verb2 := verb-verb-lex &
   [ STEM < "verb2" >,
     SYNSEM.LKEYS.KEYREL.PRED "_verb2_v_rel" ].
+
+subord := nonfinite-clause-init-prehead-s-attach-subord-lex-item &
+  [ STEM < "subord" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_subord_rel" ].

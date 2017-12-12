@@ -1,4 +1,3 @@
-
 version=28
 
 section=general
@@ -24,14 +23,14 @@ section=direct-inverse
 section=tense-aspect-mood
 
 section=other-features
-  feature1_name=FORM
+  feature1_name=finiteness
   feature1_type=head
   feature1_cat=verb
   feature1_new=yes
     feature1_value1_name=finite
-      feature1_value1_supertype1_name=FORM
+      feature1_value1_supertype1_name=finiteness
     feature1_value2_name=nonfinite
-      feature1_value2_supertype1_name=FORM
+      feature1_value2_supertype1_name=finiteness
 
 section=sentential-negation
 
@@ -43,15 +42,21 @@ section=info-str
 
 section=arg-opt
 
+section=nominalclause
+
 section=clausalmods
   cms1_position=before
+  cms1_modifier_attachment=s
   cms1_subordinator=free
   cms1_subposition=before
+  cms1_subordinator-type=head
     cms1_freemorph1_orth=subord
-    cms1_freemorph1_pred=subord
+    cms1_freemorph1_pred=_subord_rel
   cms1_specialmorph=on
-    cms1_feat1_name=FORM
+    cms1_feat1_name=finiteness
     cms1_feat1_value=nonfinite
+
+section=clausal-comp
 
 section=lexicon
   noun1_name=noun
@@ -60,6 +65,8 @@ section=lexicon
     noun1_stem1_pred=_noun1_n_rel
     noun1_stem2_orth=noun2
     noun1_stem2_pred=_noun2_n_rel
+    noun1_stem3_orth=noun3
+    noun1_stem3_pred=_noun3_n_rel
   verb1_name=verb
   verb1_valence=intrans
     verb1_stem1_orth=verb1
@@ -71,12 +78,19 @@ section=morphology
   verb-pc1_name=finite
   verb-pc1_order=suffix
   verb-pc1_inputs=verb
-    verb-pc1_lrt1_name=subord
-      verb-pc1_lrt1_feat1_name=FORM
+  verb-pc1_obligatory=on
+    verb-pc1_lrt1_name=nonfin
+      verb-pc1_lrt1_feat1_name=finiteness
       verb-pc1_lrt1_feat1_value=nonfinite
       verb-pc1_lrt1_feat1_head=verb
       verb-pc1_lrt1_lri1_inflecting=yes
-      verb-pc1_lrt1_lri1_orth=subord
+      verb-pc1_lrt1_lri1_orth=nonfin
+    verb-pc1_lrt2_name=fin
+      verb-pc1_lrt2_feat1_name=finiteness
+      verb-pc1_lrt2_feat1_value=finite
+      verb-pc1_lrt2_feat1_head=verb
+      verb-pc1_lrt2_lri1_inflecting=yes
+      verb-pc1_lrt2_lri1_orth=fin
 
 section=toolbox-import
 

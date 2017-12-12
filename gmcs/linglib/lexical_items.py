@@ -989,7 +989,11 @@ def update_lex_items_vcluster(ch, mylang):
     mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT.VC - ].', merge=True, section='nounlex')
     mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.VC + ].', merge=True, section='verblex')
     if 'cms' in ch:
-        mylang.add('subord-lex-item := [ SYNSEM.LOCAL.CAT.VC - ].', merge=True, section='subordlex')
+        for cms in ch.get('cms'):
+            if cms.get('subordinator-type') == 'adverb':
+                mylang.add('adverb-subord-lex-item := [ SYNSEM.LOCAL.CAT.VC - ].', merge=True, section='subordlex')
+            if cms.get('subordinator-type') == 'head':
+                mylang.add('rpc-subord-lex-item := [ SYNSEM.LOCAL.CAT.VC - ].', merge=True, section='subordlex')
     if 'comps' in ch:
         mylang.add('comp-lex-item := [ SYNSEM.LOCAL.CAT.VC - ].', merge=True, section='complex')
     if 'has-adj' in ch:

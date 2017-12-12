@@ -15,11 +15,19 @@ def add_subord_lex(mylang, lexicon, cms, ch):
     add the type definition for the lexical item to mylang
     and the lexical entries to lexicon
     """
+
     mylang.set_section('addenda')
     mylang.add('head :+ [ INIT bool ].')
     nominalized, nom_strategy = is_nominalized(cms)
 
     if cms.get('subordinator-type') == 'head':
+        mylang.add('rpc-subord-lex-item := single-rel-lex-item & norm-ltop-lex-item &\
+        [ SYNSEM.LOCAL.CAT [ MC -,\
+                            HEAD +rpc & [ MOD < [ LOCAL scopal-mod &\
+                                                    [ CAT [ HEAD verb,\
+                                                            VAL [ COMPS < > ]]]]>],\
+                            VAL.COMPS < [LOCAL.CAT.VAL.COMPS < >] > ]].')
+
         if nominalized == 'yes':
             mylang.set_section('noun-lex')
             mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT.HEAD.NMZ - ].')
@@ -28,26 +36,19 @@ def add_subord_lex(mylang, lexicon, cms, ch):
                 if ns.get('name') == nom_strategy:
                     nmzRel = ns.get('nmzRel')
             if nmzRel == 'no':
-                mylang.add('scopal-mod-with-nominalized-comp-no-rel-lex := single-rel-lex-item & norm-ltop-lex-item &\
-        [ SYNSEM [ LOCAL [ CAT [ MC -,\
-                      HEAD.MOD < [ LOCAL scopal-mod &\
-                 [CAT [HEAD verb,\
-      VAL [ SPR < >,\
-          COMPS < >]],\
-      CONT.HOOK[LTOP  #mod,\
-      INDEX  #index ]]] >,\
-      VAL.COMPS < [LOCAL[CAT[HEAD noun,\
-                   VAL[SPR < >,\
-                       COMPS < >]],\
-      CONT.HOOK.LTOP  #comp ]] > ],\
-      CONT[HCONS <! qeq &\
-                    [ HARG  #h1,\
-                     LARG  #mod ],\
-                    qeq &\
-                    [ HARG  #h2,\
-                     LARG  #comp ] !>,\
-                     HOOK.INDEX  #index ]],\
-                     LKEYS.KEYREL[ARG0 event,\
+                mylang.add('scopal-mod-with-nominalized-comp-no-rel-lex := rpc-subord-lex-item &\
+        [ SYNSEM [ LOCAL [ CAT [ HEAD.MOD < [ CONT.HOOK [ LTOP  #mod,\
+                                            INDEX  #index ]] >,\
+                                VAL.COMPS < [LOCAL[CAT[HEAD noun],\
+                                                    CONT.HOOK.LTOP  #comp ]] > ],\
+                        CONT[HCONS <! qeq &\
+                             [ HARG  #h1,\
+                                LARG  #mod ],\
+                                qeq &\
+                            [ HARG  #h2,\
+                                LARG  #comp ] !>,\
+                            HOOK.INDEX  #index ]],\
+                    LKEYS.KEYREL[ARG0 event,\
                      ARG1  #h1,\
                      ARG2  #h2 ]]].')
 
@@ -61,25 +62,18 @@ def add_subord_lex(mylang, lexicon, cms, ch):
                     mylang.add('scopal-mod-with-nominalized-comp-no-rel-lex := [ SYNSEM [ LOCAL.CAT.SUBPAIR #subpair,\
                                       LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.SUBPAIR #subpair ] > ]].' )
             else:
-                mylang.add('scopal-mod-with-nominalized-comp-lex := single-rel-lex-item & norm-ltop-lex-item &\
-        [ SYNSEM [ LOCAL [ CAT [ MC -,\
-                    HEAD.MOD < [ LOCAL scopal-mod &\
-               [CAT [HEAD verb,\
-         VAL [SPR < >,\
-        COMPS < >]],\
-        CONT.HOOK[LTOP  #mod,\
-        INDEX  #index ]]] >,\
-        VAL.COMPS < [LOCAL[CAT[HEAD noun,\
-                 VAL[SPR < >,\
-                     COMPS < >]],\
-        CONT.HOOK.INDEX  #comp ]] > ],\
-        CONT[HCONS <! qeq &\
-                  [HARG  #h1,\
-                   LARG  #mod ] !>,\
-                   HOOK.INDEX  #index ]],\
+                mylang.add('scopal-mod-with-nominalized-comp-lex := rpc-subord-lex-item &\
+        [ SYNSEM [ LOCAL [ CAT [ HEAD.MOD < [ LOCAL.CONT.HOOK[LTOP  #mod,\
+                                                                INDEX  #index ]] >,\
+                               VAL.COMPS < [LOCAL[CAT[HEAD noun],\
+                                                CONT.HOOK.INDEX  #comp ]] > ],\
+                        CONT[HCONS <! qeq &\
+                              [HARG  #h1,\
+                               LARG  #mod ] !>,\
+                           HOOK.INDEX  #index ]],\
                    LKEYS.KEYREL[ARG0 event,\
-                   ARG1  #h1,\
-                   ARG2  #comp ]]].')
+                               ARG1  #h1,\
+                                ARG2  #comp ]]].')
 
                 mylang.add('nom-subord-lex-item := scopal-mod-with-nominalized-comp-lex &\
                 [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >,\
@@ -92,27 +86,21 @@ def add_subord_lex(mylang, lexicon, cms, ch):
                                       LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.SUBPAIR #subpair ] > ]].' )
         else:
             mylang.set_section('subordlex')
-            mylang.add('scopal-mod-with-comp-lex := single-rel-lex-item & norm-ltop-lex-item &\
-            [ SYNSEM [ LOCAL [ CAT [ MC -,\
-                            HEAD.MOD < [ LOCAL scopal-mod &\
-					      [ CAT [ HEAD verb,\
-						      VAL [ SPR < >,\
-							    COMPS < > ]],\
-						CONT.HOOK [ LTOP #mod,\
-							    INDEX #index ]]] >,\
-			   VAL.COMPS < [ LOCAL [ CAT [ HEAD verb,\
-							VAL [ SPR < >,\
-							      COMPS < > ]],\
-						  CONT.HOOK.LTOP #comps ]] > ],\
-		     CONT [ HCONS <! qeq & \
-				 [ HARG #h1,\
-				   LARG #mod ],\
-				 qeq &\
-				 [ HARG #h2,\
-				   LARG #comps ] !>,\
-			    HOOK.INDEX #index ]],\
-	     LKEYS.KEYREL [ ARG1 #h1,\
-			    ARG2 #h2 ]]].')
+            mylang.add('scopal-mod-with-comp-lex := rpc-subord-lex-item &\
+            [ SYNSEM [ LOCAL [ CAT [ HEAD.MOD < [ LOCAL [ CAT [ HEAD verb ],\
+                                						   CONT.HOOK [ LTOP #mod,\
+	                                    						    INDEX #index ]]] >,\
+                    			   VAL.COMPS < [ LOCAL [ CAT [ HEAD verb],\
+						                                CONT.HOOK.LTOP #comps ]] > ],\
+		                        CONT [ HCONS <! qeq & \
+                            				 [ HARG #h1,\
+                            				   LARG #mod ],\
+                                				 qeq &\
+                            				 [ HARG #h2,\
+                            				   LARG #comps ] !>,\
+			                            HOOK.INDEX #index ]],\
+	                 LKEYS.KEYREL [ ARG1 #h1,\
+			                        ARG2 #h2 ]]].')
             if cms.get('subordinator') == 'pair':
                 mylang.add('scopal-mod-with-comp-lex := [ SYNSEM [ LOCAL.CAT.SUBPAIR #subpair,\
                                     LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.SUBPAIR #subpair ] > ]].')
@@ -125,11 +113,8 @@ def add_subord_lex(mylang, lexicon, cms, ch):
 
     elif cms.get('subordinator-type') == 'adverb':
         mylang.set_section('subordlex')
-        mylang.add('intersective-mod-subord-lex-item := no-rels-hcons-lex-item &\
-  [ SYNSEM [ LOCAL [ CAT [ VAL [ COMPS < >,\
-				 SPR < >,\
-				 SUBJ < > ],\
-			   HEAD.MOD < [ LOCAL intersective-mod &\
+        mylang.add('adverb-subord-lex-item := no-rels-hcons-lex-item &\
+  [ SYNSEM [ LOCAL [ CAT [ HEAD.MOD < [ LOCAL intersective-mod &\
                                               [ CAT [ MC -,\
                                                       HEAD verb ] ] ] > ] ] ]].')
 
@@ -268,7 +253,7 @@ def add_subord_lex(mylang, lexicon, cms, ch):
                     constraints.append('SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL [ COMPS < > ]] >')
                 type = build_lex_type(lextype)
                 type += '-adv-subord-lex-item'
-                mylang.add(type + ' := intersective-mod-subord-lex-item & [ ' + constraints.pop() + ' ].')
+                mylang.add(type + ' := adverb-subord-lex-item & [ ' + constraints.pop() + ' ].')
                 while constraints != []:
                     mylang.add(type + ' := [ ' + constraints.pop() + ' ].')
                 orth = adverb.get('orth')
@@ -291,7 +276,7 @@ def add_subord_lex(mylang, lexicon, cms, ch):
                     constraints.append('SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL [ COMPS < > ]] >')
                 type = build_lex_type(lextype)
                 type += '-adv-subord-lex-item'
-                mylang.add(type + ' := intersective-mod-subord-lex-item & [ ' + constraints.pop() + ' ].')
+                mylang.add(type + ' := adverb-subord-lex-item & [ ' + constraints.pop() + ' ].')
                 while constraints != []:
                     mylang.add(type + ' := [ ' + constraints.pop() + ' ].')
                 orth = adverb.get('subordorth')
@@ -419,6 +404,14 @@ def add_subord_phrasal_types(mylang, rules, cms, ch):
         else:
             mylang.add(type + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.VAL.SUBJ < > ] >].')
 
+    if cms.get('subordinator-type') == 'head':
+        wo = ch.get('word-order')
+        if wo == 'sov' or wo == 'osv' or wo == 'ovs' or wo == 'v-final' or wo  == 'v2':
+            mylang.set_section('phrases')
+            mylang.add('rpc-head-comp-phrase := basic-head-1st-comp-phrase & head-final &\
+                [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +rpc ].')
+            rules.add('rpc-head-comp := rpc-head-comp-phrase.')
+
 def add_subordinators_matrix_pair_to_lexicon(mylang, lexicon, cms, ch):
     """
     Adds the matrix member of a subordinator pair to the lexicon
@@ -467,7 +460,7 @@ def add_subordinators_matrix_pair_to_lexicon(mylang, lexicon, cms, ch):
             constraints.append('SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL [ COMPS < > ]] >')
         type = build_lex_type(lextype)
         type += '-pair-lex-item'
-        #mylang.add(type + ' := intersective-mod-subord-lex-item & ' + const)
+        #mylang.add(type + ' := adverb-subord-lex-item & ' + const)
         mylang.add(type + ' := scopal-mod-matrix-lex-item & [ ' + constraints.pop() + ' ].')
         while constraints != []:
             mylang.add(type + ' := [ ' + constraints.pop() + ' ].')
@@ -761,7 +754,6 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
     elif pos == 'either':
         rules.add('adj-head-scop := adj-head-scop-phrase.')
         rules.add('head-adj-scop := head-adj-scop-phrase.')
-
 
 def customize_clausalmods(mylang, ch, lexicon, rules, roots):
     """
