@@ -12,7 +12,7 @@
 
 import MySQLdb
 import filters
-from u_filters import filter_list 
+from u_filters import filter_list
 import sys
 
 #Connect to MySQL server
@@ -61,6 +61,6 @@ for cand in candidates:
             print_values.append(print_value)
     else:
         print_values = filter_values
-    
+
     print str(r_id) + " : " + str(print_values)
     

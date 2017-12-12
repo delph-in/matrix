@@ -187,15 +187,15 @@ def create_choices_from_lt_id(lt_id, conn):
 
     # get the feature groups that define this language type
     fg_ids = conn.selQuery("SELECT lfg_grp_id " + \
-                                       "FROM lt_feat_grp " + \
-                                       "WHERE lfg_lt_id = %s",(lt_id))
+                           "FROM lt_feat_grp " + \
+                           "WHERE lfg_lt_id = %s",(lt_id))
 
     # for each feature group that defines this language type...
     for fg_id in fg_ids:
         # get the feat/val combos that define the group
         fvs = conn.selQuery("SELECT fg_feat, fg_value " + \
-                                      "FROM feat_grp " + \
-                                      "WHERE fg_grp_id = %s",(fg_id[0]))
+                            "FROM feat_grp " + \
+                            "WHERE fg_grp_id = %s",(fg_id[0]))
         if len(fvs) == 1:       # if only one feat/val combo was returned
             fv = fvs[0]            # ...this is a singleton group, so get the feature...
             choices[fv[0]] = fv[1] # and update that key's value in the output to its value 
@@ -256,7 +256,7 @@ def update_groups_table(fltr, conn):
     Tables modified: feat_grp
     """
     global last_group_id        # declare the highest group id in feat_grp table to be global var
-    
+
     # Get the specification of filters.  This is the definition of what combination of feat/val pairs
     # or absence of features that this filter cares about
     group_spec = fltr.fv
@@ -314,7 +314,7 @@ def update_groups_table_helper(gs, groups, conn):
             groups = update_groups_table_helper(g, groups, conn)
 
         answer = groups                         # set final value of groups to output
-    
+
     # gs is ['f:v']
     # if the spec is just a string or a list of one feat/val combo...    
     elif len(gs) == 1 or type(gs) == str:
@@ -324,18 +324,18 @@ def update_groups_table_helper(gs, groups, conn):
         try:
             # get the group id of this feat/val combo as a singleton group
             g_id = conn.selQuery("SELECT fg_grp_id FROM " + \
-                                                "(SELECT fg_grp_id, fg_feat, fg_value, count(*) num " + \
-                                                 "FROM feat_grp " + \
-                                                 "GROUP BY fg_grp_id) subq " + \
-                                            "WHERE num = 1 AND fg_feat = %s AND fg_value = %s",
-                                                                                                                         (f,v))[0][0]
+                                 "(SELECT fg_grp_id, fg_feat, fg_value, count(*) num " + \
+                                 "FROM feat_grp " + \
+                                 "GROUP BY fg_grp_id) subq " + \
+                                 "WHERE num = 1 AND fg_feat = %s AND fg_value = %s",
+                                 (f,v))[0][0]
             groups.append(g_id)     # and append that group id to groups list
         except IndexError:  # but if that feat/val combo isn't in the database as a singleton group...
             last_group_id += 1      # ...increment the highest group id...
 
             # ...and insert this feat/val combo into db as a group with that new highest group id
             conn.execute("INSERT INTO feat_grp " + \
-                                 "SET fg_grp_id = %s, fg_feat = %s, fg_value = %s", (last_group_id,f,v))
+                         "SET fg_grp_id = %s, fg_feat = %s, fg_value = %s", (last_group_id,f,v))
             groups.append(last_group_id)        # and append that id to the list of groups
         answer = groups                               # set output to groups
 
@@ -352,7 +352,7 @@ def update_groups_table_helper(gs, groups, conn):
         for i in range (2, len(gs)):                                    # for index of daughter after first...
             j = i - 1                                                         # ...set j to index of prev daughter
             from_string += ', feat_grp AS fg' + str(i) + ' ' # concatente new table alias to from string
-            
+
             if i != 2:                                  # if this isn't the first time through the loop...
                 where_string += 'AND '        # ...add an AND to where string
 
@@ -367,11 +367,11 @@ def update_groups_table_helper(gs, groups, conn):
             feat_string += 'AND fg' + str(i) + '.fg_feat = "' + g[0] + '" '
 
             # add the value to where clause
-            value_string += 'AND fg' + str(i) + '.fg_value = "' + g[1] + '" ' 
+            value_string += 'AND fg' + str(i) + '.fg_value = "' + g[1] + '" '
 
-        # set the start of the query
+            # set the start of the query
         prefix = 'SELECT feat_grp.fg_grp_id FROM feat_grp WHERE feat_grp.fg_grp_id IN ' + \
-                        '(SELECT fg1.fg_grp_id '
+                 '(SELECT fg1.fg_grp_id '
 
         # set the end of the query
         suffix = ') GROUP BY feat_grp.fg_grp_id HAVING count(*) = ' + str(len(gs)-1)
@@ -394,8 +394,8 @@ def update_groups_table_helper(gs, groups, conn):
 
                 # and add as a part of the new group id
                 conn.execute("INSERT INTO feat_grp " + \
-                                     "SET fg_grp_id = %s, fg_feat = %s, fg_value = %s",
-                                                                                                             (last_group_id, f, v))
+                             "SET fg_grp_id = %s, fg_feat = %s, fg_value = %s",
+                             (last_group_id, f, v))
             groups.append(last_group_id)        # add new group id to output groups list
 
         else:                   # but if we got a group id back encompassing these feat/val combos...
@@ -424,7 +424,7 @@ def update_group_filter_table(f_id, groups, conn):
     Tables modified: fltr_feat_grp
     """
     #update fltr_lt each time, to make sure it stays consistent.
-    
+
     # delete any existing intersection between this fliter and feature groups
     conn.execute("DELETE FROM fltr_feat_grp WHERE ffg_fltr_id = %s", (f_id))
 
@@ -454,7 +454,7 @@ def normalize_group_spec(group_spec):
     Functionality: converts the fv member of a Filter to a full binary tree
     Tables accessed: none
     Tables modified: none
-    """    
+    """
     # These are nested lists with at least three elements each where the first element 
     # of each list is the string 'or' or 'and', and the remaining elements are either
     # strings of the form 'feature:value' or group_specs themselves.
@@ -468,7 +468,7 @@ def normalize_group_spec(group_spec):
         if type(group_spec[0]) == str:         # ...and its only member is a string...
             return group_spec                     # ...just return that list
         # ...but if it's of length one and the only member is not a string...
-        else:   
+        else:
             raise ValueError, "Ill-formed group spec."  # ...then it's ill-fomed, so raise an error
 
     #Take possibly flat tree and make it binary for easier processing.
@@ -513,7 +513,7 @@ def normalize_gs_helper(gs, finished):
     """
     # TODO: this function seems big, can it be made smaller?  broken up? refactored?
     #if finished == False:
-        #return [gs,finished]
+    #return [gs,finished]
 
     #Change finished to False as soon as we do something.  Then pass it back
     #through the recursive calls for this pass.
@@ -549,7 +549,7 @@ def normalize_gs_helper(gs, finished):
         # If we've made it this far, operator is 'and'.
         # in case where daughter operators are also 'and' or strings
         elif ((left_dtr[0] == 'and' or type(left_dtr) == str) and
-              (right_dtr[0] == 'and' or type(right_dtr) == str)):
+                  (right_dtr[0] == 'and' or type(right_dtr) == str)):
 
             # recurse on left daughter and input value of finished            
             [new_left_dtr, f1] = normalize_gs_helper(left_dtr, finished)
@@ -563,7 +563,7 @@ def normalize_gs_helper(gs, finished):
 
             # set output to that new fv spec and the finished output of recursing on right daughter            
             return_value = [new_gs, f2]
-        
+
         #Now the cases where we have to change something.
 
         #Operator is 'and'.  Left dtr is 'or' and right dtr is string.
@@ -596,7 +596,7 @@ def normalize_gs_helper(gs, finished):
             # what we do in this case is change something like ['and', ;ld, ['or', rdld, rdrd]]
             # to something like ['or', ['and', ld, rdld], ['and', ld, rdrd]]
             # which are logically equivalent
-            
+
             # set finished to False because we can't be sure we've fixed everything even after
             # making this change
             finished = False
@@ -623,7 +623,7 @@ def normalize_gs_helper(gs, finished):
             # ['or', ['and', ldld, rdld], ['and', ldld, rdrd], ['and', ldrd, rdld], ['and', ldrd, rdrd]] which is
             # logically equivalent, then we binarize that spec so it's more like a right-branching thing:
             # ['or', ['and', ldld, rdld], ['or', ['and', ldld, rdrd], ['or'....
-            
+
             # set finished to False because we can't be sure we've fixed everything even after
             # making this change
             finished = False
@@ -660,7 +660,7 @@ def normalize_gs_helper(gs, finished):
             # in this case we take something like ['and', ['or', ldld, ldrd], ['and', rdld, rdrd]] and
             # convert it to something like ['or', ['and', ldld, rdld, rdrd], ['and', ldrd, rdld, rdrd]] (but with
             # both daughters binarized), which is logically equivalent
-            
+
             # set finished to False because we can't be sure we've fixed everything even after
             # making this change            
             finished = False
@@ -697,7 +697,7 @@ def normalize_gs_helper(gs, finished):
             # in this case we take something like ['and', ['and', ldld, ldrd], ['or', rdld, rdrd]] and
             # convert it to something like ['or', ['and', ldld, ldrd, rdld], ['and', ldld, ldrd, rdrd]] (but with
             # both daughters binarized), which is logically equivalent
-            
+
             # set finished to False because we can't be sure we've fixed everything even after
             # making this change                        
             finished = False
@@ -707,7 +707,7 @@ def normalize_gs_helper(gs, finished):
             flat_dtr_1 = ['and', right_dtr[1], left_dtr[1], left_dtr[2]]
 
             # binarize that spec
-            bin_dtr_1 = make_binary_gs(flat_dtr_1)            
+            bin_dtr_1 = make_binary_gs(flat_dtr_1)
 
             # create a new spec that is this node's operator (and) with the right daughter's right
             # daughter and both daughters of the left daughter                        
@@ -771,11 +771,11 @@ def make_binary_gs(group_spec):
                          strings that are a feat/val combo
     Tables accessed: none
     Tables modified: none
-    """    
+    """
     l = len(group_spec)                                         # get length of group_spec
 
     # Check syntax of group_spec.
-    
+
     if not type(group_spec) == list:                        # if group_spec is not a list...
         raise ValueError, "Group_spec is not a list." # ...raise an error
 
@@ -796,15 +796,15 @@ def make_binary_gs(group_spec):
         op = group_spec[0]                          # ...get the operator (and or or)
         left_dtr = group_spec[1]                    # get the left daughter (car the list)
 
-       # make the right daughter the operator plus the rest of the daughters (the cdr of the input
-       # list)        
+        # make the right daughter the operator plus the rest of the daughters (the cdr of the input
+        # list)
         right_dtr = [op] + group_spec[2:]
 
         # and call this function recursively on the cdr of the list
         binary_right_dtr = make_binary_gs(right_dtr)
 
         # put the results of binarzing the cdr of the list into a single right-daughter element
-        return_value = [op, left_dtr, binary_right_dtr] 
+        return_value = [op, left_dtr, binary_right_dtr]
 
     elif l == 3:                                                    # otherwise, if we have exactly two daughters...
         if type(group_spec[1]) == str:                          # ...if the left daughter is a string...
@@ -826,7 +826,7 @@ def make_binary_gs(group_spec):
 # flatten_binary_gs(gs): Takes group_spec in binary format and
 # flattens it.  Result should be at most two layers deep (an
 # or of ands).
-     
+
 def flatten_binary_gs(gs):
     """
     Function: flatten_binary_gs
@@ -855,7 +855,7 @@ def flatten_binary_gs(gs):
 
                 # if the first element of the flattened daughter is now equal to the same operator
                 # of this node...
-                if d[0] == op:                    
+                if d[0] == op:
                     #[or1, [or2, [and, a, b] [and, c, d]], e]
                     #op = or1
                     #first nd = [or2, [and, a, b] [and, c, d]]
@@ -868,10 +868,10 @@ def flatten_binary_gs(gs):
                         #if type(nd) == str:
 
                         #else:
-                    #new_dtrs += [flatten_binary_gs(nd)]
+                        #new_dtrs += [flatten_binary_gs(nd)]
 
                 # if the flattened daughter's operator is different from that of this node...
-                else:                                          
+                else:
                     # ...don't promote but do flatten recursively.
                     # do this by appending the flattened daughter itself (not the granddaughter)
                     # TODO: this seems redundant to recusively call this on d here as well as above...
@@ -882,7 +882,7 @@ def flatten_binary_gs(gs):
         answer = new_dtrs
 
     return answer       # return output
-            
+
 
 #######################################################################
 # make_string: for constructing the main select query
@@ -895,10 +895,10 @@ def make_string(limit):
     """
 
     output = "SELECT r_result_id, r_mrs, i_input " + \
-                 "FROM result, item  " + \
-                  "WHERE result.r_parse_id = item.i_id " + \
-                        "AND r_wf = 1  " + \
-                        "AND result.r_result_id < 12000000 LIMIT " + str(limit) + ", 100000"
+             "FROM result, item  " + \
+             "WHERE result.r_parse_id = item.i_id " + \
+             "AND r_wf = 1  " + \
+             "AND result.r_result_id < 12000000 LIMIT " + str(limit) + ", 100000"
     return output
 
 def getLT_FVs(fvdict):
@@ -961,8 +961,8 @@ def main(osp_id, conn):
     # delete all existing results for that osp in res_sfltr
     # TODO: consider speeding this up by just putting the osp id on res_sfltr
     conn.execute("DELETE FROM res_sfltr WHERE rsf_res_id in " + \
-                             "(SELECT r_result_id FROM result " + \
-                                     "WHERE r_osp_id = %s)", (osp_id))
+                 "(SELECT r_result_id FROM result " + \
+                 "WHERE r_osp_id = %s)", (osp_id))
 
     if len(passAllUnivs) == 0:                  # if no strings in that osp_id pass all u filters...
         print "That is not a valid osp_id."   # ...give error message
@@ -994,7 +994,7 @@ def main(osp_id, conn):
                 applyResult = 2                               # ...give it a "result" of don't care
 
             fID = filter_id_hash[f.name]                   # get the filter's ID
-            
+
             # TODO: Consider not having two separate tables res_fltr and res_sfltr...they're the
             # same or have to filter tables, too, to make that parallel.
             # TODO: deal with case where the filters have already run on these results.  should
@@ -1004,7 +1004,7 @@ def main(osp_id, conn):
 
                 # ...add the result/filter combo to the set of results to be added to res_sfltr
                 resultsToInsert.add((res_id, fID, applyResult))
-                
+
                 if ((len(resultsToInsert) % 1000) == 0):                # if we have 1000 results to insert
 
                     # print logging message
@@ -1020,7 +1020,7 @@ def main(osp_id, conn):
 
     # insert final set of specific results for those where i didn't get up to 1000
     filters.insertManyFilteredSpecResults(resultsToInsert, conn)
-        
+
     return
 
 # set to true for running on my machine.  set to False before commiting to repository.
@@ -1054,13 +1054,13 @@ if __name__ == "__main__":      # only run if run as main module...not if import
 elif moduleTest:                        # or if i'm testing, run it on MatrixTDB2
     # notify user moduleTest is set to True
     print >> sys.stderr, "Note: module testing turned on in run_specific_filters.py.  " + \
-                                 "Unless testing locally, set moduleTest to False."
+                         "Unless testing locally, set moduleTest to False."
 
     # get the osp_id for the results we want to filter.  Doing it by osp_id instead of just all of the
     # strings allows us to import new strings and not re-run the specific filters on every single
     # string we already have in the database
     osp_id = raw_input("\nWhat is the osp_id for the results you would lke to filter: ")
-    
+
     myconn = MatrixTDBConn('2')       # connect to MySQL server 
 
     # update database with specific filters, make sure they are associated with correct feature
