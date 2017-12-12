@@ -22,6 +22,8 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "evidentials-infl-aux-shp") (:content . "evidentials-infl-aux-shp: Testing the evidentiality library with the evidentials of Shipibo-Konibo"))
+((:path . "evidentials-infl-aux-kal") (:content . "evidentials-infl-aux-kal: Testing the evidentiality library with Kalaallisut evidentials"))
 ((:path . "evidentials-auxiliary-choose") (:content . "evidentials-auxiliary-choose: testing evidential auxiliary verbs with selected evidential inventory"))
 ((:path . "evidentials-auxiliary-build") (:content . "evidentials-auxiliary-build: testing evidential auxiliary verbs with user-input evidential inventory"))
 ((:path . "evidentials-inflection-build") (:content . "evidentials-inflection-build: testing evidential verbal inflection with user-input evidential inventory"))

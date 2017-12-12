@@ -282,10 +282,8 @@ cagr-pseudospanish-feature-resolution=tests the part of coordination and agreeme
 evidentials-infl-aux-kaz=testing coverage of Kazakh evidentials (infl, aux)
 evidentials-infl-cng=testing coverage of Qiang evidentials (infl)
 evidentials-aux-apw=testing coverage of Western Apache evidentials (aux)
-evidentials-infl-aux-shp=testing coverage of Shipibo-Konibo evidentials (infl, aux)
 evidentials-infl-yux=testing coverage of Kolyma Yukaghir evidentials (infl)
 evidentials-aux-peb=testing coverage of Eastern Pommo evidentials (infl)
-evidentials-infl-aux-kal=testing coverage of Kalaallisut evidentials (infl, aux)
 evidentials-inflection-choose=testing evidential verbal inflection with selected evidential inventory
 evidentials-inflection-build=testing evidential verbal inflection with user-input evidential inventory
 evidentials-auxiliary-build=testing evidential auxiliary verbs with user-input evidential inventory
@@ -293,3 +291,5 @@ evidentials-auxiliary-choose=testing evidential auxiliary verbs with selected ev
 vfinal=V-final basic word order: verb in final position, subject and object in either position in front.
 
 v2-basic-order=V2 basic word order: verb in second position, subject and object on either side.
+evidentials-infl-aux-kal=Testing the evidentiality library with Kalaallisut evidentials
+evidentials-infl-aux-shp=Testing the evidentiality library with the evidentials of Shipibo-Konibo
