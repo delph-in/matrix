@@ -32,6 +32,12 @@ from gmcs.linglib import word_order
 from gmcs.linglib import features
 from gmcs.linglib import lexical_items
 from gmcs.linglib import agreement_features
+
+#############################################################################################################################
+### TESTING
+#############################################################################################################################
+from gmcs.linglib import adnominal_possession
+#############################################################################################################################
 from gmcs.linglib import verbal_features
 from gmcs.linglib import negation
 from gmcs.linglib import coordination
@@ -594,6 +600,11 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
   # customize_gender()
   #  customize_other_features()
   agreement_features.customize_agreement_features(mylang, hierarchies)
+#############################################################################################################
+### TESTING
+#############################################################################################################
+  adnominal_possession.customize_adnominal_possession(mylang,ch,rules,irules,lexicon)
+#############################################################################################################
   # customize_form()
   # customize_tense()
   # customize_aspect()

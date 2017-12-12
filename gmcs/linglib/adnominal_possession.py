@@ -1,5 +1,5 @@
-import sys
 import gmcs.tdl
+
 
 # Atoms of a possessive strategy:
 #
@@ -17,10 +17,14 @@ import gmcs.tdl
 
 # PRIMARY FUNCTION
 def customize_adnominal_possession(mylang,ch,rules,irules,lexicon):
-    mylang_real=tdl.TDLfile(mylang)
-    print mylang
-    
-    mylang.set_section('adnom-poss')
+    print "beep"
+    for item in ch['section']:
+        print item
+    for strat in ch.get('poss-strat',[]):
+        print strat
+        print "boop"
+        customize_rules(mylang,ch,rules)
+
 
 # What customize_adnominal_possession does:
 #    For each strategy (or strategy object?):
@@ -30,8 +34,28 @@ def customize_adnominal_possession(mylang,ch,rules,irules,lexicon):
 
 
 # SECONDARY FUNCTIONS
-# def customize_rules(mylang,ch,rules)
-#     IF: possessor is specifier-like, then add head-spec-hc
+def customize_rules(mylang,ch,rules):
+    top_rule=""
+    mylang.set_section('phrases')
+#    IF: possessor is specifier-like, then add head-spec-hc
+# FOR EACH STRATEGY
+"""
+    if ch.get('mod-spec')=='spec':
+        top-rule='head-spec-phrase-hc'
+        mylang.add(top-rule + ' :=  basic-head-spec-phrase-super &  [  NON-HEAD-DTR.SYNSEM [ OPT - ],\
+    HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK #hook ,\
+    C-CONT.HOOK #hook ].')
+    elif ch.get('mod-spec')=='modifier':
+        if ch.get('mark-loc')=='possessum-marking':
+            top-rule='head-comps'
+        else:
+            top-rule='head-mod'
+# CHECK AGAINST GENERAL WORD ORDER INFO:
+    if ch.get('order')=='possessor-first':
+        mylang.add(top-rule + ' := head-final.',merge=True)
+    else:
+        mylang.add(top-rule + ' := head-initial.',merge=True)
+""" 
 #     IF: possessor is modifier-like and it's possessor marking, then add head-mod.
 #     IF: possessive phrases are out of order, then add a new rule with the right order
 #         with a req that its inflected component be POSS +

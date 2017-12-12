@@ -562,7 +562,7 @@ class MatrixDefFile:
   'arg-opt':'ArgumentOptionality', 'lexicon':'Lexicon',
   'morphology':'Morphology','toolbox-import':'ImportToolboxLexicon',
   'test-sentences':'TestSentences','gen-options':'TestByGeneration',
-  'ToolboxLexicon':'ImportToolboxLexicon','adnom-poss':'Adnominal Possession'}
+  'ToolboxLexicon':'ImportToolboxLexicon','adnom-poss':'AdnominalPossession'}
   def_file = ''
   v2f = {}
   f2v = {}
