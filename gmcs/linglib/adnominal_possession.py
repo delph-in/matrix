@@ -19,6 +19,7 @@ from gmcs.linglib.word_order import customize_major_constituent_order
 
 # PRIMARY FUNCTION
 def customize_adnominal_possession(mylang,ch,rules,irules,lexicon):
+    # TODO: add POSS feature and POSS.PNG to head feature here.
     for strat in ch.get('poss-strat',[]):
         customize_rules(strat,mylang,ch,rules)
         #customize_irules(strat,mylang,ch,irules)
@@ -30,22 +31,22 @@ def customize_adnominal_possession(mylang,ch,rules,irules,lexicon):
 def customize_rules(strat,mylang,ch,rules):
 # TODO: deal with free word order
     """
-    Add the necessary phrase rule to combine possessor and possessum
+    Adds the necessary phrase rule to combine possessor and possessum
     If rule already exists (head-comp case), then make sure its order is correct.
     """
     phrase_rule=""
     mylang.set_section('phrases')
-    # Add a head-compositional variant of head-spec if possessor = spec
+    # Adds a head-compositional variant of head-spec if possessor = spec
     if strat.get('mod-spec')=='spec':
         phrase_rule="head-spec-hc-phrase"
         # TODO: constrain head-spec-hc so it only applies to poss-phrases.
         mylang.add(phrase_rule + ' :=  basic-head-spec-phrase-super &  [  NON-HEAD-DTR.SYNSEM [ OPT - ],\
     HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK #hook ,\
     C-CONT.HOOK #hook ].')
-    # Add either head-mod or head-comp if possessor = mod
+    # Adds either head-mod or head-comp if possessor = mod
     elif strat.get('mod-spec')=='mod':
         if strat.get('mark-loc')=='possessum-marking':
-            phrase_rule="head-comp"
+            phrase_rule="head-comp-poss-phrase"
             # Check if the existing head-comp rule has the correct order; 
             # if not, add a new rule with correct order that only applies to poss-phrases.
             head_comp_order=customize_major_constituent_order(ch.get('word-order'),mylang,ch,rules)['hc']
@@ -59,16 +60,18 @@ def customize_rules(strat,mylang,ch,rules):
                 # TODO: constrain head-comp-poss-phrase  so it only applies to poss-phrases.
                 mylang.add(phrase_rule +'-poss-phrase  := basic-head-comp-phrase &'+strat.get('order')+' ].')
         else:
-            phrase_rule="head-mod-phrase"
+            phrase_rule="head-mod-poss-phrase"
             mylang.add('head-mod-phrase := basic-head-mod-phrase-simple & head-compositional & \
      [ SYNSEM.LOCAL.CAT.VAL [ SPEC #spec ], \
        HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPEC #spec].')
-    # Add word order info to the phrase rule (unless it's the head-comps pattern -- it's already been dealt with) 
-    if phrase_rule!='head-comp':
+    # Adds word order info to the phrase rule (unless it's the head-comps pattern -- it's already been dealt with) 
+    if phrase_rule!='head-comp-poss-phrase':
         if strat.get('order')=='possessor-first':
             mylang.add(phrase_rule + ' := head-final.',merge=True)
         else:
             mylang.add(phrase_rule + ' := head-initial.',merge=True)
+    # Adds rule to rules.tdl
+    rules.add(phrase_rule.replace('-phrase','') + ':= '+phrase_rule+'. ' )
 
 
 
@@ -95,9 +98,7 @@ def customize_rules(strat,mylang,ch,rules):
 #             If double-marking
 #                ADD possessum-lex-rule with COMPS<[possessor]>
 #                ADD a feature [HEAD.POSS +] to the possessor infl rule.
-#
-#
-#
+
 
 
 # TODO: figure out what happens with double marking
