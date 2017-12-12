@@ -1,6 +1,7 @@
 import gmcs.tdl
+from gmcs.linglib.word_order import customize_major_constituent_order
 
-
+###################################################################
 # Atoms of a possessive strategy:
 #
 # The rule that combines possessor and possessum
@@ -12,53 +13,65 @@ import gmcs.tdl
 #
 # For each non-affix:
 # Lexical entries + rules to attach these words to their heads
-
+#
+###################################################################
 
 
 # PRIMARY FUNCTION
 def customize_adnominal_possession(mylang,ch,rules,irules,lexicon):
-    print "beep"
-    for item in ch['section']:
-        print item
     for strat in ch.get('poss-strat',[]):
-        print strat
-        print "boop"
-        customize_rules(mylang,ch,rules)
+        customize_rules(strat,mylang,ch,rules)
+        #customize_irules(strat,mylang,ch,irules)
+        #customize_lexicon(strat,mylang,ch,lexicon)
 
-
-# What customize_adnominal_possession does:
-#    For each strategy (or strategy object?):
-#        call customize_rules()
-#        call customize_irules()
-#        call customize_lexicon()
 
 
 # SECONDARY FUNCTIONS
-def customize_rules(mylang,ch,rules):
-    top_rule=""
+def customize_rules(strat,mylang,ch,rules):
+# TODO: deal with free word order
+    """
+    Add the necessary phrase rule to combine possessor and possessum
+    If rule already exists (head-comp case), then make sure its order is correct.
+    """
+    phrase_rule=""
     mylang.set_section('phrases')
-#    IF: possessor is specifier-like, then add head-spec-hc
-# FOR EACH STRATEGY
-"""
-    if ch.get('mod-spec')=='spec':
-        top-rule='head-spec-phrase-hc'
-        mylang.add(top-rule + ' :=  basic-head-spec-phrase-super &  [  NON-HEAD-DTR.SYNSEM [ OPT - ],\
+    # Add a head-compositional variant of head-spec if possessor = spec
+    if strat.get('mod-spec')=='spec':
+        phrase_rule="head-spec-hc-phrase"
+        # TODO: constrain head-spec-hc so it only applies to poss-phrases.
+        mylang.add(phrase_rule + ' :=  basic-head-spec-phrase-super &  [  NON-HEAD-DTR.SYNSEM [ OPT - ],\
     HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK #hook ,\
     C-CONT.HOOK #hook ].')
-    elif ch.get('mod-spec')=='modifier':
-        if ch.get('mark-loc')=='possessum-marking':
-            top-rule='head-comps'
+    # Add either head-mod or head-comp if possessor = mod
+    elif strat.get('mod-spec')=='mod':
+        if strat.get('mark-loc')=='possessum-marking':
+            phrase_rule="head-comp"
+            # Check if the existing head-comp rule has the correct order; 
+            # if not, add a new rule with correct order that only applies to poss-phrases.
+            head_comp_order=customize_major_constituent_order(ch.get('word-order'),mylang,ch,rules)['hc']
+            if head_comp_order=='head-comp':
+                head_comp_order='head-initial'
+            else:
+                head_comp_order='head-final'
+            if head_comp_order!=strat.get('order'):
+                print head_comp_order
+                print strat.get('order')
+                # TODO: constrain head-comp-poss-phrase  so it only applies to poss-phrases.
+                mylang.add(phrase_rule +'-poss-phrase  := basic-head-comp-phrase &'+strat.get('order')+' ].')
         else:
-            top-rule='head-mod'
-# CHECK AGAINST GENERAL WORD ORDER INFO:
-    if ch.get('order')=='possessor-first':
-        mylang.add(top-rule + ' := head-final.',merge=True)
-    else:
-        mylang.add(top-rule + ' := head-initial.',merge=True)
-""" 
-#     IF: possessor is modifier-like and it's possessor marking, then add head-mod.
-#     IF: possessive phrases are out of order, then add a new rule with the right order
-#         with a req that its inflected component be POSS +
+            phrase_rule="head-mod-phrase"
+            mylang.add('head-mod-phrase := basic-head-mod-phrase-simple & head-compositional & \
+     [ SYNSEM.LOCAL.CAT.VAL [ SPEC #spec ], \
+       HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPEC #spec].')
+    # Add word order info to the phrase rule (unless it's the head-comps pattern -- it's already been dealt with) 
+    if phrase_rule!='head-comp':
+        if strat.get('order')=='possessor-first':
+            mylang.add(phrase_rule + ' := head-final.',merge=True)
+        else:
+            mylang.add(phrase_rule + ' := head-initial.',merge=True)
+
+
+
 
 # NOTE: customize_irules doesn't yet deal with situations where one marker is an affix and one isn't:
 # NOTE: customize_irules and customize_lex both don't handle agreement yet
