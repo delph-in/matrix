@@ -1087,6 +1087,34 @@ class ChoicesFile:
     #   A flag feature 'customized' is added, which indicates whether the feature
     #   is created in the customization system by users. A feature is specified as
     #   either 'customized=y' or 'customized=n'.
+    def features(self):
+        features = []
+
+        # Case
+        features += self.__get_features(case.case_names(self), 0, 1, 'case',
+                                        'LOCAL.CAT.HEAD.CASE', 'noun', 'y')
+        # Number, Person, and Pernum
+        pernums = self.pernums()
+        if pernums:
+            features += self.__get_features(pernums, 0, 0, 'pernum',
+                                            'LOCAL.CONT.HOOK.INDEX.PNG.PERNUM', 'noun', 'y')
+        else:
+            features += self.__get_features(self.numbers(), 0, 0, 'number',
+                                            'LOCAL.CONT.HOOK.INDEX.PNG.NUM', 'noun', 'y')
+            features += self.__get_features(self.persons(), 0, 0, 'person',
+                                            'LOCAL.CONT.HOOK.INDEX.PNG.PER', 'noun', 'y')
+
+        # Gender
+        features += self.__get_features(self.genders(), 0, 0, 'gender',
+                                        'LOCAL.CONT.HOOK.INDEX.PNG.GEND', 'noun', 'y')
+
+        # Case patterns
+        features += self.__get_features(self.patterns(), 0, 1,
+                                        'argument structure', '', 'verb', 'n')
+
+        # Form
+        features += self.__get_features(self.forms(), 0, 0, 'form',
+                                        'LOCAL.CAT.HEAD.FORM', 'verb', 'y')
 
         # Tense
         features += self.__get_features(self.tenses(), 0, 0, 'tense',
@@ -1227,7 +1255,7 @@ class ChoicesFile:
     # convert_value(), followed by a sequence of calls to convert_key().
     # That way the calls always contain an old name and a new name.
     def current_version(self):
-        return 28
+        return 29
 
     def convert_value(self, key, old, new, partial=False):
         if key in self:
@@ -1244,6 +1272,16 @@ class ChoicesFile:
             self[new] = self[old]
             #self.delete(old, prune=True)
             self.delete(old)
+
+    # For example, combine nf-subform and fin-subform
+    # into one key, 'form-fin-nf', and put the values
+    def combine_keys(self, new, old1, old2):
+        if old1 in self and old2 in self:
+            tmp = self[old1]
+            self[old1].extend(self[old2])
+            self[new] = self[old1]
+            self.delete(old1)
+            self.delete(old2)
 
     def convert_0_to_1(self):
         self.convert_key('wordorder', 'word-order')
@@ -2131,6 +2169,29 @@ class ChoicesFile:
                         orth = lri['orth']
                         self.convert_value(lri.full_key + '_orth', orth, orth.lower())
 
+    def convert_28_to_29(self):
+        """
+        Updates the treatment of FORM.
+        FORM will no longerbe implicit with has-aux=yes.
+        It will be explicitly initialized in Other Features section.
+        FORM will no longer be available in Tense, Aspect, and Mood section.
+        FORM will no longer be a special hierarchy but will look much like other features,
+        except finite and nonfinite values will be initialized by default.
+        """
+        if self.get('noaux-fin-nf') == 'on':
+            self.convert_key('noaux-fin-nf', 'form-fin-nf')
+        elif self.get('has-aux') == 'yes' or 'nf-subform' in self or 'fin-subform' in self:
+            self['form-fin-nf'] = 'on'
+        for subtype in self.get('nf-subform'):
+            subtype['supertype'] = 'nonfinite'
+        for subtype in self.get('fin-subform'):
+            subtype['supertype'] = 'finite'
+        if 'nf-subform' in self and 'fin-subform' in self:
+            self.combine_keys('form-subtype', 'nf-subform', 'fin-subform')
+        elif 'nf-subform' in self:
+            self.convert_key('nf-subform', 'form-subtype')
+        elif 'fin-subform' in self:
+            self.convert_key('fin-subform', 'form-subtype')
 
 
 ########################################################################

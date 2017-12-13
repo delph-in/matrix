@@ -60,3 +60,13 @@ def add_ctp_to_lexicon(mylang,lexicon):
 def add_arg_structures(mylang, ch, lexicon):
     for ccs in ch.get('comps'):
         pass
+
+def validate(ch,vr):
+    if not ch.get('comps'):
+        pass
+    if ch.get('word-order') not in ['sov', 'ovs', 'vfinal', 'osv']:
+        for css in ch.get('comps'):
+            if css['clause-pos-extra'] == 'on':
+                vr.err(css.full_key + '_clause-pos-extra',
+                       'Extraposed clausal complements are only supported for word orders '
+                       'where Objects precedes Verb (e.g. SOV).')

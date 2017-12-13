@@ -315,8 +315,8 @@ def create_verb_lex_type(cases, ch, hierarchies, lexicon, mylang, verb):
 
     features.customize_feature_values(mylang, ch, hierarchies, verb, vtype, 'verb', None, cases)
 
-        stems = verb.get('stem', [])
-        stems.extend(verb.get('bistem', []))
+    stems = verb.get('stem', [])
+    stems.extend(verb.get('bistem', []))
     for stem in stems:
         add_stem_to_lexicon(lexicon, stem, vtype)
 
