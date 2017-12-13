@@ -73,20 +73,17 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
     # ASF 2008-11-03 v2 analysis requires MC feature is not passed up to mother in
     # head - comp and not from mod to mother, putting it back for other wo options
 
-# KPH 2017-11/17 passing up MC from the non-head-dtr is makes incorrect predictions
-# for clausal modifiers, so I've removed it.
-
     if not wo == 'v2':
         mylang.add_literal(';Constraint on MC used to be part of matrix.tdl\n;' +
-               ';it applies to all wo implementations, except for v2')
+                           ';it applies to all wo implementations, except for v2')
         mylang.add('basic-head-comp-phrase :+\
                 [ SYNSEM.LOCAL.CAT.MC #mc,\
                   HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].',
                    section='addenda')
-        #mylang.add('basic-head-mod-phrase-simple :+\
-         #       [ SYNSEM.LOCAL.CAT.MC #mc, \
-          #        NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].',
-           #        section='addenda')
+        mylang.add('basic-head-mod-phrase-simple :+\
+                [ SYNSEM.LOCAL.CAT.MC #mc, \
+                  NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].',
+                   section='addenda')
 
 
     # Head-comp order
@@ -854,5 +851,4 @@ def determine_consistent_order(wo,hc,ch):
             # return what we learned
 
     return {'adp': adp, 'aux': aux, 'qpart_order': qpart_order} #TODO: verify key
-
 

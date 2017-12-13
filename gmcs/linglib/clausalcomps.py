@@ -21,6 +21,7 @@ def customize_clausalcomps(mylang,ch,lexicon,rules,irules):
     add_complementizer_type_to_grammar(mylang,ch,rules)
 
 def add_complementizer_type_to_grammar(mylang,ch,rules):
+    print('adding type')
     mylang.set_section('complex')
     mylang.add('comp-lex-item := raise-sem-lex-item & basic-one-arg &\
       [ SYNSEM.LOCAL.CAT [ HEAD comp &\
@@ -43,6 +44,7 @@ def add_complementizer_type_to_grammar(mylang,ch,rules):
                 mylang.add(typename + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM ' + f['value'] + ' ].',merge=True)
 
 def add_complementizers_to_lexicon(lexicon,ch):
+    print('adding lex')
     lexicon.add_literal(';;; Complementizers')
     for comp_strategy in ch['comps']:
         for complementizer in comp_strategy['complementizer']:
