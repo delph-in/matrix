@@ -1,6 +1,6 @@
 import gmcs.tdl
 from gmcs.linglib.word_order import customize_major_constituent_order
-
+from gmcs.linglib.morphotactics import all_position_classes
 ###################################################################
 # Atoms of a possessive strategy:
 #
@@ -86,30 +86,23 @@ def customize_irules(strat,mylang,ch,irules):
                     # Added these supertypes to morphotactics.py as well
                     if strat.get('mod-spec')=='spec' or (strat.get('mod-spec')=='mod' and strat.get('mark-loc')=='possessum-marking'):
                         lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') + \
-                                                          ['val-change-with-ccont-rule'])
+                                                          ['val-change-with-ccont-lex-rule'])
                     else:
                         # This rule type doesn't exist in matrix.tdl. Writing to the forum to see if I can add it there, or just to my grammars, or if it's wrong on some other level.
                         lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') + \
-                                                          ['head-change-with-ccont-rule'])
-                   
+                                                          ['head-change-with-ccont-lex-rule'])
+
+    for pc in all_position_classes(ch):
+        pc_key = pc.full_key
+        pc_inputs = pc.get('inputs',[])
+        idx = pc['lrt'].next_iter_num() if 'lrt' in pc else 1
+        for lrt in pc.get('lrt',[]):
+            print lrt
 # I don't think I need to add to morphotactics.py
 # Imitate valence_change.py to model lex-rules in library. 
 
 """
-class LexRuleBuilder:
-    def __init__(self):
-        self.rules = set()
-    def add(self,rule_name,rulegen,*rulegen_args):
-        self.rules.add(FnWrapper(rule_name,rulegen,*rulegen_args))
-    def generate_tdl(self,mylang):
-        prev_section = mylang.section
-        mylang.set_section('lexrules')
-        for rule in self.rules:
-            mylang.add(rule())
-        mylang.set_section(prev_section)
-
 def customize_valence_change(mylang, ch, lexicon, rules, irules, lrules):
-    from gmcs.linglib.morphotactics import all_position_classes
     rules = LexRuleBuilder()
     for pc in all_position_classes(ch):
         pc_key = pc.full_key
@@ -142,11 +135,22 @@ def customize_valence_change(mylang, ch, lexicon, rules, irules, lrules):
 
     rules.generate_tdl(mylang)
 
+class LexRuleBuilder:
+    def __init__(self):
+        self.rules = set()
+    def add(self,rule_name,rulegen,*rulegen_args):
+        self.rules.add(FnWrapper(rule_name,rulegen,*rulegen_args))
+    def generate_tdl(self,mylang):
+        prev_section = mylang.section
+        mylang.set_section('lexrules')
+        for rule in self.rules:
+            mylang.add(rule())
+        mylang.set_section(prev_section)
+
+
 """
 
 
-# and add head-change-no-ccont if it's a head-mod rule
- 
 
 #     Possessor-marker:
 #             If the possessor is specifier-like:

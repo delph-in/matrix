@@ -1126,6 +1126,12 @@ class ChoicesFile:
         # if 'neg1b-neg2b' in self.choices:
         #  features += [ ['neg2', 'plus|plus', '', 'verb' ] ]
 
+        # Possessives
+        if self.get_regex("poss-strat._possessor-bound")[0][1]=='possessor-affix':
+            features += [ ['possessor', 'plus|plus;minus|minus', '', 'verb', 'y'] ]
+        if self.get_regex("poss-strat._possessum-bound")[0][1]=='possessum-affix':
+            features += [ ['possessum', 'plus|plus;minus|minus', '', 'verb', 'y'] ]
+
         # Questions
         if 'q-infl' in self.choices:
             features += [ ['question', 'plus|plus', '', 'verb', 'y'] ]

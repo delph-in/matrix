@@ -2157,7 +2157,7 @@ BeginIter noun-pc{i} "a Position Class" 1 0
       MultiSelect value "Noun Position Class {i} Lexical Rule Type {j} Feature {k} Value" "Value: " ""
       fillvalues p=noun-pc{i}_lrt{j}_feat{k}_name
 
-      Select head "Noun Position Class {i} Lexical Rule Type {j} Feature {k} Head" "Specified on: <br>" ""
+      Select head "Noun Position Class {i} Lexical Rule Type {j} Feature {k} Head" "Specified on: " ""
       . itself "Itself" "itself<br>"
       . possessor "Possessor" "the possessor<br>"
       . possessum "Possessum" "the possessum<br>"
