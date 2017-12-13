@@ -1444,7 +1444,20 @@ def validate_arg_opt(ch, vr):
 # validate_clausal_mods(ch, vr)
 #   Validate the user's choices clausal modifiers.
 
-#def validate_clausal_mods(ch, vr):
+def validate_clausal_mods(ch, vr):
+    for cms in ch.get('cms'):
+        pos = cms.get('position')
+        subord = cms.get('subordinator')
+        subpos = cms.get('subposition')
+
+        if subord == 'free':
+            pass
+
+        if subord == 'pair':
+            pass
+
+        if subord == 'none':
+            pass
 
 
 def validate(ch, extra = False):
@@ -1471,6 +1484,7 @@ def validate(ch, extra = False):
     gmcs.linglib.morphotactics.validate(ch, vr)
     validate_test_sentences(ch, vr)
     gmcs.linglib.clausalcomps.validate(ch, vr)
+    validate_clausalmods(ch, vr)
 
     validate_types(ch, vr)
     validate_features(ch, vr)

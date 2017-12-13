@@ -757,7 +757,41 @@ def customize_subord_word_order(mylang,ch,wo,rules):
                        '[ SYNSEM.LOCAL.CAT.VC #vc,'
                        'NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc ].', merge=True, section='phrases')
 
+        # OZ 2017-11-13 A subroutine to create appropriate phrase structure rules
+        # for subordinate clauses, if needed. Currently only supports V2 matrix order
+        # with V-final subordinate order. If the subordinate word order is the same
+        # as in the matrix clause, no work needs to be done here.
 
+def customize_subord_word_order(mylang, ch, wo, rules):
+    if 'subord-word-order' in ch:
+        if ch.get('subord-word-order') == 'vfinal' and wo == 'v2':
+            mylang.add('subord-phrase := head-final &\n'
+                        ' [ SYNSEM.LOCAL.CAT.MC #mc & - ,\n  HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].',
+                       'Phrase structure rules for subordinate clauses')
+            mylang.add('subord-comp-head-phrase := subord-phrase & basic-head-1st-comp-phrase.')
+            mylang.add('subord-subj-head-phrase := subord-phrase & decl-head-subj-phrase.')
+            rules.add('subord-comp-head := subord-comp-head-phrase.')
+            rules.add('subord-subj-head := subord-subj-head-phrase.')
+
+        # For German-like subordinate clauses, we need additional feature VC (verb cluster)
+        # to ensure that verbs and auxiliaries in subordinate clauses cluster at the end.
+        if 'has-aux' in ch and ch['has-aux'] == 'yes':
+            update_lex_items_vcluster(ch, mylang)
+            mylang.add('subord-phrase := [ SYNSEM.LOCAL.CAT.VC - ].')
+            mylang.add('basic-unary-phrase :+\
+                            [ SYNSEM.LOCAL.CAT.VC #vc,\
+                            ARGS.FIRST.SYNSEM.LOCAL.CAT.VC #vc ].', merge=True, section='phrases')
+            mylang.add('basic-binary-headed-phrase :+ '
+                       '[ SYNSEM.LOCAL.CAT.VC #vc,'
+                        'NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc ].', merge=True, section='phrases')
+
+            mylang.add('verb-cluster-phrase := head-final & '
+                       '[ SYNSEM.LOCAL.CAT [ VC +, MC #mc & - ], '
+                        'HEAD-DTR.SYNSEM.LOCAL.CAT [ VC +, MC #mc], '
+                       'NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].', merge=True, section='phrases')
+            mylang.add('vc-comp-head-phrase := verb-cluster-phrase & basic-head-1st-comp-phrase.',
+                       merge=True, section='phrases')
+            rules.add('vc-comp-head := vc-comp-head-phrase.')
 
 # ERB 2006-09-14 Subroutine for figuring out the relationship of major
 # constituent order to adpositions and auxiliaries.  Returns two values:
