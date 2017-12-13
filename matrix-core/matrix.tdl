@@ -1120,6 +1120,24 @@ subj-change-only-lex-rule := same-comps-lex-rule &
                              same-spr-lex-rule &
                              same-spec-lex-rule.
 
+; EKN 2017-12-13 Convenience types for possessive rules:
+
+local-change-with-ccont-lex-rule := same-non-local-lex-rule &
+			      	    same-modified-lex-rule &
+			      	    same-light-lex-rule.
+
+cat-mod-change-with-ccont-lex-rule := local-change-with-ccont-lex-rule &
+			    	      same-ctxt-lex-rule &		       
+			    	      same-cont-lex-rule &
+			    	      same-agr-lex-rule.
+
+head-change-with-ccont-lex-rule := cat-mod-change-with-ccont-lex-rule &
+			     	   same-val-lex-rule &
+			     	   same-hc-light-lex-rule &
+			     	   same-posthead-lex-rule &
+			     	   same-mc-lex-rule.
+
+
 ; ERB 2007-02-13 These two should only be inherited by ltol types,
 ; since they are redundant with constraints on lexeme-to-word-rule.
 
