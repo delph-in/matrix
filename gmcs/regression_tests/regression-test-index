@@ -294,11 +294,6 @@ v2-basic-order=V2 basic word order: verb in second position, subject and object 
 evidentials-infl-aux-kal=Testing the evidentiality library with Kalaallisut evidentials
 evidentials-infl-aux-shp=Testing the evidentiality library with the evidentials of Shipibo-Konibo
 
-clausalmods-free-fixed-mod=clausal modifiers that must occur strictly before, strictly after or before and after the matrix clause
-clausalmods-post-head-mod=clausal modifiers that must occur after the matrix clause
-clausalmods-pre-head-mod=clausal mods that must occur before the matrix clause
-clausalmods-pre-head-subord=clausal mods with a subordinator that must occur at the beginning of the clause
-clausalmods-post-head-subord=clausal mods with a subordinator that must occur at the end of the clause
 v2-orig=Basic order for verb in second position: verb must be in second position but arguments can go on either side
 vfinal=Basic order for verb in final position and subject and complement taking either spot in front of it.
 clausalcomps-v2-vfinal-aux=German-like clausal complements: V2 word order in the matrix clause, V-final in the subordinate clause; auxiliary clusters with the verb in the subordinate clause.

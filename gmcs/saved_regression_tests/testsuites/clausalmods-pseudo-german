@@ -1,0 +1,4 @@
+noun1 aux noun2 tverb
+*noun1 noun2 tverb aux
+noun1 iverb subord noun2 noun3 tverb aux
+*noun1 iverb subord noun2 aux noun3 tverb
