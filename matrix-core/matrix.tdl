@@ -286,7 +286,15 @@ head-min := avm.
 head := head-min &
   [ MOD list,
     PRD bool,
-    KEYS keys_min ].
+    KEYS keys_min,
+    POSS poss ].
+
+; EKN 2017-12-12 Adding POSS feature to HEAD. Experimental. Kinda slipshod.
+
+poss := *top*.
+possessor := poss.
+possessum := poss.
+nonposs := poss.
 
 ; (ERB 2004-08-19) We had previously shied away from defining head
 ; types because even head types that are expected to occur across

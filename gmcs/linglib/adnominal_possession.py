@@ -22,7 +22,7 @@ def customize_adnominal_possession(mylang,ch,rules,irules,lexicon):
     # TODO: add POSS feature and POSS.PNG to head feature here.
     for strat in ch.get('poss-strat',[]):
         customize_rules(strat,mylang,ch,rules)
-        #customize_irules(strat,mylang,ch,irules)
+        customize_irules(strat,mylang,ch,irules)
         #customize_lexicon(strat,mylang,ch,lexicon)
 
 
@@ -55,8 +55,6 @@ def customize_rules(strat,mylang,ch,rules):
             else:
                 head_comp_order='head-final'
             if head_comp_order!=strat.get('order'):
-                print head_comp_order
-                print strat.get('order')
                 # TODO: constrain head-comp-poss-phrase  so it only applies to poss-phrases.
                 mylang.add(phrase_rule +'-poss-phrase  := basic-head-comp-phrase &'+strat.get('order')+' ].')
         else:
@@ -79,8 +77,77 @@ def customize_rules(strat,mylang,ch,rules):
 # NOTE: customize_irules doesn't yet deal with situations where one marker is an affix and one isn't:
 # NOTE: customize_irules and customize_lex both don't handle agreement yet
 
-# def customize_irules(mylang,ch,irules) :
-#     IF: either possessor or possessum mark is an affix, add the correct infl-rule
+
+def customize_irules(strat,mylang,ch,irules):
+    for npc in ch['noun-pc']:
+        for lrt in npc['lrt']:
+            for f in lrt['feat']:
+                if 'possessor' in f['name']:
+                    # Added these supertypes to morphotactics.py as well
+                    if strat.get('mod-spec')=='spec' or (strat.get('mod-spec')=='mod' and strat.get('mark-loc')=='possessum-marking'):
+                        lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') + \
+                                                          ['val-change-with-ccont-rule'])
+                    else:
+                        # This rule type doesn't exist in matrix.tdl. Writing to the forum to see if I can add it there, or just to my grammars, or if it's wrong on some other level.
+                        lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') + \
+                                                          ['head-change-with-ccont-rule'])
+                   
+# I don't think I need to add to morphotactics.py
+# Imitate valence_change.py to model lex-rules in library. 
+
+"""
+class LexRuleBuilder:
+    def __init__(self):
+        self.rules = set()
+    def add(self,rule_name,rulegen,*rulegen_args):
+        self.rules.add(FnWrapper(rule_name,rulegen,*rulegen_args))
+    def generate_tdl(self,mylang):
+        prev_section = mylang.section
+        mylang.set_section('lexrules')
+        for rule in self.rules:
+            mylang.add(rule())
+        mylang.set_section(prev_section)
+
+def customize_valence_change(mylang, ch, lexicon, rules, irules, lrules):
+    from gmcs.linglib.morphotactics import all_position_classes
+    rules = LexRuleBuilder()
+    for pc in all_position_classes(ch):
+        pc_key = pc.full_key
+        pc_inputs = pc.get('inputs',[])
+        idx = pc['lrt'].next_iter_num() if 'lrt' in pc else 1
+        for lrt in pc.get('lrt',[]):
+            for vchop in lrt.get('valchg',[]):
+                opname = vchop['operation'].lower()
+                if opname == 'subj-rem':
+                    rules.add('subj-rem-op', subj_rem_op_lex_rule)
+                if opname == 'obj-rem':
+                    rules.add('obj-rem-op', obj_rem_op_lex_rule)
+                if opname == 'obj-add':
+                    rules.add('basic-applicative', basic_applicative_lex_rule)
+                    position = vchop.get('argpos','').lower()
+                    argtype = vchop.get('argtype','').lower()
+                    if position == 'pre':
+                        rules.add('added-arg-head-type', added_arg_head_lex_rule, 2, argtype)
+                        rules.add('added-arg-applicative', added_arg_applicative_lex_rule, 2, 3)
+                        rules.add('added-arg-non-local', added_arg_non_local_lex_rule, 2, 3)
+                    elif position == 'post':
+                        rules.add('added-arg-head-type', added_arg_head_lex_rule, 3, argtype)
+                        rules.add('added-arg-applicative', added_arg_applicative_lex_rule, 3, 3)
+                        rules.add('added-arg-non-local', added_arg_non_local_lex_rule, 3, 3)
+                if opname == 'subj-add':
+                    if 'verb' in pc_inputs or 'iverb' in pc_inputs:
+                        rules.add('added-arg-non-local', added_arg_non_local_lex_rule, 1, 2)
+                    if 'verb' in pc_inputs or 'tverb' in pc_inputs:
+                        rules.add('added-arg-non-local', added_arg_non_local_lex_rule, 1, 3)
+
+    rules.generate_tdl(mylang)
+
+"""
+
+
+# and add head-change-no-ccont if it's a head-mod rule
+ 
+
 #     Possessor-marker:
 #             If the possessor is specifier-like:
 #                ADD possessor-lex-rule with SPEC<[possessum]>, carrying poss_rel
