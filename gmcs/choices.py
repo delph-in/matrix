@@ -949,9 +949,8 @@ class ChoicesFile:
 
         return genders
 
-    # forms()
     #   Create and return a list containing the values of the FORM
-    #   feature that constrains the form of verbs as
+    #   feature that constrains the form of auxiliary complements as
     #   defined in the current choices.
     #   This list consists of tuples:
     #     [name, supertype]
@@ -963,6 +962,8 @@ class ChoicesFile:
             forms += [[name, stype]]
 
         return forms
+
+
 
     # tenses()
     #   Create and return a list containing information about the values
@@ -1028,6 +1029,21 @@ class ChoicesFile:
 
         return moods
 
+    def evidentials(self):
+        evidentials = []
+
+        evidential_definition = self.get('evidential-definition')
+
+        if evidential_definition == 'choose':
+            for evid in ('firsthand', 'nonfirsthand', 'visual', 'nonvisual', 'inferential', 'reported', 'quotative', 'everythingelse'):
+                if evid in self.choices:
+                    evidentials += [[evid]]
+        elif evidential_definition == 'build':
+            for evid in self.get('evidential'):
+                evidentials += [ [evid['name']] ]
+
+        return evidentials
+
     def types(self):
         """
         Create and return a list containing type names. FIX - these are
@@ -1072,35 +1088,6 @@ class ChoicesFile:
     #   is created in the customization system by users. A feature is specified as
     #   either 'customized=y' or 'customized=n'.
 
-    def features(self):
-        features = []
-
-        # Case
-        features += self.__get_features(case.case_names(self), 0, 1, 'case',
-                                        'LOCAL.CAT.HEAD.CASE','noun', 'y')
-        # Number, Person, and Pernum
-        pernums = self.pernums()
-        if pernums:
-            features += self.__get_features(pernums, 0, 0, 'pernum',
-                                            'LOCAL.CONT.HOOK.INDEX.PNG.PERNUM','noun', 'y')
-        else:
-            features += self.__get_features(self.numbers(), 0, 0, 'number',
-                                            'LOCAL.CONT.HOOK.INDEX.PNG.NUM','noun', 'y')
-            features += self.__get_features(self.persons(), 0, 0, 'person',
-                                            'LOCAL.CONT.HOOK.INDEX.PNG.PER','noun', 'y')
-
-        # Gender
-        features += self.__get_features(self.genders(), 0, 0, 'gender',
-                                        'LOCAL.CONT.HOOK.INDEX.PNG.GEND','noun', 'y')
-
-        # Case patterns
-        features += self.__get_features(self.patterns(), 0, 1,
-                                        'argument structure', '', 'verb', 'n')
-
-        # Form
-        features += self.__get_features(self.forms(), 0, 0, 'form',
-                                        'LOCAL.CAT.HEAD.FORM', 'verb', 'y')
-
         # Tense
         features += self.__get_features(self.tenses(), 0, 0, 'tense',
                                         'LOCAL.CONT.HOOK.INDEX.E.TENSE', 'verb', 'y')
@@ -1115,6 +1102,9 @@ class ChoicesFile:
         #Mood
         features += self.__get_features(self.moods(), 0, 0, 'mood',
                                         'LOCAL.CONT.HOOK.INDEX.E.MOOD', 'verb', 'y')
+        # Evidentials
+        features += self.__get_features(self.evidentials(), 0, 0, 'evidential',
+                                        '', 'verb', 'y')
         # Direction
         if self.has_dirinv():
             features += [ ['direction', 'dir|direct;inv|inverse', '', 'verb', 'y'] ]
@@ -1135,6 +1125,10 @@ class ChoicesFile:
         #features += [ ['information-structure marking', mkg_values, 'LOCAL.CAT.MKG', 'both', 'n'] ]
         features += [ ['information-structure meaning', infostr_values, 'LOCAL.CONT.HOOK.ICONS-KEY', 'both', 'n'] ]
 
+        # Argument Optionality
+        if 'subj-drop' in self.choices or 'obj-drop' in self.choices:
+            features +=[['OPT', 'plus|plus;minus|minus', '', 'verb', 'y']]
+
         # Nominalization
         if 'ns' in self.choices:
             nom_types = ''
@@ -1144,11 +1138,6 @@ class ChoicesFile:
                 else:
                     nom_types += (';' + ns.get('name') + '|' + ns.get('name'))
             features += [ ['nominalization', nom_types, '', 'verb', 'y'] ]
-
-
-        # Argument Optionality
-        if 'subj-drop' in self.choices or 'obj-drop' in self.choices:
-            features +=[['OPT', 'plus|plus;minus|minus', '', 'verb', 'y']]
 
         perm_notperm_string = 'permitted|permitted;not-permitted|not-permitted'
         # Overt Argument
@@ -1238,7 +1227,7 @@ class ChoicesFile:
     # convert_value(), followed by a sequence of calls to convert_key().
     # That way the calls always contain an old name and a new name.
     def current_version(self):
-        return 29
+        return 28
 
     def convert_value(self, key, old, new, partial=False):
         if key in self:
@@ -1253,17 +1242,8 @@ class ChoicesFile:
             new = '_'.join([key_prefix, new])
         if old in self:
             self[new] = self[old]
+            #self.delete(old, prune=True)
             self.delete(old)
-
-    # For example, combine nf-subform and fin-subform
-    # into one key, 'form-fin-nf', and put the values
-    def combine_keys(self, new, old1, old2):
-        if old1 in self and old2 in self:
-            tmp = self[old1]
-            self[old1].extend(self[old2])
-            self[new] = self[old1]
-            self.delete(old1)
-            self.delete(old2)
 
     def convert_0_to_1(self):
         self.convert_key('wordorder', 'word-order')
@@ -2153,31 +2133,6 @@ class ChoicesFile:
 
 
 
-    def convert_28_to_29(self):
-        """
-        Updates the treatment of FORM.
-        FORM will no longerbe implicit with has-aux=yes.
-        It will be explicitly initialized in Other Features section.
-        FORM will no longer be available in Tense, Aspect, and Mood section.
-        FORM will no longer be a special hierarchy but will look much like other features,
-        except finite and nonfinite values will be initialized by default.
-        """
-        if self.get('noaux-fin-nf') == 'on':
-            self.convert_key('noaux-fin-nf','form-fin-nf')
-        elif self.get('has-aux')=='yes' or 'nf-subform' in self or 'fin-subform' in self:
-            self['form-fin-nf'] = 'on'
-        for subtype in self.get('nf-subform'):
-            subtype['supertype'] = 'nonfinite'
-        for subtype in self.get('fin-subform'):
-            subtype['supertype'] = 'finite'
-        if 'nf-subform' in self and 'fin-subform' in self:
-            self.combine_keys('form-subtype','nf-subform','fin-subform')
-        elif 'nf-subform' in self:
-            self.convert_key('nf-subform', 'form-subtype')
-        elif 'fin-subform' in self:
-            self.convert_key('fin-subform', 'form-subtype')
-
-
 ########################################################################
 # FormData Class
 # This Class acts like form data which would normally
@@ -2195,15 +2150,18 @@ class FormData:
             return self.data[key]
 
     def __setitem__(self, key, value):
-        self.data[key] = value
+        self.data[key] = value;
 
     def has_key(self, key):
-        return key in self.data
+        if key in self.data:
+            return True;
+        else:
+            return False;
 
     def keys(self):
-        return self.data.keys()
+        return self.data.keys();
 
 class FormInfo:
     def __init__(self, key, value):
-        self.key = key
-        self.value = value
+        self.key = key;
+        self.value = value;

@@ -173,6 +173,12 @@ class PositionClass(MorphotacticNode):
             self._has_vcops = False
         return self._has_vcops
 
+    def has_evidential(self):
+        for lrt in self.nodes.values():
+            if lrt.evidential != None:
+                return True
+        return False
+
     def has_incorporated_stems(self):
         # 2014-08-21 TJT: Keep track of whether a PositionClass has
         # Incorporated Stem Lexical Rule Instances
@@ -210,6 +216,7 @@ class LexicalRuleType(MorphotacticNode):
         self.identifier_suffix = 'lex-rule'
         # CMC 2017-03-24 Valence change operations are new property of LRT
         self.valchgops = []
+        self.evidential = None
 
     def __repr__(self):
         return 'LexicalRuleType(' + self.key + ')'

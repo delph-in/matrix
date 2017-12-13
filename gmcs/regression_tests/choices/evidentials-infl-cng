@@ -1,0 +1,202 @@
+
+version=28
+
+section=general
+language=evidentials-infl-cng
+punctuation-chars=keep-all
+archive=no
+
+section=word-order
+word-order=sov
+has-dets=yes
+noun-det-order=noun-det
+has-aux=no
+
+section=number
+  number1_name=singular
+  number2_name=plural
+
+section=person
+person=1-2-3
+first-person=none
+
+section=gender
+
+section=case
+case-marking=none
+
+section=direct-inverse
+
+section=tense-aspect-mood
+
+section=evidentials
+evidential-definition=choose
+visual=on
+inferential=on
+reported=on
+
+section=other-features
+
+section=sentential-negation
+neg-exp=1
+vpc-0-neg=create
+infl-neg=on
+
+section=coordination
+
+section=matrix-yes-no
+
+section=info-str
+
+section=arg-opt
+
+section=lexicon
+  noun1_name=common-noun
+    noun1_feat1_name=person
+    noun1_feat1_value=3rd
+    noun1_feat2_name=number
+    noun1_feat2_value=singular
+  noun1_det=imp
+    noun1_stem1_orth=Zbuh
+    noun1_stem1_pred=_drum_n_rel
+    noun1_stem2_orth=mi
+    noun1_stem2_pred=_person_n_rel
+    noun1_stem3_orth=Zawa
+    noun1_stem3_pred=_stone_n_rel
+  noun2_name=pronoun-1s
+    noun2_feat1_name=person
+    noun2_feat1_value=1st
+    noun2_feat2_name=number
+    noun2_feat2_value=singular
+  noun2_det=imp
+    noun2_stem2_orth=qa
+    noun2_stem2_pred=_I_n_rel
+  noun3_name=pronoun-2s
+    noun3_feat1_name=person
+    noun3_feat1_value=2nd
+    noun3_feat2_name=number
+    noun3_feat2_value=singular
+  noun3_det=imp
+    noun3_stem1_orth=u
+    noun3_stem1_pred=_you_n_rel
+  noun4_name=pronoun-3s
+    noun4_feat1_name=person
+    noun4_feat1_value=3rd
+    noun4_feat2_name=number
+    noun4_feat2_value=singular
+  noun4_det=imp
+    noun4_stem1_orth=thee
+    noun4_stem1_pred=_hesheit_n_rel
+  verb1_name=itr-verb
+  verb1_valence=intrans
+    verb1_stem1_orth=quh
+    verb1_stem1_pred=_go_v_rel
+    verb1_stem2_orth=ghlu
+    verb1_stem2_pred=_roll_v_rel
+  verb2_name=tr-verb
+  verb2_valence=trans
+    verb2_stem1_orth=Zete
+    verb2_stem1_pred=_beat_v_rel
+
+section=morphology
+  verb-pc1_name=neg-pc
+  verb-pc1_order=prefix
+  verb-pc1_inputs=verb
+    verb-pc1_lrt1_name=neg-lrt
+      verb-pc1_lrt1_feat1_name=negation
+      verb-pc1_lrt1_feat1_value=plus
+      verb-pc1_lrt1_feat1_head=verb
+      verb-pc1_lrt1_lri1_inflecting=yes
+      verb-pc1_lrt1_lri1_orth=muh-
+  verb-pc2_name=inf
+  verb-pc2_order=suffix
+  verb-pc2_inputs=verb
+    verb-pc2_lrt1_name=inferential
+      verb-pc2_lrt1_feat1_name=evidential
+      verb-pc2_lrt1_feat1_value=inferential
+      verb-pc2_lrt1_feat1_head=verb
+      verb-pc2_lrt1_lri1_inflecting=yes
+      verb-pc2_lrt1_lri1_orth=-k
+  verb-pc3_name=vis
+  verb-pc3_order=suffix
+  verb-pc3_inputs=verb, verb-pc2
+    verb-pc3_forbid1_others=verb-pc4
+    verb-pc3_lrt1_name=visual
+      verb-pc3_lrt1_feat1_name=evidential
+      verb-pc3_lrt1_feat1_value=visual
+      verb-pc3_lrt1_feat1_head=verb
+      verb-pc3_lrt1_lri1_inflecting=yes
+      verb-pc3_lrt1_lri1_orth=-u
+  verb-pc4_name=rep
+  verb-pc4_order=suffix
+  verb-pc4_inputs=verb-pc5
+    verb-pc4_forbid1_others=verb-pc3
+    verb-pc4_lrt1_name=hearsay
+      verb-pc4_lrt1_feat1_name=evidential
+      verb-pc4_lrt1_feat1_value=reported
+      verb-pc4_lrt1_feat1_head=verb
+      verb-pc4_lrt1_lri1_inflecting=yes
+      verb-pc4_lrt1_lri1_orth=-i
+  verb-pc5_name=actor
+  verb-pc5_obligatory=on
+  verb-pc5_order=suffix
+  verb-pc5_inputs=verb, verb-pc2, verb-pc3
+    verb-pc5_lrt1_name=1s
+      verb-pc5_lrt1_feat1_name=person
+      verb-pc5_lrt1_feat1_value=1st
+      verb-pc5_lrt1_feat1_head=subj
+      verb-pc5_lrt1_feat2_name=number
+      verb-pc5_lrt1_feat2_value=singular
+      verb-pc5_lrt1_feat2_head=subj
+      verb-pc5_lrt1_lri1_inflecting=yes
+      verb-pc5_lrt1_lri1_orth=-a
+    verb-pc5_lrt2_name=2s
+      verb-pc5_lrt2_feat1_name=person
+      verb-pc5_lrt2_feat1_value=2nd
+      verb-pc5_lrt2_feat1_head=subj
+      verb-pc5_lrt2_feat2_name=number
+      verb-pc5_lrt2_feat2_value=singular
+      verb-pc5_lrt2_feat2_head=subj
+    verb-pc5_lrt3_name=3s
+      verb-pc5_lrt3_feat1_name=person
+      verb-pc5_lrt3_feat1_value=3rd
+      verb-pc5_lrt3_feat1_head=subj
+      verb-pc5_lrt3_feat2_name=number
+      verb-pc5_lrt3_feat2_value=singular
+      verb-pc5_lrt3_feat2_head=subj
+      verb-pc5_lrt3_lri1_inflecting=no
+    verb-pc5_lrt4_name=1p
+      verb-pc5_lrt4_feat1_name=person
+      verb-pc5_lrt4_feat1_value=1st
+      verb-pc5_lrt4_feat1_head=subj
+      verb-pc5_lrt4_feat2_name=number
+      verb-pc5_lrt4_feat2_value=plural
+      verb-pc5_lrt4_feat2_head=subj
+      verb-pc5_lrt4_lri1_inflecting=yes
+      verb-pc5_lrt4_lri1_orth=-uhr
+    verb-pc5_lrt5_name=2p
+      verb-pc5_lrt5_feat1_name=person
+      verb-pc5_lrt5_feat1_value=2nd
+      verb-pc5_lrt5_feat1_head=subj
+      verb-pc5_lrt5_feat2_name=number
+      verb-pc5_lrt5_feat2_value=plural
+      verb-pc5_lrt5_feat2_head=subj
+      verb-pc5_lrt5_lri1_inflecting=yes
+      verb-pc5_lrt5_lri1_orth=-i
+    verb-pc5_lrt6_name=3p
+      verb-pc5_lrt6_feat1_name=person
+      verb-pc5_lrt6_feat1_value=3rd
+      verb-pc5_lrt6_feat1_head=subj
+      verb-pc5_lrt6_feat2_name=number
+      verb-pc5_lrt6_feat2_value=plural
+      verb-pc5_lrt6_feat2_head=subj
+      verb-pc5_lrt6_lri1_inflecting=yes
+      verb-pc5_lrt6_lri1_orth=-tshi
+
+section=toolbox-import
+
+section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon

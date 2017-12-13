@@ -71,7 +71,7 @@ def define_arg_str_and_valency(aux, auxcomp, ch, mylang, negaux):
                            [ ARG-ST < [ LOCAL.CAT.HEAD.AUX - ], [ ] > ].'
                     mylang.add(auxrest_type)
             else: #norder == 'before'
-                comp_spec_typedef = supertypename + ''' := basic-two-arg &
+                comp_spec_typedef = supertypename + ''' := basic-two-arg & 
                  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >, 
                                           COMPS < #negcomp , #comp > ],
                    ARG-ST < #negcomp &  
@@ -219,7 +219,11 @@ def create_semantics(sem, aux, auxcomp, mylang, ch, hierarchies, negaux):
     if negaux:
         norder = ch.get('comp-neg-order-head-comp')
     supertypename = set_supertypename(auxcomp)
-    if sem == 'add-pred':
+    evid_present = False
+    for feat in aux.get('feat',[]):
+        if feat.get('name') == 'evidential':
+            evid_present = True
+    if sem == 'add-pred' or evid_present:
         auxtypename = supertypename + '-with-pred'
         basic_typedef = auxtypename + ' := ' + supertypename + '.'
         if auxcomp == 'vp':
@@ -228,7 +232,7 @@ def create_semantics(sem, aux, auxcomp, mylang, ch, hierarchies, negaux):
                                           trans-first-arg-raising-lex-item-1 .'
             else: #negaux
                 if norder=='after':
-                    typedef = auxtypename + ''' := norm-sem-lex-item &
+                    typedef = auxtypename + ''' := norm-sem-lex-item & 
           [ ARG-ST < [ ], [ LOCAL.CONT.HOOK.LTOP #larg ], [ ] >,
             SYNSEM [ LOCAL.CONT.HCONS <! qeq & 
                                         [ HARG #harg,
@@ -236,7 +240,7 @@ def create_semantics(sem, aux, auxcomp, mylang, ch, hierarchies, negaux):
                      LKEYS.KEYREL event-relation & 
                        [ ARG1 #harg ]]].'''
                 else: #norder=='before'
-                    typedef = auxtypename + ''' := norm-sem-lex-item &
+                    typedef = auxtypename + ''' := norm-sem-lex-item & 
           [ ARG-ST < [ ], [ ], [ LOCAL.CONT.HOOK.LTOP #larg ] >,
             SYNSEM [ LOCAL.CONT.HCONS <! qeq & 
                                         [ HARG #harg,
@@ -345,13 +349,22 @@ def add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon, trigger):
                        [ STEM < "' + orth + '" > ].'
         lexicon.add(typedef)
 
-        if sem == 'add-pred':
-            pred = stem.get('pred')
+
+        evid_present = False
+        evid_value = None
+        for feat in aux.get('feat',[]):
+            if feat.get('name') == 'evidential':
+                evid_present = True
+                evid_value = feat.get('value')
+        if sem == 'add-pred' or evid_present:
+            pred = 'ev_' + str(evid_value) + '_rel'
+            if not evid_present:
+                pred = stem.get('pred')
             typedef = TDLencode(id) + \
                       ' := [ SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
             lexicon.add(typedef, merge=True)
         else:
-            tense = aspect = mood = ''
+            tense = aspect = mood = evidential = ''
 
             for feat in aux.get('feat',[]):
                 if feat.get('name') == 'tense':
@@ -360,6 +373,8 @@ def add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon, trigger):
                     aspect = feat.get('value')
                 if feat.get('name') == 'mood':
                     mood = feat.get('value')
+                if feat.get('name') == 'evidential':
+                    evidential = feat.get('value')
 
             grdef = TDLencode(id) +'_gr := arg0e_gtr & \
                     [ CONTEXT [ RELS <! [ '

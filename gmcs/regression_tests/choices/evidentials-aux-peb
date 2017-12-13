@@ -1,0 +1,194 @@
+
+version=28
+
+section=general
+language=evidentials-aux-peb
+punctuation-chars=keep-all
+archive=no
+
+section=word-order
+word-order=sov
+has-dets=no
+has-aux=no
+
+section=number
+  number1_name=singular
+  number2_name=plural
+
+section=person
+person=1-2-3
+first-person=none
+
+section=gender
+
+section=case
+case-marking=none
+
+section=direct-inverse
+
+section=tense-aspect-mood
+tense-definition=choose
+future=on
+nonfuture=on
+  aspect1_name=punctual
+    aspect1_supertype1_name=aspect
+  aspect2_name=semelfactive
+    aspect2_supertype1_name=aspect
+  aspect3_name=punctual-semelfactive
+    aspect3_supertype1_name=punctual
+    aspect3_supertype2_name=semelfactive
+  aspect4_name=habitual
+    aspect4_supertype1_name=aspect
+subjind=on
+
+section=evidentials
+evidential-definition=choose
+visual=on
+nonvisual=on
+inferential=on
+reported=on
+
+section=other-features
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=info-str
+
+section=arg-opt
+
+section=lexicon
+  noun1_name=noun
+  noun1_det=imp
+    noun1_stem1_orth=sha
+    noun1_stem1_pred=_fish_n_rel
+  noun2_name=pronoun-1p
+    noun2_feat1_name=number
+    noun2_feat1_value=plural
+    noun2_feat2_name=person
+    noun2_feat2_value=1st
+  noun2_det=imp
+    noun2_stem1_orth=ha
+    noun2_stem1_pred=_prn_n_rel
+  noun3_name=pronoun-3sm
+    noun3_feat1_name=number
+    noun3_feat1_value=singular
+    noun3_feat2_name=person
+    noun3_feat2_value=3rd
+  noun3_det=imp
+    noun3_stem1_orth=mip
+    noun3_stem1_pred=_prn_n_rel
+  verb1_name=itr-verb
+  verb1_valence=intrans
+    verb1_stem1_orth=q'a.lalma
+    verb1_stem1_pred=_become.sick_v_rel
+  verb2_name=tr-verb
+  verb2_valence=trans
+    verb2_stem1_orth=sho
+    verb2_stem1_pred=_hear_v_rel
+
+section=morphology
+  verb-pc1_name=I
+  verb-pc1_order=suffix
+  verb-pc1_inputs=verb
+    verb-pc1_lrt1_name=punct
+      verb-pc1_lrt1_feat1_name=aspect
+      verb-pc1_lrt1_feat1_value=punctual
+      verb-pc1_lrt1_feat1_head=verb
+      verb-pc1_lrt1_lri1_inflecting=yes
+      verb-pc1_lrt1_lri1_orth=-kh
+  verb-pc2_name=III
+  verb-pc2_order=suffix
+  verb-pc2_inputs=verb, verb-pc1
+    verb-pc2_lrt1_name=causative
+      verb-pc2_lrt1_lri1_inflecting=yes
+      verb-pc2_lrt1_lri1_orth=-qa
+  verb-pc3_name=IV
+  verb-pc3_order=suffix
+  verb-pc3_inputs=verb, verb-pc1, verb-pc2
+    verb-pc3_lrt1_name=semel
+      verb-pc3_lrt1_feat1_name=aspect
+      verb-pc3_lrt1_feat1_value=semelfactive
+      verb-pc3_lrt1_feat1_head=verb
+      verb-pc3_lrt1_lri1_inflecting=yes
+      verb-pc3_lrt1_lri1_orth=-ki
+  verb-pc4_name=VI
+  verb-pc4_order=suffix
+  verb-pc4_inputs=verb, verb-pc1, verb-pc2, verb-pc3
+    verb-pc4_lrt1_name=pl
+      verb-pc4_lrt1_feat1_name=number
+      verb-pc4_lrt1_feat1_value=plural
+      verb-pc4_lrt1_feat1_head=subj
+      verb-pc4_lrt1_lri1_inflecting=yes
+      verb-pc4_lrt1_lri1_orth=-yaki
+    verb-pc4_lrt2_name=habit-pl
+      verb-pc4_lrt2_feat1_name=number
+      verb-pc4_lrt2_feat1_value=plural
+      verb-pc4_lrt2_feat1_head=subj
+      verb-pc4_lrt2_feat2_name=aspect
+      verb-pc4_lrt2_feat2_value=habitual
+      verb-pc4_lrt2_feat2_head=verb
+      verb-pc4_lrt2_lri1_inflecting=yes
+      verb-pc4_lrt2_lri1_orth=-kima
+    verb-pc4_lrt3_name=habit
+      verb-pc4_lrt3_feat1_name=aspect
+      verb-pc4_lrt3_feat1_value=habitual
+      verb-pc4_lrt3_feat1_head=verb
+      verb-pc4_lrt3_lri1_inflecting=yes
+      verb-pc4_lrt3_lri1_orth=-kil
+  verb-pc5_name=VII
+  verb-pc5_order=suffix
+  verb-pc5_inputs=verb, verb-pc1, verb-pc2, verb-pc3, verb-pc4
+    verb-pc5_lrt1_name=fut
+      verb-pc5_lrt1_feat1_name=tense
+      verb-pc5_lrt1_feat1_value=future
+      verb-pc5_lrt1_feat1_head=verb
+      verb-pc5_lrt1_lri1_inflecting=yes
+      verb-pc5_lrt1_lri1_orth=-ayax
+    verb-pc5_lrt2_name=infr
+      verb-pc5_lrt2_feat1_name=evidential
+      verb-pc5_lrt2_feat1_value=inferential
+      verb-pc5_lrt2_feat1_head=verb
+      verb-pc5_lrt2_lri1_inflecting=yes
+      verb-pc5_lrt2_lri1_orth=-ine
+    verb-pc5_lrt3_name=subj
+      verb-pc5_lrt3_feat1_name=mood
+      verb-pc5_lrt3_feat1_value=subjunctive
+      verb-pc5_lrt3_feat1_head=verb
+      verb-pc5_lrt3_lri1_inflecting=yes
+      verb-pc5_lrt3_lri1_orth=-ba'e
+  verb-pc6_name=VIII
+  verb-pc6_order=suffix
+  verb-pc6_inputs=verb, verb-pc1, verb-pc2, verb-pc3, verb-pc4, verb-pc5
+    verb-pc6_lrt1_name=indicative
+      verb-pc6_lrt1_feat1_name=mood
+      verb-pc6_lrt1_feat1_value=indicative
+      verb-pc6_lrt1_feat1_head=verb
+      verb-pc6_lrt1_feat2_name=evidential
+      verb-pc6_lrt1_feat2_value=visual
+      verb-pc6_lrt1_feat2_head=verb
+      verb-pc6_lrt1_lri1_inflecting=yes
+      verb-pc6_lrt1_lri1_orth=-ya
+    verb-pc6_lrt2_name=non-vis
+      verb-pc6_lrt2_feat1_name=evidential
+      verb-pc6_lrt2_feat1_value=nonvisual
+      verb-pc6_lrt2_feat1_head=verb
+      verb-pc6_lrt2_lri1_inflecting=yes
+      verb-pc6_lrt2_lri1_orth=-ink'e
+    verb-pc6_lrt3_name=hearsay
+      verb-pc6_lrt3_feat1_name=evidential
+      verb-pc6_lrt3_feat1_value=reported
+      verb-pc6_lrt3_feat1_head=verb
+      verb-pc6_lrt3_lri1_inflecting=yes
+      verb-pc6_lrt3_lri1_orth=-.le
+
+section=toolbox-import
+
+section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon

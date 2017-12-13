@@ -252,8 +252,11 @@ def create_lexical_rule_type(lrt, mtx_supertypes, cur_pc):
     new_lrt = LexicalRuleType(lrt.full_key, get_name(lrt))
     _id_key_tbl[new_lrt.identifier()] = lrt.full_key
     for feat in lrt.get('feat'):
-        new_lrt.features[feat['name']] = {'value': feat['value'],
-                                          'head': feat['head']}
+        if feat['name'] == 'evidential':
+            new_lrt.evidential = feat['value']
+        else:
+            new_lrt.features[feat['name']] = {'value': feat['value'],
+                                              'head': feat['head']}
 
     # CMC 2017-03-24 Populate valence change operations
     new_lrt.valchgops = lrt.get('valchg',[])
@@ -461,9 +464,9 @@ def set_lexical_rule_supertypes(lrt, mtx_supertypes):
 
             # feature-based supertypes
             # JDC 04 June 2012 now negation supertypes are set in features.py
-        #  if ('value', 'a') in lrt.features.get('negation',{}).items():
-        #    lrt.supertypes.add('cont-change-only-lex-rule')
-        # add other special cases here
+            #  if ('value', 'a') in lrt.features.get('negation',{}).items():
+            #    lrt.supertypes.add('cont-change-only-lex-rule')
+            # add other special cases here
 
 def calculate_supertypes(pch):
     # calculate daughter types first, because we want to percolate them
@@ -508,6 +511,11 @@ def percolate_supertypes(pc):
                     # CMC 2017-02-20: Valence-changing operations need
                     # less-constrained supertype
                     x.supertypes.add('val-change-with-ccont-lex-rule')
+                elif pc.has_evidential():
+                    # MTH 2017-11-13: Lexical rule types that contribute
+                    # evidential semantics must be able to add a predicate
+                    # in CCONT
+                    x.supertypes.add('cont-change-only-lex-rule')
                 else:
                     x.supertypes.add('add-only-no-ccont-rule')
 
@@ -600,6 +608,8 @@ def write_rules(pch, mylang, irules, lrules, lextdl, choices):
             write_pc_adj_syntactic_behavior(lrt, mylang, choices)
             # CMC 2017-03-28 Write valence change operations rules
             write_valence_change_behavior(lrt, mylang, choices)
+            # MTH 2017-10-16 Write evidential behavior
+            write_evidential_behavior(lrt, mylang, choices, pc.has_evidential())
             # CMC 2017-04-07 moved merged LRT/PCs handling to write_supertypes
             write_supertypes(mylang, lrt.identifier(), lrt.all_supertypes())
         write_daughter_types(mylang, pc)
@@ -763,6 +773,36 @@ def write_i_or_l_rules(irules, lrules, lrt, order):
         # lexical rules # TJT 2014-12-21: cleaning this up
         lrt_id = lrt.identifier()
         lrules.add(lrt_id.rsplit('-rule',1)[0] + ' := ' + lrt_id + '.')
+
+def write_evidential_behavior(lrt, mylang, choices, pc_evidential):
+    EVIDENTIAL_LEX_RULE = '''evidential-lex-rule := cont-change-only-lex-rule &
+  same-spr-lex-rule &
+  same-spec-lex-rule &
+[ C-CONT [ RELS <! event-relation &
+           [ LBL #ltop,
+           ARG0 event,
+           ARG1 #harg ] !>,
+       HCONS <! qeq & [ HARG #harg,
+                LARG #larg ] !>,
+       HOOK [ LTOP #ltop,
+          INDEX #mainev,
+          XARG #mainagent ] ],
+  DTR.SYNSEM.LOCAL.CONT.HOOK [ LTOP #larg,
+                          XARG #mainagent,
+                          INDEX #mainev ] ].
+'''
+    if lrt.evidential:
+        lrt.supertypes.add(lrt.evidential + '-evidential-lex-rule')
+        prev_section = mylang.section
+        mylang.set_section('lexrules')
+        mylang.add(EVIDENTIAL_LEX_RULE)
+        infl_evid_def = lrt.evidential + '''-evidential-lex-rule := evidential-lex-rule & 
+        [ C-CONT.RELS <! [ PRED "ev_''' + lrt.evidential + '''_rel" ] !> ].
+        '''
+        mylang.add(infl_evid_def)
+        mylang.set_section(prev_section)
+    elif pc_evidential:
+        lrt.supertypes.add("add-only-no-ccont-rule")
 
 def write_valence_change_behavior(lrt, mylang, choices):
     from gmcs.linglib.valence_change import lexrule_name
@@ -944,6 +984,11 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
                 vr.err(feat.full_key + '_head',
                        'This feature is associated with nouns, ' + \
                        'please select one of the NP options.')
+
+        # MTH 2017-11-27: check to make sure that only one evidential value is selected
+        if feat['name'] == 'evidential' and len(feat.get('value').split(',')) > 1:
+            vr.err(feat.full_key + '_value',
+                   'Choose only one evidential term.')
 
     # TJT 2015-02-02: Any given LRT should be either inflecting or non-inflecting
     inflecting_count = len(filter(None, [lri.get('inflecting')=="yes" for lri in lrt.get('lri',[])]))
@@ -1237,10 +1282,10 @@ def warn_merged_pcs(all_pcs, vr):
             for inp in pc.get('inputs',[]):
                 input_map[inp][order].add(pc_name)
                 # Warn for each obligatory position class with equal inputs and orders
-            #   pcs_to_be_merged = {pc for inp in input_map
-            #                       for order in input_map[inp]
-            #                       for pc in input_map[inp][order]
-            #                       if len(input_map[inp][order]) > 1}
+                #   pcs_to_be_merged = {pc for inp in input_map
+                #                       for order in input_map[inp]
+                #                       for pc in input_map[inp][order]
+                #                       if len(input_map[inp][order]) > 1}
     # TJT 2014-12-19: Converting above set comprehension
     # to loop for older python versions
     pcs_to_be_merged = set()
