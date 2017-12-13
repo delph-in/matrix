@@ -79,16 +79,26 @@ def customize_rules(strat,mylang,ch,rules):
 
 
 def customize_irules(strat,mylang,ch,irules):
+    #TODO: this method for retrieving the strategy name is garbage. Fix it.
+    strat_name=strat.full_keys()[0].split("_")[0]
+    strat_num=strat_name[-1]
     for npc in ch['noun-pc']:
         for lrt in npc['lrt']:
             for f in lrt['feat']:
                 if 'possessor' in f['name']:
                     # Added these supertypes to morphotactics.py as well
                     if strat.get('mod-spec')=='spec' or (strat.get('mod-spec')=='mod' and strat.get('mark-loc')=='possessum-marking'):
+#                        if 'supertypes' not in lrt:
+#                            lrt['supertypes']='val-change-with-ccont-lex-rule'
+#                        else:
+#                            lrt.supertypes.add('val-change-with-ccont-lex-rule')
                         lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') + \
                                                           ['val-change-with-ccont-lex-rule'])
                     else:
-                        # This rule type doesn't exist in matrix.tdl. Writing to the forum to see if I can add it there, or just to my grammars, or if it's wrong on some other level.
+#                        if 'supertypes' not in lrt:
+#                            lrt['supertypes']='head-change-with-ccont-lex-rule'
+#                        else:
+#                            lrt.supertypes.add('head-change-with-ccont-lex-rule')
                         lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') + \
                                                           ['head-change-with-ccont-lex-rule'])
 
@@ -97,9 +107,84 @@ def customize_irules(strat,mylang,ch,irules):
         pc_inputs = pc.get('inputs',[])
         idx = pc['lrt'].next_iter_num() if 'lrt' in pc else 1
         for lrt in pc.get('lrt',[]):
-            print lrt
-# I don't think I need to add to morphotactics.py
-# Imitate valence_change.py to model lex-rules in library. 
+            for feat in lrt['feat']:
+                # Go through the pc info till you find the strategy you're actually dealing with
+                if strat_name in str(feat['name']):
+                    # Then narrow down which kind of rule to add:
+                    mod_spec=strat.get('mod-spec')
+                    mark_loc=strat.get('mark-loc')
+                    np_nom=strat.get('np-nom')
+                    mylang.set_section('lexrules')
+                    if mark_loc=='possessor-marking':
+                        if mod_spec=='spec':
+                            mylang.add('possessor-lex-rule'+strat_num+' := val-change-with-ccont-lex-rule & infl-lex-rule & \
+                  [ SYNSEM.LOCAL.CAT [ VAL [ SPEC.FIRST.LOCAL [ CAT [ HEAD noun ],\
+                                                                CONT.HOOK [ INDEX #index & [ COG-ST uniq-id ],\
+                                                                       LTOP #lbl ] ],\
+                                                                        SPR #spr,\
+                                                                        SUBJ #subj,\
+                                                                        COMPS #comps] ] ,\
+                                       C-CONT [ HOOK #hook ,\
+                                       RELS <! arg12-ev-relation & [ PRED "poss_rel", \
+                                                                     LBL #lbl, \
+                                                                     ARG1 #possessum, \
+                                                                     ARG2 #possessor ], \
+                                                quant-relation & [ PRED "exist_q_rel", \
+                                                                   ARG0 #possessum, \
+                                                                   RSTR #harg ] !>, \
+                                                                   HCONS <! qeq & [ HARG #harg, LARG #lbl ] !>, \
+                                                                                                ICONS <! !>  ], \
+                   DTR.SYNSEM.LOCAL [ CAT.VAL [ SPR #spr, \
+                                                SUBJ #subj, \
+                                                COMPS #comps ], \
+                                      CONT.HOOK  #hook & [ INDEX #possessor ] ] ].')
+                        else: 
+                            mylang.add('possessor-lex-rule'+strat_num+' := head-change-with-ccont-lex-rule & infl-lex-rule & \
+                  [ SYNSEM.LOCAL.CAT [ HEAD.MOD.FIRST [ LOCAL [ CAT.HEAD noun, \
+                                                                CONT.HOOK [ INDEX #possessum, \
+                                                                            LTOP #lbl ] ], \
+                                                        OPT - ], \
+                                       VAL [ SPEC #spec,\
+                                             SPR #spr,\
+                                             SUBJ #subj,\
+                                             COMPS #comps] ] ,\
+                                       C-CONT [ HOOK #hook ,\
+                                       RELS <! arg12-ev-relation & [ PRED "poss_rel", \
+                                                                     LBL #lbl, \
+                                                                     ARG1 #possessum, \
+                                                                     ARG2 #possessor ] !>, \
+                                                                   HCONS <! !>, \
+                                                                   ICONS <! !>  ], \
+                   DTR.SYNSEM.LOCAL [ CAT.VAL [ SPEC #spec, \
+                                                SPR #spr, \
+                                                SUBJ #subj, \
+                                                COMPS #comps ], \
+                                      CONT.HOOK  #hook & [ INDEX #possessor ] ] ].')
+
+
+                    for lri in lrt.get('lri'):
+                        # TODO: fix. Only handling one instance for now. 
+                        # Can fix by just adding an instantiation in irules for each instance.
+                        orth=lri.get('orth')
+
+#     Possessor-marker:
+#             If the possessor is specifier-like:
+#                ADD possessor-lex-rule with SPEC<[possessum]>, carrying poss_rel
+#             If the possessor is  modifier-like:
+#                ADD possessor-lex-rule with MOD<[possessum]>, carrying poss_rel
+#     Possessum-marker:
+#        If the possessor is specifier-like:
+#             If single-marking:
+#                ADD possessum-lex-rule with SPR<[possessor]>, carrying poss_rel
+#             If double-marking:
+#                ADD possessum-lex-rule with SPR<[possessor]>
+#        If the possessum is modifier-like:
+#             If single-marking:
+#                ADD possessum-lex-rule with COMPS<[possessor]>, carrying poss_rel
+#             If double-marking
+#                ADD possessum-lex-rule with COMPS<[possessor]>
+#                ADD a feature [HEAD.POSS +] to the possessor infl rule.
+
 
 """
 def customize_valence_change(mylang, ch, lexicon, rules, irules, lrules):

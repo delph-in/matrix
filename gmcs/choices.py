@@ -1127,12 +1127,15 @@ class ChoicesFile:
         #  features += [ ['neg2', 'plus|plus', '', 'verb' ] ]
 
         # Possessives
-        if self.get_regex("poss-strat._possessor-bound")[0][1]=='possessor-affix':
-            strat_name=self.get_regex("poss-strat._possessor-bound")[0][0].replace("_possessor-bound","")
-            features += [ ['possessor_'+strat_name, 'plus|plus;minus|minus', '', 'verb', 'y'] ]
-        if self.get_regex("poss-strat._possessum-bound")[0][1]=='possessum-affix':
-            strat_name=self.get_regex("poss-strat._possessum-bound")[0][0].replace("_possessum-bound","")
-            features += [ ['possessum_'+strat_name, 'plus|plus;minus|minus', '', 'verb', 'y'] ]
+        if self.get_regex(".*_possessor-bound"):
+            if self.get_regex("poss-strat._possessor-bound")[0][1]=='possessor-affix':
+                strat_name=self.get_regex("poss-strat._possessor-bound")[0][0].replace("_possessor-bound","")
+                features += [ ['possessor_'+strat_name, 'plus|plus;minus|minus', '', 'verb', 'y'] ]
+        if self.get_regex(".*_possessum-bound"):
+            if self.get_regex("poss-strat._possessum-bound")[0][1]=='possessum-affix':
+                strat_name=self.get_regex("poss-strat._possessum-bound")[0][0].replace("_possessum-bound","")
+                features += [ ['possessum_'+strat_name, 'plus|plus;minus|minus', '', 'verb', 'y'] ]
+
 
         # Questions
         if 'q-infl' in self.choices:

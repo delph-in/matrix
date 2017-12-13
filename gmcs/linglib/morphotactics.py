@@ -516,6 +516,13 @@ def percolate_supertypes(pc):
                     # evidential semantics must be able to add a predicate
                     # in CCONT
                     x.supertypes.add('cont-change-only-lex-rule')
+                elif pc.has_possessive():
+                    # EKN 2017-12-13: Possessive lexical rules have some
+                    # CAT change and then add a predicate in CCONT.
+                    # Which exact supertype a possessive rule inherits from
+                    # is defined in adnominal_possession.py. This remains maximally
+                    # general.
+                    x.supertypes.add('lex-rule')
                 else:
                     x.supertypes.add('add-only-no-ccont-rule')
 

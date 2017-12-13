@@ -178,6 +178,13 @@ class PositionClass(MorphotacticNode):
                 return True
         return False
 
+    def has_possessive(self):
+        for lrt in self.nodes.values():
+            for feat in lrt.features:
+                if 'possess' in str(feat):
+                    return True
+        return False
+
     def has_incorporated_stems(self):
         # 2014-08-21 TJT: Keep track of whether a PositionClass has
         # Incorporated Stem Lexical Rule Instances
