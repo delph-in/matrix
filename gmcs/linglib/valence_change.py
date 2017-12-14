@@ -192,13 +192,13 @@ def basic_applicative_lex_rule():
     DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX #evt ].'''.format(rulename=lexrule_name('basic-applicative'))
 
 
-OSUBJ_ARG_FRAG = ''' [ LOCAL [ CONT.HOOK.INDEX #causee,
+OSUBJ_ARG_FRAG = ''' [ LOCAL [ CONT.HOOK.INDEX #arg2,
                                CAT [ HEAD [ MOD #mod,
                                             KEYS #keys ],
                                      VAL #val ] ],
                        NON-LOCAL #nl ]'''
 
-OSUBJ_ARG_FRAG_MIN = ''' [ LOCAL [ CONT.HOOK.INDEX #causee,
+OSUBJ_ARG_FRAG_MIN = ''' [ LOCAL [ CONT.HOOK.INDEX #arg2,
                                    CAT [ HEAD [ MOD #mod,
                                                 KEYS #keys ],
                                          VAL #val ] ],
@@ -208,17 +208,17 @@ SCOPAL_REL_LEX_RULE = '''scopal-rel-lex-rule := lex-rule &
   [ C-CONT [ RELS <! event-relation &
                    [ LBL #ltop,
                      ARG0 #hidx,
-                     ARG1 #causer,
-                     ARG2 #causee,
-                     ARG3 #charg ] !>,
+                     ARG1 #arg1,
+                     ARG2 #arg2,
+                     ARG3 #harg ] !>,
              HOOK [ LTOP #ltop,
                     INDEX #hidx,
-                    XARG #causer ],
-             HCONS <! qeq & [ HARG #charg,
-                              LARG #caused ] !> ],
-    SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX #causer ] >,
-    DTR.SYNSEM.LOCAL [ CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX #causee ] >,
-                       CONT.HOOK.LTOP #caused ] ].'''          
+                    XARG #arg1 ],
+             HCONS <! qeq & [ HARG #harg,
+                              LARG #scoped ] !> ],
+    SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX #arg1 ] >,
+    DTR.SYNSEM.LOCAL [ CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX #arg2 ] >,
+                       CONT.HOOK.LTOP #scoped ] ].'''          
 
 def scopal_rel_lex_rule_gen():
     return SCOPAL_REL_LEX_RULE
@@ -441,34 +441,27 @@ def customize_valence_change(mylang, ch, lexicon, rules, irules, lrules):
 
     rules.generate_tdl(mylang)
 
-# Add new rule specifications (e.g. for transitive/intransitive variants)
+
 def add_lexrules(ch):
-    pass
-#    for pc in ch['verb-pc']:
-#        pc_key = pc.full_key
-#        idx = pc['lrt'].next_iter_num() if 'lrt' in pc else 1
-#        for lrt in pc.get('lrt', []):
-#            for vchop in lrt.get('valchg', []):
-#                opname = vchop['operation'].lower()
-#                if opname in ['subj-add', 'obj-add', 'subj-rem']:
-#                    inputs = vchop.get('inputs', []).split(',')
-#                    if len(inputs) > 1:
-#                        # need both, so make this one intrans-only
-#                        vchop['inputs'] = 'intrans'
-#                        lrt_base_name = lrt['name']
-#                        lrt['name'] = lrt_base_name + '-itr'
-#                        # and create new one
-#                        idx = ch[pc_key + '_lrt'].next_iter_num()
-#                        lrt_key = pc_key + '_lrt' + str(idx)
-#                        ch[lrt_key + '_name'] = lrt_base_name + '-tr'
-#                        valchg_idx = ch[pc_key + '_lrt']
-                        
-#                    if need_tv and need_iv:
-#                        # split into transitive/intransitive-specialized versions
-#                        key = pc.full_key + '_lrt' + str(idx)
-#                        name = get_name(pc) + '-transitive'
-#                        ch[key + '_name'] = name
-#                        #ch[key + _
+    for pc in ch['verb-pc']:
+        pc_key = pc.full_key
+        for lrt in pc.get('lrt', []):
+            # have to do this rewriting here so that features library sees it
+            # if a feature is specified as on the added object ('newobj') then
+            # the actual head value is different depending on the position of the added
+            # argument in the COMPS list. 
+            # pre: obj = obj2, newobj = obj
+            # post: obj = obj, newobj = obj2
+            for vchop in [vchop for vchop in lrt.get('valchg',[]) if vchop['operation'].lower() == 'obj-add']:
+                newarg_is_post = (vchop.get('argpos','post') == 'post')
+                for feat in lrt.get('feat',[]):
+                    if feat.get('head','') == 'newobj':
+                        feat['head'] = 'obj2' if newarg_is_post else 'obj'
+                    if feat.get('head','') == 'obj' and not newarg_is_post:
+                        feat['head'] = 'obj2'
+
+            
+
                     
 
 

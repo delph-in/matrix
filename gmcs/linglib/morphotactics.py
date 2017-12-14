@@ -598,7 +598,7 @@ def write_rules(pch, mylang, irules, lrules, lextdl, choices):
       # TJT 2014-08-27: Write adjective position class features
       write_pc_adj_syntactic_behavior(lrt, mylang, choices)
       # CMC 2017-03-28 Write valence change operations rules
-      write_valence_change_behavior(lrt, mylang, choices)
+      write_valence_change_behavior(pc, lrt, mylang, choices)
       # CMC 2017-04-07 moved merged LRT/PCs handling to write_supertypes
       write_supertypes(mylang, lrt.identifier(), lrt.all_supertypes())
     write_daughter_types(mylang, pc)
@@ -763,8 +763,16 @@ def write_i_or_l_rules(irules, lrules, lrt, order):
     lrt_id = lrt.identifier()
     lrules.add(lrt_id.rsplit('-rule',1)[0] + ' := ' + lrt_id + '.')
 
-def write_valence_change_behavior(lrt, mylang, choices):
+def write_valence_change_behavior(pc, lrt, mylang, choices):
   from gmcs.linglib.valence_change import lexrule_name, added_argnum_for_vchop
+
+  # Need to push down a stricter constraint to LRT created by argument optionality.
+  # Specifically, if pc.has_valchg_ops() is True, then the PC supertype will inherit from 
+  # val-change-with-ccont, which is underspecified for the *non-valence-changing* rules
+  # (e.g. the -no-drop rules that *should* copy VAL features up.)
+  if pc.has_valchg_ops() and not lrt.valchgops:
+    lrt.supertypes.add('add-only-no-ccont-rule')
+
   for op in lrt.valchgops:
     operation = op.get('operation','').lower()
     transitive = 'trans' in op.get('inputs','').split(',')

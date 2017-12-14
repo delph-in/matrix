@@ -60,6 +60,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
   head_map = {
     'subj': 'LOCAL.CAT.VAL.SUBJ.FIRST.',
     'obj': 'LOCAL.CAT.VAL.COMPS.FIRST.',
+    'obj2': 'LOCAL.CAT.VAL.COMPS.REST.FIRST.',
     'higher': 'SC-ARGS.FIRST.',
     'lower': 'SC-ARGS.REST.FIRST.',
     'xarg': 'LOCAL.CONT.HOOK.XARG.',  # XARG for adjectives
@@ -321,7 +322,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
       #  tdlfile.add(type_name + ':= obj-drop-verb-lex.', merge = True)
 
     elif n == 'OPT':
-      geom_map = {'subj': 'SUBJ', 'obj': 'COMPS'}
+      geom_map = {'subj': 'SUBJ', 'obj': 'COMPS', 'obj2': 'COMPS.REST'}
       if head in geom_map:
         bool_val = {'plus': '+', 'minus': '-'}[v[0].lower()]
         val_geom = geom_map[head.lower()]

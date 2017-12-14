@@ -576,8 +576,8 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
   negation.customize_sentential_negation(mylang, ch, lexicon, rules, lrules, hierarchies)
 
   add_lexrules_methods = [case.add_lexrules,
-                          valence_change.add_lexrules,
                           argument_optionality.add_lexrules,
+                          valence_change.add_lexrules,
                           direct_inverse.add_lexrules]
   to_cfv = morphotactics.customize_inflection(ch, add_lexrules_methods,
                                               mylang, irules, lrules, lexicon)
