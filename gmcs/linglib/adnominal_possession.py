@@ -82,25 +82,6 @@ def customize_irules(strat,mylang,ch,irules):
     #TODO: this method for retrieving the strategy name is garbage. Fix it.
     strat_name=strat.full_keys()[0].split("_")[0]
     strat_num=strat_name[-1]
-    for npc in ch['noun-pc']:
-        for lrt in npc['lrt']:
-            for f in lrt['feat']:
-                if 'possessor' in f['name']:
-                    # Added these supertypes to morphotactics.py as well
-                    if strat.get('mod-spec')=='spec' or (strat.get('mod-spec')=='mod' and strat.get('mark-loc')=='possessum-marking'):
-#                        if 'supertypes' not in lrt:
-#                            lrt['supertypes']='val-change-with-ccont-lex-rule'
-#                        else:
-#                            lrt.supertypes.add('val-change-with-ccont-lex-rule')
-                        lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') + \
-                                                          ['val-change-with-ccont-lex-rule'])
-                    else:
-#                        if 'supertypes' not in lrt:
-#                            lrt['supertypes']='head-change-with-ccont-lex-rule'
-#                        else:
-#                            lrt.supertypes.add('head-change-with-ccont-lex-rule')
-                        lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') + \
-                                                          ['head-change-with-ccont-lex-rule'])
 
     for pc in all_position_classes(ch):
         pc_key = pc.full_key
@@ -117,7 +98,7 @@ def customize_irules(strat,mylang,ch,irules):
                     mylang.set_section('lexrules')
                     if mark_loc=='possessor-marking':
                         if mod_spec=='spec':
-                            mylang.add('possessor-lex-rule'+strat_num+' := val-change-with-ccont-lex-rule & infl-lex-rule & \
+                            mylang.add('possessor-lex-rule-'+strat_num+' := val-change-with-ccont-lex-rule & infl-lex-rule & \
                   [ SYNSEM.LOCAL.CAT [ VAL [ SPEC.FIRST.LOCAL [ CAT [ HEAD noun ],\
                                                                 CONT.HOOK [ INDEX #index & [ COG-ST uniq-id ],\
                                                                        LTOP #lbl ] ],\
@@ -139,7 +120,7 @@ def customize_irules(strat,mylang,ch,irules):
                                                 COMPS #comps ], \
                                       CONT.HOOK  #hook & [ INDEX #possessor ] ] ].')
                         else: 
-                            mylang.add('possessor-lex-rule'+strat_num+' := head-change-with-ccont-lex-rule & infl-lex-rule & \
+                            mylang.add('possessor-lex-rule-'+strat_num+' := head-change-with-ccont-lex-rule & infl-lex-rule & \
                   [ SYNSEM.LOCAL.CAT [ HEAD.MOD.FIRST [ LOCAL [ CAT.HEAD noun, \
                                                                 CONT.HOOK [ INDEX #possessum, \
                                                                             LTOP #lbl ] ], \
@@ -165,7 +146,35 @@ def customize_irules(strat,mylang,ch,irules):
                     for lri in lrt.get('lri'):
                         # TODO: fix. Only handling one instance for now. 
                         # Can fix by just adding an instantiation in irules for each instance.
+
                         orth=lri.get('orth')
+
+
+
+
+"""
+    for npc in ch['noun-pc']:
+        for lrt in npc['lrt']:
+            for f in lrt['feat']:
+                if 'possessor' in f['name']:
+                    # Added these supertypes to morphotactics.py as well
+                    if strat.get('mod-spec')=='spec' or (strat.get('mod-spec')=='mod' and strat.get('mark-loc')=='possessum-marking'):
+#                        if 'supertypes' not in lrt:
+#                            lrt['supertypes']='val-change-with-ccont-lex-rule'
+#                        else:
+#                            lrt.supertypes.add('val-change-with-ccont-lex-rule')
+                        lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') + \
+                                                          ['val-change-with-ccont-lex-rule'])
+                    else:
+#                        if 'supertypes' not in lrt:
+#                            lrt['supertypes']='head-change-with-ccont-lex-rule'
+#                        else:
+#                            lrt.supertypes.add('head-change-with-ccont-lex-rule')
+                        lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') + \
+                                                          ['head-change-with-ccont-lex-rule'])
+"""
+
+
 
 #     Possessor-marker:
 #             If the possessor is specifier-like:

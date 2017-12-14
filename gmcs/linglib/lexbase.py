@@ -180,9 +180,8 @@ class PositionClass(MorphotacticNode):
 
     def has_possessive(self):
         for lrt in self.nodes.values():
-            for feat in lrt.features:
-                if 'possess' in str(feat):
-                    return True
+            if lrt.possessor != None or lrt.possessum != None:
+                return True
         return False
 
     def has_incorporated_stems(self):
@@ -223,6 +222,12 @@ class LexicalRuleType(MorphotacticNode):
         # CMC 2017-03-24 Valence change operations are new property of LRT
         self.valchgops = []
         self.evidential = None
+
+        self.possessor = None
+        self.possessor_strat_num = None
+        self.possessum = None
+        self.possessum_strat_num = None
+        
 
     def __repr__(self):
         return 'LexicalRuleType(' + self.key + ')'

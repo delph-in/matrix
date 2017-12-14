@@ -254,9 +254,20 @@ def create_lexical_rule_type(lrt, mtx_supertypes, cur_pc):
     for feat in lrt.get('feat'):
         if feat['name'] == 'evidential':
             new_lrt.evidential = feat['value']
+###########################
+        elif 'possessor' in feat['name']:
+            new_lrt.possessor = feat['value']
+            new_lrt.possessor_strat_num = feat['name'][-1]
+            print new_lrt.possessor
+        elif 'possessum' in feat['name']:
+            new_lrt.possessum = feat['value']
+            new_lrt.possessum_strat_num = feat['name'][-1]
+            print new_lrt.possessum
+###########################
         else:
             new_lrt.features[feat['name']] = {'value': feat['value'],
                                               'head': feat['head']}
+
 
     # CMC 2017-03-24 Populate valence change operations
     new_lrt.valchgops = lrt.get('valchg',[])
@@ -617,6 +628,8 @@ def write_rules(pch, mylang, irules, lrules, lextdl, choices):
             write_valence_change_behavior(lrt, mylang, choices)
             # MTH 2017-10-16 Write evidential behavior
             write_evidential_behavior(lrt, mylang, choices, pc.has_evidential())
+            # EKN 2017-12-13 Write possessive behavior
+            write_possessive_behavior(lrt,mylang,choices, pc.has_possessive())
             # CMC 2017-04-07 moved merged LRT/PCs handling to write_supertypes
             write_supertypes(mylang, lrt.identifier(), lrt.all_supertypes())
         write_daughter_types(mylang, pc)
@@ -810,6 +823,25 @@ def write_evidential_behavior(lrt, mylang, choices, pc_evidential):
         mylang.set_section(prev_section)
     elif pc_evidential:
         lrt.supertypes.add("add-only-no-ccont-rule")
+
+
+def write_possessive_behavior(lrt,mylang,choices, pc_possessive):
+    POSSESSOR_LEX_RULE_DEFN = ''' := lex-rule &
+             [ SYNSEM.LOCAL.CAT.HEAD noun & [ POSS possessor ] ].'''
+    POSSESSUM_LEX_RULE_DEFN = ''' := lex-rule &
+             [ SYNSEM.LOCAL.CAT.HEAD noun & [ POSS possessum ] ].'''
+    if lrt.possessor:
+        lrt.supertypes.add('lex-rule')
+        prev_section = mylang.section
+        mylang.set_section('lexrules')
+        mylang.add('possessor-lex-rule-'+lrt.possessor_strat_num+POSSESSOR_LEX_RULE_DEFN)
+        mylang.set_section(prev_section)
+    if lrt.possessum:
+        lrt.supertypes.add('lex-rule')
+        prev_section = mylang.section
+        mylang.set_section('lexrules')
+        mylang.add('possessum-lex-rule-'+lrt.possessum_strat_num+POSSESSUM_LEX_RULE_DEFN)
+        mylang.set_section(prev_section)
 
 def write_valence_change_behavior(lrt, mylang, choices):
     from gmcs.linglib.valence_change import lexrule_name
