@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of clausalmods-morph-and-subord
 ;;; created at:
-;;;     Mon Dec 11 22:08:28 UTC 2017
+;;;     Fri Dec 15 22:27:51 UTC 2017
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -22,29 +22,28 @@ inflected :+ [ FINITE-FLAG luk ].
 
 infl-satisfied :+ [ FINITE-FLAG na-or-+ ].
 
-head :+ [ FINITENESS finiteness,
+head :+ [ FORM form,
     INIT bool ].
 
 basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.MC #mc,
-    HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
-
-basic-head-mod-phrase-simple :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc,
-    SYNSEM.LOCAL.CAT.MC #mc,
     HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
 
 basic-head-opt-subj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
 
 +nvcdmo :+ [ MOD < > ].
 
+basic-head-mod-phrase-simple :+ [ SYNSEM.LOCAL.CAT.MC #mc,
+    HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
+
 ;;;;;;;;;;;;;;
 ;;; Features
 ;;;;;;;;;;;;;;
 
-;;; Finiteness
+;;; Form
 
-finiteness := *top*.
-finite := finiteness.
-nonfinite := finiteness.
+form := *top*.
+nonfinite := form.
+finite := form.
 
 ;;;;;;;;;;;;;;;;;;;
 ;;; Lexical Types
@@ -104,17 +103,22 @@ verb-verb-lex := intransitive-verb-lex.
 ;;; Subordinators
 ;;;;;;;;;;;;;;;;;;;
 
-scopal-mod-with-comp-lex := single-rel-lex-item & norm-ltop-lex-item &
-  [ SYNSEM [ LOCAL [ CAT [ MC -,
-                           HEAD.MOD < [ LOCAL scopal-mod &
-                                              [ CAT [ HEAD verb,
-                                                      VAL [ SPR < >,
-                                                            COMPS < > ] ],
+adposition-subord-lex-item := single-rel-lex-item & norm-ltop-lex-item &
+  [ SYNSEM.LOCAL.CAT [ MC -,
+                       HEAD adp &
+                            [ MOD < [ LOCAL scopal-mod &
+                                            [ CAT [ HEAD verb,
+                                                    VAL.COMPS < > ] ] ] > ],
+                       VAL [ SUBJ < >,
+                             SPR < >,
+                             COMPS < [ LOCAL.CAT [ MC -,
+                                                   VAL.COMPS < > ] ] > ] ] ].
+
+subord-with-verbal-comp-lex := adposition-subord-lex-item &
+  [ SYNSEM [ LOCAL [ CAT [ HEAD.MOD < [ LOCAL [ CAT.HEAD verb,
                                                 CONT.HOOK [ LTOP #mod,
                                                             INDEX #index ] ] ] >,
-                           VAL.COMPS < [ LOCAL [ CAT [ HEAD verb,
-                                                       VAL [ SPR < >,
-                                                             COMPS < > ] ],
+                           VAL.COMPS < [ LOCAL [ CAT.HEAD verb,
                                                  CONT.HOOK.LTOP #comps ] ] > ],
                      CONT [ HCONS <! qeq &
                                      [ HARG #h1,
@@ -125,18 +129,11 @@ scopal-mod-with-comp-lex := single-rel-lex-item & norm-ltop-lex-item &
              LKEYS.KEYREL [ ARG1 #h1,
                             ARG2 #h2 ] ] ].
 
-subord-lex-item := scopal-mod-with-comp-lex &
-  [ SYNSEM.LOCAL.CAT.VAL [ SPR < >,
-                           COMPS < #comps > ],
-    ARG-ST < #comps &
-             [ LOCAL.CAT [ HEAD verb,
-                           MC - ] ] > ].
-
-nonfinite-clause-init-prehead-s-attach-subord-lex-item := subord-lex-item &
+nonfinite-clause-init-prehead-s-attach-subord-lex-item := subord-with-verbal-comp-lex &
   [ SYNSEM.LOCAL.CAT [ VAL.COMPS < [ LOCAL.CAT [ VAL.SUBJ < >,
-                                                 HEAD.finiteness #feat & nonfinite ] ] >,
+                                                 HEAD.form #feat & nonfinite ] ] >,
                        POSTHEAD -,
-                       HEAD [ finiteness #feat,
+                       HEAD [ form #feat,
                               MOD < [ LOCAL.CAT.VAL.SUBJ < > ] >,
                               INIT + ] ] ].
 
@@ -152,11 +149,11 @@ finite-lex-rule-super := add-only-no-ccont-rule & infl-lex-rule &
   [ INFLECTED.FINITE-FLAG +,
     DTR verb-lex ].
 
-nonfin-lex-rule := finite-lex-rule-super &
-  [ SYNSEM.LOCAL.CAT.HEAD.FINITENESS nonfinite ].
-
 fin-lex-rule := finite-lex-rule-super &
-  [ SYNSEM.LOCAL.CAT.HEAD.FINITENESS finite ].
+  [ SYNSEM.LOCAL.CAT.HEAD.FORM finite ].
+
+nonfin-lex-rule := finite-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.HEAD.FORM nonfinite ].
 
 ;;;;;;;;;;;;;;;;;;;
 ;;; Phrasal Types

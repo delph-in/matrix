@@ -1,4 +1,3 @@
-# some subordinators require special morphology and some don't
 subord noun1 verb1nonfin noun2 verb2fin
 *subord noun1 verb1 noun2 verb2fin
 *subord noun1 verb1nonfin noun2 verb2nonfin

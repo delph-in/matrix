@@ -23,14 +23,7 @@ section=direct-inverse
 section=tense-aspect-mood
 
 section=other-features
-  feature1_name=finiteness
-  feature1_type=head
-  feature1_cat=verb
-  feature1_new=yes
-    feature1_value1_name=finite
-      feature1_value1_supertype1_name=finiteness
-    feature1_value2_name=nonfinite
-      feature1_value2_supertype1_name=finiteness
+  form-fin-nf=on
 
 section=sentential-negation
 
@@ -46,14 +39,14 @@ section=nominalclause
 
 section=clausalmods
   cms1_position=before
-  cms1_modifier_attachment=s
+  cms1_modifier-attach=s
   cms1_subordinator=free
   cms1_subposition=before
   cms1_subordinator-type=head
     cms1_freemorph1_orth=subord
     cms1_freemorph1_pred=_subord_rel
   cms1_specialmorph=on
-    cms1_feat1_name=finiteness
+    cms1_feat1_name=form
     cms1_feat1_value=nonfinite
 
 section=clausal-comp
@@ -79,18 +72,18 @@ section=morphology
   verb-pc1_order=suffix
   verb-pc1_inputs=verb
   verb-pc1_obligatory=on
-    verb-pc1_lrt1_name=nonfin
-      verb-pc1_lrt1_feat1_name=finiteness
-      verb-pc1_lrt1_feat1_value=nonfinite
+    verb-pc1_lrt1_name=fin
+      verb-pc1_lrt1_feat1_name=form
+      verb-pc1_lrt1_feat1_value=finite
       verb-pc1_lrt1_feat1_head=verb
       verb-pc1_lrt1_lri1_inflecting=yes
-      verb-pc1_lrt1_lri1_orth=nonfin
-    verb-pc1_lrt2_name=fin
-      verb-pc1_lrt2_feat1_name=finiteness
-      verb-pc1_lrt2_feat1_value=finite
+      verb-pc1_lrt1_lri1_orth=fin
+    verb-pc1_lrt2_name=nonfin
+      verb-pc1_lrt2_feat1_name=form
+      verb-pc1_lrt2_feat1_value=nonfinite
       verb-pc1_lrt2_feat1_head=verb
       verb-pc1_lrt2_lri1_inflecting=yes
-      verb-pc1_lrt2_lri1_orth=fin
+      verb-pc1_lrt2_lri1_orth=nonfin
 
 section=toolbox-import
 

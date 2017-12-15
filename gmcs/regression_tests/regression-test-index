@@ -305,3 +305,7 @@ clausalmods-nom-high=Clausal modifiers that are nominalized at S (high) and have
 clausalmods-nom-mid=Clausal modifiers that are nominalized at VP (mid)
 clausalmods-nom-low=Clausal modifiers that are nominalized at V (low)
 clausalmods-nom-no-rel=Clausal modifiers that are nominalized at S (high) but to not have a nominalization predication
+clausalmods-subord-pairs=Clausal Modifiers with subordinator pair
+clausalmods-attach-vp-s=Clausal modifiers that attach to the matrix VP, S or VP and S
+clausalmods-morph-and-subord=Clausal modifiers with special morphology and a free subordinator morpheme (in this case nonfinite special morphology)
+clausalmods-special-morph=Clausal Modifiers with special morphology that contributes a predication

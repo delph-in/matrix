@@ -1,10 +1,10 @@
 ;;; -*- Mode: TDL; Coding: utf-8 -*-
 ;;; Inflecting Lexical Rule Instances
 
-nonfin-suffix :=
-%suffix (* nonfin)
-nonfin-lex-rule.
-
 fin-suffix :=
 %suffix (* fin)
 fin-lex-rule.
+
+nonfin-suffix :=
+%suffix (* nonfin)
+nonfin-lex-rule.

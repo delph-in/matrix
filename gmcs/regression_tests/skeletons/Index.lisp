@@ -22,6 +22,10 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "clausalmods-special-morph") (:content . "clausalmods-special-morph: Clausal Modifiers with special morphology that contributes a predication"))
+((:path . "clausalmods-morph-and-subord") (:content . "clausalmods-morph-and-subord: Clausal modifiers with special morphology and a free subordinator morpheme (in this case nonfinite special morphology)"))
+((:path . "clausalmods-attach-vp-s") (:content . "clausalmods-attach-vp-s: Clausal modifiers that attach to the matrix VP, S or VP and S"))
+((:path . "clausalmods-subord-pairs") (:content . "clausalmods-subord-pairs: Clausal Modifiers with subordinator pair"))
 ((:path . "clausalmods-nom-no-rel") (:content . "clausalmods-nom-no-rel: Clausal modifiers that are nominalized at S (high) but to not have a nominalization predication"))
 ((:path . "clausalmods-nom-low") (:content . "clausalmods-nom-low: Clausal modifiers that are nominalized at V (low)"))
 ((:path . "clausalmods-nom-mid") (:content . "clausalmods-nom-mid: Clausal modifiers that are nominalized at VP (mid)"))
