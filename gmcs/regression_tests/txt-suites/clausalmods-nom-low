@@ -1,6 +1,0 @@
-#the clausal modifier is nominalized
-subord noun1gen tverbnmz noun2acc noun3nom iverb
-*subord noun1nom tverbnmz noun2acc noun3nom iverb
-*subord noun1gen tverb noun2acc noun3nom iverb
-*subord noun1gen tverbnmz noun2acc noun3gen iverb
-*subord noun1nom tverb noun2acc noun3gen iverb
