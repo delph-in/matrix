@@ -110,6 +110,8 @@ def customize_nmcs(mylang, ch, rules, lrules):
             mylang.add(level + '-nominalized-clause-phrase := basic-unary-phrase &\
                                     [ SYNSEM.LOCAL.CAT [ HEAD noun,\
             		                VAL [ SPR < [ OPT + ] >,\
+                                            SPEC < >,\
+                                            COMPS < >,\
             		                        SUBJ < #subj > ]],\
                                     C-CONT [ RELS <! [ PRED "nominalized_rel",\
             	    	            LBL #ltop,\
@@ -133,7 +135,10 @@ def customize_nmcs(mylang, ch, rules, lrules):
             if nmzrel == 'no':
                 mylang.add(level + '-no-rel-nominalized-clause-phrase := basic-unary-phrase &\
   [ SYNSEM [ LOCAL.CAT [ HEAD noun,\
-                         VAL [ SPR < > ]]],\
+                         VAL [ COMPS < >,\
+                                        SUBJ < >,\
+                                        SPR < >,\
+                                        SPEC < > ]]],\
     C-CONT [ RELS <! !>,\
 	     HCONS <! !>,\
 	     HOOK [ LTOP #ltop ] ],\

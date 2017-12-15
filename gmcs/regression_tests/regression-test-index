@@ -301,3 +301,7 @@ clausalmods-vfinal-v2-adp=Clausal modifiers with a an adposition subordinator, v
 clausalmods-modifier-position=Clausal modifiers that attach before, after or before and after the main clause
 clausalmods-subord-position=Clausal modifiers whose subordinators (type head) go at the beginning or end of the clause
 clausalmods-adv-or-head=Claual modifiers whose subordinator is a head, an s-attaching adverb, a vp-attaching adverb or a vp and s-attaching adverb
+clausalmods-nom-high=Clausal modifiers that are nominalized at S (high) and have a nominalization predication
+clausalmods-nom-mid=Clausal modifiers that are nominalized at VP (mid)
+clausalmods-nom-low=Clausal modifiers that are nominalized at V (low)
+clausalmods-nom-no-rel=Clausal modifiers that are nominalized at S (high) but to not have a nominalization predication

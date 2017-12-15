@@ -39,7 +39,7 @@ def add_subord_lex(mylang, lexicon, cms, ch):
                     nmzRel = ns.get('nmzRel')
             if nmzRel == 'no':
                 mylang.add('subord-with-nominalized-comp-no-rel-lex := adposition-subord-lex-item &\
-        [ SYNSEM [ LOCAL [ CAT [ HEAD.MOD < [ CONT.HOOK [ LTOP  #mod,\
+        [ SYNSEM [ LOCAL [ CAT [ HEAD.MOD < [ LOCAL.CONT.HOOK [ LTOP  #mod,\
                                             INDEX  #index ]] >,\
                                 VAL.COMPS < [LOCAL[CAT[HEAD noun &\
                                         			[ NMZ + ],\
@@ -69,7 +69,8 @@ def add_subord_lex(mylang, lexicon, cms, ch):
                 mylang.add('subord-with-nominalized-comp-lex := adposition-subord-lex-item &\
         [ SYNSEM [ LOCAL [ CAT [ HEAD.MOD < [ LOCAL.CONT.HOOK[LTOP  #mod,\
                                                                 INDEX  #index ]] >,\
-                               VAL.COMPS < [LOCAL[CAT[HEAD noun,\
+                               VAL.COMPS < [LOCAL[CAT[HEAD noun &\
+                                                            [ NMZ + ],\
                                                         VAL.SPR < > ],\
                                                 CONT.HOOK.INDEX  #comp ]] > ],\
                         CONT[HCONS <! qeq &\
