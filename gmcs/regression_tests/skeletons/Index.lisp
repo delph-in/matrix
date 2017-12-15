@@ -22,6 +22,7 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "valchg-lkt") (:content . "valchg-lkt: valchg tests using Lakota"))
 ((:path . "v2-basic-order") (:content . "v2-basic-order: V2 basic word order: verb in second position, subject and object on either side."))
 ((:path . "vfinal") (:content . "vfinal: V-final basic word order: verb in final position, subject and object in either position in front."))
 ((:path . "valchg-subj-add-pre-case") (:content . "valchg-subj-add-pre-case: subject-adding, with case constraints"))

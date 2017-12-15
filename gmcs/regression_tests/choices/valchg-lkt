@@ -1,0 +1,227 @@
+
+version=28
+
+section=general
+language=valchg-lkt
+iso-code=lkt
+punctuation-chars=keep-list
+punctuation-chars-list='-
+
+section=word-order
+word-order=sov
+has-dets=yes
+noun-det-order=noun-det
+has-aux=yes
+aux-comp-order=after
+aux-comp=s
+multiple-aux=no
+
+section=number
+  number1_name=singular
+  number2_name=plural
+
+section=person
+person=1-2-3
+first-person=none
+
+section=gender
+
+section=case
+case-marking=none
+
+section=direct-inverse
+
+section=tense-aspect-mood
+
+section=other-features
+
+section=sentential-negation
+neg-exp=1
+vpc-0-neg=create
+neg-aux=on
+neg-aux-index=1
+comp-neg-head=v
+comp-neg-orth=šni
+
+section=coordination
+
+section=matrix-yes-no
+
+section=info-str
+
+section=arg-opt
+subj-drop=subj-drop-all
+subj-mark-drop=subj-mark-drop-req
+subj-mark-no-drop=subj-mark-no-drop-not
+subj-con=subj-con-always
+obj-drop=obj-drop-all
+obj-mark-drop=obj-mark-drop-req
+obj-mark-no-drop=obj-mark-no-drop-not
+
+section=lexicon
+  noun1_name=regular-noun
+  noun1_det=opt
+    noun1_stem1_orth=šúŋka
+    noun1_stem1_pred=_šúŋka_n_rel
+    noun1_stem2_orth=waštúŋkala
+    noun1_stem2_pred=_waštúŋkala_n_rel
+    noun1_stem3_orth=hokšíla
+    noun1_stem3_pred=_hokšíla_n_rel
+    noun1_stem4_orth=čháŋčheGa
+    noun1_stem4_pred=_čháŋčheǧa_n_rel
+    noun1_stem5_orth=matHó
+    noun1_stem5_pred=_matȟó_n_rel
+    noun1_stem6_orth=wičháša
+    noun1_stem6_pred=_wičháša_n_rel
+    noun1_stem7_orth=até
+    noun1_stem7_pred=_até_n_rel
+    noun1_stem8_orth=kaká
+    noun1_stem8_pred=_kaká_n_rel
+  noun2_name=proper-noun
+  noun2_supertypes=noun1
+  noun2_det=imp
+    noun2_stem1_orth=Phita
+    noun2_stem1_pred=_Phita_n_rel
+  verb1_name=tr-active
+  verb1_valence=trans
+    verb1_stem1_orth=yaHtákA
+    verb1_stem1_pred=_yaȟtákA_v_rel
+    verb1_stem2_orth=káGA
+    verb1_stem2_pred=_káǧA_v_rel
+    verb1_stem3_orth=kté
+    verb1_stem3_pred=_kté_v_rel
+  verb2_name=itr-stative
+  verb2_valence=intrans
+    verb2_stem1_orth=ičháGA
+    verb2_stem1_pred=_ičháǧA_v_rel
+  aux1_name=neg
+  aux1_sem=add-pred
+    aux1_compfeature1_name=form
+    aux1_compfeature1_value=finite
+    aux1_stem1_orth=šni
+    aux1_stem1_pred=neg_rel
+    det1_stem1_orth=kiŋ
+    det1_stem1_pred=_kiŋ_q_rel
+    det1_stem2_orth=waŋ
+    det1_stem2_pred=_waŋ_q_rel
+
+section=morphology
+  verb-pc1_name=agt-pron-pos
+  verb-pc1_obligatory=on
+  verb-pc1_order=prefix
+  verb-pc1_inputs=verb-pc4
+    verb-pc1_lrt1_name=agt-pron-1sg-subj
+      verb-pc1_lrt1_feat1_name=number
+      verb-pc1_lrt1_feat1_value=singular
+      verb-pc1_lrt1_feat1_head=subj
+      verb-pc1_lrt1_feat2_name=person
+      verb-pc1_lrt1_feat2_value=1st
+      verb-pc1_lrt1_feat2_head=subj
+      verb-pc1_lrt1_feat3_name=overt-arg
+      verb-pc1_lrt1_feat3_value=not-permitted
+      verb-pc1_lrt1_feat3_head=subj
+      verb-pc1_lrt1_lri1_inflecting=yes
+      verb-pc1_lrt1_lri1_orth=1SgAgt-
+    verb-pc1_lrt2_name=agips-tr-fill
+      verb-pc1_lrt2_valchg1_operation=subj-rem
+      verb-pc1_lrt2_valchg1_inputs=trans
+      verb-pc1_lrt2_valchg1_argpos=pre
+      verb-pc1_lrt2_valchg1_argtype=np
+      verb-pc1_lrt2_lri1_inflecting=yes
+      verb-pc1_lrt2_lri1_orth=AGIPS-
+  verb-pc2_name=caus-itr-agt-pron-pos
+  verb-pc2_order=prefix
+  verb-pc2_inputs=verb-pc6
+  verb-pc2_obligatory=off
+    verb-pc2_lrt1_name=caus-itr-agt-pron-1sg-subj
+    verb-pc2_lrt1_feat1_name=number
+    verb-pc2_lrt1_feat1_value=singular
+    verb-pc2_lrt1_feat1_head=subj
+    verb-pc2_lrt1_feat2_name=person
+    verb-pc2_lrt1_feat2_value=1st
+    verb-pc2_lrt1_feat2_head=subj
+    verb-pc2_lrt1_feat3_name=overt-arg
+    verb-pc2_lrt1_feat3_value=not-permitted
+    verb-pc2_lrt1_feat3_head=subj
+    verb-pc2_lrt1_lri1_inflecting=yes
+    verb-pc2_lrt1_lri1_orth=1SgAgt-
+  verb-pc4_name=pat-obj-pron-pos
+  verb-pc4_order=prefix
+  verb-pc4_inputs=verb1
+  verb-pc4_obligatory=on
+    verb-pc4_lrt1_name=pat-obj-2sg-pron
+      verb-pc4_lrt1_feat1_name=number
+      verb-pc4_lrt1_feat1_value=singular
+      verb-pc4_lrt1_feat1_head=obj
+      verb-pc4_lrt1_feat2_name=person
+      verb-pc4_lrt1_feat2_value=2nd
+      verb-pc4_lrt1_feat2_head=obj
+      verb-pc4_lrt1_feat3_name=overt-arg
+      verb-pc4_lrt1_feat3_value=not-permitted
+      verb-pc4_lrt1_feat3_head=obj
+      verb-pc4_lrt1_lri1_inflecting=yes
+      verb-pc4_lrt1_lri1_orth=2SgPat-
+    verb-pc4_lrt2_name=patips-obj-fill
+      verb-pc4_lrt2_valchg1_operation=obj-rem
+      verb-pc4_lrt2_valchg1_inputs=trans
+      verb-pc4_lrt2_valchg1_argpos=pre
+      verb-pc4_lrt2_valchg1_argtype=np
+      verb-pc4_lrt2_lri1_inflecting=yes
+      verb-pc4_lrt2_lri1_orth=PATIPS-
+  verb-pc5_name=pat-subj-pron-pos
+  verb-pc5_order=prefix
+  verb-pc5_inputs=verb2
+  verb-pc5_obligatory=on
+    verb-pc5_lrt1_name=pat-subj-2sg-pron
+      verb-pc5_lrt1_feat1_name=number
+      verb-pc5_lrt1_feat1_value=singular
+      verb-pc5_lrt1_feat1_head=subj
+      verb-pc5_lrt1_feat2_name=person
+      verb-pc5_lrt1_feat2_value=2nd
+      verb-pc5_lrt1_feat2_head=subj
+      verb-pc5_lrt1_feat3_name=overt-arg
+      verb-pc5_lrt1_feat3_value=not-permitted
+      verb-pc5_lrt1_feat3_head=subj
+      verb-pc5_lrt1_lri1_inflecting=yes
+      verb-pc5_lrt1_lri1_orth=2SgPat-
+    verb-pc5_lrt2_name=patips-subj-fill
+      verb-pc5_lrt2_valchg1_operation=subj-rem
+      verb-pc5_lrt2_valchg1_inputs=intrans
+      verb-pc5_lrt2_valchg1_argpos=pre
+      verb-pc5_lrt2_valchg1_argtype=np
+      verb-pc5_lrt2_lri1_inflecting=yes
+      verb-pc5_lrt2_lri1_orth=PATIPS-
+  verb-pc6_name=caus-itr-pos
+  verb-pc6_order=suffix
+  verb-pc6_inputs=verb-pc5
+  verb-pc6_require1_others=verb-pc2
+    verb-pc6_lrt1_name=caus
+      verb-pc6_lrt1_valchg1_operation=subj-add
+      verb-pc6_lrt1_valchg1_inputs=intrans
+      verb-pc6_lrt1_valchg1_predname=_caus_v_rel
+      verb-pc6_lrt1_valchg1_argpos=pre
+      verb-pc6_lrt1_valchg1_argtype=np
+      verb-pc6_lrt1_lri1_inflecting=yes
+      verb-pc6_lrt1_lri1_orth=-CAUS
+  verb-pc7_name=bene-tr-pos
+  verb-pc7_order=suffix
+  verb-pc7_inputs=verb-pc1, verb-pc4
+    verb-pc7_lrt1_name=bene
+      verb-pc7_lrt1_feat1_name=OPT
+      verb-pc7_lrt1_feat1_value=minus
+      verb-pc7_lrt1_feat1_head=newobj
+      verb-pc7_lrt1_valchg1_operation=obj-add
+      verb-pc7_lrt1_valchg1_inputs=trans
+      verb-pc7_lrt1_valchg1_predname=_benefactive_v_rel
+      verb-pc7_lrt1_valchg1_argpos=post
+      verb-pc7_lrt1_valchg1_argtype=np
+      verb-pc7_lrt1_lri1_inflecting=yes
+      verb-pc7_lrt1_lri1_orth=-BEN
+
+section=toolbox-import
+
+section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon

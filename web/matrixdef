@@ -2269,6 +2269,7 @@ BeginIter verb-pc{i} "a Position Class" 1
       . verb "The verb" "the verb"
       . subj "The subject" "the subject NP"
       . obj "The object" "the object NP"
+      . newobj "The added object" "the added object NP"
       . higher "Higher-ranked" "the higher-ranked NP"
       . lower "Lower-ranked" "the lower-ranked NP"
 
