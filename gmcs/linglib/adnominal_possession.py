@@ -16,6 +16,15 @@ from gmcs.linglib.morphotactics import all_position_classes
 #
 ###################################################################
 
+###################################################################
+POSS_REL = '''arg12-ev-relation & [ PRED "poss_rel", \
+                                    LBL #lbl, \
+                                    ARG1 #possessum, \
+                                    ARG2 #possessor ] '''
+
+POSSESSUM_EXIST_REL = '''quant-relation & [ PRED "exist_q_rel", \
+                                            ARG0 #possessum, \
+                                            RSTR #harg ]'''
 
 # PRIMARY FUNCTION
 def customize_adnominal_possession(mylang,ch,rules,irules,lexicon):
@@ -96,9 +105,10 @@ def customize_irules(strat,mylang,ch,irules):
                     mark_loc=strat.get('mark-loc')
                     np_nom=strat.get('np-nom')
                     mylang.set_section('lexrules')
-                    if mark_loc=='possessor-marking':
+                    if mark_loc=='possessor-marking' or 'double-marking':
+                        possessor_rule_name = 'possessor-lex-rule-'+strat_num
                         if mod_spec=='spec':
-                            mylang.add('possessor-lex-rule-'+strat_num+' := val-change-with-ccont-lex-rule & infl-lex-rule & \
+                            mylang.add(possessor_rule_name+' := val-change-with-ccont-lex-rule & \
                   [ SYNSEM.LOCAL.CAT [ VAL [ SPEC.FIRST.LOCAL [ CAT [ HEAD noun ],\
                                                                 CONT.HOOK [ INDEX #index & [ COG-ST uniq-id ],\
                                                                        LTOP #lbl ] ],\
@@ -106,13 +116,7 @@ def customize_irules(strat,mylang,ch,irules):
                                                                         SUBJ #subj,\
                                                                         COMPS #comps] ] ,\
                                        C-CONT [ HOOK #hook ,\
-                                       RELS <! arg12-ev-relation & [ PRED "poss_rel", \
-                                                                     LBL #lbl, \
-                                                                     ARG1 #possessum, \
-                                                                     ARG2 #possessor ], \
-                                                quant-relation & [ PRED "exist_q_rel", \
-                                                                   ARG0 #possessum, \
-                                                                   RSTR #harg ] !>, \
+                                       RELS <! '+ POSS_REL  +' , '+POSSESSUM_EXIST_REL+ ' !>, \
                                                                    HCONS <! qeq & [ HARG #harg, LARG #lbl ] !>, \
                                                                                                 ICONS <! !>  ], \
                    DTR.SYNSEM.LOCAL [ CAT.VAL [ SPR #spr, \
@@ -130,10 +134,7 @@ def customize_irules(strat,mylang,ch,irules):
                                              SUBJ #subj,\
                                              COMPS #comps] ] ,\
                                        C-CONT [ HOOK #hook ,\
-                                       RELS <! arg12-ev-relation & [ PRED "poss_rel", \
-                                                                     LBL #lbl, \
-                                                                     ARG1 #possessum, \
-                                                                     ARG2 #possessor ] !>, \
+                                       RELS <! '+POSS_REL+' !>,\
                                                                    HCONS <! !>, \
                                                                    ICONS <! !>  ], \
                    DTR.SYNSEM.LOCAL [ CAT.VAL [ SPEC #spec, \
@@ -149,30 +150,6 @@ def customize_irules(strat,mylang,ch,irules):
 
                         orth=lri.get('orth')
 
-
-
-
-"""
-    for npc in ch['noun-pc']:
-        for lrt in npc['lrt']:
-            for f in lrt['feat']:
-                if 'possessor' in f['name']:
-                    # Added these supertypes to morphotactics.py as well
-                    if strat.get('mod-spec')=='spec' or (strat.get('mod-spec')=='mod' and strat.get('mark-loc')=='possessum-marking'):
-#                        if 'supertypes' not in lrt:
-#                            lrt['supertypes']='val-change-with-ccont-lex-rule'
-#                        else:
-#                            lrt.supertypes.add('val-change-with-ccont-lex-rule')
-                        lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') + \
-                                                          ['val-change-with-ccont-lex-rule'])
-                    else:
-#                        if 'supertypes' not in lrt:
-#                            lrt['supertypes']='head-change-with-ccont-lex-rule'
-#                        else:
-#                            lrt.supertypes.add('head-change-with-ccont-lex-rule')
-                        lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') + \
-                                                          ['head-change-with-ccont-lex-rule'])
-"""
 
 
 
@@ -195,54 +172,6 @@ def customize_irules(strat,mylang,ch,irules):
 #                ADD a feature [HEAD.POSS +] to the possessor infl rule.
 
 
-"""
-def customize_valence_change(mylang, ch, lexicon, rules, irules, lrules):
-    rules = LexRuleBuilder()
-    for pc in all_position_classes(ch):
-        pc_key = pc.full_key
-        pc_inputs = pc.get('inputs',[])
-        idx = pc['lrt'].next_iter_num() if 'lrt' in pc else 1
-        for lrt in pc.get('lrt',[]):
-            for vchop in lrt.get('valchg',[]):
-                opname = vchop['operation'].lower()
-                if opname == 'subj-rem':
-                    rules.add('subj-rem-op', subj_rem_op_lex_rule)
-                if opname == 'obj-rem':
-                    rules.add('obj-rem-op', obj_rem_op_lex_rule)
-                if opname == 'obj-add':
-                    rules.add('basic-applicative', basic_applicative_lex_rule)
-                    position = vchop.get('argpos','').lower()
-                    argtype = vchop.get('argtype','').lower()
-                    if position == 'pre':
-                        rules.add('added-arg-head-type', added_arg_head_lex_rule, 2, argtype)
-                        rules.add('added-arg-applicative', added_arg_applicative_lex_rule, 2, 3)
-                        rules.add('added-arg-non-local', added_arg_non_local_lex_rule, 2, 3)
-                    elif position == 'post':
-                        rules.add('added-arg-head-type', added_arg_head_lex_rule, 3, argtype)
-                        rules.add('added-arg-applicative', added_arg_applicative_lex_rule, 3, 3)
-                        rules.add('added-arg-non-local', added_arg_non_local_lex_rule, 3, 3)
-                if opname == 'subj-add':
-                    if 'verb' in pc_inputs or 'iverb' in pc_inputs:
-                        rules.add('added-arg-non-local', added_arg_non_local_lex_rule, 1, 2)
-                    if 'verb' in pc_inputs or 'tverb' in pc_inputs:
-                        rules.add('added-arg-non-local', added_arg_non_local_lex_rule, 1, 3)
-
-    rules.generate_tdl(mylang)
-
-class LexRuleBuilder:
-    def __init__(self):
-        self.rules = set()
-    def add(self,rule_name,rulegen,*rulegen_args):
-        self.rules.add(FnWrapper(rule_name,rulegen,*rulegen_args))
-    def generate_tdl(self,mylang):
-        prev_section = mylang.section
-        mylang.set_section('lexrules')
-        for rule in self.rules:
-            mylang.add(rule())
-        mylang.set_section(prev_section)
-
-
-"""
 
 
 
