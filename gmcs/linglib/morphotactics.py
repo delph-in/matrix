@@ -820,6 +820,7 @@ def write_evidential_behavior(lrt, mylang, choices, pc_evidential):
         [ C-CONT.RELS <! [ PRED "ev_''' + lrt.evidential + '''_rel" ] !> ].
         '''
         mylang.add(infl_evid_def)
+        print infl_evid_def
         mylang.set_section(prev_section)
     elif pc_evidential:
         lrt.supertypes.add("add-only-no-ccont-rule")
@@ -831,16 +832,18 @@ def write_possessive_behavior(lrt,mylang,choices, pc_possessive):
     POSSESSUM_LEX_RULE_DEFN = ''' := lex-rule &
              [ SYNSEM.LOCAL.CAT.HEAD noun & [ POSS possessum ] ].'''
     if lrt.possessor:
-        lrt.supertypes.add('lex-rule')
+        possessor_rule_name='possessor-lex-rule-'+lrt.possessor_strat_num
+        lrt.supertypes.add(possessor_rule_name)
         prev_section = mylang.section
         mylang.set_section('lexrules')
-        mylang.add('possessor-lex-rule-'+lrt.possessor_strat_num+POSSESSOR_LEX_RULE_DEFN)
+        mylang.add(possessor_rule_name+POSSESSOR_LEX_RULE_DEFN)
         mylang.set_section(prev_section)
     if lrt.possessum:
-        lrt.supertypes.add('lex-rule')
+        possessum_rule_name='possessum-lex-rule-'+lrt.possessor_strat_num
+        lrt.supertypes.add(possessum_rule_name)
         prev_section = mylang.section
         mylang.set_section('lexrules')
-        mylang.add('possessum-lex-rule-'+lrt.possessum_strat_num+POSSESSUM_LEX_RULE_DEFN)
+        mylang.add(possessum_rule_name+POSSESSUM_LEX_RULE_DEFN)
         mylang.set_section(prev_section)
 
 def write_valence_change_behavior(lrt, mylang, choices):
