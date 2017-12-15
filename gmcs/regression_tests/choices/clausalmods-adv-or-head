@@ -1,8 +1,7 @@
-
 version=28
 
 section=general
-language=clausalmods-free-fixed-mod
+language=clausalmods-adv-or-head
 
 section=word-order
 word-order=svo
@@ -35,28 +34,40 @@ section=info-str
 
 section=arg-opt
 
+section=nominalclause
+
 section=clausalmods
   cms1_position=before
   cms1_modifier-attach=s
   cms1_subordinator=free
-  cms1_subordinator-type=head
   cms1_subposition=before
-    cms1_freemorph1_orth=subord1
-    cms1_freemorph1_pred=_subord1_rel_
-  cms2_position=either
+  cms1_subordinator-type=head
+    cms1_freemorph1_orth=subord-head
+    cms1_freemorph1_pred=_subord-head_rel
+  cms2_position=before
   cms2_modifier-attach=s
   cms2_subordinator=free
-  cms2_subordinator-type=head
   cms2_subposition=before
-    cms2_freemorph1_orth=subord2
-    cms2_freemorph1_pred=_subord2_rel_
-  cms3_position=after
+  cms2_subordinator-type=adverb
+  cms2_adverb-attach=s
+    cms2_freemorph1_orth=subord-adv-s
+    cms2_freemorph1_pred=_subord-adv-s_rel
+  cms3_position=before
   cms3_modifier-attach=s
   cms3_subordinator=free
-  cms3_subordinator-type=head
   cms3_subposition=before
-    cms3_freemorph1_orth=subord3
-    cms3_freemorph1_pred=_subord3_rel_
+  cms3_subordinator-type=adverb
+  cms3_adverb-attach=vp
+    cms3_freemorph1_orth=subord-adv-vp
+    cms3_freemorph1_pred=_subord-adv-vp_rel
+  cms4_position=before
+  cms4_modifier-attach=s
+  cms4_subordinator=free
+  cms4_subposition=before
+  cms4_subordinator-type=adverb
+  cms4_adverb-attach=both
+    cms4_freemorph1_orth=subord-adv-vp-and-s
+    cms4_freemorph1_pred=_subord-adv-vp-and-s_rel
 
 section=lexicon
   noun1_name=noun
@@ -65,7 +76,7 @@ section=lexicon
     noun1_stem1_pred=_noun1_n_rel
     noun1_stem2_orth=noun2
     noun1_stem2_pred=_noun2_n_rel
-  verb1_name=intrans
+  verb1_name=verb
   verb1_valence=intrans
     verb1_stem1_orth=verb1
     verb1_stem1_pred=_verb1_v_rel
@@ -81,4 +92,3 @@ section=test-sentences
 section=gen-options
 
 section=ToolboxLexicon
-

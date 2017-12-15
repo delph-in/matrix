@@ -1444,11 +1444,14 @@ def validate_arg_opt(ch, vr):
 # validate_clausal_mods(ch, vr)
 #   Validate the user's choices clausal modifiers.
 
-def validate_clausal_mods(ch, vr):
+def validate_clausalmods(ch, vr):
     for cms in ch.get('cms'):
         pos = cms.get('position')
         subord = cms.get('subordinator')
+        subord_type = cms.get('subordinator-type')
         subpos = cms.get('subposition')
+        attach = cms.get('modifier-attach')
+        adv_attach = cms.get('adverb-attach')
 
         if subord == 'free':
             pass

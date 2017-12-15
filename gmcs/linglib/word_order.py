@@ -73,6 +73,10 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
     # ASF 2008-11-03 v2 analysis requires MC feature is not passed up to mother in
     # head - comp and not from mod to mother, putting it back for other wo options
 
+    # KPH 2017-12-14 Removed mc identity between non head daughter and mother in
+    # basic-head-mod. This is not the case for clausal modifiers (in whcih the modifer
+    # is MC -).
+
     if not wo == 'v2':
         mylang.add_literal(';Constraint on MC used to be part of matrix.tdl\n;' +
                            ';it applies to all wo implementations, except for v2')
@@ -80,10 +84,10 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
                 [ SYNSEM.LOCAL.CAT.MC #mc,\
                   HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].',
                    section='addenda')
-        mylang.add('basic-head-mod-phrase-simple :+\
-                [ SYNSEM.LOCAL.CAT.MC #mc, \
-                  NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].',
-                   section='addenda')
+        # mylang.add('basic-head-mod-phrase-simple :+\
+        #         [ SYNSEM.LOCAL.CAT.MC #mc, \
+        #           NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].',
+        #            section='addenda')
 
 
     # Head-comp order

@@ -21,6 +21,7 @@ def add_subord_lex(mylang, lexicon, cms, ch):
     nominalized, nom_strategy = is_nominalized(cms)
 
     if cms.get('subordinator-type') == 'head':
+        mylang.set_section('subordlex')
         mylang.add('adposition-subord-lex-item := single-rel-lex-item & norm-ltop-lex-item &\
         [ SYNSEM.LOCAL.CAT [ MC -,\
                             HEAD adp & [ MOD < [ LOCAL scopal-mod &\
@@ -32,8 +33,6 @@ def add_subord_lex(mylang, lexicon, cms, ch):
                                                         VAL.COMPS < >]] > ]]].')
 
         if nominalized == 'yes':
-            mylang.set_section('noun-lex')
-            mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT.HEAD.NMZ - ].')
             mylang.set_section('subordlex')
             for ns in ch.get('ns'):
                 if ns.get('name') == nom_strategy:
@@ -43,7 +42,8 @@ def add_subord_lex(mylang, lexicon, cms, ch):
         [ SYNSEM [ LOCAL [ CAT [ HEAD.MOD < [ CONT.HOOK [ LTOP  #mod,\
                                             INDEX  #index ]] >,\
                                 VAL.COMPS < [LOCAL[CAT[HEAD noun &\
-                                        			[ NMZ + ]],\
+                                        			[ NMZ + ],\
+                                        			VAL.SPR < > ],\
                                                     CONT.HOOK.LTOP  #comp ]] > ],\
                         CONT[HCONS <! qeq &\
                              [ HARG  #h1,\
@@ -69,7 +69,8 @@ def add_subord_lex(mylang, lexicon, cms, ch):
                 mylang.add('subord-with-nominalized-comp-lex := adposition-subord-lex-item &\
         [ SYNSEM [ LOCAL [ CAT [ HEAD.MOD < [ LOCAL.CONT.HOOK[LTOP  #mod,\
                                                                 INDEX  #index ]] >,\
-                               VAL.COMPS < [LOCAL[CAT[HEAD noun],\
+                               VAL.COMPS < [LOCAL[CAT[HEAD noun,\
+                                                        VAL.SPR < > ],\
                                                 CONT.HOOK.INDEX  #comp ]] > ],\
                         CONT[HCONS <! qeq &\
                               [HARG  #h1,\
@@ -126,7 +127,7 @@ def add_subord_lex(mylang, lexicon, cms, ch):
     constraints = []
     pos = cms.get('position')
     subpos = cms.get('subposition')
-    attach = cms.get('modifier_attachment')
+    attach = cms.get('modifier-attach')
     if cms.get('subordinator-type') == 'head':
         if subpos == 'before':
             lextype.append('clause-init')
@@ -246,14 +247,14 @@ def add_subord_lex(mylang, lexicon, cms, ch):
                 constraints.append('SYNSEM.SUBORDINATED ' + value)
                 if cms.get('subordinator') == 'pair':
                     constraints.append('SYNSEM.LOCAL.CAT.SUBPAIR ' + value)
-                if cms.get('adverb_attaches') == 's':
+                if cms.get('adverb-attach') == 's':
                     if cms.get('shared-subj') == 'on':
                         constraints.append('SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL [ SUBJ < unexpressed >, COMPS < > ]] >')
                     else:
                         constraints.append('SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL [ SUBJ < >, COMPS < > ]] >')
-                elif cms.get('adverb_attaches') == 'vp':
+                elif cms.get('adverb-attach') == 'vp':
                     constraints.append('SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL [ SUBJ < [ ] >, COMPS < > ]] >')
-                if cms.get('adverb_attaches') == 'both':
+                if cms.get('adverb-attach') == 'both':
                     constraints.append('SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL [ COMPS < > ]] >')
                 type = build_lex_type(lextype)
                 type += '-adv-subord-lex-item'
@@ -272,11 +273,11 @@ def add_subord_lex(mylang, lexicon, cms, ch):
                 lextype = [ value ] + lextype
                 constraints.append('SYNSEM.SUBORDINATED ' + value)
                 constraints.append('SYNSEM.LOCAL.CAT.SUBPAIR ' + value)
-                if cms.get('adverb_attaches') == 's':
+                if cms.get('adverb-attach') == 's':
                     constraints.append('SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL [ SUBJ < >, COMPS < > ]] >')
-                elif cms.get('adverb_attaches') == 'vp':
+                elif cms.get('adverb-attach') == 'vp':
                     constraints.append('SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL [ SUBJ < [ ] >, COMPS < > ]] >')
-                if cms.get('adverb_attaches') == 'both':
+                if cms.get('adverb-attach') == 'both':
                     constraints.append('SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL [ COMPS < > ]] >')
                 type = build_lex_type(lextype)
                 type += '-adv-subord-lex-item'
@@ -326,7 +327,6 @@ def add_subord_phrasal_types(mylang, rules, cms, ch):
     #rules.add('subj-head := subj-head-phrase.')
 
     if cms.get('subordinator-type') == 'adverb':
-        print('its an adverb')
         if cms.get('subposition') == 'before':
             rules.add('adj-head-int := adj-head-int-phrase.')
         elif cms.get('subposition') == 'after':
@@ -338,7 +338,8 @@ def add_subord_phrasal_types(mylang, rules, cms, ch):
         supertype = 'adv-marked-subord-clause-phrase'
         mylang.add(supertype + ' := basic-unary-phrase &\
   [ SYNSEM [ LOCAL [ CAT [ MC -,\
-                          VAL.SUBJ #subj,\
+                          VAL [ SUBJ < >,\
+                                COMPS < > ],\
                           HEAD [ MOD < [ LOCAL scopal-mod &\
 						[ CAT [ HEAD verb,\
 							VAL [ SUBJ < >,\
@@ -356,8 +357,9 @@ def add_subord_phrasal_types(mylang, rules, cms, ch):
 		    [ HARG #sch,\
 		      LARG #scl ] !>,\
     		HOOK.INDEX #index ],\
-    ARGS < [ SYNSEM [ LOCAL [ CAT [ HEAD verb,\
-				    VAL [ SUBJ #subj,\
+    ARGS < [ SYNSEM [ LOCAL [ CAT [ HEAD verb &\
+                                          [ MOD < > ],\
+				    VAL [ SUBJ < >,\
 				      SPR < >,\
 					  COMPS < > ]],\
 			    CONT.HOOK.LTOP #scl ],\
@@ -366,7 +368,7 @@ def add_subord_phrasal_types(mylang, rules, cms, ch):
             mylang.add(supertype + ' := [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.SUBPAIR #subpair ] >,\
                                   ARGS < [ SYNSEM.LOCAL.CAT.SUBPAIR #subpair ] > ].')
         pos = cms.get('position')
-        attach =cms.get('modifier_attachment')
+        attach =cms.get('modifier-attach')
         if cms.get('subordinator') == 'free':
             for adverb in cms.get('freemorph'):
                 pred = adverb.get('pred')
@@ -406,7 +408,7 @@ def add_subord_phrasal_types(mylang, rules, cms, ch):
                          ARGS < [ SYNSEM.LOCAL [ CONT.HOOK.XARG #xarg,\
                                       CAT [ VAL [ SUBJ < unexpressed > ]]]] >].')
         else:
-            mylang.add(type + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.VAL.SUBJ < > ] >].')
+            mylang.add(type + ' := [ ARGS < [ SYNSEM.LOCAL.CAT.VAL.SUBJ < > ] > ].') #changed 12/14
 
     if cms.get('subordinator-type') == 'head':
         wo = ch.get('word-order')
@@ -442,7 +444,7 @@ def add_subordinators_matrix_pair_to_lexicon(mylang, lexicon, cms, ch):
     for adverb in cms.get('morphpair'):
         lextype = []
         constraints = []
-        advpos = cms.get('matrix_subposition')
+        advpos = cms.get('matrix-subposition')
         if advpos == 'before':
             lextype.append('clause-init')
             constraints.append('SYNSEM.LOCAL.CAT.POSTHEAD -')
@@ -458,11 +460,11 @@ def add_subordinators_matrix_pair_to_lexicon(mylang, lexicon, cms, ch):
         pred = shortform_pred(matrixpred)
         lextype = [ pred ] + lextype
         constraints.append('SYNSEM.LOCAL.CAT.SUBPAIR ' + subpair)
-        if cms.get('matrix_adverb_attaches') == 's':
+        if cms.get('matrix-adverb-attach') == 's':
             constraints.append('SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL [ SUBJ < >, COMPS < > ]] >')
-        elif cms.get('matrix_adverb_attaches') == 'vp':
+        elif cms.get('matrix-adverb-attach') == 'vp':
             constraints.append('SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL [ SUBJ < [ ] >, COMPS < > ]] >')
-        elif cms.get('matrix_adverb_attaches') == 'both':
+        elif cms.get('matrix-adverb-attach') == 'both':
             constraints.append('SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL [ COMPS < > ]] >')
         type = build_lex_type(lextype)
         type += '-pair-lex-item'
@@ -604,9 +606,9 @@ def is_nominalized(cms):
     nominalized = 'no'
     nom_strategy = ''
     for feat in cms.get('feat'):
-        if feat.get('value') == 'nominalization':
+        if feat.get('name') == 'nominalization':
             nominalized = 'yes'
-            nom_strategy = feat.get('name')
+            nom_strategy = feat.get('value')
     return nominalized, nom_strategy
 
 def shortform_pred(pred):
@@ -644,8 +646,6 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
     else:
         constraints.append('ARGS < [ SYNSEM.LOCAL.CAT.VAL.SUBJ < > ] >')
     if nominalized == 'yes':
-        mylang.set_section('noun-lex')
-        mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT.HEAD.NMZ - ].')
         mylang.set_section('phrases')
         for ns in ch.get('ns'):
             if ns.get('name') == nom_strategy:

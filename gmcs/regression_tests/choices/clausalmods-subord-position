@@ -2,7 +2,7 @@
 version=28
 
 section=general
-language=clausalmods-post-head-mod
+language=clausalmods-subord-position
 
 section=word-order
 word-order=svo
@@ -36,13 +36,20 @@ section=info-str
 section=arg-opt
 
 section=clausalmods
-  cms1_position=after
+  cms1_position=either
   cms1_subordinator=free
   cms1_modifier-attach=s
   cms1_subordinator-type=head
   cms1_subposition=before
-    cms1_freemorph1_orth=subord
-    cms1_freemorph1_pred=_subord_rel
+    cms1_freemorph1_orth=subord1
+    cms1_freemorph1_pred=_subord1_rel
+  cms2_position=either
+  cms2_subordinator=free
+  cms2_modifier-attach=s
+  cms2_subordinator-type=head
+  cms2_subposition=after
+    cms2_freemorph1_orth=subord2
+    cms2_freemorph1_pred=_subord2_rel
 
 section=lexicon
   noun1_name=noun

@@ -1,14 +1,14 @@
 version=28
 
 section=general
-language=clausalmods-pseudo-german
+language=clausalmods-vfinal-v2-adv
 
 section=word-order
 word-order=v2
 has-dets=no
 has-aux=yes
 aux-comp-order=before
-aux-comp=vp
+aux-comp=v
 multiple-aux=yes
 subord-word-order=vfinal
 
@@ -42,11 +42,11 @@ section=nominalclause
 
 section=clausalmods
   cms1_position=after
-  cms1_modifier_attachment=s
+  cms1_modifier-attach=s
   cms1_subordinator=free
   cms1_subposition=before
   cms1_subordinator-type=adverb
-  cms1_adverb_attaches=s
+  cms1_adverb-attach=s
     cms1_freemorph1_orth=subord
     cms1_freemorph1_pred=_subord_rel
 

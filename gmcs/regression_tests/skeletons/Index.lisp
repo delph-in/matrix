@@ -22,6 +22,14 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "clausalmods-nom-low") (:content . "clausalmods-nom-low: Clausal mods that are nominalized low (at V)"))
+((:path . "clausalmods-nom-mid") (:content . "clausalmods-nom-mid: Clausal modifiers that are nominalized at VP (mid)"))
+((:path . "clausalmods-nom-high") (:content . "clausalmods-nom-high: Clausal modifier that is nominalized high (at S) and has a nmz_rel predication"))
+((:path . "clausalmods-adv-or-head") (:content . "clausalmods-adv-or-head: Claual modifiers whose subordinator is a head, an s-attaching adverb, a vp-attaching adverb or a vp and s-attaching adverb"))
+((:path . "clausalmods-subord-position") (:content . "clausalmods-subord-position: Clausal modifiers whose subordinators (type head) go at the beginning or end of the clause"))
+((:path . "clausalmods-modifier-position") (:content . "clausalmods-modifier-position: Clausal modifiers that attach before, after or before and after the main clause"))
+((:path . "clausalmods-free-fixed-mod") (:content . "clausalmods-free-fixed-mod: Clausal modifiers that can go before, after or before and after the clause they modify"))
+((:path . "clausalmods-vfinal-v2-adp") (:content . "clausalmods-vfinal-v2-adp: Clausal modifiers with a an adposition subordinator, vfinal word order in the main clause and v2 in the subordinate clause"))
 ((:path . "evidentials-infl-aux-shp") (:content . "evidentials-infl-aux-shp: Testing the evidentiality library with the evidentials of Shipibo-Konibo"))
 ((:path . "evidentials-infl-aux-kal") (:content . "evidentials-infl-aux-kal: Testing the evidentiality library with Kalaallisut evidentials"))
 ((:path . "evidentials-auxiliary-choose") (:content . "evidentials-auxiliary-choose: testing evidential auxiliary verbs with selected evidential inventory"))

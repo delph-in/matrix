@@ -21,16 +21,8 @@ def customize_nmcs(mylang, ch, rules, lrules):
         name = ns.get('name')
         level = ns.get('level')
         nmzrel = ns.get('nmzRel')
-        mylang.set_section('addenda')
-        mylang.add('head :+ [ NMZ bool,\
-	                        FORM form,\
-	                        AUX bool,\
-	                        INIT bool ].')
+        add_features(mylang)
         mylang.add('+nvcdmo :+ [ MOD < > ].')
-        mylang.set_section('features')
-        mylang.add('form := *top*.')
-        mylang.add('nonfinite := form.')
-        mylang.add('finite := form.')
 
 
         if level == 'low' or level == 'mid':
@@ -38,20 +30,16 @@ def customize_nmcs(mylang, ch, rules, lrules):
             wo = ch.get('word-order')
             if wo == 'osv' or wo == 'sov' or wo == 'svo' or wo == 'v-final':
                 mylang.add('non-event-subj-head-phrase := basic-head-subj-phrase & head-final &\
-                            [ SYNSEM.LOCAL.CAT.HEAD [ FORM #form ],\
-                                HEAD-DTR.SYNSEM [ LOCAL [ CONT.HOOK.INDEX ref-ind,\
-                                                        CAT [ HEAD [ FORM #form ],\
-            				                                VAL.COMPS < > ]],\
+                            [ HEAD-DTR.SYNSEM [ LOCAL [ CONT.HOOK.INDEX ref-ind,\
+                                                        CAT [ VAL.COMPS < > ]],\
                                                   NON-LOCAL [ QUE 0-dlist,\
                                                                 REL 0-dlist ]]\
                                 NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPR < > ].')
                 rules.add('non-event-subj-head := non-event-subj-head-phrase.')
             if wo == 'ovs' or wo == 'vos' or wo == 'vso' or wo == 'v-initial':
                 mylang.add('non-event-head-subj-phrase := basic-head-subj-phrase & head-initial &\
-                            [ SYNSEM.LOCAL.CAT.HEAD [ FORM #form ],\
-                                HEAD-DTR.SYNSEM [ LOCAL [ CONT.HOOK.INDEX ref-ind,\
-                                                        CAT [ HEAD [ FORM #form ],\
-            				                                VAL.COMPS < > ]],\
+                            [ HEAD-DTR.SYNSEM [ LOCAL [ CONT.HOOK.INDEX ref-ind,\
+                                                        CAT [ VAL.COMPS < > ]],\
                                                   NON-LOCAL [ QUE 0-dlist,\
                                                                 REL 0-dlist ]]\
                                 NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPR < > ].')
@@ -62,10 +50,7 @@ def customize_nmcs(mylang, ch, rules, lrules):
     [ SYNSEM.LOCAL [ CONT [ HOOK [ INDEX event ]],\
 		   CAT [ HEAD verb &\
 			      [ NMZ +,\
-                                FORM #form,\
-                                AUX #aux,\
-                                INIT #init,\
-                                MOD #mod ],\
+                     MOD #mod ],\
                          VAL [ SUBJ < [ LOCAL [ CAT [ HEAD noun,\
                                                       VAL.SPR < > ],\
                                                 CONT.HOOK.INDEX #subj ] ] >,\
@@ -76,10 +61,7 @@ def customize_nmcs(mylang, ch, rules, lrules):
                          MKG #mkg,\
                          HC-LIGHT #hc-light,\
                          POSTHEAD #posthead ] ],\
-    DTR.SYNSEM.LOCAL [ CAT [ HEAD [ FORM #form,\
-                                  AUX #aux,\
-                                  INIT #init,\
-                                  MOD #mod ],\
+    DTR.SYNSEM.LOCAL [ CAT [ HEAD [ MOD #mod ],\
                            VAL [ SUBJ < [ LOCAL.CONT.HOOK.INDEX #subj ] >,\
                                  COMPS #comps,\
                                  SPR #spr,\
@@ -94,10 +76,7 @@ def customize_nmcs(mylang, ch, rules, lrules):
             mylang.set_section('lexrules')
             mylang.add('low-nominalization-lex-rule := cat-change-with-ccont-lex-rule &\
                 [ SYNSEM.LOCAL.CAT [ HEAD noun & \
-			    [ FORM #form,\
-			      AUX #aux,\
-			      INIT #init,\
-			      MOD #mod ],\
+			    [ MOD #mod ],\
 		        VAL [ SUBJ < [ LOCAL [ CAT [ HEAD noun,\
 		                            VAL.SPR < > ],\
 				      	      CONT.HOOK.INDEX #subj ]] >,\
@@ -117,10 +96,7 @@ def customize_nmcs(mylang, ch, rules, lrules):
 		      LARG #larg ] !>,\
 	            HOOK [ INDEX #arg0,\
 		        LTOP #ltop ]],\
-                DTR.SYNSEM.LOCAL [ CAT [ HEAD [ FORM #form,\
-				    AUX #aux,\
-				    INIT #init,\
-				    MOD #mod ],\
+                DTR.SYNSEM.LOCAL [ CAT [ HEAD [ MOD #mod ],\
 			     VAL [ SUBJ < [ LOCAL.CONT.HOOK.INDEX #subj ] >,\
 				   COMPS #comps,\
 				   SPEC #spec  ],\
@@ -193,3 +169,11 @@ def customize_nmcs(mylang, ch, rules, lrules):
 					  SPEC < > ]],\
 			      CONT.HOOK [ LTOP #larg ]]]] > ].')
                 rules.add(level + '-nominalized-clause := ' + level + '-nominalized-clause-phrase.')
+
+def add_features(mylang):
+    mylang.set_section('addenda')
+    mylang.add('head :+ [ NMZ bool ].')
+    mylang.set_section('noun-lex')
+    mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT.HEAD.NMZ - ].')
+    mylang.set_section('verb-lex')
+    mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HEAD.NMZ - ].')
