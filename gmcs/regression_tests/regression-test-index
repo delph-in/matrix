@@ -311,3 +311,4 @@ clausalmods-morph-and-subord=Clausal modifiers that have a free subordinator mor
 clausalmods-shared-subject-bound-subord=Clausal modifiers marked by a bound subordinator morpheme that share their subject with the matrix verb
 clausalmods-shared-subject-free-subord=Clausal modifiers with a free subordinator that share their subject with the matrix verb
 clausalmods-special-morph=Clausal modifiers that are marked by special verbal morphology
+clausalmods-subord-pairs=Clausal modifiers with subordinator pairs (one in the subord and one in the matrix clause)
