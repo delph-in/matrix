@@ -251,7 +251,10 @@ def add_subord_lex(mylang, lexicon, cms, ch):
                 constraints.append('SYNSEM.SUBORDINATED ' + value)
                 if cms.get('adverb-attach') == 's':
                     if cms.get('shared-subj') == 'on':
-                        constraints.append('SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL [ SUBJ < unexpressed >, COMPS < > ]] >')
+                        constraints.append('SYNSEM.LOCAL [ CONT.HOOK.XARG #xarg,\
+                                                           CAT.HEAD.MOD < [ LOCAL [ CONT.HOOK.XARG #xarg,\
+                                                                                  CAT.VAL [ SUBJ < unexpressed >,\
+                                                                                            COMPS < > ]]] > ]')
                     else:
                         constraints.append('SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL [ SUBJ < >, COMPS < > ]] >')
                 elif cms.get('adverb-attach') == 'vp':
@@ -276,7 +279,13 @@ def add_subord_lex(mylang, lexicon, cms, ch):
                 constraints.append('SYNSEM.SUBORDINATED ' + value)
                 constraints.append('SYNSEM.LOCAL.CAT.SUBPAIR ' + value)
                 if cms.get('adverb-attach') == 's':
-                    constraints.append('SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL [ SUBJ < >, COMPS < > ]] >')
+                    if cms.get('shared-subj') == 'on':
+                        constraints.append('SYNSEM.LOCAL [ CONT.HOOK.XARG #xarg,\
+                                                           CAT.HEAD.MOD < [ LOCAL [ CONT.HOOK.XARG #xarg,\
+                                                                                  CAT.VAL [ SUBJ < unexpressed >,\
+                                                                                            COMPS < > ]]] > ]')
+                    else:
+                        constraints.append('SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL [ SUBJ < >, COMPS < > ]] >')
                 elif cms.get('adverb-attach') == 'vp':
                     constraints.append('SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL [ SUBJ < [ ] >, COMPS < > ]] >')
                 if cms.get('adverb-attach') == 'both':
@@ -340,8 +349,7 @@ def add_subord_phrasal_types(mylang, rules, cms, ch):
         supertype = 'adv-marked-subord-clause-phrase'
         mylang.add(supertype + ' := basic-unary-phrase &\
   [ SYNSEM [ LOCAL [ CAT [ MC -,\
-                          VAL [ SUBJ < >,\
-                                COMPS < > ],\
+                          VAL [ COMPS < > ],\
                           HEAD [ MOD < [ LOCAL scopal-mod &\
 						[ CAT [ HEAD verb,\
 							VAL [ SUBJ < >,\
@@ -361,8 +369,7 @@ def add_subord_phrasal_types(mylang, rules, cms, ch):
     		HOOK.INDEX #index ],\
     ARGS < [ SYNSEM [ LOCAL [ CAT [ HEAD verb &\
                                           [ MOD < > ],\
-				    VAL [ SUBJ < >,\
-				      SPR < >,\
+				    VAL [ SPR < >,\
 					  COMPS < > ]],\
 			    CONT.HOOK.LTOP #scl ],\
                       NON-LOCAL [ REL 0-dlist ] ] ] > ].')
@@ -384,10 +391,12 @@ def add_subord_phrasal_types(mylang, rules, cms, ch):
                     mylang.add(type + ' := [ SYNSEM.LOCAL.CAT.POSTHEAD - ].')
                 elif pos == 'after':
                     mylang.add(type + ' := [ SYNSEM.LOCAL.CAT.POSTHEAD + ].')
-                if attach == 's':
-                    mylang.add(type + ' := [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL.SUBJ < > ] > ].')
-                elif attach == 'vp':
-                    mylang.add(type + ' := [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL.SUBJ < [ ] > ] > ].')
+                if cms.get('shared-subj') == 'on':
+                    mylang.add(type + ' := [ SYNSEM.LOCAL.CAT [ HEAD.MOD < [ LOCAL [ CONT.HOOK.XARG #xarg ]] > ],\
+                                 ARGS < [ SYNSEM.LOCAL [ CONT.HOOK.XARG #xarg,\
+                                              CAT [ VAL [ SUBJ < unexpressed > ]]]] >].')
+                else:
+                    mylang.add(type + ' := [ ARGS < [ SYNSEM.LOCAL [ CAT [ VAL [ SUBJ < > ]]]] >].')
                 rules.add(value + '-modifying-clause := ' + type + '.')
         elif cms.get('subordinator') == 'pair':
             for adverb in cms.get('morphpair'):
@@ -395,8 +404,8 @@ def add_subord_phrasal_types(mylang, rules, cms, ch):
                 value = shortform_pred(pred)
                 type = value + '-modifying-clause-phrase'
                 mylang.add(type + ' := ' + supertype + ' &\
-  [ C-CONT.RELS <! [ PRED "' + pred + '" ] !>,\
-    ARGS < [ SYNSEM.SUBORDINATED ' + value + ' ] > ].')
+                    [ C-CONT.RELS <! [ PRED "' + pred + '" ] !>,\
+                        ARGS < [ SYNSEM.SUBORDINATED ' + value + ' ] > ].')
                 if pos == 'before':
                     mylang.add(type + ' := [ SYNSEM.LOCAL.CAT.POSTHEAD - ].')
                 elif pos == 'after':
@@ -406,12 +415,7 @@ def add_subord_phrasal_types(mylang, rules, cms, ch):
                 elif attach == 'vp':
                     mylang.add(type + ' := [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL.SUBJ < [ ] > ] > ].')
                 rules.add(value + '-modifying-clause := ' + type + '.')
-        if cms.get('shared-subj') == 'on':
-            mylang.add(type + ' := [ SYNSEM.LOCAL.CAT [ HEAD.MOD < [ LOCAL [ CONT.HOOK.XARG #xarg ]] > ],\
-                         ARGS < [ SYNSEM.LOCAL [ CONT.HOOK.XARG #xarg,\
-                                      CAT [ VAL [ SUBJ < unexpressed > ]]]] >].')
-        else:
-            mylang.add(type + ' := [ ARGS < [ SYNSEM.LOCAL.CAT.VAL.SUBJ < > ] > ].') #changed 12/14
+
 
     if cms.get('subordinator-type') == 'head':
         wo = ch.get('word-order')
