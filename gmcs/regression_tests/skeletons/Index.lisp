@@ -22,6 +22,7 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "clausalmods-morph-and-subord") (:content . "clausalmods-morph-and-subord: Clausal modifiers that have a free subordinator morpheme and also require special morphology in the subordinate clause"))
 ((:path . "clausalmods-attach-vp-s") (:content . "clausalmods-attach-vp-s: Clausal modifiers that attach to the VP, S or both of the matrix clause"))
 ((:path . "clausalmods-modifier-position") (:content . "clausalmods-modifier-position: Clausal modifiers that attach before, after or before and after the matrix clause"))
 ((:path . "clausalmods-modifier-position") (:content . "clausalmods-modifier-position: Clausal modifiers that attach before, after or before and after the matrix clause"))
