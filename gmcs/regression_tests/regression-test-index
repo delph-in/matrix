@@ -303,7 +303,6 @@ clausalmods-nom-high=Clausal modifiers that are nominalized at S (high) and have
 clausalmods-nom-no-rel=Clausal modifiers that are nominalized at S (high) and do not have a nominalied predication
 clausalmods-nom-mid=Clausal modifiers that are nominalized at VP (mid)
 clausalmods-nom-low=Clausal modifiers that are nominalized at V (low)
-clausalmods-subord-position=Clausal modifiers wihth a subordinator that goes either at the beginning or end of the clause
 clausalmods-vfinal-v2-adv=Clausal modifiers with V2 word order in the matrix clause, Vfinal word order in the subordinate clause and and adverbial subordinator
 clausalmods-modifier-position=Clausal modifiers that attach before, after or before and after the matrix clause
 clausalmods-attach-vp-s=Clausal modifiers that attach to the VP, S or both of the matrix clause
