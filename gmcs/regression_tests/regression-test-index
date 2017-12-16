@@ -310,3 +310,4 @@ clausalmods-subord-position=Clausal modifiers wihth a subordinator that goes eit
 clausalmods-shared-subject-free-subord=Clausal modifiers with a free subordinator morpheme that share a subject with the matrix verb
 clausalmods-shared-subject-bound-subord=Clausal modifiers with a bound subordinator morpheme that share a subject with the matrix verb
 clausalmods-vfinal-v2-adv=Clausal modifiers with V2 word order in the matrix clause, Vfinal word order in the subordinate clause and and adverbial subordinator
+clausalmods-modifier-position=Clausal modifiers that attach before, after or before and after the matrix clause
