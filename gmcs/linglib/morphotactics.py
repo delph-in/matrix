@@ -254,16 +254,16 @@ def create_lexical_rule_type(lrt, mtx_supertypes, cur_pc):
     for feat in lrt.get('feat'):
         if feat['name'] == 'evidential':
             new_lrt.evidential = feat['value']
-###########################
+######################################################
+# CAUSING PROBLEMS
+######################################################
         elif 'possessor' in feat['name']:
             new_lrt.possessor = feat['value']
             new_lrt.possessor_strat_num = feat['name'][-1]
-            print new_lrt.possessor
         elif 'possessum' in feat['name']:
             new_lrt.possessum = feat['value']
             new_lrt.possessum_strat_num = feat['name'][-1]
-            print new_lrt.possessum
-###########################
+######################################################
         else:
             new_lrt.features[feat['name']] = {'value': feat['value'],
                                               'head': feat['head']}
@@ -820,7 +820,6 @@ def write_evidential_behavior(lrt, mylang, choices, pc_evidential):
         [ C-CONT.RELS <! [ PRED "ev_''' + lrt.evidential + '''_rel" ] !> ].
         '''
         mylang.add(infl_evid_def)
-        print infl_evid_def
         mylang.set_section(prev_section)
     elif pc_evidential:
         lrt.supertypes.add("add-only-no-ccont-rule")
@@ -845,6 +844,8 @@ def write_possessive_behavior(lrt,mylang,choices, pc_possessive):
         mylang.set_section('lexrules')
         mylang.add(possessum_rule_name+POSSESSUM_LEX_RULE_DEFN)
         mylang.set_section(prev_section)
+    elif pc_possessive:
+        lrt.supertypes.add("lex-rule")
 
 def write_valence_change_behavior(lrt, mylang, choices):
     from gmcs.linglib.valence_change import lexrule_name

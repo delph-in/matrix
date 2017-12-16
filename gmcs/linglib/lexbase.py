@@ -178,11 +178,15 @@ class PositionClass(MorphotacticNode):
                 return True
         return False
 
+#############################################################
+# Causing problems:
+#############################################################
     def has_possessive(self):
         for lrt in self.nodes.values():
             if lrt.possessor != None or lrt.possessum != None:
                 return True
         return False
+
 
     def has_incorporated_stems(self):
         # 2014-08-21 TJT: Keep track of whether a PositionClass has
@@ -222,7 +226,7 @@ class LexicalRuleType(MorphotacticNode):
         # CMC 2017-03-24 Valence change operations are new property of LRT
         self.valchgops = []
         self.evidential = None
-
+        # EKN 2017-12-15 Possessor rule pseudofeatures are properties of LRT
         self.possessor = None
         self.possessor_strat_num = None
         self.possessum = None
