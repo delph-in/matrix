@@ -1,0 +1,10 @@
+*noun1 verb1 subord-head1 verb2
+noun1 verb1 subord-head1 noun1 verb2
+*noun1 verb1 subord-head2 noun1 verb2
+*noun1 verb1 subord-head2 noun2 verb2
+noun1 verb1 subord-head2 verb2
+*noun1 verb1 subord-adv1 verb2
+noun1 verb1 subord-adv1 noun1 verb2
+*noun1 verb1 subord-adv2 noun1 verb2
+*noun1 verb1 subord-adv2 noun2 verb2
+noun1 verb1 subord-adv2 verb2

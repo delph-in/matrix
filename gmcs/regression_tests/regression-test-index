@@ -311,3 +311,4 @@ clausalmods-modifier-position=Clausal modifiers that attach before, after or bef
 clausalmods-attach-vp-s=Clausal modifiers that attach to the VP, S or both of the matrix clause
 clausalmods-morph-and-subord=Clausal modifiers that have a free subordinator morpheme and also require special morphology in the subordinate clause
 clausalmods-shared-subject-bound-subord=Clausal modifiers marked by a bound subordinator morpheme that share their subject with the matrix verb
+clausalmods-shared-subject-free-subord=Clausal modifiers with a free subordinator that share their subject with the matrix verb
