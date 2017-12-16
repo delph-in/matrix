@@ -22,6 +22,13 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "clausalmods-subord-position") (:content . "clausalmods-subord-position: Clausal modifiers wihth a subordinator that goes either at the beginning or end of the clause"))
+((:path . "clausalmods-nom-low") (:content . "clausalmods-nom-low: Clausal modifiers that are nominalized at V (low)"))
+((:path . "clausalmods-nom-mid") (:content . "clausalmods-nom-mid: Clausal modifiers that are nominalized at VP (mid)"))
+((:path . "clausalmods-nom-no-rel") (:content . "clausalmods-nom-no-rel: Clausal modifiers that are nominalized at S (high) and do not have a nominalied predication"))
+((:path . "clausalmods-nom-high") (:content . "clausalmods-nom-high: Clausal modifiers that are nominalized at S (high) and have a nominalized predication"))
+((:path . "clausalmods-modifier-position") (:content . "clausalmods-modifier-position: Clausal modifiers that attch before, after or before and after the matrix clause"))
+((:path . "clausalmods-adv-or-head") (:content . "clausalmods-adv-or-head: Clausal modifiers whose subordinator is either an adverb or adposition (head)"))
 ((:path . "clausalmods-special-morph") (:content . "clausalmods-special-morph: Clausal Modifiers with special morphology that contributes a predication"))
 ((:path . "clausalmods-morph-and-subord") (:content . "clausalmods-morph-and-subord: Clausal modifiers with special morphology and a free subordinator morpheme (in this case nonfinite special morphology)"))
 ((:path . "clausalmods-attach-vp-s") (:content . "clausalmods-attach-vp-s: Clausal modifiers that attach to the matrix VP, S or VP and S"))
