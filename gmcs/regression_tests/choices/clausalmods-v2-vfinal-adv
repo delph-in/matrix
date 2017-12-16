@@ -1,0 +1,87 @@
+version=28
+
+section=general
+language=clausalmods-v2-vfinal-adv
+
+section=word-order
+word-order=v2
+has-dets=no
+has-aux=yes
+aux-comp-order=before
+aux-comp=v
+multiple-aux=yes
+subord-word-order=vfinal
+
+section=number
+
+section=person
+person=none
+
+section=gender
+
+section=case
+case-marking=none
+
+section=direct-inverse
+
+section=tense-aspect-mood
+
+section=other-features
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=info-str
+
+section=arg-opt
+
+section=nominalclause
+
+section=clausalmods
+  cms1_position=after
+  cms1_modifier-attach=s
+  cms1_subordinator=free
+  cms1_subposition=before
+  cms1_subordinator-type=adverb
+  cms1_adverb-attach=s
+    cms1_freemorph1_orth=subord
+    cms1_freemorph1_pred=_subord_rel
+
+section=clausal-comp
+
+section=lexicon
+  noun1_name=noun
+  noun1_det=imp
+    noun1_stem1_orth=noun1
+    noun1_stem1_pred=_noun1_n_rel
+    noun1_stem2_orth=noun2
+    noun1_stem2_pred=_noun2_n_rel
+    noun1_stem3_orth=noun3
+    noun1_stem3_pred=_noun3_n_rel
+  verb1_name=trans
+  verb1_valence=trans
+    verb1_stem1_orth=tverb
+    verb1_stem1_pred=_tverb_v_rel
+  verb2_name=intrans
+  verb2_valence=intrans
+    verb2_stem1_orth=iverb
+    verb2_stem1_pred=_iverb_v_rel
+  aux1_name=aux
+  aux1_sem=no-pred
+  aux1_subj=np
+    aux1_compfeature1_name=form
+    aux1_compfeature1_value=finite
+    aux1_stem1_orth=aux
+
+section=morphology
+
+section=toolbox-import
+
+section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon
