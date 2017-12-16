@@ -299,7 +299,6 @@ vfinal=Basic order for verb in final position and subject and complement taking 
 clausalcomps-v2-vfinal-aux=German-like clausal complements: V2 word order in the matrix clause, V-final in the subordinate clause; auxiliary clusters with the verb in the subordinate clause.
 clausalmods-vfinal-v2-adp=Clausal modifiers with a an adposition subordinator, vfinal word order in the main clause and v2 in the subordinate clause
 clausalmods-subord-pairs=Clausal Modifiers with subordinator pair
-clausalmods-special-morph=Clausal Modifiers with special morphology that contributes a predication
 clausalmods-adv-or-head=Clausal modifiers whose subordinator is either an adverb or adposition (head)
 clausalmods-nom-high=Clausal modifiers that are nominalized at S (high) and have a nominalized predication
 clausalmods-nom-no-rel=Clausal modifiers that are nominalized at S (high) and do not have a nominalied predication
