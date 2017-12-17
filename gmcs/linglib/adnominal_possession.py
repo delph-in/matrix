@@ -108,24 +108,29 @@ def customize_irules(strat,mylang,ch,irules):
                     mylang.set_section('lexrules')
                     if mark_loc=='possessor-marking' or 'double-marking':
                         possessor_rule_name = 'possessor-lex-rule-'+strat_num
+                        possessor_rule_defn = possessor_rule_name+' :=\
+                  [ SYNSEM.LOCAL [ CAT.VAL [ SPR #spr,\
+                                             COMPS #comps,\
+                                             SUBJ #subj ] ],\
+                    DTR.SYNSEM.LOCAL [ CAT.VAL [ SPR #spr,\
+                                                 COMPS #comps,\
+                                                 SUBJ #subj ], \
+                                       CONT.HOOK #hook & [ INDEX #possessor  ] ] ] ].'
+
+
                         if mod_spec=='spec':
+                            mylang.add(possessor_rule_defn)
                             mylang.add(possessor_rule_name+' := val-change-with-ccont-lex-rule & \
                   [ SYNSEM.LOCAL.CAT [ VAL [ SPEC.FIRST.LOCAL [ CAT [ HEAD noun ],\
                                                                 CONT.HOOK [ INDEX #possessum & [ COG-ST uniq-id ],\
-                                                                       LTOP #lbl ] ],\
-                                                                        SPR #spr,\
-                                                                        SUBJ #subj,\
-                                                                        COMPS #comps] ] ,\
+                                                                       LTOP #lbl ] ] ] ] ,\
                                        C-CONT [ HOOK #hook ,\
                                        RELS <! '+ POSS_REL  +' , '+POSSESSUM_EXIST_REL+ ' !>, \
                                                                    HCONS <! qeq & [ HARG #harg, LARG #lbl ] !>, \
-                                                                                                ICONS <! !>  ], \
-                   DTR.SYNSEM.LOCAL [ CAT.VAL [ SPR #spr, \
-                                                SUBJ #subj, \
-                                                COMPS #comps ], \
-                                      CONT.HOOK  #hook & [ INDEX #possessor ] ] ].')
+                                                                                                ICONS <! !>  ] ].')
                         else: 
-                            mylang.add('possessor-lex-rule-'+strat_num+' := head-change-with-ccont-lex-rule & infl-lex-rule & \
+                            mylang.add(possessor_rule_defn)
+                            mylang.add(possessor_rule_name+' := head-change-with-ccont-lex-rule & infl-lex-rule & \
                   [ SYNSEM.LOCAL.CAT [ HEAD.MOD.FIRST [ LOCAL [ CAT.HEAD noun, \
                                                                 CONT.HOOK [ INDEX #possessum, \
                                                                             LTOP #lbl ] ], \
