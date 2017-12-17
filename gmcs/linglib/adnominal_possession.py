@@ -16,7 +16,7 @@ from gmcs.linglib.morphotactics import all_position_classes
 #
 ###################################################################
 
-###################################################################
+
 POSS_REL = '''arg12-ev-relation & [ PRED "poss_rel", \
                                     LBL #lbl, \
                                     ARG1 #possessum, \
@@ -49,7 +49,7 @@ def customize_rules(strat,mylang,ch,rules):
     if strat.get('mod-spec')=='spec':
         phrase_rule="head-spec-hc-phrase"
         # TODO: constrain head-spec-hc so it only applies to poss-phrases.
-        mylang.add(phrase_rule + ' :=  basic-head-spec-phrase-super &  [  NON-HEAD-DTR.SYNSEM [ OPT - ],\
+        mylang.add(phrase_rule + ' :=  basic-head-spec-phrase-super & [  NON-HEAD-DTR.SYNSEM [ OPT - ],\
     HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK #hook ,\
     C-CONT.HOOK #hook ].')
     # Adds either head-mod or head-comp if possessor = mod
@@ -74,10 +74,7 @@ def customize_rules(strat,mylang,ch,rules):
             mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT.VAL.SPR.HEAD +nd ]. ')
     # Adds word order info to the phrase rule (unless it's the head-comps pattern -- it's already been dealt with) 
     if phrase_rule!='head-comp-poss-phrase':
-        if strat.get('order')=='possessor-first':
-            mylang.add(phrase_rule + ' := head-final.',merge=True)
-        else:
-            mylang.add(phrase_rule + ' := head-initial.',merge=True)
+        mylang.add(phrase_rule +' := '+strat.get('order')+'.',merge=True)
     # Adds rule to rules.tdl
     rules.add(phrase_rule.replace('-phrase','') + ':= '+phrase_rule+'. ' )
 
