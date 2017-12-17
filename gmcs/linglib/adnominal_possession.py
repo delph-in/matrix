@@ -71,6 +71,7 @@ def customize_rules(strat,mylang,ch,rules):
             mylang.add('head-mod-phrase := basic-head-mod-phrase-simple & head-compositional & \
      [ SYNSEM.LOCAL.CAT.VAL [ SPEC #spec ], \
        HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPEC #spec].')
+            mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT.VAL.SPR.HEAD +nd ]. ')
     # Adds word order info to the phrase rule (unless it's the head-comps pattern -- it's already been dealt with) 
     if phrase_rule!='head-comp-poss-phrase':
         if strat.get('order')=='possessor-first':
@@ -110,7 +111,7 @@ def customize_irules(strat,mylang,ch,irules):
                         if mod_spec=='spec':
                             mylang.add(possessor_rule_name+' := val-change-with-ccont-lex-rule & \
                   [ SYNSEM.LOCAL.CAT [ VAL [ SPEC.FIRST.LOCAL [ CAT [ HEAD noun ],\
-                                                                CONT.HOOK [ INDEX #index & [ COG-ST uniq-id ],\
+                                                                CONT.HOOK [ INDEX #possessum & [ COG-ST uniq-id ],\
                                                                        LTOP #lbl ] ],\
                                                                         SPR #spr,\
                                                                         SUBJ #subj,\

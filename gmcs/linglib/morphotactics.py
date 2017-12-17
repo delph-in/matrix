@@ -533,7 +533,7 @@ def percolate_supertypes(pc):
                     # Which exact supertype a possessive rule inherits from
                     # is defined in adnominal_possession.py. This remains maximally
                     # general.
-                    x.supertypes.add('lex-rule')
+                    x.supertypes.add('cat-mod-change-with-ccont-lex-rule')
                 else:
                     x.supertypes.add('add-only-no-ccont-rule')
 
@@ -826,9 +826,9 @@ def write_evidential_behavior(lrt, mylang, choices, pc_evidential):
 
 
 def write_possessive_behavior(lrt,mylang,choices, pc_possessive):
-    POSSESSOR_LEX_RULE_DEFN = ''' := lex-rule &
+    POSSESSOR_LEX_RULE_DEFN = ''' := 
              [ SYNSEM.LOCAL.CAT.HEAD noun & [ POSS possessor ] ].'''
-    POSSESSUM_LEX_RULE_DEFN = ''' := lex-rule &
+    POSSESSUM_LEX_RULE_DEFN = ''' := 
              [ SYNSEM.LOCAL.CAT.HEAD noun & [ POSS possessum ] ].'''
     if lrt.possessor:
         possessor_rule_name='possessor-lex-rule-'+lrt.possessor_strat_num
@@ -844,8 +844,8 @@ def write_possessive_behavior(lrt,mylang,choices, pc_possessive):
         mylang.set_section('lexrules')
         mylang.add(possessum_rule_name+POSSESSUM_LEX_RULE_DEFN)
         mylang.set_section(prev_section)
-    elif pc_possessive:
-        lrt.supertypes.add("lex-rule")
+#    elif pc_possessive:
+#        lrt.supertypes.add("lex-rule")
 
 def write_valence_change_behavior(lrt, mylang, choices):
     from gmcs.linglib.valence_change import lexrule_name

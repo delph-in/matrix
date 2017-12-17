@@ -178,9 +178,6 @@ class PositionClass(MorphotacticNode):
                 return True
         return False
 
-#############################################################
-# Causing problems:
-#############################################################
     def has_possessive(self):
         for lrt in self.nodes.values():
             if lrt.possessor != None or lrt.possessum != None:
