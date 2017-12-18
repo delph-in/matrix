@@ -349,7 +349,9 @@ def add_subord_phrasal_types(mylang, rules, cms, ch):
         supertype = 'adv-marked-subord-clause-phrase'
         mylang.add(supertype + ' := basic-unary-phrase &\
   [ SYNSEM [ LOCAL [ CAT [ MC -,\
-                          VAL [ COMPS < > ],\
+                          VAL [ SPR < >,\
+                          COMPS < >,\
+                                SUBJ #subj ],\
                           HEAD [ MOD < [ LOCAL scopal-mod &\
 						[ CAT [ HEAD verb,\
 							VAL [ SUBJ < >,\
@@ -369,7 +371,8 @@ def add_subord_phrasal_types(mylang, rules, cms, ch):
     		HOOK.INDEX #index ],\
     ARGS < [ SYNSEM [ LOCAL [ CAT [ HEAD verb &\
                                           [ MOD < > ],\
-				    VAL [ SPR < >,\
+				    VAL [ SUBJ #subj,\
+				        SPR < >,\
 					  COMPS < > ]],\
 			    CONT.HOOK.LTOP #scl ],\
                       NON-LOCAL [ REL 0-dlist ] ] ] > ].')
@@ -410,10 +413,12 @@ def add_subord_phrasal_types(mylang, rules, cms, ch):
                     mylang.add(type + ' := [ SYNSEM.LOCAL.CAT.POSTHEAD - ].')
                 elif pos == 'after':
                     mylang.add(type + ' := [ SYNSEM.LOCAL.CAT.POSTHEAD + ].')
-                if attach == 's':
-                    mylang.add(type + ' := [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL.SUBJ < > ] > ].')
-                elif attach == 'vp':
-                    mylang.add(type + ' := [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL.SUBJ < [ ] > ] > ].')
+                if cms.get('shared-subj') == 'on':
+                    mylang.add(type + ' := [ SYNSEM.LOCAL.CAT [ HEAD.MOD < [ LOCAL [ CONT.HOOK.XARG #xarg ]] > ],\
+                                 ARGS < [ SYNSEM.LOCAL [ CONT.HOOK.XARG #xarg,\
+                                              CAT [ VAL [ SUBJ < unexpressed > ]]]] >].')
+                else:
+                    mylang.add(type + ' := [ ARGS < [ SYNSEM.LOCAL [ CAT [ VAL [ SUBJ < > ]]]] >].')
                 rules.add(value + '-modifying-clause := ' + type + '.')
 
 
