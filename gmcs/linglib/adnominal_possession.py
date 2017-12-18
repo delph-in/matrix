@@ -85,15 +85,31 @@ def customize_rules(strat,mylang,ch,rules):
     # Make non-possessive phrases reject possessive nouns:
     if ch.get('has-dets')=='yes':
         mylang.add('head-spec-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD  +vjrpcdmo ].')
-    for pc in ch.get('pc'):
+    adj_head=False
+    head_adj=False
+    for adj in ch.get('adj',[]):
+        modpos=adj.get('modpos',[])
+        if modpos=='before':
+            head_adj=True
+        elif modpos=='after':
+            adj_head=True
+        elif modpos=='either':
+            head_adj=True
+            adj_head=True
+    for pc in ch.get('adj-pc',[]):
+        print pc
         for lrt in pc.get('lrt'):
-            if lrt.get('modpos')=='before':
-                mylang.add('adj-head-int-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD  +vjrpcdmo ].')
-            elif lrt.get('modpos')=='after':
-                mylang.add('head-adj-int-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD  +vjrpcdmo ].')
-            elif lrt.get('modpos')=='either':
-                mylang.add('adj-head-int-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD  +vjrpcdmo ].')
-                mylang.add('head-adj-int-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD  +vjrpcdmo ].')
+            modpos=lrt.get('modpos')
+            if modpos=='before':
+                head_adj=True
+            elif modpos=='after':
+                adj_head=True
+            elif modpos=='either':
+                head_adj=True
+                adj_head=True
+    if head_adj: mylang.add('head-adj-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD  +vjrpcdmo ].')
+    if adj_head: mylang.add('adj-head-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD  +vjrpcdmo ].')
+
     # If a specialized poss phrase rule was added, adds word order info to the phrase rule:
     mylang.add(phrase_rule +' := '+strat.get('order')+'.',merge=True)
     # If a specialized poss phrase rule was added, adds rule to rules.tdl
@@ -148,7 +164,7 @@ def customize_irules(strat,mylang,ch,irules):
                                                                                                 ICONS <! !>  ] ].')
                         else: 
                             mylang.add(possessor_rule_defn)
-                            mylang.add(possessor_rule_name+' := head-change-with-ccont-lex-rule & infl-lex-rule & \
+                            mylang.add(possessor_rule_name+' := head-change-with-ccont-lex-rule & \
                   [ SYNSEM.LOCAL.CAT [ HEAD.MOD.FIRST [ LOCAL [ CAT.HEAD noun, \
                                                                 CONT.HOOK [ INDEX #possessum, \
                                                                             LTOP #lbl ] ], \
