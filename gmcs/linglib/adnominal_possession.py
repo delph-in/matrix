@@ -52,6 +52,9 @@ def customize_rules(strat,mylang,ch,rules):
         mylang.add(phrase_rule + ' :=  basic-head-spec-phrase-super & [  NON-HEAD-DTR.SYNSEM [ OPT - ],\
     HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK #hook ,\
     C-CONT.HOOK #hook ].')
+        # Also allow the noun-lex to take nouns as specifiers (TODO: NOT WORKING):
+        mylang.set_section('nounlex')
+#        mylang.add('noun-lex := [SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.LOCAL.CAT.HEAD +nd ].',merge=False)
     # Adds either head-mod or head-comp if possessor = mod
     elif strat.get('mod-spec')=='mod':
         if strat.get('mark-loc')=='possessum-marking':
@@ -68,10 +71,9 @@ def customize_rules(strat,mylang,ch,rules):
                 mylang.add(phrase_rule +'-poss-phrase  := basic-head-comp-phrase &'+strat.get('order')+' ].')
         else:
             phrase_rule="head-mod-poss-phrase"
-            mylang.add('head-mod-phrase := basic-head-mod-phrase-simple & head-compositional & \
+            mylang.add(phrase_rule+' := basic-head-mod-phrase-simple & head-compositional & \
      [ SYNSEM.LOCAL.CAT.VAL [ SPEC #spec ], \
        HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPEC #spec].')
-            mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT.VAL.SPR.HEAD +nd ]. ')
     # Adds word order info to the phrase rule (unless it's the head-comps pattern -- it's already been dealt with) 
     if phrase_rule!='head-comp-poss-phrase':
         mylang.add(phrase_rule +' := '+strat.get('order')+'.',merge=True)

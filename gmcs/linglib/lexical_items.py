@@ -437,7 +437,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
 
     typedef = \
         'noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & \
-           [ SYNSEM.LOCAL [ CAT.VAL [ SPR < #spr & [ LOCAL.CAT.HEAD +nd ] >, \
+           [ SYNSEM.LOCAL [ CAT.VAL [ SPR < #spr & [ LOCAL.CAT.HEAD det ] >, \
                                       COMPS < >, \
                                       SUBJ < >, \
                                       SPEC < > ] ], \
