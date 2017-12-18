@@ -292,9 +292,11 @@ head := head-min &
 ; EKN 2017-12-12 Adding POSS feature to HEAD. Experimental. Kinda slipshod.
 
 poss := *top*.
-possessor := poss.
-possessum := poss.
-nonposs := poss.
+possessive := poss.
+nonpossessive := poss.
+possessor := possessive.
+possessum := possessive.
+
 
 ; (ERB 2004-08-19) We had previously shied away from defining head
 ; types because even head types that are expected to occur across

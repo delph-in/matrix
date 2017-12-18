@@ -523,16 +523,12 @@ def percolate_supertypes(pc):
                     # evidential semantics must be able to add a predicate
                     # in CCONT
                     x.supertypes.add('cont-change-only-lex-rule')
+                # EKN 2017-12-18 Possessive lexical rules have too much variation to 
+                # add any supertype but lex-rule, but adding this causes inheritance issues.
+                # So no supertypes for possessive rules are added here; instead, supertypes
+                # are handled by write_possessive_behavior().
                 elif not pc.has_possessive():
                     x.supertypes.add('add-only-no-ccont-rule')
-#                elif pc.has_possessive():
-                    # EKN 2017-12-13: Possessive lexical rules have some
-                    # CAT change and then add a predicate in CCONT.
-                    # Which exact supertype a possessive rule inherits from
-                    # is defined in adnominal_possession.py. This remains maximally
-                    # general.
-#                    x.supertypes.add('cat-mod-change-with-ccont-lex-rule')
-#                else:
 
     for r in pc.roots():
         r.percolate_down(items=lambda x: x.supertypes,
@@ -828,7 +824,7 @@ def write_possessive_behavior(lrt,mylang,choices):
     POSSESSUM_LEX_RULE_DEFN = ''' := 
              [ SYNSEM.LOCAL.CAT.HEAD noun & [ POSS possessum ] ].'''
     NON_POSS_LEX_RULE_DEFN = ''' := add-only-no-ccont-rule &
-             [ SYNSEM.LOCAL.CAT.HEAD noun & [ POSS nonposs ] ].'''
+             [ SYNSEM.LOCAL.CAT.HEAD noun & [ POSS nonpossessive ] ].'''
     if lrt.possessor=='plus':
         possessor_rule_name='possessor-lex-rule-'+lrt.possessor_strat_num
         lrt.supertypes.add(possessor_rule_name)
