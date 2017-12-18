@@ -38,24 +38,23 @@ def customize_adnominal_possession(mylang,ch,rules,irules,lexicon):
 
 # SECONDARY FUNCTIONS
 def customize_rules(strat,mylang,ch,rules):
+    
 # TODO: deal with free word order
     """
     Adds the necessary phrase rule to combine possessor and possessum
     If rule already exists (head-comp case), then make sure its order is correct.
     """
     phrase_rule=""
+    strat_order=strat.get('order')
     mylang.set_section('phrases')
     # Adds a head-compositional variant of head-spec if possessor = spec
     if strat.get('mod-spec')=='spec':
-        phrase_rule="head-spec-hc-phrase"
-        # TODO: constrain head-spec-hc so it only applies to poss-phrases.
+        phrase_rule="head-spec-poss-phrase"
         mylang.add(phrase_rule + ' :=  basic-head-spec-phrase-super & [  NON-HEAD-DTR.SYNSEM [ OPT - ],\
-    HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK #hook ,\
-    C-CONT.HOOK #hook ].')
-        # Also allow the noun-lex to take nouns as specifiers (TODO: NOT WORKING):
-        mylang.set_section('nounlex')
-#        mylang.add('noun-lex := [SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.LOCAL.CAT.HEAD +nd ].',merge=False)
+                                                                         HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK #hook ,\
+                                                                         C-CONT.HOOK #hook ].')
     # Adds either head-mod or head-comp if possessor = mod
+    # Exception: no rule added if preexistent head-comps has correct order
     elif strat.get('mod-spec')=='mod':
         if strat.get('mark-loc')=='possessum-marking':
             phrase_rule="head-comp-poss-phrase"
@@ -66,25 +65,45 @@ def customize_rules(strat,mylang,ch,rules):
                 head_comp_order='head-initial'
             else:
                 head_comp_order='head-final'
-            if head_comp_order!=strat.get('order'):
-                # TODO: constrain head-comp-poss-phrase  so it only applies to poss-phrases.
-                mylang.add(phrase_rule +'-poss-phrase  := basic-head-comp-phrase &'+strat.get('order')+' ].')
+            if head_comp_order!=strat_order:
+                mylang.add(phrase_rule +' := basic-head-comp-phrase.')
         else:
             phrase_rule="head-mod-poss-phrase"
             mylang.add(phrase_rule+' := basic-head-mod-phrase-simple & head-compositional & \
-     [ SYNSEM.LOCAL.CAT.VAL [ SPEC #spec ], \
-       HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPEC #spec].')
-    # Adds word order info to the phrase rule (unless it's the head-comps pattern -- it's already been dealt with) 
-    if phrase_rule!='head-comp-poss-phrase':
-        mylang.add(phrase_rule +' := '+strat.get('order')+'.',merge=True)
-    # Adds rule to rules.tdl
+                                        [ SYNSEM.LOCAL.CAT.VAL [ SPEC #spec ], \
+                                          HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPEC #spec].')
+    # If a specialized poss phrase rule was added, require that the marked constituent be marked possessive.
+    if strat.get('mark-loc')=='possessor-marking':
+        mylang.add(phrase_rule+':= [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS nonpossessive,\
+                                     NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessive ].')
+    if strat.get('mark-loc')=='possessum-marking':
+        mylang.add(phrase_rule+':= [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessive,\
+                                     NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS nonpossessive ].')
+    if strat.get('mark-loc')=='both-marking':
+        mylang.add(phrase_rule+':= [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessive,\
+                                     HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessive ].')
+    # Make non-possessive phrases reject possessive nouns:
+    if ch.get('has-dets')=='yes':
+        mylang.add('head-spec-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD  +vjrpcdmo ].')
+    for pc in ch.get('pc'):
+        for lrt in pc.get('lrt'):
+            if lrt.get('modpos')=='before':
+                mylang.add('adj-head-int-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD  +vjrpcdmo ].')
+            elif lrt.get('modpos')=='after':
+                mylang.add('head-adj-int-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD  +vjrpcdmo ].')
+            elif lrt.get('modpos')=='either':
+                mylang.add('adj-head-int-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD  +vjrpcdmo ].')
+                mylang.add('head-adj-int-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD  +vjrpcdmo ].')
+    # If a specialized poss phrase rule was added, adds word order info to the phrase rule:
+    mylang.add(phrase_rule +' := '+strat.get('order')+'.',merge=True)
+    # If a specialized poss phrase rule was added, adds rule to rules.tdl
     rules.add(phrase_rule.replace('-phrase','') + ':= '+phrase_rule+'. ' )
+    
 
 
 
-
-# NOTE: customize_irules doesn't yet deal with situations where one marker is an affix and one isn't:
-# NOTE: customize_irules and customize_lex both don't handle agreement yet
+# NOTE: customize_irules pseudocode/code doesn't yet deal with situations where one marker is an affix and one isn't:
+# NOTE: customize_irules and customize_lex pseudocode/code both don't handle agreement yet
 
 
 def customize_irules(strat,mylang,ch,irules):
