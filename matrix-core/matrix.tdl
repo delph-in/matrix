@@ -1,3 +1,4 @@
+
 ;;; -*- Mode: TDL; Package: LKB -*-
 ;;;
 ;;; HPSG Grammar Matrix
@@ -2270,8 +2271,10 @@ basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
 					  LIGHT #light,
                                           MODIFIED #modif,
 					  OPT - ] > ],
-			   VAL [ COMPS olist, 
-				 SPR olist ], 
+			   VAL [ COMPS olist
+;, 
+;				 SPR olist 
+], 
                            MKG #mkg ],
 		     CONT.HOOK [ ICONS-KEY.IARG1 #clause,
 				 CLAUSE-KEY #clause ] ],
@@ -2294,7 +2297,8 @@ adj-head-phrase := basic-head-mod-phrase-simple & head-final &
              LIGHT #light ],
     HEAD-DTR.SYNSEM [ LOCAL.CAT.POSTHEAD #ph,
                       LIGHT #light ],
-    NON-HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL.COMPS < > ],
+    NON-HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL [ SPR olist,
+    			  	      	    COMPS < > ] ],
 			  NON-LOCAL [ SLASH 0-dlist,
 				      REL 0-dlist ],
                           MODIFIED.PERIPH #periph ] ].
@@ -2307,7 +2311,8 @@ adj-head-phrase := basic-head-mod-phrase-simple & head-final &
 ;; EMB pointed out as another english-specific leftover.
 head-adj-phrase := basic-head-mod-phrase-simple & head-initial & phrasal &
   [ SYNSEM.MODIFIED rmod,
-    NON-HEAD-DTR.SYNSEM [ LOCAL.CAT.POSTHEAD +,
+    NON-HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL.SPR olist,
+    			  	      POSTHEAD + ],
     			  NON-LOCAL.QUE 0-dlist ] ].
 
 ; We split head-adj-phrase and adj-head-phrase into two each,
@@ -2317,7 +2322,8 @@ head-adj-phrase := basic-head-mod-phrase-simple & head-initial & phrasal &
 ; we delay construction of intersective modification, but not scopal.
 
 scopal-mod-phrase := basic-head-mod-phrase-simple &
-  [ NON-HEAD-DTR.SYNSEM.LOCAL [ CAT.HEAD.MOD < [ LOCAL scopal-mod ] >,
+  [ NON-HEAD-DTR.SYNSEM.LOCAL [ CAT [ VAL.SPR olist,
+    			      	      HEAD.MOD < [ LOCAL scopal-mod ] > ],
 				CONT.HOOK #hook ],
     C-CONT [ HOOK #hook,
 	     HCONS <! !>,
@@ -2333,7 +2339,8 @@ scopal-mod-phrase := basic-head-mod-phrase-simple &
 
 isect-mod-phrase := basic-head-mod-phrase-simple & head-compositional &
   [ HEAD-DTR.SYNSEM.LOCAL [ CAT.MKG #mkg, CONT [ HOOK.LTOP #hand ] ],
-    NON-HEAD-DTR.SYNSEM.LOCAL [ CAT.HEAD.MOD < [ LOCAL intersective-mod & [ CAT.MKG #mkg ] ] >,
+    NON-HEAD-DTR.SYNSEM.LOCAL [ CAT [ VAL.SPR olist,
+    			      	      HEAD.MOD < [ LOCAL intersective-mod & [ CAT.MKG #mkg ] ] > ],
 				CONT.HOOK.LTOP #hand ],
     C-CONT [ HCONS <! !>,
 	     ICONS <! !> ] ].

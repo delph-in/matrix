@@ -134,7 +134,7 @@ def customize_rules(strat,mylang,ch,rules):
     # PROBLEM: head-mod-phrase-basic (or whatever) id's the non-head dtr's SPR values with the head dtr's SPR values.
     # So it can't be a 1-dlist
     elif np_nom=='nom':
-        mylang.add(phrase_rule+' := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPR 1-dlist ].')
+        mylang.add(phrase_rule+' := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPR 1-list ].')
 
 
 
