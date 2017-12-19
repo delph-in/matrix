@@ -1720,11 +1720,7 @@ Label "<p>Clausal modifiers may also be marked by special verbal morphology, nom
 clause, special word order in the subordinate clause, and subject sharing. You may define any number of 
 clausal modifier strategies by combinging the free morpheme type with subject sharing and various morphologial constraints.</p>"
 
-Label "<p>Note: Some characteristics of clausal modifiers must be defined on other pages of the grammar matrix.</p>"
-
-Label "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Special Word order should be indicated on the word order page<br>"
-Label "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nominalization strategies should be defined on the Nominalized Clauses page. These stragies can then be added to the clausal modifier strategy under "Add a feature".<br>"
-Label "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Additional features such as finite/non-finite, or features associated with bound subordinator morphemes should be defined on the Other Features page.<br>"
+Label "<p>Note: Some characteristics of clausal modifiers must be defined on other pages of the grammar matrix.<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Special Word order should be indicated on the word order page<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nominalization strategies should be defined on the Nominalized Clauses page. These stragies can then be added to the clausal modifier strategy under Add a Feature.<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Additional features such as finite/non-finite, or features associated with bound subordinator morphemes should be defined on the Other Features page.</p>"
 
 
 BeginIter cms{i} "a Clausal Modifier Strategy" 1
@@ -1812,10 +1808,10 @@ Radio subordinator "Clausal Modifier Strategy {i} pattern" "<br><br>" ""
   . none "No Subordinator" "" "This strategy does not use a free subordinator morpheme<br>"
     Label "<p>No Subordinator{i}:<br>"
 
-Label "<br>The clausal modifier strategy contributes the following predication. (Note: if you do not enter a predication, a generic _subord_rel predication will be added) <br>"
+Label "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The clausal modifier strategy contributes the following predication. (Note: if you do not enter a predication, a generic _subord_rel predication will be added) <br>"
     Text pred "subord {i} stem {j} predicate" " Predicate: " "" 30<br>
 
-Label "<br><b>The clausal modifier has the following features</b><br> Note: Features can be defined on the Other Features page. If this morphological feature cannot head a matrix clause, it should be defined as a FORM feature.<br>"
+Label "<br><br><b>The clausal modifier has the following features</b><br> Note: Features can be defined on the Other Features page. If this morphological feature cannot head a matrix clause, it should be defined as a FORM feature.<br>"
 
 BeginIter feat{k} "a Feature"
 
