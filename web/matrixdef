@@ -1705,23 +1705,28 @@ EndIter ns
 
 Section clausalmods "Clausal Modifiers"
 
-Label "<p>There are several possible strategies for clausal subordination, 
-many of which may be exhibited in clausal modifiers. Three strategies are supported in the
-Matrix for contributing a predication for clausal modifiers:</p>"
+Label "<p>Languages often have several different strategies for clausal modifers. You many define any number of clausal modifier strategies below or you can leave this page blank, in whch case the starter grammar produced will not support clausal modifiers.</p>"
+
+Label "<p>The Grammar Matrix defines clausal modification with three types of strategies:</p>"
 
 Label "<div style=\"padding-left: 16px\"><p><span
 class=\"dfn\">Free Subordinating Morpheme</span><br>&nbsp;&nbsp;&nbsp;&nbsp;A free morpheme
 that marks the subordinate clause<br><span
-class=\"dfn\">Bound Subordinating Morpheme</span><br>&nbsp;&nbsp;&nbsp;&nbsp;Either a bound morpheme 
-marking the verb in the subordinate clause that adds a semantic predication or a non-finite form 
-that pairs with another subordination strategy that adds a predication<br><span
 class=\"dfn\">Free Subordinating Morpheme Pair</span><br>&nbsp;&nbsp;&nbsp;&nbsp;A pair of subordinator 
-morphemes, one  of which marks the subordinate clause, the other of which marks the matrix clause<br></div>"
+morphemes, one  of which marks the subordinate clause, the other of which marks the matrix clause<br><span
+class=\"dfn\">No Free Subordinating Morpheme</span><br>&nbsp;&nbsp;&nbsp;&nbsp;The clausal modifier does not contain a free subordinator morpheme<br></div>"
 
 Label "<p>Clausal modifiers may also be marked by special verbal morphology, nominalization of the subordinate
-clause, special word order in the subordinate clause, and subject raising. You may define any number of 
-clausal modifier strategies by combinging these characteristics. You may also leave this section blank, in which 
-case the starter grammar produced will not support clausal modifiers.</p>"
+clause, special word order in the subordinate clause, and subject sharing. You may define any number of 
+clausal modifier strategies by combinging the free morpheme type with subject sharing and various morphologial constraints.</p>"
+
+Label "<p>Some characteristics of clausal modifiers must be defined on other pages of the grammar matrix.</p>"
+
+Label "<div style=\"padding-left: 16px\"><p><span
+class=\"dfn\"></span><br>&nbsp;&nbsp;&nbsp;&nbsp;Special Word order should be indicated on the word order page<br><span
+class=\"dfn\"></span><br>&nbsp;&nbsp;&nbsp;&nbsp;Nominalization strategies should be defined on the Nominalized Clauses page. These stragies can then be added to the clausal modifier strategy under "Add a feature"<br><span
+class=\"dfn\"></span><br>&nbsp;&nbsp;&nbsp;&nbsp;Additional features such as finite/non-finite, or features associated with bound subordinator morphemes should be defined on the Other Features page.<br></div>"
+
 
 
 BeginIter cms{i} "a Clausal Modifier Strategy" 1
@@ -1733,10 +1738,10 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
   . after "After" "" "after the matrix clause<br>"
   . either "Either" "" "either before or after the matrix clause<br><br>"
 
-    Radio modifier-attach "Clause Position" "<b>Does the clausal modifier attach to/modify a VP or an S?:</b><br>" ""
-  . vp "VP" "" "it modifies a VP<br>"
-  . s "S" "" "it modifies an S<br>"
-  . either "Either" "" "it can modify either a VP or an S <br><br>"
+    Radio modifier-attach "Clause Position" "<b>The clausal modifier attaches to/modifies:</b><br>" ""
+  . vp "VP" "" "a VP<br>"
+  . s "S" "" "an S<br>"
+  . either "Either" "" "either a VP or an S <br><br>"
 
     Radio subordinator "Clausal Modifier Strategy {i} pattern" "<b>The subordinate predication is contributed by:</b><br><br>" ""
   . free "Free Subordinator" "" "a free subordinator morpheme<br>"
@@ -1755,7 +1760,7 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
   . s "S" "" "S<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
   . both "Both" "" "Both VP and S"
 
-        BeginIter freemorph{j} "a Free Subordinator Morpheme" 0
+        BeginIter freemorph{j} "A Free Subordinator Morpheme" 0
 
             Label "<p>Free Subordinator Morpheme {i}:<br>"
                 Text orth "subord {i} stem {j} spelling" "Spelling: " "" 30 "fill_pred('subord{i}_stem{j}', 's')"
@@ -1764,7 +1769,7 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
 
 
     Radio subordinator "Clausal Modifier Strategy {i} pattern" "<br><br>" ""
-  . pair "Subordinator Pair" "" "a free subordinator morpheme pair: one in the subordinate clause and one in the main clause<br>"
+  . pair "Subordinator Pair" "" "A free subordinator morpheme pair: one in the subordinate clause and one in the main clause<br>"
     Label "<p>Free Subordinator Morpheme Pair{i}:<br>"
 
   Radio subposition "Subordinator Position" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Does the morpheme in the subordinate clause attach to the beginning or end of the clause?:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
@@ -1790,7 +1795,7 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
   . both "Both" "" "Both VP and S"
 
 
-        BeginIter morphpair{j} "a Free Subordinator Morpheme Pair" 0
+        BeginIter morphpair{j} "A Free Subordinator Morpheme Pair" 0
             Label "<p>Free Subordinator Morpheme Pair{i}:<br>"
                 Text matrixorth "subord {i} stem {j} spelling" "Matrix Morpheme Spelling: " "" 30<br> "fill_pred('subord{i}_stem{j}', 's')"
 
@@ -1809,9 +1814,10 @@ Radio subordinator "Clausal Modifier Strategy {i} pattern" "<br><br>" ""
   . none "No Subordinator" "" "This strategy does not use a free subordinator morpheme<br>"
     Label "<p>No Subordinator{i}:<br>"
 
-Label "<b>Is this strategy marked by special verbal morphology?</b> Features can be defined on the Other Features page. If this morphological feature cannot head a matrix clause, it should be defined as a FORM feature.<br>"
+Label "<br>The clausal modifier strategy contributes the following predication. (Note: if you do not enter a predication, a generic _subord_rel predication will be added) <br>"
+    Text pred "subord {i} stem {j} predicate" " Predicate: " "" 30<br>
 
-Check specialmorph "Special Morphology" "" "Yes<br>"
+Label "<br><b>The clausal modifier has the following features</b><br> Note: Features can be defined on the Other Features page. If this morphological feature cannot head a matrix clause, it should be defined as a FORM feature.<br>"
 
 BeginIter feat{k} "a Feature"
 
@@ -1822,11 +1828,6 @@ BeginIter feat{k} "a Feature"
       fillvalues p=cms{i}_feat{k}_name
 
 EndIter feat
-
-Label "<b><br><br>If a predication is associated with this morphology, enter it below.</b> If no predication has been defined for a free subordinator above and none is defined here, a generic _subord_rel will be used<br>"
-
-    Text pred "subord {i} stem {j} predicate" " Predicate: " "" 30<br>
-
 
 Label "<b><br><br>Is the subject of the subordinate clause unexpressed and shared with the subject of the main clause?</b><br>"
 Check shared-subj "Shared Subject" "" "Yes<br>"
