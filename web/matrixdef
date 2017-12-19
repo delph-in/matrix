@@ -1722,11 +1722,9 @@ clausal modifier strategies by combinging the free morpheme type with subject sh
 
 Label "<p>Some characteristics of clausal modifiers must be defined on other pages of the grammar matrix.</p>"
 
-Label "<div style=\"padding-left: 16px\"><p><span
-class=\"dfn\"></span><br>&nbsp;&nbsp;&nbsp;&nbsp;Special Word order should be indicated on the word order page<br><span
-class=\"dfn\"></span><br>&nbsp;&nbsp;&nbsp;&nbsp;Nominalization strategies should be defined on the Nominalized Clauses page. These stragies can then be added to the clausal modifier strategy under "Add a feature"<br><span
-class=\"dfn\"></span><br>&nbsp;&nbsp;&nbsp;&nbsp;Additional features such as finite/non-finite, or features associated with bound subordinator morphemes should be defined on the Other Features page.<br></div>"
-
+Label "<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Special Word order should be indicated on the word order page</p>"
+Label "<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nominalization strategies should be defined on the Nominalized Clauses page. These stragies can then be added to the clausal modifier strategy under "Add a feature".</p>"
+Label "<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Additional features such as finite/non-finite, or features associated with bound subordinator morphemes should be defined on the Other Features page.</p>"
 
 
 BeginIter cms{i} "a Clausal Modifier Strategy" 1
