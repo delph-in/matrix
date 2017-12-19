@@ -35,7 +35,13 @@ POSSESSOR_RULE=' :=\
                                                  SUBJ #subj ], \
                                        CONT.HOOK #hook & [ INDEX #possessor  ] ] ] ].'
 
-POSSESSUM_RULE=''
+POSSESSUM_RULE=' :=\
+                  [ SYNSEM.LOCAL [ CAT.VAL [ SPEC #spec,\
+                                             SUBJ #subj ] ],\
+                    DTR.SYNSEM.LOCAL [ CAT.VAL [ SPEC #spec,\
+                                                 SUBJ #subj ], \
+                                       CONT.HOOK.INDEX #possessum  ] ] ].'
+
 # PRIMARY FUNCTION
 def customize_adnominal_possession(mylang,ch,rules,irules,lexicon):
     # TODO: add POSS feature and POSS.PNG to head feature here.
@@ -127,12 +133,11 @@ def customize_rules(strat,mylang,ch,rules):
     mylang.add(phrase_rule +' := '+strat.get('order')+'.',merge=True)
     # If a specialized poss phrase rule was added, adds rule to rules.tdl
     rules.add(phrase_rule.replace('-phrase','') + ':= '+phrase_rule+'. ' )
+    # TODO: remove this:
     # Switch for if possessor is NP vs NOM.
     np_nom=strat.get('np-nom')
     if np_nom=='np':
         mylang.add(phrase_rule+' := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPR olist ].')
-    # PROBLEM: head-mod-phrase-basic (or whatever) id's the non-head dtr's SPR values with the head dtr's SPR values.
-    # So it can't be a 1-dlist
     elif np_nom=='nom':
         mylang.add(phrase_rule+' := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPR 1-list ].')
 
@@ -182,8 +187,40 @@ def customize_irules(strat,mylang,ch,irules):
                                                 HCONS <! !>, \
                                                 ICONS <! !>  ], \
                    DTR.SYNSEM.LOCAL.CAT.VAL.SPEC #spec  ].')
+                    if mark_loc=='possessum-marking' or 'double-marking':
+                        # Don't add poss_rel yet -- only if its single-marking
+                        possessum_rule_name = 'possessum-lex-rule-'+strat_num
+                        mylang.add(possessum_rule_name+POSSESSUM_RULE)
 
-
+# THESE TWO RULES ARE UNTESTED:
+                        if mod_spec=='spec':
+                            mylang.add(possessum_rule_name+':= [ val-change-with-ccont-lex-rule & \
+                                           [ SYNSEM.LOCAL.CAT [ VAL [ COMPS #comps,\
+                                                                      SPR.FIRST.LOCAL [ CAT [ HEAD noun ],\
+                                                                                        CONT.HOOK #hook & [ INDEX #possessor,\
+                                                                                                     LTOP #lbl ] ] ] ] ,\
+                                             C-CONT [ HOOK #hook & [ COG-ST uniq-id ],\
+                                                      RELS <! '+ POSS_REL  +' ,\
+                                                              '+ POSSESSUM_EXIST_REL+ ' !>, \
+                                                                   HCONS <! qeq & [ HARG #harg, LARG #lbl ] !>, \
+                                                                                                ICONS <! !>  ],\
+                                                              DTR.SYNSEM.LOCAL [ CAT.VAL.COMPS #comps ] ] ].')
+                       
+                        if mod_spec=='mod':
+                            mylang.add(possessum_rule_name+':= val-change-with-ccont-lex-rule & \
+                                                       [ SYNSEM.LOCAL.CAT [ HEAD.CASE gen,\
+                                                                            VAL [ SPR #spr, \
+                                                                                  COMPS.FIRST.LOCAL [ CAT.HEAD noun, \
+                                                                                                      CONT.HOOK [ INDEX #possessor,\
+                                                                                                                  LTOP #lbl ] ] ] ],\
+                                                         C-CONT [ HOOK #hook ,\
+                                                                  RELS <! '+POSS_REL+',\
+                                                                          '+POSSESSUM_EXIST_REL+' !>, \
+                                                                  HCONS <! qeq & [ HARG #harg, LARG #lbl ] !>,\
+                                                                  ICONS <! !>  ],\
+                                                          DTR.SYNSEM.LOCAL [ CAT.VAL [ SPR #spr ],\
+                                                                             CONT.HOOK  #hook & [ INDEX #possessum ] ] ].')
+ 
 
 
 
@@ -201,27 +238,6 @@ def customize_irules(strat,mylang,ch,irules):
 #                ADD possessum-lex-rule with COMPS<[possessor]>
 #                ADD a feature [HEAD.POSS +] to the possessor infl rule.
 
-
-
-
-
-#     Possessor-marker:
-#             If the possessor is specifier-like:
-#                ADD possessor-lex-rule with SPEC<[possessum]>, carrying poss_rel
-#             If the possessor is  modifier-like:
-#                ADD possessor-lex-rule with MOD<[possessum]>, carrying poss_rel
-#     Possessum-marker:
-#        If the possessor is specifier-like:
-#             If single-marking:
-#                ADD possessum-lex-rule with SPR<[possessor]>, carrying poss_rel
-#             If double-marking:
-#                ADD possessum-lex-rule with SPR<[possessor]>
-#        If the possessum is modifier-like:
-#             If single-marking:
-#                ADD possessum-lex-rule with COMPS<[possessor]>, carrying poss_rel
-#             If double-marking
-#                ADD possessum-lex-rule with COMPS<[possessor]>
-#                ADD a feature [HEAD.POSS +] to the possessor infl rule.
 
 
 
