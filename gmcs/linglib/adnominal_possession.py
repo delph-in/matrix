@@ -44,8 +44,6 @@ def customize_adnominal_possession(mylang,ch,rules,irules,lexicon):
         customize_irules(strat,mylang,ch,irules)
         #customize_lexicon(strat,mylang,ch,lexicon)
 
-
-
 # SECONDARY FUNCTIONS
 def customize_rules(strat,mylang,ch,rules):
 # TODO: deal with free word order
@@ -129,10 +127,15 @@ def customize_rules(strat,mylang,ch,rules):
     mylang.add(phrase_rule +' := '+strat.get('order')+'.',merge=True)
     # If a specialized poss phrase rule was added, adds rule to rules.tdl
     rules.add(phrase_rule.replace('-phrase','') + ':= '+phrase_rule+'. ' )
-    
+    # Switch for if possessor is NP vs NOM.
+    np_nom=strat.get('np-nom')
+    if np_nom=='np':
+        mylang.add(phrase_rule+' := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPR olist ].')
+    # PROBLEM: head-mod-phrase-basic (or whatever) id's the non-head dtr's SPR values with the head dtr's SPR values.
+    # So it can't be a 1-dlist
+    elif np_nom=='nom':
+        mylang.add(phrase_rule+' := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPR 1-dlist ].')
 
-
-POSSESSUM_RULE=''
 
 
 # NOTE: customize_irules pseudocode/code doesn't yet deal with situations where one marker is an affix and one isn't:
@@ -153,7 +156,6 @@ def customize_irules(strat,mylang,ch,irules):
                     # Then narrow down which kind of rule to add:
                     mod_spec=strat.get('mod-spec')
                     mark_loc=strat.get('mark-loc')
-                    np_nom=strat.get('np-nom')
                     mylang.set_section('lexrules')
                     if mark_loc=='possessor-marking' or 'double-marking':
                         # Add the basic possessor rule defn:
