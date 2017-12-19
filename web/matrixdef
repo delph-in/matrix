@@ -1720,7 +1720,7 @@ Label "<p>Clausal modifiers may also be marked by special verbal morphology, nom
 clause, special word order in the subordinate clause, and subject sharing. You may define any number of 
 clausal modifier strategies by combinging the free morpheme type with subject sharing and various morphologial constraints.</p>"
 
-Label "<p>Note: Some characteristics of clausal modifiers must be defined on other pages of the grammar matrix.<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Special Word order should be indicated on the word order page<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nominalization strategies should be defined on the Nominalized Clauses page. These stragies can then be added to the clausal modifier strategy under Add a Feature.<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Additional features such as finite/non-finite, or features associated with bound subordinator morphemes should be defined on the Other Features page.</p>"
+Label "<p>Note: Some characteristics of clausal modifiers must be defined on other pages of the grammar matrix.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Special Word order should be indicated on the word order page<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nominalization strategies should be defined on the Nominalized Clauses page. These stragies can then be added to the clausal modifier strategy under Add a Feature.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Additional features such as finite/non-finite, or features associated with bound subordinator morphemes should be defined on the Other Features page.</p>"
 
 
 BeginIter cms{i} "a Clausal Modifier Strategy" 1
@@ -1757,7 +1757,7 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
         BeginIter freemorph{j} "A Free Subordinator Morpheme" 0
 
             Label "<p>Free Subordinator Morpheme {i}:<br>"
-                Text orth "subord {i} stem {j} spelling" "Spelling: " "" 30 "fill_pred('subord{i}_stem{j}', 's')"
+                Text orth "subord {i} stem {j} spelling" "Spelling: " "" 30 "fill_pred('cms{i}_freemorph{j}', 'subord')"
                 Text pred "subord {i} stem {j} predicate" " Predicate: " "" 30<br>
          EndIter freemorph
 
