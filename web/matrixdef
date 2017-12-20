@@ -1737,7 +1737,22 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
     . s "S" "" "an S<br>"
     . either "Either" "" "either a VP or an S <br><br>"
 
+    Radio subordinator "Clausal Modifier Strategy {i} pattern" "<b>The subordinate predication is contributed by:</b><br><br>" ""
+  . free "Free Subordinator" "" "a free subordinator morpheme<br>""toggle_element.call(this, 'free_subordinator{i}_choices', 'on')"
+  . pair "Subordinator Pair" "" "a free subordinator morpheme pair: one in the subordinate clause and one in the main clause<br>""toggle_element.call(this, 'free_subordinator{i}_choices', 'off')"
+  . none "No Subordinator" "" "this strategy does not use a free subordinator morpheme<br>""toggle_element.call(this, 'free_subordinator{i}_choices', 'off')"
 
+    Label "<div id='free_subordinator{i}_choices' style='display:none'>"
+      Radio subposition "Subordinator Position" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The free subordinator morpheme is positioned:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
+      . before "Before" "" "before the VP or S it attaches to<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+      . after "After" "" "after the VP or S it attaches to<br>"
+
+      BeginIter freemorph{j} "A Free Subordinator Morpheme" 0
+        Label "<p>Free Subordinator Morpheme {i}:<br>"
+          Text orth "subord {i} stem {j} spelling" "Spelling: " "" 30 "fill_pred('cms{i}_freemorph{j}', 'subord')"
+          Text pred "subord {i} stem {j} predicate" " Predicate: " "" 30<br>
+      EndIter freemorph
+    Label "</div>"
 
 
 Label "<br><br><b>The clausal modifier has the following features</b><br> Note: Features can be defined on the Other Features page. If this morphological feature cannot head a matrix clause, it should be defined as a FORM feature.<br>"
