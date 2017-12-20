@@ -94,14 +94,15 @@ def customize_rules(strat,mylang,ch,rules):
                                           HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPEC #spec ] ].')
             rule_added=True
     # If a specialized poss phrase rule was added, require that the marked constituent be marked possessive.
-    if strat.get('mark-loc')=='possessor-marking':
-        mylang.add(phrase_rule+':= [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS nonpossessive,\
+    if rule_added:
+        if strat.get('mark-loc')=='possessor-marking':
+            mylang.add(phrase_rule+':= [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS nonpossessive,\
                                      NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessive ].',merge=True)
-    if strat.get('mark-loc')=='possessum-marking':
-        mylang.add(phrase_rule+':= [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessive,\
+        if strat.get('mark-loc')=='possessum-marking':
+            mylang.add(phrase_rule+':= [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessive,\
                                      NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS nonpossessive ].',merge=True)
-    if strat.get('mark-loc')=='both-marking':
-        mylang.add(phrase_rule+':= [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessive,\
+        if strat.get('mark-loc')=='both-marking':
+            mylang.add(phrase_rule+':= [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessive,\
                                      HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessive ].',merge=True)
     # Make non-possessive phrases reject possessive nouns:
     if ch.get('has-dets')=='yes':
@@ -130,20 +131,21 @@ def customize_rules(strat,mylang,ch,rules):
                 adj_head=True
     if head_adj: mylang.add('head-adj-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD  +vjrpcdmo ].',merge=True)
     if adj_head: mylang.add('adj-head-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD  +vjrpcdmo ].',merge=True)
-# TODO: limit head-comp phrase as well, when relevant.
-#    if phrase_rule=='head-comp-poss-phrase' and rule_added:
-#        mylang.add('head-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS nonpossessive ].')
+    if phrase_rule=='head-comp-poss-phrase' and rule_added:
+        # TODO: add this to head-comp or comp-head depending on what exists in the lg.
+        mylang.add('head-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS nonpossessive ].')
     # If a specialized poss phrase rule was added, adds word order info to the phrase rule:
-    mylang.add(phrase_rule +' := '+strat.get('order')+'.',merge=True)
-    # If a specialized poss phrase rule was added, adds rule to rules.tdl
-    rules.add(phrase_rule.replace('-phrase','') + ':= '+phrase_rule+'. ' )
-    # TODO: remove this:
-    # Switch for if possessor is NP vs NOM.
-    np_nom=strat.get('np-nom')
-    if np_nom=='np':
-        mylang.add(phrase_rule+' := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPR olist ].',merge=True)
-    elif np_nom=='nom':
-        mylang.add(phrase_rule+' := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPR 1-list ].',merge=True)
+    if rule_added: 
+        mylang.add(phrase_rule +' := '+strat.get('order')+'.',merge=True)
+        # If a specialized poss phrase rule was added, adds rule to rules.tdl
+        rules.add(phrase_rule.replace('-phrase','') + ':= '+phrase_rule+'. ' )
+        # TODO: remove this:
+        # Switch for if possessor is NP vs NOM.
+        np_nom=strat.get('np-nom')
+        if np_nom=='np':
+            mylang.add(phrase_rule+' := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPR olist ].',merge=True)
+        elif np_nom=='nom':
+            mylang.add(phrase_rule+' := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPR 1-list ].',merge=True)
 
 
 
