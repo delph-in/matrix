@@ -1738,11 +1738,11 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
     . either "Either" "" "either a VP or an S <br><br>"
 
     Radio subordinator "Clausal Modifier Strategy {i} pattern" "<b>The subordinate predication is contributed by:</b><br><br>" ""
-  . free "Free Subordinator" "" "a free subordinator morpheme<br>""toggle_element.call(this, 'free_subordinator{i}_choices', 'on'); toggle_element.call(this, 'pair{i}_choices', 'on');"
-  . pair "Subordinator Pair" "" "a free subordinator morpheme pair: one in the subordinate clause and one in the main clause<br>""toggle_element.call(this, 'free_subordinator{i}_choices', 'on'); toggle_element.call(this, 'pair{i}_choices', 'off');"
-  . none "No Subordinator" "" "this strategy does not use a free subordinator morpheme<br>""toggle_element.call(this, 'free_subordinator{i}_choices', 'off'); toggle_element.call(this, 'pair{i}_choices', 'off');"
+  . free "Free Subordinator" "" "a free subordinator morpheme<br>""toggle_element.call(this, 'free{i}_choices', 'on'); toggle_element.call(this, 'pair{i}_choices', 'on');"
+  . pair "Subordinator Pair" "" "a free subordinator morpheme pair: one in the subordinate clause and one in the main clause<br>""toggle_element.call(this, 'free{i}_choices', 'on'); toggle_element.call(this, 'pair{i}_choices', 'off');"
+  . none "No Subordinator" "" "this strategy does not use a free subordinator morpheme<br>""toggle_element.call(this, 'subordinator{i}_choices', 'off'); toggle_element.call(this, 'pair{i}_choices', 'off');"
 
-    Label "<div id='free_subordinator{i}_choices' style='display:none'>"
+    Label "<div id='free{i}_choices' style='display:none'>"
       Radio subposition "Subordinator Position" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The free subordinator morpheme is positioned:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
       . before "Before" "" "before the VP or S it attaches to<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
       . after "After" "" "after the VP or S it attaches to<br>"
