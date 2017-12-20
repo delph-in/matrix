@@ -132,8 +132,9 @@ def customize_rules(strat,mylang,ch,rules):
     if head_adj: mylang.add('head-adj-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD  +vjrpcdmo ].',merge=True)
     if adj_head: mylang.add('adj-head-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD  +vjrpcdmo ].',merge=True)
     if phrase_rule=='head-comp-poss-phrase' and rule_added:
+        head_comp_order=customize_major_constituent_order(ch.get('word-order'),mylang,ch,rules)['hc']
         # TODO: add this to head-comp or comp-head depending on what exists in the lg.
-        mylang.add('head-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS nonpossessive ].')
+        mylang.add(head_comp_order+'-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS nonpossessive ].')
     # If a specialized poss phrase rule was added, adds word order info to the phrase rule:
     if rule_added: 
         mylang.add(phrase_rule +' := '+strat.get('order')+'.',merge=True)
