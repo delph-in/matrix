@@ -447,16 +447,27 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     # to other nouns. This bit of logic checks to see if the user has
     # indicated that possessor nouns can be specifiers, and if so, overwrites
     # the typedef of noun-lex to indicate that its SPR is of head type +nd.
-    # Otherwise, the SPR of noun-lex is of head type det, as before.
-
+    # Otherwise, the SPR of noun-lex is of head type det, as before. Furthermore,
+    # in cases when only the possessum is marked, any noun needs to be able to
+    # have a non-empty SPEC list, so we change that to being underspecified
+    # in those cases here too:
+    # PROBLEM: this currently assumes at most one possessive strategy.
     for strat in ch.get('poss-strat',[]):
         if strat.get('mod-spec')=='spec':
+            if strat.get('mark-loc')=='possessor-marking' or strat.get('mark-loc')=='both-marking':
                 typedef = \
         'noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & \
            [ SYNSEM.LOCAL [ CAT.VAL [ SPR < #spr & [ LOCAL.CAT.HEAD +nd ] >, \
                                       COMPS < >, \
                                       SUBJ < >, \
                                       SPEC < > ] ], \
+             ARG-ST < #spr > ].'
+            elif strat.get('mark-loc')=='possessum-marking':
+                typedef = \
+        'noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & \
+           [ SYNSEM.LOCAL [ CAT.VAL [ SPR < #spr & [ LOCAL.CAT.HEAD +nd ] >, \
+                                      COMPS < >, \
+                                      SUBJ < > ] ], \
              ARG-ST < #spr > ].'
 
     mylang.add(typedef)

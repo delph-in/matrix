@@ -92,16 +92,16 @@ def customize_rules(strat,mylang,ch,rules):
     # If a specialized poss phrase rule was added, require that the marked constituent be marked possessive.
     if strat.get('mark-loc')=='possessor-marking':
         mylang.add(phrase_rule+':= [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS nonpossessive,\
-                                     NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessive ].')
+                                     NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessive ].',merge=True)
     if strat.get('mark-loc')=='possessum-marking':
         mylang.add(phrase_rule+':= [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessive,\
-                                     NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS nonpossessive ].')
+                                     NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS nonpossessive ].',merge=True)
     if strat.get('mark-loc')=='both-marking':
         mylang.add(phrase_rule+':= [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessive,\
-                                     HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessive ].')
+                                     HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessive ].',merge=True)
     # Make non-possessive phrases reject possessive nouns:
     if ch.get('has-dets')=='yes':
-        mylang.add('head-spec-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD  +vjrpcdmo ].')
+        mylang.add('head-spec-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD  +vjrpcdmo ].',merge=True)
     adj_head=False
     head_adj=False
     for adj in ch.get('adj',[]):
@@ -124,8 +124,8 @@ def customize_rules(strat,mylang,ch,rules):
             elif modpos=='either':
                 head_adj=True
                 adj_head=True
-    if head_adj: mylang.add('head-adj-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD  +vjrpcdmo ].')
-    if adj_head: mylang.add('adj-head-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD  +vjrpcdmo ].')
+    if head_adj: mylang.add('head-adj-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD  +vjrpcdmo ].',merge=True)
+    if adj_head: mylang.add('adj-head-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD  +vjrpcdmo ].',merge=True)
 # TODO: limit head-comp phrase as well, when relevant.
 #    if phrase_rule=='head-comp-poss-phrase' and rule_added:
 #        mylang.add('head-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS nonpossessive ].')
@@ -137,9 +137,9 @@ def customize_rules(strat,mylang,ch,rules):
     # Switch for if possessor is NP vs NOM.
     np_nom=strat.get('np-nom')
     if np_nom=='np':
-        mylang.add(phrase_rule+' := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPR olist ].')
+        mylang.add(phrase_rule+' := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPR olist ].',merge=True)
     elif np_nom=='nom':
-        mylang.add(phrase_rule+' := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPR 1-list ].')
+        mylang.add(phrase_rule+' := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPR 1-list ].',merge=True)
 
 
 
@@ -149,7 +149,6 @@ def customize_irules(strat,mylang,ch,irules):
     #TODO: this method for retrieving the strategy name is garbage. Fix it.
     strat_name=strat.full_keys()[0].split("_")[0]
     strat_num=strat_name[-1]
-
     for pc in all_position_classes(ch):
         pc_key = pc.full_key
         pc_inputs = pc.get('inputs',[])
@@ -174,7 +173,7 @@ def customize_irules(strat,mylang,ch,irules):
                                              C-CONT [ HOOK #hook ,\
                                                       RELS <! '+ POSS_REL  +' , '+POSSESSUM_EXIST_REL+ ' !>, \
                                                                    HCONS <! qeq & [ HARG #harg, LARG #lbl ] !>, \
-                                                                                                ICONS <! !>  ] ].')
+                                                                                                ICONS <! !>  ] ].',merge=True)
                         else: 
                             mylang.add(possessor_rule_name+' := head-change-with-ccont-lex-rule & \
                                            [ SYNSEM.LOCAL.CAT [ HEAD.MOD.FIRST [ LOCAL [ CAT.HEAD noun, \
@@ -186,7 +185,7 @@ def customize_irules(strat,mylang,ch,irules):
                                                 RELS <! '+POSS_REL+' !>,\
                                                 HCONS <! !>, \
                                                 ICONS <! !>  ], \
-                   DTR.SYNSEM.LOCAL.CAT.VAL.SPEC #spec  ].')
+                   DTR.SYNSEM.LOCAL.CAT.VAL.SPEC #spec  ].',merge=True)
                     if mark_loc=='possessum-marking' or 'double-marking':
                         # Don't add poss_rel yet -- only if its single-marking
                         possessum_rule_name = 'possessum-lex-rule-'+strat_num
@@ -194,17 +193,17 @@ def customize_irules(strat,mylang,ch,irules):
 
 # THESE TWO RULES ARE UNTESTED:
                         if mod_spec=='spec':
-                            mylang.add(possessum_rule_name+':= [ val-change-with-ccont-lex-rule & \
+                            mylang.add(possessum_rule_name+':=  val-change-with-ccont-lex-rule & \
                                            [ SYNSEM.LOCAL.CAT [ VAL [ COMPS #comps,\
-                                                                      SPR.FIRST.LOCAL [ CAT [ HEAD noun ],\
+                                                                      SPR < [ LOCAL [ CAT [ HEAD noun ],\
                                                                                         CONT.HOOK #hook & [ INDEX #possessor,\
-                                                                                                     LTOP #lbl ] ] ] ] ,\
-                                             C-CONT [ HOOK #hook & [ COG-ST uniq-id ],\
+                                                                                                            LTOP #lbl ] ] ] > ] ] ,\
+                                             C-CONT [ HOOK #hook & [ INDEX.COG-ST uniq-id ],\
                                                       RELS <! '+ POSS_REL  +' ,\
                                                               '+ POSSESSUM_EXIST_REL+ ' !>, \
                                                                    HCONS <! qeq & [ HARG #harg, LARG #lbl ] !>, \
                                                                                                 ICONS <! !>  ],\
-                                                              DTR.SYNSEM.LOCAL [ CAT.VAL.COMPS #comps ] ] ].')
+                                                              DTR.SYNSEM.LOCAL [ CAT.VAL.COMPS #comps ] ] ].',merge=True)
                        
                         if mod_spec=='mod':
                             mylang.add(possessum_rule_name+':= val-change-with-ccont-lex-rule & \
@@ -219,7 +218,7 @@ def customize_irules(strat,mylang,ch,irules):
                                                                   HCONS <! qeq & [ HARG #harg, LARG #lbl ] !>,\
                                                                   ICONS <! !>  ],\
                                                           DTR.SYNSEM.LOCAL [ CAT.VAL [ SPR #spr ],\
-                                                                             CONT.HOOK  #hook & [ INDEX #possessum ] ] ].')
+                                                                             CONT.HOOK  #hook & [ INDEX #possessum ] ] ].',merge=True)
  
 
 
