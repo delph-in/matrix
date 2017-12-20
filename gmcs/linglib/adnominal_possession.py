@@ -83,13 +83,15 @@ def customize_rules(strat,mylang,ch,rules):
             else:
                 head_comp_order='head-final'
             if head_comp_order!=strat_order:
-                mylang.add(phrase_rule +' := basic-head-comp-phrase.')
+                mylang.add(phrase_rule +' := basic-head-1st-comp-phrase &\
+                                           [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD noun,\
+                                             NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD noun  ].')
                 rule_added=True
         else:
             phrase_rule="head-mod-poss-phrase"
             mylang.add(phrase_rule+' := basic-head-mod-phrase-simple & head-compositional & \
                                         [ SYNSEM.LOCAL.CAT.VAL [ SPEC #spec ], \
-                                          HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPEC #spec].')
+                                          HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPEC #spec ] ].')
             rule_added=True
     # If a specialized poss phrase rule was added, require that the marked constituent be marked possessive.
     if strat.get('mark-loc')=='possessor-marking':
