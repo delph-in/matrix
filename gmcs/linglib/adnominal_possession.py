@@ -198,29 +198,26 @@ def customize_irules(strat,mylang,ch,irules):
                             mylang.add(possessum_rule_name+':=  val-change-with-ccont-lex-rule & \
                                            [ SYNSEM.LOCAL.CAT [ VAL [ COMPS #comps,\
                                                                       SPR < [ LOCAL [ CAT [ HEAD noun ],\
-                                                                                        CONT.HOOK [ INDEX #possessor ] ] ] > ] ] ,\
+                                                                                      CONT.HOOK [ INDEX #possessor ] ] ] > ] ] ,\
                                              C-CONT [ HOOK #hook & [ INDEX.COG-ST uniq-id ],\
                                                       RELS <! '+ POSS_REL  +' ,\
                                                               '+ POSSESSUM_EXIST_REL+ ' !>, \
-                                                                   HCONS <! qeq & [ HARG #harg, LARG #lbl ] !>, \
-                                                                                                ICONS <! !>  ],\
-                                                              DTR.SYNSEM.LOCAL [ CAT.VAL.COMPS #comps ] ] ].',merge=True)
+                                                      HCONS <! qeq & [ HARG #harg, LARG #lbl ] !>, \
+                                                      ICONS <! !>  ],\
+                                             DTR.SYNSEM.LOCAL [ CAT.VAL.COMPS #comps,\
+                                                                CONT.HOOK.LTOP #lbl ] ].',merge=True)
                        
                         if mod_spec=='mod':
                             # Should append things to COMPS list, not overwrite
                             mylang.add(possessum_rule_name+':= val-change-with-ccont-lex-rule & \
-                                                       [ SYNSEM.LOCAL.CAT [ HEAD.CASE gen,\
-                                                                            VAL [ SPR #spr, \
+                                                       [ SYNSEM.LOCAL.CAT [ VAL [ SPR #spr, \
                                                                                   COMPS.FIRST.LOCAL [ CAT.HEAD noun, \
-                                                                                                      CONT.HOOK [ INDEX #possessor,\
-                                                                                                                  LTOP #lbl ] ] ] ],\
+                                                                                                      CONT.HOOK [ INDEX #possessor ] ] ] ],\
                                                          C-CONT [ HOOK #hook ,\
-                                                                  RELS <! '+POSS_REL+',\
-                                                                          '+POSSESSUM_EXIST_REL+' !>, \
-                                                                  HCONS <! qeq & [ HARG #harg, LARG #lbl ] !>,\
+                                                                  RELS <! '+POSS_REL+' !>, \
+                                                                  HCONS <! !>,\
                                                                   ICONS <! !>  ],\
-                                                          DTR.SYNSEM.LOCAL [ CAT.VAL [ SPR #spr ],\
-                                                                             CONT.HOOK  #hook & [ INDEX #possessum ] ] ].',merge=True)
+                                                         DTR.SYNSEM.LOCAL [ CAT.VAL.SPR #spr ] ].',merge=True)
  
 
 
