@@ -41,7 +41,8 @@ POSSESSUM_RULE=' :=\
                                              SUBJ #subj ] ],\
                     DTR.SYNSEM.LOCAL [ CAT.VAL [ SPEC #spec,\
                                                  SUBJ #subj ], \
-                                       CONT.HOOK #hook & [ INDEX #possessum ] ] ] ].'
+                                       CONT.HOOK #hook & [ INDEX #possessum, \
+                                                           LTOP #lbl] ] ] ].'
 
 # PRIMARY FUNCTION
 def customize_adnominal_possession(mylang,ch,rules,irules,lexicon):
