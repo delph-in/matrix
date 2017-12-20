@@ -1787,22 +1787,23 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
     . both "Both" "" "Both VP and S"
 
 
-    BeginIter morphpair{j} "A Free Subordinator Morpheme Pair" 0
+    BeginIter pair-subord{j} pair-matrix{k} "A Free Subordinator Morpheme Pair" 0
       Label "<p>Free Subordinator Morpheme Pair{i}:<br>"
-        Text matrixorth "subord {i} stem {j} spelling" "Matrix Morpheme Spelling: " "" 30<br> "fill_pred('cms{i}_matrixorth{j}', 'subord')"
-
-        Text matrixpred "matrix {i} stem {j} predicate" "<br>Predicate: " "" 30
-
         Text subordorth "matrix {i} stem {j} spelling" "<br>Subordinator Morpheme Spelling: " "" 30<br> "fill_pred('cms{i}_subordorth{j}', 'subord')"
 
         Text subordpred "matrix {i} stem {j} predicate" "<br>Predicate: " "" 30
+
+        Text matrixorth "subord {i} stem {k} spelling" "Matrix Morpheme Spelling: " "" 30<br> "fill_pred('cms{i}morphpair{j}', 'subord')"
+
+        Text matrixpred "matrix {i} stem {k} predicate" "<br>Predicate: " "" 30
+
 
     EndIter morphpair
     Label "</div>"
 
     Label "<div id='none{i}_choices' style='display:none'>"
-Label "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The clausal modifier strategy contributes the following predication. (Note: if you do not enter a predication, a generic _subord_rel predication will be added) <br>"
-    Text pred "subord {i} stem {j} predicate" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Predicate: " "" 30<br>
+      Label "The clausal modifier strategy contributes the following predication. (Note: if you do not enter a predication, a generic _subord_rel predication will be added) <br>"
+      Text pred "subord {i} stem {j} predicate" "Predicate: " "" 30<br>
     Label "</div>"
 
 Label "<br><br>The clausal modifier has the following features<br> Note: Features can be defined on the Other Features page. If this morphological feature cannot head a matrix clause, it should be defined as a FORM feature.<br>"
