@@ -1738,9 +1738,9 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
   . either "Either" "" "either a VP or an S <br><br>"
 
     Radio subordinator "Clausal Modifier Strategy {i} pattern" "<b>The subordinate predication is contributed by:</b><br><br>" ""
-  . free "Free Subordinator" "" "a free subordinator morpheme<br>""toggle_element.call(this, 'free_subordinator{i}_choices', 'on')"
-  . pair "Subordinator Pair" "" "a free subordinator morpheme pair: one in the subordinate clause and one in the main clause<br>""toggle_element.call(this, 'free_subordinator{i}_choices', 'off'); toggle_element.call(this, 'pair_subordinator{i}_choices', 'off')"
-  . none "No Subordinator" "" "this strategy does not use a free subordinator morpheme<br>""toggle_element.call(this, 'free_subordinator{i}_choices', 'off'); toggle_element.call(this, 'pair_subordinator{i}_choices', 'on'); toggle_element.call(this, 'pair_subordinator{i}_choices', 'on')"
+  . free "Free Subordinator" "" "a free subordinator morpheme<br>""toggle_element.call(this, 'free_subordinator{i}_choices', 'on'); toggle_element.call(this, 'pair_subordinator{i}_choices', 'off')"
+  . pair "Subordinator Pair" "" "a free subordinator morpheme pair: one in the subordinate clause and one in the main clause<br>""toggle_element.call(this, 'free_subordinator{i}_choices', 'off'); toggle_element.call(this, 'pair_subordinator{i}_choices', 'on')"
+  . none "No Subordinator" "" "this strategy does not use a free subordinator morpheme<br>""toggle_element.call(this, 'free_subordinator{i}_choices', 'off'); toggle_element.call(this, 'pair_subordinator{i}_choices', 'off')"
 
   Label "<div id='free_subordinator{i}_choices' style='display:none'>"
     Radio subposition "Subordinator Position id='free_subordinator{i}_choices' style='display:none;'" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The free subordinator morpheme is positioned:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
@@ -1764,7 +1764,7 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
                 Text orth "subord {i} stem {j} spelling" "Spelling: " "" 30 "fill_pred('cms{i}_freemorph{j}', 'subord')"
                 Text pred "subord {i} stem {j} predicate" " Predicate: " "" 30<br>
          EndIter freemorph
-  Label "</div>"
+    Label "</div>"
 
     Label "<div id='pair_subordinator{i}_choices' style='display:none'>"
       Radio subposition "Subordinator Position" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Does the morpheme in the subordinate clause attach to the beginning or end of the clause?:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
@@ -1792,17 +1792,17 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
     . both "Both" "" "Both VP and S"
 
 
-        BeginIter morphpair{j} "A Free Subordinator Morpheme Pair" 0
-            Label "<p>Free Subordinator Morpheme Pair{i}:<br>"
-                Text matrixorth "subord {i} stem {j} spelling" "Matrix Morpheme Spelling: " "" 30<br> "fill_pred('cms{i}_morphpair{j}', 'subord')"
+    BeginIter morphpair{j} "A Free Subordinator Morpheme Pair" 0
+      Label "<p>Free Subordinator Morpheme Pair{i}:<br>"
+        Text matrixorth "subord {i} stem {j} spelling" "Matrix Morpheme Spelling: " "" 30<br> "fill_pred('cms{i}_morphpair{j}', 'subord')"
 
-		Text matrixpred "matrix {i} stem {j} predicate" "<br>Predicate: " "" 30
+        Text matrixpred "matrix {i} stem {j} predicate" "<br>Predicate: " "" 30
 
-                Text subordorth "matrix {i} stem {j} spelling" "<br>Subordinator Morpheme Spelling: " "" 30<br> "fill_pred('cms{i}_morphpair{j}', 'subord')"
+        Text subordorth "matrix {i} stem {j} spelling" "<br>Subordinator Morpheme Spelling: " "" 30<br> "fill_pred('cms{i}_morphpair{j}', 'subord')"
 
-                Text subordpred "matrix {i} stem {j} predicate" "<br>Predicate: " "" 30
+        Text subordpred "matrix {i} stem {j} predicate" "<br>Predicate: " "" 30
 
-         EndIter morphpair
+    EndIter morphpair
     Label "</div>
 
 
