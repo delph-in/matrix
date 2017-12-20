@@ -1441,8 +1441,6 @@ def validate_arg_opt(ch, vr):
                        "on the subject NP or the object NP."
                 vr.err(feat.full_key+'_head',mess)
 
-# validate_clausal_mods(ch, vr)
-#   Validate the user's choices clausal modifiers.
 
 def validate_clausalmods(ch, vr):
     for cms in ch.get('cms'):
@@ -1461,6 +1459,10 @@ def validate_clausalmods(ch, vr):
 
         if subord == 'none':
             pass
+
+def validate_nominalized_clauses(ch, vfr):
+    for ns in ch.get('ns'):
+        pass
 
 
 def validate(ch, extra = False):
