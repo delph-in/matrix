@@ -1789,11 +1789,11 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
 
     BeginIter pair-subord{j} pair-matrix{k} "A Free Subordinator Morpheme Pair" 0
       Label "<p>Free Subordinator Morpheme Pair{i}:<br>"
-        Text subordorth "matrix {i} stem {j} spelling" "<br>Subordinator Morpheme Spelling: " "" 30<br> "fill_pred('cms{i}_subordorth{j}', 'subord')"
+        Text subordorth "matrix {i} stem {j} spelling" "<br>Subordinator Morpheme Spelling: " "" 30<br> "fill_pred('cms{i}pair-subord{j}', 'subord')"
 
         Text subordpred "matrix {i} stem {j} predicate" "<br>Predicate: " "" 30
 
-        Text matrixorth "subord {i} stem {k} spelling" "Matrix Morpheme Spelling: " "" 30<br> "fill_pred('cms{i}morphpair{j}', 'subord')"
+        Text matrixorth "subord {i} stem {k} spelling" "Matrix Morpheme Spelling: " "" 30<br> "fill_pred('cms{i}matrix-subord{j}', 'subord')"
 
         Text matrixpred "matrix {i} stem {k} predicate" "<br>Predicate: " "" 30
 
