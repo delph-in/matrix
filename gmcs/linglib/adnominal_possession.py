@@ -33,14 +33,15 @@ POSSESSOR_RULE=' :=\
                     DTR.SYNSEM.LOCAL [ CAT.VAL [ SPR #spr,\
                                                  COMPS #comps,\
                                                  SUBJ #subj ], \
-                                       CONT.HOOK #hook & [ INDEX #possessor  ] ] ] ].'
+                                       CONT.HOOK #hook & [ INDEX #possessor,\
+                                                           LTOP #lbl  ] ] ] ].'
 
 POSSESSUM_RULE=' :=\
                   [ SYNSEM.LOCAL [ CAT.VAL [ SPEC #spec,\
                                              SUBJ #subj ] ],\
                     DTR.SYNSEM.LOCAL [ CAT.VAL [ SPEC #spec,\
                                                  SUBJ #subj ], \
-                                       CONT.HOOK.INDEX #possessum  ] ] ].'
+                                       CONT.HOOK #hook & [ INDEX #possessum ] ] ] ].'
 
 # PRIMARY FUNCTION
 def customize_adnominal_possession(mylang,ch,rules,irules,lexicon):
@@ -196,8 +197,7 @@ def customize_irules(strat,mylang,ch,irules):
                             mylang.add(possessum_rule_name+':=  val-change-with-ccont-lex-rule & \
                                            [ SYNSEM.LOCAL.CAT [ VAL [ COMPS #comps,\
                                                                       SPR < [ LOCAL [ CAT [ HEAD noun ],\
-                                                                                        CONT.HOOK #hook & [ INDEX #possessor,\
-                                                                                                            LTOP #lbl ] ] ] > ] ] ,\
+                                                                                        CONT.HOOK [ INDEX #possessor ] ] ] > ] ] ,\
                                              C-CONT [ HOOK #hook & [ INDEX.COG-ST uniq-id ],\
                                                       RELS <! '+ POSS_REL  +' ,\
                                                               '+ POSSESSUM_EXIST_REL+ ' !>, \
