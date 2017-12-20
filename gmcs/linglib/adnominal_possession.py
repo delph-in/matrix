@@ -168,7 +168,9 @@ def customize_irules(strat,mylang,ch,irules):
                     mod_spec=strat.get('mod-spec')
                     mark_loc=strat.get('mark-loc')
                     mylang.set_section('lexrules')
-                    if mark_loc=='possessor-marking' or 'double-marking':
+
+
+                    if mark_loc=='possessor-marking' or 'both-marking':
                         # Add the basic possessor rule defn:
                         possessor_rule_name = 'possessor-lex-rule-'+strat_num
                         mylang.add(possessor_rule_name+POSSESSOR_RULE)
@@ -193,25 +195,25 @@ def customize_irules(strat,mylang,ch,irules):
                                                 HCONS <! !>, \
                                                 ICONS <! !>  ], \
                    DTR.SYNSEM.LOCAL.CAT.VAL.SPEC #spec  ].',merge=True)
-                    if mark_loc=='possessum-marking' or 'double-marking':
+
+
+                    if mark_loc=='possessum-marking' or 'both marking':
                         # Don't add poss_rel yet -- only if its single-marking
                         possessum_rule_name = 'possessum-lex-rule-'+strat_num
                         mylang.add(possessum_rule_name+POSSESSUM_RULE)
-
-# THESE TWO RULES ARE UNTESTED:
                         if mod_spec=='spec':
                             mylang.add(possessum_rule_name+':=  val-change-with-ccont-lex-rule & \
                                            [ SYNSEM.LOCAL.CAT [ VAL [ COMPS #comps,\
-                                                                      SPR < [ LOCAL [ CAT [ HEAD noun ],\
-                                                                                      CONT.HOOK [ INDEX #possessor ] ] ] > ] ] ,\
+                                                                      SPR < [ LOCAL [ CAT [ HEAD noun ] ] ] > ] ] ,\
                                              C-CONT [ HOOK #hook & [ INDEX.COG-ST uniq-id ],\
-                                                      RELS <! '+ POSS_REL  +' ,\
-                                                              '+ POSSESSUM_EXIST_REL+ ' !>, \
+                                                      RELS <! '+ POSSESSUM_EXIST_REL+ ' !>, \
                                                       HCONS <! qeq & [ HARG #harg, LARG #lbl ] !>, \
                                                       ICONS <! !>  ],\
                                              DTR.SYNSEM.LOCAL [ CAT.VAL.COMPS #comps,\
                                                                 CONT.HOOK.LTOP #lbl ] ].',merge=True)
-                       
+                            if mark_loc=='possessum-marking':
+                                mylang.add(possessum_rule_name+' := [ SYNSEM.LOCAL.CAT.VAL.SPR <[ LOCAL.CONT.HOOK [ INDEX #possessor ] ]>,\
+                                                                      C-CONT.RELS <! '+POSS_REL+' !> ].')
                         if mod_spec=='mod':
                             # Should append things to COMPS list, not overwrite
                             mylang.add(possessum_rule_name+':= val-change-with-ccont-lex-rule & \
@@ -219,10 +221,14 @@ def customize_irules(strat,mylang,ch,irules):
                                                                                   COMPS.FIRST.LOCAL [ CAT.HEAD noun, \
                                                                                                       CONT.HOOK [ INDEX #possessor ] ] ] ],\
                                                          C-CONT [ HOOK #hook ,\
-                                                                  RELS <! '+POSS_REL+' !>, \
+                                                                  RELS <! !>, \
                                                                   HCONS <! !>,\
                                                                   ICONS <! !>  ],\
                                                          DTR.SYNSEM.LOCAL [ CAT.VAL.SPR #spr ] ].',merge=True)
+                            if mark_loc=='possessum-marking':
+                                mylang.add(possessum_rule_name+' := [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK [ INDEX #possessor ],\
+                                                                      C-CONT.RELS <! '+POSS_REL+' !> ].')
+
  
 
 
