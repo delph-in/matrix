@@ -206,6 +206,7 @@ def customize_irules(strat,mylang,ch,irules):
                                                               DTR.SYNSEM.LOCAL [ CAT.VAL.COMPS #comps ] ] ].',merge=True)
                        
                         if mod_spec=='mod':
+                            # Should append things to COMPS list, not overwrite
                             mylang.add(possessum_rule_name+':= val-change-with-ccont-lex-rule & \
                                                        [ SYNSEM.LOCAL.CAT [ HEAD.CASE gen,\
                                                                             VAL [ SPR #spr, \
