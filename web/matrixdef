@@ -1727,20 +1727,20 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
 
   Label "<p>Clausal Modifier Strategy {i}:<br>"
 
-    Radio position "Clause Position" "<b>The clausal modifier is positioned:</b><br>" ""
+    Radio position "Clause Position" "The clausal modifier is positioned:<br>" ""
     . before "Before" "" "before the matrix clause<br>"
     . after "After" "" "after the matrix clause<br>"
     . either "Either" "" "either before or after the matrix clause<br><br>"
 
-    Radio modifier-attach "Clause Position" "<b>The clausal modifier attaches to/modifies:</b><br>" ""
+    Radio modifier-attach "Clause Position" "The clausal modifier attaches to/modifies:<br>" ""
     . vp "VP" "" "a VP<br>"
     . s "S" "" "an S<br>"
     . either "Either" "" "either a VP or an S <br><br>"
 
-    Radio subordinator "Clausal Modifier Strategy {i} pattern" "<b>The subordinate predication is contributed by:</b><br><br>" ""
+    Radio subordinator "Clausal Modifier Strategy {i} pattern" "The subordinate predication is contributed by:<br><br>" ""
   . free "Free Subordinator" "" "a free subordinator morpheme<br>""toggle_element.call(this, 'free{i}_choices', 'on'); toggle_element.call(this, 'pair{i}_choices', 'off'); toggle_element.call(this, 'none{i}_choices', 'off');"
   . pair "Subordinator Pair" "" "a free subordinator morpheme pair: one in the subordinate clause and one in the main clause<br>""toggle_element.call(this, 'free{i}_choices', 'off'); toggle_element.call(this, 'pair{i}_choices', 'on'); toggle_element.call(this, 'none{i}_choices', 'off');"
-  . none "No Subordinator" "" "this strategy does not use a free subordinator morpheme<br>""toggle_element.call(this, 'subordinator{i}_choices', 'off'); toggle_element.call(this, 'pair{i}_choices', 'off'); toggle_element.call(this, 'none{i}_choices', 'on');"
+  . none "No Subordinator" "" "this strategy does not use a free subordinator morpheme""toggle_element.call(this, 'free{i}_choices', 'off'); toggle_element.call(this, 'pair{i}_choices', 'off'); toggle_element.call(this, 'none{i}_choices', 'on');"
 
     Label "<div id='free{i}_choices' style='display:none'>"
       Radio subposition "Subordinator Position" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The free subordinator morpheme is positioned:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
@@ -1789,11 +1789,11 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
 
     BeginIter morphpair{j} "A Free Subordinator Morpheme Pair" 0
       Label "<p>Free Subordinator Morpheme Pair{i}:<br>"
-        Text matrixorth "subord {i} stem {j} spelling" "Matrix Morpheme Spelling: " "" 30<br> "fill_pred('cms{i}_morphpair{j}', 'subord')"
+        Text matrixorth "subord {i} stem {j} spelling" "Matrix Morpheme Spelling: " "" 30<br> "fill_pred('cms{i}_matrixorth{j}', 'subord')"
 
         Text matrixpred "matrix {i} stem {j} predicate" "<br>Predicate: " "" 30
 
-        Text subordorth "matrix {i} stem {j} spelling" "<br>Subordinator Morpheme Spelling: " "" 30<br> "fill_pred('cms{i}_morphpair{j}', 'subord')"
+        Text subordorth "matrix {i} stem {j} spelling" "<br>Subordinator Morpheme Spelling: " "" 30<br> "fill_pred('cms{i}_subordorth{j}', 'subord')"
 
         Text subordpred "matrix {i} stem {j} predicate" "<br>Predicate: " "" 30
 
@@ -1802,10 +1802,10 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
 
     Label "<div id='none{i}_choices' style='display:none'>"
 Label "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The clausal modifier strategy contributes the following predication. (Note: if you do not enter a predication, a generic _subord_rel predication will be added) <br>"
-    Text pred "subord {i} stem {j} predicate" " Predicate: " "" 30<br>
+    Text pred "subord {i} stem {j} predicate" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Predicate: " "" 30<br>
     Label "</div>"
 
-Label "<br><br><b>The clausal modifier has the following features</b><br> Note: Features can be defined on the Other Features page. If this morphological feature cannot head a matrix clause, it should be defined as a FORM feature.<br>"
+Label "<br><br>The clausal modifier has the following features<br> Note: Features can be defined on the Other Features page. If this morphological feature cannot head a matrix clause, it should be defined as a FORM feature.<br>"
 
 BeginIter feat{k} "a Feature"
 
@@ -1817,7 +1817,7 @@ BeginIter feat{k} "a Feature"
 
 EndIter feat
 
-Label "<b><br><br>Is the subject of the subordinate clause unexpressed and shared with the subject of the main clause?</b><br>"
+Label "<br><br>Is the subject of the subordinate clause unexpressed and shared with the subject of the main clause?<br>"
 Check shared-subj "Shared Subject" "" "Yes<br>"
 
 EndIter cms
