@@ -1762,8 +1762,7 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
                 Text orth "subord {i} stem {j} spelling" "Spelling: " "" 30 "fill_pred('cms{i}_freemorph{j}', 'subord')"
                 Text pred "subord {i} stem {j} predicate" " Predicate: " "" 30<br>
          EndIter freemorph
-
-
+  Label "</div>"
 
 
 Label "<br><br><b>The clausal modifier has the following features</b><br> Note: Features can be defined on the Other Features page. If this morphological feature cannot head a matrix clause, it should be defined as a FORM feature.<br>"
