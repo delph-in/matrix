@@ -1739,7 +1739,7 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
 
     Radio subordinator "Clausal Modifier Strategy {i} pattern" "<b>The subordinate predication is contributed by:</b><br><br>" ""
   . free "Free Subordinator" "" "a free subordinator morpheme<br>""toggle_element.call(this, 'free_subordinator{i}_choices', 'on'); toggle_element.call(this, 'pair_subordinator{i}_choices', 'off');"
-  . pair "Subordinator Pair" "" "a free subordinator morpheme pair: one in the subordinate clause and one in the main clause<br>""toggle_element.call(this, 'free_subordinator{i}_choices', 'off'); toggle_element.call(this, 'pair_subordinator{i}_choices', 'on');"
+  . pair "Subordinator Pair" "" "a free subordinator morpheme pair: one in the subordinate clause and one in the main clause<br>""toggle_element.call(this, 'pair_subordinator{i}_choices', 'on'); toggle_element.call(this, 'free_subordinator{i}_choices', 'off');"
   . none "No Subordinator" "" "this strategy does not use a free subordinator morpheme<br>""toggle_element.call(this, 'free_subordinator{i}_choices', 'off'); toggle_element.call(this, 'pair_subordinator{i}_choices', 'off');"
 
     Label "<div id='free_subordinator{i}_choices' style='display:none'>"
