@@ -44,11 +44,13 @@ POSSESSUM_RULE=' :=\
 
 # PRIMARY FUNCTION
 def customize_adnominal_possession(mylang,ch,rules,irules,lexicon):
-    # TODO: add POSS feature and POSS.PNG to head feature here.
     for strat in ch.get('poss-strat',[]):
         customize_rules(strat,mylang,ch,rules)
-        customize_irules(strat,mylang,ch,irules)
-        #customize_lexicon(strat,mylang,ch,lexicon)
+        if strat.get('possessor-bound')=='possessor-affix' or strat.get('possessum-bound')=='possessum-affix':
+            #TODO: only call if possessor or possessum is affixally marked:
+            customize_irules(strat,mylang,ch,irules)
+        #TODO: only call if possessor or possessum is marked by separate word:
+        customize_lexicon(strat,mylang,ch,lexicon)
 
 # SECONDARY FUNCTIONS
 def customize_rules(strat,mylang,ch,rules):
@@ -242,31 +244,13 @@ def customize_irules(strat,mylang,ch,irules):
                                                                             CONT.HOOK [ INDEX #possessum,\
                                                                                         LTOP #lbl ] ] ].',merge=True)
                             if mark_loc=='both-marking':
-                                mylang.add(possessum_rule_name+' := [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD noun & [ POSS possessor ] ].')
+                                mylang.add(possessum_rule_name+' :=\
+                                           [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD noun & [ POSS possessor ] ].')
  
 
 
-# qeq & [ HARG #harg, LARG #lbl ]
-
-#     Possessum-marker:
-#        If the possessor is specifier-like:
-#             If single-marking:
-#                ADD possessum-lex-rule with SPR<[possessor]>, carrying poss_rel
-#             If double-marking:#                ADD possessum-lex-rule with SPR<[possessor]>
-#        If the possessum is modifier-like:
-#             If single-marking:
-#                ADD possessum-lex-rule with COMPS<[possessor]>, carrying poss_rel
-#             If double-marking
-#                ADD possessum-lex-rule with COMPS<[possessor]>
-#                ADD a feature [HEAD.POSS +] to the possessor infl rule.
-
-
-
-
-# TODO: figure out what happens with double marking
-# TODO: add in where the poss_rel is
-
-# def customize_lex(mylang,ch,lexicon):
+def customize_lexicon(strat,mylang,ch,lexicon):
+    print 'blah'
 #     IF: either possessor or possessum mark is a separate word, add the correct lexical entry
 #     Possessor-marker:
 #        If the possessor is specifier-like:

@@ -255,9 +255,11 @@ def create_lexical_rule_type(lrt, mtx_supertypes, cur_pc):
         if feat['name'] == 'evidential':
             new_lrt.evidential = feat['value']
         elif 'possessor' in feat['name']:
+            # TODO: don't add here if possessor mark is separate word
             new_lrt.possessor = feat['value']
             new_lrt.possessor_strat_num = feat['name'][-1]
         elif 'possessum' in feat['name']:
+            # TODO: don't add here if possessum mark is separate word
             new_lrt.possessum = feat['value']
             new_lrt.possessum_strat_num = feat['name'][-1]
         else:
