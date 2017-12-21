@@ -41,8 +41,7 @@ POSSESSUM_RULE=' :=\
                                              SUBJ #subj ] ],\
                     DTR.SYNSEM.LOCAL [ CAT.VAL [ SPEC #spec,\
                                                  SUBJ #subj ], \
-                                       CONT.HOOK #hook & [ INDEX #possessum, \
-                                                           LTOP #lbl] ] ] ].'
+                                       CONT.HOOK #hook ] ] ].'
 
 # PRIMARY FUNCTION
 def customize_adnominal_possession(mylang,ch,rules,irules,lexicon):
@@ -206,14 +205,18 @@ def customize_irules(strat,mylang,ch,irules):
                                            [ SYNSEM.LOCAL.CAT [ VAL [ COMPS #comps,\
                                                                       SPR < [ LOCAL [ CAT [ HEAD noun ] ] ] > ] ] ,\
                                              C-CONT [ HOOK #hook & [ INDEX.COG-ST uniq-id ],\
-                                                      RELS <! '+ POSSESSUM_EXIST_REL+ ' !>, \
-                                                      HCONS <! qeq & [ HARG #harg, LARG #lbl ] !>, \
+                                                      HCONS <! !>, \
                                                       ICONS <! !>  ],\
-                                             DTR.SYNSEM.LOCAL [ CAT.VAL.COMPS #comps,\
-                                                                CONT.HOOK.LTOP #lbl ] ].',merge=True)
+                                             DTR.SYNSEM.LOCAL [ CAT.VAL.COMPS #comps ] ].',merge=True)
                             if mark_loc=='possessum-marking':
                                 mylang.add(possessum_rule_name+' := [ SYNSEM.LOCAL.CAT.VAL.SPR <[ LOCAL.CONT.HOOK [ INDEX #possessor ] ]>,\
-                                                                      C-CONT.RELS <! '+POSS_REL+' !> ].')
+                                                                      C-CONT [ HCONS <! qeq & [ HARG #harg, LARG #lbl ] !> ,\
+                                                                               RELS <! '+POSS_REL+',\
+                                                                                       '+POSSESSUM_EXIST_REL+' !> ],\
+                                                                                       DTR.SYNSEM.LOCAL.CONT.HOOK [ INDEX #possessum,\
+                                                                                                                    LTOP #lbl ] ].')
+                            else:
+                                mylang.add(possessum_rule_name+' := [ C-CONT.RELS <! !> ].')
                         if mod_spec=='mod':
                             # Should append things to COMPS list, not overwrite
                             mylang.add(possessum_rule_name+':= val-change-with-ccont-lex-rule & \
@@ -227,12 +230,13 @@ def customize_irules(strat,mylang,ch,irules):
                                                          DTR.SYNSEM.LOCAL [ CAT.VAL.SPR #spr ] ].',merge=True)
                             if mark_loc=='possessum-marking':
                                 mylang.add(possessum_rule_name+' := [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK [ INDEX #possessor ],\
-                                                                      C-CONT.RELS <! '+POSS_REL+' !> ].')
-
+                                                                      C-CONT.RELS <! '+POSS_REL+' !> ,\
+                                                                      DTR.SYNSEM.LOCAL.CONT.HOOK [ INDEX #possessum,\
+                                                                                                   LTOP #lbl  ] ].')
  
 
 
-
+# qeq & [ HARG #harg, LARG #lbl ]
 
 #     Possessum-marker:
 #        If the possessor is specifier-like:
@@ -309,38 +313,3 @@ def customize_irules(strat,mylang,ch,irules):
 #     DEPENDS ON: mark-loc, possessor-sep-word, possessum-sep-word
 # Phrasal rules for attaching possessor and possessum:
 #     DEPENDS ON: order, rule-type, [info from word-order lib]
-
-
-
-
-
-# Choice 1:
-# Order of possessor and possessum
-#
-# Consequence: 
-# Depending on the preexistent order of head-spec, head-mod, and head-comps,
-# May have to create a specific version of the above that has the appropriate order:
-#     Whatever rule is used in this strategy will have to be added and with the right constraints.
-# If preexistent order of head-spec, head-mod, and head-comps is already correct,
-# Do nothing.
-
-
-# Choice 2:
-# Modifier vs. specifier
-#
-# Consequence:
-# If specifier, always add head-spec-hc.
-#     Also, MANY OTHER CHOICES FALL OUT FROM THIS
-# If modifier, add either head-mod or leave in head-comp.
-#     Also, MANY OTHER CHOICES FALL OUT FROM THIS
-
-# Choice 3:
-# Possessor = NOM vs NP
-# 
-# Consequence:
-# If NOM, then require the possessor (in head-mod or head-spec or head-comps)
-# to be SPR 1-dlist. 
-# If NP, then require the possessor to be SPR olist.
-
-# Choice 4:
-# Complicated stuff
