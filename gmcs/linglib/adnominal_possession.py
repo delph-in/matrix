@@ -95,13 +95,13 @@ def customize_rules(strat,mylang,ch,rules):
     if rule_added:
         if strat.get('mark-loc')=='possessor-marking':
             mylang.add(phrase_rule+':= [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS nonpossessive,\
-                                     NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessive ].',merge=True)
+                                     NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessor ].',merge=True)
         if strat.get('mark-loc')=='possessum-marking':
-            mylang.add(phrase_rule+':= [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessive,\
+            mylang.add(phrase_rule+':= [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessum,\
                                      NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS nonpossessive ].',merge=True)
         if strat.get('mark-loc')=='both-marking':
-            mylang.add(phrase_rule+':= [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessive,\
-                                     HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessive ].',merge=True)
+            mylang.add(phrase_rule+':= [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessor,\
+                                     HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessum ].',merge=True)
     # Make non-possessive phrases reject possessive nouns:
     if ch.get('has-dets')=='yes':
         mylang.add('head-spec-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD  +vjrpcdmo ].',merge=True)
