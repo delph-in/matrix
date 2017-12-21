@@ -33,8 +33,7 @@ POSSESSOR_RULE=' :=\
                     DTR.SYNSEM.LOCAL [ CAT.VAL [ SPR #spr,\
                                                  COMPS #comps,\
                                                  SUBJ #subj ], \
-                                       CONT.HOOK #hook & [ INDEX #possessor,\
-                                                           LTOP #lbl  ] ] ] ].'
+                                       CONT.HOOK #hook & [ INDEX #possessor ] ] ] ].'
 
 POSSESSUM_RULE=' :=\
                   [ SYNSEM.LOCAL [ CAT.VAL [ SPEC #spec,\
@@ -193,11 +192,8 @@ def customize_irules(strat,mylang,ch,irules):
                                                 RELS <! '+POSS_REL+' !>,\
                                                 HCONS <! !>, \
                                                 ICONS <! !>  ], \
-                   DTR.SYNSEM.LOCAL.CAT.VAL.SPEC #spec  ].',merge=True)
-
-
+                    DTR.SYNSEM.LOCAL.CAT.VAL.SPEC #spec  ].',merge=True)
                     if mark_loc=='possessum-marking' or 'both marking':
-                        # Don't add poss_rel yet -- only if its single-marking
                         possessum_rule_name = 'possessum-lex-rule-'+strat_num
                         mylang.add(possessum_rule_name+POSSESSUM_RULE)
                         if mod_spec=='spec':
@@ -224,7 +220,6 @@ def customize_irules(strat,mylang,ch,irules):
                                                                                   COMPS.FIRST.LOCAL [ CAT.HEAD noun, \
                                                                                                       CONT.HOOK [ INDEX #possessor ] ] ] ],\
                                                          C-CONT [ HOOK #hook ,\
-                                                                  RELS <! !>, \
                                                                   HCONS <! !>,\
                                                                   ICONS <! !>  ],\
                                                          DTR.SYNSEM.LOCAL [ CAT.VAL.SPR #spr ] ].',merge=True)
@@ -233,6 +228,8 @@ def customize_irules(strat,mylang,ch,irules):
                                                                       C-CONT.RELS <! '+POSS_REL+' !> ,\
                                                                       DTR.SYNSEM.LOCAL.CONT.HOOK [ INDEX #possessum,\
                                                                                                    LTOP #lbl  ] ].')
+                            else:
+                                mylang.add(possessum_rule_name+' := [ C-CONT.RELS <! !> ].')
  
 
 
@@ -242,8 +239,7 @@ def customize_irules(strat,mylang,ch,irules):
 #        If the possessor is specifier-like:
 #             If single-marking:
 #                ADD possessum-lex-rule with SPR<[possessor]>, carrying poss_rel
-#             If double-marking:
-#                ADD possessum-lex-rule with SPR<[possessor]>
+#             If double-marking:#                ADD possessum-lex-rule with SPR<[possessor]>
 #        If the possessum is modifier-like:
 #             If single-marking:
 #                ADD possessum-lex-rule with COMPS<[possessor]>, carrying poss_rel
