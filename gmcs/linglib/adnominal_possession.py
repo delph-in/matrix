@@ -47,10 +47,9 @@ def customize_adnominal_possession(mylang,ch,rules,irules,lexicon):
     for strat in ch.get('poss-strat',[]):
         customize_rules(strat,mylang,ch,rules)
         if strat.get('possessor-bound')=='possessor-affix' or strat.get('possessum-bound')=='possessum-affix':
-            #TODO: only call if possessor or possessum is affixally marked:
             customize_irules(strat,mylang,ch,irules)
-        #TODO: only call if possessor or possessum is marked by separate word:
-        customize_lexicon(strat,mylang,ch,lexicon)
+        if strat.get('possessor-bound')=='possessor-non-affix' or strat.get('possessum-bound')=='possessum-non-affix':
+            customize_lexicon(strat,mylang,ch,lexicon)
 
 # SECONDARY FUNCTIONS
 def customize_rules(strat,mylang,ch,rules):
@@ -119,7 +118,6 @@ def customize_rules(strat,mylang,ch,rules):
             head_adj=True
             adj_head=True
     for pc in ch.get('adj-pc',[]):
-        print pc
         for lrt in pc.get('lrt'):
             modpos=lrt.get('modpos')
             if modpos=='before':
@@ -205,11 +203,6 @@ def customize_irules(strat,mylang,ch,irules):
 
 
 
-
-
-
-
-
                     if mark_loc=='possessum-marking' or 'both marking':
                         possessum_rule_name = 'possessum-lex-rule-'+strat_num
                         mylang.add(possessum_rule_name+POSSESSUM_RULE)
@@ -250,7 +243,75 @@ def customize_irules(strat,mylang,ch,irules):
 
 
 def customize_lexicon(strat,mylang,ch,lexicon):
-    print 'blah'
+    strat_name=strat.full_keys()[0].split("_")[0]
+    strat_num=strat_name[-1]
+    mark_loc=strat.get('mark-loc')
+    mod_spec=strat.get('mod-spec')    
+    if mark_loc=='possessor-marking':
+        orth=strat.get('possessor-orth')
+        # UNTESTED:
+        # TODO: check if already-existing phrase rules will work; if not add a head-comps rule that will only take possessive heads
+        # Problem with this one: head-comps doesn't pass up SPEC value of head dtr.
+        mylang.add('two-rel-adposition-lex := basic-icons-lex-item &\
+  [ SYNSEM [ LOCAL [ CAT [ HEAD adp,\
+                           VAL.COMPS < [ LOCAL [ CAT cat-sat,\
+                                                 CONT.HOOK [ INDEX #ind,\
+                                                             ICONS-KEY.IARG1 #clause ] ] ] > ],\
+                     CONT.HOOK.CLAUSE-KEY #clause ],\
+             LKEYS.KEYREL arg12-ev-relation & [ ARG2 #ind ] ] ].')
+        if mod_spec=='spec':
+            mylang.add('possessor-adp-lex := two-rel-adposition-lex &\
+                                 [  SYNSEM.LOCAL [ CAT [ VAL [ COMPS.FIRST.LOCAL [ CAT.HEAD noun,\
+                                                                                   CONT.HOOK.INDEX #possessor ],\
+                                                               SPEC.FIRST.LOCAL [ CONT.HOOK [ INDEX #possessum,\
+                                                                                              LTOP #lbl ],\
+                                                                                  CAT.VAL.SPR < [ ] > ] ] ],\
+                                                  CONT [ RELS <! '+POSS_REL+',\
+                                                                 '+POSSESSUM_EXIST_REL+' !>,\
+                                                         HCONS <!  qeq & [ HARG #harg, LARG #lbl ] !>,\
+                                                         ICONS <! !>   ] ] ].')
+        if mod_spec=='mod':
+            mylang.add('possessor-adp-lex := two-rel-adposition-lex &\
+                                 [  SYNSEM.LOCAL [ CAT [ VAL.COMPS.FIRST.LOCAL [ CAT.HEAD noun,\
+                                                                                 CONT.HOOK.INDEX #possessor ],\
+                                                         HEAD.MOD.FIRST.LOCAL [ CONT.HOOK [ INDEX #possessum,\
+                                                                                            LTOP #lbl ],\
+                                                                                CAT.VAL.SPR < [ ] > ] ],\
+                                                  CONT [ RELS <! arg12-ev-relation & [ PRED "poss_rel",\
+                                                                                            ARG1 #possessum,\
+                                                                                            ARG2 #possessor ] !>,\
+                                                         HCONS <! !>,\
+                                                         ICONS <! !>   ] ] ].')
+        lexicon.add('possessor-adp-'+strat_num+' := possessor-adp-lex &\
+                                                  [ STEM < "'+orth+'" >].')
+    elif mark_loc=='possessum-marking':
+        orth=strat.get('possessum-orth')
+        if mod_spec=='spec':
+            mylang.add('possessum-noun-lex := noun-lex &\
+                                 [  SYNSEM.LOCAL [ CAT [ VAL [ SPR.FIRST.LOCAL [ CAT.HEAD noun,\
+                                                                                   CONT.HOOK.INDEX #possessor ],\
+                                                               COMPS.FIRST.LOCAL [ CONT.HOOK [ INDEX #possessum,\
+                                                                                              LTOP #lbl ],\
+                                                                                  CAT.VAL.SPR < [ ] > ] ] ],\
+                                                  CONT [ RELS <! '+POSS_REL+',\
+                                                                 '+POSSESSUM_EXIST_REL+' !>,\
+                                                         HCONS <!  qeq & [ HARG #harg, LARG #lbl ] !>,\
+                                                         ICONS <! !>   ] ] ].')
+        if mod_spec=='mod':
+            mylang.add('possessum-noun-lex := noun-lex &\
+                                 [  SYNSEM.LOCAL [ CAT [ VAL [ COMPS < [ LOCAL [ CONT.HOOK [ INDEX #possessum,\
+                                                                                             LTOP #lbl ],\
+                                                                                 CAT.VAL.SPR < [ ] > ] ] ] ],\
+                                                                       [ LOCAL [ CAT.HEAD noun,\
+                                                                                 CONT.HOOK.INDEX #possessor ] ] >,\
+                                                  CONT [ RELS <! '+POSS_REL+',\
+                                                                 '+POSSESSUM_EXIST_REL+' !>,\
+                                                         HCONS <!  qeq & [ HARG #harg, LARG #lbl ] !>,\
+                                                         ICONS <! !>   ] ] ].')
+
+        lexicon.add('possessum-noun-'+strat_num+' := possessor-noun-lex &\
+                                                  [ STEM < "'+orth+'" >].')
+
 #     IF: either possessor or possessum mark is a separate word, add the correct lexical entry
 #     Possessor-marker:
 #        If the possessor is specifier-like:
@@ -264,45 +325,3 @@ def customize_lexicon(strat,mylang,ch,lexicon):
 #             ADD possessum-noun-lex, with COMPS<[possessum]>, SPR<[possessor]>
 #        If the possessor is modifier-like:
 #             ADD possessum-noun-lex, with COMPS<[possessum][possessor]>
-
-
-
-
-
-
-# Not sure making an object from the choices file is really that helpful, 
-# but here's one way you could do it if you wanted to:
-#
-# A strategy object contains:
-#
-# Primitives from questionnaire:
-# (Try not to add too many obscuring layers between choices file and this)
-# juxtaposition: boolean (for convenience -- could be encoded in other variables)
-# specifier vs. mod
-# NOM: bool
-# order: head-first or head-final or free
-# mark-loc: head, dep, both
-# possessor-affix: boolean
-# possessor-sep-word: left-attach, right-attach, none
-# possessum-affix: boolean
-# possessum-sep-word: left-attach, right-attach, none
-#
-# Deduced properties:
-# rule-type: head-spec-hc, head-comps, head-mod
-#     DEPENDS ON: spec-like, mark-loc
-# add-lex-rules: bool
-#     DEPENDS ON: possessor-affix, possessum-affix
-# add-lex-entries: bool
-#     DEPENDS ON: possessor-sep-word, possessum-sep-word
-# add-phrasal-rules: bool
-#     DEPENDS ON: order, rule-type (anything but head-comp guarantees a rule add), 
-#     [order info from word-order page]
-#
-# TDL-adding functions:
-# Lexical rules.
-#     DEPENDS ON: mark-loc, possessor-affix, possessum-affix
-#     [Also unsure of how this interfaces with the stuff on Morphology page]
-# Lexical entries.
-#     DEPENDS ON: mark-loc, possessor-sep-word, possessum-sep-word
-# Phrasal rules for attaching possessor and possessum:
-#     DEPENDS ON: order, rule-type, [info from word-order lib]

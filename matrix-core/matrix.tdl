@@ -1877,11 +1877,13 @@ basic-head-comp-phrase := head-valence-phrase & head-compositional &
 			  binary-headed-phrase & 
   [ SYNSEM phr-synsem-min &
 		   [ LOCAL.CAT [ VAL [ SUBJ #subj,
+		     	       	       SPEC #spec,
 				       SPR #spr ],
 				 POSTHEAD #ph,
 				 HC-LIGHT #light ],
 		     LIGHT #light ],
     HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL [ SUBJ #subj,
+    		      		      	SPEC #spec,
 					SPR #spr ],
 				  HC-LIGHT #light,
 				  POSTHEAD #ph ]], 

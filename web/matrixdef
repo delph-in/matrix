@@ -2921,7 +2921,7 @@ BeginIter poss-strat{i} "a possessive strategy"
 
      	   Label "<div id='possessor-non-affix{i}' style='display:none'>"
 
-	   Text possessor-word-spelling "Possessor word spelling" "<br>The possessor-marking word is spelled " "<br>" 15
+	   Text possessor-orth "Possessor word spelling" "<br>The possessor-marking word is spelled " "<br>" 15
 	   
 	   Radio possessor-word-order "Possessor word order" "and appears to the "  " of the possessor<br>" 
 	   . left "left" "" "left"
@@ -2962,7 +2962,7 @@ BeginIter poss-strat{i} "a possessive strategy"
 
            Label "<div id='possessum-non-affix{i}' style='display:none'>"
 
-           Text possessum-word-spelling "Possessum word spelling" "<br>The possessum-marking word is spelled " "<br>" 15
+           Text possessum-orth "Possessum word spelling" "<br>The possessum-marking word is spelled " "<br>" 15
 
            Radio possessum-word-order "Possessum word order" "and appears to the "  " of the possessum<br>"
            . left "left" "" "left"

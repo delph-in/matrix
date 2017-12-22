@@ -455,9 +455,18 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     for strat in ch.get('poss-strat',[]):
         if strat.get('mod-spec')=='spec':
             if strat.get('mark-loc')=='possessor-marking' or strat.get('mark-loc')=='both-marking':
-                typedef = \
+                if strat.get('possessor-bound')=='possessor-affix':
+                    typedef = \
         'noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & \
            [ SYNSEM.LOCAL [ CAT.VAL [ SPR < #spr & [ LOCAL.CAT.HEAD +nd ] >, \
+                                      COMPS < >, \
+                                      SUBJ < >, \
+                                      SPEC < > ] ], \
+             ARG-ST < #spr > ].'
+                else:
+                    typedef = \
+        'noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & \
+           [ SYNSEM.LOCAL [ CAT.VAL [ SPR < #spr & [ LOCAL.CAT.HEAD +pd ] >, \
                                       COMPS < >, \
                                       SUBJ < >, \
                                       SPEC < > ] ], \
