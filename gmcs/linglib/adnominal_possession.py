@@ -76,7 +76,7 @@ def customize_rules(strat,mylang,ch,rules):
     # Add either head-mod or head-comp if possessor = mod
     # Exception: no rule added if preexistent head-comps has correct order
     elif strat.get('mod-spec')=='mod':
-        if strat.get('mark-loc')=='possessum-marking' or 'both-marking':
+        if strat.get('mark-loc')=='possessum-marking' or strat.get('mark-loc')=='both-marking':
             phrase_rule="head-comp-poss-phrase"
             # Check if the existing head-comp rule has the correct order; 
             # if not, add a new rule with correct order that only applies to poss-phrases.
@@ -286,13 +286,13 @@ def customize_lexicon(strat,mylang,ch,lexicon):
                                                          HEAD.MOD.FIRST.LOCAL [ CONT.HOOK [ INDEX #possessum,\
                                                                                             LTOP #lbl ],\
                                                                                 CAT.VAL.SPR < [ ] > ] ],\
-                                                  CONT [ RELS <! arg12-ev-relation & [ PRED "poss_rel",\
-                                                                                            ARG1 #possessum,\
-                                                                                            ARG2 #possessor ] !>,\
+                                                  CONT [ RELS <! '+POSS_REL+' !>,\
                                                          HCONS <! !>,\
                                                          ICONS <! !>   ] ] ].')
         lexicon.add('possessor-adp-'+strat_num+' := possessor-adp-lex &\
                                                   [ STEM < "'+orth+'" >].')
+
+"""
     elif mark_loc=='possessum-marking':
         orth=strat.get('possessum-orth')
         if mod_spec=='spec':
@@ -322,7 +322,7 @@ def customize_lexicon(strat,mylang,ch,lexicon):
 
         lexicon.add('possessum-noun-'+strat_num+' := possessor-noun-lex &\
                                                   [ STEM < "'+orth+'" >].')
-
+"""
 #     IF: either possessor or possessum mark is a separate word, add the correct lexical entry
 #     Possessor-marker:
 #        If the possessor is specifier-like:

@@ -2273,10 +2273,8 @@ basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
 					  LIGHT #light,
                                           MODIFIED #modif,
 					  OPT - ] > ],
-			   VAL [ COMPS olist
-;, 
-;				 SPR olist 
-], 
+			   VAL [ COMPS olist, 
+				 SPR olist ], 
                            MKG #mkg ],
 		     CONT.HOOK [ ICONS-KEY.IARG1 #clause,
 				 CLAUSE-KEY #clause ] ],
