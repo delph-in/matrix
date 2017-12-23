@@ -254,7 +254,7 @@ def customize_lexicon(strat,mylang,ch,lexicon):
     strat_num=strat_name[-1]
     mark_loc=strat.get('mark-loc')
     mod_spec=strat.get('mod-spec')    
-    if mark_loc=='possessor-marking':
+    if mark_loc=='possessor-marking' or mark_loc=='both-marking':
         orth=strat.get('possessor-orth')
         # UNTESTED:
         # TODO: check if already-existing phrase rules will work; if not add a head-comps rule that will only take possessive heads
@@ -293,7 +293,7 @@ def customize_lexicon(strat,mylang,ch,lexicon):
         lexicon.add('possessor-adp-'+strat_num+' := possessor-adp-lex &\
                                                   [ STEM < "'+orth+'" >].')
 
-    elif mark_loc=='possessum-marking':
+    if mark_loc=='possessum-marking' or mark_loc=='both-marking':
         orth=strat.get('possessum-orth')
         if mod_spec=='spec':
             # NOTE: currently, this allows regular head-spec to do what head-spec-poss should be doing. 
@@ -301,18 +301,27 @@ def customize_lexicon(strat,mylang,ch,lexicon):
             # it probably shouldn't.
             mylang.add('possessum-noun-lex := basic-two-arg &\
                                  [  SYNSEM.LOCAL [ CAT  [ HEAD noun & [ POSS possessum ],\
-                                                          VAL [ SPR < #spr & [ LOCAL [ CAT.HEAD +np,\
-                                                                                       CONT.HOOK.INDEX #possessor ] ] >,\
-                                                                COMPS < #comps & [ LOCAL [ CONT.HOOK [ INDEX #possessum,\
-                                                                                                       LTOP #lbl ]  ,\
-                                                                                    CAT.VAL.SPR <[ ]> ] ] > ] ],\
-                                                  CONT [ RELS <! '+POSS_REL+',\
-                                                                 '+POSSESSUM_EXIST_REL+' !>,\
-                                                         HCONS <!  qeq & [ HARG #harg, LARG #lbl ] !>,\
+                                                          VAL [ SPR < #spr & [ LOCAL [ CAT.HEAD +np ] ] >,\
+                                                                COMPS < #comps & [ LOCAL [ CONT.HOOK #hook,\
+                                                                                           CAT.VAL.SPR <[ ]> ] ] > ] ],\
+                                                  CONT [ HOOK #hook\
                                                          ICONS <! !>   ] ],\
                                     ARG-ST < #spr, #comps > ].')
-########################################################################################################################################
+            if mark_loc=='possessum-marking':
+                mylang.add('possessum-noun-lex := [ SYNSEM.LOCAL [ CAT [ VAL [ SPR < #spr & [ LOCAL [ CONT.HOOK.INDEX #possessor ] ] >,\
+                                                                              COMPS < #comps & [ LOCAL [ CONT.HOOK [ INDEX #possessum,\
+                                                                                                                     LTOP #lbl ] ] ] > ] ],\
+                                                                CONT [ RELS <! '+POSS_REL+',\
+                                                                               '+POSSESSUM_EXIST_REL+' !>,\
+                                                                               HCONS <! qeq & [HARG #harg, LARG #lbl] !> ] ] ].',merge=True)
+            else:
+                mylang.add('possessum-noun-lex := [ SYNSEM.LOCAL.CONT [ RELS <! !>,\
+                                                                      HCONS <! !>] ].',merge=True)
         if mod_spec=='mod':
+            # NOTE: semantics (irretrievably?) broken.
+            # Since the marker takes the whole possessum NP as its complement, it ends up plugging the determiner's LTOP into
+            # the LBL of the poss_rel (instead of the possessum noun's LTOP). I apparently didn't notice this in building toy grammars.
+            # TODO: check if this reeeeeeeally happens. If not, block this path off (in validation)
             mylang.add('possessum-noun-lex := basic-two-arg &\
                           [ SYNSEM.LOCAL [ CAT [ HEAD noun & [ POSS possessum ] ,\
                                                  VAL.COMPS < #possessum-comp & [ LOCAL [ CONT.HOOK [ INDEX #possessum,\
@@ -326,19 +335,3 @@ def customize_lexicon(strat,mylang,ch,lexicon):
                             ARG-ST < #possessum-comp, #possessor-comp > ].')
         lexicon.add('possessum-noun-'+strat_num+' := possessum-noun-lex &\
                                                   [ STEM < "'+orth+'" >].')
-                                                                   
-########################################################################################################################################
-
-"""
-'possessum-noun-lex := basic-two-arg &\
-                             [  SYNSEM.LOCAL [ CAT [ HEAD noun & [ POSS possessum ],\
-                                                     VAL [ COMPS < #possessum-comp & [  LOCAL [ CONT.HOOK [ INDEX #possessum,\
-                                                                                                            LTOP #lbl ],\
-                                                                                                CAT.VAL.SPR < > ] ] ] ],\
-                                                                   #possessor-comp & [ LOCAL [ CAT.HEAD +np,\
-                                                                                               CONT.HOOK.INDEX #possessor ] ] >,\
-                                                  CONT [ RELS <! '+POSS_REL+' !>,\
-                                                         HCONS <! !>,\
-                                                         ICONS <! !> ] ],\
-                                    ARG-ST < #possessum-comp, #possessor-comp > ].'
-"""
