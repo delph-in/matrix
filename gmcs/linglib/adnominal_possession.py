@@ -87,8 +87,8 @@ def customize_rules(strat,mylang,ch,rules):
                 head_comp_order='head-final'
             if head_comp_order!=strat_order:
                 mylang.add(phrase_rule +' := basic-head-1st-comp-phrase &\
-                                           [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD noun,\
-                                             NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD noun  ].')
+                                           [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +np,\
+                                             NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +np  ].')
                 rule_added=True
         else:
             phrase_rule="head-mod-poss-phrase"
@@ -139,7 +139,9 @@ def customize_rules(strat,mylang,ch,rules):
     if phrase_rule=='head-comp-poss-phrase' and rule_added and strat.get('possessum-bound')!='possessum-non-affix':
         head_comp_order=customize_major_constituent_order(ch.get('word-order'),mylang,ch,rules)['hc']
         # TODO: add this to head-comp or comp-head depending on what exists in the lg.
-        mylang.add(head_comp_order+'-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS nonpossessive ].')
+#        mylang.add(head_comp_order+'-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS nonpossessive ].')
+        mylang.add(head_comp_order+'-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL [ SPR <>,\
+                                                                                 SPEC <> ] ].')
     # If a specialized poss phrase rule was added, adds word order info to the phrase rule:
     if rule_added: 
         mylang.add(phrase_rule +' := '+strat.get('order')+'.',merge=True)
@@ -192,7 +194,7 @@ def customize_irules(strat,mylang,ch,irules):
                             if mark_loc=='possessor-marking':
                                 mylang.add(possessor_rule_name+POSSESSOR_RULE)
                                 mylang.add(possessor_rule_name+' := head-change-with-ccont-lex-rule & \
-                                           [ SYNSEM.LOCAL.CAT [ HEAD.MOD.FIRST [ LOCAL [ CAT.HEAD noun, \
+                                           [ SYNSEM.LOCAL.CAT [ HEAD.MOD.FIRST [ LOCAL [ CAT.HEAD +np, \
                                                                                          CONT.HOOK [ INDEX #possessum, \
                                                                                                      LTOP #lbl ] ], \
                                                                                  OPT - ], \
@@ -245,7 +247,7 @@ def customize_irules(strat,mylang,ch,irules):
                                                                                         LTOP #lbl ] ] ].',merge=True)
                             if mark_loc=='both-marking':
                                 mylang.add(possessum_rule_name+' :=\
-                                           [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD noun & [ POSS possessor ] ].')
+                                           [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD +np & [ POSS possessor ] ].')
  
 
 
