@@ -289,50 +289,56 @@ def customize_lexicon(strat,mylang,ch,lexicon):
                                                   CONT [ RELS <! '+POSS_REL+' !>,\
                                                          HCONS <! !>,\
                                                          ICONS <! !>   ] ] ].')
+        # TODO: this lex item doesn't follow nomenclature conventions yet:
         lexicon.add('possessor-adp-'+strat_num+' := possessor-adp-lex &\
                                                   [ STEM < "'+orth+'" >].')
 
-"""
     elif mark_loc=='possessum-marking':
         orth=strat.get('possessum-orth')
         if mod_spec=='spec':
-            mylang.add('possessum-noun-lex := noun-lex &\
-                                 [  SYNSEM.LOCAL [ CAT  [ HEAD.POSS possessum,\
-                                                          VAL [ SPR.FIRST.LOCAL [ CAT.HEAD noun,\
-                                                                                   CONT.HOOK.INDEX #possessor ],\
-                                                               COMPS.FIRST.LOCAL [ CONT.HOOK [ INDEX #possessum,\
-                                                                                              LTOP #lbl ],\
-                                                                                  CAT.VAL.SPR < [ ] > ] ] ],\
+            # NOTE: currently, this allows regular head-spec to do what head-spec-poss should be doing. 
+            # Could prevent by not allowing the HEAD-DTR of head-spec to be possessive, but that would rule out things 
+            # it probably shouldn't.
+            mylang.add('possessum-noun-lex := basic-two-arg &\
+                                 [  SYNSEM.LOCAL [ CAT  [ HEAD noun & [ POSS possessum ],\
+                                                          VAL [ SPR < #spr & [ LOCAL [ CAT.HEAD +np,\
+                                                                                       CONT.HOOK.INDEX #possessor ] ] >,\
+                                                                COMPS < #comps & [ LOCAL [ CONT.HOOK [ INDEX #possessum,\
+                                                                                                       LTOP #lbl ]  ,\
+                                                                                    CAT.VAL.SPR <[ ]> ] ] > ] ],\
                                                   CONT [ RELS <! '+POSS_REL+',\
                                                                  '+POSSESSUM_EXIST_REL+' !>,\
                                                          HCONS <!  qeq & [ HARG #harg, LARG #lbl ] !>,\
-                                                         ICONS <! !>   ] ] ].')
+                                                         ICONS <! !>   ] ],\
+                                    ARG-ST < #spr, #comps > ].')
+########################################################################################################################################
         if mod_spec=='mod':
-            mylang.add('possessum-noun-lex := noun-lex &\
-                                 [  SYNSEM.LOCAL [ CAT [ HEAD.POSS possessum,\
-                                                         VAL [ COMPS < [ LOCAL [ CONT.HOOK [ INDEX #possessum,\
-                                                                                             LTOP #lbl ],\
-                                                                                 CAT.VAL.SPR < [ ] > ] ] ] ],\
-                                                                       [ LOCAL [ CAT.HEAD noun,\
-                                                                                 CONT.HOOK.INDEX #possessor ] ] >,\
-                                                  CONT [ RELS <! '+POSS_REL+',\
-                                                                 '+POSSESSUM_EXIST_REL+' !>,\
-                                                         HCONS <!  qeq & [ HARG #harg, LARG #lbl ] !>,\
-                                                         ICONS <! !>   ] ] ].')
-
-        lexicon.add('possessum-noun-'+strat_num+' := possessor-noun-lex &\
+            mylang.add('possessum-noun-lex := basic-two-arg &\
+                          [ SYNSEM.LOCAL [ CAT [ HEAD noun & [ POSS possessum ] ],\
+                                                 VAL.COMPS < #possessum-comp & [ LOCAL [ CONT.HOOK [ INDEX #possessum,\
+                                                                                                     LTOP #lbl ] ],\
+                                                                                         CAT.VAL.SPR < > ],\
+                                                             #possessor-comp & [ LOCAL [ CAT.HEAD +np,\
+                                                                                         CONT.HOOK.INDEX #possessor ] ] > ],\
+                                           CONT [ RELS <! '+POSS_REL+' !>,\
+                                                  HCONS <! !>,\
+                                                  ICONS <! !>  ],\
+                            ARG-ST < #possessum-comp, #possessor-comp > ].')
+        lexicon.add('possessum-noun-'+strat_num+' := possessum-noun-lex &\
                                                   [ STEM < "'+orth+'" >].')
+                                                                   
+########################################################################################################################################
+
 """
-#     IF: either possessor or possessum mark is a separate word, add the correct lexical entry
-#     Possessor-marker:
-#        If the possessor is specifier-like:
-#            ADD possessor-det-lex, with SPR<[possessor]>, SPEC<[possessum]>, carrying poss_rel
-#             OR TRY:
-#            ADD possessor-adp-lex, with COMPS<[possessor]>,SPEC<possessum]>
-#        If the possessor is modifier-like:
-#            ADD possessor-adp-lex, with COMPS<[possessor]>, MOD<[possessum]>
-#     Possessum-marker:
-#        If the possessor is specifier-like:
-#             ADD possessum-noun-lex, with COMPS<[possessum]>, SPR<[possessor]>
-#        If the possessor is modifier-like:
-#             ADD possessum-noun-lex, with COMPS<[possessum][possessor]>
+'possessum-noun-lex := basic-two-arg &\
+                             [  SYNSEM.LOCAL [ CAT [ HEAD noun & [ POSS possessum ],\
+                                                     VAL [ COMPS < #possessum-comp & [  LOCAL [ CONT.HOOK [ INDEX #possessum,\
+                                                                                                            LTOP #lbl ],\
+                                                                                                CAT.VAL.SPR < > ] ] ] ],\
+                                                                   #possessor-comp & [ LOCAL [ CAT.HEAD +np,\
+                                                                                               CONT.HOOK.INDEX #possessor ] ] >,\
+                                                  CONT [ RELS <! '+POSS_REL+' !>,\
+                                                         HCONS <! !>,\
+                                                         ICONS <! !> ] ],\
+                                    ARG-ST < #possessum-comp, #possessor-comp > ].'
+"""
