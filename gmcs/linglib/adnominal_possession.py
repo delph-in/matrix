@@ -136,7 +136,7 @@ def customize_rules(strat,mylang,ch,rules):
 #    if adj_head: mylang.add('adj-head-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD  +vjrpcdmo ].',merge=True)
     if head_adj: mylang.add('head-adj-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS nonpossessive ].',merge=True)
     if adj_head: mylang.add('adj-head-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS nonpossessive ].',merge=True)
-    if phrase_rule=='head-comp-poss-phrase' and rule_added:
+    if phrase_rule=='head-comp-poss-phrase' and rule_added and strat.get('possessum-bound')!='possessum-non-affix':
         head_comp_order=customize_major_constituent_order(ch.get('word-order'),mylang,ch,rules)['hc']
         # TODO: add this to head-comp or comp-head depending on what exists in the lg.
         mylang.add(head_comp_order+'-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS nonpossessive ].')
@@ -314,15 +314,15 @@ def customize_lexicon(strat,mylang,ch,lexicon):
 ########################################################################################################################################
         if mod_spec=='mod':
             mylang.add('possessum-noun-lex := basic-two-arg &\
-                          [ SYNSEM.LOCAL [ CAT [ HEAD noun & [ POSS possessum ] ],\
+                          [ SYNSEM.LOCAL [ CAT [ HEAD noun & [ POSS possessum ] ,\
                                                  VAL.COMPS < #possessum-comp & [ LOCAL [ CONT.HOOK [ INDEX #possessum,\
-                                                                                                     LTOP #lbl ] ],\
-                                                                                         CAT.VAL.SPR < > ],\
+                                                                                                     LTOP #lbl ]  ,\
+                                                                                         CAT.VAL.SPR < > ] ],\
                                                              #possessor-comp & [ LOCAL [ CAT.HEAD +np,\
                                                                                          CONT.HOOK.INDEX #possessor ] ] > ],\
                                            CONT [ RELS <! '+POSS_REL+' !>,\
                                                   HCONS <! !>,\
-                                                  ICONS <! !>  ],\
+                                                  ICONS <! !>  ] ],\
                             ARG-ST < #possessum-comp, #possessor-comp > ].')
         lexicon.add('possessum-noun-'+strat_num+' := possessum-noun-lex &\
                                                   [ STEM < "'+orth+'" >].')
