@@ -216,7 +216,7 @@ def customize_irules(strat,mylang,ch,irules):
                         if mod_spec=='spec':
                             mylang.add(possessum_rule_name+':=  val-change-with-ccont-lex-rule & \
                                            [ SYNSEM.LOCAL.CAT [ VAL [ COMPS #comps,\
-                                                                      SPR < [ LOCAL [ CAT [ HEAD noun ] ] ] > ] ] ,\
+                                                                      SPR < [ LOCAL [ CAT [ HEAD +np ] ] ] > ] ] ,\
                                              C-CONT [ HOOK #hook & [ INDEX.COG-ST uniq-id ],\
                                                       HCONS <! !>, \
                                                       ICONS <! !>  ],\
@@ -234,7 +234,7 @@ def customize_irules(strat,mylang,ch,irules):
                             # Should append things to COMPS list, not overwrite
                             mylang.add(possessum_rule_name+':= val-change-with-ccont-lex-rule & \
                                                        [ SYNSEM.LOCAL.CAT [ VAL [ SPR #spr, \
-                                                                                  COMPS.FIRST.LOCAL [ CAT.HEAD noun, \
+                                                                                  COMPS.FIRST.LOCAL [ CAT.HEAD +np, \
                                                                                                       CONT.HOOK [ INDEX #possessor ] ] ] ],\
                                                          C-CONT [ HOOK #hook ,\
                                                                   RELS <! '+POSS_REL+' !>,\
