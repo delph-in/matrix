@@ -149,9 +149,8 @@ def customize_rules(strat,mylang,ch,rules):
         rules.add(phrase_rule.replace('-phrase','') + ':= '+phrase_rule+'. ' )
 
 
-
-# NOTE: customize_irules pseudocode/code doesn't yet deal with situations where one marker is an affix and one isn't:
 # NOTE: customize_irules and customize_lex pseudocode/code both don't handle agreement yet
+
 def customize_irules(strat,mylang,ch,irules):
     #TODO: this method for retrieving the strategy name is garbage. Fix it.
     strat_name=strat.full_keys()[0].split("_")[0]
@@ -171,9 +170,15 @@ def customize_irules(strat,mylang,ch,irules):
                     if mark_loc=='possessor-marking' or 'both-marking':
                         # Add the basic possessor rule defn:
                         possessor_rule_name = 'possessor-lex-rule-'+strat_num
+
                         if mod_spec=='spec':
                             mylang.add(possessor_rule_name+POSSESSOR_RULE)
-                            mylang.add(possessor_rule_name+' := val-change-with-ccont-lex-rule & \
+####################################################################################
+# TESTING: putting the poss_rel on the possessum in all both-marking constructions #
+####################################################################################
+                            if mark_loc=='possessor-marking':
+####################################################################################
+                                mylang.add(possessor_rule_name+' := val-change-with-ccont-lex-rule & \
                                            [ SYNSEM.LOCAL.CAT [ VAL [ SPEC.FIRST.LOCAL [ CAT [ HEAD noun ],\
                                                                                          CONT.HOOK [ INDEX #possessum & [ COG-ST uniq-id ],\
                                                                                                      LTOP #lbl ] ] ] ] ,\
@@ -181,7 +186,18 @@ def customize_irules(strat,mylang,ch,irules):
                                                       RELS <! '+ POSS_REL  +' , '+POSSESSUM_EXIST_REL+ ' !>, \
                                                                    HCONS <! qeq & [ HARG #harg, LARG #lbl ] !>, \
                                                                                                 ICONS <! !>  ] ].',merge=True)
-                        else: # if mod_spec=='mod':
+####################################################################################
+# TESTING: putting the poss_rel on the possessum in all both-marking constructions #
+####################################################################################
+                            if mark_loc=='both-marking':
+                                mylang.add(possessor_rule_name+' := val-change-with-ccont-lex-rule & \
+                                           [ SYNSEM.LOCAL.CAT [ VAL [ SPEC.FIRST.LOCAL [ CAT [ HEAD noun ] ] ] ] ,\
+                                             C-CONT [ HOOK #hook & [ INDEX #possessor ],\
+                                                      RELS <!  !>, \
+                                                      HCONS <! !>, \
+                                                      ICONS <! !>  ] ].',merge=True)
+####################################################################################
+                        elif mod_spec=='mod':
                             if mark_loc=='possessor-marking':
                                 mylang.add(possessor_rule_name+POSSESSOR_RULE)
                                 mylang.add(possessor_rule_name+' := head-change-with-ccont-lex-rule & \
@@ -200,9 +216,6 @@ def customize_irules(strat,mylang,ch,irules):
                                                                     [ SYNSEM.LOCAL [ CAT [ HEAD.POSS possessor,\
                                                                                            VAL #val ] ] ,\
                                                                       DTR.SYNSEM.LOCAL [ CAT.VAL #val ] ].')
-
-
-
                     if mark_loc=='possessum-marking' or 'both marking':
                         possessum_rule_name = 'possessum-lex-rule-'+strat_num
                         mylang.add(possessum_rule_name+POSSESSUM_RULE)
@@ -214,15 +227,24 @@ def customize_irules(strat,mylang,ch,irules):
                                                       HCONS <! !>, \
                                                       ICONS <! !>  ],\
                                              DTR.SYNSEM.LOCAL [ CAT.VAL.COMPS #comps ] ].',merge=True)
-                            if mark_loc=='possessum-marking':
-                                mylang.add(possessum_rule_name+' := [ SYNSEM.LOCAL.CAT.VAL.SPR <[ LOCAL.CONT.HOOK [ INDEX #possessor ] ]>,\
+####################################################################################
+# TESTING: putting the poss_rel on the possessum in all both-marking constructions #
+####################################################################################
+#                            if mark_loc=='possessum-marking':
+####################################################################################
+                            mylang.add(possessum_rule_name+' := [ SYNSEM.LOCAL.CAT.VAL.SPR <[ LOCAL.CONT.HOOK [ INDEX #possessor ] ]>,\
                                                                       C-CONT [ HCONS <! qeq & [ HARG #harg, LARG #lbl ] !> ,\
                                                                                RELS <! '+POSS_REL+',\
                                                                                        '+POSSESSUM_EXIST_REL+' !> ],\
                                                                                        DTR.SYNSEM.LOCAL.CONT.HOOK [ INDEX #possessum,\
+
                                                                                                                     LTOP #lbl ] ].')
-                            else:
-                                mylang.add(possessum_rule_name+' := [ C-CONT.RELS <! !> ].')
+####################################################################################
+# TESTING: putting the poss_rel on the possessum in all both-marking constructions #
+####################################################################################
+#                            elif mark_loc=='both-marking':
+#                                mylang.add(possessum_rule_name+' := [ C-CONT.RELS <! !> ].')
+####################################################################################
                         if mod_spec=='mod':
                             # Should append things to COMPS list, not overwrite
                             mylang.add(possessum_rule_name+':= val-change-with-ccont-lex-rule & \
@@ -240,7 +262,6 @@ def customize_irules(strat,mylang,ch,irules):
                                 mylang.add(possessum_rule_name+' :=\
                                            [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD +np & [ POSS possessor ] ].')
  
-
 
 def customize_lexicon(strat,mylang,ch,lexicon):
     strat_name=strat.full_keys()[0].split("_")[0]
@@ -314,7 +335,7 @@ def customize_lexicon(strat,mylang,ch,lexicon):
             # NOTE: semantics (irretrievably?) broken.
             # Since the marker takes the whole possessum NP as its complement, it ends up plugging the determiner's LTOP into
             # the LBL of the poss_rel (instead of the possessum noun's LTOP). I apparently didn't notice this in building toy grammars.
-            # TODO: check if this reeeeeeeally happens. If not, block this path off (in validation)
+            # TODO: check if this construction reeeeeeeally happens. If not, block this path off (in validation)
             mylang.add('possessum-noun-lex := basic-two-arg &\
                           [ SYNSEM.LOCAL [ CAT [ HEAD noun & [ POSS possessum ] ,\
                                                  VAL.COMPS < #possessum-comp & [ LOCAL [ CONT.HOOK [ INDEX #possessum,\
