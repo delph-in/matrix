@@ -237,7 +237,6 @@ def customize_irules(strat,mylang,ch,irules):
                                                                                RELS <! '+POSS_REL+',\
                                                                                        '+POSSESSUM_EXIST_REL+' !> ],\
                                                                                        DTR.SYNSEM.LOCAL.CONT.HOOK [ INDEX #possessum,\
-
                                                                                                                     LTOP #lbl ] ].')
 ####################################################################################
 # TESTING: putting the poss_rel on the possessum in all both-marking constructions #
@@ -276,12 +275,13 @@ def customize_lexicon(strat,mylang,ch,lexicon):
         mylang.add('two-rel-adposition-lex := basic-icons-lex-item &\
   [ SYNSEM [ LOCAL [ CAT [ HEAD adp,\
                            VAL.COMPS < [ LOCAL [ CAT cat-sat,\
-                                                 CONT.HOOK [ INDEX #ind,\
+                                                 CONT.HOOK #hook & [ INDEX #ind,\
                                                              ICONS-KEY.IARG1 #clause ] ] ] > ],\
-                     CONT.HOOK.CLAUSE-KEY #clause ],\
+                     CONT.HOOK #hook & [ CLAUSE-KEY #clause ] ],\
              LKEYS.KEYREL arg12-ev-relation & [ ARG2 #ind ] ] ].')
         if mod_spec=='spec':
-            mylang.add('possessor-adp-lex := two-rel-adposition-lex &\
+            if mark_loc=='possessor-marking':
+                mylang.add('possessor-adp-lex := two-rel-adposition-lex &\
                                  [  SYNSEM.LOCAL [ CAT  [ HEAD.POSS possessor,\
                                                           VAL [ COMPS.FIRST.LOCAL [ CAT.HEAD noun,\
                                                                                    CONT.HOOK.INDEX #possessor ],\
@@ -291,6 +291,14 @@ def customize_lexicon(strat,mylang,ch,lexicon):
                                                   CONT [ RELS <! '+POSS_REL+',\
                                                                  '+POSSESSUM_EXIST_REL+' !>,\
                                                          HCONS <!  qeq & [ HARG #harg, LARG #lbl ] !>,\
+                                                         ICONS <! !>   ] ] ].')
+            elif mark_loc=='both-marking':
+                mylang.add('possessor-adp-lex := two-rel-adposition-lex &\
+                                 [  SYNSEM.LOCAL [ CAT  [ HEAD.POSS possessor,\
+                                                          VAL [ COMPS.FIRST.LOCAL [ CAT.HEAD noun ],\
+                                                               SPEC.FIRST.LOCAL [ CAT.VAL.SPR < [ ] > ] ] ],\
+                                                  CONT [ RELS <! !>,\
+                                                         HCONS <! !>,\
                                                          ICONS <! !>   ] ] ].')
         if mod_spec=='mod':
             mylang.add('possessor-adp-lex := two-rel-adposition-lex &\
@@ -321,16 +329,24 @@ def customize_lexicon(strat,mylang,ch,lexicon):
                                                   CONT [ HOOK #hook\
                                                          ICONS <! !>   ] ],\
                                     ARG-ST < #spr, #comps > ].')
-            if mark_loc=='possessum-marking':
-                mylang.add('possessum-noun-lex := [ SYNSEM.LOCAL [ CAT [ VAL [ SPR < #spr & [ LOCAL [ CONT.HOOK.INDEX #possessor ] ] >,\
+####################################################################################
+# TESTING: putting the poss_rel on the possessum in all both-marking constructions #
+####################################################################################
+#            if mark_loc=='possessum-marking':
+####################################################################################
+            mylang.add('possessum-noun-lex := [ SYNSEM.LOCAL [ CAT [ VAL [ SPR < #spr & [ LOCAL [ CONT.HOOK.INDEX #possessor ] ] >,\
                                                                               COMPS < #comps & [ LOCAL [ CONT.HOOK [ INDEX #possessum,\
                                                                                                                      LTOP #lbl ] ] ] > ] ],\
                                                                 CONT [ RELS <! '+POSS_REL+',\
                                                                                '+POSSESSUM_EXIST_REL+' !>,\
                                                                                HCONS <! qeq & [HARG #harg, LARG #lbl] !> ] ] ].',merge=True)
-            else:
-                mylang.add('possessum-noun-lex := [ SYNSEM.LOCAL.CONT [ RELS <! !>,\
-                                                                      HCONS <! !>] ].',merge=True)
+####################################################################################
+# TESTING: putting the poss_rel on the possessum in all both-marking constructions #
+####################################################################################
+#            else:
+#                mylang.add('possessum-noun-lex := [ SYNSEM.LOCAL.CONT [ RELS <! !>,\
+#                                                                      HCONS <! !>] ].',merge=True)
+####################################################################################
         if mod_spec=='mod':
             # NOTE: semantics (irretrievably?) broken.
             # Since the marker takes the whole possessum NP as its complement, it ends up plugging the determiner's LTOP into
