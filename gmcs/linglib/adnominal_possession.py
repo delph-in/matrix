@@ -70,10 +70,10 @@ def customize_rules(strat,mylang,ch,rules):
                          [ SYNSEM.LOCAL.CAT [ HEAD #head,\
                                               VAL [ COMPS < >,\
                                                     SUBJ < > ] ],\
-                           C-CONT [ HOOK.INDEX #possessum,\
+                           C-CONT [ HOOK #hook & [ INDEX #possessum ],\
                                     ICONS <! !>],\
                            HEAD-DTR.SYNSEM.LOCAL [ CAT [ HEAD #head & noun ],\
-                                                   CONT.HOOK [ INDEX #possessum,\
+                                                   CONT.HOOK #hook & [ INDEX #possessum,\
                                                                LTOP #lbl ] ],\
                            NON-HEAD-DTR.SYNSEM.LOCAL [ CAT [ HEAD noun,\
                                                              VAL.SPR < > ],\
