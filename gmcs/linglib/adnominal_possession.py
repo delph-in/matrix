@@ -227,23 +227,12 @@ def customize_irules(strat,mylang,ch,irules):
                                                       HCONS <! !>, \
                                                       ICONS <! !>  ],\
                                              DTR.SYNSEM.LOCAL [ CAT.VAL.COMPS #comps ] ].',merge=True)
-####################################################################################
-# TESTING: putting the poss_rel on the possessum in all both-marking constructions #
-####################################################################################
-#                            if mark_loc=='possessum-marking':
-####################################################################################
                             mylang.add(possessum_rule_name+' := [ SYNSEM.LOCAL.CAT.VAL.SPR <[ LOCAL.CONT.HOOK [ INDEX #possessor ] ]>,\
                                                                       C-CONT [ HCONS <! qeq & [ HARG #harg, LARG #lbl ] !> ,\
                                                                                RELS <! '+POSS_REL+',\
                                                                                        '+POSSESSUM_EXIST_REL+' !> ],\
                                                                                        DTR.SYNSEM.LOCAL.CONT.HOOK [ INDEX #possessum,\
                                                                                                                     LTOP #lbl ] ].')
-####################################################################################
-# TESTING: putting the poss_rel on the possessum in all both-marking constructions #
-####################################################################################
-#                            elif mark_loc=='both-marking':
-#                                mylang.add(possessum_rule_name+' := [ C-CONT.RELS <! !> ].')
-####################################################################################
                         if mod_spec=='mod':
                             # Should append things to COMPS list, not overwrite
                             mylang.add(possessum_rule_name+':= val-change-with-ccont-lex-rule & \
@@ -301,7 +290,8 @@ def customize_lexicon(strat,mylang,ch,lexicon):
                                                          HCONS <! !>,\
                                                          ICONS <! !>   ] ] ].')
         if mod_spec=='mod':
-            mylang.add('possessor-adp-lex := two-rel-adposition-lex &\
+            if mark_loc=='possessor-marking':
+                mylang.add('possessor-adp-lex := two-rel-adposition-lex &\
                                  [  SYNSEM.LOCAL [ CAT [ HEAD.POSS possessor,\
                                                          VAL.COMPS.FIRST.LOCAL [ CAT.HEAD noun,\
                                                                                  CONT.HOOK.INDEX #possessor ],\
@@ -311,6 +301,15 @@ def customize_lexicon(strat,mylang,ch,lexicon):
                                                   CONT [ RELS <! '+POSS_REL+' !>,\
                                                          HCONS <! !>,\
                                                          ICONS <! !>   ] ] ].')
+            elif mark_loc=='both-marking':            
+                mylang.add('possessor-adp-lex := two-rel-adposition-lex &\
+                                 [  SYNSEM.LOCAL [ CAT [ HEAD.POSS possessor,\
+                                                         VAL.COMPS.FIRST.LOCAL [ CAT.HEAD noun ],\
+                                                         HEAD.MOD.FIRST.LOCAL [ CAT.VAL.SPR < [ ] > ] ],\
+                                                  CONT [ RELS <! !>,\
+                                                         HCONS <! !>,\
+                                                         ICONS <! !>   ] ] ].')
+                
         # TODO: this lex item doesn't follow nomenclature conventions yet:
         lexicon.add('possessor-adp-'+strat_num+' := possessor-adp-lex &\
                                                   [ STEM < "'+orth+'" >].')
@@ -329,24 +328,12 @@ def customize_lexicon(strat,mylang,ch,lexicon):
                                                   CONT [ HOOK #hook\
                                                          ICONS <! !>   ] ],\
                                     ARG-ST < #spr, #comps > ].')
-####################################################################################
-# TESTING: putting the poss_rel on the possessum in all both-marking constructions #
-####################################################################################
-#            if mark_loc=='possessum-marking':
-####################################################################################
             mylang.add('possessum-noun-lex := [ SYNSEM.LOCAL [ CAT [ VAL [ SPR < #spr & [ LOCAL [ CONT.HOOK.INDEX #possessor ] ] >,\
                                                                               COMPS < #comps & [ LOCAL [ CONT.HOOK [ INDEX #possessum,\
                                                                                                                      LTOP #lbl ] ] ] > ] ],\
                                                                 CONT [ RELS <! '+POSS_REL+',\
                                                                                '+POSSESSUM_EXIST_REL+' !>,\
                                                                                HCONS <! qeq & [HARG #harg, LARG #lbl] !> ] ] ].',merge=True)
-####################################################################################
-# TESTING: putting the poss_rel on the possessum in all both-marking constructions #
-####################################################################################
-#            else:
-#                mylang.add('possessum-noun-lex := [ SYNSEM.LOCAL.CONT [ RELS <! !>,\
-#                                                                      HCONS <! !>] ].',merge=True)
-####################################################################################
         if mod_spec=='mod':
             # NOTE: semantics (irretrievably?) broken.
             # Since the marker takes the whole possessum NP as its complement, it ends up plugging the determiner's LTOP into
