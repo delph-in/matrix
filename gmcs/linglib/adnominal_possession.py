@@ -71,7 +71,6 @@ def customize_rules(strat,mylang,ch,rules):
                                               VAL [ COMPS < >,\
                                                     SUBJ < > ] ],\
                            C-CONT [ HOOK.INDEX #possessum,\
-                                    RELS <! '+POSS_REL+' !>,\
                                     ICONS <! !>],\
                            HEAD-DTR.SYNSEM.LOCAL [ CAT [ HEAD #head & noun ],\
                                                    CONT.HOOK [ INDEX #possessum,\
@@ -83,12 +82,14 @@ def customize_rules(strat,mylang,ch,rules):
             mylang.add(phrase_rule+' := [ SYNSEM.LOCAL.CAT.VAL.SPR < >,\
                                           HEAD-DTR.SYNSEM.LOCAL [ CAT.VAL.SPR <[ ]>,\
                                                                   CONT.HOOK.INDEX.COG-ST uniq-id  ],\
-                                          C-CONT [ RELS <! '+POSSESSUM_EXIST_REL+' !>,\
+                                          C-CONT [ RELS <! '+POSS_REL+',\
+                                                           '+POSSESSUM_EXIST_REL+' !>,\
                                                    HCONS <! qeq & [ HARG #harg, LARG #lbl] !> ] ].')
         elif strat.get('mod-spec')=='mod':
             mylang.add(phrase_rule+' := [ SYNSEM.LOCAL.CAT.VAL.SPR #spr,\
                                           HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPR #spr,\
-                                          C-CONT [ HCONS <! !> ] ].')
+                                          C-CONT [ RELS <! '+POSS_REL+' !>,\
+                                                   HCONS <! !> ] ].')
         rule_added=True
     else:
         # Add a head-compositional variant of head-spec if possessor = spec
