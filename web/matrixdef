@@ -2917,27 +2917,37 @@ BeginIter poss-strat{i} "a possessive strategy"
 
      	   Label "<div id='possessor-non-affix{i}' style='display:none'>"
 
-	   Text orth "Possessor word orth" "<br>The possessor-marking word is spelled " "<br>" 15
-	   
-	   Radio marker-order "Possessor marker order" "and appears to the "  " of the possessor<br>" 
+	   Radio marker-order "Possessor marker order" "The possessor-marking word or clitic appears to the "  " of the possessor<br>" 
 	   . left "left" "" "left"
 	   . right "right" "" "right"
 
 	   Radio agr "Possessor agreement" " and " " agree with the possessum.<br>"
-	   . agree "Possessor agree" "" "does" "toggle_element.call(this, 'possessor-agr{i}', 'on')"
-	   . non-agree "Possessor non agree" "" "does not"  "toggle_element.call(this, 'possessor-agr{i}', 'off')"
+	   . agree "Possessor agree" "" "does" "toggle_element.call(this, 'possessor-agr{i}', 'on'); toggle_element.call(this, 'possessor-non-agr{i}', 'off');"
+	   . non-agree "Possessor non agree" "" "does not"  "toggle_element.call(this, 'possessor-agr{i}', 'off');toggle_element.call(this, 'possessor-non-agr{i}', 'on');"
+
+	   Label "<div id='possessor-non-agr{i}' style='display:none'>"
+
+	   Text orth "Possessor word orth" "<br>The possessor-marking word is spelled " "<br>" 15
+
+	   Label "</div>"
 
 	   Label "<div id='possessor-agr{i}' style='display:none'>"
 
-	   BeginIter possessor-feat{k} "an agreement feature"
+	   BeginIter possessor-form{n} "a possessor-marking word with agreement features"
 
-      	   Select name "Possessive strategy {i} possessor-marking word Feature {k} Name" "Name: " " "
+	   Text agr-orth "Agreement orthography" "<br> The form spelled: " "<br>carries the following agreement features<br>" 15
+
+	   BeginIter possessor-feat{k} "an agreement feature"
+	   
+	   Select name "Possessive strategy {i} possessor-marking word Form {n} Feature {k} Name" "Name: " " "
       	   fillnames c=noun
 
-      	   MultiSelect value "Possessive Strategy {i} possessor-marking word Feature {k} Value" "Value: " ""
-      	   fillvalues p=poss-strat{i}_possessor-feat{k}_name
+      	   MultiSelect value "Possessive Strategy {i} possessor-marking word Form {n} Feature {k} Value" "Value: " ""
+      	   fillvalues p=poss-strat{i}_possessor-form{n}_possessor-feat{k}_name
 
     	   EndIter possessor-feat
+
+	   EndIter possessor-form
 
 	   Label "</div>"
 
@@ -2958,27 +2968,37 @@ BeginIter poss-strat{i} "a possessive strategy"
 
            Label "<div id='possessum-non-affix{i}' style='display:none'>"
 
-           Text orth "Possessum word orth" "<br>The possessum-marking word is spelled " "<br>" 15
-
-           Radio marker-order "Possessum marker order" "and appears to the "  " of the possessum<br>"
+           Radio marker-order "Possessum marker order" "<br>The possessum-marking word appears to the "  " of the possessum<br>"
            . left "left" "" "left"
            . right "right" "" "right"
 
            Radio agr "Possessum agreement" " and " " agree with the possessor.<br>"
-           . agree "Possessum agree" "" "does" "toggle_element.call(this, 'possessum-agr{i}', 'on')"
-           . non-agree "Possessum non agree" "" "does not"  "toggle_element.call(this, 'possessum-agr{i}', 'off')"
+           . agree "Possessum agree" "" "does" "toggle_element.call(this, 'possessum-agr{i}', 'on'); toggle_element.call(this, 'possessum-non-agr{i}', 'off');"
+           . non-agree "Possessum non agree" "" "does not"  "toggle_element.call(this, 'possessum-agr{i}', 'off');toggle_element.call(this, 'possessum-non-agr{i}', 'on');"
+
+	   Label "<div id='possessum-non-agr{i}' style='display:none'>" 
+
+           Text orth "Possessum word orth" "<br>The possessum-marking word is spelled " "<br>" 15
+
+	   Label "</div>"
 
            Label "<div id='possessum-agr{i}' style='display:none'>"
 
-           BeginIter possessum-feat{l} "an agreement feature"
+	   BeginIter possessum-form{m} "a possessum-marking word with agreement features"
 
-           Select name "Possessive strategy {i} possessum-marking word Feature {l} Name" "Name: " " "
+	   Text agr-orth "Orthography agreement" "<br>The form spelled: " "<br> carries the following agreement features:<br>" 15
+
+           BeginIter possessum-feat{l} "an agreement feature"
+	   
+           Select name "Possessive strategy {i} possessum-marking word Form {k} Feature {l} Name" "Name: " " "
            fillnames c=noun
 
-           MultiSelect value "Noun Position Class {i} Lexical Rule Type {j} Feature {l} Value" "Value: " ""
-           fillvalues p=poss-strat{i}_possessum-feat{l}_name
+           MultiSelect value "Noun Position Class {i} Lexical Rule Type {j} Form {k} Feature {l} Value" "Value: " ""
+           fillvalues p=poss-strat{i}_possessum-form{m}_possessum-feat{l}_name
 
            EndIter possessum-feat
+
+	   EndIter possessum-form
 
            Label "</div>"
 
