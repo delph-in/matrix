@@ -188,7 +188,6 @@ def customize_irules(strat,mylang,ch,irules):
     mark_loc=strat.get('mark-loc')
     possessor_type=strat.get('possessor-type')
     possessum_type=strat.get('possessum-type')
-    print possessor_type,possessum_type
     for pc in all_position_classes(ch):
         pc_key = pc.full_key
         pc_inputs = pc.get('inputs',[])
@@ -206,7 +205,6 @@ def customize_irules(strat,mylang,ch,irules):
                         if mod_spec=='spec':
                             mylang.add(possessor_rule_name+POSSESSOR_RULE)
                             if mark_loc=='possessor':
-                                print "added possessor rule"
                                 mylang.add(possessor_rule_name+' := val-change-with-ccont-lex-rule & \
                                            [ SYNSEM.LOCAL.CAT [ VAL [ SPEC.FIRST.LOCAL [ CAT [ HEAD noun ],\
                                                                                          CONT.HOOK [ INDEX #possessum & [ COG-ST uniq-id ],\
@@ -216,7 +214,6 @@ def customize_irules(strat,mylang,ch,irules):
                                                                    HCONS <! qeq & [ HARG #harg, LARG #lbl ] !>, \
                                                                                                 ICONS <! !>  ] ].',merge=True)
                             if mark_loc=='both':
-                                print "added possessor rule"
                                 mylang.add(possessor_rule_name+' := val-change-with-ccont-lex-rule & \
                                            [ SYNSEM.LOCAL.CAT [ VAL [ SPEC.FIRST.LOCAL [ CAT [ HEAD noun ] ] ] ] ,\
                                              C-CONT [ HOOK #hook & [ INDEX #possessor ],\
@@ -225,7 +222,6 @@ def customize_irules(strat,mylang,ch,irules):
                                                       ICONS <! !>  ] ].',merge=True)
                         elif mod_spec=='mod':
                             if mark_loc=='possessor':
-                                print "added possessor rule"
                                 mylang.add(possessor_rule_name+POSSESSOR_RULE)
                                 mylang.add(possessor_rule_name+' := head-change-with-ccont-lex-rule & \
                                            [ SYNSEM.LOCAL.CAT [ HEAD.MOD.FIRST [ LOCAL [ CAT.HEAD +np, \
@@ -239,7 +235,6 @@ def customize_irules(strat,mylang,ch,irules):
                                                 ICONS <! !>  ], \
                                              DTR.SYNSEM.LOCAL.CAT.VAL.SPEC #spec  ].',merge=True)
                             elif mark_loc=='both':
-                                print "added possessor rule"
                                 mylang.add(possessor_rule_name+' := add-only-no-ccont-rule &\
                                                                     [ SYNSEM.LOCAL [ CAT [ HEAD.POSS possessor,\
                                                                                            VAL #val ] ] ,\
