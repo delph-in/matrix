@@ -2901,35 +2901,31 @@ BeginIter poss-strat{i} "a possessive strategy"
      . spec "specifier" "" "specifier<br>"
      . mod "modifier" "" "modifier<br>"
 
-     Radio np-nom "NP or NOM" "<p> Is the possessor more like a full noun phrase (e.g. taking its own determiner) or more like an N'?</p>" ""
-     . np "NP" "" "full noun phrase<br>"
-     . nom "NOM" "" "N'<br>"
-
      Radio mark-loc "Mark location" "<p> Do any morphemes appear which mark the noun phrase as possessive? If so, where?</p>" ""
-     . possessor-marking "Possessor marking" "" "On the possessor<br>"  "toggle_element.call(this, 'possessor-morph{i}', 'on'); toggle_element.call(this, 'possessum-morph{i}', 'off');"
-     . possessum-marking "Possessum marking" "" "On the possessum<br>"  "toggle_element.call(this, 'possessum-morph{i}', 'on'); toggle_element.call(this, 'possessor-morph{i}', 'off');"
-     . both-marking "Both marking" "" "On both the possessor and the possessum<br>" "toggle_element.call(this, 'possessum-morph{i}', 'on'); toggle_element.call(this, 'possessor-morph{i}', 'on');"
-     . neither-marking "Neither marking" "" "No possessive morphemes appear<br>" "toggle_element.call(this, 'possessum-morph{i}', 'off'); toggle_element.call(this, 'possessor-morph{i}', 'off');"
+     . possessor "Possessor marking" "" "On the possessor<br>"  "toggle_element.call(this, 'possessor-morph{i}', 'on'); toggle_element.call(this, 'possessum-morph{i}', 'off');"
+     . possessum "Possessum marking" "" "On the possessum<br>"  "toggle_element.call(this, 'possessum-morph{i}', 'on'); toggle_element.call(this, 'possessor-morph{i}', 'off');"
+     . both "Both marking" "" "On both the possessor and the possessum<br>" "toggle_element.call(this, 'possessum-morph{i}', 'on'); toggle_element.call(this, 'possessor-morph{i}', 'on');"
+     . neither "Neither marking" "" "No possessive morphemes appear<br>" "toggle_element.call(this, 'possessum-morph{i}', 'off'); toggle_element.call(this, 'possessor-morph{i}', 'off');"
 
      Label "<div id='possessor-morph{i}' style='display:none'>"
      
-	Radio possessor-bound "Possessor bound" "<p>Is the morpheme that marks the <b>possessor</b> an affix or a separate word?</p>" ""
-     	. possessor-affix "Possessor affix" "" "affix<br>"  "toggle_element.call(this, 'possessor-affix{i}', 'on'); toggle_element.call(this, 'possessor-non-affix{i}', 'off');"
-     	. possessor-non-affix "Possessor non-affix" "" "separate word<br>" "toggle_element.call(this, 'possessor-affix{i}', 'off'); toggle_element.call(this, 'possessor-non-affix{i}', 'on');"
+	Radio possessor-type "Possessor morpheme type" "<p>Is the morpheme that marks the <b>possessor</b> an affix or a separate word?</p>" ""
+     	. affix "Possessor affix" "" "affix<br>"  "toggle_element.call(this, 'possessor-affix{i}', 'on'); toggle_element.call(this, 'possessor-non-affix{i}', 'off');"
+     	. non-affix "Possessor non-affix" "" "separate word<br>" "toggle_element.call(this, 'possessor-affix{i}', 'off'); toggle_element.call(this, 'possessor-non-affix{i}', 'on');"
      
      	   Label "<div id='possessor-affix{i}' style='display:none'> <br><br>A feature called <span class=\"feat\">possessor_poss-strat{i}</span> with possible values <span class=\"tt\">plus</span> and <span class=\"tt\">minus</span> has been defined for use in defining morphemes on the morphology page.  In order to define a possessor-marking affix, add the appropriate position class and lexical rules, and mark the lexical rules as [<span class=\"feat\">possessor_poss-strat{i}</span> <span class=\"tt\">plus</span>]. Be sure to select the feature that corresponds to this strategy.</div>"
 
      	   Label "<div id='possessor-non-affix{i}' style='display:none'>"
 
-	   Text possessor-orth "Possessor word spelling" "<br>The possessor-marking word is spelled " "<br>" 15
+	   Text orth "Possessor word orth" "<br>The possessor-marking word is spelled " "<br>" 15
 	   
-	   Radio possessor-word-order "Possessor word order" "and appears to the "  " of the possessor<br>" 
+	   Radio marker-order "Possessor marker order" "and appears to the "  " of the possessor<br>" 
 	   . left "left" "" "left"
 	   . right "right" "" "right"
 
-	   Radio possessor-agr "Possessor agreement" " and " " agree with the possessum.<br>"
-	   . possessor-agree "Possessor agree" "" "does" "toggle_element.call(this, 'possessor-agr{i}', 'on')"
-	   . possessor-non-agree "Possessor non agree" "" "does not"  "toggle_element.call(this, 'possessor-agr{i}', 'off')"
+	   Radio agr "Possessor agreement" " and " " agree with the possessum.<br>"
+	   . agree "Possessor agree" "" "does" "toggle_element.call(this, 'possessor-agr{i}', 'on')"
+	   . non-agree "Possessor non agree" "" "does not"  "toggle_element.call(this, 'possessor-agr{i}', 'off')"
 
 	   Label "<div id='possessor-agr{i}' style='display:none'>"
 
@@ -2951,9 +2947,9 @@ BeginIter poss-strat{i} "a possessive strategy"
 
      Label "<div id='possessum-morph{i}' style='display:none'>"
      
-     Radio possessum-bound "Possessum bound" "<p>Is the morpheme that marks the <b>possessum</b> an affix or a separate word?</p>" ""
-     . possessum-affix "Possessum affix" "" "affix<br>" "toggle_element.call(this, 'possessum-affix{i}', 'on'); toggle_element.call(this, 'possessum-non-affix{i}', 'off');"
-     . possessum-non-affix "Possessum non-affix" "" "separate word<br>"  "toggle_element.call(this, 'possessum-affix{i}', 'off'); toggle_element.call(this, 'possessum-non-affix{i}', 'on');"
+     Radio possessum-type "Possessum morpheme type" "<p>Is the morpheme that marks the <b>possessum</b> an affix or a separate word?</p>" ""
+     . affix "Possessum affix" "" "affix<br>" "toggle_element.call(this, 'possessum-affix{i}', 'on'); toggle_element.call(this, 'possessum-non-affix{i}', 'off');"
+     . non-affix "Possessum non-affix" "" "separate word<br>"  "toggle_element.call(this, 'possessum-affix{i}', 'off'); toggle_element.call(this, 'possessum-non-affix{i}', 'on');"
      
 
      	   Label "<div id='possessum-affix{i}' style='display:none'> <br><br>A feature called <span class=\"feat\">possessum_poss-strat{i}</span> with possible values <span class=\"tt\">plus</span> and <span class=\"tt\">minus</span> has been defined for use in defining morphemes on the morphology page.  In order to define a possessum-marking affix, add the appropriate position class and lexical rules, and mark the lexical rules as [<span class=\"feat\">possessum_poss-strat{i}</span> <span class=\"tt\">plus</span>]. Be sure to select the feature that corresponds to this strategy.</div>"
@@ -2962,15 +2958,15 @@ BeginIter poss-strat{i} "a possessive strategy"
 
            Label "<div id='possessum-non-affix{i}' style='display:none'>"
 
-           Text possessum-orth "Possessum word spelling" "<br>The possessum-marking word is spelled " "<br>" 15
+           Text orth "Possessum word orth" "<br>The possessum-marking word is spelled " "<br>" 15
 
-           Radio possessum-word-order "Possessum word order" "and appears to the "  " of the possessum<br>"
+           Radio marker-order "Possessum marker order" "and appears to the "  " of the possessum<br>"
            . left "left" "" "left"
            . right "right" "" "right"
 
-           Radio possessum-agr "Possessum agreement" " and " " agree with the possessor.<br>"
-           . possessum-agree "Possessum agree" "" "does" "toggle_element.call(this, 'possessum-agr{i}', 'on')"
-           . possessum-non-agree "Possessum non agree" "" "does not"  "toggle_element.call(this, 'possessum-agr{i}', 'off')"
+           Radio agr "Possessum agreement" " and " " agree with the possessor.<br>"
+           . agree "Possessum agree" "" "does" "toggle_element.call(this, 'possessum-agr{i}', 'on')"
+           . non-agree "Possessum non agree" "" "does not"  "toggle_element.call(this, 'possessum-agr{i}', 'off')"
 
            Label "<div id='possessum-agr{i}' style='display:none'>"
 
