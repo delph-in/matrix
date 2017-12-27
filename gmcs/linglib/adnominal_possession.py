@@ -186,7 +186,9 @@ def customize_irules(strat,mylang,ch,irules):
     strat_name=strat.full_keys()[0].split("_")[0]
     strat_num=strat_name[-1]
     mark_loc=strat.get('mark-loc')
-    print mark_loc
+    possessor_type=strat.get('possessor-type')
+    possessum_type=strat.get('possessum-type')
+    print possessor_type,possessum_type
     for pc in all_position_classes(ch):
         pc_key = pc.full_key
         pc_inputs = pc.get('inputs',[])
@@ -195,10 +197,10 @@ def customize_irules(strat,mylang,ch,irules):
             for feat in lrt['feat']:
                 # Go through the pc info till you find the strategy you're actually dealing with
                 if strat_name in str(feat['name']):
-                    # Then narrow down which kind of rule to add:
+                    # Add possessor-inflecting rules:
                     mod_spec=strat.get('mod-spec')
                     mylang.set_section('lexrules')
-                    if mark_loc=='possessor' or 'both':
+                    if (mark_loc=='possessor' or mark_loc=='both') and possessor_type=='affix':
                         # Add the basic possessor rule defn:
                         possessor_rule_name = 'possessor-lex-rule-'+strat_num
                         if mod_spec=='spec':
@@ -242,7 +244,8 @@ def customize_irules(strat,mylang,ch,irules):
                                                                     [ SYNSEM.LOCAL [ CAT [ HEAD.POSS possessor,\
                                                                                            VAL #val ] ] ,\
                                                                       DTR.SYNSEM.LOCAL [ CAT.VAL #val ] ].')
-                    if mark_loc=='possessum' or 'both':
+                    # Add possessum-inflecting rules
+                    if (mark_loc=='possessum' or mark_loc=='both') and possessum_type=='affix':
                         possessum_rule_name = 'possessum-lex-rule-'+strat_num
                         mylang.add(possessum_rule_name+POSSESSUM_RULE)
                         if mod_spec=='spec':
@@ -278,14 +281,14 @@ def customize_irules(strat,mylang,ch,irules):
  
 
 def customize_lexicon(strat,mylang,ch,lexicon):
-    print strat
     strat_name=strat.full_keys()[0].split("_")[0]
     strat_num=strat_name[-1]
     mark_loc=strat.get('mark-loc')
     mod_spec=strat.get('mod-spec')    
     orth=strat.get('orth')
-    print orth
-    if mark_loc=='possessor' or mark_loc=='both':
+    possessor_type=strat.get('possessor-type')
+    possessum_type=strat.get('possessum-type')
+    if (mark_loc=='possessor' or mark_loc=='both') and possessor_type=='non-affix':
         # TODO: check if already-existing phrase rules will work; if not add a head-comps rule that will only take possessive heads
         mylang.add('two-rel-adposition-lex := basic-icons-lex-item &\
   [ SYNSEM [ LOCAL [ CAT [ HEAD adp,\
@@ -340,7 +343,7 @@ def customize_lexicon(strat,mylang,ch,lexicon):
         lexicon.add('possessor-adp-'+strat_num+' := possessor-adp-lex &\
                                                   [ STEM < "'+orth+'" >].')
 
-    if mark_loc=='possessum' or mark_loc=='both':
+    if (mark_loc=='possessum' or mark_loc=='both') and possessum_type=='non-affix':
         if mod_spec=='spec':
             # NOTE: currently, this allows regular head-spec to do what head-spec-poss should be doing. 
             # Could prevent by not allowing the HEAD-DTR of head-spec to be possessive, but that would rule out things 
