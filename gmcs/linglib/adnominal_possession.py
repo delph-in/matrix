@@ -185,6 +185,8 @@ def customize_irules(strat,mylang,ch,irules):
     #TODO: this method for retrieving the strategy name is garbage. Fix it.
     strat_name=strat.full_keys()[0].split("_")[0]
     strat_num=strat_name[-1]
+    mark_loc=strat.get('mark-loc')
+    print mark_loc
     for pc in all_position_classes(ch):
         pc_key = pc.full_key
         pc_inputs = pc.get('inputs',[])
@@ -199,10 +201,10 @@ def customize_irules(strat,mylang,ch,irules):
                     if mark_loc=='possessor' or 'both':
                         # Add the basic possessor rule defn:
                         possessor_rule_name = 'possessor-lex-rule-'+strat_num
-
                         if mod_spec=='spec':
                             mylang.add(possessor_rule_name+POSSESSOR_RULE)
                             if mark_loc=='possessor':
+                                print "added possessor rule"
                                 mylang.add(possessor_rule_name+' := val-change-with-ccont-lex-rule & \
                                            [ SYNSEM.LOCAL.CAT [ VAL [ SPEC.FIRST.LOCAL [ CAT [ HEAD noun ],\
                                                                                          CONT.HOOK [ INDEX #possessum & [ COG-ST uniq-id ],\
@@ -211,19 +213,17 @@ def customize_irules(strat,mylang,ch,irules):
                                                       RELS <! '+ POSS_REL  +' , '+POSSESSUM_EXIST_REL+ ' !>, \
                                                                    HCONS <! qeq & [ HARG #harg, LARG #lbl ] !>, \
                                                                                                 ICONS <! !>  ] ].',merge=True)
-####################################################################################
-# TESTING: putting the poss_rel on the possessum in all both-marking constructions #
-####################################################################################
-                            if mark_loc=='both-marking':
+                            if mark_loc=='both':
+                                print "added possessor rule"
                                 mylang.add(possessor_rule_name+' := val-change-with-ccont-lex-rule & \
                                            [ SYNSEM.LOCAL.CAT [ VAL [ SPEC.FIRST.LOCAL [ CAT [ HEAD noun ] ] ] ] ,\
                                              C-CONT [ HOOK #hook & [ INDEX #possessor ],\
                                                       RELS <!  !>, \
                                                       HCONS <! !>, \
                                                       ICONS <! !>  ] ].',merge=True)
-####################################################################################
                         elif mod_spec=='mod':
-                            if mark_loc=='possessor-marking':
+                            if mark_loc=='possessor':
+                                print "added possessor rule"
                                 mylang.add(possessor_rule_name+POSSESSOR_RULE)
                                 mylang.add(possessor_rule_name+' := head-change-with-ccont-lex-rule & \
                                            [ SYNSEM.LOCAL.CAT [ HEAD.MOD.FIRST [ LOCAL [ CAT.HEAD +np, \
@@ -236,12 +236,13 @@ def customize_irules(strat,mylang,ch,irules):
                                                 HCONS <! !>, \
                                                 ICONS <! !>  ], \
                                              DTR.SYNSEM.LOCAL.CAT.VAL.SPEC #spec  ].',merge=True)
-                            elif mark_loc=='both-marking':
+                            elif mark_loc=='both':
+                                print "added possessor rule"
                                 mylang.add(possessor_rule_name+' := add-only-no-ccont-rule &\
                                                                     [ SYNSEM.LOCAL [ CAT [ HEAD.POSS possessor,\
                                                                                            VAL #val ] ] ,\
                                                                       DTR.SYNSEM.LOCAL [ CAT.VAL #val ] ].')
-                    if mark_loc=='possessum-marking' or 'both marking':
+                    if mark_loc=='possessum' or 'both':
                         possessum_rule_name = 'possessum-lex-rule-'+strat_num
                         mylang.add(possessum_rule_name+POSSESSUM_RULE)
                         if mod_spec=='spec':
@@ -271,21 +272,21 @@ def customize_irules(strat,mylang,ch,irules):
                                                          DTR.SYNSEM.LOCAL [ CAT.VAL.SPR #spr,\
                                                                             CONT.HOOK [ INDEX #possessum,\
                                                                                         LTOP #lbl ] ] ].',merge=True)
-                            if mark_loc=='both-marking':
+                            if mark_loc=='both':
                                 mylang.add(possessum_rule_name+' :=\
                                            [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD +np & [ POSS possessor ] ].')
  
 
 def customize_lexicon(strat,mylang,ch,lexicon):
+    print strat
     strat_name=strat.full_keys()[0].split("_")[0]
     strat_num=strat_name[-1]
     mark_loc=strat.get('mark-loc')
     mod_spec=strat.get('mod-spec')    
-    if mark_loc=='possessor-marking' or mark_loc=='both-marking':
-        orth=strat.get('orth')
-        # UNTESTED:
+    orth=strat.get('orth')
+    print orth
+    if mark_loc=='possessor' or mark_loc=='both':
         # TODO: check if already-existing phrase rules will work; if not add a head-comps rule that will only take possessive heads
-        # Problem with this one: head-comps doesn't pass up SPEC value of head dtr.
         mylang.add('two-rel-adposition-lex := basic-icons-lex-item &\
   [ SYNSEM [ LOCAL [ CAT [ HEAD adp,\
                            VAL.COMPS < [ LOCAL [ CAT cat-sat,\
@@ -294,7 +295,7 @@ def customize_lexicon(strat,mylang,ch,lexicon):
                      CONT.HOOK #hook & [ CLAUSE-KEY #clause ] ],\
              LKEYS.KEYREL arg12-ev-relation & [ ARG2 #ind ] ] ].')
         if mod_spec=='spec':
-            if mark_loc=='possessor-marking':
+            if mark_loc=='possessor':
                 mylang.add('possessor-adp-lex := two-rel-adposition-lex &\
                                  [  SYNSEM.LOCAL [ CAT  [ HEAD.POSS possessor,\
                                                           VAL [ COMPS.FIRST.LOCAL [ CAT.HEAD noun,\
@@ -306,7 +307,7 @@ def customize_lexicon(strat,mylang,ch,lexicon):
                                                                  '+POSSESSUM_EXIST_REL+' !>,\
                                                          HCONS <!  qeq & [ HARG #harg, LARG #lbl ] !>,\
                                                          ICONS <! !>   ] ] ].')
-            elif mark_loc=='both-marking':
+            elif mark_loc=='both':
                 mylang.add('possessor-adp-lex := two-rel-adposition-lex &\
                                  [  SYNSEM.LOCAL [ CAT  [ HEAD.POSS possessor,\
                                                           VAL [ COMPS.FIRST.LOCAL [ CAT.HEAD noun ],\
@@ -315,7 +316,7 @@ def customize_lexicon(strat,mylang,ch,lexicon):
                                                          HCONS <! !>,\
                                                          ICONS <! !>   ] ] ].')
         if mod_spec=='mod':
-            if mark_loc=='possessor-marking':
+            if mark_loc=='possessor':
                 mylang.add('possessor-adp-lex := two-rel-adposition-lex &\
                                  [  SYNSEM.LOCAL [ CAT [ HEAD.POSS possessor,\
                                                          VAL.COMPS.FIRST.LOCAL [ CAT.HEAD noun,\
@@ -326,7 +327,7 @@ def customize_lexicon(strat,mylang,ch,lexicon):
                                                   CONT [ RELS <! '+POSS_REL+' !>,\
                                                          HCONS <! !>,\
                                                          ICONS <! !>   ] ] ].')
-            elif mark_loc=='both-marking':            
+            elif mark_loc=='both':
                 mylang.add('possessor-adp-lex := two-rel-adposition-lex &\
                                  [  SYNSEM.LOCAL [ CAT [ HEAD.POSS possessor,\
                                                          VAL.COMPS.FIRST.LOCAL [ CAT.HEAD noun ],\
@@ -339,8 +340,7 @@ def customize_lexicon(strat,mylang,ch,lexicon):
         lexicon.add('possessor-adp-'+strat_num+' := possessor-adp-lex &\
                                                   [ STEM < "'+orth+'" >].')
 
-    if mark_loc=='possessum-marking' or mark_loc=='both-marking':
-        orth=strat.get('orth')
+    if mark_loc=='possessum' or mark_loc=='both':
         if mod_spec=='spec':
             # NOTE: currently, this allows regular head-spec to do what head-spec-poss should be doing. 
             # Could prevent by not allowing the HEAD-DTR of head-spec to be possessive, but that would rule out things 
