@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of adnom-poss-test
 ;;; created at:
-;;;     Thu Dec 28 21:00:26 UTC 2017
+;;;     Thu Dec 28 21:08:16 UTC 2017
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -71,8 +71,8 @@ noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & non-mod-lex-ite
     SYNSEM.LOCAL.CAT [ VAL [ COMPS < >,
                              SUBJ < >,
                              SPR < #spr &
-                                   [ OPT -,
-                                     LOCAL.CAT.HEAD +nd & det ] > ],
+                                   [ LOCAL.CAT.HEAD det,
+                                     OPT - ] > ],
                        HEAD.POSS nonpossessive ] ].
 
 common-noun-lex := noun-lex &

@@ -366,7 +366,7 @@ def customize_lexicon(strat,mylang,ch,lexicon):
                                                                 CONT [ RELS <! '+POSS_REL+',\
                                                                                '+POSSESSUM_EXIST_REL+' !>,\
                                                                                HCONS <! qeq & [HARG #harg, LARG #lbl] !> ] ] ].',merge=True)
-            mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.LOCAL.CAT.HEAD det ].')
+#            mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.LOCAL.CAT.HEAD det ].')
         if mod_spec=='mod':
             # NOTE: semantics (irretrievably?) broken.
             # Since the marker takes the whole possessum NP as its complement, it ends up plugging the determiner's LTOP into

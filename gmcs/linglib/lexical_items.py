@@ -472,9 +472,17 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
                                       SPEC < > ] ], \
              ARG-ST < #spr > ].'
             elif strat.get('mark-loc')=='possessum':
-                typedef = \
+                if strat.get('possessum-type')=='affix':
+                    typedef = \
         'noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & \
            [ SYNSEM.LOCAL [ CAT.VAL [ SPR < #spr & [ LOCAL.CAT.HEAD +nd ] >, \
+                                      COMPS < >, \
+                                      SUBJ < > ] ], \
+             ARG-ST < #spr > ].'
+                if strat.get('possessum-type')=='non-affix':
+                    typedef = \
+        'noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & \
+           [ SYNSEM.LOCAL [ CAT.VAL [ SPR < #spr & [ LOCAL.CAT.HEAD det ] >, \
                                       COMPS < >, \
                                       SUBJ < > ] ], \
              ARG-ST < #spr > ].'
