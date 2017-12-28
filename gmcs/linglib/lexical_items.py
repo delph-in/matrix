@@ -454,7 +454,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     # PROBLEM: this currently assumes at most one possessive strategy.
     for strat in ch.get('poss-strat',[]):
         if strat.get('mod-spec')=='spec':
-            if strat.get('mark-loc')=='possessor-marking' or strat.get('mark-loc')=='both-marking':
+            if strat.get('mark-loc')=='possessor' or strat.get('mark-loc')=='both':
                 if strat.get('possessor-type')=='affix':
                     typedef = \
         'noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & \
@@ -471,7 +471,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
                                       SUBJ < >, \
                                       SPEC < > ] ], \
              ARG-ST < #spr > ].'
-            elif strat.get('mark-loc')=='possessum-marking':
+            elif strat.get('mark-loc')=='possessum':
                 typedef = \
         'noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & \
            [ SYNSEM.LOCAL [ CAT.VAL [ SPR < #spr & [ LOCAL.CAT.HEAD +nd ] >, \

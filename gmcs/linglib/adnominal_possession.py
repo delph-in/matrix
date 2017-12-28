@@ -364,12 +364,13 @@ def customize_lexicon(strat,mylang,ch,lexicon):
             # TODO: check if this construction reeeeeeeally happens. If not, block this path off (in validation)
             mylang.add('possessum-noun-lex := basic-two-arg &\
                           [ SYNSEM.LOCAL [ CAT [ HEAD noun & [ POSS possessum ] ,\
-                                                 VAL.COMPS < #possessum-comp & [ LOCAL [ CONT.HOOK [ INDEX #possessum,\
+                                                 VAL.COMPS < #possessum-comp & [ LOCAL [ CONT.HOOK #hook & [ INDEX #possessum,\
                                                                                                      LTOP #lbl ]  ,\
                                                                                          CAT.VAL.SPR < > ] ],\
                                                              #possessor-comp & [ LOCAL [ CAT.HEAD +np,\
                                                                                          CONT.HOOK.INDEX #possessor ] ] > ],\
-                                           CONT [ RELS <! '+POSS_REL+' !>,\
+                                           CONT [ HOOK #hook,\
+                                                  RELS <! '+POSS_REL+' !>,\
                                                   HCONS <! !>,\
                                                   ICONS <! !>  ] ],\
                             ARG-ST < #possessum-comp, #possessor-comp > ].')
