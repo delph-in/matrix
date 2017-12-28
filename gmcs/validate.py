@@ -1484,7 +1484,7 @@ def validate_nominalized_clauses(ch, vr):
                 mess = 'This is not a valid choice for' + \
                     'noinalization at V or VP'
             vr.err(ns.full_key + '_nmzRel', mess)
-        if ns.get(level) == 'mid':
+        if ns.get('level') == 'mid':
             if ch.get('word-order') == 'vso' or ch.get('word-order') == 'osv':
                 mess = 'The analysis for your word order does not include a' +\
                        'VP constituent. You must select V or S nominalization.'
