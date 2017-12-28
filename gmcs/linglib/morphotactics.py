@@ -833,7 +833,7 @@ def write_possessive_behavior(lrt,mylang,choices):
         mylang.add(possessor_rule_name+POSSESSOR_LEX_RULE_DEFN)
         mylang.set_section(prev_section)
     if lrt.possessor=='minus':
-        possessor_rule_name='non-possessor-lex-rule-'+lrt.possessor_strat_num
+        possessor_rule_name='non-possessive-lex-rule-'+lrt.possessor_strat_num
         lrt.supertypes.add(possessor_rule_name)
         prev_section=mylang.section
         mylang.set_section('lexrules')
@@ -847,7 +847,7 @@ def write_possessive_behavior(lrt,mylang,choices):
         mylang.add(possessum_rule_name+POSSESSUM_LEX_RULE_DEFN)
         mylang.set_section(prev_section)
     if lrt.possessum=='minus':
-        possessum_rule_name='non-possessum-lex-rule-'+lrt.possessum_strat_num
+        possessum_rule_name='non-possessive-lex-rule-'+lrt.possessum_strat_num
         lrt.supertypes.add(possessum_rule_name)
         prev_section=mylang.section
         mylang.set_section('lexrules')

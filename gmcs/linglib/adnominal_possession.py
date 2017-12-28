@@ -98,8 +98,9 @@ def customize_rules(strat,mylang,ch,rules):
             # Note: added the constraint on head type so that this would never do the work of attaching determiners to nouns
             # (Found helpful in scenario: possessor marking adposition, spec-like attachment.
             # Not sure if this is too little constriction -- only testing with mini english so far (12/22/2017)
-            mylang.add(phrase_rule + ' :=  basic-head-spec-phrase-super & [  NON-HEAD-DTR.SYNSEM [ LOCAL.CAT.HEAD +nvjrpcmo,\
-                                                                                               OPT - ],\
+            mylang.add(phrase_rule + ' :=  basic-head-spec-phrase-super & [  NON-HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL.SPR < >,\
+                                                                                                               HEAD +nvjrpcmo ],\
+                                                                                                   OPT - ],\
                                                                          HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK #hook ,\
                                                                          C-CONT.HOOK #hook ].')
             rule_added=True
@@ -118,7 +119,8 @@ def customize_rules(strat,mylang,ch,rules):
                 if head_comp_order!=strat_order:
                     mylang.add(phrase_rule +' := basic-head-1st-comp-phrase &\
                                            [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +np,\
-                                             NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +np  ].')
+                                             NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.SPR <>,\
+                                                                             HEAD +np ] ].')
                     rule_added=True
             else:
                 phrase_rule="head-mod-poss-phrase"
@@ -224,7 +226,8 @@ def customize_irules(strat,mylang,ch,irules):
                             if mark_loc=='possessor':
                                 mylang.add(possessor_rule_name+POSSESSOR_RULE)
                                 mylang.add(possessor_rule_name+' := head-change-with-ccont-lex-rule & \
-                                           [ SYNSEM.LOCAL.CAT [ HEAD.MOD.FIRST [ LOCAL [ CAT.HEAD +np, \
+                                           [ SYNSEM.LOCAL.CAT [ HEAD.MOD.FIRST [ LOCAL [ CAT [ VAL.SPR <[]>,\
+                                                                                               HEAD +np ], \
                                                                                          CONT.HOOK [ INDEX #possessum, \
                                                                                                      LTOP #lbl ] ], \
                                                                                  OPT - ], \
@@ -257,6 +260,8 @@ def customize_irules(strat,mylang,ch,irules):
                                                                                        '+POSSESSUM_EXIST_REL+' !> ],\
                                                                                        DTR.SYNSEM.LOCAL.CONT.HOOK [ INDEX #possessum,\
                                                                                                                     LTOP #lbl ] ].')
+                            # This should keep normal head-spec constructions from letting noun phrases act as determiners:
+                            mylang.add('non-possessive-lex-rule-'+strat_num+' := [ SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.LOCAL.CAT.HEAD det ].')
                         if mod_spec=='mod':
                             # Should append things to COMPS list, not overwrite
                             mylang.add(possessum_rule_name+':= val-change-with-ccont-lex-rule & \

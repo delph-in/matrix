@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of adnom-poss-test
 ;;; created at:
-;;;     Wed Dec 27 22:48:55 UTC 2017
+;;;     Thu Dec 28 18:08:30 UTC 2017
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -158,7 +158,8 @@ possessive-lex-rule-super := lex-rule &
 possessor-lex-rule-1 := head-change-with-ccont-lex-rule &
   [ SYNSEM.LOCAL.CAT [ HEAD noun &
                             [ POSS possessor,
-                              MOD.FIRST [ LOCAL [ CAT.HEAD +np,
+                              MOD.FIRST [ LOCAL [ CAT [ VAL.SPR < [ ] >,
+                                                        HEAD +np ],
                                                   CONT.HOOK [ INDEX #possessum,
                                                               LTOP #lbl ] ],
                                           OPT - ] ],
