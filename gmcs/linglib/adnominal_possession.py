@@ -280,10 +280,10 @@ def customize_lexicon(strat,mylang,ch,lexicon):
     strat_num=strat_name[-1]
     mark_loc=strat.get('mark-loc')
     mod_spec=strat.get('mod-spec')    
-    orth=strat.get('orth')
     possessor_type=strat.get('possessor-type')
     possessum_type=strat.get('possessum-type')
     if (mark_loc=='possessor' or mark_loc=='both') and possessor_type=='non-affix':
+        orth=strat.get('possessor-orth')
         # TODO: check if already-existing phrase rules will work; if not add a head-comps rule that will only take possessive heads
         mylang.add('two-rel-adposition-lex := basic-icons-lex-item &\
   [ SYNSEM [ LOCAL [ CAT [ HEAD adp,\
@@ -339,6 +339,7 @@ def customize_lexicon(strat,mylang,ch,lexicon):
                                                   [ STEM < "'+orth+'" >].')
 
     if (mark_loc=='possessum' or mark_loc=='both') and possessum_type=='non-affix':
+        orth=strat.get('possessum-orth')
         if mod_spec=='spec':
             # NOTE: currently, this allows regular head-spec to do what head-spec-poss should be doing. 
             # Could prevent by not allowing the HEAD-DTR of head-spec to be possessive, but that would rule out things 

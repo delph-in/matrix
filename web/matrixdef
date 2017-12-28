@@ -2917,17 +2917,17 @@ BeginIter poss-strat{i} "a possessive strategy"
 
      	   Label "<div id='possessor-non-affix{i}' style='display:none'>"
 
-	   Radio marker-order "Possessor marker order" "The possessor-marking word or clitic appears to the "  " of the possessor<br>" 
+	   Radio possessor-marker-order "Possessor marker order" "The possessor-marking word or clitic appears to the "  " of the possessor<br>" 
 	   . left "left" "" "left"
 	   . right "right" "" "right"
 
-	   Radio agr "Possessor agreement" " and " " agree with the possessum.<br>"
+	   Radio possessor-agr "Possessor agreement" " and " " agree with the possessum.<br>"
 	   . agree "Possessor agree" "" "does" "toggle_element.call(this, 'possessor-agr{i}', 'on'); toggle_element.call(this, 'possessor-non-agr{i}', 'off');"
 	   . non-agree "Possessor non agree" "" "does not"  "toggle_element.call(this, 'possessor-agr{i}', 'off');toggle_element.call(this, 'possessor-non-agr{i}', 'on');"
 
 	   Label "<div id='possessor-non-agr{i}' style='display:none'>"
 
-	   Text orth "Possessor word orth" "<br>The possessor-marking word is spelled " "<br>" 15
+	   Text possessor-orth "Possessor word orth" "<br>The possessor-marking word is spelled " "<br>" 15
 
 	   Label "</div>"
 
@@ -2968,17 +2968,17 @@ BeginIter poss-strat{i} "a possessive strategy"
 
            Label "<div id='possessum-non-affix{i}' style='display:none'>"
 
-           Radio marker-order "Possessum marker order" "<br>The possessum-marking word appears to the "  " of the possessum<br>"
+           Radio possessum-marker-order "Possessum marker order" "<br>The possessum-marking word appears to the "  " of the possessum<br>"
            . left "left" "" "left"
            . right "right" "" "right"
 
-           Radio agr "Possessum agreement" " and " " agree with the possessor.<br>"
+           Radio possessum-agr "Possessum agreement" " and " " agree with the possessor.<br>"
            . agree "Possessum agree" "" "does" "toggle_element.call(this, 'possessum-agr{i}', 'on'); toggle_element.call(this, 'possessum-non-agr{i}', 'off');"
            . non-agree "Possessum non agree" "" "does not"  "toggle_element.call(this, 'possessum-agr{i}', 'off');toggle_element.call(this, 'possessum-non-agr{i}', 'on');"
 
 	   Label "<div id='possessum-non-agr{i}' style='display:none'>" 
 
-           Text orth "Possessum word orth" "<br>The possessum-marking word is spelled " "<br>" 15
+           Text possessum-orth "Possessum word orth" "<br>The possessum-marking word is spelled " "<br>" 15
 
 	   Label "</div>"
 
