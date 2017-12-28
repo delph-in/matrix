@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of adnom-poss-test
 ;;; created at:
-;;;     Thu Dec 28 07:15:08 UTC 2017
+;;;     Thu Dec 28 21:17:39 UTC 2017
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -181,11 +181,11 @@ possessum-lex-rule-1 := val-change-with-ccont-lex-rule &
 
 possessum-lex-rule := infl-lex-rule & possessive-lex-rule-super & possessum-lex-rule-1.
 
-non-possessum-lex-rule-1 := add-only-no-ccont-rule &
+non-possessive-lex-rule-1 := add-only-no-ccont-rule &
   [ SYNSEM.LOCAL.CAT.HEAD noun &
                           [ POSS nonpossessive ] ].
 
-nonpossessive-lex-rule := const-lex-rule & non-possessum-lex-rule-1 & possessive-lex-rule-super.
+nonpossessive-lex-rule := const-lex-rule & non-possessive-lex-rule-1 & possessive-lex-rule-super.
 
 pernum-lex-rule-super := add-only-no-ccont-rule &
   [ INFLECTED [ PERNUM-FLAG +,
@@ -218,7 +218,8 @@ two-rel-adposition-lex := basic-icons-lex-item &
 
 possessor-adp-lex := two-rel-adposition-lex &
   [ SYNSEM.LOCAL [ CAT [ HEAD.POSS possessor,
-                         VAL.COMPS.FIRST.LOCAL.CAT.HEAD noun,
+                         VAL [ SPR < >,
+                               COMPS.FIRST.LOCAL.CAT.HEAD noun ],
                          HEAD.MOD.FIRST.LOCAL.CAT.VAL.SPR < [ ] > ],
                    CONT [ RELS <!  !>,
                           HCONS <!  !>,
@@ -237,8 +238,9 @@ subj-head-phrase := decl-head-subj-phrase & head-final &
   [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
 
 head-comp-poss-phrase := basic-head-1st-comp-phrase & head-final &
-  [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +np &
-                                       [ POSS possessor ],
+  [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.SPR < >,
+                                    HEAD +np &
+                                         [ POSS possessor ] ],
     HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +np &
                                    [ POSS possessum ] ].
 
@@ -246,7 +248,8 @@ head-comp-poss-phrase := basic-head-1st-comp-phrase & head-final &
 ; the specifier of nouns and SUBJ for the subject (specifier) of verbs.
 
 head-spec-phrase := basic-head-spec-phrase & head-final &
-  [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS nonpossessive ].
+  [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.SPR < >,
+                                    HEAD.POSS nonpossessive ] ].
 
 ;Constraint on MC used to be part of matrix.tdl
 ;;it applies to all wo implementations, except for v2

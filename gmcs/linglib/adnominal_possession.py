@@ -304,7 +304,8 @@ def customize_lexicon(strat,mylang,ch,lexicon):
             if mark_loc=='possessor':
                 mylang.add('possessor-adp-lex := two-rel-adposition-lex &\
                                  [  SYNSEM.LOCAL [ CAT  [ HEAD.POSS possessor,\
-                                                          VAL [ COMPS.FIRST.LOCAL [ CAT.HEAD noun,\
+                                                          VAL [ SPR < >,\
+                                                                COMPS.FIRST.LOCAL [ CAT.HEAD noun,\
                                                                                    CONT.HOOK.INDEX #possessor ],\
                                                                SPEC.FIRST.LOCAL [ CONT.HOOK [ INDEX #possessum,\
                                                                                               LTOP #lbl ],\
@@ -316,8 +317,9 @@ def customize_lexicon(strat,mylang,ch,lexicon):
             elif mark_loc=='both':
                 mylang.add('possessor-adp-lex := two-rel-adposition-lex &\
                                  [  SYNSEM.LOCAL [ CAT  [ HEAD.POSS possessor,\
-                                                          VAL [ COMPS.FIRST.LOCAL [ CAT.HEAD noun ],\
-                                                               SPEC.FIRST.LOCAL [ CAT.VAL.SPR < [ ] > ] ] ],\
+                                                          VAL [ SPR < >,\
+                                                                COMPS.FIRST.LOCAL [ CAT.HEAD noun ],\
+                                                                SPEC.FIRST.LOCAL [ CAT.VAL.SPR < [ ] > ] ] ],\
                                                   CONT [ RELS <! !>,\
                                                          HCONS <! !>,\
                                                          ICONS <! !>   ] ] ].')
@@ -325,8 +327,9 @@ def customize_lexicon(strat,mylang,ch,lexicon):
             if mark_loc=='possessor':
                 mylang.add('possessor-adp-lex := two-rel-adposition-lex &\
                                  [  SYNSEM.LOCAL [ CAT [ HEAD.POSS possessor,\
-                                                         VAL.COMPS.FIRST.LOCAL [ CAT.HEAD noun,\
-                                                                                 CONT.HOOK.INDEX #possessor ],\
+                                                         VAL [ SPR < >,\
+                                                               COMPS.FIRST.LOCAL [ CAT.HEAD noun,\
+                                                                                 CONT.HOOK.INDEX #possessor ] ],\
                                                          HEAD.MOD.FIRST.LOCAL [ CONT.HOOK [ INDEX #possessum,\
                                                                                             LTOP #lbl ],\
                                                                                 CAT.VAL.SPR < [ ] > ] ],\
@@ -336,7 +339,8 @@ def customize_lexicon(strat,mylang,ch,lexicon):
             elif mark_loc=='both':
                 mylang.add('possessor-adp-lex := two-rel-adposition-lex &\
                                  [  SYNSEM.LOCAL [ CAT [ HEAD.POSS possessor,\
-                                                         VAL.COMPS.FIRST.LOCAL [ CAT.HEAD noun ],\
+                                                         VAL [ SPR < >,\
+                                                               COMPS.FIRST.LOCAL [ CAT.HEAD noun ] ],\
                                                          HEAD.MOD.FIRST.LOCAL [ CAT.VAL.SPR < [ ] > ] ],\
                                                   CONT [ RELS <! !>,\
                                                          HCONS <! !>,\

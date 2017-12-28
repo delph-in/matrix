@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of adnom-poss-test
 ;;; created at:
-;;;     Thu Dec 28 02:49:57 UTC 2017
+;;;     Thu Dec 28 21:09:46 UTC 2017
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -68,12 +68,13 @@ pl := number.
 
 noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & non-mod-lex-item &
   [ ARG-ST < #spr >,
-    SYNSEM.LOCAL.CAT.VAL [ COMPS < >,
-                           SUBJ < >,
-                           SPEC < >,
-                           SPR < #spr &
-                                 [ LOCAL.CAT.HEAD +pd,
-                                   OPT - ] > ] ].
+    SYNSEM.LOCAL.CAT [ VAL [ COMPS < >,
+                             SUBJ < >,
+                             SPEC < >,
+                             SPR < #spr &
+                                   [ LOCAL.CAT.HEAD +pd,
+                                     OPT - ] > ],
+                       HEAD.POSS nonpossessive ] ].
 
 common-noun-lex := noun-lex &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 3rd,
@@ -161,8 +162,9 @@ non-3rd-lex-rule := const-lex-rule & pernum-lex-rule-super &
 head-spec-poss-phrase := basic-head-spec-phrase-super & head-final &
   [ C-CONT.HOOK #hook,
     NON-HEAD-DTR.SYNSEM [ OPT -,
-                          LOCAL.CAT.HEAD +nvjrpcmo &
-                                         [ POSS possessor ] ],
+                          LOCAL.CAT [ VAL.SPR < >,
+                                      HEAD +nvjrpcmo &
+                                           [ POSS possessor ] ] ],
     HEAD-DTR.SYNSEM.LOCAL [ CONT.HOOK #hook,
                             CAT.HEAD.POSS possessum ] ].
 
@@ -170,7 +172,8 @@ head-spec-poss-phrase := basic-head-spec-phrase-super & head-final &
 ; the specifier of nouns and SUBJ for the subject (specifier) of verbs.
 
 head-spec-phrase := basic-head-spec-phrase & head-final &
-  [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS nonpossessive ].
+  [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.SPR < >,
+                                    HEAD.POSS nonpossessive ] ].
 
 two-rel-adposition-lex := basic-icons-lex-item &
   [ SYNSEM [ LOCAL [ CAT [ HEAD adp,
