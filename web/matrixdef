@@ -1742,7 +1742,7 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
   . pair "Subordinator Pair" "" "a free subordinator morpheme pair: one in the subordinate clause and one in the main clause<br>""toggle_element.call(this, 'free{i}_choices', 'off'); toggle_element.call(this, 'pair{i}_choices', 'on'); toggle_element.call(this, 'none{i}_choices', 'off');"
   . none "No Subordinator" "" "this strategy does not use a free subordinator morpheme""toggle_element.call(this, 'free{i}_choices', 'off'); toggle_element.call(this, 'pair{i}_choices', 'off'); toggle_element.call(this, 'none{i}_choices', 'on');"
 
-    Label "<div id='free{i}_choices' style='display:none'>"
+    Label "<div id='free{i}_choices' style='display:block'>"
       Radio subposition "Subordinator Position" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The free subordinator morpheme is positioned:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
       . before "Before" "" "before the VP or S it attaches to<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
       . after "After" "" "after the VP or S it attaches to<br>"
@@ -1763,7 +1763,7 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
       EndIter freemorph
     Label "</div>"
 
-    Label "<div id='pair{i}_choices' style='display:none'>"
+    Label "<div id='pair{i}_choices' style='display:block'>"
       Radio subposition "Subordinator Position" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Does the morpheme in the subordinate clause attach to the beginning or end of the clause?:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
       . before "Before" "" "before the VP or S it attaches to<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
       . after "After" "" "after the VP or S it attaches to<br>"
@@ -1799,7 +1799,7 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
     EndIter morphpair
     Label "</div>"
 
-    Label "<div id='none{i}_choices' style='display:none'>"
+    Label "<div id='none{i}_choices' style='display:block'>"
     Label "The clausal modifier strategy contributes the following predication. (Note: if you do not enter a predication, a generic _subord_rel predication will be added) <br>"
     Text pred "subord {i} stem {j} predicate" "Predicate: " "" 30<br>
     Label "</div>"
