@@ -102,6 +102,7 @@ function toggle_element(id, how, switchOn) {
     }
     else if (how == "off") {
       element.style.display = 'none';
+      remove_element(id)
     }
   } 
   save_form()
