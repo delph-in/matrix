@@ -118,4 +118,4 @@ section=adnom-poss
   poss-strat1_possessor-type=non-affix
   poss-strat1_marker-order=left
   poss-strat1_agr=non-agree
-  poss-strat1_orth=POSSESSOR
+  poss-strat1_possessor-orth=POSSESSOR

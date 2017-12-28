@@ -50,6 +50,8 @@ def customize_adnominal_possession(mylang,ch,rules,irules,lexicon):
             customize_irules(strat,mylang,ch,irules)
         if strat.get('possessor-type')=='non-affix' or strat.get('possessum-type')=='non-affix':
             customize_lexicon(strat,mylang,ch,lexicon)
+        if 'affix' not in (strat.get('possessor-type'), strat.get('possessum-type')):
+            mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT.HEAD.POSS nonpossessive ].')
 
 # SECONDARY FUNCTIONS
 def customize_rules(strat,mylang,ch,rules):
@@ -142,7 +144,8 @@ def customize_rules(strat,mylang,ch,rules):
         # Make non-possessive phrases reject possessive nouns:
         if ch.get('has-dets')=='yes':
 #        mylang.add('head-spec-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD  +vjrpcdmo ].',merge=True)
-            mylang.add('head-spec-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS nonpossessive ].',merge=True)
+            mylang.add('head-spec-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.SPR <>,\
+                                                                              HEAD.POSS nonpossessive ] ].',merge=True)
         adj_head=False
         head_adj=False
         for adj in ch.get('adj',[]):
@@ -363,6 +366,7 @@ def customize_lexicon(strat,mylang,ch,lexicon):
                                                                 CONT [ RELS <! '+POSS_REL+',\
                                                                                '+POSSESSUM_EXIST_REL+' !>,\
                                                                                HCONS <! qeq & [HARG #harg, LARG #lbl] !> ] ] ].',merge=True)
+            mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.LOCAL.CAT.HEAD det ].')
         if mod_spec=='mod':
             # NOTE: semantics (irretrievably?) broken.
             # Since the marker takes the whole possessum NP as its complement, it ends up plugging the determiner's LTOP into

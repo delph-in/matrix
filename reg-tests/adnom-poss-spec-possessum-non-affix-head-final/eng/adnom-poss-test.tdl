@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of adnom-poss-test
 ;;; created at:
-;;;     Thu Dec 28 00:29:28 UTC 2017
+;;;     Thu Dec 28 21:00:26 UTC 2017
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -25,11 +25,11 @@ non-mod-lex-item := lex-item &
 ;;; Matrix Type Addenda
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 
-inflected :+ [ NUM-FLAG luk,
-    PERNUM-FLAG luk ].
+inflected :+ [ PERNUM-FLAG luk,
+    NUM-FLAG luk ].
 
-infl-satisfied :+ [ NUM-FLAG na-or-+,
-    PERNUM-FLAG na-or-+ ].
+infl-satisfied :+ [ PERNUM-FLAG na-or-+,
+    NUM-FLAG na-or-+ ].
 
 png :+ [ PER person,
     NUM number ].
@@ -68,11 +68,12 @@ pl := number.
 
 noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & non-mod-lex-item &
   [ ARG-ST < #spr >,
-    SYNSEM.LOCAL.CAT.VAL [ COMPS < >,
-                           SUBJ < >,
-                           SPR < #spr &
-                                 [ LOCAL.CAT.HEAD +nd,
-                                   OPT - ] > ] ].
+    SYNSEM.LOCAL.CAT [ VAL [ COMPS < >,
+                             SUBJ < >,
+                             SPR < #spr &
+                                   [ OPT -,
+                                     LOCAL.CAT.HEAD +nd & det ] > ],
+                       HEAD.POSS nonpossessive ] ].
 
 common-noun-lex := noun-lex &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 3rd,
@@ -162,14 +163,16 @@ head-spec-poss-phrase := basic-head-spec-phrase-super & head-final &
     HEAD-DTR.SYNSEM.LOCAL [ CONT.HOOK #hook,
                             CAT.HEAD.POSS possessum ],
     NON-HEAD-DTR.SYNSEM [ OPT -,
-                          LOCAL.CAT.HEAD +nvjrpcmo &
-                                         [ POSS nonpossessive ] ] ].
+                          LOCAL.CAT [ VAL.SPR < >,
+                                      HEAD +nvjrpcmo &
+                                           [ POSS nonpossessive ] ] ] ].
 
 ; Rules for building NPs.  Note that the Matrix uses SPR for
 ; the specifier of nouns and SUBJ for the subject (specifier) of verbs.
 
 head-spec-phrase := basic-head-spec-phrase & head-final &
-  [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS nonpossessive ].
+  [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.SPR < >,
+                                    HEAD.POSS nonpossessive ] ].
 
 possessum-noun-lex := basic-two-arg &
   [ ARG-ST < #spr,

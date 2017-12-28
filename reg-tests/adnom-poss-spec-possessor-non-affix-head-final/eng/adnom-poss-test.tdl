@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of adnom-poss-test
 ;;; created at:
-;;;     Wed Dec 27 22:55:32 UTC 2017
+;;;     Thu Dec 28 20:25:19 UTC 2017
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -163,8 +163,9 @@ head-spec-poss-phrase := basic-head-spec-phrase-super & head-final &
     HEAD-DTR.SYNSEM.LOCAL [ CONT.HOOK #hook,
                             CAT.HEAD.POSS nonpossessive ],
     NON-HEAD-DTR.SYNSEM [ OPT -,
-                          LOCAL.CAT.HEAD +nvjrpcmo &
-                                         [ POSS possessor ] ] ].
+                          LOCAL.CAT [ VAL.SPR < >,
+                                      HEAD +nvjrpcmo &
+                                           [ POSS possessor ] ] ] ].
 
 ; Rules for building NPs.  Note that the Matrix uses SPR for
 ; the specifier of nouns and SUBJ for the subject (specifier) of verbs.
