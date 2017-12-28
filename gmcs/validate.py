@@ -231,7 +231,7 @@ def validate_names(ch, vr):
         reserved_types['finite'] = True
         reserved_types['nonfinite'] = True
 
-    if 'ns' in ch.get('nominalclause'):
+    if 'ns' in ch:
         reserved_types['nmz'] = True
 
     for pattern in ch.patterns():
@@ -1477,17 +1477,17 @@ def validate_nominalized_clauses(ch, vr):
         if ns.get('level') == 'high':
             if not ns.get('nmzRel'):
                 mess = 'You must select whether the nominalization is syntactic only' + \
-                    'or if it should be refelcted in the semantics.'
+                    ' or if it should be refelcted in the semantics.'
                 vr.err(ns.full_key + '_nmzRel', mess)
         else:
             if ns.get('nmzRel') != '':
                 mess = 'This is not a valid choice for' + \
-                    'noinalization at V or VP'
+                    ' nominalization at V or VP'
             vr.err(ns.full_key + '_nmzRel', mess)
         if ns.get('level') == 'mid':
             if ch.get('word-order') == 'vso' or ch.get('word-order') == 'osv':
                 mess = 'The analysis for your word order does not include a' +\
-                       'VP constituent. You must select V or S nominalization.'
+                       ' VP constituent. You must select V or S nominalization.'
                 vr.err(ns.full_key + '_level', mess)
 
 
