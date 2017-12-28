@@ -104,6 +104,7 @@ function toggle_element(id, how, switchOn) {
       element.style.display = 'none';
     }
   } 
+  save_form()
 }
 
 //////////////////////////////////////////////////////////////////////
