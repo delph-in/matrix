@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of adnom-poss-test
 ;;; created at:
-;;;     Thu Dec 28 06:59:23 UTC 2017
+;;;     Thu Dec 28 06:57:12 UTC 2017
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -74,7 +74,7 @@ noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & non-mod-lex-ite
                            SUBJ < >,
                            SPEC < >,
                            SPR < #spr &
-                                 [ LOCAL.CAT.HEAD +nd,
+                                 [ LOCAL.CAT.HEAD +pd,
                                    OPT - ] > ] ].
 
 common-noun-lex := noun-lex &
@@ -155,31 +155,42 @@ possessive-lex-rule-super := lex-rule &
         [ INFLECTED [ NUM-FLAG #num,
                       PERNUM-FLAG #pernum ] ] ].
 
-possessor-lex-rule-1 := val-change-with-ccont-lex-rule &
-  [ DTR.SYNSEM.LOCAL [ CAT.VAL [ SPR #spr,
-                                 COMPS #comps,
-                                 SUBJ #subj ],
-                       CONT.HOOK #hook &
-                                 [ INDEX #possessor ] ],
-    SYNSEM.LOCAL.CAT [ HEAD noun &
-                            [ POSS possessor ],
-                       VAL [ SPR #spr,
-                             COMPS #comps,
+possessum-lex-rule-1 := val-change-with-ccont-lex-rule &
+  [ SYNSEM.LOCAL.CAT [ HEAD noun &
+                            [ POSS possessum ],
+                       VAL [ SPEC #spec,
                              SUBJ #subj,
-                             SPEC.FIRST.LOCAL.CAT.HEAD noun ] ],
+                             COMPS #comps,
+                             SPR < [ LOCAL [ CAT.HEAD +np,
+                                             CONT.HOOK.INDEX #possessor ] ] > ] ],
     C-CONT [ HOOK #hook &
-                  [ INDEX #possessor ],
-             RELS <!  !>,
-             HCONS <!  !>,
-             ICONS <!  !> ] ].
+                  [ INDEX.COG-ST uniq-id ],
+             ICONS <!  !>,
+             HCONS <! qeq &
+                      [ HARG #harg,
+                        LARG #lbl ] !>,
+             RELS <! arg12-ev-relation &
+                     [ PRED "poss_rel",
+                       LBL #lbl,
+                       ARG1 #possessum,
+                       ARG2 #possessor ], quant-relation &
+                                          [ PRED "exist_q_rel",
+                                            ARG0 #possessum,
+                                            RSTR #harg ] !> ],
+    DTR.SYNSEM.LOCAL [ CAT.VAL [ SPEC #spec,
+                                 SUBJ #subj,
+                                 COMPS #comps ],
+                       CONT.HOOK #hook &
+                                 [ INDEX #possessum,
+                                   LTOP #lbl ] ] ].
 
-possessor-lex-rule := infl-lex-rule & possessive-lex-rule-super & possessor-lex-rule-1.
+possessum-lex-rule := infl-lex-rule & possessive-lex-rule-super & possessum-lex-rule-1.
 
-non-possessor-lex-rule-1 := add-only-no-ccont-rule &
+non-possessum-lex-rule-1 := add-only-no-ccont-rule &
   [ SYNSEM.LOCAL.CAT.HEAD noun &
                           [ POSS nonpossessive ] ].
 
-nonpossessive-lex-rule := const-lex-rule & non-possessor-lex-rule-1 & possessive-lex-rule-super.
+nonpossessive-lex-rule := const-lex-rule & non-possessum-lex-rule-1 & possessive-lex-rule-super.
 
 pernum-lex-rule-super := add-only-no-ccont-rule &
   [ INFLECTED [ PERNUM-FLAG +,
@@ -199,32 +210,24 @@ pl-lex-rule := const-lex-rule & pernum-lex-rule-super &
 non-3rd-lex-rule := const-lex-rule & pernum-lex-rule-super &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PER non-3rd ].
 
-possessum-noun-lex := basic-two-arg &
-  [ ARG-ST < #spr,
-             #comps >,
-    SYNSEM.LOCAL [ CAT [ HEAD noun &
-                              [ POSS possessum ],
-                         VAL [ SPR < #spr &
-                                     [ LOCAL [ CAT.HEAD +np,
-                                               CONT.HOOK.INDEX #possessor ] ] >,
-                               COMPS < #comps &
-                                       [ LOCAL [ CAT.VAL.SPR < [ ] >,
+two-rel-adposition-lex := basic-icons-lex-item &
+  [ SYNSEM [ LOCAL [ CAT [ HEAD adp,
+                           VAL.COMPS < [ LOCAL [ CAT cat-sat,
                                                  CONT.HOOK #hook &
-                                                           [ INDEX #possessum,
-                                                             LTOP #lbl ] ] ] > ] ],
-                   CONT [ HOOK #hook,
-                          ICONS <!  !>,
-                          RELS <! arg12-ev-relation &
-                                  [ PRED "poss_rel",
-                                    LBL #lbl,
-                                    ARG1 #possessum,
-                                    ARG2 #possessor ], quant-relation &
-                                                       [ PRED "exist_q_rel",
-                                                         ARG0 #possessum,
-                                                         RSTR #harg ] !>,
-                          HCONS <! qeq &
-                                   [ HARG #harg,
-                                     LARG #lbl ] !> ] ] ].
+                                                           [ INDEX #ind,
+                                                             ICONS-KEY.IARG1 #clause ] ] ] > ],
+                     CONT.HOOK #hook &
+                               [ CLAUSE-KEY #clause ] ],
+             LKEYS.KEYREL arg12-ev-relation &
+                          [ ARG2 #ind ] ] ].
+
+possessor-adp-lex := two-rel-adposition-lex &
+  [ SYNSEM.LOCAL [ CAT [ HEAD.POSS possessor,
+                         VAL [ COMPS.FIRST.LOCAL.CAT.HEAD noun,
+                               SPEC.FIRST.LOCAL.CAT.VAL.SPR < [ ] > ] ],
+                   CONT [ RELS <!  !>,
+                          HCONS <!  !>,
+                          ICONS <!  !> ] ] ].
 
 ;;;;;;;;;;;;;;;;;;;
 ;;; Phrasal Types
