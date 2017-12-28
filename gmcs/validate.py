@@ -332,6 +332,9 @@ def validate_names(ch, vr):
                 user_types += [[get_name(lrt) + '-lex-rule',
                                 lrt.full_key + '_name']]
 
+    for ns in ch.get('ns'):
+        user_types += [[ns.get('name'), ns.full_key + '_name']]
+
     # Cull entries in user_types where there's no type name (and assume
     # these will be caught by other validation).  This could happen, for
     # for example, if the user adds a value for number and specifies a
@@ -1444,7 +1447,8 @@ def validate_arg_opt(ch, vr):
                        "on the subject NP or the object NP."
                 vr.err(feat.full_key+'_head',mess)
 
-
+######################################################################
+# Validation of clausal modifiers
 def validate_clausalmods(ch, vr):
     for cms in ch.get('cms'):
         pos = cms.get('position')
@@ -1463,6 +1467,8 @@ def validate_clausalmods(ch, vr):
         if subord == 'none':
             pass
 
+######################################################################
+# Validation nominalized clauses
 def validate_nominalized_clauses(ch, vr):
     for ns in ch.get('ns'):
         if not ns.get('name'):
@@ -1510,6 +1516,7 @@ def validate(ch, extra = False):
     validate_test_sentences(ch, vr)
     gmcs.linglib.clausalcomps.validate(ch, vr)
     validate_clausalmods(ch, vr)
+    validate_nominalized_clauses(ch, vr)
 
     validate_types(ch, vr)
     validate_features(ch, vr)
