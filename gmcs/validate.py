@@ -187,7 +187,7 @@ def validate_names(ch, vr):
 
     # if called for by current choices, add reserved types for:
     # case, direction, person, number, pernum, gender, tense, aspect,
-    # situation, mood, form, and trans/intrans verb types.
+    # situation, mood, form, nominalization (nmz), and trans/intrans verb types.
     if ch.get('case-marking', None) is not None:
         reserved_types['case'] = True
 
@@ -230,6 +230,9 @@ def validate_names(ch, vr):
         reserved_types['form'] = True
         reserved_types['finite'] = True
         reserved_types['nonfinite'] = True
+
+    if 'ns' in ch.get('nominalclause'):
+        reserved_types['nmz'] = True
 
     for pattern in ch.patterns():
         p = pattern[0].split(',')
@@ -1460,9 +1463,26 @@ def validate_clausalmods(ch, vr):
         if subord == 'none':
             pass
 
-def validate_nominalized_clauses(ch, vfr):
+def validate_nominalized_clauses(ch, vr):
     for ns in ch.get('ns'):
-        pass
+        if not ns.get('name'):
+            mess = 'You must enter a name for the nominalization strategy.'
+            vr.err(ns.full_key + '_name', mess)
+        if ns.get('level') == 'high':
+            if not ns.get('nmzRel'):
+                mess = 'You must select whether the nominalization is syntactic only' + \
+                    'or if it should be refelcted in the semantics.'
+                vr.err(ns.full_key + '_nmzRel', mess)
+        else:
+            if ns.get('nmzRel') != '':
+                mess = 'This is not a valid choice for' + \
+                    'noinalization at V or VP'
+            vr.err(ns.full_key + '_nmzRel', mess)
+        if ns.get(level) == 'mid':
+            if ch.get('word-order') == 'vso' or ch.get('word-order') == 'osv':
+                mess = 'The analysis for your word order does not include a' +\
+                       'VP constituent. You must select V or S nominalization.'
+                vr.err(ns.full_key + '_level', mess)
 
 
 def validate(ch, extra = False):
