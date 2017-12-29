@@ -22,6 +22,11 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "evidentials-infl-aux-wic") (:content . "evidentials-infl-aux-wic: Held-out test of Wichita for the evidentials library"))
+((:path . "evidentials-infl-mon") (:content . "evidentials-infl-mon: Held-out test of (Khalkha) Mongolian for the evidentials library"))
+((:path . "evidentials-infl-lbj") (:content . "evidentials-infl-lbj: Held-out test of Ladakhi for the evidentials library"))
+((:path . "evidentials-aux-afb") (:content . "evidentials-aux-afb: Held-out test of Gulf Arabic for the evidentials library"))
+((:path . "evidentials-aux-eus") (:content . "evidentials-aux-eus: Adding held-out Basque tests for evidentiality library"))
 ((:path . "evidentials-infl-aux-shp") (:content . "evidentials-infl-aux-shp: Testing the evidentiality library with the evidentials of Shipibo-Konibo"))
 ((:path . "evidentials-infl-aux-kal") (:content . "evidentials-infl-aux-kal: Testing the evidentiality library with Kalaallisut evidentials"))
 ((:path . "evidentials-auxiliary-choose") (:content . "evidentials-auxiliary-choose: testing evidential auxiliary verbs with selected evidential inventory"))
