@@ -1482,14 +1482,6 @@ def validate_clausalmods(ch, vr):
             if not cms.get('freemorph'):
                 mess = 'You must add at least one free subordinator morpheme.'
                 vr.err(cms.full_key + '_freemorph', mess)
-            else:
-                for subord in cms.get('freemorph'):
-                    if not subord.get('orth'):
-                        mess = 'You must enter an orthographic form for the subordinator'
-                        vr.err(cms.full_key + '_freemorph_orth', mess)
-                    if not subord.get('pred'):
-                        mess = 'You must enter a predication for the subordinator'
-                    vr.err(cms.full_key + '_freemorph_pred', mess)
 
 
         # Check the choices required for pair subordinators only
@@ -1504,20 +1496,7 @@ def validate_clausalmods(ch, vr):
             if not cms.get('morphpair'):
                 mess = 'You must add at least one free subordinator morpheme pair.'
                 vr.err(cms.full_key + '_morphpair', mess)
-            else:
-                for pair in cms.get('morphpair'):
-                    if not pair.get('subordorth'):
-                        mess = 'You must enter an orthographic form for the subordinator.'
-                        vr.err(cms.full_key + '_morphpair_subordorth', mess)
-                    if not pair.get('subordpred'):
-                        mess = 'You must enter a predication for the subordinator.'
-                        vr.err(cms.full_key + '_morphpair_subordpred', mess)
-                    if not pair.get('matrixorth'):
-                        mess = 'You must enter an orthographic form for the matrix adverb.'
-                        vr.err(cms.full_key + '_morphpair_matrixorth', mess)
-                    if not pair.get('matrixpred'):
-                        mess = 'You must enter a predication for the matrix adverb.'
-                        vr.err(cms.full_key + '_morphpair_matrixpred', mess)
+
 
         # Warnings for no subordinator morpheme
         if cms.get('subordinator') == 'none':
@@ -1534,7 +1513,7 @@ def validate_clausalmods(ch, vr):
             for feat in cms.get('feat'):
                 if feat.get('name') == 'nominalization':
                     mess = 'Nominalization is not supported of the adverb analysis.'
-                    vr.err(cms.full_key + '_feat', mess)
+                    vr.err(cms.full_key + '_feat_name', mess)
         if cms.get('subordinator') == 'none':
             for feat in cms.get('feat'):
                 if feat.get('name') == 'nominalization':
@@ -1542,7 +1521,7 @@ def validate_clausalmods(ch, vr):
                         ' nominalization and a free subordinator morhpheme or morpheme' +\
                         ' pair is not associated with each strategy, the produced grammar' +\
                         ' will be prone to spurious parsing.'
-                    vr.warn(cms.full_key + '_feat', mess)
+                    vr.warn(cms.full_key + '_feat_name', mess)
 
 
 
