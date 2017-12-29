@@ -1503,10 +1503,10 @@ def validate_clausalmods(ch, vr):
             if not cms.get('pred'):
                 mess = 'If you do not enter a predication for this strategy' + \
                     ' a generic _subord_rel will be added.'
-                vr.err(warn.full_key + '_morphpair_matrixpred', mess)
+                vr.warn(cms.full_key + '_pred', mess)
             if not cms.get('feat'):
                 mess = 'You have not added any subordinator (free or bound) to this strategy.'
-                vr.err(warn.full_key + '_subordinator', mess)
+                vr.warn(cms.full_key + '_subordinator', mess)
 
         # Check for unsupoorted combinations with nominalization
         if cms.get('subordinaotor-type') == 'adverb':
