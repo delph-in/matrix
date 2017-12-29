@@ -2918,8 +2918,8 @@ BeginIter poss-strat{i} "a possessive strategy"
      	   Label "<div id='possessor-non-affix{i}' style='display:none'>"
 
 	   Radio possessor-marker-order "Possessor marker order" "The possessor-marking word or clitic appears to the "  " of the possessor<br>" 
-	   . left "left" "" "left"
-	   . right "right" "" "right"
+	   . head-initial "left" "" "left"
+	   . head-final "right" "" "right"
 
 	   Radio possessor-agr "Possessor agreement" " and " " agree with the possessum.<br>"
 	   . agree "Possessor agree" "" "does" "toggle_element.call(this, 'possessor-agr{i}', 'on'); toggle_element.call(this, 'possessor-non-agr{i}', 'off');"
@@ -2969,8 +2969,8 @@ BeginIter poss-strat{i} "a possessive strategy"
            Label "<div id='possessum-non-affix{i}' style='display:none'>"
 
            Radio possessum-marker-order "Possessum marker order" "<br>The possessum-marking word appears to the "  " of the possessum<br>"
-           . left "left" "" "left"
-           . right "right" "" "right"
+           . head-initial "left" "" "left"
+           . head-final "right" "" "right"
 
            Radio possessum-agr "Possessum agreement" " and " " agree with the possessor.<br>"
            . agree "Possessum agree" "" "does" "toggle_element.call(this, 'possessum-agr{i}', 'on'); toggle_element.call(this, 'possessum-non-agr{i}', 'off');"
