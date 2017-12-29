@@ -187,7 +187,7 @@ def validate_names(ch, vr):
 
     # if called for by current choices, add reserved types for:
     # case, direction, person, number, pernum, gender, tense, aspect,
-    # situation, mood, form, nominalization (nmz), and trans/intrans verb types.
+    # situation, mood, form, nominalization, and trans/intrans verb types.
     if ch.get('case-marking', None) is not None:
         reserved_types['case'] = True
 
@@ -232,7 +232,7 @@ def validate_names(ch, vr):
         reserved_types['nonfinite'] = True
 
     if 'ns' in ch:
-        reserved_types['nmz'] = True
+        reserved_types['nominalization'] = True
 
     for pattern in ch.patterns():
         p = pattern[0].split(',')
@@ -748,7 +748,7 @@ def validate_word_order(ch, vr):
         elif wo == 'v2' and ch.get('subord-word-order') == 'vfinal' \
                 and ch.get('has-aux') == 'yes' and ch.get('aux-comp') != 'v':
             vr.err('aux-comp','The only supported choice for auxiliary complement '
-                   'type for v2/vfinal word order combination is V.')
+                              'type for v2/vfinal word order combination is V.')
 
 
 ######################################################################
@@ -1156,11 +1156,11 @@ def validate_tanda(ch, vr):
                'that assumes auxiliaries, but have not initialized a FORM hierarchy.'
         vr.err('form-fin-nf', mess)
 
-    # if ch.get('has-aux') == 'no' and not (ch.get('noaux-fin-nf') == 'on'):
-    #     if 'nf-subform' in ch:
-    #         mess = 'You have indicated that your language has no auxiliaries ' + \
-    #                'but you have entered subforms of finite or non-finite.'
-    #         vr.err('noaux-fin-nf', mess)
+        # if ch.get('has-aux') == 'no' and not (ch.get('noaux-fin-nf') == 'on'):
+        #     if 'nf-subform' in ch:
+        #         mess = 'You have indicated that your language has no auxiliaries ' + \
+        #                'but you have entered subforms of finite or non-finite.'
+        #         vr.err('noaux-fin-nf', mess)
 
 ######################################################################
 # validate_test_sentences(ch, vr)
@@ -1450,26 +1450,111 @@ def validate_arg_opt(ch, vr):
 ######################################################################
 # Validation of clausal modifiers
 def validate_clausalmods(ch, vr):
+    """Check to see if the user completed the necessary portions of the
+       Clausal Modifiers page and check for unsupported combinations of choices"""
     for cms in ch.get('cms'):
-        pos = cms.get('position')
-        subord = cms.get('subordinator')
-        subord_type = cms.get('subordinator-type')
-        subpos = cms.get('subposition')
-        attach = cms.get('modifier-attach')
-        adv_attach = cms.get('adverb-attach')
+        # First check the choices that are required for all clausal mod strategies
+        if not cms.get('position'):
+            mess = 'You must select a position for the clausal modifier.'
+            vr.err(cms.full_key + '_position', mess)
+        if not cms.get('modifier-attach'):
+            mess = 'You must select VP or S attachment for the clausal modifier.'
+            vr.err(cms.full_key + '_modifier-attach', mess)
+        if not cms.get('subordinator'):
+            mess = 'You must select a subordinator type.'
+            vr.err(cms.full_key + '_subordinator', mess)
 
-        if subord == 'free':
-            pass
+        # Next check the choices required for free and pair subordinators
+        if cms.get('subordinator') == 'free' or cms.get('subordinator') == 'pair':
+            if not cms.get('subposition'):
+                mess = 'You must select a position for the subordinator.'
+                vr.err(cms.full_key + '_subposition', mess)
+            if not cms.get('subordinator-type'):
+                mess = 'You must makes a selection for whether the subordinator is an adverb or head.'
+                vr.err(cms.full_key + '_subordinator-type', mess)
+            if cms.get('subordinator-type') == 'adverb':
+                if not cms.get('adverb-attach'):
+                    mess = 'You must makes a selection for whether the subordinator attaches to a VP or S.'
+                    vr.err(cms.full_key + '_adverb-attach', mess)
 
-        if subord == 'pair':
-            pass
+        # Check the choices required for free subordinators only
+        if cms.get('subordinator') == 'free':
+            if not cms.get('freemorph'):
+                mess = 'You must add at least one free subordinator morpheme.'
+                vr.err(cms.full_key + '_freemorph', mess)
+            else:
+                for subord in cms.get('freemorph'):
+                    if not subord.get('orth'):
+                        mess = 'You must enter an orthographic form for the subordinator'
+                        vr.err(cms.full_key + '_freemorph_orth', mess)
+                    if not subord.get('pred'):
+                        mess = 'You must enter a predication for the subordinator'
+                    vr.err(cms.full_key + '_freemorph_pred', mess)
 
-        if subord == 'none':
-            pass
+
+        # Check the choices required for pair subordinators only
+        if cms.get('subordinator') == 'pair':
+            if not cms.get('matrix-subposition'):
+                mess = 'You must select a position for the adverb in the matrix clause.'
+                vr.err(cms.full_key + '_matrix-subposition', mess)
+            if not cms.get('matrix-adverb-attach'):
+                mess = 'You must makes a selection for whether the adverb' + \
+                       ' in the matrix clause attaches to a VP or S.'
+                vr.err(cms.full_key + '_matrix-adverb-attach', mess)
+            if not cms.get('morphpair'):
+                mess = 'You must add at least one free subordinator morpheme pair.'
+                vr.err(cms.full_key + '_morphpair', mess)
+            else:
+                for pair in cms.get('morphpair'):
+                    if not pair.get('subordorth'):
+                        mess = 'You must enter an orthographic form for the subordinator.'
+                        vr.err(cms.full_key + '_morphpair_subordorth', mess)
+                    if not pair.get('subordpred'):
+                        mess = 'You must enter a predication for the subordinator.'
+                        vr.err(cms.full_key + '_morphpair_subordpred', mess)
+                    if not pair.get('matrixorth'):
+                        mess = 'You must enter an orthographic form for the matrix adverb.'
+                        vr.err(cms.full_key + '_morphpair_matrixorth', mess)
+                    if not pair.get('matrixpred'):
+                        mess = 'You must enter a predication for the matrix adverb.'
+                        vr.err(cms.full_key + '_morphpair_matrixpred', mess)
+
+        # Warnings for no subordinator morpheme
+        if cms.get('subordinator') == 'none':
+            if not cms.get('pred'):
+                mess = 'If you do not enter a predication for this strategy' + \
+                    ' a generic _subord_rel will be added.'
+                vr.err(warn.full_key + '_morphpair_matrixpred', mess)
+            if not cms.get('feat'):
+                mess = 'You have not added any subordinator (free or bound) to this strategy.'
+                vr.err(warn.full_key + '_subordinator', mess)
+
+        # Check for unsupoorted combinations with nominalization
+        if cms.get('subordinaotor-type') == 'adverb':
+            for feat in cms.get('feat'):
+                if feat.get('name') == 'nominalization':
+                    mess = 'Nominalization is not supported of the adverb analysis.'
+                    vr.err(cms.full_key + '_feat', mess)
+        if cms.get('subordinator') == 'none':
+            for feat in cms.get('feat'):
+                if feat.get('name') == 'nominalization':
+                    mess = 'If multiple clausal modifier strategies are added with' +\
+                        ' nominalization and a free subordinator morhpheme or morpheme' +\
+                        ' pair is not associated with each strategy, the produced grammar' +\
+                        ' will be prone to spurious parsing.'
+                    vr.warn(cms.full_key + '_feat', mess)
+
+
+
+
+
+
 
 ######################################################################
 # Validation nominalized clauses
 def validate_nominalized_clauses(ch, vr):
+    """Check to see if the user completed the necessary portions of the
+       Nominalized Clauses page and check for conflicts with word order"""
     for ns in ch.get('ns'):
         if not ns.get('name'):
             mess = 'You must enter a name for the nominalization strategy.'
@@ -1477,16 +1562,16 @@ def validate_nominalized_clauses(ch, vr):
         if ns.get('level') == 'high':
             if not ns.get('nmzRel'):
                 mess = 'You must select whether the nominalization is syntactic only' + \
-                    ' or if it should be refelcted in the semantics.'
+                       ' or if it should be refelcted in the semantics.'
                 vr.err(ns.full_key + '_nmzRel', mess)
         else:
             if ns.get('nmzRel') != '':
                 mess = 'This is not a valid choice for' + \
-                    ' nominalization at V or VP'
+                       ' nominalization at V or VP'
             vr.err(ns.full_key + '_nmzRel', mess)
         if ns.get('level') == 'mid':
             if ch.get('word-order') == 'vso' or ch.get('word-order') == 'osv':
-                mess = 'The analysis for your word order does not include a' +\
+                mess = 'The analysis for your word order does not include a' + \
                        ' VP constituent. You must select V or S nominalization.'
                 vr.err(ns.full_key + '_level', mess)
 

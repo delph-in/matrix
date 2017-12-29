@@ -1705,9 +1705,9 @@ EndIter ns
 
 Section clausalmods "Clausal Modifiers"
 
-Label "<p>Languages often have several different strategies for clausal modifers. You many define any number of clausal modifier strategies below or you can leave this page blank, in whch case the starter grammar produced will not support clausal modifiers.</p>"
+Label "<p>Languages often have several different strategies for clausal modifers. You many define any number of clausal modifier strategies below or you can leave this page blank, in which case the starter grammar produced will not support clausal modifiers.</p>"
 
-Label "<p>The Grammar Matrix defines clausal modification with three types of strategies:</p>"
+Label "<p>The Grammar Matrix defines clausal modification with three types of subordinators:</p>"
 
 Label "<div style=\"padding-left: 16px\"><p><span
 class=\"dfn\">Free Subordinating Morpheme</span><br>&nbsp;&nbsp;&nbsp;&nbsp;A free morpheme
@@ -1718,9 +1718,9 @@ class=\"dfn\">No Free Subordinating Morpheme</span><br>&nbsp;&nbsp;&nbsp;&nbsp;T
 
 Label "<p>Clausal modifiers may also be marked by special verbal morphology, nominalization of the subordinate
 clause, special word order in the subordinate clause, and subject sharing. You may define any number of 
-clausal modifier strategies by combinging the free morpheme type with subject sharing and various morphologial constraints.</p>"
+clausal modifier strategies by combining the free morpheme type with subject sharing and various morphologial constraints.</p>"
 
-Label "<p>Note: Some characteristics of clausal modifiers must be defined on other pages of the grammar matrix.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Special Word order should be indicated on the word order page<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nominalization strategies should be defined on the Nominalized Clauses page. These stragies can then be added to the clausal modifier strategy under Add a Feature.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Additional features such as finite/non-finite, or features associated with bound subordinator morphemes should be defined on the Other Features page.</p>"
+Label "<p>Note: Some characteristics of clausal modifiers must be defined on other pages of the grammar matrix.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Special Word order (currently only supported for V2 languages with Vfinal word order in the subordinate clause) should be specified on the word order page<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nominalization strategies should be defined on the Nominalized Clauses page. These stragies can then be added to a clausal modifier strategy under Add a Feature.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Additional features such as finite/non-finite, or features associated with bound subordinator morphemes should be defined on the Other Features page and added to a clausal modifier strategy under Add a Feature.</p>"
 
 
 BeginIter cms{i} "a Clausal Modifier Strategy" 1
