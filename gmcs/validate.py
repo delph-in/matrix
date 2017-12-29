@@ -1513,7 +1513,7 @@ def validate_clausalmods(ch, vr):
             for feat in cms.get('feat'):
                 if feat.get('name') == 'nominalization':
                     mess = 'Nominalization is not supported of the adverb analysis.'
-                    vr.err(cms.full_key + '_feat_name', mess)
+                    vr.err(feat.full_key + '_name', mess)
         if cms.get('subordinator') == 'none':
             for feat in cms.get('feat'):
                 if feat.get('name') == 'nominalization':
@@ -1521,7 +1521,7 @@ def validate_clausalmods(ch, vr):
                         ' nominalization and a free subordinator morhpheme or morpheme' +\
                         ' pair is not associated with each strategy, the produced grammar' +\
                         ' will be prone to spurious parsing.'
-                    vr.warn(cms.full_key + '_feat_name', mess)
+                    vr.warn(feat.full_key + '_name', mess)
 
 
 
