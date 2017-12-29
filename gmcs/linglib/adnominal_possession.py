@@ -306,7 +306,7 @@ def customize_lexicon(strat,mylang,ch,lexicon):
                                  [  SYNSEM.LOCAL [ CAT  [ HEAD.POSS possessor,\
                                                           VAL [ SPR < >,\
                                                                 COMPS.FIRST.LOCAL [ CAT.HEAD noun,\
-                                                                                   CONT.HOOK.INDEX #possessor ],\
+                                                                                    CONT.HOOK.INDEX #possessor ],\
                                                                SPEC.FIRST.LOCAL [ CONT.HOOK [ INDEX #possessum,\
                                                                                               LTOP #lbl ],\
                                                                                   CAT.VAL.SPR < [ ] > ] ] ],\
@@ -328,8 +328,8 @@ def customize_lexicon(strat,mylang,ch,lexicon):
                 mylang.add('possessor-adp-lex := two-rel-adposition-lex &\
                                  [  SYNSEM.LOCAL [ CAT [ HEAD.POSS possessor,\
                                                          VAL [ SPR < >,\
-                                                               COMPS.FIRST.LOCAL [ CAT.HEAD noun,\
-                                                                                 CONT.HOOK.INDEX #possessor ] ],\
+                                                               COMPS.FIRST.LOCAL [ CAT [ HEAD noun ],\
+                                                                                   CONT.HOOK.INDEX #possessor ] ],\
                                                          HEAD.MOD.FIRST.LOCAL [ CONT.HOOK [ INDEX #possessum,\
                                                                                             LTOP #lbl ],\
                                                                                 CAT.VAL.SPR < [ ] > ] ],\
@@ -340,7 +340,7 @@ def customize_lexicon(strat,mylang,ch,lexicon):
                 mylang.add('possessor-adp-lex := two-rel-adposition-lex &\
                                  [  SYNSEM.LOCAL [ CAT [ HEAD.POSS possessor,\
                                                          VAL [ SPR < >,\
-                                                               COMPS.FIRST.LOCAL [ CAT.HEAD noun ] ],\
+                                                               COMPS.FIRST.LOCAL [ CAT [ HEAD noun ] ] ],\
                                                          HEAD.MOD.FIRST.LOCAL [ CAT.VAL.SPR < [ ] > ] ],\
                                                   CONT [ RELS <! !>,\
                                                          HCONS <! !>,\
