@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of adnom-poss-test
 ;;; created at:
-;;;     Fri Dec 29 01:25:28 UTC 2017
+;;;     Fri Dec 29 19:18:16 UTC 2017
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -59,6 +59,14 @@ non-3rd := person.
 number := *top*.
 sg := number.
 pl := number.
+
+;Constraint on MC used to be part of matrix.tdl
+;;it applies to all wo implementations, except for v2
+
+head-comp-phrase := basic-head-1st-comp-phrase & head-initial.
+
+subj-head-phrase := decl-head-subj-phrase & head-final &
+  [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
 
 ;;;;;;;;;;;;;;;;;;;
 ;;; Lexical Types
@@ -161,24 +169,7 @@ non-3rd-lex-rule := const-lex-rule & pernum-lex-rule-super &
 
 head-mod-poss-phrase := basic-head-mod-phrase-simple & head-compositional & head-final &
   [ SYNSEM.LOCAL.CAT.VAL.SPEC #spec,
-    HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.SPEC #spec,
-                                HEAD.POSS nonpossessive ],
-    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessor ].
-
-; Rules for building NPs.  Note that the Matrix uses SPR for
-; the specifier of nouns and SUBJ for the subject (specifier) of verbs.
-
-head-spec-phrase := basic-head-spec-phrase & head-final &
-  [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.SPR < >,
-                                    HEAD.POSS nonpossessive ] ].
-
-;Constraint on MC used to be part of matrix.tdl
-;;it applies to all wo implementations, except for v2
-
-head-comp-phrase := basic-head-1st-comp-phrase & head-initial.
-
-subj-head-phrase := decl-head-subj-phrase & head-final &
-  [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
+    HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPEC #spec ].
 
 two-rel-adposition-lex := basic-icons-lex-item &
   [ SYNSEM [ LOCAL [ CAT [ HEAD adp,
@@ -209,6 +200,11 @@ possessor-adp-lex := two-rel-adposition-lex &
 
 ;Constraint on MC used to be part of matrix.tdl
 ;;it applies to all wo implementations, except for v2
+
+; Rules for building NPs.  Note that the Matrix uses SPR for
+; the specifier of nouns and SUBJ for the subject (specifier) of verbs.
+
+head-spec-phrase := basic-head-spec-phrase & head-final.
 
 ; Bare NP phrase.  Consider modifying the PRED value of the quantifier relation
 ; introduced to match the semantic effect of bare NPs in your language.
