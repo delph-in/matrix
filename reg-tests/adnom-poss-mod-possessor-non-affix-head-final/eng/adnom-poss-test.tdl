@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of adnom-poss-test
 ;;; created at:
-;;;     Fri Dec 29 19:18:16 UTC 2017
+;;;     Sat Dec 30 19:37:30 UTC 2017
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -183,20 +183,20 @@ two-rel-adposition-lex := basic-icons-lex-item &
                           [ ARG2 #ind ] ] ].
 
 possessor-adp-lex := two-rel-adposition-lex &
-  [ SYNSEM.LOCAL [ CAT [ HEAD.POSS possessor,
-                         VAL [ SPR < >,
+  [ SYNSEM.LOCAL [ CAT [ VAL [ SPR < >,
                                COMPS.FIRST.LOCAL [ CAT.HEAD noun,
                                                    CONT.HOOK.INDEX #possessor ] ],
-                         HEAD.MOD.FIRST.LOCAL [ CONT.HOOK [ INDEX #possessum,
-                                                            LTOP #lbl ],
-                                                CAT.VAL.SPR < [ ] > ] ],
-                   CONT [ RELS <! arg12-ev-relation &
+                         HEAD [ POSS possessor,
+                                MOD.FIRST.LOCAL [ CAT.VAL.SPR < [ ] >,
+                                                  CONT.HOOK [ INDEX #possessum,
+                                                              LTOP #lbl ] ] ] ],
+                   CONT [ HCONS <!  !>,
+                          ICONS <!  !>,
+                          RELS <! arg12-ev-relation &
                                   [ PRED "poss_rel",
                                     LBL #lbl,
                                     ARG1 #possessum,
-                                    ARG2 #possessor ] !>,
-                          HCONS <!  !>,
-                          ICONS <!  !> ] ] ].
+                                    ARG2 #possessor ] !> ] ] ].
 
 ;Constraint on MC used to be part of matrix.tdl
 ;;it applies to all wo implementations, except for v2

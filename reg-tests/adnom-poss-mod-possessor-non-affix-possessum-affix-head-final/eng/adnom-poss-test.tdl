@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of adnom-poss-test
 ;;; created at:
-;;;     Fri Dec 29 00:07:52 UTC 2017
+;;;     Sat Dec 30 20:46:07 UTC 2017
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -61,6 +61,14 @@ non-3rd := person.
 number := *top*.
 sg := number.
 pl := number.
+
+;Constraint on MC used to be part of matrix.tdl
+;;it applies to all wo implementations, except for v2
+
+head-comp-phrase := basic-head-1st-comp-phrase & head-initial.
+
+subj-head-phrase := decl-head-subj-phrase & head-final &
+  [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
 
 ;;;;;;;;;;;;;;;;;;;
 ;;; Lexical Types
@@ -175,9 +183,11 @@ possessum-lex-rule-1 := val-change-with-ccont-lex-rule &
                        VAL [ SPEC #spec,
                              SUBJ #subj,
                              SPR #spr,
-                             COMPS.FIRST.LOCAL [ CONT.HOOK.INDEX #possessor,
-                                                 CAT.HEAD +np &
-                                                          [ POSS possessor ] ] ] ] ].
+                             COMPS.FIRST [ OPT -,
+                                           LOCAL [ CONT.HOOK.INDEX #possessor,
+                                                   CAT cat-sat &
+                                                       [ HEAD +np &
+                                                              [ POSS possessor ] ] ] ] ] ] ].
 
 possessum-lex-rule := infl-lex-rule & possessive-lex-rule-super & possessum-lex-rule-1.
 
@@ -217,42 +227,31 @@ two-rel-adposition-lex := basic-icons-lex-item &
                           [ ARG2 #ind ] ] ].
 
 possessor-adp-lex := two-rel-adposition-lex &
-  [ SYNSEM.LOCAL [ CAT [ HEAD.POSS possessor,
-                         VAL [ SPR < >,
-                               COMPS.FIRST.LOCAL.CAT.HEAD noun ],
-                         HEAD.MOD.FIRST.LOCAL.CAT.VAL.SPR < [ ] > ],
-                   CONT [ RELS <!  !>,
-                          HCONS <!  !>,
-                          ICONS <!  !> ] ] ].
+  [ SYNSEM.LOCAL [ CAT [ VAL [ SPR < >,
+                               COMPS.FIRST [ LOCAL.CAT.HEAD noun,
+                                             OPT - ] ],
+                         HEAD [ MOD.FIRST.LOCAL.CAT.VAL.SPR < [ ] >,
+                                POSS possessor ] ],
+                   CONT [ HCONS <!  !>,
+                          ICONS <!  !>,
+                          RELS <!  !> ] ] ].
 
 ;;;;;;;;;;;;;;;;;;;
 ;;; Phrasal Types
 ;;;;;;;;;;;;;;;;;;;
 
+head-comp-poss-phrase := basic-head-1st-comp-phrase & head-final &
+  [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +np,
+    NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.SPR < >,
+                                    HEAD +np ] ].
+
 ;Constraint on MC used to be part of matrix.tdl
 ;;it applies to all wo implementations, except for v2
-
-head-comp-phrase := basic-head-1st-comp-phrase & head-initial.
-
-subj-head-phrase := decl-head-subj-phrase & head-final &
-  [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
-
-head-comp-poss-phrase := basic-head-1st-comp-phrase & head-final &
-  [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.SPR < >,
-                                    HEAD +np &
-                                         [ POSS possessor ] ],
-    HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +np &
-                                   [ POSS possessum ] ].
 
 ; Rules for building NPs.  Note that the Matrix uses SPR for
 ; the specifier of nouns and SUBJ for the subject (specifier) of verbs.
 
-head-spec-phrase := basic-head-spec-phrase & head-final &
-  [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.SPR < >,
-                                    HEAD.POSS nonpossessive ] ].
-
-;Constraint on MC used to be part of matrix.tdl
-;;it applies to all wo implementations, except for v2
+head-spec-phrase := basic-head-spec-phrase & head-final.
 
 ; Bare NP phrase.  Consider modifying the PRED value of the quantifier relation
 ; introduced to match the semantic effect of bare NPs in your language.

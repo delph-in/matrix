@@ -2895,7 +2895,7 @@ BeginIter poss-strat{i} "a possessive strategy"
      Radio order "Word order" "<p>The word order within a possessive phrase is:</p>" ""
      . head-final "head-final" "" "possessor-first<br>"
      . head-initial "head-initial" "" "possessum-first<br>"
-     . either "either" "" "either<br>"
+     . either "either" "" "either (not currently working)<br>"
 
      Radio mod-spec "Modifier or specifier" "<p>The possessor is more like a </p>" ""
      . spec "specifier" "" "specifier<br>"
