@@ -41,11 +41,10 @@ section=arg-opt
 section=nominalclause
   ns1_name=nom-mid
   ns1_level=mid
-  ns1_nmzRel=yes
 
 section=clausalmods
   cms1_position=before
-  cms1_modifier_attachment=s
+  cms1_modifier-attach=s
   cms1_subordinator=free
   cms1_subposition=before
   cms1_subordinator-type=head

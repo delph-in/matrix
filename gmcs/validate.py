@@ -1514,14 +1514,18 @@ def validate_clausalmods(ch, vr):
                 if feat.get('name') == 'nominalization':
                     mess = 'Nominalization is not supported of the adverb analysis.'
                     vr.err(feat.full_key + '_name', mess)
-        if cms.get('subordinator') == 'none':
-            for feat in cms.get('feat'):
-                if feat.get('name') == 'nominalization':
-                    mess = 'If multiple clausal modifier strategies are added with' +\
-                        ' nominalization and a free subordinator morhpheme or morpheme' +\
-                        ' pair is not associated with each strategy, the produced grammar' +\
-                        ' will be prone to spurious parsing.'
-                    vr.warn(feat.full_key + '_name', mess)
+        for feat in cms.get('feat'):
+            if feat.get('name') == 'nominalization':
+                mess = 'If multiple nominalization strategies are allowed in the grammar,' +\
+                        ' and clausal modifiers require nominalization, the produced grammar' +\
+                        ' will allow any nominalinalization strategy for the clausal modifier strategy.'
+                vr.warn(feat.full_key + '_name', mess)
+
+        # Check for unsupported features
+        for feat in cms.get('feat'):
+            if feat.get('type') == 'index':
+                mess = 'Index besides aspect and mood are not supported at this time.'
+                vr.err(feat.full_key + '_type', mess)
 
 
 
@@ -1547,7 +1551,7 @@ def validate_nominalized_clauses(ch, vr):
             if ns.get('nmzRel') != '':
                 mess = 'This is not a valid choice for' + \
                        ' nominalization at V or VP'
-            vr.err(ns.full_key + '_nmzRel', mess)
+                vr.err(ns.full_key + '_nmzRel', mess)
         if ns.get('level') == 'mid':
             if ch.get('word-order') == 'vso' or ch.get('word-order') == 'osv':
                 mess = 'The analysis for your word order does not include a' + \

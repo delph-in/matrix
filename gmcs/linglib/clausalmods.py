@@ -143,8 +143,7 @@ def create_head_subordinator_lexical_subtypes(mylang, lexicon, ch, cms):
     elif attach == 'vp':
         lextype.append('vp-attach')
         constraints.append('SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL.SUBJ < [ ] > ] >')
-    if cms.get('specialmorph') == 'on':
-        lextype, constraints = add_morphological_constraints(lextype, constraints, cms, 'lextype')
+    lextype, constraints = add_morphological_constraints(lextype, constraints, cms, 'lextype')
     if cms.get('shared-subj') == 'on':
         lextype.append('shared-subject')
         constraints.append('SYNSEM.LOCAL.CAT [ HEAD.MOD < [ LOCAL [ CONT.HOOK.XARG #xarg ]] >,\
@@ -227,8 +226,7 @@ def create_adverb_subordinator_lexical_subtypes(mylang, lexicon, cms):
         lextype.append('prehead')
     elif pos == 'after':
         lextype.append('posthead')
-    if cms.get('specialmorph') == 'on':
-        lextype, constraints = add_morphological_constraints(lextype, constraints, cms, 'lextype')
+    lextype, constraints = add_morphological_constraints(lextype, constraints, cms, 'lextype')
     saved_constraints = constraints
     saved_lextype = lextype
     if cms.get('subordinator') == 'free':
@@ -438,7 +436,6 @@ def add_subordinators_matrix_pair_to_lexicon(mylang, lexicon, cms, ch):
                                SYNSEM.LKEYS.KEYREL.PRED "' + matrixpred + '"].')
 
 def add_morphological_subord_rel(mylang, cms, ch, rules):
-    #todo- make the rel a variable and add subord rel if there is no rel
     """
     adds a non-branching rule that puts in a subord_rel (when no other semantic meaning
     is added via a subordinator) and accounts for special morphology, subject raising, and
@@ -454,8 +451,7 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
     elif pos == 'after':
         lextype.append('posthead')
         constraints.append('SYNSEM.LOCAL.CAT.POSTHEAD +')
-    if cms.get('specialmorph') == 'on':
-        lextype, constraints = add_morphological_constraints(lextype, constraints, cms, 'phrase')
+    lextype, constraints = add_morphological_constraints(lextype, constraints, cms, 'phrase')
     mylang.set_section('phrases')
     if cms.get('shared-subj') == 'on':
         lextype.append('shared-subject')
@@ -555,8 +551,8 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
     pred = cms.get('pred')
     if pred == '':
         pred = '_subord_rel'
-    rules.add(type + '-modifying-clause := ' + type + '-modifying-clause-phrase.')
     type = type + '-modifying-clause-phrase'
+    rules.add(type + ' := ' + type + '.')
     mylang.add(type + ' := ' + supertype + '.')
     while constraints != []:
         mylang.add(type + ' := [ ' + constraints.pop() + ' ].')
@@ -710,16 +706,19 @@ def add_head_compement_rules(mylang, rules, ch):
 
 def add_morphological_constraints(lextype, constraints, cms, type):
     for feat in cms.get('feat'):
-        if type == 'lextype':
-            if feat.get('value') != 'nominalization':
-                lextype.append(feat.get('value'))
-                constraints.append('SYNSEM.LOCAL.CAT [ HEAD.' + feat.get('name') + ' #feat,\
-        VAL.COMPS < [ LOCAL.CAT.HEAD.' + feat.get('name') + ' #feat & ' + feat.get('value') + ' ] > ]')
-        elif type == 'phrase':
-            if feat.get('value') != 'nominalization':
-                lextype.append(feat.get('value'))
-                constraints.append('SYNSEM.LOCAL.CAT [ HEAD.' + feat.get('name') + ' #feat ],\
-        ARGS < [ SYNSEM.LOCAL.CAT.HEAD.' + feat.get('name') + ' #feat & ' + feat.get('value') + ' ] >')
+        if feat.get('name') != 'nominalization':
+            lextype.append(feat.get('value'))
+            if feat.get('name') == 'mood' or feat.get('name') == 'aspect':
+                path = 'LOCAL.CONT.HOOK.INDEX.E.'
+            else:
+                path = 'LOCAL.CAT.HEAD.'
+            constraints.append('SYNSEM.' + path + feat.get('name').upper() + ' #feat')
+            if type == 'lextype':
+                constraints.append('SYNSEM.LOCAL.CAT.VAL.COMPS < [ ' + path + feat.get('name').upper()\
+                                   + ' #feat & ' + feat.get('value') + ' ] >')
+            elif type == 'phrase':
+                constraints.append('ARGS < [ SYNSEM.' + path + feat.get('name').upper()\
+                                   + ' #feat & ' + feat.get('value') + ' ] >')
     return lextype, constraints
 
 def build_lex_type(lextype):

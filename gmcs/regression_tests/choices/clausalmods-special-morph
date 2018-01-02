@@ -45,23 +45,20 @@ section=nominalclause
 
 section=clausalmods
   cms1_position=before
-  cms1_modifier_attachment=s
+  cms1_modifier-attach=s
   cms1_subordinator=none
-  cms1_specialmorph=on
     cms1_feat1_name=form
     cms1_feat1_value=purp
   cms1_pred=_purposive_rel
   cms2_position=before
-  cms2_modifier_attachment=s
+  cms2_modifier-attach=s
   cms2_subordinator=none
-  cms2_specialmorph=on
     cms2_feat1_name=form
     cms2_feat1_value=simul
   cms2_pred=_simultaneous_rel
   cms3_position=before
-  cms3_modifier_attachment=s
+  cms3_modifier-attach=s
   cms3_subordinator=none
-  cms3_specialmorph=on
     cms3_feat1_name=form
     cms3_feat1_value=prog
 
