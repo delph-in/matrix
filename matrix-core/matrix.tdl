@@ -580,8 +580,12 @@ event-or-ref-index := individual.
 ; so those aren't included here.
 
 expl-ind := index.
-ref-ind := index & event-or-ref-index &
-  [ PNG png ].
+
+; 2018-01-01 EKN As experiment, declaring PNG on a supertype
+; that ref-ind inherits from:
+
+ref-ind := index & event-or-ref-index & 
+ [ PNG png ].
 
 ; Types encoding agreement information, analyzed as a part of the
 ; index, following Pollard & Sag 1994.  Which subtypes and features

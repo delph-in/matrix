@@ -1,4 +1,5 @@
 import gmcs.tdl
+import gmcs.utils
 from gmcs.linglib.word_order import customize_major_constituent_order
 from gmcs.linglib.morphotactics import all_position_classes
 from gmcs.linglib.features import customize_feature_values
@@ -369,17 +370,21 @@ def customize_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
                                                       [ STEM < "'+orth+'" >].')
         elif strat.get('possessor-agr')=='agree':
             # TODO: set section here
-            mylang.add('poss :+ [ PNG png ].')
+            mylang.add('poss :+ [ PNG png ].',section='addenda')
             # TODO: revert to prev section here
             for form in strat.get('possessor-form'):
-                print form
-                adp_type=adp_id(form)
-                print adp_type
-                mylang.add(adp_type+' := possessor-adp-lex.')
-                customize_feature_values(mylang,ch,hierarchies,form,adp_type,'adp',form.get('possessor-feat'))
+                spec_prefix='SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
+                mod_prefix='SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
                 orth=form.get('agr-orth')
-                lexicon.add(adp_type+' := possessor-adp-lex &\
-                                         [ STEM < "'+form.get('agr-orth')+'" > ].')
+                adp_type=adp_id(form)
+                mylang.add(adp_type+' := possessor-adp-lex &\
+                                        [ SYNSEM.LOCAL.CAT.HEAD.POSS.PNG #png,\
+                                        '+spec_prefix+' #png ].')
+                customize_feature_values(mylang,ch,hierarchies,form,adp_type,'poss-marker',form.get('possessor-feat'))
+                orth=form.get('agr-orth')
+                # TODO: Maybe should be named by the orth form, not by the name? Not sure.
+                lexicon.add(adp_type.replace('-lex','')+' := '+adp_type+' &\
+                                         [ STEM < "'+orth+'" > ].')
 
 
     if (mark_loc=='possessum' or mark_loc=='both') and possessum_type=='non-affix':

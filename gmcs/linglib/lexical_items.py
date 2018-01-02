@@ -564,7 +564,6 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
 
 
     for noun in ch.get('noun',[]):
-        print noun
         ntype = noun_id(noun)
         det = noun.get('det')
         if noun.full_key in stopdets:
