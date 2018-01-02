@@ -2939,15 +2939,15 @@ BeginIter poss-strat{i} "a possessive strategy"
 
 	   Text agr-orth "Agreement orthography" "<br> The form spelled: " "<br>carries the following agreement features<br>" 15
 
-	   BeginIter possessor-feat{k} "an agreement feature"
+	   BeginIter feat{k} "an agreement feature"
 	   
 	   Select name "Possessive strategy {i} possessor-marking word Form {n} Feature {k} Name" "Name: " " "
       	   fillnames c=noun
 
       	   MultiSelect value "Possessive Strategy {i} possessor-marking word Form {n} Feature {k} Value" "Value: " ""
-      	   fillvalues p=poss-strat{i}_possessor-form{n}_possessor-feat{k}_name
+      	   fillvalues p=poss-strat{i}_possessor-form{n}_feat{k}_name
 
-    	   EndIter possessor-feat
+    	   EndIter feat
 
 	   EndIter possessor-form
 
@@ -2992,15 +2992,15 @@ BeginIter poss-strat{i} "a possessive strategy"
 
 	   Text agr-orth "Orthography agreement" "<br>The form spelled: " "<br> carries the following agreement features:<br>" 15
 
-           BeginIter possessum-feat{l} "an agreement feature"
+           BeginIter feat{l} "an agreement feature"
 	   
            Select name "Possessive strategy {i} possessum-marking word Form {k} Feature {l} Name" "Name: " " "
            fillnames c=noun
 
            MultiSelect value "Noun Position Class {i} Lexical Rule Type {j} Form {k} Feature {l} Value" "Value: " ""
-           fillvalues p=poss-strat{i}_possessum-form{m}_possessum-feat{l}_name
+           fillvalues p=poss-strat{i}_possessum-form{m}_feat{l}_name
 
-           EndIter possessum-feat
+           EndIter feat
 
 	   EndIter possessum-form
 
