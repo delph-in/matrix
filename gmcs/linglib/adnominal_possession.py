@@ -370,7 +370,7 @@ def customize_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
                                                       [ STEM < "'+orth+'" >].')
         elif strat.get('possessor-agr')=='agree':
             # TODO: set section here
-            mylang.add('poss :+ [ PNG png ].',section='addenda')
+#            mylang.add('poss :+ [ PNG png ].',section='addenda')
             # TODO: revert to prev section here
             for form in strat.get('possessor-form'):
                 spec_prefix='SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'

@@ -290,14 +290,6 @@ head := head-min &
     KEYS keys_min,
     POSS poss ].
 
-; EKN 2017-12-12 Adding POSS feature to HEAD.
-
-poss := *top*.
-possessive := poss.
-nonpossessive := poss.
-possessor := possessive.
-possessum := possessive.
-
 
 ; (ERB 2004-08-19) We had previously shied away from defining head
 ; types because even head types that are expected to occur across
@@ -585,7 +577,15 @@ expl-ind := index.
 ; that ref-ind inherits from:
 
 ref-ind := index & event-or-ref-index & 
- [ PNG png ].
+ 	[ PNG png ].
+
+; EKN 2017-12-12 Adding POSS feature to HEAD.
+
+poss := *top*.
+possessive := poss.
+nonpossessive := poss.
+possessor := possessive.
+possessum := possessive.
 
 ; Types encoding agreement information, analyzed as a part of the
 ; index, following Pollard & Sag 1994.  Which subtypes and features

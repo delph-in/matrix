@@ -585,7 +585,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
         else:
             mylang.add(ntype + ' := ' + ' & '.join(stype_names) + '.')
 
-#        features.customize_feature_values(mylang, ch, hierarchies, noun, ntype, 'noun')
+        features.customize_feature_values(mylang, ch, hierarchies, noun, ntype, 'noun')
 
         for stem in noun.get('stem', []):
             orthstr = orth_encode(stem.get('orth'))

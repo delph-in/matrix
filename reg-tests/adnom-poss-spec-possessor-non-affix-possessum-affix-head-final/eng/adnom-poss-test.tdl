@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of adnom-poss-test
 ;;; created at:
-;;;     Mon Jan 01 19:30:24 UTC 2018
+;;;     Tue Jan 02 05:53:06 UTC 2018
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -86,8 +86,7 @@ noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & non-mod-lex-ite
                                    OPT - ] > ] ].
 
 common-noun-lex := noun-lex &
-  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 3rd,
-    INFLECTED [ NUM-FLAG -,
+  [ INFLECTED [ NUM-FLAG -,
                 POSSESSIVE-FLAG - ] ].
 
 ;;; Verbs
