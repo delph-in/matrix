@@ -97,7 +97,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
       geom_prefix += 'LOCAL.CAT.VAL.COMPS.FIRST.'
 
     if pos=='poss-marker':
-      geom_prefix = 'SYNSEM.LOCAL.CAT.HEAD.POSS.'
+      geom_prefix = 'SYNSEM.LOCAL.CAT.HEAD.POSS.POSS-AGR.'
 
 
     # TJT 2014-05-08 adding the break and moving the concatenation up
@@ -117,7 +117,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
           if head in ('xarg','mod') and n == 'case':
             geom_prefix = 'SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.HEAD.CASE'
           if pos=='poss-marker':
-            value=value.replace('LOCAL.CONT.HOOK.INDEX.','')
+            value=value.replace('LOCAL.CONT.HOOK.INDEX.PNG.','')
           geom = geom_prefix + value
 #          if head == 'mod':
 #            geom += "] >"  # TJT 2014-05-27: close MOD

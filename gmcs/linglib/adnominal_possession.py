@@ -370,16 +370,18 @@ def customize_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
                                                       [ STEM < "'+orth+'" >].')
         elif strat.get('possessor-agr')=='agree':
             # TODO: set section here
-#            mylang.add('poss :+ [ PNG png ].',section='addenda')
+            mylang.add('poss :+ [ POSS-AGR png ].',section='addenda')
             # TODO: revert to prev section here
             for form in strat.get('possessor-form'):
-                spec_prefix='SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
-                mod_prefix='SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
+                if mod_spec=='spec':
+                    prefix='SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
+                elif mod_spec=='mod':
+                    prefix='SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
                 orth=form.get('agr-orth')
                 adp_type=adp_id(form)
                 mylang.add(adp_type+' := possessor-adp-lex &\
-                                        [ SYNSEM.LOCAL.CAT.HEAD.POSS.PNG #png,\
-                                        '+spec_prefix+' #png ].')
+                                        [ SYNSEM.LOCAL.CAT.HEAD.POSS.POSS-AGR #png,\
+                                        '+prefix+' #png ].')
                 customize_feature_values(mylang,ch,hierarchies,form,adp_type,'poss-marker',form.get('possessor-feat'))
                 orth=form.get('agr-orth')
                 # TODO: Maybe should be named by the orth form, not by the name? Not sure.
