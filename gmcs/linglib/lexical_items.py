@@ -34,6 +34,10 @@ def det_id(item):
     """Return the identifier for a determiner lexical item."""
     return get_name(item) + '-determiner-lex'
 
+def adp_id(item):
+    """Return the identifier for an adposition lexical item."""
+    return get_name(item) + '-adp-lex'
+
 
 ##########################################################
 # insert_ids()
@@ -560,6 +564,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
 
 
     for noun in ch.get('noun',[]):
+        print noun
         ntype = noun_id(noun)
         det = noun.get('det')
         if noun.full_key in stopdets:
@@ -581,7 +586,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
         else:
             mylang.add(ntype + ' := ' + ' & '.join(stype_names) + '.')
 
-        features.customize_feature_values(mylang, ch, hierarchies, noun, ntype, 'noun')
+#        features.customize_feature_values(mylang, ch, hierarchies, noun, ntype, 'noun')
 
         for stem in noun.get('stem', []):
             orthstr = orth_encode(stem.get('orth'))

@@ -2935,6 +2935,8 @@ BeginIter poss-strat{i} "a possessive strategy"
 
 	   BeginIter possessor-form{n} "a possessor-marking word with agreement features"
 
+	   Text name "Type name" "Type name: " "-adp-lex<br>" 15
+
 	   Text agr-orth "Agreement orthography" "<br> The form spelled: " "<br>carries the following agreement features<br>" 15
 
 	   BeginIter possessor-feat{k} "an agreement feature"
@@ -2985,6 +2987,8 @@ BeginIter poss-strat{i} "a possessive strategy"
            Label "<div id='possessum-agr{i}' style='display:none'>"
 
 	   BeginIter possessum-form{m} "a possessum-marking word with agreement features"
+
+	   Text name "Type name" "Type name: " "-adp-lex<br>" 15
 
 	   Text agr-orth "Orthography agreement" "<br>The form spelled: " "<br> carries the following agreement features:<br>" 15
 

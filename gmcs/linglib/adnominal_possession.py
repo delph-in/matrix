@@ -1,6 +1,8 @@
 import gmcs.tdl
 from gmcs.linglib.word_order import customize_major_constituent_order
 from gmcs.linglib.morphotactics import all_position_classes
+from gmcs.linglib.features import customize_feature_values
+from gmcs.linglib.lexical_items import adp_id
 ###################################################################
 # Atoms of a possessive strategy:
 #
@@ -55,13 +57,13 @@ JUXTAPOSITION_RULE=' := [ SYNSEM.LOCAL.CAT [ HEAD #head,\
                                                        CONT.HOOK.INDEX #possessor ] ].'
 
 # PRIMARY FUNCTION
-def customize_adnominal_possession(mylang,ch,rules,irules,lexicon):
+def customize_adnominal_possession(mylang,ch,rules,irules,lexicon,hierarchies):
     for strat in ch.get('poss-strat',[]):
         customize_rules(strat,mylang,ch,rules)
         if strat.get('possessor-type')=='affix' or strat.get('possessum-type')=='affix':
             customize_irules(strat,mylang,ch,irules)
         if strat.get('possessor-type')=='non-affix' or strat.get('possessum-type')=='non-affix':
-            customize_lexicon(strat,mylang,ch,lexicon,rules)
+            customize_lexicon(strat,mylang,ch,lexicon,rules,hierarchies)
         if 'affix' not in (strat.get('possessor-type'), strat.get('possessum-type')):
             mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT.HEAD.POSS nonpossessive ].')
 
@@ -116,7 +118,6 @@ def customize_rules(strat,mylang,ch,rules):
         # Exception: no rule added if preexistent head-comps has correct order
         elif strat.get('mod-spec')=='mod':
             if strat.get('mark-loc')=='possessum' or strat.get('mark-loc')=='both':
-                print head_comp_order
                 phrase_rule="head-comp-poss-phrase"
                 # Check if the existing head-comp rule has the correct order; 
                 # if not, add a new rule with correct order that only applies to poss-phrases.
@@ -135,32 +136,28 @@ def customize_rules(strat,mylang,ch,rules):
     # If the possession marker is not in the right order for existing head-comps to deal with it, add a new head-comps rule here
     # which requires its head be [ POSS possessive ]
     added_rule_for_marker=False
-    # If you haven't added a head-comp rule above, then either the head-comp order for possessive phrases is the same as basic WO
-    # or it isn't a head-comp possessive strategy
+    # Note: this first check will stop you from trying to add a third head-comp rule when only two orders are possible:
     if not rule_added:
         if mark_loc=='both':
             if head_comp_order!=strat.get('possessor-marker-order') and head_comp_order!=strat.get('possessum-marker-order'):
-                print "adding "+strat.get('possessor-marker-order')+" variant"
                 mylang.add('head-comp-poss-phrase := '+strat.get('possessor-marker-order')+' & basic-head-1st-comp-phrase &\
                                        [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessive ].')
                 rules.add('head-comp-poss := head-comp-poss-phrase.')
                 added_rule_for_marker=True
         elif mark_loc=='possessor':
             if head_comp_order!=strat.get('possessor-marker-order'):
-                print "adding "+strat.get('possessor-marker-order')+" variant"
                 mylang.add('head-comp-poss-phrase := '+strat.get('possessor-marker-order')+' & basic-head-1st-comp-phrase &\
                                        [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessor ].')
                 rules.add('head-comp-poss := head-comp-poss-phrase.')
                 added_rule_for_marker=True
         elif mark_loc=='possessum':
             if head_comp_order!=strat.get('possessum-marker-order'):
-                print "adding "+strat.get('possessum-marker-order')+" variant"
                 mylang.add('head-comp-poss-phrase := '+strat.get('possessum-marker-order')+' & basic-head-1st-comp-phrase &\
                                        [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessum ].')
                 rules.add('head-comp-poss := head-comp-poss-phrase.')
                 added_rule_for_marker=True
 
-        # If a specialized (non-juxtaposition) poss phrase rule was added, require that the marked constituent be marked possessive.
+        # If a specialized (non-juxtaposition) poss phrase rule was added, require that the marked constituent be [ POSS possessive ]
         # TODO: check if I can take out the stuff after 'and not'
         if rule_added and not (added_rule_for_marker and phrase_rule=='head-comp-poss-phrase'):
             if strat.get('mark-loc')=='possessor':
@@ -211,8 +208,6 @@ def customize_rules(strat,mylang,ch,rules):
 
 
 
-
-# NOTE: customize_irules and customize_lex pseudocode/code both don't handle agreement yet
 
 def customize_irules(strat,mylang,ch,irules):
     #TODO: this method for retrieving the strategy name is garbage. Fix it.
@@ -313,7 +308,7 @@ def customize_irules(strat,mylang,ch,irules):
                                            [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD +np & [ POSS possessor ] ].')
  
 
-def customize_lexicon(strat,mylang,ch,lexicon,rules):
+def customize_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
     strat_name=strat.full_keys()[0].split("_")[0]
     strat_num=strat_name[-1]
     mark_loc=strat.get('mark-loc')
@@ -321,7 +316,6 @@ def customize_lexicon(strat,mylang,ch,lexicon,rules):
     possessor_type=strat.get('possessor-type')
     possessum_type=strat.get('possessum-type')
     if (mark_loc=='possessor' or mark_loc=='both') and possessor_type=='non-affix':
-        orth=strat.get('possessor-orth')
         mylang.add('two-rel-adposition-lex := basic-icons-lex-item &\
   [ SYNSEM [ LOCAL [ CAT [ HEAD adp,\
                            VAL.COMPS < [ LOCAL [ CAT cat-sat,\
@@ -368,9 +362,25 @@ def customize_lexicon(strat,mylang,ch,lexicon,rules):
                 mylang.add('possessor-adp-lex := two-rel-adposition-lex &\
                                  [ SYNSEM.LOCAL [ CAT.HEAD.POSS possessor,\
                                                   CONT.RELS <! !> ] ] .')
-        # TODO: this lex item doesn't follow nomenclature conventions yet:
-        lexicon.add('possessor-adp-'+strat_num+' := possessor-adp-lex &\
-                                                  [ STEM < "'+orth+'" >].')
+        # TODO: these lex items don't follow nomenclature conventions yet:
+        if strat.get('possessor-agr')=='non-agree':
+            orth=strat.get('possessor-orth')
+            lexicon.add('possessor-adp-'+strat_num+' := possessor-adp-lex &\
+                                                      [ STEM < "'+orth+'" >].')
+        elif strat.get('possessor-agr')=='agree':
+            # TODO: set section here
+            mylang.add('poss :+ [ PNG png ].')
+            # TODO: revert to prev section here
+            for form in strat.get('possessor-form'):
+                print form
+                adp_type=adp_id(form)
+                print adp_type
+                mylang.add(adp_type+' := possessor-adp-lex.')
+                customize_feature_values(mylang,ch,hierarchies,form,adp_type,'adp',form.get('possessor-feat'))
+                orth=form.get('agr-orth')
+                lexicon.add(adp_type+' := possessor-adp-lex &\
+                                         [ STEM < "'+form.get('agr-orth')+'" > ].')
+
 
     if (mark_loc=='possessum' or mark_loc=='both') and possessum_type=='non-affix':
         orth=strat.get('possessum-orth')

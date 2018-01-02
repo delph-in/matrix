@@ -290,7 +290,7 @@ head := head-min &
     KEYS keys_min,
     POSS poss ].
 
-; EKN 2017-12-12 Adding POSS feature to HEAD. Experimental. Kinda slipshod.
+; EKN 2017-12-12 Adding POSS feature to HEAD.
 
 poss := *top*.
 possessive := poss.

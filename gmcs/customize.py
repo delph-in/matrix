@@ -595,7 +595,7 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
     # customize_gender()
     #  customize_other_features()
     agreement_features.customize_agreement_features(mylang, hierarchies)
-    adnominal_possession.customize_adnominal_possession(mylang,ch,rules,irules,lexicon)
+    adnominal_possession.customize_adnominal_possession(mylang,ch,rules,irules,lexicon,hierarchies)
     # customize_form()
     # customize_tense()
     # customize_aspect()
