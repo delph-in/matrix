@@ -376,7 +376,10 @@ def customize_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
                 if mod_spec=='spec':
                     prefix='SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
                 elif mod_spec=='mod':
-                    prefix='SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
+                    if mark_loc=='possessor':
+                        prefix='SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
+                    elif mark_loc=='both':
+                        prefix='SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
                 orth=form.get('agr-orth')
                 adp_type=adp_id(form)
                 mylang.add(adp_type+' := possessor-adp-lex &\
