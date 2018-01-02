@@ -1,4 +1,3 @@
-
 ;;; -*- Mode: TDL; Package: LKB -*-
 ;;;
 ;;; HPSG Grammar Matrix
@@ -576,11 +575,15 @@ expl-ind := index.
 ; 2018-01-01 EKN As experiment, declaring PNG on a supertype
 ; that ref-ind inherits from:
 
+;png-item = avm & [ PNG png ].
+
+;ref-ind := index & event-or-ref-index & png-item.
 ref-ind := index & event-or-ref-index & 
- 	[ PNG png ].
+	[ PNG png ].
 
 ; EKN 2017-12-12 Adding POSS feature to HEAD.
 
+;poss := png-item.
 poss := *top*.
 possessive := poss.
 nonpossessive := poss.
