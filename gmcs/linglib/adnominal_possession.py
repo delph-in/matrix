@@ -272,10 +272,10 @@ def customize_irules(strat,mylang,ch,irules):
                                                                       DTR.SYNSEM.LOCAL [ CAT.VAL #val ] ].')
                     # If an agreement strategy is indicated, identify POSS-AGR with PNG of possessum
                     if strat.get('possessor-agr')=='agree' and possessor_type=='affix':
+                        mylang.add('poss :+ [ POSS-AGR png ].',section='addenda')
                     # Note: don't do this in the mod-like both-marking scenario -- possessor is a COMP and has no access to 
                     # possessum. In this scenario, the identification must be done on the possessum inflection.
-                        if not mark_loc=='both' and mod_spec=='mod':
-                            mylang.add('poss :+ [ POSS-AGR png ].',section='addenda')
+                        if not (mark_loc=='both' and mod_spec=='mod'):
                             mylang.add(possessor_rule_name+' := [ SYNSEM.LOCAL.CAT.HEAD.POSS.POSS-AGR #png,\
                                                                                '+agr_prefix+' #png ].')
 
