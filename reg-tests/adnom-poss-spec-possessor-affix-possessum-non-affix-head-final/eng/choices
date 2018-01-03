@@ -133,6 +133,6 @@ section=adnom-poss
   poss-strat1_mark-loc=both
   poss-strat1_possessor-type=affix
   poss-strat1_possessum-type=non-affix
-  poss-strat1_possessum-marker-order=left
+  poss-strat1_possessum-marker-order=head-initial
   poss-strat1_possessum-agr=non-agree
   poss-strat1_possessum-orth=POSSESSUM

@@ -160,15 +160,15 @@ def customize_rules(strat,mylang,ch,rules):
 
         # If a specialized (non-juxtaposition) poss phrase rule was added, require that the marked constituent be [ POSS possessive ]
         # TODO: check if I can take out the stuff after 'and not'
-        if rule_added and not (added_rule_for_marker and phrase_rule=='head-comp-poss-phrase'):
-            if strat.get('mark-loc')=='possessor':
-                mylang.add(phrase_rule+':= [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS nonpossessive,\
+    if rule_added and not (added_rule_for_marker and phrase_rule=='head-comp-poss-phrase'):
+        if strat.get('mark-loc')=='possessor':
+            mylang.add(phrase_rule+':= [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS nonpossessive,\
                                              NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessor ].',merge=True)
-            if strat.get('mark-loc')=='possessum':
-                mylang.add(phrase_rule+':= [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessum,\
+        if strat.get('mark-loc')=='possessum':
+            mylang.add(phrase_rule+':= [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessum,\
                                              NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS nonpossessive ].',merge=True)
-            if strat.get('mark-loc')=='both':
-                mylang.add(phrase_rule+':= [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessor,\
+        if strat.get('mark-loc')=='both':
+            mylang.add(phrase_rule+':= [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessor,\
                                              HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessum ].',merge=True)
         # Make non-possessive phrases reject possessive nouns:
         if ch.get('has-dets')=='yes':
@@ -330,7 +330,8 @@ def customize_irules(strat,mylang,ch,irules):
                     # Therefore, it has no access to the possessum's PNG info. When the possessor agrees with 
                     # the possessum, therefore, all agreement must be done in the possessum-inflecting rule:
                     if mark_loc=='both' and mod_spec=='mod' and strat.get('possessor-agr')=='agree':
-                        mylang.add(possessum_rule_name+' := [ SYNSEM.LOCAL [ CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.POSS.POSS-AGR #poss-png,\
+                        if possessum_type=='affix':
+                            mylang.add(possessum_rule_name+' := [ SYNSEM.LOCAL [ CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.POSS.POSS-AGR #poss-png,\
                                                                                  CONT.HOOK.INDEX.PNG #poss-png ] ].')
 
 
