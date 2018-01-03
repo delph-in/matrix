@@ -1115,11 +1115,11 @@ function subpair_fill_pred(name,pos)
       subord_word = subord_elms[i].value;
     }
   }
-  var subord_pred = "_"+subord_word+"+"+matrix_word+"_"+pos+"_rel";
+  var subordpred = "_"+subord_word+"+"+matrix_word+"_"+pos+"_rel";
   subord_elms = document.getElementsByName(name+'_subordpred');
   for (var i = 0; i < subord_elms.length; i++) {
     if (subord_elms[i].type == "text" && subord_elms[i].value == '' && subord_word != '') {
-      subord_elms[i].value = subord_pred;
+      subord_elms[i].value = subordpred;
       var text_elms = document.getElementsByTagName('input');
       var match_inds = [];
       for (var j = 0; j < text_elms.length; j++) {
@@ -1129,7 +1129,7 @@ function subpair_fill_pred(name,pos)
       }
       if (match_inds.length > 1){
         for (var j = 0; j < match_inds.length; j++) {
-          text_elms[match_inds[j]].value = subord_pred.replace("_rel", "_"+(j+1)+"_rel");
+          text_elms[match_inds[j]].value = subordpred.replace("_rel", "_"+(j+1)+"_rel");
         }
       }
     }
