@@ -270,7 +270,7 @@ def customize_irules(strat,mylang,ch,irules):
                                                                     [ SYNSEM.LOCAL [ CAT [ HEAD.POSS possessor,\
                                                                                            VAL #val ] ] ,\
                                                                       DTR.SYNSEM.LOCAL [ CAT.VAL #val ] ].')
-                    if strat.get('possessor-agr')=='agree':
+                    if strat.get('possessor-agr')=='agree' and possessor_type=='affix':
                         mylang.add('poss :+ [ POSS-AGR png ].',section='addenda')
                         mylang.add(possessor_rule_name+' := [ SYNSEM.LOCAL.CAT.HEAD.POSS.POSS-AGR #png,\
                                                               '+agr_prefix+' #png ].')
@@ -315,7 +315,7 @@ def customize_irules(strat,mylang,ch,irules):
                             if mark_loc=='both':
                                 mylang.add(possessum_rule_name+' :=\
                                            [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD +np & [ POSS possessor ] ].')
-                    if strat.get('possessum-agr')=='agree':
+                    if strat.get('possessum-agr')=='agree' and possessum_type=='affix':
                         mylang.add('poss :+ [ POSS-AGR png ].',section='addenda')
                         mylang.add(possessum_rule_name+' := [ SYNSEM.LOCAL.CAT.HEAD.POSS.POSS-AGR #png,\
                                                               '+agr_prefix+' #png ].')
