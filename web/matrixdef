@@ -1753,7 +1753,7 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
      
      	   Label "<div id='adverb{i}' style='display:none'>"
 
-	   Radio possessor-agr "Possessor agreement" "<p>Does the affix that marks the possessor agree with the possessum (e.g. in person, number, or gender)?</p>" ""
+	   Radio adverb-attach "Adverb Attach" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If the subordinator is an adverb, does it attach to VP, S or both?<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
 	   . agree "Possessor agree" "" "yes<br>"
 	   . non-agree "Possessor non-agree" "" "no<br>"
 
