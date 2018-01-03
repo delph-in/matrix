@@ -1747,7 +1747,7 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
       . before "Before" "" "before the VP or S it attaches to<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
       . after "After" "" "after the VP or S it attaches to<br>"
 
-Radio possessor-type "Possessor morpheme type" "<p>Is the morpheme that marks the <b>possessor</b> an affix or a separate word?</p>" ""
+      Radio subordinator-type "Subordinator Type" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Is the free subordinator morpheme treated as the head of its clause or as and adverbial?:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
      	. affix "Possessor affix" "" "affix<br>"  "toggle_element.call(this, 'possessor-affix{i}', 'on'); toggle_element.call(this, 'possessor-non-affix{i}', 'off');"
      	. non-affix "Possessor non-affix" "" "separate word<br>" "toggle_element.call(this, 'possessor-affix{i}', 'off'); toggle_element.call(this, 'possessor-non-affix{i}', 'on');"
      
