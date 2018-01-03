@@ -1752,7 +1752,10 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
       . adverb "Adverb" "" "it is an adverb (not the head of its clause)<br>""toggle_element.call(this, 'adverb{i}', 'on')"
 
         Label "<div id='adverb{i}' style='display:none'>"
-
+          Radio adverb-attach "Adverb Attach" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If the subordinator is an adverb, does it attach to VP, S or both?<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
+          . vp "VP" "" "VP<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+          . s "S" "" "S<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+          . both "Both" "" "Both VP and S"
         Label "</div>"
 
       BeginIter freemorph{j} "A Free Subordinator Morpheme" 0
