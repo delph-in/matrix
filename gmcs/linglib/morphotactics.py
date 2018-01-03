@@ -660,8 +660,6 @@ def get_section_from_pc(pc):
             return 'lexrules'
 
 def write_supertypes(mylang, identifier, supertypes=None):
-    print identifier
-    print supertypes
     if supertypes is not None and len(supertypes) > 0:
         # CMC 2017-04-07 Handling for merged LRT/PCs: omit (same) identifier from list of supertypes written
         mylang.add('''%(id)s := %(sts)s.''' % \

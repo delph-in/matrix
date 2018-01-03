@@ -250,8 +250,8 @@ def customize_irules(strat,mylang,ch,irules):
                                                       HCONS <! !>, \
                                                       ICONS <! !>  ] ].',merge=True)
                         elif mod_spec=='mod':
-                            agr_prefix='SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
                             if mark_loc=='possessor':
+                                agr_prefix='SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
                                 mylang.add(possessor_rule_name+POSSESSOR_RULE)
                                 mylang.add(possessor_rule_name+' := head-change-with-ccont-lex-rule & \
                                            [ SYNSEM.LOCAL.CAT [ HEAD.MOD.FIRST [ LOCAL [ CAT [ VAL.SPR <[]>,\
@@ -270,10 +270,14 @@ def customize_irules(strat,mylang,ch,irules):
                                                                     [ SYNSEM.LOCAL [ CAT [ HEAD.POSS possessor,\
                                                                                            VAL #val ] ] ,\
                                                                       DTR.SYNSEM.LOCAL [ CAT.VAL #val ] ].')
+                    # If an agreement strategy is indicated, identify POSS-AGR with PNG of possessum
                     if strat.get('possessor-agr')=='agree' and possessor_type=='affix':
-                        mylang.add('poss :+ [ POSS-AGR png ].',section='addenda')
-                        mylang.add(possessor_rule_name+' := [ SYNSEM.LOCAL.CAT.HEAD.POSS.POSS-AGR #png,\
-                                                              '+agr_prefix+' #png ].')
+                    # Note: don't do this in the mod-like both-marking scenario -- possessor is a COMP and has no access to 
+                    # possessum. In this scenario, the identification must be done on the possessum inflection.
+                        if not mark_loc=='both' and mod_spec=='mod':
+                            mylang.add('poss :+ [ POSS-AGR png ].',section='addenda')
+                            mylang.add(possessor_rule_name+' := [ SYNSEM.LOCAL.CAT.HEAD.POSS.POSS-AGR #png,\
+                                                                               '+agr_prefix+' #png ].')
 
                     # Add possessum-inflecting rules
                     if (mark_loc=='possessum' or mark_loc=='both') and possessum_type=='affix':
@@ -318,7 +322,16 @@ def customize_irules(strat,mylang,ch,irules):
                     if strat.get('possessum-agr')=='agree' and possessum_type=='affix':
                         mylang.add('poss :+ [ POSS-AGR png ].',section='addenda')
                         mylang.add(possessum_rule_name+' := [ SYNSEM.LOCAL.CAT.HEAD.POSS.POSS-AGR #png,\
-                                                              '+agr_prefix+' #png ].')
+                                                             '+agr_prefix+' #png ].')
+                        if mark_loc=='both' and mod_spec=='mod':
+                            mylang.add(possessum_rule_name+' := [ SYNSEM.LOCAL [ CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.POSS.POSS-AGR #poss-png,\
+                                                                                 CONT.HOOK.INDEX.PNG #poss-png ] ].')
+
+                        # Note: in the mutual agreement, double marking mod-like scenario, the possessor is a COMP.
+                        # Therefore, it has no access to the possessum's PNG info. All agreement must therefore be done
+                        # in the possessum-inflecting rule:
+
+
 
 
 def customize_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
