@@ -2157,11 +2157,6 @@ BeginIter noun-pc{i} "a Position Class" 1 0
       MultiSelect value "Noun Position Class {i} Lexical Rule Type {j} Feature {k} Value" "Value: " ""
       fillvalues p=noun-pc{i}_lrt{j}_feat{k}_name
 
-      Select head "Noun Position Class {i} Lexical Rule Type {j} Feature {k} Head" "Specified on: " ""
-      . itself "Itself" "itself<br>"
-      . possessor "Possessor" "the possessor<br>"
-      . possessum "Possessum" "the possessum<br>"
-
     EndIter feat
 
     Label "<p>Morphotactic Constraints:</p>"
@@ -2915,11 +2910,11 @@ BeginIter poss-strat{i} "a possessive strategy"
      
      	   Label "<div id='possessor-affix{i}' style='display:none'>"
 
-	   Radio possessor-agr "Possessor agreement" "<p>Does the affix that marks the possessor agree with the possessum (e.g. in person, numbe, or gender)?</p>" ""
+	   Radio possessor-agr "Possessor agreement" "<p>Does the affix that marks the possessor agree with the possessum (e.g. in person, number, or gender)?</p>" ""
 	   . agree "Possessor agree" "" "yes<br>"
 	   . non-agree "Possessor non-agree" "" "no<br>"
 
-	   Label "<p> A feature called <span class=\"feat\">possessor_poss-strat{i}</span> with possible values <span class=\"tt\">plus</span> and <span class=\"tt\">minus</span> has been defined for use in defining morphemes on the morphology page.  In order to define a possessor-marking affix, add the appropriate position class and lexical rules, and mark the lexical rules as [<span class=\"feat\">possessor_poss-strat{i}</span> <span class=\"tt\">plus</span>]. Be sure to select the feature that corresponds to this strategy. </p>"
+	   Label "<p> A feature called <span class=\"feat\">possessor_poss-strat{i}</span> with possible values <span class=\"tt\">plus</span> and <span class=\"tt\">minus</span> has been defined for use in defining morphemes on the morphology page.  In order to define a possessor-marking affix, add the appropriate position class and lexical rules, and mark the lexical rules as [<span class=\"feat\">possessor_poss-strat{i}</span> <span class=\"tt\">plus</span>]. Be sure to select the feature that corresponds to <span class=\"feat\">possessor_poss-strat{i}</span>. If the possessor-marking affix(es) agree(s) with the possessum, add appropriate person, number, and gender features to each lexical rule type. </p>"
 
 	   Label "</div>"
 
@@ -2974,11 +2969,11 @@ BeginIter poss-strat{i} "a possessive strategy"
 
      	   Label "<div id='possessum-affix{i}' style='display:none'>"
 
-	   Radio possessum-agr "Possessum agreement" "<p>Does the affix that marks the possessum agree with the possessor (e.g. in person, numbe, or gender)?</p>" ""
+	   Radio possessum-agr "Possessum agreement" "<p>Does the affix that marks the possessum agree with the possessor (e.g. in person, number, or gender)?</p>" ""
 	   . agree "Possessum agree" "" "yes<br>"
 	   . non-agree "Possessum non-agree" "" "no<br>"
 
-	   Label "<p>A feature called <span class=\"feat\">possessum_poss-strat{i}</span> with possible values <span class=\"tt\">plus</span> and <span class=\"tt\">minus</span> has been defined for use in defining morphemes on the morphology page.  In order to define a possessum-marking affix, add the appropriate position class and lexical rules, and mark the lexical rules as [<span class=\"feat\">possessum_poss-strat{i}</span> <span class=\"tt\">plus</span>]. Be sure to select the feature that corresponds to this strategy.</p>"
+	   Label "<p>A feature called <span class=\"feat\">possessum_poss-strat{i}</span> with possible values <span class=\"tt\">plus</span> and <span class=\"tt\">minus</span> has been defined for use in defining morphemes on the morphology page.  In order to define a possessum-marking affix, add the appropriate position class and lexical rules, and mark the lexical rules as [<span class=\"feat\">possessum_poss-strat{i}</span> <span class=\"tt\">plus</span>]. Be sure to select the feature that corresponds to <span class=\"feat\">possessum_poss-strat{i}</span>. If the possessum-marking affix(es) agree(s) with the possessor, add appropriate person, number, and gender features to each lexical rule type.</p>"
 	   
 	   Label "</div>"
 
