@@ -1099,7 +1099,37 @@ function aux_fill_pred(name, stem, pos)
   }
 }
 
-function subpair_fill_pred(name,pos)
+function subpair_matrix_fill_pred(name,pos)
+{
+  var elms = document.getElementsByName(name+'_matrixorth');
+  var word = '';
+  for (var i = 0; i < elms.length; i++) {
+    if (elms[i].type == "text") {
+      word = elms[i].value;
+    }
+  }
+  var matrixpred = "_"+word+"_"+pos+"_rel";
+  elms = document.getElementsByName(name+'_matrixpred');
+  for (var i = 0; i < elms.length; i++) {
+    if (elms[i].type == "text" && elms[i].value == '' && word != '') {
+      elms[i].value = matrixpred;
+      var text_elms = document.getElementsByTagName('input');
+      var match_inds = [];
+      for (var j = 0; j < text_elms.length; j++) {
+        if (text_elms[j].type == "text" && text_elms[j].value.match(new RegExp("^_"+word+"_"+pos+"_?[0-9]*_rel$",""))){
+          match_inds.push(j);
+        }  
+      }
+      if (match_inds.length > 1){
+        for (var j = 0; j < match_inds.length; j++) {
+          text_elms[match_inds[j]].value = matrixpred.replace("_rel", "_"+(j+1)+"_rel");
+        }
+      }
+    }
+  }
+}
+
+function subpair_subord_fill_pred(name,pos)
 {
   var matrix_elms = document.getElementsByName(name+'_orth');
   var matrix_word = '';
