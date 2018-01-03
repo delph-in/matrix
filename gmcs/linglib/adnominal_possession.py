@@ -209,7 +209,6 @@ def customize_rules(strat,mylang,ch,rules):
 
 
 
-
 def customize_irules(strat,mylang,ch,irules):
     #TODO: this method for retrieving the strategy name is garbage. Fix it.
     strat_name=strat.full_keys()[0].split("_")[0]
@@ -281,6 +280,7 @@ def customize_irules(strat,mylang,ch,irules):
                         possessum_rule_name = 'possessum-lex-rule-'+strat_num
                         mylang.add(possessum_rule_name+POSSESSUM_RULE)
                         if mod_spec=='spec':
+                            agr_prefix='SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
                             mylang.add(possessum_rule_name+':=  val-change-with-ccont-lex-rule & \
                                            [ SYNSEM.LOCAL.CAT [ VAL [ COMPS #comps,\
                                                                       SPR < [ LOCAL [ CAT [ HEAD +np ] ] ] > ] ] ,\
@@ -299,6 +299,7 @@ def customize_irules(strat,mylang,ch,irules):
                         if mod_spec=='mod':
                             # Added OPT - to the complement to try to correct overzealous head-comp application. Didn't work
                             # Should append things to COMPS list, not overwrite
+                            agr_prefix='SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
                             mylang.add(possessum_rule_name+':= val-change-with-ccont-lex-rule & \
                                                        [ SYNSEM.LOCAL.CAT [ VAL [ SPR #spr, \
                                                                                   COMPS.FIRST [ LOCAL [ CAT cat-sat & [ HEAD +np ], \
@@ -314,6 +315,11 @@ def customize_irules(strat,mylang,ch,irules):
                             if mark_loc=='both':
                                 mylang.add(possessum_rule_name+' :=\
                                            [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD +np & [ POSS possessor ] ].')
+                    if strat.get('possessum-agr')=='agree':
+                        mylang.add('poss :+ [ POSS-AGR png ].',section='addenda')
+                        mylang.add(possessum_rule_name+' := [ SYNSEM.LOCAL.CAT.HEAD.POSS.POSS-AGR #png,\
+                                                              '+agr_prefix+' #png ].')
+
 
 def customize_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
     strat_name=strat.full_keys()[0].split("_")[0]
