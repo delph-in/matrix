@@ -1103,16 +1103,16 @@ function subpair_fill_pred(name,pos)
 {
   var matrix_elms = document.getElementsByName(name+'_orth');
   var matrix_word = '';
-  for (var i = 0; i < elms.length; i++) {
-    if (elms[i].type == "text") {
-      matrix_word = elms[i].value;
+  for (var i = 0; i < matrix_elms.length; i++) {
+    if (matrix_elms[i].type == "text") {
+      matrix_word = matrix_elms[i].value;
     }
   }
   var subord_elms = document.getElementsByName(name+'_subordorth');
   var subord_word = '';
   for (var i = 0; i < elms.length; i++) {
-    if (elms[i].type == "text") {
-      subord_word = elms[i].value;
+    if (subord_elms[i].type == "text") {
+      subord_word = subord_elms[i].value;
     }
   }
   var subord_pred = "_"+subord_word+"+"+matrix_word+"_"+pos+"_rel";
