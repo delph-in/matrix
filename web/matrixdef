@@ -1747,16 +1747,7 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
       . before "Before" "" "before the VP or S it attaches to<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
       . after "After" "" "after the VP or S it attaches to<br>"
 
-      Radio subordinator-type "Subordinator Type" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Is the free subordinator morpheme treated as the head of its clause or as and adverbial?:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
-      . head "Head" "" "it is the head of the subordinate clause<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" "toggle_element.call(this, 'adverb{i}', 'off')"
-      . adverb "Adverb" "" "it is an adverb (not the head of its clause)<br>" "toggle_element.call(this, 'adverb{i}', 'on')"
 
-        Label "<div id='adverb{i}' style='display:none'>"
-          Radio adverb-attach "Adverb Attach" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If the subordinator is an adverb, does it attach to VP, S or both?:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
-          . vp "VP" "" "VP<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-          . s "S" "" "S<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-          . both "Both" "" "Both VP and S"
-        Label "</div>"
 
       BeginIter freemorph{j} "A Free Subordinator Morpheme" 0
         Label "<p>Free Subordinator Morpheme {j}:<br>"
