@@ -1748,8 +1748,8 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
       . after "After" "" "after the VP or S it attaches to<br>"
 
       Radio subordinator-type "Subordinator Type" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Is the free subordinator morpheme treated as the head of its clause or as and adverbial?:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
-     	. head "Head" "" "it is the head of the subordinate clause<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"  "toggle_element.call(this, 'adverb{i}', 'off'); toggle_element.call(this, 'possessor-non-affix{i}', 'off');"
-     	. adverb "Adverb" "" "it is an adverb (not the head of its clause)<br>" "toggle_element.call(this, 'adverb{i}', 'on'); toggle_element.call(this, 'possessor-non-affix{i}', 'on');"
+     	. head "Head" "" "it is the head of the subordinate clause<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"  "toggle_element.call(this, 'adverb{i}', 'off')"
+     	. adverb "Adverb" "" "it is an adverb (not the head of its clause)<br>" "toggle_element.call(this, 'adverb{i}', 'on')"
      
      	   Label "<div id='adverb{i}' style='display:none'>"
 
