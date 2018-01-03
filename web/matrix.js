@@ -1115,7 +1115,7 @@ function subpair_fill_pred(name,pos)
       subord_word = subord_elms[i].value;
     }
   }
-  var subordpred = "_"+subord_word+"+"+matrix_word+"_"+pos+"_rel";
+  var subordpred = "_"+subord_word+"x"+matrix_word+"_"+pos+"_rel";
   subord_elms = document.getElementsByName(name+'_subordpred');
   for (var i = 0; i < subord_elms.length; i++) {
     if (subord_elms[i].type == "text" && subord_elms[i].value == '' && subord_word != '') {
