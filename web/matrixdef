@@ -1760,7 +1760,7 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
 
 	   Label "</div>"
 
-      BeginIter freemorph{j} "a Free Subordinator Morpheme" 0
+      BeginIter freemorph{j} "a Free Subordinator Morpheme" 1
         Label "<p>Free Subordinator Morpheme {j}:<br>"
           Text orth "subord {i} stem {j} spelling" "Spelling: " "" 30 "fill_pred('cms{i}_freemorph{j}', 'subord')"
           Text pred "subord {i} stem {j} predicate" " Predicate: " "" 30
@@ -1795,10 +1795,10 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
     . both "Both" "" "Both VP and S"
 
 
-      BeginIter morphpair{k} "a Free Subordinator Morpheme Pair" 0
+      BeginIter morphpair{j} "a Free Subordinator Morpheme Pair" 1
         Label "<p>Free Subordinator Morpheme Pair{k}:<br>"
-          Text orth "subord {i} stem {k} spelling" "Subordinate Morpheme Spelling: " "" 30 "fill_pred('cms{i}_morphpair{k}', 'subord')"
-          Text pred "subord {i} stem {k} predicate" " Subordinate Morpheme Predicate: " "" 30
+          Text orth "subord {i} stem {j} spelling" "Subordinate Morpheme Spelling: " "" 30 "fill_pred('cms{i}_morphpair{j}', 'subord')"
+          Text pred "subord {i} stem {j} predicate" " Subordinate Morpheme Predicate: " "" 30
 
       EndIter morphpair
     Label "</div>"
