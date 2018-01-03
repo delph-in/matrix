@@ -1116,9 +1116,9 @@ function subpair_fill_pred(name,pos)
     }
   }
   var subord_pred = "_"+subord_word+"+"+matrix_word+"_"+pos+"_rel";
-  elms = document.getElementsByName(name+'_subordpred');
-  for (var i = 0; i < elms.length; i++) {
-    if (elms[i].type == "text" && subord_elms[i].value == '' && subord_word != '') {
+  subord_elms = document.getElementsByName(name+'_subordpred');
+  for (var i = 0; i < subord_elms.length; i++) {
+    if (subord_elms[i].type == "text" && subord_elms[i].value == '' && subord_word != '') {
       subord_elms[i].value = subord_pred;
       var text_elms = document.getElementsByTagName('input');
       var match_inds = [];
