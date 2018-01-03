@@ -828,31 +828,19 @@ def write_possessive_behavior(lrt,mylang,choices):
     if lrt.possessor=='plus':
         possessor_rule_name='possessor-lex-rule-'+lrt.possessor_strat_num
         lrt.supertypes.add(possessor_rule_name)
-        prev_section = mylang.section
-        mylang.set_section('lexrules')
-        mylang.add(possessor_rule_name+POSSESSOR_LEX_RULE_DEFN)
-        mylang.set_section(prev_section)
+        mylang.add(possessor_rule_name+POSSESSOR_LEX_RULE_DEFN,section='lexrules')
     if lrt.possessor=='minus':
         possessor_rule_name='non-possessive-lex-rule-'+lrt.possessor_strat_num
         lrt.supertypes.add(possessor_rule_name)
-        prev_section=mylang.section
-        mylang.set_section('lexrules')
-        mylang.add(possessor_rule_name+NON_POSS_LEX_RULE_DEFN)
-        mylang.set_section(prev_section)
+        mylang.add(possessor_rule_name+NON_POSS_LEX_RULE_DEFN,section='lexrules')
     if lrt.possessum=='plus':
         possessum_rule_name='possessum-lex-rule-'+lrt.possessum_strat_num
         lrt.supertypes.add(possessum_rule_name)
-        prev_section = mylang.section
-        mylang.set_section('lexrules')
-        mylang.add(possessum_rule_name+POSSESSUM_LEX_RULE_DEFN)
-        mylang.set_section(prev_section)
+        mylang.add(possessum_rule_name+POSSESSUM_LEX_RULE_DEFN,section='lexrules')
     if lrt.possessum=='minus':
         possessum_rule_name='non-possessive-lex-rule-'+lrt.possessum_strat_num
         lrt.supertypes.add(possessum_rule_name)
-        prev_section=mylang.section
-        mylang.set_section('lexrules')
-        mylang.add(possessum_rule_name+NON_POSS_LEX_RULE_DEFN)
-        mylang.set_section(prev_section)
+        mylang.add(possessum_rule_name+NON_POSS_LEX_RULE_DEFN,section='lexrules')
 
 def write_valence_change_behavior(lrt, mylang, choices):
     from gmcs.linglib.valence_change import lexrule_name

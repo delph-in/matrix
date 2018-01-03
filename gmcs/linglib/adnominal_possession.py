@@ -232,6 +232,7 @@ def customize_irules(strat,mylang,ch,irules):
                         # Add the basic possessor rule defn:
                         possessor_rule_name = 'possessor-lex-rule-'+strat_num
                         if mod_spec=='spec':
+                            agr_prefix='SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
                             mylang.add(possessor_rule_name+POSSESSOR_RULE)
                             if mark_loc=='possessor':
                                 mylang.add(possessor_rule_name+' := val-change-with-ccont-lex-rule & \
@@ -250,6 +251,7 @@ def customize_irules(strat,mylang,ch,irules):
                                                       HCONS <! !>, \
                                                       ICONS <! !>  ] ].',merge=True)
                         elif mod_spec=='mod':
+                            agr_prefix='SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
                             if mark_loc=='possessor':
                                 mylang.add(possessor_rule_name+POSSESSOR_RULE)
                                 mylang.add(possessor_rule_name+' := head-change-with-ccont-lex-rule & \
@@ -269,6 +271,11 @@ def customize_irules(strat,mylang,ch,irules):
                                                                     [ SYNSEM.LOCAL [ CAT [ HEAD.POSS possessor,\
                                                                                            VAL #val ] ] ,\
                                                                       DTR.SYNSEM.LOCAL [ CAT.VAL #val ] ].')
+                    if strat.get('possessor-agr')=='agree':
+                        mylang.add('poss :+ [ POSS-AGR png ].',section='addenda')
+                        mylang.add(possessor_rule_name+' := [ SYNSEM.LOCAL.CAT.HEAD.POSS.POSS-AGR #png,\
+                                                              '+agr_prefix+' #png ].')
+
                     # Add possessum-inflecting rules
                     if (mark_loc=='possessum' or mark_loc=='both') and possessum_type=='affix':
                         possessum_rule_name = 'possessum-lex-rule-'+strat_num
@@ -307,7 +314,6 @@ def customize_irules(strat,mylang,ch,irules):
                             if mark_loc=='both':
                                 mylang.add(possessum_rule_name+' :=\
                                            [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD +np & [ POSS possessor ] ].')
- 
 
 def customize_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
     strat_name=strat.full_keys()[0].split("_")[0]
