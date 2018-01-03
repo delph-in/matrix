@@ -1754,8 +1754,9 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
      	   Label "<div id='adverb{i}' style='display:none'>"
 
 	   Radio adverb-attach "Adverb Attach" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If the subordinator is an adverb, does it attach to VP, S or both?<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
-	   . agree "Possessor agree" "" "yes<br>"
-	   . non-agree "Possessor non-agree" "" "no<br>"
+	   . vp "VP" "" "VP<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+          . s "S" "" "S<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+          . both "Both" "" "Both VP and S"
 
 	   Label "<p> A feature called <span class=\"feat\">possessor_poss-strat{i}</span> with possible values <span class=\"tt\">plus</span> and <span class=\"tt\">minus</span> has been defined for use in defining morphemes on the morphology page.  In order to define a possessor-marking affix, add the appropriate position class and lexical rules, and mark the lexical rules as [<span class=\"feat\">possessor_poss-strat{i}</span> <span class=\"tt\">plus</span>]. Be sure to select the feature that corresponds to <span class=\"feat\">possessor_poss-strat{i}</span>. If the possessor-marking affix(es) agree(s) with the possessum, add appropriate person, number, and gender features to each lexical rule type. Note that any person/number/gender features that are listed on a possessor lexical rule type are assumed to be features that agree with the possessum.</p>"
 
