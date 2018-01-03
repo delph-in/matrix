@@ -1099,6 +1099,43 @@ function aux_fill_pred(name, stem, pos)
   }
 }
 
+function subpair_fill_pred(name,pos)
+{
+  var matrix_elms = document.getElementsByName(name+'_orth');
+  var matrix_word = '';
+  for (var i = 0; i < elms.length; i++) {
+    if (elms[i].type == "text") {
+      matrix_word = elms[i].value;
+    }
+  }
+  var subord_elms = document.getElementsByName(name+'_subordorth');
+  var subord_word = '';
+  for (var i = 0; i < elms.length; i++) {
+    if (elms[i].type == "text") {
+      subord_word = elms[i].value;
+    }
+  }
+  var subord_pred = "_"+subord_word+"+"+matrix_word+"_"+pos+"_rel";
+  elms = document.getElementsByName(name+'_subordpred');
+  for (var i = 0; i < elms.length; i++) {
+    if (elms[i].type == "text" && subord_elms[i].value == '' && subord_word != '') {
+      subord_elms[i].value = subord_pred;
+      var text_elms = document.getElementsByTagName('input');
+      var match_inds = [];
+      for (var j = 0; j < text_elms.length; j++) {
+        if (text_elms[j].type == "text" && text_elms[j].value.match(new RegExp("^_"+subord_word+"+"+matrix_word+"_"+pos+"_?[0-9]*_rel$",""))){
+          match_inds.push(j);
+        }  
+      }
+      if (match_inds.length > 1){
+        for (var j = 0; j < match_inds.length; j++) {
+          text_elms[match_inds[j]].value = subord_pred.replace("_rel", "_"+(j+1)+"_rel");
+        }
+      }
+    }
+  }
+}
+
 // fill_hidden_errors()
 // This moves errors which are not displayed to the outside of
 // show/hide button. It should be called onload and no where else.
