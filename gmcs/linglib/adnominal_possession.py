@@ -454,7 +454,7 @@ def customize_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
                                                   HCONS <! !>,\
                                                   ICONS <! !>  ] ],\
                             ARG-ST < #possessum-comp, #possessor-comp > ].')
-        if strat.get('possessum-agr')=='nonagree':
+        if strat.get('possessum-agr')=='non-agree':
             orth=strat.get('possessum-orth')
             lexicon.add('possessum-noun-'+strat_num+' := possessum-noun-lex &\
                                                   [ STEM < "'+orth+'" >].')
