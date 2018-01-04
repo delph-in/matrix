@@ -5,17 +5,18 @@ from gmcs.linglib.morphotactics import all_position_classes
 from gmcs.linglib.features import customize_feature_values
 from gmcs.linglib.lexical_items import adp_id, noun_id
 ###################################################################
-# Atoms of a possessive strategy:
+# Parts of a possessive strategy:
 #
-# The rule that combines possessor and possessum
+# The rule that combines possessor and possessum: customize_rules()
 #     Sometimes must be added separately
 #     Sometimes already there
 #
-# For each affix:
-# Lexical rule type
+# For each affix: customize_irules()
+#     Lexical rule type for possessor or possessum inflecting rules
 #
-# For each non-affix:
-# Lexical entries + rules to attach these words to their heads
+# For each non-affix: customize_lexicon()
+#     Lexical entries 
+#     Rules that combine these lexical items with possessor/possessum (customize_rules())
 #
 ###################################################################
 
@@ -60,18 +61,10 @@ JUXTAPOSITION_RULE=' := [ SYNSEM.LOCAL.CAT [ HEAD #head,\
 # PRIMARY FUNCTION
 def customize_adnominal_possession(mylang,ch,rules,irules,lexicon,hierarchies):
     customize_np_possession(mylang,ch,rules,irules,lexicon,hierarchies)
+    customize_pronominal_possession(mylang,ch,rules,irules,lexicon,hierarchies)
 
 
-
-
-
-
-
-
-
-
-
-
+# SECONDARY FUNCTIONS
 def customize_np_possession(mylang,ch,rules,irules,lexicon,hierarchies):
     for strat in ch.get('poss-strat',[]):
         customize_rules(strat,mylang,ch,rules)
@@ -82,25 +75,38 @@ def customize_np_possession(mylang,ch,rules,irules,lexicon,hierarchies):
         if 'affix' not in (strat.get('possessor-type'), strat.get('possessum-type')):
             mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT.HEAD.POSS nonpossessive ].')
 
-# SECONDARY FUNCTIONS
-def customize_rules(strat,mylang,ch,rules):
+
+def customize_pronominal_possession(mylang,ch,rules,irules,lexicon,hierarchies):
+    for pron in ch.get('poss-pron',[]):
+        customize_rules(pron,mylang,ch,rules)
+
 # TODO: deal with free word order
+def customize_rules(strat,mylang,ch,rules):
     """
     Adds the necessary phrase rule to combine possessor and possessum
     If rule already exists (head-comp case), then make sure its order is correct.
     """
-    phrase_rule=""
+    # Define vars for all elements of strategy:
+    strat_name=strat.full_keys()[0].split("_")[0]
     strat_order=strat.get('order')
-    rule_added=False
     mark_loc=strat.get('mark-loc')
+    if 'poss-pron' in strat_name:
+        pron_strat=True
+    else:
+        pron_strat=False
+    # Define var to keep track of major constituent word order
     head_comp_order=customize_major_constituent_order(ch.get('word-order'),mylang,ch,rules)['hc']
     if head_comp_order=='head-comp':
         head_comp_order='head-initial'
     else:
         head_comp_order='head-final'
+    # Add vars to keep track of what rules have been added:
+    phrase_rule=""
+    rule_added=False
     mylang.set_section('phrases')
+    # Start adding rules:
     # If no marking exists, add one of two juxtaposition rules:
-    if mark_loc=='neither':
+    if mark_loc=='neither' and not pron_strat:
         phrase_rule='poss-phrase'
         mylang.add(phrase_rule+JUXTAPOSITION_RULE)
         if strat.get('mod-spec')=='spec':
@@ -117,7 +123,7 @@ def customize_rules(strat,mylang,ch,rules):
                                                    HCONS <! !> ] ].')
         rule_added=True
     else:
-        # Add a head-compositional variant of head-spec if possessor = spec
+        # If possessor = spec, add a head-compositional variant of head-spec 
         if strat.get('mod-spec')=='spec':
             phrase_rule="head-spec-poss-phrase"
             # Note: added the constraint on head type so that this would never do the work of attaching determiners to nouns
@@ -129,10 +135,10 @@ def customize_rules(strat,mylang,ch,rules):
                                                                          HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK #hook ,\
                                                                          C-CONT.HOOK #hook ].')
             rule_added=True
-        # Add either head-mod or head-comp if possessor = mod
+        # If possessor = mod, add either head-mod or head-comp
         # Exception: no rule added if preexistent head-comps has correct order
         elif strat.get('mod-spec')=='mod':
-            if strat.get('mark-loc')=='possessum' or strat.get('mark-loc')=='both':
+            if strat.get('mark-loc')=='possessum' or strat.get('mark-loc')=='both' and not pron_strat:
                 phrase_rule="head-comp-poss-phrase"
                 # Check if the existing head-comp rule has the correct order; 
                 # if not, add a new rule with correct order that only applies to poss-phrases.
