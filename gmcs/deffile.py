@@ -42,7 +42,7 @@ HTML_pretitle = '''<!doctype html>
 <head><meta charset="utf-8"/>
 '''
 
-HTML_posttitle = '''<script type="text/javascript" src="web/matrix.js?cachebuster=106">
+HTML_posttitle = '''<script type="text/javascript" src="web/matrix.js?cachebuster=107">
 </script>
 
 <script type="text/javascript">
