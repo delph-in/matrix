@@ -1099,6 +1099,7 @@ function aux_fill_pred(name, stem, pos)
   }
 }
 
+// subpair_matrix_fill_pred is similar
 function subpair_matrix_fill_pred(name,pos)
 {
   var elms = document.getElementsByName(name+'_matrixorth');
@@ -1145,7 +1146,7 @@ function subpair_subord_fill_pred(name,pos)
       subordword = elms[i].value;
     }
   }
-  var subordpred = "_"+subordword+"x"+matrixword+"_"+pos+"_rel";
+  var subordpred = "_"+subordword+"+"+matrixword+"_"+pos+"_rel";
   elms = document.getElementsByName(name+'_subordpred');
   for (var i = 0; i < elms.length; i++) {
     if (elms[i].type == "text" && elms[i].value == '' && subordword != '') {
