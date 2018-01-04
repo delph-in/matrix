@@ -2883,7 +2883,7 @@ EndIter imported-entry
 
 Section adnom-poss "Adnominal Possession" 
 
-Label "<h3>Define a possessive strategy:</h3>"
+Label "<h3>Define a possessive strategy for possessive noun phrases or add a possessor pronoun:</h3>"
 
 BeginIter poss-strat{i} "a possessive strategy"
 
@@ -3019,3 +3019,44 @@ BeginIter poss-strat{i} "a possessive strategy"
 
      Label "</div>"                                                                                                                                                                                         
 EndIter poss-strat
+
+BeginIter poss-pron{i} "a possessor pronoun"
+
+Text name "Possessive Pronoun Name" "<br>Form name: " "" 15
+
+  Text orth "Possessive Pronoun Orthography" "<br>Form spelling: " "" 15
+
+  Radio order "Possessive Pronoun Order" "<p>Does the possessor pronoun occur to the left or the right of the possessum?</p>" ""
+  . head-final "head-final" "" "left<br>"
+  . head-initial "head-initial" "" "right<br>"
+  . either "either" "" "either (not currently working)<br>"
+
+  Radio mod-spec "Modifier or Specifier" "<p>Does the possessor function more like a modifier or a specifier?</p>" ""
+  . mod "Modifier" "" "modifier<br>"
+  . spec "Specifier" "" "specifier<br>"
+
+  Label "<p>Add a feature (e.g. person, number, gender, case) that belongs to this pronoun inherently:</p>"
+  
+  BeginIter feat{j} "an inherent feature to this pronoun"
+
+     Select name "Possessive pronoun {i} Feature {j} Name" "Name: " " "
+     fillnames c=noun
+
+     MultiSelect value "Possessive pronoun {i} Feature {j} Value" "Value: " ""
+     fillvalues p=poss-pron{i}_feat{j}_name
+
+  EndIter feat
+
+  Label "<p>Add any agreement features (person, number, or gender) to this pronoun that agree with the possessum:</p>"
+  
+  BeginIter agr-feat{j} "an agreement feature to this pronoun"
+
+     Select name "Possessive pronoun {i} Feature {j} Name" "Name: " " "
+     fillnames c=noun
+
+     MultiSelect value "Possessive pronoun {i} Feature {j} Value" "Value: " ""
+     fillvalues p=poss-pron{i}_agr-feat{j}_name
+
+  EndIter agr-feat
+
+EndIter poss-pron

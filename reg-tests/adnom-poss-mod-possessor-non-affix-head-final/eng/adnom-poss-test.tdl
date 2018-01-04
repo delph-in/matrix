@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of adnom-poss-test
 ;;; created at:
-;;;     Sat Dec 30 19:37:30 UTC 2017
+;;;     Thu Jan 04 18:30:35 UTC 2018
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -25,11 +25,11 @@ non-mod-lex-item := lex-item &
 ;;; Matrix Type Addenda
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 
-inflected :+ [ NUM-FLAG luk,
-    PERNUM-FLAG luk ].
+inflected :+ [ PERNUM-FLAG luk,
+    NUM-FLAG luk ].
 
-infl-satisfied :+ [ NUM-FLAG na-or-+,
-    PERNUM-FLAG na-or-+ ].
+infl-satisfied :+ [ PERNUM-FLAG na-or-+,
+    NUM-FLAG na-or-+ ].
 
 png :+ [ PER person,
     NUM number ].
@@ -169,7 +169,16 @@ non-3rd-lex-rule := const-lex-rule & pernum-lex-rule-super &
 
 head-mod-poss-phrase := basic-head-mod-phrase-simple & head-compositional & head-final &
   [ SYNSEM.LOCAL.CAT.VAL.SPEC #spec,
-    HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPEC #spec ].
+    HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.SPEC #spec,
+                                HEAD.POSS nonpossessive ],
+    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessor ].
+
+; Rules for building NPs.  Note that the Matrix uses SPR for
+; the specifier of nouns and SUBJ for the subject (specifier) of verbs.
+
+head-spec-phrase := basic-head-spec-phrase & head-final &
+  [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.SPR < >,
+                                    HEAD.POSS nonpossessive ] ].
 
 two-rel-adposition-lex := basic-icons-lex-item &
   [ SYNSEM [ LOCAL [ CAT [ HEAD adp,
@@ -184,8 +193,9 @@ two-rel-adposition-lex := basic-icons-lex-item &
 
 possessor-adp-lex := two-rel-adposition-lex &
   [ SYNSEM.LOCAL [ CAT [ VAL [ SPR < >,
-                               COMPS.FIRST.LOCAL [ CAT.HEAD noun,
-                                                   CONT.HOOK.INDEX #possessor ] ],
+                               COMPS.FIRST [ OPT -,
+                                             LOCAL [ CAT.HEAD noun,
+                                                     CONT.HOOK.INDEX #possessor ] ] ],
                          HEAD [ POSS possessor,
                                 MOD.FIRST.LOCAL [ CAT.VAL.SPR < [ ] >,
                                                   CONT.HOOK [ INDEX #possessum,
@@ -200,11 +210,6 @@ possessor-adp-lex := two-rel-adposition-lex &
 
 ;Constraint on MC used to be part of matrix.tdl
 ;;it applies to all wo implementations, except for v2
-
-; Rules for building NPs.  Note that the Matrix uses SPR for
-; the specifier of nouns and SUBJ for the subject (specifier) of verbs.
-
-head-spec-phrase := basic-head-spec-phrase & head-final.
 
 ; Bare NP phrase.  Consider modifying the PRED value of the quantifier relation
 ; introduced to match the semantic effect of bare NPs in your language.
