@@ -1131,29 +1131,22 @@ function subpair_matrix_fill_pred(name,pos)
 
 function subpair_subord_fill_pred(name,pos)
 {
-  var matrix_elms = document.getElementsByName(name+'_orth');
-  var matrix_word = '';
-  for (var i = 0; i < matrix_elms.length; i++) {
-    if (matrix_elms[i].type == "text") {
-      matrix_word = matrix_elms[i].value;
-    }
-  }
-  var subord_elms = document.getElementsByName(name+'_subordorth');
-  var subord_word = '';
+  var elms = document.getElementsByName(name+'_matrixorth');
+  var word = '';
   for (var i = 0; i < elms.length; i++) {
-    if (subord_elms[i].type == "text") {
-      subord_word = subord_elms[i].value;
+    if (elms[i].type == "text") {
+      word = elms[i].value;
     }
   }
-  var subordpred = "_"+subord_word+"x"+matrix_word+"_"+pos+"_rel";
-  subord_elms = document.getElementsByName(name+'_subordpred');
-  for (var i = 0; i < subord_elms.length; i++) {
-    if (subord_elms[i].type == "text" && subord_elms[i].value == '' && subord_word != '') {
-      subord_elms[i].value = subordpred;
+  var subordpred = "_"+word+"_"+pos+"_rel";
+  elms = document.getElementsByName(name+'_subordpred');
+  for (var i = 0; i < elms.length; i++) {
+    if (elms[i].type == "text" && elms[i].value == '' && word != '') {
+      elms[i].value = subordpred;
       var text_elms = document.getElementsByTagName('input');
       var match_inds = [];
       for (var j = 0; j < text_elms.length; j++) {
-        if (text_elms[j].type == "text" && text_elms[j].value.match(new RegExp("^_"+subord_word+"+"+matrix_word+"_"+pos+"_?[0-9]*_rel$",""))){
+        if (text_elms[j].type == "text" && text_elms[j].value.match(new RegExp("^_"+word+"_"+pos+"_?[0-9]*_rel$",""))){
           match_inds.push(j);
         }  
       }
