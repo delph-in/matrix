@@ -1153,7 +1153,7 @@ function subpair_subord_fill_pred(name,pos)
       var text_elms = document.getElementsByTagName('input');
       var match_inds = [];
       for (var j = 0; j < text_elms.length; j++) {
-        if (text_elms[j].type == "text" && text_elms[j].value.match(new RegExp("^_"+subordword+"x"+matrixword+"_"+pos+"_?[0-9]*_rel$",""))){
+        if (text_elms[j].type == "text" && text_elms[j].value.match(new RegExp("^_"+subordword+"+"+matrixword+"_"+pos+"_?[0-9]*_rel$",""))){
           match_inds.push(j);
         }  
       }
