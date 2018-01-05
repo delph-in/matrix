@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of adnom-poss-test
 ;;; created at:
-;;;     Fri Jan 05 21:30:38 UTC 2018
+;;;     Fri Jan 05 22:10:41 UTC 2018
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -181,14 +181,7 @@ possessor-lex-rule := infl-lex-rule & possessive-lex-rule-super & val-change-wit
              ICONS <!  !> ] ].
 
 possessum-lex-rule := infl-lex-rule & possessive-lex-rule-super & val-change-with-ccont-lex-rule &
-  [ SYNSEM.LOCAL.CAT [ HEAD noun &
-                            [ POSS possessum ],
-                       VAL [ SPEC #spec,
-                             SUBJ #subj,
-                             COMPS #comps,
-                             SPR < [ LOCAL [ CAT.HEAD +np,
-                                             CONT.HOOK.INDEX #possessor ] ] > ] ],
-    C-CONT [ HOOK #hook &
+  [ C-CONT [ HOOK #hook &
                   [ INDEX.COG-ST uniq-id ],
              ICONS <!  !>,
              HCONS <! qeq &
@@ -207,7 +200,15 @@ possessum-lex-rule := infl-lex-rule & possessive-lex-rule-super & val-change-wit
                                  COMPS #comps ],
                        CONT.HOOK #hook &
                                  [ INDEX #possessum,
-                                   LTOP #lbl ] ] ].
+                                   LTOP #lbl ] ],
+    SYNSEM.LOCAL.CAT [ HEAD noun &
+                            [ POSS possessum ],
+                       VAL [ SPEC #spec,
+                             SUBJ #subj,
+                             COMPS #comps,
+                             SPR < [ LOCAL [ CONT.HOOK.INDEX #possessor,
+                                             CAT.HEAD +np &
+                                                      [ POSS possessor ] ] ] > ] ] ].
 
 non-possessive-lex-rule := add-only-no-ccont-rule & const-lex-rule & possessive-lex-rule-super &
   [ SYNSEM.LOCAL.CAT [ HEAD noun &

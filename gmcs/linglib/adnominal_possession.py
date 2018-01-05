@@ -381,6 +381,8 @@ def customize_irules(strat,mylang,ch,irules):
                                                                                        '+POSSESSUM_EXIST_REL+' !> ],\
                                                                                        DTR.SYNSEM.LOCAL.CONT.HOOK [ INDEX #possessum,\
                                                                                                                     LTOP #lbl ] ].')
+                            if mark_loc=='both':
+                                mylang.add(possessum_rule_name+' := [ SYNSEM.LOCAL.CAT.VAL.SPR < [ LOCAL.CAT.HEAD.POSS possessor ] > ].')
                         if mod_spec=='mod':
                             # Added OPT - to the complement to try to correct overzealous head-comp application. Didn't work
                             # Should append things to COMPS list, not overwrite
