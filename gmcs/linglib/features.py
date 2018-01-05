@@ -96,25 +96,29 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     if pos == 'auxcomplement':
       geom_prefix += 'LOCAL.CAT.VAL.COMPS.FIRST.'
 
-    # EKN 2017-01-02 If adding PNG features to a possessive item, they should be at POSS.POSS-AGR,
+    # EKN 2017-01-02 If adding AGREEMENT PNG features to a possessive marker or affix, they should be at POSS.POSS-AGR,
     # rather than at CONT.HOOK.INDEX.PNG. This checks to see if the current lrt or lexical item
-    # is a possessive one
+    # is a possessive one. 
     poss_lrt=False
     for feat in ch_dict.get('feat'):
       from gmcs.utils import get_name
       feat_name=get_name(feat)
-      if 'possess' in feat_name:
+      if 'possess' in feat_name: # and not poss_lrt:
         poss_lrt=True
     
-#      if 'possess' in ch_dict[ch]:
-        
     if pos=='poss-marker' or poss_lrt:
       geom_prefix = 'SYNSEM.LOCAL.CAT.HEAD.POSS.POSS-AGR.'
 
 
+    if 'poss-pron' in ch_dict.full_keys()[0].split('_')[0]:
+      poss_pron=True
+    else:
+      poss_pron=False
+
     # TJT 2014-05-08 adding the break and moving the concatenation up
     geom = ''
     for f in features:
+      print f
       if f[0] == n:
         value = f[2]
         # If choice defined not to have value, don't define a geometry
