@@ -505,9 +505,38 @@ def customize_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
                     lexicon.add(noun_type.replace('-lex','')+' := '+noun_type+' &\
                                          [ STEM < "'+orth+'" > ].')
     elif pron_strat:
+        orth=strat.get('orth')
         noun_type=noun_id(strat)
-        mylang.add(noun_type+' := noun-lex.')
+        mylang.add(noun_type+' := basic-one-arg &\
+                        [ SYNSEM [ LOCAL [ CAT [ VAL.SPEC < [ LOCAL.CONT.HOOK [ INDEX #possessum &\
+                                                                                   [ COG-ST uniq+fam+act ],\
+                                                                                LTOP #lbl ]] >,\
+                                                 HEAD noun & [ POSS possessor ] ],\
+                                           CONT [ RELS  <! [ PRED "exist_q_rel",\
+                                                             ARG0 #possessum,\
+                                                             RSTR #harg ],\
+                                                           arg12-ev-relation &\
+                                                           [ PRED "poss_rel",\
+                                                             LBL #lbl,\
+                                                             ARG1 #possessum,\
+                                                             ARG2 #possessor ],\
+                                                           quant-relation &\
+                                                           [ PRED "exist_q_rel",\
+                                                             ARG0 #possessor,\
+                                                             RSTR #harg2 ],\
+                                                           #altkeyrel !>,\
+                                                  HCONS <! qeq & [ HARG #harg,\
+                                                                   LARG #lbl ],\
+                                                           qeq & [ HARG #harg2,\
+                                                                   LARG #lbl2 ] !> ] ] ,\
+                                   LKEYS.ALTKEYREL #altkeyrel & noun-relation &\
+                                                         [ PRED "pron_rel",\
+                                                           LBL #lbl2,\
+                                                           ARG0 #possessor & [ COG-ST activ-or-more,\
+                                                                               SPECI + ] ] ] ].')
         customize_feature_values(mylang,ch,hierarchies,strat,noun_type,'noun')#,strat.get('feat'))
+        lexicon.add(noun_type.replace('-lex','')+' := '+noun_type+' &\
+                                         [ STEM < "'+orth+'" > ].')
 
 
 

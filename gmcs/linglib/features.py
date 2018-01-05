@@ -118,7 +118,6 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     # TJT 2014-05-08 adding the break and moving the concatenation up
     geom = ''
     for f in features:
-      print f
       if f[0] == n:
         value = f[2]
         # If choice defined not to have value, don't define a geometry
