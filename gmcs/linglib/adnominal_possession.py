@@ -20,6 +20,10 @@ from gmcs.linglib.lexical_items import adp_id, noun_id
 #
 ###################################################################
 
+##################################################################
+## Generalized typedefs for use in library                     ###
+################################################################## 
+
 
 POSS_REL = '''arg12-ev-relation & [ PRED "poss_rel", \
                                     LBL #lbl, \
@@ -83,12 +87,7 @@ POSSESSUM_NOUN_LEX=':= basic-two-arg &\
                                      ARG-ST < #spr, #comps > ].'
 
 POSSESSOR_PRON_LEX=' := basic-one-arg &\
-                        [ SYNSEM [ LOCAL [ CAT.HEAD noun & [ POSS possessor ],\
-                                           CONT.RELS <! [ quant-relation &\
-                                                          [ PRED "exist_q_rel",\
-                                                            ARG0 #possessor,\
-                                                            RSTR #harg2 ],\
-                                                            #altkeyrel !> ] ] ,\
+                        [ SYNSEM [ LOCAL [ CAT.HEAD noun & [ POSS possessor ] ],\
                                    LKEYS.ALTKEYREL #altkeyrel & noun-relation &\
                                                          [ PRED "pron_rel",\
                                                            LBL #lbl2,\
@@ -525,7 +524,7 @@ def customize_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
                         [ SYNSEM.LOCAL [ CAT.VAL.SPEC < [ LOCAL.CONT.HOOK [ INDEX #possessum & [ COG-ST uniq+fam+act ],\
                                                                           LTOP #lbl ] ] > ,\
                                          CONT [ RELS  <! '+POSSESSUM_EXIST_REL+',\
-                                                         '+POSS_REL+'
+                                                         '+POSS_REL+',\
                                                            quant-relation &\
                                                            [ PRED "exist_q_rel",\
                                                              ARG0 #possessor,\
@@ -537,8 +536,16 @@ def customize_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
                                                                    LARG #lbl2 ] !> ] ] ].')
         elif mod_spec=='mod':
             mylang.add(noun_type+' :=\
-                        [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK [ INDEX #possessum,\
-                                                                          LTOP #lbl ] ] > ].')
+                        [ SYNSEM.LOCAL [ CAT.HEAD.MOD < [ LOCAL.CONT.HOOK [ INDEX #possessum,\
+                                                                            LTOP #lbl ] ] > ,\
+                                         CONT [ RELS  <!  '+POSS_REL+',\
+                                                           quant-relation &\
+                                                           [ PRED "exist_q_rel",\
+                                                             ARG0 #possessor,\
+                                                             RSTR #harg2 ],\
+                                                           #altkeyrel !>,\
+                                                  HCONS <! qeq & [ HARG #harg2,\
+                                                                   LARG #lbl2 ] !> ] ] ].')
 
         customize_feature_values(mylang,ch,hierarchies,strat,noun_type,'noun')#,strat.get('feat'))
         lexicon.add(noun_type.replace('-lex','')+' := '+noun_type+' &\
