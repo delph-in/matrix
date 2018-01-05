@@ -12,6 +12,8 @@ def process_cfv_list(mylang, ch, hierarchies, to_cfv, tdlfile=None):
                              tdlfile=tdlfile or mylang)
 
 def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, features=None, cases=None, tdlfile=None):
+  if pos=='poss-marker': 
+    print ch_dict
 
   if not features:
     features = ch.features()
@@ -103,17 +105,11 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     for feat in ch_dict.get('feat'):
       from gmcs.utils import get_name
       feat_name=get_name(feat)
-      if 'possess' in feat_name: # and not poss_lrt:
+      if 'possess' in feat_name: 
         poss_lrt=True
     
     if pos=='poss-marker' or poss_lrt:
       geom_prefix = 'SYNSEM.LOCAL.CAT.HEAD.POSS.POSS-AGR.'
-
-
-    if 'poss-pron' in ch_dict.full_keys()[0].split('_')[0]:
-      poss_pron=True
-    else:
-      poss_pron=False
 
     # TJT 2014-05-08 adding the break and moving the concatenation up
     geom = ''

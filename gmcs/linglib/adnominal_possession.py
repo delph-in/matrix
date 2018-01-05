@@ -1,5 +1,6 @@
 import gmcs.tdl
 import gmcs.utils
+from gmcs.choices import ChoiceDict
 from gmcs.linglib.word_order import customize_major_constituent_order
 from gmcs.linglib.morphotactics import all_position_classes
 from gmcs.linglib.features import customize_feature_values
@@ -93,13 +94,22 @@ POSSESSOR_PRON_LEX=' := basic-one-arg &\
                                                            LBL #lbl2,\
                                                            ARG0 #possessor & [ COG-ST activ-or-more,\
                                                                                SPECI + ] ] ] ].'
-# PRIMARY FUNCTION
+
+##################################################################
+## Primary function (called from customize.py)                 ###
+################################################################## 
 def customize_adnominal_possession(mylang,ch,rules,irules,lexicon,hierarchies):
     customize_np_possession(mylang,ch,rules,irules,lexicon,hierarchies)
     customize_pronominal_possession(mylang,ch,rules,irules,lexicon,hierarchies)
 
 
-# SECONDARY FUNCTIONS
+#####################################################################################################
+## Secondary functions (called by customize_adnominal_possession() or other secondary functions)  ###
+#####################################################################################################
+
+# Calls customize_rules, customize_irules, and customize_lexicon
+# to build possessive strategies for cases where the possessor
+# is a full NP
 def customize_np_possession(mylang,ch,rules,irules,lexicon,hierarchies):
     for strat in ch.get('poss-strat',[]):
         customize_rules(strat,mylang,ch,rules)
@@ -111,12 +121,20 @@ def customize_np_possession(mylang,ch,rules,irules,lexicon,hierarchies):
             mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT.HEAD.POSS nonpossessive ].')
 
 
+# Calls customize_rules, customize_irules, and customize_lexicon
+# to build possessive strategies for cases where the possessor
+# is a pronoun
 def customize_pronominal_possession(mylang,ch,rules,irules,lexicon,hierarchies):
     for pron in ch.get('poss-pron',[]):
         customize_rules(pron,mylang,ch,rules)
         customize_lexicon(pron,mylang,ch,lexicon,rules,hierarchies)
 
-# TODO: deal with free word order
+
+# Adds phrase rules needed to join possessor and possessum,
+# as well as rules needed to join possession marker and the 
+# constituent it marks
+# Also adds constraints to non-possessive phrase rules to prevent
+# them from allowing possessive words in incorrect places
 def customize_rules(strat,mylang,ch,rules):
     """
     Adds the necessary phrase rule to combine possessor and possessum
@@ -264,7 +282,8 @@ def customize_rules(strat,mylang,ch,rules):
         rules.add(phrase_rule.replace('-phrase','') + ':= '+phrase_rule+'. ' )
 
 
-
+# Adds inflectional rules (or adds constraints to inflectional rules added in
+# morphotactics.py) that create possessive forms
 def customize_irules(strat,mylang,ch,irules):
     #TODO: this method for retrieving the strategy name is garbage. Fix it.
     strat_name=strat.full_keys()[0].split("_")[0]
@@ -393,7 +412,8 @@ def customize_irules(strat,mylang,ch,irules):
 
 
 
-
+# Adds lexical items for possession markers and possessor pronouns.
+# All needed phrase rules added in customize_rules() above.
 def customize_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
     # Define vars for all elements of strategy:
     strat_name=strat.full_keys()[0].split("_")[0]
@@ -547,12 +567,23 @@ def customize_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
                                                   HCONS <! qeq & [ HARG #harg2,\
                                                                    LARG #lbl2 ] !> ] ] ].')
 
-        customize_feature_values(mylang,ch,hierarchies,strat,noun_type,'noun')#,strat.get('feat'))
+        customize_feature_values(mylang,ch,hierarchies,strat,noun_type,'noun')
         lexicon.add(noun_type.replace('-lex','')+' := '+noun_type+' &\
                                          [ STEM < "'+orth+'" > ].')
+        if strat.get('agr')=='agree':
+            strat_tmp={}
+            for key in strat.keys():
+                print key
+                # Relabel the inherent features as something else ('skip') 
+                # Relabel the agreement features as simply features ('feat')
+                # Then call customize_feature_values() with the 'poss-marker' setting
+                # so that the agreement features are added at POSS.POSS-AGR instead of HOOK.INDEX.PNG
+                new_key=key.replace('feat','skip')
+                new_key=new_key.replace('agr-skip','feat')
+                strat_tmp[new_key]=strat.get(key)
+#            strat_tmp=ChoiceDict(strat_tmp)
+            print strat_tmp
+            customize_feature_values(mylang,ch,hierarchies,strat_tmp,noun_type,'poss-marker')
 
 
-
-#        if mod_spec=='spec':
-#        elif mod_spec=='mod':
 

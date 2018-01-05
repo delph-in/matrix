@@ -3047,6 +3047,10 @@ Text name "Possessive Pronoun Name" "<br>Form name: " "" 15
 
   EndIter feat
 
+  Radio agr "Pronominal agreement" "<p>Does this form agree with the possessum in person, number, or gender?</p>" ""
+  . agree "agree" "" "yes<br>"
+  . non-agree "non-agree" "" "no<br>"
+
   Label "<p>Add any agreement features (person, number, or gender) to this pronoun that agree with the possessum:</p>"
   
   BeginIter agr-feat{j} "an agreement feature to this pronoun"
