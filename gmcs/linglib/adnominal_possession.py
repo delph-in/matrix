@@ -361,9 +361,9 @@ def customize_irules(strat,mylang,ch,irules):
 
                     # Add possessum-inflecting rules
                     if (mark_loc=='possessum' or mark_loc=='both') and possessum_type=='affix':
-                        possessum_rule_name = 'possessum-lex-rule-'+strat_num
-#                        mylang.add(possessum_rule_name+POSSESSUM_RULE)
+#                        possessum_rule_name = 'possessum-lex-rule-'+strat_num
                         possessum_rule_name = get_name(lrt)+'-lex-rule'
+                        mylang.add(possessum_rule_name+POSSESSUM_RULE)
                         if mod_spec=='spec':
                             agr_prefix='SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
                             mylang.add(possessum_rule_name+':=  val-change-with-ccont-lex-rule & \
@@ -379,8 +379,6 @@ def customize_irules(strat,mylang,ch,irules):
                                                                                        '+POSSESSUM_EXIST_REL+' !> ],\
                                                                                        DTR.SYNSEM.LOCAL.CONT.HOOK [ INDEX #possessum,\
                                                                                                                     LTOP #lbl ] ].')
-                            # This should keep normal head-spec constructions from letting noun phrases act as determiners:
-                            mylang.add('non-possessive-lex-rule-'+strat_num+' := [ SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.LOCAL.CAT.HEAD det ].')
                         if mod_spec=='mod':
                             # Added OPT - to the complement to try to correct overzealous head-comp application. Didn't work
                             # Should append things to COMPS list, not overwrite
@@ -411,6 +409,10 @@ def customize_irules(strat,mylang,ch,irules):
                         if possessum_type=='affix':
                             mylang.add(possessum_rule_name+' := [ SYNSEM.LOCAL [ CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.POSS.POSS-AGR #poss-png,\
                                                                                  CONT.HOOK.INDEX.PNG #poss-png ] ].')
+                elif strat_name in str(feat['name']) and feat['value']=='minus':
+                    if (mark_loc=='possessum' or mark_loc=='both') and mod_spec=='spec':
+                        # This should keep normal head-spec constructions from letting noun phrases act as determiners:
+                        mylang.add(get_name(lrt)+'-lex-rule := [ SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.LOCAL.CAT.HEAD det ].')
 
 
 
