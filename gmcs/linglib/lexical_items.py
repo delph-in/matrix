@@ -455,9 +455,10 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     # in cases when only the possessum is marked, any noun needs to be able to
     # have a non-empty SPEC list, so we change that to being underspecified
     # in those cases here too:
+    # TODO: adapt so this still works with multiple possessive strategies
     for strat in ch.get('poss-strat',[]):
         if strat.get('mod-spec')=='spec':
-            if strat.get('mark-loc')=='possessor' or strat.get('mark-loc')=='both':
+            if strat.get('mark-loc')=='possessor':
                 if strat.get('possessor-type')=='affix':
                     typedef = \
         'noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & \
@@ -474,6 +475,22 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
                                       SUBJ < >, \
                                       SPEC < > ] ], \
              ARG-ST < #spr > ].'
+            elif strat.get('mark-loc')=='both':
+                if strat.get('possessor-type')=='affix':
+                    typedef = \
+        'noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & \
+           [ SYNSEM.LOCAL [ CAT.VAL [ SPR < #spr & [ LOCAL.CAT.HEAD +nd ] >, \
+                                      COMPS < >, \
+                                      SUBJ < > ] ], \
+             ARG-ST < #spr > ].'
+                else:
+                    typedef = \
+        'noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & \
+           [ SYNSEM.LOCAL [ CAT.VAL [ SPR < #spr & [ LOCAL.CAT.HEAD +pd ] >, \
+                                      COMPS < >, \
+                                      SUBJ < > ] ], \
+             ARG-ST < #spr > ].'
+                    
             elif strat.get('mark-loc')=='possessum':
                 if strat.get('possessum-type')=='affix':
                     typedef = \

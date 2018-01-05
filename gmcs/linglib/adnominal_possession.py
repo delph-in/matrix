@@ -306,9 +306,10 @@ def customize_irules(strat,mylang,ch,irules):
                 if strat_name in str(feat['name']) and feat['value']!='minus':
                     # Add possessor-inflecting rules:
                     mylang.set_section('lexrules')
-                    if (mark_loc=='possessor' or mark_loc=='both') and possessor_type=='affix':
+                    # TODO: add check here that the current lrt is a possessor rule
+                    if (mark_loc=='possessor' or mark_loc=='both') and possessor_type=='affix' and ('possessor' in feat['name']):
                         # Add the basic possessor rule defn:
-#                        possessor_rule_name = 'possessor-lex-rule-'+strat_nu
+#                        possessor_rule_name = 'possessor-lex-rule-'+strat_num
                         possessor_rule_name = get_name(lrt)+'-lex-rule'
                         if mod_spec=='spec':
                             agr_prefix='SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
@@ -351,7 +352,7 @@ def customize_irules(strat,mylang,ch,irules):
                                                                                            VAL #val ] ] ,\
                                                                       DTR.SYNSEM.LOCAL [ CAT.VAL #val ] ].')
                     # If an agreement strategy is indicated, identify POSS-AGR with PNG of possessum
-                    if strat.get('possessor-agr')=='agree' and possessor_type=='affix':
+                    if strat.get('possessor-agr')=='agree' and possessor_type=='affix': 
                         mylang.add('poss :+ [ POSS-AGR png ].',section='addenda')
                         # Note: don't do this in the mod-like both-marking scenario -- possessor is a COMP and has no access to 
                         # possessum. In this scenario, the identification must be done on the possessum inflection.
@@ -360,7 +361,8 @@ def customize_irules(strat,mylang,ch,irules):
                                                                                '+agr_prefix+' #png ].')
 
                     # Add possessum-inflecting rules
-                    if (mark_loc=='possessum' or mark_loc=='both') and possessum_type=='affix':
+                    # TODO: add check here that the current lrt is a possessum rule
+                    if (mark_loc=='possessum' or mark_loc=='both') and possessum_type=='affix' and ('possessum' in feat['name']):
 #                        possessum_rule_name = 'possessum-lex-rule-'+strat_num
                         possessum_rule_name = get_name(lrt)+'-lex-rule'
                         mylang.add(possessum_rule_name+POSSESSUM_RULE)
