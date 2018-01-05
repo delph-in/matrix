@@ -82,6 +82,13 @@ POSSESSUM_NOUN_LEX=':= basic-two-arg &\
                                                            ICONS <! !> ] ],\
                                      ARG-ST < #spr, #comps > ].'
 
+POSSESSOR_PRON_LEX=' := basic-one-arg &\
+                        [ SYNSEM [ LOCAL [ CAT.HEAD noun & [ POSS possessor ] ] ,\
+                                   LKEYS.ALTKEYREL #altkeyrel & noun-relation &\
+                                                         [ PRED "pron_rel",\
+                                                           LBL #lbl2,\
+                                                           ARG0 #possessor & [ COG-ST activ-or-more,\
+                                                                               SPECI + ] ] ] ].'
 # PRIMARY FUNCTION
 def customize_adnominal_possession(mylang,ch,rules,irules,lexicon,hierarchies):
     customize_np_possession(mylang,ch,rules,irules,lexicon,hierarchies)
@@ -507,12 +514,12 @@ def customize_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
     elif pron_strat:
         orth=strat.get('orth')
         noun_type=noun_id(strat)
-        mylang.add(noun_type+' := basic-one-arg &\
-                        [ SYNSEM [ LOCAL [ CAT [ VAL.SPEC < [ LOCAL.CONT.HOOK [ INDEX #possessum &\
-                                                                                   [ COG-ST uniq+fam+act ],\
-                                                                                LTOP #lbl ]] >,\
-                                                 HEAD noun & [ POSS possessor ] ],\
-                                           CONT [ RELS  <! [ PRED "exist_q_rel",\
+        mylang.add(noun_type+POSSESSOR_PRON_LEX)
+        if mod_spec=='spec':
+            mylang.add(noun_type+' :=\
+                        [ SYNSEM.LOCAL [ CAT.VAL.SPEC < [ LOCAL.CONT.HOOK [ INDEX #possessum & [ COG-ST uniq+fam+act ],\
+                                                                          LTOP #lbl ] ] > ,\
+                                         CONT [ RELS  <! [ PRED "exist_q_rel",\
                                                              ARG0 #possessum,\
                                                              RSTR #harg ],\
                                                            arg12-ev-relation &\
@@ -528,12 +535,12 @@ def customize_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
                                                   HCONS <! qeq & [ HARG #harg,\
                                                                    LARG #lbl ],\
                                                            qeq & [ HARG #harg2,\
-                                                                   LARG #lbl2 ] !> ] ] ,\
-                                   LKEYS.ALTKEYREL #altkeyrel & noun-relation &\
-                                                         [ PRED "pron_rel",\
-                                                           LBL #lbl2,\
-                                                           ARG0 #possessor & [ COG-ST activ-or-more,\
-                                                                               SPECI + ] ] ] ].')
+                                                                   LARG #lbl2 ] !> ] ] ].')
+        elif mod_spec=='mod':
+            mylang.add(noun_type+' :=\
+                        [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK [ INDEX #possessum,\
+                                                                          LTOP #lbl ] ] > ].')
+
         customize_feature_values(mylang,ch,hierarchies,strat,noun_type,'noun')#,strat.get('feat'))
         lexicon.add(noun_type.replace('-lex','')+' := '+noun_type+' &\
                                          [ STEM < "'+orth+'" > ].')
