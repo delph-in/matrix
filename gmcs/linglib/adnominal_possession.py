@@ -83,7 +83,12 @@ POSSESSUM_NOUN_LEX=':= basic-two-arg &\
                                      ARG-ST < #spr, #comps > ].'
 
 POSSESSOR_PRON_LEX=' := basic-one-arg &\
-                        [ SYNSEM [ LOCAL [ CAT.HEAD noun & [ POSS possessor ] ] ,\
+                        [ SYNSEM [ LOCAL [ CAT.HEAD noun & [ POSS possessor ],\
+                                           CONT.RELS <! [ quant-relation &\
+                                                          [ PRED "exist_q_rel",\
+                                                            ARG0 #possessor,\
+                                                            RSTR #harg2 ],\
+                                                            #altkeyrel !> ] ] ,\
                                    LKEYS.ALTKEYREL #altkeyrel & noun-relation &\
                                                          [ PRED "pron_rel",\
                                                            LBL #lbl2,\
@@ -519,14 +524,8 @@ def customize_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
             mylang.add(noun_type+' :=\
                         [ SYNSEM.LOCAL [ CAT.VAL.SPEC < [ LOCAL.CONT.HOOK [ INDEX #possessum & [ COG-ST uniq+fam+act ],\
                                                                           LTOP #lbl ] ] > ,\
-                                         CONT [ RELS  <! [ PRED "exist_q_rel",\
-                                                             ARG0 #possessum,\
-                                                             RSTR #harg ],\
-                                                           arg12-ev-relation &\
-                                                           [ PRED "poss_rel",\
-                                                             LBL #lbl,\
-                                                             ARG1 #possessum,\
-                                                             ARG2 #possessor ],\
+                                         CONT [ RELS  <! '+POSSESSUM_EXIST_REL+',\
+                                                         '+POSS_REL+'
                                                            quant-relation &\
                                                            [ PRED "exist_q_rel",\
                                                              ARG0 #possessor,\
