@@ -73,6 +73,15 @@ POSSESSOR_ADP_LEX=':= two-rel-adposition-lex &\
                                                                               OPT - ] ] ],\
                                                   CONT [ ICONS <! !>   ] ] ].'
 
+POSSESSUM_NOUN_LEX=':= basic-two-arg &\
+                                   [ SYNSEM.LOCAL [ CAT [ HEAD noun & [ POSS possessum ],\
+                                                          VAL [ SPR < #spr & [ LOCAL.CAT.HEAD +np ] >,\
+                                                                COMPS < #comps & [ LOCAL [ CONT.HOOK #hook,\
+                                                                                  CAT.VAL.SPR <[ ]> ] ] > ] ],\
+                                                    CONT [ HOOK #hook,\
+                                                           ICONS <! !> ] ],\
+                                     ARG-ST < #spr, #comps > ].'
+
 # PRIMARY FUNCTION
 def customize_adnominal_possession(mylang,ch,rules,irules,lexicon,hierarchies):
     customize_np_possession(mylang,ch,rules,irules,lexicon,hierarchies)
@@ -409,13 +418,13 @@ def customize_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
                                  [ SYNSEM.LOCAL [ CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL.SPR < [ ] > ,\
                                                   CONT [ HCONS <! !> ] ] ] .')
             if mark_loc=='possessor':
-                mylang.add('possessor-adp-lex := two-rel-adposition-lex &\
+                mylang.add('possessor-adp-lex := \
                                  [ SYNSEM.LOCAL [ CAT [ VAL [ COMPS.FIRST.LOCAL [ CONT.HOOK.INDEX #possessor ] ],\
                                                          HEAD.MOD.FIRST.LOCAL [ CONT.HOOK [ INDEX #possessum,\
                                                                                             LTOP #lbl ] ] ],\
                                                   CONT [ RELS <! '+POSS_REL+' !> ] ] ].')
             elif mark_loc=='both':
-                mylang.add('possessor-adp-lex := two-rel-adposition-lex &\
+                mylang.add('possessor-adp-lex := \
                                  [ SYNSEM.LOCAL [ CAT.HEAD.POSS possessor,\
                                                   CONT.RELS <! !> ] ] .')
         # TODO: these lex items don't follow nomenclature conventions yet:
@@ -448,14 +457,7 @@ def customize_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
 
 
     if (mark_loc=='possessum' or mark_loc=='both') and possessum_type=='non-affix':
-        mylang.add('possessum-noun-lex := basic-two-arg &\
-                                   [ SYNSEM.LOCAL [ CAT [ HEAD noun & [ POSS possessum ],\
-                                                          VAL [ SPR < #spr & [ LOCAL.CAT.HEAD +np ] >,\
-                                                                COMPS < #comps & [ LOCAL [ CONT.HOOK #hook,\
-                                                                                  CAT.VAL.SPR <[ ]> ] ] > ] ],\
-                                                    CONT [ HOOK #hook,\
-                                                           ICONS <! !> ] ],\
-                                     ARG-ST < #spr, #comps > ].')
+        mylang.add('possessum-noun-lex '+POSSESSUM_NOUN_LEX)
         if mod_spec=='spec':
             # NOTE: currently, this allows regular head-spec to do what head-spec-poss should be doing. 
             # Could prevent by not allowing the HEAD-DTR of head-spec to be possessive, but that would rule out things 
@@ -466,7 +468,6 @@ def customize_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
                                                                 CONT [ RELS <! '+POSS_REL+',\
                                                                                '+POSSESSUM_EXIST_REL+' !>,\
                                                                                HCONS <! qeq & [HARG #harg, LARG #lbl] !> ] ] ].',merge=True)
-#            mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.LOCAL.CAT.HEAD det ].')
         if mod_spec=='mod':
             # NOTE: semantics (irretrievably?) broken.
             # Since the marker takes the whole possessum NP as its complement, it ends up plugging the determiner's LTOP into
