@@ -1135,7 +1135,10 @@ class ChoicesFile:
             if self.get_regex("poss-strat._possessum-type")[0][1]=='affix':
                 strat_name=self.get_regex("poss-strat._possessum-type")[0][0].replace("_possessum-type","")
                 features += [ ['possessum_'+strat_name, 'plus|plus;minus|minus', '', 'verb', 'y'] ]
-
+        if self.get_regex("poss-pron.*"):
+            if self.get_regex("poss-pron._type")[0][1]=='affix':
+                strat_name=self.get_regex("poss-pron._type")[0][0].replace("_type","")
+                features += [ [strat_name,'plus|plus;minus|minus', '', 'verb', 'y' ] ]
 
         # Questions
         if 'q-infl' in self.choices:

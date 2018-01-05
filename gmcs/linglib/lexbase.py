@@ -228,7 +228,6 @@ class LexicalRuleType(MorphotacticNode):
         self.possessor_strat_num = None
         self.possessum = None
         self.possessum_strat_num = None
-        
 
     def __repr__(self):
         return 'LexicalRuleType(' + self.key + ')'

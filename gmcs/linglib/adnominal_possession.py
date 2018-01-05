@@ -1,11 +1,12 @@
 import gmcs.tdl
 import gmcs.utils
+from gmcs.utils import get_name
 from gmcs.choices import ChoiceDict
 from gmcs.linglib.word_order import customize_major_constituent_order
 from gmcs.linglib.morphotactics import all_position_classes
 from gmcs.linglib.features import customize_feature_values
 from gmcs.linglib.lexical_items import adp_id, noun_id
-###################################################################
+###############################################################################################
 # Parts of a possessive strategy:
 #
 # The rule that combines possessor and possessum: customize_rules()
@@ -19,11 +20,11 @@ from gmcs.linglib.lexical_items import adp_id, noun_id
 #     Lexical entries 
 #     Rules that combine these lexical items with possessor/possessum (customize_rules())
 #
-###################################################################
+################################################################################################
 
-##################################################################
-## Generalized typedefs for use in library                     ###
-################################################################## 
+################################################################################################
+## Generalized typedefs for use in library                                                   ###
+################################################################################################ 
 
 
 POSS_REL = '''arg12-ev-relation & [ PRED "poss_rel", \
@@ -132,7 +133,7 @@ def customize_pronominal_possession(mylang,ch,rules,irules,lexicon,hierarchies):
 
 # Adds phrase rules needed to join possessor and possessum,
 # as well as rules needed to join possession marker and the 
-# constituent it marks
+# constituent it marks.
 # Also adds constraints to non-possessive phrase rules to prevent
 # them from allowing possessive words in incorrect places
 def customize_rules(strat,mylang,ch,rules):
@@ -177,7 +178,7 @@ def customize_rules(strat,mylang,ch,rules):
                                                    HCONS <! !> ] ].')
         rule_added=True
     else:
-        # If possessor = spec, add a head-compositional variant of head-spec 
+        # If possessor==spec, add a head-compositional variant of head-spec 
         if strat.get('mod-spec')=='spec':
             phrase_rule="head-spec-poss-phrase"
             # Note: added the constraint on head type so that this would never do the work of attaching determiners to nouns
@@ -189,7 +190,7 @@ def customize_rules(strat,mylang,ch,rules):
                                                                          HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK #hook ,\
                                                                          C-CONT.HOOK #hook ].')
             rule_added=True
-        # If possessor = mod, add either head-mod or head-comp
+        # If possessor==mod, add either head-mod or head-comp
         # Exception: no rule added if preexistent head-comps has correct order
         elif strat.get('mod-spec')=='mod':
             if strat.get('mark-loc')=='possessum' or strat.get('mark-loc')=='both' and not pron_strat:
@@ -289,6 +290,7 @@ def customize_irules(strat,mylang,ch,irules):
     strat_name=strat.full_keys()[0].split("_")[0]
     strat_num=strat_name[-1]
     mark_loc=strat.get('mark-loc')
+    mod_spec=strat.get('mod-spec')
     possessor_type=strat.get('possessor-type')
     possessum_type=strat.get('possessum-type')
     mutual_agr=False
@@ -300,14 +302,14 @@ def customize_irules(strat,mylang,ch,irules):
         idx = pc['lrt'].next_iter_num() if 'lrt' in pc else 1
         for lrt in pc.get('lrt',[]):
             for feat in lrt['feat']:
-                # Go through the pc info till you find the strategy you're actually dealing with
-                if strat_name in str(feat['name']):
+                # Go through the position class (pc) info till you find the strategy you're actually dealing with
+                if strat_name in str(feat['name']) and feat['value']!='minus':
                     # Add possessor-inflecting rules:
-                    mod_spec=strat.get('mod-spec')
                     mylang.set_section('lexrules')
                     if (mark_loc=='possessor' or mark_loc=='both') and possessor_type=='affix':
                         # Add the basic possessor rule defn:
-                        possessor_rule_name = 'possessor-lex-rule-'+strat_num
+#                        possessor_rule_name = 'possessor-lex-rule-'+strat_nu
+                        possessor_rule_name = get_name(lrt)+'-lex-rule'
                         if mod_spec=='spec':
                             agr_prefix='SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
                             mylang.add(possessor_rule_name+POSSESSOR_RULE)
@@ -360,7 +362,8 @@ def customize_irules(strat,mylang,ch,irules):
                     # Add possessum-inflecting rules
                     if (mark_loc=='possessum' or mark_loc=='both') and possessum_type=='affix':
                         possessum_rule_name = 'possessum-lex-rule-'+strat_num
-                        mylang.add(possessum_rule_name+POSSESSUM_RULE)
+#                        mylang.add(possessum_rule_name+POSSESSUM_RULE)
+                        possessum_rule_name = get_name(lrt)+'-lex-rule'
                         if mod_spec=='spec':
                             agr_prefix='SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
                             mylang.add(possessum_rule_name+':=  val-change-with-ccont-lex-rule & \
@@ -428,6 +431,7 @@ def customize_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
         pron_strat=False
     if not pron_strat:
         if (mark_loc=='possessor' or mark_loc=='both') and possessor_type=='non-affix':
+            mylang.set_section('otherlex')
             mylang.add(TWO_REL_ADP)
             mylang.add('possessor-adp-lex '+POSSESSOR_ADP_LEX)
             if mod_spec=='spec':
@@ -487,6 +491,7 @@ def customize_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
 
 
         if (mark_loc=='possessum' or mark_loc=='both') and possessum_type=='non-affix':
+            mylang.set_section('nounlex')
             mylang.add('possessum-noun-lex '+POSSESSUM_NOUN_LEX)
             if mod_spec=='spec':
                 # NOTE: currently, this allows regular head-spec to do what head-spec-poss should be doing. 
@@ -538,6 +543,7 @@ def customize_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
     elif pron_strat:
         orth=strat.get('orth')
         noun_type=noun_id(strat)
+        mylang.set_section('nounlex')
         mylang.add(noun_type+POSSESSOR_PRON_LEX)
         if mod_spec=='spec':
             mylang.add(noun_type+' :=\

@@ -448,14 +448,13 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
              ARG-ST < #spr > ].'
 
     # EKN 2017-12-18 In some languages, possessor nouns act as specifiers
-    # to other nouns. This bit of logic checks to see if the user has
+    # to other nouns. This checks to see if the user has
     # indicated that possessor nouns can be specifiers, and if so, overwrites
     # the typedef of noun-lex to indicate that its SPR is of head type +nd.
     # Otherwise, the SPR of noun-lex is of head type det, as before. Furthermore,
     # in cases when only the possessum is marked, any noun needs to be able to
     # have a non-empty SPEC list, so we change that to being underspecified
     # in those cases here too:
-    # PROBLEM: this currently assumes at most one possessive strategy.
     for strat in ch.get('poss-strat',[]):
         if strat.get('mod-spec')=='spec':
             if strat.get('mark-loc')=='possessor' or strat.get('mark-loc')=='both':
