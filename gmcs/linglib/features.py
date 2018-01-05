@@ -12,8 +12,6 @@ def process_cfv_list(mylang, ch, hierarchies, to_cfv, tdlfile=None):
                              tdlfile=tdlfile or mylang)
 
 def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, features=None, cases=None, tdlfile=None):
-  if pos=='poss-marker': 
-    print ch_dict
 
   if not features:
     features = ch.features()

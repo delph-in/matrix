@@ -541,8 +541,8 @@ def customize_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
         mylang.add(noun_type+POSSESSOR_PRON_LEX)
         if mod_spec=='spec':
             mylang.add(noun_type+' :=\
-                        [ SYNSEM.LOCAL [ CAT.VAL.SPEC < [ LOCAL.CONT.HOOK [ INDEX #possessum & [ COG-ST uniq+fam+act ],\
-                                                                          LTOP #lbl ] ] > ,\
+                        [ SYNSEM.LOCAL [ CAT.VAL.SPEC.FIRST.LOCAL.CONT.HOOK [ INDEX #possessum & [ COG-ST uniq+fam+act ],\
+                                                                          LTOP #lbl ],\
                                          CONT [ RELS  <! '+POSSESSUM_EXIST_REL+',\
                                                          '+POSS_REL+',\
                                                            quant-relation &\
@@ -556,8 +556,8 @@ def customize_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
                                                                    LARG #lbl2 ] !> ] ] ].')
         elif mod_spec=='mod':
             mylang.add(noun_type+' :=\
-                        [ SYNSEM.LOCAL [ CAT.HEAD.MOD < [ LOCAL.CONT.HOOK [ INDEX #possessum,\
-                                                                            LTOP #lbl ] ] > ,\
+                        [ SYNSEM.LOCAL [ CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK [ INDEX #possessum,\
+                                                                            LTOP #lbl ],\
                                          CONT [ RELS  <!  '+POSS_REL+',\
                                                            quant-relation &\
                                                            [ PRED "exist_q_rel",\
@@ -571,9 +571,9 @@ def customize_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
         lexicon.add(noun_type.replace('-lex','')+' := '+noun_type+' &\
                                          [ STEM < "'+orth+'" > ].')
         if strat.get('agr')=='agree':
+            mylang.add('poss :+ [ POSS-AGR png ].',section='addenda')            
             strat_tmp={}
             for key in strat.keys():
-                print key
                 # Relabel the inherent features as something else ('skip') 
                 # Relabel the agreement features as simply features ('feat')
                 # Then call customize_feature_values() with the 'poss-marker' setting
@@ -581,9 +581,13 @@ def customize_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
                 new_key=key.replace('feat','skip')
                 new_key=new_key.replace('agr-skip','feat')
                 strat_tmp[new_key]=strat.get(key)
-#            strat_tmp=ChoiceDict(strat_tmp)
-            print strat_tmp
+            # TODO: Figure out how to cast from a dict to a ChoiceDict so that no future developers have to deal with this mess in features.py
             customize_feature_values(mylang,ch,hierarchies,strat_tmp,noun_type,'poss-marker')
-
-
+            if mod_spec=='spec':
+                agr_prefix='SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
+            elif mod_spec=='mod':
+                agr_prefix='SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
+            mylang.add(noun_type+' := [ SYNSEM.LOCAL.CAT.HEAD.POSS.POSS-AGR #png,\
+                                        '+agr_prefix+' #png ].')
+                
 
