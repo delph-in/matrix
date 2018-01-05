@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of adnom-poss-test
 ;;; created at:
-;;;     Thu Jan 04 23:03:00 UTC 2018
+;;;     Fri Jan 05 00:03:17 UTC 2018
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -200,8 +200,8 @@ possessor-adp-lex := two-rel-adposition-lex &
                                 MOD.FIRST.LOCAL [ CAT.VAL.SPR < [ ] >,
                                                   CONT.HOOK [ INDEX #possessum,
                                                               LTOP #lbl ] ] ] ],
-                   CONT [ HCONS <!  !>,
-                          ICONS <!  !>,
+                   CONT [ ICONS <!  !>,
+                          HCONS <!  !>,
                           RELS <! arg12-ev-relation &
                                   [ PRED "poss_rel",
                                     LBL #lbl,
