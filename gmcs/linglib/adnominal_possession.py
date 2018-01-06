@@ -426,7 +426,6 @@ def customize_irules(strat,mylang,ch,irules,hierarchies):
                             mylang.add(get_name(lrt)+'-lex-rule := [ SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.LOCAL.CAT.HEAD det ].')
                 elif pron_strat:
                     if strat_name in str(feat['name']) and feat['value']!='minus':
-                        print strat_name
                         mylang.add(get_name(lrt)+'-lex-rule :=\
                                       [ DTR.SYNSEM.LOCAL.CONT.HOOK [ INDEX #possessum & [ COG-ST uniq+fam+act ],\
                                                                      LTOP #lbl],\
