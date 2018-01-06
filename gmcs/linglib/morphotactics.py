@@ -256,10 +256,8 @@ def create_lexical_rule_type(lrt, mtx_supertypes, cur_pc):
             new_lrt.evidential = feat['value']
         elif 'possessor' in feat['name']:
             new_lrt.possessor = feat['value']
-            new_lrt.possessor_strat_num = feat['name'][-1]
         elif 'possessum' in feat['name']:
             new_lrt.possessum = feat['value']
-            new_lrt.possessum_strat_num = feat['name'][-1]
         else:
             new_lrt.features[feat['name']] = {'value': feat['value'],
                                               'head': feat['head']}
