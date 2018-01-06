@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of adnom-poss-test
 ;;; created at:
-;;;     Fri Jan 05 01:04:06 UTC 2018
+;;;     Sat Jan 06 21:19:17 UTC 2018
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -25,12 +25,12 @@ non-mod-lex-item := lex-item &
 ;;; Matrix Type Addenda
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 
-inflected :+ [ POSSESSIVE-FLAG luk,
-    PERNUM-FLAG luk,
+inflected :+ [ PERNUM-FLAG luk,
+    POSSESSIVE-FLAG luk,
     NUM-FLAG luk ].
 
-infl-satisfied :+ [ POSSESSIVE-FLAG na-or-+,
-    PERNUM-FLAG na-or-+,
+infl-satisfied :+ [ PERNUM-FLAG na-or-+,
+    POSSESSIVE-FLAG na-or-+,
     NUM-FLAG na-or-+ ].
 
 png :+ [ PER person,
@@ -133,6 +133,39 @@ determiner-lex := basic-determiner-lex & norm-zero-arg & non-mod-lex-item &
 
 det1-determiner-lex := determiner-lex & no-icons-lex-item.
 
+two-rel-adposition-lex := basic-icons-lex-item &
+  [ SYNSEM [ LOCAL [ CAT [ HEAD adp,
+                           VAL.COMPS < [ LOCAL [ CAT cat-sat,
+                                                 CONT.HOOK #hook &
+                                                           [ INDEX #ind,
+                                                             ICONS-KEY.IARG1 #clause ] ] ] > ],
+                     CONT.HOOK #hook &
+                               [ CLAUSE-KEY #clause ] ],
+             LKEYS.KEYREL arg12-ev-relation &
+                          [ ARG2 #ind ] ] ].
+
+possessor-adp-lex := two-rel-adposition-lex &
+  [ SYNSEM.LOCAL [ CAT [ VAL [ SPR < >,
+                               COMPS.FIRST [ LOCAL.CAT.HEAD noun,
+                                             OPT - ] ],
+                         HEAD [ MOD.FIRST.LOCAL.CAT.VAL.SPR < [ ] >,
+                                POSS possessor ] ],
+                   CONT [ ICONS <!  !>,
+                          HCONS <!  !>,
+                          RELS <!  !> ] ] ].
+
+possessor-3sg-adp-lex := possessor-adp-lex &
+  [ SYNSEM.LOCAL.CAT [ VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG #png,
+                       HEAD.POSS.POSS-AGR #png &
+                                          [ NUM sg,
+                                            PER 3rd ] ] ].
+
+possessor-3pl-adp-lex := possessor-adp-lex &
+  [ SYNSEM.LOCAL.CAT [ VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG #png,
+                       HEAD.POSS.POSS-AGR #png &
+                                          [ NUM pl,
+                                            PER 3rd ] ] ].
+
 ;;;;;;;;;;;;;;;;;;;
 ;;; Lexical Rules
 ;;;;;;;;;;;;;;;;;;;
@@ -145,11 +178,11 @@ possessive-rule-dtr := word-or-lexrule.
 
 num-lex-rule-super := add-only-no-ccont-rule & possessive-rule-dtr &
   [ INFLECTED [ NUM-FLAG +,
-                POSSESSIVE-FLAG #possessive,
-                PERNUM-FLAG #pernum ],
+                PERNUM-FLAG #pernum,
+                POSSESSIVE-FLAG #possessive ],
     DTR common-noun-lex &
-        [ INFLECTED [ POSSESSIVE-FLAG #possessive,
-                      PERNUM-FLAG #pernum ] ] ].
+        [ INFLECTED [ PERNUM-FLAG #pernum,
+                      POSSESSIVE-FLAG #possessive ] ] ].
 
 singular-lex-rule := const-lex-rule & num-lex-rule-super &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM sg ].
@@ -197,19 +230,19 @@ possessum-lex-rule-1 := val-change-with-ccont-lex-rule &
 
 possessum-lex-rule := infl-lex-rule & possessive-lex-rule-super & possessum-lex-rule-1.
 
-non-possessive-lex-rule-1 := add-only-no-ccont-rule &
+nonpossessive-lex-rule-1 := add-only-no-ccont-rule &
   [ SYNSEM.LOCAL.CAT.HEAD noun &
                           [ POSS nonpossessive ] ].
 
-non-possessive-lex-rule := const-lex-rule & non-possessive-lex-rule-1 & possessive-lex-rule-super.
+non-possessive-lex-rule := const-lex-rule & nonpossessive-lex-rule-1 & possessive-lex-rule-super.
 
 pernum-lex-rule-super := add-only-no-ccont-rule &
   [ INFLECTED [ PERNUM-FLAG +,
-                POSSESSIVE-FLAG #possessive,
-                NUM-FLAG #num ],
+                NUM-FLAG #num,
+                POSSESSIVE-FLAG #possessive ],
     DTR verb-lex &
-        [ INFLECTED [ POSSESSIVE-FLAG #possessive,
-                      NUM-FLAG #num ] ] ].
+        [ INFLECTED [ NUM-FLAG #num,
+                      POSSESSIVE-FLAG #possessive ] ] ].
 
 3sg-lex-rule := infl-lex-rule & pernum-lex-rule-super &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ PER 3rd,
@@ -220,39 +253,6 @@ pl-lex-rule := const-lex-rule & pernum-lex-rule-super &
 
 non-3rd-lex-rule := const-lex-rule & pernum-lex-rule-super &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PER non-3rd ].
-
-two-rel-adposition-lex := basic-icons-lex-item &
-  [ SYNSEM [ LOCAL [ CAT [ HEAD adp,
-                           VAL.COMPS < [ LOCAL [ CAT cat-sat,
-                                                 CONT.HOOK #hook &
-                                                           [ INDEX #ind,
-                                                             ICONS-KEY.IARG1 #clause ] ] ] > ],
-                     CONT.HOOK #hook &
-                               [ CLAUSE-KEY #clause ] ],
-             LKEYS.KEYREL arg12-ev-relation &
-                          [ ARG2 #ind ] ] ].
-
-possessor-adp-lex := two-rel-adposition-lex &
-  [ SYNSEM.LOCAL [ CAT [ VAL [ SPR < >,
-                               COMPS.FIRST [ LOCAL.CAT.HEAD noun,
-                                             OPT - ] ],
-                         HEAD [ MOD.FIRST.LOCAL.CAT.VAL.SPR < [ ] >,
-                                POSS possessor ] ],
-                   CONT [ ICONS <!  !>,
-                          HCONS <!  !>,
-                          RELS <!  !> ] ] ].
-
-possessor-3sg-adp-lex := possessor-adp-lex &
-  [ SYNSEM.LOCAL.CAT [ VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG #png,
-                       HEAD.POSS.POSS-AGR #png &
-                                          [ NUM sg,
-                                            PER 3rd ] ] ].
-
-possessor-3pl-adp-lex := possessor-adp-lex &
-  [ SYNSEM.LOCAL.CAT [ VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG #png,
-                       HEAD.POSS.POSS-AGR #png &
-                                          [ NUM pl,
-                                            PER 3rd ] ] ].
 
 ;;;;;;;;;;;;;;;;;;;
 ;;; Phrasal Types

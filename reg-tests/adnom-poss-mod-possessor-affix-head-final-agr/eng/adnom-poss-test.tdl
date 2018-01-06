@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of adnom-poss-test
 ;;; created at:
-;;;     Sat Jan 06 19:01:17 UTC 2018
+;;;     Sat Jan 06 21:01:58 UTC 2018
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -165,7 +165,7 @@ possessive-lex-rule-super := lex-rule &
         [ INFLECTED [ NUM-FLAG #num,
                       PERNUM-FLAG #pernum ] ] ].
 
-possessor-3sg-lex-rule := infl-lex-rule & possessive-lex-rule-super & head-change-with-ccont-lex-rule &
+possessor-lex-rule-1 := head-change-with-ccont-lex-rule &
   [ C-CONT [ HOOK #hook,
              RELS <! arg12-ev-relation &
                      [ PRED "poss_rel",
@@ -186,9 +186,7 @@ possessor-3sg-lex-rule := infl-lex-rule & possessive-lex-rule-super & head-chang
                              SPEC #spec ],
                        HEAD noun &
                             [ POSS possessor &
-                                   [ POSS-AGR #png &
-                                              [ NUM sg,
-                                                PER 3rd ] ],
+                                   [ POSS-AGR #png ],
                               MOD.FIRST [ OPT -,
                                           LOCAL [ CAT [ VAL.SPR < [ ] >,
                                                         HEAD +np ],
@@ -196,40 +194,19 @@ possessor-3sg-lex-rule := infl-lex-rule & possessive-lex-rule-super & head-chang
                                                               INDEX #possessum &
                                                                     [ PNG #png ] ] ] ] ] ] ].
 
-nonpossessive-lex-rule := add-only-no-ccont-rule & const-lex-rule & possessive-lex-rule-super &
+possessor-3sg-lex-rule := infl-lex-rule & possessive-lex-rule-super & possessor-lex-rule-1 &
+  [ SYNSEM.LOCAL.CAT.HEAD.POSS.POSS-AGR [ NUM sg,
+                                          PER 3rd ] ].
+
+nonpossessive-lex-rule-1 := add-only-no-ccont-rule &
   [ SYNSEM.LOCAL.CAT.HEAD noun &
                           [ POSS nonpossessive ] ].
 
-possessor-3pl-lex-rule := infl-lex-rule & possessive-lex-rule-super & head-change-with-ccont-lex-rule &
-  [ C-CONT [ HOOK #hook,
-             RELS <! arg12-ev-relation &
-                     [ PRED "poss_rel",
-                       LBL #lbl,
-                       ARG1 #possessum,
-                       ARG2 #possessor ] !>,
-             HCONS <!  !>,
-             ICONS <!  !> ],
-    DTR.SYNSEM.LOCAL [ CONT.HOOK #hook &
-                                 [ INDEX #possessor ],
-                       CAT.VAL [ SPR #spr,
-                                 COMPS #comps,
-                                 SUBJ #subj,
-                                 SPEC #spec ] ],
-    SYNSEM.LOCAL.CAT [ VAL [ SPR #spr,
-                             COMPS #comps,
-                             SUBJ #subj,
-                             SPEC #spec ],
-                       HEAD noun &
-                            [ POSS possessor &
-                                   [ POSS-AGR #png &
-                                              [ NUM pl,
-                                                PER 3rd ] ],
-                              MOD.FIRST [ OPT -,
-                                          LOCAL [ CAT [ VAL.SPR < [ ] >,
-                                                        HEAD +np ],
-                                                  CONT.HOOK [ LTOP #lbl,
-                                                              INDEX #possessum &
-                                                                    [ PNG #png ] ] ] ] ] ] ].
+nonpossessive-lex-rule := const-lex-rule & nonpossessive-lex-rule-1 & possessive-lex-rule-super.
+
+possessor-3pl-lex-rule := infl-lex-rule & possessive-lex-rule-super & possessor-lex-rule-1 &
+  [ SYNSEM.LOCAL.CAT.HEAD.POSS.POSS-AGR [ NUM pl,
+                                          PER 3rd ] ].
 
 pernum-lex-rule-super := add-only-no-ccont-rule &
   [ INFLECTED [ PERNUM-FLAG +,

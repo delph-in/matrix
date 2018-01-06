@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of adnom-poss-test
 ;;; created at:
-;;;     Sat Dec 30 20:46:07 UTC 2017
+;;;     Sat Jan 06 21:15:06 UTC 2018
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -131,6 +131,27 @@ determiner-lex := basic-determiner-lex & norm-zero-arg & non-mod-lex-item &
 
 det1-determiner-lex := determiner-lex & no-icons-lex-item.
 
+two-rel-adposition-lex := basic-icons-lex-item &
+  [ SYNSEM [ LOCAL [ CAT [ HEAD adp,
+                           VAL.COMPS < [ LOCAL [ CAT cat-sat,
+                                                 CONT.HOOK #hook &
+                                                           [ INDEX #ind,
+                                                             ICONS-KEY.IARG1 #clause ] ] ] > ],
+                     CONT.HOOK #hook &
+                               [ CLAUSE-KEY #clause ] ],
+             LKEYS.KEYREL arg12-ev-relation &
+                          [ ARG2 #ind ] ] ].
+
+possessor-adp-lex := two-rel-adposition-lex &
+  [ SYNSEM.LOCAL [ CAT [ VAL [ SPR < >,
+                               COMPS.FIRST [ LOCAL.CAT.HEAD noun,
+                                             OPT - ] ],
+                         HEAD [ MOD.FIRST.LOCAL.CAT.VAL.SPR < [ ] >,
+                                POSS possessor ] ],
+                   CONT [ ICONS <!  !>,
+                          HCONS <!  !>,
+                          RELS <!  !> ] ] ].
+
 ;;;;;;;;;;;;;;;;;;;
 ;;; Lexical Rules
 ;;;;;;;;;;;;;;;;;;;
@@ -191,11 +212,11 @@ possessum-lex-rule-1 := val-change-with-ccont-lex-rule &
 
 possessum-lex-rule := infl-lex-rule & possessive-lex-rule-super & possessum-lex-rule-1.
 
-non-possessive-lex-rule-1 := add-only-no-ccont-rule &
+nonpossessive-lex-rule-1 := add-only-no-ccont-rule &
   [ SYNSEM.LOCAL.CAT.HEAD noun &
                           [ POSS nonpossessive ] ].
 
-nonpossessive-lex-rule := const-lex-rule & non-possessive-lex-rule-1 & possessive-lex-rule-super.
+nonpossessive-lex-rule := const-lex-rule & nonpossessive-lex-rule-1 & possessive-lex-rule-super.
 
 pernum-lex-rule-super := add-only-no-ccont-rule &
   [ INFLECTED [ PERNUM-FLAG +,
@@ -215,43 +236,26 @@ pl-lex-rule := const-lex-rule & pernum-lex-rule-super &
 non-3rd-lex-rule := const-lex-rule & pernum-lex-rule-super &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PER non-3rd ].
 
-two-rel-adposition-lex := basic-icons-lex-item &
-  [ SYNSEM [ LOCAL [ CAT [ HEAD adp,
-                           VAL.COMPS < [ LOCAL [ CAT cat-sat,
-                                                 CONT.HOOK #hook &
-                                                           [ INDEX #ind,
-                                                             ICONS-KEY.IARG1 #clause ] ] ] > ],
-                     CONT.HOOK #hook &
-                               [ CLAUSE-KEY #clause ] ],
-             LKEYS.KEYREL arg12-ev-relation &
-                          [ ARG2 #ind ] ] ].
-
-possessor-adp-lex := two-rel-adposition-lex &
-  [ SYNSEM.LOCAL [ CAT [ VAL [ SPR < >,
-                               COMPS.FIRST [ LOCAL.CAT.HEAD noun,
-                                             OPT - ] ],
-                         HEAD [ MOD.FIRST.LOCAL.CAT.VAL.SPR < [ ] >,
-                                POSS possessor ] ],
-                   CONT [ HCONS <!  !>,
-                          ICONS <!  !>,
-                          RELS <!  !> ] ] ].
-
 ;;;;;;;;;;;;;;;;;;;
 ;;; Phrasal Types
 ;;;;;;;;;;;;;;;;;;;
 
 head-comp-poss-phrase := basic-head-1st-comp-phrase & head-final &
-  [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +np,
-    NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.SPR < >,
-                                    HEAD +np ] ].
-
-;Constraint on MC used to be part of matrix.tdl
-;;it applies to all wo implementations, except for v2
+  [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.SPR < >,
+                                    HEAD +np &
+                                         [ POSS possessor ] ],
+    HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +np &
+                                   [ POSS possessum ] ].
 
 ; Rules for building NPs.  Note that the Matrix uses SPR for
 ; the specifier of nouns and SUBJ for the subject (specifier) of verbs.
 
-head-spec-phrase := basic-head-spec-phrase & head-final.
+head-spec-phrase := basic-head-spec-phrase & head-final &
+  [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.SPR < >,
+                                    HEAD.POSS nonpossessive ] ].
+
+;Constraint on MC used to be part of matrix.tdl
+;;it applies to all wo implementations, except for v2
 
 ; Bare NP phrase.  Consider modifying the PRED value of the quantifier relation
 ; introduced to match the semantic effect of bare NPs in your language.

@@ -256,6 +256,7 @@ def create_lexical_rule_type(lrt, mtx_supertypes, cur_pc):
             new_lrt.evidential = feat['value']
         elif feat['value']=='possessor' or feat['value']=='possessum' or feat['value']=='nonpossessive':
             new_lrt.possessive=feat['value']
+            new_lrt.poss_strat_num = feat['name'][-1]
 #        elif 'possessor' in feat['name']:
 #            new_lrt.possessor = feat['value']
 #        elif 'possessum' in feat['name']:
@@ -622,7 +623,7 @@ def write_rules(pch, mylang, irules, lrules, lextdl, choices):
             # MTH 2017-10-16 Write evidential behavior
             write_evidential_behavior(lrt, mylang, choices, pc.has_evidential())
             # EKN 2017-12-13 Write possessive behavior
-            write_possessive_behavior(lrt,mylang,choices)
+            write_possessive_behavior(pc,lrt,mylang,choices)
             # CMC 2017-04-07 moved merged LRT/PCs handling to write_supertypes
             write_supertypes(mylang, lrt.identifier(), lrt.all_supertypes())
         write_daughter_types(mylang, pc)
@@ -818,7 +819,7 @@ def write_evidential_behavior(lrt, mylang, choices, pc_evidential):
         lrt.supertypes.add("add-only-no-ccont-rule")
 
 
-def write_possessive_behavior(lrt,mylang,choices):
+def write_possessive_behavior(pc,lrt,mylang,choices):
     ##############################################
     # FULL NP POSSESSIVE PHRASES:              ###
     ##############################################
@@ -828,15 +829,21 @@ def write_possessive_behavior(lrt,mylang,choices):
              [ SYNSEM.LOCAL.CAT.HEAD noun & [ POSS possessum ] ].'''
     NON_POSS_LEX_RULE_DEFN = ''' := add-only-no-ccont-rule &
              [ SYNSEM.LOCAL.CAT.HEAD noun & [ POSS nonpossessive ] ].'''
-#    if lrt.possessor=='plus':
     if lrt.possessive=='possessor':
-        mylang.add(lrt.identifier()+POSSESSOR_LEX_RULE_DEFN,section='lexrules')
-#    if lrt.possessum=='plus':
+        possessor_rule_name='possessor-lex-rule-'+lrt.poss_strat_num
+        lrt.supertypes.add(possessor_rule_name)
+        mylang.add(possessor_rule_name+POSSESSOR_LEX_RULE_DEFN,section='lexrules')
+#        mylang.add(lrt.identifier()+POSSESSOR_LEX_RULE_DEFN,section='lexrules')
     if lrt.possessive=='possessum':
-        mylang.add(lrt.identifier()+POSSESSUM_LEX_RULE_DEFN,section='lexrules')
-#    if lrt.possessum=='minus' or lrt.possessor=='minus':
+        possessum_rule_name='possessum-lex-rule-'+lrt.poss_strat_num
+        mylang.add(possessum_rule_name+POSSESSUM_LEX_RULE_DEFN,section='lexrules')
+        lrt.supertypes.add(possessum_rule_name)
+#        mylang.add(lrt.identifier()+POSSESSUM_LEX_RULE_DEFN,section='lexrules')
     if lrt.possessive=='nonpossessive':
-        mylang.add(lrt.identifier()+NON_POSS_LEX_RULE_DEFN,section='lexrules')
+        nonpossessive_rule_name='nonpossessive-lex-rule-'+lrt.poss_strat_num
+        mylang.add(nonpossessive_rule_name+NON_POSS_LEX_RULE_DEFN,section='lexrules')
+        lrt.supertypes.add(nonpossessive_rule_name)
+#        mylang.add(lrt.identifier()+NON_POSS_LEX_RULE_DEFN,section='lexrules')
     ##############################################
     # PRONOMINAL POSSESSIVE PHRASES:           ###
     ##############################################

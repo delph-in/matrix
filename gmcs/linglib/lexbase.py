@@ -189,7 +189,6 @@ class PositionClass(MorphotacticNode):
                 return True
         return False
 
-
     def has_incorporated_stems(self):
         # 2014-08-21 TJT: Keep track of whether a PositionClass has
         # Incorporated Stem Lexical Rule Instances
@@ -230,6 +229,7 @@ class LexicalRuleType(MorphotacticNode):
         self.evidential = None
         # EKN 2017-12-15 Possessor rule pseudofeatures are properties of LRT
         self.possessive = None
+        self.poss_strat_num = None
 #        self.possessor = None
 #        self.possessum = None
 

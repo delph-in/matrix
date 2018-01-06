@@ -315,7 +315,8 @@ def customize_irules(strat,mylang,ch,irules,hierarchies):
 #                        if (mark_loc=='possessor' or mark_loc=='both') and possessor_type=='affix' and ('possessor' in feat['name']):
                         if (mark_loc=='possessor' or mark_loc=='both') and possessor_type=='affix' and feat['value']=='possessor':
                             # Add the basic possessor rule defn:
-                            possessor_rule_name = get_name(lrt)+'-lex-rule'
+#                            possessor_rule_name = get_name(lrt)+'-lex-rule
+                            possessor_rule_name ='possessor-lex-rule-'+strat_num
                             if mod_spec=='spec':
                                 agr_prefix='SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
                                 mylang.add(possessor_rule_name+POSSESSOR_RULE)
@@ -368,7 +369,8 @@ def customize_irules(strat,mylang,ch,irules,hierarchies):
                         # TODO: add check here that the current lrt is a possessum rule
 #                        if (mark_loc=='possessum' or mark_loc=='both') and possessum_type=='affix' and ('possessum' in feat['name']):
                         if (mark_loc=='possessum' or mark_loc=='both') and possessum_type=='affix' and feat['value']=='possessum':
-                            possessum_rule_name = get_name(lrt)+'-lex-rule'
+#                            possessum_rule_name = get_name(lrt)+'-lex-rule'
+                            possessum_rule_name ='possessum-lex-rule-'+strat_num
                             mylang.add(possessum_rule_name+POSSESSUM_RULE)
                             if mod_spec=='spec':
                                 agr_prefix='SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
@@ -406,16 +408,16 @@ def customize_irules(strat,mylang,ch,irules,hierarchies):
                                 if mark_loc=='both':
                                     mylang.add(possessum_rule_name+' :=\
                                            [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD +np & [ POSS possessor ] ].')
-                        if strat.get('possessum-agr')=='agree' and possessum_type=='affix':
-                            mylang.add('poss :+ [ POSS-AGR png ].',section='addenda')
-                            mylang.add(possessum_rule_name+' := [ SYNSEM.LOCAL.CAT.HEAD.POSS.POSS-AGR #png,\
+                            if strat.get('possessum-agr')=='agree' and possessum_type=='affix':
+                                mylang.add('poss :+ [ POSS-AGR png ].',section='addenda')
+                                mylang.add(possessum_rule_name+' := [ SYNSEM.LOCAL.CAT.HEAD.POSS.POSS-AGR #png,\
                                                              '+agr_prefix+' #png ].')
-                        # Note: in the mutual agreement, double marking mod-like scenario, the possessor is a COMP.
-                        # Therefore, it has no access to the possessum's PNG info. When the possessor agrees with 
-                        # the possessum, therefore, all agreement must be done in the possessum-inflecting rule:
-                        if mark_loc=='both' and mod_spec=='mod' and strat.get('possessor-agr')=='agree':
-                            if possessum_type=='affix':
-                                mylang.add(possessum_rule_name+' := [ SYNSEM.LOCAL [ CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.POSS.POSS-AGR #poss-png,\
+                            # Note: in the mutual agreement, double marking mod-like scenario, the possessor is a COMP.
+                            # Therefore, it has no access to the possessum's PNG info. When the possessor agrees with 
+                            # the possessum, therefore, all agreement must be done in the possessum-inflecting rule:
+                            if mark_loc=='both' and mod_spec=='mod' and strat.get('possessor-agr')=='agree':
+                                if possessum_type=='affix':
+                                    mylang.add(possessum_rule_name+' := [ SYNSEM.LOCAL [ CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.POSS.POSS-AGR #poss-png,\
                                                                                  CONT.HOOK.INDEX.PNG #poss-png ] ].')
 #                    elif strat_name in str(feat['name']) and feat['value']=='minus':
                     elif strat_name==str(feat['name']) and feat['value']=='nonpossessive':

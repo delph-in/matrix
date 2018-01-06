@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of adnom-poss-test
 ;;; created at:
-;;;     Sat Jan 06 19:00:42 UTC 2018
+;;;     Sat Jan 06 21:01:26 UTC 2018
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -165,7 +165,7 @@ possessive-lex-rule-super := lex-rule &
         [ INFLECTED [ PERNUM-FLAG #pernum,
                       NUM-FLAG #num ] ] ].
 
-possessor-lex-rule := infl-lex-rule & possessive-lex-rule-super & head-change-with-ccont-lex-rule &
+possessor-lex-rule-1 := head-change-with-ccont-lex-rule &
   [ C-CONT [ HOOK #hook,
              RELS <! arg12-ev-relation &
                      [ PRED "poss_rel",
@@ -194,9 +194,13 @@ possessor-lex-rule := infl-lex-rule & possessive-lex-rule-super & head-change-wi
                                                               INDEX #possessum &
                                                                     [ PNG #png ] ] ] ] ] ] ].
 
-nonpossessive-lex-rule := add-only-no-ccont-rule & const-lex-rule & possessive-lex-rule-super &
+possessor-lex-rule := infl-lex-rule & possessive-lex-rule-super & possessor-lex-rule-1.
+
+nonpossessive-lex-rule-1 := add-only-no-ccont-rule &
   [ SYNSEM.LOCAL.CAT.HEAD noun &
                           [ POSS nonpossessive ] ].
+
+nonpossessive-lex-rule := const-lex-rule & nonpossessive-lex-rule-1 & possessive-lex-rule-super.
 
 pernum-lex-rule-super := add-only-no-ccont-rule &
   [ INFLECTED [ PERNUM-FLAG +,
