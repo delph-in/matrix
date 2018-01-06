@@ -427,9 +427,11 @@ def customize_irules(strat,mylang,ch,irules,hierarchies):
                 elif pron_strat:
                     if strat_name in str(feat['name']) and feat['value']!='minus':
                         mylang.add(get_name(lrt)+'-lex-rule :=\
-                                      [ DTR.SYNSEM.LOCAL.CONT.HOOK [ INDEX #possessum & [ COG-ST uniq+fam+act ],\
-                                                                     LTOP #lbl],\
-                                        C-CONT [ RELS  <! '+POSSESSUM_EXIST_REL+',\
+                                      [ SYNSEM.LOCAL.CAT.HEAD.POSS possessive,\
+                                        DTR.SYNSEM.LOCAL.CONT.HOOK #hook & [ INDEX #possessum & [ COG-ST uniq+fam+act ],\
+                                                                             LTOP #lbl],\
+                                        C-CONT [ HOOK #hook,\
+                                                 RELS  <! '+POSSESSUM_EXIST_REL+',\
                                                           '+POSS_REL+',\
                                                           quant-relation &\
                                                           [ PRED "exist_q_rel",\
@@ -444,6 +446,11 @@ def customize_irules(strat,mylang,ch,irules,hierarchies):
                                                                   LARG #lbl ],\
                                                           qeq & [ HARG #harg2,\
                                                                   LARG #lbl2 ] !> ] ].')
+                        if mod_spec=='spec':
+                            mylang.add(get_name(lrt)+'-lex-rule := [ SYNSEM.LOCAL.CAT.VAL.SPR < > ].')
+                        elif mod_spec=='mod':
+                            mylang.add(get_name(lrt)+'-lex-rule := [ SYNSEM.LOCAL.CAT.VAL.SPR #spr,\
+                                                                     DTR.SYNSEM.LOCAL.CAT.VAL.SPR #spr  ].')
 #                        customize_feature_values(mylang,ch,hierarchies,strat,get_name(lrt),'poss-marker')
 
 

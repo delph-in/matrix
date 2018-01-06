@@ -3034,6 +3034,10 @@ BeginIter poss-pron{i} "a possessor pronoun"
     . agree "agree" "" "yes<br>"
     . non-agree "non-agree" "" "no<br>"
 
+    Radio mod-spec "Modifier or Specifier" "<p>If your language has determiners, does the possessum noun still appear with a determiner when marked with this affix?</p>" ""
+    . mod "Mod" "" "yes<br>"
+    . spec "Spec" "" "no<br>"
+
     BeginIter agr-feat{j} "an agreement feature to this pronominal affix"
 
       Select name "Possessive pronoun {i} Feature {j} Name" "<br>Name: " " "
