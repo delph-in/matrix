@@ -236,8 +236,8 @@ def customize_rules(strat,mylang,ch,rules):
                 rules.add('head-comp-poss := head-comp-poss-phrase.')
                 added_rule_for_marker=True
 
-        # If a specialized (non-juxtaposition) poss phrase rule was added, require that the marked constituent be [ POSS possessive ]
-        # TODO: check if I can take out the stuff after 'and not'
+    # If a specialized (non-juxtaposition) poss phrase rule was added, require that the marked constituent be [ POSS possessive ]
+    # TODO: check if I can take out the stuff after 'and not'
     if rule_added and not (added_rule_for_marker and phrase_rule=='head-comp-poss-phrase'):
         if strat.get('mark-loc')=='possessor':
             mylang.add(phrase_rule+':= [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS nonpossessive,\
@@ -304,20 +304,17 @@ def customize_irules(strat,mylang,ch,irules,hierarchies):
     if strat.get('possessor-agr')=='agree' and strat.get('possessum-agr')=='agree':
         mutual_agr=True
     for pc in all_position_classes(ch):
-        pc_key = pc.full_key
-        pc_inputs = pc.get('inputs',[])
-        idx = pc['lrt'].next_iter_num() if 'lrt' in pc else 1
         for lrt in pc.get('lrt',[]):
             for feat in lrt['feat']:
                 if not pron_strat:
                     # Go through the position class (pc) info till you find the strategy you're actually dealing with
-                    if strat_name in str(feat['name']) and feat['value']!='minus':
+#                    if strat_name in str(feat['name']) and feat['value']!='minus':
+                    if strat_name==str(feat['name']) and feat['value']!='nonpossessive':
                         # Add possessor-inflecting rules:
                         mylang.set_section('lexrules')
-                        # TODO: add check here that the current lrt is a possessor rule
-                        if (mark_loc=='possessor' or mark_loc=='both') and possessor_type=='affix' and ('possessor' in feat['name']):
+#                        if (mark_loc=='possessor' or mark_loc=='both') and possessor_type=='affix' and ('possessor' in feat['name']):
+                        if (mark_loc=='possessor' or mark_loc=='both') and possessor_type=='affix' and feat['value']=='possessor':
                             # Add the basic possessor rule defn:
-                            #                        possessor_rule_name = 'possessor-lex-rule-'+strat_num
                             possessor_rule_name = get_name(lrt)+'-lex-rule'
                             if mod_spec=='spec':
                                 agr_prefix='SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
@@ -369,8 +366,8 @@ def customize_irules(strat,mylang,ch,irules,hierarchies):
                                                                                '+agr_prefix+' #png ].')
                         # Add possessum-inflecting rules
                         # TODO: add check here that the current lrt is a possessum rule
-                        if (mark_loc=='possessum' or mark_loc=='both') and possessum_type=='affix' and ('possessum' in feat['name']):
-                            #                        possessum_rule_name = 'possessum-lex-rule-'+strat_num
+#                        if (mark_loc=='possessum' or mark_loc=='both') and possessum_type=='affix' and ('possessum' in feat['name']):
+                        if (mark_loc=='possessum' or mark_loc=='both') and possessum_type=='affix' and feat['value']=='possessum':
                             possessum_rule_name = get_name(lrt)+'-lex-rule'
                             mylang.add(possessum_rule_name+POSSESSUM_RULE)
                             if mod_spec=='spec':
@@ -420,12 +417,14 @@ def customize_irules(strat,mylang,ch,irules,hierarchies):
                             if possessum_type=='affix':
                                 mylang.add(possessum_rule_name+' := [ SYNSEM.LOCAL [ CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.POSS.POSS-AGR #poss-png,\
                                                                                  CONT.HOOK.INDEX.PNG #poss-png ] ].')
-                    elif strat_name in str(feat['name']) and feat['value']=='minus':
+#                    elif strat_name in str(feat['name']) and feat['value']=='minus':
+                    elif strat_name==str(feat['name']) and feat['value']=='nonpossessive':
                         if (mark_loc=='possessum' or mark_loc=='both') and mod_spec=='spec':
                             # This should keep normal head-spec constructions from letting noun phrases act as determiners:
                             mylang.add(get_name(lrt)+'-lex-rule := [ SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.LOCAL.CAT.HEAD det ].')
                 elif pron_strat:
-                    if strat_name in str(feat['name']) and feat['value']!='minus':
+#                    if strat_name in str(feat['name']) and feat['value']!='minus':
+                    if strat_name in str(feat['name']) and feat['value']!='nonpossessive':
                         mylang.add(get_name(lrt)+'-lex-rule :=\
                                       [ SYNSEM.LOCAL.CAT.HEAD.POSS possessive,\
                                         DTR.SYNSEM.LOCAL.CONT.HOOK #hook & [ INDEX #possessum & [ COG-ST uniq+fam+act ],\
@@ -534,7 +533,7 @@ def customize_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
                     mylang.add(adp_type+' := possessor-adp-lex &\
                                         [ SYNSEM.LOCAL.CAT.HEAD.POSS.POSS-AGR #png,\
                                         '+prefix+' #png ].')
-                    customize_feature_values(mylang,ch,hierarchies,form,adp_type,'poss-marker',form.get('possessor-feat'))
+                    customize_feature_values(mylang,ch,hierarchies,form,adp_type,'poss-marker')#form.get('possessor-feat'))
                     orth=form.get('agr-orth')
                     # TODO: Maybe should be named by the orth form, not by the name? Not sure.
                     lexicon.add(adp_type.replace('-lex','')+' := '+adp_type+' &\

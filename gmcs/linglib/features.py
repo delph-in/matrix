@@ -103,7 +103,8 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     for feat in ch_dict.get('feat'):
       from gmcs.utils import get_name
       feat_name=get_name(feat)
-      if 'possess' in feat_name: 
+#      if 'possess' in feat_name: 
+      if 'poss-strat' in feat_name: 
         poss_lrt=True
     if pos=='poss-marker' or poss_lrt:
       geom_prefix = 'SYNSEM.LOCAL.CAT.HEAD.POSS.POSS-AGR.'

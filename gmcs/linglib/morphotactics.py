@@ -254,10 +254,12 @@ def create_lexical_rule_type(lrt, mtx_supertypes, cur_pc):
     for feat in lrt.get('feat'):
         if feat['name'] == 'evidential':
             new_lrt.evidential = feat['value']
-        elif 'possessor' in feat['name']:
-            new_lrt.possessor = feat['value']
-        elif 'possessum' in feat['name']:
-            new_lrt.possessum = feat['value']
+        elif feat['value']=='possessor' or feat['value']=='possessum' or feat['value']=='nonpossessive':
+            new_lrt.possessive=feat['value']
+#        elif 'possessor' in feat['name']:
+#            new_lrt.possessor = feat['value']
+#        elif 'possessum' in feat['name']:
+#            new_lrt.possessum = feat['value']
         else:
             new_lrt.features[feat['name']] = {'value': feat['value'],
                                               'head': feat['head']}
@@ -826,11 +828,14 @@ def write_possessive_behavior(lrt,mylang,choices):
              [ SYNSEM.LOCAL.CAT.HEAD noun & [ POSS possessum ] ].'''
     NON_POSS_LEX_RULE_DEFN = ''' := add-only-no-ccont-rule &
              [ SYNSEM.LOCAL.CAT.HEAD noun & [ POSS nonpossessive ] ].'''
-    if lrt.possessor=='plus':
+#    if lrt.possessor=='plus':
+    if lrt.possessive=='possessor':
         mylang.add(lrt.identifier()+POSSESSOR_LEX_RULE_DEFN,section='lexrules')
-    if lrt.possessum=='plus':
+#    if lrt.possessum=='plus':
+    if lrt.possessive=='possessum':
         mylang.add(lrt.identifier()+POSSESSUM_LEX_RULE_DEFN,section='lexrules')
-    if lrt.possessum=='minus' or lrt.possessor=='minus':
+#    if lrt.possessum=='minus' or lrt.possessor=='minus':
+    if lrt.possessive=='nonpossessive':
         mylang.add(lrt.identifier()+NON_POSS_LEX_RULE_DEFN,section='lexrules')
     ##############################################
     # PRONOMINAL POSSESSIVE PHRASES:           ###
