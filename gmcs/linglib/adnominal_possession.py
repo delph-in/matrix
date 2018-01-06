@@ -430,27 +430,39 @@ def customize_irules(strat,mylang,ch,irules,hierarchies):
                                       [ SYNSEM.LOCAL.CAT.HEAD.POSS possessive,\
                                         DTR.SYNSEM.LOCAL.CONT.HOOK #hook & [ INDEX #possessum & [ COG-ST uniq+fam+act ],\
                                                                              LTOP #lbl],\
-                                        C-CONT [ HOOK #hook,\
-                                                 RELS  <! '+POSSESSUM_EXIST_REL+',\
-                                                          '+POSS_REL+',\
-                                                          quant-relation &\
-                                                          [ PRED "exist_q_rel",\
-                                                            ARG0 #possessor,\
-                                                            RSTR #harg2 ],\
-                                                          noun-relation &\
-                                                          [ PRED "pron_rel",\
-                                                            LBL #lbl2,\
-                                                            ARG0 #possessor & [ COG-ST activ-or-more,\
-                                                                                SPECI + ] ] !>,\
-                                                 HCONS <! qeq & [ HARG #harg,\
-                                                                  LARG #lbl ],\
-                                                          qeq & [ HARG #harg2,\
-                                                                  LARG #lbl2 ] !> ] ].')
+                                        C-CONT.HOOK #hook ].')
                         if mod_spec=='spec':
-                            mylang.add(get_name(lrt)+'-lex-rule := [ SYNSEM.LOCAL.CAT.VAL.SPR < > ].')
+                            mylang.add(get_name(lrt)+'-lex-rule := [ SYNSEM.LOCAL.CAT.VAL.SPR < >,\
+                                                                     C-CONT [ RELS  <! '+POSSESSUM_EXIST_REL+',\
+                                                                                     '+POSS_REL+',\
+                                                                                     quant-relation &\
+                                                                                     [ PRED "exist_q_rel",\
+                                                                                       ARG0 #possessor,\
+                                                                                       RSTR #harg2 ],\
+                                                                                     noun-relation &\
+                                                                                     [ PRED "pron_rel",\
+                                                                                       LBL #lbl2,\
+                                                                                       ARG0 #possessor & [ COG-ST activ-or-more,\
+                                                                                                           SPECI + ] ] !>,\
+                                                                             HCONS <! qeq & [ HARG #harg,\
+                                                                                             LARG #lbl ],\
+                                                                                     qeq & [ HARG #harg2,\
+                                                                                             LARG #lbl2 ] !> ] ].')
                         elif mod_spec=='mod':
                             mylang.add(get_name(lrt)+'-lex-rule := [ SYNSEM.LOCAL.CAT.VAL.SPR #spr,\
-                                                                     DTR.SYNSEM.LOCAL.CAT.VAL.SPR #spr  ].')
+                                                                     DTR.SYNSEM.LOCAL.CAT.VAL.SPR #spr,\
+                                                                     C-CONT [ RELS  <! '+POSS_REL+',\
+                                                                                       quant-relation &\
+                                                                                       [ PRED "exist_q_rel",\
+                                                                                         ARG0 #possessor,\
+                                                                                         RSTR #harg2 ],\
+                                                                                       noun-relation &\
+                                                                                       [ PRED "pron_rel",\
+                                                                                         LBL #lbl2,\
+                                                                                         ARG0 #possessor & [ COG-ST activ-or-more,\
+                                                                                                             SPECI + ] ] !>,\
+                                                                            HCONS <! qeq & [ HARG #harg2,\
+                                                                                             LARG #lbl2 ] !> ] ].')
 #                        customize_feature_values(mylang,ch,hierarchies,strat,get_name(lrt),'poss-marker')
 
 
