@@ -105,9 +105,18 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
       feat_name=get_name(feat)
       if 'possess' in feat_name: 
         poss_lrt=True
-    
     if pos=='poss-marker' or poss_lrt:
       geom_prefix = 'SYNSEM.LOCAL.CAT.HEAD.POSS.POSS-AGR.'
+
+    poss_pron_lrt=False
+    for feat in ch_dict.get('feat'):
+      from gmcs.utils import get_name
+      feat_name=get_name(feat)
+      if 'poss-pron' in feat_name: 
+        poss_pron_lrt=True
+    if poss_pron_lrt:
+      geom_prefix = 'C-CONT.RELS.LIST.REST.REST.REST.ARG0.PNG.'
+    
 
     # TJT 2014-05-08 adding the break and moving the concatenation up
     geom = ''

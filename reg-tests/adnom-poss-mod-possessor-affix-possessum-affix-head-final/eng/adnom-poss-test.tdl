@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of adnom-poss-test
 ;;; created at:
-;;;     Thu Dec 28 19:46:09 UTC 2017
+;;;     Fri Jan 05 22:12:35 UTC 2018
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -25,13 +25,13 @@ non-mod-lex-item := lex-item &
 ;;; Matrix Type Addenda
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 
-inflected :+ [ PERNUM-FLAG luk,
-    POSSESSIVE-FLAG luk,
-    NUM-FLAG luk ].
+inflected :+ [ POSSESSIVE-FLAG luk,
+    NUM-FLAG luk,
+    PERNUM-FLAG luk ].
 
-infl-satisfied :+ [ PERNUM-FLAG na-or-+,
-    POSSESSIVE-FLAG na-or-+,
-    NUM-FLAG na-or-+ ].
+infl-satisfied :+ [ POSSESSIVE-FLAG na-or-+,
+    NUM-FLAG na-or-+,
+    PERNUM-FLAG na-or-+ ].
 
 png :+ [ PER person,
     NUM number ].
@@ -62,6 +62,14 @@ number := *top*.
 sg := number.
 pl := number.
 
+;Constraint on MC used to be part of matrix.tdl
+;;it applies to all wo implementations, except for v2
+
+head-comp-phrase := basic-head-1st-comp-phrase & head-initial.
+
+subj-head-phrase := decl-head-subj-phrase & head-final &
+  [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
+
 ;;;;;;;;;;;;;;;;;;;
 ;;; Lexical Types
 ;;;;;;;;;;;;;;;;;;;
@@ -79,8 +87,8 @@ noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & non-mod-lex-ite
 
 common-noun-lex := noun-lex &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 3rd,
-    INFLECTED [ POSSESSIVE-FLAG -,
-                NUM-FLAG - ] ].
+    INFLECTED [ NUM-FLAG -,
+                POSSESSIVE-FLAG - ] ].
 
 ;;; Verbs
 
@@ -135,11 +143,11 @@ possessive-rule-dtr := word-or-lexrule.
 
 num-lex-rule-super := add-only-no-ccont-rule & possessive-rule-dtr &
   [ INFLECTED [ NUM-FLAG +,
-                PERNUM-FLAG #pernum,
-                POSSESSIVE-FLAG #possessive ],
+                POSSESSIVE-FLAG #possessive,
+                PERNUM-FLAG #pernum ],
     DTR common-noun-lex &
-        [ INFLECTED [ PERNUM-FLAG #pernum,
-                      POSSESSIVE-FLAG #possessive ] ] ].
+        [ INFLECTED [ POSSESSIVE-FLAG #possessive,
+                      PERNUM-FLAG #pernum ] ] ].
 
 singular-lex-rule := const-lex-rule & num-lex-rule-super &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM sg ].
@@ -149,21 +157,19 @@ plural-lex-rule := infl-lex-rule & num-lex-rule-super &
 
 possessive-lex-rule-super := lex-rule &
   [ INFLECTED [ POSSESSIVE-FLAG +,
-                PERNUM-FLAG #pernum,
-                NUM-FLAG #num ],
+                NUM-FLAG #num,
+                PERNUM-FLAG #pernum ],
     DTR possessive-rule-dtr &
-        [ INFLECTED [ PERNUM-FLAG #pernum,
-                      NUM-FLAG #num ] ] ].
+        [ INFLECTED [ NUM-FLAG #num,
+                      PERNUM-FLAG #pernum ] ] ].
 
-possessor-lex-rule-1 := add-only-no-ccont-rule &
+possessor-lex-rule := infl-lex-rule & possessive-lex-rule-super & add-only-no-ccont-rule &
   [ SYNSEM.LOCAL.CAT [ HEAD noun &
                             [ POSS possessor ],
                        VAL #val ],
     DTR.SYNSEM.LOCAL.CAT.VAL #val ].
 
-possessor-lex-rule := infl-lex-rule & possessive-lex-rule-super & possessor-lex-rule-1.
-
-possessum-lex-rule-1 := val-change-with-ccont-lex-rule &
+possessum-lex-rule := infl-lex-rule & possessive-lex-rule-super & val-change-with-ccont-lex-rule &
   [ C-CONT [ HOOK #hook,
              RELS <! arg12-ev-relation &
                      [ PRED "poss_rel",
@@ -183,25 +189,23 @@ possessum-lex-rule-1 := val-change-with-ccont-lex-rule &
                        VAL [ SPEC #spec,
                              SUBJ #subj,
                              SPR #spr,
-                             COMPS.FIRST.LOCAL [ CONT.HOOK.INDEX #possessor,
-                                                 CAT.HEAD +np &
-                                                          [ POSS possessor ] ] ] ] ].
+                             COMPS.FIRST [ OPT -,
+                                           LOCAL [ CONT.HOOK.INDEX #possessor,
+                                                   CAT cat-sat &
+                                                       [ HEAD +np &
+                                                              [ POSS possessor ] ] ] ] ] ] ].
 
-possessum-lex-rule := infl-lex-rule & possessive-lex-rule-super & possessum-lex-rule-1.
-
-non-possessive-lex-rule-1 := add-only-no-ccont-rule &
+non-possessive-lex-rule := add-only-no-ccont-rule & const-lex-rule & possessive-lex-rule-super &
   [ SYNSEM.LOCAL.CAT.HEAD noun &
                           [ POSS nonpossessive ] ].
 
-non-possessive-lex-rule := const-lex-rule & non-possessive-lex-rule-1 & possessive-lex-rule-super.
-
 pernum-lex-rule-super := add-only-no-ccont-rule &
   [ INFLECTED [ PERNUM-FLAG +,
-                NUM-FLAG #num,
-                POSSESSIVE-FLAG #possessive ],
+                POSSESSIVE-FLAG #possessive,
+                NUM-FLAG #num ],
     DTR verb-lex &
-        [ INFLECTED [ NUM-FLAG #num,
-                      POSSESSIVE-FLAG #possessive ] ] ].
+        [ INFLECTED [ POSSESSIVE-FLAG #possessive,
+                      NUM-FLAG #num ] ] ].
 
 3sg-lex-rule := infl-lex-rule & pernum-lex-rule-super &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ PER 3rd,
@@ -217,14 +221,6 @@ non-3rd-lex-rule := const-lex-rule & pernum-lex-rule-super &
 ;;; Phrasal Types
 ;;;;;;;;;;;;;;;;;;;
 
-;Constraint on MC used to be part of matrix.tdl
-;;it applies to all wo implementations, except for v2
-
-head-comp-phrase := basic-head-1st-comp-phrase & head-initial.
-
-subj-head-phrase := decl-head-subj-phrase & head-final &
-  [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
-
 head-comp-poss-phrase := basic-head-1st-comp-phrase & head-final &
   [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.SPR < >,
                                     HEAD +np &
@@ -236,7 +232,8 @@ head-comp-poss-phrase := basic-head-1st-comp-phrase & head-final &
 ; the specifier of nouns and SUBJ for the subject (specifier) of verbs.
 
 head-spec-phrase := basic-head-spec-phrase & head-final &
-  [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS nonpossessive ].
+  [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.SPR < >,
+                                    HEAD.POSS nonpossessive ] ].
 
 ;Constraint on MC used to be part of matrix.tdl
 ;;it applies to all wo implementations, except for v2

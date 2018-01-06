@@ -180,7 +180,7 @@ class PositionClass(MorphotacticNode):
 
     def has_possessive(self):
         for lrt in self.nodes.values():
-            if lrt.possessor != None or lrt.possessum != None:
+            if lrt.possessor != None or lrt.possessum != None or 'poss-pron' in lrt.identifier():
                 return True
         return False
 

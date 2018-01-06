@@ -115,7 +115,7 @@ def customize_np_possession(mylang,ch,rules,irules,lexicon,hierarchies):
     for strat in ch.get('poss-strat',[]):
         customize_rules(strat,mylang,ch,rules)
         if strat.get('possessor-type')=='affix' or strat.get('possessum-type')=='affix':
-            customize_irules(strat,mylang,ch,irules)
+            customize_irules(strat,mylang,ch,irules,hierarchies)
         if strat.get('possessor-type')=='non-affix' or strat.get('possessum-type')=='non-affix':
             customize_lexicon(strat,mylang,ch,lexicon,rules,hierarchies)
         if 'affix' not in (strat.get('possessor-type'), strat.get('possessum-type')):
@@ -128,7 +128,10 @@ def customize_np_possession(mylang,ch,rules,irules,lexicon,hierarchies):
 def customize_pronominal_possession(mylang,ch,rules,irules,lexicon,hierarchies):
     for pron in ch.get('poss-pron',[]):
         customize_rules(pron,mylang,ch,rules)
-        customize_lexicon(pron,mylang,ch,lexicon,rules,hierarchies)
+        if pron.get('type')=='affix':
+            customize_irules(pron,mylang,ch,irules,hierarchies)
+        if pron.get('type')=='non-affix':            
+            customize_lexicon(pron,mylang,ch,lexicon,rules,hierarchies)
 
 
 # Adds phrase rules needed to join possessor and possessum,
@@ -285,10 +288,14 @@ def customize_rules(strat,mylang,ch,rules):
 
 # Adds inflectional rules (or adds constraints to inflectional rules added in
 # morphotactics.py) that create possessive forms
-def customize_irules(strat,mylang,ch,irules):
+def customize_irules(strat,mylang,ch,irules,hierarchies):
     #TODO: this method for retrieving the strategy name is garbage. Fix it.
     strat_name=strat.full_keys()[0].split("_")[0]
     strat_num=strat_name[-1]
+    if 'poss-pron' in strat_name:
+        pron_strat=True
+    else:
+        pron_strat=False
     mark_loc=strat.get('mark-loc')
     mod_spec=strat.get('mod-spec')
     possessor_type=strat.get('possessor-type')
@@ -302,20 +309,21 @@ def customize_irules(strat,mylang,ch,irules):
         idx = pc['lrt'].next_iter_num() if 'lrt' in pc else 1
         for lrt in pc.get('lrt',[]):
             for feat in lrt['feat']:
-                # Go through the position class (pc) info till you find the strategy you're actually dealing with
-                if strat_name in str(feat['name']) and feat['value']!='minus':
-                    # Add possessor-inflecting rules:
-                    mylang.set_section('lexrules')
-                    # TODO: add check here that the current lrt is a possessor rule
-                    if (mark_loc=='possessor' or mark_loc=='both') and possessor_type=='affix' and ('possessor' in feat['name']):
-                        # Add the basic possessor rule defn:
-#                        possessor_rule_name = 'possessor-lex-rule-'+strat_num
-                        possessor_rule_name = get_name(lrt)+'-lex-rule'
-                        if mod_spec=='spec':
-                            agr_prefix='SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
-                            mylang.add(possessor_rule_name+POSSESSOR_RULE)
-                            if mark_loc=='possessor':
-                                mylang.add(possessor_rule_name+' := val-change-with-ccont-lex-rule & \
+                if not pron_strat:
+                    # Go through the position class (pc) info till you find the strategy you're actually dealing with
+                    if strat_name in str(feat['name']) and feat['value']!='minus':
+                        # Add possessor-inflecting rules:
+                        mylang.set_section('lexrules')
+                        # TODO: add check here that the current lrt is a possessor rule
+                        if (mark_loc=='possessor' or mark_loc=='both') and possessor_type=='affix' and ('possessor' in feat['name']):
+                            # Add the basic possessor rule defn:
+                            #                        possessor_rule_name = 'possessor-lex-rule-'+strat_num
+                            possessor_rule_name = get_name(lrt)+'-lex-rule'
+                            if mod_spec=='spec':
+                                agr_prefix='SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
+                                mylang.add(possessor_rule_name+POSSESSOR_RULE)
+                                if mark_loc=='possessor':
+                                    mylang.add(possessor_rule_name+' := val-change-with-ccont-lex-rule & \
                                            [ SYNSEM.LOCAL.CAT [ VAL [ SPEC.FIRST.LOCAL [ CAT [ HEAD noun ],\
                                                                                          CONT.HOOK [ INDEX #possessum & [ COG-ST uniq-id ],\
                                                                                                      LTOP #lbl ] ] ] ] ,\
@@ -323,18 +331,18 @@ def customize_irules(strat,mylang,ch,irules):
                                                       RELS <! '+ POSS_REL  +' , '+POSSESSUM_EXIST_REL+ ' !>, \
                                                                    HCONS <! qeq & [ HARG #harg, LARG #lbl ] !>, \
                                                                                                 ICONS <! !>  ] ].',merge=True)
-                            if mark_loc=='both':
-                                mylang.add(possessor_rule_name+' := val-change-with-ccont-lex-rule & \
+                                    if mark_loc=='both':
+                                        mylang.add(possessor_rule_name+' := val-change-with-ccont-lex-rule & \
                                            [ SYNSEM.LOCAL.CAT [ VAL [ SPEC.FIRST.LOCAL [ CAT [ HEAD noun ] ] ] ] ,\
                                              C-CONT [ HOOK #hook & [ INDEX #possessor ],\
                                                       RELS <!  !>, \
                                                       HCONS <! !>, \
                                                       ICONS <! !>  ] ].',merge=True)
-                        elif mod_spec=='mod':
-                            if mark_loc=='possessor':
-                                agr_prefix='SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
-                                mylang.add(possessor_rule_name+POSSESSOR_RULE)
-                                mylang.add(possessor_rule_name+' := head-change-with-ccont-lex-rule & \
+                            elif mod_spec=='mod':
+                                if mark_loc=='possessor':
+                                    agr_prefix='SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
+                                    mylang.add(possessor_rule_name+POSSESSOR_RULE)
+                                    mylang.add(possessor_rule_name+' := head-change-with-ccont-lex-rule & \
                                            [ SYNSEM.LOCAL.CAT [ HEAD.MOD.FIRST [ LOCAL [ CAT [ VAL.SPR <[]>,\
                                                                                                HEAD +np ], \
                                                                                          CONT.HOOK [ INDEX #possessum, \
@@ -346,48 +354,47 @@ def customize_irules(strat,mylang,ch,irules):
                                                 HCONS <! !>, \
                                                 ICONS <! !>  ], \
                                              DTR.SYNSEM.LOCAL.CAT.VAL.SPEC #spec  ].',merge=True)
-                            elif mark_loc=='both':
-                                mylang.add(possessor_rule_name+' := add-only-no-ccont-rule &\
+                                elif mark_loc=='both':
+                                    mylang.add(possessor_rule_name+' := add-only-no-ccont-rule &\
                                                                     [ SYNSEM.LOCAL [ CAT [ HEAD.POSS possessor,\
                                                                                            VAL #val ] ] ,\
                                                                       DTR.SYNSEM.LOCAL [ CAT.VAL #val ] ].')
-                    # If an agreement strategy is indicated, identify POSS-AGR with PNG of possessum
-                    if strat.get('possessor-agr')=='agree' and possessor_type=='affix': 
-                        mylang.add('poss :+ [ POSS-AGR png ].',section='addenda')
-                        # Note: don't do this in the mod-like both-marking scenario -- possessor is a COMP and has no access to 
-                        # possessum. In this scenario, the identification must be done on the possessum inflection.
-                        if not (mark_loc=='both' and mod_spec=='mod'):
-                            mylang.add(possessor_rule_name+' := [ SYNSEM.LOCAL.CAT.HEAD.POSS.POSS-AGR #png,\
+                        # If an agreement strategy is indicated, identify POSS-AGR with PNG of possessum
+                        if strat.get('possessor-agr')=='agree' and possessor_type=='affix': 
+                            mylang.add('poss :+ [ POSS-AGR png ].',section='addenda')
+                            # Note: don't do this in the mod-like both-marking scenario -- possessor is a COMP and has no access to 
+                            # possessum. In this scenario, the identification must be done on the possessum inflection.
+                            if not (mark_loc=='both' and mod_spec=='mod'):
+                                mylang.add(possessor_rule_name+' := [ SYNSEM.LOCAL.CAT.HEAD.POSS.POSS-AGR #png,\
                                                                                '+agr_prefix+' #png ].')
-
-                    # Add possessum-inflecting rules
-                    # TODO: add check here that the current lrt is a possessum rule
-                    if (mark_loc=='possessum' or mark_loc=='both') and possessum_type=='affix' and ('possessum' in feat['name']):
-#                        possessum_rule_name = 'possessum-lex-rule-'+strat_num
-                        possessum_rule_name = get_name(lrt)+'-lex-rule'
-                        mylang.add(possessum_rule_name+POSSESSUM_RULE)
-                        if mod_spec=='spec':
-                            agr_prefix='SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
-                            mylang.add(possessum_rule_name+':=  val-change-with-ccont-lex-rule & \
+                        # Add possessum-inflecting rules
+                        # TODO: add check here that the current lrt is a possessum rule
+                        if (mark_loc=='possessum' or mark_loc=='both') and possessum_type=='affix' and ('possessum' in feat['name']):
+                            #                        possessum_rule_name = 'possessum-lex-rule-'+strat_num
+                            possessum_rule_name = get_name(lrt)+'-lex-rule'
+                            mylang.add(possessum_rule_name+POSSESSUM_RULE)
+                            if mod_spec=='spec':
+                                agr_prefix='SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
+                                mylang.add(possessum_rule_name+':=  val-change-with-ccont-lex-rule & \
                                            [ SYNSEM.LOCAL.CAT [ VAL [ COMPS #comps,\
                                                                       SPR < [ LOCAL [ CAT [ HEAD +np ] ] ] > ] ] ,\
                                              C-CONT [ HOOK #hook & [ INDEX.COG-ST uniq-id ],\
                                                       HCONS <! !>, \
                                                       ICONS <! !>  ],\
                                              DTR.SYNSEM.LOCAL [ CAT.VAL.COMPS #comps ] ].',merge=True)
-                            mylang.add(possessum_rule_name+' := [ SYNSEM.LOCAL.CAT.VAL.SPR <[ LOCAL.CONT.HOOK [ INDEX #possessor ] ]>,\
+                                mylang.add(possessum_rule_name+' := [ SYNSEM.LOCAL.CAT.VAL.SPR <[ LOCAL.CONT.HOOK [ INDEX #possessor ] ]>,\
                                                                       C-CONT [ HCONS <! qeq & [ HARG #harg, LARG #lbl ] !> ,\
                                                                                RELS <! '+POSS_REL+',\
                                                                                        '+POSSESSUM_EXIST_REL+' !> ],\
                                                                                        DTR.SYNSEM.LOCAL.CONT.HOOK [ INDEX #possessum,\
                                                                                                                     LTOP #lbl ] ].')
-                            if mark_loc=='both':
-                                mylang.add(possessum_rule_name+' := [ SYNSEM.LOCAL.CAT.VAL.SPR < [ LOCAL.CAT.HEAD.POSS possessor ] > ].')
-                        if mod_spec=='mod':
-                            # Added OPT - to the complement to try to correct overzealous head-comp application. Didn't work
-                            # Should append things to COMPS list, not overwrite
-                            agr_prefix='SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
-                            mylang.add(possessum_rule_name+':= val-change-with-ccont-lex-rule & \
+                                if mark_loc=='both':
+                                    mylang.add(possessum_rule_name+' := [ SYNSEM.LOCAL.CAT.VAL.SPR < [ LOCAL.CAT.HEAD.POSS possessor ] > ].')
+                            if mod_spec=='mod':
+                                # Added OPT - to the complement to try to correct overzealous head-comp application. Didn't work
+                                # Should append things to COMPS list, not overwrite
+                                agr_prefix='SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
+                                mylang.add(possessum_rule_name+':= val-change-with-ccont-lex-rule & \
                                                        [ SYNSEM.LOCAL.CAT [ VAL [ SPR #spr, \
                                                                                   COMPS.FIRST [ LOCAL [ CAT cat-sat & [ HEAD +np ], \
                                                                                                         CONT.HOOK [ INDEX #possessor ] ],\
@@ -399,26 +406,46 @@ def customize_irules(strat,mylang,ch,irules):
                                                          DTR.SYNSEM.LOCAL [ CAT.VAL.SPR #spr,\
                                                                             CONT.HOOK [ INDEX #possessum,\
                                                                                         LTOP #lbl ] ] ].',merge=True)
-                            if mark_loc=='both':
-                                mylang.add(possessum_rule_name+' :=\
+                                if mark_loc=='both':
+                                    mylang.add(possessum_rule_name+' :=\
                                            [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD +np & [ POSS possessor ] ].')
-                    if strat.get('possessum-agr')=='agree' and possessum_type=='affix':
-                        mylang.add('poss :+ [ POSS-AGR png ].',section='addenda')
-                        mylang.add(possessum_rule_name+' := [ SYNSEM.LOCAL.CAT.HEAD.POSS.POSS-AGR #png,\
+                        if strat.get('possessum-agr')=='agree' and possessum_type=='affix':
+                            mylang.add('poss :+ [ POSS-AGR png ].',section='addenda')
+                            mylang.add(possessum_rule_name+' := [ SYNSEM.LOCAL.CAT.HEAD.POSS.POSS-AGR #png,\
                                                              '+agr_prefix+' #png ].')
-                    # Note: in the mutual agreement, double marking mod-like scenario, the possessor is a COMP.
-                    # Therefore, it has no access to the possessum's PNG info. When the possessor agrees with 
-                    # the possessum, therefore, all agreement must be done in the possessum-inflecting rule:
-                    if mark_loc=='both' and mod_spec=='mod' and strat.get('possessor-agr')=='agree':
-                        if possessum_type=='affix':
-                            mylang.add(possessum_rule_name+' := [ SYNSEM.LOCAL [ CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.POSS.POSS-AGR #poss-png,\
+                        # Note: in the mutual agreement, double marking mod-like scenario, the possessor is a COMP.
+                        # Therefore, it has no access to the possessum's PNG info. When the possessor agrees with 
+                        # the possessum, therefore, all agreement must be done in the possessum-inflecting rule:
+                        if mark_loc=='both' and mod_spec=='mod' and strat.get('possessor-agr')=='agree':
+                            if possessum_type=='affix':
+                                mylang.add(possessum_rule_name+' := [ SYNSEM.LOCAL [ CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.POSS.POSS-AGR #poss-png,\
                                                                                  CONT.HOOK.INDEX.PNG #poss-png ] ].')
-                elif strat_name in str(feat['name']) and feat['value']=='minus':
-                    if (mark_loc=='possessum' or mark_loc=='both') and mod_spec=='spec':
-                        # This should keep normal head-spec constructions from letting noun phrases act as determiners:
-                        mylang.add(get_name(lrt)+'-lex-rule := [ SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.LOCAL.CAT.HEAD det ].')
-
-
+                    elif strat_name in str(feat['name']) and feat['value']=='minus':
+                        if (mark_loc=='possessum' or mark_loc=='both') and mod_spec=='spec':
+                            # This should keep normal head-spec constructions from letting noun phrases act as determiners:
+                            mylang.add(get_name(lrt)+'-lex-rule := [ SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.LOCAL.CAT.HEAD det ].')
+                elif pron_strat:
+                    if strat_name in str(feat['name']) and feat['value']!='minus':
+                        print strat_name
+                        mylang.add(get_name(lrt)+'-lex-rule :=\
+                                      [ DTR.SYNSEM.LOCAL.CONT.HOOK [ INDEX #possessum & [ COG-ST uniq+fam+act ],\
+                                                                     LTOP #lbl],\
+                                        C-CONT [ RELS  <! '+POSSESSUM_EXIST_REL+',\
+                                                          '+POSS_REL+',\
+                                                          quant-relation &\
+                                                          [ PRED "exist_q_rel",\
+                                                            ARG0 #possessor,\
+                                                            RSTR #harg2 ],\
+                                                          noun-relation &\
+                                                          [ PRED "pron_rel",\
+                                                            LBL #lbl2,\
+                                                            ARG0 #possessor & [ COG-ST activ-or-more,\
+                                                                                SPECI + ] ] !>,\
+                                                 HCONS <! qeq & [ HARG #harg,\
+                                                                  LARG #lbl ],\
+                                                          qeq & [ HARG #harg2,\
+                                                                  LARG #lbl2 ] !> ] ].')
+#                        customize_feature_values(mylang,ch,hierarchies,strat,get_name(lrt),'poss-marker')
 
 
 # Adds lexical items for possession markers and possessor pronouns.
