@@ -153,6 +153,7 @@ section=adnom-poss
   poss-strat1_mod-spec=mod
   poss-strat1_mark-loc=possessor
   poss-strat1_possessor-type=affix
+  poss-strat1_possessor-agr=non-agree
   poss-pron1_type=affix
   poss-pron1_agr=non-agree
   poss-pron1_mod-spec=mod

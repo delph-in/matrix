@@ -160,6 +160,4 @@ section=adnom-poss
   poss-pron1_type=affix
   poss-pron1_agr=non-agree
   poss-pron1_mod-spec=mod
-  poss-pron2_type=affix
-  poss-pron2_agr=non-agree
-  poss-pron1_mod-spec=mod
+
