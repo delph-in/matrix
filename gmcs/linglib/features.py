@@ -65,36 +65,21 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     'xarg': 'LOCAL.CONT.HOOK.XARG.',  # XARG for adjectives
     'mod': 'LOCAL.CAT.HEAD.MOD.FIRST.',  # MOD for adjectives
     'comp': 'LOCAL.CAT.VAL.COMPS.FIRST.', # COMP for copulas
+##########################################################
+    'possessor': 'LOCAL.CAT.HEAD.POSS.POSS-AGR.',
+    'possessum': 'LOCAL.CAT.HEAD.POSS.POSS-AGR.'
+##########################################################
   }
 
   for feat in ch_dict.get(iter_feat,[]):
     n = feat.get('name','')
     v = feat.get('value','').split(', ')
-
+    
     if n == 'case':
       v = [case.canon_to_abbr(c, cases) for c in v]
 
     geom_prefix = pos_geom_prefix
 
-    # The 'head' choice only appears on verb pcs, and allows the
-    # user to specify features on the subject and object as well
-    # TJT 2014-08-15: the 'head' choice now also appears on
-    # adjectives, copulas, and their lexical rules, allowing
-    # the user to specify which argument the adjective or copula
-    # is agreeing with
-    head = feat.get('head','')
-    if head in head_map: # TJT 2014-08-15: changing this to map for speed/easy reading
-      if head in ('higher', 'lower'):
-        geom_prefix = head_map[head] # TJT 2014-09-09: Higher/lower replace prefix
-      else:
-        geom_prefix += head_map[head]
-    # TJT 2014-09-16: DTR is for incorporated adjectives
-    if head == 'dtr':
-      geom_prefix = "DTR." + geom_prefix
-
-    # If auxcomplement, add additional definition on top of any head definition
-    if pos == 'auxcomplement':
-      geom_prefix += 'LOCAL.CAT.VAL.COMPS.FIRST.'
 
     # EKN 2017-01-02 If adding AGREEMENT PNG features to a possessive marker or affix, they should be at POSS.POSS-AGR,
     # rather than at CONT.HOOK.INDEX.PNG. This checks to see if the current lrt or lexical item
@@ -103,11 +88,16 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     for feat in ch_dict.get('feat'):
       from gmcs.utils import get_name
       feat_name=get_name(feat)
-#      if 'possess' in feat_name: 
       if 'poss-strat' in feat_name: 
         poss_lrt=True
     if pos=='poss-marker' or poss_lrt:
       geom_prefix = 'SYNSEM.LOCAL.CAT.HEAD.POSS.POSS-AGR.'
+
+
+    # The inherent features of possessive pronominal affixes 
+    # can't be added at SYNSEM.LOCAL.CONT.HOOK.INDEX, 
+    # because the possessum noun has its features there. 
+    # They must be added at a different path:
 
     poss_pron_lrt=False
     for feat in ch_dict.get('feat'):
@@ -117,6 +107,29 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
         poss_pron_lrt=True
     if poss_pron_lrt:
       geom_prefix = 'C-CONT.RELS.LIST.REST.REST.REST.ARG0.PNG.'
+
+    # The 'head' choice only appears on verb pcs, and allows the
+    # user to specify features on the subject and object as well
+    # TJT 2014-08-15: the 'head' choice now also appears on
+    # adjectives, copulas, and their lexical rules, allowing
+    # the user to specify which argument the adjective or copula
+    # is agreeing with
+    # EKN 2018-01-06: It now also appears on nouns, to distinguish
+    # a noun's inherent features from features that agree with
+    # another nominal element in a possessive phrase
+    head = feat.get('head','')
+    if head in head_map: # TJT 2014-08-15: changing this to map for speed/easy reading
+      if head in ('higher', 'lower'):
+        geom_prefix = head_map[head] # TJT 2014-09-09: Higher/lower replace prefix
+      else:
+        geom_prefix += head_map[head]
+    # TJT 2014-09-16: DTR is for incorporated adjectives
+    if head == 'dtr':
+      geom_prefix = "DTR." + geom_prefix
+    # If auxcomplement, add additional definition on top of any head definition
+    if pos == 'auxcomplement':
+      geom_prefix += 'LOCAL.CAT.VAL.COMPS.FIRST.'
+
     
 
     # TJT 2014-05-08 adding the break and moving the concatenation up
@@ -135,7 +148,10 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
           # constructions and has a different geometry
           if head in ('xarg','mod') and n == 'case':
             geom_prefix = 'SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.HEAD.CASE'
-          if pos=='poss-marker' or poss_lrt:
+          # EKN 2018-1-6: when adding a possessive rule, the standard feature path
+          # won't work. This removes all but the feature name and value from the
+          # variable value.
+          if pos=='poss-marker' or poss_lrt or poss_pron_lrt:
             value=value.replace('LOCAL.CONT.HOOK.INDEX.PNG.','')
           geom = geom_prefix + value
 #          if head == 'mod':
