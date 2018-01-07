@@ -848,8 +848,9 @@ def write_possessive_behavior(pc,lrt,mylang,choices):
     # PRONOMINAL POSSESSIVE PHRASES:           ###
     ##############################################
 #    POSSESSOR_PRONOUN_LEX_RULE_DEFN =' := [ SYNSEM.LOCAL.CONT.HOOK.INDEX #possessum ].'
-#    POSSESSOR_PRONOUN_LEX_RULE_DEFN =' := lex-rule.'
+#    NONPOSSESSOR_PRONOUN_LEX_RULE_DEFN =' := lex-rule.'
 #    for key in lrt.features.keys():
+#        print "adding "+lrt.identifier()
 #        if 'poss-pron' in key:
 #            mylang.add(lrt.identifier()+POSSESSOR_PRONOUN_LEX_RULE_DEFN)
 

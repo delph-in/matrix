@@ -3020,33 +3020,21 @@ BeginIter poss-strat{i} "a possessive strategy"
      Label "</div>"                                                                                                                                                                                         
 EndIter poss-strat
 
-BeginIter poss-pron{i} "a possessor pronoun"
+BeginIter poss-pron{i} "a class of possessor pronouns"
 
-
-
-  Radio type "Possessive Pronoun Type" "<p>Is the possessor pronoun an affix? Or is it a separate word or clitic? </p>" ""
-  . affix "affix" "" "an affix<br>" "toggle_element.call(this, 'pron-non-affix{i}', 'off');toggle_element.call(this, 'pron-affix{i}', 'on');"
-  . non-affix "non-affix" "" "a separate word or clitic<br>" "toggle_element.call(this, 'pron-non-affix{i}', 'on');toggle_element.call(this, 'pron-affix{i}', 'off');"
+  Radio type "Possessive Pronoun Type" "<p>Are these possessor pronouns affixes? Or are they separate words or clitics? </p>" ""
+  . affix "affix" "" "affixes<br>" "toggle_element.call(this, 'pron-non-affix{i}', 'off');toggle_element.call(this, 'pron-affix{i}', 'on');"
+  . non-affix "non-affix" "" "separate words or clitics<br>" "toggle_element.call(this, 'pron-non-affix{i}', 'on');toggle_element.call(this, 'pron-affix{i}', 'off');"
 
   Label "<div id='pron-affix{i}' style='display:none'>"
 
-    Radio agr "Pronominal agreement" "<p>Does this affix agree with the possessum in person, number, or gender?</p>" ""
+    Radio agr "Pronominal agreement" "<p>Do these affixes agree with the possessum in person, number, or gender?</p>" ""
     . agree "agree" "" "yes<br>"
     . non-agree "non-agree" "" "no<br>"
 
-    Radio mod-spec "Modifier or Specifier" "<p>If your language has determiners, does the possessum noun still appear with a determiner when marked with this affix?</p>" ""
+    Radio mod-spec "Modifier or Specifier" "<p>If your language has determiners, does the possessum noun still appear with a determiner when marked with these affixes?</p>" ""
     . mod "Mod" "" "yes<br>"
     . spec "Spec" "" "no<br>"
-
-    BeginIter agr-feat{j} "an agreement feature to this pronominal affix"
-
-      Select name "Possessive pronoun {i} Feature {j} Name" "<br>Name: " " "
-      fillnames c=noun
-
-      MultiSelect value "Possessive pronoun {i} Feature {j} Value" "Value: " "<br>"
-      fillvalues p=poss-pron{i}_agr-feat{j}_name
-      
-    EndIter agr-feat
 
     Label "<p>A feature called <span class=\"feat\">poss-pron{i}</span> with possible values <span class=\"tt\">plus</span> and <span class=\"tt\">minus</span> has been defined for use in defining morphemes on the morphology page.  In order to define a pronominal affix, add the appropriate position class and lexical rules, and mark the lexical rules as [<span class=\"feat\">poss-pron{i}</span> <span class=\"tt\">plus</span>]. Be sure to select the feature that corresponds to <span class=\"feat\">poss-pron{i}</span>. Note that any person/number/gender features that are listed on a pronominal affix are assumed to be inherent features of that pronominal affix, rather than agreement features. Agreement features should all be added on this page.</p>"
 
@@ -3055,11 +3043,7 @@ BeginIter poss-pron{i} "a possessor pronoun"
 
   Label "<div id='pron-non-affix{i}' style='display:none'>"
 
-    Text name "Possessive Pronoun Name" "<br>Form name: " "" 15
-
-    Text orth "Possessive Pronoun Orthography" "<br>Form spelling: " "" 15
-    
-    Radio order "Possessive Pronoun Order" "<p>Does the possessor pronoun occur to the left or the right of the possessum?</p>" ""
+    Radio order "Possessive Pronoun Order" "<p>Do the possessor pronouns occur to the left or the right of the possessum?</p>" ""
     . head-final "head-final" "" "left<br>"
     . head-initial "head-initial" "" "right<br>"
     . either "either" "" "either (not currently working)<br>"
@@ -3068,33 +3052,41 @@ BeginIter poss-pron{i} "a possessor pronoun"
     . mod "Modifier" "" "modifier<br>"
     . spec "Specifier" "" "specifier<br>"
 
-    Label "<p>Add a feature (e.g. person, number, gender, case) that belongs to this pronoun inherently:</p>"
-  
-    BeginIter feat{j} "an inherent feature to this pronoun"
-
-      Select name "Possessive pronoun {i} Feature {j} Name" "Name: " " "
-      fillnames c=noun
-
-      MultiSelect value "Possessive pronoun {i} Feature {j} Value" "Value: " ""
-      fillvalues p=poss-pron{i}_feat{j}_name
-
-    EndIter feat
-
-    Radio agr "Pronominal agreement" "<p>Does this form agree with the possessum in person, number, or gender?</p>" ""
+    Radio agr "Pronominal agreement" "<p>Do these pronouns agree with the possessum in person, number, or gender?</p>" ""
     . agree "agree" "" "yes<br>"
     . non-agree "non-agree" "" "no<br>"
 
-    Label "<p>Add any agreement features (person, number, or gender) to this pronoun that agree with the possessum:</p>"
+    BeginIter  instance{j} "a possessor pronoun instance"
+
+      Text name "Possessive Pronoun Name" "<br>Form name: " "" 15
+
+      Text orth "Possessive Pronoun Orthography" "<br>Form spelling: " "" 15
+
+      Label "<p>Add a feature (e.g. person, number, gender, case) that belongs to this pronoun inherently:</p>"
   
-    BeginIter agr-feat{j} "an agreement feature to this pronoun"
+      BeginIter feat{k} "an inherent feature to this pronoun"
 
-      Select name "Possessive pronoun {i} Feature {j} Name" "Name: " " "
-      fillnames c=noun
+         Select name "Possessive pronoun {i} Instance {j} Feature {k} Name" "Name: " " "
+         fillnames c=noun
 
-      MultiSelect value "Possessive pronoun {i} Feature {j} Value" "Value: " ""
-      fillvalues p=poss-pron{i}_agr-feat{j}_name
+      	 MultiSelect value "Possessive pronoun {i} Instance {j} Feature {k} Value" "Value: " ""
+      	 fillvalues p=poss-pron{i}_instance{j}_feat{k}_name
 
-    EndIter agr-feat
+      EndIter feat
+
+      Label "<p>Add any agreement features (person, number, or gender) to this pronoun that agree with the possessum:</p>"
+  
+      BeginIter agr-feat{k} "an agreement feature to this pronoun"
+
+         Select name "Possessive pronoun {i}  Instance {j} Feature {k} Name" "Name: " " "
+         fillnames c=noun
+
+         MultiSelect value "Possessive pronoun {i} Instance {j} Feature {k} Value" "Value: " ""
+         fillvalues p=poss-pron{i}_instance{j}_agr-feat{k}_name
+
+      EndIter agr-feat
+
+    EndIter instance
  
   Label "</div>"
      

@@ -595,11 +595,15 @@ def customize_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
                     lexicon.add(noun_type.replace('-lex','')+' := '+noun_type+' &\
                                          [ STEM < "'+orth+'" > ].')
     elif pron_strat:
-        orth=strat.get('orth')
         noun_type=noun_id(strat)
+        if strat.get('agr')=='agree':
+            agr=True
+        else:
+            agr=False
         mylang.set_section('nounlex')
         mylang.add(noun_type+POSSESSOR_PRON_LEX)
         if mod_spec=='spec':
+            agr_prefix='SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
             mylang.add(noun_type+' :=\
                         [ SYNSEM.LOCAL [ CAT.VAL.SPEC.FIRST.LOCAL.CONT.HOOK [ INDEX #possessum & [ COG-ST uniq+fam+act ],\
                                                                           LTOP #lbl ],\
@@ -615,6 +619,7 @@ def customize_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
                                                            qeq & [ HARG #harg2,\
                                                                    LARG #lbl2 ] !> ] ] ].')
         elif mod_spec=='mod':
+            agr_prefix='SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
             mylang.add(noun_type+' :=\
                         [ SYNSEM.LOCAL [ CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK [ INDEX #possessum,\
                                                                             LTOP #lbl ],\
@@ -627,27 +632,28 @@ def customize_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
                                                   HCONS <! qeq & [ HARG #harg2,\
                                                                    LARG #lbl2 ] !> ] ] ].')
 
-        customize_feature_values(mylang,ch,hierarchies,strat,noun_type,'noun')
-        lexicon.add(noun_type.replace('-lex','')+' := '+noun_type+' &\
-                                         [ STEM < "'+orth+'" > ].')
-        if strat.get('agr')=='agree':
-            mylang.add('poss :+ [ POSS-AGR png ].',section='addenda')            
-            strat_tmp={}
-            for key in strat.keys():
-                # Relabel the inherent features as something else ('skip') 
-                # Relabel the agreement features as simply features ('feat')
-                # Then call customize_feature_values() with the 'poss-marker' setting
-                # so that the agreement features are added at POSS.POSS-AGR instead of HOOK.INDEX.PNG
-                new_key=key.replace('feat','skip')
-                new_key=new_key.replace('agr-skip','feat')
-                strat_tmp[new_key]=strat.get(key)
-            # TODO: Figure out how to cast from a dict to a ChoiceDict so that no future developers have to deal with this mess in features.py
-            customize_feature_values(mylang,ch,hierarchies,strat_tmp,noun_type,'poss-marker')
-            if mod_spec=='spec':
-                agr_prefix='SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
-            elif mod_spec=='mod':
-                agr_prefix='SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
+        if agr: 
             mylang.add(noun_type+' := [ SYNSEM.LOCAL.CAT.HEAD.POSS.POSS-AGR #png,\
-                                        '+agr_prefix+' #png ].')
+                                              '+agr_prefix+' #png ].')
+        for instance in strat.get('instance'):
+            orth=instance.get('orth')
+            instance_name=noun_id(instance)
+            mylang.add(instance_name+' := '+noun_type+'.')
+            customize_feature_values(mylang,ch,hierarchies,instance,instance_name,'noun')
+            lexicon.add(instance_name.replace('-lex','')+' := '+instance_name+' &\
+                                                          [ STEM < "'+orth+'" > ].')
+            if agr:
+                mylang.add('poss :+ [ POSS-AGR png ].',section='addenda')            
+                instance_tmp={}
+                for key in instance.keys():
+                    # Relabel the inherent features as something else ('skip') 
+                    # Relabel the agreement features as simply features ('feat')
+                    # Then call customize_feature_values() with the 'poss-marker' setting
+                    # so that the agreement features are added at POSS.POSS-AGR instead of HOOK.INDEX.PNG
+                    new_key=key.replace('feat','skip')
+                    new_key=new_key.replace('agr-skip','feat')
+                    instance_tmp[new_key]=instance.get(key)
+                # TODO: Figure out how to cast from a dict to a ChoiceDict so that no future developers have to deal with this mess in features.py
+                customize_feature_values(mylang,ch,hierarchies,instance_tmp,instance_name,'poss-marker')
                 
 
