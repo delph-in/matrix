@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of adnom-poss-test
 ;;; created at:
-;;;     Wed Jan 03 21:22:59 UTC 2018
+;;;     Sat Jan 06 23:28:51 UTC 2018
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -25,13 +25,13 @@ non-mod-lex-item := lex-item &
 ;;; Matrix Type Addenda
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 
-inflected :+ [ POSSESSIVE-FLAG luk,
-    NUM-FLAG luk,
-    PERNUM-FLAG luk ].
+inflected :+ [ PERNUM-FLAG luk,
+    POSSESSIVE-FLAG luk,
+    NUM-FLAG luk ].
 
-infl-satisfied :+ [ POSSESSIVE-FLAG na-or-+,
-    NUM-FLAG na-or-+,
-    PERNUM-FLAG na-or-+ ].
+infl-satisfied :+ [ PERNUM-FLAG na-or-+,
+    POSSESSIVE-FLAG na-or-+,
+    NUM-FLAG na-or-+ ].
 
 png :+ [ PER person,
     NUM number ].
@@ -80,15 +80,41 @@ noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & non-mod-lex-ite
   [ ARG-ST < #spr >,
     SYNSEM.LOCAL.CAT.VAL [ COMPS < >,
                            SUBJ < >,
-                           SPEC < >,
                            SPR < #spr &
                                  [ LOCAL.CAT.HEAD +nd,
                                    OPT - ] > ] ].
 
 common-noun-lex := noun-lex &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 3rd,
-    INFLECTED [ NUM-FLAG -,
-                POSSESSIVE-FLAG - ] ].
+    INFLECTED [ POSSESSIVE-FLAG -,
+                NUM-FLAG - ] ].
+
+possessum-noun-lex := basic-two-arg &
+  [ ARG-ST < #spr,
+             #comps >,
+    SYNSEM.LOCAL [ CAT [ HEAD noun &
+                              [ POSS possessum ],
+                         VAL [ SPR < #spr &
+                                     [ LOCAL [ CAT.HEAD +np,
+                                               CONT.HOOK.INDEX #possessor ] ] >,
+                               COMPS < #comps &
+                                       [ LOCAL [ CAT.VAL.SPR < [ ] >,
+                                                 CONT.HOOK #hook &
+                                                           [ INDEX #possessum,
+                                                             LTOP #lbl ] ] ] > ] ],
+                   CONT [ HOOK #hook,
+                          ICONS <!  !>,
+                          RELS <! arg12-ev-relation &
+                                  [ PRED "poss_rel",
+                                    LBL #lbl,
+                                    ARG1 #possessum,
+                                    ARG2 #possessor ], quant-relation &
+                                                       [ PRED "exist_q_rel",
+                                                         ARG0 #possessum,
+                                                         RSTR #harg ] !>,
+                          HCONS <! qeq &
+                                   [ HARG #harg,
+                                     LARG #lbl ] !> ] ] ].
 
 ;;; Verbs
 
@@ -143,11 +169,11 @@ possessive-rule-dtr := word-or-lexrule.
 
 num-lex-rule-super := add-only-no-ccont-rule & possessive-rule-dtr &
   [ INFLECTED [ NUM-FLAG +,
-                POSSESSIVE-FLAG #possessive,
-                PERNUM-FLAG #pernum ],
+                PERNUM-FLAG #pernum,
+                POSSESSIVE-FLAG #possessive ],
     DTR common-noun-lex &
-        [ INFLECTED [ POSSESSIVE-FLAG #possessive,
-                      PERNUM-FLAG #pernum ] ] ].
+        [ INFLECTED [ PERNUM-FLAG #pernum,
+                      POSSESSIVE-FLAG #possessive ] ] ].
 
 singular-lex-rule := const-lex-rule & num-lex-rule-super &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM sg ].
@@ -157,11 +183,11 @@ plural-lex-rule := infl-lex-rule & num-lex-rule-super &
 
 possessive-lex-rule-super := lex-rule &
   [ INFLECTED [ POSSESSIVE-FLAG +,
-                NUM-FLAG #num,
-                PERNUM-FLAG #pernum ],
+                PERNUM-FLAG #pernum,
+                NUM-FLAG #num ],
     DTR possessive-rule-dtr &
-        [ INFLECTED [ NUM-FLAG #num,
-                      PERNUM-FLAG #pernum ] ] ].
+        [ INFLECTED [ PERNUM-FLAG #pernum,
+                      NUM-FLAG #num ] ] ].
 
 possessor-lex-rule-1 := val-change-with-ccont-lex-rule &
   [ DTR.SYNSEM.LOCAL [ CAT.VAL [ SPR #spr,
@@ -183,19 +209,19 @@ possessor-lex-rule-1 := val-change-with-ccont-lex-rule &
 
 possessor-lex-rule := infl-lex-rule & possessive-lex-rule-super & possessor-lex-rule-1.
 
-non-possessive-lex-rule-1 := add-only-no-ccont-rule &
+nonpossessive-lex-rule-_ := add-only-no-ccont-rule &
   [ SYNSEM.LOCAL.CAT.HEAD noun &
                           [ POSS nonpossessive ] ].
 
-nonpossessive-lex-rule := const-lex-rule & non-possessive-lex-rule-1 & possessive-lex-rule-super.
+nonpossessive-lex-rule := const-lex-rule & nonpossessive-lex-rule-_ & possessive-lex-rule-super.
 
 pernum-lex-rule-super := add-only-no-ccont-rule &
   [ INFLECTED [ PERNUM-FLAG +,
-                POSSESSIVE-FLAG #possessive,
-                NUM-FLAG #num ],
+                NUM-FLAG #num,
+                POSSESSIVE-FLAG #possessive ],
     DTR verb-lex &
-        [ INFLECTED [ POSSESSIVE-FLAG #possessive,
-                      NUM-FLAG #num ] ] ].
+        [ INFLECTED [ NUM-FLAG #num,
+                      POSSESSIVE-FLAG #possessive ] ] ].
 
 3sg-lex-rule := infl-lex-rule & pernum-lex-rule-super &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ PER 3rd,
@@ -207,51 +233,28 @@ pl-lex-rule := const-lex-rule & pernum-lex-rule-super &
 non-3rd-lex-rule := const-lex-rule & pernum-lex-rule-super &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PER non-3rd ].
 
-possessum-noun-lex := basic-two-arg &
-  [ ARG-ST < #spr,
-             #comps >,
-    SYNSEM.LOCAL [ CAT [ HEAD noun &
-                              [ POSS possessum ],
-                         VAL [ SPR < #spr &
-                                     [ LOCAL [ CAT.HEAD +np,
-                                               CONT.HOOK.INDEX #possessor ] ] >,
-                               COMPS < #comps &
-                                       [ LOCAL [ CAT.VAL.SPR < [ ] >,
-                                                 CONT.HOOK #hook &
-                                                           [ INDEX #possessum,
-                                                             LTOP #lbl ] ] ] > ] ],
-                   CONT [ HOOK #hook,
-                          ICONS <!  !>,
-                          RELS <! arg12-ev-relation &
-                                  [ PRED "poss_rel",
-                                    LBL #lbl,
-                                    ARG1 #possessum,
-                                    ARG2 #possessor ], quant-relation &
-                                                       [ PRED "exist_q_rel",
-                                                         ARG0 #possessum,
-                                                         RSTR #harg ] !>,
-                          HCONS <! qeq &
-                                   [ HARG #harg,
-                                     LARG #lbl ] !> ] ] ].
-
 ;;;;;;;;;;;;;;;;;;;
 ;;; Phrasal Types
 ;;;;;;;;;;;;;;;;;;;
 
 head-spec-poss-phrase := basic-head-spec-phrase-super & head-final &
-  [ NON-HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL.SPR < >,
-                                      HEAD +nvjrpcmo ],
-                          OPT - ],
-    HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK #hook,
-    C-CONT.HOOK #hook ].
-
-;Constraint on MC used to be part of matrix.tdl
-;;it applies to all wo implementations, except for v2
+  [ C-CONT.HOOK #hook,
+    NON-HEAD-DTR.SYNSEM [ OPT -,
+                          LOCAL.CAT [ VAL.SPR < >,
+                                      HEAD +nvjrpcmo &
+                                           [ POSS possessor ] ] ],
+    HEAD-DTR.SYNSEM.LOCAL [ CONT.HOOK #hook,
+                            CAT.HEAD.POSS possessum ] ].
 
 ; Rules for building NPs.  Note that the Matrix uses SPR for
 ; the specifier of nouns and SUBJ for the subject (specifier) of verbs.
 
-head-spec-phrase := basic-head-spec-phrase & head-final.
+head-spec-phrase := basic-head-spec-phrase & head-final &
+  [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.SPR < >,
+                                    HEAD.POSS nonpossessive ] ].
+
+;Constraint on MC used to be part of matrix.tdl
+;;it applies to all wo implementations, except for v2
 
 ; Bare NP phrase.  Consider modifying the PRED value of the quantifier relation
 ; introduced to match the semantic effect of bare NPs in your language.

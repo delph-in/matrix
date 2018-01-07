@@ -575,9 +575,6 @@ expl-ind := index.
 ; 2018-01-01 EKN As experiment, declaring PNG on a supertype
 ; that ref-ind inherits from:
 
-;png-item = avm & [ PNG png ].
-
-;ref-ind := index & event-or-ref-index & png-item.
 ref-ind := index & event-or-ref-index & 
 	[ PNG png ].
 
@@ -2137,7 +2134,7 @@ basic-bare-np-phrase := head-only & head-valence-phrase &
 			   SUBJ < >,
 			   COMPS < >,
 			   SPEC < > ],
-    HEAD-DTR.SYNSEM.LOCAL [ CAT [ HEAD noun,
+    HEAD-DTR.SYNSEM.LOCAL [ CAT [ HEAD noun & [ POSS nonpossessive ],
 				  VAL [ SPR < unexpressed & 
 				      	      [ LOCAL.CAT.HEAD det,
 						OPT + ] >,

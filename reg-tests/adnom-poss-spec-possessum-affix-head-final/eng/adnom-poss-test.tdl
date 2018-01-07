@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of adnom-poss-test
 ;;; created at:
-;;;     Fri Jan 05 22:53:27 UTC 2018
+;;;     Sun Jan 07 00:22:46 UTC 2018
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -162,7 +162,7 @@ possessive-lex-rule-super := lex-rule &
         [ INFLECTED [ PERNUM-FLAG #pernum,
                       NUM-FLAG #num ] ] ].
 
-possessum-lex-rule := infl-lex-rule & possessive-lex-rule-super & val-change-with-ccont-lex-rule &
+possessum-lex-rule-1 := val-change-with-ccont-lex-rule &
   [ SYNSEM.LOCAL.CAT [ HEAD noun &
                             [ POSS possessum ],
                        VAL [ SPEC #spec,
@@ -191,10 +191,14 @@ possessum-lex-rule := infl-lex-rule & possessive-lex-rule-super & val-change-wit
                                  [ INDEX #possessum,
                                    LTOP #lbl ] ] ].
 
-nonpossessive-lex-rule := add-only-no-ccont-rule & const-lex-rule & possessive-lex-rule-super &
-  [ SYNSEM.LOCAL.CAT [ HEAD noun &
-                            [ POSS nonpossessive ],
-                       VAL.SPR.FIRST.LOCAL.CAT.HEAD det ] ].
+possessum-lex-rule := infl-lex-rule & possessive-lex-rule-super & possessum-lex-rule-1.
+
+nonpossessive-lex-rule-1 := add-only-no-ccont-rule &
+  [ SYNSEM.LOCAL.CAT.HEAD noun &
+                          [ POSS nonpossessive ] ].
+
+nonpossessive-lex-rule := const-lex-rule & nonpossessive-lex-rule-1 & possessive-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.LOCAL.CAT.HEAD det ].
 
 pernum-lex-rule-super := add-only-no-ccont-rule &
   [ INFLECTED [ PERNUM-FLAG +,

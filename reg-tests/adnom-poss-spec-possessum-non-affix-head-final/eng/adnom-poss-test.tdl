@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of adnom-poss-test
 ;;; created at:
-;;;     Fri Jan 05 00:35:25 UTC 2018
+;;;     Sun Jan 07 00:27:26 UTC 2018
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -25,11 +25,11 @@ non-mod-lex-item := lex-item &
 ;;; Matrix Type Addenda
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 
-inflected :+ [ PERNUM-FLAG luk,
-    NUM-FLAG luk ].
+inflected :+ [ NUM-FLAG luk,
+    PERNUM-FLAG luk ].
 
-infl-satisfied :+ [ PERNUM-FLAG na-or-+,
-    NUM-FLAG na-or-+ ].
+infl-satisfied :+ [ NUM-FLAG na-or-+,
+    PERNUM-FLAG na-or-+ ].
 
 png :+ [ PER person,
     NUM number ].
@@ -86,6 +86,33 @@ noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & non-mod-lex-ite
 common-noun-lex := noun-lex &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 3rd,
     INFLECTED.NUM-FLAG - ].
+
+possessum-noun-lex := basic-two-arg &
+  [ ARG-ST < #spr,
+             #comps >,
+    SYNSEM.LOCAL [ CAT [ HEAD noun &
+                              [ POSS possessum ],
+                         VAL [ SPR < #spr &
+                                     [ LOCAL [ CAT.HEAD +np,
+                                               CONT.HOOK.INDEX #possessor ] ] >,
+                               COMPS < #comps &
+                                       [ LOCAL [ CAT.VAL.SPR < [ ] >,
+                                                 CONT.HOOK #hook &
+                                                           [ INDEX #possessum,
+                                                             LTOP #lbl ] ] ] > ] ],
+                   CONT [ HOOK #hook,
+                          ICONS <!  !>,
+                          RELS <! arg12-ev-relation &
+                                  [ PRED "poss_rel",
+                                    LBL #lbl,
+                                    ARG1 #possessum,
+                                    ARG2 #possessor ], quant-relation &
+                                                       [ PRED "exist_q_rel",
+                                                         ARG0 #possessum,
+                                                         RSTR #harg ] !>,
+                          HCONS <! qeq &
+                                   [ HARG #harg,
+                                     LARG #lbl ] !> ] ] ].
 
 ;;; Verbs
 
@@ -181,33 +208,6 @@ head-spec-poss-phrase := basic-head-spec-phrase-super & head-final &
 head-spec-phrase := basic-head-spec-phrase & head-final &
   [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.SPR < >,
                                     HEAD.POSS nonpossessive ] ].
-
-possessum-noun-lex := basic-two-arg &
-  [ ARG-ST < #spr,
-             #comps >,
-    SYNSEM.LOCAL [ CAT [ HEAD noun &
-                              [ POSS possessum ],
-                         VAL [ SPR < #spr &
-                                     [ LOCAL [ CAT.HEAD +np,
-                                               CONT.HOOK.INDEX #possessor ] ] >,
-                               COMPS < #comps &
-                                       [ LOCAL [ CAT.VAL.SPR < [ ] >,
-                                                 CONT.HOOK #hook &
-                                                           [ INDEX #possessum,
-                                                             LTOP #lbl ] ] ] > ] ],
-                   CONT [ HOOK #hook,
-                          ICONS <!  !>,
-                          RELS <! arg12-ev-relation &
-                                  [ PRED "poss_rel",
-                                    LBL #lbl,
-                                    ARG1 #possessum,
-                                    ARG2 #possessor ], quant-relation &
-                                                       [ PRED "exist_q_rel",
-                                                         ARG0 #possessum,
-                                                         RSTR #harg ] !>,
-                          HCONS <! qeq &
-                                   [ HARG #harg,
-                                     LARG #lbl ] !> ] ] ].
 
 ;Constraint on MC used to be part of matrix.tdl
 ;;it applies to all wo implementations, except for v2

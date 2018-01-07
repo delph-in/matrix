@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of adnom-poss-test
 ;;; created at:
-;;;     Wed Jan 03 01:46:10 UTC 2018
+;;;     Sun Jan 07 00:26:36 UTC 2018
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -27,13 +27,13 @@ non-mod-lex-item := lex-item &
 
 noun :+ [ CASE case ].
 
-inflected :+ [ NUM-FLAG luk,
-    PERNUM-FLAG luk,
-    POSSESSIVE-FLAG luk ].
+inflected :+ [ PERNUM-FLAG luk,
+    POSSESSIVE-FLAG luk,
+    NUM-FLAG luk ].
 
-infl-satisfied :+ [ NUM-FLAG na-or-+,
-    PERNUM-FLAG na-or-+,
-    POSSESSIVE-FLAG na-or-+ ].
+infl-satisfied :+ [ PERNUM-FLAG na-or-+,
+    POSSESSIVE-FLAG na-or-+,
+    NUM-FLAG na-or-+ ].
 
 png :+ [ PER person,
     NUM number ].
@@ -96,8 +96,8 @@ noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & non-mod-lex-ite
 
 common-noun-lex := noun-lex &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 3rd,
-    INFLECTED [ NUM-FLAG -,
-                POSSESSIVE-FLAG - ] ].
+    INFLECTED [ POSSESSIVE-FLAG -,
+                NUM-FLAG - ] ].
 
 ;;; Verbs
 
@@ -176,11 +176,11 @@ plural-lex-rule := infl-lex-rule & num-lex-rule-super &
 
 possessive-lex-rule-super := lex-rule &
   [ INFLECTED [ POSSESSIVE-FLAG +,
-                NUM-FLAG #num,
-                PERNUM-FLAG #pernum ],
+                PERNUM-FLAG #pernum,
+                NUM-FLAG #num ],
     DTR possessive-rule-dtr &
-        [ INFLECTED [ NUM-FLAG #num,
-                      PERNUM-FLAG #pernum ] ] ].
+        [ INFLECTED [ PERNUM-FLAG #pernum,
+                      NUM-FLAG #num ] ] ].
 
 possessum-lex-rule-1 := val-change-with-ccont-lex-rule &
   [ C-CONT [ HOOK #hook &
@@ -217,12 +217,12 @@ possessum-3sg-lex-rule := infl-lex-rule & possessive-lex-rule-super & possessum-
   [ SYNSEM.LOCAL.CAT.HEAD.POSS.POSS-AGR [ NUM sg,
                                           PER 3rd ] ].
 
-non-possessive-lex-rule-1 := add-only-no-ccont-rule &
-  [ SYNSEM.LOCAL.CAT [ HEAD noun &
-                            [ POSS nonpossessive ],
-                       VAL.SPR.FIRST.LOCAL.CAT.HEAD det ] ].
+nonpossessive-lex-rule-1 := add-only-no-ccont-rule &
+  [ SYNSEM.LOCAL.CAT.HEAD noun &
+                          [ POSS nonpossessive ] ].
 
-nonpossessive-lex-rule := const-lex-rule & non-possessive-lex-rule-1 & possessive-lex-rule-super.
+nonpossessive-lex-rule := const-lex-rule & nonpossessive-lex-rule-1 & possessive-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.LOCAL.CAT.HEAD det ].
 
 possessum-3pl-lex-rule := infl-lex-rule & possessive-lex-rule-super & possessum-lex-rule-1 &
   [ SYNSEM.LOCAL.CAT.HEAD.POSS.POSS-AGR [ NUM pl,
@@ -251,19 +251,23 @@ non-3rd-lex-rule := const-lex-rule & pernum-lex-rule-super &
 ;;;;;;;;;;;;;;;;;;;
 
 head-spec-poss-phrase := basic-head-spec-phrase-super & head-final &
-  [ NON-HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL.SPR < >,
-                                      HEAD +nvjrpcmo ],
-                          OPT - ],
-    HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK #hook,
-    C-CONT.HOOK #hook ].
-
-;Constraint on MC used to be part of matrix.tdl
-;;it applies to all wo implementations, except for v2
+  [ C-CONT.HOOK #hook,
+    HEAD-DTR.SYNSEM.LOCAL [ CONT.HOOK #hook,
+                            CAT.HEAD.POSS possessum ],
+    NON-HEAD-DTR.SYNSEM [ OPT -,
+                          LOCAL.CAT [ VAL.SPR < >,
+                                      HEAD +nvjrpcmo &
+                                           [ POSS nonpossessive ] ] ] ].
 
 ; Rules for building NPs.  Note that the Matrix uses SPR for
 ; the specifier of nouns and SUBJ for the subject (specifier) of verbs.
 
-head-spec-phrase := basic-head-spec-phrase & head-final.
+head-spec-phrase := basic-head-spec-phrase & head-final &
+  [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.SPR < >,
+                                    HEAD.POSS nonpossessive ] ].
+
+;Constraint on MC used to be part of matrix.tdl
+;;it applies to all wo implementations, except for v2
 
 ; Bare NP phrase.  Consider modifying the PRED value of the quantifier relation
 ; introduced to match the semantic effect of bare NPs in your language.

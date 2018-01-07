@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of adnom-poss-test
 ;;; created at:
-;;;     Wed Jan 03 21:55:09 UTC 2018
+;;;     Sun Jan 07 00:04:09 UTC 2018
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -25,12 +25,12 @@ non-mod-lex-item := lex-item &
 ;;; Matrix Type Addenda
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 
-inflected :+ [ POSSESSIVE-FLAG luk,
-    PERNUM-FLAG luk,
+inflected :+ [ PERNUM-FLAG luk,
+    POSSESSIVE-FLAG luk,
     NUM-FLAG luk ].
 
-infl-satisfied :+ [ POSSESSIVE-FLAG na-or-+,
-    PERNUM-FLAG na-or-+,
+infl-satisfied :+ [ PERNUM-FLAG na-or-+,
+    POSSESSIVE-FLAG na-or-+,
     NUM-FLAG na-or-+ ].
 
 png :+ [ PER person,
@@ -82,7 +82,6 @@ noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & non-mod-lex-ite
   [ ARG-ST < #spr >,
     SYNSEM.LOCAL.CAT.VAL [ COMPS < >,
                            SUBJ < >,
-                           SPEC < >,
                            SPR < #spr &
                                  [ LOCAL.CAT.HEAD +pd,
                                    OPT - ] > ] ].
@@ -133,94 +132,6 @@ determiner-lex := basic-determiner-lex & norm-zero-arg & non-mod-lex-item &
 
 det1-determiner-lex := determiner-lex & no-icons-lex-item.
 
-;;;;;;;;;;;;;;;;;;;
-;;; Lexical Rules
-;;;;;;;;;;;;;;;;;;;
-
-;;; Intermediate rule types
-
-possessive-rule-dtr := word-or-lexrule.
-
-;;; Lexical rule types
-
-num-lex-rule-super := add-only-no-ccont-rule & possessive-rule-dtr &
-  [ INFLECTED [ NUM-FLAG +,
-                POSSESSIVE-FLAG #possessive,
-                PERNUM-FLAG #pernum ],
-    DTR common-noun-lex &
-        [ INFLECTED [ POSSESSIVE-FLAG #possessive,
-                      PERNUM-FLAG #pernum ] ] ].
-
-singular-lex-rule := const-lex-rule & num-lex-rule-super &
-  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM sg ].
-
-plural-lex-rule := infl-lex-rule & num-lex-rule-super &
-  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM pl ].
-
-possessive-lex-rule-super := lex-rule &
-  [ INFLECTED [ POSSESSIVE-FLAG +,
-                PERNUM-FLAG #pernum,
-                NUM-FLAG #num ],
-    DTR possessive-rule-dtr &
-        [ INFLECTED [ PERNUM-FLAG #pernum,
-                      NUM-FLAG #num ] ] ].
-
-possessum-lex-rule-1 := val-change-with-ccont-lex-rule &
-  [ SYNSEM.LOCAL.CAT [ HEAD noun &
-                            [ POSS possessum ],
-                       VAL [ SPEC #spec,
-                             SUBJ #subj,
-                             COMPS #comps,
-                             SPR < [ LOCAL [ CAT.HEAD +np,
-                                             CONT.HOOK.INDEX #possessor ] ] > ] ],
-    C-CONT [ HOOK #hook &
-                  [ INDEX.COG-ST uniq-id ],
-             ICONS <!  !>,
-             HCONS <! qeq &
-                      [ HARG #harg,
-                        LARG #lbl ] !>,
-             RELS <! arg12-ev-relation &
-                     [ PRED "poss_rel",
-                       LBL #lbl,
-                       ARG1 #possessum,
-                       ARG2 #possessor ], quant-relation &
-                                          [ PRED "exist_q_rel",
-                                            ARG0 #possessum,
-                                            RSTR #harg ] !> ],
-    DTR.SYNSEM.LOCAL [ CAT.VAL [ SPEC #spec,
-                                 SUBJ #subj,
-                                 COMPS #comps ],
-                       CONT.HOOK #hook &
-                                 [ INDEX #possessum,
-                                   LTOP #lbl ] ] ].
-
-possessum-lex-rule := infl-lex-rule & possessive-lex-rule-super & possessum-lex-rule-1.
-
-non-possessive-lex-rule-1 := add-only-no-ccont-rule &
-  [ SYNSEM.LOCAL.CAT [ HEAD noun &
-                            [ POSS nonpossessive ],
-                       VAL.SPR.FIRST.LOCAL.CAT.HEAD det ] ].
-
-non-possessive-lex-rule := const-lex-rule & non-possessive-lex-rule-1 & possessive-lex-rule-super.
-
-pernum-lex-rule-super := add-only-no-ccont-rule &
-  [ INFLECTED [ PERNUM-FLAG +,
-                POSSESSIVE-FLAG #possessive,
-                NUM-FLAG #num ],
-    DTR verb-lex &
-        [ INFLECTED [ POSSESSIVE-FLAG #possessive,
-                      NUM-FLAG #num ] ] ].
-
-3sg-lex-rule := infl-lex-rule & pernum-lex-rule-super &
-  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ PER 3rd,
-                                                                NUM sg ] ].
-
-pl-lex-rule := const-lex-rule & pernum-lex-rule-super &
-  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.NUM pl ].
-
-non-3rd-lex-rule := const-lex-rule & pernum-lex-rule-super &
-  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PER non-3rd ].
-
 two-rel-adposition-lex := basic-icons-lex-item &
   [ SYNSEM [ LOCAL [ CAT [ HEAD adp,
                            VAL.COMPS < [ LOCAL [ CAT cat-sat,
@@ -253,6 +164,95 @@ possessor-3pl-adp-lex := possessor-adp-lex &
                        HEAD.POSS.POSS-AGR #png &
                                           [ NUM pl,
                                             PER 3rd ] ] ].
+
+;;;;;;;;;;;;;;;;;;;
+;;; Lexical Rules
+;;;;;;;;;;;;;;;;;;;
+
+;;; Intermediate rule types
+
+possessive-rule-dtr := word-or-lexrule.
+
+;;; Lexical rule types
+
+num-lex-rule-super := add-only-no-ccont-rule & possessive-rule-dtr &
+  [ INFLECTED [ NUM-FLAG +,
+                PERNUM-FLAG #pernum,
+                POSSESSIVE-FLAG #possessive ],
+    DTR common-noun-lex &
+        [ INFLECTED [ PERNUM-FLAG #pernum,
+                      POSSESSIVE-FLAG #possessive ] ] ].
+
+singular-lex-rule := const-lex-rule & num-lex-rule-super &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM sg ].
+
+plural-lex-rule := infl-lex-rule & num-lex-rule-super &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM pl ].
+
+possessive-lex-rule-super := lex-rule &
+  [ INFLECTED [ POSSESSIVE-FLAG +,
+                PERNUM-FLAG #pernum,
+                NUM-FLAG #num ],
+    DTR possessive-rule-dtr &
+        [ INFLECTED [ PERNUM-FLAG #pernum,
+                      NUM-FLAG #num ] ] ].
+
+possessum-lex-rule-1 := val-change-with-ccont-lex-rule &
+  [ C-CONT [ HOOK #hook &
+                  [ INDEX.COG-ST uniq-id ],
+             ICONS <!  !>,
+             HCONS <! qeq &
+                      [ HARG #harg,
+                        LARG #lbl ] !>,
+             RELS <! arg12-ev-relation &
+                     [ PRED "poss_rel",
+                       LBL #lbl,
+                       ARG1 #possessum,
+                       ARG2 #possessor ], quant-relation &
+                                          [ PRED "exist_q_rel",
+                                            ARG0 #possessum,
+                                            RSTR #harg ] !> ],
+    DTR.SYNSEM.LOCAL [ CAT.VAL [ SPEC #spec,
+                                 SUBJ #subj,
+                                 COMPS #comps ],
+                       CONT.HOOK #hook &
+                                 [ INDEX #possessum,
+                                   LTOP #lbl ] ],
+    SYNSEM.LOCAL.CAT [ HEAD noun &
+                            [ POSS possessum ],
+                       VAL [ SPEC #spec,
+                             SUBJ #subj,
+                             COMPS #comps,
+                             SPR < [ LOCAL [ CONT.HOOK.INDEX #possessor,
+                                             CAT.HEAD +np &
+                                                      [ POSS possessor ] ] ] > ] ] ].
+
+possessum-lex-rule := infl-lex-rule & possessive-lex-rule-super & possessum-lex-rule-1.
+
+nonpossessive-lex-rule-1 := add-only-no-ccont-rule &
+  [ SYNSEM.LOCAL.CAT.HEAD noun &
+                          [ POSS nonpossessive ] ].
+
+non-possessive-lex-rule := const-lex-rule & nonpossessive-lex-rule-1 & possessive-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.LOCAL.CAT.HEAD det ].
+
+pernum-lex-rule-super := add-only-no-ccont-rule &
+  [ INFLECTED [ PERNUM-FLAG +,
+                NUM-FLAG #num,
+                POSSESSIVE-FLAG #possessive ],
+    DTR verb-lex &
+        [ INFLECTED [ NUM-FLAG #num,
+                      POSSESSIVE-FLAG #possessive ] ] ].
+
+3sg-lex-rule := infl-lex-rule & pernum-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ PER 3rd,
+                                                                NUM sg ] ].
+
+pl-lex-rule := const-lex-rule & pernum-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.NUM pl ].
+
+non-3rd-lex-rule := const-lex-rule & pernum-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PER non-3rd ].
 
 ;;;;;;;;;;;;;;;;;;;
 ;;; Phrasal Types

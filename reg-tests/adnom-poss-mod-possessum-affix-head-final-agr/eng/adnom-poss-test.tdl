@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of adnom-poss-test
 ;;; created at:
-;;;     Wed Jan 03 20:04:59 UTC 2018
+;;;     Sat Jan 06 22:23:10 UTC 2018
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -196,11 +196,11 @@ possessum-3sg-lex-rule := infl-lex-rule & possessive-lex-rule-super & possessum-
   [ SYNSEM.LOCAL.CAT.HEAD.POSS.POSS-AGR [ NUM sg,
                                           PER 3rd ] ].
 
-non-possessive-lex-rule-1 := add-only-no-ccont-rule &
+nonpossessive-lex-rule-1 := add-only-no-ccont-rule &
   [ SYNSEM.LOCAL.CAT.HEAD noun &
                           [ POSS nonpossessive ] ].
 
-nonpossessive-lex-rule := const-lex-rule & non-possessive-lex-rule-1 & possessive-lex-rule-super.
+nonpossessive-lex-rule := const-lex-rule & nonpossessive-lex-rule-1 & possessive-lex-rule-super.
 
 possessum-3pl-lex-rule := infl-lex-rule & possessive-lex-rule-super & possessum-lex-rule-1 &
   [ SYNSEM.LOCAL.CAT.HEAD.POSS.POSS-AGR [ NUM pl,

@@ -200,8 +200,6 @@ def customize_rules(strat,mylang,ch,rules):
                 phrase_rule="head-comp-poss-phrase"
                 # Check if the existing head-comp rule has the correct order; 
                 # if not, add a new rule with correct order that only applies to poss-phrases.
-                print "head_comp_order: "+head_comp_order
-                print "strat_order: "+strat_order
                 if head_comp_order!=strat_order:
                     mylang.add(phrase_rule +' := basic-head-1st-comp-phrase &\
                                            [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +np,\
@@ -239,7 +237,7 @@ def customize_rules(strat,mylang,ch,rules):
     # If a specialized (non-juxtaposition) poss phrase rule was added, require that the marked constituent be [ POSS possessive ]
     # TODO: check if I can take out the stuff after 'and not'
     if rule_added and not phrase_rule=='head-comp-poss-phrase':
-        if not phrase_rule=='head-comp-poss-phrase' and possessor_mark_order==order or possessum_mark_order==order:
+        if not (phrase_rule=='head-comp-poss-phrase' and (possessor_mark_order==order or possessum_mark_order==order)):
             if strat.get('mark-loc')=='possessor':
                 mylang.add(phrase_rule+':= [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS nonpossessive,\
                                              NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessor ].',merge=True)
@@ -333,8 +331,8 @@ def customize_irules(strat,mylang,ch,irules,hierarchies):
                                                       RELS <! '+ POSS_REL  +' , '+POSSESSUM_EXIST_REL+ ' !>, \
                                                                    HCONS <! qeq & [ HARG #harg, LARG #lbl ] !>, \
                                                                                                 ICONS <! !>  ] ].',merge=True)
-                                    if mark_loc=='both':
-                                        mylang.add(possessor_rule_name+' := val-change-with-ccont-lex-rule & \
+                                if mark_loc=='both':
+                                    mylang.add(possessor_rule_name+' := val-change-with-ccont-lex-rule & \
                                            [ SYNSEM.LOCAL.CAT [ VAL [ SPEC.FIRST.LOCAL [ CAT [ HEAD noun ] ] ] ] ,\
                                              C-CONT [ HOOK #hook & [ INDEX #possessor ],\
                                                       RELS <!  !>, \
