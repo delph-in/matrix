@@ -209,8 +209,9 @@ def customize_nmcs(mylang, ch, rules):
                 i = 0
                 while i < len(possible_subj_head_types):
                     subtype = possible_subj_head_types[i] + '-subj-' + type_name
-                    mylang.add(subtype + ' := [SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CAT.HEAD ' + possible_subj_head_types[i] + '] >,\
-                                               DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CAT.HEAD ' + possible_subj_head_types[i] + '] > ].')
+                    mylang.add(subtype + ' := ' + type_name + ' & \
+                                            [SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CAT.HEAD ' + possible_subj_head_types[i] + '] >,\
+                                             DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CAT.HEAD ' + possible_subj_head_types[i] + '] > ].')
                     i += 1
         mylang.set_section('phrases')
         if level == 'mid':
@@ -224,45 +225,34 @@ def customize_nmcs(mylang, ch, rules):
                 mylang.add(level + SUBJ_NMZ_CLAUSE)
                 rules.add(level + '-nominalized-clause := ' + level + '-nominalized-clause-phrase.')
 
-
 def argument_types(ch):
     possible_subj_head_types = []
     possible_obj_head_types = []
-    for vpc in ch['verb-pc']:
-        for lrt in vpc['lrt']:
-            for f in lrt['feat']:
-                if 'nominalization' in f['name']:
-                    inputs = vpc.get('inputs')
-                    for p in ch.patterns():
-                        if 'clausal' in p[1]:
-                            continue
-                        rule_pattern = p[2]
-
-                        p = p[0].split(',')  # split off ',dirinv', if present
-                        dir_inv = ''
-                        if len(p) > 1 and p[1] == 'dirinv':
-                            dir_inv = 'dir-inv-'
-
-                        if not rule_pattern:
-                            c = p[0].split('-')  # split 'agentcase-patientcase'
-                            if p[0] == 'trans' or len(c) > 1:  # transitive
-                                if p[0] == 'trans':
-                                    a_head = ch.case_head()
-                                    o_head = ch.case_head()
-                                else:
-                                    a_head = ch.case_head(c[0])
-                                    o_head = ch.case_head(c[1])
-                                if a_head != '' and a_head not in possible_subj_head_types:
-                                    possible_subj_head_types.append(a_head)
-                                if o_head != '' and o_head not in possible_obj_head_types:
-                                    possible_obj_head_types.append(o_head)
-                            else:  # intransitive
-                                if c[0] == 'intrans':
-                                    s_head = ch.case_head()
-                                else:
-                                    s_head = ch.case_head(c[0])
-                                if s_head != '' and s_head not in possible_subj_head_types:
-                                    possible_subj_head_types.append(s_head)
+    for p in ch.patterns():
+        if 'clausal' in p[1]:
+            continue
+        rule_pattern = p[2]
+        p = p[0].split(',')  # split off ',dirinv', if present
+        if not rule_pattern:
+            c = p[0].split('-')  # split 'agentcase-patientcase'
+            if p[0] == 'trans' or len(c) > 1:  # transitive
+                if p[0] == 'trans':
+                    a_head = ch.case_head()
+                    o_head = ch.case_head()
+                else:
+                    a_head = ch.case_head(c[0])
+                    o_head = ch.case_head(c[1])
+                if a_head != '' and a_head not in possible_subj_head_types:
+                    possible_subj_head_types.append(a_head)
+                if o_head != '' and o_head not in possible_obj_head_types:
+                    possible_obj_head_types.append(o_head)
+            else:  # intransitive
+                if c[0] == 'intrans':
+                    s_head = ch.case_head()
+                else:
+                    s_head = ch.case_head(c[0])
+                if s_head != '' and s_head not in possible_subj_head_types:
+                    possible_subj_head_types.append(s_head)
     return possible_subj_head_types, possible_obj_head_types
 
 def case_change(ch):
@@ -291,6 +281,7 @@ def case_change_lrt(lrt):
     return False
 
 def update_lexical_rules(ch):
+    possible_subj_head_types, possibl_obj_head_types = argument_types(ch)
     for vpc in ch['verb-pc']:
         for lrt in vpc['lrt']:
             for f in lrt['feat']:
@@ -299,15 +290,38 @@ def update_lexical_rules(ch):
                         if ns.get('name') == f['value']:
                             level = ns.get('level')
                             if level == 'mid' or level == 'high':
-                                lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') + \
+                                if len(possible_subj_head_types) == 1:
+                                    lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') + \
                                     ['high-or-mid-nominalization-lex-rule'])
+                                else:
+                                    i = 0
+                                    while i < len(possible_subj_head_types):
+                                        lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') + \
+                                                                      [possible_subj_head_types[i] + '-subj-high-or-mid-nominalization-lex-rule'])
+                                        i += 1
                             if level == 'low':
                                 if case_change_lrt(lrt):
-                                    lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') + \
-                                     ['low-nmz-trans-lex-rule'])
+                                    if len(possible_subj_head_types) == 1:
+                                        lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') + \
+                                        ['low-nmz-trans-lex-rule'])
+                                    else:
+                                        i = 0
+                                        while i < len(possible_subj_head_types):
+                                            lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') + \
+                                                                          [possible_subj_head_types[
+                                                                               i] + '-subj-low-nmz-trans-lex-rule'])
+                                            i += 1
                                 else:
-                                    lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') + \
+                                    if len(possible_subj_head_types) == 1:
+                                        lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') + \
                                         ['low-nmz-compsid-lex-rule'])
+                                    else:
+                                        i = 0
+                                        while i < len(possible_subj_head_types):
+                                            lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') + \
+                                                                          [possible_subj_head_types[
+                                                                               i] + '-subj-low-nmz-compsid-lex-rule'])
+                                            i += 1
 
 
 def add_features(mylang):
