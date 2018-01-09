@@ -20,7 +20,6 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
   if not tdlfile:
     tdlfile = mylang
 
-
   # TJT 2014-11-05: moving this up to get the proper geometry for case
   # get the feature geometry of CASE
   if cases:
@@ -106,7 +105,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
       if 'poss-pron' in feat_name: 
         poss_pron_lrt=True
     if poss_pron_lrt:
-      geom_prefix = 'C-CONT.RELS.LIST.REST.REST.REST.ARG0.PNG.'
+      geom_prefix = 'C-CONT.RELS <! [ ARG0.PNG '
 
     # The 'head' choice only appears on verb pcs, and allows the
     # user to specify features on the subject and object as well
@@ -151,8 +150,10 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
           # EKN 2018-1-6: when adding a possessive rule, the standard feature path
           # won't work. This removes all but the feature name and value from the
           # variable value.
-          if pos=='poss-marker' or poss_lrt or poss_pron_lrt:
+          if pos=='poss-marker' or poss_lrt:
             value=value.replace('LOCAL.CONT.HOOK.INDEX.PNG.','')
+          if poss_pron_lrt:
+            value=value.replace('LOCAL.CONT.HOOK.INDEX.PNG','')
           geom = geom_prefix + value
 #          if head == 'mod':
 #            geom += "] >"  # TJT 2014-05-27: close MOD
@@ -163,6 +164,9 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     if geom:
       if n in hierarchies:
         value = hierarchies[n].get_type_covering(v)
+        if poss_pron_lrt:
+          value=value+'],...!>'
+        print geom,value
         tdlfile.add(type_name +
                     ' := [ ' + geom + ' ' + value + ' ].',
                     merge=True)

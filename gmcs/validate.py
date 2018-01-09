@@ -1429,6 +1429,18 @@ def validate_arg_opt(ch, vr):
                        "on the subject NP or the object NP."
                 vr.err(feat.full_key+'_head',mess)
 
+######################################################################
+# validate_adnominal_possession(ch, vr)
+#   Validate the user's choices about adnominal possession
+
+def validate_adnominal_possession(ch, vr):
+    for strat in ch.get('poss-strat'):
+        if not strat.get('order'):
+            print 'You must choose a possessive phrase order.'
+            mess='You must choose a possessive phrase order.'
+            vr.err(strat.full_key,mess)
+
+
 
 def validate(ch, extra = False):
     """
@@ -1453,6 +1465,7 @@ def validate(ch, extra = False):
     gmcs.linglib.lexicon.validate_lexicon(ch, vr)
     gmcs.linglib.morphotactics.validate(ch, vr)
     validate_test_sentences(ch, vr)
+#    validate_adnominal_possession(ch, vr)
 
     validate_types(ch, vr)
     validate_features(ch, vr)
@@ -1479,9 +1492,7 @@ def validate_choices(choices_file, extra = False):
 # that result.
 
 if __name__ == "__main__":
-    print "hello"
     vr = validate_choices(sys.argv[1])
-
     print sys.argv[1]
     for k in vr.errors.keys():
         print '  ' + k + ':'

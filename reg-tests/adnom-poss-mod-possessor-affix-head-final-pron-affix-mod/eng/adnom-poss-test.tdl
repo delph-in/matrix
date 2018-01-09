@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of adnom-poss-test
 ;;; created at:
-;;;     Sun Jan 07 06:12:25 UTC 2018
+;;;     Tue Jan 09 20:19:52 UTC 2018
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -215,20 +215,21 @@ possessor-pron-1sg-lex-rule := infl-lex-rule & poss-pron-lex-rule-super &
                                    LTOP #lbl ],
                        CAT.VAL.SPR #spr ],
     C-CONT [ HOOK #hook,
-             RELS 
-                  <! arg12-ev-relation &
-                     [ PRED "poss_rel",
-                       LBL #lbl,
-                       ARG1 #possessum,
-                       ARG2 #possessor ], quant-relation &
-                                          [ PRED "exist_q_rel",
-                                            ARG0 #possessor,
-                                            RSTR #harg2 ], noun-relation &
-                                                           [ PRED "pron_rel",
-                                                             LBL #lbl2,
-                                                             ARG0 #possessor &
-                                                                  [ COG-ST activ-or-more,
-                                                                    SPECI + ] ] !>,
+             RELS <! noun-relation &
+                     [ PRED "pron_rel",
+                       LBL #lbl2,
+                       ARG0 #possessor &
+                            [ PNG [ NUM sg,
+                                    PER 1st ],
+                              COG-ST activ-or-more,
+                              SPECI + ] ], ... & arg12-ev-relation &
+                                           [ PRED "poss_rel",
+                                             LBL #lbl,
+                                             ARG1 #possessum,
+                                             ARG2 #possessor ], quant-relation &
+                                                                [ PRED "exist_q_rel",
+                                                                  ARG0 #possessor,
+                                                                  RSTR #harg2 ] !>,
              HCONS <! qeq &
                       [ HARG #harg2,
                         LARG #lbl2 ] !> ] ].
@@ -242,20 +243,21 @@ possessor-pron-1pl-lex-rule := infl-lex-rule & poss-pron-lex-rule-super &
                                    LTOP #lbl ],
                        CAT.VAL.SPR #spr ],
     C-CONT [ HOOK #hook,
-             RELS
-                  <! arg12-ev-relation &
-                     [ PRED "poss_rel",
-                       LBL #lbl,
-                       ARG1 #possessum,
-                       ARG2 #possessor ], quant-relation &
-                                          [ PRED "exist_q_rel",
-                                            ARG0 #possessor,
-                                            RSTR #harg2 ], noun-relation &
-                                                           [ PRED "pron_rel",
-                                                             LBL #lbl2,
-                                                             ARG0 #possessor &
-                                                                  [ COG-ST activ-or-more,
-                                                                    SPECI + ] ] !>,
+             RELS <! noun-relation &
+                     [ PRED "pron_rel",
+                       LBL #lbl2,
+                       ARG0 #possessor &
+                            [ PNG [ NUM pl,
+                                    PER 1st ],
+                              COG-ST activ-or-more,
+                              SPECI + ] ], ... & arg12-ev-relation &
+                                           [ PRED "poss_rel",
+                                             LBL #lbl,
+                                             ARG1 #possessum,
+                                             ARG2 #possessor ], quant-relation &
+                                                                [ PRED "exist_q_rel",
+                                                                  ARG0 #possessor,
+                                                                  RSTR #harg2 ] !>,
              HCONS <! qeq &
                       [ HARG #harg2,
                         LARG #lbl2 ] !> ] ].
@@ -269,19 +271,19 @@ non-possessive-pron-lex-rule := const-lex-rule & poss-pron-lex-rule-super &
                                    LTOP #lbl ],
                        CAT.VAL.SPR #spr ],
     C-CONT [ HOOK #hook,
-             RELS <! arg12-ev-relation &
-                     [ PRED "poss_rel",
-                       LBL #lbl,
-                       ARG1 #possessum,
-                       ARG2 #possessor ], quant-relation &
-                                          [ PRED "exist_q_rel",
-                                            ARG0 #possessor,
-                                            RSTR #harg2 ], noun-relation &
-                                                           [ PRED "pron_rel",
-                                                             LBL #lbl2,
-                                                             ARG0 #possessor &
-                                                                  [ COG-ST activ-or-more,
-                                                                    SPECI + ] ] !>,
+             RELS <! noun-relation &
+                     [ PRED "pron_rel",
+                       LBL #lbl2,
+                       ARG0 #possessor &
+                            [ COG-ST activ-or-more,
+                              SPECI + ] ], arg12-ev-relation &
+                                           [ PRED "poss_rel",
+                                             LBL #lbl,
+                                             ARG1 #possessum,
+                                             ARG2 #possessor ], quant-relation &
+                                                                [ PRED "exist_q_rel",
+                                                                  ARG0 #possessor,
+                                                                  RSTR #harg2 ] !>,
              HCONS <! qeq &
                       [ HARG #harg2,
                         LARG #lbl2 ] !> ] ].

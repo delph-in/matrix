@@ -454,16 +454,16 @@ def customize_irules(strat,mylang,ch,irules,hierarchies):
                         elif mod_spec=='mod':
                             mylang.add(get_name(lrt)+'-lex-rule := [ SYNSEM.LOCAL.CAT.VAL.SPR #spr,\
                                                                      DTR.SYNSEM.LOCAL.CAT.VAL.SPR #spr,\
-                                                                     C-CONT [ RELS  <! '+POSS_REL+',\
-                                                                                       quant-relation &\
-                                                                                       [ PRED "exist_q_rel",\
-                                                                                         ARG0 #possessor,\
-                                                                                         RSTR #harg2 ],\
-                                                                                       noun-relation &\
+                                                                     C-CONT [ RELS  <! noun-relation &\
                                                                                        [ PRED "pron_rel",\
                                                                                          LBL #lbl2,\
                                                                                          ARG0 #possessor & [ COG-ST activ-or-more,\
-                                                                                                             SPECI + ] ] !>,\
+                                                                                                             SPECI + ] ],\
+                                                                                       '+POSS_REL+',\
+                                                                                       quant-relation &\
+                                                                                       [ PRED "exist_q_rel",\
+                                                                                         ARG0 #possessor,\
+                                                                                         RSTR #harg2 ] !>,\
                                                                             HCONS <! qeq & [ HARG #harg2,\
                                                                                              LARG #lbl2 ] !> ] ].')
 #                        customize_feature_values(mylang,ch,hierarchies,strat,get_name(lrt),'poss-marker')
@@ -546,8 +546,9 @@ def customize_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
 
         if (mark_loc=='possessum' or mark_loc=='both') and possessum_type=='non-affix':
             mylang.set_section('nounlex')
-            mylang.add('possessum-noun-lex '+POSSESSUM_NOUN_LEX)
+
             if mod_spec=='spec':
+                mylang.add('possessum-noun-lex '+POSSESSUM_NOUN_LEX)
                 # NOTE: currently, this allows regular head-spec to do what head-spec-poss should be doing. 
                 # Could prevent by not allowing the HEAD-DTR of head-spec to be possessive, but that would rule out things 
                 # it probably shouldn't.
