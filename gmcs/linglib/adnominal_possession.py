@@ -436,17 +436,17 @@ def customize_irules(strat,mylang,ch,irules,hierarchies):
                                         C-CONT.HOOK #hook ].')
                         if mod_spec=='spec':
                             mylang.add(get_name(lrt)+'-lex-rule := [ SYNSEM.LOCAL.CAT.VAL.SPR < >,\
-                                                                     C-CONT [ RELS  <! '+POSSESSUM_EXIST_REL+',\
+                                                                     C-CONT [ RELS  <! noun-relation &\
+                                                                                     [ PRED "pron_rel",\
+                                                                                       LBL #lbl2,\
+                                                                                       ARG0 #possessor & [ COG-ST activ-or-more,\
+                                                                                                           SPECI + ] ],\
+                                                                                     '+POSSESSUM_EXIST_REL+',\
                                                                                      '+POSS_REL+',\
                                                                                      quant-relation &\
                                                                                      [ PRED "exist_q_rel",\
                                                                                        ARG0 #possessor,\
-                                                                                       RSTR #harg2 ],\
-                                                                                     noun-relation &\
-                                                                                     [ PRED "pron_rel",\
-                                                                                       LBL #lbl2,\
-                                                                                       ARG0 #possessor & [ COG-ST activ-or-more,\
-                                                                                                           SPECI + ] ] !>,\
+                                                                                       RSTR #harg2 ] !>,\
                                                                              HCONS <! qeq & [ HARG #harg,\
                                                                                              LARG #lbl ],\
                                                                                      qeq & [ HARG #harg2,\
