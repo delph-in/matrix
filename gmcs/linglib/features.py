@@ -165,7 +165,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
       if n in hierarchies:
         value = hierarchies[n].get_type_covering(v)
         if poss_pron_lrt:
-          value=value+'],...!>'
+          value=value+'] !>'
         print geom,value
         tdlfile.add(type_name +
                     ' := [ ' + geom + ' ' + value + ' ].',

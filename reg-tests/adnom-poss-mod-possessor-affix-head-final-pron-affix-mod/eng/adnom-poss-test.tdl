@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of adnom-poss-test
 ;;; created at:
-;;;     Tue Jan 09 20:19:52 UTC 2018
+;;;     Tue Jan 09 20:26:51 UTC 2018
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -222,7 +222,7 @@ possessor-pron-1sg-lex-rule := infl-lex-rule & poss-pron-lex-rule-super &
                             [ PNG [ NUM sg,
                                     PER 1st ],
                               COG-ST activ-or-more,
-                              SPECI + ] ], ... & arg12-ev-relation &
+                              SPECI + ] ], arg12-ev-relation &
                                            [ PRED "poss_rel",
                                              LBL #lbl,
                                              ARG1 #possessum,
@@ -250,7 +250,7 @@ possessor-pron-1pl-lex-rule := infl-lex-rule & poss-pron-lex-rule-super &
                             [ PNG [ NUM pl,
                                     PER 1st ],
                               COG-ST activ-or-more,
-                              SPECI + ] ], ... & arg12-ev-relation &
+                              SPECI + ] ], arg12-ev-relation &
                                            [ PRED "poss_rel",
                                              LBL #lbl,
                                              ARG1 #possessum,
