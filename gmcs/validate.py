@@ -1434,6 +1434,7 @@ def validate_arg_opt(ch, vr):
 #   Validate the user's choices about adnominal possession
 
 def validate_adnominal_possession(ch, vr):
+    png_feats=set(['person','number','gender'])
     for strat in ch.get('poss-strat'):
         # CHECK THAT ALL THE CHOICES ARE CHOSEN
         # Require basic input for all possessive strategies:
@@ -1482,9 +1483,15 @@ def validate_adnominal_possession(ch, vr):
                            if not feat.get('name'):
                               mess='You must give the name of this feature.'   
                               vr.err(feat.full_key+'_name',mess)
+                           # Limit agr features to PNG
+                           elif feat.get('name') not in png_feats:
+                               mess='Agreement between elements of the possessive phrase ' +\
+                                   'is only supported for person, number, and gender.'
+                               vr.err(feat.full_key+'_name',mess)
                            if not feat.get('value'):
                               mess='You must give the value of this feature.'   
                               vr.err(feat.full_key+'_value',mess)
+
         # Require input for possessum-marking 
         if strat.get('mark-loc')=='possessum' or strat.get('mark-loc')=='both':
             if not strat.get('possessum-type'):
@@ -1527,6 +1534,11 @@ def validate_adnominal_possession(ch, vr):
                            if not feat.get('name'):
                               mess='You must give the name of this feature.'   
                               vr.err(feat.full_key+'_name',mess)
+                           # Limit agr features to PNG
+                           elif feat.get('name') not in png_feats:
+                               mess='Agreement between elements of the possessive phrase ' +\
+                                   'is only supported for person, number, and gender.'
+                               vr.err(feat.full_key+'_name',mess)
                            if not feat.get('value'):
                               mess='You must give the value of this feature.'   
                               vr.err(feat.full_key+'_value',mess)

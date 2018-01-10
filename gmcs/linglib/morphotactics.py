@@ -1104,10 +1104,9 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
     # EKN 2018-01-09: Check that only PNG features are 
     # added as agreement features to possessive strategies
     # TODO: allow poss-stratN as a feature
-    png_feats={'person','number','gender'}
+    png_feats=set(['person','number','gender'])
     for feat_key in other_feats:
-        print feat_key, other_feats[feat_key]
-        if other_feats[feat_key][0] not in png_feats:
+        if (poss_strats or poss_prons) and other_feats[feat_key][0] not in png_feats:
             vr.err(feat_key+'_name',
                    'Only person, number, and gender features are supported for agreement' +\
                    ' between possessor and possessum.')
