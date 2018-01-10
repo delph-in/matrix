@@ -1436,7 +1436,7 @@ def validate_arg_opt(ch, vr):
 def validate_adnominal_possession(ch, vr):
     for strat in ch.get('poss-strat'):
         # CHECK THAT ALL THE CHOICES ARE CHOSEN
-        # Require basic input for all strategies:
+        # Require basic input for all possessive strategies:
         if not strat.get('order'):
             mess='You must choose a possessive phrase order.'
             vr.err(strat.full_key+'_order',mess)
@@ -1485,7 +1485,6 @@ def validate_adnominal_possession(ch, vr):
                            if not feat.get('value'):
                               mess='You must give the value of this feature.'   
                               vr.err(feat.full_key+'_value',mess)
-
         # Require input for possessor-marking 
         if strat.get('mark-loc')=='possessum' or 'both':
             if not strat.get('possessum-type'):
@@ -1525,7 +1524,51 @@ def validate_adnominal_possession(ch, vr):
                            if not feat.get('value'):
                               mess='You must give the value of this feature.'   
                               vr.err(feat.full_key+'_value',mess)
-                         
+    for pron in ch.get('poss-pron'):
+        # Require basic input for all possessive pronouns
+        if not pron.get('type'):
+            mess='You must specify the type of this possessive pronoun.'
+            vr.err(pron.full_key+'_type',mess)
+        elif pron.get('type')=='affix':
+            if not pron.get('agr'):
+                mess='You must specify the whether this pronoun affix agrees with the possessum.'
+                vr.err(pron.full_key+'_agr',mess)
+            if not pron.get('mod-spec'):
+                mess='You must specify the whether this pronoun affix appears with determiners or not.'
+                vr.err(pron.full_key+'_mod-spec',mess)
+        elif pron.get('type')=='non-affix':
+            if not pron.get('order'):
+                mess='You must specify the order this pronoun appears in.'
+                vr.err(pron.full_key+'_order',mess)
+            if not pron.get('mod-spec'):
+                mess='You must specify the whether this pronoun affix appears with determiners or not.'
+                vr.err(pron.full_key+'_mod-spec',mess)
+            if not pron.get('agr'):
+                mess='You must specify the whether this pronoun affix agrees with the possessum.'
+                vr.err(pron.full_key+'_agr',mess)
+            for inst in pron.get('instance'):
+                if not inst.get('name'):
+                    mess='You must give a name for this pronoun.'
+                    vr.err(inst.full_key+'_name',mess)
+                if not inst.get('orth'):
+                    mess='You must give the spelling for this pronoun.'
+                    vr.err(inst.full_key+'_orth',mess)
+                for feat in inst.get('feat'):
+                    if not feat.get('name'):
+                        mess='You must give a name for this feature.'
+                        vr.err(feat.full_key+'_name',mess)
+                    if not feat.get('value'):
+                        mess='You must give a value for this feature.'
+                        vr.err(feat.full_key+'_value',mess)
+                for feat in inst.get('agr-feat'):
+                    if not feat.get('name'):
+                        mess='You must give a name for this feature.'
+                        vr.err(feat.full_key+'_name',mess)
+                    if not feat.get('value'):
+                        mess='You must give a value for this feature.'
+                        vr.err(feat.full_key+'_value',mess)
+                    
+            
 
                            
                         
