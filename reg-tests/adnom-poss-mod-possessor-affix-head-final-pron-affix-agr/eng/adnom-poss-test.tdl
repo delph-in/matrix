@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of adnom-poss-test
 ;;; created at:
-;;;     Wed Jan 10 01:04:30 UTC 2018
+;;;     Wed Jan 10 17:46:19 UTC 2018
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -25,13 +25,13 @@ non-mod-lex-item := lex-item &
 ;;; Matrix Type Addenda
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 
-inflected :+ [ PERNUM-FLAG luk,
+inflected :+ [ NUM-FLAG luk,
     POSS-PRON-OR-POSSESSIVE-FLAG luk,
-    NUM-FLAG luk ].
+    PERNUM-FLAG luk ].
 
-infl-satisfied :+ [ PERNUM-FLAG na-or-+,
+infl-satisfied :+ [ NUM-FLAG na-or-+,
     POSS-PRON-OR-POSSESSIVE-FLAG na-or-+,
-    NUM-FLAG na-or-+ ].
+    PERNUM-FLAG na-or-+ ].
 
 png :+ [ PER person,
     NUM number ].
@@ -87,8 +87,8 @@ noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & non-mod-lex-ite
 
 common-noun-lex := noun-lex &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 3rd,
-    INFLECTED [ POSS-PRON-OR-POSSESSIVE-FLAG -,
-                NUM-FLAG - ] ].
+    INFLECTED [ NUM-FLAG -,
+                POSS-PRON-OR-POSSESSIVE-FLAG - ] ].
 
 ;;; Verbs
 
@@ -143,11 +143,11 @@ poss-pron-or-possessive-rule-dtr := word-or-lexrule.
 
 num-lex-rule-super := add-only-no-ccont-rule & poss-pron-or-possessive-rule-dtr &
   [ INFLECTED [ NUM-FLAG +,
-                PERNUM-FLAG #pernum,
-                POSS-PRON-OR-POSSESSIVE-FLAG #poss-pron-or-possessive ],
+                POSS-PRON-OR-POSSESSIVE-FLAG #poss-pron-or-possessive,
+                PERNUM-FLAG #pernum ],
     DTR common-noun-lex &
-        [ INFLECTED [ PERNUM-FLAG #pernum,
-                      POSS-PRON-OR-POSSESSIVE-FLAG #poss-pron-or-possessive ] ] ].
+        [ INFLECTED [ POSS-PRON-OR-POSSESSIVE-FLAG #poss-pron-or-possessive,
+                      PERNUM-FLAG #pernum ] ] ].
 
 singular-lex-rule := const-lex-rule & num-lex-rule-super &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM sg ].
@@ -157,11 +157,11 @@ plural-lex-rule := infl-lex-rule & num-lex-rule-super &
 
 possessive-lex-rule-super := lex-rule &
   [ INFLECTED [ POSS-PRON-OR-POSSESSIVE-FLAG +,
-                PERNUM-FLAG #pernum,
-                NUM-FLAG #num ],
+                NUM-FLAG #num,
+                PERNUM-FLAG #pernum ],
     DTR poss-pron-or-possessive-rule-dtr &
-        [ INFLECTED [ PERNUM-FLAG #pernum,
-                      NUM-FLAG #num ] ] ].
+        [ INFLECTED [ NUM-FLAG #num,
+                      PERNUM-FLAG #pernum ] ] ].
 
 possessor-lex-rule-1 := head-change-with-ccont-lex-rule &
   [ SYNSEM.LOCAL.CAT [ HEAD noun &
@@ -200,11 +200,11 @@ nonpossessive-lex-rule := const-lex-rule & nonpossessive-lex-rule-1 & possessive
 
 poss-pron-lex-rule-super := lex-rule &
   [ INFLECTED [ POSS-PRON-OR-POSSESSIVE-FLAG +,
-                PERNUM-FLAG #pernum,
-                NUM-FLAG #num ],
+                NUM-FLAG #num,
+                PERNUM-FLAG #pernum ],
     DTR poss-pron-or-possessive-rule-dtr &
-        [ INFLECTED [ PERNUM-FLAG #pernum,
-                      NUM-FLAG #num ] ] ].
+        [ INFLECTED [ NUM-FLAG #num,
+                      PERNUM-FLAG #pernum ] ] ].
 
 possessor-pron-1sg-lex-rule := infl-lex-rule & poss-pron-lex-rule-super &
   [ SYNSEM.LOCAL.CAT [ HEAD.POSS possessive,
@@ -294,11 +294,11 @@ non-possessive-pron-lex-rule := const-lex-rule & poss-pron-lex-rule-super &
 
 pernum-lex-rule-super := add-only-no-ccont-rule &
   [ INFLECTED [ PERNUM-FLAG +,
-                POSS-PRON-OR-POSSESSIVE-FLAG #poss-pron-or-possessive,
-                NUM-FLAG #num ],
+                NUM-FLAG #num,
+                POSS-PRON-OR-POSSESSIVE-FLAG #poss-pron-or-possessive ],
     DTR verb-lex &
-        [ INFLECTED [ POSS-PRON-OR-POSSESSIVE-FLAG #poss-pron-or-possessive,
-                      NUM-FLAG #num ] ] ].
+        [ INFLECTED [ NUM-FLAG #num,
+                      POSS-PRON-OR-POSSESSIVE-FLAG #poss-pron-or-possessive ] ] ].
 
 3sg-lex-rule := infl-lex-rule & pernum-lex-rule-super &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ PER 3rd,

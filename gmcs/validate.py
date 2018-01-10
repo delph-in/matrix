@@ -1447,13 +1447,13 @@ def validate_adnominal_possession(ch, vr):
             mess='You must indicate where possessive markings appear.'
             vr.err(strat.full_key+'_mark-loc',mess)
         # Require input for possessor-marking 
-        if strat.get('mark-loc')=='possessor' or 'both':
+        if strat.get('mark-loc')=='possessor' or strat.get('mark-loc')=='both':
             if not strat.get('possessor-type'):
                 mess='You must indicate what form the possessor marking takes.'
                 vr.err(strat.full_key+'_possessor-type',mess)
             # Require input for affix possessor-marking
             elif strat.get('possessor-type')=='affix':
-                if not strat.get('possessor-agr'):
+                if not strat.get('possessor-affix-agr'):
                     mess='You must indicate whether the possessor affix agrees with the possessum.'
                     vr.err(strat.full_key+'_possessor-agr',mess)
             # Require input for non-affix possessor-marking
@@ -1485,14 +1485,14 @@ def validate_adnominal_possession(ch, vr):
                            if not feat.get('value'):
                               mess='You must give the value of this feature.'   
                               vr.err(feat.full_key+'_value',mess)
-        # Require input for possessor-marking 
-        if strat.get('mark-loc')=='possessum' or 'both':
+        # Require input for possessum-marking 
+        if strat.get('mark-loc')=='possessum' or strat.get('mark-loc')=='both':
             if not strat.get('possessum-type'):
                 mess='You must indicate what form the possessum marking takes.'
                 vr.err(strat.full_key+'_possessum-type',mess)
             # Require input for affix possessum-marking
             elif strat.get('possessum-type')=='affix':
-                if not strat.get('possessum-agr'):
+                if not strat.get('possessum-affix-agr'):
                     mess='You must indicate whether the possessum affix agrees with the possessor.'
                     vr.err(strat.full_key+'_possessum-agr',mess)
             # Require input for non-affix possessum-marking

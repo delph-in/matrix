@@ -2915,7 +2915,7 @@ BeginIter poss-strat{i} "a possessive strategy"
      
      	   Label "<div id='possessor-affix{i}' style='display:none'>"
 
-	   Radio possessor-agr "Possessor agreement" "<p>Does the affix that marks the possessor agree with the possessum (e.g. in person, number, or gender)?</p>" ""
+	   Radio possessor-affix-agr "Possessor agreement" "<p>Does the affix that marks the possessor agree with the possessum (e.g. in person, number, or gender)?</p>" ""
 	   . agree "Possessor agree" "" "yes<br>"
 	   . non-agree "Possessor non-agree" "" "no<br>"
 
@@ -2974,7 +2974,7 @@ BeginIter poss-strat{i} "a possessive strategy"
 
      	   Label "<div id='possessum-affix{i}' style='display:none'>"
 
-	   Radio possessum-agr "Possessum agreement" "<p>Does the affix that marks the possessum agree with the possessor (e.g. in person, number, or gender)?</p>" ""
+	   Radio possessum-affix-agr "Possessum agreement" "<p>Does the affix that marks the possessum agree with the possessor (e.g. in person, number, or gender)?</p>" ""
 	   . agree "Possessum agree" "" "yes<br>"
 	   . non-agree "Possessum non-agree" "" "no<br>"
 

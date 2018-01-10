@@ -833,17 +833,14 @@ def write_possessive_behavior(pc,lrt,mylang,choices):
         possessor_rule_name='possessor-lex-rule-'+lrt.poss_strat_num
         lrt.supertypes.add(possessor_rule_name)
         mylang.add(possessor_rule_name+POSSESSOR_LEX_RULE_DEFN,section='lexrules')
-#        mylang.add(lrt.identifier()+POSSESSOR_LEX_RULE_DEFN,section='lexrules')
     if lrt.possessive=='possessum':
         possessum_rule_name='possessum-lex-rule-'+lrt.poss_strat_num
         mylang.add(possessum_rule_name+POSSESSUM_LEX_RULE_DEFN,section='lexrules')
         lrt.supertypes.add(possessum_rule_name)
-#        mylang.add(lrt.identifier()+POSSESSUM_LEX_RULE_DEFN,section='lexrules')
     if lrt.possessive=='nonpossessive':
         nonpossessive_rule_name='nonpossessive-lex-rule-'+lrt.poss_strat_num
         mylang.add(nonpossessive_rule_name+NON_POSS_LEX_RULE_DEFN,section='lexrules')
         lrt.supertypes.add(nonpossessive_rule_name)
-#        mylang.add(lrt.identifier()+NON_POSS_LEX_RULE_DEFN,section='lexrules')
     ##############################################
     # PRONOMINAL POSSESSIVE PHRASES:           ###
     ##############################################
@@ -1076,6 +1073,33 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
                 vr.warn(vchop.full_key+'_argtype','The type of the added argument ({}) is unconstrained.'.format(vchop.get('argtype','')))
             if not vchop.get('predname'):
                 vr.warn(vchop.full_key+'_predname','The added predicated should have a name specified.')
+
+    # EKN 2018-01-09: Check that only one possessive strategy or 
+    # possessive pronoun is selected per LRT
+    poss_strats={}
+    poss_prons={}
+    for feat in lrt.get('feat'):
+        if 'poss-strat' in feat.get('name'):
+            poss_strats[feat.full_key]=feat.get('value')
+        if 'poss-pron' in feat.get('name'):
+            poss_prons[feat.full_key]=feat.get('value')
+    if len(poss_strats) > 1:
+        for feat_key in poss_strats:
+            vr.err(feat_key+'_name',
+               'A given rule can only be marked for one possessive behavior.')
+    if len(poss_prons) > 1:
+        for feat_key in poss_prons:
+            vr.err(feat_key+'_name',
+               'A given rule can only be marked for one possessive behavior.')
+    if poss_strats and poss_prons:
+        for feat_key in poss_prons:
+            vr.err(feat_key+'_name',
+               'A given rule can only be marked for one possessive behavior.')
+        for feat_key in poss_strats:
+            vr.err(feat_key+'_name',
+               'A given rule can only be marked for one possessive behavior.')
+        
+
 
     # TJT 2014-08-21: Incorporated Adjective validation
     if incorp:
