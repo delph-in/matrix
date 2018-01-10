@@ -1127,6 +1127,7 @@ class ChoicesFile:
         #  features += [ ['neg2', 'plus|plus', '', 'verb' ] ]
 
         # Possessives
+        # TODO: change verb to noun
         if self.get_regex(".*_possessor-type"):
             if self.get_regex("poss-strat._possessor-type")[0][1]=='affix':
                 strat_name=self.get_regex("poss-strat._possessor-type")[0][0].replace("_possessor-type","")

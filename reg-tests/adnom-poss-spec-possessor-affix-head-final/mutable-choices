@@ -123,8 +123,8 @@ section=gen-options
 section=ToolboxLexicon
 
 section=adnom-poss
-  poss-strat1_order=
-  poss-strat1_mod-spec=spec
-  poss-strat1_mark-loc=possessor
-  poss-strat1_possessor-type=affix
-  poss-strat1_possessor-agr=non-agree
+  poss-strat1_order=head-final
+  poss-strat1_mod-spec=mod
+  poss-strat1_mark-loc=possessum
+  poss-strat1_possessum-type=non-affix
+  poss-strat1_possessum-agr=non-agree
