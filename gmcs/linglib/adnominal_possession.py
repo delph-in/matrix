@@ -9,16 +9,16 @@ from gmcs.linglib.lexical_items import adp_id, noun_id
 ###############################################################################################
 # Parts of a possessive strategy:
 #
-# The rule that combines possessor and possessum: customize_rules()
+# The rule that combines possessor and possessum: customize_poss_rules()
 #     Sometimes must be added separately
 #     Sometimes already there
 #
-# For each affix: customize_irules()
+# For each affix: customize_poss_irules()
 #     Lexical rule type for possessor or possessum inflecting rules
 #
-# For each non-affix: customize_lexicon()
+# For each non-affix: customize_poss_lexicon()
 #     Lexical entries 
-#     Rules that combine these lexical items with possessor/possessum (customize_rules())
+#     Rules that combine these lexical items with possessor/possessum (customize_poss_rules())
 #
 ################################################################################################
 
@@ -108,30 +108,30 @@ def customize_adnominal_possession(mylang,ch,rules,irules,lexicon,hierarchies):
 ## Secondary functions (called by customize_adnominal_possession() or other secondary functions)  ###
 #####################################################################################################
 
-# Calls customize_rules, customize_irules, and customize_lexicon
+# Calls customize_poss_rules, customize_poss_irules, and customize_poss_lexicon
 # to build possessive strategies for cases where the possessor
 # is a full NP
 def customize_np_possession(mylang,ch,rules,irules,lexicon,hierarchies):
     for strat in ch.get('poss-strat',[]):
-        customize_rules(strat,mylang,ch,rules)
+        customize_poss_rules(strat,mylang,ch,rules)
         if strat.get('possessor-type')=='affix' or strat.get('possessum-type')=='affix':
-            customize_irules(strat,mylang,ch,irules,hierarchies)
+            customize_poss_irules(strat,mylang,ch,irules,hierarchies)
         if strat.get('possessor-type')=='non-affix' or strat.get('possessum-type')=='non-affix':
-            customize_lexicon(strat,mylang,ch,lexicon,rules,hierarchies)
+            customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies)
         if 'affix' not in (strat.get('possessor-type'), strat.get('possessum-type')):
             mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT.HEAD.POSS nonpossessive ].')
 
 
-# Calls customize_rules, customize_irules, and customize_lexicon
+# Calls customize_poss_rules, customize_poss_irules, and customize_poss_lexicon
 # to build possessive strategies for cases where the possessor
 # is a pronoun
 def customize_pronominal_possession(mylang,ch,rules,irules,lexicon,hierarchies):
     for pron in ch.get('poss-pron',[]):
-        customize_rules(pron,mylang,ch,rules)
+        customize_poss_rules(pron,mylang,ch,rules)
         if pron.get('type')=='affix':
-            customize_irules(pron,mylang,ch,irules,hierarchies)
+            customize_poss_irules(pron,mylang,ch,irules,hierarchies)
         if pron.get('type')=='non-affix':            
-            customize_lexicon(pron,mylang,ch,lexicon,rules,hierarchies)
+            customize_poss_lexicon(pron,mylang,ch,lexicon,rules,hierarchies)
 
 
 # Adds phrase rules needed to join possessor and possessum,
@@ -139,7 +139,7 @@ def customize_pronominal_possession(mylang,ch,rules,irules,lexicon,hierarchies):
 # constituent it marks.
 # Also adds constraints to non-possessive phrase rules to prevent
 # them from allowing possessive words in incorrect places
-def customize_rules(strat,mylang,ch,rules):
+def customize_poss_rules(strat,mylang,ch,rules):
     """
     Adds the necessary phrase rule to combine possessor and possessum
     If rule already exists (head-comp case), then make sure its order is correct.
@@ -190,8 +190,8 @@ def customize_rules(strat,mylang,ch,rules):
             mylang.add(phrase_rule + ' :=  basic-head-spec-phrase-super & [  NON-HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL.SPR < >,\
                                                                                                                HEAD +nvjrpcmo ],\
                                                                                                    OPT - ],\
-                                                                         HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK #hook ,\
-                                                                         C-CONT.HOOK #hook ].')
+                                                                             HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK #hook ,\
+                                                                             C-CONT.HOOK #hook ].')
             rule_added=True
         # If possessor==mod, add either head-mod or head-comp
         # Exception: no rule added if preexistent head-comps has correct order
@@ -290,7 +290,7 @@ def customize_rules(strat,mylang,ch,rules):
 
 # Adds inflectional rules (or adds constraints to inflectional rules added in
 # morphotactics.py) that create possessive forms
-def customize_irules(strat,mylang,ch,irules,hierarchies):
+def customize_poss_irules(strat,mylang,ch,irules,hierarchies):
     #TODO: this method for retrieving the strategy name is garbage. Fix it.
     strat_name=strat.full_keys()[0].split("_")[0]
     strat_num=strat_name[-1]
@@ -470,8 +470,8 @@ def customize_irules(strat,mylang,ch,irules,hierarchies):
 
 
 # Adds lexical items for possession markers and possessor pronouns.
-# All needed phrase rules added in customize_rules() above.
-def customize_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
+# All needed phrase rules added in customize_poss_rules() above.
+def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
     # Define vars for all elements of strategy:
     strat_name=strat.full_keys()[0].split("_")[0]
     strat_num=strat_name[-1]

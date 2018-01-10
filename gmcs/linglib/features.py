@@ -64,48 +64,46 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     'xarg': 'LOCAL.CONT.HOOK.XARG.',  # XARG for adjectives
     'mod': 'LOCAL.CAT.HEAD.MOD.FIRST.',  # MOD for adjectives
     'comp': 'LOCAL.CAT.VAL.COMPS.FIRST.', # COMP for copulas
-##########################################################
-    'possessor': 'LOCAL.CAT.HEAD.POSS.POSS-AGR.',
-    'possessum': 'LOCAL.CAT.HEAD.POSS.POSS-AGR.'
-##########################################################
   }
 
   for feat in ch_dict.get(iter_feat,[]):
     n = feat.get('name','')
     v = feat.get('value','').split(', ')
-    
+
     if n == 'case':
       v = [case.canon_to_abbr(c, cases) for c in v]
 
     geom_prefix = pos_geom_prefix
 
-
-    # EKN 2017-01-02 If adding AGREEMENT PNG features to a possessive marker or affix, they should be at POSS.POSS-AGR,
-    # rather than at CONT.HOOK.INDEX.PNG. This checks to see if the current lrt or lexical item
-    # is a possessive one. 
+    # EKN 2017-01-02 If adding AGREEMENT PNG features to a 
+    # possessive marker or affix, they should be at
+    # POSS.POSS-AGR, rather than at CONT.HOOK.INDEX.PNG.
+    # Also, the PNG features of a possessor pronoun affix
+    # should go on the ARG0 of the first thing in the
+    # RELS list of the inflectional rule (which corresponds
+    # to the pron_rel). The following checks to see if the
+    # ch_dict that was passed in corresponds to a possessive
+    # lexical rule or a possessor pronoun lexical rule, by
+    # iterating through all features in the ch_dict to see
+    # if any is named 'poss-stratN' or 'poss-pronN'. If so,
+    # it sets a boolean flag (poss_lrt or poss_pron_lrt),
+    # which is subsequently used to correctly adjust the 
+    # feature geometry.
     poss_lrt=False
-    for feat in ch_dict.get('feat'):
-      from gmcs.utils import get_name
-      feat_name=get_name(feat)
+    poss_pron_lrt=False
+    for feature in ch_dict.get('feat'):
+      feat_name=feature.get('name')
       if 'poss-strat' in feat_name: 
         poss_lrt=True
+      if 'poss-pron' in feat_name:
+        poss_pron_lrt=True
     if pos=='poss-marker' or poss_lrt:
       geom_prefix = 'SYNSEM.LOCAL.CAT.HEAD.POSS.POSS-AGR.'
-
-
-    # The inherent features of possessive pronominal affixes 
-    # can't be added at SYNSEM.LOCAL.CONT.HOOK.INDEX, 
-    # because the possessum noun has its features there. 
-    # They must be added at a different path:
-
-    poss_pron_lrt=False
-    for feat in ch_dict.get('feat'):
-      from gmcs.utils import get_name
-      feat_name=get_name(feat)
-      if 'poss-pron' in feat_name: 
-        poss_pron_lrt=True
     if poss_pron_lrt:
-      geom_prefix = 'C-CONT.RELS <! [ ARG0.PNG '
+      if feat.get('head')=='possessum':
+        geom_prefix = 'DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG'
+      else:
+        geom_prefix = 'C-CONT.RELS <! [ ARG0.PNG'
 
     # The 'head' choice only appears on verb pcs, and allows the
     # user to specify features on the subject and object as well
@@ -128,8 +126,6 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     # If auxcomplement, add additional definition on top of any head definition
     if pos == 'auxcomplement':
       geom_prefix += 'LOCAL.CAT.VAL.COMPS.FIRST.'
-
-    
 
     # TJT 2014-05-08 adding the break and moving the concatenation up
     geom = ''
