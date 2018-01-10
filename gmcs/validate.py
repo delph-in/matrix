@@ -1435,12 +1435,100 @@ def validate_arg_opt(ch, vr):
 
 def validate_adnominal_possession(ch, vr):
     for strat in ch.get('poss-strat'):
+        # CHECK THAT ALL THE CHOICES ARE CHOSEN
+        # Require basic input for all strategies:
         if not strat.get('order'):
             mess='You must choose a possessive phrase order.'
             vr.err(strat.full_key+'_order',mess)
         if not strat.get('mod-spec'):
             mess='You must choose either modifier-like or specifier-like.'
             vr.err(strat.full_key+'_mod-spec',mess)
+        if not strat.get('mark-loc'):
+            mess='You must indicate where possessive markings appear.'
+            vr.err(strat.full_key+'_mark-loc',mess)
+        # Require input for possessor-marking 
+        if strat.get('mark-loc')=='possessor' or 'both':
+            if not strat.get('possessor-type'):
+                mess='You must indicate what form the possessor marking takes.'
+                vr.err(strat.full_key+'_possessor-type',mess)
+            # Require input for affix possessor-marking
+            elif strat.get('possessor-type')=='affix':
+                if not strat.get('possessor-agr'):
+                    mess='You must indicate whether the possessor affix agrees with the possessum.'
+                    vr.err(strat.full_key+'_possessor-agr',mess)
+            # Require input for non-affix possessor-marking
+            elif strat.get('possessor-type')=='non-affix':
+                if not strat.get('possessor-marker-order'):
+                    mess='You must indicate the word order of the possessor marking word.'
+                    vr.err(strat.full_key+'_possessor-marker-order',mess)
+                if not strat.get('possessor-agr'):
+                    mess='You must indicate whether the possessor affix agrees with the possessum.'
+                    vr.err(strat.full_key+'_possessor-agr',mess)
+                # Require input for the case when the possessor-marking word doesn't do agreement
+                elif strat.get('possessor-agr')=='non-agree':
+                    if not strat.get('possessor-orth'):
+                        mess='You must give the possessor marker\'s orthographic form.'
+                        vr.err(strat.full_key+'_possessor-orth',mess)
+                # Require input for the case when the possessor-marking word does do agreement
+                elif strat.get('possessor-agr')=='agree':
+                    for form in strat.get('possessor-form'):
+                        if not form.get('name'):
+                           mess='You must give a name for this form.'
+                           vr.err(form.full_key+'_name',mess)
+                        if not form.get('agr-orth'):
+                           mess='You must give the spelling for this form.'
+                           vr.err(form.full_key+'_agr-orth',mess)
+                        for feat in form.get('feat'):
+                           if not feat.get('name'):
+                              mess='You must give the name of this feature.'   
+                              vr.err(feat.full_key+'_name',mess)
+                           if not feat.get('value'):
+                              mess='You must give the value of this feature.'   
+                              vr.err(feat.full_key+'_value',mess)
+
+        # Require input for possessor-marking 
+        if strat.get('mark-loc')=='possessum' or 'both':
+            if not strat.get('possessum-type'):
+                mess='You must indicate what form the possessum marking takes.'
+                vr.err(strat.full_key+'_possessum-type',mess)
+            # Require input for affix possessum-marking
+            elif strat.get('possessum-type')=='affix':
+                if not strat.get('possessum-agr'):
+                    mess='You must indicate whether the possessum affix agrees with the possessor.'
+                    vr.err(strat.full_key+'_possessum-agr',mess)
+            # Require input for non-affix possessum-marking
+            elif strat.get('possessum-type')=='non-affix':
+                if not strat.get('possessum-marker-order'):
+                    mess='You must indicate the word order of the possessum-marking word.'
+                    vr.err(strat.full_key+'_possessum-marker-order',mess)
+                if not strat.get('possessum-agr'):
+                    mess='You must indicate whether the possessum affix agrees with the possessor.'
+                    vr.err(strat.full_key+'_possessum-agr',mess)
+                # Require input for the case when the possessum-marking word doesn't do agreement
+                elif strat.get('possessum-agr')=='non-agree':
+                    if not strat.get('possessum-orth'):
+                        mess='You must give the possessum marker\'s orthographic form.'
+                        vr.err(strat.full_key+'_possessum-orth',mess)
+                # Require input for the case when the possessum-marking word does do agreement
+                elif strat.get('possessum-agr')=='agree':
+                    for form in strat.get('possessum-form'):
+                        if not form.get('name'):
+                           mess='You must give a name for this form.'
+                           vr.err(form.full_key+'_name',mess)
+                        if not form.get('agr-orth'):
+                           mess='You must give the spelling for this form.'
+                           vr.err(form.full_key+'_agr-orth',mess)
+                        for feat in form.get('feat'):
+                           if not feat.get('name'):
+                              mess='You must give the name of this feature.'   
+                              vr.err(feat.full_key+'_name',mess)
+                           if not feat.get('value'):
+                              mess='You must give the value of this feature.'   
+                              vr.err(feat.full_key+'_value',mess)
+                         
+
+                           
+                        
 
 
 
