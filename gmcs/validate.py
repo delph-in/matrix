@@ -1436,9 +1436,12 @@ def validate_arg_opt(ch, vr):
 def validate_adnominal_possession(ch, vr):
     for strat in ch.get('poss-strat'):
         if not strat.get('order'):
-            print 'You must choose a possessive phrase order.'
             mess='You must choose a possessive phrase order.'
-            vr.err(strat.full_key,mess)
+            vr.err(strat.full_key+'_order',mess)
+        if not strat.get('mod-spec'):
+            mess='You must choose either modifier-like or specifier-like.'
+            vr.err(strat.full_key+'_mod-spec',mess)
+
 
 
 
@@ -1465,7 +1468,7 @@ def validate(ch, extra = False):
     gmcs.linglib.lexicon.validate_lexicon(ch, vr)
     gmcs.linglib.morphotactics.validate(ch, vr)
     validate_test_sentences(ch, vr)
-#    validate_adnominal_possession(ch, vr)
+    validate_adnominal_possession(ch, vr)
 
     validate_types(ch, vr)
     validate_features(ch, vr)
@@ -1490,6 +1493,12 @@ def validate_choices(choices_file, extra = False):
 # Allow validate_choices() to be called directly from the
 # command line or shell scripts, and print out the errors
 # that result.
+
+# EKN 2017-01-09 The matrix wiki site now lists this method as
+# deprecated. If you want to run validation from the
+# command line, try running it via matrix.py, as follows:
+#
+# >>> python matrix.py validate /path/to/choices
 
 if __name__ == "__main__":
     vr = validate_choices(sys.argv[1])
