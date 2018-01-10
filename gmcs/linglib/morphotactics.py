@@ -1078,11 +1078,14 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
     # possessive pronoun is selected per LRT
     poss_strats={}
     poss_prons={}
+    other_feats={}
     for feat in lrt.get('feat'):
         if 'poss-strat' in feat.get('name'):
-            poss_strats[feat.full_key]=feat.get('value')
-        if 'poss-pron' in feat.get('name'):
-            poss_prons[feat.full_key]=feat.get('value')
+            poss_strats[feat.full_key]=feat.get('name')
+        elif 'poss-pron' in feat.get('name'):
+            poss_prons[feat.full_key]=feat.get('name')
+        else:
+            other_feats[feat.full_key]=(feat.get('name'),feat.get('value'))
     if len(poss_strats) > 1:
         for feat_key in poss_strats:
             vr.err(feat_key+'_name',
@@ -1098,6 +1101,17 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
         for feat_key in poss_strats:
             vr.err(feat_key+'_name',
                'A given rule can only be marked for one possessive behavior.')
+    # EKN 2018-01-09: Check that only PNG features are 
+    # added as agreement features to possessive strategies
+    # TODO: allow poss-stratN as a feature
+    png_feats={'person','number','gender'}
+    for feat_key in other_feats:
+        print feat_key, other_feats[feat_key]
+        if other_feats[feat_key][0] not in png_feats:
+            vr.err(feat_key+'_name',
+                   'Only person, number, and gender features are supported for agreement' +\
+                   ' between possessor and possessum.')
+
         
 
 

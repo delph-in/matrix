@@ -20,6 +20,8 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
   if not tdlfile:
     tdlfile = mylang
 
+  print features
+
   # TJT 2014-11-05: moving this up to get the proper geometry for case
   # get the feature geometry of CASE
   if cases:
