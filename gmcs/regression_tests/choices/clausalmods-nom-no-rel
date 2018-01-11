@@ -41,7 +41,7 @@ section=arg-opt
 section=nominalclause
   ns1_name=nom-high
   ns1_level=high
-  ns1_nmzRel=yes
+  ns1_nmzRel=no
 
 section=clausalmods
   cms1_position=before
