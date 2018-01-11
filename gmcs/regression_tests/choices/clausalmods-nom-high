@@ -95,9 +95,6 @@ section=morphology
       verb-pc1_lrt1_feat1_name=nominalization
       verb-pc1_lrt1_feat1_value=nom-high
       verb-pc1_lrt1_feat1_head=verb
-      verb-pc1_lrt1_feat2_name=case
-      verb-pc1_lrt1_feat2_value=gen
-      verb-pc1_lrt1_feat2_head=subj
       verb-pc1_lrt1_lri1_inflecting=yes
       verb-pc1_lrt1_lri1_orth=nmz
 

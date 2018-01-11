@@ -317,7 +317,7 @@ def update_lexical_rules(mylang, ch):
                                 lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') + \
                                     ['high-or-mid-nominalization-lex-rule'])
                             if level == 'mid':
-                                if case_change('subj', ch):
+                                if case_change_lrt('subj', lrt):
                                     lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') + \
                                                                   ['mid-nominalization-lex-rule'])
                                     mylang.set_section('lexrules')
@@ -329,7 +329,7 @@ def update_lexical_rules(mylang, ch):
                                                                   ['high-or-mid-nominalization-lex-rule'])
                             if level == 'low':
                                 if case_change_lrt('subj', lrt):
-                                    if case_change('obj', ch):
+                                    if case_change_lrt('obj', lrt):
                                         lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') + \
                                                                       ['low-nmz-no-subjid-trans-lex-rule'])
                                         mylang.set_section('lexrules')
@@ -339,20 +339,22 @@ def update_lexical_rules(mylang, ch):
                                         obj_head_type = get_head_type('obj', lrt, ch)
                                         mylang.add(
                                             'low-nmz-no-subjid-trans-lex-rule := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD ' + obj_head_type + '] > ].')
-                                    lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') + \
+                                    else:
+                                        lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') + \
                                                                   ['low-nmz-no-subjid-compsid-lex-rule'])
-                                    mylang.set_section('lexrules')
-                                    subj_head_type = get_head_type('subj', lrt, ch)
-                                    mylang.add(
-                                        'low-nmz-no-subjid-compsid-lex-rule := [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CAT.HEAD ' + subj_head_type + '] > ].')
+                                        mylang.set_section('lexrules')
+                                        subj_head_type = get_head_type('subj', lrt, ch)
+                                        mylang.add(
+                                            'low-nmz-no-subjid-compsid-lex-rule := [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CAT.HEAD ' + subj_head_type + '] > ].')
                                 else:
-                                    if case_change('obj', ch):
+                                    if case_change_lrt('obj', lrt):
                                         lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') + \
                                                                       ['low-nmz-subjid-trans-lex-rule'])
                                         obj_head_type = get_head_type('obj', lrt, ch)
                                         mylang.add(
                                             'low-nmz-subjid-trans-lex-rule := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD ' + obj_head_type + '] > ].')
-                                    lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') + \
+                                    else:
+                                        lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') + \
                                                                       ['low-nmz-subjid-compsid-lex-rule'])
 
 def add_features(mylang):
