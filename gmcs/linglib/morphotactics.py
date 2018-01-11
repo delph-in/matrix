@@ -439,9 +439,11 @@ LEX_RULE_SUPERTYPES = ['cat-change-only-lex-rule',
                        'head-change-only-lex-rule',
                        'cont-change-only-lex-rule',
                        'high-or-mid-nominalization-lex-rule',
-                       'low-nominalization-lex-rule',
-                       'low-nmz-trans-lex-rule',
-                       'low-nmz-compsid-lex-rule']
+                       'mid-nominalization-lex-rule',
+                       'low-nmz-no-subjid-trans-lex-rule',
+                       'low-nmz-no-subjid-compsid-lex-rule',
+                       'low-nmz-subjid-trans-lex-rule',
+                       'low-nmz-subjid-compsid-lex-rule']
 
 ALL_LEX_RULE_SUPERTYPES = LEX_RULE_SUPERTYPES + ['infl-lex-rule',
                                                  'const-lex-rule',
