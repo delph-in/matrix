@@ -22,6 +22,10 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "adnom-poss-mod-possessor-affix-head-final-agr") (:content . "adnom-poss-mod-possessor-affix-head-final-agr: possessor affix mod full np with agr"))
+((:path . "adnom-poss-mod-possessor-affix-head-final") (:content . "adnom-poss-mod-possessor-affix-head-final:  possessum affix like mod full NP non agr"))
+((:path . "adnom-poss-mod-possessor-affix-head-final") (:content . "adnom-poss-mod-possessor-affix-head-final: possessor=mod, possessor affix, head final, full np, no agr"))
+((:path . "adnom-poss-test") (:content . "adnom-poss-test: possessor=mod, full NP, possessor affix, no agr"))
 ((:path . "evidentials-infl-aux-shp") (:content . "evidentials-infl-aux-shp: Testing the evidentiality library with the evidentials of Shipibo-Konibo"))
 ((:path . "evidentials-infl-aux-kal") (:content . "evidentials-infl-aux-kal: Testing the evidentiality library with Kalaallisut evidentials"))
 ((:path . "evidentials-auxiliary-choose") (:content . "evidentials-auxiliary-choose: testing evidential auxiliary verbs with selected evidential inventory"))

@@ -2,8 +2,7 @@
 version=28
 
 section=general
-language=adnom-poss-test
-iso-code=eng
+language=adnom-poss-mod-possessor-affix-head-final
 comment=This is a sample choices file which exercises only a small range of the information provided by the customization system, in order to create a grammar for a very small fragment of English. It describes and SVO language with a small vocabulary drawn from English and subset of the (already simple) English verbal agreement paradigm.  Where it was not possible to leave a section blank, we have said the language does not manifest the phenomenon, even when this is not actually correct for English.
 
 section=word-order
