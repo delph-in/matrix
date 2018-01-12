@@ -64,7 +64,8 @@ MID_LEXRULE_NO_SUBJ_ID = 'mid-nominalization-lex-rule := cat-change-with-ccont-l
 # A rule that says nothing about the subject or object. Should only ever be used as a supertype.
 LOW_NMZ = 'low-nominalization-lex-rule := cat-change-with-ccont-lex-rule &\
                 [ SYNSEM.LOCAL.CAT [ HEAD noun & \
-			    [ MOD #mod ],\
+			    [ NMZ +,\
+			    MOD #mod ],\
 		        VAL [ SUBJ < [ LOCAL [ CAT [ VAL.SPR < > ],\
 				      	      CONT.HOOK.INDEX #subj ] ] >,\
 			     SPEC #spec,\
@@ -133,7 +134,8 @@ LOW_LEXRULE_SUBJ_ID_COMPS_ID = 'low-nmz-subjid-compsid-lex-rule := low-nominaliz
 
 
 NMZ_CLAUSE = '-nominalized-clause-phrase := basic-unary-phrase &\
-                                    [ SYNSEM.LOCAL.CAT [ HEAD noun,\
+                                    [ SYNSEM.LOCAL.CAT [ HEAD noun &\
+                                                [ NMZ + ],\
             		                VAL [ SPR < [ OPT + ] >,\
                                             SPEC < >,\
                                             COMPS < >,\
@@ -156,7 +158,8 @@ NMZ_CLAUSE = '-nominalized-clause-phrase := basic-unary-phrase &\
             			            CONT.HOOK [ LTOP #larg ]]]] > ].'
 
 NO_REL_NLZ_CLAUSE = '-no-rel-nominalized-clause-phrase := basic-unary-phrase &\
-  [ SYNSEM [ LOCAL.CAT [ HEAD noun,\
+  [ SYNSEM [ LOCAL.CAT [ HEAD noun &\
+                            [ NMZ + ],\
                          VAL [ COMPS < >,\
                                         SUBJ < >,\
                                         SPR < >,\
@@ -173,7 +176,8 @@ NO_REL_NLZ_CLAUSE = '-no-rel-nominalized-clause-phrase := basic-unary-phrase &\
 		CONT.HOOK [ LTOP #ltop ] ] ] ] > ].'
 
 SUBJ_NMZ_CLAUSE = '-nominalized-clause-phrase := basic-unary-phrase &\
-                          [ SYNSEM.LOCAL.CAT [ HEAD noun,\
+                          [ SYNSEM.LOCAL.CAT [ HEAD noun &\
+                            [ NMZ + ],\
 		       VAL [ SPR < [ OPT + ] >,'\
                            'COMPS < >,\
 					  SUBJ < >,\
