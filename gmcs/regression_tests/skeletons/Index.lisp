@@ -22,6 +22,8 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "adnom-poss-mod-possessor-affix-possessum-affix-head-final") (:content . "adnom-poss-mod-possessor-affix-possessum-affix-head-final: mod both affix marking full np head final"))
+((:path . "adnom-poss-mod-possessor-affix-head-initial") (:content . "adnom-poss-mod-possessor-affix-head-initial:  possessor affix mod full np non agr"))
 ((:path . "adnom-poss-mod-possessor-affix-head-final-agr") (:content . "adnom-poss-mod-possessor-affix-head-final-agr: possessor affix mod full np with agr"))
 ((:path . "adnom-poss-mod-possessor-affix-head-final") (:content . "adnom-poss-mod-possessor-affix-head-final:  possessum affix like mod full NP non agr"))
 ((:path . "adnom-poss-mod-possessor-affix-head-final") (:content . "adnom-poss-mod-possessor-affix-head-final: possessor=mod, possessor affix, head final, full np, no agr"))

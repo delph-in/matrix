@@ -296,3 +296,5 @@ evidentials-infl-aux-shp=Testing the evidentiality library with the evidentials 
 
 adnom-poss-mod-possessor-affix-head-final= possessum affix like mod full NP non agr
 adnom-poss-mod-possessor-affix-head-final-agr=possessor affix mod full np with agr
+adnom-poss-mod-possessor-affix-head-initial= possessor affix mod full np non agr
+adnom-poss-mod-possessor-affix-possessum-affix-head-final=mod both affix marking full np head final
