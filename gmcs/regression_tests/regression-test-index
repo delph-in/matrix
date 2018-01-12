@@ -299,3 +299,5 @@ adnom-poss-mod-possessor-affix-head-final-agr=possessor takes affix, mod-like po
 adnom-poss-mod-possessor-affix-head-initial=possessor takes affix, mod-like possessor, head initial, no agreement
 adnom-poss-mod-possessor-affix-possessum-affix-head-final=possessor and possessum take affix, mod-like possessor,  head final, no agreement
 adnom-poss-mod-possessor-affix-possessum-affix-head-final-agr-mutual=possessor and possessum take affix, mod-like possessor, head final, with mutual agreement
+adnom-poss-mod-possessor-affix-possessum-affix-head-final-agr-unidir-possessor=possessor and possessum take affix, mod-like possessor, possessor is full np, head final, possessor agrees with possessum
+adnom-poss-mod-possessor-affix-possessum-affix-head-final-agr-unidir-possessum=possessor and possessum take affix, mod-like possessor, possessor is full np, head final, possessum agrees with possessor
