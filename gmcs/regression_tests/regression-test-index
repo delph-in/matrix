@@ -294,7 +294,8 @@ v2-basic-order=V2 basic word order: verb in second position, subject and object 
 evidentials-infl-aux-kal=Testing the evidentiality library with Kalaallisut evidentials
 evidentials-infl-aux-shp=Testing the evidentiality library with the evidentials of Shipibo-Konibo
 
-adnom-poss-mod-possessor-affix-head-final= possessum affix like mod full NP non agr
-adnom-poss-mod-possessor-affix-head-final-agr=possessor affix mod full np with agr
-adnom-poss-mod-possessor-affix-head-initial= possessor affix mod full np non agr
-adnom-poss-mod-possessor-affix-possessum-affix-head-final=mod both affix marking full np head final
+adnom-poss-mod-possessor-affix-head-final=possessor takes affix, mod-like possessor, head final, no agreement
+adnom-poss-mod-possessor-affix-head-final-agr=possessor takes affix, mod-like possessor, head final, with agreement
+adnom-poss-mod-possessor-affix-head-initial=possessor takes affix, mod-like possessor, head initial, no agreement
+adnom-poss-mod-possessor-affix-possessum-affix-head-final=possessor and possessum take affix, mod-like possessor,  head final, no agreement
+adnom-poss-mod-possessor-affix-possessum-affix-head-final-agr-mutual=possessor and possessum take affix, mod-like possessor, head final, with mutual agreement
