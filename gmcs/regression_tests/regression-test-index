@@ -320,3 +320,4 @@ adnom-poss-spec-possessor-affix-head-initial=spec, possessor-affix, head-initial
 adnom-poss-spec-possessor-affix-possessum-affix-head-final=spec, possessor affix, possessum affix, head-final, no agr
 adnom-poss-spec-possessor-affix-possessum-affix-head-final-agr-mutual=spec, both affixes, head-final, mutual agr
 adnom-poss-spec-possessor-affix-possessum-affix-head-final-agr-unidir-possessor=spec, both affixes, head-final, possessor agrees
+adnom-poss-spec-possessor-affix-possessum-affix-head-final-agr-unidir-possessum=spec, both affixes, head-final, possessum agrees
