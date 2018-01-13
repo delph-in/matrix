@@ -824,9 +824,9 @@ def write_possessive_behavior(pc,lrt,mylang,choices):
     # FULL NP POSSESSIVE PHRASES:              ###
     ##############################################
     POSSESSOR_LEX_RULE_DEFN = ''' := 
-             [ SYNSEM.LOCAL.CAT.HEAD noun & [ POSS possessor ] ].'''
+             [ SYNSEM.LOCAL.CAT.HEAD noun ].'''
     POSSESSUM_LEX_RULE_DEFN = ''' := 
-             [ SYNSEM.LOCAL.CAT.HEAD noun & [ POSS possessum ] ].'''
+             [ SYNSEM.LOCAL.CAT.HEAD noun ].'''
     NON_POSS_LEX_RULE_DEFN = ''' := add-only-no-ccont-rule &
              [ SYNSEM.LOCAL.CAT.HEAD noun & [ POSS nonpossessive ] ].'''
     if lrt.possessive=='possessor':
