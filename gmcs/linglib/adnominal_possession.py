@@ -563,23 +563,23 @@ def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
                                                                 CONT [ RELS <! '+POSS_REL+',\
                                                                                '+POSSESSUM_EXIST_REL+' !>,\
                                                                                HCONS <! qeq & [HARG #harg, LARG #lbl] !> ] ] ].',merge=True)
-            if mod_spec=='mod':
+#            if mod_spec=='mod':
                 # NOTE: semantics (irretrievably?) broken.
                 # Since the marker takes the whole possessum NP as its complement, it ends up plugging the determiner's LTOP into
                 # the LBL of the poss_rel (instead of the possessum noun's LTOP). I apparently didn't notice this in building toy grammars.
                 # TODO: check if this construction reeeeeeeally happens. If not, block this path off (in validation)
-                mylang.add('possessum-noun-lex := basic-two-arg &\
-                          [ SYNSEM.LOCAL [ CAT [ HEAD noun & [ POSS possessum ] ,\
-                                                 VAL.COMPS < #possessum-comp & [ LOCAL [ CONT.HOOK #hook & [ INDEX #possessum,\
-                                                                                                     LTOP #lbl ]  ,\
-                                                                                         CAT.VAL.SPR < > ] ],\
-                                                             #possessor-comp & [ LOCAL [ CAT.HEAD +np,\
-                                                                                         CONT.HOOK.INDEX #possessor ] ] > ],\
-                                           CONT [ HOOK #hook,\
-                                                  RELS <! '+POSS_REL+' !>,\
-                                                  HCONS <! !>,\
-                                                  ICONS <! !>  ] ],\
-                            ARG-ST < #possessum-comp, #possessor-comp > ].')
+#                mylang.add('possessum-noun-lex := basic-two-arg &\
+#                          [ SYNSEM.LOCAL [ CAT [ HEAD noun & [ POSS possessum ] ,\
+#                                                 VAL.COMPS < #possessum-comp & [ LOCAL [ CONT.HOOK #hook & [ INDEX #possessum,\
+#                                                                                                     LTOP #lbl ]  ,\
+#                                                                                         CAT.VAL.SPR < > ] ],\
+#                                                             #possessor-comp & [ LOCAL [ CAT.HEAD +np,\
+#                                                                                         CONT.HOOK.INDEX #possessor ] ] > ],\
+#                                           CONT [ HOOK #hook,\
+#                                                  RELS <! '+POSS_REL+' !>,\
+#                                                  HCONS <! !>,\
+#                                                  ICONS <! !>  ] ],\
+#                            ARG-ST < #possessum-comp, #possessor-comp > ].')
             if strat.get('possessum-agr')=='non-agree':
                 orth=strat.get('possessum-orth')
                 lexicon.add('possessum-noun-'+strat_num+' := possessum-noun-lex &\
@@ -602,6 +602,7 @@ def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
                                          [ STEM < "'+orth+'" > ].')
     elif pron_strat:
         noun_type=noun_id(strat)
+        print noun_type
         if strat.get('agr')=='agree':
             agr=True
         else:
