@@ -315,3 +315,4 @@ adnom-poss-mod-possessor-non-affix-possessum-affix-head-final-sov-right-side-mar
 adnom-poss-mod-possessum-affix-head-final=mod, possessum affix, head-final, no agr
 adnom-poss-mod-possessum-affix-head-final-agr=mod, possessum affix, head-final, no agr
 adnom-poss-spec-possessor-affix-head-final=spec, possessor affix, head-final, no agr
+adnom-poss-spec-possessor-affix-head-final-agr=spec, possessor affix, head-final, with agr
