@@ -638,6 +638,7 @@ def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
                                                   HCONS <! qeq & [ HARG #harg2,\
                                                                    LARG #lbl2 ] !> ] ] ].')
         if agr: 
+            mylang.add('poss :+ [ POSS-AGR png ].',section='addenda')
             mylang.add(noun_type+' := [ SYNSEM.LOCAL.CAT.HEAD.POSS.POSS-AGR #png,\
                                               '+agr_prefix+' #png ].')
         for instance in strat.get('instance'):
