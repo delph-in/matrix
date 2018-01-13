@@ -313,3 +313,4 @@ adnom-poss-mod-possessor-non-affix-possessum-affix-head-final-agr-unidir-possess
 adnom-poss-mod-possessor-non-affix-possessum-affix-head-final-agr-unidir-possessum=mod, possessor non-affix, possessum affix, head-final, possessum agrees
 adnom-poss-mod-possessor-non-affix-possessum-affix-head-final-sov-right-side-marker=mod, possessor no-affix, possessum affix, various word orders
 adnom-poss-mod-possessum-affix-head-final=mod, possessum affix, head-final, no agr
+adnom-poss-mod-possessum-affix-head-final-agr=mod, possessum affix, head-final, no agr
