@@ -286,8 +286,7 @@ head-min := avm.
 head := head-min &
   [ MOD list,
     PRD bool,
-    KEYS keys_min,
-    POSS poss ].
+    KEYS keys_min ].
 
 
 ; (ERB 2004-08-19) We had previously shied away from defining head
@@ -577,15 +576,6 @@ expl-ind := index.
 
 ref-ind := index & event-or-ref-index & 
 	[ PNG png ].
-
-; EKN 2017-12-12 Adding POSS feature to HEAD.
-
-;poss := png-item.
-poss := *top*.
-possessive := poss.
-nonpossessive := poss.
-possessor := possessive.
-possessum := possessive.
 
 ; Types encoding agreement information, analyzed as a part of the
 ; index, following Pollard & Sag 1994.  Which subtypes and features

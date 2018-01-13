@@ -100,6 +100,16 @@ POSSESSOR_PRON_LEX=' := basic-one-arg &\
 ## Primary function (called from customize.py)                 ###
 ################################################################## 
 def customize_adnominal_possession(mylang,ch,rules,irules,lexicon,hierarchies):
+    # Check if any possessive strategies or pronouns are defined.
+    # If so, add the POSS head feature.
+    for key in ch.full_keys():
+        if 'poss-strat' in key or 'poss-pron' in key:
+            mylang.add('head :+ [ POSS poss ].',section='addenda')
+            mylang.add('poss := *top* & [ POSS-AGR png ].',section='addenda')
+            mylang.add('possessive := poss.',section='addenda')
+            mylang.add('nonpossessive := poss.',section='addenda')
+            mylang.add('possessor := possessive.',section='addenda')
+            mylang.add('possessum := possessive.',section='addenda')
     customize_np_possession(mylang,ch,rules,irules,lexicon,hierarchies)
     customize_pronominal_possession(mylang,ch,rules,irules,lexicon,hierarchies)
 
@@ -364,7 +374,7 @@ def customize_poss_irules(strat,mylang,ch,irules,hierarchies):
                         # If an agreement strategy is indicated, identify POSS-AGR with PNG of possessum
                         # TODO: take out possessor_type=='affix'
                         if strat.get('possessor-affix-agr')=='agree' and possessor_type=='affix': 
-                            mylang.add('poss :+ [ POSS-AGR png ].',section='addenda')
+#                            mylang.add('poss :+ [ POSS-AGR png ].',section='addenda')
                             # Note: don't do this in the mod-like both-marking scenario -- possessor is a COMP and has no access to 
                             # possessum. In this scenario, the identification must be done on the possessum inflection.
                             if not (mark_loc=='both' and mod_spec=='mod'):
@@ -415,7 +425,7 @@ def customize_poss_irules(strat,mylang,ch,irules,hierarchies):
                                            [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD +np & [ POSS possessor ] ].')
                             # TODO: try taking that possessum_type=='affix' out of this.
                             if strat.get('possessum-affix-agr')=='agree' and possessum_type=='affix':
-                                mylang.add('poss :+ [ POSS-AGR png ].',section='addenda')
+#                                mylang.add('poss :+ [ POSS-AGR png ].',section='addenda')
                                 mylang.add(possessum_rule_name+' := [ SYNSEM.LOCAL.CAT.HEAD.POSS.POSS-AGR #png,\
                                                              '+agr_prefix+' #png ].')
                             # Note: in the mutual agreement, double marking mod-like scenario, the possessor is a COMP.
@@ -528,7 +538,7 @@ def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
                 lexicon.add('possessor-adp-'+strat_num+' := possessor-adp-lex &\
                                                       [ STEM < "'+orth+'" >].')
             elif strat.get('possessor-agr')=='agree':
-                mylang.add('poss :+ [ POSS-AGR png ].',section='addenda')
+#                mylang.add('poss :+ [ POSS-AGR png ].',section='addenda')
                 for form in strat.get('possessor-form'):
                     if mod_spec=='spec':
                         prefix='SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
@@ -585,7 +595,7 @@ def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
                 lexicon.add('possessum-noun-'+strat_num+' := possessum-noun-lex &\
                                                   [ STEM < "'+orth+'" >].')
             elif strat.get('possessum-agr')=='agree':
-                mylang.add('poss :+ [ POSS-AGR png ].',section='addenda')
+#                mylang.add('poss :+ [ POSS-AGR png ].',section='addenda')
                 for form in strat.get('possessum-form'):
                     if mod_spec=='spec':
                         prefix='SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
@@ -638,7 +648,7 @@ def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
                                                   HCONS <! qeq & [ HARG #harg2,\
                                                                    LARG #lbl2 ] !> ] ] ].')
         if agr: 
-            mylang.add('poss :+ [ POSS-AGR png ].',section='addenda')
+#            mylang.add('poss :+ [ POSS-AGR png ].',section='addenda')
             mylang.add(noun_type+' := [ SYNSEM.LOCAL.CAT.HEAD.POSS.POSS-AGR #png,\
                                               '+agr_prefix+' #png ].')
         for instance in strat.get('instance'):
