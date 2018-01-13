@@ -318,3 +318,4 @@ adnom-poss-spec-possessor-affix-head-final=spec, possessor affix, head-final, no
 adnom-poss-spec-possessor-affix-head-final-agr=spec, possessor affix, head-final, with agr
 adnom-poss-spec-possessor-affix-head-initial=spec, possessor-affix, head-initial
 adnom-poss-spec-possessor-affix-possessum-affix-head-final=spec, possessor affix, possessum affix, head-final, no agr
+adnom-poss-spec-possessor-affix-possessum-affix-head-final-agr-mutual=spec, both affixes, head-final, mutual agr
