@@ -322,3 +322,4 @@ adnom-poss-spec-possessor-affix-possessum-affix-head-final-agr-mutual=spec, both
 adnom-poss-spec-possessor-affix-possessum-affix-head-final-agr-unidir-possessor=spec, both affixes, head-final, possessor agrees
 adnom-poss-spec-possessor-affix-possessum-affix-head-final-agr-unidir-possessum=spec, both affixes, head-final, possessum agrees
 adnom-poss-spec-possessor-affix-possessum-non-affix-head-final-agr-mutual=spec, possessor affix, possessum non-affix, head-final, mutual agr
+adnom-poss-spec-possessor-affix-possessum-non-affix-head-final-agr-unidir-possessor=spec, possessor affix, possessum non-affix, head-final, possessor agrees
