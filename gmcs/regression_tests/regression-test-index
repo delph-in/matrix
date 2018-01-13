@@ -335,3 +335,4 @@ adnom-poss-spec-possessor-non-affix-possessum-non-affix-head-final-agr-unidir-po
 adnom-poss-spec-possessor-non-affix-possessum-non-affix-head-final-agr-unidir-possessum=spec, both non-affix, head-final, possessum agrees
 adnom-poss-mod-possessor-affix-head-final-pron-agr=pronouns as separate words with agr
 adnom-poss-spec-possessor-affix-head-final-pron-agr=pronoun is separate word with agreement
+adnom-poss-spec-juxt=spec-like juxtaposition

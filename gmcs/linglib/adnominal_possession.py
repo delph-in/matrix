@@ -602,7 +602,6 @@ def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
                                          [ STEM < "'+orth+'" > ].')
     elif pron_strat:
         noun_type=noun_id(strat)
-        print noun_type
         if strat.get('agr')=='agree':
             agr=True
         else:
