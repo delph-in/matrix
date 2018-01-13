@@ -308,3 +308,4 @@ adnom-poss-mod-possessor-affix-possessum-affix-head-final-agr-unidir-possessum=m
 adnom-poss-mod-possessor-non-affix-head-final=mod, possessor nonaffix, head-final, no agr
 adnom-poss-mod-possessor-non-affix-head-final-agr=mod, possessor non-affix, head-final, agr
 adnom-poss-mod-possessor-non-affix-head-initial=mod, possessor non-affix, head-initial, no agr
+adnom-poss-mod-possessor-non-affix-possessum-affix-head-final-agr-mutual=mod, popossessum marked, possessum affix, head-final, mutual agr
