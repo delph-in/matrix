@@ -96,6 +96,7 @@ POSSESSOR_PRON_LEX=' := basic-one-arg &\
                                                            ARG0 #possessor & [ COG-ST activ-or-more,\
                                                                                SPECI + ] ] ] ].'
 
+
 ##################################################################
 ## Primary function (called from customize.py)                 ###
 ################################################################## 
@@ -110,6 +111,8 @@ def customize_adnominal_possession(mylang,ch,rules,irules,lexicon,hierarchies):
             mylang.add('nonpossessive := poss.',section='addenda')
             mylang.add('possessor := possessive.',section='addenda')
             mylang.add('possessum := possessive.',section='addenda')
+            mylang.add('basic-bare-np-phrase :+\
+                     [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS nonpossessive ].',section='addenda')
     customize_np_possession(mylang,ch,rules,irules,lexicon,hierarchies)
     customize_pronominal_possession(mylang,ch,rules,irules,lexicon,hierarchies)
 
@@ -123,6 +126,12 @@ def customize_adnominal_possession(mylang,ch,rules,irules,lexicon,hierarchies):
 # is a full NP
 def customize_np_possession(mylang,ch,rules,irules,lexicon,hierarchies):
     for strat in ch.get('poss-strat',[]):
+        strat_num=strat.full_keys()[0].split("_")[0][-1]
+        mylang.add(str(strat_num)+' := possessive.',section='addenda')
+        mylang.add('possessor'+'-'+str(strat_num)+\
+                    ' := possessor & '+str(strat_num)+'.',section='addenda')
+        mylang.add('possessum'+'-'+str(strat_num)+\
+                    ' := possessum & '+str(strat_num)+'.',section='addenda')
         customize_poss_rules(strat,mylang,ch,rules)
         if strat.get('possessor-type')=='affix' or strat.get('possessum-type')=='affix':
             customize_poss_irules(strat,mylang,ch,irules,hierarchies)
@@ -137,6 +146,9 @@ def customize_np_possession(mylang,ch,rules,irules,lexicon,hierarchies):
 # is a pronoun
 def customize_pronominal_possession(mylang,ch,rules,irules,lexicon,hierarchies):
     for pron in ch.get('poss-pron',[]):
+        pron_num=pron.full_keys()[0].split("_")[0][-1]
+        mylang.add('pron'+str(pron_num)+' := possessive.',section='addenda')
+        mylang.add('possessor'+'-pron'+str(pron_num)+' := possessor & '+'pron'+str(pron_num)+'.')
         customize_poss_rules(pron,mylang,ch,rules)
         if pron.get('type')=='affix':
             customize_poss_irules(pron,mylang,ch,irules,hierarchies)
@@ -156,6 +168,7 @@ def customize_poss_rules(strat,mylang,ch,rules):
     """
     # Define vars for all elements of strategy:
     strat_name=strat.full_keys()[0].split("_")[0]
+    strat_num=strat_name[-1]
     strat_order=strat.get('order')
     mark_loc=strat.get('mark-loc')
     if 'poss-pron' in strat_name:
@@ -442,7 +455,7 @@ def customize_poss_irules(strat,mylang,ch,irules,hierarchies):
                             # This should keep normal head-spec constructions from letting noun phrases act as determiners:
                             mylang.add(get_name(lrt)+'-lex-rule := [ SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.LOCAL.CAT.HEAD det ].')
                 elif pron_strat:
-#                    if strat_name in str(feat['name']) and feat['value']!='minus':
+                    pron_num=pron.full_keys()[0].split("_")[0][-1]
                     if strat_name in str(feat['name']) and feat['value']!='nonpossessive':
                         mylang.add(get_name(lrt)+'-lex-rule :=\
                                       [ SYNSEM.LOCAL.CAT.HEAD.POSS possessive,\
@@ -481,7 +494,7 @@ def customize_poss_irules(strat,mylang,ch,irules,hierarchies):
                                                                                          RSTR #harg2 ] !>,\
                                                                             HCONS <! qeq & [ HARG #harg2,\
                                                                                              LARG #lbl2 ] !> ] ].')
-#                        customize_feature_values(mylang,ch,hierarchies,strat,get_name(lrt),'poss-marker')
+
 
 
 # Adds lexical items for possession markers and possessor pronouns.
