@@ -1643,11 +1643,6 @@ def validate_choices(choices_file, extra = False):
 # command line or shell scripts, and print out the errors
 # that result.
 
-# EKN 2017-01-09 The matrix wiki site now lists this method as
-# deprecated. If you want to run validation from the
-# command line, try running it via matrix.py, as follows:
-#
-# >>> python matrix.py validate /path/to/choices
 
 if __name__ == "__main__":
     vr = validate_choices(sys.argv[1])
