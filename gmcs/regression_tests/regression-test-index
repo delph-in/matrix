@@ -303,3 +303,4 @@ adnom-poss-mod-possessor-affix-head-final=mod, possessor affix, head-final, no a
 adnom-poss-mod-possessor-affix-head-initial=mod-like, possessor affix, head-initial, no agr
 adnom-poss-mod-possessor-affix-possessum-affix-head-final=possessor and possessum affix, mod-like, head-final, no agr
 adnom-poss-mod-possessor-affix-possessum-affix-head-final-agr-mutual=mod-like, possessor and possessum affix, head-final, mutual agr
+adnom-poss-mod-possessor-affix-possessum-affix-head-final-agr-unidir-possessor=mod-like, possessor and possessum afix, head-final, possessor agrees
