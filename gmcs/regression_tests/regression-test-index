@@ -326,3 +326,4 @@ adnom-poss-spec-possessor-affix-possessum-non-affix-head-final-agr-unidir-posses
 adnom-poss-spec-possessor-affix-possessum-non-affix-head-final-agr-unidir-possessum=spec, possessor affix, possessum non-affix, head-final, possessum agrees
 adnom-poss-spec-possessor-non-affix-head-final=spec, possessor non-affix, head-final
 adnom-poss-spec-possessor-non-affix-head-final-agr=spec, possessor-nonaffix, head-final, agr
+adnom-poss-spec-possessor-non-affix-possessum-affix-head-final=spec, possessor-non-affix, possessum- affix, head-final, no agr
