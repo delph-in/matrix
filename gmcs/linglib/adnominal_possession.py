@@ -176,6 +176,7 @@ def customize_poss_rules(strat,mylang,ch,rules):
     mark_loc=strat.get('mark-loc')
     if 'poss-pron' in strat_name:
         pron_strat=True
+        strat_num='pron-'+strat_num
     else:
         pron_strat=False
     # Define var to keep track of major constituent word order
@@ -191,7 +192,7 @@ def customize_poss_rules(strat,mylang,ch,rules):
     # Start adding rules:
     # If no marking exists, add one of two juxtaposition rules:
     if mark_loc=='neither' and not pron_strat:
-        phrase_rule='poss-phrase'
+        phrase_rule='poss-phrase'+'-'+strat_num
         mylang.add(phrase_rule+JUXTAPOSITION_RULE)
         if strat.get('mod-spec')=='spec':
             mylang.add(phrase_rule+' := [ SYNSEM.LOCAL.CAT.VAL.SPR < >,\
@@ -209,11 +210,11 @@ def customize_poss_rules(strat,mylang,ch,rules):
     else:
         # If possessor==spec, add a head-compositional variant of head-spec 
         if strat.get('mod-spec')=='spec':
-            phrase_rule="head-spec-poss-phrase"
+            phrase_rule="head-spec-poss-phrase"+'-'+strat_num
             # Note: added the constraint on head type so that this would never do the work of attaching determiners to nouns
             # (Found helpful in scenario: possessor marking adposition, spec-like attachment.)
             # Not sure if this is too little constriction -- only testing with mini english so far (12/22/2017)
-            mylang.add(phrase_rule + ' :=  basic-head-spec-phrase-super & [  NON-HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL.SPR < >,\
+            mylang.add(phrase_rule+' :=  basic-head-spec-phrase-super & [  NON-HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL.SPR < >,\
                                                                                                                HEAD +nvjrpcmo ],\
                                                                                                    OPT - ],\
                                                                              HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK #hook ,\
@@ -223,7 +224,7 @@ def customize_poss_rules(strat,mylang,ch,rules):
         # Exception: no rule added if preexistent head-comps has correct order
         elif strat.get('mod-spec')=='mod':
             if strat.get('mark-loc')=='possessum' or strat.get('mark-loc')=='both' and not pron_strat:
-                phrase_rule="head-comp-poss-phrase"
+                phrase_rule="head-comp-poss-phrase"+'-'+strat_num
                 # Check if the existing head-comp rule has the correct order; 
                 # if not, add a new rule with correct order that only applies to poss-phrases.
                 if head_comp_order!=strat_order:
@@ -233,7 +234,7 @@ def customize_poss_rules(strat,mylang,ch,rules):
                                                                              HEAD +np ] ].')
                     rule_added=True
             else:
-                phrase_rule="head-mod-poss-phrase"
+                phrase_rule="head-mod-poss-phrase"+'-'+strat_num
                 mylang.add(phrase_rule+' := basic-head-mod-phrase-simple & head-compositional & \
                                         [ SYNSEM.LOCAL.CAT.VAL [ SPEC #spec ], \
                                           HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPEC #spec ] ].')
@@ -248,23 +249,23 @@ def customize_poss_rules(strat,mylang,ch,rules):
     if not rule_added:
         if mark_loc=='both':
             if head_comp_order!=strat.get('possessor-marker-order') and head_comp_order!=strat.get('possessum-marker-order'):
-                mylang.add('head-comp-poss-phrase := '+possessor_mark_order+' & basic-head-1st-comp-phrase &\
+                mylang.add('head-comp-poss-phrase-'+strat_num+' := '+possessor_mark_order+' & basic-head-1st-comp-phrase &\
                                        [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessive-'+strat_num+' ].')
-                rules.add('head-comp-poss := head-comp-poss-phrase.')
+                rules.add('head-comp-poss-'+strat_num+' := head-comp-poss-phrase-'+strat_num+'.')
         elif mark_loc=='possessor':
             if head_comp_order!=strat.get('possessor-marker-order'):
-                mylang.add('head-comp-poss-phrase := '+possessor_mark_order+' & basic-head-1st-comp-phrase &\
+                mylang.add('head-comp-poss-phrase-'+strat_num+' := '+possessor_mark_order+' & basic-head-1st-comp-phrase &\
                                        [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessor-'+strat_num+' ].')
-                rules.add('head-comp-poss := head-comp-poss-phrase.')
+                rules.add('head-comp-poss-'+strat_num+' := head-comp-poss-phrase-'+strat_num+'.')
         elif mark_loc=='possessum':
             if head_comp_order!=strat.get('possessum-marker-order'):
-                mylang.add('head-comp-poss-phrase := '+possessum_mark_order+' & basic-head-1st-comp-phrase &\
+                mylang.add('head-comp-poss-phrase-'+strat_num+' := '+possessum_mark_order+' & basic-head-1st-comp-phrase &\
                                        [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessum-'+strat_num+' ].')
-                rules.add('head-comp-poss := head-comp-poss-phrase.')
+                rules.add('head-comp-poss-'+strat_num+' := head-comp-poss-phrase-'+strat_num+'.')
     # If a specialized (non-juxtaposition) poss phrase rule was added, require that the marked constituent be [ POSS possessive ]
     # TODO: check if I can take out the stuff after 'and not'
-    if rule_added and not phrase_rule=='head-comp-poss-phrase':
-        if not (phrase_rule=='head-comp-poss-phrase' and (possessor_mark_order==order or possessum_mark_order==order)):
+    if rule_added and not phrase_rule=='head-comp-poss-phrase'+'-'+strat_num:
+        if not (phrase_rule=='head-comp-poss-phrase'+'-'+strat_num and (possessor_mark_order==order or possessum_mark_order==order)):
             if strat.get('mark-loc')=='possessor':
                 mylang.add(phrase_rule+':= [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS nonpossessive,\
                                              NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessor-'+strat_num+' ].',merge=True)
@@ -304,7 +305,7 @@ def customize_poss_rules(strat,mylang,ch,rules):
                     adj_head=True
             if head_adj: mylang.add('head-adj-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS nonpossessive ].',merge=True)
             if adj_head: mylang.add('adj-head-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS nonpossessive ].',merge=True)
-            if phrase_rule=='head-comp-poss-phrase' and rule_added and strat.get('possessum-type')!='non-affix':
+            if phrase_rule=='head-comp-poss-phrase'+'-'+strat_num and rule_added and strat.get('possessum-type')!='non-affix':
                 head_comp_order=customize_major_constituent_order(ch.get('word-order'),mylang,ch,rules)['hc']
                 mylang.add(head_comp_order+'-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL [ SPR <>,\
                                                                                          SPEC <> ] ].')
@@ -312,7 +313,7 @@ def customize_poss_rules(strat,mylang,ch,rules):
     if rule_added: 
         mylang.add(phrase_rule +' := '+strat.get('order')+'.',merge=True)
         # If a specialized poss phrase rule was added, adds rule to rules.tdl
-        rules.add(phrase_rule.replace('-phrase','') + ':= '+phrase_rule+'. ' )
+        rules.add(phrase_rule.replace('-phrase-','') + ':= '+phrase_rule+'. ' )
 
 
 # Adds inflectional rules (or adds constraints to inflectional rules added in
@@ -644,8 +645,9 @@ def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
         if mod_spec=='spec':
             agr_prefix='SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
             mylang.add(noun_type+' :=\
-                        [ SYNSEM.LOCAL [ CAT.VAL.SPEC.FIRST.LOCAL.CONT.HOOK [ INDEX #possessum & [ COG-ST uniq+fam+act ],\
-                                                                          LTOP #lbl ],\
+                        [ SYNSEM.LOCAL [ CAT [ HEAD.POSS possessor-pron-'+strat_num+',\
+                                               VAL.SPEC.FIRST.LOCAL.CONT.HOOK [ INDEX #possessum & [ COG-ST uniq+fam+act ],\
+                                                                          LTOP #lbl ] ],\
                                          CONT [ RELS  <! '+POSSESSUM_EXIST_REL+',\
                                                          '+POSS_REL+',\
                                                            quant-relation &\
@@ -660,8 +662,9 @@ def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
         elif mod_spec=='mod':
             agr_prefix='SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
             mylang.add(noun_type+' :=\
-                        [ SYNSEM.LOCAL [ CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK [ INDEX #possessum,\
-                                                                            LTOP #lbl ],\
+                        [ SYNSEM.LOCAL [ CAT.HEAD [ POSS possessor-pron-'+strat_num+',\
+                                                    MOD.FIRST.LOCAL.CONT.HOOK [ INDEX #possessum,\
+                                                                            LTOP #lbl ] ],\
                                          CONT [ RELS  <!  '+POSS_REL+',\
                                                            quant-relation &\
                                                            [ PRED "exist_q_rel",\

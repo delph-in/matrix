@@ -22,9 +22,3 @@ itr-verb := itr-verb-lex &
 det := det1-determiner-lex &
   [ STEM < "det" >,
     SYNSEM.LKEYS.KEYREL.PRED "_def_q_rel" ].
-
-possessor-1sg-noun := possessor-1sg-noun-lex &
-  [ STEM < "possessor1sg" > ].
-
-possessor1pl-noun := possessor1pl-noun-lex &
-  [ STEM < "possessor-1pl" > ].
