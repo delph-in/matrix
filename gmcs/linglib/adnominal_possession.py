@@ -470,7 +470,10 @@ def customize_poss_irules(strat,mylang,ch,irules,hierarchies):
                                                                              LTOP #lbl],\
                                         C-CONT.HOOK #hook ].')
                         if mod_spec=='spec':
-                            mylang.add(get_name(lrt)+'-lex-rule := [ SYNSEM.LOCAL.CAT.VAL.SPR < >,\
+                            mylang.add(get_name(lrt)+'-lex-rule := [ SYNSEM.LOCAL.CAT.VAL [ SPR < >,\
+                                                                                            SPEC #spec,\
+                                                                                            SUBJ #subj,\
+                                                                                            COMPS #comps ],\
                                                                      C-CONT [ RELS  <! noun-relation &\
                                                                                      [ PRED "pron_rel",\
                                                                                        LBL #lbl2,\
@@ -485,10 +488,13 @@ def customize_poss_irules(strat,mylang,ch,irules,hierarchies):
                                                                              HCONS <! qeq & [ HARG #harg,\
                                                                                              LARG #lbl ],\
                                                                                      qeq & [ HARG #harg2,\
-                                                                                             LARG #lbl2 ] !> ] ].')
+                                                                                             LARG #lbl2 ] !> ],\
+                                                                     DTR.SYNSEM.LOCAL.CAT.VAL [ SPEC #spec,\
+                                                                                                SUBJ #subj,\
+                                                                                                COMPS #comps] ].')
                         elif mod_spec=='mod':
-                            mylang.add(get_name(lrt)+'-lex-rule := [ SYNSEM.LOCAL.CAT.VAL.SPR #spr,\
-                                                                     DTR.SYNSEM.LOCAL.CAT.VAL.SPR #spr,\
+                            mylang.add(get_name(lrt)+'-lex-rule := [ SYNSEM.LOCAL.CAT.VAL #val,\
+                                                                     DTR.SYNSEM.LOCAL.CAT.VAL #val,\
                                                                      C-CONT [ RELS  <! noun-relation &\
                                                                                        [ PRED "pron_rel",\
                                                                                          LBL #lbl2,\
