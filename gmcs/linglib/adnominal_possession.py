@@ -241,12 +241,6 @@ def customize_poss_rules(strat,mylang,ch,rules):
                     rule_added=True
             else:
                 phrase_rule="head-mod-poss-phrase"+'-'+strat_num
-#                mylang.add(phrase_rule+' := basic-head-mod-phrase-simple & head-compositional & \
-#                                        [ SYNSEM.LOCAL.CAT [ HEAD +np,\
-#                                                             VAL [ SPEC #spec ] ], \
-#                                          HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD +np,\
-#                                                                      VAL.SPEC #spec & <[ ]> ] ] ].')
-
                 mylang.add(phrase_rule+' := basic-head-mod-phrase-simple & head-compositional & \
                                         [ SYNSEM.LOCAL.CAT [ HEAD +np,\
                                                              VAL [ SPEC #spec ] ], \
@@ -295,9 +289,10 @@ def customize_poss_rules(strat,mylang,ch,rules):
             
         # Make non-possessive phrases reject possessive nouns:
         if ch.get('has-dets')=='yes':
-            mylang.add('head-spec-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.SPR <>,\
-                                                                              HEAD +vjrcdmo &\
-                                                                                 [ POSS nonpossessive ] ] ].',merge=True)
+            mylang.add('head-spec-phrase :=\
+                              [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.SPR <>,\
+                                                                HEAD +vjrcdmo &\
+                                                                  [ POSS nonpossessive ] ] ].',merge=True)
         adj_head=False
         head_adj=False
         for adj in ch.get('adj',[]):
@@ -325,6 +320,9 @@ def customize_poss_rules(strat,mylang,ch,rules):
                 head_comp_order=customize_major_constituent_order(ch.get('word-order'),mylang,ch,rules)['hc']
                 mylang.add(head_comp_order+'-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL [ SPR <>,\
                                                                                          SPEC <> ] ].')
+#                mylang.add(head_comp_order+'-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSS nonpossessive,\
+#                                                                                     VAL [ SPR <>,\
+#                                                                                          SPEC <> ] ] ].')
     # If a specialized poss phrase rule was added, adds word order info to the phrase rule:
     if rule_added: 
         mylang.add(phrase_rule +' := '+strat.get('order')+'.',merge=True)
