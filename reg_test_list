@@ -36,7 +36,7 @@ adnom-poss-mod-possessor-non-affix-head-initial
 INSTALLED
 ############################################################
 adnom-poss-mod-possessor-non-affix-possessum-affix-head-final
-DIFFS EXPECTED - comp issue
+DIFFS EXPECTED - head-comp is doing the work of head-comp-poss
 ############################################################
 adnom-poss-mod-possessor-non-affix-possessum-affix-head-final-agr-mutual
 INSTALLED
@@ -46,7 +46,7 @@ adnom-poss-mod-possessor-non-affix-possessum-affix-head-final-agr-unidir-possess
 INSTALLED
 ############################################################
 adnom-poss-mod-possessor-non-affix-possessum-affix-head-final-sov-left-side-marker
-DIFFS EXPECTED - comp issue
+DIFFS EXPECTED - head-comp and head-comp-poss doing same work
 ############################################################
 adnom-poss-mod-possessor-non-affix-possessum-affix-head-final-sov-right-side-marker
 INSTALLED
