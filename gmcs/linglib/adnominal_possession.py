@@ -330,11 +330,6 @@ def customize_poss_irules(strat,mylang,ch,irules,hierarchies):
     mod_spec=strat.get('mod-spec')
     possessor_type=strat.get('possessor-type')
     possessum_type=strat.get('possessum-type')
-    #######################################################################################################
-    mutual_agr=False
-    if strat.get('possessor-affix-agr')=='agree' and strat.get('possessum-affix-agr')=='agree':
-        mutual_agr=True
-    #######################################################################################################
     for pc in all_position_classes(ch):
         for lrt in pc.get('lrt',[]):
             for feat in lrt['feat']:
