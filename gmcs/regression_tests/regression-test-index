@@ -340,3 +340,4 @@ adnom-poss-mod-possessor-affix-head-final-pron-affix-mod=pronoun affix that take
 adnom-poss-mod-possessor-affix-head-final-pron-affix-agr=pronoun affix with agreement
 adnom-poss-spec-possessor-affix-head-final-pron-affix=pronoun is affix, takes no det
 adnom-poss-spec-possessum-affix-head-final=spec, possessum affix, head final, no agr
+adnom-poss-spec-possessum-affix-head-final-agr=spec, possessum-affix, head-final, agr
