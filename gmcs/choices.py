@@ -1132,11 +1132,11 @@ class ChoicesFile:
         for strat in self.get('poss-strat'):
             if strat.get('possessor-type')=='affix' or strat.get('possessum-type')=='affix':
                 strat_name=strat.full_key
-                features += [ [ strat_name, 'possessor|possessor;possessum|possessum;nonpossessive|nonpossessive', '', 'verb', 'y'] ]
+                features += [ [ strat_name, 'possessor|possessor;possessum|possessum;nonpossessive|nonpossessive', '', 'noun', 'y'] ]
         for pron in self.get('poss-pron'):
             if pron.get('type')=='affix':
                 pron_name=pron.full_key
-                features += [ [ pron_name,'plus|plus;minus|minus', '', 'verb', 'y' ] ]
+                features += [ [ pron_name,'plus|plus;minus|minus', '', 'noun', 'y' ] ]
 
         # Questions
         if 'q-infl' in self.choices:
