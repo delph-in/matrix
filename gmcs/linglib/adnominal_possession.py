@@ -151,7 +151,8 @@ def customize_pronominal_possession(mylang,ch,rules,irules,lexicon,hierarchies):
     for pron in ch.get('poss-pron',[]):
         pron_num=pron.full_keys()[0].split("_")[0][-1]
         mylang.add('possessive-pron-'+str(pron_num)+' := possessive.',section='addenda')
-        mylang.add('possessor-pron-'+str(pron_num)+' := possessor & '+'possessive-pron-'+str(pron_num)+'.')
+        mylang.add('possessor-pron-'+str(pron_num)+' :=\
+                      possessor & '+'possessive-pron-'+str(pron_num)+'.',section='addenda')
         customize_poss_rules(pron,mylang,ch,rules)
         if pron.get('type')=='affix':
             customize_poss_irules(pron,mylang,ch,irules,hierarchies)
@@ -210,7 +211,7 @@ def customize_poss_rules(strat,mylang,ch,rules):
     else:
         # If possessor==spec, add a head-compositional variant of head-spec 
         if strat.get('mod-spec')=='spec':
-            phrase_rule="head-spec-poss-phrase"+'-'+strat_num
+            phrase_rule='head-spec-poss-phrase'+'-'+strat_num
             # Note: added the constraint on head type so that this would never do the work of attaching determiners to nouns
             # (Found helpful in scenario: possessor marking adposition, spec-like attachment.)
             # Not sure if this is too little constriction -- only testing with mini english so far (12/22/2017)
@@ -236,8 +237,10 @@ def customize_poss_rules(strat,mylang,ch,rules):
             else:
                 phrase_rule="head-mod-poss-phrase"+'-'+strat_num
                 mylang.add(phrase_rule+' := basic-head-mod-phrase-simple & head-compositional & \
-                                        [ SYNSEM.LOCAL.CAT.VAL [ SPEC #spec ], \
-                                          HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPEC #spec ] ].')
+                                        [ SYNSEM.LOCAL.CAT [ HEAD +np,\
+                                                             VAL [ SPEC #spec ] ], \
+                                          HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD +np,\
+                                                                      VAL.SPEC #spec ] ] ].')
                 rule_added=True
     # If the possession marker is not in the right order for existing head-comps to deal with it, add a new head-comps rule here
     # which requires its head be [ POSS possessive ]
@@ -266,7 +269,7 @@ def customize_poss_rules(strat,mylang,ch,rules):
     # TODO: check if I can take out the stuff after 'and not'
     if rule_added and not phrase_rule=='head-comp-poss-phrase'+'-'+strat_num:
         if not (phrase_rule=='head-comp-poss-phrase'+'-'+strat_num and (possessor_mark_order==order or possessum_mark_order==order)):
-            if strat.get('mark-loc')=='possessor':
+            if strat.get('mark-loc')=='possessor' or pron_strat:
                 mylang.add(phrase_rule+':= [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS nonpossessive,\
                                              NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessor-'+strat_num+' ].',merge=True)
             if strat.get('mark-loc')=='possessum':
@@ -313,7 +316,7 @@ def customize_poss_rules(strat,mylang,ch,rules):
     if rule_added: 
         mylang.add(phrase_rule +' := '+strat.get('order')+'.',merge=True)
         # If a specialized poss phrase rule was added, adds rule to rules.tdl
-        rules.add(phrase_rule.replace('-phrase-','') + ':= '+phrase_rule+'. ' )
+        rules.add(phrase_rule.replace('-phrase','') + ':= '+phrase_rule+'. ' )
 
 
 # Adds inflectional rules (or adds constraints to inflectional rules added in
@@ -458,10 +461,9 @@ def customize_poss_irules(strat,mylang,ch,irules,hierarchies):
                             # This should keep normal head-spec constructions from letting noun phrases act as determiners:
                             mylang.add(get_name(lrt)+'-lex-rule := [ SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.LOCAL.CAT.HEAD det ].')
                 elif pron_strat:
-                    pron_num=pron.full_keys()[0].split("_")[0][-1]
                     if strat_name in str(feat['name']) and feat['value']!='nonpossessive':
                         mylang.add(get_name(lrt)+'-lex-rule :=\
-                                      [ SYNSEM.LOCAL.CAT.HEAD.POSS possessive,\
+                                      [ SYNSEM.LOCAL.CAT.HEAD.POSS possessive-pron-'+strat_num+',\
                                         DTR.SYNSEM.LOCAL.CONT.HOOK #hook & [ INDEX #possessum & [ COG-ST uniq+fam+act ],\
                                                                              LTOP #lbl],\
                                         C-CONT.HOOK #hook ].')
