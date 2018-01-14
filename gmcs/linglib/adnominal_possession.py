@@ -88,7 +88,7 @@ POSSESSUM_NOUN_LEX=':= basic-two-arg &\
                                      ARG-ST < #spr, #comps > ].'
 
 POSSESSOR_PRON_LEX=' := basic-one-arg &\
-                        [ SYNSEM [ LOCAL [ CAT.HEAD noun & [ POSS possessor ] ],\
+                        [ SYNSEM [ LOCAL [ CAT.HEAD noun ],\
                                    LKEYS.ALTKEYREL #altkeyrel & noun-relation &\
                                                          [ PRED "pron_rel",\
                                                            LBL #lbl2,\
