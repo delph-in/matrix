@@ -10,10 +10,8 @@ adnom-poss-mod-possessor-affix-head-final
 INSTALLED
 adnom-poss-mod-possessor-affix-head-final-agr
 INSTALLED
-############################################################
 adnom-poss-mod-possessor-affix-head-final-pron
-DIFFS EXPECTED
-############################################################
+INSTALLED
 adnom-poss-mod-possessor-affix-head-final-pron-affix-agr
 INSTALLED
 adnom-poss-mod-possessor-affix-head-final-pron-affix-mod
@@ -66,8 +64,10 @@ adnom-poss-spec-possessor-affix-head-final
 INSTALLED
 adnom-poss-spec-possessor-affix-head-final-agr
 INSTALLED
+############################################################
 adnom-poss-spec-possessor-affix-head-final-pron
 DIFFS EXPECTED - spec possessor taking a det
+############################################################
 adnom-poss-spec-possessor-affix-head-final-pron-affix
 INSTALLED
 adnom-poss-spec-possessor-affix-head-final-pron-agr

@@ -88,7 +88,10 @@ POSSESSUM_NOUN_LEX=':= basic-two-arg &\
                                      ARG-ST < #spr, #comps > ].'
 
 POSSESSOR_PRON_LEX=' := basic-one-arg &\
-                        [ SYNSEM [ LOCAL [ CAT.HEAD noun ],\
+                        [ SYNSEM [ LOCAL [ CAT [ VAL [ SPR olist,\
+                                                       COMPS olist,\
+                                                       SUBJ olist ],\
+                                                 HEAD noun ] ],\
                                    LKEYS.ALTKEYREL #altkeyrel & noun-relation &\
                                                          [ PRED "pron_rel",\
                                                            LBL #lbl2,\
@@ -400,7 +403,6 @@ def customize_poss_irules(strat,mylang,ch,irules,hierarchies):
                         # If an agreement strategy is indicated, identify POSS-AGR with PNG of possessum
                         # TODO: take out possessor_type=='affix'
                         if strat.get('possessor-affix-agr')=='agree' and possessor_type=='affix': 
-#                            mylang.add('poss :+ [ POSS-AGR png ].',section='addenda')
                             # Note: don't do this in the mod-like both-marking scenario -- possessor is a COMP and has no access to 
                             # possessum. In this scenario, the identification must be done on the possessum inflection.
                             if not (mark_loc=='both' and mod_spec=='mod'):
@@ -433,8 +435,7 @@ def customize_poss_irules(strat,mylang,ch,irules,hierarchies):
                                     mylang.add(possessum_rule_name+' :=\
                                        [ SYNSEM.LOCAL.CAT.VAL.SPR < [ LOCAL.CAT.HEAD.POSS possessor-'+strat_num+' ] > ].')
                             if mod_spec=='mod':
-                                # Added OPT - to the complement to try to correct overzealous head-comp application. Didn't work
-                                # Should append things to COMPS list, not overwrite
+                                # Added OPT - to the complement to try to correct overzealous head-comp application. Didn't work.
                                 agr_prefix='SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
                                 mylang.add(possessum_rule_name+':= val-change-with-ccont-lex-rule & \
                                                        [ SYNSEM.LOCAL.CAT [ HEAD.POSS possessum-'+strat_num+',\
@@ -454,7 +455,6 @@ def customize_poss_irules(strat,mylang,ch,irules,hierarchies):
                                            [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD +np & [ POSS possessor-'+strat_num+' ] ].')
                             # TODO: try taking that possessum_type=='affix' out of this.
                             if strat.get('possessum-affix-agr')=='agree' and possessum_type=='affix':
-#                                mylang.add('poss :+ [ POSS-AGR png ].',section='addenda')
                                 mylang.add(possessum_rule_name+' := [ SYNSEM.LOCAL.CAT.HEAD.POSS.POSS-AGR #png,\
                                                              '+agr_prefix+' #png ].')
                             # Note: in the mutual agreement, double marking mod-like scenario, the possessor is a COMP.
@@ -463,9 +463,9 @@ def customize_poss_irules(strat,mylang,ch,irules,hierarchies):
                             # TODO: Maybe add 'or strat.get('possessor-agr')
                             if mark_loc=='both' and mod_spec=='mod' and strat.get('possessor-affix-agr')=='agree':
                                 if possessum_type=='affix':
-                                    mylang.add(possessum_rule_name+' := [ SYNSEM.LOCAL [ CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.POSS.POSS-AGR #poss-png,\
-                                                                                 CONT.HOOK.INDEX.PNG #poss-png ] ].')
-#                    elif strat_name in str(feat['name']) and feat['value']=='minus':
+                                    mylang.add(possessum_rule_name+' :=\
+                                         [ SYNSEM.LOCAL [ CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.POSS.POSS-AGR #poss-png,\
+                                                          CONT.HOOK.INDEX.PNG #poss-png ] ].')
                     elif strat_name==str(feat['name']) and feat['value']=='nonpossessive':
                         if (mark_loc=='possessum' or mark_loc=='both') and mod_spec=='spec':
                             # This should keep normal head-spec constructions from letting noun phrases act as determiners:
@@ -574,7 +574,6 @@ def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
                 lexicon.add('possessor-adp-'+strat_num+' := possessor-adp-lex &\
                                                       [ STEM < "'+orth+'" >].')
             elif strat.get('possessor-agr')=='agree':
-#                mylang.add('poss :+ [ POSS-AGR png ].',section='addenda')
                 for form in strat.get('possessor-form'):
                     if mod_spec=='spec':
                         prefix='SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
@@ -695,7 +694,6 @@ def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
                                                   HCONS <! qeq & [ HARG #harg2,\
                                                                    LARG #lbl2 ] !> ] ] ].')
         if agr: 
-#            mylang.add('poss :+ [ POSS-AGR png ].',section='addenda')
             mylang.add(noun_type+' := [ SYNSEM.LOCAL.CAT.HEAD.POSS.POSS-AGR #png,\
                                               '+agr_prefix+' #png ].')
         for instance in strat.get('instance'):
