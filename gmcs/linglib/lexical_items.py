@@ -477,10 +477,11 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
                 if strat.get('possessum-type')=='affix':
                     affixal_strat=True
                 if strat.get('possessum-type')=='non-affix':
-                    nonaffixal_strat=False
+                    nonaffixal_strat=True
 
     # Add a typedef that takes into account all strategies
     if spec_strat:
+        
         if affixal_strat and nonaffixal_strat:
             spr_head_type='+npd'
         elif affixal_strat:
