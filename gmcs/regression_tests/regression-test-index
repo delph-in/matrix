@@ -347,3 +347,4 @@ adnom-poss-spec-possessor-non-affix-possessum-non-affix-head-final=spec, both no
 adnom-poss-spec-possessor-affix-two-strat-order-var=two strategies, identical except for order
 adnom-poss-spec-possessor-affix-two-strat-mod-spec-var=two strategies, one spec one mod
 adnom-poss-mod-possessor-affix-head-final-pron=pronoun, mod-like
+adnom-poss-spec-possessor-affix-head-final-pron=pron spec
