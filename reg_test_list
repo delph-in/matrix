@@ -47,7 +47,7 @@ DIFFS EXPECTED - comp issue
 adnom-poss-mod-possessor-non-affix-possessum-affix-head-final-sov-right-side-marker
 INSTALLED
 adnom-poss-mod-possessor-non-affix-possessum-affix-head-final-svo-right-side-marker
-DIFFS EXPECTED - comp issue
+DIFFS EXPECTED - head-comp doing the work of head-comp-poss
 adnom-poss-mod-possessor-non-affix-possessum-affix-head-initial-sov-right-side-marker
 DIFFS EXPECTED - comp issue
 adnom-poss-mod-possessum-affix-head-final
@@ -63,9 +63,9 @@ INSTALLED
 adnom-poss-spec-possessor-affix-head-final-pron
 DIFFS EXPECTED - spec possessor taking a det
 adnom-poss-spec-possessor-affix-head-final-pron-affix
-DIFFS EXPECTED - head-comp issue
+INSTALLED
 adnom-poss-spec-possessor-affix-head-final-pron-agr
-
+INSTALLED
 adnom-poss-spec-possessor-affix-head-initial
 INSTALLED
 adnom-poss-spec-possessor-affix-possessum-affix-head-final

@@ -473,7 +473,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
                 else:
                     nonaffixal_strat=True
             elif strat.get('mark-loc')=='possessum':
-                possessum_mark=False
+                possessum_mark=True
                 if strat.get('possessum-type')=='affix':
                     affixal_strat=True
                 if strat.get('possessum-type')=='non-affix':
