@@ -175,11 +175,13 @@ def customize_poss_rules(strat,mylang,ch,rules):
     strat_num=strat_name[-1]
     strat_order=strat.get('order')
     mark_loc=strat.get('mark-loc')
+    pron_strat=False
+    pron_affix=False
     if 'poss-pron' in strat_name:
         pron_strat=True
         strat_num='pron-'+strat_num
-    else:
-        pron_strat=False
+        if strat.get('type')=='affix':
+            pron_affix=True
     # Define var to keep track of major constituent word order
     head_comp_order=customize_major_constituent_order(ch.get('word-order'),mylang,ch,rules)['hc']
     if head_comp_order=='head-comp':
@@ -208,7 +210,7 @@ def customize_poss_rules(strat,mylang,ch,rules):
                                           C-CONT [ RELS <! '+POSS_REL+' !>,\
                                                    HCONS <! !> ] ].')
         rule_added=True
-    else:
+    elif not pron_affix:
         # If possessor==spec, add a head-compositional variant of head-spec 
         if strat.get('mod-spec')=='spec':
             phrase_rule='head-spec-poss-phrase'+'-'+strat_num
@@ -249,7 +251,7 @@ def customize_poss_rules(strat,mylang,ch,rules):
     order=strat.get('order')
     # Note: this first check will stop you from trying to add a third head-comp rule when only two orders are possible:
     #asdf
-    if not rule_added:
+    if not rule_added and not pron_affix:
         if mark_loc=='both':
             if head_comp_order!=strat.get('possessor-marker-order') and head_comp_order!=strat.get('possessum-marker-order'):
                 mylang.add('head-comp-poss-phrase-'+strat_num+' := '+possessor_mark_order+' & basic-head-1st-comp-phrase &\
