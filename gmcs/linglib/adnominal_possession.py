@@ -80,7 +80,7 @@ POSSESSOR_ADP_LEX=':= two-rel-adposition-lex &\
 
 POSSESSUM_NOUN_LEX=':= basic-two-arg &\
                                    [ SYNSEM.LOCAL [ CAT [ HEAD noun ,\
-                                                          VAL [ SPR < #spr & [ LOCAL.CAT.HEAD +np ] >,\
+                                                          VAL [ SPR < #spr >,\
                                                                 COMPS < #comps & [ LOCAL [ CONT.HOOK #hook,\
                                                                                   CAT.VAL.SPR <[ ]> ] ] > ] ],\
                                                     CONT [ HOOK #hook,\
@@ -603,6 +603,14 @@ def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
                                                                 CONT [ RELS <! '+POSS_REL+',\
                                                                                '+POSSESSUM_EXIST_REL+' !>,\
                                                                                HCONS <! qeq & [HARG #harg, LARG #lbl] !> ] ] ].',merge=True)
+                if mark_loc=='possessum':
+                        mylang.add('possessum-noun-lex := [ SYNSEM.LOCAL.CAT.VAL.SPR < [ LOCAL.CAT.HEAD noun ] > ].')                    
+                if mark_loc=='both':
+                    if possessor_type=='affix':
+                        mylang.add('possessum-noun-lex := [ SYNSEM.LOCAL.CAT.VAL.SPR < [ LOCAL.CAT.HEAD noun ] > ].')
+                    else:
+                        mylang.add('possessum-noun-lex := [ SYNSEM.LOCAL.CAT.VAL.SPR < [ LOCAL.CAT.HEAD adp ] > ].')
+
 #            if mod_spec=='mod':
                 # NOTE: semantics (irretrievably?) broken.
                 # Since the marker takes the whole possessum NP as its complement, it ends up plugging the determiner's LTOP into
@@ -625,7 +633,6 @@ def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
                 lexicon.add('possessum-noun-'+strat_num+' := possessum-noun-lex &\
                                                   [ STEM < "'+orth+'" >].')
             elif strat.get('possessum-agr')=='agree':
-#                mylang.add('poss :+ [ POSS-AGR png ].',section='addenda')
                 for form in strat.get('possessum-form'):
                     if mod_spec=='spec':
                         prefix='SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
@@ -635,7 +642,7 @@ def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
                     mylang.add(noun_type+' := possessum-noun-lex &\
                                         [ SYNSEM.LOCAL.CAT.HEAD.POSS.POSS-AGR #png,\
                                         '+prefix+' #png ].')
-                    customize_feature_values(mylang,ch,hierarchies,form,noun_type,'poss-marker')#,form.get('possessum-feat'))
+                    customize_feature_values(mylang,ch,hierarchies,form,noun_type,'poss-marker')
                     orth=form.get('agr-orth')
                     # TODO: Maybe should be named by the orth form, not by the name? Not sure.
                     lexicon.add(noun_type.replace('-lex','')+' := '+noun_type+' &\
