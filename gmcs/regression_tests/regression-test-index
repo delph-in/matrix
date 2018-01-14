@@ -344,3 +344,4 @@ adnom-poss-spec-possessum-affix-head-final-agr=spec, possessum-affix, head-final
 adnom-poss-spec-possessum-non-affix-head-final=spec, possessum non-affix, head-final, agr
 adnom-poss-spec-possessum-non-affix-head-final-agr=spec, possessum non-affix, head-final, agr
 adnom-poss-spec-possessor-non-affix-possessum-non-affix-head-final=spec, both non-affix, head final, no agr
+adnom-poss-spec-possessor-affix-two-strat-order-var=two strategies, identical except for order
