@@ -226,7 +226,7 @@ def customize_poss_rules(strat,mylang,ch,rules):
         # If possessor==mod, add either head-mod or head-comp
         # Exception: no rule added if preexistent head-comps has correct order
         elif strat.get('mod-spec')=='mod':
-            if strat.get('mark-loc')=='possessum' or strat.get('mark-loc')=='both' and not pron_strat:
+            if strat.get('mark-loc')=='possessum' or strat.get('mark-loc')=='both':# and not pron_strat:
                 phrase_rule="head-comp-poss-phrase"+'-'+strat_num
                 # Check if the existing head-comp rule has the correct order; 
                 # if not, add a new rule with correct order that only applies to poss-phrases.
@@ -238,11 +238,18 @@ def customize_poss_rules(strat,mylang,ch,rules):
                     rule_added=True
             else:
                 phrase_rule="head-mod-poss-phrase"+'-'+strat_num
+#                mylang.add(phrase_rule+' := basic-head-mod-phrase-simple & head-compositional & \
+#                                        [ SYNSEM.LOCAL.CAT [ HEAD +np,\
+#                                                             VAL [ SPEC #spec ] ], \
+#                                          HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD +np,\
+#                                                                      VAL.SPEC #spec & <[ ]> ] ] ].')
+
                 mylang.add(phrase_rule+' := basic-head-mod-phrase-simple & head-compositional & \
                                         [ SYNSEM.LOCAL.CAT [ HEAD +np,\
                                                              VAL [ SPEC #spec ] ], \
                                           HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD +np,\
                                                                       VAL.SPEC #spec ] ] ].')
+
                 rule_added=True
     # If the possession marker is not in the right order for existing head-comps to deal with it, add a new head-comps rule here
     # which requires its head be [ POSS possessive ]
@@ -676,8 +683,9 @@ def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
             agr_prefix='SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
             mylang.add(noun_type+' :=\
                         [ SYNSEM.LOCAL [ CAT.HEAD [ POSS possessor-pron-'+strat_num+',\
-                                                    MOD.FIRST.LOCAL.CONT.HOOK [ INDEX #possessum,\
-                                                                            LTOP #lbl ] ],\
+                                                    MOD.FIRST.LOCAL [ CAT.VAL.SPR <[]>,\
+                                                                      CONT.HOOK [ INDEX #possessum,\
+                                                                                  LTOP #lbl ] ] ],\
                                          CONT [ RELS  <!  '+POSS_REL+',\
                                                            quant-relation &\
                                                            [ PRED "exist_q_rel",\
