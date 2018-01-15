@@ -515,7 +515,7 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
                 nmzRel = ns.get('nmzRel')
         if nmzRel == 'no':
             lextype.append('nmz-no-rel')
-            supertype = 'semantically-empty-nominalized-norel-subord-clause-phrase'
+            supertype = 'no-subordinator-nominalized-norel-subord-clause-phrase'
             mylang.add(supertype + ' := basic-unary-phrase &\
           [ SYNSEM [ LOCAL [ CAT [ MC -,\
                                   VAL.SUBJ #subj,\
@@ -526,8 +526,7 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
         							      COMPS < > ]],\
         						  CONT.HOOK [ LTOP #mcl,\
         								INDEX #index ]]] > ]]]],\
-            C-CONT [ RELS <! [ PRED "_subord_rel" ] &\
-        		   [ ARG1 #mch,\
+            C-CONT [ RELS <! [ ARG1 #mch,\
         		     ARG2 #sch ] !>,\
         	     HCONS <! qeq &\
         		    [ HARG #mch,\
@@ -544,7 +543,7 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
                               NON-LOCAL [ REL 0-dlist ] ] ] > ].')
         else:
             lextype.append('nmz')
-            supertype = 'semantically-empty-nominalized-subord-clause-phrase'
+            supertype = 'no-subordinator-nominalized-subord-clause-phrase'
             mylang.add(supertype + ' := basic-unary-phrase &\
             [ SYNSEM [ LOCAL [ CAT [ MC -,\
                                     VAL.SUBJ #subj,\
@@ -555,8 +554,7 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
           							      COMPS < > ]],\
           						  CONT.HOOK [ LTOP #mcl,\
           								INDEX #index ]]] > ]]]],\
-              C-CONT [ RELS <! [ PRED "_subord_rel" ] &\
-          		   [ ARG1 #mch,\
+              C-CONT [ RELS <! [ ARG1 #mch,\
           		     ARG2 #scl ] !>,\
           	     HCONS <! qeq &\
           		    [ HARG #mch,\
