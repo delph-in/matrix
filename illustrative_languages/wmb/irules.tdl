@@ -1,0 +1,46 @@
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+;;; Inflecting Lexical Rule Instances
+
+erg-suffix :=
+%suffix (* ni)
+erg-lex-rule.
+
+dat-suffix :=
+%suffix (* nka)
+dat-lex-rule.
+
+all-suffix :=
+%suffix (* nmanji)
+all-lex-rule.
+
+fut-prefix :=
+%prefix (* ba)
+fut-lex-rule.
+
+inf-prefix :=
+%prefix (* barda)
+inf-lex-rule.
+
+purp-prefix :=
+%prefix (* barda)
+purp-lex-rule.
+
+prior-prefix :=
+%prefix (* nnga)
+prior-lex-rule.
+
+aux-fut-suffix :=
+%suffix (* u)
+aux-fut-lex-rule.
+
+aux-pst-suffix1 :=
+%suffix (* amany)
+aux-pst-lex-rule.
+
+aux-pst-suffix2 :=
+%suffix (* a)
+aux-pst-lex-rule.
+
+aux-np-awy-suffix :=
+%suffix (* any)
+aux-np-awy-lex-rule.

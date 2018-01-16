@@ -536,6 +536,7 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
         		      LARG #scl ] !>,\
             		HOOK.INDEX #index ],\
             ARGS < [ SYNSEM [ LOCAL [ CAT [ HEAD noun,\
+        				    MC +,\
         				    VAL [ SUBJ #subj,\
         				        SPR < >,\
         					  COMPS < > ]],\
@@ -562,6 +563,7 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
               		HOOK.INDEX #index ],\
               ARGS < [ SYNSEM [ LOCAL [ CONT.HOOK.INDEX #scl,\
                                         CAT [ HEAD noun,\
+          				    MC +,\
           				    VAL [ SUBJ #subj,\
           				        SPR < >,\
           					  COMPS < > ]] ],\
@@ -588,6 +590,7 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
   		      LARG #scl ] !>,\
       		HOOK.INDEX #index ],\
       ARGS < [ SYNSEM [ LOCAL [ CAT [ HEAD verb,\
+  				    MC +,\
   				    VAL [ SUBJ #subj,\
   				    SPR < >,\
   					  COMPS < > ]],\

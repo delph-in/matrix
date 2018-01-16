@@ -1,0 +1,69 @@
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+;;; Nouns
+
+bungmanyi := masc-noun-lex &
+  [ STEM < "bungmanyi" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_old.man_n_rel" ].
+
+alaji := masc-noun-lex &
+  [ STEM < "alaji" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_boy_n_rel" ].
+
+g_1 := fem-noun-lex &
+  [ STEM < "g" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_woman_n_rel" ].
+
+gamarra := neut-noun-lex &
+  [ STEM < "gamarra" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_calf_n_rel" ].
+
+magi := neut-noun-lex &
+  [ STEM < "magi" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_camp_n_rel" ].
+
+manganymi := veg-noun-lex &
+  [ STEM < "manganymi" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_tucker_n_rel" ].
+
+;;; Adjectives
+
+;;; Verbs
+
+nyagaj := intrans-verb-lex &
+  [ STEM < "nyagaj" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_be.tired_v_rel" ].
+
+yarru_1 := intrans-verb-lex &
+  [ STEM < "yarru" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_go_v_rel" ].
+
+yabu := intrans-verb-lex &
+  [ STEM < "yabu" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_bring_v_rel" ].
+
+ngarli := intrans-verb-lex &
+  [ STEM < "ngarli" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_talk_v_rel" ].
+
+yany := trans-verb-lex &
+  [ STEM < "yany" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_get_v_rel" ].
+
+ngajbi := trans-verb-lex &
+  [ STEM < "ngajbi" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_see_v_rel" ].
+
+yarru_2 := trans2-verb-lex &
+  [ STEM < "yarru" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_go_v_rel" ].
+
+;;; Auxiliaries
+
+g_2 := masc-aux-lex &
+  [ STEM < "g" > ].
+
+gun := fem-aux-lex &
+  [ STEM < "gun" > ].
+
+ng := first-aux-lex &
+  [ STEM < "ng" > ].
