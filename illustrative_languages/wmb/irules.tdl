@@ -13,20 +13,20 @@ all-suffix :=
 %suffix (* nmanji)
 all-lex-rule.
 
-fut-prefix :=
-%prefix (* ba)
+fut-suffix :=
+%suffix (* ba)
 fut-lex-rule.
 
-inf-prefix :=
-%prefix (* barda)
+inf-suffix :=
+%suffix (* barda)
 inf-lex-rule.
 
-purp-prefix :=
-%prefix (* barda)
+purp-suffix :=
+%suffix (* barda)
 purp-lex-rule.
 
-prior-prefix :=
-%prefix (* nnga)
+prior-suffix :=
+%suffix (* nnga)
 prior-lex-rule.
 
 aux-fut-suffix :=

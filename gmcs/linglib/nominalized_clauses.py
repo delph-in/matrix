@@ -8,6 +8,7 @@ NHS_DEF = '[ HEAD-DTR.SYNSEM [ LOCAL [ CONT.HOOK.INDEX ref-ind ],\
                                            REL 0-dlist ]]\
             NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPR < > ].'
 
+
 # A rule that does not allow case change on subject or object.
 # Only good for high and mid nominalization.
 HIGH_OR_MID_LEXRULE_SUBJ_ID = 'high-or-mid-nominalization-lex-rule := cat-change-with-ccont-lex-rule & same-cont-lex-rule &\
@@ -66,9 +67,7 @@ LOW_NMZ = 'low-nominalization-lex-rule := cat-change-with-ccont-lex-rule &\
                 [ SYNSEM.LOCAL.CAT [ HEAD noun & \
 			    [ NMZ +,\
 			    MOD #mod ],\
-		        VAL [ SUBJ < [ LOCAL [ CAT [ VAL.SPR < > ],\
-				      	      CONT.HOOK.INDEX #subj ] ] >,\
-			     SPEC #spec,\
+		        VAL [ SPEC #spec,\
 			     SPR < [ OPT + ]> ],\
 		       MC #mc,\
 		       MKG #mkg,\
@@ -84,8 +83,7 @@ LOW_NMZ = 'low-nominalization-lex-rule := cat-change-with-ccont-lex-rule &\
 	            HOOK [ INDEX #arg0,\
 		        LTOP #ltop ]],\
                 DTR.SYNSEM.LOCAL [ CAT [ HEAD [ MOD #mod ],\
-			     VAL [ SUBJ < [ LOCAL [ CONT.HOOK.INDEX #subj ] ] >,\
-				   SPEC #spec  ],\
+			     VAL [ SPEC #spec  ],\
 			     MC #mc,\
 			     MKG #mkg,\
 			     HC-LIGHT #hc-light,\

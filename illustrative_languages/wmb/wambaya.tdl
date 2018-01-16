@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of wambaya
 ;;; created at:
-;;;     Tue Jan 16 17:39:57 UTC 2018
+;;;     Tue Jan 16 20:15:09 UTC 2018
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -154,8 +154,7 @@ aux-lex := verb-lex &
 
 intransitive-verb-lex := main-verb-lex & intransitive-lex-item &
   [ SYNSEM.LOCAL.CAT.VAL.COMPS < >,
-    ARG-ST.FIRST.LOCAL.CAT.HEAD noun,
-    INFLECTED.INFLECTION-FLAG - ].
+    ARG-ST.FIRST.LOCAL.CAT.HEAD noun ].
 
 transitive-verb-lex := main-verb-lex & transitive-lex-item &
   [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >,
@@ -164,8 +163,7 @@ transitive-verb-lex := main-verb-lex & transitive-lex-item &
              [ LOCAL.CAT cat-sat &
                          [ VAL [ SPR < >,
                                  COMPS < > ],
-                           HEAD noun ] ] >,
-    INFLECTED.INFLECTION-FLAG - ].
+                           HEAD noun ] ] > ].
 
 ctp-verb-lex := main-verb-lex & clausal-second-arg-trans-lex-item &
   [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >,
@@ -185,13 +183,16 @@ erg-abs-transitive-verb-lex := transitive-verb-lex &
              [ LOCAL.CAT.HEAD noun &
                               [ CASE abs ] ] > ].
 
-intrans-verb-lex := abs-intransitive-verb-lex.
+intrans-verb-lex := abs-intransitive-verb-lex &
+  [ INFLECTED.INFLECTION-FLAG - ].
 
-trans-verb-lex := erg-abs-transitive-verb-lex.
+trans-verb-lex := erg-abs-transitive-verb-lex &
+  [ INFLECTED.INFLECTION-FLAG - ].
 
 trans2-verb-lex := transitive-verb-lex &
   [ SYNSEM.LOCAL.CAT.VAL [ SUBJ.FIRST.LOCAL.CAT.HEAD.CASE erg,
-                           COMPS.FIRST.LOCAL.CAT.HEAD.CASE all ] ].
+                           COMPS.FIRST.LOCAL.CAT.HEAD.CASE all ],
+    INFLECTED.INFLECTION-FLAG - ].
 
 ;;; Auxiliaries
 
@@ -441,13 +442,14 @@ bare-np-phrase := basic-bare-np-phrase &
 morphological-subord-clause-phrase := basic-unary-phrase &
   [ SYNSEM.LOCAL.CAT [ MC -,
                        VAL.SUBJ #subj,
-                       HEAD.MOD < [ LOCAL scopal-mod &
-                                          [ CAT [ HEAD verb,
-                                                  VAL [ SUBJ < >,
-                                                        SPR < >,
-                                                        COMPS < > ] ],
-                                            CONT.HOOK [ LTOP #mcl,
-                                                        INDEX #index ] ] ] > ],
+                       HEAD adp &
+                            [ MOD < [ LOCAL scopal-mod &
+                                            [ CAT [ HEAD verb,
+                                                    VAL [ SUBJ < >,
+                                                          SPR < >,
+                                                          COMPS < > ] ],
+                                              CONT.HOOK [ LTOP #mcl,
+                                                          INDEX #index ] ] ] > ] ],
     C-CONT [ RELS <! [ ARG1 #mch,
                        ARG2 #sch ] !>,
              HCONS <! qeq &
@@ -456,13 +458,12 @@ morphological-subord-clause-phrase := basic-unary-phrase &
                                      [ HARG #sch,
                                        LARG #scl ] !>,
              HOOK.INDEX #index ],
-    ARGS < [ SYNSEM [ LOCAL [ CAT [ HEAD verb,
-                                    MC +,
-                                    VAL [ SUBJ #subj,
-                                          SPR < >,
-                                          COMPS < > ] ],
-                              CONT.HOOK.LTOP #scl ],
-                      NON-LOCAL.REL 0-dlist ] ] > ].
+    ARGS < [ SYNSEM.LOCAL [ CAT [ HEAD verb,
+                                  MC +,
+                                  VAL [ SUBJ #subj,
+                                        SPR < >,
+                                        COMPS < > ] ],
+                            CONT.HOOK.LTOP #scl ] ] > ].
 
 shared-subject-PRIOR-modifying-clause-phrase := morphological-subord-clause-phrase &
   [ ARGS < [ SYNSEM.LOCAL [ CONT.HOOK.XARG #xarg,
@@ -475,26 +476,26 @@ shared-subject-PRIOR-modifying-clause-phrase := morphological-subord-clause-phra
 no-subordinator-nominalized-subord-clause-phrase := basic-unary-phrase &
   [ SYNSEM.LOCAL.CAT [ MC -,
                        VAL.SUBJ #subj,
-                       HEAD.MOD < [ LOCAL scopal-mod &
-                                          [ CAT [ HEAD verb,
-                                                  VAL [ SUBJ #subj,
-                                                        SPR < >,
-                                                        COMPS < > ] ],
-                                            CONT.HOOK [ LTOP #mcl,
-                                                        INDEX #index ] ] ] > ],
+                       HEAD adp &
+                            [ MOD < [ LOCAL scopal-mod &
+                                            [ CAT [ HEAD verb,
+                                                    VAL [ SUBJ #subj,
+                                                          SPR < >,
+                                                          COMPS < > ] ],
+                                              CONT.HOOK [ LTOP #mcl,
+                                                          INDEX #index ] ] ] > ] ],
     C-CONT [ RELS <! [ ARG1 #mch,
                        ARG2 #scl ] !>,
              HCONS <! qeq &
                       [ HARG #mch,
                         LARG #mcl ] !>,
              HOOK.INDEX #index ],
-    ARGS < [ SYNSEM [ LOCAL [ CONT.HOOK.INDEX #scl,
-                              CAT [ HEAD noun,
-                                    MC +,
-                                    VAL [ SUBJ #subj,
-                                          SPR < >,
-                                          COMPS < > ] ] ],
-                      NON-LOCAL.REL 0-dlist ] ] > ].
+    ARGS < [ SYNSEM.LOCAL [ CONT.HOOK.INDEX #scl,
+                            CAT [ HEAD noun,
+                                  MC +,
+                                  VAL [ SUBJ #subj,
+                                        SPR < >,
+                                        COMPS < > ] ] ] ] > ].
 
 nmz-posthead-PURP-shared-subject-modifying-clause-phrase := no-subordinator-nominalized-subord-clause-phrase &
   [ ARGS < [ SYNSEM.LOCAL [ CONT.HOOK.XARG #xarg,
