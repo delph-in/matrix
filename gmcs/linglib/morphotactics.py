@@ -1103,16 +1103,23 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
                'A given rule can only be marked for one possessive behavior.')
     # EKN 2018-01-09: Check that only PNG features are 
     # added as agreement features to possessive strategies
-    # TODO: allow poss-stratN as a feature
     png_feats=set(['person','number','gender'])
     for feat_key in other_feats:
         if (poss_strats or poss_prons) and other_feats[feat_key][0] not in png_feats:
             vr.err(feat_key+'_name',
-                   'Only person, number, and gender features are supported for agreement' +\
-                   ' between possessor and possessum.')
-
-        
-
+                   'Only person, number, and gender features are supported for agreement ' +\
+                   'between possessor and possessum.')
+    # Possessive pc's should be obligatory
+    # TODO: not working on site version.
+    if poss_strats or poss_prons:
+        pc_id=lrt.full_key.split('_')[0]
+        pc=choices.get(pc_id)
+        if pc.get('obligatory')=='off':
+            mess= 'Possessive position ' +\
+                     'classes should be obligatory; ' +\
+                     'please mark as obligatory and then include a ' +\
+                     'nonpossessive lexical rule type.'
+            vr.err(pc_id+'_obligatory', mess)
 
     # TJT 2014-08-21: Incorporated Adjective validation
     if incorp:

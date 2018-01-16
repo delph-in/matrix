@@ -2897,11 +2897,11 @@ BeginIter poss-strat{i} "a possessive strategy"
      . head-initial "head-initial" "" "possessum-first<br>"
      . either "either" "" "either (not currently working)<br>"
 
-     Radio mod-spec "Modifier or specifier" "<p>The possessor is more like a </p>" ""
+     Radio mod-spec "Modifier or specifier" "<p>In some possessive strategies, the possessor acts like a <b>specifier</b> of the possessum; in other strategies, the possessor is more like a <b>modifier</b> of the possessum. For a full explanation of the tests used to distinguish these two behaviors, see the documentation link above. <br><br> In this strategy, is the possessor more like a </p>" ""
      . spec "specifier" "" "specifier<br>"
      . mod "modifier" "" "modifier<br>"
 
-     Radio mark-loc "Mark location" "<p> Do any morphemes appear which mark the noun phrase as possessive? If so, where?</p>" ""
+     Radio mark-loc "Mark location" "<p> Do any morphemes (affixes, clitics, or separate words) appear which mark the noun phrase as possessive? If so, where?</p>" ""
      . possessor "Possessor marking" "" "On the possessor<br>"  "toggle_element.call(this, 'possessor-morph{i}', 'on'); toggle_element.call(this, 'possessum-morph{i}', 'off');"
      . possessum "Possessum marking" "" "On the possessum<br>"  "toggle_element.call(this, 'possessum-morph{i}', 'on'); toggle_element.call(this, 'possessor-morph{i}', 'off');"
      . both "Both marking" "" "On both the possessor and the possessum<br>" "toggle_element.call(this, 'possessum-morph{i}', 'on'); toggle_element.call(this, 'possessor-morph{i}', 'on');"
