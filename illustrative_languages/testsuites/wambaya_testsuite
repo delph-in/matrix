@@ -20,16 +20,6 @@ Ngajbi ng-a alaji yarru ng-a magi-nmanji
 see 1SG-PST boy.ABS go 1SG-PST camp-ALL
 `I saw the boy (when/because) I got to camp.'
 
-# 3 finite verb
-Source: n
-Vetted: n
-Judgment: u
-Phenomena:{finite}
-Ngajbi nga alaji yarrubarda maginmanji
-Ngajbi ng-a alaji yarru-barda magi-nmanji
-see 1SG-PST boy.ABS go-INF camp-ALL
-`I saw the boy (when/because) I got to camp.'
-
 # 4 clause order
 # this is grammatical, but it acutally means "just after the women dance, the men will sing"
 Source: n
@@ -57,16 +47,6 @@ Gamarra g-u nyagaj-ba yarru-nnga
 calf 3SG-FUT be.tired-FUT go-PRIOR
 `His calves will be tired from walking.'
 
-# 6 finite
-Source: a:214
-Vetted: s
-Judgment: u
-Phenomena:{prior}
-Gamarra gu nyagajba yarruba
-Gamarra g-u nyagaj-ba yarru-ba
-calf 3SG-FUT be.tired-FUT go-FUT
-`His calves will be tired from walking.'
-
 # 7 shared subj
 # if subj is necessarily shared this will be ungrammatical. if switch reference is allowed it will be grammatical
 # but the pronoun will no be coindexed with "his calves"
@@ -74,9 +54,9 @@ Source: a:214
 Vetted: s
 Judgment: u
 Phenomena:{ssubj}
-Gamarra gu nyagajba gu yarrunnga
-Gamarra g-u nyagaj-ba g-u yarru-nnga
-calf 3SG-FUT be.tired-FUT 3SG-NF go-PRIOR
+Gamarra gu nyagajba Gamarra yarrunnga
+Gamarra g-u nyagaj-ba Gamarra yarru-nnga
+calf 3SG-FUT be.tired-FUT calf go-PRIOR
 `His calves will be tired from walking.'
 
 # 8 clause order

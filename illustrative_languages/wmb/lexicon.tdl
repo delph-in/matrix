@@ -9,17 +9,17 @@ alaji := masc-noun-lex &
   [ STEM < "alaji" >,
     SYNSEM.LKEYS.KEYREL.PRED "_boy_n_rel" ].
 
-g_1 := fem-noun-lex &
-  [ STEM < "g" >,
-    SYNSEM.LKEYS.KEYREL.PRED "_woman_n_rel" ].
-
-gamarra := neut-noun-lex &
+gamarra := masc-noun-lex &
   [ STEM < "gamarra" >,
     SYNSEM.LKEYS.KEYREL.PRED "_calf_n_rel" ].
 
-magi := neut-noun-lex &
+magi := masc-noun-lex &
   [ STEM < "magi" >,
     SYNSEM.LKEYS.KEYREL.PRED "_camp_n_rel" ].
+
+g_1 := fem-noun-lex &
+  [ STEM < "g" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_woman_n_rel" ].
 
 manganymi := veg-noun-lex &
   [ STEM < "manganymi" >,

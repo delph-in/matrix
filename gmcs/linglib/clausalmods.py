@@ -517,11 +517,12 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
             supertype = 'no-subordinator-nominalized-norel-subord-clause-phrase'
             mylang.add(supertype + ' := basic-unary-phrase &\
           [ SYNSEM [ LOCAL [ CAT [ MC -,\
-                                  VAL.SUBJ #subj,\
+                                  VAL [ SUBJ #subj,\
+                                        SPR #spr,\
+                                        COMPS < > ],\
                                   HEAD adp & [ MOD < [ LOCAL scopal-mod &\
         						[ CAT [ HEAD verb,\
         							VAL [ SUBJ < >,\
-        							      SPR < >,\
         							      COMPS < > ]],\
         						  CONT.HOOK [ LTOP #mcl,\
         								INDEX #index ]]] > ]]]],\
@@ -535,9 +536,9 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
         		      LARG #scl ] !>,\
             		HOOK.INDEX #index ],\
             ARGS < [ SYNSEM [ LOCAL [ CAT [ HEAD noun,\
-        				    MC +,\
+        				    MC na-or-+,\
         				    VAL [ SUBJ #subj,\
-        				        SPR < >,\
+        				        SPR #spr,\
         					  COMPS < > ]],\
         			    CONT.HOOK.LTOP #scl ] ] ] > ].')
         else:
@@ -545,11 +546,12 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
             supertype = 'no-subordinator-nominalized-subord-clause-phrase'
             mylang.add(supertype + ' := basic-unary-phrase &\
             [ SYNSEM [ LOCAL [ CAT [ MC -,\
-                                    VAL.SUBJ #subj,\
+                                    VAL [ SUBJ #subj,\
+                                          SPR #spr,\
+                                          COMPS < > ],\
                                     HEAD adp & [ MOD < [ LOCAL scopal-mod &\
           						[ CAT [ HEAD verb,\
-          							VAL [ SUBJ #subj,\
-          							      SPR < >,\
+          							VAL [ SUBJ < >,\
           							      COMPS < > ]],\
           						  CONT.HOOK [ LTOP #mcl,\
           								INDEX #index ]]] > ]]]],\
@@ -561,15 +563,17 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
               		HOOK.INDEX #index ],\
               ARGS < [ SYNSEM [ LOCAL [ CONT.HOOK.INDEX #scl,\
                                         CAT [ HEAD noun,\
-          				    MC +,\
+          				    MC na-or-+,\
           				    VAL [ SUBJ #subj,\
-          				        SPR < >,\
+          				        SPR #spr,\
           					  COMPS < > ]] ] ] ] > ].')
     else:
         supertype = 'morphological-subord-clause-phrase'
         mylang.add(supertype + ' := basic-unary-phrase &\
     [ SYNSEM [ LOCAL [ CAT [ MC -,\
-                            VAL.SUBJ #subj,\
+                            VAL [ SUBJ #subj,\
+                                  SPR < >,\
+                                  COMPS < > ],\
                             HEAD adp & [ MOD < [ LOCAL scopal-mod &\
   						[ CAT [ HEAD verb,\
   							VAL [ SUBJ < >,\
@@ -587,7 +591,7 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
   		      LARG #scl ] !>,\
       		HOOK.INDEX #index ],\
       ARGS < [ SYNSEM [ LOCAL [ CAT [ HEAD verb,\
-  				    MC +,\
+  				    MC na-or-+,\
   				    VAL [ SUBJ #subj,\
   				    SPR < >,\
   					  COMPS < > ]],\

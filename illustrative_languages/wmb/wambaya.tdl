@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of wambaya
 ;;; created at:
-;;;     Tue Jan 16 20:15:09 UTC 2018
+;;;     Wed Jan 17 00:50:02 UTC 2018
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -25,13 +25,23 @@ head :+ [ AUX bool,
     FORM form,
     INIT bool ].
 
-inflected :+ [ CASE-FLAG luk,
-    INFLECTION-FLAG luk,
-    AUX-TENSE-FLAG luk ].
+inflected :+ [ AUX-TENSE-FLAG luk,
+    AUX-MASCULINE-FLAG luk,
+    INTRANSITIVE-VERB-FLAG luk,
+    AUX-FIRST-PER-FLAG luk,
+    CASE-FLAG luk,
+    AUX-FEMINE-FLAG luk,
+    TRANSITIVE-VERB-FLAG luk,
+    INFLECTION-FLAG luk ].
 
-infl-satisfied :+ [ CASE-FLAG na-or-+,
-    INFLECTION-FLAG na-or-+,
-    AUX-TENSE-FLAG na-or-+ ].
+infl-satisfied :+ [ AUX-TENSE-FLAG na-or-+,
+    AUX-MASCULINE-FLAG na-or-+,
+    INTRANSITIVE-VERB-FLAG na-or-+,
+    AUX-FIRST-PER-FLAG na-or-+,
+    CASE-FLAG na-or-+,
+    AUX-FEMINE-FLAG na-or-+,
+    TRANSITIVE-VERB-FLAG na-or-+,
+    INFLECTION-FLAG na-or-+ ].
 
 png :+ [ PER person,
     NUM number,
@@ -78,10 +88,9 @@ plural := number.
 ;;; Gender
 
 gender := *top*.
-masculine := gender.
+masculine-or-neuter := gender.
 feminine := gender.
 vegetable := gender.
-neuter := gender.
 
 ;;; Form
 
@@ -116,16 +125,10 @@ noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & non-mod-lex-ite
     INFLECTED.CASE-FLAG - ].
 
 masc-noun-lex := noun-lex &
-  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ GEND masculine,
-                                       NUM singular ] ].
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND masculine-or-neuter ].
 
 fem-noun-lex := noun-lex &
-  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ GEND feminine,
-                                       NUM singular ] ].
-
-neut-noun-lex := noun-lex &
-  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ NUM singular,
-                                       GEND neuter ] ].
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.GEND feminine ].
 
 veg-noun-lex := noun-lex.
 
@@ -136,7 +139,7 @@ verb-lex := non-mod-lex-item &
                        HEAD verb &
                             [ NMZ - ] ] ].
 
-main-verb-lex := verb-lex & basic-verb-lex & inflection-rule-dtr &
+main-verb-lex := verb-lex & basic-verb-lex & inflection-rule-dtr & intrans-features-or-trans-features-rule-dtr &
   [ SYNSEM.LOCAL [ CAT [ HEAD.AUX -,
                          VAL [ SPR < >,
                                SPEC < >,
@@ -150,11 +153,14 @@ main-verb-lex := verb-lex & basic-verb-lex & inflection-rule-dtr &
 
 aux-lex := verb-lex &
   [ SYNSEM.LOCAL.CAT.HEAD.AUX +,
-    INFLECTED.AUX-TENSE-FLAG - ].
+    INFLECTED [ TRANSITIVE-VERB-FLAG na-or--,
+                INTRANSITIVE-VERB-FLAG na-or-- ] ].
 
 intransitive-verb-lex := main-verb-lex & intransitive-lex-item &
   [ SYNSEM.LOCAL.CAT.VAL.COMPS < >,
-    ARG-ST.FIRST.LOCAL.CAT.HEAD noun ].
+    ARG-ST.FIRST.LOCAL.CAT.HEAD noun,
+    INFLECTED [ TRANSITIVE-VERB-FLAG na-or--,
+                INTRANSITIVE-VERB-FLAG + ] ].
 
 transitive-verb-lex := main-verb-lex & transitive-lex-item &
   [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >,
@@ -163,7 +169,9 @@ transitive-verb-lex := main-verb-lex & transitive-lex-item &
              [ LOCAL.CAT cat-sat &
                          [ VAL [ SPR < >,
                                  COMPS < > ],
-                           HEAD noun ] ] > ].
+                           HEAD noun ] ] >,
+    INFLECTED [ TRANSITIVE-VERB-FLAG +,
+                INTRANSITIVE-VERB-FLAG na-or-- ] ].
 
 ctp-verb-lex := main-verb-lex & clausal-second-arg-trans-lex-item &
   [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >,
@@ -229,8 +237,12 @@ arg-comp-aux := aux-lex & basic-two-arg &
 
 arg-comp-aux-no-pred := arg-comp-aux & raise-sem-lex-item.
 
-masc-aux-lex := arg-comp-aux-no-pred &
-  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM finite ].
+masc-aux-lex := arg-comp-aux-no-pred & aux-tense-rule-dtr &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM finite,
+    INFLECTED [ TRANSITIVE-VERB-FLAG na-or--,
+                AUX-MASCULINE-FLAG -,
+                INTRANSITIVE-VERB-FLAG na-or--,
+                AUX-TENSE-FLAG - ] ].
 
 ; Somewhat surprisingly, this inherits from basic-two-arg, so
 ; that the non-local features are amalgamated from subj, the
@@ -241,8 +253,12 @@ masc-aux-lex := arg-comp-aux-no-pred &
 ; tell that you had an argument composition auxiliary if it
 ; wasn't appearing adjacent to the verb.
 
-fem-aux-lex := arg-comp-aux-no-pred &
-  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM finite ].
+fem-aux-lex := arg-comp-aux-no-pred & aux-tense-rule-dtr &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM finite,
+    INFLECTED [ TRANSITIVE-VERB-FLAG na-or--,
+                INTRANSITIVE-VERB-FLAG na-or--,
+                AUX-TENSE-FLAG -,
+                AUX-FEMINE-FLAG - ] ].
 
 ; Somewhat surprisingly, this inherits from basic-two-arg, so
 ; that the non-local features are amalgamated from subj, the
@@ -253,8 +269,12 @@ fem-aux-lex := arg-comp-aux-no-pred &
 ; tell that you had an argument composition auxiliary if it
 ; wasn't appearing adjacent to the verb.
 
-first-aux-lex := arg-comp-aux-no-pred &
-  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM finite ].
+first-aux-lex := arg-comp-aux-no-pred & aux-tense-rule-dtr &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM finite,
+    INFLECTED [ TRANSITIVE-VERB-FLAG na-or--,
+                INTRANSITIVE-VERB-FLAG na-or--,
+                AUX-TENSE-FLAG -,
+                AUX-FIRST-PER-FLAG - ] ].
 
 ;;; Complementizers
 
@@ -266,9 +286,7 @@ low-nominalization-lex-rule := cat-change-with-ccont-lex-rule &
   [ SYNSEM.LOCAL.CAT [ HEAD noun &
                             [ NMZ +,
                               MOD #mod ],
-                       VAL [ SUBJ < [ LOCAL [ CAT.VAL.SPR < >,
-                                              CONT.HOOK.INDEX #subj ] ] >,
-                             SPEC #spec,
+                       VAL [ SPEC #spec,
                              SPR < [ OPT + ] > ],
                        MC #mc,
                        MKG #mkg,
@@ -284,8 +302,7 @@ low-nominalization-lex-rule := cat-change-with-ccont-lex-rule &
              HOOK [ INDEX #arg0,
                     LTOP #ltop ] ],
     DTR.SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
-                             VAL [ SUBJ < [ LOCAL.CONT.HOOK.INDEX #subj ] >,
-                                   SPEC #spec ],
+                             VAL.SPEC #spec,
                              MC #mc,
                              MKG #mkg,
                              HC-LIGHT #hc-light,
@@ -300,16 +317,28 @@ low-nmz-subjid-compsid-lex-rule := low-nominalization-lex-rule &
 
 ;;; Intermediate rule types
 
+aux-tense-rule-dtr := word-or-lexrule.
 inflection-rule-dtr := word-or-lexrule.
+intrans-features-or-trans-features-rule-dtr := word-or-lexrule.
 
 ;;; Lexical rule types
 
 case-lex-rule-super := add-only-no-ccont-rule &
   [ INFLECTED [ CASE-FLAG +,
+                INTRANSITIVE-VERB-FLAG #intransitive-verb,
+                AUX-MASCULINE-FLAG #aux-masculine,
+                AUX-FIRST-PER-FLAG #aux-first-per,
+                AUX-FEMINE-FLAG #aux-femine,
                 AUX-TENSE-FLAG #aux-tense,
+                TRANSITIVE-VERB-FLAG #transitive-verb,
                 INFLECTION-FLAG #inflection ],
     DTR noun-lex &
-        [ INFLECTED [ AUX-TENSE-FLAG #aux-tense,
+        [ INFLECTED [ INTRANSITIVE-VERB-FLAG #intransitive-verb,
+                      AUX-MASCULINE-FLAG #aux-masculine,
+                      AUX-FIRST-PER-FLAG #aux-first-per,
+                      AUX-FEMINE-FLAG #aux-femine,
+                      AUX-TENSE-FLAG #aux-tense,
+                      TRANSITIVE-VERB-FLAG #transitive-verb,
                       INFLECTION-FLAG #inflection ] ] ].
 
 erg-lex-rule := case-lex-rule-super & infl-lex-rule &
@@ -324,44 +353,55 @@ dat-lex-rule := case-lex-rule-super & infl-lex-rule &
 all-lex-rule := case-lex-rule-super & infl-lex-rule &
   [ SYNSEM.LOCAL.CAT.HEAD.CASE all ].
 
-inflection-lex-rule-super := lex-rule &
+inflection-lex-rule-super := add-only-no-ccont-rule &
   [ INFLECTED [ INFLECTION-FLAG +,
+                INTRANSITIVE-VERB-FLAG #intransitive-verb,
+                AUX-MASCULINE-FLAG #aux-masculine,
+                AUX-FIRST-PER-FLAG #aux-first-per,
+                CASE-FLAG #case,
+                AUX-FEMINE-FLAG #aux-femine,
                 AUX-TENSE-FLAG #aux-tense,
-                CASE-FLAG #case ],
+                TRANSITIVE-VERB-FLAG #transitive-verb ],
     DTR inflection-rule-dtr &
-        [ INFLECTED [ AUX-TENSE-FLAG #aux-tense,
-                      CASE-FLAG #case ] ] ].
+        [ INFLECTED [ INTRANSITIVE-VERB-FLAG #intransitive-verb,
+                      AUX-MASCULINE-FLAG #aux-masculine,
+                      AUX-FIRST-PER-FLAG #aux-first-per,
+                      CASE-FLAG #case,
+                      AUX-FEMINE-FLAG #aux-femine,
+                      AUX-TENSE-FLAG #aux-tense,
+                      TRANSITIVE-VERB-FLAG #transitive-verb ] ] ].
 
-fut-lex-rule := add-only-no-ccont-rule & infl-lex-rule & inflection-lex-rule-super &
+fut-lex-rule := infl-lex-rule & inflection-lex-rule-super &
   [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.E.TENSE future,
                    CAT.HEAD.FORM finite ] ].
 
-pst-lex-rule := add-only-no-ccont-rule & const-lex-rule & inflection-lex-rule-super &
+pst-lex-rule := const-lex-rule & inflection-lex-rule-super &
   [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.E.TENSE past,
                    CAT.HEAD.FORM finite ] ].
 
-non-fin-lex-rule := add-only-no-ccont-rule & const-lex-rule & inflection-lex-rule-super &
+non-fin-lex-rule := const-lex-rule & inflection-lex-rule-super & intrans-features-or-trans-features-rule-dtr &
   [ SYNSEM.LOCAL.CAT.HEAD.FORM nonfinite ].
 
-inf-lex-rule := infl-lex-rule & inflection-lex-rule-super & low-nmz-subjid-trans-lex-rule &
-  [ SYNSEM.LOCAL.CAT [ HEAD.FORM INF,
-                       VAL.COMPS.FIRST.LOCAL.CAT.HEAD.CASE dat ] ].
-
-purp-lex-rule := infl-lex-rule & inflection-lex-rule-super & low-nmz-subjid-trans-lex-rule &
-  [ SYNSEM.LOCAL.CAT [ HEAD.FORM PURP,
-                       VAL.COMPS.FIRST.LOCAL.CAT.HEAD.CASE dat ] ].
-
-prior-lex-rule := infl-lex-rule & inflection-lex-rule-super & low-nmz-subjid-trans-lex-rule &
-  [ SYNSEM.LOCAL.CAT [ HEAD.FORM PRIOR,
-                       VAL.COMPS.FIRST.LOCAL.CAT.HEAD.CASE dat ] ].
+non-pst-lex-rule := const-lex-rule & inflection-lex-rule-super &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E.TENSE nonpast ].
 
 aux-tense-lex-rule-super := add-only-no-ccont-rule &
   [ INFLECTED [ AUX-TENSE-FLAG +,
-                INFLECTION-FLAG #inflection,
-                CASE-FLAG #case ],
-    DTR aux-lex &
-        [ INFLECTED [ INFLECTION-FLAG #inflection,
-                      CASE-FLAG #case ] ] ].
+                INTRANSITIVE-VERB-FLAG #intransitive-verb,
+                AUX-MASCULINE-FLAG #aux-masculine,
+                AUX-FIRST-PER-FLAG #aux-first-per,
+                CASE-FLAG #case,
+                AUX-FEMINE-FLAG #aux-femine,
+                TRANSITIVE-VERB-FLAG #transitive-verb,
+                INFLECTION-FLAG #inflection ],
+    DTR aux-tense-rule-dtr &
+        [ INFLECTED [ INTRANSITIVE-VERB-FLAG #intransitive-verb,
+                      AUX-MASCULINE-FLAG #aux-masculine,
+                      AUX-FIRST-PER-FLAG #aux-first-per,
+                      CASE-FLAG #case,
+                      AUX-FEMINE-FLAG #aux-femine,
+                      TRANSITIVE-VERB-FLAG #transitive-verb,
+                      INFLECTION-FLAG #inflection ] ] ].
 
 aux-fut-lex-rule := aux-tense-lex-rule-super & infl-lex-rule &
   [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.E.TENSE future,
@@ -378,18 +418,102 @@ aux-np-awy-lex-rule := aux-tense-lex-rule-super & infl-lex-rule &
 aux-non-fin-lex-rule := aux-tense-lex-rule-super & const-lex-rule &
   [ SYNSEM.LOCAL.CAT.HEAD.FORM nonfinite ].
 
-per-gen-lex-rule-super := add-only-no-ccont-rule &
+aux-femine-lex-rule-super := add-only-no-ccont-rule & aux-tense-rule-dtr & const-lex-rule &
+  [ INFLECTED [ AUX-FEMINE-FLAG +,
+                AUX-TENSE-FLAG #aux-tense,
+                AUX-MASCULINE-FLAG #aux-masculine,
+                AUX-FIRST-PER-FLAG #aux-first-per,
+                CASE-FLAG #case,
+                INTRANSITIVE-VERB-FLAG #intransitive-verb,
+                TRANSITIVE-VERB-FLAG #transitive-verb,
+                INFLECTION-FLAG #inflection ],
+    DTR fem-aux-lex &
+        [ INFLECTED [ AUX-TENSE-FLAG #aux-tense,
+                      AUX-MASCULINE-FLAG #aux-masculine,
+                      AUX-FIRST-PER-FLAG #aux-first-per,
+                      CASE-FLAG #case,
+                      INTRANSITIVE-VERB-FLAG #intransitive-verb,
+                      TRANSITIVE-VERB-FLAG #transitive-verb,
+                      INFLECTION-FLAG #inflection ] ] ].
+
+aux-fem-lex-rule := aux-femine-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ GEND feminine,
+                                                                PER 3rd ] ].
+
+trans-features-lex-rule-super := infl-lex-rule & low-nmz-subjid-trans-lex-rule &
   [ INFLECTED #infl,
-    DTR aux-lex &
-        [ INFLECTED #infl ] ].
+    DTR intrans-features-or-trans-features-rule-dtr &
+        [ INFLECTED #infl &
+                    [ TRANSITIVE-VERB-FLAG + ] ] ].
 
-aux-fem-lex-rule := const-lex-rule & per-gen-lex-rule-super &
-  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.GEND feminine ].
+inf-lex-rule := trans-features-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT [ HEAD.FORM INF,
+                       VAL.COMPS.FIRST.LOCAL.CAT.HEAD.CASE dat ] ].
 
-aux-masc-lex-rule := per-gen-lex-rule-super &
-  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.GEND masculine ].
+purp-lex-rule := trans-features-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT [ HEAD.FORM PURP,
+                       VAL.COMPS.FIRST.LOCAL.CAT.HEAD.CASE dat ] ].
 
-aux-first-lex-rule := const-lex-rule & per-gen-lex-rule-super &
+prior-lex-rule := trans-features-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT [ HEAD.FORM PRIOR,
+                       VAL.COMPS.FIRST.LOCAL.CAT.HEAD.CASE dat ] ].
+
+intrans-features-lex-rule-super := infl-lex-rule & low-nmz-subjid-compsid-lex-rule &
+  [ INFLECTED #infl,
+    DTR intrans-features-or-trans-features-rule-dtr &
+        [ INFLECTED #infl &
+                    [ INTRANSITIVE-VERB-FLAG + ] ] ].
+
+inf2-lex-rule := intrans-features-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.HEAD.FORM INF ].
+
+purp2-lex-rule := intrans-features-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.HEAD.FORM PURP ].
+
+prior2-lex-rule := intrans-features-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.HEAD.FORM PRIOR ].
+
+aux-masculine-lex-rule-super := add-only-no-ccont-rule & aux-tense-rule-dtr & const-lex-rule &
+  [ INFLECTED [ AUX-MASCULINE-FLAG +,
+                INTRANSITIVE-VERB-FLAG #intransitive-verb,
+                INFLECTION-FLAG #inflection,
+                AUX-FIRST-PER-FLAG #aux-first-per,
+                CASE-FLAG #case,
+                AUX-FEMINE-FLAG #aux-femine,
+                AUX-TENSE-FLAG #aux-tense,
+                TRANSITIVE-VERB-FLAG #transitive-verb ],
+    DTR masc-aux-lex &
+        [ INFLECTED [ INTRANSITIVE-VERB-FLAG #intransitive-verb,
+                      INFLECTION-FLAG #inflection,
+                      AUX-FIRST-PER-FLAG #aux-first-per,
+                      CASE-FLAG #case,
+                      AUX-FEMINE-FLAG #aux-femine,
+                      AUX-TENSE-FLAG #aux-tense,
+                      TRANSITIVE-VERB-FLAG #transitive-verb ] ] ].
+
+aux-masc-lex-rule := aux-masculine-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ GEND masculine-or-neuter,
+                                                                PER 3rd ] ].
+
+aux-first-per-lex-rule-super := add-only-no-ccont-rule & aux-tense-rule-dtr & const-lex-rule &
+  [ INFLECTED [ AUX-FIRST-PER-FLAG +,
+                INTRANSITIVE-VERB-FLAG #intransitive-verb,
+                AUX-MASCULINE-FLAG #aux-masculine,
+                CASE-FLAG #case,
+                AUX-FEMINE-FLAG #aux-femine,
+                AUX-TENSE-FLAG #aux-tense,
+                TRANSITIVE-VERB-FLAG #transitive-verb,
+                INFLECTION-FLAG #inflection ],
+    DTR first-aux-lex &
+        [ INFLECTED [ INTRANSITIVE-VERB-FLAG #intransitive-verb,
+                      AUX-MASCULINE-FLAG #aux-masculine,
+                      CASE-FLAG #case,
+                      AUX-FEMINE-FLAG #aux-femine,
+                      AUX-TENSE-FLAG #aux-tense,
+                      TRANSITIVE-VERB-FLAG #transitive-verb,
+                      INFLECTION-FLAG #inflection ] ] ].
+
+aux-first-lex-rule := aux-first-per-lex-rule-super &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PER 1st ].
 
 ;;;;;;;;;;;;;;;;;;;
@@ -439,48 +563,15 @@ comp-head-phrase-2 := basic-head-2nd-comp-phrase & head-final-head-nexus.
 bare-np-phrase := basic-bare-np-phrase &
   [ C-CONT.RELS <! [ PRED "exist_q_rel" ] !> ].
 
-morphological-subord-clause-phrase := basic-unary-phrase &
+no-subordinator-nominalized-subord-clause-phrase := basic-unary-phrase &
   [ SYNSEM.LOCAL.CAT [ MC -,
-                       VAL.SUBJ #subj,
+                       VAL [ SUBJ #subj,
+                             SPR #spr,
+                             COMPS < > ],
                        HEAD adp &
                             [ MOD < [ LOCAL scopal-mod &
                                             [ CAT [ HEAD verb,
                                                     VAL [ SUBJ < >,
-                                                          SPR < >,
-                                                          COMPS < > ] ],
-                                              CONT.HOOK [ LTOP #mcl,
-                                                          INDEX #index ] ] ] > ] ],
-    C-CONT [ RELS <! [ ARG1 #mch,
-                       ARG2 #sch ] !>,
-             HCONS <! qeq &
-                      [ HARG #mch,
-                        LARG #mcl ], qeq &
-                                     [ HARG #sch,
-                                       LARG #scl ] !>,
-             HOOK.INDEX #index ],
-    ARGS < [ SYNSEM.LOCAL [ CAT [ HEAD verb,
-                                  MC +,
-                                  VAL [ SUBJ #subj,
-                                        SPR < >,
-                                        COMPS < > ] ],
-                            CONT.HOOK.LTOP #scl ] ] > ].
-
-shared-subject-PRIOR-modifying-clause-phrase := morphological-subord-clause-phrase &
-  [ ARGS < [ SYNSEM.LOCAL [ CONT.HOOK.XARG #xarg,
-                            CAT [ VAL.SUBJ < unexpressed >,
-                                  HEAD.FORM #feat & PRIOR ] ] ] >,
-    SYNSEM.LOCAL.CAT.HEAD [ MOD < [ LOCAL.CONT.HOOK.XARG #xarg ] >,
-                            FORM #feat ],
-    C-CONT.RELS <! [ PRED "_prior_subord_rel" ] !> ].
-
-no-subordinator-nominalized-subord-clause-phrase := basic-unary-phrase &
-  [ SYNSEM.LOCAL.CAT [ MC -,
-                       VAL.SUBJ #subj,
-                       HEAD adp &
-                            [ MOD < [ LOCAL scopal-mod &
-                                            [ CAT [ HEAD verb,
-                                                    VAL [ SUBJ #subj,
-                                                          SPR < >,
                                                           COMPS < > ] ],
                                               CONT.HOOK [ LTOP #mcl,
                                                           INDEX #index ] ] ] > ] ],
@@ -492,10 +583,18 @@ no-subordinator-nominalized-subord-clause-phrase := basic-unary-phrase &
              HOOK.INDEX #index ],
     ARGS < [ SYNSEM.LOCAL [ CONT.HOOK.INDEX #scl,
                             CAT [ HEAD noun,
-                                  MC +,
+                                  MC na-or-+,
                                   VAL [ SUBJ #subj,
-                                        SPR < >,
+                                        SPR #spr,
                                         COMPS < > ] ] ] ] > ].
+
+nmz-PRIOR-shared-subject-modifying-clause-phrase := no-subordinator-nominalized-subord-clause-phrase &
+  [ ARGS < [ SYNSEM.LOCAL [ CONT.HOOK.XARG #xarg,
+                            CAT [ VAL.SUBJ < unexpressed >,
+                                  HEAD.FORM #feat & PRIOR ] ] ] >,
+    SYNSEM.LOCAL.CAT.HEAD [ MOD < [ LOCAL.CONT.HOOK.XARG #xarg ] >,
+                            FORM #feat ],
+    C-CONT.RELS <! [ PRED "_prior_subord_rel" ] !> ].
 
 nmz-posthead-PURP-shared-subject-modifying-clause-phrase := no-subordinator-nominalized-subord-clause-phrase &
   [ ARGS < [ SYNSEM.LOCAL [ CONT.HOOK.XARG #xarg,
@@ -514,6 +613,34 @@ nmz-posthead-INF-shared-subject-modifying-clause-phrase := no-subordinator-nomin
                               FORM #feat ],
                        POSTHEAD + ],
     C-CONT.RELS <! [ PRED "_purp_subord_rel" ] !> ].
+
+morphological-subord-clause-phrase := basic-unary-phrase &
+  [ SYNSEM.LOCAL.CAT [ MC -,
+                       VAL [ SUBJ #subj,
+                             SPR < >,
+                             COMPS < > ],
+                       HEAD adp &
+                            [ MOD < [ LOCAL scopal-mod &
+                                            [ CAT [ HEAD verb,
+                                                    VAL [ SUBJ < >,
+                                                          SPR < >,
+                                                          COMPS < > ] ],
+                                              CONT.HOOK [ LTOP #mcl,
+                                                          INDEX #index ] ] ] > ] ],
+    C-CONT [ RELS <! [ ARG1 #mch,
+                       ARG2 #sch ] !>,
+             HCONS <! qeq &
+                      [ HARG #mch,
+                        LARG #mcl ], qeq &
+                                     [ HARG #sch,
+                                       LARG #scl ] !>,
+             HOOK.INDEX #index ],
+    ARGS < [ SYNSEM.LOCAL [ CAT [ HEAD verb,
+                                  MC na-or-+,
+                                  VAL [ SUBJ #subj,
+                                        SPR < >,
+                                        COMPS < > ] ],
+                            CONT.HOOK.LTOP #scl ] ] > ].
 
 finite-posthead-modifying-clause-phrase := morphological-subord-clause-phrase &
   [ ARGS < [ SYNSEM.LOCAL.CAT [ VAL.SUBJ < >,

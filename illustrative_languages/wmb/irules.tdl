@@ -17,18 +17,6 @@ fut-suffix :=
 %suffix (* ba)
 fut-lex-rule.
 
-inf-suffix :=
-%suffix (* barda)
-inf-lex-rule.
-
-purp-suffix :=
-%suffix (* barda)
-purp-lex-rule.
-
-prior-suffix :=
-%suffix (* nnga)
-prior-lex-rule.
-
 aux-fut-suffix :=
 %suffix (* u)
 aux-fut-lex-rule.
@@ -44,3 +32,27 @@ aux-pst-lex-rule.
 aux-np-awy-suffix :=
 %suffix (* any)
 aux-np-awy-lex-rule.
+
+inf-suffix :=
+%suffix (* barda)
+inf-lex-rule.
+
+purp-suffix :=
+%suffix (* nka)
+purp-lex-rule.
+
+prior-suffix :=
+%suffix (* nnga)
+prior-lex-rule.
+
+inf2-suffix :=
+%suffix (* barda)
+inf2-lex-rule.
+
+purp2-suffix :=
+%suffix (* nka)
+purp2-lex-rule.
+
+prior2-suffix :=
+%suffix (* nnga)
+prior2-lex-rule.

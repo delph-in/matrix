@@ -5,8 +5,12 @@ pst-lex := pst-lex-rule.
 
 non-fin-lex := non-fin-lex-rule.
 
+non-pst-lex := non-pst-lex-rule.
+
 aux-non-fin-lex := aux-non-fin-lex-rule.
 
 aux-fem-lex := aux-fem-lex-rule.
+
+aux-masc-lex := aux-masc-lex-rule.
 
 aux-first-lex := aux-first-lex-rule.

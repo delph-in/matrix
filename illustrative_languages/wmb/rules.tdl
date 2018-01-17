@@ -19,7 +19,7 @@ comp-head-2 := comp-head-phrase-2.
 
 bare-np := bare-np-phrase.
 
-shared-subject-PRIOR-modifying-clause-phrase := shared-subject-PRIOR-modifying-clause-phrase.
+nmz-PRIOR-shared-subject-modifying-clause-phrase := nmz-PRIOR-shared-subject-modifying-clause-phrase.
 
 adj-head-scop := adj-head-scop-phrase.
 

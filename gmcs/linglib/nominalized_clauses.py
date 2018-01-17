@@ -8,7 +8,6 @@ NHS_DEF = '[ HEAD-DTR.SYNSEM [ LOCAL [ CONT.HOOK.INDEX ref-ind ],\
                                            REL 0-dlist ]]\
             NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPR < > ].'
 
-
 # A rule that does not allow case change on subject or object.
 # Only good for high and mid nominalization.
 HIGH_OR_MID_LEXRULE_SUBJ_ID = 'high-or-mid-nominalization-lex-rule := cat-change-with-ccont-lex-rule & same-cont-lex-rule &\
@@ -241,23 +240,31 @@ def customize_nmcs(mylang, ch, rules):
                        # will be taken care of by INIT
                        # on the clausal verb?
                     mylang.add(typename + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].',merge=True)
-        mylang.set_section('lexrules')
+
         if level == 'high':
+            mylang.set_section('lexrules')
             mylang.add(HIGH_OR_MID_LEXRULE_SUBJ_ID)
         if level == 'mid':
             if case_change('subj', ch):
+                mylang.set_section('lexrules')
                 mylang.add(MID_LEXRULE_NO_SUBJ_ID)
             else:
+                mylang.set_section('lexrules')
                 mylang.add(HIGH_OR_MID_LEXRULE_SUBJ_ID)
         if level == 'low':
+            mylang.set_section('lexrules')
             mylang.add(LOW_NMZ)
             if case_change('subj', ch):
                 if case_change('obj', ch):
+                    mylang.set_section('lexrules')
                     mylang.add(LOW_LEXRULE_NO_SUBJ_ID_NO_COMPS_ID)
+                mylang.set_section('lexrules')
                 mylang.add(LOW_LEXRULE_NO_SUBJ_ID_COMPS_ID)
             else:
                 if case_change('obj', ch):
+                    mylang.set_section('lexrules')
                     mylang.add(LOW_LEXRULE_SUBJ_ID_NO_COMPS_ID)
+                mylang.set_section('lexrules')
                 mylang.add(LOW_LEXRULE_SUBJ_ID_COMPS_ID)
         mylang.set_section('phrases')
         if level == 'mid':

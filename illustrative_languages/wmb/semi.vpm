@@ -49,10 +49,9 @@ PNG.NUM : PNG.NUM
   * <> *
 
 PNG.GEND : PNG.GEND
-  neuter <> neuter
   vegetable <> vegetable
   feminine <> feminine
-  masculine <> masculine
+  masculine-or-neuter <> masculine-or-neuter
   * <> *
 
 E.TENSE : E.TENSE
