@@ -42,7 +42,7 @@
 (list
 (lkb-pathname (parent-directory) "matrix.tdl")
 (lkb-pathname (parent-directory) "head-types.tdl")
-   (lkb-pathname (parent-directory) "wambaya.tdl")
+   (lkb-pathname (parent-directory) "clausalmods-wambaya.tdl")
 (lkb-pathname (parent-directory) "mtr.tdl")
 ))
 

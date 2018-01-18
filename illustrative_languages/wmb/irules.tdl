@@ -13,10 +13,6 @@ all-suffix :=
 %suffix (* nmanji)
 all-lex-rule.
 
-fut-suffix :=
-%suffix (* ba)
-fut-lex-rule.
-
 aux-fut-suffix :=
 %suffix (* u)
 aux-fut-lex-rule.
@@ -33,6 +29,10 @@ aux-np-awy-suffix :=
 %suffix (* any)
 aux-np-awy-lex-rule.
 
+fut-suffix :=
+%suffix (* ba)
+fut-lex-rule.
+
 inf-suffix :=
 %suffix (* barda)
 inf-lex-rule.
@@ -44,6 +44,10 @@ purp-lex-rule.
 prior-suffix :=
 %suffix (* nnga)
 prior-lex-rule.
+
+fut2-suffix :=
+%suffix (* ba)
+fut2-lex-rule.
 
 inf2-suffix :=
 %suffix (* barda)

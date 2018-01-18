@@ -41,6 +41,7 @@ section=arg-opt
 section=nominalclause
   ns1_name=nom-mid
   ns1_level=mid
+  ns1_nmzRel=yes
 
 section=clausalmods
   cms1_position=before

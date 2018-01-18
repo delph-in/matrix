@@ -1,6 +1,6 @@
 ;;; files to load
 
-grammar-top               := "../wambaya-pet.tdl".
+grammar-top               := "../clausalmods-wambaya-pet.tdl".
 variable-property-mapping := "../semi.vpm".
 preprocessor              := "../repp/vanilla.rpp".
 ;generation-ignore-signs   := "generation.ignore".
