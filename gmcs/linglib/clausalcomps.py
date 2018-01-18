@@ -49,8 +49,7 @@ COMPLEMENTIZER = 'complementizer' # Choices key for choices pertaining
 EXTRA = 'EXTRA' # Feature for extraposed complements
 
 # Error messages:
-EXTRA_VO = 'The only supporded word orders for extraposed complements are: SOV, VOS, OVS, OSV, v-final. ' \
-           'V-initial is not supported with optional complementizer.'
+EXTRA_VO = 'The only supporded word orders for extraposed complements are: SOV, VOS, OVS, OSV, v-final.'
 SAME_OR_EXTRA = 'Please choose whether the clausal complement takes the same position as noun ' \
                         'complements or is extraposed to the end of the clause ' \
                         '(the latter valid only for strict OV orders).'
