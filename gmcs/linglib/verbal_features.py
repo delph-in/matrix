@@ -134,27 +134,13 @@ def init_form_hierarchy(ch, hierarchies):
     """
     Create the FORM hierarchies associated with the user's choices
     about verb forms
-    Adds FORM finite and nonfinte values if there are auxiliaries
-    or if user specified
     """
     hier = TDLHierarchy('form')
-
-    if ch.get('has-aux') == 'yes' or 'noaux-fin-nf' in ch:
-
+    if ('form-fin-nf' in ch):
         hier.add('nonfinite', 'form')
         hier.add('finite', 'form')
-
-        for p in ('nf', 'fin'):
-
-            for subform in ch.get(p + '-subform',[]):
-                if p == 'nf':
-                    sup = 'nonfinite'
-                elif p == 'fin':
-                    sup = 'finite'
-
-                sub = subform.get('name')
-                hier.add(sub, sup)
-
+        for subform in ch.get('form-subtype',[]):
+            hier.add(subform.get('name'), subform.get('supertype'))
     if not hier.is_empty():
         hierarchies[hier.name] = hier
 

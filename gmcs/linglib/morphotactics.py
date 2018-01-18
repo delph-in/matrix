@@ -437,7 +437,13 @@ LEX_RULE_SUPERTYPES = ['cat-change-only-lex-rule',
                        'same-head-lex-rule',
                        'val-change-only-lex-rule',
                        'head-change-only-lex-rule',
-                       'cont-change-only-lex-rule']
+                       'cont-change-only-lex-rule',
+                       'high-or-mid-nominalization-lex-rule',
+                       'mid-nominalization-lex-rule',
+                       'low-nmz-no-subjid-trans-lex-rule',
+                       'low-nmz-no-subjid-compsid-lex-rule',
+                       'low-nmz-subjid-trans-lex-rule',
+                       'low-nmz-subjid-compsid-lex-rule']
 
 ALL_LEX_RULE_SUPERTYPES = LEX_RULE_SUPERTYPES + ['infl-lex-rule',
                                                  'const-lex-rule',
@@ -1113,6 +1119,16 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
                     vr.warn(lrt.full_key+'_predcop',
                             'An adjective defined as a copula complement is ' + \
                             'unusable without a copula defined on the Lexicon page.')
+
+    #KPH Validation for case change on nominalization rules
+    for lri in lrt.get('lri'):
+        for feat in lri.get('feat'):
+            if feat.get('name') == 'case':
+                vr.warn(lrt.full_key + '_lri', 'If case change is specified on the object ' + \
+                       'in a nominalization rule, the resulting lexical rule will only be ' + \
+                       'compatible with transitive verbs. If this lexical rule should also ' + \
+                       'be possible for intransitive verbs, create another lexical rule that ' + \
+                        'requires intransitives verbs as the input.')
 
 def hierarchy_validation(choices, pc, vr):
     # LLD 2015-11-22 Supertype LRTs should not have non-affixing LRIs if subtype

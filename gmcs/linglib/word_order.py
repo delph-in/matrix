@@ -1,5 +1,7 @@
 # from sets import Set
 from gmcs.linglib.parameters import determine_vcluster
+from gmcs.linglib.lexical_items import update_lex_items_vcluster
+from gmcs.linglib.clausalcomps import extraposed_comps
 
 ######################################################################
 # customize_word_order()
@@ -36,6 +38,8 @@ def customize_word_order(mylang, ch, rules):
     orders = determine_consistent_order(wo,hc,ch)
     specialize_word_order(hc,orders,mylang,ch,rules)
 
+    customize_subord_word_order(mylang,ch,wo,rules)
+
 
 
 def customize_major_constituent_order(wo, mylang, ch, rules):
@@ -70,6 +74,10 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
     # ASF 2008-11-03 v2 analysis requires MC feature is not passed up to mother in
     # head - comp and not from mod to mother, putting it back for other wo options
 
+    # KPH 2017-12-14 Removed mc identity between non head daughter and mother in
+    # basic-head-mod. This is not the case for clausal modifiers (in whcih the modifer
+    # is MC -).
+
     if not wo == 'v2':
         mylang.add_literal(';Constraint on MC used to be part of matrix.tdl\n;' +
                            ';it applies to all wo implementations, except for v2')
@@ -77,10 +85,10 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
                 [ SYNSEM.LOCAL.CAT.MC #mc,\
                   HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].',
                    section='addenda')
-        mylang.add('basic-head-mod-phrase-simple :+\
-                [ SYNSEM.LOCAL.CAT.MC #mc, \
-                  NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].',
-                   section='addenda')
+        # mylang.add('basic-head-mod-phrase-simple :+\
+        #         [ SYNSEM.LOCAL.CAT.MC #mc, \
+        #           NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].',
+        #            section='addenda')
 
 
     # Head-comp order
@@ -103,27 +111,30 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
         hs = 'head-subj'
         mylang.add(hs + '-phrase := decl-head-subj-phrase & head-initial.')
 
-    # Complements attach before subjects
 
+    # Complements attach before subjects
     if wo == 'ovs' or wo == 'vos' or wo == 'sov' or wo == 'svo':
-        mylang.add(hs + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].')
+        # If the language is OVS and extraposes clausal complements, we need subjects to attach low:
+        if not ((wo == 'ovs' or wo == 'vos') and 'comps' in ch and extraposed_comps(ch)):
+            mylang.add(hs + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].')
 
     # Subjects attach before complements
     # ASF 2008-11-20 in order to allow for aux with vp-comp for VSO and OSV
     # languages, the standard analysis needs to be adapted to a LIGHT +
     # constraint on the hs-rule.
-
+    # OZ 2017-12-21 We also need low subject attachment for OVS languages with extraposed clausal complements.
     auxcomp = ch.get('aux-comp')
-    if wo == 'vso' or wo == 'osv':
+    if (wo == 'vso' or wo == 'osv') or (wo == 'ovs'
+                                        and 'comps' in ch and extraposed_comps(ch)):
         if ch.get('has-aux') == 'yes' and auxcomp == 'vp':
             mylang.add(hs + '-phrase := [ HEAD-DTR.SYNSEM.LIGHT + ].')
         else:
             mylang.add(hc + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].')
 
-            # LLD 2016-03-24 to allow argument optionality with VSO and OSV languages,
-            # we have to move COMPS < > from basic-head-opt-subj-phrase in matrix.tdl and
-            # only add it with languages where O attaches lower than S. To prevent spurious
-            # ambiguity, we add SUBJ < > to head-opt-comp in these languages instead.
+        # LLD 2016-03-24 to allow argument optionality with VSO and OSV languages,
+        # we have to move COMPS < > from basic-head-opt-subj-phrase in matrix.tdl and
+        # only add it with languages where O attaches lower than S. To prevent spurious
+        # ambiguity, we add SUBJ < > to head-opt-comp in these languages instead.
 
     if wo == 'vso' or wo == 'osv':
         mylang.add('basic-head-opt-comp-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].', section='addenda')
@@ -134,7 +145,7 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
 
     # Module for free word order, i.e., all possible orders of head, subj,
     # comps (thinking initially about V, S, and O).  Use this with
-    # free-order-rules.tdl, which is partially redunant to
+    # free-order-rules.tdl, which is partially redundant to
     # V-initial-rules.tdl and V-final-rules.tdl.  The difference is that
     # those currently don't have the head-2nd-comp rules.
 
@@ -234,11 +245,20 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
         mylang.add('head-initial-head-nexus := head-initial & \
                 [ SYNSEM.LOCAL.CAT.MC na & #mc, \
                   HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].')
-        mylang.add('head-final-head-nexus := head-final & \
-                [ SYNSEM.LOCAL.CAT.MC bool, \
-                  HEAD-DTR.SYNSEM.LOCAL.CAT.MC na ].')
+        # OZ 2017-11-13 [ MC bool ] is to allow v2 order in subordinate clauses, like in Wabmbaya.
+        if not ch.get('subord-word-order') or ch.get('subord-word-order') == 'same':
+            mylang.add('head-final-head-nexus := head-final & \
+                  [ SYNSEM.LOCAL.CAT.MC bool, \
+                    HEAD-DTR.SYNSEM.LOCAL.CAT.MC na ].')
+        # OZ 2017-11-13 For strict subordinate order, like in formal German,
+        # need [ MC + ] for the head-final phrase.
+        else:
+            mylang.add('head-final-head-nexus := head-final & \
+            [ SYNSEM.LOCAL.CAT.MC +, \
+              HEAD-DTR.SYNSEM.LOCAL.CAT.MC na ].')
 
-    #rules shared among free and v2
+
+        #rules shared among free and v2
 
     if wo == 'free' or wo == 'v2':
         mylang.add('head-subj-phrase := decl-head-subj-phrase & head-initial-head-nexus.')
@@ -266,7 +286,6 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
         rules.add(hs + ' :=  ' + hs + '-phrase.')
 
     return {'hs': hs, 'hc': hc}
-
 
 
 
@@ -717,6 +736,45 @@ def customize_np_word_order(mylang, ch, rules):
 
     rules.add('bare-np := bare-np-phrase.')
 
+# OZ 2017-11-13 A subroutine to create appropriate phrase structure rules
+# for subordinate clauses, if needed. Currently only supports V2 matrix order
+# with V-final subordinate order. If the subordinate word order is the same
+# as in the matrix clause, no work needs to be done here.
+
+def customize_subord_word_order(mylang,ch,wo,rules):
+    if 'subord-word-order' in ch:
+        if ch.get('subord-word-order') == 'vfinal' and wo == 'v2':
+            mylang.add('subord-phrase := head-final &\n'
+                       ' [ SYNSEM.LOCAL.CAT.MC #mc & - ,\n  HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].',
+                       'Phrase structure rules for subordinate clauses')
+            mylang.add('subord-comp-head-phrase := subord-phrase & basic-head-1st-comp-phrase.')
+            mylang.add('subord-subj-head-phrase := subord-phrase & decl-head-subj-phrase.')
+
+            rules.add('subord-comp-head := subord-comp-head-phrase.')
+            rules.add('subord-subj-head := subord-subj-head-phrase.')
+
+            # For German-like subordinate clauses, we need additional feature VC (verb cluster)
+            # to ensure that verbs and auxiliaries in subordinate clauses cluster at the end.
+            if 'has-aux' in ch and ch['has-aux'] == 'yes':
+                update_lex_items_vcluster(ch, mylang)
+                mylang.add('subord-phrase := [ SYNSEM.LOCAL.CAT.VC - ].')
+                mylang.add('basic-unary-phrase :+\
+                              [ SYNSEM.LOCAL.CAT.VC #vc,\
+                                ARGS.FIRST.SYNSEM.LOCAL.CAT.VC #vc ].', merge=True, section='phrases')
+                mylang.add('basic-binary-headed-phrase :+ '
+                           '[ SYNSEM.LOCAL.CAT.VC #vc,'
+                           'NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc ].', merge=True, section='phrases')
+
+                mylang.add('verb-cluster-phrase := head-final & '
+                           '[ SYNSEM.LOCAL.CAT [ VC +, MC #mc & - ], '
+                           'HEAD-DTR.SYNSEM.LOCAL.CAT [ VC +, MC #mc], '
+                           'NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].',merge=True,section='phrases')
+                mylang.add('vc-comp-head-phrase := verb-cluster-phrase & basic-head-1st-comp-phrase.',
+                           merge=True,section='phrases')
+                rules.add('vc-comp-head := vc-comp-head-phrase.')
+                if ch['has-dets'] == 'yes':
+                    mylang.add('basic-head-spec-phrase :+ [ SYNSEM.LOCAL.CAT.VC #vc,'
+                               'HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc ].')
 
 # ERB 2006-09-14 Subroutine for figuring out the relationship of major
 # constituent order to adpositions and auxiliaries.  Returns two values:
@@ -810,4 +868,5 @@ def determine_consistent_order(wo,hc,ch):
             # return what we learned
 
     return {'adp': adp, 'aux': aux, 'qpart_order': qpart_order} #TODO: verify key
+
 

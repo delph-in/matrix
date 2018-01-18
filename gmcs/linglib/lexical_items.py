@@ -8,6 +8,7 @@ from gmcs.linglib import case
 from gmcs.linglib import features
 from gmcs.linglib import auxiliaries
 from gmcs.linglib import information_structure
+from gmcs.linglib import clausalcomps
 from gmcs.linglib.parameters import determine_vcluster
 from gmcs.linglib.lexbase import ALL_LEX_TYPES, LEXICAL_SUPERTYPES
 from gmcs.linglib.lexicon import get_all_supertypes
@@ -169,7 +170,7 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
     hclightallverbs = False
 
     if ch.get('has-aux') == 'yes':
-        vc = determine_vcluster(auxcomp, auxorder, wo, ch)
+        vc = determine_vcluster(auxcomp, auxorder, wo, ch) #TODO: OZ 11-30-2017 Reconcile this with my VC stuff in word_order.py
         if wo == 'vso' or wo == 'osv':
             wo = 'req-hcl-vp'
         if auxcomp == 'v' and hclight != True:
@@ -266,7 +267,6 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
        [ SYNSEM.LOCAL.CAT.VAL.COMPS < > ].'
     mylang.add(typedef)
 
-
     # transitive verb lexical type
     typedef = \
         'transitive-verb-lex := ' + mainorverbtype + ' & transitive-lex-item & \
@@ -276,6 +276,9 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
                   [ LOCAL [ CAT cat-sat & [ VAL [ SPR < >, \
                                       COMPS < > ] ] ] ] > ].'
     mylang.add(typedef)
+
+    if ch.get(clausalcomps.COMPS):
+        clausalcomps.add_clausalcomp_verb_supertype(ch, mainorverbtype, mylang)
 
     case.customize_verb_case(mylang, ch)
 
@@ -288,55 +291,88 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
     # Now create the lexical entries for all the defined verb types
     cases = case.case_names(ch)
     for verb in ch.get('verb',[]):
-        stypes = verb.get('supertypes').split(', ')
-        stype_names = [verb_id(ch[st]) for st in stypes if st != '']
+        create_verb_lex_type(cases, ch, hierarchies, lexicon, mylang, verb)
 
-        vtype = verb_id(verb)
-        val = verb.get('valence')
 
-        if not val == '':
-            i = val.find(',')
-            dir_inv = ''
-            tivity = ''
-            if i != -1:
-                val = val[:i]
-                dir_inv = 'dir-inv-'
 
-            if val == 'trans':
-                tivity = 'trans'
-            elif val == 'intrans':
-                tivity = 'intrans'
-            elif val.find('-') != -1:
-                c = val.split('-')
-                a_case = case.canon_to_abbr(c[0], cases)
-                o_case = case.canon_to_abbr(c[1], cases)
-                tivity = a_case + '-' + o_case + '-trans'
-            else:
-                s_case = case.canon_to_abbr(val, cases)
-                tivity = s_case + '-intrans'
 
-            if not dir_inv == '' or not tivity == '':
-                stype_names.append(dir_inv + tivity + 'itive-verb-lex')
+def create_verb_lex_type(cases, ch, hierarchies, lexicon, mylang, verb):
+    stypes = verb.get('supertypes').split(', ')
+    stype_names = [verb_id(ch[st]) for st in stypes if st != '']
+    vtype = verb_id(verb)
+    construct_supertype_names(cases, ch, stype_names, verb)
+    # clausal verb's valence and its complement's head constraint:
+    vtype,head = clausalcomps.update_verb_lextype(ch,verb,vtype)
+    if len(stype_names) == 0:
+        mylang.add(vtype + ' := verb-lex .')
+    else:
+        mylang.add(vtype + ' := ' + ' & '.join(stype_names) + '.')
+    if head:
+        mylang.add(vtype + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD ' + head + ' ] > ].'
+                   , merge=True)
+    features.customize_feature_values(mylang, ch, hierarchies, verb, vtype, 'verb', None, cases)
 
-        if len(stype_names) == 0:
-            mylang.add(vtype + ' := verb-lex .')
-        else:
-            mylang.add(vtype + ' := ' + ' & '.join(stype_names) + '.')
+    stems = verb.get('stem', [])
+    stems.extend(verb.get('bistem', []))
+    for stem in stems:
+        add_stem_to_lexicon(lexicon, stem, vtype)
 
-        features.customize_feature_values(mylang, ch, hierarchies, verb, vtype, 'verb', None, cases)
 
-        stems = verb.get('stem', [])
-        stems.extend(verb.get('bistem', []))
-
-        for stem in stems:
-            orthstr = orth_encode(stem.get('orth'))
-            pred = stem.get('pred')
-            name = stem.get('name')
-            typedef = \
-                TDLencode(name) + ' := ' + vtype + ' & \
+def add_stem_to_lexicon(lexicon, stem, vtype):
+    orthstr = orth_encode(stem.get('orth'))
+    pred = stem.get('pred')
+    name = stem.get('name')
+    typedef = \
+        TDLencode(name) + ' := ' + vtype + ' & \
                     [ STEM < "' + orthstr + '" >, \
                       SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
-            lexicon.add(typedef)
+    lexicon.add(typedef)
+
+
+def construct_supertype_names(cases, ch, stype_names, verb):
+    val = verb.get('valence')
+    if not val == '':
+        i = val.find(',')
+        dir_inv = ''
+        tivity = ''
+        clausal = ''
+        if i != -1:
+            type = val.split(',')[1]
+            if type == 'dirinv':
+                dir_inv = 'dir-inv-'
+            elif type.startswith('comps'):
+                clausal = 'clausal-'
+            val = val[:i]
+        if val == 'trans' and not clausal:
+            tivity = 'trans'
+        elif val == 'intrans':
+            tivity = 'intrans'
+        elif val.find('-') != -1:
+            c = val.split('-')
+            a_case = case.canon_to_abbr(c[0], cases)
+            o_case = case.canon_to_abbr(c[1], cases)
+            tivity = a_case + '-' + o_case
+            if not clausal:
+                tivity = tivity + '-trans'
+            else:
+                tivity = tivity + '-'
+        else:
+            s_case = case.canon_to_abbr(val, cases)
+            if not clausal:
+                tivity += s_case
+                tivity += '-intrans'
+            else:
+                #OZ 2018-01-03: This is awkward, has to do with the current format of the choices file...
+                #We should not ideally end up here at all if we are not an intransitive verb...
+                #The reason we end up here is some clausal verbs will only have subject case specified.
+                if not s_case == 'trans':
+                    tivity += s_case
+                    tivity += '-'
+        if clausal:
+            stype_names.append(clausal + tivity + 'verb-lex')
+        elif (not dir_inv == '' or not tivity == ''):
+            stype_names.append(dir_inv + tivity + 'itive-verb-lex')
+
 
 # Returns the verb type for lexical/main verbs.
 def main_or_verb(ch):
@@ -953,3 +989,21 @@ def customize_lexicon(mylang, ch, lexicon, trigger, hierarchies, rules):
     mylang.set_section('otherlex')
     customize_determiners(mylang, ch, lexicon, hierarchies)
     customize_misc_lex(ch, lexicon, trigger)
+
+# Used by the word order library, for different matrix-subordinate word order
+# E.g. German: verbs in subordinate clauses cluster at the end of the clause.
+def update_lex_items_vcluster(ch, mylang):
+    mylang.add('cat :+ [ VC bool ].', merge=True, section='addenda')
+    mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT.VC - ].', merge=True, section='nounlex')
+    mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.VC + ].', merge=True, section='verblex')
+    if 'cms' in ch:
+        for cms in ch.get('cms'):
+            if cms.get('subordinator-type') == 'adverb':
+                mylang.add('adverb-subord-lex-item := [ SYNSEM.LOCAL.CAT.VC - ].', merge=True, section='subordlex')
+            if cms.get('subordinator-type') == 'head':
+                mylang.add('adposition-subord-lex-item := [ SYNSEM.LOCAL.CAT.VC - ].', merge=True, section='subordlex')
+    if 'comps' in ch:
+        mylang.add('comp-lex-item := [ SYNSEM.LOCAL.CAT.VC - ].', merge=True, section='complex')
+    if 'has-adj' in ch:
+        mylang.add('adj-lex := [ SYNSEM.LOCAL.CAT.VC - ].', merge=True, section='adjlex')
+

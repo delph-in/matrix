@@ -71,7 +71,7 @@ def define_arg_str_and_valency(aux, auxcomp, ch, mylang, negaux):
                            [ ARG-ST < [ LOCAL.CAT.HEAD.AUX - ], [ ] > ].'
                     mylang.add(auxrest_type)
             else: #norder == 'before'
-                comp_spec_typedef = supertypename + ''' := basic-two-arg & 
+                comp_spec_typedef = supertypename + ''' := basic-two-arg &
                  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >, 
                                           COMPS < #negcomp , #comp > ],
                    ARG-ST < #negcomp &  
@@ -232,7 +232,7 @@ def create_semantics(sem, aux, auxcomp, mylang, ch, hierarchies, negaux):
                                           trans-first-arg-raising-lex-item-1 .'
             else: #negaux
                 if norder=='after':
-                    typedef = auxtypename + ''' := norm-sem-lex-item & 
+                    typedef = auxtypename + ''' := norm-sem-lex-item &
           [ ARG-ST < [ ], [ LOCAL.CONT.HOOK.LTOP #larg ], [ ] >,
             SYNSEM [ LOCAL.CONT.HCONS <! qeq & 
                                         [ HARG #harg,
@@ -240,7 +240,7 @@ def create_semantics(sem, aux, auxcomp, mylang, ch, hierarchies, negaux):
                      LKEYS.KEYREL event-relation & 
                        [ ARG1 #harg ]]].'''
                 else: #norder=='before'
-                    typedef = auxtypename + ''' := norm-sem-lex-item & 
+                    typedef = auxtypename + ''' := norm-sem-lex-item &
           [ ARG-ST < [ ], [ ], [ LOCAL.CONT.HOOK.LTOP #larg ] >,
             SYNSEM [ LOCAL.CONT.HCONS <! qeq & 
                                         [ HARG #harg,
@@ -331,6 +331,10 @@ def customize_users_auxtype(auxtypename, aux, ch, mylang, hierarchies):
     features.customize_feature_values(mylang, ch, hierarchies, aux, userstypename, 'aux')
     features.customize_feature_values(mylang, ch, hierarchies, aux, userstypename, 'auxcomplement')
     mylang.add(userstypename + ':= ' + auxtypename + '.')
+    if ch.get('word-order') == 'v2' and ch.get('subord-word-order') == 'vfinal':
+        mylang.add(userstypename + ':='+ auxtypename
+                   + '& [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.MC na-or-- ].')
+
 
 def get_users_type_name(aux):
     name = aux.get('name', '')

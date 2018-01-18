@@ -73,7 +73,7 @@ def added_arg_non_local_lex_rule(added_arg, total_args):
     for i in range(1,total_args+1):
         if i == added_arg:
             arglist.append(NEW_NON_LOCAL_FRAGMENT)
-        else:
+        else: 
             arglist.append('[ ]')
     arg_st = ',\n             '.join(arglist)
     rulevars = { 'rulename': rulename, 'arg-st': arg_st }
@@ -151,16 +151,16 @@ def added_arg_head_lex_rule(arg,head):
         constraint = '  [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD {} ], [ ] > ].'.format(head_type)
     elif arg == 3:
         constraint = '  [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ ], [ LOCAL.CAT.HEAD {} ] > ].'.format(head_type)
-
+    
     return rulename + ' := lex-rule &\n' + constraint
-
+    
 
 
 
 ADDED_ARG_APPLICATIVE_FRAGMENT = ''' #ncomp & [ LOCAL [ CAT [ VAL [ SPR < >,
                                                                     COMPS < > ] ],
                                                         CONT.HOOK.INDEX #nind ] ]'''
-
+                            
 # Generates the valence-specific applicative LR supertype.     
 # Inherits from the valence-specific non-local rule and the generic applicative rule.   
 def added_arg_applicative_lex_rule(added_arg, total_args):
@@ -171,14 +171,14 @@ def added_arg_applicative_lex_rule(added_arg, total_args):
             continue
         elif i == added_arg:
             arglist.append(ADDED_ARG_APPLICATIVE_FRAGMENT)
-        else:
+        else: 
             arglist.append('#ocomp')
     rulevars['arg-st'] = ', '.join(arglist)
     rulevars['comps'] = '#ncomp, #ocomp' if added_arg == 2 else '#ocomp, #ncomp'
     rulevars['rulename'] = lexrule_name('added-arg-applicative', added_arg, total_args)
     rulevars['basic-applicative-rule'] = lexrule_name('basic-applicative')
     rulevars['added-arg-non-local-rule'] = lexrule_name('added-arg-non-local', added_arg, total_args)
-
+                 
     rule = '''{rulename} := {basic-applicative-rule} & {added-arg-non-local-rule} &
   [ SYNSEM.LOCAL.CAT.VAL.COMPS < {comps} >,
     C-CONT [ RELS <! [ ARG2 #nind ] !> ],
@@ -209,7 +209,7 @@ class LexRuleBuilder:
         for rule in self.rules:
             mylang.add(rule())
         mylang.set_section(prev_section)
-
+            
 ####### MAIN INTERFACE ##########
 
 def customize_valence_change(mylang, ch, lexicon, rules, irules, lrules):
