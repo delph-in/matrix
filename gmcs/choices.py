@@ -4,9 +4,8 @@
 # imports
 
 import re
-#import sys
 from gmcs.util.misc import safe_int, get_valid_lines
-from gmcs.linglib import case
+from gmcs.linglib import case, clausalcomps
 
 ######################################################################
 # globals
@@ -134,6 +133,15 @@ class ChoiceDict(ChoiceCategory, dict):
                 else str(self[key])
             for key in self)
 
+    def __repr__(self):
+        return '\n'.join(
+            '='.join(['_'.join([self.full_key, key]) if self.full_key else key,
+                      self[key]]) \
+                if not isinstance(self[key], ChoiceList) \
+                else str(self[key])
+            for key in self)
+
+
 class ChoiceList(ChoiceCategory, list):
 
     def __getitem__(self, key):
@@ -234,6 +242,10 @@ class ChoiceList(ChoiceCategory, list):
     def __str__(self):
         return '\n'.join(str(item) for item in self)
 
+    def __repr__(self):
+        return '\n'.join(str(item) for item in self)
+
+
 ######################################################################
 # Helper functions
 
@@ -261,6 +273,7 @@ def get_choice(choice, choices):
 var_delim_re = re.compile(r'(\d+)(?:_|$)')
 # use the following re if we only split when a digit precedes _
 #var_delim_re = re.compile(r'(\d+)(?:_)')
+
 def split_variable_key(key):
     """
     Split a compound variable key into a list of its component parts.
@@ -269,6 +282,7 @@ def split_variable_key(key):
     return [k for k in var_delim_re.split(key) if k]
 
 next_key_cache = {}
+
 def get_next_key(complex_key):
     """
     Split a key grouping it by non-numbers and numbers.
@@ -555,6 +569,12 @@ class ChoicesFile:
             self.convert_26_to_27()
         if self.version < 28:
             self.convert_27_to_28()
+        if self.version < 29:
+            self.convert_28_to_29()
+        if self.version < 30:
+            self.convert_29_to_30()
+
+
         # As we get more versions, add more version-conversion methods, and:
         # if self.version < N:
         #   self.convert_N-1_to_N
@@ -784,6 +804,7 @@ class ChoicesFile:
         patterns += [ ['trans', '', False] ]
 
         # Fill in the friendly names based on the canonical names
+        w = None
         for i in range(0, len(patterns)):
             if patterns[i][0] in ['trans', 'intrans']:
                 patterns[i][1] = patterns[i][0] + 'itive'
@@ -800,7 +821,7 @@ class ChoicesFile:
                 elif len(w) == 2:
                     patterns[i][1] = 'transitive (%s-%s)' % (w[0], w[1])
 
-        # Finally, extend the patterns to include direct-inverse, as needed
+        # extend the patterns to include direct-inverse, as needed
         if self.has_dirinv():
             for i in range(0, len(patterns)):
                 if patterns[i][0] == 'trans' or patterns[i][0].find('-') != -1:
@@ -808,6 +829,14 @@ class ChoicesFile:
                                     patterns[i][1] + ', direct-inverse',
                                     patterns[i][2] ] ]
 
+        # Extend the patterns to include clausal complement strategies
+        for ccs in self['comps']:
+            patterns += [ [ 'trans,%s'%(ccs.full_key), 'transitive-clausal-%s (case unspecified)' % (ccs.full_key), False] ]
+            if w and w[0] and w[1]:
+                if clausalcomps.is_nominalized_complement(ccs):
+                    patterns += [ [ '%s-%s,%s'% (w[0],w[1],ccs.full_key), 'transitive-clausal-%s (%s-%s)' % (ccs.full_key,w[0],w[1]), False] ]
+            if w and w[0] and not cm == 'focus':
+                patterns += [ [ '%s,%s'%(w[0],ccs.full_key), 'transitive-clausal-%s (%s-unspecified)' % (ccs.full_key,w[0]), False] ]
         return patterns
 
 
@@ -825,7 +854,6 @@ class ChoicesFile:
             numbers += [[name, stype]]
 
         return numbers
-
 
     # persons()
     #   Create and return a list containing information about the values
@@ -932,20 +960,19 @@ class ChoicesFile:
 
     # forms()
     #   Create and return a list containing the values of the FORM
-    #   feature that constrains the form of auxiliary complements as
+    #   feature that constrains the form of verbs as
     #   defined in the current choices.
     #   This list consists of tuples:
-    #     [form name]
+    #     [name, supertype]
     def forms(self):
-        forms = []
-
-        if self.get('has-aux') == 'yes' or self.get('noaux-fin-nf') == 'on':
-            forms += [ ['finite'], ['nonfinite'] ]
-            for p in ['nf', 'fin']:
-                for p_sf in self.get(p + '-subform'):
-                    forms += [[p_sf['name']]]
-
-        return forms
+        if 'form-fin-nf' in self and self['form-fin-nf'] == 'on':
+            forms = [['form','form'],['finite','form'],['nonfinite','form']]
+            for f in self.get('form-subtype'):
+                name = f['name']
+                stype = f.get('supertype') if f.get('supertype') else 'form'
+                forms += [[name, stype]]
+            return forms
+        return []
 
     # tenses()
     #   Create and return a list containing information about the values
@@ -1075,21 +1102,21 @@ class ChoicesFile:
 
         # Case
         features += self.__get_features(case.case_names(self), 0, 1, 'case',
-                                        'LOCAL.CAT.HEAD.CASE','noun', 'y')
+                                        'LOCAL.CAT.HEAD.CASE', 'noun', 'y')
         # Number, Person, and Pernum
         pernums = self.pernums()
         if pernums:
             features += self.__get_features(pernums, 0, 0, 'pernum',
-                                            'LOCAL.CONT.HOOK.INDEX.PNG.PERNUM','noun', 'y')
+                                            'LOCAL.CONT.HOOK.INDEX.PNG.PERNUM', 'noun', 'y')
         else:
             features += self.__get_features(self.numbers(), 0, 0, 'number',
-                                            'LOCAL.CONT.HOOK.INDEX.PNG.NUM','noun', 'y')
+                                            'LOCAL.CONT.HOOK.INDEX.PNG.NUM', 'noun', 'y')
             features += self.__get_features(self.persons(), 0, 0, 'person',
-                                            'LOCAL.CONT.HOOK.INDEX.PNG.PER','noun', 'y')
+                                            'LOCAL.CONT.HOOK.INDEX.PNG.PER', 'noun', 'y')
 
         # Gender
         features += self.__get_features(self.genders(), 0, 0, 'gender',
-                                        'LOCAL.CONT.HOOK.INDEX.PNG.GEND','noun', 'y')
+                                        'LOCAL.CONT.HOOK.INDEX.PNG.GEND', 'noun', 'y')
 
         # Case patterns
         features += self.__get_features(self.patterns(), 0, 1,
@@ -1135,6 +1162,17 @@ class ChoicesFile:
         #mkg_values = 'fc|focus;tp|topic;fc-only|focus-only;tp-only|topic-only;fc-+-tp|focus-and-topic;non-tp|non-topic;non-fc|non-focus;unmkg|unmarking'
         #features += [ ['information-structure marking', mkg_values, 'LOCAL.CAT.MKG', 'both', 'n'] ]
         features += [ ['information-structure meaning', infostr_values, 'LOCAL.CONT.HOOK.ICONS-KEY', 'both', 'n'] ]
+
+        # Nominalization
+        if 'ns' in self.choices:
+            nom_types = ''
+            for ns in self.choices.get('ns'):
+                if nom_types == '':
+                    nom_types += (ns.get('name') + '|' + ns.get('name'))
+                else:
+                    nom_types += (';' + ns.get('name') + '|' + ns.get('name'))
+            features += [ ['nominalization', nom_types, '', 'verb', 'y'] ]
+
 
         # Argument Optionality
         if 'subj-drop' in self.choices or 'obj-drop' in self.choices:
@@ -1228,7 +1266,7 @@ class ChoicesFile:
     # convert_value(), followed by a sequence of calls to convert_key().
     # That way the calls always contain an old name and a new name.
     def current_version(self):
-        return 28
+        return 30
 
     def convert_value(self, key, old, new, partial=False):
         if key in self:
@@ -1243,8 +1281,17 @@ class ChoicesFile:
             new = '_'.join([key_prefix, new])
         if old in self:
             self[new] = self[old]
-            #self.delete(old, prune=True)
             self.delete(old)
+
+    # For example, combine nf-subform and fin-subform
+    # into one key, 'form-fin-nf', and put the values
+    def combine_keys(self, new, old1, old2):
+        if old1 in self and old2 in self:
+            tmp = self[old1]
+            self[old1].extend(self[old2])
+            self[new] = self[old1]
+            self.delete(old1)
+            self.delete(old2)
 
     def convert_0_to_1(self):
         self.convert_key('wordorder', 'word-order')
@@ -2134,6 +2181,39 @@ class ChoicesFile:
 
 
 
+    def convert_28_to_29(self):
+        """
+        Updates the treatment of FORM.
+        FORM will no longerbe implicit with has-aux=yes.
+        It will be explicitly initialized in Other Features section.
+        FORM will no longer be available in Tense, Aspect, and Mood section.
+        FORM will no longer be a special hierarchy but will look much like other features,
+        except finite and nonfinite values will be initialized by default.
+        """
+        if self.get('noaux-fin-nf') == 'on':
+            self.convert_key('noaux-fin-nf', 'form-fin-nf')
+        elif self.get('has-aux') == 'yes' or 'nf-subform' in self or 'fin-subform' in self:
+            self['form-fin-nf'] = 'on'
+        for subtype in self.get('nf-subform'):
+            subtype['supertype'] = 'nonfinite'
+        for subtype in self.get('fin-subform'):
+            subtype['supertype'] = 'finite'
+        if 'nf-subform' in self and 'fin-subform' in self:
+            self.combine_keys('form-subtype','nf-subform','fin-subform')
+        elif 'nf-subform' in self:
+            self.convert_key('nf-subform', 'form-subtype')
+        elif 'fin-subform' in self:
+            self.convert_key('fin-subform', 'form-subtype')
+
+    def convert_29_to_30(self):
+        '''
+        Updates clausal valency: inserts 'trans,' before valency starting with 'comps'.
+
+        '''
+        for v in self.get('verb'):
+            if v['valence'].startswith('comps'):
+                v['valence'] = 'trans,' + v['valence']
+
 ########################################################################
 # FormData Class
 # This Class acts like form data which would normally
@@ -2151,18 +2231,15 @@ class FormData:
             return self.data[key]
 
     def __setitem__(self, key, value):
-        self.data[key] = value;
+        self.data[key] = value
 
     def has_key(self, key):
-        if key in self.data:
-            return True;
-        else:
-            return False;
+        return key in self.data
 
     def keys(self):
-        return self.data.keys();
+        return self.data.keys()
 
 class FormInfo:
     def __init__(self, key, value):
-        self.key = key;
-        self.value = value;
+        self.key = key
+        self.value = value

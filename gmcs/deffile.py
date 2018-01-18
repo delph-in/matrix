@@ -12,7 +12,6 @@
 ######################################################################
 # imports
 
-#import sys
 import os
 import cgi
 import cgitb
@@ -21,7 +20,6 @@ import re
 import tarfile
 import gzip
 import zipfile
-#import gmcs.tdl
 
 from gmcs import choices
 from gmcs.choices import ChoicesFile
@@ -29,7 +27,6 @@ from gmcs.utils import tokenize_def, get_name
 from gmcs import generate
 from gmcs.validate import ValidationMessage
 
-#from random import randrange
 from collections import defaultdict
 
 ######################################################################
@@ -46,7 +43,7 @@ HTML_pretitle = '''<!doctype html>
 <head><meta charset="utf-8"/>
 '''
 
-HTML_posttitle = '''<script type="text/javascript" src="web/matrix.js">
+HTML_posttitle = '''<script type="text/javascript" src="web/matrix.js?cachebuster=103">
 </script>
 
 <script type="text/javascript">
@@ -62,6 +59,11 @@ var verb_case_patterns = [
 var numbers = [
 %s
 ];
+
+var forms = [
+%s
+];
+
 </script>
 
 <link rel="stylesheet" href="web/matrix.css">
@@ -237,7 +239,7 @@ HTML_sentencespostbody = '''
 <a href="http://www.delph-in.net/lkb">To the LKB page</a>
 '''
 
-HTML_prebody = '''<body onload="animate(); focus_all_fields(); multi_init(); fill_hidden_errors();scalenav();">
+HTML_prebody = '''<body onload="animate(); focus_all_fields(); multi_init(); fill_hidden_errors(); scalenav();">
 '''
 
 HTML_prebody_sn = '''<body onload="animate(); focus_all_fields(); multi_init(); fill_hidden_errors();display_neg_form();scalenav();">'''
@@ -545,7 +547,10 @@ class MatrixDefFile:
                  'other-features':'Other Features', 'sentential-negation':'Sentential Negation',
                  'coordination':'Coordination', 'matrix-yes-no':'Matrix Yes/No Questions',
                  'info-str':'Information Structure',
-                 'arg-opt':'Argument Optionality', 'lexicon':'Lexicon',
+                 'arg-opt':'Argument Optionality',
+                 'clausal-comp':'Clausal Complements', 'lexicon':'Lexicon',
+                 'nominalclause':'Nominalized Clauses',
+                 'lexicon':'Lexicon',
                  'morphology':'Morphology','toolbox-import':'Toolbox Import',
                  'test-sentences':'Test Sentences','gen-options':'TbG Options',
                  'ToolboxLexicon':'Toolbox Lexicon'}
@@ -559,7 +564,10 @@ class MatrixDefFile:
                  'other-features':'OtherFeatures', 'sentential-negation':'SententialNegation',
                  'coordination':'Coordination', 'matrix-yes-no':'YesNoQ',
                  'info-str':'InformationStructure',
-                 'arg-opt':'ArgumentOptionality', 'lexicon':'Lexicon',
+                 'arg-opt':'ArgumentOptionality',
+                 'clausal-comp':'ClausalComplements','lexicon':'Lexicon',
+                 'nominalclause':'Nominalized Clauses',
+                 'lexicon':'Lexicon',
                  'morphology':'Morphology','toolbox-import':'ImportToolboxLexicon',
                  'test-sentences':'TestSentences','gen-options':'TestByGeneration',
                  'ToolboxLexicon':'ImportToolboxLexicon'}
@@ -673,7 +681,7 @@ class MatrixDefFile:
         print 'Set-cookie: session=' + cookie + '\n'
         print HTML_pretitle
         print '<title>The Matrix</title>'
-        print HTML_posttitle % ('', '', '')
+        print HTML_posttitle % ('', '', '','')
 
         try:
             f = open('datestamp', 'r')
@@ -955,10 +963,13 @@ class MatrixDefFile:
                                'fillvalues':'fill_feature_values(%(args)s)',
                                'fillverbpat':'fill_case_patterns(false)',
                                'fillnumbers':'fill_numbers()',
-                               'fillcache':'fill_cache(%(args)s)'}
+                               'fillcache':'fill_cache(%(args)s)',
+                               'fillforms':'fill_forms()'}
                 # look ahead and see if we have an auto-filled drop-down
                 i += 1
-                while lines[i].strip().startswith('fill'):
+                # OZ 2017-12-05 Adding check that i is not out of array bounds; managed to break it otherwise,
+                # probably by calling it incorrectly, but the check should not hurt.
+                while i < len(lines)-1 and lines[i].strip().startswith('fill'):
                     word = tokenize_def(replace_vars(lines[i], vars))
                     # arguments are labeled like p=pattern, l(literal_feature)=1,
                     # n(nameOnly)=1, c=cat
@@ -1046,7 +1057,7 @@ class MatrixDefFile:
             elif word[0] == 'Button':
                 (vn, bf, af, oc) = word[1:]
                 html += html_input(vr, word[0].lower(), '', vn, False,
-                                   bf, af, onclick=oc) + '\n';
+                                   bf, af, onclick=oc) + '\n'
             elif word[0] == 'BeginIter':
                 iter_orig = word[1]
                 (iter_name, iter_var) = word[1].replace('}', '').split('{', 1)
@@ -1097,10 +1108,10 @@ class MatrixDefFile:
                     # the current choices file OR iter_min copies, whichever is
                     # greater
                     c = 0
-                    iter_num = 0;
+                    iter_num = 0
                     chlist = [x for x in choices.get(prefix + iter_name) if x]
                     while (chlist and c < len(chlist)) or c < iter_min:
-                        show_name = "";
+                        show_name = ""
                         if c < len(chlist):
                             iter_num = str(chlist[c].iter_num())
                             show_name = chlist[c]["name"]
@@ -1234,7 +1245,6 @@ class MatrixDefFile:
         choices_file = 'sessions/' + cookie + '/choices'
         choices = ChoicesFile(choices_file)
 
-
         section_begin = -1
         section_end = -1
         section_friendly = ''
@@ -1264,7 +1274,8 @@ class MatrixDefFile:
             print HTML_posttitle % \
                   (js_array4(choices.features()),
                    js_array([c for c in choices.patterns() if not c[2]]),
-                   js_array([n for n in choices.numbers()]))
+                   js_array([n for n in choices.numbers()]),
+                   js_array([n for n in choices.forms()]))
 
             if section == 'sentential-negation':
                 print HTML_prebody_sn
@@ -1336,7 +1347,7 @@ class MatrixDefFile:
             print '<a href="#stay" onclick="document.forms[0].submit()" class="navleft">Save &amp; stay</a><br />'
             # TJT 2014-05-28: Not sure why the following doesn't work -- need to do more investigation
             #print '<a href="?subpage=%s" onclick="document.forms[0].submit()" class="navleft">Save &amp; stay</a><br />' % section
-            print '<a href="#clear" onclick="clear_form()" class="navleft">Clear form</a><br />'
+            print '<a href="#clear" onclick="clear_form()" class="navleft">Clear current subpage</a><br />'
 
             ## if there are errors, then we print the links in red and
             ## unclickable
@@ -1359,7 +1370,7 @@ class MatrixDefFile:
             print html_input(vr, 'hidden', 'subpage', section, False, '', '\n')
             print self.defs_to_html(self.def_lines[section_begin:section_end],
                                     choices, vr,
-                                    '', {})
+                                    prefix='', vars={})
 
         # these buttons are now in the navmenu
         #    print html_input(vr, 'button', '', 'Submit', False, '<p>', '', onclick='submit_main()')
@@ -1735,15 +1746,19 @@ class MatrixDefFile:
             if 'neg1b-neg2b' in keys or \
                     ('neg1-type' in keys and 'neg2-type' in keys and form_data['neg1-type'].value == 'fh' and form_data['neg2-type'].value == 'b') or \
                     ('neg1-type' in keys and 'neg2-type' in keys and form_data['neg2-type'].value == 'fh' and form_data['neg1-type'].value == 'b'):
-                next_n = old_choices['nf-subform'].next_iter_num() if 'nf-subform' in old_choices else 1
-                found_negform = False
-                if next_n > 1:
-                    nfss = old_choices.get('nf-subform')
-                    for nfs in nfss:
-                        if nfs['name'] == 'negform':
-                            found_negform = True
-                if not found_negform:
-                    old_choices['nf-subform%d_name' % next_n ] = 'negform'
+                try:
+                    next_n = old_choices['form-subtype'].next_iter_num() if 'form-subtype' in old_choices else 1
+                    found_negform = False
+                    if next_n > 1:
+                        nfss = old_choices.get('form-subtype')
+                        for nfs in nfss:
+                            if nfs['name'] == 'negform':
+                                found_negform = True
+                    if not found_negform:
+                        old_choices['form-subtype%d_name' % next_n ] = 'negform' #TODO update this to new form: form-subtype name=negform with supertype nonfinite
+                        old_choices['form-subtype%d_supertype' % next_n ] = 'nonfinite' #OZ 2017-12-09 I have not tested this line and don't know if it works
+                except:
+                    print 'Go look in deffile.py save_choices; probably nf-subform needs to be updated to form-subtype; see choices.py up-rev 28-29 function.'
 
         # Now pass through the def file, writing out either the old choices
         # for each section or, for the section we're saving, the new choices
@@ -1775,6 +1790,7 @@ class MatrixDefFile:
             self.save_choices_section(self.def_lines[cur_sec_begin:i], f, choices)
 
         f.close()
+
 
     def create_neg_aux_choices(self, choices,form_data):
         '''this is a side effect of the existence of neg-aux
@@ -1831,7 +1847,7 @@ class MatrixDefFile:
         print HTTP_header + '\n'
         print HTML_pretitle
         print '<title>Invalid Choices File</title>'
-        print HTML_posttitle % ('', '', '')
+        print HTML_posttitle % ('', '', '','')
         print HTML_toggle_visible_js
         print HTML_prebody
 
@@ -1859,7 +1875,7 @@ class MatrixDefFile:
         print HTTP_header + '\n'
         print HTML_pretitle
         print '<title>Problem Customizing Grammar</title>'
-        print HTML_posttitle % ('', '', '')
+        print HTML_posttitle % ('', '', '','')
         print HTML_toggle_visible_js
         print HTML_prebody
 

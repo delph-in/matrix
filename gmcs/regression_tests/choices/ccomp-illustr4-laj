@@ -1,0 +1,199 @@
+
+version=30
+
+section=general
+language=ccomp-illustr4-laj
+punctuation-chars=keep-all
+
+section=word-order
+word-order=svo
+has-dets=no
+has-aux=no
+subord-word-order=same
+
+section=number
+
+section=person
+person=1-2-3
+first-person=none
+
+section=gender
+
+section=case
+case-marking=none
+
+section=direct-inverse
+
+section=tense-aspect-mood
+  aspect1_name=perfective
+    aspect1_supertype1_name=aspect
+  aspect2_name=habitual
+    aspect2_supertype1_name=aspect
+subjind=on
+
+section=other-features
+form-fin-nf=on
+  form-subtype1_name=infinitive
+  form-subtype1_supertype=nonfinite
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=info-str
+
+section=arg-opt
+subj-drop=subj-drop-all
+subj-mark-drop=subj-mark-drop-req
+subj-mark-no-drop=subj-mark-no-drop-req
+subj-con=subj-con-always
+
+section=nominalclause
+
+section=clausalmods
+
+section=clausal-comp
+  comps1_clause-pos-same=on
+  comps1_comp-pos-before=on
+  comps1_comp=oblig
+    comps1_complementizer1_orth=ni
+    comps1_feat1_name=mood
+    comps1_feat1_value=indicative
+  comps2_clause-pos-same=on
+  comps2_comp=oblig
+    comps2_complementizer1_orth=ni
+    comps2_feat1_name=mood
+    comps2_feat1_value=subjunctive
+  comps3_clause-pos-same=on
+    comps3_feat1_name=form
+    comps3_feat1_value=infinitive
+
+section=lexicon
+  noun1_name=noun1
+    noun1_feat1_name=person
+    noun1_feat1_value=3rd
+  noun1_det=imp
+    noun1_stem1_orth=loc^
+    noun1_stem1_pred=_man_n_rel
+    noun1_stem2_orth=tic
+    noun1_stem2_pred=_work_n_rel
+    noun1_stem3_orth=atin
+    noun1_stem3_pred=_child_n_rel
+    noun1_stem4_orth=doggola
+    noun1_stem4_pred=_door_n_rel
+    noun1_stem5_orth=gwok
+    noun1_stem5_pred=_dog_n_rel
+  verb1_name=tran
+  verb1_valence=trans
+  verb2_name=3sg-hab
+  verb2_supertypes=verb1
+    verb2_feat1_name=aspect
+    verb2_feat1_value=habitual
+    verb2_feat1_head=verb
+    verb2_feat2_name=person
+    verb2_feat2_value=3rd
+    verb2_feat2_head=subj
+    verb2_feat3_name=mood
+    verb2_feat3_value=indicative
+    verb2_feat3_head=verb
+    verb2_feat4_name=form
+    verb2_feat4_value=finite
+    verb2_feat4_head=verb
+    verb2_stem1_orth=dago
+    verb2_stem1_pred=_hate_v_rel
+  verb3_name=3sg-perf
+  verb3_supertypes=verb1
+    verb3_feat1_name=aspect
+    verb3_feat1_value=perfective
+    verb3_feat1_head=verb
+    verb3_feat2_name=person
+    verb3_feat2_value=3rd
+    verb3_feat2_head=subj
+    verb3_feat3_name=mood
+    verb3_feat3_value=indicative
+    verb3_feat3_head=verb
+    verb3_feat4_name=form
+    verb3_feat4_value=finite
+    verb3_feat4_head=verb
+    verb3_stem1_orth=ocego
+    verb3_stem1_pred=_close_v_rel
+  verb4_name=1sg-sjnct
+  verb4_supertypes=verb1
+    verb4_feat1_name=person
+    verb4_feat1_value=1st
+    verb4_feat1_head=subj
+    verb4_feat2_name=mood
+    verb4_feat2_value=subjunctive
+    verb4_feat2_head=verb
+    verb4_feat3_name=form
+    verb4_feat3_value=nonfinite
+    verb4_feat3_head=verb
+    verb4_stem1_orth=aceg
+    verb4_stem1_pred=_close_v_rel
+  verb5_name=1sg-inf
+  verb5_supertypes=verb1
+    verb5_feat1_name=person
+    verb5_feat1_value=1st
+    verb5_feat1_head=subj
+    verb5_feat2_name=form
+    verb5_feat2_value=infinitive
+    verb5_feat2_head=verb
+    verb5_stem1_orth=nenno
+    verb5_stem1_pred=_see_v_rel
+  verb6_name=1sg-know
+    verb6_feat1_name=person
+    verb6_feat1_value=1st
+    verb6_feat1_head=subj
+    verb6_feat2_name=mood
+    verb6_feat2_value=indicative
+    verb6_feat2_head=verb
+    verb6_feat3_name=form
+    verb6_feat3_value=finite
+    verb6_feat3_head=verb
+    verb6_feat4_name=aspect
+    verb6_feat4_value=habitual
+    verb6_feat4_head=verb
+  verb6_valence=trans,comps1
+    verb6_stem1_orth=aneo
+    verb6_stem1_pred=_know_v_rel
+  verb7_name=3sg-want
+    verb7_feat1_name=person
+    verb7_feat1_value=3rd
+    verb7_feat1_head=subj
+    verb7_feat2_name=form
+    verb7_feat2_value=finite
+    verb7_feat2_head=verb
+    verb7_feat3_name=aspect
+    verb7_feat3_value=perfective
+    verb7_feat3_head=verb
+    verb7_feat4_name=mood
+    verb7_feat4_value=indicative
+    verb7_feat4_head=verb
+  verb7_valence=trans,comps2
+    verb7_stem1_orth=omito
+    verb7_stem1_pred=_want_v_rel
+  verb8_name=1sg-want
+    verb8_feat1_name=person
+    verb8_feat1_value=1st
+    verb8_feat1_head=subj
+    verb8_feat2_name=form
+    verb8_feat2_value=finite
+    verb8_feat2_head=verb
+    verb8_feat3_name=mood
+    verb8_feat3_value=indicative
+    verb8_feat3_head=verb
+  verb8_valence=trans,comps3
+    verb8_stem1_orth=amitto
+    verb8_stem1_pred=_want_v_rel
+
+section=morphology
+
+section=toolbox-import
+
+section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon

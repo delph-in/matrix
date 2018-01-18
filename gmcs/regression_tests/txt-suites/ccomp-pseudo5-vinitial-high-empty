@@ -1,0 +1,9 @@
+*noun1 tverb noun2
+*noun1 noun2 tverb
+tverb noun1 noun2
+*tverb-NMZ noun1 noun2
+cverb noun3 tverb-NMZ noun1 noun2
+cverb tverb-NMZ noun2 noun3 noun1
+*cverb noun3 tverb noun1 noun2
+*tverb-NMZ noun1 noun2 cverb noun3
+*noun1 tverb-NMZ noun2

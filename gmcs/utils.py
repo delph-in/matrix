@@ -74,3 +74,42 @@ def format_comment_block(comment_string, max_chars=70, prefix=';;;'):
 
 def verify():
     return raw_input("  Do you want to continue? (y/n): ").lower() in ('y','yes')
+
+'''
+2017-12-08 OZ: An attempt to start modularizing the customization code better.
+A function
+(with lots of params, so, not sure this is going to work well, this is just a first take on it)
+that will generally merge in constraints into a type, assuming a two-tier choice structure.
+Example:
+        ccs = ch.get('comps')[0] # First clausal complement strategy
+        path = 'SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM'
+        merge_constraints(choice=ccs, mylang=mylang, typename='comp1-comp-lex-item',
+                               path=path,key1='feat',key2='name',val='form')
+
+This will merge in constraints on FORM into a complementizer lexical type.
+The idea is that this and similar functions can be used throughout,
+though like I said above I am not sure this is actually better.
+
+'''
+def merge_constraints(choicedict, mylang, typename, path, key1, key2, val):
+    for ch in choicedict[key1]:
+        if ch[key2] == val:
+            mylang.add(typename + ' := [ ' + path + ' ' + ch['value'] + ' ].',
+                       merge=True)
+
+def nonempty_ccomp_nmz(ch):
+    for cs in ch['comps']:
+        for f in cs['feat']:
+            if f['name'] == 'nominalization':
+                for ns in ch['ns']:
+                    if ns['name'] == f['value']:
+                        if ns['nmzRel'] == 'yes':
+                            return True
+    return False
+
+def has_nmz_ccomp(ch):
+    for cs in ch['comps']:
+        for f in cs['feat']:
+            if f['name'] == 'nominalization':
+                return True
+    return False

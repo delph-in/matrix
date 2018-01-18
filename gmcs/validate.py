@@ -16,6 +16,7 @@ import gmcs.linglib.case
 import gmcs.linglib.morphotactics
 import gmcs.linglib.negation
 import gmcs.linglib.lexicon
+import gmcs.linglib.clausalcomps
 
 
 ######################################################################
@@ -296,10 +297,7 @@ def validate_names(ch, vr):
     for mood in ch.get('mood', []):
         user_types += [[mood.get('name'), mood.full_key + '_name']]
 
-    for sf in ch.get('nf-subform', []):
-        user_types += [[sf.get('name'), sf.full_key + '_name']]
-
-    for sf in ch.get('fin-subform', []):
+    for sf in ch.get('form-subtype', []):
         user_types += [[sf.get('name'), sf.full_key + '_name']]
 
     for noun in ch.get('noun', []):
@@ -734,6 +732,19 @@ def validate_word_order(ch, vr):
                'The general word order and aux-comp order ' +
                'are not compatible with vp complements.')
 
+    #OZ 2017-11-13 Validate subordinate clauses word order.
+
+    if (ch.get('subord-word-order')):
+        if not (wo == 'v2' or ch.get('subord-word-order') == 'same'):
+            vr.err('subord-word-order',
+                   'V-final subordinate word order is ' +
+                   'only supported with V2 matrix order.')
+        elif wo == 'v2' and ch.get('subord-word-order') == 'vfinal' \
+                and ch.get('has-aux') == 'yes' and ch.get('aux-comp') != 'v':
+            vr.err('aux-comp','The only supported choice for auxiliary complement '
+                   'type for v2/vfinal word order combination is V.')
+
+
 ######################################################################
 # validate_coordination(ch, vr)
 #   Validate the user's choices about coordination.
@@ -1133,16 +1144,17 @@ def validate_tanda(ch, vr):
                    'mood subtype you define.')
 
     ## validate form
-    if ch.get('has-aux') == 'yes' and ch.get('noaux-fin-nf') == 'on':
+    if ch.get('has-aux') == 'yes' and not ch.get('form-fin-nf') == 'on':
         mess = 'You have indicated on the word order page that ' + \
-               'your language has auxiliaries.'
-        vr.err('noaux-fin-nf', mess)
+               'your language has auxiliaries or picked a sentential negation strategy' \
+               'that assumes auxiliaries, but have not initialized a FORM hierarchy.'
+        vr.err('form-fin-nf', mess)
 
-    if ch.get('has-aux') == 'no' and not (ch.get('noaux-fin-nf') == 'on'):
-        if 'nf-subform' in ch:
-            mess = 'You have indicated that your language has no auxiliaries ' + \
-                   'but you have entered subforms of finite or non-finite.'
-            vr.err('noaux-fin-nf', mess)
+    # if ch.get('has-aux') == 'no' and not (ch.get('noaux-fin-nf') == 'on'):
+    #     if 'nf-subform' in ch:
+    #         mess = 'You have indicated that your language has no auxiliaries ' + \
+    #                'but you have entered subforms of finite or non-finite.'
+    #         vr.err('noaux-fin-nf', mess)
 
 ######################################################################
 # validate_test_sentences(ch, vr)
@@ -1429,6 +1441,24 @@ def validate_arg_opt(ch, vr):
                        "on the subject NP or the object NP."
                 vr.err(feat.full_key+'_head',mess)
 
+# validate_clausalmods(ch, vr)
+#   Validate the user's choices clausal modifiers.
+
+def validate_clausalmods(ch, vr):
+    for cms in ch.get('cms'):
+        pos = cms.get('position')
+        subord = cms.get('subordinator')
+        subpos = cms.get('subposition')
+
+        if subord == 'free':
+            pass
+
+        if subord == 'pair':
+            pass
+
+        if subord == 'none':
+            pass
+
 
 def validate(ch, extra = False):
     """
@@ -1453,6 +1483,8 @@ def validate(ch, extra = False):
     gmcs.linglib.lexicon.validate_lexicon(ch, vr)
     gmcs.linglib.morphotactics.validate(ch, vr)
     validate_test_sentences(ch, vr)
+    gmcs.linglib.clausalcomps.validate(ch, vr)
+    validate_clausalmods(ch, vr)
 
     validate_types(ch, vr)
     validate_features(ch, vr)

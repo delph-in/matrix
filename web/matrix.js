@@ -773,13 +773,14 @@ function fill_case_patterns(morph)
     var p = pats[i].split(':');
     items.push([p[1], p[0]]);
   }
+  // add clausal complement strategies as possible argument structure
   return items
 }
 
 // fill_numbers()
 // Return items from the array numbers[], where every OPTION is a value of the
 // number feature.
-function fill_numbers(select_name)
+function fill_numbers()
 {
   var items = new Array();
   for (var i = 0; i < numbers.length; i++) {
@@ -788,6 +789,18 @@ function fill_numbers(select_name)
   }
   return items
 }
+
+
+function fill_forms()
+{
+  var items = new Array();
+  for (var i = 0; i < forms.length; i++) {
+    var n = forms[i].split(':');
+    items.push([n[0],n[0]]);
+  }
+  return items
+}
+
 
 // fill_cache()
 // Return items from the given cache.
@@ -1136,6 +1149,24 @@ function import_toolbox_lexicon()
 ////////////////////////////////////////////////////////////
 
 ////////
+// Other Features Subpage
+////////
+
+
+// set_form_feature automatically hide and show section based on radio choice
+//
+function set_form_feature()
+{
+  var divs = document.getElementsByClassName("form_switch");
+	for(var i=0; i<divs.length;i++){
+    var d = divs[i];
+    d.style.display = 'none';
+	}
+  var d = document.getElementById('form');
+  d.style.display ='block';
+}
+
+////////
 // Sentential Negation Subpage
 ////////
 
@@ -1262,6 +1293,11 @@ function set_negmorph(t1,t2){
   } else {
     d.innerHTML='<p>Please choose a morpheme type for each exponent.</p>';
   }
+}
+
+function display_form_choice()
+{
+    set_form_feature('2')
 }
 
 function display_neg_form()

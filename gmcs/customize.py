@@ -38,6 +38,8 @@ from gmcs.linglib import coordination
 from gmcs.linglib import yes_no_questions
 from gmcs.linglib import toolboximport
 from gmcs.linglib import valence_change
+from gmcs.linglib import nominalized_clauses
+from gmcs.linglib import clausalcomps
 
 ######################################################################
 # globals
@@ -189,8 +191,8 @@ def customize_test_sentences(grammar_path):
                 for sentence in ch.get('sentence',[]):
                     s.write('"' + sentence.get('orth','') + '" ')
                     # 2017-12-13 OZ: Adding two lines below.
-                    # Shouldn't the start be printed in test_sentences
-                    # if the sentence is ungrammatical? Also see choices.py uprev convert_23_to_24().
+                    # # Shouldn't the start be printed in test_sentences
+                    # if the sentence is ungrammatical? See choices.py uprev convert_23_to_24() though.
                     if sentence['star'] == 'on':
                         ts.write('*' + sentence.get('orth','') + '\n')
                     else:
@@ -316,7 +318,7 @@ def customize_roots():
                       NON-LOCAL non-local-none ] ].'
     roots.add(typedef, comment)
 
-    if ch.get('has-aux') == 'yes' or 'noaux-fin-nf' in ch:
+    if 'form-fin-nf' in ch:
         roots.add('root := [ SYNSEM.LOCAL.CAT.HEAD.FORM finite ].')
 
     # ERB 2006-10-05 I predict a bug here:  If we a language with auxiliaries
@@ -457,7 +459,7 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
         grammar_path = get_grammar_path(ch.get('iso-code', language).lower(),
                                         language.lower(), destination)
 
-        # delete any existing contents at grammar path
+    # delete any existing contents at grammar path
     if os.path.exists(grammar_path):
         shutil.rmtree(grammar_path)
     # the rsync command won't create the target dirs, so do it now
@@ -493,6 +495,7 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
                             ['coplex', 'Copulas', False, False],
                             ['adjlex', 'Adjectives', False, False],
                             ['subordlex', 'Subordinators', True, False],
+                            ['complex', 'Complementizers', False, True],
                             ['otherlex', 'Others', False, False],
                             ['lexrules', 'Lexical Rules', True, False],
                             ['phrases', 'Phrasal Types', True, False],
@@ -579,6 +582,7 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
     # but provide the methods the components above have for their own
     # contributions to the lexical rules
 
+    nominalized_clauses.customize_nmcs(mylang, ch, rules)
     negation.customize_sentential_negation(mylang, ch, lexicon, rules, lrules, hierarchies)
 
     add_lexrules_methods = [case.add_lexrules,
@@ -610,6 +614,7 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
     word_order.customize_word_order(mylang, ch, rules)
     coordination.customize_coordination(mylang, ch, lexicon, rules, irules)
     yes_no_questions.customize_yesno_questions(mylang, ch, rules, lrules, hierarchies)
+    clausalcomps.customize_clausalcomps(mylang,ch,lexicon,rules)
     customize_punctuation(grammar_path)
     customize_test_sentences(grammar_path)
     customize_itsdb(grammar_path)
