@@ -64,7 +64,6 @@
 ((:path . "ccomp-pseudo3-osv-extra-opt-bef-aft") (:content . "ccomp-pseudo3-osv-extra-opt-bef-aft: Clausal comps: OSV matrix order, optional complementizer before or after a strictly extraposed complement clause."))
 ((:path . "ccomp-pseudo2-vfinal-extra-opt-bef-aft") (:content . "ccomp-pseudo2-vfinal-extra-opt-bef-aft: Clausal comps: vfinal matrix, optional complementizer before or after the clause, strictly extraposed complement clause."))
 ((:path . "ccomp-extra-and-same") (:content . "ccomp-extra-and-same: Clausal complements: SOV, extraposed and normally positioned complement."))
-((:path . "ccomp-v2-vfinal-aux") (:content . "ccomp-v2-vfinal-aux: Clausal comps: V2 in matrix, Vfinal in embedded, auxiliaries cluster with the verb."))
 ((:path . "clausalcomp-extra-and-same") (:content . "clausalcomp-extra-and-same: Clausal-complement: SOV, extraposed and nouny position complement."))
 ((:path . "clcomp-sov-extra") (:content . "clcomp-sov-extra: Clausal comps: SOV, extraposed complement."))
 ((:path . "ccomp-opt-svo") (:content . "ccomp-opt-svo: Clausal comps: SVO, optional complementizer"))
