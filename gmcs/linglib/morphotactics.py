@@ -1123,7 +1123,7 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
     #KPH Validation for case change on nominalization rules
     for feat in lrt.get('feat'):
         if feat.get('name') == 'case':
-            vr.warn(lrt.full_key + '_feat', 'If case change is specified on the object ' + \
+            vr.warn(feat.full_key + '_case', 'If case change is specified on the object ' + \
                    'in a nominalization rule, the resulting lexical rule will only be ' + \
                     'compatible with transitive verbs. If this lexical rule should also ' + \
                    'be possible for intransitive verbs, create another lexical rule that ' + \
