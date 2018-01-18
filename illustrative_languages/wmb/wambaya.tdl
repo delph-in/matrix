@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of wambaya
 ;;; created at:
-;;;     Wed Jan 17 00:50:02 UTC 2018
+;;;     Thu Jan 18 17:24:51 UTC 2018
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -25,23 +25,21 @@ head :+ [ AUX bool,
     FORM form,
     INIT bool ].
 
-inflected :+ [ AUX-TENSE-FLAG luk,
-    AUX-MASCULINE-FLAG luk,
-    INTRANSITIVE-VERB-FLAG luk,
-    AUX-FIRST-PER-FLAG luk,
-    CASE-FLAG luk,
+inflected :+ [ TRANSITIVE-VERB-FLAG luk,
+    AUX-TENSE-FLAG luk,
     AUX-FEMINE-FLAG luk,
-    TRANSITIVE-VERB-FLAG luk,
-    INFLECTION-FLAG luk ].
+    INTRANSITIVE-VERB-FLAG luk,
+    AUX-MASCULINE-FLAG luk,
+    CASE-FLAG luk,
+    AUX-FIRST-PER-FLAG luk ].
 
-infl-satisfied :+ [ AUX-TENSE-FLAG na-or-+,
-    AUX-MASCULINE-FLAG na-or-+,
-    INTRANSITIVE-VERB-FLAG na-or-+,
-    AUX-FIRST-PER-FLAG na-or-+,
-    CASE-FLAG na-or-+,
+infl-satisfied :+ [ TRANSITIVE-VERB-FLAG na-or-+,
+    AUX-TENSE-FLAG na-or-+,
     AUX-FEMINE-FLAG na-or-+,
-    TRANSITIVE-VERB-FLAG na-or-+,
-    INFLECTION-FLAG na-or-+ ].
+    INTRANSITIVE-VERB-FLAG na-or-+,
+    AUX-MASCULINE-FLAG na-or-+,
+    CASE-FLAG na-or-+,
+    AUX-FIRST-PER-FLAG na-or-+ ].
 
 png :+ [ PER person,
     NUM number,
@@ -139,7 +137,7 @@ verb-lex := non-mod-lex-item &
                        HEAD verb &
                             [ NMZ - ] ] ].
 
-main-verb-lex := verb-lex & basic-verb-lex & inflection-rule-dtr & intrans-features-or-trans-features-rule-dtr &
+main-verb-lex := verb-lex & basic-verb-lex & inflection-or-intrans-features-or-trans-features-rule-dtr &
   [ SYNSEM.LOCAL [ CAT [ HEAD.AUX -,
                          VAL [ SPR < >,
                                SPEC < >,
@@ -191,16 +189,13 @@ erg-abs-transitive-verb-lex := transitive-verb-lex &
              [ LOCAL.CAT.HEAD noun &
                               [ CASE abs ] ] > ].
 
-intrans-verb-lex := abs-intransitive-verb-lex &
-  [ INFLECTED.INFLECTION-FLAG - ].
+intrans-verb-lex := abs-intransitive-verb-lex.
 
-trans-verb-lex := erg-abs-transitive-verb-lex &
-  [ INFLECTED.INFLECTION-FLAG - ].
+trans-verb-lex := erg-abs-transitive-verb-lex.
 
 trans2-verb-lex := transitive-verb-lex &
   [ SYNSEM.LOCAL.CAT.VAL [ SUBJ.FIRST.LOCAL.CAT.HEAD.CASE erg,
-                           COMPS.FIRST.LOCAL.CAT.HEAD.CASE all ],
-    INFLECTED.INFLECTION-FLAG - ].
+                           COMPS.FIRST.LOCAL.CAT.HEAD.CASE all ] ].
 
 ;;; Auxiliaries
 
@@ -238,11 +233,11 @@ arg-comp-aux := aux-lex & basic-two-arg &
 arg-comp-aux-no-pred := arg-comp-aux & raise-sem-lex-item.
 
 masc-aux-lex := arg-comp-aux-no-pred & aux-tense-rule-dtr &
-  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM finite,
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM nonfinite,
     INFLECTED [ TRANSITIVE-VERB-FLAG na-or--,
+                AUX-TENSE-FLAG -,
                 AUX-MASCULINE-FLAG -,
-                INTRANSITIVE-VERB-FLAG na-or--,
-                AUX-TENSE-FLAG - ] ].
+                INTRANSITIVE-VERB-FLAG na-or-- ] ].
 
 ; Somewhat surprisingly, this inherits from basic-two-arg, so
 ; that the non-local features are amalgamated from subj, the
@@ -254,11 +249,11 @@ masc-aux-lex := arg-comp-aux-no-pred & aux-tense-rule-dtr &
 ; wasn't appearing adjacent to the verb.
 
 fem-aux-lex := arg-comp-aux-no-pred & aux-tense-rule-dtr &
-  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM finite,
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM nonfinite,
     INFLECTED [ TRANSITIVE-VERB-FLAG na-or--,
-                INTRANSITIVE-VERB-FLAG na-or--,
                 AUX-TENSE-FLAG -,
-                AUX-FEMINE-FLAG - ] ].
+                AUX-FEMINE-FLAG -,
+                INTRANSITIVE-VERB-FLAG na-or-- ] ].
 
 ; Somewhat surprisingly, this inherits from basic-two-arg, so
 ; that the non-local features are amalgamated from subj, the
@@ -270,11 +265,11 @@ fem-aux-lex := arg-comp-aux-no-pred & aux-tense-rule-dtr &
 ; wasn't appearing adjacent to the verb.
 
 first-aux-lex := arg-comp-aux-no-pred & aux-tense-rule-dtr &
-  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM finite,
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM nonfinite,
     INFLECTED [ TRANSITIVE-VERB-FLAG na-or--,
-                INTRANSITIVE-VERB-FLAG na-or--,
                 AUX-TENSE-FLAG -,
-                AUX-FIRST-PER-FLAG - ] ].
+                AUX-FIRST-PER-FLAG -,
+                INTRANSITIVE-VERB-FLAG na-or-- ] ].
 
 ;;; Complementizers
 
@@ -286,7 +281,9 @@ low-nominalization-lex-rule := cat-change-with-ccont-lex-rule &
   [ SYNSEM.LOCAL.CAT [ HEAD noun &
                             [ NMZ +,
                               MOD #mod ],
-                       VAL [ SPEC #spec,
+                       VAL [ SUBJ < [ LOCAL [ CAT.VAL.SPR < >,
+                                              CONT.HOOK.INDEX #subj ] ] >,
+                             SPEC #spec,
                              SPR < [ OPT + ] > ],
                        MC #mc,
                        MKG #mkg,
@@ -299,15 +296,18 @@ low-nominalization-lex-rule := cat-change-with-ccont-lex-rule &
              HCONS <! qeq &
                       [ HARG #arg1,
                         LARG #larg ] !>,
-             HOOK [ INDEX #arg0,
+             HOOK [ XARG #xarg,
+                    INDEX #arg0,
                     LTOP #ltop ] ],
     DTR.SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
-                             VAL.SPEC #spec,
+                             VAL [ SUBJ < [ LOCAL.CONT.HOOK.INDEX #subj ] >,
+                                   SPEC #spec ],
                              MC #mc,
                              MKG #mkg,
                              HC-LIGHT #hc-light,
                              POSTHEAD #posthead ],
-                       CONT.HOOK.LTOP #larg ] ].
+                       CONT.HOOK [ XARG #xarg,
+                                   LTOP #larg ] ] ].
 
 low-nmz-subjid-compsid-lex-rule := low-nominalization-lex-rule &
   [ SYNSEM.LOCAL.CAT.VAL [ COMPS #comps,
@@ -318,28 +318,25 @@ low-nmz-subjid-compsid-lex-rule := low-nominalization-lex-rule &
 ;;; Intermediate rule types
 
 aux-tense-rule-dtr := word-or-lexrule.
-inflection-rule-dtr := word-or-lexrule.
-intrans-features-or-trans-features-rule-dtr := word-or-lexrule.
+inflection-or-intrans-features-or-trans-features-rule-dtr := word-or-lexrule.
 
 ;;; Lexical rule types
 
 case-lex-rule-super := add-only-no-ccont-rule &
   [ INFLECTED [ CASE-FLAG +,
-                INTRANSITIVE-VERB-FLAG #intransitive-verb,
                 AUX-MASCULINE-FLAG #aux-masculine,
-                AUX-FIRST-PER-FLAG #aux-first-per,
-                AUX-FEMINE-FLAG #aux-femine,
-                AUX-TENSE-FLAG #aux-tense,
                 TRANSITIVE-VERB-FLAG #transitive-verb,
-                INFLECTION-FLAG #inflection ],
+                AUX-TENSE-FLAG #aux-tense,
+                AUX-FEMINE-FLAG #aux-femine,
+                INTRANSITIVE-VERB-FLAG #intransitive-verb,
+                AUX-FIRST-PER-FLAG #aux-first-per ],
     DTR noun-lex &
-        [ INFLECTED [ INTRANSITIVE-VERB-FLAG #intransitive-verb,
-                      AUX-MASCULINE-FLAG #aux-masculine,
-                      AUX-FIRST-PER-FLAG #aux-first-per,
-                      AUX-FEMINE-FLAG #aux-femine,
-                      AUX-TENSE-FLAG #aux-tense,
+        [ INFLECTED [ AUX-MASCULINE-FLAG #aux-masculine,
                       TRANSITIVE-VERB-FLAG #transitive-verb,
-                      INFLECTION-FLAG #inflection ] ] ].
+                      AUX-TENSE-FLAG #aux-tense,
+                      AUX-FEMINE-FLAG #aux-femine,
+                      INTRANSITIVE-VERB-FLAG #intransitive-verb,
+                      AUX-FIRST-PER-FLAG #aux-first-per ] ] ].
 
 erg-lex-rule := case-lex-rule-super & infl-lex-rule &
   [ SYNSEM.LOCAL.CAT.HEAD.CASE erg ].
@@ -354,54 +351,37 @@ all-lex-rule := case-lex-rule-super & infl-lex-rule &
   [ SYNSEM.LOCAL.CAT.HEAD.CASE all ].
 
 inflection-lex-rule-super := add-only-no-ccont-rule &
-  [ INFLECTED [ INFLECTION-FLAG +,
-                INTRANSITIVE-VERB-FLAG #intransitive-verb,
-                AUX-MASCULINE-FLAG #aux-masculine,
-                AUX-FIRST-PER-FLAG #aux-first-per,
-                CASE-FLAG #case,
-                AUX-FEMINE-FLAG #aux-femine,
-                AUX-TENSE-FLAG #aux-tense,
-                TRANSITIVE-VERB-FLAG #transitive-verb ],
-    DTR inflection-rule-dtr &
-        [ INFLECTED [ INTRANSITIVE-VERB-FLAG #intransitive-verb,
-                      AUX-MASCULINE-FLAG #aux-masculine,
-                      AUX-FIRST-PER-FLAG #aux-first-per,
-                      CASE-FLAG #case,
-                      AUX-FEMINE-FLAG #aux-femine,
-                      AUX-TENSE-FLAG #aux-tense,
-                      TRANSITIVE-VERB-FLAG #transitive-verb ] ] ].
+  [ INFLECTED #infl,
+    DTR inflection-or-intrans-features-or-trans-features-rule-dtr &
+        [ INFLECTED #infl ] ].
 
 fut-lex-rule := infl-lex-rule & inflection-lex-rule-super &
   [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.E.TENSE future,
-                   CAT.HEAD.FORM finite ] ].
+                   CAT.HEAD.FORM nonfinite ] ].
 
 pst-lex-rule := const-lex-rule & inflection-lex-rule-super &
   [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.E.TENSE past,
-                   CAT.HEAD.FORM finite ] ].
-
-non-fin-lex-rule := const-lex-rule & inflection-lex-rule-super & intrans-features-or-trans-features-rule-dtr &
-  [ SYNSEM.LOCAL.CAT.HEAD.FORM nonfinite ].
+                   CAT.HEAD.FORM nonfinite ] ].
 
 non-pst-lex-rule := const-lex-rule & inflection-lex-rule-super &
-  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E.TENSE nonpast ].
+  [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.E.TENSE nonpast,
+                   CAT.HEAD.FORM nonfinite ] ].
 
 aux-tense-lex-rule-super := add-only-no-ccont-rule &
   [ INFLECTED [ AUX-TENSE-FLAG +,
-                INTRANSITIVE-VERB-FLAG #intransitive-verb,
-                AUX-MASCULINE-FLAG #aux-masculine,
-                AUX-FIRST-PER-FLAG #aux-first-per,
                 CASE-FLAG #case,
-                AUX-FEMINE-FLAG #aux-femine,
+                AUX-MASCULINE-FLAG #aux-masculine,
                 TRANSITIVE-VERB-FLAG #transitive-verb,
-                INFLECTION-FLAG #inflection ],
+                INTRANSITIVE-VERB-FLAG #intransitive-verb,
+                AUX-FEMINE-FLAG #aux-femine,
+                AUX-FIRST-PER-FLAG #aux-first-per ],
     DTR aux-tense-rule-dtr &
-        [ INFLECTED [ INTRANSITIVE-VERB-FLAG #intransitive-verb,
+        [ INFLECTED [ CASE-FLAG #case,
                       AUX-MASCULINE-FLAG #aux-masculine,
-                      AUX-FIRST-PER-FLAG #aux-first-per,
-                      CASE-FLAG #case,
-                      AUX-FEMINE-FLAG #aux-femine,
                       TRANSITIVE-VERB-FLAG #transitive-verb,
-                      INFLECTION-FLAG #inflection ] ] ].
+                      INTRANSITIVE-VERB-FLAG #intransitive-verb,
+                      AUX-FEMINE-FLAG #aux-femine,
+                      AUX-FIRST-PER-FLAG #aux-first-per ] ] ].
 
 aux-fut-lex-rule := aux-tense-lex-rule-super & infl-lex-rule &
   [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.E.TENSE future,
@@ -421,20 +401,18 @@ aux-non-fin-lex-rule := aux-tense-lex-rule-super & const-lex-rule &
 aux-femine-lex-rule-super := add-only-no-ccont-rule & aux-tense-rule-dtr & const-lex-rule &
   [ INFLECTED [ AUX-FEMINE-FLAG +,
                 AUX-TENSE-FLAG #aux-tense,
-                AUX-MASCULINE-FLAG #aux-masculine,
-                AUX-FIRST-PER-FLAG #aux-first-per,
                 CASE-FLAG #case,
-                INTRANSITIVE-VERB-FLAG #intransitive-verb,
+                AUX-MASCULINE-FLAG #aux-masculine,
                 TRANSITIVE-VERB-FLAG #transitive-verb,
-                INFLECTION-FLAG #inflection ],
+                INTRANSITIVE-VERB-FLAG #intransitive-verb,
+                AUX-FIRST-PER-FLAG #aux-first-per ],
     DTR fem-aux-lex &
         [ INFLECTED [ AUX-TENSE-FLAG #aux-tense,
-                      AUX-MASCULINE-FLAG #aux-masculine,
-                      AUX-FIRST-PER-FLAG #aux-first-per,
                       CASE-FLAG #case,
-                      INTRANSITIVE-VERB-FLAG #intransitive-verb,
+                      AUX-MASCULINE-FLAG #aux-masculine,
                       TRANSITIVE-VERB-FLAG #transitive-verb,
-                      INFLECTION-FLAG #inflection ] ] ].
+                      INTRANSITIVE-VERB-FLAG #intransitive-verb,
+                      AUX-FIRST-PER-FLAG #aux-first-per ] ] ].
 
 aux-fem-lex-rule := aux-femine-lex-rule-super &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ GEND feminine,
@@ -442,7 +420,7 @@ aux-fem-lex-rule := aux-femine-lex-rule-super &
 
 trans-features-lex-rule-super := infl-lex-rule & low-nmz-subjid-trans-lex-rule &
   [ INFLECTED #infl,
-    DTR intrans-features-or-trans-features-rule-dtr &
+    DTR inflection-or-intrans-features-or-trans-features-rule-dtr &
         [ INFLECTED #infl &
                     [ TRANSITIVE-VERB-FLAG + ] ] ].
 
@@ -460,7 +438,7 @@ prior-lex-rule := trans-features-lex-rule-super &
 
 intrans-features-lex-rule-super := infl-lex-rule & low-nmz-subjid-compsid-lex-rule &
   [ INFLECTED #infl,
-    DTR intrans-features-or-trans-features-rule-dtr &
+    DTR inflection-or-intrans-features-or-trans-features-rule-dtr &
         [ INFLECTED #infl &
                     [ INTRANSITIVE-VERB-FLAG + ] ] ].
 
@@ -475,21 +453,19 @@ prior2-lex-rule := intrans-features-lex-rule-super &
 
 aux-masculine-lex-rule-super := add-only-no-ccont-rule & aux-tense-rule-dtr & const-lex-rule &
   [ INFLECTED [ AUX-MASCULINE-FLAG +,
-                INTRANSITIVE-VERB-FLAG #intransitive-verb,
-                INFLECTION-FLAG #inflection,
-                AUX-FIRST-PER-FLAG #aux-first-per,
                 CASE-FLAG #case,
-                AUX-FEMINE-FLAG #aux-femine,
+                TRANSITIVE-VERB-FLAG #transitive-verb,
                 AUX-TENSE-FLAG #aux-tense,
-                TRANSITIVE-VERB-FLAG #transitive-verb ],
+                AUX-FEMINE-FLAG #aux-femine,
+                INTRANSITIVE-VERB-FLAG #intransitive-verb,
+                AUX-FIRST-PER-FLAG #aux-first-per ],
     DTR masc-aux-lex &
-        [ INFLECTED [ INTRANSITIVE-VERB-FLAG #intransitive-verb,
-                      INFLECTION-FLAG #inflection,
-                      AUX-FIRST-PER-FLAG #aux-first-per,
-                      CASE-FLAG #case,
-                      AUX-FEMINE-FLAG #aux-femine,
+        [ INFLECTED [ CASE-FLAG #case,
+                      TRANSITIVE-VERB-FLAG #transitive-verb,
                       AUX-TENSE-FLAG #aux-tense,
-                      TRANSITIVE-VERB-FLAG #transitive-verb ] ] ].
+                      AUX-FEMINE-FLAG #aux-femine,
+                      INTRANSITIVE-VERB-FLAG #intransitive-verb,
+                      AUX-FIRST-PER-FLAG #aux-first-per ] ] ].
 
 aux-masc-lex-rule := aux-masculine-lex-rule-super &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ GEND masculine-or-neuter,
@@ -497,21 +473,19 @@ aux-masc-lex-rule := aux-masculine-lex-rule-super &
 
 aux-first-per-lex-rule-super := add-only-no-ccont-rule & aux-tense-rule-dtr & const-lex-rule &
   [ INFLECTED [ AUX-FIRST-PER-FLAG +,
-                INTRANSITIVE-VERB-FLAG #intransitive-verb,
-                AUX-MASCULINE-FLAG #aux-masculine,
                 CASE-FLAG #case,
-                AUX-FEMINE-FLAG #aux-femine,
-                AUX-TENSE-FLAG #aux-tense,
+                AUX-MASCULINE-FLAG #aux-masculine,
                 TRANSITIVE-VERB-FLAG #transitive-verb,
-                INFLECTION-FLAG #inflection ],
+                INTRANSITIVE-VERB-FLAG #intransitive-verb,
+                AUX-FEMINE-FLAG #aux-femine,
+                AUX-TENSE-FLAG #aux-tense ],
     DTR first-aux-lex &
-        [ INFLECTED [ INTRANSITIVE-VERB-FLAG #intransitive-verb,
+        [ INFLECTED [ CASE-FLAG #case,
                       AUX-MASCULINE-FLAG #aux-masculine,
-                      CASE-FLAG #case,
-                      AUX-FEMINE-FLAG #aux-femine,
-                      AUX-TENSE-FLAG #aux-tense,
                       TRANSITIVE-VERB-FLAG #transitive-verb,
-                      INFLECTION-FLAG #inflection ] ] ].
+                      INTRANSITIVE-VERB-FLAG #intransitive-verb,
+                      AUX-FEMINE-FLAG #aux-femine,
+                      AUX-TENSE-FLAG #aux-tense ] ] ].
 
 aux-first-lex-rule := aux-first-per-lex-rule-super &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PER 1st ].

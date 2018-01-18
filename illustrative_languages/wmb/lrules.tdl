@@ -3,8 +3,6 @@ abs-lex := abs-lex-rule.
 
 pst-lex := pst-lex-rule.
 
-non-fin-lex := non-fin-lex-rule.
-
 non-pst-lex := non-pst-lex-rule.
 
 aux-non-fin-lex := aux-non-fin-lex-rule.
