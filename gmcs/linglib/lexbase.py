@@ -182,6 +182,7 @@ class PositionClass(MorphotacticNode):
         for lrt in self.nodes.values():
             poss_pron=False
             for feature in lrt.features:
+                print feature
                 if 'poss-pron' in feature:
                     poss_pron=True
             if lrt.possessive != None or poss_pron:
@@ -229,8 +230,8 @@ class LexicalRuleType(MorphotacticNode):
         # EKN 2017-12-15 Possessor rule pseudofeatures are properties of LRT
         self.possessive = None
         self.poss_strat_num = None
-        self.poss_pron = None
-        self.poss_pron_num = None
+#        self.poss_pron = None
+#        self.poss_pron_num = None
 
 
     def __repr__(self):

@@ -471,14 +471,15 @@ def customize_poss_irules(strat,mylang,ch,irules,hierarchies):
                 elif pron_strat:
 #                    if strat_name in str(feat['name']) and feat['value']!='nonpossessive':
                     if strat_name in str(feat['name']) and feat['value']!='minus':
-                        print(strat_name+"_lex_rule")
+#                        poss_pron_rule_name='poss-pron-lex-rule-'+strat_num
                         mylang.add(get_name(lrt)+'-lex-rule :=\
                                       [ SYNSEM.LOCAL.CAT.HEAD.POSS possessive-pron-'+strat_num+',\
                                         DTR.SYNSEM.LOCAL.CONT.HOOK #hook & [ INDEX #possessum & [ COG-ST uniq+fam+act ],\
                                                                              LTOP #lbl],\
                                         C-CONT.HOOK #hook ].')
                         if mod_spec=='spec':
-                            mylang.add(get_name(lrt)+'-lex-rule := [ SYNSEM.LOCAL.CAT.VAL [ SPR < >,\
+                            mylang.add(get_name(lrt)+'-lex-rule := \
+                                                                   [ SYNSEM.LOCAL.CAT.VAL [ SPR < >,\
                                                                                             SPEC #spec,\
                                                                                             SUBJ #subj,\
                                                                                             COMPS #comps ],\
@@ -501,7 +502,8 @@ def customize_poss_irules(strat,mylang,ch,irules,hierarchies):
                                                                                                 SUBJ #subj,\
                                                                                                 COMPS #comps] ].')
                         elif mod_spec=='mod':
-                            mylang.add(get_name(lrt)+'-lex-rule := [ SYNSEM.LOCAL.CAT.VAL #val,\
+                            mylang.add(get_name(lrt)+'-lex-rule := \
+                                                                   [ SYNSEM.LOCAL.CAT.VAL #val,\
                                                                      DTR.SYNSEM.LOCAL.CAT.VAL #val,\
                                                                      C-CONT [ RELS  <! noun-relation &\
                                                                                        [ PRED "pron_rel",\
