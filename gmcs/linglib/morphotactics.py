@@ -257,10 +257,9 @@ def create_lexical_rule_type(lrt, mtx_supertypes, cur_pc):
         elif feat['value']=='possessor' or feat['value']=='possessum' or feat['value']=='nonpossessive':
             new_lrt.possessive=feat['value']
             new_lrt.poss_strat_num = feat['name'][-1]
-#        elif 'possessor' in feat['name']:
-#            new_lrt.possessor = feat['value']
-#        elif 'possessum' in feat['name']:
-#            new_lrt.possessum = feat['value']
+        elif 'poss-pron' in feat['name']:
+            new_lrt.poss_pron=feat['value']
+            new_lrt.poss_pron_num = feat['name'][-1]
         else:
             new_lrt.features[feat['name']] = {'value': feat['value'],
                                               'head': feat['head']}
@@ -844,13 +843,16 @@ def write_possessive_behavior(pc,lrt,mylang,choices):
     ##############################################
     # PRONOMINAL POSSESSIVE PHRASES:           ###
     ##############################################
-#    POSSESSOR_PRONOUN_LEX_RULE_DEFN =' := [ SYNSEM.LOCAL.CONT.HOOK.INDEX #possessum ].'
-#    NONPOSSESSOR_PRONOUN_LEX_RULE_DEFN =' := lex-rule.'
-#    for key in lrt.features.keys():
-#        print "adding "+lrt.identifier()
-#        if 'poss-pron' in key:
-#            mylang.add(lrt.identifier()+POSSESSOR_PRONOUN_LEX_RULE_DEFN)
-
+    NONPOSSESSOR_PRONOUN_LEX_RULE_DEFN =' := lex-rule.'
+    POSSESSOR_PRONOUN_LEX_RULE_DEFN =' := [ SYNSEM.LOCAL.CONT.HOOK.INDEX #possessum ].'
+    if lrt.poss_pron=='plus':
+        poss_pron_rule_name='poss-pron-lex-rule-'+lrt.poss_pron_num
+        mylang.add(poss_pron_rule_name+POSSESSOR_PRONOUN_LEX_RULE_DEFN)
+        lrt.supertypes.add(poss_pron_rule_name)
+    elif lrt.poss_pron=='minus':
+        non_poss_pron_rule_name='non-poss-pron-lex-rule-'+lrt.poss_pron_num
+        mylang.add(non_poss_pron_rule_name+NONPOSSESSOR_PRONOUN_LEX_RULE_DEFN)
+        lrt.supertypes.add(non_poss_pron_rule_name)
 
 def write_valence_change_behavior(lrt, mylang, choices):
     from gmcs.linglib.valence_change import lexrule_name

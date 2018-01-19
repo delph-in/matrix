@@ -1188,10 +1188,10 @@ function set_possessum(n)
   var d;
   switch (n){
     case '0':
-      var d = document.getElementById('affix');
+      var d = document.getElementById('agree');
       break;
     case '1':
-      var d = document.getElementById('non-affix');
+      var d = document.getElementById('non-agree');
       break;
     default:
       var d = null; 

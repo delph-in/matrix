@@ -3094,5 +3094,5 @@ BeginIter poss-pron{i} "a class of possessor pronouns"
     EndIter instance
  
   Label "</div>"
-     
+
 EndIter poss-pron

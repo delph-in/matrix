@@ -469,7 +469,9 @@ def customize_poss_irules(strat,mylang,ch,irules,hierarchies):
                             # This should keep normal head-spec constructions from letting noun phrases act as determiners:
                             mylang.add(get_name(lrt)+'-lex-rule := [ SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.LOCAL.CAT.HEAD det ].')
                 elif pron_strat:
-                    if strat_name in str(feat['name']) and feat['value']!='nonpossessive':
+#                    if strat_name in str(feat['name']) and feat['value']!='nonpossessive':
+                    if strat_name in str(feat['name']) and feat['value']!='minus':
+                        print(strat_name+"_lex_rule")
                         mylang.add(get_name(lrt)+'-lex-rule :=\
                                       [ SYNSEM.LOCAL.CAT.HEAD.POSS possessive-pron-'+strat_num+',\
                                         DTR.SYNSEM.LOCAL.CONT.HOOK #hook & [ INDEX #possessum & [ COG-ST uniq+fam+act ],\
