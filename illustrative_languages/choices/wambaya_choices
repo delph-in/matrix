@@ -3,7 +3,6 @@ version=30
 
 section=general
 language=clausalmods-wambaya
-iso-code=wmb
 
 section=word-order
 word-order=v2
@@ -32,6 +31,7 @@ erg-abs-erg-case-name=ergative
 erg-abs-abs-case-name=absolutive
   case1_name=dative
   case2_name=allative
+  case3_name=accusative
 
 section=direct-inverse
 
@@ -205,6 +205,14 @@ section=morphology
       noun-pc1_lrt4_feat1_value=allative
       noun-pc1_lrt4_lri1_inflecting=yes
       noun-pc1_lrt4_lri1_orth=nmanji
+  noun-pc2_name=nmz-case
+  noun-pc2_obligatory=on
+  noun-pc2_order=suffix
+  noun-pc2_inputs=verb-pc4_lrt4, verb-pc4_lrt5, verb-pc4_lrt6, verb-pc5_lrt4, verb-pc5_lrt5, verb-pc5_lrt6
+    noun-pc2_lrt1_name=acc
+      noun-pc2_lrt1_feat1_name=case
+      noun-pc2_lrt1_feat1_value=accusative
+      noun-pc2_lrt1_lri1_inflecting=no
   verb-pc2_name=aux-tense
   verb-pc2_obligatory=on
   verb-pc2_order=suffix

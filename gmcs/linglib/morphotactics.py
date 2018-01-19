@@ -1121,13 +1121,14 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
                             'unusable without a copula defined on the Lexicon page.')
 
     #KPH Validation for case change on nominalization rules
-    for feat in lrt.get('feat'):
-        if feat.get('name') == 'case':
-            vr.warn(lrt.full_key + '_feat', 'If case change is specified on the object ' + \
-                   'in a nominalization rule, the resulting lexical rule will only be ' + \
-                    'compatible with transitive verbs. If this lexical rule should also ' + \
-                   'be possible for intransitive verbs, create another lexical rule that ' + \
-                    'requires intransitives verbs as the input.')
+    if lrt.full_key.startswith('verb-pc'):
+        for feat in lrt.get('feat'):
+            if feat.get('name') == 'case':
+                vr.warn(feat.full_key + '_name', 'If case change is specified on the object ' + \
+                       'in a nominalization rule, the resulting lexical rule will only be ' + \
+                        'compatible with transitive verbs. If this lexical rule should also ' + \
+                        'be possible for intransitive verbs, create another lexical rule that ' + \
+                        'requires intransitives verbs as the input.')
 
 def hierarchy_validation(choices, pc, vr):
     # LLD 2015-11-22 Supertype LRTs should not have non-affixing LRIs if subtype
