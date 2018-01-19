@@ -2445,14 +2445,14 @@ BeginIter noun-pc{i} "a Position Class" 1 0
 
   Check obligatory "Noun Position Class {i} Obligatory" "<br/>Obligatorily occurs:" ""
 
-  Select order "Noun Position Class {i} Order" "<br/>Appears as a prefix or suffix:" ""
-  . prefix "Prefix" "prefix"
-  . suffix "Suffix" "suffix"
+Select order "Noun Position Class {i} Order" "<br/>Appears as a prefix or suffix:" ""
+. prefix "Prefix" "prefix"
+. suffix "Suffix" "suffix"
 
-  MultiSelect inputs "Noun Position Class {i} Input" "<br/>Possible inputs:" ""
-  fillcache c=nouns
-  fillregex p=noun-pc[0-9]+(_lrt[0-9]+)?_name
-  . noun "Any noun" "any noun"
+MultiSelect inputs "Noun Position Class {i} Input" "<br/>Possible inputs:" ""
+fillcache c=nouns
+fillregex p=(verb|noun)-pc[0-9]+(_lrt[0-9]+)?_name
+. noun "Any noun" "any noun"
 
   Label "<p>Morphotactic Constraints:</p>"
 
