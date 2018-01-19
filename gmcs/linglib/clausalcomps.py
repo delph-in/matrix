@@ -417,7 +417,7 @@ def init_needed(wo, cs,mylang):
         elif wo == 'free':
             res = (cs[COMP_POS_AFTER] and not cs[COMP_POS_BEFORE]) or (cs[COMP_POS_BEFORE] and not cs[COMP_POS_AFTER])
     else:
-         res = (wo in OV_ORDERS or wo == 'vos') and cs[CLAUSE_POS_EXTRA] == 'on'
+         res = wo in OV_ORDERS and cs[CLAUSE_POS_EXTRA] == 'on'
     if res:
         mylang.add('head :+ [ INIT bool ].', section='addenda')
     return res
