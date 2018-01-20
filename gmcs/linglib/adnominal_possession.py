@@ -340,12 +340,16 @@ def customize_poss_rules(strat,mylang,ch,rules):
                     adj_head=True
 #            if head_adj: mylang.add('head-adj-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS nonpossessive ].',merge=True)
 #            if adj_head: mylang.add('adj-head-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS nonpossessive ].',merge=True)
-            if head_adj: mylang.add('head-adj-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSSESSOR nonpossessive ].',merge=True)
-            if adj_head: mylang.add('adj-head-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSSESSOR nonpossessive ].',merge=True)
-            if phrase_rule=='head-comp-poss-phrase'+'-'+strat_num and rule_added and strat.get('possessum-type')!='non-affix':
-                head_comp_order=customize_major_constituent_order(ch.get('word-order'),mylang,ch,rules)['hc']
-                mylang.add(head_comp_order+'-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL [ SPR <>,\
-                                                                                         SPEC <> ] ].')
+        if head_adj: mylang.add('head-adj-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSSESSOR nonpossessive ].',merge=True)
+        if adj_head: mylang.add('adj-head-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSSESSOR nonpossessive ].',merge=True)
+        print phrase_rule
+        print rule_added
+        if phrase_rule=='head-comp-poss-phrase'+'-'+strat_num: # and rule_added and strat.get('possessum-type')!='non-affix':
+            print "adding constraints to head-comp"
+            head_comp_order=customize_major_constituent_order(ch.get('word-order'),mylang,ch,rules)['hc']
+            mylang.add(head_comp_order+'-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSSESSOR nonpossessive,\
+                                                         HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL [ SPR <>,\
+                                                                                           SPEC <> ] ] ].')
     # If a specialized poss phrase rule was added, adds word order info to the phrase rule:
     if rule_added: 
         mylang.add(phrase_rule +' := '+strat.get('order')+'.',merge=True)

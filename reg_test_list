@@ -37,6 +37,7 @@ INSTALLED
 ############################################################
 adnom-poss-mod-possessor-non-affix-possessum-affix-head-final
 DIFFS EXPECTED - head-comp is doing the work of head-comp-poss
+fixed -- not installed yet
 ############################################################
 adnom-poss-mod-possessor-non-affix-possessum-affix-head-final-agr-mutual
 INSTALLED
