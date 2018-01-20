@@ -348,3 +348,5 @@ adnom-poss-spec-possessor-affix-two-strat-order-var=two strategies, identical ex
 adnom-poss-spec-possessor-affix-two-strat-mod-spec-var=two strategies, one spec one mod
 adnom-poss-mod-possessor-affix-head-final-pron=pronoun, mod-like
 adnom-poss-spec-possessor-affix-head-final-pron=pron spec
+adnom-poss-mod-possessor-non-affix-possessum-affix-head-initial-sov-right-side-marker=test for word order combo poss phrase doesn't match normal head-comp
+adnom-poss-mod-possessor-non-affix-possessum-affix-head-final=dummy comment

@@ -300,8 +300,12 @@ def customize_poss_rules(strat,mylang,ch,rules):
                                              HEAD-DTR.SYNSEM.LOCAL.CAT.POSSESSUM possessum-'+strat_num+' ].',merge=True)
 #                mylang.add(phrase_rule+':= [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessor-'+strat_num+',\
 #                                             HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessum-'+strat_num+' ].',merge=True)
-# This part is supposed to make head-comp-poss accept only possessive phrases. May not be necessary?
-#        else:
+# This part is supposed to make head-comp-poss accept only possessive phrases. 
+        elif phrase_rule=='head-comp-poss-phrase-'+strat_num:
+            if (mark_loc=='possessum' or mark_loc=='both') and strat.get('possessum-type')=='affix':
+                mylang.add(phrase_rule+':= [ HEAD-DTR.SYNSEM.LOCAL.CAT [ POSSESSUM possessum ] ].')
+                
+
 #            mylang.add(phrase_rule+':= [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR nonpossessive,\
 #                                                                         POSSESSUM nonpossessive ] ].',merge=True)
 #            mylang.add(phrase_rule+':= [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessive-'+strat_num+' ].',merge=True)
@@ -342,10 +346,7 @@ def customize_poss_rules(strat,mylang,ch,rules):
 #            if adj_head: mylang.add('adj-head-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS nonpossessive ].',merge=True)
         if head_adj: mylang.add('head-adj-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSSESSOR nonpossessive ].',merge=True)
         if adj_head: mylang.add('adj-head-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSSESSOR nonpossessive ].',merge=True)
-        print phrase_rule
-        print rule_added
         if phrase_rule=='head-comp-poss-phrase'+'-'+strat_num: # and rule_added and strat.get('possessum-type')!='non-affix':
-            print "adding constraints to head-comp"
             head_comp_order=customize_major_constituent_order(ch.get('word-order'),mylang,ch,rules)['hc']
             mylang.add(head_comp_order+'-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSSESSOR nonpossessive,\
                                                          HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL [ SPR <>,\
@@ -639,6 +640,7 @@ def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
             if mod_spec=='spec':
                 mylang.add('possessor-adp-lex := \
                                  [  SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR possessor-'+strat_num+',\
+                                                       POSSESSUM nonpossessive,\
                                                        VAL.SPEC.FIRST.LOCAL.CAT.VAL.SPR < [ ] > ] ].')
 #                mylang.add('possessor-adp-lex := \
 #                                 [  SYNSEM.LOCAL.CAT [ HEAD.POSS possessor-'+strat_num+',\
@@ -672,7 +674,8 @@ def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
                                                   CONT [ RELS <! '+POSS_REL+' !> ] ] ].')
                 elif mark_loc=='both':
                     mylang.add('possessor-adp-lex := \
-                                 [ SYNSEM.LOCAL [ CAT.HEAD.POSSESSOR possessor-'+strat_num+',\
+                                 [ SYNSEM.LOCAL [ CAT [ HEAD.POSSESSOR possessor-'+strat_num+',\
+                                                        POSSESSUM nonpossessive, ]\
                                                   CONT.RELS <! !> ] ] .')
 #                    mylang.add('possessor-adp-lex := \
 #                                 [ SYNSEM.LOCAL [ CAT.HEAD.POSS possessor-'+strat_num+',\

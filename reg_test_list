@@ -48,11 +48,14 @@ INSTALLED
 ############################################################
 adnom-poss-mod-possessor-non-affix-possessum-affix-head-final-sov-left-side-marker
 DIFFS EXPECTED - head-comp and head-comp-poss doing same work
+declared out of scope
 ############################################################
 adnom-poss-mod-possessor-non-affix-possessum-affix-head-final-sov-right-side-marker
 INSTALLED
+############################################################
 adnom-poss-mod-possessor-non-affix-possessum-affix-head-final-svo-right-side-marker
 DIFFS EXPECTED - head-comp doing the work of head-comp-poss
+############################################################
 adnom-poss-mod-possessor-non-affix-possessum-affix-head-initial-sov-right-side-marker
 DIFFS EXPECTED - comp issue
 adnom-poss-mod-possessum-affix-head-final
