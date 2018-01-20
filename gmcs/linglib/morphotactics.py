@@ -257,9 +257,6 @@ def create_lexical_rule_type(lrt, mtx_supertypes, cur_pc):
         elif feat['value']=='possessor' or feat['value']=='possessum' or feat['value']=='nonpossessive':
             new_lrt.possessive=feat['value']
             new_lrt.poss_strat_num = feat['name'][-1]
-#        elif 'poss-pron' in feat['name']:
-#            new_lrt.poss_pron=feat['value']
-#            new_lrt.poss_pron_num = feat['name'][-1]
         else:
             new_lrt.features[feat['name']] = {'value': feat['value'],
                                               'head': feat['head']}
@@ -528,7 +525,6 @@ def percolate_supertypes(pc):
                 # So no supertypes for possessive rules are added here; instead, supertypes
                 # are handled by write_possessive_behavior().
                 elif not pc.has_possessive():
-                    print(pc)
                     x.supertypes.add('add-only-no-ccont-rule')
 
     for r in pc.roots():
@@ -828,7 +824,8 @@ def write_possessive_behavior(pc,lrt,mylang,choices):
     POSSESSUM_LEX_RULE_DEFN = ''' := 
              [ SYNSEM.LOCAL.CAT.HEAD noun ].'''
     NON_POSS_LEX_RULE_DEFN = ''' := add-only-no-ccont-rule &
-             [ SYNSEM.LOCAL.CAT.HEAD noun & [ POSS nonpossessive ] ].'''
+             [ SYNSEM.LOCAL.CAT [ HEAD noun & [ POSSESSOR nonpossessive ],\
+                                  POSSESSUM nonpossessive ] ].'''
     if lrt.possessive=='possessor':
         possessor_rule_name='possessor-lex-rule-'+lrt.poss_strat_num
         lrt.supertypes.add(possessor_rule_name)

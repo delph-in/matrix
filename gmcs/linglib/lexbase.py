@@ -182,7 +182,6 @@ class PositionClass(MorphotacticNode):
         for lrt in self.nodes.values():
             poss_pron=False
             for feature in lrt.features:
-                print feature
                 if 'poss-pron' in feature:
                     poss_pron=True
             if lrt.possessive != None or poss_pron:
