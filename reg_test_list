@@ -23,7 +23,7 @@ NEED TO REINSTALL
 adnom-poss-mod-possessor-affix-possessum-affix-head-final
 INSTALLED
 adnom-poss-mod-possessor-affix-possessum-affix-head-initial
-
+INSTALLED
 adnom-poss-mod-possessor-affix-possessum-affix-head-final-agr-mutual
 INSTALLED
 adnom-poss-mod-possessor-affix-possessum-affix-head-final-agr-unidir-possessor
@@ -60,6 +60,8 @@ adnom-poss-mod-possessor-non-affix-possessum-affix-head-initial-sov-right-side-m
 INSTALLED
 adnom-poss-mod-possessum-affix-head-final
 INSTALLED
+adnom-poss-mod-possessum-affix-head-initial
+
 adnom-poss-mod-possessum-affix-head-final-agr
 INSTALLED
 adnom-poss-spec-juxt
