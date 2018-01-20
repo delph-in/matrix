@@ -1,0 +1,99 @@
+
+version=29
+
+section=general
+language=ccomp-pseudo42-vos-extra-feat
+
+section=word-order
+word-order=vos
+has-dets=no
+has-aux=no
+subord-word-order=same
+
+section=number
+
+section=person
+person=none
+
+section=gender
+
+section=case
+case-marking=none
+
+section=direct-inverse
+
+section=tense-aspect-mood
+
+section=other-features
+form-fin-nf=on
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=info-str
+
+section=arg-opt
+
+section=nominalclause
+
+section=clausalmods
+
+section=clausal-comp
+  comps1_clause-pos-extra=on
+    comps1_feat2_name=form
+    comps1_feat2_value=nonfinite
+
+section=lexicon
+  noun1_name=noun
+  noun1_det=imp
+    noun1_stem1_orth=noun1
+    noun1_stem1_pred=_noun1_n_rel
+    noun1_stem2_orth=noun2
+    noun1_stem2_pred=_noun2_n_rel
+    noun1_stem3_orth=noun3
+    noun1_stem3_pred=_noun3_n_rel
+  verb1_name=tverb
+  verb1_valence=trans
+    verb1_stem1_orth=tverb
+    verb1_stem1_pred=_tverb_v_rel
+  verb2_name=cverb
+  verb2_valence=comps1
+    verb2_stem1_orth=cverb
+    verb2_stem1_pred=_cverb_v_rel
+
+section=morphology
+  verb-pc1_name=FRM
+  verb-pc1_obligatory=on
+  verb-pc1_order=suffix
+  verb-pc1_inputs=verb
+    verb-pc1_lrt1_name=fin
+      verb-pc1_lrt1_feat1_name=form
+      verb-pc1_lrt1_feat1_value=finite
+      verb-pc1_lrt1_feat1_head=verb
+      verb-pc1_lrt1_lri1_inflecting=yes
+      verb-pc1_lrt1_lri1_orth=-FIN
+    verb-pc1_lrt2_name=nfin
+      verb-pc1_lrt2_feat1_name=form
+      verb-pc1_lrt2_feat1_value=nonfinite
+      verb-pc1_lrt2_feat1_head=verb
+      verb-pc1_lrt2_lri1_inflecting=yes
+      verb-pc1_lrt2_lri1_orth=-NFIN
+
+section=toolbox-import
+
+section=test-sentences
+  sentence1_orth=tverb-FIN noun1 noun2
+  sentence2_orth=cverb-FIN noun1 tverb-NFIN noun2 noun3
+  sentence3_orth=cverb-FIN noun1 tverb-FIN noun2 noun3
+  sentence3_star=on
+  sentence4_orth=cverb-FIN tverb-NFIN noun2 noun3 noun1
+  sentence4_star=on
+  sentence5_orth=cverb-NFIN tverb-NFIN noun2 noun3 noun1
+  sentence5_star=on
+
+section=gen-options
+
+section=ToolboxLexicon

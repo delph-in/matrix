@@ -1,0 +1,127 @@
+
+version=30
+
+section=general
+language=ccomp-illustr3-deu
+
+section=word-order
+word-order=v2
+has-dets=yes
+noun-det-order=det-noun
+has-aux=yes
+aux-comp-order=after
+aux-comp=v
+multiple-aux=no
+subord-word-order=vfinal
+
+section=number
+
+section=person
+person=1-2-3
+first-person=none
+
+section=gender
+
+section=case
+case-marking=nom-acc
+nom-acc-nom-case-name=nom
+nom-acc-acc-case-name=acc
+
+section=direct-inverse
+
+section=tense-aspect-mood
+
+section=other-features
+form-fin-nf=on
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=info-str
+
+section=arg-opt
+
+section=nominalclause
+
+section=clausalmods
+
+section=clausal-comp
+  comps1_clause-pos-same=on
+  comps1_comp-pos-before=on
+  comps1_comp=oblig
+    comps1_complementizer1_orth=dass
+
+section=lexicon
+  noun1_name=proper
+    noun1_feat1_name=case
+    noun1_feat1_value=nom
+    noun1_feat2_name=person
+    noun1_feat2_value=3rd
+  noun1_det=imp
+    noun1_stem1_orth=Klaus
+    noun1_stem1_pred=_Klaus_n_rel
+  noun2_name=common
+    noun2_feat1_name=case
+    noun2_feat1_value=acc
+    noun2_feat2_name=person
+    noun2_feat2_value=3rd
+  noun2_det=obl
+    noun2_stem1_orth=Buch
+    noun2_stem1_pred=_book_n_rel
+  noun3_name=pro-1sg
+    noun3_feat1_name=case
+    noun3_feat1_value=nom
+    noun3_feat2_name=person
+    noun3_feat2_value=1st
+  noun3_det=imp
+    noun3_stem1_orth=Ich
+    noun3_stem1_pred=_1sg_n_rel
+  verb1_name=tran3sg
+    verb1_feat1_name=person
+    verb1_feat1_value=3rd
+    verb1_feat1_head=subj
+  verb1_valence=nom-acc
+    verb1_stem1_orth=liest
+    verb1_stem1_pred=_read_v_rel
+  verb2_name=tran-inf
+    verb2_feat1_name=form
+    verb2_feat1_value=nonfinite
+    verb2_feat1_head=verb
+  verb2_valence=nom-acc
+    verb2_stem1_orth=lesen
+    verb2_stem1_pred=_read_v_rel
+  verb3_name=thought-1sg
+    verb3_feat1_name=person
+    verb3_feat1_value=1st
+    verb3_feat1_head=subj
+    verb3_feat2_name=form
+    verb3_feat2_value=finite
+    verb3_feat2_head=verb
+  verb3_valence=nom,comps1
+    verb3_stem1_orth=glaube
+    verb3_stem1_pred=_glaube_v_rel
+  aux1_name=want
+  aux1_sem=add-pred
+  aux1_subj=np-comp-case
+    aux1_compfeature1_name=form
+    aux1_compfeature1_value=nonfinite
+    aux1_stem1_orth=will
+    aux1_stem1_pred=_want_v_rel
+  det1_name=def
+    det1_stem1_orth=das
+    det1_stem1_pred=_the_q_rel
+    det1_feat1_name=case
+    det1_feat1_value=acc
+
+section=morphology
+
+section=toolbox-import
+
+section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon

@@ -191,7 +191,13 @@ def customize_test_sentences(grammar_path):
                     s.write('""')
                 for sentence in ch.get('sentence',[]):
                     s.write('"' + sentence.get('orth','') + '" ')
-                    ts.write(sentence.get('orth','') + '\n')
+                    # 2017-12-13 OZ: Adding two lines below.
+                    # # Shouldn't the start be printed in test_sentences
+                    # if the sentence is ungrammatical? See choices.py uprev convert_23_to_24() though.
+                    if sentence['star'] == 'on':
+                        ts.write('*' + sentence.get('orth','') + '\n')
+                    else:
+                        ts.write(sentence.get('orth','') + '\n')
                 s.write(')))\n')
             else:
                 s.write(l + '\n')
@@ -610,7 +616,7 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
     coordination.customize_coordination(mylang, ch, lexicon, rules, irules)
     yes_no_questions.customize_yesno_questions(mylang, ch, rules, lrules, hierarchies)
     clausalmods.customize_clausalmods(mylang, ch, lexicon, rules, roots)
-    clausalcomps.customize_clausalcomps(mylang,ch,lexicon,rules,irules)
+    clausalcomps.customize_clausalcomps(mylang,ch,lexicon,rules)
     customize_punctuation(grammar_path)
     customize_test_sentences(grammar_path)
     customize_itsdb(grammar_path)
@@ -618,7 +624,6 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
     customize_pettdl(grammar_path)
     customize_acetdl(grammar_path)
     customize_roots()
-    #
     customize_vpm(ch, vpm, hierarchies)
 
     # Save the output files

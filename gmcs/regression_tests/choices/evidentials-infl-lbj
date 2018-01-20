@@ -1,0 +1,188 @@
+
+version=28
+
+section=general
+language=evidentials-infl-lbj
+punctuation-chars=keep-all
+archive=no
+
+section=word-order
+word-order=sov
+has-dets=no
+has-aux=no
+
+section=number
+
+section=person
+person=none
+
+section=gender
+
+section=case
+case-marking=erg-abs
+erg-abs-erg-case-name=ergative
+erg-abs-abs-case-name=direct
+
+section=direct-inverse
+
+section=tense-aspect-mood
+tense-definition=choose
+past=on
+nonpast=on
+  aspect1_name=continuous
+    aspect1_supertype1_name=aspect
+  aspect2_name=perfect
+    aspect2_supertype1_name=aspect
+
+section=evidentials
+evidential-definition=build
+  evidential1_name=observed
+  evidential2_name=narrative
+  evidential3_name=experiential
+  evidential4_name=fact-inferential
+  evidential5_name=appearance-inferential
+  evidential6_name=attested-inferential
+
+section=other-features
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=info-str
+
+section=arg-opt
+
+section=lexicon
+  noun1_name=common-noun
+  noun1_det=imp
+    noun1_stem1_orth=thug-gu
+    noun1_stem1_pred=_boy_n_rel
+    noun1_stem2_orth=spe-chhuh
+    noun1_stem2_pred=_book_n_rel
+  verb1_name=tr-verb
+  verb1_valence=erg-abs
+    verb1_stem1_orth=sil
+    verb1_stem1_pred=_read_v_rel
+
+section=morphology
+  noun-pc1_name=case
+  noun-pc1_obligatory=on
+  noun-pc1_order=suffix
+  noun-pc1_inputs=noun
+    noun-pc1_lrt1_name=dir
+      noun-pc1_lrt1_feat1_name=case
+      noun-pc1_lrt1_feat1_value=abs
+      noun-pc1_lrt1_lri1_inflecting=no
+    noun-pc1_lrt2_name=erg
+      noun-pc1_lrt2_feat1_name=case
+      noun-pc1_lrt2_feat1_value=erg
+      noun-pc1_lrt2_lri1_inflecting=yes
+      noun-pc1_lrt2_lri1_orth=-yi
+  verb-pc1_name=aspect
+  verb-pc1_order=suffix
+  verb-pc1_inputs=verb
+    verb-pc1_lrt1_name=cont
+      verb-pc1_lrt1_feat1_name=aspect
+      verb-pc1_lrt1_feat1_value=continuous
+      verb-pc1_lrt1_feat1_head=verb
+      verb-pc1_lrt1_lri1_inflecting=yes
+      verb-pc1_lrt1_lri1_orth=-yin
+    verb-pc1_lrt2_name=perf
+      verb-pc1_lrt2_feat1_name=aspect
+      verb-pc1_lrt2_feat1_value=perfect
+      verb-pc1_lrt2_feat1_head=verb
+      verb-pc1_lrt2_lri1_inflecting=yes
+      verb-pc1_lrt2_lri1_orth=-s
+  verb-pc2_name=evid
+  verb-pc2_order=suffix
+  verb-pc2_inputs=verb, verb-pc1
+    verb-pc2_lrt1_name=report
+      verb-pc2_lrt1_lri1_inflecting=yes
+      verb-pc2_lrt1_lri1_orth=-yod
+    verb-pc2_lrt2_name=obs
+      verb-pc2_lrt2_feat1_name=evidential
+      verb-pc2_lrt2_feat1_value=observed
+      verb-pc2_lrt2_feat1_head=verb
+      verb-pc2_lrt2_lri1_inflecting=yes
+      verb-pc2_lrt2_lri1_orth=-dug
+  verb-pc3_name=narr
+  verb-pc3_order=suffix
+  verb-pc3_inputs=verb-pc1_lrt2, verb-pc2_lrt1
+    verb-pc3_require1_others=verb-pc2_lrt1
+    verb-pc3_lrt1_name=narrat
+      verb-pc3_lrt1_feat1_name=evidential
+      verb-pc3_lrt1_feat1_value=narrative
+      verb-pc3_lrt1_feat1_head=verb
+      verb-pc3_lrt1_lri1_inflecting=yes
+      verb-pc3_lrt1_lri1_orth=-kuhk
+  verb-pc4_name=fact-infr
+  verb-pc4_order=suffix
+  verb-pc4_inputs=verb
+    verb-pc4_lrt1_name=fact-infr-lrt
+      verb-pc4_lrt1_feat1_name=evidential
+      verb-pc4_lrt1_feat1_value=fact-inferential
+      verb-pc4_lrt1_feat1_head=verb
+      verb-pc4_lrt1_lri1_inflecting=yes
+      verb-pc4_lrt1_lri1_orth=-og
+  verb-pc5_name=tense
+  verb-pc5_order=suffix
+  verb-pc5_inputs=verb-pc1_lrt2, verb-pc2, verb-pc4, verb-pc6
+    verb-pc5_lrt1_name=past
+      verb-pc5_lrt1_feat1_name=tense
+      verb-pc5_lrt1_feat1_value=past
+      verb-pc5_lrt1_feat1_head=verb
+      verb-pc5_lrt1_lri1_inflecting=yes
+      verb-pc5_lrt1_lri1_orth=-pin
+  verb-pc6_name=exper
+  verb-pc6_order=suffix
+  verb-pc6_inputs=verb
+    verb-pc6_lrt1_name=exp
+      verb-pc6_lrt1_feat1_name=evidential
+      verb-pc6_lrt1_feat1_value=experiential
+      verb-pc6_lrt1_feat1_head=verb
+      verb-pc6_lrt1_lri1_inflecting=yes
+      verb-pc6_lrt1_lri1_orth=-uh-ruhg
+  verb-pc7_name=appearance-infr
+  verb-pc7_order=suffix
+  verb-pc7_inputs=verb
+    verb-pc7_lrt1_name=appr-infr
+      verb-pc7_lrt1_feat1_name=evidential
+      verb-pc7_lrt1_feat1_value=appearance-inferential
+      verb-pc7_lrt1_feat1_head=verb
+      verb-pc7_lrt1_lri1_inflecting=yes
+      verb-pc7_lrt1_lri1_orth=-thig-ruhg
+    verb-pc7_lrt2_name=appr-infr-past
+      verb-pc7_lrt2_feat1_name=evidential
+      verb-pc7_lrt2_feat1_value=appearance-inferential
+      verb-pc7_lrt2_feat1_head=verb
+      verb-pc7_lrt2_feat2_name=tense
+      verb-pc7_lrt2_feat2_value=past
+      verb-pc7_lrt2_feat2_head=verb
+      verb-pc7_lrt2_lri1_inflecting=yes
+      verb-pc7_lrt2_lri1_orth=-thig-song
+  verb-pc8_name=attested-infr
+  verb-pc8_order=suffix
+  verb-pc8_inputs=verb-pc1_lrt2
+    verb-pc8_lrt1_name=att-infr
+      verb-pc8_lrt1_feat1_name=evidential
+      verb-pc8_lrt1_feat1_value=attested-inferential
+      verb-pc8_lrt1_feat1_head=verb
+      verb-pc8_lrt1_lri1_inflecting=yes
+      verb-pc8_lrt1_lri1_orth=-tok
+  verb-pc9_name=narr-tshuk
+  verb-pc9_order=suffix
+  verb-pc9_inputs=verb-pc2_lrt1, verb-pc5
+    verb-pc9_forbid1_others=verb-pc3
+    verb-pc9_forbid2_others=verb-pc2_lrt2
+    verb-pc9_forbid3_others=verb-pc6
+
+section=toolbox-import
+
+section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon

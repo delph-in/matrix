@@ -748,7 +748,7 @@ def validate_word_order(ch, vr):
         elif wo == 'v2' and ch.get('subord-word-order') == 'vfinal' \
                 and ch.get('has-aux') == 'yes' and ch.get('aux-comp') != 'v':
             vr.err('aux-comp','The only supported choice for auxiliary complement '
-                              'type for v2/vfinal word order combination is V.')
+                   'type for v2/vfinal word order combination is V.')
 
 
 ######################################################################
@@ -1156,11 +1156,11 @@ def validate_tanda(ch, vr):
                'that assumes auxiliaries, but have not initialized a FORM hierarchy.'
         vr.err('form-fin-nf', mess)
 
-        # if ch.get('has-aux') == 'no' and not (ch.get('noaux-fin-nf') == 'on'):
-        #     if 'nf-subform' in ch:
-        #         mess = 'You have indicated that your language has no auxiliaries ' + \
-        #                'but you have entered subforms of finite or non-finite.'
-        #         vr.err('noaux-fin-nf', mess)
+    # if ch.get('has-aux') == 'no' and not (ch.get('noaux-fin-nf') == 'on'):
+    #     if 'nf-subform' in ch:
+    #         mess = 'You have indicated that your language has no auxiliaries ' + \
+    #                'but you have entered subforms of finite or non-finite.'
+    #         vr.err('noaux-fin-nf', mess)
 
 ######################################################################
 # validate_test_sentences(ch, vr)

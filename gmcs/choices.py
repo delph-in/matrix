@@ -5,7 +5,7 @@
 
 import re
 from gmcs.util.misc import safe_int, get_valid_lines
-from gmcs.linglib import case
+from gmcs.linglib import case, clausalcomps
 
 ######################################################################
 # globals
@@ -833,8 +833,9 @@ class ChoicesFile:
         for ccs in self['comps']:
             patterns += [ [ 'trans,%s'%(ccs.full_key), 'transitive-clausal-%s (case unspecified)' % (ccs.full_key), False] ]
             if w and w[0] and w[1]:
-                patterns += [ [ '%s-%s,%s'% (w[0],w[1],ccs.full_key), 'transitive-clausal-%s (%s-%s)' % (ccs.full_key,w[0],w[1]), False] ]
-            if w and w[0]:
+                if clausalcomps.is_nominalized_complement(ccs):
+                    patterns += [ [ '%s-%s,%s'% (w[0],w[1],ccs.full_key), 'transitive-clausal-%s (%s-%s)' % (ccs.full_key,w[0],w[1]), False] ]
+            if w and w[0] and not cm == 'focus':
                 patterns += [ [ '%s,%s'%(w[0],ccs.full_key), 'transitive-clausal-%s (%s-unspecified)' % (ccs.full_key,w[0]), False] ]
         return patterns
 

@@ -676,30 +676,6 @@ EndIter mood
 
 Label "</div>"
 
-#Separator
-
-#Label "<h3>Syntactic Feature</h3>"
-
-#Label "<div style=\"padding-left: 16px\">"
-#Label "<h4><span class=\"feat\">form</span></h4>"
-#Check form-fin-nf "Finite-nonfinite" "" "My language has no auxiliaries but does make a syntactically relevant finite/non-finite distinction.</p>"
-
-
-#Label "<div style=\"padding-left: 35px\">"
-
-#Label "<b>nonfinite</b>:"
-#  BeginIter nf-subform{i} "a subtype"
-#    Text name "Nonfinite subtype {i} name" "nonfinite subtype name: " "" 20
-#  EndIter nf-subform
-
-#Label "<br><br><b>finite</b>:"
-#  BeginIter fin-subform{i} "a subtype"
-#    Text name "Finite subtype {i} name" "finite subtype name: " "" 20
-#  EndIter fin-subform
-
-#Label "</div>"
-#Label "</div>"
-
 Label "<h4>References</h4>"
 Label "<div style=\"font-size:2\">"
 Label "<p>Bybee, Joan L. 2003. Aspect. In: Frawley, W.J. (ed.)
@@ -716,66 +692,6 @@ Edition). Dordrecht: Kluwer Academic Publishers. (Revised version of
 Smith, Carlota. 1991. The Parameter of Aspect. Dordrecht: Kluwer
 Academic Publishers)."
 Label "</div>"
-
-Section evidentials "Evidentials"
-
-Label "<p>Evidentiality refers to the grammatical expression of information source, how the speaker knows what he/she is saying.  Common evidential meanings include \"I heard it from someone else,\" \"I saw it myself,\" \"I inferred it from evidence,\" etc.  Evidentials are most commonly expressed through inflection on the verb or through auxiliary verbs, often described simply as clitics or particles in the literature.</p>"
-
-Label "<p>Here, you may define an inventory of evidential terms.  On the Morphology and Lexicon pages, you may then add an evidential feature either to a lexical rule type on the Morphology page or an auxiliary verb on the Lexicon page.  Note that even though evidentials are specified as features in this interface, in the grammar produced by the Grammar Matrix, evidential semantics will be expressed by an indpendent predicate, not a feature.</p>"
-
-Label "<p>NOTE: For auxiliary verbs expressing evidentials, the evidential feature should be an auxiliary feature, not a complement feature.</p>"
-
-Label "<p>NOTE: For auxiliary verbs expressing evidentials, select \"No predicate.\"  If you specify an evidential feature AND define a predicate for the auxiliary verb, the evidential semantics will overwrite the defined predicate.</p>"
-
-Label "<p>NOTE: You should not specify more than one evidential value on each lexical rule type or auxiliary verb.</p>"
-
-Label "<h3>Semantic Features</h3>"
-
-Label "<div style=\"padding-left: 16px\">"
-
-  Radio evidential-definition "Evidential hierarchy definition style" "" ""
-  . noevid "No Evidentiality" "" "<strong>No evidentiality in this language</strong><br>"
-
-  Radio evidential-definition "Evidential hierarchy definition style" "" ""
-  . choose "Choose" "" "<strong>Select among common hierarchy elements</strong><br>"
-
-    Label "<div style=\"padding-left: 35px\">"
-
-    Label "<br>Which of the following are evidential hierarchy elements in this subsystem?<br><br>"
-
-    Check firsthand "Firsthand" "" "<b>firsthand</b><br>"
-
-    Check nonfirsthand "NonFirsthand" "" "<b>non-firsthand</b><br>"
-
-    Check visual "Visual" "" "<b>visual</b><br>"
-
-    Check nonvisual "NonVisualSensory" "" "<b>non-visual sensory</b><br>"
-
-    Check inferential "Inferential" "" "<b>inferential</b><br>"
-
-    Check reported "Reported" "" "<b>reported</b><br>"
-
-    Check quoatative "Quotative" "" "<b>quotative</b><br>"
-
-    Check everythingelse "EverythingElse" "" "<b>\"everything else\"</b><br>"
-
-    Label "</div>"
-
-  Radio evidential-definition "Evidential hierarchy definition style" "" ""
-  . build "Build" "" "<strong>Specify your own hierarchy</strong><br>"
-
-  BeginIter evidential{i} "an evidential term" 0 0
-    Text name "Evidential Term {i} Name" "<b>Evidential Term {i}</b>:<br/>Evidential Term Name: " " " 20
-  EndIter evidential
-
-Label "</div>"
-
-Label "<h4>References</h4>"
-Label "<div style=\"font-size:2\">"
-Label "<p>Aikhenvald, A. (2006). Evidentiality. Oxford linguistics. Oxford University Press."
-Label "<p>Murray, S. E. (2017). The Semantics of Evidentials. Oxford University Press."
-Label "</div>"
-
 
 Section other-features "Other Features"
 
@@ -796,11 +712,12 @@ Label "<p>To start, your
 grammar may utilize a syntactic feature characterizing the form the
 verb takes. The <span class=\"feat\">form</span> feature distinguishes
 finite from non-finite forms and can be used to constrain auxiliary
-complement forms. If not applicable, you may leave this section
+complement forms and for marking clausal complements (e.g. via morphology).
+If not applicable, you may leave this section
 blank.</p>"
 
 Label "<p>If you have indicated on the word order page that your
-language has auxiliary verbs, your grammar will include
+language has auxiliary verbs, your grammar must include
 <span class=\"tt\">finite</span> and <span class=\"tt\">nonfinite</span> as values of <span
 class=\"feat\">form</span>. If your language does not have auxiliaries
 you may still include <span class=\"tt\">finite</span> and <span class=\"tt\">nonfinite</span> as values
@@ -824,12 +741,7 @@ BeginIter form-subtype{i} "a Subtype for FORM"
 
 EndIter form-subtype
 
-
-#Label "<div id='form' class='form_switch' style='display:none'>
-#<p> FORM will be specified as a syntactic feature, and a value \"finite\"
-#will be specified by default. You can add more values below.</p>"
-
-#Label "</div>"
+Label "<p>(Hint: Click Save and Stay to see the supertypes.)</p>"
 
 Label "<h3>Other Syntactic and Semantic Features</h3>"
 
@@ -1696,12 +1608,157 @@ BeginIter ns{i} "a Nominalization Strategy" 1
   . mid "Mid" "" "at VP"
   . high "High" "" "at S"
 
-  Radio nmzRel "Nominalization Strategy {i} Relation" "<br><br><b>If nominalization happens at the clause level (if you selected S above), is the nominalization syntactic only or should it also be reflected in the semantics?
+Radio nmzRel "Nominalization Strategy {i} Relation" "<br><br><b>Is the nominalization syntactic
+only or should it also be reflected in the semantics?</b><br>
+  (Note: for mid or low nominalization, currently you must say that it is reflected in the semantics).
   </b><br>" ""
     . no "No" "" "Nominalization is syntactic only<br>"
     . yes "Yes" "" "Nominalization should be reflected in the semantics<br>"
 
 EndIter ns
+
+Section clausal-comp "Clausal Complements"
+
+Define strategies for <b>sentential,
+or clausal, complements</b> here.<br><br>
+
+Label "<p><b>New section! Report bugs to Olga Zamaraeva.</b></p>"
+
+Label "<p>You may define several types of object clausal complements below.
+You may also leave this section blank, in which case the starter
+grammar produced will not support clausal complements. 
+<br><br>Specify a clausal verb type
+for each strategy in the Lexicon section. Choose the argument structure option
+corresponding to the complementation strategy. (There will be three options for
+the case frame: case unspecified; subject case -- object unspecified; both subject and
+object case specified. In most cases, you will want the second option. The third option
+is meant for verbs taking nominalized complements).
+</p>"
+
+Cache otherfeatures feature[0-9]+$ name
+
+BeginIter comps{i} "a Clausal Complement Type" 1
+
+  Label "<p>Clausal Complement Type {i}:<br>&nbsp;&nbsp;&nbsp;&nbsp;in which object complement clauses are placed:<br>"
+
+  Check clause-pos-same "Clause Same Position" "" "in the same position as regular noun complements <br>"
+  Check clause-pos-extra "Clause Extraposed" "" "in the extraposed position at the end of sentence.<br>"
+  
+  Label "<p>The complement clauses are marked by
+  a (semantically empty) complementizer that comes "
+
+  Check comp-pos-before "Complementizer Position Before" "" "before"
+  Check comp-pos-after "Complementizer Position After" "" "or after the complement clause"<br>
+
+  Radio comp "Clausal Complement Type {i} comp" " and is " ""
+  . opt "Optional Complementizer" "" "optional or"
+  . oblig "Obligatory Complementizer" ""  "obligatory."
+
+        BeginIter complementizer{j} "a Complementizer spelling" 0
+
+                Text orth "comp {i} stem {j} spelling" "Spelling: " "" 30 ""
+
+        EndIter complementizer
+
+        Label "<p> You can put a FORM feature on the obligatory complementizer if you want to constrain the clausal
+        verb in terms of which complementizers it can go with. (Note that all complementizers here
+        are still assumed to be semantically empty.)</p>"
+
+        #BeginIter cform{k} "a Complementizer Form"
+
+           Select cformvalue "Clausal Complement Type {i} Complementizer Form {k} Value" "Form Value: " ""
+           fillvalues p=form l=1
+
+        #EndIter cform
+
+
+  Label "<p> The embedded verb
+  has the following features
+  e.g. finite, nonfinite form (define in Other Features; we assume that mostly FORM and MOOD will be used;
+  you can use custom syntactic but not semantic features; note that subject raising is not yeet supported,
+  so be careful with infinitives: you will not get the right semantics),
+   nominalization (define in Nominalized Clauses):</p>"
+  
+    BeginIter feat{l} "a Feature"
+
+      Select name "Clausal Complement Type {i} Embedded Verb Feature {l} Name" "Name: " ""
+	  fillnames2 c=verb
+ 
+      MultiSelect value "Clausal Complement Type {i} Embedded Verb Feature {l} Value" "Value: " ""
+      fillvalues p=comps{i}_feat{l}_name
+
+    EndIter feat
+
+EndIter comps
+
+Separator
+
+Label "<p>
+NOTES:
+</p>"
+
+Label "<p>
+1. The current version
+of the questionnaire only covers objectival clausal complements.
+</p>"
+
+Label "<p>2. You will need to specify the word order in the complement
+clauses on the Word Order page. Currently, only one experimental
+case is supported:
+V2 order in the matrix and V-final in the subordinate clause, across all
+types of subordinate clauses.</p>"
+
+Label "<p>
+3. Sorry, no extraposition to sentence-initial position yet! (e.g. SOV becomes OSV).
+</p>"
+
+
+Label "<p>
+4. You will need to specify the position classes for the verbal morphology
+in the Morphology section.
+You will need to specify which verbs can take which type of complement in the Lexicon section.
+</p>"
+
+Label "<p>
+5. The number of various combinations of choices becomes really large
+when more than one complementation strategy is defined. You can specify multiple strategies,
+but one-strategy scenario was tested better.
+</p>"
+
+Label "<p>
+6. You can use different nominalization strategies in different complementation strategies,
+but the distinction will have no effect unless there are other things that distinguish
+the complementation strategies from each other. Using only nominalization type
+to create different complementation strategies is currently not supported. Let us
+know if your language does this!
+</p>"
+
+Label "<p>
+7. The only case frame change that is currently supported is via nominalization.
+ It is possible to mock up case change by leaving underlying verbs undespecified for case.
+</p>"
+
+Label "<p>
+8. More than one complementizer is not yet supported.
+</p>"
+
+Label "<p>
+9. Participial complements (where the participle is modifying the subject) are not yet supported.
+</p>"
+
+Label "<p>
+10. Subject raising, equi-deletion are not yet supported.
+</p>"
+
+Separator
+
+Label "<p>
+Reference: Noonan, Michael. Complementation. 
+In: Language typology and syntactic description, vol. 2: Complex constructions, 
+ed. by Timothy Shopen, 42-140. (2007 (1985)).
+</p>"
+
+
 
 Section clausalmods "Clausal Modifiers"
 
@@ -2449,10 +2506,10 @@ Select order "Noun Position Class {i} Order" "<br/>Appears as a prefix or suffix
 . prefix "Prefix" "prefix"
 . suffix "Suffix" "suffix"
 
-MultiSelect inputs "Noun Position Class {i} Input" "<br/>Possible inputs:" ""
-fillcache c=nouns
-fillregex p=(verb|noun)-pc[0-9]+(_lrt[0-9]+)?_name
-. noun "Any noun" "any noun"
+  MultiSelect inputs "Noun Position Class {i} Input" "<br/>Possible inputs:" ""
+  fillcache c=nouns
+  fillregex p=(verb|noun)-pc[0-9]+(_lrt[0-9]+)?_name
+  . noun "Any noun" "any noun"
 
   Label "<p>Morphotactic Constraints:</p>"
 

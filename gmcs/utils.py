@@ -90,7 +90,6 @@ This will merge in constraints on FORM into a complementizer lexical type.
 The idea is that this and similar functions can be used throughout,
 though like I said above I am not sure this is actually better.
 
-See clausalcomps.py for an example of where it actually is being called.
 '''
 def merge_constraints(choicedict, mylang, typename, path, key1, key2, val):
     for ch in choicedict[key1]:

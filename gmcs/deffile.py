@@ -42,7 +42,7 @@ HTML_pretitle = '''<!doctype html>
 <head><meta charset="utf-8"/>
 '''
 
-HTML_posttitle = '''<script type="text/javascript" src="web/matrix.js?cachebuster=110">
+HTML_posttitle = '''<script type="text/javascript" src="web/matrix.js?cachebuster=103">
 </script>
 
 <script type="text/javascript">
@@ -1251,7 +1251,6 @@ class MatrixDefFile:
         choices_file = 'sessions/' + cookie + '/choices'
         choices = ChoicesFile(choices_file)
 
-
         section_begin = -1
         section_end = -1
         section_friendly = ''
@@ -1755,15 +1754,19 @@ class MatrixDefFile:
             if 'neg1b-neg2b' in keys or \
                     ('neg1-type' in keys and 'neg2-type' in keys and form_data['neg1-type'].value == 'fh' and form_data['neg2-type'].value == 'b') or \
                     ('neg1-type' in keys and 'neg2-type' in keys and form_data['neg2-type'].value == 'fh' and form_data['neg1-type'].value == 'b'):
-                next_n = old_choices['nf-subform'].next_iter_num() if 'nf-subform' in old_choices else 1
-                found_negform = False
-                if next_n > 1:
-                    nfss = old_choices.get('nf-subform')
-                    for nfs in nfss:
-                        if nfs['name'] == 'negform':
-                            found_negform = True
-                if not found_negform:
-                    old_choices['nf-subform%d_name' % next_n ] = 'negform'
+                try:
+                    next_n = old_choices['form-subtype'].next_iter_num() if 'form-subtype' in old_choices else 1
+                    found_negform = False
+                    if next_n > 1:
+                        nfss = old_choices.get('form-subtype')
+                        for nfs in nfss:
+                            if nfs['name'] == 'negform':
+                                found_negform = True
+                    if not found_negform:
+                        old_choices['form-subtype%d_name' % next_n ] = 'negform' #TODO update this to new form: form-subtype name=negform with supertype nonfinite
+                        old_choices['form-subtype%d_supertype' % next_n ] = 'nonfinite' #OZ 2017-12-09 I have not tested this line and don't know if it works
+                except:
+                    print 'Go look in deffile.py save_choices; probably nf-subform needs to be updated to form-subtype; see choices.py up-rev 28-29 function.'
 
         # Now pass through the def file, writing out either the old choices
         # for each section or, for the section we're saving, the new choices
@@ -1795,6 +1798,7 @@ class MatrixDefFile:
             self.save_choices_section(self.def_lines[cur_sec_begin:i], f, choices)
 
         f.close()
+
 
     def create_neg_aux_choices(self, choices,form_data):
         '''this is a side effect of the existence of neg-aux

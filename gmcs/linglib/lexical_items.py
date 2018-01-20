@@ -8,6 +8,7 @@ from gmcs.linglib import case
 from gmcs.linglib import features
 from gmcs.linglib import auxiliaries
 from gmcs.linglib import information_structure
+from gmcs.linglib import clausalcomps
 from gmcs.linglib.parameters import determine_vcluster
 from gmcs.linglib.lexbase import ALL_LEX_TYPES, LEXICAL_SUPERTYPES
 from gmcs.linglib.lexicon import get_all_supertypes
@@ -266,7 +267,6 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
        [ SYNSEM.LOCAL.CAT.VAL.COMPS < > ].'
     mylang.add(typedef)
 
-
     # transitive verb lexical type
     typedef = \
         'transitive-verb-lex := ' + mainorverbtype + ' & transitive-lex-item & \
@@ -277,15 +277,8 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
                                       COMPS < > ] ] ] ] > ].'
     mylang.add(typedef)
 
-    # CTP (clausal complement-taking type)
-    typedef = 'ctp-verb-lex := ' + mainorverbtype + '& clausal-second-arg-trans-lex-item &\
-  [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >,\
-    ARG-ST < [LOCAL.CAT.HEAD noun ],\
-    	     #comps &\
-    	     [ LOCAL.CAT [ VAL [ SPR < >, COMPS < > ],' \
-                                                    'HEAD comp ] ] > ].'
-
-    mylang.add(typedef)
+    if ch.get(clausalcomps.COMPS):
+        clausalcomps.add_clausalcomp_verb_supertype(ch, mainorverbtype, mylang)
 
     case.customize_verb_case(mylang, ch)
 
@@ -301,18 +294,22 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
         create_verb_lex_type(cases, ch, hierarchies, lexicon, mylang, verb)
 
 
+
+
 def create_verb_lex_type(cases, ch, hierarchies, lexicon, mylang, verb):
     stypes = verb.get('supertypes').split(', ')
     stype_names = [verb_id(ch[st]) for st in stypes if st != '']
     vtype = verb_id(verb)
     construct_supertype_names(cases, ch, stype_names, verb)
-
+    # clausal verb's valence and its complement's head constraint:
+    vtype,head = clausalcomps.update_verb_lextype(ch,verb,vtype)
     if len(stype_names) == 0:
         mylang.add(vtype + ' := verb-lex .')
     else:
         mylang.add(vtype + ' := ' + ' & '.join(stype_names) + '.')
-
-
+    if head:
+        mylang.add(vtype + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD ' + head + ' ] > ].'
+                   , merge=True)
     features.customize_feature_values(mylang, ch, hierarchies, verb, vtype, 'verb', None, cases)
 
     stems = verb.get('stem', [])
@@ -338,13 +335,15 @@ def construct_supertype_names(cases, ch, stype_names, verb):
         i = val.find(',')
         dir_inv = ''
         tivity = ''
-        clausalcomp = ''
-
+        clausal = ''
         if i != -1:
+            type = val.split(',')[1]
+            if type == 'dirinv':
+                dir_inv = 'dir-inv-'
+            elif type.startswith('comps'):
+                clausal = 'clausal-'
             val = val[:i]
-            dir_inv = 'dir-inv-'
-
-        if val == 'trans':
+        if val == 'trans' and not clausal:
             tivity = 'trans'
         elif val == 'intrans':
             tivity = 'intrans'
@@ -352,16 +351,25 @@ def construct_supertype_names(cases, ch, stype_names, verb):
             c = val.split('-')
             a_case = case.canon_to_abbr(c[0], cases)
             o_case = case.canon_to_abbr(c[1], cases)
-            tivity = a_case + '-' + o_case + '-trans'
-        else:
-            ccs_names = [ccs_name.full_key for ccs_name in list(ch.get('comps'))]
-            if val in ccs_names:
-                clausalcomp = 'ctp'
+            tivity = a_case + '-' + o_case
+            if not clausal:
+                tivity = tivity + '-trans'
             else:
-                s_case = case.canon_to_abbr(val, cases)
-                tivity = s_case + '-intrans'
-        if clausalcomp:
-            stype_names.append(clausalcomp + tivity + '-verb-lex')
+                tivity = tivity + '-'
+        else:
+            s_case = case.canon_to_abbr(val, cases)
+            if not clausal:
+                tivity += s_case
+                tivity += '-intrans'
+            else:
+                #OZ 2018-01-03: This is awkward, has to do with the current format of the choices file...
+                #We should not ideally end up here at all if we are not an intransitive verb...
+                #The reason we end up here is some clausal verbs will only have subject case specified.
+                if not s_case == 'trans':
+                    tivity += s_case
+                    tivity += '-'
+        if clausal:
+            stype_names.append(clausal + tivity + 'verb-lex')
         elif (not dir_inv == '' or not tivity == ''):
             stype_names.append(dir_inv + tivity + 'itive-verb-lex')
 

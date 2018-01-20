@@ -330,23 +330,25 @@ def customize_verb_case(mylang, ch):
 
     # Pass through the list of case-marking patterns.  If a pattern is a
     # lexical pattern (i.e. the third item in the list is False), then
-    # create and contrain the appropriate lexical type.  This type is a
+    # create and constrain the appropriate lexical type.  This type is a
     # subtype of either transitive-verb-lex or intransitive-verb-lex.
     #
     # Note: I specify ARG-ST.FIRST... below instead of ARG-ST < [], ...>
     # because TDLFile has trouble with merges and open-ended lists.
     # Which should get fixed...  - sfd
 
-    for p in ch.patterns():
-        if 'clausal'in p[1]:
-            continue
-        rule_pattern = p[2]
+    # OZ: This currently also adds clausal types.
 
+    for p in ch.patterns():
+        rule_pattern = p[2]
         p = p[0].split(',')  # split off ',dirinv', if present
         dir_inv = ''
-        if len(p) > 1 and p[1] == 'dirinv':
-            dir_inv = 'dir-inv-'
-
+        clausal = ''
+        if len(p) > 1:
+            if p[1] == 'dirinv':
+                dir_inv = 'dir-inv-'
+            elif p[1].startswith('comps'):
+                clausal = 'clausal-'
         if not rule_pattern:
             c = p[0].split('-')  # split 'agentcase-patientcase'
             if p[0] == 'trans' or len(c) > 1:  # transitive
@@ -354,21 +356,34 @@ def customize_verb_case(mylang, ch):
                     a_case = ''
                     o_case = ''
                     a_head = ch.case_head()
-                    o_head = ch.case_head()
+                    if not clausal:
+                        o_head = ch.case_head()
+                    else:
+                        o_head = ''
                 else:
                     a_case = canon_to_abbr(c[0], cases)
                     o_case = canon_to_abbr(c[1], cases)
                     a_head = ch.case_head(c[0])
-                    o_head = ch.case_head(c[1])
+                    if not clausal:
+                        o_head = ch.case_head(c[1])
+                    elif o_case:
+                        o_head = ch.case_head(c[1])
 
                 if a_case and o_case:
-                    t_type = dir_inv + a_case + '-' + o_case + '-transitive-verb-lex'
+                    if not clausal:
+                        t_type = dir_inv + a_case + '-' + o_case + '-transitive-verb-lex'
+                    else:
+                        t_type = clausal + a_case + '-' + o_case + '-verb-lex'
                 else:
-                    t_type = dir_inv + 'transitive-verb-lex'
-
-                if t_type != 'transitive-verb-lex':
-                    mylang.add(t_type + ' := transitive-verb-lex.')
-
+                    if not clausal:
+                        t_type = dir_inv + 'transitive-verb-lex'
+                    else:
+                        t_type = clausal + 'verb-lex'
+                if t_type != 'transitive-verb-lex' and t_type != 'clausal-verb-lex':
+                    if not clausal:
+                        mylang.add(t_type + ' := transitive-verb-lex.')
+                    else:
+                        mylang.add(t_type + ' := clausal-verb-lex.')
                 # constrain the head of the agent/subject
                 typedef = \
                     t_type + ' := \
@@ -390,10 +405,11 @@ def customize_verb_case(mylang, ch):
                     mylang.add(typedef)
 
                 # constrain the head of the patient/object
-                typedef = \
-                    t_type + ' := \
+                if o_head:
+                    typedef = \
+                        t_type + ' := \
           [ ARG-ST < [ ], [ LOCAL.CAT.HEAD ' + o_head + ' ] > ].'
-                mylang.add(typedef)
+                    mylang.add(typedef)
 
                 # constrain the case of the patient/object
                 if o_case:
@@ -408,7 +424,7 @@ def customize_verb_case(mylang, ch):
                         t_type + ' := \
             [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.CASE-MARKED + ] > ].'
                     mylang.add(typedef)
-            else:     # intransitive
+            else:     # intransitive or clausal with constrained subject
                 if c[0] == 'intrans':
                     s_case = ''
                     s_head = ch.case_head()
@@ -417,12 +433,21 @@ def customize_verb_case(mylang, ch):
                     s_head = ch.case_head(c[0])
 
                 if s_case:
-                    i_type = dir_inv + s_case + '-intransitive-verb-lex'
+                    if not clausal:
+                        i_type = dir_inv + s_case + '-intransitive-verb-lex'
+                    else:
+                        i_type = clausal + s_case + '-verb-lex'
                 else:
-                    i_type = dir_inv + 'intransitive-verb-lex'
+                    if not clausal:
+                        i_type = dir_inv + 'intransitive-verb-lex'
+                    else:
+                        i_type = clausal + 'verb-lex'
 
-                if i_type != 'intransitive-verb-lex':
-                    mylang.add(i_type + ' := intransitive-verb-lex.')
+                if i_type != 'intransitive-verb-lex' and i_type !='clausal-verb-lex':
+                    if not clausal:
+                        mylang.add(i_type + ' := intransitive-verb-lex.')
+                    else:
+                        mylang.add(i_type + ' := clausal-verb-lex.')
 
                 # constrain the head of the subject
                 typedef = \

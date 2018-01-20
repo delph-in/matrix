@@ -800,12 +800,12 @@ def validate_lexicon(ch, vr):
                     vr.err(feat.full_key + '_value', mess)
                 if feat.get('name') == 'evidential':
                     vr.warn(feat.full_key + '_name',
-                    'You have specified an evidential and an added predicate on this auxiliary.' +\
-                    'The evidential\'s semantics will overwrite the predicate you have specified.')
+                        'You have specified an evidential and an added predicate on this auxiliary.' +\
+                   'The evidential\'s semantics will overwrite the predicate you have specified.')
         for feat in aux.get('feat', []):
             if feat['name'] == 'evidential' and len(feat.get('value').split(',')) > 1:
                 vr.err(feat.full_key + '_value',
-                'Choose only one evidential term.')
+                  'Choose only one evidential term.')
 
         if comp == 'vp' or comp == 'v':
             if not subj:

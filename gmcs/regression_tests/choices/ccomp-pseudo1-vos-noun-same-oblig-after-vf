@@ -1,0 +1,112 @@
+
+version=29
+
+section=general
+language=ccomp-pseudo1-vos-noun-same-oblig-after-vf
+
+section=word-order
+word-order=vos
+has-dets=no
+has-aux=no
+subord-word-order=same
+
+section=number
+
+section=person
+person=none
+
+section=gender
+
+section=case
+case-marking=none
+
+section=direct-inverse
+
+section=tense-aspect-mood
+
+section=other-features
+form-fin-nf=on
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=info-str
+
+section=arg-opt
+
+section=nominalclause
+
+section=clausalmods
+
+section=clausal-comp
+  comps1_clause-pos-same=on
+  comps1_comp-pos-after=on
+  comps1_comp=oblig
+    comps1_complementizer1_orth=comp1
+    comps1_feat1_name=form
+    comps1_feat1_value=finite
+
+section=lexicon
+  noun1_name=noun
+  noun1_det=imp
+    noun1_stem1_orth=noun1
+    noun1_stem1_pred=_noun1_n_rel
+    noun1_stem2_orth=noun2
+    noun1_stem2_pred=_noun2_n_rel
+    noun1_stem3_orth=noun3
+    noun1_stem3_pred=_noun3_n_rel
+  verb1_name=tverb
+  verb1_valence=trans
+    verb1_stem1_orth=tverb
+    verb1_stem1_pred=_tverb_v_rel
+  verb2_name=cverb
+  verb2_valence=comps1
+    verb2_stem1_orth=cverb
+    verb2_stem1_pred=_cverb_v_rel
+
+section=morphology
+  verb-pc1_name=FRM
+  verb-pc1_obligatory=on
+  verb-pc1_order=suffix
+  verb-pc1_inputs=verb
+    verb-pc1_lrt1_name=fin
+      verb-pc1_lrt1_feat1_name=form
+      verb-pc1_lrt1_feat1_value=finite
+      verb-pc1_lrt1_feat1_head=verb
+      verb-pc1_lrt1_lri1_inflecting=yes
+      verb-pc1_lrt1_lri1_orth=-FIN
+    verb-pc1_lrt2_name=nfin
+      verb-pc1_lrt2_feat1_name=form
+      verb-pc1_lrt2_feat1_value=nonfinite
+      verb-pc1_lrt2_feat1_head=verb
+      verb-pc1_lrt2_lri1_inflecting=yes
+      verb-pc1_lrt2_lri1_orth=-NFIN
+
+section=toolbox-import
+
+section=test-sentences
+  sentence1_orth=tverb-FIN noun1 noun2
+  sentence2_orth=noun1 tverb-FIN noun2
+  sentence2_star=on
+  sentence3_orth=noun1 noun2 tverb-FIN
+  sentence3_star=on
+  sentence4_orth=cverb-FIN tverb-FIN noun1 noun2 comp1 noun3
+  sentence5_orth=cverb-FIN noun3 tverb-FIN noun1 noun2 comp1
+  sentence5_star=on
+  sentence6_orth=cverb-FIN comp1 tverb-FIN noun1 noun2 noun3
+  sentence6_star=on
+  sentence7_orth=tverb-NFIN noun1 noun2
+  sentence7_star=on
+  sentence8_orth=cverb-FIN tverb-NFIN noun1 noun2 comp1 noun3
+  sentence8_star=on
+  sentence9_orth=cverb-NFIN tverb-FIN noun1 noun2 comp1 noun3
+  sentence9_star=on
+  sentence10_orth=cverb-NFIN tverb-NFIN noun1 noun2 comp1 noun3
+  sentence10_star=on
+
+section=gen-options
+
+section=ToolboxLexicon
