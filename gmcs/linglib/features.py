@@ -99,13 +99,15 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
       if 'poss-strat' in feat_name: 
         poss_lrt=True
         agreeing_element=feature.get('value')
-      if 'poss-pron' in feat_name:
+      elif 'poss-pron' in feat_name:
         poss_pron_lrt=True
         agreeing_element='possessor'
-      if 'possessum' in feature.full_key:
+      elif 'possessum' in feature.full_key:
         agreeing_element='possessum'
-      if 'possessor' in feature.full_key:
+      elif 'possessor' in feature.full_key:
         agreeing_element='possessor'
+      elif 'poss-pron' in feature.full_key:
+        agreeing_element='possessor'      
     if pos=='poss-marker' or poss_lrt:
       if agreeing_element=='possessor':
         geom_prefix = 'SYNSEM.LOCAL.CAT.HEAD.POSSESSOR.POSS-AGR.'
