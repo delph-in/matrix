@@ -34,11 +34,8 @@ adnom-poss-mod-possessor-non-affix-head-final-agr
 INSTALLED
 adnom-poss-mod-possessor-non-affix-head-initial
 INSTALLED
-############################################################
 adnom-poss-mod-possessor-non-affix-possessum-affix-head-final
-DIFFS EXPECTED - head-comp is doing the work of head-comp-poss
-fixed -- not installed yet
-############################################################
+INSTALLED
 adnom-poss-mod-possessor-non-affix-possessum-affix-head-final-agr-mutual
 INSTALLED
 adnom-poss-mod-possessor-non-affix-possessum-affix-head-final-agr-unidir-possessor
@@ -46,18 +43,19 @@ INSTALLED
 adnom-poss-mod-possessor-non-affix-possessum-affix-head-final-agr-unidir-possessum
 INSTALLED
 ############################################################
-adnom-poss-mod-possessor-non-affix-possessum-affix-head-final-sov-left-side-marker
-DIFFS EXPECTED - head-comp and head-comp-poss doing same work
-declared out of scope
+#adnom-poss-mod-possessor-non-affix-possessum-affix-head-final-sov-left-side-marker
+#DIFFS EXPECTED - head-comp and head-comp-poss doing same work
+#declared out of scope
 ############################################################
 adnom-poss-mod-possessor-non-affix-possessum-affix-head-final-sov-right-side-marker
 INSTALLED
 ############################################################
-adnom-poss-mod-possessor-non-affix-possessum-affix-head-final-svo-right-side-marker
-DIFFS EXPECTED - head-comp doing the work of head-comp-poss
+#adnom-poss-mod-possessor-non-affix-possessum-affix-head-final-svo-right-side-marker
+#DIFFS EXPECTED - head-comp doing the work of head-comp-poss
+#declared out of scope
 ############################################################
 adnom-poss-mod-possessor-non-affix-possessum-affix-head-initial-sov-right-side-marker
-DIFFS EXPECTED - comp issue
+INSTALLED
 adnom-poss-mod-possessum-affix-head-final
 INSTALLED
 adnom-poss-mod-possessum-affix-head-final-agr
@@ -84,8 +82,10 @@ adnom-poss-spec-possessor-affix-possessum-affix-head-final-agr-unidir-possessor
 INSTALLED
 adnom-poss-spec-possessor-affix-possessum-affix-head-final-agr-unidir-possessum
 INSTALLED
+########################################################
 adnom-poss-spec-possessor-affix-possessum-non-affix-head-final
 DIFFS EXPECTED - comp issue
+########################################################
 adnom-poss-spec-possessor-affix-possessum-non-affix-head-final-agr-mutual
 INSTALLED
 adnom-poss-spec-possessor-affix-possessum-non-affix-head-final-agr-unidir-possessor
