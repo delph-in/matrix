@@ -1,6 +1,6 @@
-from gmcs.utils import merge_constraints, get_name
+from gmcs.utils import get_name
 
-from gmcs import constants, utils
+from gmcs import constants
 
 ######################################################################
 # Clausal Complements
@@ -48,15 +48,13 @@ COMPLEMENTIZER = 'complementizer' # Choices key for choices pertaining
                                   # a particular complementation strategy.
 EXTRA = 'EXTRA' # Feature for extraposed complements
 
-
 # Error messages:
-EXTRA_VO = 'The only supporded word orders for extraposed complements are: SOV, VOS, OVS, OSV, v-final. ' \
-           'V-initial is not supported with optional complementizer.'
+EXTRA_VO = 'The only supporded word orders for extraposed complements are: SOV, VOS, OVS, OSV, v-final.'
 SAME_OR_EXTRA = 'Please choose whether the clausal complement takes the same position as noun ' \
                         'complements or is extraposed to the end of the clause ' \
                         '(the latter valid only for strict OV orders).'
 WO_WARNING = 'You chose a flexible word order; note that the order will indeed be flexible, ' \
-             'even with respect to complementizers.'
+             'including within the embedded clause.'
 
 #### Methods ###
 
@@ -66,11 +64,10 @@ Should fully cover all the customization needed for
 what was specified on the Clausal Complements subpage
 of the Questionnaire.
 '''
-def customize_clausalcomps(mylang,ch,lexicon,rules,irules):
+def customize_clausalcomps(mylang,ch,lexicon,rules):
     if not COMPS in ch:
         return
-    # Note: clausal verb type will be added by lexical_items.py,
-    # just like a regular verb. It would be better to do it here instead?
+    # Note: clausal verb type will be added by lexical_items.py.
     have_comp = add_complementizers_to_lexicon(lexicon,ch)
     add_types_to_grammar(mylang,ch,rules,have_comp)
 
@@ -89,7 +86,6 @@ def add_complementizers_to_lexicon(lexicon,ch):
             have_comp = True
     return have_comp
 
-
 def add_types_to_grammar(mylang,ch,rules,have_complementizer):
     if have_complementizer:
         mylang.set_section(COMPLEX)
@@ -103,9 +99,35 @@ def add_types_to_grammar(mylang,ch,rules,have_complementizer):
         typename = add_complementizer_subtype(cs, mylang,ch) if cs[COMP] else None
         if wo in OV_ORDERS or wo in VO_ORDERS:
             general, additional = determine_head_comp_rule_type(ch.get(constants.WORD_ORDER),cs)
-            customize_order(ch, cs, mylang, rules, typename, init,general,additional,extra)
+            if is_more_flexible_order(ch):
+                customize_order_using_headtypes(ch, cs, mylang, rules, typename, general,additional,extra)
+            else:
+                customize_order(ch, cs, mylang, rules, typename, init,general,additional,extra)
         elif wo == 'free':
             constrain_complementizer(wo,cs,mylang,typename)
+
+def is_more_flexible_order(ch):
+    """
+    @param ch: choices
+    @return: True if the word order in complex sentences
+    subsumes the basic WO but not restricts it.
+    E.g. If in a SOV order both OV and VO is allowed for clausal complements.
+    Or if complementizers attach both before and after clause.
+    If e.g. OV order is forbidden for clausal complements, must return False.
+    """
+    wo = ch.get(constants.WORD_ORDER)
+    if not wo in OV_ORDERS and not wo in VO_ORDERS:
+        return False
+    for ccs in ch.get(COMPS):
+        if not ccs[COMP] == 'oblig':
+            return False
+        if wo in OV_ORDERS and ((not ccs[COMP_POS_AFTER] or not ccs[CLAUSE_POS_SAME])
+                                 or (ccs[COMP_POS_AFTER] and not ccs[COMP_POS_BEFORE] and ccs[CLAUSE_POS_EXTRA])):
+            return False
+        if wo in VO_ORDERS and ((not ccs[COMP_POS_BEFORE] or not ccs[CLAUSE_POS_SAME])
+                                or (ccs[COMP_POS_BEFORE] and not ccs[COMP_POS_AFTER] and ccs[CLAUSE_POS_EXTRA])):
+            return False
+    return True
 
 def constrain_complementizer(wo,cs,mylang,typename):
     if not wo == 'free':
@@ -122,23 +144,23 @@ def constrain_complementizer(wo,cs,mylang,typename):
             default_init_val = '+'
             my_phrase = 'comp-head'
             other_phrase = 'head-comp'
+        if not init_val or not my_phrase or not other_phrase or not default_init_val:
+            raise Exception('Illegal combination of choises for complementizer position.')
         constrain_lexitem_for_feature(typename,path,'INIT',init_val,mylang)
         mylang.add(my_phrase + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT ' + init_val + ' ].',
                    merge=True)
         mylang.add(other_phrase + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT ' + default_init_val + ' ].',
                    merge=True)
 
-
-
 def use_init(ch, mylang, wo):
     init = False
+    is_flex = is_more_flexible_order(ch)
     if wo in OV_ORDERS or wo in VO_ORDERS or wo == 'free':
         for cs in ch.get(COMPS):
-            init = init_needed(ch.get(constants.WORD_ORDER), cs, mylang)
+            init = init_needed(ch.get(constants.WORD_ORDER), cs, mylang, is_flex)
             if init:
                 break
     return init
-
 
 def add_complementizer_supertype(mylang):
     mylang.add(COMP_LEX_ITEM_DEF, section=COMPLEX)
@@ -148,8 +170,8 @@ def add_complementizer_subtype(cs, mylang,ch):
     typename = id + '-' + COMP_LEX_ITEM
     mylang.add(typename + ' := ' + COMP_LEX_ITEM + '.', section=COMPLEX)
     constrain_for_features(typename,cs,mylang,'SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.',ch,is_nominalized_complement(cs))
-
-    #constrain_lexitem_for_feature(typename,'SYNSEM.LOCAL.CAT.HEAD',f['name'],f['value'],mylang)
+    if cs['cformvalue']:
+        constrain_lexitem_for_feature(typename,'SYNSEM.LOCAL.CAT.HEAD','FORM',cs['cformvalue'],mylang)
     return typename
 
 '''
@@ -170,19 +192,25 @@ the complementation strategies in this grammar.
 '''
 def customize_order(ch, cs, mylang, rules, typename, init, general, additional,extra):
     wo = ch.get(constants.WORD_ORDER)
-    init_value = '+' if additional == constants.HEAD_COMP else '-'
-    default_init_value = '-' if init_value == '+' else '+'
-    # What is the head of the added rule's head daughter?
-    head = determine_head(wo,cs)
-    constrain_lex_items(head,ch,cs,typename,init_value,default_init_value,mylang,init,extra)
-    # Constrain added and general rule wrt head and INIT
+    init_gen, init_add = which_init(general,additional)
+    constrain_lex_items(ch,cs,typename,init_add,init_gen,mylang,init,extra)
     if need_customize_hc(wo,cs):
-        #TODO: this should probably be split somehow; the number of args is unhealthy.
         if additional_needed(cs,wo):
-            constrain_head_comp_rules(mylang,rules,init,init_value,default_init_value,head,general,additional,cs,ch)
-        handle_special_cases(additional, cs, general, mylang, rules, wo)
+            constrain_head_comp_rules(mylang,rules,init,general,additional,cs,ch)
+        handle_special_cases(additional, cs, general, mylang, rules, wo,is_more_flexible_order(ch))
     if need_customize_hs(wo,cs):
         constrain_head_subj_rules(cs,mylang,rules,ch)
+
+def customize_order_using_headtypes(ch, cs, mylang, rules, typename, general, additional,extra):
+    wo = ch.get(constants.WORD_ORDER)
+    constrain_lex_items_using_headtypes(ch,cs,typename,mylang,extra)
+    if need_customize_hc(wo,cs):
+        if additional_needed(cs,wo):
+            constrain_head_comp_rules_headtype(mylang,rules,additional,cs,ch)
+        handle_special_cases(additional, cs, general, mylang, rules, wo,is_more_flexible_order(ch))
+    if need_customize_hs(wo,cs):
+        constrain_head_subj_rules(cs,mylang,rules,ch)
+
 
 def need_customize_hc(wo,cs):
     return (wo in ['vos', 'v-initial', 'sov', 'v-final', 'osv', 'ovs'] and cs[CLAUSE_POS_EXTRA]) \
@@ -192,27 +220,9 @@ def need_customize_hc(wo,cs):
 def need_customize_hs(wo,cs):
     return wo in ['vos'] and cs[CLAUSE_POS_EXTRA]
 
-# Assume OV order and complemetizer can attach before clause
-# or
-# VO order and complementizer can attach after.
-def customize_complementizer_order(wo,cs,mylang,rules):
-    if wo in OV_ORDERS and cs[COMP_POS_BEFORE]:
-        pass
-    elif wo in VO_ORDERS and cs[COMP_POS_AFTER]:
-        if wo in ['v-initial','vos']:
-            mylang.add('comp-head-phrase := basic-head-1st-comp-phrase & head-final '
-                       '& [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD comp ].',section='phrases')
-            rules.add('comp-head := comp-head-phrase.')
-
 def constrain_head_subj_rules(cs,mylang,rules,ch):
-    if cs[COMP]:
-        head = 'comp' if cs[COMP] == 'oblig' else '+vc'
-    elif is_nominalized_complement(cs):
-        head = '[ NMZ + ]'
-    else:
-        head = 'verb'
     mylang.add('head-subj-ccomp-phrase := decl-head-subj-phrase & head-initial & '
-               '[ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD ' + head + ' ] > ].',section='phrases')
+               '[ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.EXTRA + ] > ].',section='phrases')
     constrain_for_features('head-subj-ccomp-phrase',cs,mylang,
                            'HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.',ch,is_nominalized_complement(cs))
     rules.add('head-subj-ccomp := head-subj-ccomp-phrase.')
@@ -225,8 +235,19 @@ and there is not a complementizer or
 there is a complementizer but it can only use the normal HCR.
 '''
 def additional_needed(cs,wo):
-     return not (wo in ['v-initial', 'vos'] and cs[CLAUSE_POS_SAME]
-                and (not cs[COMP] or (cs[COMP_POS_AFTER] and cs[COMP_POS_BEFORE])))
+    if wo in ['v-initial','vos'] and cs[CLAUSE_POS_SAME] and not cs[COMP_POS_AFTER]:
+        return False
+    return not (wo in ['v-initial','vos'] and cs[CLAUSE_POS_SAME]
+                and ((not cs[COMP]) or (cs[COMP_POS_AFTER] and cs[COMP_POS_BEFORE])))
+
+
+def which_init(general, additional):
+    supertype_gen = 'head-initial' if general.startswith(constants.HEAD_COMP) else 'head-final'
+    supertype_add = 'head-initial' if additional.startswith(constants.HEAD_COMP) else 'head-final'
+    init_general = '+' if supertype_gen == 'head-initial' else '-'
+    init_add = '+' if supertype_add == 'head-initial' else '-'
+    return (init_general,init_add)
+
 
 '''
 If an additional head-comp rule is needed, it may also need constraints
@@ -234,26 +255,40 @@ with respect to its head or the INIT feature. The default rule will
 also need to be constrained with respect to INIT, if INIT is used in
 the additional rule.
 '''
-def constrain_head_comp_rules(mylang,rules,init,init_value, default_init_value,head,general,additional,cs,ch):
+def constrain_head_comp_rules(mylang,rules,init,general,additional,cs,ch):
     supertype = 'head-initial' if additional.startswith(constants.HEAD_COMP) else 'head-final'
+    init_gen, init_add = which_init(general,additional)
     mylang.add(additional + '-phrase := basic-head-1st-comp-phrase & ' + supertype + '.'
            ,section = 'phrases',merge=True)
     rules.add(additional + ' := ' + additional + '-phrase.')
-    if head:
-        mylang.add(additional + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD ' + head +' ].'
-               ,merge=True)
     if is_nominalized_complement(cs):
-        mylang.add(additional + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD [ NMZ + ] ].'
+        mylang.add(additional + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.NMZ + ].'
                ,merge=True)
+        if not cs[CLAUSE_POS_SAME]:
+            mylang.add(general + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.NMZ - ].')
     if init:
         mylang.add(additional +
-                   '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT ' + init_value + ' ].',
+                   '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT ' + init_add + ' ].',
                    merge=True)
-        mylang.add(general + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT ' + default_init_value + ' ].',
+        mylang.add(general + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT ' + init_gen + ' ].',
                    merge=True)
     constrain_for_features(additional + '-phrase', cs, mylang,
                            'NON-HEAD-DTR.SYNSEM.',ch,is_nominalized_complement(cs))
 
+def constrain_head_comp_rules_headtype(mylang,rules,additional,cs,ch):
+    supertype = 'head-initial' if additional.startswith(constants.HEAD_COMP) else 'head-final'
+    head = determine_head(ch.get(constants.WORD_ORDER),cs)
+    mylang.add(additional + '-phrase := basic-head-1st-comp-phrase & ' + supertype + '.'
+           ,section = 'phrases',merge=True)
+    rules.add(additional + ' := ' + additional + '-phrase.')
+    if is_nominalized_complement(cs):
+        mylang.add(additional + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.NMZ + ].'
+               ,merge=True)
+    mylang.add(additional +
+                   '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD ' + head + ' ].',
+                   merge=True)
+    constrain_for_features(additional + '-phrase', cs, mylang,
+                           'NON-HEAD-DTR.SYNSEM.',ch,is_nominalized_complement(cs))
 
 
 def constrain_for_features(typename,choice,mylang,path_prefix,ch,is_nmz):
@@ -274,38 +309,46 @@ def constrain_for_features(typename,choice,mylang,path_prefix,ch,is_nmz):
             mylang.add(typename + ' := [ ' + path_prefix + path + 'NMZ + ].',merge=True)
 
 
-#TODO: I haven't still grasped the general logic here, hopefully one day it'll generalize.
-#TODO: This isn't really special cases. This is the logic that has to do with extraposition,
-# plus one special case with complementizer.
-def handle_special_cases(additional, cs, general, mylang, rules, wo):
+#TODO: This isn't really special cases. This is EXTRA feature handling,
+# plus adding SUBJ <> in some cases,
+# plus an actual special case(?) with complementizer.
+def handle_special_cases(additional, cs, general, mylang, rules, wo,is_more_flex):
     if (wo in ['ovs', 'osv', 'v-initial','vos','v-final']) and cs[CLAUSE_POS_EXTRA]:
         if additional_needed(cs,wo):
             mylang.add(additional + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].',
                        section='phrases',merge=True)
     if wo in ['v-initial','vos','v-final'] and cs[CLAUSE_POS_EXTRA]:
-        if cs[COMP] == 'oblig':
-            add_head = 'comp'
-        elif cs[COMP] == 'opt':
-            add_head = '+vc'
-        elif not cs[COMP]:
-            if is_nominalized_complement(cs):
-                gen_head = '[ NMZ - ]'
-                add_head = '[ NMZ + ]'
-                mylang.add(general + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD ' + gen_head + ' ].')
-            else:
-                add_head = 'verb'
         if not cs[CLAUSE_POS_SAME]:
             mylang.add(additional + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.EXTRA + ].', merge=True)
             mylang.add(general + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.EXTRA - ].', merge=True)
-        if not wo in ['v-initial', 'vos','v-final']:
-            mylang.add(additional + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD ' + add_head + ' ].')
-        if (not wo == 'v-final' and cs[CLAUSE_POS_SAME] and cs[COMP]) or \
-                (wo == 'v-final' and cs[CLAUSE_POS_EXTRA] and not cs[CLAUSE_POS_SAME] and cs[COMP_POS_AFTER]):
-            mylang.add('comp-head-complementizer-phrase := basic-head-1st-comp-phrase & head-final '
+        if complementizer_comp_head_needed(wo,cs):
+            if is_more_flex:
+                mylang.add('comp-head-complementizer-phrase := basic-head-1st-comp-phrase & head-final '
                        '& [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD comp ].',section='phrases')
+            else:
+                mylang.add('comp-head-complementizer-phrase := basic-head-1st-comp-phrase & head-final '
+                       '& [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT - ].',section='phrases')
+            if not cs[CLAUSE_POS_SAME]:
+                mylang.add('comp-head-complementizer-phrase '
+                           ':= [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.EXTRA + ].', merge=True)
             rules.add('comp-head-compl := comp-head-complementizer-phrase.')
 
-def determine_clausal_verb_head(cs):
+#This assumes WO is in ['v-initial','vos','v-final'] and there is extraposition.
+def complementizer_comp_head_needed(wo,cs):
+    if wo == 'v-final' and not cs[CLAUSE_POS_SAME] and cs[COMP_POS_AFTER]:
+        return True
+    if not wo == 'v-final':
+        if wo  == 'v-initial' and not cs[COMP_POS_AFTER]:
+            return False
+        if wo == 'vos' and cs[COMP_POS_AFTER]:
+            return True
+        if cs[CLAUSE_POS_SAME] and cs[COMP]:
+            return True
+    return False
+
+
+
+def determine_clausal_verb_comp_head(cs):
     head = ''
     if cs[COMP]:
         if cs[COMP] == 'oblig':
@@ -322,30 +365,24 @@ def find_clausalverb_typename(ch,cs):
         if v.get(constants.VALENCE).endswith(cs.full_key):
             return get_name(v) + '-clausal-verb-lex'
 
-'''
-This function assumes that the INIT feature is needed.
-It will constrain verbs and/or complementizers with respect to the INIT feature.
-'''
-def constrain_lex_items(head,ch,cs,comptype, init_value, default_init_value,mylang,init,extra):
+
+def constrain_transitive_verb(head,cs):
+    return head == 'verb' \
+           or (head == '+vc' and cs[CLAUSE_POS_EXTRA]
+               and (not cs[CLAUSE_POS_SAME] or cs[COMP] == 'opt'))
+
+
+def constrain_lex_items_using_headtypes(ch,cs,comptype, mylang, extra):
     wo = ch.get(constants.WORD_ORDER)
-    clausalverb = find_clausalverb_typename(ch,cs)
-    path = 'SYNSEM.LOCAL.CAT.HEAD'
-    if init:
-        if constrain_transitive_verb(head,cs):
-            mylang.add('transitive-verb-lex := [ ' + path + '.INIT ' + default_init_value + ' ].'
-                       , merge=True)
-        if head == '+vc' and cs[CLAUSE_POS_EXTRA]and not cs[CLAUSE_POS_SAME]:
-            constrain_lexitem_for_feature(clausalverb,path, 'INIT',init_value,mylang)
-            if cs[COMP_POS_BEFORE] and not cs[COMP_POS_AFTER] and wo in OV_ORDERS:
-                constrain_lexitem_for_feature(comptype,path,'INIT',init_value,mylang)
-        elif head == 'verb' and cs[CLAUSE_POS_EXTRA] and not cs[CLAUSE_POS_SAME]:
-            constrain_lexitem_for_feature(clausalverb,path, 'INIT', init_value,mylang)
-        elif comptype:
-            if (cs[COMP_POS_BEFORE] and not cs[COMP_POS_AFTER] and wo in OV_ORDERS) \
-                    or (cs[COMP_POS_AFTER] and not cs[COMP_POS_BEFORE] and wo in VO_ORDERS):
-                mylang.add(comptype + ':= [ ' + path + '.INIT ' + init_value + ' ].',merge=True)
-            elif not (cs[COMP_POS_AFTER] and cs[COMP_POS_BEFORE]):
-                mylang.add(comptype + ':= [ ' + path + '.INIT ' + default_init_value + ' ].',merge=True)
+    path = 'SYNSEM.LOCAL.CAT'
+    head = determine_head(wo,cs)
+    if cs[COMP]:
+        if wo in VO_ORDERS:
+            if cs[COMP_POS_AFTER] and not cs[COMP_POS_BEFORE]:
+                constrain_lexitem_for_feature(comptype,path,'HEAD',head,mylang)
+        elif wo in OV_ORDERS:
+            if cs[COMP_POS_BEFORE] and not cs[COMP_POS_AFTER]:
+                constrain_lexitem_for_feature(comptype,path,'HEAD',head,mylang)
     if comptype and nominalized_comps(ch) and not is_nominalized_complement(cs):
         mylang.add(comptype + ':= [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.NMZ - ] > ].',merge=True)
     if extra and comptype:
@@ -355,10 +392,38 @@ def constrain_lex_items(head,ch,cs,comptype, init_value, default_init_value,myla
                 mylang.add(comptype + ':= [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.EXTRA - ] > ].',merge=True)
 
 
-def constrain_transitive_verb(head,cs):
-    return head == 'verb' \
-           or (head == '+vc' and cs[CLAUSE_POS_EXTRA]
-               and (not cs[CLAUSE_POS_SAME] or cs[COMP] == 'opt'))
+def constrain_lex_items(ch,cs,comptype, init_value, default_init_value,mylang,init,extra):
+    wo = ch.get(constants.WORD_ORDER)
+    clausalverb = find_clausalverb_typename(ch,cs)
+    path = 'SYNSEM.LOCAL.CAT.HEAD'
+    if init:
+        if cs[COMP]:
+            if wo in VO_ORDERS:
+                if cs[COMP_POS_AFTER] and not cs[COMP_POS_BEFORE]:
+                    constrain_lexitem_for_feature(comptype,path,'INIT',init_value,mylang)
+                elif cs[COMP_POS_BEFORE] and not cs[COMP_POS_AFTER]:
+                    constrain_lexitem_for_feature(comptype,path,'INIT',default_init_value,mylang)
+            elif wo in OV_ORDERS:
+                if cs[COMP_POS_BEFORE] and not cs[COMP_POS_AFTER]:
+                    constrain_lexitem_for_feature(comptype,path,'INIT',init_value,mylang)
+                elif cs[COMP_POS_AFTER] and not cs[COMP_POS_BEFORE]:
+                    constrain_lexitem_for_feature(comptype,path,'INIT',default_init_value,mylang)
+        if wo in OV_ORDERS:
+            if cs[CLAUSE_POS_EXTRA] and not cs[CLAUSE_POS_SAME]:
+                constrain_lexitem_for_feature(clausalverb,path,'INIT',init_value,mylang)
+            elif cs[CLAUSE_POS_SAME] and not cs[CLAUSE_POS_EXTRA]:
+                constrain_lexitem_for_feature(clausalverb,path,'INIT',default_init_value,mylang)
+        for pos in ['intransitive-verb','transitive-verb','noun','adj','aux','det','cop']:
+            if ch.get(pos) or pos in ['intransitive-verb','transitive-verb']:
+                mylang.add(pos + '-lex := [ ' + path + '.INIT ' + default_init_value + ' ].'
+                        , merge=True)
+    if comptype and nominalized_comps(ch) and not is_nominalized_complement(cs):
+        mylang.add(comptype + ':= [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.NMZ - ] > ].',merge=True)
+    if extra and comptype:
+            if cs[CLAUSE_POS_EXTRA] and not cs[CLAUSE_POS_SAME]:
+                mylang.add(comptype + ':= [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.EXTRA + ] > ].',merge=True)
+            elif cs[CLAUSE_POS_SAME] and not cs[CLAUSE_POS_EXTRA]:
+                mylang.add(comptype + ':= [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.EXTRA - ] > ].',merge=True)
 
 
 def constrain_lexitem_for_feature(typename, feature_path, feature_name, feature_value,mylang):
@@ -418,7 +483,9 @@ for all of them, so you will need to stop
 calling this function once it returns True.
 '''
 
-def init_needed(wo, cs,mylang):
+def init_needed(wo, cs,mylang,is_flex):
+    if is_flex:
+        return False
     res = False
     if cs[COMP]:
         if wo in OV_ORDERS:
@@ -436,11 +503,11 @@ def init_needed(wo, cs,mylang):
             elif cs[COMP_POS_AFTER]:
                 res = cs[CLAUSE_POS_EXTRA] == constants.ON
         elif wo in VO_ORDERS:
-            res = (cs[COMP_POS_AFTER] == constants.ON and not cs[COMP_POS_BEFORE] == constants.ON)
+            res = (cs[COMP_POS_AFTER] == constants.ON)
         elif wo == 'free':
             res = (cs[COMP_POS_AFTER] and not cs[COMP_POS_BEFORE]) or (cs[COMP_POS_BEFORE] and not cs[COMP_POS_AFTER])
     else:
-         res = (wo in OV_ORDERS or wo == 'vos') and cs[CLAUSE_POS_EXTRA] == 'on'
+         res = wo in OV_ORDERS and cs[CLAUSE_POS_EXTRA] == 'on'
     if res:
         mylang.add('head :+ [ INIT bool ].', section='addenda')
     return res
@@ -461,9 +528,10 @@ Add clausal verb supertype to the grammar.
 # It is possible that that call should be moved to this module.
 
 def add_clausalcomp_verb_supertype(ch, mainorverbtype,mylang):
+    head = ch.case_head()
     typedef = CLAUSALCOMP + '-verb-lex := ' + mainorverbtype + '&\
       [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >,\
-        ARG-ST < [ LOCAL.CAT.HEAD noun ],\
+        ARG-ST < [ LOCAL.CAT.HEAD ' + head + ' ],\
                  #comps &\
                  [ LOCAL.CAT.VAL [ SPR < >, COMPS < >, SUBJ < > ] ] > ].'
     mylang.add(typedef,section='verblex')
@@ -473,7 +541,13 @@ def is_nominalized_complement(cs):
     return 'nominalization' in [ f['name'] for f in cs['feat'] ]
 
 def customize_clausal_verb(clausalverb,mylang,ch,cs,extra):
-    constrain_for_features(clausalverb,cs,mylang,'SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.',ch,is_nominalized_complement(cs))
+    if not cs['cformvalue']:
+        constrain_for_features(clausalverb,cs,mylang,
+                               'SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.',ch,is_nominalized_complement(cs))
+    else:
+        mylang.add(clausalverb + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.FORM '
+                   + cs['cformvalue'] + ' ] > ].'
+                    , merge=True)
     supertype = clausalverb_supertype(ch, cs)
     mylang.add(clausalverb +' := ' + supertype + '.',merge=True)
     if extra:
@@ -485,6 +559,7 @@ def customize_clausal_verb(clausalverb,mylang,ch,cs,extra):
         if val:
             mylang.add(clausalverb + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.EXTRA '+ val + ' ] > ].'
                        , merge=True)
+
 
 '''
 Semantically non-empty nominalization requires that
@@ -498,7 +573,7 @@ def clausalverb_supertype(ch, cs):
         if f['name'] == 'nominalization':
             for ns in ch['ns']:
                 if ns['name'] == f['value']:
-                    if ns['nmzRel'] == 'yes':
+                    if ns['nmzRel'] == 'yes' or ns['level'] in ['mid','low']:
                         supertype = 'transitive-lex-item'
     if not supertype:
         supertype = 'clausal-second-arg-trans-lex-item'
@@ -513,7 +588,7 @@ def update_verb_lextype(ch,verb, vtype):
     for ccs in ch.get(COMPS):
         if val.endswith(ccs.full_key):
             suffix = val
-            head = determine_clausal_verb_head(ccs)
+            head = determine_clausal_verb_comp_head(ccs)
     if suffix:
         name = vtype[0:vtype.find('verb-lex')-1]
         rest = 'clausal-verb-lex'
@@ -525,7 +600,7 @@ def nonempty_nmz(cs,ch):
         if f['name'] == 'nominalization':
             for ns in ch['ns']:
                 if ns['name'] == f['value']:
-                    if ns['nmzRel'] == 'yes':
+                    if ns['nmzRel'] == 'yes' or ns['level'] in ['mid','low']:
                         return True
     return False
 
@@ -542,8 +617,9 @@ def validate(ch,vr):
     if not ch.get(COMPS):
         pass
     matches = {}
+    wo = ch.get(constants.WORD_ORDER)
     for ccs in ch.get(COMPS):
-        if ch.get(constants.WORD_ORDER) in ['free','v2']:
+        if wo in ['free','v2']:
             vr.warn(ccs.full_key + '_'+ CLAUSE_POS_SAME,WO_WARNING)
         matches[ccs.full_key] = None
         for vb in ch.get('verb'):
@@ -557,13 +633,21 @@ def validate(ch,vr):
         if not (ccs[CLAUSE_POS_EXTRA] or ccs[CLAUSE_POS_SAME]):
             vr.err(ccs.full_key + '_' + CLAUSE_POS_SAME, SAME_OR_EXTRA)
         if ccs[CLAUSE_POS_EXTRA]:
-            if ch.get(constants.WORD_ORDER) in ['free','v2','svo','vso']:
+            if wo in ['free','v2','svo','vso']:
                 vr.err(ccs.full_key + '_' + CLAUSE_POS_EXTRA,EXTRA_VO)
+            #if wo == 'vos' and ccs[COMP_POS_AFTER]:
+            #    vr.err('Clause-final complementizers were not implemented for extraposed complements in VOS orders')
         for f in ccs['feat']:
             feat = find_in_other_features(f['name'],ch)
             if feat:
                 if feat['type'] and feat['type'] == 'index':
                     vr.err(f.full_key + '_name','Custom semantic features are not supported here.')
+        if ccs['cformvalue'] and not ccs[COMP] == 'oblig':
+            vr.err(ccs.full_key + '_' + COMP,
+                   'FORM on complementizers is only supported with obligatory complementizers.')
+        if ccs['complementizer'] and not (ccs[COMP] == 'oblig' or ccs[COMP] == 'opt'):
+            vr.err(ccs.full_key + '_' + COMP,
+                   'Please choose whether the complementizer is obligatory or optional.')
 
 def find_in_other_features(name,ch):
     for f in ch.get('feature'):

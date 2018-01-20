@@ -300,9 +300,8 @@ def add_nonevent_subj_rules(ch, level, mylang, rules):
             if not typename:
                 raise Exception('Invalid combination of word order and nominalization choices.')
             mylang.add(typename + '-phrase := ' + NHS_SUPERTYPE + '&' + super + '&' + NHS_DEF)
-            if wo in ['svo', 'vos', 'sov'] or (wo == 'ovs' \
-                                                       and len(
-                    [cs for cs in ch.get('comps') if cs['clause-pos-extra']]) == 0):
+            if wo in ['svo', 'vos', 'sov'] \
+                    or (wo == 'ovs' and len([cs for cs in ch.get('comps') if cs['clause-pos-extra']]) == 0):
                 mylang.add(typename + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].', merge=True)
 
 
