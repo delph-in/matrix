@@ -221,7 +221,7 @@ def need_customize_hs(wo,cs):
     return wo in ['vos'] and cs[CLAUSE_POS_EXTRA]
 
 def constrain_head_subj_rules(cs,mylang,rules,ch):
-    mylang.add('head-subj-ccomp-phrase := decl-head-subj-phrase & head-initial & '
+    mylang.add('head-subj-ccomp-phrase := decl-head-subj-phrase & head-initial & '\
                '[ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.EXTRA + ] > ].',section='phrases')
     constrain_for_features('head-subj-ccomp-phrase',cs,mylang,
                            'HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.',ch,is_nominalized_complement(cs))
@@ -284,8 +284,7 @@ def constrain_head_comp_rules_headtype(mylang,rules,additional,cs,ch):
     if is_nominalized_complement(cs):
         mylang.add(additional + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.NMZ + ].'
                ,merge=True)
-    mylang.add(additional +
-                   '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD ' + head + ' ].',
+    mylang.add(additional + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD ' + head + ' ].',
                    merge=True)
     constrain_for_features(additional + '-phrase', cs, mylang,
                            'NON-HEAD-DTR.SYNSEM.',ch,is_nominalized_complement(cs))
@@ -317,32 +316,40 @@ def handle_special_cases(additional, cs, general, mylang, rules, wo,is_more_flex
         if additional_needed(cs,wo):
             mylang.add(additional + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].',
                        section='phrases',merge=True)
-    if wo in ['v-initial','vos','v-final'] and cs[CLAUSE_POS_EXTRA]:
-        if not cs[CLAUSE_POS_SAME]:
-            mylang.add(additional + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.EXTRA + ].', merge=True)
-            mylang.add(general + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.EXTRA - ].', merge=True)
-        if complementizer_comp_head_needed(wo,cs):
+    if wo in ['v-initial','vos','v-final']:
+        if cs[CLAUSE_POS_EXTRA]:
+            if not cs[CLAUSE_POS_SAME]:
+                mylang.add(additional + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.EXTRA + ].', merge=True)
+                mylang.add(general + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.EXTRA - ].', merge=True)
+        if complementizer_comp_head_needed(wo,cs) and not additional.startswith(constants.COMP_HEAD):
+            # V-final will need two comp-head rules in some cases,
+            # for the complementizer to be able to attach to an extraposed complement.
+            # The situation should be symmetric for v-initial but we aren't yet supporting
+            # extraposition to the beginning of the clause, so this doesn't fully come up.
+            # We would use two head-comp rules in such a case.
+            name = 'comp-head-compl' if wo == 'v-final' else 'comp-head'
             if is_more_flex:
-                mylang.add('comp-head-complementizer-phrase := basic-head-1st-comp-phrase & head-final '
+                mylang.add(name + '-phrase := basic-head-1st-comp-phrase & head-final '\
                        '& [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD comp ].',section='phrases')
             else:
-                mylang.add('comp-head-complementizer-phrase := basic-head-1st-comp-phrase & head-final '
+                mylang.add(name + '-phrase := basic-head-1st-comp-phrase & head-final '\
                        '& [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT - ].',section='phrases')
             if not cs[CLAUSE_POS_SAME]:
-                mylang.add('comp-head-complementizer-phrase '
-                           ':= [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.EXTRA + ].', merge=True)
-            rules.add('comp-head-compl := comp-head-complementizer-phrase.')
+                mylang.add(name + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.EXTRA + ].',
+                           merge=True)
+            rules.add(name + ' := ' + name + '-phrase.')
 
-#This assumes WO is in ['v-initial','vos','v-final'] and there is extraposition.
+#This assumes WO is in ['v-initial','vos','v-final'].
 def complementizer_comp_head_needed(wo,cs):
-    if wo == 'v-final' and not cs[CLAUSE_POS_SAME] and cs[COMP_POS_AFTER]:
+    if wo == 'v-final' and cs[CLAUSE_POS_EXTRA] and not cs[CLAUSE_POS_SAME] and cs[COMP_POS_AFTER]:
         return True
     if not wo == 'v-final':
-        if wo  == 'v-initial' and not cs[COMP_POS_AFTER]:
+        if wo  == 'v-initial' and cs[CLAUSE_POS_EXTRA] and not cs[COMP_POS_AFTER]:
             return False
-        if wo == 'vos' and cs[COMP_POS_AFTER]:
+        if wo == 'vos' and cs[CLAUSE_POS_EXTRA] and cs[COMP_POS_AFTER]:
             return True
-        if cs[CLAUSE_POS_SAME] and cs[COMP]:
+        if cs[CLAUSE_POS_SAME] and cs[COMP] \
+                and (cs[CLAUSE_POS_EXTRA] or cs[COMP_POS_AFTER]):
             return True
     return False
 
@@ -545,7 +552,7 @@ def customize_clausal_verb(clausalverb,mylang,ch,cs,extra):
         constrain_for_features(clausalverb,cs,mylang,
                                'SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.',ch,is_nominalized_complement(cs))
     else:
-        mylang.add(clausalverb + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.FORM '
+        mylang.add(clausalverb + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.FORM '\
                    + cs['cformvalue'] + ' ] > ].'
                     , merge=True)
     supertype = clausalverb_supertype(ch, cs)
