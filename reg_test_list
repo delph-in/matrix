@@ -82,10 +82,8 @@ adnom-poss-spec-possessor-affix-possessum-affix-head-final-agr-unidir-possessor
 INSTALLED
 adnom-poss-spec-possessor-affix-possessum-affix-head-final-agr-unidir-possessum
 INSTALLED
-########################################################
 adnom-poss-spec-possessor-affix-possessum-non-affix-head-final
-DIFFS EXPECTED - comp issue
-########################################################
+INSTALLED
 adnom-poss-spec-possessor-affix-possessum-non-affix-head-final-agr-mutual
 INSTALLED
 adnom-poss-spec-possessor-affix-possessum-non-affix-head-final-agr-unidir-possessor

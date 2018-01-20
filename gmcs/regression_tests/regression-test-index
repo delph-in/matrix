@@ -351,3 +351,4 @@ adnom-poss-spec-possessor-affix-head-final-pron=pron spec
 adnom-poss-mod-possessor-non-affix-possessum-affix-head-initial-sov-right-side-marker=test for word order combo poss phrase doesn't match normal head-comp
 adnom-poss-mod-possessor-non-affix-possessum-affix-head-final=dummy comment
 adnom-poss-spec-possessor-affix-possessum-non-affix-head-final=dummy comment
+adnom-poss-mod-juxt=modifier-like juxtaposition

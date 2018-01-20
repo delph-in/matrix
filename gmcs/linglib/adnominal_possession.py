@@ -217,7 +217,7 @@ def customize_poss_rules(strat,mylang,ch,rules):
                                                    HCONS <! qeq & [ HARG #harg, LARG #lbl] !> ] ].')
         elif strat.get('mod-spec')=='mod':
             mylang.add(phrase_rule+' := [ SYNSEM.LOCAL.CAT.VAL.SPR #spr,\
-                                          HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPR #spr,\
+                                          HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPR #spr & <[ ]>,\
                                           C-CONT [ RELS <! '+POSS_REL+' !>,\
                                                    HCONS <! !> ] ].')
         rule_added=True
