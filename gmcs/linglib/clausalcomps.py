@@ -235,10 +235,23 @@ and there is not a complementizer or
 there is a complementizer but it can only use the normal HCR.
 '''
 def additional_needed(cs,wo):
-    if wo in ['v-initial','vos'] and cs[CLAUSE_POS_SAME] and not cs[COMP_POS_AFTER]:
+    if wo in ['vos'] and cs[CLAUSE_POS_EXTRA] \
+            and cs[CLAUSE_POS_SAME] and cs[COMP_POS_BEFORE] and cs[COMP_POS_AFTER]:
         return False
-    return not (wo in ['v-initial','vos'] and cs[CLAUSE_POS_SAME]
-                and ((not cs[COMP]) or (cs[COMP_POS_AFTER] and cs[COMP_POS_BEFORE])))
+    if wo == 'v-initial' and cs[CLAUSE_POS_SAME] and cs[CLAUSE_POS_EXTRA] and not cs[COMP_POS_AFTER]:
+        return False
+    if wo == 'v-initial' and cs[CLAUSE_POS_SAME] and cs[COMP_POS_BEFORE] and cs[COMP_POS_AFTER]:
+        return False
+    if wo in OV_ORDERS and not cs[CLAUSE_POS_EXTRA] and not cs[COMP_POS_BEFORE]:
+        return False
+    if wo in VO_ORDERS and not cs[CLAUSE_POS_EXTRA] and not cs[COMP_POS_AFTER]:
+        return False
+    return True
+    #if wo in ['v-initial','vos'] and cs[CLAUSE_POS_SAME] and not cs[COMP_POS_AFTER]:
+    #    return False
+
+    #return not (wo in ['v-initial','vos'] and cs[CLAUSE_POS_SAME]
+    #            and ((not cs[COMP]) or (cs[COMP_POS_AFTER] and cs[COMP_POS_BEFORE])))
 
 
 def which_init(general, additional):
@@ -312,13 +325,15 @@ def constrain_for_features(typename,choice,mylang,path_prefix,ch,is_nmz):
 # plus adding SUBJ <> in some cases,
 # plus an actual special case(?) with complementizer.
 def handle_special_cases(additional, cs, general, mylang, rules, wo,is_more_flex):
-    if (wo in ['ovs', 'osv', 'v-initial','vos','v-final']) and cs[CLAUSE_POS_EXTRA]:
+    if ((wo in ['ovs', 'osv', 'v-initial','vos','v-final']) and cs[CLAUSE_POS_EXTRA]) \
+            or (wo in ['v-initial','vos'] and cs[COMP_POS_AFTER]):
         if additional_needed(cs,wo):
-            mylang.add(additional + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].',
+            if not (wo in ['v-initial','vos'] and additional.startswith(constants.COMP_HEAD)):
+                mylang.add(additional + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].',
                        section='phrases',merge=True)
     if wo in ['v-initial','vos','v-final']:
         if cs[CLAUSE_POS_EXTRA]:
-            if not cs[CLAUSE_POS_SAME]:
+            if additional_needed(cs,wo):
                 mylang.add(additional + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.EXTRA + ].', merge=True)
                 mylang.add(general + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.EXTRA - ].', merge=True)
         if complementizer_comp_head_needed(wo,cs) and not additional.startswith(constants.COMP_HEAD):
@@ -642,8 +657,6 @@ def validate(ch,vr):
         if ccs[CLAUSE_POS_EXTRA]:
             if wo in ['free','v2','svo','vso']:
                 vr.err(ccs.full_key + '_' + CLAUSE_POS_EXTRA,EXTRA_VO)
-            #if wo == 'vos' and ccs[COMP_POS_AFTER]:
-            #    vr.err('Clause-final complementizers were not implemented for extraposed complements in VOS orders')
         for f in ccs['feat']:
             feat = find_in_other_features(f['name'],ch)
             if feat:
