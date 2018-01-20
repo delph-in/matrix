@@ -5,7 +5,7 @@ DIFFS EXPECTED=library currently produces incorrect output
 possessor takes affix, mod-like possessor, possessor is full np, head initial, no agreement
 
 adnom-poss-mod-juxt
-DIFFS EXPECTED - order of determiners and nouns
+INSTALLED
 adnom-poss-mod-possessor-affix-head-final
 INSTALLED
 adnom-poss-mod-possessor-affix-head-final-agr
