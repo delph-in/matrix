@@ -1,4 +1,0 @@
-# the verb in the clausal modifier requires special morphology
-noun1 verb1purp noun2 verb2
-*noun1 verb1 noun2 verb2
-noun1 verb1simul noun2 verb2

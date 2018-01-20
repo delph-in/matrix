@@ -1,8 +1,0 @@
-noun1 tverb noun2
-* noun1 noun2 tverb
-noun1 cverb comp1 noun2 noun3 tverb
-noun1 cverb comp1 noun2 noun3 tverb aux1
-* noun1 cverb comp1 noun2 tverb noun3 aux1
-* noun1 cverb comp1 tverb noun2 noun3 aux1
-noun1 aux1 noun2 tverb
-tverb aux1 noun1 noun2

@@ -1,8 +1,0 @@
-event <> e
-handle <> h
-ref-ind <> x
-individual <> i
-semarg <> u
-
-SORT : SORT
-SEMSORT <> SEMSORT

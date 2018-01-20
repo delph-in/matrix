@@ -1,6 +1,0 @@
-;;; -*- Mode: TDL; Coding: utf-8 -*-
-;;; Inflecting Lexical Rule Instances
-
-nmz-suffix :=
-%suffix (* -NMZ)
-nmz-lex-rule.

@@ -1,4 +1,0 @@
-noun1 aux adv verb noun2
-*noun1 adv aux verb noun2
-sent subord noun1 adv aux verb noun2
-*sent subord noun1 aux adv verb noun2

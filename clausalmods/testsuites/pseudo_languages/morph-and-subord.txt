@@ -1,4 +1,0 @@
-# the verb in the clausal modifier requires special morphology and a subordinator
-subord noun1 verb1-subord noun2 verb2
-*subord noun1 verb1 noun2 verb2
-*noun1 verb1-subord noun2 verb2

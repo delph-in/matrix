@@ -1,3 +1,0 @@
-# adverb vs complementizer distribution
-subord3a noun1 verb1 noun2 subord3b verb2
-*subord3a noun1 verb1 subord3b noun2 verb2

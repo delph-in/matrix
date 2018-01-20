@@ -1,2 +1,0 @@
-noun1 verb1 subords noun2 verb2 ;should attach to the sentence
-noun1 verb1 subordvp noun2 verb2 ;should attach to the vp

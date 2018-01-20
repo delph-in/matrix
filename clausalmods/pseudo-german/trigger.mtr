@@ -1,6 +1,0 @@
-;;; -*- Mode: TDL; Coding: utf-8 -*-
-;;; Semantically Empty Lexical Entries
-
-aux1_gr := arg0e_gtr &
-  [ CONTEXT.RELS <! [ PRED "non_existing_rel" ] !>,
-    FLAGS.TRIGGER "aux1" ].

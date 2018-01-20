@@ -1,4 +1,0 @@
-# the subordinator occurs at the end of the clause
-noun1 verb1 subord noun2 verb2
-noun1 verb1 noun2 verb2 subord
-*subord noun1 verb1 noun2 verb2
