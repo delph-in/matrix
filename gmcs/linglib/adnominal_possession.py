@@ -258,31 +258,33 @@ def customize_poss_rules(strat,mylang,ch,rules):
                 rule_added=True
     # If the possession marker is not in the right order for existing head-comps to deal with it, add a new head-comps rule here
     # which requires its head be [ POSS possessive ]
-    possessor_mark_order=strat.get('possessor-marker-order')
-    possessum_mark_order=strat.get('possessum-marker-order')
+
+    # EKN 2018-01-18: taking this out -- going to assume markers have normal adposition order
+    #possessor_mark_order=strat.get('possessor-marker-order')
+    #possessum_mark_order=strat.get('possessum-marker-order')
     order=strat.get('order')
     # Note: this first check will stop you from trying to add a third head-comp rule when only two orders are possible:
     # TODO: fix so that all possessive rules are the same, and different from non-possessive rules
-    if not rule_added and not pron_affix:
-        if mark_loc=='both':
-            if head_comp_order!=strat.get('possessor-marker-order') and head_comp_order!=strat.get('possessum-marker-order'):
-                mylang.add('head-comp-poss-phrase-'+strat_num+' := '+possessor_mark_order+' & basic-head-1st-comp-phrase &\
-                                       [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessive-'+strat_num+' ].')
-                rules.add('head-comp-poss-'+strat_num+' := head-comp-poss-phrase-'+strat_num+'.')
-        elif mark_loc=='possessor':
-            if head_comp_order!=strat.get('possessor-marker-order'):
-                mylang.add('head-comp-poss-phrase-'+strat_num+' := '+possessor_mark_order+' & basic-head-1st-comp-phrase &\
-                                       [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessor-'+strat_num+' ].')
-                rules.add('head-comp-poss-'+strat_num+' := head-comp-poss-phrase-'+strat_num+'.')
-        elif mark_loc=='possessum':
-            if head_comp_order!=strat.get('possessum-marker-order'):
-                mylang.add('head-comp-poss-phrase-'+strat_num+' := '+possessum_mark_order+' & basic-head-1st-comp-phrase &\
-                                       [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessum-'+strat_num+' ].')
-                rules.add('head-comp-poss-'+strat_num+' := head-comp-poss-phrase-'+strat_num+'.')
+#    if not rule_added and not pron_affix:
+#        if mark_loc=='both':
+#            if head_comp_order!=strat.get('possessor-marker-order') and head_comp_order!=strat.get('possessum-marker-order'):
+#                mylang.add('head-comp-poss-phrase-'+strat_num+' := '+possessor_mark_order+' & basic-head-1st-comp-phrase &\
+#                                       [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessive-'+strat_num+' ].')
+#                rules.add('head-comp-poss-'+strat_num+' := head-comp-poss-phrase-'+strat_num+'.')
+#        elif mark_loc=='possessor':
+#            if head_comp_order!=strat.get('possessor-marker-order'):
+#                mylang.add('head-comp-poss-phrase-'+strat_num+' := '+possessor_mark_order+' & basic-head-1st-comp-phrase &\
+#                                       [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessor-'+strat_num+' ].')
+#                rules.add('head-comp-poss-'+strat_num+' := head-comp-poss-phrase-'+strat_num+'.')
+#        elif mark_loc=='possessum':
+#            if head_comp_order!=strat.get('possessum-marker-order'):
+#                mylang.add('head-comp-poss-phrase-'+strat_num+' := '+possessum_mark_order+' & basic-head-1st-comp-phrase &\
+#                                       [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessum-'+strat_num+' ].')
+#                rules.add('head-comp-poss-'+strat_num+' := head-comp-poss-phrase-'+strat_num+'.')
+
     # If a specialized (non-juxtaposition) poss phrase rule was added, require that the marked constituent be [ POSS possessive ]
-    # TODO: check if I can take out the stuff after 'and not'
-    if rule_added and not phrase_rule=='head-comp-poss-phrase'+'-'+strat_num:
-        if not (phrase_rule=='head-comp-poss-phrase'+'-'+strat_num and (possessor_mark_order==order or possessum_mark_order==order)):
+    if rule_added: # and not phrase_rule=='head-comp-poss-phrase'+'-'+strat_num:
+        if not (phrase_rule=='head-comp-poss-phrase-'+strat_num):# and (possessor_mark_order==order or possessum_mark_order==order)):
             if strat.get('mark-loc')=='possessor' or pron_strat:
                 mylang.add(phrase_rule+':= [ HEAD-DTR.SYNSEM.LOCAL.CAT.POSSESSUM nonpossessive,\
                                              NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSSESSOR possessor-'+strat_num+' ].',merge=True)
@@ -298,9 +300,10 @@ def customize_poss_rules(strat,mylang,ch,rules):
                                              HEAD-DTR.SYNSEM.LOCAL.CAT.POSSESSUM possessum-'+strat_num+' ].',merge=True)
 #                mylang.add(phrase_rule+':= [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessor-'+strat_num+',\
 #                                             HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessum-'+strat_num+' ].',merge=True)
-        # TODO: fix this so that it works with head-comps rules
-        else:
-            mylang.add(phrase_rule+':= [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessive-'+strat_num+' ].',merge=True)
+# This part is supposed to make head-comp-poss accept only possessive phrases. May not be necessary?
+#        else:
+#            mylang.add(phrase_rule+':= [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR nonpossessive,\
+#                                                                         POSSESSUM nonpossessive ] ].',merge=True)
 #            mylang.add(phrase_rule+':= [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessive-'+strat_num+' ].',merge=True)
             
         # Make non-possessive phrases reject possessive nouns:
