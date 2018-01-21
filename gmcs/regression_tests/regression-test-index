@@ -300,3 +300,5 @@ evidentials-infl-mon=Held-out test of (Khalkha) Mongolian for the evidentials li
 evidentials-infl-aux-wic=Held-out test of Wichita for the evidentials library
 adnom-poss-mod-juxt=Juxtaposition poss construction w mod-like attachment
 adnom-poss-mod-dep-aff-hf=Dep marked head final poss construction w mod-like attachment
+adnom-poss-mod-dep-aff-free-wo=Dep marked free wo poss construction w mod-like attachment
+adnom-poss-mod-dep-aff-hf-agr=Dep affixaly marked agreement head final poss construction w mod-like attachment
