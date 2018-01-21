@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of adnom-poss-mod-dep-non-aff-hf-agr
 ;;; created at:
-;;;     Sun Jan 21 06:14:05 UTC 2018
+;;;     Sun Jan 21 19:21:19 UTC 2018
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -25,11 +25,11 @@ non-mod-lex-item := lex-item &
 ;;; Matrix Type Addenda
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 
-inflected :+ [ PERNUM-FLAG luk,
-    NUM-FLAG luk ].
+inflected :+ [ NUM-FLAG luk,
+    PERNUM-FLAG luk ].
 
-infl-satisfied :+ [ PERNUM-FLAG na-or-+,
-    NUM-FLAG na-or-+ ].
+infl-satisfied :+ [ NUM-FLAG na-or-+,
+    PERNUM-FLAG na-or-+ ].
 
 png :+ [ PER person,
     NUM number ].
