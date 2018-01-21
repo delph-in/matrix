@@ -105,12 +105,14 @@ INSTALLED
 adnom-poss-spec-possessor-non-affix-possessum-affix-head-final
 INSTALLED
 adnom-poss-spec-possessor-non-affix-possessum-affix-bidirec
-
+INSTALLED
 adnom-poss-spec-possessor-non-affix-possessum-affix-head-final-agr-mutual
 INSTALLED
 adnom-poss-spec-possessor-non-affix-possessum-affix-head-final-agr-unidir-possessor
 INSTALLED
 adnom-poss-spec-possessor-non-affix-possessum-affix-head-final-agr-unidir-possessum
+INSTALLED
+adnom-poss-spec-possessor-non-affix-possessum-non-affix-head-final
 INSTALLED
 adnom-poss-spec-possessor-non-affix-possessum-non-affix-head-final
 INSTALLED
@@ -122,6 +124,8 @@ adnom-poss-spec-possessor-non-affix-possessum-non-affix-head-final-agr-unidir-po
 INSTALLED
 adnom-poss-spec-possessum-affix-head-final
 INSTALLED
+adnom-poss-spec-possessum-affix-bidirec
+
 adnom-poss-spec-possessum-affix-head-final-agr
 INSTALLED
 adnom-poss-spec-possessum-non-affix-head-final
