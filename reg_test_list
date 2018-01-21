@@ -99,11 +99,13 @@ INSTALLED
 adnom-poss-spec-possessor-non-affix-head-final
 INSTALLED
 adnom-poss-spec-possessor-non-affix-bidirec
-
+INSTALLED
 adnom-poss-spec-possessor-non-affix-head-final-agr
 INSTALLED
 adnom-poss-spec-possessor-non-affix-possessum-affix-head-final
 INSTALLED
+adnom-poss-spec-possessor-non-affix-possessum-affix-bidirec
+
 adnom-poss-spec-possessor-non-affix-possessum-affix-head-final-agr-mutual
 INSTALLED
 adnom-poss-spec-possessor-non-affix-possessum-affix-head-final-agr-unidir-possessor
