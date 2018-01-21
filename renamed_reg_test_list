@@ -5,27 +5,55 @@ DIFFS EXPECTED=library currently produces incorrect output
 possessor takes affix, mod-like possessor, possessor is full np, head initial, no agreement
 
 adnom-poss-mod-juxt
+INSTALLED
+Juxtaposition poss construction w mod-like attachment
+
 adnom-poss-mod-dep-aff-hf
+INSTALLED
+Dep marked head final poss construction w mod-like attachment
+
 adnom-poss-mod-dep-aff-free-wo
+
+Dep marked  poss construction w mod-like attachment
+
 adnom-poss-mod-dep-aff-hf-agr
+
 adnom-poss-mod-dep-aff-hf-pron
+
 adnom-poss-mod-dep-aff-hf-pron-aff-agr
+
 adnom-poss-mod-dep-aff-hf-pron-aff-mod
+
 adnom-poss-mod-dep-aff-hf-pron-agr
+
 adnom-poss-mod-dep-aff-hi
+
 adnom-poss-mod-dep-aff-head-aff-hf
+
 adnom-poss-mod-dep-aff-head-aff-hi
+
 adnom-poss-mod-dep-aff-head-aff-hf-agr-mut
+
 adnom-poss-mod-dep-aff-head-aff-hf-agr-dep
+
 adnom-poss-mod-dep-aff-head-aff-hf-agr-head
+
 adnom-poss-mod-dep-non-aff-hf
+
 adnom-poss-mod-dep-non-aff-free-wo
+
 adnom-poss-mod-dep-non-aff-hf-agr
+
 adnom-poss-mod-dep-non-aff-hi
+
 adnom-poss-mod-dep-non-aff-head-aff-free-wo
+
 adnom-poss-mod-dep-non-aff-head-aff-hf
+
 adnom-poss-mod-dep-non-aff-head-aff-hf-agr-mut
+
 adnom-poss-mod-dep-non-aff-head-aff-hf-agr-dep
+
 adnom-poss-mod-dep-non-aff-head-aff-hf-agr-head
 ############################################################
 #adnom-poss-mod-dep-non-aff-head-aff-hf-sov
