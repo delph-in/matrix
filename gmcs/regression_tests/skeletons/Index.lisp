@@ -22,6 +22,7 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "adnom-poss-mod-dep-aff-hf-pron-aff-agr") (:content . "adnom-poss-mod-dep-aff-hf-pron-aff-agr: Dep affixally marked head final poss construction w mod-like attachment, and agreement poss pron affixes"))
 ((:path . "adnom-poss-mod-dep-aff-hf-pron") (:content . "adnom-poss-mod-dep-aff-hf-pron: Dep affixally marked head final poss construction w mod-like attachment, and similar poss pronouns"))
 ((:path . "adnom-poss-mod-dep-aff-hf-agr") (:content . "adnom-poss-mod-dep-aff-hf-agr: Dep affixaly marked agreement head final poss construction w mod-like attachment"))
 ((:path . "adnom-poss-mod-dep-aff-free-wo") (:content . "adnom-poss-mod-dep-aff-free-wo: Dep marked free wo poss construction w mod-like attachment"))
