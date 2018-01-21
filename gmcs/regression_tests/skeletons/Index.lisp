@@ -22,6 +22,9 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "adnom-poss-mod-dep-aff-head-aff-hf-agr-head") (:content . "adnom-poss-mod-dep-aff-head-aff-hf-agr-head: Dep and head affixally marked, head agreeing head initial poss construction w mod-like attachment"))
+((:path . "adnom-poss-mod-dep-aff-head-aff-hf-agr-dep") (:content . "adnom-poss-mod-dep-aff-head-aff-hf-agr-dep: Dep and head affixally marked, dep agreeing head initial poss construction w mod-like attachment"))
+((:path . "adnom-poss-mod-dep-aff-head-aff-hf-agr-mut") (:content . "adnom-poss-mod-dep-aff-head-aff-hf-agr-mut: "))
 ((:path . "adnom-poss-mod-dep-aff-head-aff-hi") (:content . "adnom-poss-mod-dep-aff-head-aff-hi: Dep and head affixally marked head initial poss construction w mod-like attachment"))
 ((:path . "adnom-poss-mod-dep-aff-head-aff-hf") (:content . "adnom-poss-mod-dep-aff-head-aff-hf: Dep and head affixally marked head final poss construction w mod-like attachment"))
 ((:path . "adnom-poss-mod-dep-aff-hi") (:content . "adnom-poss-mod-dep-aff-hi: Dep affixally marked head initial poss construction w mod-like attachment"))
