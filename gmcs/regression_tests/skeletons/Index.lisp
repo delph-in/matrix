@@ -22,6 +22,7 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "adnom-poss-mod-possessor-non-affix-possessum-affix-bidirec") (:content . "adnom-poss-mod-possessor-non-affix-possessum-affix-bidirec: dummy comment"))
 ((:path . "adnom-poss-mod-possessor-non-affix-bidirec") (:content . "adnom-poss-mod-possessor-non-affix-bidirec: dummy comment"))
 ((:path . "adnom-poss-mod-possessor-affix-bidirec") (:content . "adnom-poss-mod-possessor-affix-bidirec: dummy comment"))
 ((:path . "adnom-poss-spec-possessum-affix-bidirec") (:content . "adnom-poss-spec-possessum-affix-bidirec: dummy comment"))
