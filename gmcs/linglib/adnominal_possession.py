@@ -227,11 +227,12 @@ def customize_poss_rules(strat,mylang,ch,rules):
             # Note: added the constraint on head type so that this would never do the work of attaching determiners to nouns
             # (Found helpful in scenario: possessor marking adposition, spec-like attachment.)
             # Not sure if this is too little constriction -- only testing with mini english so far (12/22/2017)
-            mylang.add(phrase_rule+' :=  basic-head-spec-phrase-super & [  NON-HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL.SPR < >,\
+            mylang.add(phrase_rule+' :=  basic-head-spec-phrase-super & [  NON-HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL [ SPR < >,\
+                                                                                                                   COMPS < > ],\
                                                                                                                HEAD +nvjrpcmo ],\
                                                                                                    OPT - ],\
-                                                                             HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK #hook ,\
-                                                                             C-CONT.HOOK #hook ].')
+                                                                           HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK #hook ,\
+                                                                           C-CONT.HOOK #hook ].')
             rule_added=True
         # If possessor==mod, add either head-mod or head-comp
         # Exception: no rule added if preexistent head-comps has correct order
@@ -555,7 +556,7 @@ def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
                 mylang.add('possessor-adp-lex := \
                                  [  SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR possessor-'+strat_num+',\
                                                        POSSESSUM nonpossessive,\
-                                                       VAL.SPEC.FIRST.LOCAL.CAT.VAL.SPR < [ ] > ] ].')
+                                                       VAL [ SPEC.FIRST.LOCAL.CAT.VAL.SPR < [ ] > ] ] ].')
                 if mark_loc=='possessor':
                     mylang.add('possessor-adp-lex := \
                                  [  SYNSEM.LOCAL [ CAT  [ VAL [ COMPS.FIRST.LOCAL [ CONT.HOOK.INDEX #possessor ],\
