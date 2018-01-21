@@ -306,3 +306,4 @@ adnom-poss-mod-dep-aff-hf-pron=Dep affixally marked head final poss construction
 adnom-poss-mod-dep-aff-hf-pron-aff-agr=Dep affixally marked head final poss construction w mod-like attachment, and agreement poss pron affixes
 adnom-poss-mod-dep-aff-hf-pron-aff-mod=Dep affixally marked head final poss construction w mod-like attachment, and poss pron affixes that are mod-like
 adnom-poss-mod-dep-aff-hf-pron-agr=Dep affixally marked head final poss construction w mod-like attachment, and similar agreeingposs pronouns
+adnom-poss-mod-dep-aff-hi=Dep affixally marked head initial poss construction w mod-like attachment
