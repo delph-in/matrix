@@ -140,3 +140,25 @@ adnom-poss-spec-possessum-non-affix-head-final
 INSTALLED
 adnom-poss-spec-possessum-non-affix-head-final-agr
 INSTALLED
+
+
+
+Conversion to shorter names:
+adnom-poss=adnom-poss
+spec=spec
+mod=mod
+possessor=dep
+possessum=head
+affix=aff
+non-affix=!aff
+head-final=hf
+head-initial=hi
+agr=agr
+mutual=mut
+unidir-possessor=dep
+unidir-possessum=head
+bidirec=free-wo
+pron=pron
+affix=aff
+
+
