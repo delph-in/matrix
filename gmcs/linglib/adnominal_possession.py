@@ -331,12 +331,18 @@ def customize_poss_rules(strat,mylang,ch,rules):
             mylang.add(head_comp_order+'-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSSESSOR nonpossessive,\
                                                          HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL [ SPR <>,\
                                                                                            SPEC <> ] ] ].')
-    # If a specialized poss phrase rule was added, adds word order info to the phrase rule:
-    if rule_added: 
-        mylang.add(phrase_rule +' := '+strat.get('order')+'.',merge=True)
+    if rule_added:
         # If a specialized poss phrase rule was added, adds rule to rules.tdl
-        rules.add(phrase_rule.replace('-phrase','') + ':= '+phrase_rule+'. ' )
 
+        # Add word order info to any special poss phrase rules added above
+        if strat_order=='either':
+            mylang.add(phrase_rule+'-head-initial := head-initial & '+phrase_rule+'.')
+            mylang.add(phrase_rule+'-head-final := head-final & '+phrase_rule+'.')
+            rules.add(phrase_rule.replace('-phrase','')+'-head-initial := '+phrase_rule+'-head-initial.'  )
+            rules.add(phrase_rule.replace('-phrase','')+'-head-final := '+phrase_rule+'-head-final. ' )
+        else:
+            mylang.add(phrase_rule +' := '+strat.get('order')+'.',merge=True)
+            rules.add(phrase_rule.replace('-phrase','') + ':= '+phrase_rule+'. ' )
 
 # Adds inflectional rules (or adds constraints to inflectional rules added in
 # morphotactics.py) that create possessive forms
