@@ -1626,14 +1626,7 @@ Label "<p><b>New section! Report bugs to Olga Zamaraeva.</b></p>"
 
 Label "<p>You may define several types of object clausal complements below.
 You may also leave this section blank, in which case the starter
-grammar produced will not support clausal complements. 
-<br><br>Specify a clausal verb type
-for each strategy in the Lexicon section. Choose the argument structure option
-corresponding to the complementation strategy. (There will be three options for
-the case frame: case unspecified; subject case -- object unspecified; both subject and
-object case specified. In most cases, you will want the second option. The third option
-is meant for verbs taking nominalized complements).
-</p>"
+grammar produced will not support clausal complements.</p>"
 
 Cache otherfeatures feature[0-9]+$ name
 
@@ -1748,14 +1741,6 @@ Label "<p>
 
 Label "<p>
 10. Subject raising, equi-deletion are not yet supported.
-</p>"
-
-Separator
-
-Label "<p>
-Reference: Noonan, Michael. Complementation. 
-In: Language typology and syntactic description, vol. 2: Complex constructions, 
-ed. by Timothy Shopen, 42-140. (2007 (1985)).
 </p>"
 
 
