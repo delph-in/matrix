@@ -68,6 +68,7 @@ subj-con=subj-con-always
 section=nominalclause
   ns1_name=nom
   ns1_level=low
+  ns1_nmzRel=yes
 
 section=clausalmods
   cms1_position=either
