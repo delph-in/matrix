@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of adnom-poss-spec-dep-aff-head-non-aff-hf-agr-head
 ;;; created at:
-;;;     Sun Jan 21 06:18:31 UTC 2018
+;;;     Mon Jan 22 02:58:01 UTC 2018
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -25,13 +25,13 @@ non-mod-lex-item := lex-item &
 ;;; Matrix Type Addenda
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 
-inflected :+ [ PERNUM-FLAG luk,
-    POSSESSIVE-FLAG luk,
-    NUM-FLAG luk ].
+inflected :+ [ NUM-FLAG luk,
+    PERNUM-FLAG luk,
+    POSSESSIVE-FLAG luk ].
 
-infl-satisfied :+ [ PERNUM-FLAG na-or-+,
-    POSSESSIVE-FLAG na-or-+,
-    NUM-FLAG na-or-+ ].
+infl-satisfied :+ [ NUM-FLAG na-or-+,
+    PERNUM-FLAG na-or-+,
+    POSSESSIVE-FLAG na-or-+ ].
 
 png :+ [ PER person,
     NUM number ].
@@ -111,8 +111,8 @@ noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & non-mod-lex-ite
 
 common-noun-lex := noun-lex &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 3rd,
-    INFLECTED [ POSSESSIVE-FLAG -,
-                NUM-FLAG - ] ].
+    INFLECTED [ NUM-FLAG -,
+                POSSESSIVE-FLAG - ] ].
 
 possessum-noun-lex := basic-two-arg &
   [ ARG-ST < #spr,
@@ -220,11 +220,11 @@ plural-lex-rule := infl-lex-rule & num-lex-rule-super &
 
 possessive-lex-rule-super := lex-rule &
   [ INFLECTED [ POSSESSIVE-FLAG +,
-                PERNUM-FLAG #pernum,
-                NUM-FLAG #num ],
+                NUM-FLAG #num,
+                PERNUM-FLAG #pernum ],
     DTR possessive-rule-dtr &
-        [ INFLECTED [ PERNUM-FLAG #pernum,
-                      NUM-FLAG #num ] ] ].
+        [ INFLECTED [ NUM-FLAG #num,
+                      PERNUM-FLAG #pernum ] ] ].
 
 possessor-lex-rule-1 := val-change-with-ccont-lex-rule &
   [ DTR.SYNSEM.LOCAL [ CAT.VAL [ SPR #spr,
