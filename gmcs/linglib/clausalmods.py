@@ -354,7 +354,7 @@ def add_non_branching_rules(mylang, rules, cms):
     sharing. Each subordinator needs it's own rule subtype to add the subordinator
     """
     # First create the supertype
-    mylang.add('adv-marked-subord-clause-phrase := basic-unary-phrase &\
+    mylang.add('adv-marked-subord-clause-phrase := unary-phrase &\
                 [ SYNSEM [ LOCAL [ CAT [ MC -,\
                               VAL [ SPR < >,\
                               COMPS < >,\
@@ -515,7 +515,7 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
         if nmzRel == 'no':
             lextype.append('nmz-no-rel')
             supertype = 'no-subordinator-nominalized-norel-subord-clause-phrase'
-            mylang.add(supertype + ' := basic-unary-phrase &\
+            mylang.add(supertype + ' := unary-phrase &\
           [ SYNSEM [ LOCAL [ CAT [ MC -,\
                                   VAL [ SUBJ #subj,\
                                         SPR #spr,\
@@ -544,7 +544,7 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
         else:
             lextype.append('nmz')
             supertype = 'no-subordinator-nominalized-subord-clause-phrase'
-            mylang.add(supertype + ' := basic-unary-phrase &\
+            mylang.add(supertype + ' := unary-phrase &\
             [ SYNSEM [ LOCAL [ CAT [ MC -,\
                                     VAL [ SUBJ #subj,\
                                           SPR #spr,\
@@ -569,7 +569,7 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
           					  COMPS < > ]] ] ] ] > ].')
     else:
         supertype = 'morphological-subord-clause-phrase'
-        mylang.add(supertype + ' := basic-unary-phrase &\
+        mylang.add(supertype + ' := unary-phrase &\
     [ SYNSEM [ LOCAL [ CAT [ MC -,\
                             VAL [ SUBJ #subj,\
                                   SPR < >,\
@@ -815,3 +815,4 @@ def shortform_pred(pred):
     else:
         value = pred.split('_')[0]
     return value
+

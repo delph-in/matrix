@@ -137,7 +137,7 @@ LOW_LEXRULE_SUBJ_ID_COMPS_ID = 'low-nmz-subjid-compsid-lex-rule := low-nominaliz
 
 #A non-branching rule for nominalized clauses to form a NP, with nominalized_rel for the MRS.
 # For high nominalization.
-NMZ_CLAUSE = '-nominalized-clause-phrase := basic-unary-phrase &\
+NMZ_CLAUSE = '-nominalized-clause-phrase := unary-phrase &\
                                     [ SYNSEM.LOCAL.CAT [ HEAD noun &\
                                                 [ NMZ + ],\
             		                VAL [ SPR < [ OPT + ] >,\
@@ -164,7 +164,7 @@ NMZ_CLAUSE = '-nominalized-clause-phrase := basic-unary-phrase &\
             			                LTOP #larg ]]]] > ].'
 
 #A non-branching rule for nominalized clauses to form a NP, semantically emtpy.
-NO_REL_NLZ_CLAUSE = '-no-rel-nominalized-clause-phrase := basic-unary-phrase &\
+NO_REL_NLZ_CLAUSE = '-no-rel-nominalized-clause-phrase := unary-phrase &\
   [ SYNSEM [ LOCAL.CAT [ HEAD noun &\
                             [ NMZ + ],\
                          VAL [ COMPS < >,\
@@ -186,7 +186,7 @@ NO_REL_NLZ_CLAUSE = '-no-rel-nominalized-clause-phrase := basic-unary-phrase &\
 
 #A non-branching rule for nominalized clauses to form a NP, with nominalized_rel for the MRS.
 # For middle nominalization.
-SUBJ_NMZ_CLAUSE = '-nominalized-clause-phrase := basic-unary-phrase &\
+SUBJ_NMZ_CLAUSE = '-nominalized-clause-phrase := unary-phrase &\
                           [ SYNSEM.LOCAL.CAT [ HEAD noun &\
                             [ NMZ + ],\
 		       VAL [ SPR < [ OPT + ] >,'\
@@ -423,3 +423,4 @@ def add_nmz_feature(mylang):
     mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT.HEAD.NMZ - ].')
     mylang.set_section('verb-lex')
     mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HEAD.NMZ - ].')
+
