@@ -318,3 +318,4 @@ adnom-poss-mod-dep-non-aff-hf-agr=Dep non-affixally marked head final poss const
 adnom-poss-mod-dep-non-aff-hi=Dep non-affixally marked head final poss construction w mod-like attachment
 adnom-poss-mod-dep-non-aff-head-aff-free-wo=Dep non-affixally marked, head affixally marked free wo poss construction w mod-like attachment
 adnom-poss-mod-dep-non-aff-head-aff-hf=Dep non-affixally marked, head affixally marked head final poss construction w mod-like attachment
+adnom-poss-mod-dep-non-aff-head-aff-hf-agr-mut=Dep non-affixally marked, head affixally marked, both agreeing head final poss construction w mod-like attachment
