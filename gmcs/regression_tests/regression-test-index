@@ -333,3 +333,4 @@ adnom-poss-spec-dep-aff-free-wo=Dep affixally marked free wo poss construction w
 adnom-poss-spec-dep-aff-hf-agr=Dep affixally marked agreeing head final poss construction w spec-like attachment
 adnom-poss-spec-dep-aff-hf-pron=Dep affixally marked head final poss construction w spec-like attachment, with similar pronouns
 adnom-poss-spec-dep-aff-hf-pron-aff=Dep affixally marked head final poss construction w spec-like attachment, with affixal pronouns
+adnom-poss-spec-dep-aff-hf-pron-agr=Dep affixally marked head final poss construction w spec-like attachment, with similar agreeing pronouns
