@@ -323,3 +323,4 @@ adnom-poss-mod-dep-non-aff-head-aff-hf-agr-dep=Dep non-affixally marked, head af
 adnom-poss-mod-dep-non-aff-head-aff-hf-agr-head=Dep non-affixally marked, head affixally marked, head agreeing head final poss construction w mod-like attachment
 adnom-poss-mod-dep-non-aff-head-aff-hf-sov=Dep non-affixally marked, head affixally marked head final poss construction w mod-like attachment, general wo is head final
 adnom-poss-mod-dep-non-aff-head-aff-hi-sov=Dep non-affixally marked, head affixally marked head initial poss construction w mod-like attachment, general wo is head final
+adnom-poss-mod-head-aff-hf=Head marked head final poss construction w mod-like attachment
