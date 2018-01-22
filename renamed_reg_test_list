@@ -145,12 +145,15 @@ INSTALLED
 Dep affixally marked head final poss construction w spec-like attachment, with affixal pronouns
 
 adnom-poss-spec-dep-aff-hf-pron-agr
+INSTALLED
 Dep affixally marked head final poss construction w spec-like attachment, with similar agreeing pronouns
 
 adnom-poss-spec-dep-aff-hi
+INSTALLED
 Dep affixally marked head initial poss construction w spec-like attachment
 
 adnom-poss-spec-dep-aff-head-aff-hf
+
 Dep and head affixally marked head final poss construction w spec-like attachment
 
 adnom-poss-spec-dep-aff-head-aff-hf-agr-mut

@@ -335,3 +335,4 @@ adnom-poss-spec-dep-aff-hf-pron=Dep affixally marked head final poss constructio
 adnom-poss-spec-dep-aff-hf-pron-aff=Dep affixally marked head final poss construction w spec-like attachment, with affixal pronouns
 adnom-poss-spec-dep-aff-hf-pron-agr=Dep affixally marked head final poss construction w spec-like attachment, with similar agreeing pronouns
 adnom-poss-spec-dep-aff-hi=Dep affixally marked head initial poss construction w spec-like attachment
+adnom-poss-spec-dep-aff-head-aff-hf=Dep and head affixally marked head final poss construction w spec-like attachment
