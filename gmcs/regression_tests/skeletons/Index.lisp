@@ -22,6 +22,8 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "adnom-poss-mod-dep-non-aff-head-aff-hi-sov") (:content . "adnom-poss-mod-dep-non-aff-head-aff-hi-sov: Dep non-affixally marked, head affixally marked head initial poss construction w mod-like attachment, general wo is head final"))
+((:path . "adnom-poss-mod-dep-non-aff-head-aff-hf-sov") (:content . "adnom-poss-mod-dep-non-aff-head-aff-hf-sov: Dep non-affixally marked, head affixally marked head final poss construction w mod-like attachment, general wo is head final"))
 ((:path . "adnom-poss-mod-dep-non-aff-head-aff-hf-agr-head") (:content . "adnom-poss-mod-dep-non-aff-head-aff-hf-agr-head: Dep non-affixally marked, head affixally marked, head agreeing head final poss construction w mod-like attachment"))
 ((:path . "adnom-poss-mod-dep-non-aff-head-aff-hf-agr-dep") (:content . "adnom-poss-mod-dep-non-aff-head-aff-hf-agr-dep: Dep non-affixally marked, head affixally marked, dep agreeing head final poss construction w mod-like attachment"))
 ((:path . "adnom-poss-mod-dep-non-aff-head-aff-hf-agr-mut") (:content . "adnom-poss-mod-dep-non-aff-head-aff-hf-agr-mut: Dep non-affixally marked, head affixally marked, both agreeing head final poss construction w mod-like attachment"))
