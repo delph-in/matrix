@@ -1,6 +1,0 @@
-noun1 noun2 verb
-noun2 noun1 verb
-* verb noun1 noun2
-* verb noun2 noun1
-* noun1 verb noun2
-* noun2 verb noun1
