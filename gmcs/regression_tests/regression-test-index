@@ -344,3 +344,4 @@ adnom-poss-spec-dep-aff-head-non-aff-hf-agr-mut=Dep affixally marked, head non-a
 adnom-poss-spec-dep-aff-head-non-aff-hf-agr-dep=Dep affixally marked, head non-affixally, dep agreeing, head final poss construction w spec-like attachment
 adnom-poss-spec-dep-aff-head-non-aff-hf-agr-head=Dep affixally marked, head non-affixally, dead agreeing, head final poss construction w spec-like attachment
 adnom-poss-spec-dep-non-aff-hf=Dep non-affixally marked head final poss construction w spec-like attachment
+adnom-poss-spec-dep-non-aff-free-wo=Dep non-affixally marked free-wo poss construction w spec-like attachment
