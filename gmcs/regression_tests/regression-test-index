@@ -362,3 +362,4 @@ adnom-poss-spec-head-aff-hf-agr=Head affixally marked agreeing, head final poss 
 adnom-poss-spec-head-non-aff-hf=Head non-affixally marked, head final poss construction w spec-like attachment
 adnom-poss-spec-head-non-aff-hf-agr=Head non-affixally marked, agreeing, head final poss construction w spec-like attachment
 adnom-poss-dep-aff-two-strat-mod-spec-var=Two poss strategies, both dep affixally marked, one mod-like, one spec-like
+adnom-poss-spec-dep-aff-two-strat-order-var=Two poss strategies, both dep affixally marked, one head-final, one head initial
