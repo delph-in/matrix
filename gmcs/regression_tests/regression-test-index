@@ -356,3 +356,5 @@ adnom-poss-spec-dep-non-aff-head-non-aff-free-wo=Dep and head non-affixally mark
 adnom-poss-spec-dep-non-aff-head-non-aff-hf-agr-mut=Dep and head non-affixally marked, both agreeing, head final poss construction w spec-like attachment
 adnom-poss-spec-dep-non-aff-head-non-aff-hf-agr-dep=Dep and head non-affixally marked, dep agreeing, head final poss construction w spec-like attachment
 adnom-poss-spec-dep-non-aff-head-non-aff-hf-agr-head=Dep and head non-affixally marked, head agreeing, head final poss construction w spec-like attachment
+adnom-poss-spec-head-aff-hf=Head affixally marked, head final poss construction w spec-like attachment
+adnom-poss-spec-head-aff-free-wo=Head affixally marked, free wo poss construction w spec-like attachment
