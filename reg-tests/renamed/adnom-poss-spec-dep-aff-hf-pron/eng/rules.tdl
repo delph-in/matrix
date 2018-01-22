@@ -3,7 +3,11 @@ head-comp := head-comp-phrase.
 
 subj-head := subj-head-phrase.
 
-head-spec-poss := head-spec-poss-phrase.
+head-spec-poss-1 := head-spec-poss-phrase-1.
+
+head-spec-poss-pron-1 := head-spec-poss-phrase-pron-1.
+
+head-spec-poss-pron-2 := head-spec-poss-phrase-pron-2.
 
 head-spec := head-spec-phrase.
 

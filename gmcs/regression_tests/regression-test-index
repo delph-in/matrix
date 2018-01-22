@@ -331,3 +331,4 @@ adnom-poss-spec-juxt=Juxtaposition poss construction w spec-like attachment
 adnom-poss-spec-dep-aff-hf=Dep affixally marked head final poss construction w spec-like attachment
 adnom-poss-spec-dep-aff-free-wo=Dep affixally marked free wo poss construction w spec-like attachment
 adnom-poss-spec-dep-aff-hf-agr=Dep affixally marked agreeing head final poss construction w spec-like attachment
+adnom-poss-spec-dep-aff-hf-pron=Dep affixally marked head final poss construction w spec-like attachment, with similar pronouns
