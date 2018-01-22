@@ -1,4 +1,4 @@
-### $Id: matrixdef,v 1.37 2008-09-30 23:50:02 lpoulson Exp $
+## $Id: matrixdef,v 1.37 2008-09-30 23:50:02 lpoulson Exp $
 
 Section general "General Information"
 
@@ -67,11 +67,8 @@ Radio word-order "Basic word order" "Please indicate which pattern best describe
 . v-final "Verb-final" "" "V-final<br>"
 . v-initial "Verb-initial" "" "V-initial<br>"
 . free "Free word order" "" "free (pragmatically determined word order)<br>"
-. v2 "v2 word order" "" "finite verb or auxiliary in second position, else free word order"
-
-Label "<p>Note: Modules for V2 order (finite verb second, non-finite
-verb clause-finally) and differing word order between matrix and
-subordinate clauses are currently under development.</p>"
+. v2 "v2 word order" "" "finite verb or auxiliary in second position, else free word order<br>"
+. v2 "v2 word order" "" "finite verb second, non-finite verb clause-finally"
 
 Separator
 
@@ -1763,6 +1760,131 @@ ed. by Timothy Shopen, 42-140. (2007 (1985)).
 
 
 
+Section clausalmods "Clausal Modifiers"
+
+Label "<p>Languages often have several different strategies for clausal modifers. You many define any number of clausal modifier strategies below or you can leave this page blank, in which case the starter grammar produced will not support clausal modifiers.</p>"
+
+Label "<p>The Grammar Matrix defines clausal modification with three types of subordinators:</p>"
+
+Label "<div style=\"padding-left: 16px\"><p><span
+class=\"dfn\">Free Subordinating Morpheme</span><br>&nbsp;&nbsp;&nbsp;&nbsp;A free morpheme
+that marks the subordinate clause<br><span
+class=\"dfn\">Free Subordinating Morpheme Pair</span><br>&nbsp;&nbsp;&nbsp;&nbsp;A pair of subordinator 
+morphemes, one  of which marks the subordinate clause, the other of which marks the matrix clause<br><span
+class=\"dfn\">No Free Subordinating Morpheme</span><br>&nbsp;&nbsp;&nbsp;&nbsp;The clausal modifier does not contain a free subordinator morpheme<br></div>"
+
+Label "<p>Clausal modifiers may also be marked by special verbal morphology, nominalization of the subordinate
+clause, special word order in the subordinate clause, and subject sharing. You may define any number of 
+clausal modifier strategies by combining the free morpheme type with subject sharing and various morphologial constraints.</p>"
+
+Label "<p>Note: Some characteristics of clausal modifiers must be defined on other pages of the grammar matrix.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Special Word order (currently only supported for V2 languages with Vfinal word order in the subordinate clause) should be specified on the word order page<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nominalization strategies should be defined on the Nominalized Clauses page. These stragies can then be added to a clausal modifier strategy under Add a Feature.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Additional features such as finite/non-finite, or features associated with bound subordinator morphemes should be defined on the Other Features page and added to a clausal modifier strategy under Add a Feature.</p>"
+
+
+BeginIter cms{i} "a Clausal Modifier Strategy" 1
+
+  Label "<p>Clausal Modifier Strategy {i}:<br>"
+
+    Radio position "Clause Position" "The clausal modifier is positioned:<br>" ""
+    . before "Before" "" "before the matrix clause<br>"
+    . after "After" "" "after the matrix clause<br>"
+    . either "Either" "" "either before or after the matrix clause<br><br>"
+
+    Radio modifier-attach "Clause Position" "The clausal modifier attaches to/modifies:<br>" ""
+    . vp "VP" "" "a VP<br>"
+    . s "S" "" "an S<br>"
+    . either "Either" "" "either a VP or an S <br><br>"
+
+    Radio subordinator "Clausal Modifier Strategy {i} pattern" "The subordinate predication is contributed by:<br><br>" ""
+  . free "Free Subordinator" "" "a free subordinator morpheme<br>""toggle_element.call(this, 'free{i}', 'on'); toggle_element.call(this, 'pair{i}', 'off'); toggle_element.call(this, 'none{i}', 'off');"
+  . pair "Subordinator Pair" "" "a free subordinator morpheme pair: one in the subordinate clause and one in the main clause<br>""toggle_element.call(this, 'free{i}', 'off'); toggle_element.call(this, 'pair{i}', 'on'); toggle_element.call(this, 'none{i}', 'off');"
+  . none "No Subordinator" "" "this strategy does not use a free subordinator morpheme""toggle_element.call(this, 'free{i}', 'off'); toggle_element.call(this, 'pair{i}', 'off'); toggle_element.call(this, 'none{i}', 'on');"
+
+    Label "<div id='free{i}' style='display:none'>"
+      Radio subposition "Subordinator Position" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The free subordinator morpheme is positioned:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
+      . before "Before" "" "before the VP or S it attaches to<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+      . after "After" "" "after the VP or S it attaches to<br>"
+
+      Radio subordinator-type "Subordinator Type" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Is the free subordinator morpheme treated as the head of its clause or as and adverbial?:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
+     	. head "Head" "" "it is the head of the subordinate clause<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"  "toggle_element.call(this, 'adverb{i}', 'off')"
+     	. adverb "Adverb" "" "it is an adverb (not the head of its clause)<br>" "toggle_element.call(this, 'adverb{i}', 'on')"
+     
+     	   Label "<div id='adverb{i}' style='display:none'>"
+
+	   Radio adverb-attach "Adverb Attach" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If the subordinator is an adverb, does it attach to VP, S or both?<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
+	   . vp "VP" "" "VP<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+          . s "S" "" "S<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+          . both "Both" "" "Both VP and S"
+
+	   Label "</div>"
+
+      BeginIter freemorph{j} "a Free Subordinator Morpheme" 0 1
+        Label "<p>Free Subordinator Morpheme {j}:<br>"
+          Text orth "subord {i} stem {j} spelling" "Spelling: " "" 30 "fill_pred('cms{i}_freemorph{j}', 'subord')"
+          Text pred "subord {i} stem {j} predicate" " Predicate: " "" 30
+      EndIter freemorph
+       Label "</div>"
+
+    Label "<div id='pair{i}' style='display:none'>"
+      Radio subposition "Subordinator Position" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Does the morpheme in the subordinate clause attach to the beginning or end of the clause?:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
+      . before "Before" "" "before the VP or S it attaches to<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+      . after "After" "" "after the VP or S it attaches to<br>"
+
+      Radio subordinator-type "Subordinator Type" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Is the morpheme in the subordinate clause treated as the head of its clause or as and adverbial?:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
+     	. head "Head" "" "it is the head of the subordinate clause<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"  "toggle_element.call(this, 'pair-adverb{i}', 'off')"
+     	. adverb "Adverb" "" "it is an adverb (not the head of its clause)<br>" "toggle_element.call(this, 'pair-adverb{i}', 'on')"
+     
+     	   Label "<div id='pair-adverb{i}' style='display:none'>"
+
+	   Radio adverb-attach "Adverb Attach" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If the morpheme in the subordinate clause is an adverb, does it attach to VP, S or both?<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
+	   . vp "VP" "" "VP<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+          . s "S" "" "S<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+          . both "Both" "" "Both VP and S"
+
+	   Label "</div>"
+
+    Radio matrix-subposition "Matrix Subordinator Position" "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Does the morpheme in the matrix clause attach to the beginning or end of the clause?:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
+    . before "Before" "" "before the VP or S it attaches to<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+    . after "After" "" "after the VP or S it attaches to<br>"
+
+    Radio matrix-adverb-attach "Matrix Adverb Attach" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Does the morpheme in the matrix clause attach to VP, S or both?:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
+    . vp "VP" "" "VP<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+    . s "S" "" "S<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+    . both "Both" "" "Both VP and S"
+
+
+      BeginIter morphpair{j} "a Free Subordinator Morpheme Pair" 0 1
+        Label "<p>Free Subordinator Morpheme Pair{j}:<br>"
+          Text matrixorth "adverb {i} stem {j} spelling" "Matrix Morpheme Spelling: " "" 30 "subpair_matrix_fill_pred('cms{i}_morphpair{j}', 'a')"
+          Text matrixpred "adverb {i} stem {j} predicate" " Matrix Morpheme Predicate: " "" 30
+          Text subordorth "subord {i} stem {j} spelling" "<br>Subordinate Morpheme Spelling: " "" 30 "subpair_subord_fill_pred('cms{i}_morphpair{j}', 'subord')"
+          Text subordpred "subord {i} stem {j} predicate" " Subordinate Morpheme Predicate: " "" 30
+
+      EndIter morphpair
+    Label "</div>"
+
+    Label "<div id='none{i}' style='display:none'>"
+    Label "The clausal modifier strategy contributes the following predication. (Note: if you do not enter a predication, a generic _subord_rel predication will be added) <br>"
+    Text pred "subord {i} stem {j} predicate" "Predicate: " "" 30<br>
+    Label "</div>"
+
+Label "<br><br>The clausal modifier has the following features<br> Note: Features can be defined on the Other Features page. If this morphological feature cannot head a matrix clause, it should be defined as a FORM feature.<br>"
+
+BeginIter feat{k} "a Feature"
+
+    Select name "Clausal Modifier Strategy {i} Embedded Verb Feature {k} Name" "Name: " ""
+      fillnames2 c=verb
+ 
+    MultiSelect value "Clausal Modifier Strategy {i} Embedded Verb Feature {k} Value" "Value: " ""
+      fillvalues p=cms{i}_feat{k}_name
+
+EndIter feat
+
+Label "<br><br>Is the subject of the subordinate clause unexpressed and shared with the subject of the main clause?<br>"
+Check shared-subj "Shared Subject" "" "Yes<br>"
+
+EndIter cms
+
+
 Section lexicon "Lexicon"
 
 Cache nounlrs noun-pc[0-9]+(_lrt[0-9]+)?$ name
@@ -2314,9 +2436,9 @@ BeginIter noun-pc{i} "a Position Class" 1 0
 
   Check obligatory "Noun Position Class {i} Obligatory" "<br/>Obligatorily occurs:" ""
 
-  Select order "Noun Position Class {i} Order" "<br/>Appears as a prefix or suffix:" ""
-  . prefix "Prefix" "prefix"
-  . suffix "Suffix" "suffix"
+Select order "Noun Position Class {i} Order" "<br/>Appears as a prefix or suffix:" ""
+. prefix "Prefix" "prefix"
+. suffix "Suffix" "suffix"
 
   MultiSelect inputs "Noun Position Class {i} Input" "<br/>Possible inputs:" ""
   fillcache c=nouns

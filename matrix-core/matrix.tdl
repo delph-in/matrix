@@ -1,3 +1,4 @@
+
 ;;; -*- Mode: TDL; Package: LKB -*-
 ;;;
 ;;; HPSG Grammar Matrix
@@ -2119,7 +2120,7 @@ basic-bare-np-phrase := head-only & head-valence-phrase &
 			   SPEC < > ],
     HEAD-DTR.SYNSEM.LOCAL [ CAT [ HEAD noun,
 				  VAL [ SPR < unexpressed & 
-				      	      [ LOCAL.CAT.HEAD det,
+				      	      [ LOCAL.CAT.HEAD +nd,
 						OPT + ] >,
 					SUBJ < >,
 					COMPS < > ] ],
@@ -2674,6 +2675,8 @@ basic-three-arg-no-hcons := basic-three-arg & no-hcons-lex-item.
 
 ; (Kim is a student requires an analysis of predicative NPs.)
 
+; CHANGING: add cat-sat to args here (PASSES all reg tests)
+
 intransitive-lex-item := basic-one-arg-no-hcons & basic-icons-lex-item &
   [ ARG-ST < [ LOCAL [ CAT cat-sat, 
     	       	       CONT.HOOK [ INDEX ref-ind & #ind,
@@ -2694,6 +2697,8 @@ expl-arg-only-lex-item := basic-one-arg-no-hcons & basic-icons-lex-item &
 ; Kim ga hiru gohan wo taberu.  
 ; Kim mange le dejeuner.  
 
+; CHANGING: add cat-sat to args here (PASSES all reg tests)
+
 transitive-lex-item := basic-two-arg-no-hcons & basic-icons-lex-item &
    [ ARG-ST < [ LOCAL [ CAT cat-sat,
      	      	      	CONT.HOOK [ INDEX ref-ind & #ind1,
@@ -2708,6 +2713,8 @@ transitive-lex-item := basic-two-arg-no-hcons & basic-icons-lex-item &
 ; Kim gives Sandy a book.
 ; Kim ga Sandy ni hon wo ageru.
 ; Kim donne un livre a Sandy.
+
+; CHANGING: add cat-sat to args here  (PASSES all reg tests)
 
 ditransitive-lex-item := basic-three-arg-no-hcons & basic-icons-lex-item &
    [ ARG-ST < [ LOCAL [ CAT cat-sat,
@@ -2734,6 +2741,8 @@ ditransitive-lex-item := basic-three-arg-no-hcons & basic-icons-lex-item &
 ; intervening.
 
 
+; Changing: planning on adding cat-sat to all arguments that have ref-ind indexes from here on.
+
 clausal-arg-intrans-lex-item := basic-one-arg & one-icons-lex-item & 
    [ ARG-ST < [ LOCAL.CONT.HOOK [ LTOP #larg,
 				  INDEX #target ] ] >,
@@ -2748,6 +2757,7 @@ clausal-arg-intrans-lex-item := basic-one-arg & one-icons-lex-item &
 ; ERB 2007-01-22 Inserting qeqs now that we no longer have messages
 ; intervening.
 
+; changing: added cat-sat (PASSES all reg tests)
 
 clausal-first-arg-trans-lex-item := basic-two-arg & one-icons-lex-item & 
    [ ARG-ST < [ LOCAL.CONT.HOOK [ LTOP #larg,
@@ -2768,6 +2778,8 @@ clausal-first-arg-trans-lex-item := basic-two-arg & one-icons-lex-item &
 
 ; ERB 2007-01-22 Inserting qeqs now that we no longer have messages
 ; intervening.
+
+; changing: added cat-sat (PASSES all reg tests)
 
 clausal-second-arg-trans-lex-item := basic-two-arg & one-icons-lex-item & 
    [ ARG-ST < [ LOCAL [ CAT cat-sat,

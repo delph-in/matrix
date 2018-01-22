@@ -13,7 +13,6 @@
 # imports
 
 import os
-import cgi
 import cgitb
 import glob
 import re
@@ -33,7 +32,7 @@ from collections import defaultdict
 # HTML blocks, used to create web pages
 
 def dummy():
-    pass # let emacs know the indentation is 2 spaces
+    pass # let emacs know the indentation is 2 spaces 2017-12-01 OZ: why 2 spaces and not the standard 4?
 
 
 HTTP_header = 'Content-type: text/html;charset=UTF-8'
@@ -241,6 +240,10 @@ HTML_sentencespostbody = '''
 
 HTML_prebody = '''<body onload="animate(); focus_all_fields(); multi_init(); fill_hidden_errors(); scalenav();">
 '''
+
+HTML_prebody_of = '''<body onload="animate(); focus_all_fields(); multi_init(); fill_hidden_errors(); display_form_choice();scalenav();">
+'''
+
 
 HTML_prebody_sn = '''<body onload="animate(); focus_all_fields(); multi_init(); fill_hidden_errors();display_neg_form();scalenav();">'''
 
@@ -550,7 +553,7 @@ class MatrixDefFile:
                  'arg-opt':'Argument Optionality',
                  'clausal-comp':'Clausal Complements', 'lexicon':'Lexicon',
                  'nominalclause':'Nominalized Clauses',
-                 'lexicon':'Lexicon',
+                 'clausalmods':'Clausal Modifiers', 'lexicon':'Lexicon',
                  'morphology':'Morphology','toolbox-import':'Toolbox Import',
                  'test-sentences':'Test Sentences','gen-options':'TbG Options',
                  'ToolboxLexicon':'Toolbox Lexicon'}
@@ -567,7 +570,7 @@ class MatrixDefFile:
                  'arg-opt':'ArgumentOptionality',
                  'clausal-comp':'ClausalComplements','lexicon':'Lexicon',
                  'nominalclause':'Nominalized Clauses',
-                 'lexicon':'Lexicon',
+                 'clausalmods':'Clausal Modifiers', 'lexicon':'Lexicon',
                  'morphology':'Morphology','toolbox-import':'ImportToolboxLexicon',
                  'test-sentences':'TestSentences','gen-options':'TestByGeneration',
                  'ToolboxLexicon':'ImportToolboxLexicon'}
@@ -841,6 +844,7 @@ class MatrixDefFile:
 
         html = ''
 
+        #if not debug:
         http_cookie = os.getenv('HTTP_COOKIE')
 
         cookie = {}
@@ -971,6 +975,8 @@ class MatrixDefFile:
                 # probably by calling it incorrectly, but the check should not hurt.
                 while i < len(lines)-1 and lines[i].strip().startswith('fill'):
                     word = tokenize_def(replace_vars(lines[i], vars))
+                    #if word[0].startswith('fillform'):
+                    #    print(5)
                     # arguments are labeled like p=pattern, l(literal_feature)=1,
                     # n(nameOnly)=1, c=cat
                     #note: possible cat values are "noun", "verb" or "both"
@@ -1279,6 +1285,8 @@ class MatrixDefFile:
 
             if section == 'sentential-negation':
                 print HTML_prebody_sn
+            #elif section == 'other-features':
+            #    print HTML_prebody_of
             else:
                 print HTML_prebody
 

@@ -38,6 +38,7 @@ from gmcs.linglib import coordination
 from gmcs.linglib import yes_no_questions
 from gmcs.linglib import toolboximport
 from gmcs.linglib import valence_change
+from gmcs.linglib import clausalmods
 from gmcs.linglib import nominalized_clauses
 from gmcs.linglib import clausalcomps
 
@@ -614,6 +615,7 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
     word_order.customize_word_order(mylang, ch, rules)
     coordination.customize_coordination(mylang, ch, lexicon, rules, irules)
     yes_no_questions.customize_yesno_questions(mylang, ch, rules, lrules, hierarchies)
+    clausalmods.customize_clausalmods(mylang, ch, lexicon, rules, roots)
     clausalcomps.customize_clausalcomps(mylang,ch,lexicon,rules)
     customize_punctuation(grammar_path)
     customize_test_sentences(grammar_path)
@@ -622,7 +624,6 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
     customize_pettdl(grammar_path)
     customize_acetdl(grammar_path)
     customize_roots()
-
     customize_vpm(ch, vpm, hierarchies)
 
     # Save the output files

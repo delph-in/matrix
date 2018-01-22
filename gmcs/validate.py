@@ -187,7 +187,7 @@ def validate_names(ch, vr):
 
     # if called for by current choices, add reserved types for:
     # case, direction, person, number, pernum, gender, tense, aspect,
-    # situation, mood, form, and trans/intrans verb types.
+    # situation, mood, form, nominalization, and trans/intrans verb types.
     if ch.get('case-marking', None) is not None:
         reserved_types['case'] = True
 
@@ -230,6 +230,9 @@ def validate_names(ch, vr):
         reserved_types['form'] = True
         reserved_types['finite'] = True
         reserved_types['nonfinite'] = True
+
+    if 'ns' in ch:
+        reserved_types['nominalization'] = True
 
     for pattern in ch.patterns():
         p = pattern[0].split(',')
@@ -328,6 +331,9 @@ def validate_names(ch, vr):
             for lrt in pc.get('lrt', []):
                 user_types += [[get_name(lrt) + '-lex-rule',
                                 lrt.full_key + '_name']]
+
+    for ns in ch.get('ns'):
+        user_types += [[ns.get('name'), ns.full_key + '_name']]
 
     # Cull entries in user_types where there's no type name (and assume
     # these will be caught by other validation).  This could happen, for
@@ -1441,23 +1447,94 @@ def validate_arg_opt(ch, vr):
                        "on the subject NP or the object NP."
                 vr.err(feat.full_key+'_head',mess)
 
-# validate_clausalmods(ch, vr)
-#   Validate the user's choices clausal modifiers.
-
+######################################################################
+# Validation of clausal modifiers
 def validate_clausalmods(ch, vr):
+    """Check to see if the user completed the necessary portions of the
+       Clausal Modifiers page and check for unsupported combinations of choices"""
     for cms in ch.get('cms'):
-        pos = cms.get('position')
-        subord = cms.get('subordinator')
-        subpos = cms.get('subposition')
+        # First check the choices that are required for all clausal mod strategies
+        if not cms.get('position'):
+            mess = 'You must select a position for the clausal modifier.'
+            vr.err(cms.full_key + '_position', mess)
+        if not cms.get('modifier-attach'):
+            mess = 'You must select VP or S attachment for the clausal modifier.'
+            vr.err(cms.full_key + '_modifier-attach', mess)
+        if not cms.get('subordinator'):
+            mess = 'You must select a subordinator type.'
+            vr.err(cms.full_key + '_subordinator', mess)
 
-        if subord == 'free':
-            pass
+        # Next check the choices required for free and pair subordinators
+        if cms.get('subordinator') == 'free' or cms.get('subordinator') == 'pair':
+            if not cms.get('subposition'):
+                mess = 'You must select a position for the subordinator.'
+                vr.err(cms.full_key + '_subposition', mess)
+            if not cms.get('subordinator-type'):
+                mess = 'You must makes a selection for whether the subordinator is an adverb or head.'
+                vr.err(cms.full_key + '_subordinator-type', mess)
+            if cms.get('subordinator-type') == 'adverb':
+                if not cms.get('adverb-attach'):
+                    mess = 'You must makes a selection for whether the subordinator attaches to a VP or S.'
+                    vr.err(cms.full_key + '_adverb-attach', mess)
 
-        if subord == 'pair':
-            pass
+        # Check the choices required for free subordinators only
+        if cms.get('subordinator') == 'free':
+            if not cms.get('freemorph'):
+                mess = 'You must add at least one free subordinator morpheme.'
+                vr.err(cms.full_key + '_freemorph', mess)
 
-        if subord == 'none':
-            pass
+
+        # Check the choices required for pair subordinators only
+        if cms.get('subordinator') == 'pair':
+            if not cms.get('matrix-subposition'):
+                mess = 'You must select a position for the adverb in the matrix clause.'
+                vr.err(cms.full_key + '_matrix-subposition', mess)
+            if not cms.get('matrix-adverb-attach'):
+                mess = 'You must makes a selection for whether the adverb' + \
+                       ' in the matrix clause attaches to a VP or S.'
+                vr.err(cms.full_key + '_matrix-adverb-attach', mess)
+            if not cms.get('morphpair'):
+                mess = 'You must add at least one free subordinator morpheme pair.'
+                vr.err(cms.full_key + '_morphpair', mess)
+
+
+        # Warnings for no subordinator morpheme
+        if cms.get('subordinator') == 'none':
+            if not cms.get('pred'):
+                mess = 'If you do not enter a predication for this strategy' + \
+                    ' a generic _subord_rel will be added.'
+                vr.warn(cms.full_key + '_pred', mess)
+            if not cms.get('feat'):
+                mess = 'You have not added any subordinator (free or bound) to this strategy.'
+                vr.warn(cms.full_key + '_subordinator', mess)
+
+        # Check for unsupoorted combinations with nominalization
+        if cms.get('subordinaotor-type') == 'adverb':
+            for feat in cms.get('feat'):
+                if feat.get('name') == 'nominalization':
+                    mess = 'Nominalization is not supported of the adverb analysis.'
+                    vr.err(feat.full_key + '_name', mess)
+        for feat in cms.get('feat'):
+            if feat.get('name') == 'nominalization':
+                mess = 'If multiple nominalization strategies are allowed in the grammar,' +\
+                        ' and clausal modifiers require nominalization, the produced grammar' +\
+                        ' will allow any nominalinalization strategy for the clausal modifier strategy.'
+                vr.warn(feat.full_key + '_name', mess)
+
+        # Check for unsupported features
+        for feat in cms.get('feat'):
+            if feat.get('type') == 'index':
+                mess = 'Index besides aspect and mood are not supported at this time.'
+                vr.err(feat.full_key + '_type', mess)
+            if feat.get('name') == 'situation':
+                mess = 'Situation aspect is not supported at this time.'
+                vr.err(feat.full_key + '_type', mess)
+
+
+
+
+
+
 
 ######################################################################
 # Validation nominalized clauses
@@ -1468,16 +1545,17 @@ def validate_nominalized_clauses(ch, vr):
         if not ns.get('name'):
             mess = 'You must enter a name for the nominalization strategy.'
             vr.err(ns.full_key + '_name', mess)
-        level = ns.get('level')
-        if level in ['mid','low'] and not ns['nmzRel'] == 'yes':
-            vr.err(ns.full_key + '_level','Mid and low nominalization must be specified as having semantics.')
-        if not ns['nmzRel'] == 'yes' and not ns['nmzRel'] == 'no':
-            vr.err(ns.full_key + '_nmzRel','Please choose whether nominalization contributes to the semantics.')
+        if ns.get('level') == 'high':
+            if not ns.get('nmzRel'):
+                mess = 'You must select whether the nominalization is syntactic only' + \
+                       ' or if it should be refelcted in the semantics.'
+                vr.err(ns.full_key + '_nmzRel', mess)
         if ns.get('level') == 'mid':
             if ch.get('word-order') == 'vso' or ch.get('word-order') == 'osv':
                 mess = 'The analysis for your word order does not include a' + \
                        ' VP constituent. You must select V or S nominalization.'
                 vr.err(ns.full_key + '_level', mess)
+
 
 def validate(ch, extra = False):
     """
@@ -1503,7 +1581,9 @@ def validate(ch, extra = False):
     gmcs.linglib.morphotactics.validate(ch, vr)
     validate_test_sentences(ch, vr)
     gmcs.linglib.clausalcomps.validate(ch, vr)
+    validate_clausalmods(ch, vr)
     validate_nominalized_clauses(ch, vr)
+
     validate_types(ch, vr)
     validate_features(ch, vr)
     validate_hierarchy(ch, vr)
