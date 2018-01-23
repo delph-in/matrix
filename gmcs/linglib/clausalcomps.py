@@ -217,16 +217,16 @@ def customize_order(ch, cs, mylang, rules, typename, init, general, additional):
     wo = ch.get(constants.WORD_ORDER)
     init_gen, init_add = which_init(general,additional)
     is_flex = is_more_flexible_order(wo,cs)
-    if is_flex and not init:
-        constrain_lex_items_using_headtypes(ch,cs,typename,mylang)
-    else:
-        constrain_lex_items(ch,cs,typename,init_add,init_gen,mylang,init)
+    #if is_flex and not init:
+    constrain_lex_items_using_headtypes(ch,cs,typename,mylang)
+    #else:
+    constrain_lex_items(ch,cs,typename,init_add,init_gen,mylang,init)
     if need_customize_hc(wo,cs):
         if additional_hcr_needed(cs,wo):
-            if is_flex and not init:
-                constrain_head_comp_rules_headtype(mylang,rules,additional,cs,ch)
-            else:
-                constrain_head_comp_rules(mylang,rules,init,general,additional,cs,ch)
+            #if is_flex and not init:
+            constrain_head_comp_rules_headtype(mylang,rules,additional,cs,ch)
+            #else:
+            constrain_head_comp_rules(mylang,rules,init,general,additional,cs,ch)
         add_special_complementizer_HCR(additional, cs, general, mylang, rules, wo,is_flex)
 
 def need_customize_hc(wo,cs):
