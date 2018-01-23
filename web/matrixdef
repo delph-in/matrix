@@ -693,6 +693,65 @@ Smith, Carlota. 1991. The Parameter of Aspect. Dordrecht: Kluwer
 Academic Publishers)."
 Label "</div>"
 
+Section evidentials "Evidentials"
+
+Label "<p>Evidentiality refers to the grammatical expression of information source, how the speaker knows what he/she is saying.  Common evidential meanings include \"I heard it from someone else,\" \"I saw it myself,\" \"I inferred it from evidence,\" etc.  Evidentials are most commonly expressed through inflection on the verb or through auxiliary verbs, often described simply as clitics or particles in the literature.</p>"
+
+Label "<p>Here, you may define an inventory of evidential terms.  On the Morphology and Lexicon pages, you may then add an evidential feature either to a lexical rule type on the Morphology page or an auxiliary verb on the Lexicon page.  Note that even though evidentials are specified as features in this interface, in the grammar produced by the Grammar Matrix, evidential semantics will be expressed by an indpendent predicate, not a feature.</p>"
+
+Label "<p>NOTE: For auxiliary verbs expressing evidentials, the evidential feature should be an auxiliary feature, not a complement feature.</p>"
+
+Label "<p>NOTE: For auxiliary verbs expressing evidentials, select \"No predicate.\"  If you specify an evidential feature AND define a predicate for the auxiliary verb, the evidential semantics will overwrite the defined predicate.</p>"
+
+Label "<p>NOTE: You should not specify more than one evidential value on each lexical rule type or auxiliary verb.</p>"
+
+Label "<h3>Semantic Features</h3>"
+
+Label "<div style=\"padding-left: 16px\">"
+
+  Radio evidential-definition "Evidential hierarchy definition style" "" ""
+  . noevid "No Evidentiality" "" "<strong>No evidentiality in this language</strong><br>"
+
+  Radio evidential-definition "Evidential hierarchy definition style" "" ""
+  . choose "Choose" "" "<strong>Select among common hierarchy elements</strong><br>"
+
+    Label "<div style=\"padding-left: 35px\">"
+
+    Label "<br>Which of the following are evidential hierarchy elements in this subsystem?<br><br>"
+
+    Check firsthand "Firsthand" "" "<b>firsthand</b><br>"
+
+    Check nonfirsthand "NonFirsthand" "" "<b>non-firsthand</b><br>"
+
+    Check visual "Visual" "" "<b>visual</b><br>"
+
+    Check nonvisual "NonVisualSensory" "" "<b>non-visual sensory</b><br>"
+
+    Check inferential "Inferential" "" "<b>inferential</b><br>"
+
+    Check reported "Reported" "" "<b>reported</b><br>"
+
+    Check quoatative "Quotative" "" "<b>quotative</b><br>"
+
+    Check everythingelse "EverythingElse" "" "<b>\"everything else\"</b><br>"
+
+    Label "</div>"
+
+  Radio evidential-definition "Evidential hierarchy definition style" "" ""
+  . build "Build" "" "<strong>Specify your own hierarchy</strong><br>"
+
+  BeginIter evidential{i} "an evidential term" 0 0
+    Text name "Evidential Term {i} Name" "<b>Evidential Term {i}</b>:<br/>Evidential Term Name: " " " 20
+  EndIter evidential
+
+Label "</div>"
+
+Label "<h4>References</h4>"
+Label "<div style=\"font-size:2\">"
+Label "<p>Aikhenvald, A. (2006). Evidentiality. Oxford linguistics. Oxford University Press."
+Label "<p>Murray, S. E. (2017). The Semantics of Evidentials. Oxford University Press."
+Label "</div>"
+
 Section other-features "Other Features"
 
 Label "<p>If your language has other features beyond those that can be
