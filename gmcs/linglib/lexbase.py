@@ -230,8 +230,6 @@ class LexicalRuleType(MorphotacticNode):
         # EKN 2017-12-15 Possessor rule pseudofeatures are properties of LRT
         self.possessive = None
         self.poss_strat_num = None
-#        self.poss_pron = None
-#        self.poss_pron_num = None
 
 
     def __repr__(self):
