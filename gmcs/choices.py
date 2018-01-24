@@ -1153,6 +1153,16 @@ class ChoicesFile:
         # if 'neg1b-neg2b' in self.choices:
         #  features += [ ['neg2', 'plus|plus', '', 'verb' ] ]
 
+        # Possessives EKN 2017-01-13
+        for strat in self.get('poss-strat'):
+            if strat.get('possessor-type')=='affix' or strat.get('possessum-type')=='affix':
+                strat_name=strat.full_key
+                features += [ [ strat_name, 'possessor|possessor;possessum|possessum;nonpossessive|nonpossessive', '', 'noun', 'y'] ]
+        for pron in self.get('poss-pron'):
+            if pron.get('type')=='affix':
+                pron_name=pron.full_key
+                features += [ [ pron_name,'plus|plus;minus|minus', '', 'noun', 'y' ] ]
+
         # Questions
         if 'q-infl' in self.choices:
             features += [ ['question', 'plus|plus', '', 'verb', 'y'] ]

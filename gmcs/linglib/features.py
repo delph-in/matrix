@@ -1,5 +1,4 @@
 from gmcs.linglib import case
-
 ######################################################################
 # customize_feature_values(ch_dict, type_name, pos, features, cases)
 #   In the passed-in choices dictionary, go through the 'feat'
@@ -20,7 +19,6 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     if not tdlfile:
         tdlfile = mylang
 
-
     # TJT 2014-11-05: moving this up to get the proper geometry for case
     # get the feature geometry of CASE
     if cases:
@@ -35,7 +33,6 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     pos_geom_prefix = prefix_map[pos] if pos in prefix_map else 'SYNSEM.'
 
     iter_feat = 'feat' if pos != 'auxcomplement' else 'compfeature'
-
     basic_infl_neg_def = ''':= \
                    [ C-CONT [ HOOK [ XARG #xarg,\
                      LTOP #ltop,\
@@ -75,12 +72,58 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
 
         geom_prefix = pos_geom_prefix
 
+        # EKN 2017-01-02 If adding AGREEMENT PNG features to a 
+        # possessive marker or affix, they should be at
+        # POSS.POSS-AGR, rather than at CONT.HOOK.INDEX.PNG.
+        # Also, the PNG features of a possessor pronoun affix
+        # should go on the ARG0 of the first thing in the
+        # RELS list of the inflectional rule (which corresponds
+        # to the pron_rel). The following checks to see if the
+        # ch_dict that was passed in corresponds to a possessive
+        # lexical rule or a possessor pronoun lexical rule, by
+        # iterating through all features in the ch_dict to see
+        # if any is named 'poss-stratN' or 'poss-pronN'. If so,
+        # it sets a boolean flag (poss_lrt or poss_pron_lrt),
+        # which is subsequently used to correctly adjust the 
+        # feature geometry.
+        poss_lrt=False
+        poss_pron_lrt=False
+        agreeing_element=''
+        for feature in ch_dict.get('feat'):
+            feat_name=feature.get('name')
+            if 'poss-strat' in feat_name: 
+                poss_lrt=True
+                agreeing_element=feature.get('value')
+            elif 'poss-pron' in feat_name:
+                poss_pron_lrt=True
+                agreeing_element='possessor'
+            elif 'possessum' in feature.full_key:
+                agreeing_element='possessum'
+            elif 'possessor' in feature.full_key:
+                agreeing_element='possessor'
+            elif 'poss-pron' in feature.full_key:
+                agreeing_element='possessor'      
+        if pos=='poss-marker' or poss_lrt:
+            if agreeing_element=='possessor':
+                geom_prefix = 'SYNSEM.LOCAL.CAT.HEAD.POSSESSOR.POSS-AGR.'
+            elif agreeing_element=='possessum':
+                geom_prefix = 'SYNSEM.LOCAL.CAT.POSSESSUM.POSS-AGR.'
+        if poss_pron_lrt:
+            if feat.get('head')=='possessum':
+                geom_prefix = 'DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG'
+            else:
+                geom_prefix = 'C-CONT.RELS <! [ ARG0.PNG'
+
         # The 'head' choice only appears on verb pcs, and allows the
         # user to specify features on the subject and object as well
         # TJT 2014-08-15: the 'head' choice now also appears on
         # adjectives, copulas, and their lexical rules, allowing
         # the user to specify which argument the adjective or copula
         # is agreeing with
+        # EKN 2018-01-06: It now also appears on nouns, to distinguish
+        # a noun's inherent features from features that agree with
+        # another nominal element in a possessive phrase; however,
+        # the head feature for possessive phrases is dealt with above
         head = feat.get('head','')
         if head in head_map: # TJT 2014-08-15: changing this to map for speed/easy reading
             if head in ('higher', 'lower'):
@@ -90,7 +133,6 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
         # TJT 2014-09-16: DTR is for incorporated adjectives
         if head == 'dtr':
             geom_prefix = "DTR." + geom_prefix
-
         # If auxcomplement, add additional definition on top of any head definition
         if pos == 'auxcomplement':
             geom_prefix += 'LOCAL.CAT.VAL.COMPS.FIRST.'
@@ -111,9 +153,16 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                     # constructions and has a different geometry
                     if head in ('xarg','mod') and n == 'case':
                         geom_prefix = 'SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.HEAD.CASE'
+                    # EKN 2018-1-6: when adding a possessive rule, the standard feature path
+                    # won't work. This removes all but the feature name and value from the
+                    # variable value.
+                    if pos=='poss-marker' or poss_lrt:
+                        value=value.replace('LOCAL.CONT.HOOK.INDEX.PNG.','')
+                    if poss_pron_lrt:
+                        value=value.replace('LOCAL.CONT.HOOK.INDEX.PNG','')
                     geom = geom_prefix + value
-                #          if head == 'mod':
-                #            geom += "] >"  # TJT 2014-05-27: close MOD
+#           if head == 'mod':
+#               geom += "] >"  # TJT 2014-05-27: close MOD
                 break # TJT 2014-05-08 stop looking!
 
         # If the feature has a geometry, just specify its value;
@@ -121,23 +170,27 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
         if geom:
             if n in hierarchies:
                 value = hierarchies[n].get_type_covering(v)
+                # EKN 2018-01-19: Add the closing brackets for the possessive
+                # pronoun's feature path
+                if poss_pron_lrt:
+                    value=value+'] !>'
                 tdlfile.add(type_name +
-                            ' := [ ' + geom + ' ' + value + ' ].',
-                            merge=True)
+                    ' := [ ' + geom + ' ' + value + ' ].',
+                    merge=True)
                 if n == 'case' and ch.has_mixed_case():
                     val = '-' if '-synth-' + value in type_name else '+'
                     tdlfile.add(type_name +
-                                ' := [ ' + geom + '-MARKED ' + val + ' ].',
-                                merge=True)
+                      ' := [ ' + geom + '-MARKED ' + val + ' ].',
+                      merge=True)
             else:
                 for value in v:
                     tdlfile.add(type_name +
-                                ' := [ ' + geom + ' ' + value + ' ].',
-                                merge=True)
+                      ' := [ ' + geom + ' ' + value + ' ].',
+                      merge=True)
         elif n == 'argument structure':
             # constrain the ARG-ST to be passed up
             tdlfile.add(type_name + ' := [ ARG-ST #arg-st, DTR.ARG-ST #arg-st ].',
-                        merge=True)
+                  merge=True)
 
             for argst in v:
                 # specify the subj/comps CASE values

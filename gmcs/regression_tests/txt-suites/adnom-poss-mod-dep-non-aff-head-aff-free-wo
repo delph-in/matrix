@@ -1,0 +1,12 @@
+det possessor det noun1 noun2possessum itr-verb3sg
+det noun2possessum possessor det noun1 itr-verb3sg
+*possessor det noun1 noun2possessum itr-verb3sg
+*det possessor noun1 noun2possessum itr-verb3sg
+*det det possessor noun1 noun2possessum itr-verb3sg
+*possessor noun1 noun2possessum itr-verb3sg
+*det possessor det noun1 noun2 itr-verb3sg
+*det det noun1 noun2possessum itr-verb3sg
+*det det noun1 noun2 itr-verb3sg
+*det noun2possessum det noun1 possessor itr-verb3sg
+*noun2possessum possessor det noun1 itr-verb3sg
+*det noun2possessum possessor noun1 det itr-verb3sg
