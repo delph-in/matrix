@@ -1126,37 +1126,17 @@ class ChoicesFile:
         # if 'neg1b-neg2b' in self.choices:
         #  features += [ ['neg2', 'plus|plus', '', 'verb' ] ]
 
-        # Possessives
+        # Possessives 
+        # EKN 2017-01-13
         # TODO: change verb to noun
-        if self.get_regex(".*_possessor-type"):
-            if self.get_regex("poss-strat._possessor-type")[0][1]=='affix':
-                strat_name=self.get_regex("poss-strat._possessor-type")[0][0].replace("_possessor-type","")
-                features += [ [ strat_name, 'possessor|possessor;possessum|possessum;nonpossessive|nonpossessive', '', 'verb', 'y'] ]
-        if self.get_regex(".*_possessum-type"):
-            if self.get_regex("poss-strat._possessum-type")[0][1]=='affix':
-                strat_name=self.get_regex("poss-strat._possessum-type")[0][0].replace("_possessum-type","")
-                features += [ [ strat_name, 'possessor|possessor;possessum|possessum;nonpossessive|nonpossessive', '', 'verb', 'y'] ]
-        if self.get_regex("poss-pron.*"):
-            if self.get_regex("poss-pron._type")[0][1]=='affix':
-                strat_name=self.get_regex("poss-pron._type")[0][0].replace("_type","")
-                features += [ [strat_name,'plus|plus;minus|minus', '', 'verb', 'y' ] ]
-
-#        # Possessives
-#        if self.get_regex(".*_possessor-type"):
-#            if self.get_regex("poss-strat._possessor-type")[0][1]=='affix':
-#                strat_name=self.get_regex("poss-strat._possessor-type")[0][0].replace("_possessor-type","")
-#                features += [ ['possessor_'+strat_name, 'plus|plus;minus|minus', '', 'verb', 'y'] ]
-#        if self.get_regex(".*_possessum-type"):
-#            if self.get_regex("poss-strat._possessum-type")[0][1]=='affix':
-#                strat_name=self.get_regex("poss-strat._possessum-type")[0][0].replace("_possessum-type","")
-#                features += [ ['possessum_'+strat_name, 'plus|plus;minus|minus', '', 'verb', 'y'] ]
-#        if self.get_regex("poss-pron.*"):
-#            if self.get_regex("poss-pron._type")[0][1]=='affix':
-#                strat_name=self.get_regex("poss-pron._type")[0][0].replace("_type","")
-#                features += [ [strat_name,'plus|plus;minus|minus', '', 'verb', 'y' ] ]
-
-
-
+        for strat in self.get('poss-strat'):
+            if strat.get('possessor-type')=='affix' or strat.get('possessum-type')=='affix':
+                strat_name=strat.full_key
+                features += [ [ strat_name, 'possessor|possessor;possessum|possessum;nonpossessive|nonpossessive', '', 'noun', 'y'] ]
+        for pron in self.get('poss-pron'):
+            if pron.get('type')=='affix':
+                pron_name=pron.full_key
+                features += [ [ pron_name,'plus|plus;minus|minus', '', 'noun', 'y' ] ]
 
         # Questions
         if 'q-infl' in self.choices:

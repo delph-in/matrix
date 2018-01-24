@@ -447,64 +447,57 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
                                       SPEC < > ] ], \
              ARG-ST < #spr > ].'
 
-    # EKN 2017-12-18 In some languages, possessor nouns act as specifiers
-    # to other nouns. This checks to see if the user has
-    # indicated that possessor nouns can be specifiers, and if so, overwrites
-    # the typedef of noun-lex to indicate that its SPR is of head type +nd.
-    # Otherwise, the SPR of noun-lex is of head type det, as before. Furthermore,
-    # in cases when only the possessum is marked, any noun needs to be able to
-    # have a non-empty SPEC list, so we change that to being underspecified
-    # in those cases here too:
-    # TODO: adapt so this still works with multiple possessive strategies
+    # EKN 2017-12-18 In some languages, possessor nouns or 
+    # possessor-marking adpositions act as specifiers to nouns. 
+    # This checks to see which kinds of possessive strategies
+    # have been defined, and makes the head type of the noun-lex's
+    # SPR conditional on that. It also checks for cases where only 
+    # the possessum is marked, since in these cases, the possessor
+    # noun must have a non-empty SPEC list even though it has gone
+    # through no lexical rules.
+    
+    # Check all possessive strategies to see what combo of 
+    # strategies you have:
+    spec_strat=False
+    affixal_strat=False
+    nonaffixal_strat=False
+    possessor_mark=False
+    possessum_mark=False
     for strat in ch.get('poss-strat',[]):
-        if strat.get('mod-spec')=='spec':
-            if strat.get('mark-loc')=='possessor':
+        if strat.get('mod-spec')=='spec' and strat.get('mark-loc')!='neither':
+            spec_strat=True
+            if strat.get('mark-loc')=='possessor' or strat.get('mark-loc')=='both':
+                possessor_mark=True
                 if strat.get('possessor-type')=='affix':
-                    typedef = \
-        'noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & \
-           [ SYNSEM.LOCAL [ CAT.VAL [ SPR < #spr & [ LOCAL.CAT.HEAD +nd ] >, \
-                                      COMPS < >, \
-                                      SUBJ < >, \
-                                      SPEC < > ] ], \
-             ARG-ST < #spr > ].'
+                    affixal_strat=True
                 else:
-                    typedef = \
-        'noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & \
-           [ SYNSEM.LOCAL [ CAT.VAL [ SPR < #spr & [ LOCAL.CAT.HEAD +pd ] >, \
-                                      COMPS < >, \
-                                      SUBJ < >, \
-                                      SPEC < > ] ], \
-             ARG-ST < #spr > ].'
-            elif strat.get('mark-loc')=='both':
-                if strat.get('possessor-type')=='affix':
-                    typedef = \
-        'noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & \
-           [ SYNSEM.LOCAL [ CAT.VAL [ SPR < #spr & [ LOCAL.CAT.HEAD +nd ] >, \
-                                      COMPS < >, \
-                                      SUBJ < > ] ], \
-             ARG-ST < #spr > ].'
-                else:
-                    typedef = \
-        'noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & \
-           [ SYNSEM.LOCAL [ CAT.VAL [ SPR < #spr & [ LOCAL.CAT.HEAD +pd ] >, \
-                                      COMPS < >, \
-                                      SUBJ < > ] ], \
-             ARG-ST < #spr > ].'
-                    
+                    nonaffixal_strat=True
             elif strat.get('mark-loc')=='possessum':
+                possessum_mark=True
                 if strat.get('possessum-type')=='affix':
-                    typedef = \
-        'noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & \
-           [ SYNSEM.LOCAL [ CAT.VAL [ SPR < #spr & [ LOCAL.CAT.HEAD +nd ] >, \
-                                      COMPS < >, \
-                                      SUBJ < > ] ], \
-             ARG-ST < #spr > ].'
+                    affixal_strat=True
                 if strat.get('possessum-type')=='non-affix':
-                    typedef = \
+                    nonaffixal_strat=True
+
+    # Add a typedef that takes into account all strategies
+    if spec_strat:
+        
+        if affixal_strat and nonaffixal_strat:
+            spr_head_type='+npd'
+        elif affixal_strat:
+            spr_head_type='+nd'            
+        elif nonaffixal_strat:
+            spr_head_type='+pd'            
+        if possessum_mark:
+            spec_constraint=''
+        else:
+            spec_constraint=',\
+                             SPEC <>'
+        typedef= \
         'noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & \
-           [ SYNSEM.LOCAL [ CAT.VAL [ SPR < #spr & [ LOCAL.CAT.HEAD det ] >, \
+           [ SYNSEM.LOCAL [ CAT.VAL [ SPR < #spr & [ LOCAL.CAT.HEAD '+spr_head_type+' ] >,\
                                       COMPS < >, \
-                                      SUBJ < > ] ], \
+                                      SUBJ < > '+spec_constraint+' ] ], \
              ARG-ST < #spr > ].'
 
     mylang.add(typedef)

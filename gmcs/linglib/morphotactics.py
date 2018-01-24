@@ -257,10 +257,6 @@ def create_lexical_rule_type(lrt, mtx_supertypes, cur_pc):
         elif feat['value']=='possessor' or feat['value']=='possessum' or feat['value']=='nonpossessive':
             new_lrt.possessive=feat['value']
             new_lrt.poss_strat_num = feat['name'][-1]
-#        elif 'possessor' in feat['name']:
-#            new_lrt.possessor = feat['value']
-#        elif 'possessum' in feat['name']:
-#            new_lrt.possessum = feat['value']
         else:
             new_lrt.features[feat['name']] = {'value': feat['value'],
                                               'head': feat['head']}
@@ -824,11 +820,12 @@ def write_possessive_behavior(pc,lrt,mylang,choices):
     # FULL NP POSSESSIVE PHRASES:              ###
     ##############################################
     POSSESSOR_LEX_RULE_DEFN = ''' := 
-             [ SYNSEM.LOCAL.CAT.HEAD noun & [ POSS possessor ] ].'''
+             [ SYNSEM.LOCAL.CAT.HEAD noun ].'''
     POSSESSUM_LEX_RULE_DEFN = ''' := 
-             [ SYNSEM.LOCAL.CAT.HEAD noun & [ POSS possessum ] ].'''
+             [ SYNSEM.LOCAL.CAT.HEAD noun ].'''
     NON_POSS_LEX_RULE_DEFN = ''' := add-only-no-ccont-rule &
-             [ SYNSEM.LOCAL.CAT.HEAD noun & [ POSS nonpossessive ] ].'''
+             [ SYNSEM.LOCAL.CAT [ HEAD noun & [ POSSESSOR nonpossessive ],\
+                                  POSSESSUM nonpossessive ] ].'''
     if lrt.possessive=='possessor':
         possessor_rule_name='possessor-lex-rule-'+lrt.poss_strat_num
         lrt.supertypes.add(possessor_rule_name)
@@ -844,13 +841,17 @@ def write_possessive_behavior(pc,lrt,mylang,choices):
     ##############################################
     # PRONOMINAL POSSESSIVE PHRASES:           ###
     ##############################################
-#    POSSESSOR_PRONOUN_LEX_RULE_DEFN =' := [ SYNSEM.LOCAL.CONT.HOOK.INDEX #possessum ].'
 #    NONPOSSESSOR_PRONOUN_LEX_RULE_DEFN =' := lex-rule.'
-#    for key in lrt.features.keys():
-#        print "adding "+lrt.identifier()
-#        if 'poss-pron' in key:
-#            mylang.add(lrt.identifier()+POSSESSOR_PRONOUN_LEX_RULE_DEFN)
-
+#    POSSESSOR_PRONOUN_LEX_RULE_DEFN =' := [ SYNSEM.LOCAL.CONT.HOOK.INDEX #possessum ].'
+#    POSSESSOR_PRONOUN_LEX_RULE_DEFN =' := lex-rule.'
+#    if lrt.poss_pron=='plus':
+#        poss_pron_rule_name='poss-pron-lex-rule-'+lrt.poss_pron_num
+#        mylang.add(poss_pron_rule_name+POSSESSOR_PRONOUN_LEX_RULE_DEFN)
+#        lrt.supertypes.add(poss_pron_rule_name)
+#    elif lrt.poss_pron=='minus':
+#        non_poss_pron_rule_name='non-poss-pron-lex-rule-'+lrt.poss_pron_num
+#        mylang.add(non_poss_pron_rule_name+NONPOSSESSOR_PRONOUN_LEX_RULE_DEFN)
+#        lrt.supertypes.add(non_poss_pron_rule_name)
 
 def write_valence_change_behavior(lrt, mylang, choices):
     from gmcs.linglib.valence_change import lexrule_name
@@ -1103,16 +1104,23 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
                'A given rule can only be marked for one possessive behavior.')
     # EKN 2018-01-09: Check that only PNG features are 
     # added as agreement features to possessive strategies
-    # TODO: allow poss-stratN as a feature
     png_feats=set(['person','number','gender'])
     for feat_key in other_feats:
         if (poss_strats or poss_prons) and other_feats[feat_key][0] not in png_feats:
             vr.err(feat_key+'_name',
-                   'Only person, number, and gender features are supported for agreement' +\
-                   ' between possessor and possessum.')
-
-        
-
+                   'Only person, number, and gender features are supported for agreement ' +\
+                   'between possessor and possessum.')
+    # Possessive pc's should be obligatory
+    # TODO: not working on site version.
+    if poss_strats or poss_prons:
+        pc_id=lrt.full_key.split('_')[0]
+        pc=choices.get(pc_id)
+        if pc.get('obligatory')=='off':
+            mess= 'Possessive position ' +\
+                     'classes should be obligatory; ' +\
+                     'please mark as obligatory and then include a ' +\
+                     'nonpossessive lexical rule type.'
+            vr.err(pc_id+'_obligatory', mess)
 
     # TJT 2014-08-21: Incorporated Adjective validation
     if incorp:
