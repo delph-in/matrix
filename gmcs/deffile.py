@@ -19,6 +19,7 @@ import re
 import tarfile
 import gzip
 import zipfile
+import cgi
 
 from gmcs import choices
 from gmcs.choices import ChoicesFile
