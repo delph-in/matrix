@@ -1727,7 +1727,7 @@ BeginIter comps{i} "a Clausal Complement Type" 1
   Label "<p> The embedded verb
   has the following features
   e.g. finite, nonfinite form (define in Other Features; we assume that mostly FORM and MOOD will be used;
-  you can use custom syntactic but not semantic features; note that subject raising is not yeet supported,
+  you can use custom syntactic but not semantic features; note that subject raising is not yet supported,
   so be careful with infinitives: you will not get the right semantics),
    nominalization (define in Nominalized Clauses):</p>"
   
