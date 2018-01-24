@@ -842,20 +842,6 @@ def write_possessive_behavior(pc,lrt,mylang,choices):
         nonpossessive_rule_name='nonpossessive-lex-rule-'+lrt.poss_strat_num
         mylang.add(nonpossessive_rule_name+NON_POSS_LEX_RULE_DEFN,section='lexrules')
         lrt.supertypes.add(nonpossessive_rule_name)
-    ##############################################
-    # PRONOMINAL POSSESSIVE PHRASES:           ###
-    ##############################################
-#    NONPOSSESSOR_PRONOUN_LEX_RULE_DEFN =' := lex-rule.'
-#    POSSESSOR_PRONOUN_LEX_RULE_DEFN =' := [ SYNSEM.LOCAL.CONT.HOOK.INDEX #possessum ].'
-#    POSSESSOR_PRONOUN_LEX_RULE_DEFN =' := lex-rule.'
-#    if lrt.poss_pron=='plus':
-#        poss_pron_rule_name='poss-pron-lex-rule-'+lrt.poss_pron_num
-#        mylang.add(poss_pron_rule_name+POSSESSOR_PRONOUN_LEX_RULE_DEFN)
-#        lrt.supertypes.add(poss_pron_rule_name)
-#    elif lrt.poss_pron=='minus':
-#        non_poss_pron_rule_name='non-poss-pron-lex-rule-'+lrt.poss_pron_num
-#        mylang.add(non_poss_pron_rule_name+NONPOSSESSOR_PRONOUN_LEX_RULE_DEFN)
-#        lrt.supertypes.add(non_poss_pron_rule_name)
 
 def write_valence_change_behavior(lrt, mylang, choices):
     from gmcs.linglib.valence_change import lexrule_name
