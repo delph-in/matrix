@@ -1105,12 +1105,12 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
     if poss_strats or poss_prons:
         pc_id=lrt.full_key.split('_')[0]
         pc=choices.get(pc_id)
-        if pc.get('obligatory')=='off':
+        if pc.get('obligatory')!='on':
             mess= 'Possessive position ' +\
                      'classes should be obligatory; ' +\
                      'please mark as obligatory and then include a ' +\
                      'nonpossessive lexical rule type.'
-            vr.err(pc_id+'_obligatory', mess)
+            vr.warn(pc_id+'_obligatory', mess)
 
     # TJT 2014-08-21: Incorporated Adjective validation
     if incorp:
