@@ -468,8 +468,6 @@ def customize_poss_irules(strat,mylang,ch,irules,hierarchies):
                             if strat.get('possessum-affix-agr')=='agree' and possessum_type=='affix':
                                 mylang.add(possessum_rule_name+' := [ SYNSEM.LOCAL.CAT.POSSESSUM.POSS-AGR #png,\
                                                              '+agr_prefix+' #png ].')
-#                                mylang.add(possessum_rule_name+' := [ SYNSEM.LOCAL.CAT.HEAD.POSS.POSS-AGR #png,\
-#                                                             '+agr_prefix+' #png ].')
                             # Note: in the mutual agreement, double marking mod-like scenario, the possessor is a COMP.
                             # Therefore, it has no access to the possessum's PNG info. When the possessor agrees with 
                             # the possessum, therefore, all agreement must be done in the possessum-inflecting rule:
