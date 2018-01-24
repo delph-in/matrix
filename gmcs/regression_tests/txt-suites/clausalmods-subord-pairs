@@ -1,0 +1,15 @@
+subord1a-head noun1 verb1 subord1b-sadv noun2 verb2
+*subord1a-head noun1 verb1 noun2 verb2
+*noun1 verb1 subord1b-sadv noun2 verb2
+*subord1a-head noun1 verb1 subord1a-head noun2 verb2
+*subord1b-sadv noun1 verb1 subord1b-sadv noun2 verb2
+*subord1b-sadv noun1 verb1 subord1a-head noun2 verb2
+subord2a-svpadv noun1 verb1 noun2 subord2b-vpadv verb2
+noun1 subord2a-svpadv verb1 noun2 subord2b-vpadv verb2
+*subord2a-svpadv noun1 verb1 noun2 verb2
+*noun1 verb1 noun2 subord2b-vpadv verb2
+*subord2a-svpadv noun1 verb1 subord2a-svpadv noun2 verb2
+*noun1 subord2b-vpadv verb1 noun2 subord2b-vpadv verb2
+*noun1 subord2b-vpadv verb1 subord2a-svpadv noun2 verb2
+*subord1a-head noun1 verb1 noun2 subord2b-vpadv verb2
+*subord2a-svpadv noun1 verb1 subord1b-sadv noun2 verb2

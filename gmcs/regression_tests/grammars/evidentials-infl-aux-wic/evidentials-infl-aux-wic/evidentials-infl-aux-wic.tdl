@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of evidentials-infl-aux-wic
 ;;; created at:
-;;;     Tue Jan 23 00:22:21 UTC 2018
+;;;     Wed Jan 24 04:56:49 UTC 2018
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -21,21 +21,18 @@ non-mod-lex-item := lex-item &
 head :+ [ AUX bool,
     FORM form ].
 
-inflected :+ [ ASP-OR-OBJECT-FLAG luk,
-    ASP-OR-TENSE-ASPECT-FLAG luk,
+inflected :+ [ ASP-OR-TENSE-ASPECT-FLAG luk,
+    ASP-OR-OBJECT-FLAG luk,
     ASP-OR-SUBJECT-FLAG luk ].
 
-infl-satisfied :+ [ ASP-OR-OBJECT-FLAG na-or-+,
-    ASP-OR-TENSE-ASPECT-FLAG na-or-+,
+infl-satisfied :+ [ ASP-OR-TENSE-ASPECT-FLAG na-or-+,
+    ASP-OR-OBJECT-FLAG na-or-+,
     ASP-OR-SUBJECT-FLAG na-or-+ ].
 
 png :+ [ PER person ].
 
 basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.MC #mc,
     HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
-
-basic-head-mod-phrase-simple :+ [ SYNSEM.LOCAL.CAT.MC #mc,
-    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
 
 basic-head-opt-subj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
 
@@ -89,8 +86,8 @@ common-noun-noun-lex := noun-lex &
 
 verb-lex := non-mod-lex-item & quot-rule-dtr & subject-rule-dtr & tense-aspect-rule-dtr &
   [ SYNSEM.LOCAL.CAT.HEAD verb,
-    INFLECTED [ ASP-OR-OBJECT-FLAG -,
-                ASP-OR-SUBJECT-FLAG -,
+    INFLECTED [ ASP-OR-SUBJECT-FLAG -,
+                ASP-OR-OBJECT-FLAG -,
                 ASP-OR-TENSE-ASPECT-FLAG - ] ].
 
 main-verb-lex := verb-lex & basic-verb-lex &
@@ -151,6 +148,8 @@ subj-raise-aux-with-pred := subj-raise-aux & norm-sem-lex-item & trans-first-arg
 infr-aux-lex := subj-raise-aux-with-pred &
   [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM finite ].
 
+;;; Complementizers
+
 ;;;;;;;;;;;;;;;;;;;
 ;;; Lexical Rules
 ;;;;;;;;;;;;;;;;;;;
@@ -182,11 +181,11 @@ object-lex-rule-super := add-only-no-ccont-rule & quot-rule-dtr & subject-rule-d
 
 subject-lex-rule-super := add-only-no-ccont-rule & quot-rule-dtr & tense-aspect-rule-dtr &
   [ INFLECTED [ ASP-OR-SUBJECT-FLAG +,
-                ASP-OR-OBJECT-FLAG #asp-or-object,
-                ASP-OR-TENSE-ASPECT-FLAG #asp-or-tense-aspect ],
+                ASP-OR-TENSE-ASPECT-FLAG #asp-or-tense-aspect,
+                ASP-OR-OBJECT-FLAG #asp-or-object ],
     DTR subject-rule-dtr &
-        [ INFLECTED [ ASP-OR-OBJECT-FLAG #asp-or-object,
-                      ASP-OR-TENSE-ASPECT-FLAG #asp-or-tense-aspect ] ] ].
+        [ INFLECTED [ ASP-OR-TENSE-ASPECT-FLAG #asp-or-tense-aspect,
+                      ASP-OR-OBJECT-FLAG #asp-or-object ] ] ].
 
 1subj-lex-rule := infl-lex-rule & subject-lex-rule-super &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PER 1st ].
@@ -224,11 +223,11 @@ nf-lex-rule := nonfirsthand-evidential-lex-rule & quot-lex-rule-super.
 
 tense-aspect-lex-rule-super := cont-change-only-lex-rule & infl-lex-rule & quot-rule-dtr &
   [ INFLECTED [ ASP-OR-TENSE-ASPECT-FLAG +,
-                ASP-OR-OBJECT-FLAG #asp-or-object,
-                ASP-OR-SUBJECT-FLAG #asp-or-subject ],
+                ASP-OR-SUBJECT-FLAG #asp-or-subject,
+                ASP-OR-OBJECT-FLAG #asp-or-object ],
     DTR tense-aspect-rule-dtr &
-        [ INFLECTED [ ASP-OR-OBJECT-FLAG #asp-or-object,
-                      ASP-OR-SUBJECT-FLAG #asp-or-subject ] ] ].
+        [ INFLECTED [ ASP-OR-SUBJECT-FLAG #asp-or-subject,
+                      ASP-OR-OBJECT-FLAG #asp-or-object ] ] ].
 
 fut-quot-lex-rule := nonfirsthand-evidential-lex-rule & tense-aspect-lex-rule-super &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E.TENSE future ].
@@ -241,8 +240,8 @@ rec-past-lex-rule := add-only-no-ccont-rule & tense-aspect-lex-rule-super &
                                      ASPECT perfective ] ].
 
 asp-lex-rule-super := add-only-no-ccont-rule &
-  [ INFLECTED [ ASP-OR-OBJECT-FLAG +,
-                ASP-OR-SUBJECT-FLAG +,
+  [ INFLECTED [ ASP-OR-SUBJECT-FLAG +,
+                ASP-OR-OBJECT-FLAG +,
                 ASP-OR-TENSE-ASPECT-FLAG + ],
     DTR verb-lex ].
 

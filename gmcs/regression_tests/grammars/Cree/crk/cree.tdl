@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of Cree
 ;;; created at:
-;;;     Wed Jan 24 02:50:14 UTC 2018
+;;;     Wed Jan 24 04:50:10 UTC 2018
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -25,13 +25,13 @@ word-or-lexrule :+ [ SC-ARGS list ].
 lex-rule :+ [ SC-ARGS #1,
     DTR.SC-ARGS #1 ].
 
-inflected :+ [ PREFIX-FLAG luk,
-    SUFFIX-FLAG luk,
-    TRANSITIVE-ANIMATE-DIR-INV-FLAG luk ].
+inflected :+ [ TRANSITIVE-ANIMATE-DIR-INV-FLAG luk,
+    PREFIX-FLAG luk,
+    SUFFIX-FLAG luk ].
 
-infl-satisfied :+ [ PREFIX-FLAG na-or-+,
-    SUFFIX-FLAG na-or-+,
-    TRANSITIVE-ANIMATE-DIR-INV-FLAG na-or-+ ].
+infl-satisfied :+ [ TRANSITIVE-ANIMATE-DIR-INV-FLAG na-or-+,
+    PREFIX-FLAG na-or-+,
+    SUFFIX-FLAG na-or-+ ].
 
 png :+ [ PER person ].
 
@@ -39,9 +39,6 @@ head :+ [ PROXIMITY proximity ].
 
 basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.MC #mc,
     HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
-
-basic-head-mod-phrase-simple :+ [ SYNSEM.LOCAL.CAT.MC #mc,
-    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
 
 basic-head-opt-comp-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].
 
@@ -222,9 +219,11 @@ dir-inv-transitive-verb-lex := transitive-verb-lex &
 dummy-verb-lex := intransitive-verb-lex.
 
 transitive-animate-verb-lex := dir-inv-transitive-verb-lex & prefix-rule-dtr & suffix-rule-dtr &
-  [ INFLECTED [ PREFIX-FLAG -,
-                SUFFIX-FLAG -,
-                TRANSITIVE-ANIMATE-DIR-INV-FLAG - ] ].
+  [ INFLECTED [ TRANSITIVE-ANIMATE-DIR-INV-FLAG -,
+                PREFIX-FLAG -,
+                SUFFIX-FLAG - ] ].
+
+;;; Complementizers
 
 ;;;;;;;;;;;;;;;;;;;
 ;;; Lexical Rules
@@ -258,11 +257,11 @@ prefix_lrt3-lex-rule := const-lex-rule & prefix-lex-rule-super &
 
 suffix-lex-rule-super := add-only-no-ccont-rule & infl-lex-rule &
   [ INFLECTED [ SUFFIX-FLAG +,
-                PREFIX-FLAG #prefix,
-                TRANSITIVE-ANIMATE-DIR-INV-FLAG #transitive-animate-dir-inv ],
+                TRANSITIVE-ANIMATE-DIR-INV-FLAG #transitive-animate-dir-inv,
+                PREFIX-FLAG #prefix ],
     DTR suffix-rule-dtr &
-        [ INFLECTED [ PREFIX-FLAG #prefix,
-                      TRANSITIVE-ANIMATE-DIR-INV-FLAG #transitive-animate-dir-inv ] ] ].
+        [ INFLECTED [ TRANSITIVE-ANIMATE-DIR-INV-FLAG #transitive-animate-dir-inv,
+                      PREFIX-FLAG #prefix ] ] ].
 
 suffix_lrt1-lex-rule := suffix-lex-rule-super & dir-lex-rule &
   [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PER 1st ].

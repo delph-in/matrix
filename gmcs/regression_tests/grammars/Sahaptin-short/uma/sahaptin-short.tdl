@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of Sahaptin-short
 ;;; created at:
-;;;     Wed Jan 24 02:50:24 UTC 2018
+;;;     Wed Jan 24 04:50:18 UTC 2018
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -27,21 +27,21 @@ word-or-lexrule :+ [ SC-ARGS list ].
 lex-rule :+ [ SC-ARGS #1,
     DTR.SC-ARGS #1 ].
 
-inflected :+ [ _TOPIC-FLAG luk,
-    INTRANS-PREFIX-FLAG luk,
-    VERB2-DIR-INV-FLAG luk,
-    INTRANS-ENCLITIC-FLAG luk,
+inflected :+ [ TRANS-ENCLITIC-FLAG luk,
+    _TOPIC-FLAG luk,
     SUBJPROX-FLAG luk,
+    INTRANS-ENCLITIC-FLAG luk,
+    INTRANS-PREFIX-FLAG luk,
     TRANS-PREFIX-FLAG luk,
-    TRANS-ENCLITIC-FLAG luk ].
+    VERB2-DIR-INV-FLAG luk ].
 
-infl-satisfied :+ [ _TOPIC-FLAG na-or-+,
-    INTRANS-PREFIX-FLAG na-or-+,
-    VERB2-DIR-INV-FLAG na-or-+,
-    INTRANS-ENCLITIC-FLAG na-or-+,
+infl-satisfied :+ [ TRANS-ENCLITIC-FLAG na-or-+,
+    _TOPIC-FLAG na-or-+,
     SUBJPROX-FLAG na-or-+,
+    INTRANS-ENCLITIC-FLAG na-or-+,
+    INTRANS-PREFIX-FLAG na-or-+,
     TRANS-PREFIX-FLAG na-or-+,
-    TRANS-ENCLITIC-FLAG na-or-+ ].
+    VERB2-DIR-INV-FLAG na-or-+ ].
 
 png :+ [ PERNUM pernum,
     _TOPICALITY _topicality ].
@@ -50,9 +50,6 @@ head :+ [ PROXIMITY proximity ].
 
 basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.MC #mc,
     HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
-
-basic-head-mod-phrase-simple :+ [ SYNSEM.LOCAL.CAT.MC #mc,
-    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
 
 basic-head-opt-comp-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].
 
@@ -172,19 +169,19 @@ inv-lex-rule := add-only-no-ccont-rule &
 
 verb2-dir-inv-lex-rule-super := add-only-no-ccont-rule & const-lex-rule & subjprox-rule-dtr & trans-enclitic-rule-dtr & trans-prefix-rule-dtr &
   [ INFLECTED [ VERB2-DIR-INV-FLAG +,
-                _TOPIC-FLAG #_topic,
+                INTRANS-ENCLITIC-FLAG #intrans-enclitic,
                 SUBJPROX-FLAG #subjprox,
                 TRANS-ENCLITIC-FLAG #trans-enclitic,
-                TRANS-PREFIX-FLAG #trans-prefix,
                 INTRANS-PREFIX-FLAG #intrans-prefix,
-                INTRANS-ENCLITIC-FLAG #intrans-enclitic ],
+                TRANS-PREFIX-FLAG #trans-prefix,
+                _TOPIC-FLAG #_topic ],
     DTR verb2-verb-lex &
-        [ INFLECTED [ _TOPIC-FLAG #_topic,
+        [ INFLECTED [ INTRANS-ENCLITIC-FLAG #intrans-enclitic,
                       SUBJPROX-FLAG #subjprox,
                       TRANS-ENCLITIC-FLAG #trans-enclitic,
-                      TRANS-PREFIX-FLAG #trans-prefix,
                       INTRANS-PREFIX-FLAG #intrans-prefix,
-                      INTRANS-ENCLITIC-FLAG #intrans-enclitic ] ] ].
+                      TRANS-PREFIX-FLAG #trans-prefix,
+                      _TOPIC-FLAG #_topic ] ] ].
 
 verb2-dir-lex-rule := verb2-dir-inv-lex-rule-super & dir-lex-rule.
 
@@ -371,14 +368,16 @@ dir-inv-transitive-verb-lex := transitive-verb-lex &
              [ LOCAL.CAT.HEAD noun ] > ].
 
 verb1-verb-lex := nom-intransitive-verb-lex &
-  [ INFLECTED [ INTRANS-ENCLITIC-FLAG -,
-                INTRANS-PREFIX-FLAG - ] ].
+  [ INFLECTED [ INTRANS-PREFIX-FLAG -,
+                INTRANS-ENCLITIC-FLAG - ] ].
 
 verb2-verb-lex := dir-inv-nom-obj-transitive-verb-lex &
   [ INFLECTED [ TRANS-PREFIX-FLAG -,
                 SUBJPROX-FLAG -,
                 TRANS-ENCLITIC-FLAG -,
                 VERB2-DIR-INV-FLAG - ] ].
+
+;;; Complementizers
 
 ;;;;;;;;;;;;;;;;;;;
 ;;; Lexical Rules
@@ -395,19 +394,19 @@ subjprox-rule-dtr := word-or-lexrule.
 
 _topic-lex-rule-super := add-only-no-ccont-rule &
   [ INFLECTED [ _TOPIC-FLAG +,
+                INTRANS-ENCLITIC-FLAG #intrans-enclitic,
                 VERB2-DIR-INV-FLAG #verb2-dir-inv,
-                TRANS-PREFIX-FLAG #trans-prefix,
-                TRANS-ENCLITIC-FLAG #trans-enclitic,
                 SUBJPROX-FLAG #subjprox,
+                TRANS-ENCLITIC-FLAG #trans-enclitic,
                 INTRANS-PREFIX-FLAG #intrans-prefix,
-                INTRANS-ENCLITIC-FLAG #intrans-enclitic ],
+                TRANS-PREFIX-FLAG #trans-prefix ],
     DTR noun-lex &
-        [ INFLECTED [ VERB2-DIR-INV-FLAG #verb2-dir-inv,
-                      TRANS-PREFIX-FLAG #trans-prefix,
-                      TRANS-ENCLITIC-FLAG #trans-enclitic,
+        [ INFLECTED [ INTRANS-ENCLITIC-FLAG #intrans-enclitic,
+                      VERB2-DIR-INV-FLAG #verb2-dir-inv,
                       SUBJPROX-FLAG #subjprox,
+                      TRANS-ENCLITIC-FLAG #trans-enclitic,
                       INTRANS-PREFIX-FLAG #intrans-prefix,
-                      INTRANS-ENCLITIC-FLAG #intrans-enclitic ] ] ].
+                      TRANS-PREFIX-FLAG #trans-prefix ] ] ].
 
 _topic_lrt1-lex-rule := _topic-lex-rule-super & infl-lex-rule &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM 3rd,
@@ -418,19 +417,19 @@ _topic_lrt2-lex-rule := _topic-lex-rule-super & const-lex-rule &
 
 intrans-prefix-lex-rule-super := add-only-no-ccont-rule & intrans-enclitic-rule-dtr &
   [ INFLECTED [ INTRANS-PREFIX-FLAG +,
-                _TOPIC-FLAG #_topic,
+                INTRANS-ENCLITIC-FLAG #intrans-enclitic,
                 VERB2-DIR-INV-FLAG #verb2-dir-inv,
                 SUBJPROX-FLAG #subjprox,
                 TRANS-ENCLITIC-FLAG #trans-enclitic,
                 TRANS-PREFIX-FLAG #trans-prefix,
-                INTRANS-ENCLITIC-FLAG #intrans-enclitic ],
+                _TOPIC-FLAG #_topic ],
     DTR verb1-verb-lex &
-        [ INFLECTED [ _TOPIC-FLAG #_topic,
+        [ INFLECTED [ INTRANS-ENCLITIC-FLAG #intrans-enclitic,
                       VERB2-DIR-INV-FLAG #verb2-dir-inv,
                       SUBJPROX-FLAG #subjprox,
                       TRANS-ENCLITIC-FLAG #trans-enclitic,
                       TRANS-PREFIX-FLAG #trans-prefix,
-                      INTRANS-ENCLITIC-FLAG #intrans-enclitic ] ] ].
+                      _TOPIC-FLAG #_topic ] ] ].
 
 intrans-prefix_lrt1-lex-rule := infl-lex-rule & intrans-prefix-lex-rule-super &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL [ CONT.HOOK.INDEX.PNG.PERNUM 3sg,
@@ -444,19 +443,19 @@ intrans-prefix_lrt3-lex-rule := const-lex-rule & intrans-prefix-lex-rule-super &
 
 trans-prefix-lex-rule-super := add-only-no-ccont-rule & subjprox-rule-dtr & trans-enclitic-rule-dtr &
   [ INFLECTED [ TRANS-PREFIX-FLAG +,
-                _TOPIC-FLAG #_topic,
+                INTRANS-ENCLITIC-FLAG #intrans-enclitic,
                 VERB2-DIR-INV-FLAG #verb2-dir-inv,
-                TRANS-ENCLITIC-FLAG #trans-enclitic,
                 SUBJPROX-FLAG #subjprox,
+                TRANS-ENCLITIC-FLAG #trans-enclitic,
                 INTRANS-PREFIX-FLAG #intrans-prefix,
-                INTRANS-ENCLITIC-FLAG #intrans-enclitic ],
+                _TOPIC-FLAG #_topic ],
     DTR trans-prefix-rule-dtr &
-        [ INFLECTED [ _TOPIC-FLAG #_topic,
+        [ INFLECTED [ INTRANS-ENCLITIC-FLAG #intrans-enclitic,
                       VERB2-DIR-INV-FLAG #verb2-dir-inv,
-                      TRANS-ENCLITIC-FLAG #trans-enclitic,
                       SUBJPROX-FLAG #subjprox,
+                      TRANS-ENCLITIC-FLAG #trans-enclitic,
                       INTRANS-PREFIX-FLAG #intrans-prefix,
-                      INTRANS-ENCLITIC-FLAG #intrans-enclitic ] ] ].
+                      _TOPIC-FLAG #_topic ] ] ].
 
 trans-prefix_lrt1-lex-rule := infl-lex-rule & trans-prefix-lex-rule-super &
   [ SYNSEM.LOCAL.CAT.VAL [ SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 3sg,
@@ -500,19 +499,19 @@ trans-prefix_lrt9-lex-rule := const-lex-rule & trans-prefix-lex-rule-super &
 
 intrans-enclitic-lex-rule-super := add-only-no-ccont-rule &
   [ INFLECTED [ INTRANS-ENCLITIC-FLAG +,
-                _TOPIC-FLAG #_topic,
                 VERB2-DIR-INV-FLAG #verb2-dir-inv,
                 SUBJPROX-FLAG #subjprox,
                 TRANS-ENCLITIC-FLAG #trans-enclitic,
+                INTRANS-PREFIX-FLAG #intrans-prefix,
                 TRANS-PREFIX-FLAG #trans-prefix,
-                INTRANS-PREFIX-FLAG #intrans-prefix ],
+                _TOPIC-FLAG #_topic ],
     DTR intrans-enclitic-rule-dtr &
-        [ INFLECTED [ _TOPIC-FLAG #_topic,
-                      VERB2-DIR-INV-FLAG #verb2-dir-inv,
+        [ INFLECTED [ VERB2-DIR-INV-FLAG #verb2-dir-inv,
                       SUBJPROX-FLAG #subjprox,
                       TRANS-ENCLITIC-FLAG #trans-enclitic,
+                      INTRANS-PREFIX-FLAG #intrans-prefix,
                       TRANS-PREFIX-FLAG #trans-prefix,
-                      INTRANS-PREFIX-FLAG #intrans-prefix ] ] ].
+                      _TOPIC-FLAG #_topic ] ] ].
 
 intrans-enclitic_lrt1-lex-rule := infl-lex-rule & intrans-enclitic-lex-rule-super &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1sg ].
@@ -534,19 +533,19 @@ intrans-enclitic_lrt6-lex-rule := const-lex-rule & intrans-enclitic-lex-rule-sup
 
 trans-enclitic-lex-rule-super := add-only-no-ccont-rule & subjprox-rule-dtr &
   [ INFLECTED [ TRANS-ENCLITIC-FLAG +,
-                _TOPIC-FLAG #_topic,
+                INTRANS-ENCLITIC-FLAG #intrans-enclitic,
                 VERB2-DIR-INV-FLAG #verb2-dir-inv,
                 SUBJPROX-FLAG #subjprox,
                 INTRANS-PREFIX-FLAG #intrans-prefix,
                 TRANS-PREFIX-FLAG #trans-prefix,
-                INTRANS-ENCLITIC-FLAG #intrans-enclitic ],
+                _TOPIC-FLAG #_topic ],
     DTR trans-enclitic-rule-dtr &
-        [ INFLECTED [ _TOPIC-FLAG #_topic,
+        [ INFLECTED [ INTRANS-ENCLITIC-FLAG #intrans-enclitic,
                       VERB2-DIR-INV-FLAG #verb2-dir-inv,
                       SUBJPROX-FLAG #subjprox,
                       INTRANS-PREFIX-FLAG #intrans-prefix,
                       TRANS-PREFIX-FLAG #trans-prefix,
-                      INTRANS-ENCLITIC-FLAG #intrans-enclitic ] ] ].
+                      _TOPIC-FLAG #_topic ] ] ].
 
 trans-enclitic_lrt1-lex-rule := infl-lex-rule & trans-enclitic-lex-rule-super &
   [ SC-ARGS < [ LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1sg ] . [ FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 3rd ] > ].
@@ -589,19 +588,19 @@ trans-enclitic_lrt11-lex-rule := const-lex-rule & trans-enclitic-lex-rule-super 
 
 subjprox-lex-rule-super := add-only-no-ccont-rule & const-lex-rule &
   [ INFLECTED [ SUBJPROX-FLAG +,
-                _TOPIC-FLAG #_topic,
+                INTRANS-ENCLITIC-FLAG #intrans-enclitic,
                 VERB2-DIR-INV-FLAG #verb2-dir-inv,
                 TRANS-ENCLITIC-FLAG #trans-enclitic,
-                TRANS-PREFIX-FLAG #trans-prefix,
                 INTRANS-PREFIX-FLAG #intrans-prefix,
-                INTRANS-ENCLITIC-FLAG #intrans-enclitic ],
+                TRANS-PREFIX-FLAG #trans-prefix,
+                _TOPIC-FLAG #_topic ],
     DTR subjprox-rule-dtr &
-        [ INFLECTED [ _TOPIC-FLAG #_topic,
+        [ INFLECTED [ INTRANS-ENCLITIC-FLAG #intrans-enclitic,
                       VERB2-DIR-INV-FLAG #verb2-dir-inv,
                       TRANS-ENCLITIC-FLAG #trans-enclitic,
-                      TRANS-PREFIX-FLAG #trans-prefix,
                       INTRANS-PREFIX-FLAG #intrans-prefix,
-                      INTRANS-ENCLITIC-FLAG #intrans-enclitic ] ] ].
+                      TRANS-PREFIX-FLAG #trans-prefix,
+                      _TOPIC-FLAG #_topic ] ] ].
 
 subjprox_lrt1-lex-rule := subjprox-lex-rule-super & inv-lex-rule &
   [ SYNSEM.LOCAL.CAT.VAL [ SUBJ.FIRST.LOCAL [ CONT.HOOK.INDEX.PNG.PERNUM 3sg,

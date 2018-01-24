@@ -180,7 +180,7 @@ def customize_comp_neg(mylang, ch, lexicon, rules, lrules):
                                             SUBJ < > ],
                                       HEAD [ NEGATED +, 
                                              MOD < [ LOCAL.CAT.HEAD verb ] > ] ] ].''',
-               '''Type for negative selected comps. 
+               '''Type for negative selected comps.
                   This type uses the MOD list to get scopal semantics.
                   Constrain head-modifier rules to be [NEGATED -] if you don't
                   want this type to act as a modifer.''')
@@ -269,7 +269,7 @@ def customize_infl_head_neg():
 
     # * neg-aux is a typical aux,
     # * the required FORM value is added
-    #   to the questionairre page automatically,
+    #   to the questionnaire page automatically,
     # * user selects that the inflector is FORM negform
     #   and makes the position class required to enforce
     #   complementary distribution of FORM
@@ -293,7 +293,7 @@ def customize_infl_comp_neg(mylang,ch,lexicon):
                                             SUBJ < > ],
                                       HEAD [ NEGATED +, 
                                              MOD < [ LOCAL.CAT.HEAD verb ] > ] ] ].''',
-               '''Type for negative selected comps. 
+               '''Type for negative selected comps.
                   This type uses the MOD list to get scopal semantics.
                   Constrain head-modifier rules to be [NEGATED -] if you don't
                   want this type to act as a modifer.''')
@@ -447,7 +447,7 @@ def customize_head_comp_neg(mylang,ch,lexicon, hierarchies):
                                               COMPS < > ] ],
                                   CONT [ RELS <! !>,
                                          HCONS <! !> ]]].''',
-               '''Type for negative selected comps. 
+               '''Type for negative selected comps.
                   This type uses the MOD list to get scopal semantics.
                   Constrain head-modifier rules to be [NEGATED -] if you don't
                   want this type to act as a modifer.''')
@@ -582,7 +582,7 @@ def customize_comp_comp_neg(mylang,ch,lexicon):
                                             SUBJ < > ],
                                       HEAD [ NEGATED +, 
                                              MOD < [ LOCAL.CAT.HEAD verb ] > ] ] ].''',
-               '''Type for negative selected comps. 
+               '''Type for negative selected comps.
                   This type uses the MOD list to get scopal semantics.
                   Constrain head-modifier rules to be [NEGATED -] if you don't
                   want this type to act as a modifer.''')
@@ -597,7 +597,7 @@ def customize_comp_comp_neg(mylang,ch,lexicon):
                                              MOD < [ LOCAL.CAT.HEAD verb ] > ] ],
                                   CONT [ HCONS <! !>,
                                          RELS <! !> ]  ] ].''',
-               '''Type for negative selected comps. 
+               '''Type for negative selected comps.
                   This type uses the MOD list to get scopal semantics.
                   Constrain head-modifier rules to be [NEGATED -] if you don't
                   want this type to act as a modifer.''')
@@ -695,7 +695,7 @@ def customize_comp_mod_neg(mylang,ch,lexicon,rules):
                                             SUBJ < > ],
                                       HEAD [ NEGATED +, 
                                              MOD < [ LOCAL.CAT.HEAD verb ] > ] ] ].''',
-               '''Type for negative selected comps. 
+               '''Type for negative selected comps.
                   This type uses the MOD list to get scopal semantics.
                   Constrain head-modifier rules to be [NEGATED -] if you don't
                   want this type to act as a modifer.''')
@@ -821,7 +821,7 @@ def customize_mod_mod_neg(mylang,ch,lexicon,rules):
                   want this type to act as a modifer.''')
 
     # add neg2 mod (sets neg-sat back to +, via its psr)
-    mylang.add('''neg2-adv-lex := norm-zero-arg & 
+    mylang.add('''neg2-adv-lex := norm-zero-arg &
                 [ SYNSEM.LOCAL [ CAT [ VAL [ SPR < >,
                                              SPEC < >,
                                              COMPS < >,
@@ -993,20 +993,20 @@ def validate(ch, vr):
 
             # If affix is indicated, must select prefix/suffix and
             # main/aux/either and give form.
-            #   if (ch.get('infl-neg') == 'on'):
-            #     if (not ch.get('neg-infl-type')):
-            #       mess = 'If sentential negation is expressed through affixation, you must specify what the affix attaches to.'
-            #       vr.err('neg-infl-type', mess)
-            #     if (not ch.get('neg-aff')):
-            #       mess = 'If sentential negation is expressed through affixation, you must specify whether its a prefix or a suffix'
-            #       vr.err('neg-aff', mess)
-            #     if (not ch.get('neg-aff-orth')):
-            #       mess = 'If sentential negation is expressed through affixation, you must specify the form of the affix'
-            #       vr.err('neg-aff-orth', mess)
-            #     # If aux is selected then has-aux = 'yes' must be chosen in word order section
-            #     if ((neginfltype == 'aux' or neginfltype == 'aux-main') and ch.get('has-aux') != 'yes'):
-            #         mess = 'You have not indicated on the word order page that your language has auxiliaries.'
-            #         vr.err('neg-infl-type', mess)
+        #   if (ch.get('infl-neg') == 'on'):
+        #     if (not ch.get('neg-infl-type')):
+        #       mess = 'If sentential negation is expressed through affixation, you must specify what the affix attaches to.'
+        #       vr.err('neg-infl-type', mess)
+        #     if (not ch.get('neg-aff')):
+        #       mess = 'If sentential negation is expressed through affixation, you must specify whether its a prefix or a suffix'
+        #       vr.err('neg-aff', mess)
+        #     if (not ch.get('neg-aff-orth')):
+        #       mess = 'If sentential negation is expressed through affixation, you must specify the form of the affix'
+        #       vr.err('neg-aff-orth', mess)
+        #     # If aux is selected then has-aux = 'yes' must be chosen in word order section
+        #     if ((neginfltype == 'aux' or neginfltype == 'aux-main') and ch.get('has-aux') != 'yes'):
+        #         mess = 'You have not indicated on the word order page that your language has auxiliaries.'
+        #         vr.err('neg-infl-type', mess)
 
     # If adverb is indicated, must lexical entry, what it modifies, and
     # ind/selected modifier -- now only applicable under single negation
@@ -1074,13 +1074,13 @@ def validate(ch, vr):
 
                 # If aux is selected then has-aux = 'yes' must be chosen in word
                 # order section
-                #    if ((negseladv == 'aux' or negseladv == 'main-aux') and
-                #        ch.get('has-aux') != 'yes'):
-                #       mess = 'You have not indicated on the word order page ' +\
-                #             'that your language has auxiliaries.'
-                #     vr.err('neg-sel-adv', mess)
+            #    if ((negseladv == 'aux' or negseladv == 'main-aux') and
+            #        ch.get('has-aux') != 'yes'):
+            #       mess = 'You have not indicated on the word order page ' +\
+            #             'that your language has auxiliaries.'
+            #     vr.err('neg-sel-adv', mess)
 
-                # ERB 2009-01-23 Currently not possible to say how they combine.
+            # ERB 2009-01-23 Currently not possible to say how they combine.
 
 #   # If both strategies are checked, then they must say how they combine:
 #   if ((ch.get('infl-neg') == 'on') and (ch.get('adv-neg') == 'on')):

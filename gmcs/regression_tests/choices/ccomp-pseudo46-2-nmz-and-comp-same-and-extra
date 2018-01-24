@@ -1,0 +1,146 @@
+
+version=29
+
+section=general
+language=ccomp-pseudo46-2-nmz-and-comp-same-and-extra
+
+section=word-order
+word-order=ovs
+has-dets=no
+has-aux=no
+subord-word-order=same
+
+section=number
+
+section=person
+person=none
+
+section=gender
+
+section=case
+case-marking=none
+
+section=direct-inverse
+
+section=tense-aspect-mood
+
+section=other-features
+form-fin-nf=on
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=info-str
+
+section=arg-opt
+
+section=nominalclause
+  ns1_name=high
+  ns1_level=high
+  ns1_nmzRel=no
+
+section=clausalmods
+
+section=clausal-comp
+  comps1_clause-pos-same=on
+  comps1_clause-pos-extra=on
+  comps1_comp-pos-before=on
+  comps1_comp-pos-after=on
+  comps1_comp=oblig
+    comps1_complementizer1_orth=comp1
+    comps1_feat1_name=form
+    comps1_feat1_value=finite
+  comps2_clause-pos-same=on
+    comps2_feat1_name=nominalization
+    comps2_feat1_value=mid
+    comps2_feat2_name=form
+    comps2_feat2_value=nonfinite
+
+section=lexicon
+  noun1_name=noun
+  noun1_det=imp
+    noun1_stem1_orth=noun1
+    noun1_stem1_pred=_noun1_n_rel
+    noun1_stem2_orth=noun2
+    noun1_stem2_pred=_noun2_n_rel
+    noun1_stem3_orth=noun3
+    noun1_stem3_pred=_noun3_n_rel
+  verb1_name=tverb
+  verb1_valence=trans
+    verb1_stem1_orth=tverb
+    verb1_stem1_pred=_tverb_v_rel
+  verb2_name=cverb-nonextra
+  verb2_valence=comps1
+    verb2_stem1_orth=cverb1
+    verb2_stem1_pred=_cverb_v_rel
+  verb3_name=cverb-extra
+  verb3_valence=comps2
+    verb3_stem1_orth=cverb2
+    verb3_stem1_pred=_cverb2_v_rel
+
+section=morphology
+  verb-pc1_name=NMZ
+  verb-pc1_order=suffix
+  verb-pc1_inputs=verb-pc2
+    verb-pc1_require1_others=verb-pc2_lrt2
+    verb-pc1_lrt1_name=high
+      verb-pc1_lrt1_feat1_name=nominalization
+      verb-pc1_lrt1_feat1_value=high
+      verb-pc1_lrt1_feat1_head=verb
+      verb-pc1_lrt1_lri1_inflecting=yes
+      verb-pc1_lrt1_lri1_orth=-NMZ
+  verb-pc2_name=FRM
+  verb-pc2_obligatory=on
+  verb-pc2_order=suffix
+  verb-pc2_inputs=verb
+    verb-pc2_lrt1_name=fin
+      verb-pc2_lrt1_feat1_name=form
+      verb-pc2_lrt1_feat1_value=finite
+      verb-pc2_lrt1_feat1_head=verb
+      verb-pc2_lrt1_lri1_inflecting=yes
+      verb-pc2_lrt1_lri1_orth=-FIN
+    verb-pc2_lrt2_name=nonfin
+      verb-pc2_lrt2_feat1_name=form
+      verb-pc2_lrt2_feat1_value=nonfinite
+      verb-pc2_lrt2_feat1_head=verb
+      verb-pc2_lrt2_lri1_inflecting=yes
+      verb-pc2_lrt2_lri1_orth=-NFIN
+
+section=toolbox-import
+
+section=test-sentences
+  sentence1_orth=noun1 tverb-FIN noun2
+  sentence2_orth=noun1 tverb-NFIN noun2
+  sentence2_star=on
+  sentence3_orth=cverb1-FIN noun1 comp1 noun2 tverb-FIN noun3
+  sentence4_orth=cverb1-FIN noun1 noun2 tverb-FIN noun3 comp1
+  sentence5_orth=comp1 noun1 tverb-FIN noun2 cverb1-FIN noun3
+  sentence6_orth=noun2 tverb-FIN noun3 comp1  cverb1-FIN noun1
+  sentence7_orth=noun2 tverb-NFIN noun3 comp1 cverb1-FIN noun1
+  sentence7_star=on
+  sentence8_orth=comp1 noun2 tverb-NFIN noun3 cverb1-FIN noun1
+  sentence8_star=on
+  sentence9_orth=cverb1-FIN noun1 noun2 tverb-NFIN noun3 comp1
+  sentence9_star=on
+  sentence10_orth=noun1 tverb-NFIN-NMZ noun2 cverb2-FIN noun3
+  sentence11_orth=noun1 tverb-NFIN-NMZ noun2 cverb2-FIN-NMZ noun3
+  sentence11_star=on
+  sentence12_orth=noun1 tverb-FIN-NMZ noun2 cverb2-FIN noun3
+  sentence12_star=on
+  sentence13_orth=noun1 tverb-FIN noun2 cverb2-FIN noun3
+  sentence13_star=on
+  sentence14_orth=noun1 tverb-NFIN noun2 cverb2-FIN noun3
+  sentence14_star=on
+  sentence15_orth=cverb2-FIN noun1 tverb-FIN-NMZ noun2 noun3
+  sentence15_star=on
+  sentence16_orth=cverb2-FIN comp1 noun1 tverb-FIN-NMZ noun2 noun3
+  sentence16_star=on
+  sentence17_orth=cverb2-FIN comp1 noun1 tverb-FIN noun2 noun3
+  sentence17_star=on
+
+section=gen-options
+
+section=ToolboxLexicon

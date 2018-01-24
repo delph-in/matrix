@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of Slave
 ;;; created at:
-;;;     Wed Jan 24 02:50:26 UTC 2018
+;;;     Wed Jan 24 04:50:22 UTC 2018
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -18,23 +18,20 @@ non-mod-lex-item := lex-item &
 ;;; Matrix Type Addenda
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 
-inflected :+ [ SUBJECT-FLAG luk,
+inflected :+ [ DEIXIS-FLAG luk,
+    SUBJECT-FLAG luk,
     MODE-FLAG luk,
-    POSTPOS-OBJECT-FLAG luk,
     INCORPORATED-POSTPOSITION-FLAG luk,
-    DEIXIS-FLAG luk ].
+    POSTPOS-OBJECT-FLAG luk ].
 
-infl-satisfied :+ [ SUBJECT-FLAG na-or-+,
+infl-satisfied :+ [ DEIXIS-FLAG na-or-+,
+    SUBJECT-FLAG na-or-+,
     MODE-FLAG na-or-+,
-    POSTPOS-OBJECT-FLAG na-or-+,
     INCORPORATED-POSTPOSITION-FLAG na-or-+,
-    DEIXIS-FLAG na-or-+ ].
+    POSTPOS-OBJECT-FLAG na-or-+ ].
 
 basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.MC #mc,
     HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
-
-basic-head-mod-phrase-simple :+ [ SYNSEM.LOCAL.CAT.MC #mc,
-    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
 
 basic-head-opt-subj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
 
@@ -67,9 +64,9 @@ verb-lex := basic-verb-lex & non-mod-lex-item & adverbial-rule-dtr & aspect-rule
                                [ VAL [ SPR < >,
                                        COMPS < > ] ],
                            CONT.HOOK.INDEX #xarg ] ],
-    INFLECTED [ SUBJECT-FLAG -,
+    INFLECTED [ INCORPORATED-POSTPOSITION-FLAG na-or--,
                 MODE-FLAG -,
-                INCORPORATED-POSTPOSITION-FLAG na-or-- ] ].
+                SUBJECT-FLAG - ] ].
 
 intransitive-verb-lex := verb-lex & intransitive-lex-item &
   [ SYNSEM.LOCAL.CAT.VAL.COMPS < >,
@@ -88,6 +85,8 @@ verb1-verb-lex := intransitive-verb-lex.
 
 verb2-verb-lex := transitive-verb-lex.
 
+;;; Complementizers
+
 ;;;;;;;;;;;;;;;;;;;
 ;;; Lexical Rules
 ;;;;;;;;;;;;;;;;;;;
@@ -97,7 +96,7 @@ verb2-verb-lex := transitive-verb-lex.
 customary-or-distributive-rule-dtr := word-or-lexrule.
 object-rule-dtr := word-or-lexrule.
 incorporated-stem-rule-dtr := word-or-lexrule.
-incorporated-postposition-rule-dtr := word-or-lexrule.
+mode-rule-dtr := word-or-lexrule.
 deixis-rule-dtr := word-or-lexrule.
 theme-rule-dtr := word-or-lexrule.
 subject-rule-dtr := word-or-lexrule.
@@ -106,7 +105,7 @@ negation-rule-dtr := word-or-lexrule.
 postpos-object-rule-dtr := word-or-lexrule.
 number-rule-dtr := word-or-lexrule.
 aspect-rule-dtr := word-or-lexrule.
-mode-rule-dtr := word-or-lexrule.
+incorporated-postposition-rule-dtr := word-or-lexrule.
 adverbial-rule-dtr := word-or-lexrule.
 
 ;;; Lexical rule types
@@ -120,15 +119,15 @@ reciprocal-lex-rule := classifier-lex-rule-super.
 
 subject-lex-rule-super := add-only-no-ccont-rule & adverbial-rule-dtr & aspect-rule-dtr & conjugation-rule-dtr & customary-or-distributive-rule-dtr & deixis-rule-dtr & incorporated-postposition-rule-dtr & incorporated-stem-rule-dtr & mode-rule-dtr & negation-rule-dtr & number-rule-dtr & object-rule-dtr & postpos-object-rule-dtr & theme-rule-dtr &
   [ INFLECTED [ SUBJECT-FLAG +,
-                MODE-FLAG #mode,
                 POSTPOS-OBJECT-FLAG #postpos-object,
+                DEIXIS-FLAG #deixis,
                 INCORPORATED-POSTPOSITION-FLAG #incorporated-postposition,
-                DEIXIS-FLAG #deixis ],
+                MODE-FLAG #mode ],
     DTR subject-rule-dtr &
-        [ INFLECTED [ MODE-FLAG #mode,
-                      POSTPOS-OBJECT-FLAG #postpos-object,
+        [ INFLECTED [ POSTPOS-OBJECT-FLAG #postpos-object,
+                      DEIXIS-FLAG #deixis,
                       INCORPORATED-POSTPOSITION-FLAG #incorporated-postposition,
-                      DEIXIS-FLAG #deixis ] ] ].
+                      MODE-FLAG #mode ] ] ].
 
 1SG-SUBJ-lex-rule := infl-lex-rule & subject-lex-rule-super.
 
@@ -138,15 +137,15 @@ subject-lex-rule-super := add-only-no-ccont-rule & adverbial-rule-dtr & aspect-r
 
 mode-lex-rule-super := add-only-no-ccont-rule & adverbial-rule-dtr & aspect-rule-dtr & conjugation-rule-dtr & customary-or-distributive-rule-dtr & deixis-rule-dtr & incorporated-postposition-rule-dtr & incorporated-stem-rule-dtr & negation-rule-dtr & number-rule-dtr & object-rule-dtr & postpos-object-rule-dtr & theme-rule-dtr &
   [ INFLECTED [ MODE-FLAG +,
-                SUBJECT-FLAG #subject,
                 POSTPOS-OBJECT-FLAG #postpos-object,
+                DEIXIS-FLAG #deixis,
                 INCORPORATED-POSTPOSITION-FLAG #incorporated-postposition,
-                DEIXIS-FLAG #deixis ],
+                SUBJECT-FLAG #subject ],
     DTR mode-rule-dtr &
-        [ INFLECTED [ SUBJECT-FLAG #subject,
-                      POSTPOS-OBJECT-FLAG #postpos-object,
+        [ INFLECTED [ POSTPOS-OBJECT-FLAG #postpos-object,
+                      DEIXIS-FLAG #deixis,
                       INCORPORATED-POSTPOSITION-FLAG #incorporated-postposition,
-                      DEIXIS-FLAG #deixis ] ] ].
+                      SUBJECT-FLAG #subject ] ] ].
 
 perfective-lex-rule := infl-lex-rule & mode-lex-rule-super.
 
@@ -179,15 +178,15 @@ theme1-lex-rule := theme-lex-rule-super.
 
 deixis-lex-rule-super := add-only-no-ccont-rule & adverbial-rule-dtr & customary-or-distributive-rule-dtr & incorporated-postposition-rule-dtr & incorporated-stem-rule-dtr & infl-lex-rule & negation-rule-dtr & number-rule-dtr & object-rule-dtr & postpos-object-rule-dtr &
   [ INFLECTED [ DEIXIS-FLAG +,
-                SUBJECT-FLAG #subject,
                 POSTPOS-OBJECT-FLAG #postpos-object,
+                INCORPORATED-POSTPOSITION-FLAG #incorporated-postposition,
                 MODE-FLAG #mode,
-                INCORPORATED-POSTPOSITION-FLAG #incorporated-postposition ],
+                SUBJECT-FLAG #subject ],
     DTR deixis-rule-dtr &
-        [ INFLECTED [ SUBJECT-FLAG #subject,
-                      POSTPOS-OBJECT-FLAG #postpos-object,
+        [ INFLECTED [ POSTPOS-OBJECT-FLAG #postpos-object,
+                      INCORPORATED-POSTPOSITION-FLAG #incorporated-postposition,
                       MODE-FLAG #mode,
-                      INCORPORATED-POSTPOSITION-FLAG #incorporated-postposition ] ] ].
+                      SUBJECT-FLAG #subject ] ] ].
 
 3PL-lex-rule := deixis-lex-rule-super.
 
@@ -235,29 +234,29 @@ adverbial-lex-rule-super := add-only-no-ccont-rule & incorporated-postposition-r
 avbl1-lex-rule := adverbial-lex-rule-super.
 
 incorporated-postposition-lex-rule-super := add-only-no-ccont-rule & infl-lex-rule & negation-rule-dtr & postpos-object-rule-dtr &
-  [ INFLECTED [ POSTPOS-OBJECT-FLAG -,
-                INCORPORATED-POSTPOSITION-FLAG +,
-                SUBJECT-FLAG #subject,
+  [ INFLECTED [ INCORPORATED-POSTPOSITION-FLAG +,
+                POSTPOS-OBJECT-FLAG -,
+                DEIXIS-FLAG #deixis,
                 MODE-FLAG #mode,
-                DEIXIS-FLAG #deixis ],
+                SUBJECT-FLAG #subject ],
     DTR incorporated-postposition-rule-dtr &
-        [ INFLECTED [ SUBJECT-FLAG #subject,
+        [ INFLECTED [ DEIXIS-FLAG #deixis,
                       MODE-FLAG #mode,
-                      DEIXIS-FLAG #deixis ] ] ].
+                      SUBJECT-FLAG #subject ] ] ].
 
 into-lex-rule := incorporated-postposition-lex-rule-super.
 
 postpos-object-lex-rule-super := add-only-no-ccont-rule & infl-lex-rule & negation-rule-dtr &
   [ INFLECTED [ POSTPOS-OBJECT-FLAG +,
-                SUBJECT-FLAG #subject,
-                MODE-FLAG #mode,
+                DEIXIS-FLAG #deixis,
                 INCORPORATED-POSTPOSITION-FLAG #incorporated-postposition,
-                DEIXIS-FLAG #deixis ],
+                MODE-FLAG #mode,
+                SUBJECT-FLAG #subject ],
     DTR postpos-object-rule-dtr &
-        [ INFLECTED [ SUBJECT-FLAG #subject,
-                      MODE-FLAG #mode,
+        [ INFLECTED [ DEIXIS-FLAG #deixis,
                       INCORPORATED-POSTPOSITION-FLAG #incorporated-postposition & +,
-                      DEIXIS-FLAG #deixis ] ] ].
+                      MODE-FLAG #mode,
+                      SUBJECT-FLAG #subject ] ] ].
 
 3-POSTPOS-OBJ-lex-rule := postpos-object-lex-rule-super.
 

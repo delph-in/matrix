@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of Zulu
 ;;; created at:
-;;;     Wed Jan 24 02:50:28 UTC 2018
+;;;     Wed Jan 24 04:50:25 UTC 2018
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -18,19 +18,16 @@ non-mod-lex-item := lex-item &
 ;;; Matrix Type Addenda
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 
-inflected :+ [ NC-FLAG luk,
-    SC-FLAG luk,
-    FV-FLAG luk ].
+inflected :+ [ SC-FLAG luk,
+    FV-FLAG luk,
+    NC-FLAG luk ].
 
-infl-satisfied :+ [ NC-FLAG na-or-+,
-    SC-FLAG na-or-+,
-    FV-FLAG na-or-+ ].
+infl-satisfied :+ [ SC-FLAG na-or-+,
+    FV-FLAG na-or-+,
+    NC-FLAG na-or-+ ].
 
 basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.MC #mc,
     HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
-
-basic-head-mod-phrase-simple :+ [ SYNSEM.LOCAL.CAT.MC #mc,
-    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
 
 basic-head-opt-subj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
 
@@ -88,6 +85,8 @@ verb1-verb-lex := intransitive-verb-lex.
 
 verb2-verb-lex := transitive-verb-lex.
 
+;;; Complementizers
+
 ;;; Others
 
 ; We treat question particles as complementizers.
@@ -117,9 +116,9 @@ qpart-lex-item := complementizer-lex-item &
 ;;; Intermediate rule types
 
 FV-rule-dtr := word-or-lexrule.
-tense-rule-dtr := word-or-lexrule.
-negation-rule-dtr := word-or-lexrule.
 SC-rule-dtr := word-or-lexrule.
+negation-rule-dtr := word-or-lexrule.
+tense-rule-dtr := word-or-lexrule.
 
 ;;; Lexical rule types
 
@@ -155,11 +154,11 @@ pres-tense-lex-rule := tense-lex-rule-super.
 
 SC-lex-rule-super := FV-rule-dtr & add-only-no-ccont-rule & infl-lex-rule & negation-rule-dtr &
   [ INFLECTED [ SC-FLAG +,
-                NC-FLAG #nc,
-                FV-FLAG #fv ],
+                FV-FLAG #fv,
+                NC-FLAG #nc ],
     DTR SC-rule-dtr &
-        [ INFLECTED [ NC-FLAG #nc,
-                      FV-FLAG #fv ] ] ].
+        [ INFLECTED [ FV-FLAG #fv,
+                      NC-FLAG #nc ] ] ].
 
 SC1-lex-rule := SC-lex-rule-super.
 
@@ -167,11 +166,11 @@ SC9-lex-rule := SC-lex-rule-super.
 
 FV-lex-rule-super := add-only-no-ccont-rule & infl-lex-rule &
   [ INFLECTED [ FV-FLAG +,
-                NC-FLAG #nc,
-                SC-FLAG #sc ],
+                SC-FLAG #sc,
+                NC-FLAG #nc ],
     DTR FV-rule-dtr &
-        [ INFLECTED [ NC-FLAG #nc,
-                      SC-FLAG #sc ] ] ].
+        [ INFLECTED [ SC-FLAG #sc,
+                      NC-FLAG #nc ] ] ].
 
 default-FV-lex-rule := FV-lex-rule-super.
 

@@ -1,0 +1,6 @@
+subord noun1 verb1nonfin noun2 verb2fin
+*subord noun1 verb1 noun2 verb2
+*subord noun1 verb1nonfin noun2 verb2nonfin
+*subord noun1 verb1fin noun2 verb2fin
+*subord noun1 verb1 noun2 verb2fin
+*subord noun1 verb1fin noun2 verb2nonfin

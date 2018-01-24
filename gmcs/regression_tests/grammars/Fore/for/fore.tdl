@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of Fore
 ;;; created at:
-;;;     Wed Jan 24 02:50:19 UTC 2018
+;;;     Wed Jan 24 04:50:14 UTC 2018
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -36,9 +36,6 @@ head :+ [ NTYPE ntype ].
 
 basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.MC #mc,
     HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
-
-basic-head-mod-phrase-simple :+ [ SYNSEM.LOCAL.CAT.MC #mc,
-    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
 
 basic-head-opt-subj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
 
@@ -254,6 +251,8 @@ verb1-verb-lex := nom-intransitive-verb-lex.
 verb2-verb-lex := dir-inv-transitive-verb-lex & direction-rule-dtr &
   [ INFLECTED [ DIRECTION-FLAG -,
                 VERB2-DIR-INV-FLAG - ] ].
+
+;;; Complementizers
 
 ;;;;;;;;;;;;;;;;;;;
 ;;; Lexical Rules

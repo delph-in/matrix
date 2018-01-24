@@ -1,0 +1,95 @@
+
+version=28
+
+section=general
+language=ccomp-oblig-svo-form
+
+section=word-order
+word-order=svo
+has-dets=no
+has-aux=no
+subord-word-order=same
+
+section=number
+
+section=person
+person=none
+
+section=gender
+
+section=case
+case-marking=none
+
+section=direct-inverse
+
+section=tense-aspect-mood
+
+section=other-features
+form-fin-nf=on
+  form-subtype1_name=subjunctive
+  form-subtype1_supertype=nonfinite
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=info-str
+
+section=arg-opt
+
+section=nominalclause
+
+section=clausalmods
+
+section=clausal-comp
+  comps1_clause-pos-same=on
+  comps1_comp-pos-before=on
+  comps1_comp=oblig
+    comps1_complementizer1_orth=comp1
+    comps1_feat1_name=form
+    comps1_feat1_value=subjunctive
+
+section=lexicon
+  noun1_name=noun
+  noun1_det=imp
+    noun1_stem1_orth=noun1
+    noun1_stem1_pred=_noun1_n_rel
+    noun1_stem2_orth=noun2
+    noun1_stem2_pred=_noun2_n_rel
+    noun1_stem3_orth=noun3
+    noun1_stem3_pred=_noun3_n_rel
+  verb1_name=tverb
+  verb1_valence=trans
+    verb1_stem1_orth=tverb
+    verb1_stem1_pred=_tverb_v_rel
+  verb2_name=cverb
+  verb2_valence=comps1
+    verb2_stem1_orth=cverb
+    verb2_stem1_pred=_cverb_v_rel
+
+section=morphology
+  verb-pc1_name=FRM
+  verb-pc1_obligatory=on
+  verb-pc1_order=suffix
+  verb-pc1_inputs=verb
+    verb-pc1_lrt1_name=nonfin
+      verb-pc1_lrt1_feat1_name=form
+      verb-pc1_lrt1_feat1_value=subjunctive
+      verb-pc1_lrt1_feat1_head=verb
+      verb-pc1_lrt1_lri1_inflecting=yes
+      verb-pc1_lrt1_lri1_orth=-SUBJ
+    verb-pc1_lrt2_name=fin
+      verb-pc1_lrt2_feat1_name=form
+      verb-pc1_lrt2_feat1_value=finite
+      verb-pc1_lrt2_feat1_head=verb
+      verb-pc1_lrt2_lri1_inflecting=no
+
+section=toolbox-import
+
+section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon

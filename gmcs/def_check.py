@@ -22,17 +22,17 @@ var_list = {}
 f = open('matrixdef', 'r')
 line = f.readlines()
 f.close()
-
+  
 for l in line:
     l = l.strip()
     if len(l):
         w = tokenize_def(l)
         if len(w) >= 3:
-            ty = w[0]
-            vn = w[1]
-            fn = w[2]
-            if ty == 'Text' or ty == 'Radio' or ty == '.' or ty == 'Check':
-                var_list[vn] = True
+          ty = w[0]
+          vn = w[1]
+          fn = w[2]
+          if ty == 'Text' or ty == 'Radio' or ty == '.' or ty == 'Check':
+              var_list[vn] = True
 
 # Read through arg[0] for all instances of ch(), and
 # check that the variable being looked up is in the list.

@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of evidentials-infl-lbj
 ;;; created at:
-;;;     Tue Jan 23 00:22:23 UTC 2018
+;;;     Wed Jan 24 04:56:52 UTC 2018
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -20,19 +20,16 @@ non-mod-lex-item := lex-item &
 
 noun :+ [ CASE case ].
 
-inflected :+ [ EXPER-OR-OBS-FLAG luk,
-    CASE-FLAG luk,
-    REPORT-FLAG luk ].
+inflected :+ [ REPORT-FLAG luk,
+    EXPER-OR-OBS-FLAG luk,
+    CASE-FLAG luk ].
 
-infl-satisfied :+ [ EXPER-OR-OBS-FLAG na-or-+,
-    CASE-FLAG na-or-+,
-    REPORT-FLAG na-or-+ ].
+infl-satisfied :+ [ REPORT-FLAG na-or-+,
+    EXPER-OR-OBS-FLAG na-or-+,
+    CASE-FLAG na-or-+ ].
 
 basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.MC #mc,
     HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
-
-basic-head-mod-phrase-simple :+ [ SYNSEM.LOCAL.CAT.MC #mc,
-    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
 
 basic-head-opt-subj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
 
@@ -113,6 +110,8 @@ erg-dir-transitive-verb-lex := transitive-verb-lex &
 
 tr-verb-verb-lex := erg-dir-transitive-verb-lex.
 
+;;; Complementizers
+
 ;;;;;;;;;;;;;;;;;;;
 ;;; Lexical Rules
 ;;;;;;;;;;;;;;;;;;;
@@ -129,11 +128,11 @@ tense-rule-dtr := word-or-lexrule.
 
 case-lex-rule-super := add-only-no-ccont-rule &
   [ INFLECTED [ CASE-FLAG +,
-                EXPER-OR-OBS-FLAG #exper-or-obs,
-                REPORT-FLAG #report ],
+                REPORT-FLAG #report,
+                EXPER-OR-OBS-FLAG #exper-or-obs ],
     DTR noun-lex &
-        [ INFLECTED [ EXPER-OR-OBS-FLAG #exper-or-obs,
-                      REPORT-FLAG #report ] ] ].
+        [ INFLECTED [ REPORT-FLAG #report,
+                      EXPER-OR-OBS-FLAG #exper-or-obs ] ] ].
 
 dir-lex-rule := case-lex-rule-super & const-lex-rule &
   [ SYNSEM.LOCAL.CAT.HEAD.CASE dir ].
@@ -216,11 +215,11 @@ past-lex-rule := tense-lex-rule-super &
 
 exper-lex-rule-super := cont-change-only-lex-rule & infl-lex-rule & narr-tshuk-rule-dtr & tense-rule-dtr &
   [ INFLECTED [ EXPER-OR-OBS-FLAG +,
-                CASE-FLAG #case,
-                REPORT-FLAG #report ],
+                REPORT-FLAG #report,
+                CASE-FLAG #case ],
     DTR verb-lex &
-        [ INFLECTED [ CASE-FLAG #case,
-                      REPORT-FLAG #report ] ] ].
+        [ INFLECTED [ REPORT-FLAG #report,
+                      CASE-FLAG #case ] ] ].
 
 experiential-evidential-lex-rule := evidential-lex-rule &
   [ C-CONT.RELS <! [ PRED "ev_experiential_rel" ] !> ].

@@ -1,0 +1,4 @@
+noun1 tverb noun2
+*noun1 noun2 tverb
+cverb noun1 noun2 tverb noun3 comp1
+noun2 tverb noun3 comp1 cverb noun1

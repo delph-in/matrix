@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of adj-adj_n_agr
 ;;; created at:
-;;;     Wed Jan 24 02:50:40 UTC 2018
+;;;     Wed Jan 24 04:50:37 UTC 2018
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -28,9 +28,6 @@ png :+ [ GEND gender ].
 
 basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.MC #mc,
     HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
-
-basic-head-mod-phrase-simple :+ [ SYNSEM.LOCAL.CAT.MC #mc,
-    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
 
 basic-head-opt-subj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
 
@@ -108,6 +105,8 @@ attr-adj-lex := adj-lex & intersective-mod-lex &
 attr-only-adj-lex := attr-adj-lex &
   [ SYNSEM.LOCAL.CAT [ HEAD.PRD -,
                        VAL.SUBJ < > ] ].
+
+;;; Complementizers
 
 ;;; Others
 

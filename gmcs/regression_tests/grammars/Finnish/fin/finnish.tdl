@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of Finnish
 ;;; created at:
-;;;     Wed Jan 24 02:50:18 UTC 2018
+;;;     Wed Jan 24 04:50:12 UTC 2018
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -18,19 +18,16 @@ non-mod-lex-item := lex-item &
 ;;; Matrix Type Addenda
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 
-inflected :+ [ NUMBER-FLAG luk,
-    PERNUM-AGR-FLAG luk,
-    CASE-FLAG luk ].
+inflected :+ [ CASE-FLAG luk,
+    NUMBER-FLAG luk,
+    PERNUM-AGR-FLAG luk ].
 
-infl-satisfied :+ [ NUMBER-FLAG na-or-+,
-    PERNUM-AGR-FLAG na-or-+,
-    CASE-FLAG na-or-+ ].
+infl-satisfied :+ [ CASE-FLAG na-or-+,
+    NUMBER-FLAG na-or-+,
+    PERNUM-AGR-FLAG na-or-+ ].
 
 basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.MC #mc,
     HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
-
-basic-head-mod-phrase-simple :+ [ SYNSEM.LOCAL.CAT.MC #mc,
-    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
 
 basic-head-opt-subj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
 
@@ -86,27 +83,29 @@ verb1-verb-lex := intransitive-verb-lex.
 
 verb2-verb-lex := transitive-verb-lex.
 
+;;; Complementizers
+
 ;;;;;;;;;;;;;;;;;;;
 ;;; Lexical Rules
 ;;;;;;;;;;;;;;;;;;;
 
 ;;; Intermediate rule types
 
-possessive-rule-dtr := word-or-lexrule.
 particle-rule-dtr := word-or-lexrule.
 pernum-agr-rule-dtr := word-or-lexrule.
-mood-or-tense-rule-dtr := word-or-lexrule.
 case-rule-dtr := word-or-lexrule.
+mood-or-tense-rule-dtr := word-or-lexrule.
+possessive-rule-dtr := word-or-lexrule.
 
 ;;; Lexical rule types
 
 number-lex-rule-super := add-only-no-ccont-rule & case-rule-dtr & particle-rule-dtr & possessive-rule-dtr &
   [ INFLECTED [ NUMBER-FLAG +,
-                PERNUM-AGR-FLAG #pernum-agr,
-                CASE-FLAG #case ],
+                CASE-FLAG #case,
+                PERNUM-AGR-FLAG #pernum-agr ],
     DTR noun-lex &
-        [ INFLECTED [ PERNUM-AGR-FLAG #pernum-agr,
-                      CASE-FLAG #case ] ] ].
+        [ INFLECTED [ CASE-FLAG #case,
+                      PERNUM-AGR-FLAG #pernum-agr ] ] ].
 
 plural-lex-rule := infl-lex-rule & number-lex-rule-super.
 
@@ -154,11 +153,11 @@ conditional-lex-rule := mood-lex-rule-super.
 
 pernum-agr-lex-rule-super := add-only-no-ccont-rule & infl-lex-rule & particle-rule-dtr &
   [ INFLECTED [ PERNUM-AGR-FLAG +,
-                NUMBER-FLAG #number,
-                CASE-FLAG #case ],
+                CASE-FLAG #case,
+                NUMBER-FLAG #number ],
     DTR pernum-agr-rule-dtr &
-        [ INFLECTED [ NUMBER-FLAG #number,
-                      CASE-FLAG #case ] ] ].
+        [ INFLECTED [ CASE-FLAG #case,
+                      NUMBER-FLAG #number ] ] ].
 
 1SG-lex-rule := pernum-agr-lex-rule-super.
 

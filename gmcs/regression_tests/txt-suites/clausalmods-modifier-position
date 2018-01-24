@@ -1,0 +1,6 @@
+subord1 noun1 verb1 noun2 verb2
+*noun1 verb1 subord1 noun2 verb2
+noun1 verb1 subord2 noun2 verb2
+subord2 noun1 verb1 noun2 verb2
+*subord3 noun1 verb1 noun2 verb2
+noun1 verb1 subord3 noun2 verb2

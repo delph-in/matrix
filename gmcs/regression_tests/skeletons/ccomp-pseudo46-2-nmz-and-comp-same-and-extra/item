@@ -1,0 +1,17 @@
+1@unknown@formal@none@1@S@noun1 tverb-FIN noun2@@@@@@@olzama@2017-12-28
+2@unknown@formal@none@1@@noun1 tverb-NFIN noun2@@@@@@@olzama@2017-12-28
+3@unknown@formal@none@1@S@cverb1-FIN noun1 comp1 noun2 tverb-FIN noun3@@@@@@@olzama@2017-12-28
+4@unknown@formal@none@1@S@cverb1-FIN noun1 noun2 tverb-FIN noun3 comp1@@@@@@@olzama@2017-12-28
+5@unknown@formal@none@1@S@comp1 noun1 tverb-FIN noun2 cverb1-FIN noun3@@@@@@@olzama@2017-12-28
+6@unknown@formal@none@1@S@noun2 tverb-FIN noun3 comp1  cverb1-FIN noun1@@@@@@@olzama@2017-12-28
+7@unknown@formal@none@1@@noun2 tverb-NFIN noun3 comp1 cverb1-FIN noun1@@@@@@@olzama@2017-12-28
+8@unknown@formal@none@1@@comp1 noun2 tverb-NFIN noun3 cverb1-FIN noun1@@@@@@@olzama@2017-12-28
+9@unknown@formal@none@1@@cverb1-FIN noun1 noun2 tverb-NFIN noun3 comp1@@@@@@@olzama@2017-12-28
+10@unknown@formal@none@1@S@noun1 tverb-NFIN-NMZ noun2 cverb2-FIN noun3@@@@@@@olzama@2017-12-28
+11@unknown@formal@none@1@@noun1 tverb-NFIN-NMZ noun2 cverb2-FIN-NMZ noun3@@@@@@@olzama@2017-12-28
+12@unknown@formal@none@1@@noun1 tverb-FIN-NMZ noun2 cverb2-FIN noun3@@@@@@@olzama@2017-12-28
+13@unknown@formal@none@1@@noun1 tverb-FIN noun2 cverb2-FIN noun3@@@@@@@olzama@2017-12-28
+14@unknown@formal@none@1@@noun1 tverb-NFIN noun2 cverb2-FIN noun3@@@@@@@olzama@2017-12-28
+15@unknown@formal@none@1@@cverb2-FIN noun1 tverb-FIN-NMZ noun2 noun3@@@@@@@olzama@2017-12-28
+16@unknown@formal@none@1@@cverb2-FIN comp1 noun1 tverb-FIN-NMZ noun2 noun3@@@@@@@olzama@2017-12-28
+17@unknown@formal@none@1@@cverb2-FIN comp1 noun1 tverb-FIN noun2 noun3@@@@@@@olzama@2017-12-28

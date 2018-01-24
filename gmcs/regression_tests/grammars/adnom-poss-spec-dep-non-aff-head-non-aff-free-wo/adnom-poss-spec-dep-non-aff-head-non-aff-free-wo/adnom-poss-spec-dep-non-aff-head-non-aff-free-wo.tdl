@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of adnom-poss-spec-dep-non-aff-head-non-aff-free-wo
 ;;; created at:
-;;;     Wed Jan 24 01:47:01 UTC 2018
+;;;     Wed Jan 24 04:52:56 UTC 2018
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -60,9 +60,6 @@ possessum-1 := possessum & possessive-1.
 
 basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.MC #mc,
     HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
-
-basic-head-mod-phrase-simple :+ [ SYNSEM.LOCAL.CAT.MC #mc,
-    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
 
 basic-head-opt-subj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
 
@@ -168,6 +165,8 @@ transitive-verb-lex := verb-lex & transitive-lex-item &
                            HEAD noun ] ] > ].
 
 itr-verb-lex := intransitive-verb-lex.
+
+;;; Complementizers
 
 ;;; Others
 

@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of adj-adj-n-adj
 ;;; created at:
-;;;     Wed Jan 24 02:50:38 UTC 2018
+;;;     Wed Jan 24 04:50:35 UTC 2018
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -20,9 +20,6 @@ non-mod-lex-item := lex-item &
 
 basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.MC #mc,
     HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
-
-basic-head-mod-phrase-simple :+ [ SYNSEM.LOCAL.CAT.MC #mc,
-    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
 
 basic-head-opt-subj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
 
@@ -71,6 +68,8 @@ transitive-verb-lex := verb-lex & transitive-lex-item &
 tv-verb-lex := transitive-verb-lex.
 
 iv-verb-lex := intransitive-verb-lex.
+
+;;; Complementizers
 
 ;;; Others
 
