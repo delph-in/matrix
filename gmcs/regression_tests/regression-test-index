@@ -294,13 +294,3 @@ v2-basic-order=V2 basic word order: verb in second position, subject and object 
 evidentials-infl-aux-kal=Testing the evidentiality library with Kalaallisut evidentials
 evidentials-infl-aux-shp=Testing the evidentiality library with the evidentials of Shipibo-Konibo
 
-adnom-poss-mod-possessor-affix-head-final=possessor takes affix, mod-like possessor, head final, no agreement
-adnom-poss-mod-possessor-affix-head-final-agr=possessor takes affix, mod-like possessor, head final, with agreement
-adnom-poss-mod-possessor-affix-head-initial=possessor takes affix, mod-like possessor, head initial, no agreement
-adnom-poss-mod-possessor-affix-possessum-affix-head-final=possessor and possessum take affix, mod-like possessor,  head final, no agreement
-adnom-poss-mod-possessor-affix-possessum-affix-head-final-agr-mutual=possessor and possessum take affix, mod-like possessor, head final, with mutual agreement
-adnom-poss-mod-possessor-affix-possessum-affix-head-final-agr-unidir-possessor=possessor and possessum take affix, mod-like possessor, possessor is full np, head final, possessor agrees with possessum
-adnom-poss-mod-possessor-affix-possessum-affix-head-final-agr-unidir-possessum=possessor and possessum take affix, mod-like possessor, possessor is full np, head final, possessum agrees with possessor
-adnom-poss-mod-possessor-non-affix-head-final=possessor takes non-affix, mod-like possessor, head-final, no agreement
-adnom-poss-mod-possessor-non-affix-head-initial=possessor takes non-affix, mod-like possessor, head-initial, no agreement
-adnom-poss-mod-possessor-non-affix-head-final-agr=possessor takes non-affix, mod-like possessor, head-final, with agreement
