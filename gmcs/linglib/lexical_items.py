@@ -494,8 +494,8 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     
     # Check all possessive strategies to see what combo of 
     # strategies you have:
-    spec_strat=False
-    affixal_strat=False
+    spec_strat=False #Does the strategy use the head-spec rule?
+    affixal_strat=False #Does the strategy include affixal poss markers?
     nonaffixal_strat=False
     possessor_mark=False
     possessum_mark=False
@@ -517,7 +517,6 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
 
     # Add a typedef that takes into account all strategies
     if spec_strat:
-        
         if affixal_strat and nonaffixal_strat:
             spr_head_type='+npd'
         elif affixal_strat:
