@@ -540,8 +540,9 @@ class MatrixDefFile:
     # use in links on html navigation menu
     sections = { 'general':'General Information',
                  'word-order':'Word Order', 'number':'Number',
-                 'person':'Person', 'gender':'Gender', 'case':'Case',
-                 'direct-inverse':'Direct-inverse', 'tense-aspect-mood':'Tense, Aspect and Mood', 'evidentials': 'Evidentials',
+                 'person':'Person', 'gender':'Gender', 'case':'Case', 
+                 'adnom-poss':'Adnominal Possession', 'direct-inverse':'Direct-inverse', 
+                 'tense-aspect-mood':'Tense, Aspect and Mood', 'evidentials': 'Evidentials',
                  'other-features':'Other Features', 'sentential-negation':'Sentential Negation',
                  'coordination':'Coordination', 'matrix-yes-no':'Matrix Yes/No Questions',
                  'info-str':'Information Structure',
@@ -551,13 +552,14 @@ class MatrixDefFile:
                  'clausalmods':'Clausal Modifiers', 'lexicon':'Lexicon',
                  'morphology':'Morphology','toolbox-import':'Toolbox Import',
                  'test-sentences':'Test Sentences','gen-options':'TbG Options',
-                 'ToolboxLexicon':'Toolbox Lexicon','adnom-poss':'Adnominal Possession'}
+                 'ToolboxLexicon':'Toolbox Lexicon'}
     # used to link section names to their documentation
     # page name in the delph-in wiki
     doclinks = { 'general':'GeneralInfo',
                  'word-order':'WordOrder', 'number':'Number',
                  'person':'Person', 'gender':'Gender', 'case':'Case',
-                 'direct-inverse':'DirectInverse', 'tense-aspect-mood':'TenseAspectMood', 'evidentials': 'Evidentials',
+                 'adnom-poss':'AdnominalPossession', 'direct-inverse':'DirectInverse', 
+                 'tense-aspect-mood':'TenseAspectMood', 'evidentials': 'Evidentials',
                  'other-features':'OtherFeatures', 'sentential-negation':'SententialNegation',
                  'coordination':'Coordination', 'matrix-yes-no':'YesNoQ',
                  'info-str':'InformationStructure',
@@ -567,7 +569,7 @@ class MatrixDefFile:
                  'clausalmods':'Clausal Modifiers', 'lexicon':'Lexicon',
                  'morphology':'Morphology','toolbox-import':'ImportToolboxLexicon',
                  'test-sentences':'TestSentences','gen-options':'TestByGeneration',
-                 'ToolboxLexicon':'ImportToolboxLexicon','adnom-poss':'AdnominalPossession'}
+                 'ToolboxLexicon':'ImportToolboxLexicon'}
     def_file = ''
     v2f = {}
     f2v = {}

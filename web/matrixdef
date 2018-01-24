@@ -432,6 +432,210 @@ Queensland. Ph.D. thesis, University of London.</p>"
 Label "</div>"
 
 
+Section adnom-poss "Adnominal Possession" 
+
+Label "<h3>Define a possessive strategy for possessive noun phrases or add a possessor pronoun:</h3>"
+
+BeginIter poss-strat{i} "a possessive strategy"
+
+     Radio order "Word order" "<p>The word order within a possessive phrase is:</p>" ""
+     . head-final "head-final" "" "possessor-first<br>"
+     . head-initial "head-initial" "" "possessum-first<br>"
+     . either "either" "" "either<br>"
+
+     Radio mod-spec "Modifier or specifier" "<p>In some possessive strategies, the possessor acts like a <b>specifier</b> of the possessum; in other strategies, the possessor is more like a <b>modifier</b> of the possessum. For a full explanation of the tests used to distinguish these two behaviors, see the documentation link above. <br><br> In this strategy, is the possessor more like a </p>" ""
+     . spec "specifier" "" "specifier<br>"
+     . mod "modifier" "" "modifier<br>"
+
+     Radio mark-loc "Mark location" "<p> Do any morphemes (affixes, clitics, or separate words) appear which mark the noun phrase as possessive? If so, where?</p>" ""
+     . possessor "Possessor marking" "" "On the possessor<br>"  "toggle_element.call(this, 'possessor-morph{i}', 'on'); toggle_element.call(this, 'possessum-morph{i}', 'off');"
+     . possessum "Possessum marking" "" "On the possessum<br>"  "toggle_element.call(this, 'possessum-morph{i}', 'on'); toggle_element.call(this, 'possessor-morph{i}', 'off');"
+     . both "Both marking" "" "On both the possessor and the possessum<br>" "toggle_element.call(this, 'possessum-morph{i}', 'on'); toggle_element.call(this, 'possessor-morph{i}', 'on');"
+     . neither "Neither marking" "" "No possessive morphemes appear<br>" "toggle_element.call(this, 'possessum-morph{i}', 'off'); toggle_element.call(this, 'possessor-morph{i}', 'off');"
+
+     Label "<div id='possessor-morph{i}' style='display:none'>"
+     
+	Radio possessor-type "Possessor morpheme type" "<p>Is the morpheme that marks the <b>possessor</b> an affix? Or is it a separate word or clitic?</p>" ""
+     	. affix "Possessor affix" "" "affix<br>"  "toggle_element.call(this, 'possessor-affix{i}', 'on'); toggle_element.call(this, 'possessor-non-affix{i}', 'off');"
+     	. non-affix "Possessor non-affix" "" "separate word or clitic<br>" "toggle_element.call(this, 'possessor-affix{i}', 'off'); toggle_element.call(this, 'possessor-non-affix{i}', 'on');"
+     
+     	   Label "<div id='possessor-affix{i}' style='display:none'>"
+
+	   Radio possessor-affix-agr "Possessor agreement" "<p>Does the affix that marks the possessor agree with the possessum (e.g. in person, number, or gender)?</p>" ""
+	   . agree "Possessor agree" "" "yes<br>"
+	   . non-agree "Possessor non-agree" "" "no<br>"
+
+	   Label "<p> A feature called <span class=\"feat\">possessor_poss-strat{i}</span> with possible values <span class=\"tt\">plus</span> and <span class=\"tt\">minus</span> has been defined for use in defining morphemes on the morphology page.  In order to define a possessor-marking affix, add the appropriate position class and lexical rules, and mark the lexical rules as [<span class=\"feat\">possessor_poss-strat{i}</span> <span class=\"tt\">plus</span>]. If you make the possessive marking obligatory (recommended), remember to also create a non-possessive inflecting rule in the same position class by creating a lexical rule type marked [<span class=\"feat\">possessor_poss-strat{i}</span> <span class=\"tt\">minus</span>]. Be sure to select the feature that corresponds to <span class=\"feat\">possessor_poss-strat{i}</span>. If the possessor-marking affix(es) agree(s) with the possessum, add appropriate person, number, and gender features to each lexical rule type. Note that any person/number/gender features that are listed on a possessor lexical rule type are assumed to be features that agree with the possessum.</p>"
+
+	   Label "</div>"
+
+     	   Label "<div id='possessor-non-affix{i}' style='display:none'>"
+
+           Radio possessor-agr "Possessor agreement" "<p>Does the possessor agree with the possessum?</p>" ""
+	   . agree "Possessor agree" "" "yes<br>" "toggle_element.call(this, 'possessor-agr{i}', 'on'); toggle_element.call(this, 'possessor-non-agr{i}', 'off');"
+	   . non-agree "Possessor non agree" "" "no<br>"  "toggle_element.call(this, 'possessor-agr{i}', 'off');toggle_element.call(this, 'possessor-non-agr{i}', 'on');"
+
+	   Label "<div id='possessor-non-agr{i}' style='display:none'>"
+
+	   Text possessor-orth "Possessor word orth" "<br>The possessor-marking word is spelled " "<br>" 15
+
+	   Label "</div>"
+
+	   Label "<div id='possessor-agr{i}' style='display:none'>"
+
+	   BeginIter possessor-form{n} "a possessor-marking word with agreement features"
+
+	   Text name "Type name" "Type name: " "-adp-lex<br>" 15
+
+	   Text agr-orth "Agreement orthography" "<br> The form spelled: " "<br>carries the following agreement features<br>" 15
+
+	   BeginIter feat{k} "an agreement feature"
+	   
+	   Select name "Possessive strategy {i} possessor-marking word Form {n} Feature {k} Name" "Name: " " "
+      	   fillnames c=noun
+
+      	   MultiSelect value "Possessive Strategy {i} possessor-marking word Form {n} Feature {k} Value" "Value: " ""
+      	   fillvalues p=poss-strat{i}_possessor-form{n}_feat{k}_name
+
+    	   EndIter feat
+
+	   EndIter possessor-form
+
+	   Label "</div>"
+
+     	   Label "</div>"
+
+     Label "</div>"                                                                                                                            
+
+     Label "<div id='possessum-morph{i}' style='display:none'>"
+     
+     Radio possessum-type "Possessum morpheme type" "<p>Is the morpheme that marks the <b>possessum</b> an affix? Or is it a separate word or clitic?</p>" ""
+     . affix "Possessum affix" "" "affix<br>" "toggle_element.call(this, 'possessum-affix{i}', 'on'); toggle_element.call(this, 'possessum-non-affix{i}', 'off');"
+     . non-affix "Possessum non-affix" "" "separate word or clitic<br>"  "toggle_element.call(this, 'possessum-affix{i}', 'off'); toggle_element.call(this, 'possessum-non-affix{i}', 'on');"
+     
+
+     	   Label "<div id='possessum-affix{i}' style='display:none'>"
+
+	   Radio possessum-affix-agr "Possessum agreement" "<p>Does the affix that marks the possessum agree with the possessor (e.g. in person, number, or gender)?</p>" ""
+	   . agree "Possessum agree" "" "yes<br>"
+	   . non-agree "Possessum non-agree" "" "no<br>"
+
+	   Label "<p>A feature called <span class=\"feat\">possessum_poss-strat{i}</span> with possible values <span class=\"tt\">plus</span> and <span class=\"tt\">minus</span> has been defined for use in defining morphemes on the morphology page.  In order to define a possessum-marking affix, add the appropriate position class and lexical rules, and mark the lexical rules as [<span class=\"feat\">possessum_poss-strat{i}</span> <span class=\"tt\">plus</span>]. If you make the possessive marking obligatory (recommended), remember to also create a non-possessive inflecting rule in the same position class by creating a lexical rule type marked [<span class=\"feat\">possessor_poss-strat{i}</span> <span class=\"tt\">minus</span>]. Be sure to select the feature that corresponds to <span class=\"feat\">possessum_poss-strat{i}</span>. If the possessum-marking affix(es) agree(s) with the possessor, add appropriate person, number, and gender features to each lexical rule type. Note that any person/number/gender features that are listed on a possessum lexical rule type are assumed to be features that agree with the possessor.</p>"
+	   
+	   Label "</div>"
+
+           Label "<div id='possessum-non-affix{i}' style='display:none'>"
+
+           Radio possessum-agr "Possessum agreement" "<p>Does the possessum agree with the possessor?</p>" ""
+           . agree "Possessum agree" "" "yes<br>" "toggle_element.call(this, 'possessum-agr{i}', 'on'); toggle_element.call(this, 'possessum-non-agr{i}', 'off');"
+           . non-agree "Possessum non agree" "" "no<br>"  "toggle_element.call(this, 'possessum-agr{i}', 'off');toggle_element.call(this, 'possessum-non-agr{i}', 'on');"
+
+	   Label "<div id='possessum-non-agr{i}' style='display:none'>" 
+
+           Text possessum-orth "Possessum word orth" "<br>The possessum-marking word is spelled " "<br>" 15
+
+	   Label "</div>"
+
+           Label "<div id='possessum-agr{i}' style='display:none'>"
+
+	   BeginIter possessum-form{m} "a possessum-marking word with agreement features"
+
+	   Text name "Type name" "Type name: " "-noun-lex<br>" 15
+
+	   Text agr-orth "Orthography agreement" "<br>The form spelled: " "<br> carries the following agreement features:<br>" 15
+
+           BeginIter feat{l} "an agreement feature"
+	   
+           Select name "Possessive strategy {i} possessum-marking word Form {k} Feature {l} Name" "Name: " " "
+           fillnames c=noun
+
+           MultiSelect value "Noun Position Class {i} Lexical Rule Type {j} Form {k} Feature {l} Value" "Value: " ""
+           fillvalues p=poss-strat{i}_possessum-form{m}_feat{l}_name
+
+           EndIter feat
+
+	   EndIter possessum-form
+
+           Label "</div>"
+
+           Label "</div>"
+
+     Label "</div>"                                                                                                                                                                                         
+EndIter poss-strat
+
+BeginIter poss-pron{i} "a class of possessor pronouns"
+
+  Radio type "Possessive Pronoun Type" "<p>Are these possessor pronouns affixes? Or are they separate words or clitics? </p>" ""
+  . affix "affix" "" "affixes<br>" "toggle_element.call(this, 'pron-non-affix{i}', 'off');toggle_element.call(this, 'pron-affix{i}', 'on');"
+  . non-affix "non-affix" "" "separate words or clitics<br>" "toggle_element.call(this, 'pron-non-affix{i}', 'on');toggle_element.call(this, 'pron-affix{i}', 'off');"
+
+  Label "<div id='pron-affix{i}' style='display:none'>"
+
+    Radio agr "Pronominal agreement" "<p>Do these affixes agree with the possessum in person, number, or gender?</p>" ""
+    . agree "agree" "" "yes<br>"
+    . non-agree "non-agree" "" "no<br>"
+
+    Radio mod-spec "Modifier or Specifier" "<p>If your language has determiners, does the possessum noun still appear with a determiner when marked with these affixes?</p>" ""
+    . mod "Mod" "" "yes<br>"
+    . spec "Spec" "" "no<br>"
+
+    Label "<p>A feature called <span class=\"feat\">poss-pron{i}</span> with possible values <span class=\"tt\">plus</span> and <span class=\"tt\">minus</span> has been defined for use in defining morphemes on the morphology page.  In order to define a pronominal affix, add the appropriate position class and lexical rules, and mark the lexical rules as [<span class=\"feat\">poss-pron{i}</span> <span class=\"tt\">plus</span>]. Be sure to select the feature that corresponds to <span class=\"feat\">poss-pron{i}</span>. Note that any person/number/gender features that are listed on a pronominal affix are assumed to be inherent features of that pronominal affix, rather than agreement features. Agreement features should all be added on this page.</p>"
+
+  Label "</div>"
+
+
+  Label "<div id='pron-non-affix{i}' style='display:none'>"
+
+    Radio order "Possessive Pronoun Order" "<p>Do the possessor pronouns occur to the left or the right of the possessum?</p>" ""
+    . head-final "head-final" "" "left<br>"
+    . head-initial "head-initial" "" "right<br>"
+    . either "either" "" "either<br>"
+
+    Radio mod-spec "Modifier or Specifier" "<p>Does the possessor function more like a modifier or a specifier?</p>" ""
+    . mod "Modifier" "" "modifier<br>"
+    . spec "Specifier" "" "specifier<br>"
+
+    Radio agr "Pronominal agreement" "<p>Do these pronouns agree with the possessum in person, number, or gender?</p>" ""
+    . agree "agree" "" "yes<br>"
+    . non-agree "non-agree" "" "no<br>"
+
+    BeginIter  instance{j} "a possessor pronoun instance"
+
+      Text name "Possessive Pronoun Name" "<br>Form name: " "" 15
+
+      Text orth "Possessive Pronoun Orthography" "<br>Form spelling: " "" 15
+
+      Label "<p>Add a feature (e.g. person, number, gender, case) that belongs to this pronoun inherently:</p>"
+  
+      BeginIter feat{k} "an inherent feature to this pronoun"
+
+         Select name "Possessive pronoun {i} Instance {j} Feature {k} Name" "Name: " " "
+         fillnames c=noun
+
+      	 MultiSelect value "Possessive pronoun {i} Instance {j} Feature {k} Value" "Value: " ""
+      	 fillvalues p=poss-pron{i}_instance{j}_feat{k}_name
+
+      EndIter feat
+
+      Label "<p>Add any agreement features (person, number, or gender) to this pronoun that agree with the possessum:</p>"
+  
+      BeginIter agr-feat{k} "an agreement feature to this pronoun"
+
+         Select name "Possessive pronoun {i}  Instance {j} Feature {k} Name" "Name: " " "
+         fillnames c=noun
+
+         MultiSelect value "Possessive pronoun {i} Instance {j} Feature {k} Value" "Value: " ""
+         fillvalues p=poss-pron{i}_instance{j}_agr-feat{k}_name
+
+      EndIter agr-feat
+
+    EndIter instance
+ 
+  Label "</div>"
+
+EndIter poss-pron
+
+
 Section direct-inverse "Direct-inverse"
 
 Label "<p>In some languages, the pattern of marking of verbal
@@ -3256,206 +3460,3 @@ BeginIter imported-entry{i} "an imported Entry"
 
 EndIter imported-entry
 
-
-Section adnom-poss "Adnominal Possession" 
-
-Label "<h3>Define a possessive strategy for possessive noun phrases or add a possessor pronoun:</h3>"
-
-BeginIter poss-strat{i} "a possessive strategy"
-
-     Radio order "Word order" "<p>The word order within a possessive phrase is:</p>" ""
-     . head-final "head-final" "" "possessor-first<br>"
-     . head-initial "head-initial" "" "possessum-first<br>"
-     . either "either" "" "either<br>"
-
-     Radio mod-spec "Modifier or specifier" "<p>In some possessive strategies, the possessor acts like a <b>specifier</b> of the possessum; in other strategies, the possessor is more like a <b>modifier</b> of the possessum. For a full explanation of the tests used to distinguish these two behaviors, see the documentation link above. <br><br> In this strategy, is the possessor more like a </p>" ""
-     . spec "specifier" "" "specifier<br>"
-     . mod "modifier" "" "modifier<br>"
-
-     Radio mark-loc "Mark location" "<p> Do any morphemes (affixes, clitics, or separate words) appear which mark the noun phrase as possessive? If so, where?</p>" ""
-     . possessor "Possessor marking" "" "On the possessor<br>"  "toggle_element.call(this, 'possessor-morph{i}', 'on'); toggle_element.call(this, 'possessum-morph{i}', 'off');"
-     . possessum "Possessum marking" "" "On the possessum<br>"  "toggle_element.call(this, 'possessum-morph{i}', 'on'); toggle_element.call(this, 'possessor-morph{i}', 'off');"
-     . both "Both marking" "" "On both the possessor and the possessum<br>" "toggle_element.call(this, 'possessum-morph{i}', 'on'); toggle_element.call(this, 'possessor-morph{i}', 'on');"
-     . neither "Neither marking" "" "No possessive morphemes appear<br>" "toggle_element.call(this, 'possessum-morph{i}', 'off'); toggle_element.call(this, 'possessor-morph{i}', 'off');"
-
-     Label "<div id='possessor-morph{i}' style='display:none'>"
-     
-	Radio possessor-type "Possessor morpheme type" "<p>Is the morpheme that marks the <b>possessor</b> an affix? Or is it a separate word or clitic?</p>" ""
-     	. affix "Possessor affix" "" "affix<br>"  "toggle_element.call(this, 'possessor-affix{i}', 'on'); toggle_element.call(this, 'possessor-non-affix{i}', 'off');"
-     	. non-affix "Possessor non-affix" "" "separate word or clitic<br>" "toggle_element.call(this, 'possessor-affix{i}', 'off'); toggle_element.call(this, 'possessor-non-affix{i}', 'on');"
-     
-     	   Label "<div id='possessor-affix{i}' style='display:none'>"
-
-	   Radio possessor-affix-agr "Possessor agreement" "<p>Does the affix that marks the possessor agree with the possessum (e.g. in person, number, or gender)?</p>" ""
-	   . agree "Possessor agree" "" "yes<br>"
-	   . non-agree "Possessor non-agree" "" "no<br>"
-
-	   Label "<p> A feature called <span class=\"feat\">possessor_poss-strat{i}</span> with possible values <span class=\"tt\">plus</span> and <span class=\"tt\">minus</span> has been defined for use in defining morphemes on the morphology page.  In order to define a possessor-marking affix, add the appropriate position class and lexical rules, and mark the lexical rules as [<span class=\"feat\">possessor_poss-strat{i}</span> <span class=\"tt\">plus</span>]. If you make the possessive marking obligatory (recommended), remember to also create a non-possessive inflecting rule in the same position class by creating a lexical rule type marked [<span class=\"feat\">possessor_poss-strat{i}</span> <span class=\"tt\">minus</span>]. Be sure to select the feature that corresponds to <span class=\"feat\">possessor_poss-strat{i}</span>. If the possessor-marking affix(es) agree(s) with the possessum, add appropriate person, number, and gender features to each lexical rule type. Note that any person/number/gender features that are listed on a possessor lexical rule type are assumed to be features that agree with the possessum.</p>"
-
-	   Label "</div>"
-
-     	   Label "<div id='possessor-non-affix{i}' style='display:none'>"
-
-           Radio possessor-agr "Possessor agreement" "<p>Does the possessor agree with the possessum?</p>" ""
-	   . agree "Possessor agree" "" "yes<br>" "toggle_element.call(this, 'possessor-agr{i}', 'on'); toggle_element.call(this, 'possessor-non-agr{i}', 'off');"
-	   . non-agree "Possessor non agree" "" "no<br>"  "toggle_element.call(this, 'possessor-agr{i}', 'off');toggle_element.call(this, 'possessor-non-agr{i}', 'on');"
-
-	   Label "<div id='possessor-non-agr{i}' style='display:none'>"
-
-	   Text possessor-orth "Possessor word orth" "<br>The possessor-marking word is spelled " "<br>" 15
-
-	   Label "</div>"
-
-	   Label "<div id='possessor-agr{i}' style='display:none'>"
-
-	   BeginIter possessor-form{n} "a possessor-marking word with agreement features"
-
-	   Text name "Type name" "Type name: " "-adp-lex<br>" 15
-
-	   Text agr-orth "Agreement orthography" "<br> The form spelled: " "<br>carries the following agreement features<br>" 15
-
-	   BeginIter feat{k} "an agreement feature"
-	   
-	   Select name "Possessive strategy {i} possessor-marking word Form {n} Feature {k} Name" "Name: " " "
-      	   fillnames c=noun
-
-      	   MultiSelect value "Possessive Strategy {i} possessor-marking word Form {n} Feature {k} Value" "Value: " ""
-      	   fillvalues p=poss-strat{i}_possessor-form{n}_feat{k}_name
-
-    	   EndIter feat
-
-	   EndIter possessor-form
-
-	   Label "</div>"
-
-     	   Label "</div>"
-
-     Label "</div>"                                                                                                                            
-
-     Label "<div id='possessum-morph{i}' style='display:none'>"
-     
-     Radio possessum-type "Possessum morpheme type" "<p>Is the morpheme that marks the <b>possessum</b> an affix? Or is it a separate word or clitic?</p>" ""
-     . affix "Possessum affix" "" "affix<br>" "toggle_element.call(this, 'possessum-affix{i}', 'on'); toggle_element.call(this, 'possessum-non-affix{i}', 'off');"
-     . non-affix "Possessum non-affix" "" "separate word or clitic<br>"  "toggle_element.call(this, 'possessum-affix{i}', 'off'); toggle_element.call(this, 'possessum-non-affix{i}', 'on');"
-     
-
-     	   Label "<div id='possessum-affix{i}' style='display:none'>"
-
-	   Radio possessum-affix-agr "Possessum agreement" "<p>Does the affix that marks the possessum agree with the possessor (e.g. in person, number, or gender)?</p>" ""
-	   . agree "Possessum agree" "" "yes<br>"
-	   . non-agree "Possessum non-agree" "" "no<br>"
-
-	   Label "<p>A feature called <span class=\"feat\">possessum_poss-strat{i}</span> with possible values <span class=\"tt\">plus</span> and <span class=\"tt\">minus</span> has been defined for use in defining morphemes on the morphology page.  In order to define a possessum-marking affix, add the appropriate position class and lexical rules, and mark the lexical rules as [<span class=\"feat\">possessum_poss-strat{i}</span> <span class=\"tt\">plus</span>]. If you make the possessive marking obligatory (recommended), remember to also create a non-possessive inflecting rule in the same position class by creating a lexical rule type marked [<span class=\"feat\">possessor_poss-strat{i}</span> <span class=\"tt\">minus</span>]. Be sure to select the feature that corresponds to <span class=\"feat\">possessum_poss-strat{i}</span>. If the possessum-marking affix(es) agree(s) with the possessor, add appropriate person, number, and gender features to each lexical rule type. Note that any person/number/gender features that are listed on a possessum lexical rule type are assumed to be features that agree with the possessor.</p>"
-	   
-	   Label "</div>"
-
-           Label "<div id='possessum-non-affix{i}' style='display:none'>"
-
-           Radio possessum-agr "Possessum agreement" "<p>Does the possessum agree with the possessor?</p>" ""
-           . agree "Possessum agree" "" "yes<br>" "toggle_element.call(this, 'possessum-agr{i}', 'on'); toggle_element.call(this, 'possessum-non-agr{i}', 'off');"
-           . non-agree "Possessum non agree" "" "no<br>"  "toggle_element.call(this, 'possessum-agr{i}', 'off');toggle_element.call(this, 'possessum-non-agr{i}', 'on');"
-
-	   Label "<div id='possessum-non-agr{i}' style='display:none'>" 
-
-           Text possessum-orth "Possessum word orth" "<br>The possessum-marking word is spelled " "<br>" 15
-
-	   Label "</div>"
-
-           Label "<div id='possessum-agr{i}' style='display:none'>"
-
-	   BeginIter possessum-form{m} "a possessum-marking word with agreement features"
-
-	   Text name "Type name" "Type name: " "-noun-lex<br>" 15
-
-	   Text agr-orth "Orthography agreement" "<br>The form spelled: " "<br> carries the following agreement features:<br>" 15
-
-           BeginIter feat{l} "an agreement feature"
-	   
-           Select name "Possessive strategy {i} possessum-marking word Form {k} Feature {l} Name" "Name: " " "
-           fillnames c=noun
-
-           MultiSelect value "Noun Position Class {i} Lexical Rule Type {j} Form {k} Feature {l} Value" "Value: " ""
-           fillvalues p=poss-strat{i}_possessum-form{m}_feat{l}_name
-
-           EndIter feat
-
-	   EndIter possessum-form
-
-           Label "</div>"
-
-           Label "</div>"
-
-     Label "</div>"                                                                                                                                                                                         
-EndIter poss-strat
-
-BeginIter poss-pron{i} "a class of possessor pronouns"
-
-  Radio type "Possessive Pronoun Type" "<p>Are these possessor pronouns affixes? Or are they separate words or clitics? </p>" ""
-  . affix "affix" "" "affixes<br>" "toggle_element.call(this, 'pron-non-affix{i}', 'off');toggle_element.call(this, 'pron-affix{i}', 'on');"
-  . non-affix "non-affix" "" "separate words or clitics<br>" "toggle_element.call(this, 'pron-non-affix{i}', 'on');toggle_element.call(this, 'pron-affix{i}', 'off');"
-
-  Label "<div id='pron-affix{i}' style='display:none'>"
-
-    Radio agr "Pronominal agreement" "<p>Do these affixes agree with the possessum in person, number, or gender?</p>" ""
-    . agree "agree" "" "yes<br>"
-    . non-agree "non-agree" "" "no<br>"
-
-    Radio mod-spec "Modifier or Specifier" "<p>If your language has determiners, does the possessum noun still appear with a determiner when marked with these affixes?</p>" ""
-    . mod "Mod" "" "yes<br>"
-    . spec "Spec" "" "no<br>"
-
-    Label "<p>A feature called <span class=\"feat\">poss-pron{i}</span> with possible values <span class=\"tt\">plus</span> and <span class=\"tt\">minus</span> has been defined for use in defining morphemes on the morphology page.  In order to define a pronominal affix, add the appropriate position class and lexical rules, and mark the lexical rules as [<span class=\"feat\">poss-pron{i}</span> <span class=\"tt\">plus</span>]. Be sure to select the feature that corresponds to <span class=\"feat\">poss-pron{i}</span>. Note that any person/number/gender features that are listed on a pronominal affix are assumed to be inherent features of that pronominal affix, rather than agreement features. Agreement features should all be added on this page.</p>"
-
-  Label "</div>"
-
-
-  Label "<div id='pron-non-affix{i}' style='display:none'>"
-
-    Radio order "Possessive Pronoun Order" "<p>Do the possessor pronouns occur to the left or the right of the possessum?</p>" ""
-    . head-final "head-final" "" "left<br>"
-    . head-initial "head-initial" "" "right<br>"
-    . either "either" "" "either<br>"
-
-    Radio mod-spec "Modifier or Specifier" "<p>Does the possessor function more like a modifier or a specifier?</p>" ""
-    . mod "Modifier" "" "modifier<br>"
-    . spec "Specifier" "" "specifier<br>"
-
-    Radio agr "Pronominal agreement" "<p>Do these pronouns agree with the possessum in person, number, or gender?</p>" ""
-    . agree "agree" "" "yes<br>"
-    . non-agree "non-agree" "" "no<br>"
-
-    BeginIter  instance{j} "a possessor pronoun instance"
-
-      Text name "Possessive Pronoun Name" "<br>Form name: " "" 15
-
-      Text orth "Possessive Pronoun Orthography" "<br>Form spelling: " "" 15
-
-      Label "<p>Add a feature (e.g. person, number, gender, case) that belongs to this pronoun inherently:</p>"
-  
-      BeginIter feat{k} "an inherent feature to this pronoun"
-
-         Select name "Possessive pronoun {i} Instance {j} Feature {k} Name" "Name: " " "
-         fillnames c=noun
-
-      	 MultiSelect value "Possessive pronoun {i} Instance {j} Feature {k} Value" "Value: " ""
-      	 fillvalues p=poss-pron{i}_instance{j}_feat{k}_name
-
-      EndIter feat
-
-      Label "<p>Add any agreement features (person, number, or gender) to this pronoun that agree with the possessum:</p>"
-  
-      BeginIter agr-feat{k} "an agreement feature to this pronoun"
-
-         Select name "Possessive pronoun {i}  Instance {j} Feature {k} Name" "Name: " " "
-         fillnames c=noun
-
-         MultiSelect value "Possessive pronoun {i} Instance {j} Feature {k} Value" "Value: " ""
-         fillvalues p=poss-pron{i}_instance{j}_agr-feat{k}_name
-
-      EndIter agr-feat
-
-    EndIter instance
- 
-  Label "</div>"
-
-EndIter poss-pron
