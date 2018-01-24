@@ -1,6 +1,0 @@
-;;; -*- Mode: TDL; Coding: utf-8 -*-
-3obj-lex := 3obj-lex-rule.
-
-3subj-lex := 3subj-lex-rule.
-
-perf-lex := perf-lex-rule.

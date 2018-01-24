@@ -1,6 +1,0 @@
-;;; -*- Mode: TDL; Coding: utf-8 -*-
-singular-lex := singular-lex-rule.
-
-nominative-lex := nominative-lex-rule.
-
-nonpast-lex := nonpast-lex-rule.

@@ -1,7 +1,0 @@
-;;; -*- Mode: TDL; Coding: utf-8 -*-
-;;; Incorporated Stem Lexical Rule Instances
-
-adj_incorp_is-lrt1-prefix :=
-%prefix (* adj)
-adj_incorp_is-lrt1-lex-rule &
-  [ C-CONT.RELS.LIST.FIRST.PRED "_adj_a_rel" ].
