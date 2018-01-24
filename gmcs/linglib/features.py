@@ -91,8 +91,6 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
         poss_lrt=False
         poss_pron_lrt=False
         agreeing_element=''
-        # TODO: change geom prefix based on whether this thing is 
-        # agreeing with possessor or possessum
         for feature in ch_dict.get('feat'):
             feat_name=feature.get('name')
             if 'poss-strat' in feat_name: 
