@@ -91,28 +91,14 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     # feature geometry.
     poss_lrt=False
     poss_pron_lrt=False
-    agreeing_element=''
-    # TODO: change geom prefix based on whether this thing is 
-    # agreeing with possessor or possessum
     for feature in ch_dict.get('feat'):
       feat_name=feature.get('name')
       if 'poss-strat' in feat_name: 
         poss_lrt=True
-        agreeing_element=feature.get('value')
-      elif 'poss-pron' in feat_name:
+      if 'poss-pron' in feat_name:
         poss_pron_lrt=True
-        agreeing_element='possessor'
-      elif 'possessum' in feature.full_key:
-        agreeing_element='possessum'
-      elif 'possessor' in feature.full_key:
-        agreeing_element='possessor'
-      elif 'poss-pron' in feature.full_key:
-        agreeing_element='possessor'      
     if pos=='poss-marker' or poss_lrt:
-      if agreeing_element=='possessor':
-        geom_prefix = 'SYNSEM.LOCAL.CAT.HEAD.POSSESSOR.POSS-AGR.'
-      elif agreeing_element=='possessum':
-        geom_prefix = 'SYNSEM.LOCAL.CAT.POSSESSUM.POSS-AGR.'
+      geom_prefix = 'SYNSEM.LOCAL.CAT.HEAD.POSS.POSS-AGR.'
     if poss_pron_lrt:
       if feat.get('head')=='possessum':
         geom_prefix = 'DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG'
@@ -127,8 +113,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     # is agreeing with
     # EKN 2018-01-06: It now also appears on nouns, to distinguish
     # a noun's inherent features from features that agree with
-    # another nominal element in a possessive phrase; however,
-    # the head feature for possessive phrases is dealt with above
+    # another nominal element in a possessive phrase
     head = feat.get('head','')
     if head in head_map: # TJT 2014-08-15: changing this to map for speed/easy reading
       if head in ('higher', 'lower'):
@@ -175,8 +160,6 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     if geom:
       if n in hierarchies:
         value = hierarchies[n].get_type_covering(v)
-        # EKN 2018-01-19: Add the closing brackets for the possessive
-        # pronoun's feature path
         if poss_pron_lrt:
           value=value+'] !>'
         tdlfile.add(type_name +

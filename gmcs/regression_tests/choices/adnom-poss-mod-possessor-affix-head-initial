@@ -1,9 +1,9 @@
- 
+
 version=28
 
 section=general
-language=adnom-poss-test
-iso-code=eng
+language=adnom-poss-mod-possessor-affix-head-initial
+iso-code=adnom-poss-mod-possessor-affix-head-initial
 comment=This is a sample choices file which exercises only a small range of the information provided by the customization system, in order to create a grammar for a very small fragment of English. It describes and SVO language with a small vocabulary drawn from English and subset of the (already simple) English verbal agreement paradigm.  Where it was not possible to leave a section blank, we have said the language does not manifest the phenomenon, even when this is not actually correct for English.
 
 section=word-order
@@ -23,9 +23,7 @@ first-person=none
 section=gender
 
 section=case
-case-marking=nom-acc
-nom-acc-nom-case-name=nominative
-nom-acc-acc-case-name=accusative
+case-marking=none
 
 section=direct-inverse
 scale-equal=direct
@@ -84,11 +82,8 @@ section=morphology
     noun-pc2_lrt1_name=possessor
       noun-pc2_lrt1_feat1_name=poss-strat1
       noun-pc2_lrt1_feat1_value=possessor
-      noun-pc2_lrt1_feat2_name=case
-      noun-pc2_lrt1_feat2_value=nom
-      noun-pc2_lrt1_feat3_name=information-structure meaning
-      noun-pc2_lrt1_feat3_value=focus
-      noun-pc2_lrt1_lri1_orth=POSSESSOR      
+      noun-pc2_lrt1_lri1_inflecting=yes
+      noun-pc2_lrt1_lri1_orth=POSSESSOR
     noun-pc2_lrt2_name=nonpossessive
       noun-pc2_lrt2_feat1_name=poss-strat1
       noun-pc2_lrt2_feat1_value=nonpossessive
@@ -128,8 +123,9 @@ section=gen-options
 section=ToolboxLexicon
 
 section=adnom-poss
-  poss-strat1_order=head-final
+  poss-strat1_order=head-initial
   poss-strat1_mod-spec=mod
   poss-strat1_mark-loc=possessor
   poss-strat1_possessor-type=affix
-  poss-strat1_possessor-affix-agr=agree
+  poss-strat1_possessor-affix-agr=non-agree
+

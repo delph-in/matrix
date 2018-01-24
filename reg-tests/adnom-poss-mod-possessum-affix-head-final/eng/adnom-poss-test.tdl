@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of adnom-poss-test
 ;;; created at:
-;;;     Sat Jan 13 01:40:35 UTC 2018
+;;;     Sat Jan 06 22:19:08 UTC 2018
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -155,7 +155,7 @@ singular-lex-rule := const-lex-rule & num-lex-rule-super &
 plural-lex-rule := infl-lex-rule & num-lex-rule-super &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM pl ].
 
-possessive-lex-rule-super := add-only-no-ccont-rule &
+possessive-lex-rule-super := lex-rule &
   [ INFLECTED [ POSSESSIVE-FLAG +,
                 NUM-FLAG #num,
                 PERNUM-FLAG #pernum ],
@@ -163,9 +163,38 @@ possessive-lex-rule-super := add-only-no-ccont-rule &
         [ INFLECTED [ NUM-FLAG #num,
                       PERNUM-FLAG #pernum ] ] ].
 
-possessum-lex-rule := infl-lex-rule & possessive-lex-rule-super.
+possessum-lex-rule-1 := val-change-with-ccont-lex-rule &
+  [ SYNSEM.LOCAL.CAT [ HEAD noun &
+                            [ POSS possessum ],
+                       VAL [ SPEC #spec,
+                             SUBJ #subj,
+                             SPR #spr,
+                             COMPS.FIRST [ LOCAL [ CAT cat-sat &
+                                                       [ HEAD +np ],
+                                                   CONT.HOOK.INDEX #possessor ],
+                                           OPT - ] ] ],
+    C-CONT [ HOOK #hook,
+             RELS <! arg12-ev-relation &
+                     [ PRED "poss_rel",
+                       LBL #lbl,
+                       ARG1 #possessum,
+                       ARG2 #possessor ] !>,
+             HCONS <!  !>,
+             ICONS <!  !> ],
+    DTR.SYNSEM.LOCAL [ CAT.VAL [ SPEC #spec,
+                                 SUBJ #subj,
+                                 SPR #spr ],
+                       CONT.HOOK #hook &
+                                 [ INDEX #possessum,
+                                   LTOP #lbl ] ] ].
 
-nonpossessive-lex-rule := const-lex-rule & possessive-lex-rule-super.
+possessum-lex-rule := infl-lex-rule & possessive-lex-rule-super & possessum-lex-rule-1.
+
+nonpossessive-lex-rule-1 := add-only-no-ccont-rule &
+  [ SYNSEM.LOCAL.CAT.HEAD noun &
+                          [ POSS nonpossessive ] ].
+
+nonpossessive-lex-rule := const-lex-rule & nonpossessive-lex-rule-1 & possessive-lex-rule-super.
 
 pernum-lex-rule-super := add-only-no-ccont-rule &
   [ INFLECTED [ PERNUM-FLAG +,

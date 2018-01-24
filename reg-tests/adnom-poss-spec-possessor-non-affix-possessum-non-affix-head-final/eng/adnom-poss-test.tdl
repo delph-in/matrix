@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of adnom-poss-test
 ;;; created at:
-;;;     Sun Jan 14 02:21:46 UTC 2018
+;;;     Sun Jan 07 00:10:01 UTC 2018
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -25,35 +25,14 @@ non-mod-lex-item := lex-item &
 ;;; Matrix Type Addenda
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 
-inflected :+ [ NUM-FLAG luk,
-    PERNUM-FLAG luk ].
+inflected :+ [ PERNUM-FLAG luk,
+    NUM-FLAG luk ].
 
-infl-satisfied :+ [ NUM-FLAG na-or-+,
-    PERNUM-FLAG na-or-+ ].
+infl-satisfied :+ [ PERNUM-FLAG na-or-+,
+    NUM-FLAG na-or-+ ].
 
 png :+ [ PER person,
     NUM number ].
-
-head :+ [ POSS poss ].
-
-poss := *top* &
-  [ POSS-AGR png ].
-
-possessive := poss.
-
-nonpossessive := poss.
-
-possessor := possessive.
-
-possessum := possessive.
-
-basic-bare-np-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS nonpossessive ].
-
-possessive-1 := possessive.
-
-possessor-1 := possessor & possessive-1.
-
-possessum-1 := possessum & possessive-1.
 
 basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.MC #mc,
     HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
@@ -99,7 +78,6 @@ noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & non-mod-lex-ite
   [ ARG-ST < #spr >,
     SYNSEM.LOCAL.CAT [ VAL [ COMPS < >,
                              SUBJ < >,
-                             SPEC < >,
                              SPR < #spr &
                                    [ LOCAL.CAT.HEAD +pd,
                                      OPT - ] > ],
@@ -113,7 +91,7 @@ possessum-noun-lex := basic-two-arg &
   [ ARG-ST < #spr,
              #comps >,
     SYNSEM.LOCAL [ CAT [ HEAD noun &
-                              [ POSS possessum-1 ],
+                              [ POSS possessum ],
                          VAL [ SPR < #spr &
                                      [ LOCAL [ CAT.HEAD +np,
                                                CONT.HOOK.INDEX #possessor ] ] >,
@@ -189,7 +167,7 @@ two-rel-adposition-lex := basic-icons-lex-item &
                           [ ARG2 #ind ] ] ].
 
 possessor-adp-lex := two-rel-adposition-lex &
-  [ SYNSEM.LOCAL [ CAT [ HEAD.POSS possessor-1,
+  [ SYNSEM.LOCAL [ CAT [ HEAD.POSS possessor,
                          VAL [ SPR < >,
                                COMPS.FIRST [ LOCAL.CAT.HEAD noun,
                                              OPT - ],
@@ -236,22 +214,21 @@ non-3rd-lex-rule := const-lex-rule & pernum-lex-rule-super &
 ;;; Phrasal Types
 ;;;;;;;;;;;;;;;;;;;
 
-head-spec-poss-phrase-1 := basic-head-spec-phrase-super & head-final &
+head-spec-poss-phrase := basic-head-spec-phrase-super & head-final &
   [ C-CONT.HOOK #hook,
     NON-HEAD-DTR.SYNSEM [ OPT -,
                           LOCAL.CAT [ VAL.SPR < >,
                                       HEAD +nvjrpcmo &
-                                           [ POSS possessor-1 ] ] ],
+                                           [ POSS possessor ] ] ],
     HEAD-DTR.SYNSEM.LOCAL [ CONT.HOOK #hook,
-                            CAT.HEAD.POSS possessum-1 ] ].
+                            CAT.HEAD.POSS possessum ] ].
 
 ; Rules for building NPs.  Note that the Matrix uses SPR for
 ; the specifier of nouns and SUBJ for the subject (specifier) of verbs.
 
 head-spec-phrase := basic-head-spec-phrase & head-final &
   [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.SPR < >,
-                                    HEAD +vjrcdmo &
-                                         [ POSS nonpossessive ] ] ].
+                                    HEAD.POSS nonpossessive ] ].
 
 ;Constraint on MC used to be part of matrix.tdl
 ;;it applies to all wo implementations, except for v2

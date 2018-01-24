@@ -189,13 +189,7 @@ def customize_test_sentences(grammar_path):
                     s.write('""')
                 for sentence in ch.get('sentence',[]):
                     s.write('"' + sentence.get('orth','') + '" ')
-                    # 2017-12-13 OZ: Adding two lines below.
-                    # Shouldn't the start be printed in test_sentences
-                    # if the sentence is ungrammatical? Also see choices.py uprev convert_23_to_24().
-                    if sentence['star'] == 'on':
-                        ts.write('*' + sentence.get('orth','') + '\n')
-                    else:
-                        ts.write(sentence.get('orth','') + '\n')
+                    ts.write(sentence.get('orth','') + '\n')
                 s.write(')))\n')
             else:
                 s.write(l + '\n')
