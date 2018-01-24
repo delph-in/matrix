@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of adnom-poss-mod-juxt
 ;;; created at:
-;;;     Wed Jan 24 01:39:00 UTC 2018
+;;;     Wed Jan 24 01:46:32 UTC 2018
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -25,14 +25,38 @@ non-mod-lex-item := lex-item &
 ;;; Matrix Type Addenda
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 
-inflected :+ [ NUM-FLAG luk,
-    PERNUM-FLAG luk ].
+inflected :+ [ PERNUM-FLAG luk,
+    NUM-FLAG luk ].
 
-infl-satisfied :+ [ NUM-FLAG na-or-+,
-    PERNUM-FLAG na-or-+ ].
+infl-satisfied :+ [ PERNUM-FLAG na-or-+,
+    NUM-FLAG na-or-+ ].
 
 png :+ [ PER person,
     NUM number ].
+
+head :+ [ POSSESSOR poss ].
+
+cat :+ [ POSSESSUM poss ].
+
+poss := *top* &
+  [ POSS-AGR png ].
+
+possessive := poss.
+
+nonpossessive := poss.
+
+possessor := possessive.
+
+possessum := possessive.
+
+basic-bare-np-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR nonpossessive,
+                                POSSESSUM nonpossessive ] ].
+
+possessive-1 := possessive.
+
+possessor-1 := possessor & possessive-1.
+
+possessum-1 := possessum & possessive-1.
 
 basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.MC #mc,
     HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
@@ -82,7 +106,8 @@ noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & non-mod-lex-ite
                              SPR < #spr &
                                    [ LOCAL.CAT.HEAD det,
                                      OPT - ] > ],
-                       HEAD.POSS nonpossessive ] ].
+                       HEAD.POSSESSOR nonpossessive,
+                       POSSESSUM nonpossessive ] ].
 
 common-noun-lex := noun-lex &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 3rd,
@@ -167,7 +192,7 @@ non-3rd-lex-rule := const-lex-rule & pernum-lex-rule-super &
 ;;; Phrasal Types
 ;;;;;;;;;;;;;;;;;;;
 
-poss-phrase := head-final &
+poss-phrase-1 := head-final &
   [ NON-HEAD-DTR.SYNSEM.LOCAL [ CAT [ HEAD noun,
                                       VAL.SPR < > ],
                                 CONT.HOOK.INDEX #possessor ],
@@ -179,7 +204,8 @@ poss-phrase := head-final &
                                       [ INDEX #possessum,
                                         LTOP #lbl ],
                             CAT [ HEAD #head & noun,
-                                  VAL.SPR #spr ] ],
+                                  VAL.SPR #spr &
+                                          < [ ] > ] ],
     C-CONT [ HOOK #hook &
                   [ INDEX #possessum ],
              ICONS <!  !>,
@@ -195,7 +221,8 @@ poss-phrase := head-final &
 
 head-spec-phrase := basic-head-spec-phrase & head-final &
   [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.SPR < >,
-                                    HEAD.POSS nonpossessive ] ].
+                                    HEAD +vjrcdmo &
+                                         [ POSSESSOR nonpossessive ] ] ].
 
 ;Constraint on MC used to be part of matrix.tdl
 ;;it applies to all wo implementations, except for v2

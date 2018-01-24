@@ -1,5 +1,8 @@
-; File for spelling preserving lexical rules, i.e., instances
-; of (subtypes of) const-ltol-rule or const-ltow-rule.
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+singular-lex := singular-lex-rule.
 
-; %suffix should not appear in this file (see irules.tdl).
+non-possessive-lex := non-possessive-lex-rule.
 
+pl-lex := pl-lex-rule.
+
+non-3rd-lex := non-3rd-lex-rule.

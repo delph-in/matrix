@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of adnom-poss-spec-dep-non-aff-head-non-aff-free-wo
 ;;; created at:
-;;;     Wed Jan 24 01:39:43 UTC 2018
+;;;     Wed Jan 24 01:47:01 UTC 2018
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -33,6 +33,30 @@ infl-satisfied :+ [ PERNUM-FLAG na-or-+,
 
 png :+ [ PER person,
     NUM number ].
+
+head :+ [ POSSESSOR poss ].
+
+cat :+ [ POSSESSUM poss ].
+
+poss := *top* &
+  [ POSS-AGR png ].
+
+possessive := poss.
+
+nonpossessive := poss.
+
+possessor := possessive.
+
+possessum := possessive.
+
+basic-bare-np-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR nonpossessive,
+                                POSSESSUM nonpossessive ] ].
+
+possessive-1 := possessive.
+
+possessor-1 := possessor & possessive-1.
+
+possessum-1 := possessum & possessive-1.
 
 basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.MC #mc,
     HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
@@ -78,10 +102,12 @@ noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & non-mod-lex-ite
   [ ARG-ST < #spr >,
     SYNSEM.LOCAL.CAT [ VAL [ COMPS < >,
                              SUBJ < >,
+                             SPEC < >,
                              SPR < #spr &
                                    [ LOCAL.CAT.HEAD +pd,
                                      OPT - ] > ],
-                       HEAD.POSS nonpossessive ] ].
+                       HEAD.POSSESSOR nonpossessive,
+                       POSSESSUM nonpossessive ] ].
 
 common-noun-lex := noun-lex &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 3rd,
@@ -90,17 +116,7 @@ common-noun-lex := noun-lex &
 possessum-noun-lex := basic-two-arg &
   [ ARG-ST < #spr,
              #comps >,
-    SYNSEM.LOCAL [ CAT [ HEAD noun &
-                              [ POSS possessum ],
-                         VAL [ SPR < #spr &
-                                     [ LOCAL [ CAT.HEAD +np,
-                                               CONT.HOOK.INDEX #possessor ] ] >,
-                               COMPS < #comps &
-                                       [ LOCAL [ CAT.VAL.SPR < [ ] >,
-                                                 CONT.HOOK #hook &
-                                                           [ INDEX #possessum,
-                                                             LTOP #lbl ] ] ] > ] ],
-                   CONT [ HOOK #hook,
+    SYNSEM.LOCAL [ CONT [ HOOK #hook,
                           ICONS <!  !>,
                           RELS <! arg12-ev-relation &
                                   [ PRED "poss_rel",
@@ -112,7 +128,17 @@ possessum-noun-lex := basic-two-arg &
                                                          RSTR #harg ] !>,
                           HCONS <! qeq &
                                    [ HARG #harg,
-                                     LARG #lbl ] !> ] ] ].
+                                     LARG #lbl ] !> ],
+                   CAT [ HEAD noun,
+                         POSSESSUM possessum-1,
+                         VAL [ COMPS < #comps &
+                                       [ LOCAL [ CAT.VAL.SPR < [ ] >,
+                                                 CONT.HOOK #hook &
+                                                           [ INDEX #possessum,
+                                                             LTOP #lbl ] ] ] >,
+                               SPR < #spr &
+                                     [ LOCAL [ CONT.HOOK.INDEX #possessor,
+                                               CAT.HEAD adp ] ] > ] ] ] ].
 
 ;;; Verbs
 
@@ -167,7 +193,8 @@ two-rel-adposition-lex := basic-icons-lex-item &
                           [ ARG2 #ind ] ] ].
 
 possessor-adp-lex := two-rel-adposition-lex &
-  [ SYNSEM.LOCAL [ CAT [ HEAD.POSS possessor,
+  [ SYNSEM.LOCAL [ CAT [ HEAD.POSSESSOR possessor-1,
+                         POSSESSUM nonpossessive,
                          VAL [ SPR < >,
                                COMPS.FIRST [ LOCAL.CAT.HEAD noun,
                                              OPT - ],
@@ -214,21 +241,27 @@ non-3rd-lex-rule := const-lex-rule & pernum-lex-rule-super &
 ;;; Phrasal Types
 ;;;;;;;;;;;;;;;;;;;
 
-head-spec-poss-phrase := basic-head-spec-phrase-super & either &
+head-spec-poss-phrase-1 := basic-head-spec-phrase-super &
   [ C-CONT.HOOK #hook,
     NON-HEAD-DTR.SYNSEM [ OPT -,
-                          LOCAL.CAT [ VAL.SPR < >,
+                          LOCAL.CAT [ VAL [ SPR < >,
+                                            COMPS < > ],
                                       HEAD +nvjrpcmo &
-                                           [ POSS possessor ] ] ],
+                                           [ POSSESSOR possessor-1 ] ] ],
     HEAD-DTR.SYNSEM.LOCAL [ CONT.HOOK #hook,
-                            CAT.HEAD.POSS possessum ] ].
+                            CAT.POSSESSUM possessum-1 ] ].
 
 ; Rules for building NPs.  Note that the Matrix uses SPR for
 ; the specifier of nouns and SUBJ for the subject (specifier) of verbs.
 
 head-spec-phrase := basic-head-spec-phrase & head-final &
   [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.SPR < >,
-                                    HEAD.POSS nonpossessive ] ].
+                                    HEAD +vjrcdmo &
+                                         [ POSSESSOR nonpossessive ] ] ].
+
+head-spec-poss-phrase-1-head-initial := head-initial & head-spec-poss-phrase-1.
+
+head-spec-poss-phrase-1-head-final := head-final & head-spec-poss-phrase-1.
 
 ;Constraint on MC used to be part of matrix.tdl
 ;;it applies to all wo implementations, except for v2

@@ -286,8 +286,7 @@ head-min := avm.
 head := head-min &
   [ MOD list,
     PRD bool,
-    KEYS keys_min,
-    POSS poss ].
+    KEYS keys_min ].
 
 
 ; (ERB 2004-08-19) We had previously shied away from defining head
@@ -572,20 +571,8 @@ event-or-ref-index := individual.
 
 expl-ind := index.
 
-; 2018-01-01 EKN As experiment, declaring PNG on a supertype
-; that ref-ind inherits from:
-
 ref-ind := index & event-or-ref-index & 
 	[ PNG png ].
-
-; EKN 2017-12-12 Adding POSS feature to HEAD.
-
-;poss := png-item.
-poss := *top*.
-possessive := poss.
-nonpossessive := poss.
-possessor := possessive.
-possessum := possessive.
 
 ; Types encoding agreement information, analyzed as a part of the
 ; index, following Pollard & Sag 1994.  Which subtypes and features
@@ -2134,7 +2121,7 @@ basic-bare-np-phrase := head-only & head-valence-phrase &
 			   SUBJ < >,
 			   COMPS < >,
 			   SPEC < > ],
-    HEAD-DTR.SYNSEM.LOCAL [ CAT [ HEAD noun & [ POSS nonpossessive ],
+    HEAD-DTR.SYNSEM.LOCAL [ CAT [ HEAD noun,
 				  VAL [ SPR < unexpressed & 
 				      	      [ LOCAL.CAT.HEAD det,
 						OPT + ] >,

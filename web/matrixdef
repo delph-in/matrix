@@ -2895,13 +2895,13 @@ BeginIter poss-strat{i} "a possessive strategy"
      Radio order "Word order" "<p>The word order within a possessive phrase is:</p>" ""
      . head-final "head-final" "" "possessor-first<br>"
      . head-initial "head-initial" "" "possessum-first<br>"
-     . either "either" "" "either (not currently working)<br>"
+     . either "either" "" "either<br>"
 
-     Radio mod-spec "Modifier or specifier" "<p>The possessor is more like a </p>" ""
+     Radio mod-spec "Modifier or specifier" "<p>In some possessive strategies, the possessor acts like a <b>specifier</b> of the possessum; in other strategies, the possessor is more like a <b>modifier</b> of the possessum. For a full explanation of the tests used to distinguish these two behaviors, see the documentation link above. <br><br> In this strategy, is the possessor more like a </p>" ""
      . spec "specifier" "" "specifier<br>"
      . mod "modifier" "" "modifier<br>"
 
-     Radio mark-loc "Mark location" "<p> Do any morphemes appear which mark the noun phrase as possessive? If so, where?</p>" ""
+     Radio mark-loc "Mark location" "<p> Do any morphemes (affixes, clitics, or separate words) appear which mark the noun phrase as possessive? If so, where?</p>" ""
      . possessor "Possessor marking" "" "On the possessor<br>"  "toggle_element.call(this, 'possessor-morph{i}', 'on'); toggle_element.call(this, 'possessum-morph{i}', 'off');"
      . possessum "Possessum marking" "" "On the possessum<br>"  "toggle_element.call(this, 'possessum-morph{i}', 'on'); toggle_element.call(this, 'possessor-morph{i}', 'off');"
      . both "Both marking" "" "On both the possessor and the possessum<br>" "toggle_element.call(this, 'possessum-morph{i}', 'on'); toggle_element.call(this, 'possessor-morph{i}', 'on');"
@@ -2925,13 +2925,9 @@ BeginIter poss-strat{i} "a possessive strategy"
 
      	   Label "<div id='possessor-non-affix{i}' style='display:none'>"
 
-	   Radio possessor-marker-order "Possessor marker order" "The possessor-marking word or clitic appears to the "  " of the possessor<br>" 
-	   . head-initial "left" "" "left"
-	   . head-final "right" "" "right"
-
-	   Radio possessor-agr "Possessor agreement" " and " " agree with the possessum.<br>"
-	   . agree "Possessor agree" "" "does" "toggle_element.call(this, 'possessor-agr{i}', 'on'); toggle_element.call(this, 'possessor-non-agr{i}', 'off');"
-	   . non-agree "Possessor non agree" "" "does not"  "toggle_element.call(this, 'possessor-agr{i}', 'off');toggle_element.call(this, 'possessor-non-agr{i}', 'on');"
+           Radio possessor-agr "Possessor agreement" "<p>Does the possessor agree with the possessum?</p>" ""
+	   . agree "Possessor agree" "" "yes<br>" "toggle_element.call(this, 'possessor-agr{i}', 'on'); toggle_element.call(this, 'possessor-non-agr{i}', 'off');"
+	   . non-agree "Possessor non agree" "" "no<br>"  "toggle_element.call(this, 'possessor-agr{i}', 'off');toggle_element.call(this, 'possessor-non-agr{i}', 'on');"
 
 	   Label "<div id='possessor-non-agr{i}' style='display:none'>"
 
@@ -2984,13 +2980,9 @@ BeginIter poss-strat{i} "a possessive strategy"
 
            Label "<div id='possessum-non-affix{i}' style='display:none'>"
 
-           Radio possessum-marker-order "Possessum marker order" "<br>The possessum-marking word appears to the "  " of the possessum<br>"
-           . head-initial "left" "" "left"
-           . head-final "right" "" "right"
-
-           Radio possessum-agr "Possessum agreement" " and " " agree with the possessor.<br>"
-           . agree "Possessum agree" "" "does" "toggle_element.call(this, 'possessum-agr{i}', 'on'); toggle_element.call(this, 'possessum-non-agr{i}', 'off');"
-           . non-agree "Possessum non agree" "" "does not"  "toggle_element.call(this, 'possessum-agr{i}', 'off');toggle_element.call(this, 'possessum-non-agr{i}', 'on');"
+           Radio possessum-agr "Possessum agreement" "<p>Does the possessum agree with the possessor?</p>" ""
+           . agree "Possessum agree" "" "yes<br>" "toggle_element.call(this, 'possessum-agr{i}', 'on'); toggle_element.call(this, 'possessum-non-agr{i}', 'off');"
+           . non-agree "Possessum non agree" "" "no<br>"  "toggle_element.call(this, 'possessum-agr{i}', 'off');toggle_element.call(this, 'possessum-non-agr{i}', 'on');"
 
 	   Label "<div id='possessum-non-agr{i}' style='display:none'>" 
 
@@ -3051,7 +3043,7 @@ BeginIter poss-pron{i} "a class of possessor pronouns"
     Radio order "Possessive Pronoun Order" "<p>Do the possessor pronouns occur to the left or the right of the possessum?</p>" ""
     . head-final "head-final" "" "left<br>"
     . head-initial "head-initial" "" "right<br>"
-    . either "either" "" "either (not currently working)<br>"
+    . either "either" "" "either<br>"
 
     Radio mod-spec "Modifier or Specifier" "<p>Does the possessor function more like a modifier or a specifier?</p>" ""
     . mod "Modifier" "" "modifier<br>"
@@ -3094,5 +3086,5 @@ BeginIter poss-pron{i} "a class of possessor pronouns"
     EndIter instance
  
   Label "</div>"
-     
+
 EndIter poss-pron

@@ -1,4 +1,4 @@
 ;;; -*- Mode: TDL; Coding: utf-8 -*-
 (in-package :common-lisp-user)
 
-(defparameter *grammar-version* "adnom-poss-spec-head-aff-hf (2018-01-24_01:39:45_UTC)")
+(defparameter *grammar-version* "adnom-poss-spec-head-aff-hf (2018-01-24_01:47:10_UTC)")
