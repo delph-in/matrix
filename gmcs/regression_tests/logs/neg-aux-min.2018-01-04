@@ -1,0 +1,14 @@
+=== Readings-Compare ===
+
+[19:31:26] compare-in-detail():
+  `current/neg-aux-min' vs. `gold/neg-aux-min'
+  on {`readings'} and <> with []:
+
+[19:31:26] compare-in-detail(): 0 differences.
+
+
+=== MRS-Compare ===
+
+loaded 2 items
+2 left results    /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/current/neg-aux-min
+2 right results   /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/gold/neg-aux-min

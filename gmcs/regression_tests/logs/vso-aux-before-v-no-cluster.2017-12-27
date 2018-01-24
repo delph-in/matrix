@@ -1,0 +1,14 @@
+=== Readings-Compare ===
+
+[14:05:20] compare-in-detail():
+  `current/vso-aux-before-v-no-cluster' vs. `gold/vso-aux-before-v-no-cluster'
+  on {`readings'} and <> with []:
+
+[14:05:20] compare-in-detail(): 0 differences.
+
+
+=== MRS-Compare ===
+
+loaded 160 items
+7 left results    /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/current/vso-aux-before-v-no-cluster
+7 right results   /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/gold/vso-aux-before-v-no-cluster

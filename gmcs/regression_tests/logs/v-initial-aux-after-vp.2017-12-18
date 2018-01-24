@@ -1,0 +1,14 @@
+=== Readings-Compare ===
+
+[18:52:02] compare-in-detail():
+  `current/v-initial-aux-after-vp' vs. `gold/v-initial-aux-after-vp'
+  on {`readings'} and <> with []:
+
+[18:52:02] compare-in-detail(): 0 differences.
+
+
+=== MRS-Compare ===
+
+loaded 158 items
+6 left results    /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/current/v-initial-aux-after-vp
+6 right results   /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/gold/v-initial-aux-after-vp

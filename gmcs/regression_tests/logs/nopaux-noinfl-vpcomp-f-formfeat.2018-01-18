@@ -1,0 +1,14 @@
+=== Readings-Compare ===
+
+[11:21:23] compare-in-detail():
+  `current/nopaux-noinfl-vpcomp-f-formfeat' vs. `gold/nopaux-noinfl-vpcomp-f-formfeat'
+  on {`readings'} and <> with []:
+
+[11:21:23] compare-in-detail(): 0 differences.
+
+
+=== MRS-Compare ===
+
+loaded 6 items
+2 left results    /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/current/nopaux-noinfl-vpcomp-f-formfeat
+2 right results   /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/gold/nopaux-noinfl-vpcomp-f-formfeat

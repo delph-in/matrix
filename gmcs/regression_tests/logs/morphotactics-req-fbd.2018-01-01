@@ -1,0 +1,14 @@
+=== Readings-Compare ===
+
+[22:40:29] compare-in-detail():
+  `current/morphotactics-req-fbd' vs. `gold/morphotactics-req-fbd'
+  on {`readings'} and <> with []:
+
+[22:40:29] compare-in-detail(): 0 differences.
+
+
+=== MRS-Compare ===
+
+loaded 18 items
+7 left results    /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/current/morphotactics-req-fbd
+7 right results   /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/gold/morphotactics-req-fbd

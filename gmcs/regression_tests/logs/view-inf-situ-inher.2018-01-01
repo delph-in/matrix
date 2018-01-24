@@ -1,0 +1,14 @@
+=== Readings-Compare ===
+
+[22:40:35] compare-in-detail():
+  `current/view-inf-situ-inher' vs. `gold/view-inf-situ-inher'
+  on {`readings'} and <> with []:
+
+[22:40:35] compare-in-detail(): 0 differences.
+
+
+=== MRS-Compare ===
+
+loaded 9 items
+6 left results    /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/current/view-inf-situ-inher
+6 right results   /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/gold/view-inf-situ-inher

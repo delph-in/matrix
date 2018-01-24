@@ -1,0 +1,14 @@
+=== Readings-Compare ===
+
+[22:40:20] compare-in-detail():
+  `current/dir-inv-algonquian' vs. `gold/dir-inv-algonquian'
+  on {`readings'} and <> with []:
+
+[22:40:20] compare-in-detail(): 0 differences.
+
+
+=== MRS-Compare ===
+
+loaded 28 items
+16 left results    /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/current/dir-inv-algonquian
+16 right results   /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/gold/dir-inv-algonquian

@@ -1,0 +1,14 @@
+=== Readings-Compare ===
+
+[11:17:38] compare-in-detail():
+  `current/multi-wd-lex' vs. `gold/multi-wd-lex'
+  on {`readings'} and <> with []:
+
+[11:17:38] compare-in-detail(): 0 differences.
+
+
+=== MRS-Compare ===
+
+loaded 3 items
+2 left results    /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/current/multi-wd-lex
+2 right results   /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/gold/multi-wd-lex

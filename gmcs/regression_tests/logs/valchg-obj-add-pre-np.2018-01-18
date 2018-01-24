@@ -1,0 +1,14 @@
+=== Readings-Compare ===
+
+[11:21:25] compare-in-detail():
+  `current/valchg-obj-add-pre-np' vs. `gold/valchg-obj-add-pre-np'
+  on {`readings'} and <> with []:
+
+[11:21:25] compare-in-detail(): 0 differences.
+
+
+=== MRS-Compare ===
+
+loaded 4 items
+2 left results    /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/current/valchg-obj-add-pre-np
+2 right results   /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/gold/valchg-obj-add-pre-np

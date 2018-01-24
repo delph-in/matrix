@@ -1,0 +1,14 @@
+=== Readings-Compare ===
+
+[09:41:00] compare-in-detail():
+  `current/aux-assigns-subj-case-vp' vs. `gold/aux-assigns-subj-case-vp'
+  on {`readings'} and <> with []:
+
+[09:41:00] compare-in-detail(): 0 differences.
+
+
+=== MRS-Compare ===
+
+loaded 18 items
+5 left results    /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/current/aux-assigns-subj-case-vp
+5 right results   /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/gold/aux-assigns-subj-case-vp

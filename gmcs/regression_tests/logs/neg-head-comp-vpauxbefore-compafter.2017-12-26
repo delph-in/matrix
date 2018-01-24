@@ -1,0 +1,14 @@
+=== Readings-Compare ===
+
+[16:18:46] compare-in-detail():
+  `current/neg-head-comp-vpauxbefore-compafter' vs. `gold/neg-head-comp-vpauxbefore-compafter'
+  on {`readings'} and <> with []:
+
+[16:18:46] compare-in-detail(): 0 differences.
+
+
+=== MRS-Compare ===
+
+loaded 10 items
+4 left results    /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/current/neg-head-comp-vpauxbefore-compafter
+4 right results   /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/gold/neg-head-comp-vpauxbefore-compafter

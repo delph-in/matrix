@@ -1,0 +1,14 @@
+=== Readings-Compare ===
+
+[19:31:24] compare-in-detail():
+  `current/infostr-foc-v2-prev' vs. `gold/infostr-foc-v2-prev'
+  on {`readings'} and <> with []:
+
+[19:31:24] compare-in-detail(): 0 differences.
+
+
+=== MRS-Compare ===
+
+loaded 15 items
+10 left results    /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/current/infostr-foc-v2-prev
+10 right results   /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/gold/infostr-foc-v2-prev

@@ -1,0 +1,14 @@
+=== Readings-Compare ===
+
+[11:17:14] compare-in-detail():
+  `current/adj-both-either-stative' vs. `gold/adj-both-either-stative'
+  on {`readings'} and <> with []:
+
+[11:17:14] compare-in-detail(): 0 differences.
+
+
+=== MRS-Compare ===
+
+loaded 47 items
+23 left results    /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/current/adj-both-either-stative
+23 right results   /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/gold/adj-both-either-stative

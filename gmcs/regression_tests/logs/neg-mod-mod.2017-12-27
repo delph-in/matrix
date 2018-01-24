@@ -1,0 +1,14 @@
+=== Readings-Compare ===
+
+[14:05:15] compare-in-detail():
+  `current/neg-mod-mod' vs. `gold/neg-mod-mod'
+  on {`readings'} and <> with []:
+
+[14:05:15] compare-in-detail(): 0 differences.
+
+
+=== MRS-Compare ===
+
+loaded 6 items
+2 left results    /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/current/neg-mod-mod
+2 right results   /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/gold/neg-mod-mod

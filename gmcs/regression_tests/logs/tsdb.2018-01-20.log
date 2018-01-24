@@ -1,0 +1,265 @@
+initialize(): unable to create data file for `analysis' (read-only).
+initialize(): unable to create data file for `phenomenon' (read-only).
+initialize(): unable to create data file for `parameter' (read-only).
+initialize(): unable to create data file for `set' (read-only).
+initialize(): unable to create data file for `item-phenomenon' (read-only).
+initialize(): unable to create data file for `rule' (read-only).
+initialize(): unable to create data file for `output' (read-only).
+initialize(): unable to create data file for `update' (read-only).
+initialize(): unable to create data file for `fold' (read-only).
+initialize(): unable to create data file for `score' (read-only).
+initialize(): creating empty data file for `analysis'.
+initialize(): creating empty data file for `phenomenon'.
+initialize(): creating empty data file for `parameter'.
+initialize(): creating empty data file for `set'.
+initialize(): creating empty data file for `item-phenomenon'.
+initialize(): creating empty data file for `rule'.
+initialize(): creating empty data file for `output'.
+initialize(): creating empty data file for `update'.
+initialize(): creating empty data file for `fold'.
+initialize(): creating empty data file for `score'.
+read_tuple(): non-integer `' as `i-wf' in `item' (1).
+read_tuple(): non-integer `' as `i-wf' in `item' (1).
+initialize(): unable to create data file for `analysis' (read-only).
+initialize(): unable to create data file for `phenomenon' (read-only).
+initialize(): unable to create data file for `parameter' (read-only).
+initialize(): unable to create data file for `set' (read-only).
+initialize(): unable to create data file for `item-phenomenon' (read-only).
+initialize(): unable to create data file for `rule' (read-only).
+initialize(): unable to create data file for `output' (read-only).
+initialize(): unable to create data file for `update' (read-only).
+initialize(): unable to create data file for `fold' (read-only).
+initialize(): unable to create data file for `score' (read-only).
+initialize(): creating empty data file for `analysis'.
+initialize(): creating empty data file fo
+T
+TSNLP(17): 
+T
+TSNLP(18): 
+T
+TSNLP(19): 
+T
+TSNLP(20): 
+T
+TSNLP(21): 
+T
+TSNLP(22): 
+T
+TSNLP(23): T
+TSNLP(24): EOF
+Really exit lisp [n]? 
+close-connection(): `gold/adnom-poss-mod-possessum-affix-bidirec' expiry.
+close-connection(): `current/adnom-poss-mod-possessum-affix-bidirec' expiry.
+close-connection(): `gold/adnom-poss-mod-possessor-non-affix-possessum-affix-bidirec' expiry.
+close-connection(): `current/adnom-poss-mod-possessor-non-affix-possessum-affix-bidirec' expiry.
+close-connection(): `gold/adnom-poss-mod-possessor-non-affix-bidirec' expiry.
+close-connection(): `current/adnom-poss-mod-possessor-non-affix-bidirec' expiry.
+close-connection(): `gold/adnom-poss-mod-possessor-affix-bidirec' expiry.
+close-connection(): `current/adnom-poss-mod-possessor-affix-bidirec' expiry.
+close-connection(): `gold/adnom-poss-spec-possessum-affix-bidirec' expiry.
+close-connection(): `current/adnom-poss-spec-possessum-affix-bidirec' expiry.
+close-connection(): `gold/adnom-poss-spec-possessor-non-affix-possessum-non-affix-bidirec' expiry.
+close-connection(): `current/adnom-poss-spec-possessor-non-affix-possessum-non-affix-bidirec' expiry.
+close-connection(): `gold/adnom-poss-spec-possessor-non-affix-possessum-affix-bidirec' expiry.
+close-connection(): `current/adnom-poss-spec-possessor-non-affix-possessum-affix-bidirec' expiry.
+close-connection(): `gold/adnom-poss-spec-possessor-non-affix-bidirec' expiry.
+close-connection(): `current/adnom-poss-spec-possessor-non-affix-bidirec' expiry.
+close-connection(): `gold/adnom-poss-spec-possessor-affix-bidirec' expiry.
+close-connection(): `current/adnom-poss-spec-possessor-affix-bidirec' expiry.
+ile for `update'.
+initialize(): creating empty data file for `fold'.
+initialize(): creating empty data file for `score'.
+read_tuple(): non-integer `' as `i-wf' in `item' (1).
+read_tuple(): non-integer `' as `i-wf' in `item' (1).
+initialize(): unable to create data file for `analysis' (read-only).
+initialize(): unable to create data file for `phenomenon' (read-only).
+initialize(): unable to create data file for `parameter' (read-only).
+initialize(): unable to create data file for `set' (read-only).
+initialize(): unable to create data file for `item-phenomenon' (read-only).
+initialize(): unable to create data file for `rule' (read-only).
+initialize(): unable to create data file for `output' (read-only).
+initialize(): unable to create data file for `update' (read-only).
+initialize(): unable to create data file for `fold' (read-only).
+initialize(): unable to create data file for `score' (read-only).
+initialize(): creating empty data file for `analysis'.
+initialize(): creating empty data file for `phenomenon'.
+initialize(): creating empty data file for `parameter'.
+initialize(): creating empty data file for `set'.
+initialize(): creating empty data file for `item-phenomenon'.
+initialize(): creating empty data file for `rule'.
+initialize(): creating empty data file for `output'.
+initialize(): creating empty data file for `update'.
+initialize(): creating empty data file for `fold'.
+initialize(): creating empty data file for `score'.
+read_tuple(): non-integer `' as `i-wf' in `item' (1).
+read_tuple(): non-integer `' as `i-wf' in `item' (1).
+initialize(): unable to create data file for `analysis' (read-only).
+initialize(): unable to create data file for `phenomenon' (read-only).
+initialize(): unable to create data file for `parameter' (read-only).
+initialize(): unable to create data file for `set' (read-only).
+initialize(): unable to create data file for `item-phenomenon' (read-only).
+initialize(): unable to create data file for `rule' (read-only).
+initialize(): unable to create data file for `output' (read-only).
+initialize(): unable to create data file for `update' (read-only).
+initialize(): unable to create data file for `fold' (read-only).
+initialize(): unable to create data file for `score' (read-only).
+initialize(): creating empty data file for `analysis'.
+initialize(): creating empty data file for `phenomenon'.
+initialize(): creating empty data file for `parameter'.
+initialize(): creating empty data file for `set'.
+initialize(): creating empty data file for `item-phenomenon'.
+initialize(): creating empty data file for `rule'.
+initialize(): creating empty data file for `output'.
+initialize(): creating empty data file for `update'.
+initialize(): creating empty data file for `fold'.
+initialize(): creating empty data file for `score'.
+read_tuple(): non-integer `' as `i-wf' in `item' (1).
+read_tuple(): non-integer `' as `i-wf' in `item' (1).
+initialize(): unable to create data file for `analysis' (read-only).
+initialize(): unable to create data file for `phenomenon' (read-only).
+initialize(): unable to create data file for `parameter' (read-only).
+initialize(): unable to create data file for `set' (read-only).
+initialize(): unable to create data file for `item-phenomenon' (read-only).
+initialize(): unable to create data file for `rule' (read-only).
+initialize(): unable to create data file for `output' (read-only).
+initialize(): unable to create data file for `update' (read-only).
+initialize(): unable to create data file for `fold' (read-only).
+initialize(): unable to create data file for `score' (read-only).
+initialize(): creating empty data file for `analysis'.
+initialize(): creating empty data file for `phenomenon'.
+initialize(): creating empty data file for `parameter'.
+initialize(): creating empty data file for `set'.
+initialize(): creating empty data file for `item-phenomenon'.
+initialize(): creating empty data file for `rule'.
+initialize(): creating empty data file for `output'.
+initialize(): creating empty data file for `update'.
+initialize(): creating empty data file for `fold'.
+initialize(): creating empty data file for `score'.
+read_tuple(): non-integer `' as `i-wf' in `item' (1).
+read_tuple(): non-integer `' as `i-wf' in `item' (1).
+initialize(): unable to create data file for `analysis' (read-only).
+initialize(): unable to create data file for `phenomenon' (read-only).
+initialize(): unable to create data file for `parameter' (read-only).
+initialize(): unable to create data file for `set' (read-only).
+initialize(): unable to create data file for `item-phenomenon' (read-only).
+initialize(): unable to create data file for `rule' (read-only).
+initialize(): unable to create data file for `output' (read-only).
+initialize(): unable to create data file for `update' (read-only).
+initialize(): unable to create data file for `fold' (read-only).
+initialize(): unable to create data file for `score' (read-only).
+initialize(): creating empty data file for `analysis'.
+initialize(): creating empty data file for `phenomenon'.
+initialize(): creating empty data file for `parameter'.
+initialize(): creating empty data file for `set'.
+initialize(): creating empty data file for `item-phenomenon'.
+initialize(): creating empty data file for `rule'.
+initialize(): creating empty data file for `output'.
+initialize(): creating empty data file for `update'.
+initialize(): creating empty data file for `fold'.
+initialize(): creating empty data file for `score'.
+read_tuple(): non-integer `' as `i-wf' in `item' (1).
+initialize(): unable to create data file for `analysis' (read-only).
+initialize(): unable to create data file for `phenomenon' (read-only).
+initialize(): unable to create data file for `parameter' (read-only).
+initialize(): unable to create data file for `set' (read-only).
+initialize(): unable to create data file for `item-phenomenon' (read-only).
+initialize(): unable to create data file for `rule' (read-only).
+initialize(): unable to create data file for `output' (read-only).
+initialize(): unable to create data file for `update' (read-only).
+initialize(): unable to create data file for `fold' (read-only).
+initialize(): unable to create data file for `score' (read-only).
+initialize(): creating empty data file for `analysis'.
+initialize(): creating empty data file for `phenomenon'.
+initialize(): creating empty data file for `parameter'.
+initialize(): creating empty data file for `set'.
+initialize(): creating empty data file for `item-phenomenon'.
+initialize(): creating empty data file for `rule'.
+initialize(): creating empty data file for `output'.
+initialize(): creating empty data file for `update'.
+initialize(): creating empty data file for `fold'.
+initialize(): creating empty data file for `score'.
+read_tuple(): non-integer `' as `i-wf' in `item' (1).
+initialize(): unable to create data file for `analysis' (read-only).
+initialize(): unable to create data file for `phenomenon' (read-only).
+initialize(): unable to create data file for `parameter' (read-only).
+initialize(): unable to create data file for `set' (read-only).
+initialize(): unable to create data file for `item-phenomenon' (read-only).
+initialize(): unable to create data file for `rule' (read-only).
+initialize(): unable to create data file for `output' (read-only).
+initialize(): unable to create data file for `update' (read-only).
+initialize(): unable to create data file for `fold' (read-only).
+initialize(): unable to create data file for `score' (read-only).
+initialize(): creating empty data file for `analysis'.
+initialize(): creating empty data file for `phenomenon'.
+initialize(): creating empty data file for `parameter'.
+initialize(): creating empty data file for `set'.
+initialize(): creating empty data file for `item-phenomenon'.
+initialize(): creating empty data file for `rule'.
+initialize(): creating empty data file for `output'.
+initialize(): creating empty data file for `update'.
+initialize(): creating empty data file for `fold'.
+initialize(): creating empty data file for `score'.
+read_tuple(): non-integer `' as `i-wf' in `item' (1).
+initialize(): unable to create data file for `analysis' (read-only).
+initialize(): unable to create data file for `phenomenon' (read-only).
+initialize(): unable to create data file for `parameter' (read-only).
+initialize(): unable to create data file for `set' (read-only).
+initialize(): unable to create data file for `item-phenomenon' (read-only).
+initialize(): unable to create data file for `rule' (read-only).
+initialize(): unable to create data file for `output' (read-only).
+initialize(): unable to create data file for `update' (read-only).
+initialize(): unable to create data file for `fold' (read-only).
+initialize(): unable to create data file for `score' (read-only).
+initialize(): creating empty data file for `analysis'.
+initialize(): creating empty data file for `phenomenon'.
+initialize(): creating empty data file for `parameter'.
+initialize(): creating empty data file for `set'.
+initialize(): creating empty data file for `item-phenomenon'.
+initialize(): creating empty data file for `rule'.
+initialize(): creating empty data file for `output'.
+initialize(): creating empty data file for `update'.
+initialize(): creating empty data file for `fold'.
+initialize(): creating empty data file for `score'.
+read_tuple(): non-integer `' as `i-wf' in `item' (1).
+initialize(): unable to create data file for `analysis' (read-only).
+initialize(): unable to create data file for `phenomenon' (read-only).
+initialize(): unable to create data file for `parameter' (read-only).
+initialize(): unable to create data file for `set' (read-only).
+initialize(): unable to create data file for `item-phenomenon' (read-only).
+initialize(): unable to create data file for `rule' (read-only).
+initialize(): unable to create data file for `output' (read-only).
+initialize(): unable to create data file for `update' (read-only).
+initialize(): unable to create data file for `fold' (read-only).
+initialize(): unable to create data file for `score' (read-only).
+initialize(): creating empty data file for `analysis'.
+initialize(): creating empty data file for `phenomenon'.
+initialize(): creating empty data file for `parameter'.
+initialize(): creating empty data file for `set'.
+initialize(): creating empty data file for `item-phenomenon'.
+initialize(): creating empty data file for `rule'.
+initialize(): creating empty data file for `output'.
+initialize(): creating empty data file for `update'.
+initialize(): creating empty data file for `fold'.
+initialize(): creating empty data file for `score'.
+read_tuple(): non-integer `' as `i-wf' in `item' (1).
+initialize(): unable to create data file for `analysis' (read-only).
+initialize(): unable to create data file for `phenomenon' (read-only).
+initialize(): unable to create data file for `parameter' (read-only).
+initialize(): unable to create data file for `set' (read-only).
+initialize(): unable to create data file for `item-phenomenon' (read-only).
+initialize(): unable to create data file for `rule' (read-only).
+initialize(): unable to create data file for `output' (read-only).
+initialize(): unable to create data file for `update' (read-only).
+initialize(): unable to create data file for `fold' (read-only).
+initialize(): unable to create data file for `score' (read-only).
+initialize(): creating empty data file for `analysis'.
+initialize(): creating empty data file for `phenomenon'.
+initialize(): creating empty data file for `parameter'.
+initialize(): creating empty data file for `set'.
+initialize(): creating empty data file for `item-phenomenon'.
+initialize(): creating empty data file for `rule'.
+initialize(): creating empty data file for `output'.
+initialize(): creating empty data file for `update'.
+initialize(): creating empty data file for `fold'.
+initialize(): creating empty data file for `score'.
+read_tuple(): non-integer `' as `i-wf' in `item' (1).

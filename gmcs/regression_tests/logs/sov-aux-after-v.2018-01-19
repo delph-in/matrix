@@ -1,0 +1,14 @@
+=== Readings-Compare ===
+
+[23:44:19] compare-in-detail():
+  `current/sov-aux-after-v' vs. `gold/sov-aux-after-v'
+  on {`readings'} and <> with []:
+
+[23:44:19] compare-in-detail(): 0 differences.
+
+
+=== MRS-Compare ===
+
+loaded 266 items
+7 left results    /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/current/sov-aux-after-v
+7 right results   /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/gold/sov-aux-after-v

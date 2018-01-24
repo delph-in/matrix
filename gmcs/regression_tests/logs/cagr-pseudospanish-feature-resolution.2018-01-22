@@ -1,0 +1,14 @@
+=== Readings-Compare ===
+
+[16:25:37] compare-in-detail():
+  `current/cagr-pseudospanish-feature-resolution' vs. `gold/cagr-pseudospanish-feature-resolution'
+  on {`readings'} and <> with []:
+
+[16:25:37] compare-in-detail(): 0 differences.
+
+
+=== MRS-Compare ===
+
+loaded 113 items
+75 left results    /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/current/cagr-pseudospanish-feature-resolution
+75 right results   /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/gold/cagr-pseudospanish-feature-resolution

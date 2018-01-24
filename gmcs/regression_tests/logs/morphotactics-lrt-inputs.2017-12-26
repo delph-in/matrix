@@ -1,0 +1,14 @@
+=== Readings-Compare ===
+
+[16:18:45] compare-in-detail():
+  `current/morphotactics-lrt-inputs' vs. `gold/morphotactics-lrt-inputs'
+  on {`readings'} and <> with []:
+
+[16:18:45] compare-in-detail(): 0 differences.
+
+
+=== MRS-Compare ===
+
+loaded 18 items
+10 left results    /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/current/morphotactics-lrt-inputs
+10 right results   /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/gold/morphotactics-lrt-inputs

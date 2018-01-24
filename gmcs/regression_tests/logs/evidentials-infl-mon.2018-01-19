@@ -1,0 +1,14 @@
+=== Readings-Compare ===
+
+[23:44:08] compare-in-detail():
+  `current/evidentials-infl-mon' vs. `gold/evidentials-infl-mon'
+  on {`readings'} and <> with []:
+
+[23:44:08] compare-in-detail(): 0 differences.
+
+
+=== MRS-Compare ===
+
+loaded 4 items
+3 left results    /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/current/evidentials-infl-mon
+3 right results   /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/gold/evidentials-infl-mon

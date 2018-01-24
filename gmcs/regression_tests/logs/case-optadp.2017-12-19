@@ -1,0 +1,14 @@
+=== Readings-Compare ===
+
+[11:51:13] compare-in-detail():
+  `current/case-optadp' vs. `gold/case-optadp'
+  on {`readings'} and <> with []:
+
+[11:51:13] compare-in-detail(): 0 differences.
+
+
+=== MRS-Compare ===
+
+loaded 14 items
+6 left results    /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/current/case-optadp
+6 right results   /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/gold/case-optadp

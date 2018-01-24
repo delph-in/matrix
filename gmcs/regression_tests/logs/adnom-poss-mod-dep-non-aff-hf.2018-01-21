@@ -1,0 +1,14 @@
+=== Readings-Compare ===
+
+[21:01:44] compare-in-detail():
+  `current/adnom-poss-mod-dep-non-aff-hf' vs. `gold/adnom-poss-mod-dep-non-aff-hf'
+  on {`readings'} and <> with []:
+
+[21:01:44] compare-in-detail(): 0 differences.
+
+
+=== MRS-Compare ===
+
+loaded 6 items
+1 left results    /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/current/adnom-poss-mod-dep-non-aff-hf
+1 right results   /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/gold/adnom-poss-mod-dep-non-aff-hf

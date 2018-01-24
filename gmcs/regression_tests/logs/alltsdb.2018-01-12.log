@@ -1,0 +1,45 @@
+== BEGIN TSDB LOG for adnom-poss-spec-juxt ==
+initialize(): unable to create data file for `analysis' (read-only).
+initialize(): unable to create data file for `phenomenon' (read-only).
+initialize(): unable to create data file for `parameter' (read-only).
+initialize(): unable to create data file for `set' (read-only).
+initialize(): unable to create data file for `item-phenomenon' (read-only).
+initialize(): unable to create data file for `rule' (read-only).
+initialize(): unable to create data file for `output' (read-only).
+initialize(): unable to create data file for `update' (read-only).
+initialize(): unable to create data file for `fold' (read-only).
+initialize(): unable to create data file for `score' (read-only).
+initialize(): creating empty data file for `analysis'T
+TSNLP(8): EOF
+Really exit lisp [n]? 
+close-connection(): `gold/adnom-poss-spec-juxt' expiry.
+close-connection(): `current/adnom-poss-spec-juxt' expiry.
+for `set'.
+initialize(): creating empty data file for `item-phenomenon'.
+initialize(): creating empty data file for `rule'.
+initialize(): creating empty data file for `output'.
+initialize(): creating empty data file for `update'.
+initialize(): creating empty data file for `fold'.
+initialize(): creating empty data file for `score'.
+read_tuple(): non-integer `' as `i-wf' in `item' (1).
+initialize(): unable to create data file for `analysis' (read-only).
+initialize(): unable to create data file for `phenomenon' (read-only).
+initialize(): unable to create data file for `parameter' (read-only).
+initialize(): unable to create data file for `set' (read-only).
+initialize(): unable to create data file for `item-phenomenon' (read-only).
+initialize(): unable to create data file for `rule' (read-only).
+initialize(): unable to create data file for `output' (read-only).
+initialize(): unable to create data file for `update' (read-only).
+initialize(): unable to create data file for `fold' (read-only).
+initialize(): unable to create data file for `score' (read-only).
+initialize(): creating empty data file for `analysis'.
+initialize(): creating empty data file for `phenomenon'.
+initialize(): creating empty data file for `parameter'.
+initialize(): creating empty data file for `set'.
+initialize(): creating empty data file for `item-phenomenon'.
+initialize(): creating empty data file for `rule'.
+initialize(): creating empty data file for `output'.
+initialize(): creating empty data file for `update'.
+initialize(): creating empty data file for `fold'.
+initialize(): creating empty data file for `score'.
+read_tuple(): non-integer `' as `i-wf' in `item' (1).

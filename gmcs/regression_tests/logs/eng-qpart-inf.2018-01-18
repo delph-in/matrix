@@ -1,0 +1,14 @@
+=== Readings-Compare ===
+
+[11:21:11] compare-in-detail():
+  `current/eng-qpart-inf' vs. `gold/eng-qpart-inf'
+  on {`readings'} and <> with []:
+
+[11:21:11] compare-in-detail(): 0 differences.
+
+
+=== MRS-Compare ===
+
+loaded 5 items
+3 left results    /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/current/eng-qpart-inf
+3 right results   /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/gold/eng-qpart-inf

@@ -1,0 +1,14 @@
+=== Readings-Compare ===
+
+[22:40:22] compare-in-detail():
+  `current/infostr-cf-mod-after-noun' vs. `gold/infostr-cf-mod-after-noun'
+  on {`readings'} and <> with []:
+
+[22:40:22] compare-in-detail(): 0 differences.
+
+
+=== MRS-Compare ===
+
+loaded 2 items
+2 left results    /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/current/infostr-cf-mod-after-noun
+2 right results   /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/gold/infostr-cf-mod-after-noun

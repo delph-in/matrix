@@ -1,0 +1,14 @@
+=== Readings-Compare ===
+
+[18:51:47] compare-in-detail():
+  `current/arg-opt-lex-comps-drop-marker-req-wth-drop-np-wthout' vs. `gold/arg-opt-lex-comps-drop-marker-req-wth-drop-np-wthout'
+  on {`readings'} and <> with []:
+
+[18:51:47] compare-in-detail(): 0 differences.
+
+
+=== MRS-Compare ===
+
+loaded 12 items
+3 left results    /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/current/arg-opt-lex-comps-drop-marker-req-wth-drop-np-wthout
+3 right results   /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/gold/arg-opt-lex-comps-drop-marker-req-wth-drop-np-wthout

@@ -1,0 +1,14 @@
+=== Readings-Compare ===
+
+[11:17:31] compare-in-detail():
+  `current/free-one-aux-max-v' vs. `gold/free-one-aux-max-v'
+  on {`readings'} and <> with []:
+
+[11:17:31] compare-in-detail(): 0 differences.
+
+
+=== MRS-Compare ===
+
+loaded 152 items
+20 left results    /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/current/free-one-aux-max-v
+20 right results   /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/gold/free-one-aux-max-v

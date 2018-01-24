@@ -1,0 +1,14 @@
+=== Readings-Compare ===
+
+[16:25:38] compare-in-detail():
+  `current/case-split-v' vs. `gold/case-split-v'
+  on {`readings'} and <> with []:
+
+[16:25:38] compare-in-detail(): 0 differences.
+
+
+=== MRS-Compare ===
+
+loaded 60 items
+4 left results    /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/current/case-split-v
+4 right results   /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/gold/case-split-v

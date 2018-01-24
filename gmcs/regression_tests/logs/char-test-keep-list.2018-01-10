@@ -1,0 +1,14 @@
+=== Readings-Compare ===
+
+[15:37:25] compare-in-detail():
+  `current/char-test-keep-list' vs. `gold/char-test-keep-list'
+  on {`readings'} and <> with []:
+
+[15:37:25] compare-in-detail(): 0 differences.
+
+
+=== MRS-Compare ===
+
+loaded 32 items
+32 left results    /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/current/char-test-keep-list
+32 right results   /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/gold/char-test-keep-list

@@ -1,0 +1,14 @@
+=== Readings-Compare ===
+
+[11:17:27] compare-in-detail():
+  `current/auxfeatures-onlyformmarked' vs. `gold/auxfeatures-onlyformmarked'
+  on {`readings'} and <> with []:
+
+[11:17:27] compare-in-detail(): 0 differences.
+
+
+=== MRS-Compare ===
+
+loaded 6 items
+4 left results    /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/current/auxfeatures-onlyformmarked
+4 right results   /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/gold/auxfeatures-onlyformmarked

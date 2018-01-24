@@ -1,0 +1,14 @@
+=== Readings-Compare ===
+
+[21:01:32] compare-in-detail():
+  `current/Slave' vs. `gold/Slave'
+  on {`readings'} and <> with []:
+
+[21:01:32] compare-in-detail(): 0 differences.
+
+
+=== MRS-Compare ===
+
+loaded 113 items
+24 left results    /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/current/Slave
+24 right results   /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/gold/Slave

@@ -1,0 +1,14 @@
+=== Readings-Compare ===
+
+[09:41:01] compare-in-detail():
+  `current/aux-vp-f-noinfl' vs. `gold/aux-vp-f-noinfl'
+  on {`readings'} and <> with []:
+
+[09:41:01] compare-in-detail(): 0 differences.
+
+
+=== MRS-Compare ===
+
+loaded 8 items
+2 left results    /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/current/aux-vp-f-noinfl
+2 right results   /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/gold/aux-vp-f-noinfl

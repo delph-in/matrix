@@ -1,0 +1,14 @@
+=== Readings-Compare ===
+
+[11:21:06] compare-in-detail():
+  `current/arg-opt-lex-cntxt-2feat-subj-drop-marker-req-wth-drop-req-wthout' vs. `gold/arg-opt-lex-cntxt-2feat-subj-drop-marker-req-wth-drop-req-wthout'
+  on {`readings'} and <> with []:
+
+[11:21:06] compare-in-detail(): 0 differences.
+
+
+=== MRS-Compare ===
+
+loaded 42 items
+8 left results    /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/current/arg-opt-lex-cntxt-2feat-subj-drop-marker-req-wth-drop-req-wthout
+8 right results   /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/gold/arg-opt-lex-cntxt-2feat-subj-drop-marker-req-wth-drop-req-wthout

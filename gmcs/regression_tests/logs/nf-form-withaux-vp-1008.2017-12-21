@@ -1,0 +1,14 @@
+=== Readings-Compare ===
+
+[20:45:44] compare-in-detail():
+  `current/nf-form-withaux-vp-1008' vs. `gold/nf-form-withaux-vp-1008'
+  on {`readings'} and <> with []:
+
+[20:45:44] compare-in-detail(): 0 differences.
+
+
+=== MRS-Compare ===
+
+loaded 4 items
+1 left results    /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/current/nf-form-withaux-vp-1008
+1 right results   /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/gold/nf-form-withaux-vp-1008

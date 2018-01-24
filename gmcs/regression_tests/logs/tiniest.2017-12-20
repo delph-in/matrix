@@ -1,0 +1,14 @@
+=== Readings-Compare ===
+
+[11:17:42] compare-in-detail():
+  `current/tiniest' vs. `gold/tiniest'
+  on {`readings'} and <> with []:
+
+[11:17:42] compare-in-detail(): 0 differences.
+
+
+=== MRS-Compare ===
+
+loaded 9 items
+4 left results    /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/current/tiniest
+4 right results   /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/gold/tiniest

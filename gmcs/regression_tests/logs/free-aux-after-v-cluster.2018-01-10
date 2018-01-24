@@ -1,0 +1,14 @@
+=== Readings-Compare ===
+
+[15:37:27] compare-in-detail():
+  `current/free-aux-after-v-cluster' vs. `gold/free-aux-after-v-cluster'
+  on {`readings'} and <> with []:
+
+[15:37:27] compare-in-detail(): 0 differences.
+
+
+=== MRS-Compare ===
+
+loaded 144 items
+20 left results    /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/current/free-aux-after-v-cluster
+20 right results   /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/gold/free-aux-after-v-cluster

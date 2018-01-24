@@ -1,0 +1,14 @@
+=== Readings-Compare ===
+
+[11:51:00] compare-in-detail():
+  `current/adj-comp_cop' vs. `gold/adj-comp_cop'
+  on {`readings'} and <> with []:
+
+[11:51:00] compare-in-detail(): 0 differences.
+
+
+=== MRS-Compare ===
+
+loaded 6 items
+1 left results    /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/current/adj-comp_cop
+1 right results   /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/gold/adj-comp_cop

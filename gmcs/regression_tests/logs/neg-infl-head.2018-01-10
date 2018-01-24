@@ -1,0 +1,14 @@
+=== Readings-Compare ===
+
+[15:37:36] compare-in-detail():
+  `current/neg-infl-head' vs. `gold/neg-infl-head'
+  on {`readings'} and <> with []:
+
+[15:37:36] compare-in-detail(): 0 differences.
+
+
+=== MRS-Compare ===
+
+loaded 7 items
+4 left results    /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/current/neg-infl-head
+4 right results   /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/gold/neg-infl-head

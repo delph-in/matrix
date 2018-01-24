@@ -1,0 +1,14 @@
+=== Readings-Compare ===
+
+[14:04:53] compare-in-detail():
+  `current/adj-split_infl_cop_mix' vs. `gold/adj-split_infl_cop_mix'
+  on {`readings'} and <> with []:
+
+[14:04:53] compare-in-detail(): 0 differences.
+
+
+=== MRS-Compare ===
+
+loaded 106 items
+6 left results    /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/current/adj-split_infl_cop_mix
+6 right results   /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/gold/adj-split_infl_cop_mix

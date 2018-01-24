@@ -1,0 +1,14 @@
+=== Readings-Compare ===
+
+[16:25:35] compare-in-detail():
+  `current/arg-opt-lex-subj-drop-no-marker' vs. `gold/arg-opt-lex-subj-drop-no-marker'
+  on {`readings'} and <> with []:
+
+[16:25:35] compare-in-detail(): 0 differences.
+
+
+=== MRS-Compare ===
+
+loaded 19 items
+8 left results    /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/current/arg-opt-lex-subj-drop-no-marker
+8 right results   /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/gold/arg-opt-lex-subj-drop-no-marker

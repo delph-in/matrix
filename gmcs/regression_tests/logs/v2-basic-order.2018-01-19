@@ -1,0 +1,14 @@
+=== Readings-Compare ===
+
+[23:44:21] compare-in-detail():
+  `current/v2-basic-order' vs. `gold/v2-basic-order'
+  on {`readings'} and <> with []:
+
+[23:44:21] compare-in-detail(): 0 differences.
+
+
+=== MRS-Compare ===
+
+loaded 4 items
+0 left results    /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/current/v2-basic-order
+0 right results   /home/ekayen/delphin/adnom-poss/gmcs/regression_tests/home/gold/v2-basic-order
