@@ -1153,9 +1153,7 @@ class ChoicesFile:
         # if 'neg1b-neg2b' in self.choices:
         #  features += [ ['neg2', 'plus|plus', '', 'verb' ] ]
 
-        # Possessives 
-        # EKN 2017-01-13
-        # TODO: change verb to noun
+        # Possessives EKN 2017-01-13
         for strat in self.get('poss-strat'):
             if strat.get('possessor-type')=='affix' or strat.get('possessum-type')=='affix':
                 strat_name=strat.full_key
