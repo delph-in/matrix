@@ -1465,6 +1465,23 @@ def validate_clausalmods(ch, vr):
             mess = 'You must select a subordinator type.'
             vr.err(cms.full_key + '_subordinator', mess)
 
+######################################################################
+# Validation of clausal modifiers
+def validate_clausalmods(ch, vr):
+    """Check to see if the user completed the necessary portions of the
+       Clausal Modifiers page and check for unsupported combinations of choices"""
+    for cms in ch.get('cms'):
+        # First check the choices that are required for all clausal mod strategies
+        if not cms.get('position'):
+            mess = 'You must select a position for the clausal modifier.'
+            vr.err(cms.full_key + '_position', mess)
+        if not cms.get('modifier-attach'):
+            mess = 'You must select VP or S attachment for the clausal modifier.'
+            vr.err(cms.full_key + '_modifier-attach', mess)
+        if not cms.get('subordinator'):
+            mess = 'You must select a subordinator type.'
+            vr.err(cms.full_key + '_subordinator', mess)
+
         # Next check the choices required for free and pair subordinators
         if cms.get('subordinator') == 'free' or cms.get('subordinator') == 'pair':
             if not cms.get('subposition'):
@@ -1552,7 +1569,6 @@ def validate_nominalized_clauses(ch, vr):
                 mess = 'The analysis for your word order does not include a' + \
                        ' VP constituent. You must select V or S nominalization.'
                 vr.err(ns.full_key + '_level', mess)
-
 
 
 ######################################################################
@@ -1711,7 +1727,6 @@ def validate_adnominal_possession(ch, vr):
                         mess='You must give a value for this feature.'
                         vr.err(feat.full_key+'_value',mess)
         
-
 def validate(ch, extra = False):
     """
     Validate the ChoicesFile ch.  Return a ValidationResult that

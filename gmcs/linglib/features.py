@@ -33,7 +33,6 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     pos_geom_prefix = prefix_map[pos] if pos in prefix_map else 'SYNSEM.'
 
     iter_feat = 'feat' if pos != 'auxcomplement' else 'compfeature'
-
     basic_infl_neg_def = ''':= \
                    [ C-CONT [ HOOK [ XARG #xarg,\
                      LTOP #ltop,\
@@ -72,7 +71,6 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
             v = [case.canon_to_abbr(c, cases) for c in v]
 
         geom_prefix = pos_geom_prefix
-
 
         # EKN 2017-01-02 If adding AGREEMENT PNG features to a 
         # possessive marker or affix, they should be at
