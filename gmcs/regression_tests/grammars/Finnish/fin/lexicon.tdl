@@ -1,0 +1,26 @@
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+;;; Nouns
+
+opiskelija := noun1-noun-lex &
+  [ STEM < "opiskelija" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_student_n_rel" ].
+
+omena := noun2-noun-lex &
+  [ STEM < "omena" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_apple_n_rel" ].
+
+NP := noun2-noun-lex &
+  [ STEM < "NP" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_np_n_rel" ].
+
+;;; Adjectives
+
+;;; Verbs
+
+kAvele := verb1-verb-lex &
+  [ STEM < "kAvele" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_walk_v_rel" ].
+
+pidA := verb2-verb-lex &
+  [ STEM < "pidA" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_like_v_rel" ].

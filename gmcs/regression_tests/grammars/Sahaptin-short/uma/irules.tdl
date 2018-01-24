@@ -1,0 +1,98 @@
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+;;; Inflecting Lexical Rule Instances
+
+_topic_lrt1-suffix :=
+%suffix (* -top)
+_topic_lrt1-lex-rule.
+
+intrans-prefix_lrt1-prefix :=
+%prefix (* i-)
+intrans-prefix_lrt1-lex-rule.
+
+intrans-prefix_lrt2-prefix :=
+%prefix (* pa-)
+intrans-prefix_lrt2-lex-rule.
+
+trans-prefix_lrt1-prefix :=
+%prefix (* i-)
+trans-prefix_lrt1-lex-rule.
+
+trans-prefix_lrt2-prefix :=
+%prefix (* pa-)
+trans-prefix_lrt2-lex-rule.
+
+trans-prefix_lrt3-prefix :=
+%prefix (* á-)
+trans-prefix_lrt3-lex-rule.
+
+trans-prefix_lrt4-prefix :=
+%prefix (* pá-)
+trans-prefix_lrt4-lex-rule.
+
+trans-prefix_lrt5-prefix :=
+%prefix (* pá-)
+trans-prefix_lrt5-lex-rule.
+
+trans-prefix_lrt6-prefix :=
+%prefix (* patá-)
+trans-prefix_lrt6-lex-rule.
+
+intrans-enclitic_lrt1-suffix :=
+%suffix (* =naš)
+intrans-enclitic_lrt1-lex-rule.
+
+intrans-enclitic_lrt2-suffix :=
+%suffix (* =na)
+intrans-enclitic_lrt2-lex-rule.
+
+intrans-enclitic_lrt3-suffix :=
+%suffix (* =nataš)
+intrans-enclitic_lrt3-lex-rule.
+
+intrans-enclitic_lrt4-suffix :=
+%suffix (* =nam)
+intrans-enclitic_lrt4-lex-rule.
+
+intrans-enclitic_lrt5-suffix :=
+%suffix (* =pam)
+intrans-enclitic_lrt5-lex-rule.
+
+trans-enclitic_lrt1-suffix :=
+%suffix (* =naš)
+trans-enclitic_lrt1-lex-rule.
+
+trans-enclitic_lrt2-suffix :=
+%suffix (* =na)
+trans-enclitic_lrt2-lex-rule.
+
+trans-enclitic_lrt3-suffix :=
+%suffix (* =nataš)
+trans-enclitic_lrt3-lex-rule.
+
+trans-enclitic_lrt4-suffix :=
+%suffix (* =nam)
+trans-enclitic_lrt4-lex-rule.
+
+trans-enclitic_lrt5-suffix :=
+%suffix (* =nam)
+trans-enclitic_lrt5-lex-rule.
+
+trans-enclitic_lrt6-suffix :=
+%suffix (* =pam)
+trans-enclitic_lrt6-lex-rule.
+
+trans-enclitic_lrt7-suffix :=
+%suffix (* =pam)
+trans-enclitic_lrt7-lex-rule.
+
+trans-enclitic_lrt8-suffix :=
+%suffix (* =maš)
+trans-enclitic_lrt8-lex-rule.
+
+trans-enclitic_lrt9-suffix :=
+%suffix (* =mataš)
+trans-enclitic_lrt9-lex-rule.
+
+trans-enclitic_lrt10-suffix :=
+%suffix (* =mataš)
+trans-enclitic_lrt10-lex-rule.

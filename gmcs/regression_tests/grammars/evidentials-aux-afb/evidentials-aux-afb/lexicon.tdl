@@ -1,0 +1,28 @@
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+;;; Nouns
+
+rayyaal := common-noun-noun-lex &
+  [ STEM < "rayyaal" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_man_n_rel" ].
+
+laHam := common-noun-noun-lex &
+  [ STEM < "laHam" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_meat_n_rel" ].
+
+;;; Adjectives
+
+;;; Verbs
+
+akal := tr-verb-verb-lex &
+  [ STEM < "akal" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_eat_v_rel" ].
+
+DaHak := itr-verb-verb-lex &
+  [ STEM < "DaHak" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_laugh_v_rel" ].
+
+;;; Auxiliaries
+
+yikuun := evid-aux-lex &
+  [ STEM < "yikuun" >,
+    SYNSEM.LKEYS.KEYREL.PRED "ev_nonfirsthand_rel" ].

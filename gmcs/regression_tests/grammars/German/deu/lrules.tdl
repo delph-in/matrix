@@ -1,0 +1,2 @@
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+weak-acc_lrt2-lex := weak-acc_lrt2-lex-rule.

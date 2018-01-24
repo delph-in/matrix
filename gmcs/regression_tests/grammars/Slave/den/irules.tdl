@@ -1,0 +1,86 @@
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+;;; Inflecting Lexical Rule Instances
+
+reciprocal-prefix :=
+%prefix (* d-)
+reciprocal-lex-rule.
+
+1SG-SUBJ-prefix :=
+%prefix (* h-)
+1SG-SUBJ-lex-rule.
+
+1PL-SUBJ-prefix :=
+%prefix (* id-)
+1PL-SUBJ-lex-rule.
+
+perfective-prefix :=
+%prefix (* n-)
+perfective-lex-rule.
+
+yconj-prefix :=
+%prefix (* y-)
+yconj-lex-rule.
+
+wconj-prefix :=
+%prefix (* w-)
+wconj-lex-rule.
+
+inceptive-prefix :=
+%prefix (* de-)
+inceptive-lex-rule.
+
+serative-prefix :=
+%prefix (* i-)
+serative-lex-rule.
+
+theme1-prefix :=
+%prefix (* ne-)
+theme1-lex-rule.
+
+3PL-prefix :=
+%prefix (* ke-)
+3PL-lex-rule.
+
+3SG-prefix :=
+%prefix (* be-)
+3SG-lex-rule.
+
+1SG-OBJ-prefix :=
+%prefix (* se-)
+1SG-OBJ-lex-rule.
+
+reciprocal-object-prefix :=
+%prefix (* ele-)
+reciprocal-object-lex-rule.
+
+dual-prefix :=
+%prefix (* leh-)
+dual-lex-rule.
+
+laugh-prefix :=
+%prefix (* dlo-)
+laugh-lex-rule.
+
+customary-prefix :=
+%prefix (* na-)
+customary-lex-rule.
+
+distributive-prefix :=
+%prefix (* ya-)
+distributive-lex-rule.
+
+avbl1-prefix :=
+%prefix (* na-)
+avbl1-lex-rule.
+
+into-prefix :=
+%prefix (* keh-)
+into-lex-rule.
+
+3-POSTPOS-OBJ-prefix :=
+%prefix (* be-)
+3-POSTPOS-OBJ-lex-rule.
+
+negation-prefix :=
+%prefix (* du-)
+negation-lex-rule.

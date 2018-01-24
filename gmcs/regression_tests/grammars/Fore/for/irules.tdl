@@ -1,0 +1,10 @@
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+;;; Inflecting Lexical Rule Instances
+
+case_lrt1-suffix :=
+%suffix (* ma)
+case_lrt1-lex-rule.
+
+case_lrt2-suffix :=
+%suffix (* wama)
+case_lrt2-lex-rule.

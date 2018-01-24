@@ -1,0 +1,18 @@
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+;;; Inflecting Lexical Rule Instances
+
+plural-suffix :=
+%suffix (* s)
+plural-lex-rule.
+
+;;; Incorporated Stem Lexical Rule Instances
+
+noun-pc1_is-lrt1-prefix :=
+%prefix (* adj1)
+noun-pc1_is-lrt1-lex-rule &
+  [ C-CONT.RELS.LIST.FIRST.PRED "_adj_a_rel" ].
+
+noun-pc1_is-lrt2-prefix :=
+%prefix (* adj2)
+noun-pc1_is-lrt2-lex-rule &
+  [ C-CONT.RELS.LIST.FIRST.PRED "_adj_a_rel" ].

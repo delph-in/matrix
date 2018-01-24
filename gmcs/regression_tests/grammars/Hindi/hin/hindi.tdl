@@ -1,0 +1,184 @@
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Grammar of Hindi
+;;; created at:
+;;;     Wed Jan 24 02:50:22 UTC 2018
+;;; based on Matrix customization system version of:
+;;;     unknown time
+;;;
+;;; 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+; Type assigning empty mod list. Added to basic types for nouns, verbs and determiners.
+
+non-mod-lex-item := lex-item &
+  [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].
+
+;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Matrix Type Addenda
+;;;;;;;;;;;;;;;;;;;;;;;;;
+
+noun :+ [ CASE case ].
+
+inflected :+ [ CASE-FLAG luk,
+    VERB-PC1-FLAG luk,
+    VERB-PC2-FLAG luk ].
+
+infl-satisfied :+ [ CASE-FLAG na-or-+,
+    VERB-PC1-FLAG na-or-+,
+    VERB-PC2-FLAG na-or-+ ].
+
+basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.MC #mc,
+    HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
+
+basic-head-mod-phrase-simple :+ [ SYNSEM.LOCAL.CAT.MC #mc,
+    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
+
+basic-head-opt-subj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
+
+;;;;;;;;;;;;;;
+;;; Features
+;;;;;;;;;;;;;;
+
+;;; Case
+
+case := *top*.
+acc := case.  ; acc
+abs := case.  ; abs
+erg+nom := case.
+erg := erg+nom.
+nom := erg+nom.
+
+;;; Tense
+
+future := tense.
+perfective := tense.
+
+;;;;;;;;;;;;;;;;;;;
+;;; Lexical Types
+;;;;;;;;;;;;;;;;;;;
+
+;;; Nouns
+
+noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & non-mod-lex-item &
+  [ ARG-ST < #spr >,
+    SYNSEM.LOCAL.CAT.VAL [ COMPS < >,
+                           SUBJ < >,
+                           SPEC < >,
+                           SPR < #spr &
+                                 [ LOCAL.CAT.HEAD det,
+                                   OPT + ] > ],
+    INFLECTED.CASE-FLAG - ].
+
+name-noun-lex := noun-lex.
+
+;;; Verbs
+
+verb-lex := basic-verb-lex & non-mod-lex-item &
+  [ SYNSEM.LOCAL [ CAT.VAL [ SPR < >,
+                             SPEC < >,
+                             SUBJ < #subj > ],
+                   CONT.HOOK.XARG #xarg ],
+    ARG-ST.FIRST #subj &
+                 [ LOCAL [ CAT cat-sat &
+                               [ VAL [ SPR < >,
+                                       COMPS < > ] ],
+                           CONT.HOOK.INDEX #xarg ] ] ].
+
+intransitive-verb-lex := verb-lex & intransitive-lex-item &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < >,
+    ARG-ST.FIRST.LOCAL.CAT.HEAD noun,
+    INFLECTED.VERB-PC1-FLAG - ].
+
+transitive-verb-lex := verb-lex & transitive-lex-item &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >,
+    ARG-ST < [ LOCAL.CAT.HEAD noun ],
+             #comps &
+             [ LOCAL.CAT cat-sat &
+                         [ VAL [ SPR < >,
+                                 COMPS < > ],
+                           HEAD noun ] ] >,
+    INFLECTED.VERB-PC2-FLAG - ].
+
+nom-verb-lex := intransitive-verb-lex &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CAT.HEAD.CASE nom ].
+
+erg-verb-lex := intransitive-verb-lex &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CAT.HEAD.CASE erg ].
+
+fluid-verb-lex := intransitive-verb-lex &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CAT.HEAD.CASE erg+nom ].
+
+verb4-verb-lex := transitive-verb-lex &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.CASE acc ].
+
+;;;;;;;;;;;;;;;;;;;
+;;; Lexical Rules
+;;;;;;;;;;;;;;;;;;;
+
+;;; Lexical rule types
+
+case-lex-rule-super := add-only-no-ccont-rule &
+  [ INFLECTED [ CASE-FLAG +,
+                VERB-PC1-FLAG #verb-pc1,
+                VERB-PC2-FLAG #verb-pc2 ],
+    DTR noun-lex &
+        [ INFLECTED [ VERB-PC1-FLAG #verb-pc1,
+                      VERB-PC2-FLAG #verb-pc2 ] ] ].
+
+case_lrt1-lex-rule := case-lex-rule-super & const-lex-rule &
+  [ SYNSEM.LOCAL.CAT.HEAD.CASE nom ].
+
+case_lrt2-lex-rule := case-lex-rule-super & infl-lex-rule &
+  [ SYNSEM.LOCAL.CAT.HEAD.CASE erg ].
+
+case_lrt3-lex-rule := case-lex-rule-super & infl-lex-rule &
+  [ SYNSEM.LOCAL.CAT.HEAD.CASE acc ].
+
+verb-pc1-lex-rule-super := add-only-no-ccont-rule & infl-lex-rule &
+  [ INFLECTED [ VERB-PC1-FLAG +,
+                CASE-FLAG #case,
+                VERB-PC2-FLAG #verb-pc2 ],
+    DTR intransitive-verb-lex &
+        [ INFLECTED [ CASE-FLAG #case,
+                      VERB-PC2-FLAG #verb-pc2 ] ] ].
+
+verb-pc1_lrt1-lex-rule := verb-pc1-lex-rule-super &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E.TENSE perfective ].
+
+verb-pc1_lrt2-lex-rule := verb-pc1-lex-rule-super &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E.TENSE future ].
+
+verb-pc2-lex-rule-super := add-only-no-ccont-rule & infl-lex-rule &
+  [ INFLECTED [ VERB-PC2-FLAG +,
+                CASE-FLAG #case,
+                VERB-PC1-FLAG #verb-pc1 ],
+    DTR transitive-verb-lex &
+        [ INFLECTED [ CASE-FLAG #case,
+                      VERB-PC1-FLAG #verb-pc1 ] ] ].
+
+verb-pc2_lrt1-lex-rule := verb-pc2-lex-rule-super &
+  [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.E.TENSE perfective,
+                   CAT.VAL.SUBJ.FIRST.LOCAL.CAT.HEAD.CASE erg ] ].
+
+verb-pc2_lrt2-lex-rule := verb-pc2-lex-rule-super &
+  [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.E.TENSE future,
+                   CAT.VAL.SUBJ.FIRST.LOCAL.CAT.HEAD.CASE nom ] ].
+
+;;;;;;;;;;;;;;;;;;;
+;;; Phrasal Types
+;;;;;;;;;;;;;;;;;;;
+
+;Constraint on MC used to be part of matrix.tdl
+;;it applies to all wo implementations, except for v2
+
+comp-head-phrase := basic-head-1st-comp-phrase & head-final.
+
+subj-head-phrase := decl-head-subj-phrase & head-final &
+  [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
+
+; Bare NP phrase.  Consider modifying the PRED value of the quantifier relation
+; introduced to match the semantic effect of bare NPs in your language.
+
+bare-np-phrase := basic-bare-np-phrase &
+  [ C-CONT.RELS <! [ PRED "exist_q_rel" ] !> ].

@@ -1,0 +1,25 @@
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+;;; Nouns
+
+ntwana := noun1-noun-lex &
+  [ STEM < "ntwana" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_child_n_rel" ].
+
+yoka := noun2-noun-lex &
+  [ STEM < "yoka" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_snake_n_rel" ].
+
+;;; Adjectives
+
+;;; Verbs
+
+dlal := verb1-verb-lex &
+  [ STEM < "dlal" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_play_v_rel" ].
+
+bon := verb2-verb-lex &
+  [ STEM < "bon" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_see_v_rel" ].
+
+na := qpart-lex-item &
+  [ STEM < "na" > ].

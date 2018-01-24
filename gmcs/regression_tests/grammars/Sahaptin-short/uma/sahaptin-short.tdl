@@ -1,0 +1,648 @@
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Grammar of Sahaptin-short
+;;; created at:
+;;;     Wed Jan 24 02:50:24 UTC 2018
+;;; based on Matrix customization system version of:
+;;;     unknown time
+;;;
+;;; 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+; Type assigning empty mod list. Added to basic types for nouns, verbs and determiners.
+
+non-mod-lex-item := lex-item &
+  [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].
+
+;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Matrix Type Addenda
+;;;;;;;;;;;;;;;;;;;;;;;;;
+
+noun :+ [ CASE case ].
+
+verb :+ [ DIRECTION direction ].
+
+word-or-lexrule :+ [ SC-ARGS list ].
+
+lex-rule :+ [ SC-ARGS #1,
+    DTR.SC-ARGS #1 ].
+
+inflected :+ [ _TOPIC-FLAG luk,
+    INTRANS-PREFIX-FLAG luk,
+    VERB2-DIR-INV-FLAG luk,
+    INTRANS-ENCLITIC-FLAG luk,
+    SUBJPROX-FLAG luk,
+    TRANS-PREFIX-FLAG luk,
+    TRANS-ENCLITIC-FLAG luk ].
+
+infl-satisfied :+ [ _TOPIC-FLAG na-or-+,
+    INTRANS-PREFIX-FLAG na-or-+,
+    VERB2-DIR-INV-FLAG na-or-+,
+    INTRANS-ENCLITIC-FLAG na-or-+,
+    SUBJPROX-FLAG na-or-+,
+    TRANS-PREFIX-FLAG na-or-+,
+    TRANS-ENCLITIC-FLAG na-or-+ ].
+
+png :+ [ PERNUM pernum,
+    _TOPICALITY _topicality ].
+
+head :+ [ PROXIMITY proximity ].
+
+basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.MC #mc,
+    HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
+
+basic-head-mod-phrase-simple :+ [ SYNSEM.LOCAL.CAT.MC #mc,
+    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
+
+basic-head-opt-comp-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].
+
+;;;;;;;;;;;;;;
+;;; Features
+;;;;;;;;;;;;;;
+
+;;; Direction
+
+direction := *top*.
+dir := direction.
+inv := direction.
+
+;;; Case
+
+case := *top*.
+nom := case.  ; nom
+obj := case.  ; obj
+
+;;; Pernum
+
+pernum := *top*.
+sg := pernum.
+1sg := 1st & sg.
+2sg := 2nd & sg.
+3sg := 3rd & sg.
+1du := du & 1pl_excl+1du_excl+1du+1pl_incl+1du_incl+1pl.
+1du_incl := 1du & 1pl_incl+1du_incl.
+1du_excl := 1du & 1pl_excl+1du_excl.
+2du := du & 2du+2pl.
+3du := du & 3du+3pl.
+1pl := pl & 1pl_excl+1du_excl+1du+1pl_incl+1du_incl+1pl.
+1pl_incl := 1pl & 1pl_incl+1du_incl.
+1pl_excl := 1pl & 1pl_excl+1du_excl.
+2pl := pl & 2du+2pl.
+3pl := pl & 3du+3pl.
+non-1st := pernum.
+3rd := non-1st.
+2nd := non-1st & non-3rd.
+2du+2pl := 2nd.
+1pl_excl+1du_excl+1du+1pl_incl+1du_incl+1pl := 1st.
+1pl_excl+1du_excl := 1pl_excl+1du_excl+1du+1pl_incl+1du_incl+1pl.
+1pl_incl+1du_incl := 1pl_excl+1du_excl+1du+1pl_incl+1du_incl+1pl.
+1st := non-3rd.
+3du+3pl := 3rd & non-3sg.
+non-3sg := pernum.
+pl := non-3sg.
+du := non-3sg.
+non-3rd := non-3sg.
+
+;;; Proximity
+
+proximity := *top*.
+proximate := proximity.
+obviative := proximity.
+neutral := proximity.
+
+;;; _topicality
+
+_topicality := *top*.
+_topic := _topicality.
+_non-topic := _topicality.
+
+;;;;;;;;;;;;;;;;;;;;
+;;; Direct-Inverse
+;;;;;;;;;;;;;;;;;;;;
+
+;;; Direct-inverse scale
+
+dir-inv-scale := canonical-synsem.
+
+dir-inv-1 := dir-inv-scale &
+  [ LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1st ].
+
+dir-inv-non-1 := dir-inv-scale &
+  [ LOCAL.CONT.HOOK.INDEX.PNG.PERNUM non-1st ].
+
+dir-inv-2 := dir-inv-non-1 &
+  [ LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 2nd ].
+
+dir-inv-non-2 := dir-inv-non-1 &
+  [ LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 3rd ].
+
+dir-inv-3 := dir-inv-non-2 &
+  [ LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM 3rd,
+                                _TOPICALITY _topic ] ].
+
+dir-inv-non-3 := dir-inv-non-2 &
+  [ LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM 3rd,
+                                _TOPICALITY _non-topic ] ].
+
+;;; Direct-inverse/unexpressed subtypes for compatibility with argument optionality
+
+dir-inv-1-unexpressed := dir-inv-1 & unexpressed.
+
+dir-inv-2-unexpressed := dir-inv-2 & unexpressed.
+
+dir-inv-3-unexpressed := dir-inv-3 & unexpressed.
+
+dir-inv-non-3-unexpressed := dir-inv-non-3 & unexpressed.
+
+;;; Direct-inverse lexical rules
+
+dir-lex-rule := add-only-no-ccont-rule &
+  [ SC-ARGS < #1,
+              #2 >,
+    SYNSEM.LOCAL.CAT [ HEAD.DIRECTION dir,
+                       VAL [ SUBJ < #1 >,
+                             COMPS < #2 > ] ] ].
+
+inv-lex-rule := add-only-no-ccont-rule &
+  [ SC-ARGS < #1,
+              #2 >,
+    SYNSEM.LOCAL.CAT [ HEAD.DIRECTION inv,
+                       VAL [ SUBJ < #2 >,
+                             COMPS < #1 > ] ] ].
+
+verb2-dir-inv-lex-rule-super := add-only-no-ccont-rule & const-lex-rule & subjprox-rule-dtr & trans-enclitic-rule-dtr & trans-prefix-rule-dtr &
+  [ INFLECTED [ VERB2-DIR-INV-FLAG +,
+                _TOPIC-FLAG #_topic,
+                SUBJPROX-FLAG #subjprox,
+                TRANS-ENCLITIC-FLAG #trans-enclitic,
+                TRANS-PREFIX-FLAG #trans-prefix,
+                INTRANS-PREFIX-FLAG #intrans-prefix,
+                INTRANS-ENCLITIC-FLAG #intrans-enclitic ],
+    DTR verb2-verb-lex &
+        [ INFLECTED [ _TOPIC-FLAG #_topic,
+                      SUBJPROX-FLAG #subjprox,
+                      TRANS-ENCLITIC-FLAG #trans-enclitic,
+                      TRANS-PREFIX-FLAG #trans-prefix,
+                      INTRANS-PREFIX-FLAG #intrans-prefix,
+                      INTRANS-ENCLITIC-FLAG #intrans-enclitic ] ] ].
+
+verb2-dir-lex-rule := verb2-dir-inv-lex-rule-super & dir-lex-rule.
+
+verb2-dir-1-lex-rule := verb2-dir-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < dir-inv-1 >,
+                           COMPS < dir-inv-scale > ] ].
+
+verb2-dir-2-lex-rule := verb2-dir-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < dir-inv-2 >,
+                           COMPS < dir-inv-non-1 > ] ].
+
+verb2-dir-3-lex-rule := verb2-dir-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < dir-inv-3 >,
+                           COMPS < dir-inv-non-2 > ] ].
+
+verb2-dir-4-lex-rule := verb2-dir-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < dir-inv-non-3 >,
+                           COMPS < dir-inv-non-3 > ] ].
+
+verb2-inv-lex-rule := verb2-dir-inv-lex-rule-super & inv-lex-rule.
+
+verb2-inv-1-lex-rule := verb2-inv-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < dir-inv-non-1 >,
+                           COMPS < dir-inv-1 > ] ].
+
+verb2-inv-2-lex-rule := verb2-inv-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < dir-inv-non-2 >,
+                           COMPS < dir-inv-2 > ] ].
+
+verb2-inv-3-lex-rule := verb2-inv-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < dir-inv-non-3 >,
+                           COMPS < dir-inv-3 > ] ].
+
+;;;;;;;;;;;;;;;;;;;
+;;; Lexical Types
+;;;;;;;;;;;;;;;;;;;
+
+;;; Nouns
+
+noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & non-mod-lex-item &
+  [ ARG-ST < #spr >,
+    SYNSEM.LOCAL.CAT.VAL [ COMPS < >,
+                           SUBJ < >,
+                           SPEC < >,
+                           SPR < #spr &
+                                 [ LOCAL.CAT.HEAD det,
+                                   OPT + ] > ],
+    INFLECTED._TOPIC-FLAG - ].
+
+1sg-pronoun-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.PNG.PERNUM 1sg,
+                   CAT.HEAD [ CASE nom,
+                              PROXIMITY neutral ] ] ].
+
+2sg-pronoun-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL [ CAT.HEAD.CASE nom,
+                   CONT.HOOK.INDEX.PNG.PERNUM 2sg ] ].
+
+3sg-pronoun-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.PNG.PERNUM 3sg,
+                   CAT.HEAD [ CASE nom,
+                              PROXIMITY neutral ] ] ].
+
+3sgobv-pronoun-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.PNG.PERNUM 3sg,
+                   CAT.HEAD [ CASE nom,
+                              PROXIMITY obviative ] ] ].
+
+3sginv-pronoun-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.PNG.PERNUM 3sg,
+                   CAT.HEAD [ CASE nom,
+                              PROXIMITY proximate ] ] ].
+
+1du-pronoun-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.PNG.PERNUM 1du,
+                   CAT.HEAD [ CASE nom,
+                              PROXIMITY neutral ] ] ].
+
+2du-pronoun-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.PNG.PERNUM 2du,
+                   CAT.HEAD [ CASE nom,
+                              PROXIMITY neutral ] ] ].
+
+3du-pronoun-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.PNG.PERNUM 3du,
+                   CAT.HEAD [ CASE nom,
+                              PROXIMITY neutral ] ] ].
+
+1pl-pronoun-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.PNG.PERNUM 1pl,
+                   CAT.HEAD [ CASE nom,
+                              PROXIMITY neutral ] ] ].
+
+2pl-pronoun-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.PNG.PERNUM 2pl,
+                   CAT.HEAD [ CASE nom,
+                              PROXIMITY neutral ] ] ].
+
+3pl-pronoun-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.PNG.PERNUM 3pl,
+                   CAT.HEAD [ CASE nom,
+                              PROXIMITY neutral ] ] ].
+
+1sgobj-pronoun-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL [ CAT.HEAD.CASE obj,
+                   CONT.HOOK.INDEX.PNG.PERNUM 1sg ] ].
+
+2sgobj-pronoun-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL [ CAT.HEAD.CASE obj,
+                   CONT.HOOK.INDEX.PNG.PERNUM 2sg ] ].
+
+3sgobj-pronoun-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL [ CAT.HEAD.CASE obj,
+                   CONT.HOOK.INDEX.PNG.PERNUM 3sg ] ].
+
+1duobj-pronoun-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL [ CAT.HEAD.CASE obj,
+                   CONT.HOOK.INDEX.PNG.PERNUM 1du ] ].
+
+2duobj-pronoun-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL [ CAT.HEAD.CASE obj,
+                   CONT.HOOK.INDEX.PNG.PERNUM 2du ] ].
+
+3duobj-pronoun-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL [ CAT.HEAD.CASE obj,
+                   CONT.HOOK.INDEX.PNG.PERNUM 3du ] ].
+
+1plobj-pronoun-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL [ CAT.HEAD.CASE obj,
+                   CONT.HOOK.INDEX.PNG.PERNUM 1pl ] ].
+
+2plobj-pronoun-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL [ CAT.HEAD.CASE obj,
+                   CONT.HOOK.INDEX.PNG.PERNUM 2pl ] ].
+
+3plobj-pronoun-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL [ CAT.HEAD.CASE obj,
+                   CONT.HOOK.INDEX.PNG.PERNUM 3pl ] ].
+
+;;; Verbs
+
+verb-lex := basic-verb-lex & non-mod-lex-item &
+  [ SYNSEM.LOCAL [ CAT.VAL [ SPR < >,
+                             SPEC < >,
+                             SUBJ < #subj > ],
+                   CONT.HOOK.XARG #xarg ],
+    ARG-ST.FIRST #subj &
+                 [ LOCAL [ CAT cat-sat &
+                               [ VAL [ SPR < >,
+                                       COMPS < > ] ],
+                           CONT.HOOK.INDEX #xarg ] ] ].
+
+intransitive-verb-lex := verb-lex & intransitive-lex-item & intrans-enclitic-rule-dtr &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < >,
+    ARG-ST.FIRST.LOCAL.CAT.HEAD noun ].
+
+transitive-verb-lex := verb-lex & transitive-lex-item & subjprox-rule-dtr & trans-enclitic-rule-dtr & trans-prefix-rule-dtr &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >,
+    ARG-ST < [ LOCAL.CAT.HEAD noun ],
+             #comps &
+             [ LOCAL.CAT cat-sat &
+                         [ VAL [ SPR < >,
+                                 COMPS < > ],
+                           HEAD noun ] ] > ].
+
+nom-intransitive-verb-lex := intransitive-verb-lex &
+  [ ARG-ST.FIRST.LOCAL.CAT.HEAD noun &
+                                [ CASE nom ] ].
+
+nom-obj-transitive-verb-lex := transitive-verb-lex &
+  [ ARG-ST < [ LOCAL.CAT.HEAD noun &
+                              [ CASE nom ] ],
+             [ LOCAL.CAT.HEAD noun &
+                              [ CASE obj ] ] > ].
+
+dir-inv-nom-obj-transitive-verb-lex := transitive-verb-lex &
+  [ ARG-ST < [ LOCAL.CAT.HEAD noun &
+                              [ CASE nom ] ],
+             [ LOCAL.CAT.HEAD noun &
+                              [ CASE obj ] ] > ].
+
+dir-inv-transitive-verb-lex := transitive-verb-lex &
+  [ ARG-ST < [ LOCAL.CAT.HEAD noun ],
+             [ LOCAL.CAT.HEAD noun ] > ].
+
+verb1-verb-lex := nom-intransitive-verb-lex &
+  [ INFLECTED [ INTRANS-ENCLITIC-FLAG -,
+                INTRANS-PREFIX-FLAG - ] ].
+
+verb2-verb-lex := dir-inv-nom-obj-transitive-verb-lex &
+  [ INFLECTED [ TRANS-PREFIX-FLAG -,
+                SUBJPROX-FLAG -,
+                TRANS-ENCLITIC-FLAG -,
+                VERB2-DIR-INV-FLAG - ] ].
+
+;;;;;;;;;;;;;;;;;;;
+;;; Lexical Rules
+;;;;;;;;;;;;;;;;;;;
+
+;;; Intermediate rule types
+
+trans-enclitic-rule-dtr := word-or-lexrule.
+trans-prefix-rule-dtr := word-or-lexrule.
+intrans-enclitic-rule-dtr := word-or-lexrule.
+subjprox-rule-dtr := word-or-lexrule.
+
+;;; Lexical rule types
+
+_topic-lex-rule-super := add-only-no-ccont-rule &
+  [ INFLECTED [ _TOPIC-FLAG +,
+                VERB2-DIR-INV-FLAG #verb2-dir-inv,
+                TRANS-PREFIX-FLAG #trans-prefix,
+                TRANS-ENCLITIC-FLAG #trans-enclitic,
+                SUBJPROX-FLAG #subjprox,
+                INTRANS-PREFIX-FLAG #intrans-prefix,
+                INTRANS-ENCLITIC-FLAG #intrans-enclitic ],
+    DTR noun-lex &
+        [ INFLECTED [ VERB2-DIR-INV-FLAG #verb2-dir-inv,
+                      TRANS-PREFIX-FLAG #trans-prefix,
+                      TRANS-ENCLITIC-FLAG #trans-enclitic,
+                      SUBJPROX-FLAG #subjprox,
+                      INTRANS-PREFIX-FLAG #intrans-prefix,
+                      INTRANS-ENCLITIC-FLAG #intrans-enclitic ] ] ].
+
+_topic_lrt1-lex-rule := _topic-lex-rule-super & infl-lex-rule &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM 3rd,
+                                       _TOPICALITY _topic ] ].
+
+_topic_lrt2-lex-rule := _topic-lex-rule-super & const-lex-rule &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG._TOPICALITY _non-topic ].
+
+intrans-prefix-lex-rule-super := add-only-no-ccont-rule & intrans-enclitic-rule-dtr &
+  [ INFLECTED [ INTRANS-PREFIX-FLAG +,
+                _TOPIC-FLAG #_topic,
+                VERB2-DIR-INV-FLAG #verb2-dir-inv,
+                SUBJPROX-FLAG #subjprox,
+                TRANS-ENCLITIC-FLAG #trans-enclitic,
+                TRANS-PREFIX-FLAG #trans-prefix,
+                INTRANS-ENCLITIC-FLAG #intrans-enclitic ],
+    DTR verb1-verb-lex &
+        [ INFLECTED [ _TOPIC-FLAG #_topic,
+                      VERB2-DIR-INV-FLAG #verb2-dir-inv,
+                      SUBJPROX-FLAG #subjprox,
+                      TRANS-ENCLITIC-FLAG #trans-enclitic,
+                      TRANS-PREFIX-FLAG #trans-prefix,
+                      INTRANS-ENCLITIC-FLAG #intrans-enclitic ] ] ].
+
+intrans-prefix_lrt1-lex-rule := infl-lex-rule & intrans-prefix-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL [ CONT.HOOK.INDEX.PNG.PERNUM 3sg,
+                                            CAT.HEAD.PROXIMITY neutral ] ].
+
+intrans-prefix_lrt2-lex-rule := infl-lex-rule & intrans-prefix-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 3du+3pl ].
+
+intrans-prefix_lrt3-lex-rule := const-lex-rule & intrans-prefix-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM non-3rd ].
+
+trans-prefix-lex-rule-super := add-only-no-ccont-rule & subjprox-rule-dtr & trans-enclitic-rule-dtr &
+  [ INFLECTED [ TRANS-PREFIX-FLAG +,
+                _TOPIC-FLAG #_topic,
+                VERB2-DIR-INV-FLAG #verb2-dir-inv,
+                TRANS-ENCLITIC-FLAG #trans-enclitic,
+                SUBJPROX-FLAG #subjprox,
+                INTRANS-PREFIX-FLAG #intrans-prefix,
+                INTRANS-ENCLITIC-FLAG #intrans-enclitic ],
+    DTR trans-prefix-rule-dtr &
+        [ INFLECTED [ _TOPIC-FLAG #_topic,
+                      VERB2-DIR-INV-FLAG #verb2-dir-inv,
+                      TRANS-ENCLITIC-FLAG #trans-enclitic,
+                      SUBJPROX-FLAG #subjprox,
+                      INTRANS-PREFIX-FLAG #intrans-prefix,
+                      INTRANS-ENCLITIC-FLAG #intrans-enclitic ] ] ].
+
+trans-prefix_lrt1-lex-rule := infl-lex-rule & trans-prefix-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 3sg,
+                           COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG._TOPICALITY _non-topic ] ].
+
+trans-prefix_lrt2-lex-rule := infl-lex-rule & trans-prefix-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 3du+3pl,
+                           COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG._TOPICALITY _non-topic ] ].
+
+trans-prefix_lrt3-lex-rule := infl-lex-rule & trans-prefix-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM non-3rd,
+                           COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 3rd ] ].
+
+trans-prefix_lrt4-lex-rule := infl-lex-rule & trans-prefix-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 2sg,
+                           COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1sg ] ].
+
+trans-prefix_lrt5-lex-rule := infl-lex-rule & trans-prefix-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM 3sg,
+                                                                  _TOPICALITY _non-topic ],
+                           COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM 3sg,
+                                                                   _TOPICALITY _topic ] ] ].
+
+trans-prefix_lrt6-lex-rule := infl-lex-rule & trans-prefix-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM 3du+3pl,
+                                                                  _TOPICALITY _non-topic ],
+                           COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM 3sg,
+                                                                   _TOPICALITY _topic ] ] ].
+
+trans-prefix_lrt7-lex-rule := const-lex-rule & trans-prefix-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1st,
+                           COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 2nd ] ].
+
+trans-prefix_lrt8-lex-rule := const-lex-rule & trans-prefix-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 2du+2pl,
+                           COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1st ] ].
+
+trans-prefix_lrt9-lex-rule := const-lex-rule & trans-prefix-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 2sg,
+                           COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1pl_excl+1du_excl+1du+1pl_incl+1du_incl+1pl ] ].
+
+intrans-enclitic-lex-rule-super := add-only-no-ccont-rule &
+  [ INFLECTED [ INTRANS-ENCLITIC-FLAG +,
+                _TOPIC-FLAG #_topic,
+                VERB2-DIR-INV-FLAG #verb2-dir-inv,
+                SUBJPROX-FLAG #subjprox,
+                TRANS-ENCLITIC-FLAG #trans-enclitic,
+                TRANS-PREFIX-FLAG #trans-prefix,
+                INTRANS-PREFIX-FLAG #intrans-prefix ],
+    DTR intrans-enclitic-rule-dtr &
+        [ INFLECTED [ _TOPIC-FLAG #_topic,
+                      VERB2-DIR-INV-FLAG #verb2-dir-inv,
+                      SUBJPROX-FLAG #subjprox,
+                      TRANS-ENCLITIC-FLAG #trans-enclitic,
+                      TRANS-PREFIX-FLAG #trans-prefix,
+                      INTRANS-PREFIX-FLAG #intrans-prefix ] ] ].
+
+intrans-enclitic_lrt1-lex-rule := infl-lex-rule & intrans-enclitic-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1sg ].
+
+intrans-enclitic_lrt2-lex-rule := infl-lex-rule & intrans-enclitic-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1pl_incl+1du_incl ].
+
+intrans-enclitic_lrt3-lex-rule := infl-lex-rule & intrans-enclitic-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1pl_excl+1du_excl ].
+
+intrans-enclitic_lrt4-lex-rule := infl-lex-rule & intrans-enclitic-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 2sg ].
+
+intrans-enclitic_lrt5-lex-rule := infl-lex-rule & intrans-enclitic-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 2du+2pl ].
+
+intrans-enclitic_lrt6-lex-rule := const-lex-rule & intrans-enclitic-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 3rd ].
+
+trans-enclitic-lex-rule-super := add-only-no-ccont-rule & subjprox-rule-dtr &
+  [ INFLECTED [ TRANS-ENCLITIC-FLAG +,
+                _TOPIC-FLAG #_topic,
+                VERB2-DIR-INV-FLAG #verb2-dir-inv,
+                SUBJPROX-FLAG #subjprox,
+                INTRANS-PREFIX-FLAG #intrans-prefix,
+                TRANS-PREFIX-FLAG #trans-prefix,
+                INTRANS-ENCLITIC-FLAG #intrans-enclitic ],
+    DTR trans-enclitic-rule-dtr &
+        [ INFLECTED [ _TOPIC-FLAG #_topic,
+                      VERB2-DIR-INV-FLAG #verb2-dir-inv,
+                      SUBJPROX-FLAG #subjprox,
+                      INTRANS-PREFIX-FLAG #intrans-prefix,
+                      TRANS-PREFIX-FLAG #trans-prefix,
+                      INTRANS-ENCLITIC-FLAG #intrans-enclitic ] ] ].
+
+trans-enclitic_lrt1-lex-rule := infl-lex-rule & trans-enclitic-lex-rule-super &
+  [ SC-ARGS < [ LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1sg ] . [ FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 3rd ] > ].
+
+trans-enclitic_lrt2-lex-rule := infl-lex-rule & trans-enclitic-lex-rule-super &
+  [ SC-ARGS < [ LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1pl_incl+1du_incl ] . [ FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 3rd ] > ].
+
+trans-enclitic_lrt3-lex-rule := infl-lex-rule & trans-enclitic-lex-rule-super &
+  [ SC-ARGS < [ LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1pl_excl+1du_excl ] . [ FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 3rd ] > ].
+
+trans-enclitic_lrt4-lex-rule := infl-lex-rule & trans-enclitic-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 2sg ].
+
+trans-enclitic_lrt5-lex-rule := infl-lex-rule & trans-enclitic-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 3rd,
+                           COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 2sg ] ].
+
+trans-enclitic_lrt6-lex-rule := infl-lex-rule & trans-enclitic-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 2du+2pl ].
+
+trans-enclitic_lrt7-lex-rule := infl-lex-rule & trans-enclitic-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 3rd,
+                           COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 2du+2pl ] ].
+
+trans-enclitic_lrt8-lex-rule := infl-lex-rule & trans-enclitic-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1sg,
+                           COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 2sg ] ].
+
+trans-enclitic_lrt9-lex-rule := infl-lex-rule & trans-enclitic-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1st,
+                           COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 2du+2pl ] ].
+
+trans-enclitic_lrt10-lex-rule := infl-lex-rule & trans-enclitic-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 1pl_excl+1du_excl+1du+1pl_incl+1du_incl+1pl,
+                           COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 2sg ] ].
+
+trans-enclitic_lrt11-lex-rule := const-lex-rule & trans-enclitic-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 3rd,
+                           COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 3rd ] ].
+
+subjprox-lex-rule-super := add-only-no-ccont-rule & const-lex-rule &
+  [ INFLECTED [ SUBJPROX-FLAG +,
+                _TOPIC-FLAG #_topic,
+                VERB2-DIR-INV-FLAG #verb2-dir-inv,
+                TRANS-ENCLITIC-FLAG #trans-enclitic,
+                TRANS-PREFIX-FLAG #trans-prefix,
+                INTRANS-PREFIX-FLAG #intrans-prefix,
+                INTRANS-ENCLITIC-FLAG #intrans-enclitic ],
+    DTR subjprox-rule-dtr &
+        [ INFLECTED [ _TOPIC-FLAG #_topic,
+                      VERB2-DIR-INV-FLAG #verb2-dir-inv,
+                      TRANS-ENCLITIC-FLAG #trans-enclitic,
+                      TRANS-PREFIX-FLAG #trans-prefix,
+                      INTRANS-PREFIX-FLAG #intrans-prefix,
+                      INTRANS-ENCLITIC-FLAG #intrans-enclitic ] ] ].
+
+subjprox_lrt1-lex-rule := subjprox-lex-rule-super & inv-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ.FIRST.LOCAL [ CONT.HOOK.INDEX.PNG.PERNUM 3sg,
+                                              CAT.HEAD.PROXIMITY proximate ],
+                           COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG._TOPICALITY _non-topic ] ].
+
+subjprox_lrt2-lex-rule := subjprox-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.VAL [ COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 3sg,
+                           SUBJ.FIRST.LOCAL [ CONT.HOOK.INDEX.PNG [ PERNUM 3sg,
+                                                                    _TOPICALITY _topic ],
+                                              CAT.HEAD.PROXIMITY obviative ] ] ].
+
+subjprox_lrt3-lex-rule := subjprox-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.VAL [ COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ PERNUM 3sg,
+                                                                   _TOPICALITY _topic ],
+                           SUBJ.FIRST.LOCAL [ CONT.HOOK.INDEX.PNG.PERNUM 3sg,
+                                              CAT.HEAD.PROXIMITY neutral ] ] ].
+
+subjprox_lrt4-lex-rule := subjprox-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.VAL [ COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PERNUM 3du+3pl,
+                           SUBJ.FIRST.LOCAL [ CONT.HOOK.INDEX.PNG.PERNUM 3sg,
+                                              CAT.HEAD.PROXIMITY neutral ] ] ].
+
+subjprox_lrt5-lex-rule := subjprox-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL [ CONT.HOOK.INDEX.PNG.PERNUM non-3sg,
+                                            CAT.HEAD.PROXIMITY neutral ] ].
+
+;;;;;;;;;;;;;;;;;;;
+;;; Phrasal Types
+;;;;;;;;;;;;;;;;;;;
+
+;Constraint on MC used to be part of matrix.tdl
+;;it applies to all wo implementations, except for v2
+
+head-comp-phrase := basic-head-1st-comp-phrase & head-initial &
+  [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].
+
+head-subj-phrase := decl-head-subj-phrase & head-initial.
+
+; Bare NP phrase.  Consider modifying the PRED value of the quantifier relation
+; introduced to match the semantic effect of bare NPs in your language.
+
+bare-np-phrase := basic-bare-np-phrase &
+  [ C-CONT.RELS <! [ PRED "exist_q_rel" ] !> ].

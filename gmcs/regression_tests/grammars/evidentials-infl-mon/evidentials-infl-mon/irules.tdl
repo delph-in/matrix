@@ -1,0 +1,14 @@
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+;;; Inflecting Lexical Rule Instances
+
+fh-past-suffix :=
+%suffix (* -laa)
+fh-past-lex-rule.
+
+nf-past-suffix :=
+%suffix (* -jee)
+nf-past-lex-rule.
+
+amb-past-suffix :=
+%suffix (* -v)
+amb-past-lex-rule.

@@ -1,0 +1,4 @@
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+3-SUBJ-lex := 3-SUBJ-lex-rule.
+
+imperfective-lex := imperfective-lex-rule.

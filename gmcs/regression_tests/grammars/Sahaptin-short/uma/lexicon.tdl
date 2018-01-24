@@ -1,0 +1,94 @@
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+;;; Nouns
+
+ín := 1sg-pronoun-noun-lex &
+  [ STEM < "ín" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pronoun_n_rel" ].
+
+ím := 2sg-pronoun-noun-lex &
+  [ STEM < "ím" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pronoun_n_rel" ].
+
+pɨ́n := 3sg-pronoun-noun-lex &
+  [ STEM < "pɨ́n" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pronoun_n_rel" ].
+
+piiní_1 := 3sgobv-pronoun-noun-lex &
+  [ STEM < "piiní" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pronoun_n_rel" ].
+
+pnɨ́m := 3sginv-pronoun-noun-lex &
+  [ STEM < "pnɨ́m" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pronoun_n_rel" ].
+
+napiiní := 1du-pronoun-noun-lex &
+  [ STEM < "napiiní" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pronoun_n_rel" ].
+
+imiiní := 2du-pronoun-noun-lex &
+  [ STEM < "imiiní" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pronoun_n_rel" ].
+
+piiní_2 := 3du-pronoun-noun-lex &
+  [ STEM < "piiní" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pronoun_n_rel" ].
+
+náma := 1pl-pronoun-noun-lex &
+  [ STEM < "náma" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pronoun_n_rel" ].
+
+imáy := 2pl-pronoun-noun-lex &
+  [ STEM < "imáy" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pronoun_n_rel" ].
+
+pmáy := 3pl-pronoun-noun-lex &
+  [ STEM < "pmáy" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pronoun_n_rel" ].
+
+ináy := 1sgobj-pronoun-noun-lex &
+  [ STEM < "ináy" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pronoun_n_rel" ].
+
+imanáy := 2sgobj-pronoun-noun-lex &
+  [ STEM < "imanáy" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pronoun_n_rel" ].
+
+paanáy := 3sgobj-pronoun-noun-lex &
+  [ STEM < "paanáy" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pronoun_n_rel" ].
+
+napiinamanáy := 1duobj-pronoun-noun-lex &
+  [ STEM < "napiinamanáy" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pronoun_n_rel" ].
+
+imiinamanáy := 2duobj-pronoun-noun-lex &
+  [ STEM < "imiinamanáy" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pronoun_n_rel" ].
+
+piinamanáy := 3duobj-pronoun-noun-lex &
+  [ STEM < "piinamanáy" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pronoun_n_rel" ].
+
+naamanáy := 1plobj-pronoun-noun-lex &
+  [ STEM < "naamanáy" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pronoun_n_rel" ].
+
+imaamanáy := 2plobj-pronoun-noun-lex &
+  [ STEM < "imaamanáy" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pronoun_n_rel" ].
+
+paamanáy := 3plobj-pronoun-noun-lex &
+  [ STEM < "paamanáy" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pronoun_n_rel" ].
+
+;;; Adjectives
+
+;;; Verbs
+
+wína := verb1-verb-lex &
+  [ STEM < "wína" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_wína_v_rel" ].
+
+q̓ínun := verb2-verb-lex &
+  [ STEM < "q̓ínun" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_q̓ínun_v_rel" ].

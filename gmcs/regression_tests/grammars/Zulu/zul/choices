@@ -1,0 +1,119 @@
+
+version=24
+
+section=general
+language=Zulu
+iso-code=zul
+archive=no
+
+section=word-order
+word-order=svo
+has-dets=no
+has-aux=no
+
+section=number
+
+section=person
+person=none
+
+section=gender
+
+section=case
+case-marking=none
+
+section=direct-inverse
+
+section=tense-aspect-mood
+
+section=other-features
+
+section=sentential-negation
+infl-neg=on
+
+section=coordination
+
+section=matrix-yes-no
+q-part=on
+q-part-order=after
+q-part-orth=na
+
+section=arg-opt
+
+section=lexicon
+  noun1_det=imp
+    noun1_stem1_orth=ntwana
+    noun1_stem1_pred=_child_n_rel
+  noun2_det=imp
+    noun2_stem1_orth=yoka
+    noun2_stem1_pred=_snake_n_rel
+  verb1_valence=intrans
+    verb1_stem1_orth=dlal
+    verb1_stem1_pred=_play_v_rel
+  verb2_valence=trans
+    verb2_stem1_orth=bon
+    verb2_stem1_pred=_see_v_rel
+
+section=morphology
+  noun-pc1_name=NC
+  noun-pc1_obligatory=on
+  noun-pc1_order=prefix
+  noun-pc1_inputs=noun
+    noun-pc1_lrt1_name=C1
+      noun-pc1_lrt1_lri1_inflecting=yes
+      noun-pc1_lrt1_lri1_orth=C1-
+    noun-pc1_lrt2_name=C9
+      noun-pc1_lrt2_lri1_inflecting=yes
+      noun-pc1_lrt2_lri1_orth=C9-
+  verb-pc1_name=OC
+  verb-pc1_order=prefix
+  verb-pc1_inputs=tverb
+    verb-pc1_lrt1_name=OC1
+      verb-pc1_lrt1_lri1_inflecting=yes
+      verb-pc1_lrt1_lri1_orth=OC1-
+    verb-pc1_lrt2_name=OC9
+      verb-pc1_lrt2_lri1_inflecting=yes
+      verb-pc1_lrt2_lri1_orth=OC9-
+  verb-pc2_name=tense
+  verb-pc2_order=prefix
+  verb-pc2_inputs=iverb, verb-pc1
+    verb-pc2_lrt1_name=fut-tense
+      verb-pc2_lrt1_lri1_inflecting=yes
+      verb-pc2_lrt1_lri1_orth=FUT-
+    verb-pc2_lrt2_name=pres-tense
+      verb-pc2_lrt2_lri1_inflecting=yes
+      verb-pc2_lrt2_lri1_orth=PRES-
+  verb-pc3_name=SC
+  verb-pc3_obligatory=on
+  verb-pc3_order=prefix
+  verb-pc3_inputs=verb-pc2
+    verb-pc3_lrt1_name=SC1
+      verb-pc3_lrt1_lri1_inflecting=yes
+      verb-pc3_lrt1_lri1_orth=SC1-
+    verb-pc3_lrt2_name=SC9
+      verb-pc3_lrt2_lri1_inflecting=yes
+      verb-pc3_lrt2_lri1_orth=SC9-
+  verb-pc4_name=FV
+  verb-pc4_obligatory=on
+  verb-pc4_order=suffix
+  verb-pc4_inputs=verb-pc3, verb-pc5
+    verb-pc4_lrt1_name=default-FV
+      verb-pc4_lrt1_lri1_inflecting=yes
+      verb-pc4_lrt1_lri1_orth=-a
+    verb-pc4_lrt2_name=neg-FV
+      verb-pc4_lrt2_lri1_inflecting=yes
+      verb-pc4_lrt2_lri1_orth=-e
+  verb-pc5_name=negation
+  verb-pc5_order=prefix
+  verb-pc5_inputs=verb-pc3
+      verb-pc5_lrt1_lri1_inflecting=yes
+      verb-pc5_lrt1_lri1_orth=NEG-
+
+section=toolbox-import
+
+section=test-sentences
+  sentence1_orth=C1-ntwana SC1-FUT-dlal-a
+  sentence2_orth=C1-ntwana SC1-FUT-bon-a C9-yoka
+
+section=gen-options
+
+section=ToolboxLexicon

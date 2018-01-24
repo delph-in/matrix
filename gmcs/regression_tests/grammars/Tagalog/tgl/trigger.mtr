@@ -1,0 +1,32 @@
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+;;; Semantically Empty Lexical Entries
+
+focus-marker_gr_1 := arg0e_gtr &
+  [ CONTEXT.RELS <! [ ARG1 individual & #i ] !>,
+    FLAGS [ SUBSUME < #i >,
+            TRIGGER "focus-marker" ] ].
+
+focus-marker_gr_2 := arg0e_gtr &
+  [ CONTEXT.RELS <! [ ARG2 individual & #i ] !>,
+    FLAGS [ SUBSUME < #i >,
+            TRIGGER "focus-marker" ] ].
+
+focus-marker_gr_3 := arg0e_gtr &
+  [ CONTEXT.RELS <! [ ARG3 individual & #i ] !>,
+    FLAGS [ SUBSUME < #i >,
+            TRIGGER "focus-marker" ] ].
+
+a_case%2C%20o_case-marker_gr_1 := arg0e_gtr &
+  [ CONTEXT.RELS <! [ ARG1 individual & #i ] !>,
+    FLAGS [ SUBSUME < #i >,
+            TRIGGER "a_case%2C%20o_case-marker" ] ].
+
+a_case%2C%20o_case-marker_gr_2 := arg0e_gtr &
+  [ CONTEXT.RELS <! [ ARG2 individual & #i ] !>,
+    FLAGS [ SUBSUME < #i >,
+            TRIGGER "a_case%2C%20o_case-marker" ] ].
+
+a_case%2C%20o_case-marker_gr_3 := arg0e_gtr &
+  [ CONTEXT.RELS <! [ ARG3 individual & #i ] !>,
+    FLAGS [ SUBSUME < #i >,
+            TRIGGER "a_case%2C%20o_case-marker" ] ].

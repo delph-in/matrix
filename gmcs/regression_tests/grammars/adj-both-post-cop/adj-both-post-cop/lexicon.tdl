@@ -1,0 +1,33 @@
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+;;; Nouns
+
+n := noun1-noun-lex &
+  [ STEM < "n" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_n_n_rel" ].
+
+;;; Adjectives
+
+adj1 := adj-adj-lex &
+  [ STEM < "adj1" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_adj_a_rel" ].
+
+;;; Verbs
+
+iv := iv-verb-lex &
+  [ STEM < "iv" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_iv_v_rel" ].
+
+tv := tv-verb-lex &
+  [ STEM < "tv" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_tv_v_rel" ].
+
+;;; Copulas
+
+cop := cop1-cop-lex &
+  [ STEM < "cop" > ].
+
+;;; Determiners
+
+det := det1-determiner-lex &
+  [ STEM < "det" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_det_q_rel" ].

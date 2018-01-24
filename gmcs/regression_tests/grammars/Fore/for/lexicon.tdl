@@ -1,0 +1,38 @@
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+;;; Nouns
+
+ae := noun1-noun-lex &
+  [ STEM < "ae" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pronoun_n_rel" ].
+
+naba%3A := noun2-noun-lex &
+  [ STEM < "naba:" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_naba:_n_rel" ].
+
+ayore := noun3-noun-lex &
+  [ STEM < "ayore" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_ayore_n_rel" ].
+
+wá := noun4-noun-lex &
+  [ STEM < "wá" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_wá_n_rel" ].
+
+yaga%3A := noun5-noun-lex &
+  [ STEM < "yaga:" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_yaga:_n_rel" ].
+
+naninta%3A := noun6-noun-lex &
+  [ STEM < "naninta:" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_naninta:_n_rel" ].
+
+;;; Adjectives
+
+;;; Verbs
+
+kanaye := verb1-verb-lex &
+  [ STEM < "kanaye" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_kana_v_rel" ].
+
+agaye := verb2-verb-lex &
+  [ STEM < "agaye" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_ga_v_rel" ].

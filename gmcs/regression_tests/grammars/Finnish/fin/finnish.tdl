@@ -1,0 +1,192 @@
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Grammar of Finnish
+;;; created at:
+;;;     Wed Jan 24 02:50:18 UTC 2018
+;;; based on Matrix customization system version of:
+;;;     unknown time
+;;;
+;;; 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+; Type assigning empty mod list. Added to basic types for nouns, verbs and determiners.
+
+non-mod-lex-item := lex-item &
+  [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].
+
+;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Matrix Type Addenda
+;;;;;;;;;;;;;;;;;;;;;;;;;
+
+inflected :+ [ NUMBER-FLAG luk,
+    PERNUM-AGR-FLAG luk,
+    CASE-FLAG luk ].
+
+infl-satisfied :+ [ NUMBER-FLAG na-or-+,
+    PERNUM-AGR-FLAG na-or-+,
+    CASE-FLAG na-or-+ ].
+
+basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.MC #mc,
+    HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
+
+basic-head-mod-phrase-simple :+ [ SYNSEM.LOCAL.CAT.MC #mc,
+    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
+
+basic-head-opt-subj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
+
+;;;;;;;;;;;;;;;;;;;
+;;; Lexical Types
+;;;;;;;;;;;;;;;;;;;
+
+;;; Nouns
+
+noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & non-mod-lex-item & case-rule-dtr & particle-rule-dtr & possessive-rule-dtr &
+  [ ARG-ST < #spr >,
+    SYNSEM.LOCAL.CAT.VAL [ COMPS < >,
+                           SUBJ < >,
+                           SPEC < >,
+                           SPR < #spr &
+                                 [ LOCAL.CAT.HEAD det,
+                                   OPT + ] > ],
+    INFLECTED [ NUMBER-FLAG -,
+                CASE-FLAG - ] ].
+
+noun1-noun-lex := noun-lex.
+
+noun2-noun-lex := noun-lex.
+
+;;; Verbs
+
+verb-lex := basic-verb-lex & non-mod-lex-item & mood-or-tense-rule-dtr & particle-rule-dtr & pernum-agr-rule-dtr &
+  [ SYNSEM.LOCAL [ CAT.VAL [ SPR < >,
+                             SPEC < >,
+                             SUBJ < #subj > ],
+                   CONT.HOOK.XARG #xarg ],
+    ARG-ST.FIRST #subj &
+                 [ LOCAL [ CAT cat-sat &
+                               [ VAL [ SPR < >,
+                                       COMPS < > ] ],
+                           CONT.HOOK.INDEX #xarg ] ],
+    INFLECTED.PERNUM-AGR-FLAG - ].
+
+intransitive-verb-lex := verb-lex & intransitive-lex-item &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < >,
+    ARG-ST.FIRST.LOCAL.CAT.HEAD noun ].
+
+transitive-verb-lex := verb-lex & transitive-lex-item &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >,
+    ARG-ST < [ LOCAL.CAT.HEAD noun ],
+             #comps &
+             [ LOCAL.CAT cat-sat &
+                         [ VAL [ SPR < >,
+                                 COMPS < > ],
+                           HEAD noun ] ] > ].
+
+verb1-verb-lex := intransitive-verb-lex.
+
+verb2-verb-lex := transitive-verb-lex.
+
+;;;;;;;;;;;;;;;;;;;
+;;; Lexical Rules
+;;;;;;;;;;;;;;;;;;;
+
+;;; Intermediate rule types
+
+possessive-rule-dtr := word-or-lexrule.
+particle-rule-dtr := word-or-lexrule.
+pernum-agr-rule-dtr := word-or-lexrule.
+mood-or-tense-rule-dtr := word-or-lexrule.
+case-rule-dtr := word-or-lexrule.
+
+;;; Lexical rule types
+
+number-lex-rule-super := add-only-no-ccont-rule & case-rule-dtr & particle-rule-dtr & possessive-rule-dtr &
+  [ INFLECTED [ NUMBER-FLAG +,
+                PERNUM-AGR-FLAG #pernum-agr,
+                CASE-FLAG #case ],
+    DTR noun-lex &
+        [ INFLECTED [ PERNUM-AGR-FLAG #pernum-agr,
+                      CASE-FLAG #case ] ] ].
+
+plural-lex-rule := infl-lex-rule & number-lex-rule-super.
+
+singular-lex-rule := const-lex-rule & number-lex-rule-super.
+
+case-lex-rule-super := add-only-no-ccont-rule & particle-rule-dtr & possessive-rule-dtr &
+  [ INFLECTED [ CASE-FLAG +,
+                NUMBER-FLAG #number,
+                PERNUM-AGR-FLAG #pernum-agr ],
+    DTR case-rule-dtr &
+        [ INFLECTED [ NUMBER-FLAG #number,
+                      PERNUM-AGR-FLAG #pernum-agr ] ] ].
+
+elative-lex-rule := case-lex-rule-super & infl-lex-rule.
+
+nominative-lex-rule := case-lex-rule-super & const-lex-rule.
+
+possessive-lex-rule-super := add-only-no-ccont-rule & infl-lex-rule & particle-rule-dtr &
+  [ INFLECTED #infl,
+    DTR possessive-rule-dtr &
+        [ INFLECTED #infl ] ].
+
+1SG-POSS-lex-rule := possessive-lex-rule-super.
+
+passive-lex-rule := add-only-no-ccont-rule & infl-lex-rule & mood-or-tense-rule-dtr & particle-rule-dtr & pernum-agr-rule-dtr &
+  [ INFLECTED #infl,
+    DTR verb-lex &
+        [ INFLECTED #infl ] ].
+
+tense-lex-rule-super := add-only-no-ccont-rule & particle-rule-dtr & pernum-agr-rule-dtr &
+  [ INFLECTED #infl,
+    DTR mood-or-tense-rule-dtr &
+        [ INFLECTED #infl ] ].
+
+past-lex-rule := infl-lex-rule & tense-lex-rule-super.
+
+nonpast-lex-rule := const-lex-rule & tense-lex-rule-super.
+
+mood-lex-rule-super := add-only-no-ccont-rule & infl-lex-rule & particle-rule-dtr & pernum-agr-rule-dtr &
+  [ INFLECTED #infl,
+    DTR mood-or-tense-rule-dtr &
+        [ INFLECTED #infl ] ].
+
+conditional-lex-rule := mood-lex-rule-super.
+
+pernum-agr-lex-rule-super := add-only-no-ccont-rule & infl-lex-rule & particle-rule-dtr &
+  [ INFLECTED [ PERNUM-AGR-FLAG +,
+                NUMBER-FLAG #number,
+                CASE-FLAG #case ],
+    DTR pernum-agr-rule-dtr &
+        [ INFLECTED [ NUMBER-FLAG #number,
+                      CASE-FLAG #case ] ] ].
+
+1SG-lex-rule := pernum-agr-lex-rule-super.
+
+3SG-lex-rule := pernum-agr-lex-rule-super.
+
+indefinite-lex-rule := pernum-agr-lex-rule-super.
+
+particle-lex-rule-super := add-only-no-ccont-rule & infl-lex-rule &
+  [ INFLECTED #infl,
+    DTR particle-rule-dtr &
+        [ INFLECTED #infl ] ].
+
+also-lex-rule := particle-lex-rule-super.
+
+;;;;;;;;;;;;;;;;;;;
+;;; Phrasal Types
+;;;;;;;;;;;;;;;;;;;
+
+;Constraint on MC used to be part of matrix.tdl
+;;it applies to all wo implementations, except for v2
+
+head-comp-phrase := basic-head-1st-comp-phrase & head-initial.
+
+subj-head-phrase := decl-head-subj-phrase & head-final &
+  [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
+
+; Bare NP phrase.  Consider modifying the PRED value of the quantifier relation
+; introduced to match the semantic effect of bare NPs in your language.
+
+bare-np-phrase := basic-bare-np-phrase &
+  [ C-CONT.RELS <! [ PRED "exist_q_rel" ] !> ].

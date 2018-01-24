@@ -1,0 +1,18 @@
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+;;; Inflecting Lexical Rule Instances
+
+noun_masc-suffix :=
+%suffix (* -m)
+noun_masc-lex-rule.
+
+noun_fem-suffix :=
+%suffix (* -f)
+noun_fem-lex-rule.
+
+adj_masc-suffix :=
+%suffix (* -m)
+adj_masc-lex-rule.
+
+adj_fem-suffix :=
+%suffix (* -f)
+adj_fem-lex-rule.

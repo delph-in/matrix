@@ -1,0 +1,77 @@
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+; A basic VPM for Matrix grammars.
+event          <> e
+ref-ind        <> x
+individual     <> i
+handle         <> h
+non_event      <> p
+*              >> u
+semarg         << u
+
+SPECI : SPECI
+  * <> *
+
+SF : SF
+  prop <> prop
+  ques <> ques
+  prop-or-ques >> prop-or-ques
+  prop << prop-or-ques
+  comm <> comm
+  * <> *
+
+COG-ST : COG-ST
+  type-id <> type-id
+  uniq-id <> uniq-id
+  familiar <> familiar
+  activated <> activated
+  in-foc <> in-foc
+  activ+fam <> activ+fam
+  uniq+fam <> uniq+fam
+  activ-or-more <> activ-or-more
+  uniq-or-less <> uniq-or-less
+  uniq+fam+act <> uniq+fam+act
+  fam-or-more <> fam-or-more
+  fam-or-less <> fam-or-less
+  uniq-or-more <> uniq-or-more
+  activ-or-less <> activ-or-less
+  * <> *
+
+
+PNG._TOPICALITY : PNG._TOPICALITY
+  _topic <> _topic
+  _non-topic <> _non-topic
+  * <> *
+
+PNG.PERNUM : PNG.PERNUM
+  3pl <> 3pl
+  2pl <> 2pl
+  1pl_excl <> 1pl_excl
+  1pl_incl <> 1pl_incl
+  1pl <> 1pl
+  3du <> 3du
+  2du <> 2du
+  1du_excl <> 1du_excl
+  1du_incl <> 1du_incl
+  1du <> 1du
+  3sg <> 3sg
+  2sg <> 2sg
+  1sg <> 1sg
+  3rd <> 3rd
+  2nd <> 2nd
+  1st <> 1st
+  pl <> pl
+  du <> du
+  sg <> sg
+  * <> *
+
+PNG.GEND : PNG.GEND
+  * <> *
+
+E.TENSE : E.TENSE
+  * <> *
+
+E.ASPECT : E.ASPECT
+  * <> *
+
+E.MOOD : E.MOOD
+  * <> *

@@ -1,0 +1,42 @@
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+;;; Inflecting Lexical Rule Instances
+
+plural-suffix :=
+%suffix (* -pl)
+plural-lex-rule.
+
+elative-suffix :=
+%suffix (* -elat)
+elative-lex-rule.
+
+1SG-POSS-suffix :=
+%suffix (* -poss1sg)
+1SG-POSS-lex-rule.
+
+passive-suffix :=
+%suffix (* -pass)
+passive-lex-rule.
+
+past-suffix :=
+%suffix (* -past)
+past-lex-rule.
+
+conditional-suffix :=
+%suffix (* -cond)
+conditional-lex-rule.
+
+1SG-suffix :=
+%suffix (* -1sg)
+1SG-lex-rule.
+
+3SG-suffix :=
+%suffix (* -3sg)
+3SG-lex-rule.
+
+indefinite-suffix :=
+%suffix (* -indef)
+indefinite-lex-rule.
+
+also-suffix :=
+%suffix (* -kin)
+also-lex-rule.

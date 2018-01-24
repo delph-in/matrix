@@ -1,0 +1,6 @@
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+;;; Semantically Empty Lexical Entries
+
+da_gr := arg0e_gtr &
+  [ CONTEXT.RELS <! [ PRED "non_existing_rel" ] !>,
+    FLAGS.TRIGGER "da" ].

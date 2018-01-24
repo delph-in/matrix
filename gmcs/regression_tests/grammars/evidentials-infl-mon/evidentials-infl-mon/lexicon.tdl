@@ -1,0 +1,18 @@
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+;;; Nouns
+
+buuz := common-noun-noun-lex &
+  [ STEM < "buuz" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_dumpling_n_rel" ].
+
+bagsh := common-noun-noun-lex &
+  [ STEM < "bagsh" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_teacher_n_rel" ].
+
+;;; Adjectives
+
+;;; Verbs
+
+ide := tr-verb-verb-lex &
+  [ STEM < "ide" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_eat_v_rel" ].

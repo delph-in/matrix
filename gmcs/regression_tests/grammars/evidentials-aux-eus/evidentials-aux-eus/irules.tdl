@@ -1,0 +1,4 @@
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+CHEAP-HACK-RULE :=
+%prefix (xyx zyz)
+lex-rule & [ NEEDS-AFFIX + ].

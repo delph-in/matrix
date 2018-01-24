@@ -1,0 +1,18 @@
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+;;; Nouns
+
+NP := noun-noun-lex &
+  [ STEM < "NP" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_NP_n_rel" ].
+
+;;; Adjectives
+
+;;; Verbs
+
+d-shin := verb1-verb-lex &
+  [ STEM < "d-shin" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_sing_v_rel" ].
+
+tah := verb2-verb-lex &
+  [ STEM < "tah" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_kick_v_rel" ].

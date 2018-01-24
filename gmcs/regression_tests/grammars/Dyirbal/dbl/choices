@@ -1,0 +1,138 @@
+version=17
+
+section=general
+language=Dyirbal
+iso-code=dbl
+
+section=word-order
+word-order=sov
+has-dets=yes
+noun-det-order=det-noun
+has-aux=no
+
+section=number
+
+section=person
+person=1-2-3
+first-person=none
+
+section=gender
+  gender1_name=I
+  gender2_name=II
+
+section=case
+case-marking=split-n
+split-n-nom-case-name=nom
+split-n-acc-case-name=acc
+split-n-erg-case-name=erg
+split-n-abs-case-name=abs
+
+section=direct-inverse
+
+section=tense-aspect
+
+section=other-features
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=lexicon
+    noun1_feat1_name=gender
+    noun1_feat1_value=I
+    noun1_feat2_name=case
+    noun1_feat2_value=abs
+    noun1_feat3_name=person
+    noun1_feat3_value=3rd
+  noun1_det=obl
+    noun1_stem1_orth=yaɽa
+    noun1_stem1_pred=_yaɽa_n_rel
+    noun2_feat1_name=gender
+    noun2_feat1_value=I
+    noun2_feat2_name=case
+    noun2_feat2_value=erg
+    noun2_feat3_name=person
+    noun2_feat3_value=3rd
+  noun2_det=obl
+    noun2_stem1_orth=yaɽaŋgu
+    noun2_stem1_pred=_yaɽa_n_rel
+    noun3_feat1_name=gender
+    noun3_feat1_value=II
+    noun3_feat2_name=case
+    noun3_feat2_value=abs
+    noun3_feat3_name=person
+    noun3_feat3_value=3rd
+  noun3_det=obl
+    noun3_stem1_orth=ɖugumbil
+    noun3_stem1_pred=_ɖugumbil_n_rel
+    noun4_feat1_name=gender
+    noun4_feat1_value=II
+    noun4_feat2_name=case
+    noun4_feat2_value=erg
+    noun4_feat3_name=person
+    noun4_feat3_value=3rd
+  noun4_det=obl
+    noun4_stem1_orth=ɖugumbiɽu
+    noun4_stem1_pred=_ɖugumbil_n_rel
+    noun5_feat1_name=case
+    noun5_feat1_value=nom
+    noun5_feat2_name=person
+    noun5_feat2_value=1st
+  noun5_det=imp
+    noun5_stem1_orth=ŋaɖa
+    noun5_stem1_pred=_pronoun_n_rel
+    noun6_feat1_name=case
+    noun6_feat1_value=acc
+    noun6_feat2_name=person
+    noun6_feat2_value=1st
+  noun6_det=imp
+    noun6_stem1_orth=ŋayguna
+    noun6_stem1_pred=_pronoun_n_rel
+    noun7_feat1_name=case
+    noun7_feat1_value=nom
+    noun7_feat2_name=person
+    noun7_feat2_value=2nd
+  noun7_det=imp
+    noun7_stem1_orth=ŋinda
+    noun7_stem1_pred=_pronoun_n_rel
+    noun8_feat1_name=case
+    noun8_feat1_value=acc
+    noun8_feat2_name=person
+    noun8_feat2_value=2nd
+  noun8_det=imp
+    noun8_stem1_orth=ŋinuna
+    noun8_stem1_pred=_pronoun_n_rel
+  verb1_valence=s
+    verb1_stem1_orth=baniɲu
+    verb1_stem1_pred=_baniɲu_v_rel
+  verb2_valence=a-o
+    verb2_stem1_orth=balgan
+    verb2_stem1_pred=_balgan_v_rel
+    det1_stem1_orth=bayi
+    det1_stem1_pred=exist_q_rel
+    det1_feat1_name=gender
+    det1_feat1_value=I
+    det1_feat2_name=case
+    det1_feat2_value=abs
+    det2_stem1_orth=baŋgul
+    det2_stem1_pred=exist_q_rel
+    det2_feat1_name=gender
+    det2_feat1_value=I
+    det2_feat2_name=case
+    det2_feat2_value=erg
+    det3_stem1_orth=balan
+    det3_stem1_pred=exist_q_rel
+    det3_feat1_name=gender
+    det3_feat1_value=II
+    det3_feat2_name=case
+    det3_feat2_value=abs
+    det4_stem1_orth=baŋgun
+    det4_stem1_pred=exist_q_rel
+    det4_feat1_name=gender
+    det4_feat1_value=II
+    det4_feat2_name=case
+    det4_feat2_value=erg
+
+section=test-sentences

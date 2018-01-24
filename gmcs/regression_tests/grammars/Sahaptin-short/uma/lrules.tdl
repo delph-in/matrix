@@ -1,0 +1,38 @@
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+_topic_lrt2-lex := _topic_lrt2-lex-rule.
+
+intrans-prefix_lrt3-lex := intrans-prefix_lrt3-lex-rule.
+
+trans-prefix_lrt7-lex := trans-prefix_lrt7-lex-rule.
+
+trans-prefix_lrt8-lex := trans-prefix_lrt8-lex-rule.
+
+trans-prefix_lrt9-lex := trans-prefix_lrt9-lex-rule.
+
+intrans-enclitic_lrt6-lex := intrans-enclitic_lrt6-lex-rule.
+
+trans-enclitic_lrt11-lex := trans-enclitic_lrt11-lex-rule.
+
+subjprox_lrt1-lex := subjprox_lrt1-lex-rule.
+
+subjprox_lrt2-lex := subjprox_lrt2-lex-rule.
+
+subjprox_lrt3-lex := subjprox_lrt3-lex-rule.
+
+subjprox_lrt4-lex := subjprox_lrt4-lex-rule.
+
+subjprox_lrt5-lex := subjprox_lrt5-lex-rule.
+
+verb2-dir-1-lex := verb2-dir-1-lex-rule.
+
+verb2-dir-2-lex := verb2-dir-2-lex-rule.
+
+verb2-dir-3-lex := verb2-dir-3-lex-rule.
+
+verb2-dir-4-lex := verb2-dir-4-lex-rule.
+
+verb2-inv-1-lex := verb2-inv-1-lex-rule.
+
+verb2-inv-2-lex := verb2-inv-2-lex-rule.
+
+verb2-inv-3-lex := verb2-inv-3-lex-rule.

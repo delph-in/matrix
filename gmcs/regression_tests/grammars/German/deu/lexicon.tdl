@@ -1,0 +1,60 @@
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+;;; Nouns
+
+Mann := masculine-noun-lex &
+  [ STEM < "Mann" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_mann_n_rel" ].
+
+Mensch := weak-masculine-noun-lex &
+  [ STEM < "Mensch" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_mensch_n_rel" ].
+
+Frau := feminine-noun-lex &
+  [ STEM < "Frau" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_frau_n_rel" ].
+
+Mädchen := neuter-noun-lex &
+  [ STEM < "Mädchen" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_mädchen_n_rel" ].
+
+;;; Adjectives
+
+;;; Verbs
+
+schläft := nominative-verb-lex &
+  [ STEM < "schläft" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_schlafen_v_rel" ].
+
+sieht := accusative-verb-lex &
+  [ STEM < "sieht" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_sehen_v_rel" ].
+
+hilft := dative-verb-lex &
+  [ STEM < "hilft" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_helfen_v_rel" ].
+
+;;; Determiners
+
+der_1 := det1-determiner-lex &
+  [ STEM < "der" >,
+    SYNSEM.LKEYS.KEYREL.PRED "exist_q_rel" ].
+
+die := det2-determiner-lex &
+  [ STEM < "die" >,
+    SYNSEM.LKEYS.KEYREL.PRED "exist_q_rel" ].
+
+das := det3-determiner-lex &
+  [ STEM < "das" >,
+    SYNSEM.LKEYS.KEYREL.PRED "exist_q_rel" ].
+
+den := det4-determiner-lex &
+  [ STEM < "den" >,
+    SYNSEM.LKEYS.KEYREL.PRED "exist_q_rel" ].
+
+dem := det5-determiner-lex &
+  [ STEM < "dem" >,
+    SYNSEM.LKEYS.KEYREL.PRED "exist_q_rel" ].
+
+der_2 := det6-determiner-lex &
+  [ STEM < "der" >,
+    SYNSEM.LKEYS.KEYREL.PRED "exist_q_rel" ].
