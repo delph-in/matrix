@@ -223,8 +223,14 @@ def customize_poss_rules(strat,mylang,ch,rules):
         # If possessor==spec, add a head-compositional variant of head-spec 
         if strat.get('mod-spec')=='spec':
             phrase_rule='head-spec-poss-phrase'+'-'+strat_num
-            mylang.add(phrase_rule+' :=  basic-head-spec-phrase-super & [  NON-HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL [ SPR < >,\
-                                                                                                                   COMPS < > ],\
+#            mylang.add(phrase_rule+' :=  basic-head-spec-phrase-super & [  NON-HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL [ SPR < >,\
+#                                                                                                                   COMPS < > ],\
+#                                                                                                               HEAD +nvjrpcmo ],\
+#                                                                                                   OPT - ],\
+#                                                                           HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK #hook ,\
+#                                                                           C-CONT.HOOK #hook ].')
+            mylang.add(phrase_rule+' :=  basic-head-spec-phrase-super & [  NON-HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL [ SPR olist,\
+                                                                                                                   COMPS olist ],\
                                                                                                                HEAD +nvjrpcmo ],\
                                                                                                    OPT - ],\
                                                                            HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK #hook ,\
