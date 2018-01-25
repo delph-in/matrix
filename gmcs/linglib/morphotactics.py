@@ -1100,17 +1100,34 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
             vr.err(feat_key+'_name',
                    'Only person, number, and gender features are supported for agreement ' +\
                    'between possessor and possessum.')
-    # Possessive pc's should be obligatory
-    # TODO: not working on site version.
     if poss_strats or poss_prons:
+        # Possessive pc's should be obligatory
         pc_id=lrt.full_key.split('_')[0]
         pc=choices.get(pc_id)
-        if pc.get('obligatory')=='off':
+        if pc.get('obligatory')!='on':
             mess= 'Possessive position ' +\
                      'classes should be obligatory; ' +\
                      'please mark as obligatory and then include a ' +\
                      'nonpossessive lexical rule type.'
-            vr.err(pc_id+'_obligatory', mess)
+            vr.warn(pc_id+'_obligatory', mess)
+        # The head of poss-stratN or poss-pronN features should be 'itself'
+        for feat in lrt.get('feat'):
+            if 'poss-' in feat.get('name'): 
+                if feat.get('head')=='possessor' or feat.get('head')=='possessum':
+                    mess='A feature should only be marked as specified on the possessor '+\
+                         'or the possessum if it is an agreement feature. '+feat.get('name')+\
+                         ' is not an agreement feature.'
+                    vr.err(feat.full_key+'_head',mess)
+    else:
+        for feat in lrt.get('feat'):
+            # The head of noun features should be 'itself' unless it's a possessive form
+            if 'noun' in lrt.full_key.split('_')[0]:
+                if feat.get('head')=='possessor' or feat.get('head')=='possessum':
+                    mess='Only possessive rules should have features specified on ' +\
+                        'anything other than \'itself.\''
+                    vr.err(feat.full_key+'_head', mess)
+   
+       
 
     # TJT 2014-08-21: Incorporated Adjective validation
     if incorp:
