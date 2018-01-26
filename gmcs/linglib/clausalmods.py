@@ -815,3 +815,4 @@ def shortform_pred(pred):
     else:
         value = pred.split('_')[0]
     return value
+

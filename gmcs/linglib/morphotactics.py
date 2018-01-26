@@ -254,9 +254,13 @@ def create_lexical_rule_type(lrt, mtx_supertypes, cur_pc):
     for feat in lrt.get('feat'):
         if feat['name'] == 'evidential':
             new_lrt.evidential = feat['value']
+        elif feat['value']=='possessor' or feat['value']=='possessum' or feat['value']=='nonpossessive':
+            new_lrt.possessive=feat['value']
+            new_lrt.poss_strat_num = feat['name'][-1]
         else:
             new_lrt.features[feat['name']] = {'value': feat['value'],
                                               'head': feat['head']}
+
 
     # CMC 2017-03-24 Populate valence change operations
     new_lrt.valchgops = lrt.get('valchg',[])
@@ -520,7 +524,11 @@ def percolate_supertypes(pc):
                     # evidential semantics must be able to add a predicate
                     # in CCONT
                     x.supertypes.add('cont-change-only-lex-rule')
-                else:
+                # EKN 2017-12-18 Possessive lexical rules have too much variation to 
+                # add any supertype but lex-rule, but adding this causes inheritance issues.
+                # So no supertypes for possessive rules are added here; instead, supertypes
+                # are handled by write_possessive_behavior().
+                elif not pc.has_possessive():
                     x.supertypes.add('add-only-no-ccont-rule')
 
     for r in pc.roots():
@@ -614,6 +622,8 @@ def write_rules(pch, mylang, irules, lrules, lextdl, choices):
             write_valence_change_behavior(lrt, mylang, choices)
             # MTH 2017-10-16 Write evidential behavior
             write_evidential_behavior(lrt, mylang, choices, pc.has_evidential())
+            # EKN 2017-12-13 Write possessive behavior
+            write_possessive_behavior(pc,lrt,mylang,choices)
             # CMC 2017-04-07 moved merged LRT/PCs handling to write_supertypes
             write_supertypes(mylang, lrt.identifier(), lrt.all_supertypes())
         write_daughter_types(mylang, pc)
@@ -807,6 +817,31 @@ def write_evidential_behavior(lrt, mylang, choices, pc_evidential):
         mylang.set_section(prev_section)
     elif pc_evidential:
         lrt.supertypes.add("add-only-no-ccont-rule")
+
+
+def write_possessive_behavior(pc,lrt,mylang,choices):
+    ##############################################
+    # FULL NP POSSESSIVE PHRASES:              ###
+    ##############################################
+    POSSESSOR_LEX_RULE_DEFN = ''' := 
+             [ SYNSEM.LOCAL.CAT.HEAD noun ].'''
+    POSSESSUM_LEX_RULE_DEFN = ''' := 
+             [ SYNSEM.LOCAL.CAT.HEAD noun ].'''
+    NON_POSS_LEX_RULE_DEFN = ''' := add-only-no-ccont-rule &
+             [ SYNSEM.LOCAL.CAT [ HEAD noun & [ POSSESSOR nonpossessive ],\
+                                  POSSESSUM nonpossessive ] ].'''
+    if lrt.possessive=='possessor':
+        possessor_rule_name='possessor-lex-rule-'+lrt.poss_strat_num
+        lrt.supertypes.add(possessor_rule_name)
+        mylang.add(possessor_rule_name+POSSESSOR_LEX_RULE_DEFN,section='lexrules')
+    if lrt.possessive=='possessum':
+        possessum_rule_name='possessum-lex-rule-'+lrt.poss_strat_num
+        mylang.add(possessum_rule_name+POSSESSUM_LEX_RULE_DEFN,section='lexrules')
+        lrt.supertypes.add(possessum_rule_name)
+    if lrt.possessive=='nonpossessive':
+        nonpossessive_rule_name='nonpossessive-lex-rule-'+lrt.poss_strat_num
+        mylang.add(nonpossessive_rule_name+NON_POSS_LEX_RULE_DEFN,section='lexrules')
+        lrt.supertypes.add(nonpossessive_rule_name)
 
 def write_valence_change_behavior(lrt, mylang, choices):
     from gmcs.linglib.valence_change import lexrule_name
@@ -1029,6 +1064,70 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
                 vr.warn(vchop.full_key+'_argtype','The type of the added argument ({}) is unconstrained.'.format(vchop.get('argtype','')))
             if not vchop.get('predname'):
                 vr.warn(vchop.full_key+'_predname','The added predicated should have a name specified.')
+
+    # EKN 2018-01-09: Check that only one possessive strategy or 
+    # possessive pronoun is selected per LRT
+    poss_strats={}
+    poss_prons={}
+    other_feats={}
+    for feat in lrt.get('feat'):
+        if 'poss-strat' in feat.get('name'):
+            poss_strats[feat.full_key]=feat.get('name')
+        elif 'poss-pron' in feat.get('name'):
+            poss_prons[feat.full_key]=feat.get('name')
+        else:
+            other_feats[feat.full_key]=(feat.get('name'),feat.get('value'))
+    if len(poss_strats) > 1:
+        for feat_key in poss_strats:
+            vr.err(feat_key+'_name',
+               'A given rule can only be marked for one possessive behavior.')
+    if len(poss_prons) > 1:
+        for feat_key in poss_prons:
+            vr.err(feat_key+'_name',
+               'A given rule can only be marked for one possessive behavior.')
+    if poss_strats and poss_prons:
+        for feat_key in poss_prons:
+            vr.err(feat_key+'_name',
+               'A given rule can only be marked for one possessive behavior.')
+        for feat_key in poss_strats:
+            vr.err(feat_key+'_name',
+               'A given rule can only be marked for one possessive behavior.')
+    # EKN 2018-01-09: Check that only PNG features are 
+    # added as agreement features to possessive strategies
+    png_feats=set(['person','number','gender'])
+    for feat_key in other_feats:
+        if (poss_strats or poss_prons) and other_feats[feat_key][0] not in png_feats:
+            vr.err(feat_key+'_name',
+                   'Only person, number, and gender features are supported for agreement ' +\
+                   'between possessor and possessum.')
+    if poss_strats or poss_prons:
+        # Possessive pc's should be obligatory
+        pc_id=lrt.full_key.split('_')[0]
+        pc=choices.get(pc_id)
+        if pc.get('obligatory')!='on':
+            mess= 'Possessive position ' +\
+                     'classes should be obligatory; ' +\
+                     'please mark as obligatory and then include a ' +\
+                     'nonpossessive lexical rule type.'
+            vr.warn(pc_id+'_obligatory', mess)
+        # The head of poss-stratN or poss-pronN features should be 'itself'
+        for feat in lrt.get('feat'):
+            if 'poss-' in feat.get('name'): 
+                if feat.get('head')=='possessor' or feat.get('head')=='possessum':
+                    mess='A feature should only be marked as specified on the possessor '+\
+                         'or the possessum if it is an agreement feature. '+feat.get('name')+\
+                         ' is not an agreement feature.'
+                    vr.err(feat.full_key+'_head',mess)
+    else:
+        for feat in lrt.get('feat'):
+            # The head of noun features should be 'itself' unless it's a possessive form
+            if 'noun' in lrt.full_key.split('_')[0]:
+                if feat.get('head')=='possessor' or feat.get('head')=='possessum':
+                    mess='Only possessive rules should have features specified on ' +\
+                        'anything other than \'itself.\''
+                    vr.err(feat.full_key+'_head', mess)
+   
+       
 
     # TJT 2014-08-21: Incorporated Adjective validation
     if incorp:

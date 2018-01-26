@@ -19,6 +19,7 @@ import re
 import tarfile
 import gzip
 import zipfile
+import cgi
 
 from gmcs import choices
 from gmcs.choices import ChoicesFile
@@ -32,8 +33,7 @@ from collections import defaultdict
 # HTML blocks, used to create web pages
 
 def dummy():
-    pass # let emacs know the indentation is 2 spaces 2017-12-01 OZ: why 2 spaces and not the standard 4?
-
+    pass # let emacs know the indentation is 2 spaces 
 
 HTTP_header = 'Content-type: text/html;charset=UTF-8'
 
@@ -240,10 +240,6 @@ HTML_sentencespostbody = '''
 
 HTML_prebody = '''<body onload="animate(); focus_all_fields(); multi_init(); fill_hidden_errors(); scalenav();">
 '''
-
-HTML_prebody_of = '''<body onload="animate(); focus_all_fields(); multi_init(); fill_hidden_errors(); display_form_choice();scalenav();">
-'''
-
 
 HTML_prebody_sn = '''<body onload="animate(); focus_all_fields(); multi_init(); fill_hidden_errors();display_neg_form();scalenav();">'''
 
@@ -545,8 +541,9 @@ class MatrixDefFile:
     # use in links on html navigation menu
     sections = { 'general':'General Information',
                  'word-order':'Word Order', 'number':'Number',
-                 'person':'Person', 'gender':'Gender', 'case':'Case',
-                 'direct-inverse':'Direct-inverse', 'tense-aspect-mood':'Tense, Aspect and Mood', 'evidentials': 'Evidentials',
+                 'person':'Person', 'gender':'Gender', 'case':'Case', 
+                 'adnom-poss':'Adnominal Possession', 'direct-inverse':'Direct-inverse', 
+                 'tense-aspect-mood':'Tense, Aspect and Mood', 'evidentials': 'Evidentials',
                  'other-features':'Other Features', 'sentential-negation':'Sentential Negation',
                  'coordination':'Coordination', 'matrix-yes-no':'Matrix Yes/No Questions',
                  'info-str':'Information Structure',
@@ -557,13 +554,13 @@ class MatrixDefFile:
                  'morphology':'Morphology','toolbox-import':'Toolbox Import',
                  'test-sentences':'Test Sentences','gen-options':'TbG Options',
                  'ToolboxLexicon':'Toolbox Lexicon'}
-
     # used to link section names to their documentation
     # page name in the delph-in wiki
     doclinks = { 'general':'GeneralInfo',
                  'word-order':'WordOrder', 'number':'Number',
                  'person':'Person', 'gender':'Gender', 'case':'Case',
-                 'direct-inverse':'DirectInverse', 'tense-aspect-mood':'TenseAspectMood', 'evidentials': 'Evidentials',
+                 'adnom-poss':'AdnominalPossession', 'direct-inverse':'DirectInverse', 
+                 'tense-aspect-mood':'TenseAspectMood', 'evidentials': 'Evidentials',
                  'other-features':'OtherFeatures', 'sentential-negation':'SententialNegation',
                  'coordination':'Coordination', 'matrix-yes-no':'YesNoQ',
                  'info-str':'InformationStructure',
@@ -844,7 +841,6 @@ class MatrixDefFile:
 
         html = ''
 
-        #if not debug:
         http_cookie = os.getenv('HTTP_COOKIE')
 
         cookie = {}
@@ -975,10 +971,6 @@ class MatrixDefFile:
                 # probably by calling it incorrectly, but the check should not hurt.
                 while i < len(lines)-1 and lines[i].strip().startswith('fill'):
                     word = tokenize_def(replace_vars(lines[i], vars))
-                    #if word[0].startswith('fillform'):
-                    #    print(5)
-                    # arguments are labeled like p=pattern, l(literal_feature)=1,
-                    # n(nameOnly)=1, c=cat
                     #note: possible cat values are "noun", "verb" or "both"
                     argstring = ','.join(['true' if a in ('n', 'l') else "'%s'" % x
                                           for (a, x) in [w.split('=') for w in word[1:]]])
@@ -1285,8 +1277,6 @@ class MatrixDefFile:
 
             if section == 'sentential-negation':
                 print HTML_prebody_sn
-            #elif section == 'other-features':
-            #    print HTML_prebody_of
             else:
                 print HTML_prebody
 

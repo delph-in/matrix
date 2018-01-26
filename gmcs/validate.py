@@ -1464,6 +1464,23 @@ def validate_clausalmods(ch, vr):
             mess = 'You must select a subordinator type.'
             vr.err(cms.full_key + '_subordinator', mess)
 
+######################################################################
+# Validation of clausal modifiers
+def validate_clausalmods(ch, vr):
+    """Check to see if the user completed the necessary portions of the
+       Clausal Modifiers page and check for unsupported combinations of choices"""
+    for cms in ch.get('cms'):
+        # First check the choices that are required for all clausal mod strategies
+        if not cms.get('position'):
+            mess = 'You must select a position for the clausal modifier.'
+            vr.err(cms.full_key + '_position', mess)
+        if not cms.get('modifier-attach'):
+            mess = 'You must select VP or S attachment for the clausal modifier.'
+            vr.err(cms.full_key + '_modifier-attach', mess)
+        if not cms.get('subordinator'):
+            mess = 'You must select a subordinator type.'
+            vr.err(cms.full_key + '_subordinator', mess)
+
         # Next check the choices required for free and pair subordinators
         if cms.get('subordinator') == 'free' or cms.get('subordinator') == 'pair':
             if not cms.get('subposition'):
@@ -1532,10 +1549,6 @@ def validate_clausalmods(ch, vr):
 
 
 
-
-
-
-
 ######################################################################
 # Validation nominalized clauses
 def validate_nominalized_clauses(ch, vr):
@@ -1556,6 +1569,164 @@ def validate_nominalized_clauses(ch, vr):
                        ' VP constituent. You must select V or S nominalization.'
                 vr.err(ns.full_key + '_level', mess)
 
+
+
+######################################################################
+# validate_adnominal_possession(ch, vr)
+#   Validate the user's choices about adnominal possession
+def validate_adnominal_possession(ch, vr):
+    png_feats=set(['person','number','gender'])
+    for strat in ch.get('poss-strat'):
+        # CHECK THAT ALL THE CHOICES ARE CHOSEN
+        # Require basic input for all possessive strategies:
+        if not strat.get('order'):
+            mess='You must choose a possessive phrase order.'
+            vr.err(strat.full_key+'_order',mess)
+        if not strat.get('mod-spec'):
+            mess='You must choose either modifier-like or specifier-like.'
+            vr.err(strat.full_key+'_mod-spec',mess)
+        if not strat.get('mark-loc'):
+            mess='You must indicate where possessive markings appear.'
+            vr.err(strat.full_key+'_mark-loc',mess)
+        # Require input for possessor-marking 
+        if strat.get('mark-loc')=='possessor' or strat.get('mark-loc')=='both':
+            if not strat.get('possessor-type'):
+                mess='You must indicate what form the possessor marking takes.'
+                vr.err(strat.full_key+'_possessor-type',mess)
+            # Require input for affix possessor-marking
+            elif strat.get('possessor-type')=='affix':
+                if not strat.get('possessor-affix-agr'):
+                    mess='You must indicate whether the possessor affix agrees with the possessum.'
+                    vr.err(strat.full_key+'_possessor-agr',mess)
+            # Require input for non-affix possessor-marking
+            elif strat.get('possessor-type')=='non-affix':
+#                if not strat.get('possessor-marker-order'):
+#                    mess='You must indicate the word order of the possessor marking word.'
+#                    vr.err(strat.full_key+'_possessor-marker-order',mess)
+                if not strat.get('possessor-agr'):
+                    mess='You must indicate whether the possessor affix agrees with the possessum.'
+                    vr.err(strat.full_key+'_possessor-agr',mess)
+                # Require input for the case when the possessor-marking word doesn't do agreement
+                elif strat.get('possessor-agr')=='non-agree':
+                    if not strat.get('possessor-orth'):
+                        mess='You must give the possessor marker\'s orthographic form.'
+                        vr.err(strat.full_key+'_possessor-orth',mess)
+                # Require input for the case when the possessor-marking word does do agreement
+                elif strat.get('possessor-agr')=='agree':
+                    for form in strat.get('possessor-form'):
+                        if not form.get('name'):
+                           mess='You must give a name for this form.'
+                           vr.err(form.full_key+'_name',mess)
+                        if not form.get('agr-orth'):
+                           mess='You must give the spelling for this form.'
+                           vr.err(form.full_key+'_agr-orth',mess)
+                        for feat in form.get('feat'):
+                           if not feat.get('name'):
+                              mess='You must give the name of this feature.'   
+                              vr.err(feat.full_key+'_name',mess)
+                           # Limit agr features to PNG
+                           elif feat.get('name') not in png_feats:
+                               mess='Agreement between elements of the possessive phrase ' +\
+                                   'is only supported for person, number, and gender.'
+                               vr.err(feat.full_key+'_name',mess)
+                           if not feat.get('value'):
+                              mess='You must give the value of this feature.'   
+                              vr.err(feat.full_key+'_value',mess)
+
+        # Require input for possessum-marking 
+        if strat.get('mark-loc')=='possessum' or strat.get('mark-loc')=='both':
+            if not strat.get('possessum-type'):
+                mess='You must indicate what form the possessum marking takes.'
+                vr.err(strat.full_key+'_possessum-type',mess)
+            # Require input for affix possessum-marking
+            elif strat.get('possessum-type')=='affix':
+                if not strat.get('possessum-affix-agr'):
+                    mess='You must indicate whether the possessum affix agrees with the possessor.'
+                    vr.err(strat.full_key+'_possessum-agr',mess)
+            # Require input for non-affix possessum-marking
+            elif strat.get('possessum-type')=='non-affix':
+                # Rule out the scenario: mod-like attachment + non-affixal possessum mark
+                if strat.get('mod-spec')=='mod':
+                    mess='A modifier-like analysis is not supported in the case where '+ \
+                         'the possessum is marked by a separate word or clitic. ' + \
+                         'Please select a modifier-like analysis.'
+                    vr.err(strat.full_key+'_mod-spec',mess)
+#                if not strat.get('possessum-marker-order'):
+#                    mess='You must indicate the word order of the possessum-marking word.'
+#                    vr.err(strat.full_key+'_possessum-marker-order',mess)
+                if not strat.get('possessum-agr'):
+                    mess='You must indicate whether the possessum affix agrees with the possessor.'
+                    vr.err(strat.full_key+'_possessum-agr',mess)
+                # Require input for the case when the possessum-marking word doesn't do agreement
+                elif strat.get('possessum-agr')=='non-agree':
+                    if not strat.get('possessum-orth'):
+                        mess='You must give the possessum marker\'s orthographic form.'
+                        vr.err(strat.full_key+'_possessum-orth',mess)
+                # Require input for the case when the possessum-marking word does do agreement
+                elif strat.get('possessum-agr')=='agree':
+                    for form in strat.get('possessum-form'):
+                        if not form.get('name'):
+                           mess='You must give a name for this form.'
+                           vr.err(form.full_key+'_name',mess)
+                        if not form.get('agr-orth'):
+                           mess='You must give the spelling for this form.'
+                           vr.err(form.full_key+'_agr-orth',mess)
+                        for feat in form.get('feat'):
+                           if not feat.get('name'):
+                              mess='You must give the name of this feature.'   
+                              vr.err(feat.full_key+'_name',mess)
+                           # Limit agr features to PNG
+                           elif feat.get('name') not in png_feats:
+                               mess='Agreement between elements of the possessive phrase ' +\
+                                   'is only supported for person, number, and gender.'
+                               vr.err(feat.full_key+'_name',mess)
+                           if not feat.get('value'):
+                              mess='You must give the value of this feature.'   
+                              vr.err(feat.full_key+'_value',mess)
+    for pron in ch.get('poss-pron'):
+        # Require basic input for all possessive pronouns
+        if not pron.get('type'):
+            mess='You must specify the type of this possessive pronoun.'
+            vr.err(pron.full_key+'_type',mess)
+        elif pron.get('type')=='affix':
+            if not pron.get('agr'):
+                mess='You must specify the whether this pronoun affix agrees with the possessum.'
+                vr.err(pron.full_key+'_agr',mess)
+            if not pron.get('mod-spec'):
+                mess='You must specify the whether this pronoun affix appears with determiners or not.'
+                vr.err(pron.full_key+'_mod-spec',mess)
+        elif pron.get('type')=='non-affix':
+            if not pron.get('order'):
+                mess='You must specify the order this pronoun appears in.'
+                vr.err(pron.full_key+'_order',mess)
+            if not pron.get('mod-spec'):
+                mess='You must specify the whether this pronoun affix appears with determiners or not.'
+                vr.err(pron.full_key+'_mod-spec',mess)
+            if not pron.get('agr'):
+                mess='You must specify the whether this pronoun affix agrees with the possessum.'
+                vr.err(pron.full_key+'_agr',mess)
+            for inst in pron.get('instance'):
+                if not inst.get('name'):
+                    mess='You must give a name for this pronoun.'
+                    vr.err(inst.full_key+'_name',mess)
+                if not inst.get('orth'):
+                    mess='You must give the spelling for this pronoun.'
+                    vr.err(inst.full_key+'_orth',mess)
+                for feat in inst.get('feat'):
+                    if not feat.get('name'):
+                        mess='You must give a name for this feature.'
+                        vr.err(feat.full_key+'_name',mess)
+                    if not feat.get('value'):
+                        mess='You must give a value for this feature.'
+                        vr.err(feat.full_key+'_value',mess)
+                for feat in inst.get('agr-feat'):
+                    if not feat.get('name'):
+                        mess='You must give a name for this feature.'
+                        vr.err(feat.full_key+'_name',mess)
+                    if not feat.get('value'):
+                        mess='You must give a value for this feature.'
+                        vr.err(feat.full_key+'_value',mess)
+        
 def validate(ch, extra = False):
     """
     Validate the ChoicesFile ch.  Return a ValidationResult that
@@ -1579,10 +1750,10 @@ def validate(ch, extra = False):
     gmcs.linglib.lexicon.validate_lexicon(ch, vr)
     gmcs.linglib.morphotactics.validate(ch, vr)
     validate_test_sentences(ch, vr)
+    validate_adnominal_possession(ch, vr)
     gmcs.linglib.clausalcomps.validate(ch, vr)
     validate_clausalmods(ch, vr)
     validate_nominalized_clauses(ch, vr)
-
     validate_types(ch, vr)
     validate_features(ch, vr)
     validate_hierarchy(ch, vr)
@@ -1607,10 +1778,9 @@ def validate_choices(choices_file, extra = False):
 # command line or shell scripts, and print out the errors
 # that result.
 
-if __name__ == "__main__":
-    print "hello"
-    vr = validate_choices(sys.argv[1])
 
+if __name__ == "__main__":
+    vr = validate_choices(sys.argv[1])
     print sys.argv[1]
     for k in vr.errors.keys():
         print '  ' + k + ':'

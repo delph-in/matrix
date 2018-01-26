@@ -289,6 +289,7 @@ head := head-min &
     PRD bool,
     KEYS keys_min ].
 
+
 ; (ERB 2004-08-19) We had previously shied away from defining head
 ; types because even head types that are expected to occur across
 ; all languages are probably grouped differently in the head subhierarchy
@@ -570,8 +571,9 @@ event-or-ref-index := individual.
 ; so those aren't included here.
 
 expl-ind := index.
-ref-ind := index & event-or-ref-index &
-  [ PNG png ].
+
+ref-ind := index & event-or-ref-index & 
+	[ PNG png ].
 
 ; Types encoding agreement information, analyzed as a part of the
 ; index, following Pollard & Sag 1994.  Which subtypes and features
@@ -1137,7 +1139,6 @@ head-change-with-ccont-lex-rule := cat-mod-change-with-ccont-lex-rule &
 			     	   same-hc-light-lex-rule &
 			     	   same-posthead-lex-rule &
 			     	   same-mc-lex-rule.
-
 
 ; ERB 2007-02-13 These two should only be inherited by ltol types,
 ; since they are redundant with constraints on lexeme-to-word-rule.
@@ -1867,11 +1868,13 @@ basic-head-comp-phrase := head-valence-phrase & head-compositional &
 			  binary-headed-phrase & 
   [ SYNSEM phr-synsem-min &
 		   [ LOCAL.CAT [ VAL [ SUBJ #subj,
+		     	       	       SPEC #spec,
 				       SPR #spr ],
 				 POSTHEAD #ph,
 				 HC-LIGHT #light ],
 		     LIGHT #light ],
     HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL [ SUBJ #subj,
+    		      		      	SPEC #spec,
 					SPR #spr ],
 				  HC-LIGHT #light,
 				  POSTHEAD #ph ]], 
@@ -2285,7 +2288,8 @@ adj-head-phrase := basic-head-mod-phrase-simple & head-final &
              LIGHT #light ],
     HEAD-DTR.SYNSEM [ LOCAL.CAT.POSTHEAD #ph,
                       LIGHT #light ],
-    NON-HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL.COMPS < > ],
+    NON-HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL [ SPR olist,
+    			  	      	    COMPS < > ] ],
 			  NON-LOCAL [ SLASH 0-dlist,
 				      REL 0-dlist ],
                           MODIFIED.PERIPH #periph ] ].
@@ -2298,7 +2302,8 @@ adj-head-phrase := basic-head-mod-phrase-simple & head-final &
 ;; EMB pointed out as another english-specific leftover.
 head-adj-phrase := basic-head-mod-phrase-simple & head-initial & phrasal &
   [ SYNSEM.MODIFIED rmod,
-    NON-HEAD-DTR.SYNSEM [ LOCAL.CAT.POSTHEAD +,
+    NON-HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL.SPR olist,
+    			  	      POSTHEAD + ],
     			  NON-LOCAL.QUE 0-dlist ] ].
 
 ; We split head-adj-phrase and adj-head-phrase into two each,
@@ -2308,7 +2313,8 @@ head-adj-phrase := basic-head-mod-phrase-simple & head-initial & phrasal &
 ; we delay construction of intersective modification, but not scopal.
 
 scopal-mod-phrase := basic-head-mod-phrase-simple &
-  [ NON-HEAD-DTR.SYNSEM.LOCAL [ CAT.HEAD.MOD < [ LOCAL scopal-mod ] >,
+  [ NON-HEAD-DTR.SYNSEM.LOCAL [ CAT [ VAL.SPR olist,
+    			      	      HEAD.MOD < [ LOCAL scopal-mod ] > ],
 				CONT.HOOK #hook ],
     C-CONT [ HOOK #hook,
 	     HCONS <! !>,
@@ -2324,7 +2330,8 @@ scopal-mod-phrase := basic-head-mod-phrase-simple &
 
 isect-mod-phrase := basic-head-mod-phrase-simple & head-compositional &
   [ HEAD-DTR.SYNSEM.LOCAL [ CAT.MKG #mkg, CONT [ HOOK.LTOP #hand ] ],
-    NON-HEAD-DTR.SYNSEM.LOCAL [ CAT.HEAD.MOD < [ LOCAL intersective-mod & [ CAT.MKG #mkg ] ] >,
+    NON-HEAD-DTR.SYNSEM.LOCAL [ CAT [ VAL.SPR olist,
+    			      	      HEAD.MOD < [ LOCAL intersective-mod & [ CAT.MKG #mkg ] ] > ],
 				CONT.HOOK.LTOP #hand ],
     C-CONT [ HCONS <! !>,
 	     ICONS <! !> ] ].

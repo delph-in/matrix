@@ -423,3 +423,4 @@ def add_nmz_feature(mylang):
     mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT.HEAD.NMZ - ].')
     mylang.set_section('verb-lex')
     mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HEAD.NMZ - ].')
+
