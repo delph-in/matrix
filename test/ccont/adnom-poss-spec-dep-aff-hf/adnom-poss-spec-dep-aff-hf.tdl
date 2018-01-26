@@ -188,7 +188,7 @@ possessive-lex-rule-super := lex-rule &
                       NUM-FLAG #num ] ] ].
 
 ; try unary-phrase
-possessor-unary-rule := basic-unary-phrase &
+possessor-unary-rule := basic-unary-phrase & 
  [ SYNSEM.LOCAL [ CAT [ HEAD det,
    		      	VAL  [ SPR #spr,
                                COMPS #comps,	
@@ -199,11 +199,10 @@ possessor-unary-rule := basic-unary-phrase &
                                                               LTOP #lbl ] ] ] ],
                   CONT [ HOOK.INDEX #possessum ] ],
    ARGS.FIRST.SYNSEM.LOCAL [ CAT [ HEAD noun & [ POSSESSOR possessor-1 ],
-   			     	   VAL [ SPR #spr,
+   			     	   VAL [ SPR #spr & olist,
  				       	 COMPS #comps,
 					 SUBJ #subj ] ],
                             CONT [ HOOK.INDEX #possessor ] ],
-
   C-CONT [  RELS <! arg12-ev-relation &
 			       [ PRED "poss_rel",
                        	         LBL #lbl,
@@ -218,7 +217,7 @@ possessor-unary-rule := basic-unary-phrase &
                               	LARG #lbl ] !>,
              		ICONS <!  !>  ] ].
 
-possessor-lex-rule-1 := val-change-with-ccont-lex-rule &
+possessor-lex-rule-1 := add-only-no-ccont-rule &
   [ DTR.SYNSEM.LOCAL [ CAT.VAL #val ],
     SYNSEM.LOCAL.CAT [ HEAD noun &
                             [ POSSESSOR possessor-1 ],
