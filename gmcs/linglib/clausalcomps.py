@@ -1,4 +1,6 @@
 from gmcs.utils import get_name
+from gmcs.utils import TDLencode
+
 
 from gmcs import constants
 from gmcs.linglib import lexbase
@@ -74,12 +76,23 @@ def customize_clausalcomps(mylang,ch,lexicon,rules):
 def add_complementizers_to_lexicon(lexicon,ch):
     lexicon.add_literal(';;; Complementizers')
     have_comp = False
+    seen = {}
     for comp_strategy in ch[COMPS]:
         id = comp_strategy.full_key
-        typename = id + '-' + COMP_LEX_ITEM
+        stype = id + '-' + COMP_LEX_ITEM
+        #TODO: Perhaps turn complementizers into full-blown
+        # lexical items and then can call insert_ids() from lexical_items.py instead
+        # This would need to be done via redesigning the questionnaire a little.
         for complementizer in comp_strategy[COMPLEMENTIZER]:
-            orth = complementizer[constants.ORTH]
-            typedef = complementizer.full_key + ' := ' + typename + '& \
+            orth = complementizer.get(constants.ORTH)
+            typename = TDLencode(orth)
+            if orth in seen:
+                seen[orth] += 1
+            else:
+                seen[orth] = 1
+            typename = typename + '_' + str(seen[orth])
+            #typename = complementizer.full_key
+            typedef = typename + ' := ' + stype + ' & \
                           [ STEM < "' + orth + '" > ].'
 
             lexicon.add(typedef)
