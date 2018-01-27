@@ -431,7 +431,7 @@ def customize_coordination(mylang, ch, lexicon, rules, irules):
             tn += csnum
 
         if mark == 'word':
-            lexicon.add( tn + ' := conj-lex &\
+            lexicon.add(cs.get('name')) + ' := conj-lex &\
                   [ STEM < "' + orthstr + '" >,\
                     SYNSEM.LKEYS.KEYREL.PRED "_and_coord_rel",\
                     CFORM "' + csnum + '" ].')
