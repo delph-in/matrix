@@ -98,7 +98,13 @@ def insert_ids(ch):
             else:
                 stemids[matrixorth] = 1
     #CONJUNCTIONS
-    
+    for cs in ch.get('cs'):
+        if cs.get('mark') == 'word':
+            orth = cs.get('orth')
+            if orth in stemids.keys():
+                stemids[orth] += 1
+            else:
+                stemids[orth] = 1
 
     # Now that stemids has the full count, go through and add
     # to the choices file object.
@@ -126,6 +132,7 @@ def insert_ids(ch):
                     stemidcounters[orth] += 1
                     ch[bistem.full_key + '_name'] = orth + '_' + str(stemidcounters[orth])
     ## KPH Do the same for subordinators and complementizers
+    # SUBORDINATORS
     for cms in ch.get('cms'):
         for freemorph in cms.get('freemorph'):
             orth = freemorph.get('orth')
@@ -156,6 +163,18 @@ def insert_ids(ch):
             else:
                 stemidcounters[matrixorth] += 1
                 ch[morphpair.full_key + '_matrixname'] = matrixorth + '_' + str(stemidcounters[matrixorth])
+    # CONJUCTIONS
+    for cs in ch.get('cs'):
+        if cs.get('mark') == 'word':
+            orth = cs.get('orth')
+                if stemids[orth] == 1:
+                    ch[cs.full_key + '_name'] = orth
+                elif orth not in stemidcounters:
+                    stemidcounters[orth] = 1
+                    ch[cs.full_key + '_name'] = orth + '_1'
+                else:
+                    stemidcounters[orth] += 1
+                    ch[cs.full_key + '_name'] = orth + '_' + str(stemidcounters[orth])
 
 
 ##########################################################
