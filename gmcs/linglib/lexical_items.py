@@ -454,6 +454,11 @@ def customize_misc_lex(ch, lexicon, trigger):
 
 
 def customize_nouns(mylang, ch, lexicon, hierarchies):
+    ##################################################################
+    # EKN 2018-01-26 Trying adding a PRON feature to mark pronouns:
+    mylang.add('noun :+ [ PRON bool ].',section='addenda')
+    ##################################################################
+
     # Figure out which kinds of determiner-marking are in the language
     seen = {'obl':False, 'opt':False, 'imp':False}
     seenCount = 0
@@ -463,7 +468,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
         if not det == '' and not seen[det]:
             seen[det] = True
             seenCount += 1
-
+    
     singlentype = (seenCount == 1)
 
     # Playing fast and loose with the meaning of OPT on SPR.  Using
@@ -515,7 +520,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
                 if strat.get('possessum-type')=='non-affix':
                     nonaffixal_strat=True
 
-    # Add a typedef that takes into account all strategies
+    # Add a typedef that takes into account all poss strategies
     if spec_strat:
         if affixal_strat and nonaffixal_strat:
             spr_head_type='+npd'
@@ -536,6 +541,12 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
              ARG-ST < #spr > ].'
 
     mylang.add(typedef)
+
+    ####################################################################
+    # EKN 2018-01-26 Also adding a lex item that has this feat
+    mylang.add('pron-lex := noun-lex & [ SYNSEM.LOCAL.CAT.HEAD noun & [ PRON + ] ]. ')
+    mylang.add('non-pron-lex := noun-lex & [ SYNSEM.LOCAL.CAT.HEAD noun & [ PRON - ] ]. ')
+    ####################################################################
 
     # Adding empty MOD on general definitiion for noun-lex
     mylang.add('noun-lex := non-mod-lex-item.')
@@ -610,6 +621,9 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     for noun in ch.get('noun',[]):
         ntype = noun_id(noun)
         det = noun.get('det')
+        ###########################################################
+        pron = True if noun.get('pron')=='on' else False
+        ###########################################################
         if noun.full_key in stopdets:
             det = ''
 
@@ -623,6 +637,12 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
                 stype_names.append('obl-spr-noun-lex')
             elif det == 'imp':
                 stype_names.append('no-spr-noun-lex')
+        ###########################################################
+        if pron: 
+            stype_names.append('pron-lex')
+        else:
+            stype_names.append('non-pron-lex')
+        ###########################################################
 
         if len(stype_names) == 0:
             mylang.add(ntype + ' := noun-lex .')

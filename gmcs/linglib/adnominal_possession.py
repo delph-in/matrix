@@ -515,6 +515,7 @@ def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
     mod_spec=strat.get('mod-spec')    
     possessor_type=strat.get('possessor-type')
     possessum_type=strat.get('possessum-type')
+    pron_allowed=True if strat.get('pron')=='on' else False
     if 'poss-pron' in strat_name:
         pron_strat=True
     else:
@@ -524,6 +525,9 @@ def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
             mylang.set_section('otherlex')
             mylang.add(TWO_REL_ADP)
             mylang.add('possessor-adp-lex '+POSSESSOR_ADP_LEX)
+            # Trying optionally blocking PRON + items from being possessors
+            if not pron_allowed:
+                mylang.add('possessor-adp-lex := [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.PRON - ].')
             if mod_spec=='spec':
                 mylang.add('possessor-adp-lex := \
                                  [  SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR possessor-'+strat_num+',\
