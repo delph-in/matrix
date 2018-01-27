@@ -167,14 +167,14 @@ def insert_ids(ch):
     for cs in ch.get('cs'):
         if cs.get('mark') == 'word':
             orth = cs.get('orth')
-                if stemids[orth] == 1:
-                    ch[cs.full_key + '_name'] = orth
-                elif orth not in stemidcounters:
-                    stemidcounters[orth] = 1
-                    ch[cs.full_key + '_name'] = orth + '_1'
-                else:
-                    stemidcounters[orth] += 1
-                    ch[cs.full_key + '_name'] = orth + '_' + str(stemidcounters[orth])
+            if stemids[orth] == 1:
+                ch[cs.full_key + '_name'] = orth
+            elif orth not in stemidcounters:
+                stemidcounters[orth] = 1
+                ch[cs.full_key + '_name'] = orth + '_1'
+            else:
+                stemidcounters[orth] += 1
+                ch[cs.full_key + '_name'] = orth + '_' + str(stemidcounters[orth])
 
 
 ##########################################################
