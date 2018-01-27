@@ -517,14 +517,14 @@ def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
         if (mark_loc=='possessor' or mark_loc=='both') and possessor_type=='non-affix':
             mylang.set_section('otherlex')
             mylang.add(TWO_REL_ADP)
-            mylang.add('possessor-adp-lex '+POSSESSOR_ADP_LEX)
+            mylang.add('possessor-adp-lex-'+strat_num+' '+POSSESSOR_ADP_LEX)
             if mod_spec=='spec':
-                mylang.add('possessor-adp-lex := \
+                mylang.add('possessor-adp-lex-'+strat_num+' := \
                                  [  SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR possessor-'+strat_num+',\
                                                        POSSESSUM nonpossessive,\
                                                        VAL [ SPEC.FIRST.LOCAL.CAT.VAL.SPR < [ ] > ] ] ].')
                 if mark_loc=='possessor':
-                    mylang.add('possessor-adp-lex := \
+                    mylang.add('possessor-adp-lex-'+strat_num+' := \
                                  [  SYNSEM.LOCAL [ CAT  [ VAL [ COMPS.FIRST.LOCAL [ CONT.HOOK.INDEX #possessor ],\
                                                                 SPEC.FIRST.LOCAL [ CONT.HOOK [ INDEX #possessum,\
                                                                                                LTOP #lbl ] ] ] ],\
@@ -532,29 +532,29 @@ def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
                                                                  '+POSSESSUM_EXIST_REL+' !>,\
                                                          HCONS <!  qeq & [ HARG #harg, LARG #lbl ] !> ] ] ].')
                 elif mark_loc=='both':
-                    mylang.add('possessor-adp-lex := \
+                    mylang.add('possessor-adp-lex-'+strat_num+' := \
                                  [  SYNSEM.LOCAL [ CONT [ RELS <! !>,\
                                                           HCONS <! !> ] ] ].')
             if mod_spec=='mod':
-                mylang.add('possessor-adp-lex := \
+                mylang.add('possessor-adp-lex-'+strat_num+' := \
                                  [ SYNSEM.LOCAL [ CAT.HEAD [ POSSESSOR possessor-'+strat_num+',\
                                                              MOD.FIRST.LOCAL.CAT.VAL.SPR < [ ] > ],\
                                                   CONT [ HCONS <! !> ] ] ] .')
                 if mark_loc=='possessor':
-                    mylang.add('possessor-adp-lex := \
+                    mylang.add('possessor-adp-lex-'+strat_num+' := \
                                  [ SYNSEM.LOCAL [ CAT [ VAL [ COMPS.FIRST.LOCAL [ CONT.HOOK.INDEX #possessor ] ],\
                                                          HEAD.MOD.FIRST.LOCAL [ CONT.HOOK [ INDEX #possessum,\
                                                                                             LTOP #lbl ] ] ],\
                                                   CONT [ RELS <! '+POSS_REL+' !> ] ] ].')
                 elif mark_loc=='both':
-                    mylang.add('possessor-adp-lex := \
+                    mylang.add('possessor-adp-lex-'+strat_num+' := \
                                  [ SYNSEM.LOCAL [ CAT [ HEAD.POSSESSOR possessor-'+strat_num+',\
                                                         POSSESSUM nonpossessive, ]\
                                                   CONT.RELS <! !> ] ] .')
             # TODO: these lex items don't follow nomenclature conventions yet:
             if strat.get('possessor-agr')=='non-agree':
                 orth=strat.get('possessor-orth')
-                lexicon.add('possessor-adp-'+strat_num+' := possessor-adp-lex &\
+                lexicon.add('possessor-adp-'+strat_num+' := possessor-adp-lex-'+strat_num+' &\
                                                       [ STEM < "'+orth+'" >].')
             elif strat.get('possessor-agr')=='agree':
                 for form in strat.get('possessor-form'):
@@ -567,7 +567,7 @@ def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
                             prefix='SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
                     orth=form.get('agr-orth')
                     adp_type=adp_id(form)
-                    mylang.add(adp_type+' := possessor-adp-lex &\
+                    mylang.add(adp_type+' := possessor-adp-lex-'+strat_num+' &\
                                         [ SYNSEM.LOCAL.CAT.HEAD.POSSESSOR.POSS-AGR #png,\
                                         '+prefix+' #png ].')
                     customize_feature_values(mylang,ch,hierarchies,form,adp_type,'poss-marker')
@@ -579,8 +579,8 @@ def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
         if (mark_loc=='possessum' or mark_loc=='both') and possessum_type=='non-affix':
             mylang.set_section('nounlex')
             if mod_spec=='spec':
-                mylang.add('possessum-noun-lex '+POSSESSUM_NOUN_LEX)
-                mylang.add('possessum-noun-lex := [ SYNSEM.LOCAL [ CAT [ POSSESSUM possessum-'+strat_num+',\
+                mylang.add('possessum-noun-lex-'+strat_num+' '+POSSESSUM_NOUN_LEX)
+                mylang.add('possessum-noun-lex-'+strat_num+' := [ SYNSEM.LOCAL [ CAT [ POSSESSUM possessum-'+strat_num+',\
                                                                          VAL [ SPR < #spr & [ LOCAL [ CONT.HOOK.INDEX #possessor ] ] >,\
                                                                               COMPS < #comps & [ LOCAL [ CONT.HOOK [ INDEX #possessum,\
                                                                                                                      LTOP #lbl ] ] ] > ] ],\
@@ -588,15 +588,15 @@ def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
                                                                                '+POSSESSUM_EXIST_REL+' !>,\
                                                                                HCONS <! qeq & [HARG #harg, LARG #lbl] !> ] ] ].',merge=True)
                 if mark_loc=='possessum':
-                        mylang.add('possessum-noun-lex := [ SYNSEM.LOCAL.CAT.VAL.SPR < [ LOCAL.CAT.HEAD noun ] > ].')                    
+                        mylang.add('possessum-noun-lex-'+strat_num+' := [ SYNSEM.LOCAL.CAT.VAL.SPR < [ LOCAL.CAT.HEAD noun ] > ].')                    
                 if mark_loc=='both':
                     if possessor_type=='affix':
-                        mylang.add('possessum-noun-lex := [ SYNSEM.LOCAL.CAT.VAL.SPR < [ LOCAL.CAT.HEAD noun ] > ].')
+                        mylang.add('possessum-noun-lex-'+strat_num+' := [ SYNSEM.LOCAL.CAT.VAL.SPR < [ LOCAL.CAT.HEAD noun ] > ].')
                     else:
-                        mylang.add('possessum-noun-lex := [ SYNSEM.LOCAL.CAT.VAL.SPR < [ LOCAL.CAT.HEAD adp ] > ].')
+                        mylang.add('possessum-noun-lex-'+strat_num+' := [ SYNSEM.LOCAL.CAT.VAL.SPR < [ LOCAL.CAT.HEAD adp ] > ].')
             if strat.get('possessum-agr')=='non-agree':
                 orth=strat.get('possessum-orth')
-                lexicon.add('possessum-noun-'+strat_num+' := possessum-noun-lex &\
+                lexicon.add('possessum-noun-'+strat_num+' := possessum-noun-lex-'+strat_num+' &\
                                                   [ STEM < "'+orth+'" >].')
             elif strat.get('possessum-agr')=='agree':
                 for form in strat.get('possessum-form'):
@@ -605,7 +605,7 @@ def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
                     elif mod_spec=='mod':
                         prefix='SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
                     noun_type=noun_id(form)
-                    mylang.add(noun_type+' := possessum-noun-lex &\
+                    mylang.add(noun_type+' := possessum-noun-lex-'+strat_num+' &\
                                         [ SYNSEM.LOCAL.CAT.POSSESSUM.POSS-AGR #png,\
                                         '+prefix+' #png ].')
                     customize_feature_values(mylang,ch,hierarchies,form,noun_type,'poss-marker')
