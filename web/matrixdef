@@ -2183,6 +2183,8 @@ BeginIter noun{i} "a Noun Type" 1 1
   MultiSelect supertypes "Noun type {i}" "Supertypes: " "<br />"
   fillregex p=noun(?!{i}_)[0-9]+_name
 
+  Check pron "Pronoun" "" "This is a pronoun type<br><br>" 
+
   Label "Features:"
 
   BeginIter feat{j} "a Feature"
