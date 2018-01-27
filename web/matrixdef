@@ -460,6 +460,8 @@ BeginIter poss-strat{i} "a possessive strategy"
      	. non-affix "Possessor non-affix" "" "separate word or clitic<br>" "toggle_element.call(this, 'possessor-affix{i}', 'off'); toggle_element.call(this, 'possessor-non-affix{i}', 'on');"
      
      	   Label "<div id='possessor-affix{i}' style='display:none'>"
+	   
+	   Label "<p>NOTE: The possessor marked by this affix must be a full NP, not a pronoun. Please use the possessive pronoun section below, and analyze combinations of pronoun+possessive-marker as single lexical items.</p>"
 
 	   Radio possessor-affix-agr "Possessor agreement" "<p>Does the affix that marks the possessor agree with the possessum (e.g. in person, number, or gender)?</p>" ""
 	   . agree "Possessor agree" "" "yes<br>"
@@ -470,6 +472,10 @@ BeginIter poss-strat{i} "a possessive strategy"
 	   Label "</div>"
 
      	   Label "<div id='possessor-non-affix{i}' style='display:none'>"
+
+	   Radio pronoun-allow "Pronoun allowability" "<p>Can the possessor marked by this word or clitic be a pronoun?</p>" ""
+	   . yes "Pronouns allowed" "" "yes<br>"
+	   . no "Pronouns disallowed" "" "no<br>"
 
            Radio possessor-agr "Possessor agreement" "<p>Does the possessor agree with the possessum?</p>" ""
 	   . agree "Possessor agree" "" "yes<br>" "toggle_element.call(this, 'possessor-agr{i}', 'on'); toggle_element.call(this, 'possessor-non-agr{i}', 'off');"
