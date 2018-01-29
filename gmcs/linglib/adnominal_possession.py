@@ -598,7 +598,9 @@ def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
             
             if mod_spec=='spec':
                 mylang.add('possessum-noun-lex-'+strat_num+' '+POSSESSUM_NOUN_LEX)
-                mylang.add('possessum-noun-lex-'+strat_num+' := [ SYNSEM.LOCAL [ CAT [ POSSESSUM possessum-'+strat_num+',\
+                # TODO: move this up to gen definition at top
+                mylang.add('possessum-noun-lex-'+strat_num+' := [ SYNSEM.LOCAL [ CAT [ HEAD.POSSESSOR nonpossessive,\
+                                                                                       POSSESSUM possessum-'+strat_num+',\
                                                                          VAL [ SPR < #spr & [ LOCAL [ CONT.HOOK.INDEX #possessor ] ] >,\
                                                                               COMPS < #comps & [ LOCAL [ CAT.HEAD.PRON -,\
                                                                                                          CONT.HOOK [ INDEX #possessum,\
