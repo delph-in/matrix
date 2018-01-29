@@ -1,5 +1,4 @@
 from gmcs.utils import orth_encode
-from gmcs.utils import TDLencode
 
 ######################################################################
 # Clausal Modifiers
@@ -14,7 +13,6 @@ def customize_clausalmods(mylang, ch, lexicon, rules, roots):
     """
     if not 'cms' in ch:
         return None
-    subordinators = {}
     mylang.set_section ('addenda')
     mylang.add('+nvcdmo :+ [ MOD < > ].')
     add_head_compement_rules(mylang, rules, ch)
@@ -193,7 +191,7 @@ def create_head_subordinator_lexical_subtypes(mylang, lexicon, ch, cms):
             orth = freemorph.get('orth')
             orthstr = orth_encode(orth)
             pred = freemorph.get('pred')
-            lexicon.add(freemorph.get('name') + ' := ' + type + ' &\
+            lexicon.add(orthstr + ' := ' + type + ' &\
                               [ STEM < "' + orthstr + '" >,\
                            SYNSEM.LKEYS.KEYREL.PRED "' + pred + '"].')
      # for pair subordinators, add each of the constraints enumerated above to the lexical type
@@ -227,7 +225,7 @@ def create_head_subordinator_lexical_subtypes(mylang, lexicon, ch, cms):
                 orth = morphpair.get('subordorth')
                 orthstr = orth_encode(orth)
                 pred = morphpair.get('subordpred')
-                lexicon.add(morphpair.get('subordname') + ' := ' + type + ' &\
+                lexicon.add(orthstr + ' := ' + type + ' &\
                               [ STEM < "' + orthstr + '" >,\
                            SYNSEM.LKEYS.KEYREL.PRED "' + pred + '"].')
 
@@ -286,7 +284,7 @@ def create_adverb_subordinator_lexical_subtypes(mylang, lexicon, cms):
                 mylang.add(type + ' := [ ' + constraints.pop() + ' ].')
             orth = adverb.get('orth')
             orthstr = orth_encode(orth)
-            lexicon.add(adverb.get('name') + ' := ' + type + ' & [ STEM < "' + orthstr + '" > ].')
+            lexicon.add(orthstr + ' := ' + type + ' & [ STEM < "' + orthstr + '" > ].')
     # each adverb gets it's own lexical type with a special SUBORDINATED value so that the non-branching
     # rule can select it and so that the SUBPAIR feature can be added
     elif cms.get('subordinator') == 'pair':
@@ -318,7 +316,7 @@ def create_adverb_subordinator_lexical_subtypes(mylang, lexicon, cms):
                 mylang.add(type + ' := [ ' + constraints.pop() + ' ].')
             orth = adverb.get('subordorth')
             orthstr = orth_encode(orth)
-            lexicon.add(adverb.get('subordname') + ' := ' + type + ' & [ STEM < "' + orthstr + '" > ].')
+            lexicon.add(orthstr + ' := ' + type + ' & [ STEM < "' + orthstr + '" > ].')
 
 
 def add_head_modifier_phrases(mylang, rules, cms):
@@ -478,7 +476,7 @@ def add_subordinators_matrix_pair_to_lexicon(mylang, lexicon, cms, ch):
             mylang.add(type + ' := [ ' + constraints.pop() + ' ].')
         orth = adverb.get('matrixorth')
         orthstr = orth_encode(orth)
-        lexicon.add(adverb.get('matrixname') + ' := ' + type + ' &\
+        lexicon.add(orthstr + ' := ' + type + ' &\
                                           [ STEM < "' + orthstr + '" >,\
                                SYNSEM.LKEYS.KEYREL.PRED "' + matrixpred + '"].')
 

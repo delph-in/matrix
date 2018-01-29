@@ -573,6 +573,9 @@ class ChoicesFile:
             self.convert_28_to_29()
         if self.version < 30:
             self.convert_29_to_30()
+        if self.version < 31:
+            self.convert_30_to_31()
+
 
 
         # As we get more versions, add more version-conversion methods, and:
@@ -1276,7 +1279,7 @@ class ChoicesFile:
     # convert_value(), followed by a sequence of calls to convert_key().
     # That way the calls always contain an old name and a new name.
     def current_version(self):
-        return 30
+        return 31
 
     def convert_value(self, key, old, new, partial=False):
         if key in self:
@@ -2218,11 +2221,14 @@ class ChoicesFile:
     def convert_29_to_30(self):
         '''
         Updates clausal valency: inserts 'trans,' before valency starting with 'comps'.
-
         '''
         for v in self.get('verb'):
             if v['valence'].startswith('comps'):
                 v['valence'] = 'trans,' + v['valence']
+
+    def convert_30_to_31(self):
+        for cs in self.get('comps'):
+            self.convert_key('complementizer','stem',cs.full_key)
 
 ########################################################################
 # FormData Class
