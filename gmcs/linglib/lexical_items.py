@@ -492,13 +492,14 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     # noun must have a non-empty SPEC list even though it has gone
     # through no lexical rules.
     
-    # Check all possessive strategies to see what combo of 
-    # strategies you have:
+    # Check all possessive strategies and pronouns to see what combo
+    # of strategies you have:
     spec_strat=False #Does the strategy use the head-spec rule?
     affixal_strat=False #Does the strategy include affixal poss markers?
     nonaffixal_strat=False
     possessor_mark=False
     possessum_mark=False
+    pron_spec=False #Are pronouns which separate words w/ spec attachment?
     for strat in ch.get('poss-strat',[]):
         if strat.get('mod-spec')=='spec' and strat.get('mark-loc')!='neither':
             spec_strat=True
@@ -514,10 +515,15 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
                     affixal_strat=True
                 if strat.get('possessum-type')=='non-affix':
                     nonaffixal_strat=True
-
+    for pron in ch.get('poss-pron',[]):
+        if pron.get('mod-spec')=='spec' and pron.get('type')!='affix':
+            spec_strat=True
+            pron_spec=True
     # Add a typedef that takes into account all strategies
     if spec_strat:
         if affixal_strat and nonaffixal_strat:
+            spr_head_type='+npd'
+        elif pron_spec:
             spr_head_type='+npd'
         elif affixal_strat:
             spr_head_type='+nd'            
