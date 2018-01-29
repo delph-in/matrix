@@ -74,7 +74,8 @@ TWO_REL_ADP='two-rel-adposition-lex := basic-icons-lex-item &\
 
 POSSESSOR_ADP_LEX=':= two-rel-adposition-lex &\
                                  [  SYNSEM.LOCAL [ CAT  [ VAL [ SPR < >,\
-                                                                COMPS.FIRST [ LOCAL.CAT.HEAD noun,\
+                                                                COMPS.FIRST [ LOCAL.CAT [ HEAD noun,\
+                                                                                          VAL.SPR < > ],\
                                                                               OPT - ] ] ],\
                                                   CONT [ ICONS <! !>   ] ] ].'
 
@@ -516,7 +517,7 @@ def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
     mod_spec=strat.get('mod-spec')    
     possessor_type=strat.get('possessor-type')
     possessum_type=strat.get('possessum-type')
-    pron_allowed=True if strat.get('pron')=='on' else False
+    pron_allowed=True if strat.get('pronoun-allow')=='yes' else False
     if 'poss-pron' in strat_name:
         pron_strat=True
     else:
