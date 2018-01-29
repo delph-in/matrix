@@ -451,10 +451,13 @@ def customize_poss_irules(strat,mylang,ch,irules,hierarchies):
                                     mylang.add(possessum_rule_name+' :=\
                                          [ SYNSEM.LOCAL [ CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.POSSESSOR.POSS-AGR #poss-png,\
                                                           CONT.HOOK.INDEX.PNG #poss-png ] ].')
-                    elif strat_name==str(feat['name']) and feat['value']=='nonpossessive':
-                        if (mark_loc=='possessum' or mark_loc=='both') and mod_spec=='spec':
+# EKN 2018-01-29 This was in here to constrain non-possessive nouns, but was breaking the pronoun cases.
+# Taking it out doesn't cause any tests to break, but I'm leaving it commented out while still in active 
+# development
+#                    elif strat_name==str(feat['name']) and feat['value']=='nonpossessive':
+#                        if (mark_loc=='possessum' or mark_loc=='both') and mod_spec=='spec':
                             # This should keep normal head-spec constructions from letting noun phrases act as determiners:
-                            mylang.add(get_name(lrt)+'-lex-rule := [ SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.LOCAL.CAT.HEAD det ].')
+#                            mylang.add(get_name(lrt)+'-lex-rule := [ SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.LOCAL.CAT.HEAD det ].')
                 elif pron_strat:
                     if strat_name in str(feat['name']) and feat['value']!='minus':
                         mylang.add(get_name(lrt)+'-lex-rule :=\
