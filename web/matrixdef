@@ -1916,22 +1916,15 @@ BeginIter comps{i} "a Clausal Complement Type" 1
   . opt "Optional Complementizer" "" "optional or"
   . oblig "Obligatory Complementizer" ""  "obligatory."
 
-        BeginIter complementizer{j} "a Complementizer spelling" 0
+        BeginIter stem{j} "a Complementizer spelling" 0
 
-                Text orth "comp {i} stem {j} spelling" "Spelling: " "" 30 ""
+                Text orth "comps {i} stem {j} spelling" "Spelling: " "" 30 ""
 
-        EndIter complementizer
+        EndIter stem
 
         Label "<p> You can put a FORM feature on the obligatory complementizer if you want to constrain the clausal
         verb in terms of which complementizers it can go with. (Note that all complementizers here
         are still assumed to be semantically empty.)</p>"
-
-        #BeginIter cform{k} "a Complementizer Form"
-
-           Select cformvalue "Clausal Complement Type {i} Complementizer Form {k} Value" "Form Value: " ""
-           fillvalues p=form l=1
-
-        #EndIter cform
 
 
   Label "<p> The embedded verb

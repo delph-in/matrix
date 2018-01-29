@@ -1,5 +1,6 @@
 from gmcs.utils import get_name
 
+
 from gmcs import constants
 from gmcs.linglib import lexbase
 
@@ -44,7 +45,7 @@ VFINAL = ['sov','osv','v-final']
 VO = ['svo', 'vos', 'vso', 'v-initial']
 
 CLAUSALCOMP = 'clausal'
-COMPLEMENTIZER = 'complementizer' # Choices key for choices pertaining
+COMPLEMENTIZER = 'stem' # Choices key for choices pertaining
                                   # to the complementizer defined for
                                   # a particular complementation strategy.
 
@@ -76,12 +77,15 @@ def add_complementizers_to_lexicon(lexicon,ch):
     have_comp = False
     for comp_strategy in ch[COMPS]:
         id = comp_strategy.full_key
-        typename = id + '-' + COMP_LEX_ITEM
+        stype = id + '-' + COMP_LEX_ITEM
+        #TODO: Perhaps turn complementizers into full-blown
+        # lexical items and then can call insert_ids() from lexical_items.py instead
+        # This would need to be done via redesigning the questionnaire a little.
         for complementizer in comp_strategy[COMPLEMENTIZER]:
-            orth = complementizer[constants.ORTH]
-            typedef = complementizer.full_key + ' := ' + typename + '& \
+            orth = complementizer.get('orth')
+            name = complementizer.get('name')
+            typedef = name + ' := ' + stype + ' & \
                           [ STEM < "' + orth + '" > ].'
-
             lexicon.add(typedef)
             have_comp = True
     return have_comp
