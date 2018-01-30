@@ -454,10 +454,8 @@ def customize_misc_lex(ch, lexicon, trigger):
 
 
 def customize_nouns(mylang, ch, lexicon, hierarchies):
-    ##################################################################
-    # EKN 2018-01-26 Trying adding a PRON feature to mark pronouns:
+    # EKN 2018-01-26 Adding a PRON feature to mark all pronouns:
     mylang.add('noun :+ [ PRON bool ].',section='addenda')
-    ##################################################################
 
     # Figure out which kinds of determiner-marking are in the language
     seen = {'obl':False, 'opt':False, 'imp':False}

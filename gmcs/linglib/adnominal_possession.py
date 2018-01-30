@@ -92,7 +92,7 @@ POSSESSOR_PRON_LEX=' := basic-one-arg &\
                         [ SYNSEM [ LOCAL [ CAT [ VAL [ SPR olist,\
                                                        COMPS olist,\
                                                        SUBJ olist ],\
-                                                 HEAD noun ] ],\
+                                                 HEAD noun & [ PRON + ] ] ],\
                                    LKEYS.ALTKEYREL #altkeyrel & noun-relation &\
                                                          [ PRED "pron_rel",\
                                                            LBL #lbl2,\
