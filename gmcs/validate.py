@@ -1520,16 +1520,20 @@ def validate_clausalmods(ch, vr):
                         ' and clausal modifiers require nominalization, the produced grammar' +\
                         ' will allow any nominalinalization strategy for the clausal modifier strategy.'
                 vr.warn(feat.full_key + '_name', mess)
+		for feat in cms.get('feat'):
+		    if feat.get('type') == 'mood' or feat.get('type') == 'aspect':
+		    mess = 'Aspect and mood are not present on nominal projections,' +\
+                        ' and therefore are not supported in connection with nominalization.'
+                vr.err(feat.full_key + '_name', mess)
 
         # Check for unsupported features
         for feat in cms.get('feat'):
             if feat.get('type') == 'index':
                 mess = 'Index besides aspect and mood are not supported at this time.'
                 vr.err(feat.full_key + '_type', mess)
-            if feat.get('name') == 'Situation':
+            if feat.get('type') == 'situation':
                 mess = 'Situation aspect is not supported at this time.'
                 vr.err(feat.full_key + '_type', mess)
-
 
 
 ######################################################################

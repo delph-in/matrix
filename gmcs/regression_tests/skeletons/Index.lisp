@@ -31,6 +31,7 @@
 ((:path . "adnom-poss-mod-dep-aff-hf-block-pron") (:content . "adnom-poss-mod-dep-aff-hf-block-pron: Dep affixally marked head final poss construction w mod-like attachment, pronouns disallowed as possessum"))
 ((:path . "adnom-poss-spec-dep-non-aff-hf-block-pron") (:content . "adnom-poss-spec-dep-non-aff-hf-block-pron: Dep non-affixally marked head final poss construction w spec-like attachment, pronouns disallowed as possessum"))
 ((:path . "adnom-poss-spec-dep-aff-hf-block-pron") (:content . "adnom-poss-spec-dep-aff-hf-block-pron: Dep affixally marked head final poss construction w spec-like attachment, pronouns disallowed as possessum"))
+((:path . "clausalmods-mandarin") (:content . "clausalmods-mandarin: an illstrative grammar for clausal modifiers based on mandarin"))
 ((:path . "clausalmods-rukai") (:content . "clausalmods-rukai: An illustrative grammar for clausal modifiers based on mantauran rukai"))
 ((:path . "clausalmods-wambaya") (:content . "clausalmods-wambaya: Illustrative language regression test for clausal modifiers based on wambaya"))
 ((:path . "ccomp-illustr5-tgl") (:content . "ccomp-illustr5-tgl: Clausal comps: Illustrative Tagalog."))
