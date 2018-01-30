@@ -1522,9 +1522,9 @@ def validate_clausalmods(ch, vr):
                 vr.warn(feat.full_key + '_name', mess)
 		for feat in cms.get('feat'):
 		    if feat.get('type') == 'mood' or feat.get('type') == 'aspect':
-		    mess = 'Aspect and mood are not present on nominal projections,' +\
-                        ' and therefore are not supported in connection with nominalization.'
-                vr.err(feat.full_key + '_name', mess)
+		    	mess = 'Aspect and mood are not present on nominal projections,' +\
+                        	' and therefore are not supported in connection with nominalization.'
+	                vr.err(feat.full_key + '_name', mess)
 
         # Check for unsupported features
         for feat in cms.get('feat'):
