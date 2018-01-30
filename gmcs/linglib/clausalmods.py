@@ -188,12 +188,8 @@ def create_head_subordinator_lexical_subtypes(mylang, lexicon, ch, cms):
                 mylang.add(type + ' := [ ' + constraints.pop() + ' ].')
         #add each subordinator to the lexicon
         for freemorph in cms.get('freemorph'):
-            orth = freemorph.get('orth')
-            orthstr = orth_encode(orth)
-            pred = freemorph.get('pred')
-            lexicon.add(orthstr + ' := ' + type + ' &\
-                              [ STEM < "' + orthstr + '" >,\
-                           SYNSEM.LKEYS.KEYREL.PRED "' + pred + '"].')
+            add_to_lexicon(freemorph, type, '', lexicon)
+
      # for pair subordinators, add each of the constraints enumerated above to the lexical type
     # (with the appropriate subertype based on whether the clausal mod is nominalized). A separate
     # lexical type is required for each pair, so that the SUBPAIR feature can be constrained
@@ -222,12 +218,7 @@ def create_head_subordinator_lexical_subtypes(mylang, lexicon, ch, cms):
                     mylang.add(type + ' := [ ' + constraints.pop() + ' ].')
             #add each subordinator to lexicon
             for morphpair in cms.get('morphpair'):
-                orth = morphpair.get('subordorth')
-                orthstr = orth_encode(orth)
-                pred = morphpair.get('subordpred')
-                lexicon.add(orthstr + ' := ' + type + ' &\
-                              [ STEM < "' + orthstr + '" >,\
-                           SYNSEM.LKEYS.KEYREL.PRED "' + pred + '"].')
+                add_to_lexicon(morphpair, type, 'subord', lexicon)
 
 def create_adverb_subordinator_lexical_subtypes(mylang, lexicon, cms):
     """
@@ -284,7 +275,8 @@ def create_adverb_subordinator_lexical_subtypes(mylang, lexicon, cms):
                 mylang.add(type + ' := [ ' + constraints.pop() + ' ].')
             orth = adverb.get('orth')
             orthstr = orth_encode(orth)
-            lexicon.add(orthstr + ' := ' + type + ' & [ STEM < "' + orthstr + '" > ].')
+            name = adverb.get('name')
+            lexicon.add(name + ' := ' + type + ' & [ STEM < "' + orthstr + '" > ].')
     # each adverb gets it's own lexical type with a special SUBORDINATED value so that the non-branching
     # rule can select it and so that the SUBPAIR feature can be added
     elif cms.get('subordinator') == 'pair':
@@ -316,7 +308,8 @@ def create_adverb_subordinator_lexical_subtypes(mylang, lexicon, cms):
                 mylang.add(type + ' := [ ' + constraints.pop() + ' ].')
             orth = adverb.get('subordorth')
             orthstr = orth_encode(orth)
-            lexicon.add(orthstr + ' := ' + type + ' & [ STEM < "' + orthstr + '" > ].')
+            name = adverb.get('subordname')
+            lexicon.add(name + ' := ' + type + ' & [ STEM < "' + orthstr + '" > ].')
 
 
 def add_head_modifier_phrases(mylang, rules, cms):
@@ -474,11 +467,7 @@ def add_subordinators_matrix_pair_to_lexicon(mylang, lexicon, cms, ch):
         mylang.add(type + ' := subord-pair-matrix-lex-item & [ ' + constraints.pop() + ' ].')
         while constraints != []:
             mylang.add(type + ' := [ ' + constraints.pop() + ' ].')
-        orth = adverb.get('matrixorth')
-        orthstr = orth_encode(orth)
-        lexicon.add(orthstr + ' := ' + type + ' &\
-                                          [ STEM < "' + orthstr + '" >,\
-                               SYNSEM.LKEYS.KEYREL.PRED "' + matrixpred + '"].')
+        add_to_lexicon(adverb, type, 'matrix', lexicon)
 
 def add_morphological_subord_rel(mylang, cms, ch, rules):
     """
@@ -819,4 +808,79 @@ def shortform_pred(pred):
         value = pred.split('_')[0]
     return value
 
+def add_to_lexicon(morphtype, typename, type, lexicon):
+    """
+    add the subordinator or adverbt to lexicon
+    """
+    orth = morphtype.get(type + 'orth')
+    orthstr = orth_encode(orth)
+    pred = morphtype.get(type + 'pred')
+    name = morphtype.get(type + 'name')
+    lexicon.add(name + ' := ' + typename + ' &\
+                      [ STEM < "' + orthstr + '" >,\
+                   SYNSEM.LKEYS.KEYREL.PRED "' + pred + '"].')
+
+def get_subord_stemids(ch, stemids):
+    """
+    A function called by insert_ids() in lexical_items.py to
+    check for name-space-collisions
+    """
+    for cms in ch.get('cms'):
+        for freemorph in cms.get('freemorph'):
+            orth = freemorph.get('orth')
+            if orth in stemids.keys():
+                stemids[orth] += 1
+            else:
+                stemids[orth] = 1
+        for morphpair in cms.get('morphpair'):
+            subordorth = morphpair.get('subordorth')
+            matrixorth = morphpair.get('matrixorth')
+            if subordorth in stemids.keys():
+                stemids[subordorth] += 1
+            else:
+                stemids[subordorth] = 1
+            if matrixorth in stemids.keys():
+                stemids[matrixorth] += 1
+            else:
+                stemids[matrixorth] = 1
+    return stemids
+
+def add_subord_name(ch, stemids, stemidcounters):
+    """
+    A function called by insert_ids() in lexical_items.py to
+    create a "name" for each subordinator in choices, preventing
+    name-space-collisions
+    """
+    for cms in ch.get('cms'):
+        for freemorph in cms.get('freemorph'):
+            orth = freemorph.get('orth')
+            if stemids[orth] == 1:
+                ch[freemorph.full_key + '_name'] = orth
+            elif orth not in stemidcounters:
+                stemidcounters[orth] = 1
+                ch[freemorph.full_key + '_name'] = orth + '_1'
+            else:
+                stemidcounters[orth] += 1
+                ch[freemorph.full_key + '_name'] = orth + '_' + str(stemidcounters[orth])
+        for morphpair in cms.get('morphpair'):
+            subordorth = morphpair.get('subordorth')
+            matrixorth = morphpair.get('matrixorth')
+            #first look at the subordinator
+            if stemids[subordorth] == 1:
+                ch[morphpair.full_key + '_subordname'] = subordorth
+            elif subordorth not in stemidcounters:
+                stemidcounters[subordorth] = 1
+                ch[morphpair.full_key + '_subordname'] = subordorth + '_1'
+            else:
+                stemidcounters[subordorth] += 1
+                ch[morphpair.full_key + '_subordname'] = subordorth + '_' + str(stemidcounters[subordorth])
+            #then look at the matrix adverb
+            if stemids[matrixorth] == 1:
+                ch[morphpair.full_key + '_matrixname'] = matrixorth
+            elif matrixorth not in stemidcounters:
+                stemidcounters[matrixorth] = 1
+                ch[morphpair.full_key + '_matrixname'] = matrixorth + '_1'
+            else:
+                stemidcounters[subordorth] += 1
+                ch[morphpair.full_key + '_matrixname'] = matrixorth + '_' + str(stemidcounters[matrixorth])
 
