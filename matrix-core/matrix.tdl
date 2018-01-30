@@ -2115,12 +2115,11 @@ marker-final-phrase := basic-binary-marker-phrase &
 ; SSH 2013-02-19 deleting ICONS ?
 
 
-
+; EKN 2018-01-30
 basic-bare-np-phrase := head-only & head-valence-phrase &
   [ SYNSEM.LOCAL.CAT.VAL [ SPR < >,
 			   SUBJ < >,
-			   COMPS < >,
-			   SPEC < > ],
+			   COMPS < > ],
     HEAD-DTR.SYNSEM.LOCAL [ CAT [ HEAD noun,
 				  VAL [ SPR < unexpressed & 
 				      	      [ LOCAL.CAT.HEAD +nd,

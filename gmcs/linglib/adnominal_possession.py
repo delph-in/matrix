@@ -81,7 +81,7 @@ POSSESSOR_ADP_LEX=':= two-rel-adposition-lex &\
 
 POSSESSUM_NOUN_LEX=':= basic-two-arg &\
                                    [ SYNSEM.LOCAL [ CAT [ HEAD noun ,\
-                                                          VAL [ SPR < #spr >,\
+                                                          VAL [ SPR < #spr  >,\
                                                                 COMPS < #comps & [ LOCAL [ CONT.HOOK #hook,\
                                                                                            CAT.VAL.SPR <[ ]> ] ] > ] ],\
                                                     CONT [ HOOK #hook,\
@@ -604,7 +604,8 @@ def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
                 # TODO: move this up to gen definition at top
                 mylang.add('possessum-noun-lex-'+strat_num+' := [ SYNSEM.LOCAL [ CAT [ HEAD.POSSESSOR nonpossessive,\
                                                                                        POSSESSUM possessum-'+strat_num+',\
-                                                                         VAL [ SPR < #spr & [ LOCAL [ CONT.HOOK.INDEX #possessor ] ] >,\
+                                                                         VAL [ SPR < #spr & [ LOCAL [ CAT.VAL.SPR < >,\
+                                                                                                      CONT.HOOK.INDEX #possessor ] ] >,\
                                                                               COMPS < #comps & [ LOCAL [ CAT.HEAD.PRON -,\
                                                                                                          CONT.HOOK [ INDEX #possessum,\
                                                                                                                      LTOP #lbl ] ] ] > ] ],\

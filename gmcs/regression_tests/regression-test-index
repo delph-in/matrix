@@ -428,3 +428,5 @@ adnom-poss-mod-dep-aff-hf-block-pron=Dep affixally marked head final poss constr
 adnom-poss-mod-dep-non-aff-hf-block-pron=Dep non-affixally marked head final poss construction w mod-like attachment, pronouns disallowed as possessum
 adnom-poss-spec-dep-non-aff-hf-block-head-pron-only=Dep non-affixally marked head final poss construction w spec-like attachment, pronouns disallowed as possessum, allowed as possessor
 adnom-poss-mod-dep-non-aff-hf-block-head-pron-only=Dep non-affixally marked head final poss construction w mod-like attachment, pronouns disallowed as possessum, allowed as possessor
+adnom-poss-spec-head-aff-hf-block-head-pron-only=Head affixally marked head final poss construction w mod-like attachment, pronouns disallowed as possessum, allowed as possessor
+adnom-poss-spec-head-non-aff-hf-block-head-pron-only=Head non-affixally marked head final poss construction w mod-like attachment, pronouns disallowed as possessum, allowed as possessor
