@@ -355,7 +355,6 @@ clausalmods-v2-vfinal-adv=Clausal modifiers marked by vfinal word order and an a
 clausalmods-subord-pairs=Clausal modifiers makrked by a subordinaotr pair (one in the subordinate and one in the matrix clause)
 clausalmods-nom-high=Clausal modifiers that are nominalized high and have a nominalized predication
 clausalmods-nom-no-rel=Clausal modifiers that are nominalized high (at S) and do not have a nominalized predication
-clausalmods-wambaya=Illustrative language regression test for clausal modifiers based on wambaya
 adnom-poss-mod-juxt=Juxtaposition poss construction w mod-like attachment
 adnom-poss-mod-dep-aff-hf=Dep marked head final poss construction w mod-like attachment
 adnom-poss-mod-dep-aff-free-wo=Dep marked free wo poss construction w mod-like attachment
@@ -422,3 +421,4 @@ adnom-poss-spec-head-non-aff-hf-agr=Head non-affixally marked, agreeing, head fi
 adnom-poss-dep-aff-two-strat-mod-spec-var=Two poss strategies, both dep affixally marked, one mod-like, one spec-like
 adnom-poss-spec-dep-aff-two-strat-order-var=Two poss strategies, both dep affixally marked, one head-final, one head initial
 
+clausalmods-rukai=An illustrative grammar for clausal modifiers based on mantauran rukai

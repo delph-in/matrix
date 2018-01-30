@@ -1,0 +1,207 @@
+
+version=31
+
+section=general
+language=clausalmods-rukai
+
+section=word-order
+word-order=vso
+has-dets=no
+has-aux=no
+
+section=number
+  number1_name=singular
+  number2_name=plural
+
+section=person
+person=1-2-3
+first-person=none
+
+section=gender
+
+section=case
+case-marking=nom-acc
+nom-acc-nom-case-name=nominative
+nom-acc-acc-case-name=accusative
+  case1_name=genitive
+
+section=adnom-poss
+
+section=direct-inverse
+scale-equal=direct
+
+section=tense-aspect-mood
+  mood1_name=subjunctive
+    mood1_supertype1_name=mood
+  mood2_name=irrealis
+    mood2_supertype1_name=mood
+
+section=evidentials
+
+section=other-features
+form-fin-nf=on
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=info-str
+
+section=arg-opt
+
+section=nominalclause
+  ns1_name=nmz
+  ns1_level=low
+  ns1_nmzRel=yes
+
+section=clausal-comp
+
+section=clausalmods
+  cms1_position=before
+  cms1_modifier-attach=s
+  cms1_subordinator=none
+  cms1_pred=_reason_subord_rel
+    cms1_feat1_name=nominalization
+    cms1_feat1_value=nmz
+  cms2_position=before
+  cms2_modifier-attach=s
+  cms2_subordinator=free
+  cms2_subposition=before
+  cms2_subordinator-type=head
+    cms2_freemorph1_orth=lo
+    cms2_freemorph1_pred=_reason_subord_rel
+    cms2_feat2_name=nominalization
+    cms2_feat2_value=nmz
+
+section=lexicon
+  noun1_name=gen-pronoun
+    noun1_feat1_name=case
+    noun1_feat1_value=genitive
+    noun1_feat2_name=number
+    noun1_feat2_value=singular
+    noun1_feat3_name=person
+    noun1_feat3_value=1st
+  noun1_det=imp
+    noun1_stem1_orth=li
+    noun1_stem1_pred=_I_n_rel
+  noun2_name=nom-pronoun
+    noun2_feat1_name=case
+    noun2_feat1_value=nom
+    noun2_feat2_name=number
+    noun2_feat2_value=singular
+    noun2_feat3_name=person
+    noun2_feat3_value=1st
+  noun2_det=imp
+    noun2_stem1_orth=lrao
+    noun2_stem1_pred=_I_n_rel
+  noun3_name=loc-pronoun
+  noun3_det=imp
+    noun3_stem1_orth=dhona
+    noun3_stem1_pred=_there_n_rel
+  noun4_name=pl-gen-pronoun
+    noun4_feat1_name=case
+    noun4_feat1_value=genitive
+    noun4_feat2_name=number
+    noun4_feat2_value=plural
+    noun4_feat3_name=person
+    noun4_feat3_value=1st
+  noun4_det=imp
+    noun4_stem1_orth=ta
+    noun4_stem1_pred=_we_n_rel
+  noun5_name=pl-nom-pronoun
+    noun5_feat1_name=case
+    noun5_feat1_value=nom
+    noun5_feat2_name=number
+    noun5_feat2_value=plural
+    noun5_feat3_name=person
+    noun5_feat3_value=1st
+  noun5_det=imp
+    noun5_stem1_orth=mita
+    noun5_stem1_pred=_we_n_rel
+  verb1_name=intrans
+  verb1_valence=nom
+    verb1_stem1_orth=omal
+    verb1_stem1_pred=_sing_v_rel
+    verb1_stem2_orth=raveravere
+    verb1_stem2_pred=_be.happy_v_rel
+    verb1_stem3_orth=ete
+    verb1_stem3_pred=_die_v_rel
+  verb2_name=trans
+  verb2_valence=nom-acc
+    verb2_stem1_orth=oa
+    verb2_stem1_pred=_go_v_rel
+
+section=morphology
+  verb-pc1_name=pc1
+  verb-pc1_order=prefix
+  verb-pc1_inputs=verb
+    verb-pc1_lrt1_name=fin
+      verb-pc1_lrt1_feat1_name=form
+      verb-pc1_lrt1_feat1_value=finite
+      verb-pc1_lrt1_feat1_head=verb
+      verb-pc1_lrt1_lri1_inflecting=yes
+      verb-pc1_lrt1_lri1_orth=ma
+    verb-pc1_lrt2_name=non-finite
+      verb-pc1_lrt2_lri1_inflecting=yes
+      verb-pc1_lrt2_lri1_orth=ka
+    verb-pc1_lrt3_name=subjunctive
+      verb-pc1_lrt3_feat1_name=mood
+      verb-pc1_lrt3_feat1_value=subjunctive
+      verb-pc1_lrt3_feat1_head=verb
+      verb-pc1_lrt3_lri1_inflecting=yes
+      verb-pc1_lrt3_lri1_orth=m
+    verb-pc1_lrt4_name=non-finite2
+      verb-pc1_lrt4_feat1_name=form
+      verb-pc1_lrt4_feat1_value=nonfinite
+      verb-pc1_lrt4_feat1_head=verb
+      verb-pc1_lrt4_lri1_inflecting=no
+  verb-pc2_name=pc2
+  verb-pc2_order=prefix
+  verb-pc2_inputs=verb-pc1
+    verb-pc2_lrt1_name=irrealis
+      verb-pc2_lrt1_feat1_name=form
+      verb-pc2_lrt1_feat1_value=finite
+      verb-pc2_lrt1_feat1_head=verb
+      verb-pc2_lrt1_feat2_name=mood
+      verb-pc2_lrt1_feat2_value=irrealis
+      verb-pc2_lrt1_feat2_head=verb
+      verb-pc2_lrt1_lri1_inflecting=yes
+      verb-pc2_lrt1_lri1_orth=amo
+    verb-pc2_lrt2_name=nominalization
+      verb-pc2_lrt2_feat1_name=nominalization
+      verb-pc2_lrt2_feat1_value=nmz
+      verb-pc2_lrt2_feat1_head=verb
+      verb-pc2_lrt2_feat2_name=case
+      verb-pc2_lrt2_feat2_value=genitive
+      verb-pc2_lrt2_feat2_head=subj
+      verb-pc2_lrt2_require1_others=verb-pc3
+      verb-pc2_lrt2_lri1_inflecting=yes
+      verb-pc2_lrt2_lri1_orth=toa
+  verb-pc3_name=pc3
+  verb-pc3_order=suffix
+  verb-pc3_inputs=verb-pc2_lrt2
+    verb-pc3_lrt1_name=nominalization2
+      verb-pc3_lrt1_lri1_inflecting=yes
+      verb-pc3_lrt1_lri1_orth=ae
+  verb-pc4_name=subj-nominalization
+  verb-pc4_order=prefix
+  verb-pc4_inputs=verb-pc1_lrt3
+    verb-pc4_lrt1_name=nominalization3
+      verb-pc4_lrt1_feat1_name=nominalization
+      verb-pc4_lrt1_feat1_value=nmz
+      verb-pc4_lrt1_feat1_head=verb
+      verb-pc4_lrt1_feat2_name=case
+      verb-pc4_lrt1_feat2_value=genitive
+      verb-pc4_lrt1_feat2_head=subj
+      verb-pc4_lrt1_lri1_inflecting=no
+
+section=toolbox-import
+
+section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon
+

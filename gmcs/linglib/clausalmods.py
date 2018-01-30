@@ -33,7 +33,7 @@ def customize_clausalmods(mylang, ch, lexicon, rules, roots):
                 add_non_branching_rules(mylang, rules, cms)
 
         if subord == 'pair':
-            create_subpair_feature(mylang, cms.get('morphpair'))
+            create_subpair_feature(mylang, roots, cms.get('morphpair'))
             add_subordinators_matrix_pair_to_lexicon(mylang, lexicon, cms,ch)
 
         if subord == 'none':
@@ -518,7 +518,7 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
             mylang.add(supertype + ' := unary-phrase &\
           [ SYNSEM [ LOCAL [ CAT [ MC -,\
                                   VAL [ SUBJ #subj,\
-                                        SPR #spr,\
+                                        SPR < >,\
                                         COMPS < > ],\
                                   HEAD adp & [ MOD < [ LOCAL scopal-mod &\
         						[ CAT [ HEAD verb,\
@@ -535,10 +535,11 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
         		    [ HARG #sch,\
         		      LARG #scl ] !>,\
             		HOOK.INDEX #index ],\
-            ARGS < [ SYNSEM [ LOCAL [ CAT [ HEAD noun,\
+            ARGS < [ SYNSEM [ LOCAL [ CAT [ HEAD noun &\
+                                                    [ NMZ + ],\
         				    MC na-or-+,\
         				    VAL [ SUBJ #subj,\
-        				        SPR #spr,\
+        				        SPR < >,\
         					  COMPS < > ]],\
         			    CONT.HOOK.LTOP #scl ] ] ] > ].')
         else:
@@ -547,7 +548,7 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
             mylang.add(supertype + ' := unary-phrase &\
             [ SYNSEM [ LOCAL [ CAT [ MC -,\
                                     VAL [ SUBJ #subj,\
-                                          SPR #spr,\
+                                          SPR < >,\
                                           COMPS < > ],\
                                     HEAD adp & [ MOD < [ LOCAL scopal-mod &\
           						[ CAT [ HEAD verb,\
@@ -562,10 +563,11 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
           		      LARG #mcl ] !>,\
               		HOOK.INDEX #index ],\
               ARGS < [ SYNSEM [ LOCAL [ CONT.HOOK.INDEX #scl,\
-                                        CAT [ HEAD noun,\
+                                        CAT [ HEAD noun &\
+                                                    [ NMZ + ],\
           				    MC na-or-+,\
           				    VAL [ SUBJ #subj,\
-          				        SPR #spr,\
+          				        SPR < >,\
           					  COMPS < > ]] ] ] ] > ].')
     else:
         supertype = 'morphological-subord-clause-phrase'
@@ -669,7 +671,7 @@ def create_subordinated_feature(mylang, roots, cms):
     mylang.add('add-only-rule := same-subordinated-lex-rule.')
     roots.add('root := [ SYNSEM.SUBORDINATED none ].')
 
-def create_subpair_feature(mylang, morphpair):
+def create_subpair_feature(mylang, roots, morphpair):
     """
     adds the subpair feature to canonical synsem as well as adding constraints
     to phrase types to pass it and mc up
@@ -715,6 +717,7 @@ def create_subpair_feature(mylang, morphpair):
 
     mylang.set_section('verb-lex')
     mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.SUBPAIR nopair ].')
+    roots.add('root := [ SYNSEM.LOCAL.CAT.SUBPAIR nopair ].')
 
 def add_head_compement_rules(mylang, rules, ch):
     """
@@ -815,4 +818,5 @@ def shortform_pred(pred):
     else:
         value = pred.split('_')[0]
     return value
+
 

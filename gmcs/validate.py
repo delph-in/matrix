@@ -1526,7 +1526,7 @@ def validate_clausalmods(ch, vr):
             if feat.get('type') == 'index':
                 mess = 'Index besides aspect and mood are not supported at this time.'
                 vr.err(feat.full_key + '_type', mess)
-            if feat.get('name') == 'situation':
+            if feat.get('name') == 'Situation':
                 mess = 'Situation aspect is not supported at this time.'
                 vr.err(feat.full_key + '_type', mess)
 
@@ -1780,4 +1780,5 @@ if __name__ == "__main__":
                 column += len(w) + 1
         print
     print
+
 
