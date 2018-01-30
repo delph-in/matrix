@@ -460,6 +460,8 @@ BeginIter poss-strat{i} "a possessive strategy"
      	. non-affix "Possessor non-affix" "" "separate word or clitic<br>" "toggle_element.call(this, 'possessor-affix{i}', 'off'); toggle_element.call(this, 'possessor-non-affix{i}', 'on');"
      
      	   Label "<div id='possessor-affix{i}' style='display:none'>"
+	   
+	   Label "<p>NOTE: The possessor marked by this affix must be a full NP, not a pronoun. Please use the possessive pronoun section below, and analyze combinations of pronoun+possessive-marker as single lexical items.</p>"
 
 	   Radio possessor-affix-agr "Possessor agreement" "<p>Does the affix that marks the possessor agree with the possessum (e.g. in person, number, or gender)?</p>" ""
 	   . agree "Possessor agree" "" "yes<br>"
@@ -470,6 +472,10 @@ BeginIter poss-strat{i} "a possessive strategy"
 	   Label "</div>"
 
      	   Label "<div id='possessor-non-affix{i}' style='display:none'>"
+
+	   Radio pronoun-allow "Pronoun allowability" "<p>Can the possessor marked by this word or clitic be a pronoun?</p>" ""
+	   . yes "Pronouns allowed" "" "yes<br>"
+	   . no "Pronouns disallowed" "" "no<br>"
 
            Radio possessor-agr "Possessor agreement" "<p>Does the possessor agree with the possessum?</p>" ""
 	   . agree "Possessor agree" "" "yes<br>" "toggle_element.call(this, 'possessor-agr{i}', 'on'); toggle_element.call(this, 'possessor-non-agr{i}', 'off');"
@@ -512,7 +518,6 @@ BeginIter poss-strat{i} "a possessive strategy"
      Radio possessum-type "Possessum morpheme type" "<p>Is the morpheme that marks the <b>possessum</b> an affix? Or is it a separate word or clitic?</p>" ""
      . affix "Possessum affix" "" "affix<br>" "toggle_element.call(this, 'possessum-affix{i}', 'on'); toggle_element.call(this, 'possessum-non-affix{i}', 'off');"
      . non-affix "Possessum non-affix" "" "separate word or clitic<br>"  "toggle_element.call(this, 'possessum-affix{i}', 'off'); toggle_element.call(this, 'possessum-non-affix{i}', 'on');"
-     
 
      	   Label "<div id='possessum-affix{i}' style='display:none'>"
 
@@ -2169,6 +2174,8 @@ BeginIter noun{i} "a Noun Type" 1 1
 
   MultiSelect supertypes "Noun type {i}" "Supertypes: " "<br />"
   fillregex p=noun(?!{i}_)[0-9]+_name
+
+  Check pron "Pronoun" "<br>" "This is a pronoun type<br><br>" 
 
   Label "Features:"
 
