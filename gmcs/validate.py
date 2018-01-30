@@ -1513,7 +1513,7 @@ def validate_clausalmods(ch, vr):
 	for feat in cms.get('feat'):
 	    if feat.get('name') == 'nominalization':
 		nominalized = True
-	if nominalized = True:    
+	if nominalized == True:    
             mess = 'If multiple nominalization strategies are allowed in the grammar,' +\
                         ' and clausal modifiers require nominalization, the produced grammar' +\
                         ' will allow any nominalinalization strategy for the clausal modifier strategy.'
