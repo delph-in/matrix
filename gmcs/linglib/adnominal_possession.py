@@ -126,9 +126,6 @@ def customize_poss_addenda(mylang):
     mylang.add('nonpossessive := poss.',section='addenda')
     mylang.add('possessor := possessive.',section='addenda')
     mylang.add('possessum := possessive.',section='addenda')
-    mylang.add('basic-bare-np-phrase :+\
-            [ HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR nonpossessive, \
-                                          POSSESSUM nonpossessive ] ].',section='addenda')
 
 # Calls customize_poss_rules, customize_poss_irules, and customize_poss_lexicon
 # to build possessive strategies for cases where the possessor
@@ -202,6 +199,17 @@ def customize_poss_rules(strat,mylang,ch,rules):
     rule_added=False
     mylang.set_section('phrases')
     # Start adding rules:
+    # Add constraints to bare np rule:
+    if mark_loc=='possessum':
+        print("adding spec <[]> to bare np")
+        mylang.add('bare-np-phrase :=\
+            [ HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.SPEC <[ ]>,\
+                                          HEAD.POSSESSOR nonpossessive, \
+                                          POSSESSUM nonpossessive ] ].',section='addenda')
+    else:
+        mylang.add('bare-np-phrase :=\
+            [ HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR nonpossessive, \
+                                          POSSESSUM nonpossessive ] ].',section='addenda')
     # If no marking exists, add one of two juxtaposition rules:
     if mark_loc=='neither' and not pron_strat:
         phrase_rule='poss-phrase'+'-'+strat_num
@@ -401,10 +409,12 @@ def customize_poss_irules(strat,mylang,ch,irules,hierarchies):
                             mylang.add(possessum_rule_name+POSSESSUM_RULE)
                             if mod_spec=='spec':
                                 agr_prefix='SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
+                                # TODO: collapse these add statements:
                                 mylang.add(possessum_rule_name+':=  val-change-with-ccont-lex-rule & \
                                            [ SYNSEM.LOCAL.CAT [ POSSESSUM possessum-'+strat_num+',\
                                                                 VAL [ COMPS #comps,\
-                                                                      SPR < [ LOCAL [ CAT [ HEAD +np ] ] ] > ] ] ,\
+                                                                      SPR < [ LOCAL [ CAT [ VAL.SPR olist,\
+                                                                                            HEAD +np ] ] ] > ] ] ,\
                                              C-CONT [ HOOK #hook & [ INDEX.COG-ST uniq-id ],\
                                                       HCONS <! !>, \
                                                       ICONS <! !>  ],\
