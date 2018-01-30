@@ -200,14 +200,7 @@ def customize_poss_rules(strat,mylang,ch,rules):
     mylang.set_section('phrases')
     # Start adding rules:
     # Add constraints to bare np rule:
-    if mark_loc=='possessum':
-        print("adding spec <[]> to bare np")
-        mylang.add('bare-np-phrase :=\
-            [ HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.SPEC <[ ]>,\
-                                          HEAD.POSSESSOR nonpossessive, \
-                                          POSSESSUM nonpossessive ] ].',section='addenda')
-    else:
-        mylang.add('bare-np-phrase :=\
+    mylang.add('bare-np-phrase :=\
             [ HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR nonpossessive, \
                                           POSSESSUM nonpossessive ] ].',section='addenda')
     # If no marking exists, add one of two juxtaposition rules:
