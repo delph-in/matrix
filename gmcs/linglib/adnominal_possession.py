@@ -413,7 +413,7 @@ def customize_poss_irules(strat,mylang,ch,irules,hierarchies):
                                 mylang.add(possessum_rule_name+':=  val-change-with-ccont-lex-rule & \
                                            [ SYNSEM.LOCAL.CAT [ POSSESSUM possessum-'+strat_num+',\
                                                                 VAL [ COMPS #comps,\
-                                                                      SPR < [ LOCAL [ CAT [ VAL.SPR olist,\
+                                                                      SPR < [ LOCAL [ CAT [ VAL.SPR < >,\
                                                                                             HEAD +np ] ] ] > ] ] ,\
                                              C-CONT [ HOOK #hook & [ INDEX.COG-ST uniq-id ],\
                                                       HCONS <! !>, \
