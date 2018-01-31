@@ -1,0 +1,35 @@
+3sgm-nom and 3sgm-nom VERB-3plm
+3sgf-nom and 3sgm-nom VERB-3plm
+3sgm-nom and 3sgf-nom VERB-3plm
+3sgf-nom and 3sgf-nom VERB-3plf
+3sgf-nom and 3sgf-nom VERB-3plm
+*3sgm-nom and 3sgm-nom VERB-3plf
+*3sgf-nom and 3sgm-nom VERB-3plf
+*3sgm-nom and 3sgf-nom VERB-3plf
+*3sgm-nom and 3sgm-nom VERB-3sgm
+*3sgf-nom and 3sgm-nom VERB-3sgf
+*3sgm-nom and 3sgf-nom VERB-3sgf
+*3sgm-nom and 3sgm-acc VERB-3plm
+*3sgf-nom and 3sgm-acc VERB-3plm
+*3sgm-nom and 3sgf-acc VERB-3plm
+*3sgf-nom and 3sgf-acc VERB-3plf
+*3sgf-nom and 3sgf-acc VERB-3plm
+*3sgm-nom and 3sgm-acc VERB-3plf
+*3sgf-nom and 3sgm-acc VERB-3plf
+*3sgm-nom and 3sgf-acc VERB-3plf
+*3sgm-nom and 3sgm-acc VERB-3sgm
+*3sgf-nom and 3sgm-acc VERB-3sgf
+*3sgm-nom and 3sgf-acc VERB-3sgf
+3sgm-nom 3sgf-acc and 3sgm-acc TRVB-3sgm-3sgm
+3sgm-nom 3plf-acc and 3sgm-acc TRVB-3sgm-3sgm
+3sgm-nom 3sgm-acc and 3sgm-acc TRVB-3sgm-3sgm
+3sgm-nom 3plm-acc and 3sgm-acc TRVB-3sgm-3sgm
+3sgm-nom and 3sgm-nom 3sgf-acc TRVB-3plm-3sgf
+3sgf-nom and 3sgm-nom 3sgf-acc TRVB-3plm-3sgf
+3sgm-nom and 3sgf-nom 3sgm-acc TRVB-3plm-3sgm
+3sgf-nom and 3sgf-nom 3sgm-acc TRVB-3plf-3sgm
+3sgf-nom and 3sgf-nom 3sgm-acc TRVB-3plm-3sgm
+*3sgm-nom 3sgf-acc and 3sgm-acc TRVB-3sgm-3sgf
+*3sgm-nom 3plf-acc and 3sgm-acc TRVB-3sgm-3plf
+*3sgm-nom 3sgm-acc and 3sgm-acc TRVB-3sgm-3plm
+*3sgm-nom 3plm-acc and 3sgm-acc TRVB-3sgm-3plm
