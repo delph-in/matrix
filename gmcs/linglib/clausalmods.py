@@ -1,4 +1,4 @@
-from gmcs.utils import orth_encode
+from gmcs.utils import orth_encode,TDLencode
 
 ######################################################################
 # Clausal Modifiers
@@ -831,7 +831,7 @@ def add_to_lexicon(morphtype, typename, type, lexicon):
     orth = morphtype.get(type + 'orth')
     orthstr = orth_encode(orth)
     pred = morphtype.get(type + 'pred')
-    name = morphtype.get(type + 'name')
+    name = TDLencode(morphtype.get(type + 'name'))
     lexicon.add(name + ' := ' + typename + ' &\
                       [ STEM < "' + orthstr + '" >,\
                    SYNSEM.LKEYS.KEYREL.PRED "' + pred + '"].')
