@@ -275,7 +275,7 @@ def create_adverb_subordinator_lexical_subtypes(mylang, lexicon, cms):
                 mylang.add(type + ' := [ ' + constraints.pop() + ' ].')
             orth = adverb.get('orth')
             orthstr = orth_encode(orth)
-            name = adverb.get('name')
+            name = TDLencode(adverb.get('name'))
             lexicon.add(name + ' := ' + type + ' & [ STEM < "' + orthstr + '" > ].')
     # each adverb gets it's own lexical type with a special SUBORDINATED value so that the non-branching
     # rule can select it and so that the SUBPAIR feature can be added
@@ -308,7 +308,7 @@ def create_adverb_subordinator_lexical_subtypes(mylang, lexicon, cms):
                 mylang.add(type + ' := [ ' + constraints.pop() + ' ].')
             orth = adverb.get('subordorth')
             orthstr = orth_encode(orth)
-            name = adverb.get('subordname')
+            name = TDLencode(adverb.get('subordname'))
             lexicon.add(name + ' := ' + type + ' & [ STEM < "' + orthstr + '" > ].')
 
 
@@ -897,3 +897,4 @@ def add_subord_name(ch, stemids, stemidcounters):
             else:
                 stemidcounters[subordorth] += 1
                 ch[morphpair.full_key + '_matrixname'] = matrixorth + '_' + str(stemidcounters[matrixorth])
+
