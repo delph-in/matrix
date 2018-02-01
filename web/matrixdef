@@ -2288,7 +2288,7 @@ including changes to e.g. case frames or adding predicates. (<b>Experimental</b>
       . subj-rem "Subject-removing" "subject-removing"
       . obj-rem "Object-removing" "object-removing"
       . obj-add "Object-adding (e.g. applicative)" "object-adding"
-      . case-frame "Case frame-changing" "case-frame-changing"
+      . obj-prom "Object-promoting" "object-promoting"
 
       Label "<p>Most valence-changing operations currently must operate on a known input valence. If both intransitive and transitive
 inputs are possible, these need to be created as two separate lexical rule types. (This may change in the future).</p>"
