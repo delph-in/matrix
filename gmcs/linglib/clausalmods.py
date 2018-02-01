@@ -14,7 +14,7 @@ def customize_clausalmods(mylang, ch, lexicon, rules, roots):
     if not 'cms' in ch:
         return None
     mylang.set_section ('addenda')
-    mylang.add('+nvcdmo :+ [ MOD < > ].')
+    mylang.add('+vcdmo :+ [ MOD < > ].')
     add_head_compement_rules(mylang, rules, ch)
 
     for cms in ch.get('cms'):
