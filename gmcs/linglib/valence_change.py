@@ -23,6 +23,12 @@ def subj_rem_op_lex_rule_name(transitive):
     tr_itr = 'tr' if transitive else 'itr'
     return 'subj-rem-{}-op-lex-rule'.format(tr_itr)
 
+def subj_dem_op_lex_rule_name(added_arg, total_args):
+    return 'subj-dem-to-arg{}of{}-op-lex-rule'.format(added_arg, total_args)
+
+def obj_prom_op_lex_rule_name(added_arg, total_args):
+    return 'obj-prom-from-arg{}of{}-op-lex-rule'.format(added_arg, total_args)
+
 def added_arg_non_local_lex_rule_name(added_arg, total_args):
     return 'added-arg{}of{}-non-local-lex-rule'.format(added_arg, total_args)
 
@@ -49,7 +55,8 @@ def causative_lex_rule_name(demoted_argnum, transitive):
 # These are the shorthand names used to generate rules and rule names
 # NB: the values here are *functions* that return the rule name.
 rulenamefns = {'subj-rem-op': subj_rem_op_lex_rule_name,
-               'subj-dem-op': (lambda: 'subj-rem-op-lex-rule'),
+               'subj-dem-op': subj_dem_op_lex_rule_name,
+               'obj-prom-op': obj_prom_op_lex_rule_name,
                'obj-rem-op': (lambda: 'obj-rem-op-lex-rule'),
                'added-arg-non-local': added_arg_non_local_lex_rule_name,
                'added-arg-applicative': added_arg_applicative_lex_rule_name,
@@ -128,6 +135,55 @@ def obj_rem_op_lex_rule():
   [ SYNSEM.LOCAL.CAT.VAL.COMPS #comps,
     DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < unexpressed . #comps > ].'''
 
+
+def old_subj_dem_op_lex_rule():
+  return lexrule_name('subj-dem-op') + ''' := subj-and-comps-change-only-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX #oind,
+    DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX #oind ] > ].'''
+
+def subj_dem_op_lex_rule(demoted_argnum, total_args):
+    rulevars = {}
+    # if the daughter is ditransitive (= has two COMPS) then we need
+    # to copy up the one not being demoted.
+    other_arg = ['#oarg'] if total_args == 3 else [] 
+    hook = ['[ {hook} ]']
+    hook_path = 'LOCAL.CONT.HOOK.INDEX #sidx'
+    # ok here if only 2 args; adding [] doesn't do anything to the list
+    compslist = ', '.join((other_arg + hook) if demoted_argnum == 3 else (hook + other_arg))
+    rulevars['rulename'] = gen_rulename('subj-dem-op', demoted_argnum, total_args)
+    rulevars['dtrcomps'] = compslist.format(hook='')
+    rulevars['mtrcomps'] = compslist.format(hook=hook_path)
+    rule = '''{rulename} := subj-and-comps-change-only-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < {mtrcomps} >,
+    DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ < [ LOCAL.CONT.HOOK.INDEX #sidx ] >,
+                               COMPS < {dtrcomps} > ] ].'''.format(**rulevars)
+    return rule
+
+def old_obj_prom_op_lex_rule():
+  return lexrule_name('obj-prom-op') + ''' := subj-and-comps-change-only-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX #sidx ] >,
+    DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX #sidx ].'''
+
+
+## if the daughter has two comps (= ditransitive) then we need to no-op the one
+
+def obj_prom_op_lex_rule(promoted_argnum, total_args):
+    rulevars = {}
+    ## if the daughter is ditransitive (= has two COMPS) then we need
+    ## to copy up the one not being promoted.
+    other_arg = ['#oarg'] if total_args == 3 else [] 
+    hook = ['[ {hook} ]']
+    hook_path = 'LOCAL.CONT.HOOK.INDEX #sidx'
+    # ok here if only 2 args; adding [] doesn't do anything to the list
+    compslist = (other_arg + hook) if promoted_argnum == 3 else (hook + other_arg)
+    rulevars['rulename'] = gen_rulename('obj-prom-op', promoted_argnum, total_args)
+    rulevars['dtrcomps'] = ', '.join(compslist).format(hook=hook_path)
+    rulevars['mtrcomps'] = ', '.join(compslist).format(hook='')
+    rule = '''{rulename} := subj-and-comps-change-only-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < [ LOCAL.CONT.HOOK.INDEX #sidx ] >,
+                           COMPS < {mtrcomps} > ],
+    DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < {dtrcomps} > ].'''.format(**rulevars)
+    return rule
 
 ## These rules implement non-local diff list stitching for argument-adding
 ## lexical rules.
@@ -228,7 +284,7 @@ def causative_lex_rule_gen(demoted_argnum, transitive=True):
     compslist = [OSUBJ_ARG_FRAG_MIN]
     if transitive:
         # argnum 2 -> erst. SUBJ is prepend -> erst. COMP append/insert(1)
-        # argnum 3 -> erst. SUBJ is append -> erst. COMP prepent/insert(0)
+        # argnum 3 -> erst. SUBJ is append -> erst. COMP prepend/insert(0)
         compslist.insert(3 - demoted_argnum, '#comp')       
     rulevars['rulename'] = gen_rulename('subj-add', demoted_argnum, transitive)
     rulevars['osubj'] = OSUBJ_ARG_FRAG_MIN
@@ -336,6 +392,8 @@ def added_arg_applicative_lex_rule(added_arg, total_args):
 
 subj_rem_op_lex_rule_gen = subj_rem_op_lex_rule
 obj_rem_op_lex_rule_gen = obj_rem_op_lex_rule
+subj_dem_op_lex_rule_gen = subj_dem_op_lex_rule
+obj_prom_op_lex_rule_gen = obj_prom_op_lex_rule
 added_arg_applicative_lex_rule_gen = added_arg_applicative_lex_rule
 added_arg_non_local_lex_rule_gen = added_arg_non_local_lex_rule
 basic_applicative_lex_rule_gen = basic_applicative_lex_rule
@@ -345,6 +403,10 @@ rule_generators = {'subj-rem-op': {'name': subj_rem_op_lex_rule_name,
                                    'rule': subj_rem_op_lex_rule_gen},
                    'obj-rem-op':  {'name': (lambda: 'obj-rem-op-lex-rule'),
                                    'rule': obj_rem_op_lex_rule_gen },
+                   'subj-dem-op': {'name': subj_dem_op_lex_rule_name,
+                                   'rule': subj_dem_op_lex_rule_gen},
+                   'obj-prom-op': {'name': obj_prom_op_lex_rule_name,
+                                   'rule': obj_prom_op_lex_rule_gen},
                    'basic-applicative': {'name': (lambda: 'basic-applicative-lex-rule'),
                                          'rule': basic_applicative_lex_rule_gen},
                    'added-arg-applicative': {'name': added_arg_applicative_lex_rule_name,
@@ -399,7 +461,6 @@ class LexRuleBuilder(object):
         prev_section = mylang.section
         mylang.set_section('lexrules')
         for rule in self.rules:
-#            print >> stderr, "Adding rule: " + str(rule.name)
             mylang.add(rule.body)
         mylang.set_section(prev_section)
 
@@ -421,24 +482,26 @@ def customize_valence_change(mylang, ch, lexicon, rules, irules, lrules):
                 # default to transitive
                 transitive = 'trans' in inputs or (len(inputs) == 1 and inputs[0] == '')
                 opname = vchop['operation'].lower()
+                argnum, numargs = added_argnum_for_vchop(vchop)
                 if opname == 'subj-rem':
                     rules.add('subj-rem-op', transitive)
-                if opname == 'obj-rem':
+                elif opname == 'obj-rem':
                     rules.add('obj-rem-op')
-                if opname == 'obj-add':
+                elif opname == 'subj-dem':
+                    rules.add('subj-dem-op', argnum, numargs)
+                elif opname == 'obj-prom':
+                    rules.add('obj-prom-op', argnum, numargs)
+                elif opname == 'obj-add':
                     rules.add('basic-applicative')
-                    argnum, numargs = added_argnum_for_vchop(vchop)
                     rules.add('added-arg-applicative', argnum, numargs)
                     rules.add('added-arg-non-local', argnum, numargs)
                     argtype = vchop.get('argtype','').lower()
                     rules.add('added-arg-head-type', argnum, numargs, argtype)
-                if opname == 'subj-add':
+                elif opname == 'subj-add':
                     rules.add('scopal-rel')
                     position = vchop.get('argpos', '').lower()
                     inputval = vchop.get('input', '').lower()
-                    argnum, _ = added_argnum_for_vchop(vchop)
                     rules.add('subj-add', argnum, transitive)
-
     rules.generate_tdl(mylang)
 
 
@@ -452,13 +515,18 @@ def add_lexrules(ch):
             # argument in the COMPS list. 
             # pre: obj = obj2, newobj = obj
             # post: obj = obj, newobj = obj2
-            for vchop in [vchop for vchop in lrt.get('valchg',[]) if vchop['operation'].lower() == 'obj-add']:
-                newarg_is_post = (vchop.get('argpos','post') == 'post')
+            ops_to_fixup = ['subj-add', 'obj-add', 'subj-dem', 'obj-prom']
+            for vchop in [vchop for vchop in lrt.get('valchg',[]) if vchop['operation'].lower() in ops_to_fixup]:
+                newarg_is_post = (vchop.get('argpos','') == 'post')
                 for feat in lrt.get('feat',[]):
-                    if feat.get('head','') == 'newobj':
-                        feat['head'] = 'obj2' if newarg_is_post else 'obj'
-                    if feat.get('head','') == 'obj' and not newarg_is_post:
-                        feat['head'] = 'obj2'
+                    if newarg_is_post:
+                        if feat.get('head','') == 'newobj':
+                            feat['head'] = 'obj2'
+                    else:  # pre
+                        if feat.get('head','') == 'newobj':
+                            feat['head'] = 'obj'
+                        elif feat.get('head','') == 'obj':
+                            feat['head'] = 'obj2'
 
             
 

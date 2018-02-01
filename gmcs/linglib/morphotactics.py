@@ -773,10 +773,12 @@ def write_valence_change_behavior(pc, lrt, mylang, choices):
   if pc.has_valchg_ops() and not lrt.valchgops:
     lrt.supertypes.add('add-only-no-ccont-rule')
 
+  lrt_ops = set()
   for op in lrt.valchgops:
     operation = op.get('operation','').lower()
+    lrt_ops.add(operation)
     transitive = 'trans' in op.get('inputs','').split(',')
-    
+    argnum, numargs = added_argnum_for_vchop(op)
     # NB: non-scopal always need same-cont added!
     #if operation != 'subj-add':
     #  lrt.supertypes.add('same-cont-lex-rule')
@@ -787,26 +789,33 @@ def write_valence_change_behavior(pc, lrt, mylang, choices):
       mylang.add(lrt.identifier() + ' := ' + lexrule_name('subj-rem-op', transitive) + '.')
     elif operation == 'subj-dem':
       lrt.supertypes.add('local-change-only-lex-rule')
-      lrt.supertypes.add('xarg-change-only-ccont-lex-rule') # must be transitive
-      mylang.add(lrt.identifier() + ' := ' + lexrule_name('subj-dem-op'))
+      lrt.supertypes.add('same-cont-lex-rule')
+      mylang.add(lrt.identifier() + ' := ' + lexrule_name('subj-dem-op', argnum, numargs) + '.', merge=True)
+    elif operation == 'obj-prom':
+      lrt.supertypes.add('local-change-only-lex-rule')
+      lrt.supertypes.add('xarg-change-only-ccont-lex-rule')
+      mylang.add(lrt.identifier() + ' := ' + lexrule_name('obj-prom-op', argnum, numargs) + '.', merge=True)
     elif operation == 'obj-rem':
       lrt.supertypes.add('same-cont-lex-rule')
       lrt.supertypes.add('local-change-only-lex-rule') # includes no-ccont
       mylang.add(lrt.identifier() + ' := ' + lexrule_name('obj-rem-op') + '.') 
     elif operation == 'obj-add':
       lrt.supertypes.add('same-cont-lex-rule')
-      argnum, numargs = added_argnum_for_vchop(op)
       lrt.supertypes.add(lexrule_name('added-arg-applicative', argnum, numargs))
       lrt.supertypes.add(lexrule_name('added-arg-head-type', argnum, numargs, op['argtype'].lower()))
       predname = op.get('predname','undef_pred')
       mylang.add(lrt.identifier() + ' := [ C-CONT.RELS <! [ PRED "' + predname +'" ] !> ].')
     elif operation == 'subj-add':
-      argnum, _ = added_argnum_for_vchop(op)
       lrt.supertypes.add('same-non-local-lex-rule')
       lrt.supertypes.add(lexrule_name('subj-add', argnum, transitive))
       predname = op.get('predname','causative_rel')
       mylang.add(lrt.identifier() + ' := [ C-CONT.RELS <! [ PRED "' + predname + '" ] !> ].')
-       
+
+  # finished with valchg ops; now some final additions
+  #if 'obj-prom' in lrt_ops or 'subj-dem' in lrt_ops:
+  if 'subj-dem' in lrt_ops and 'obj-prom' not in lrt_ops:
+    lrt.supertypes.add('same-cont-lex-rule')
+
     
 def write_pc_adj_syntactic_behavior(lrt, mylang, choices):
   # TODO: Don't do this if a supertype is specified
