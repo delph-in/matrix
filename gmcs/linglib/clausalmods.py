@@ -1,4 +1,4 @@
-from gmcs.utils import orth_encode
+from gmcs.utils import orth_encode,TDLencode
 
 ######################################################################
 # Clausal Modifiers
@@ -13,8 +13,6 @@ def customize_clausalmods(mylang, ch, lexicon, rules, roots):
     """
     if not 'cms' in ch:
         return None
-    mylang.set_section ('addenda')
-    mylang.add('+vcdmo :+ [ MOD < > ].')
     add_head_compement_rules(mylang, rules, ch)
 
     for cms in ch.get('cms'):
@@ -277,7 +275,7 @@ def create_adverb_subordinator_lexical_subtypes(mylang, lexicon, cms):
                 mylang.add(type + ' := [ ' + constraints.pop() + ' ].')
             orth = adverb.get('orth')
             orthstr = orth_encode(orth)
-            name = adverb.get('name')
+            name = TDLencode(adverb.get('name'))
             lexicon.add(name + ' := ' + type + ' & [ STEM < "' + orthstr + '" > ].')
     # each adverb gets it's own lexical type with a special SUBORDINATED value so that the non-branching
     # rule can select it and so that the SUBPAIR feature can be added
@@ -310,7 +308,7 @@ def create_adverb_subordinator_lexical_subtypes(mylang, lexicon, cms):
                 mylang.add(type + ' := [ ' + constraints.pop() + ' ].')
             orth = adverb.get('subordorth')
             orthstr = orth_encode(orth)
-            name = adverb.get('subordname')
+            name = TDLencode(adverb.get('subordname'))
             lexicon.add(name + ' := ' + type + ' & [ STEM < "' + orthstr + '" > ].')
 
 
@@ -831,7 +829,7 @@ def add_to_lexicon(morphtype, typename, type, lexicon):
     orth = morphtype.get(type + 'orth')
     orthstr = orth_encode(orth)
     pred = morphtype.get(type + 'pred')
-    name = morphtype.get(type + 'name')
+    name = TDLencode(morphtype.get(type + 'name'))
     lexicon.add(name + ' := ' + typename + ' &\
                       [ STEM < "' + orthstr + '" >,\
                    SYNSEM.LKEYS.KEYREL.PRED "' + pred + '"].')
@@ -899,3 +897,4 @@ def add_subord_name(ch, stemids, stemidcounters):
             else:
                 stemidcounters[subordorth] += 1
                 ch[morphpair.full_key + '_matrixname'] = matrixorth + '_' + str(stemidcounters[matrixorth])
+

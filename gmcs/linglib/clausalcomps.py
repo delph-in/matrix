@@ -1,5 +1,4 @@
-from gmcs.utils import get_name
-
+from gmcs.utils import get_name,TDLencode, orth_encode
 
 from gmcs import constants
 from gmcs.linglib import lexbase
@@ -82,8 +81,8 @@ def add_complementizers_to_lexicon(lexicon,ch):
         # lexical items and then can call insert_ids() from lexical_items.py instead
         # This would need to be done via redesigning the questionnaire a little.
         for complementizer in comp_strategy[COMPLEMENTIZER]:
-            orth = complementizer.get('orth')
-            name = complementizer.get('name')
+            orth = orth_encode(complementizer.get('orth'))
+            name = TDLencode(complementizer.get('name'))
             typedef = name + ' := ' + stype + ' & \
                           [ STEM < "' + orth + '" > ].'
             lexicon.add(typedef)
