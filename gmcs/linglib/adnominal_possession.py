@@ -183,6 +183,7 @@ def customize_poss_rules(strat,mylang,ch,rules):
     mark_loc=strat.get('mark-loc')
     pron_strat=False
     pron_affix=False
+    pron_allowed=True if strat.get('pronoun-allow')=='yes' else False
     if 'poss-pron' in strat_name:
         pron_strat=True
         strat_num='pron-'+strat_num
@@ -221,6 +222,8 @@ def customize_poss_rules(strat,mylang,ch,rules):
                                                                       VAL.SPR #spr & <[ ]>],\
                                           C-CONT [ RELS <! '+POSS_REL+' !>,\
                                                    HCONS <! !> ] ].')
+        if not pron_allowed:
+            mylang.add(phrase_rule+' := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.PRON - ] ].')
         rule_added=True
     # If possessor isn't an affix, add a phrase rule
     elif not pron_affix:
