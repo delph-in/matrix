@@ -221,7 +221,6 @@ def customize_nmcs(mylang, ch, rules):
         level = ns.get('level')
         nmzrel = ns.get('nmzRel')
         add_nmz_feature(mylang)
-        mylang.add('+nvcdmo :+ [ MOD < > ].')
         add_nonevent_subj_rules(ch, level, mylang, rules)
         add_nmz_lexrules(ch, level, mylang)
         add_nmz_clause_phrases(level, mylang, nmzrel, rules)
