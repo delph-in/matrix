@@ -1,0 +1,26 @@
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+;;; Inflecting Lexical Rule Instances
+
+fin-prefix :=
+%prefix (* ma)
+fin-lex-rule.
+
+non-finite-prefix :=
+%prefix (* ka)
+non-finite-lex-rule.
+
+subjunctive-prefix :=
+%prefix (* m)
+subjunctive-lex-rule.
+
+irrealis-prefix :=
+%prefix (* amo)
+irrealis-lex-rule.
+
+nominalization-prefix :=
+%prefix (* toa)
+nominalization-lex-rule.
+
+nominalization2-suffix :=
+%suffix (* ae)
+nominalization2-lex-rule.

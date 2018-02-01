@@ -1,0 +1,107 @@
+Language: Rukai
+Language code:
+Lines: translit-seg gloss translat
+Author: Kristen Howell
+Date: January 22, 2018
+Source a: Zeitoun, Elizabeth. A Grammar of Mantauran (Rukai). Institute of Linguistics, Academia Sinica, 2007. Print.
+
+# 1
+Source: a:204
+Vetted: s
+Judgment: g
+Phenomena:{}
+to'aomalae li maraveravere lrao
+to'a-omal-ae =li ma-raveravere =lrao
+REASNMZ-sing.DYN.NF-REASNMZ 1SG.GEN STAT.FIN-be.happy 1SG.NOM
+`The reason I am singing is because I am happy.'
+
+# 2
+Source: a:204
+Vetted: s
+Judgment: u
+Phenomena:{case}
+to'aomalae lrao maraveravere lrao
+to'a-omal-ae =lrao ma-raveravere =lrao
+REASNMZ-sing.DYN.NF-REASNMZ 1SG.NOM STAT.FIN-be.happy 1SG.NOM
+`The reason I am singing is because I am happy.'
+
+# 3
+Source: a:204
+Vetted: s
+Judgment: u
+Phenomena:{morphology}
+maomal li maraveravere lrao
+ma-omal =li ma-raveravere =lrao
+STAT.FIN-sing 1SG.GEN STAT.FIN-be.happy 1SG.NOM
+`The reason I am singing is because I am happy.'
+
+# 4
+Source: a:204
+Vetted: s
+Judgment: u
+Phenomena:{order}
+maraveravere lrao to'aomalae li
+ma-raveravere =lrao to'a-omal-ae =li
+STAT.FIN-be.happy 1SG.NOM REASNMZ-sing.DYN.NF-REASNMZ 1SG.GEN
+`The reason I am singing is because I am happy.'
+
+# 5
+Source: a:204
+Vetted: s
+Judgment: u
+Phenomena:{ssubj}
+to'aomalae maraveravere lrao
+to'a-omal-ae ma-raveravere =lrao
+REASNMZ-sing.DYN.NF-REASNMZ STAT.FIN-be.happy 1SG.NOM
+`The reason I am singing is because I am happy.'
+
+# 6
+Source: a:445
+Vetted: s
+Judgment: g
+Phenomena:{}
+lo moa ta dhona amoka'ete mita
+lo m-oa =ta dhona amo-ka-'ete =mita
+if SUBJ-go 1PL.GEN that IRR-STAT.NF-die 1PL.NOM
+`If we go there, we will die.'
+
+# 7
+Source: a:445
+Vetted: s
+Judgment: u
+Phenomena:{case}
+lo moa ta dhona amoka'ete mita
+lo m-oa =mita dhona amo-ka-'ete =mita
+if SUBJ-go 1PL.NOM that IRR-STAT.NF-die 1PL.NOM
+`If we go there, we will die.'
+
+# 8
+Source: a:445
+Vetted: s
+Judgment: u
+Phenomena:{morphology}
+lo to'amoaae ta dhona amoka'ete mita
+lo to'a-m-oa-ae =ta dhona amo-ka-'ete =mita
+if REAS.NMZ-SUBJ-go-REAS.NMZ 1PL.GEN that IRR-STAT.NF-die 1PL.NOM
+`If we go there, we will die.'
+
+# 9
+Source: a:445
+Vetted: s
+Judgment: u
+Phenomena:{order}
+amoka'ete mita lo moa ta dhona
+amo-ka-'ete =mita lo m-oa =ta dhona
+IRR-STAT.NF-die 1PL.NOM if SUBJ-go 1PL.GEN that
+`If we go there, we will die.'
+
+# 10
+Source: a:445
+Vetted: s
+Judgment: u
+Phenomena:{ssubj}
+lo moa dhona amoka'ete mita
+lo m-oa dhona amo-ka-'ete =mita
+if SUBJ-go that IRR-STAT.NF-die 1PL.NOM
+`If we go there, we will die.'
+

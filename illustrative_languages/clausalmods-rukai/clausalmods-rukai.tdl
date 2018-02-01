@@ -1,0 +1,340 @@
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Grammar of clausalmods-rukai
+;;; created at:
+;;;     Tue Jan 30 01:44:35 UTC 2018
+;;; based on Matrix customization system version of:
+;;;     unknown time
+;;;
+;;; 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+; Type assigning empty mod list. Added to basic types for nouns, verbs and determiners.
+
+non-mod-lex-item := lex-item &
+  [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].
+
+;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Matrix Type Addenda
+;;;;;;;;;;;;;;;;;;;;;;;;;
+
+noun :+ [ CASE case ].
+
+head :+ [ NMZ bool,
+    FORM form,
+    INIT bool ].
+
+inflected :+ [ PC3-FLAG luk ].
+
+infl-satisfied :+ [ PC3-FLAG na-or-+ ].
+
+png :+ [ PER person,
+    NUM number ].
+
+basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.MC #mc,
+    HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
+
+basic-head-opt-comp-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].
+
+basic-head-mod-phrase-simple :+ [ SYNSEM.LOCAL.CAT.MC #mc,
+    HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
+
+;;;;;;;;;;;;;;
+;;; Features
+;;;;;;;;;;;;;;
+
+;;; Case
+
+case := *top*.
+nom := case.  ; nominative
+acc := case.  ; accusative
+gen := case.  ; genitive
+
+;;; Person
+
+person := *top*.
+1st := person.
+2nd := person.
+3rd := person.
+
+;;; Number
+
+number := *top*.
+singular := number.
+plural := number.
+
+;;; Form
+
+form := *top*.
+nonfinite := form.
+finite := form.
+
+;;; Mood
+
+subjunctive := mood.
+irrealis := mood.
+
+;;;;;;;;;;;;;;;;;;;
+;;; Lexical Types
+;;;;;;;;;;;;;;;;;;;
+
+;;; Nouns
+
+noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & non-mod-lex-item &
+  [ ARG-ST < #spr >,
+    SYNSEM.LOCAL.CAT [ VAL [ COMPS < >,
+                             SUBJ < >,
+                             SPEC < >,
+                             SPR < #spr &
+                                   [ LOCAL.CAT.HEAD det,
+                                     OPT + ] > ],
+                       HEAD.NMZ - ] ].
+
+gen-pronoun-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL [ CAT.HEAD.CASE gen,
+                   CONT.HOOK.INDEX.PNG [ NUM singular,
+                                         PER 1st ] ] ].
+
+nom-pronoun-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL [ CAT.HEAD.CASE nom,
+                   CONT.HOOK.INDEX.PNG [ NUM singular,
+                                         PER 1st ] ] ].
+
+loc-pronoun-noun-lex := noun-lex.
+
+pl-gen-pronoun-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL [ CAT.HEAD.CASE gen,
+                   CONT.HOOK.INDEX.PNG [ NUM plural,
+                                         PER 1st ] ] ].
+
+pl-nom-pronoun-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL [ CAT.HEAD.CASE nom,
+                   CONT.HOOK.INDEX.PNG [ NUM plural,
+                                         PER 1st ] ] ].
+
+;;; Verbs
+
+verb-lex := basic-verb-lex & non-mod-lex-item & pc2-rule-dtr & pc3-rule-dtr & subj-nominalization-rule-dtr &
+  [ ARG-ST.FIRST #subj &
+                 [ LOCAL [ CAT cat-sat &
+                               [ VAL [ SPR < >,
+                                       COMPS < > ] ],
+                           CONT.HOOK.INDEX #xarg ] ],
+    SYNSEM.LOCAL [ CONT.HOOK.XARG #xarg,
+                   CAT [ VAL [ SPR < >,
+                               SPEC < >,
+                               SUBJ < #subj > ],
+                         HEAD.NMZ - ] ] ].
+
+intransitive-verb-lex := verb-lex & intransitive-lex-item &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < >,
+    ARG-ST.FIRST.LOCAL.CAT.HEAD noun ].
+
+transitive-verb-lex := verb-lex & transitive-lex-item &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >,
+    ARG-ST < [ LOCAL.CAT.HEAD noun ],
+             #comps &
+             [ LOCAL.CAT cat-sat &
+                         [ VAL [ SPR < >,
+                                 COMPS < > ],
+                           HEAD noun ] ] > ].
+
+nom-intransitive-verb-lex := intransitive-verb-lex &
+  [ ARG-ST.FIRST.LOCAL.CAT.HEAD noun &
+                                [ CASE nom ] ].
+
+nom-acc-transitive-verb-lex := transitive-verb-lex &
+  [ ARG-ST < [ LOCAL.CAT.HEAD noun &
+                              [ CASE nom ] ],
+             [ LOCAL.CAT.HEAD noun &
+                              [ CASE acc ] ] > ].
+
+intrans-verb-lex := nom-intransitive-verb-lex.
+
+trans-verb-lex := nom-acc-transitive-verb-lex.
+
+;;;;;;;;;;;;;;;;;;;
+;;; Subordinators
+;;;;;;;;;;;;;;;;;;;
+
+adposition-subord-lex-item := single-rel-lex-item & norm-ltop-lex-item &
+  [ SYNSEM.LOCAL.CAT [ MC -,
+                       HEAD adp &
+                            [ MOD < [ LOCAL scopal-mod &
+                                            [ CAT [ HEAD verb,
+                                                    VAL.COMPS < > ] ] ] > ],
+                       VAL [ SUBJ < >,
+                             SPR < >,
+                             COMPS < [ LOCAL.CAT [ MC -,
+                                                   VAL.COMPS < > ] ] > ] ] ].
+
+subord-with-nominalized-comp-lex := adposition-subord-lex-item &
+  [ SYNSEM [ LOCAL [ CAT [ HEAD.MOD < [ LOCAL.CONT.HOOK [ LTOP #mod,
+                                                          INDEX #index ] ] >,
+                           VAL.COMPS < [ LOCAL [ CAT [ HEAD noun &
+                                                            [ NMZ + ],
+                                                       VAL.SPR < > ],
+                                                 CONT.HOOK.INDEX #comp ] ] > ],
+                     CONT [ HCONS <! qeq &
+                                     [ HARG #h1,
+                                       LARG #mod ] !>,
+                            HOOK.INDEX #index ] ],
+             LKEYS.KEYREL [ ARG0 event,
+                            ARG1 #h1,
+                            ARG2 #comp ] ] ].
+
+s-attach-clause-init-prehead-nom-subord-lex-item := subord-with-nominalized-comp-lex &
+  [ SYNSEM.LOCAL.CAT [ VAL.COMPS < [ LOCAL.CAT.VAL.SUBJ < > ] >,
+                       POSTHEAD -,
+                       HEAD [ MOD < [ LOCAL.CAT.VAL.SUBJ < > ] >,
+                              INIT + ] ] ].
+
+;;; Complementizers
+
+;;;;;;;;;;;;;;;;;;;
+;;; Lexical Rules
+;;;;;;;;;;;;;;;;;;;
+
+low-nmz-no-subjid-compsid-lex-rule := low-nominalization-lex-rule &
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ.FIRST.LOCAL.CAT.HEAD noun,
+                           COMPS #comps ],
+    DTR.SYNSEM.LOCAL.CAT.VAL.COMPS #comps ].
+
+low-nominalization-lex-rule := cat-change-with-ccont-lex-rule &
+  [ SYNSEM.LOCAL.CAT [ HEAD noun &
+                            [ NMZ +,
+                              MOD #mod ],
+                       VAL [ SUBJ < [ LOCAL [ CAT.VAL.SPR < >,
+                                              CONT.HOOK.INDEX #subj ] ] >,
+                             SPEC #spec,
+                             SPR < [ OPT + ] > ],
+                       MC #mc,
+                       MKG #mkg,
+                       HC-LIGHT #hc-light,
+                       POSTHEAD #posthead ],
+    C-CONT [ RELS <! [ PRED "nominalized_rel",
+                       LBL #ltop,
+                       ARG0 ref-ind & #arg0,
+                       ARG1 #arg1 ] !>,
+             HCONS <! qeq &
+                      [ HARG #arg1,
+                        LARG #larg ] !>,
+             HOOK [ XARG #xarg,
+                    INDEX #arg0,
+                    LTOP #ltop ] ],
+    DTR.SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
+                             VAL [ SUBJ < [ LOCAL.CONT.HOOK.INDEX #subj ] >,
+                                   SPEC #spec ],
+                             MC #mc,
+                             MKG #mkg,
+                             HC-LIGHT #hc-light,
+                             POSTHEAD #posthead ],
+                       CONT.HOOK [ XARG #xarg,
+                                   LTOP #larg ] ] ].
+
+;;; Intermediate rule types
+
+pc3-rule-dtr := word-or-lexrule.
+pc2-rule-dtr := word-or-lexrule.
+subj-nominalization-rule-dtr := word-or-lexrule.
+
+;;; Lexical rule types
+
+pc1-lex-rule-super := add-only-no-ccont-rule & pc2-rule-dtr & pc3-rule-dtr &
+  [ INFLECTED #infl,
+    DTR verb-lex &
+        [ INFLECTED #infl ] ].
+
+fin-lex-rule := infl-lex-rule & pc1-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.HEAD.FORM finite ].
+
+non-finite-lex-rule := infl-lex-rule & pc1-lex-rule-super.
+
+subjunctive-lex-rule := infl-lex-rule & pc1-lex-rule-super & subj-nominalization-rule-dtr &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.E.MOOD subjunctive ].
+
+non-finite2-lex-rule := const-lex-rule & pc1-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.HEAD.FORM nonfinite ].
+
+pc2-lex-rule-super := infl-lex-rule &
+  [ DTR pc2-rule-dtr ].
+
+nominalization-lex-rule := low-nmz-no-subjid-compsid-lex-rule & pc2-lex-rule-super & pc3-rule-dtr &
+  [ INFLECTED.PC3-FLAG -,
+    SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CAT.HEAD.CASE gen ].
+
+irrealis-lex-rule := add-only-no-ccont-rule & pc2-lex-rule-super &
+  [ INFLECTED #infl,
+    DTR.INFLECTED #infl,
+    SYNSEM.LOCAL [ CAT.HEAD.FORM finite,
+                   CONT.HOOK.INDEX.E.MOOD irrealis ] ].
+
+pc3-lex-rule-super := add-only-no-ccont-rule & infl-lex-rule &
+  [ INFLECTED.PC3-FLAG +,
+    DTR pc3-rule-dtr ].
+
+nominalization2-lex-rule := pc3-lex-rule-super.
+
+subj-nominalization-lex-rule-super := const-lex-rule & low-nmz-no-subjid-compsid-lex-rule &
+  [ INFLECTED #infl,
+    DTR subj-nominalization-rule-dtr &
+        [ INFLECTED #infl ] ].
+
+nominalization3-lex-rule := subj-nominalization-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CAT.HEAD.CASE gen ].
+
+;;;;;;;;;;;;;;;;;;;
+;;; Phrasal Types
+;;;;;;;;;;;;;;;;;;;
+
+non-event-head-subj-phrase := basic-head-subj-phrase & head-initial &
+  [ HEAD-DTR.SYNSEM [ LOCAL.CONT.HOOK.INDEX ref-ind,
+                      NON-LOCAL [ QUE 0-dlist,
+                                  REL 0-dlist ] ],
+    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPR < > ].
+
+;Constraint on MC used to be part of matrix.tdl
+;;it applies to all wo implementations, except for v2
+
+head-comp-phrase := basic-head-1st-comp-phrase & head-initial &
+  [ HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.SUBJ < >,
+                                HEAD.INIT + ] ].
+
+head-subj-phrase := decl-head-subj-phrase & head-initial.
+
+; Bare NP phrase.  Consider modifying the PRED value of the quantifier relation
+; introduced to match the semantic effect of bare NPs in your language.
+
+bare-np-phrase := basic-bare-np-phrase &
+  [ C-CONT.RELS <! [ PRED "exist_q_rel" ] !> ].
+
+no-subordinator-nominalized-subord-clause-phrase := unary-phrase &
+  [ SYNSEM.LOCAL.CAT [ MC -,
+                       VAL [ SUBJ #subj,
+                             SPR < >,
+                             COMPS < > ],
+                       HEAD adp &
+                            [ MOD < [ LOCAL scopal-mod &
+                                            [ CAT [ HEAD verb,
+                                                    VAL [ SUBJ < >,
+                                                          COMPS < > ] ],
+                                              CONT.HOOK [ LTOP #mcl,
+                                                          INDEX #index ] ] ] > ] ],
+    C-CONT [ RELS <! [ ARG1 #mch,
+                       ARG2 #scl ] !>,
+             HCONS <! qeq &
+                      [ HARG #mch,
+                        LARG #mcl ] !>,
+             HOOK.INDEX #index ],
+    ARGS < [ SYNSEM.LOCAL [ CONT.HOOK.INDEX #scl,
+                            CAT [ HEAD noun &
+                                       [ NMZ + ],
+                                  MC na-or-+,
+                                  VAL [ SUBJ #subj,
+                                        SPR < >,
+                                        COMPS < > ] ] ] ] > ].
+
+nmz-prehead-modifying-clause-phrase := no-subordinator-nominalized-subord-clause-phrase &
+  [ ARGS < [ SYNSEM.LOCAL.CAT.VAL.SUBJ < > ] >,
+    SYNSEM.LOCAL.CAT.POSTHEAD -,
+    C-CONT.RELS <! [ PRED "_reason_subord_rel" ] !> ].

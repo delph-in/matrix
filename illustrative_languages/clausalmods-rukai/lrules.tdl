@@ -1,0 +1,4 @@
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+non-finite2-lex := non-finite2-lex-rule.
+
+nominalization3-lex := nominalization3-lex-rule.

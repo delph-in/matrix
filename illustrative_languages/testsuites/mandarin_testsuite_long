@@ -1,0 +1,71 @@
+Language: Mandarin
+Language code:
+Lines: translit-seg gloss translat
+Author: Kristen Howell
+Date: January 22, 2018
+Source a: 
+
+# 1
+Source: a:636
+Vetted: s
+Judgment: g
+Phenomena:{both pair}
+yinwei tian hei le suoyi wo mei chu qu
+because sky black CRS so I no exit go
+`because it had gotten dark, I didn't go out'
+
+# 2
+Source: a:636
+Vetted: s
+Judgment: g
+Phenomena:{subord only}
+yinwei tian hei le wo mei chu qu
+because sky black CRS I no exit go
+`because it had gotten dark, I didn't go out'
+
+# 3
+Source: a:636
+Vetted: s
+Judgment: g
+Phenomena:{matrix only}
+tian hei le suoyi wo mei chu qu
+sky black CRS so I no exit go
+`because it had gotten dark, I didn't go out'
+
+# 4
+Source: a:636
+Vetted: s
+Judgment: u
+Phenomena:{no subord}
+tian hei le wo mei chu qu
+sky black CRS I no exit go
+`because it had gotten dark, I didn't go out'
+
+# 5
+Source: a:636
+Vetted: s
+Judgment: g
+Phenomena:{vp attach}
+tian yinwei hei le suoyi wo mei chu qu
+sky because black CRS so I no exit go
+`because it had gotten dark, I didn't go out'
+
+# 6
+Source: a:636
+Vetted: s
+Judgment: u
+Phenomena:{wrong side mod}
+suoyi wo mei chu qu yinwei tian hei le
+so I no exit go because sky black CRS
+`because it had gotten dark, I didn't go out'
+
+# 7
+Source: a:636
+Vetted: s
+Judgment: g
+Phenomena:{wrong side adv}
+tian hei le yinwei suoyi wo mei chu qu
+sky black CRS because so I no exit go
+`because it had gotten dark, I didn't go out'
+
+

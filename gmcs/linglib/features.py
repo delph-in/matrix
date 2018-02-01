@@ -1,4 +1,5 @@
 from gmcs.linglib import case
+
 ######################################################################
 # customize_feature_values(ch_dict, type_name, pos, features, cases)
 #   In the passed-in choices dictionary, go through the 'feat'
@@ -19,6 +20,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     if not tdlfile:
         tdlfile = mylang
 
+
     # TJT 2014-11-05: moving this up to get the proper geometry for case
     # get the feature geometry of CASE
     if cases:
@@ -33,6 +35,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     pos_geom_prefix = prefix_map[pos] if pos in prefix_map else 'SYNSEM.'
 
     iter_feat = 'feat' if pos != 'auxcomplement' else 'compfeature'
+
     basic_infl_neg_def = ''':= \
                    [ C-CONT [ HOOK [ XARG #xarg,\
                      LTOP #ltop,\
@@ -72,7 +75,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
 
         geom_prefix = pos_geom_prefix
 
-        # EKN 2017-01-02 If adding AGREEMENT PNG features to a 
+        # EKN 2017-01-02 If adding AGREEMENT PNG features to a
         # possessive marker or affix, they should be at
         # POSS.POSS-AGR, rather than at CONT.HOOK.INDEX.PNG.
         # Also, the PNG features of a possessor pronoun affix
@@ -84,14 +87,14 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
         # iterating through all features in the ch_dict to see
         # if any is named 'poss-stratN' or 'poss-pronN'. If so,
         # it sets a boolean flag (poss_lrt or poss_pron_lrt),
-        # which is subsequently used to correctly adjust the 
+        # which is subsequently used to correctly adjust the
         # feature geometry.
         poss_lrt=False
         poss_pron_lrt=False
         agreeing_element=''
         for feature in ch_dict.get('feat'):
             feat_name=feature.get('name')
-            if 'poss-strat' in feat_name: 
+            if 'poss-strat' in feat_name:
                 poss_lrt=True
                 agreeing_element=feature.get('value')
             elif 'poss-pron' in feat_name:
@@ -102,7 +105,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
             elif 'possessor' in feature.full_key:
                 agreeing_element='possessor'
             elif 'poss-pron' in feature.full_key:
-                agreeing_element='possessor'      
+                agreeing_element='possessor'
         if pos=='poss-marker' or poss_lrt:
             if agreeing_element=='possessor':
                 geom_prefix = 'SYNSEM.LOCAL.CAT.HEAD.POSSESSOR.POSS-AGR.'
@@ -133,6 +136,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
         # TJT 2014-09-16: DTR is for incorporated adjectives
         if head == 'dtr':
             geom_prefix = "DTR." + geom_prefix
+
         # If auxcomplement, add additional definition on top of any head definition
         if pos == 'auxcomplement':
             geom_prefix += 'LOCAL.CAT.VAL.COMPS.FIRST.'

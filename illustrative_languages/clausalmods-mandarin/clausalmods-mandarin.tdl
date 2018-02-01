@@ -1,0 +1,316 @@
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Grammar of clausalmods-mandarin
+;;; created at:
+;;;     Tue Jan 30 23:03:59 UTC 2018
+;;; based on Matrix customization system version of:
+;;;     unknown time
+;;;
+;;; 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+; Type assigning empty mod list. Added to basic types for nouns, verbs and determiners.
+
+non-mod-lex-item := lex-item &
+  [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].
+
+;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Matrix Type Addenda
+;;;;;;;;;;;;;;;;;;;;;;;;;
+
+head :+ [ AUX bool,
+    FORM form,
+    INIT bool ].
+
+png :+ [ PER person ].
+
+basic-head-comp-phrase :+ [ SYNSEM [ LOCAL.CAT [ MC #mc,
+                         SUBPAIR #subpair ],
+             SUBORDINATED #subord ],
+    HEAD-DTR.SYNSEM [ LOCAL.CAT [ MC #mc,
+                                  SUBPAIR #subpair ],
+                      SUBORDINATED #subord ] ].
+
+basic-head-opt-subj-phrase :+ [ SYNSEM [ LOCAL.CAT.SUBPAIR #subpair,
+             SUBORDINATED #subord ],
+    HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL.COMPS < >,
+                                  SUBPAIR #subpair ],
+                      SUBORDINATED #subord ] ].
+
++nvcdmo :+ [ MOD < > ].
+
+basic-head-mod-phrase-simple :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.SUBPAIR #subpair,
+    SYNSEM.LOCAL.CAT [ SUBPAIR #subpair,
+                       MC #mc ],
+    HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
+
+canonical-synsem :+ [ SUBORDINATED xsubord ].
+
+xsubord := *top*.
+
+none := xsubord.
+
+because+so := xsubord & subpair.
+
+basic-head-subj-phrase :+ [ SYNSEM [ LOCAL.CAT.SUBPAIR #subpair,
+             SUBORDINATED #subord ],
+    HEAD-DTR.SYNSEM [ LOCAL.CAT.SUBPAIR #subpair,
+                      SUBORDINATED #subord ] ].
+
+basic-head-opt-comp-phrase :+ [ SYNSEM [ LOCAL.CAT.SUBPAIR #subpair,
+             SUBORDINATED #subord ],
+    HEAD-DTR.SYNSEM [ LOCAL.CAT.SUBPAIR #subpair,
+                      SUBORDINATED #subord ] ].
+
+adj-head-phrase :+ [ SYNSEM.SUBORDINATED #subord,
+    NON-HEAD-DTR.SYNSEM.SUBORDINATED #subord ].
+
+head-adj-phrase :+ [ SYNSEM.SUBORDINATED #subord,
+    NON-HEAD-DTR.SYNSEM.SUBORDINATED #subord ].
+
+cat :+ [ SUBPAIR subpair ].
+
+scopal-mod-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.SUBPAIR #subpair ] >,
+    HEAD-DTR.SYNSEM.LOCAL.CAT.SUBPAIR #subpair ].
+
+basic-head-spec-phrase-super :+ [ SYNSEM.LOCAL.CAT.SUBPAIR #subpair,
+    HEAD-DTR.SYNSEM.LOCAL.CAT.SUBPAIR #subpair,
+    NON-HEAD-DTR.SYNSEM [ LOCAL.CAT.SUBPAIR #pair,
+                          LOCAL.CAT.VAL.SPEC < [ LOCAL.CAT.SUBPAIR #pair ] > ] ].
+
+because := xsubord.
+
+;;;;;;;;;;;;;;
+;;; Features
+;;;;;;;;;;;;;;
+
+;;; Person
+
+person := *top*.
+1st := person.
+2nd := person.
+3rd := person.
+
+;;; Form
+
+form := *top*.
+nonfinite := form.
+finite := form.
+
+subpair := *top*.
+
+nopair := subpair.
+
+;;;;;;;;;;;;;;;;;;;
+;;; Lexical Types
+;;;;;;;;;;;;;;;;;;;
+
+;;; Nouns
+
+noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & non-mod-lex-item &
+  [ ARG-ST < #spr >,
+    SYNSEM.LOCAL.CAT.VAL [ COMPS < >,
+                           SUBJ < >,
+                           SPEC < >,
+                           SPR < #spr &
+                                 [ LOCAL.CAT.HEAD det,
+                                   OPT + ] > ] ].
+
+pronoun-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 1st ].
+
+;;; Verbs
+
+verb-lex := non-mod-lex-item &
+  [ SYNSEM [ LOCAL.CAT [ HEAD verb,
+                         SUBPAIR nopair ],
+             SUBORDINATED none ] ].
+
+main-verb-lex := verb-lex & basic-verb-lex &
+  [ SYNSEM.LOCAL [ CAT [ HEAD.AUX -,
+                         VAL [ SPR < >,
+                               SPEC < >,
+                               SUBJ < #subj > ] ],
+                   CONT.HOOK.XARG #xarg ],
+    ARG-ST.FIRST #subj &
+                 [ LOCAL [ CAT cat-sat &
+                               [ VAL [ SPR < >,
+                                       COMPS < > ] ],
+                           CONT.HOOK.INDEX #xarg ] ] ].
+
+aux-lex := verb-lex &
+  [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].
+
+intransitive-verb-lex := main-verb-lex & intransitive-lex-item &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < >,
+    ARG-ST.FIRST.LOCAL.CAT.HEAD noun ].
+
+transitive-verb-lex := main-verb-lex & transitive-lex-item &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >,
+    ARG-ST < [ LOCAL.CAT.HEAD noun ],
+             #comps &
+             [ LOCAL.CAT cat-sat &
+                         [ VAL [ SPR < >,
+                                 COMPS < > ],
+                           HEAD noun ] ] > ].
+
+verb-verb-lex := intransitive-verb-lex.
+
+;;; Auxiliaries
+
+subj-raise-aux := aux-lex & trans-first-arg-raising-lex-item &
+  [ SYNSEM.LOCAL [ CAT.VAL [ SPR < >,
+                             SPEC < >,
+                             COMPS < #comps >,
+                             SUBJ < #subj > ],
+                   CONT.HOOK.XARG #xarg ],
+    ARG-ST < #subj &
+             [ LOCAL [ CAT [ HEAD noun,
+                             VAL [ SUBJ < >,
+                                   SPR < >,
+                                   SPEC < >,
+                                   COMPS < > ] ],
+                       CONT.HOOK.INDEX #xarg ] ],
+             #comps &
+             [ LOCAL.CAT [ VAL [ SUBJ < unexpressed >,
+                                 COMPS < >,
+                                 SPR < >,
+                                 SPEC < > ],
+                           HEAD verb &
+                                [ AUX - ] ] ] > ].
+
+subj-raise-aux-with-pred := subj-raise-aux & norm-sem-lex-item & trans-first-arg-raising-lex-item-1.
+
+neg-aux-lex := subj-raise-aux-with-pred &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM finite ].
+
+;;;;;;;;;;;;;;;;;;;
+;;; Subordinators
+;;;;;;;;;;;;;;;;;;;
+
+adverb-subord-lex-item := no-rels-hcons-lex-item &
+  [ SYNSEM.LOCAL.CAT [ VAL [ SUBJ < >,
+                             SPR < >,
+                             COMPS < > ],
+                       HEAD.MOD < [ SUBORDINATED none,
+                                    LOCAL intersective-mod &
+                                          [ CAT [ MC -,
+                                                  HEAD verb ] ] ] > ] ].
+
+prehead-because+so-clause-init-adv-subord-lex-item := adverb-subord-lex-item &
+  [ SYNSEM [ SUBORDINATED because+so,
+             LOCAL.CAT [ HEAD.MOD < [ LOCAL.CAT.VAL.COMPS < > ] >,
+                         SUBPAIR because+so,
+                         POSTHEAD - ] ] ].
+
+adv-marked-subord-clause-phrase := unary-phrase &
+  [ SYNSEM.LOCAL.CAT [ SUBPAIR nopair,
+                       MC -,
+                       VAL [ SPR < >,
+                             COMPS < >,
+                             SPEC < >,
+                             SUBJ #subj ],
+                       HEAD adp &
+                            [ MOD < [ LOCAL scopal-mod &
+                                            [ CAT [ SUBPAIR #subpair,
+                                                    HEAD verb,
+                                                    VAL [ SPR < >,
+                                                          COMPS < > ] ],
+                                              CONT.HOOK [ LTOP #mcl,
+                                                          INDEX #index ] ] ] > ] ],
+    C-CONT [ RELS <! arg12-ev-relation &
+                     [ ARG1 #mch,
+                       ARG2 #sch ] !>,
+             HCONS <! qeq &
+                      [ HARG #mch,
+                        LARG #mcl ], qeq &
+                                     [ HARG #sch,
+                                       LARG #scl ] !>,
+             HOOK.INDEX #index ],
+    ARGS < [ SYNSEM.LOCAL [ CAT [ SUBPAIR #subpair,
+                                  HEAD verb &
+                                       [ MOD < > ],
+                                  VAL [ SUBJ #subj,
+                                        SPR < >,
+                                        COMPS < >,
+                                        SPEC < > ] ],
+                            CONT.HOOK.LTOP #scl ] ] > ].
+
+because+so-modifying-clause-phrase := adv-marked-subord-clause-phrase &
+  [ C-CONT.RELS <! [ PRED "_because+so_subord_rel" ] !>,
+    SYNSEM.LOCAL.CAT.POSTHEAD -,
+    ARGS < [ SYNSEM [ LOCAL.CAT.VAL.SUBJ < >,
+                      SUBORDINATED because+so ] ] > ].
+
+subord-pair-matrix-lex-item := basic-adverb-lex &
+  [ SYNSEM [ LOCAL [ CAT [ VAL [ SUBJ < >,
+                                 SPR < >,
+                                 COMPS < > ],
+                           HEAD.MOD < [ LOCAL scopal-mod &
+                                              [ CAT [ MC +,
+                                                      HEAD verb ],
+                                                CONT.HOOK.LTOP #mod ] ] > ],
+                     CONT.HCONS <! qeq &
+                                   [ HARG #h1,
+                                     LARG #mod ] !> ],
+             LKEYS.KEYREL.ARG1 #h1,
+             SUBORDINATED none ] ].
+
+clause-init-so-pair-lex-item := subord-pair-matrix-lex-item &
+  [ SYNSEM.LOCAL.CAT [ HEAD.MOD < [ LOCAL.CAT.VAL.COMPS < > ] >,
+                       SUBPAIR because+so,
+                       POSTHEAD - ] ].
+
+prehead-because-clause-init-adv-subord-lex-item := adverb-subord-lex-item &
+  [ SYNSEM [ SUBORDINATED because,
+             LOCAL.CAT [ HEAD.MOD < [ LOCAL.CAT.VAL.COMPS < > ] >,
+                         POSTHEAD - ] ] ].
+
+because-modifying-clause-phrase := adv-marked-subord-clause-phrase &
+  [ C-CONT.RELS <! [ PRED "_because_subord_rel" ] !>,
+    ARGS < [ SYNSEM [ SUBORDINATED because,
+                      LOCAL.CAT.VAL.SUBJ < > ] ] >,
+    SYNSEM.LOCAL.CAT [ POSTHEAD -,
+                       HEAD.MOD < [ LOCAL.CAT.SUBPAIR nopair ] > ] ].
+
+;;; Complementizers
+
+;;;;;;;;;;;;;;;;;;;
+;;; Lexical Rules
+;;;;;;;;;;;;;;;;;;;
+
+;;; Lexical rule types
+
+;;;;;;;;;;;;;;;;;;;
+;;; Phrasal Types
+;;;;;;;;;;;;;;;;;;;
+
+;Constraint on MC used to be part of matrix.tdl
+;;it applies to all wo implementations, except for v2
+
+head-comp-phrase := basic-head-1st-comp-phrase & head-initial &
+  [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT + ].
+
+subj-head-phrase := decl-head-subj-phrase & head-final &
+  [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
+
+; Bare NP phrase.  Consider modifying the PRED value of the quantifier relation
+; introduced to match the semantic effect of bare NPs in your language.
+
+bare-np-phrase := basic-bare-np-phrase &
+  [ C-CONT.RELS <! [ PRED "exist_q_rel" ] !> ].
+
+;;;;;;;;;;;;;;;;;;
+;;; Coordination
+;;;;;;;;;;;;;;;;;;
+
+;;; Coordination Strategy 1
+
+s1-top-coord-rule := basic-s-top-coord-rule & monopoly-top-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ].
+
+s1-mid-coord-rule := basic-s-mid-coord-rule & monopoly-mid-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ].
+
+s1-bottom-coord-rule := conj-first-bottom-coord-rule & s-bottom-coord-phrase &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ].

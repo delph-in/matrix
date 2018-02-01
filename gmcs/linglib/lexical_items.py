@@ -12,6 +12,8 @@ from gmcs.linglib import clausalcomps
 from gmcs.linglib.parameters import determine_vcluster
 from gmcs.linglib.lexbase import ALL_LEX_TYPES, LEXICAL_SUPERTYPES
 from gmcs.linglib.lexicon import get_all_supertypes
+from gmcs.linglib.clausalmods import get_subord_stemids
+from gmcs.linglib.clausalmods import add_subord_name
 
 
 # helper functions
@@ -75,26 +77,10 @@ def insert_ids(ch):
                     stemids[id] += 1
                 else:
                     stemids[id] = 1
-    # KPH Subordinators and complementizers are added outside the lexicon,
+    # KPH Subordinators are added outside the lexicon,
     # but should still be checked for possible name-space collisions
-    for cms in ch.get('cms'):
-        for freemorph in cms.get('freemorph'):
-            orth = freemorph.get('orth')
-            if orth in stemids.keys():
-                stemids[orth] += 1
-            else:
-                stemids[orth] = 1
-        for morphpair in cms.get('morphpair'):
-            subordorth = morphpair.get('subordorth')
-            matrixorth = morphpair.get('matrixorth')
-            if subordorth in stemids.keys():
-                stemids[subordorth] += 1
-            else:
-                stemids[subordorth] = 1
-            if matrixorth in stemids.keys():
-                stemids[matrixorth] += 1
-            else:
-                stemids[matrixorth] = 1
+    # this should be a temporary/hacky fix- a bug has been filed
+    stemids = get_subord_stemids(ch, stemids)
 
     # Now that stemids has the full count, go through and add
     # to the choices file object.
@@ -122,41 +108,8 @@ def insert_ids(ch):
                     stemidcounters[orth] += 1
                     ch[bistem.full_key + '_name'] = orth + '_' + str(stemidcounters[orth])
     ## KPH Do the same for subordinators and complementizers
-    for cms in ch.get('cms'):
-        for freemorph in cms.get('freemorph'):
-            orth = freemorph.get('orth')
-            if stemids[orth] == 1:
-                ch[freemorph.full_key + '_name'] = orth
-            elif orth not in stemidcounters:
-                stemidcounters[orth] = 1
-                ch[freemorph.full_key + '_name'] = orth + '_1'
-            else:
-                stemidcounters[orth] += 1
-                ch[freemorph.full_key + '_name'] = orth + '_' + str(stemidcounters[orth])
-        for morphpair in cms.get('morphpair'):
-            subordorth = morphpair.get('subordorth')
-            matrixorth = morphpair.get('matrixorth')
-            if stemids[subordorth] == 1:
-                ch[morphpair.full_key + '_subordname'] = subordorth
-            elif subordorth not in stemidcounters:
-                stemidcounters[subordorth] = 1
-                ch[freemorph.full_key + '_name'] = orth + '_1'
-            else:
-                stemidcounters[orth] += 1
-                ch[freemorph.full_key + '_name'] = orth + '_' + str(stemidcounters[orth])
+    add_subord_name(ch, stemids, stemidcounters)
 
-
-                for morphpair in cms.get('morphpair'):
-                    subordorth = morphpair.get('subordorth')
-                    matrixorth = morphpair.get('matrixorth')
-                    if subordorth in stemids.keys():
-                        stemids[subordorth] += 1
-                    else:
-                        stemids[subordorth] = 1
-                    if matrixorth in stemids.keys():
-                        stemids[matrixorth] += 1
-                    else:
-                        stemids[matrixorth] = 1
 
 ##########################################################
 # customize_verbs()
@@ -509,6 +462,9 @@ def customize_misc_lex(ch, lexicon, trigger):
 
 
 def customize_nouns(mylang, ch, lexicon, hierarchies):
+    # EKN 2018-01-26 Adding a PRON feature to mark all pronouns:
+    mylang.add('head :+ [ PRON bool ].',section='addenda')
+
     # Figure out which kinds of determiner-marking are in the language
     seen = {'obl':False, 'opt':False, 'imp':False}
     seenCount = 0
@@ -518,7 +474,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
         if not det == '' and not seen[det]:
             seen[det] = True
             seenCount += 1
-
+    
     singlentype = (seenCount == 1)
 
     # Playing fast and loose with the meaning of OPT on SPR.  Using
@@ -547,13 +503,14 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     # noun must have a non-empty SPEC list even though it has gone
     # through no lexical rules.
     
-    # Check all possessive strategies to see what combo of 
-    # strategies you have:
+    # Check all possessive strategies and pronouns to see what combo
+    # of strategies you have:
     spec_strat=False #Does the strategy use the head-spec rule?
     affixal_strat=False #Does the strategy include affixal poss markers?
     nonaffixal_strat=False
     possessor_mark=False
     possessum_mark=False
+    pron_spec=False #Are pronouns which separate words w/ spec attachment?
     for strat in ch.get('poss-strat',[]):
         if strat.get('mod-spec')=='spec' and strat.get('mark-loc')!='neither':
             spec_strat=True
@@ -569,10 +526,15 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
                     affixal_strat=True
                 if strat.get('possessum-type')=='non-affix':
                     nonaffixal_strat=True
-
+    for pron in ch.get('poss-pron',[]):
+        if pron.get('mod-spec')=='spec' and pron.get('type')!='affix':
+            spec_strat=True
+            pron_spec=True
     # Add a typedef that takes into account all strategies
     if spec_strat:
         if affixal_strat and nonaffixal_strat:
+            spr_head_type='+npd'
+        elif pron_spec:
             spr_head_type='+npd'
         elif affixal_strat:
             spr_head_type='+nd'            
@@ -665,6 +627,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     for noun in ch.get('noun',[]):
         ntype = noun_id(noun)
         det = noun.get('det')
+        pron = True if noun.get('pron')=='on' else False
         if noun.full_key in stopdets:
             det = ''
 
@@ -678,12 +641,13 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
                 stype_names.append('obl-spr-noun-lex')
             elif det == 'imp':
                 stype_names.append('no-spr-noun-lex')
-
         if len(stype_names) == 0:
             mylang.add(ntype + ' := noun-lex .')
         else:
             mylang.add(ntype + ' := ' + ' & '.join(stype_names) + '.')
-
+        # EKN 2018-01-31 Adding PRON feature to individual types:
+        if pron:
+            mylang.add(ntype + ' := [ SYNSEM.LOCAL.CAT.HEAD.PRON + ].')
         features.customize_feature_values(mylang, ch, hierarchies, noun, ntype, 'noun')
 
         for stem in noun.get('stem', []):

@@ -1,0 +1,39 @@
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+;;; Nouns
+
+wo := pronoun-noun-lex &
+  [ STEM < "wo" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_I_n_rel" ].
+
+;;; Adjectives
+
+;;; Verbs
+
+chu-qu := verb-verb-lex &
+  [ STEM < "chu-qu" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_exit_v_rel" ].
+
+pa := verb-verb-lex &
+  [ STEM < "pa" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_fear_v_rel" ].
+
+;;; Auxiliaries
+
+mei := neg-aux-lex &
+  [ STEM < "mei" >,
+    SYNSEM.LKEYS.KEYREL.PRED "neg_rel" ].
+
+suoyi2 := conj-lex &
+  [ STEM < "suoyi2" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_and_coord_rel",
+    CFORM "1" ].
+
+yinwei_1 := prehead-because+so-clause-init-adv-subord-lex-item &
+  [ STEM < "yinwei" > ].
+
+suoyi := clause-init-so-pair-lex-item &
+  [ STEM < "suoyi" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_so_a_rel" ].
+
+yinwei_2 := prehead-because-clause-init-adv-subord-lex-item &
+  [ STEM < "yinwei" > ].

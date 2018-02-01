@@ -1,0 +1,46 @@
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+;;; Nouns
+
+li := gen-pronoun-noun-lex &
+  [ STEM < "li" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_I_n_rel" ].
+
+lrao := nom-pronoun-noun-lex &
+  [ STEM < "lrao" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_I_n_rel" ].
+
+dhona := loc-pronoun-noun-lex &
+  [ STEM < "dhona" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_there_n_rel" ].
+
+ta := pl-gen-pronoun-noun-lex &
+  [ STEM < "ta" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_we_n_rel" ].
+
+mita := pl-nom-pronoun-noun-lex &
+  [ STEM < "mita" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_we_n_rel" ].
+
+;;; Adjectives
+
+;;; Verbs
+
+omal := intrans-verb-lex &
+  [ STEM < "omal" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_sing_v_rel" ].
+
+raveravere := intrans-verb-lex &
+  [ STEM < "raveravere" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_be.happy_v_rel" ].
+
+ete := intrans-verb-lex &
+  [ STEM < "ete" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_die_v_rel" ].
+
+oa := trans-verb-lex &
+  [ STEM < "oa" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_go_v_rel" ].
+
+lo := s-attach-clause-init-prehead-nom-subord-lex-item &
+  [ STEM < "lo" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_reason_subord_rel" ].
