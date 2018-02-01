@@ -30,7 +30,7 @@ def customize_clausalmods(mylang, ch, lexicon, rules, roots):
                 create_subordinated_feature(mylang, roots, cms)
                 create_adverb_subordinator_basic_lex_type(mylang)
                 create_adverb_subordinator_lexical_subtypes(mylang, lexicon, cms)
-                add_non_branching_rules(mylang, rules, cms)
+                add_non_branching_rules(mylang, rules, cms, ch)
 
         if subord == 'pair':
             create_subpair_feature(mylang, roots, cms.get('morphpair'))
@@ -169,6 +169,8 @@ def create_head_subordinator_lexical_subtypes(mylang, lexicon, ch, cms):
     # for free subordinators, add each of the constraints enumerated above to the lexical type
     # (with the appropriate subertype based on whether the clausal mod is nominalized)
     if cms.get('subordinator') == 'free':
+        if has_subpairs(ch) == True:
+            constraints.append('SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.SUBPAIR nopair ] >')
         type = build_type_name(lextype)
         if nominalized == 'yes':
             if nmzRel == 'no':
@@ -340,7 +342,7 @@ def add_head_modifier_phrases(mylang, rules, cms):
             rules.add('adj-head-int := adj-head-int-phrase.')
             rules.add('head-adj-int := head-adj-int-phrase.')
 
-def add_non_branching_rules(mylang, rules, cms):
+def add_non_branching_rules(mylang, rules, cms, ch):
     """
     Create the non-branching rules for adverb subordinators. Add constraints for
     the clausal mod's attachment to the matrix clause (before/after a vp/s) and subject
@@ -412,6 +414,8 @@ def add_non_branching_rules(mylang, rules, cms):
             mylang.add(type + ' := [ SYNSEM.LOCAL.CAT.HEAD.MOD < [LOCAL.CAT.VAL[SUBJ < [ ] >]] > ].')
         if cms.get('subordinator') == 'pair':
             mylang.add(type + ' := [ ARGS < [ SYNSEM.SUBORDINATED ' + value + ' ] > ].')
+        if cms.get('subordinator') != 'pair' and has_subpairs(ch) == True:
+            mylang.add(type + ' := [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.SUBPAIR nopair ] > ].')
         rules.add(value + '-modifying-clause := ' + type + '.')
 
 
@@ -486,6 +490,8 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
         lextype.append('posthead')
         constraints.append('SYNSEM.LOCAL.CAT.POSTHEAD +')
     lextype, constraints = add_morphological_constraints(lextype, constraints, cms, 'phrase')
+    if has_subpairs(ch) == True:
+        constraints.append('SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.SUBPAIR nopair ] >')
     mylang.set_section('phrases')
     if cms.get('shared-subj') == 'on':
         lextype.append('shared-subject')
@@ -495,7 +501,7 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
     else:
         constraints.append('ARGS < [ SYNSEM.LOCAL.CAT.VAL.SUBJ < > ] >')
     # The supertype depends on if the clause in nominalized, and if it's nominalized, if it has
-    # a semeantic nominalized predication
+    # a semantic nominalized predication
     if nominalized == 'yes':
         mylang.set_section('phrases')
         for ns in ch.get('ns'):
@@ -708,6 +714,16 @@ def create_subpair_feature(mylang, roots, morphpair):
     mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.SUBPAIR nopair ].')
     roots.add('root := [ SYNSEM.LOCAL.CAT.SUBPAIR nopair ].')
 
+def has_subpairs(ch):
+    """
+    Returns true if the grammar will have subordinator pairs and false otherwise
+    """
+    subpair = False
+    for cms in ch.get('cms'):
+        if cms.get('subordinator') == 'pair':
+            subpair = True
+    return subpair
+
 def add_head_compement_rules(mylang, rules, ch):
     """
     Add appropriate head-complement rules for word order.
@@ -883,4 +899,3 @@ def add_subord_name(ch, stemids, stemidcounters):
             else:
                 stemidcounters[subordorth] += 1
                 ch[morphpair.full_key + '_matrixname'] = matrixorth + '_' + str(stemidcounters[matrixorth])
-

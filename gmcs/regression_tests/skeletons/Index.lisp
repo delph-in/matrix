@@ -22,6 +22,7 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "pseudo-urdu") (:content . "pseudo-urdu: Pseudo-Urdu mixed closest conjunct and feature resolution coordination and agreement grammar"))
 ((:path . "adnom-poss-spec-head-non-aff-hf-block-head-pron-only") (:content . "adnom-poss-spec-head-non-aff-hf-block-head-pron-only: Head non-affixally marked head final poss construction w mod-like attachment, pronouns disallowed as possessum, allowed as possessor"))
 ((:path . "adnom-poss-spec-head-aff-hf-block-head-pron-only") (:content . "adnom-poss-spec-head-aff-hf-block-head-pron-only: Head affixally marked head final poss construction w mod-like attachment, pronouns disallowed as possessum, allowed as possessor"))
 ((:path . "adnom-poss-mod-dep-non-aff-hf-block-head-pron-only") (:content . "adnom-poss-mod-dep-non-aff-hf-block-head-pron-only: Dep non-affixally marked head final poss construction w mod-like attachment, pronouns disallowed as possessum, allowed as possessor"))
@@ -31,6 +32,7 @@
 ((:path . "adnom-poss-mod-dep-aff-hf-block-pron") (:content . "adnom-poss-mod-dep-aff-hf-block-pron: Dep affixally marked head final poss construction w mod-like attachment, pronouns disallowed as possessum"))
 ((:path . "adnom-poss-spec-dep-non-aff-hf-block-pron") (:content . "adnom-poss-spec-dep-non-aff-hf-block-pron: Dep non-affixally marked head final poss construction w spec-like attachment, pronouns disallowed as possessum"))
 ((:path . "adnom-poss-spec-dep-aff-hf-block-pron") (:content . "adnom-poss-spec-dep-aff-hf-block-pron: Dep affixally marked head final poss construction w spec-like attachment, pronouns disallowed as possessum"))
+((:path . "clausalmods-mandarin") (:content . "clausalmods-mandarin: an illstrative grammar for clausal modifiers based on mandarin"))
 ((:path . "clausalmods-rukai") (:content . "clausalmods-rukai: An illustrative grammar for clausal modifiers based on mantauran rukai"))
 ((:path . "clausalmods-wambaya") (:content . "clausalmods-wambaya: Illustrative language regression test for clausal modifiers based on wambaya"))
 ((:path . "ccomp-illustr5-tgl") (:content . "ccomp-illustr5-tgl: Clausal comps: Illustrative Tagalog."))

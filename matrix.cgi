@@ -30,6 +30,12 @@ import requests
 #Production Check
 disable_captcha = True
 
+# Safety Check - There was a problem with the choices file ending up in a weird place and breaking things.
+# this should hopefully delete it before the rest of the script can break. Still unsure what is causing the file
+# to end up there in the first place.
+if os.path.exists('sessions/choices'):
+	os.remove('sessions/choices')
+
 ######################################################################
 # beginning of main program
 
