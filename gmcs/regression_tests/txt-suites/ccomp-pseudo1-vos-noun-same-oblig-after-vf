@@ -1,0 +1,10 @@
+tverb-FIN noun1 noun2
+*noun1 tverb-FIN noun2
+*noun1 noun2 tverb-FIN
+cverb-FIN tverb-FIN noun1 noun2 comp1 noun3
+*cverb-FIN noun3 tverb-FIN noun1 noun2 comp1
+*cverb-FIN comp1 tverb-FIN noun1 noun2 noun3
+*tverb-NFIN noun1 noun2
+*cverb-FIN tverb-NFIN noun1 noun2 comp1 noun3
+*cverb-NFIN tverb-FIN noun1 noun2 comp1 noun3
+*cverb-NFIN tverb-NFIN noun1 noun2 comp1 noun3

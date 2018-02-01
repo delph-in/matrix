@@ -1,0 +1,217 @@
+
+version=30
+
+section=general
+language=ccomp-illustr1-rus
+
+section=word-order
+word-order=free
+has-dets=no
+has-aux=no
+subord-word-order=same
+
+section=number
+
+section=person
+person=none
+
+section=gender
+
+section=case
+case-marking=nom-acc
+nom-acc-nom-case-name=nom
+nom-acc-acc-case-name=acc
+  case1_name=instr
+  case2_name=gen
+
+section=direct-inverse
+
+section=tense-aspect-mood
+
+section=other-features
+form-fin-nf=on
+  form-subtype1_name=chto
+  form-subtype1_supertype=form
+  form-subtype2_name=kak
+  form-subtype2_supertype=form
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=info-str
+
+section=arg-opt
+
+section=nominalclause
+  ns1_name=low
+  ns1_level=low
+  ns1_nmzRel=yes
+
+section=clausalmods
+
+section=clausal-comp
+  comps1_clause-pos-same=on
+  comps1_comp-pos-before=on
+  comps1_comp=oblig
+    comps1_complementizer1_orth=chto
+  comps1_cformvalue=chto
+    comps1_feat1_name=form
+    comps1_feat1_value=finite
+  comps3_clause-pos-same=on
+    comps3_feat1_name=nominalization
+    comps3_feat1_value=low
+    comps3_feat2_name=form
+    comps3_feat2_value=nonfinite
+  comps4_clause-pos-same=on
+  comps4_comp-pos-before=on
+  comps4_comp=oblig
+    comps4_complementizer1_orth=kak
+    comps4_complementizer2_orth=chto
+  comps4_cformvalue=kak
+    comps4_feat1_name=form
+    comps4_feat1_value=finite
+
+section=lexicon
+  noun1_name=masc
+  noun1_det=imp
+    noun1_stem1_orth=student
+    noun1_stem1_pred=_student_n_rel
+    noun1_stem2_orth=professor
+    noun1_stem2_pred=_professor_n_rel
+  noun2_name=fem
+  noun2_det=imp
+    noun2_stem1_orth=dissertatsi
+    noun2_stem1_pred=_dissertation_n_rel
+  verb1_name=tran-ipfv
+  verb1_valence=nom-acc
+    verb1_stem1_orth=pishet
+    verb1_stem1_pred=_write_v_rel
+  verb2_name=tran-pfv
+  verb2_valence=nom-acc
+    verb2_stem1_orth=napisa
+    verb2_stem1_pred=_write_v_rel
+  verb4_name=cverb1
+  verb4_valence=nom,comps1
+    verb4_stem1_orth=dumajet
+    verb4_stem1_pred=_thinks_v_rel
+  verb6_name=cverb3
+  verb6_valence=nom-acc,comps3
+    verb6_stem1_orth=vidit
+    verb6_stem1_pred=_sees_v_rel
+  verb7_name=intran
+  verb7_valence=nom
+    verb7_stem1_orth=bezhit
+    verb7_stem1_pred=_runs_v_rel
+  verb8_name=intran-nmzbl
+  verb8_valence=nom
+    verb8_stem1_orth=beg
+    verb8_stem1_pred=_beg_v_rel
+  verb9_name=cverb2
+  verb9_valence=nom,comps4
+    verb9_stem1_orth=vidit
+    verb9_stem1_pred=_sees_v_rel
+
+section=morphology
+  noun-pc1_name=case1
+  noun-pc1_obligatory=on
+  noun-pc1_order=suffix
+  noun-pc1_inputs=noun1
+    noun-pc1_lrt1_name=nom1
+      noun-pc1_lrt1_feat1_name=case
+      noun-pc1_lrt1_feat1_value=nom
+      noun-pc1_lrt1_lri1_inflecting=no
+    noun-pc1_lrt2_name=acc1
+      noun-pc1_lrt2_feat1_name=case
+      noun-pc1_lrt2_feat1_value=acc
+      noun-pc1_lrt2_lri1_inflecting=yes
+      noun-pc1_lrt2_lri1_orth=-a
+    noun-pc1_lrt3_name=instr1
+      noun-pc1_lrt3_feat1_name=case
+      noun-pc1_lrt3_feat1_value=instr
+      noun-pc1_lrt3_lri1_inflecting=yes
+      noun-pc1_lrt3_lri1_orth=-om
+    noun-pc1_lrt4_name=gen1
+      noun-pc1_lrt4_feat1_name=case
+      noun-pc1_lrt4_feat1_value=gen
+      noun-pc1_lrt4_lri1_inflecting=yes
+      noun-pc1_lrt4_lri1_orth=-a
+  noun-pc2_name=case2
+  noun-pc2_obligatory=on
+  noun-pc2_order=suffix
+  noun-pc2_inputs=noun2
+    noun-pc2_lrt1_name=nom2
+      noun-pc2_lrt1_feat1_name=case
+      noun-pc2_lrt1_feat1_value=nom
+      noun-pc2_lrt1_lri1_inflecting=yes
+      noun-pc2_lrt1_lri1_orth=-ja
+    noun-pc2_lrt2_name=acc2
+      noun-pc2_lrt2_feat1_name=case
+      noun-pc2_lrt2_feat1_value=acc
+      noun-pc2_lrt2_lri1_inflecting=yes
+      noun-pc2_lrt2_lri1_orth=-ju
+    noun-pc2_lrt3_name=gen2
+      noun-pc2_lrt3_feat1_name=case
+      noun-pc2_lrt3_feat1_value=gen
+      noun-pc2_lrt3_lri1_inflecting=yes
+      noun-pc2_lrt3_lri1_orth=-i
+  noun-pc3_name=case3
+  noun-pc3_obligatory=on
+  noun-pc3_order=suffix
+  noun-pc3_inputs=verb-pc1
+    noun-pc3_lrt1_name=nom3
+      noun-pc3_lrt1_feat1_name=case
+      noun-pc3_lrt1_feat1_value=nom
+      noun-pc3_lrt1_lri1_inflecting=yes
+      noun-pc3_lrt1_lri1_orth=-je
+    noun-pc3_lrt2_name=acc3
+      noun-pc3_lrt2_feat1_name=case
+      noun-pc3_lrt2_feat1_value=acc
+      noun-pc3_lrt2_lri1_inflecting=yes
+      noun-pc3_lrt2_lri1_orth=-je
+  noun-pc4_name=case4
+  noun-pc4_obligatory=on
+  noun-pc4_order=suffix
+  noun-pc4_inputs=verb-pc2
+    noun-pc4_lrt1_name=acc4
+      noun-pc4_lrt1_feat1_name=case
+      noun-pc4_lrt1_feat1_value=acc
+      noun-pc4_lrt1_lri1_inflecting=yes
+      noun-pc4_lrt1_lri1_orth=-o
+  verb-pc1_name=nmz1
+  verb-pc1_order=suffix
+  verb-pc1_inputs=verb2
+    verb-pc1_lrt1_name=low1
+      verb-pc1_lrt1_feat1_name=nominalization
+      verb-pc1_lrt1_feat1_value=low
+      verb-pc1_lrt1_feat1_head=verb
+      verb-pc1_lrt1_feat2_name=case
+      verb-pc1_lrt1_feat2_value=instr
+      verb-pc1_lrt1_feat2_head=subj
+      verb-pc1_lrt1_feat3_name=case
+      verb-pc1_lrt1_feat3_value=gen
+      verb-pc1_lrt1_feat3_head=obj
+      verb-pc1_lrt1_lri1_inflecting=yes
+      verb-pc1_lrt1_lri1_orth=-ni
+  verb-pc2_name=nmz2
+  verb-pc2_order=suffix
+  verb-pc2_inputs=verb8
+    verb-pc2_lrt1_name=low2
+      verb-pc2_lrt1_feat1_name=case
+      verb-pc2_lrt1_feat1_value=gen
+      verb-pc2_lrt1_feat1_head=subj
+      verb-pc2_lrt1_feat2_name=nominalization
+      verb-pc2_lrt1_feat2_value=low
+      verb-pc2_lrt1_feat2_head=verb
+      verb-pc2_lrt1_lri1_inflecting=yes
+      verb-pc2_lrt1_lri1_orth=-stv
+
+section=toolbox-import
+
+section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon

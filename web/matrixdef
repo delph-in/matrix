@@ -1,4 +1,4 @@
-### $Id: matrixdef,v 1.37 2008-09-30 23:50:02 lpoulson Exp $
+## $Id: matrixdef,v 1.37 2008-09-30 23:50:02 lpoulson Exp $
 
 Section general "General Information"
 
@@ -67,11 +67,8 @@ Radio word-order "Basic word order" "Please indicate which pattern best describe
 . v-final "Verb-final" "" "V-final<br>"
 . v-initial "Verb-initial" "" "V-initial<br>"
 . free "Free word order" "" "free (pragmatically determined word order)<br>"
-. v2 "v2 word order" "" "finite verb or auxiliary in second position, else free word order"
-
-Label "<p>Note: Modules for V2 order (finite verb second, non-finite
-verb clause-finally) and differing word order between matrix and
-subordinate clauses are currently under development.</p>"
+. v2 "v2 word order" "" "finite verb or auxiliary in second position, else free word order<br>"
+. v2 "v2 word order" "" "finite verb second, non-finite verb clause-finally"
 
 Separator
 
@@ -115,8 +112,20 @@ Label "<p><span style=\"color:red\">NOTE: As Modules for V2 order are
 still under development, relative order of auxiliaries and their
 complements have not been implemented yet.</span></p>"
 
-Label "</div>"
+Separator 
 
+Label "<p>The word order in subordinate clauses is:</p>"
+
+  Radio subord-word-order "Clausal Complement Type {i} clause word order" "" ""
+  . same "same as in indicative" "" "Same as in the matrix clause<br>" 
+  . vfinal "Verb Final" "" "Verb-final (assuming matrix order is V2, like in German)"
+  
+Label "<p> NOTE: We assume that the order in all subordinate clauses 
+(e.g. clausal modifiers and clausal complements)
+is the same. If your language reveals different behavior, 
+please let us know.</p>"
+
+Label "</div>"
 
 Section number "Number"
 
@@ -423,6 +432,214 @@ Queensland. Ph.D. thesis, University of London.</p>"
 Label "</div>"
 
 
+Section adnom-poss "Adnominal Possession" 
+
+Label "<h3>Define a possessive strategy for possessive noun phrases or add a possessor pronoun:</h3>"
+
+BeginIter poss-strat{i} "a possessive strategy"
+
+     Radio order "Word order" "<p>The word order within a possessive phrase is:</p>" ""
+     . head-final "head-final" "" "possessor-first<br>"
+     . head-initial "head-initial" "" "possessum-first<br>"
+     . either "either" "" "either<br>"
+
+     Radio mod-spec "Modifier or specifier" "<p>In some possessive strategies, the possessor acts like a <b>specifier</b> of the possessum; in other strategies, the possessor is more like a <b>modifier</b> of the possessum. For a full explanation of the tests used to distinguish these two behaviors, see the documentation link above. <br><br> In this strategy, is the possessor more like a </p>" ""
+     . spec "specifier" "" "specifier<br>"
+     . mod "modifier" "" "modifier<br>"
+
+     Radio mark-loc "Mark location" "<p> Do any morphemes (affixes, clitics, or separate words) appear which mark the noun phrase as possessive? If so, where?</p>" ""
+     . possessor "Possessor marking" "" "On the possessor<br>"  "toggle_element.call(this, 'possessor-morph{i}', 'on'); toggle_element.call(this, 'possessum-morph{i}', 'off');"
+     . possessum "Possessum marking" "" "On the possessum<br>"  "toggle_element.call(this, 'possessum-morph{i}', 'on'); toggle_element.call(this, 'possessor-morph{i}', 'off');"
+     . both "Both marking" "" "On both the possessor and the possessum<br>" "toggle_element.call(this, 'possessum-morph{i}', 'on'); toggle_element.call(this, 'possessor-morph{i}', 'on');"
+     . neither "Neither marking" "" "No possessive morphemes appear<br>" "toggle_element.call(this, 'possessum-morph{i}', 'off'); toggle_element.call(this, 'possessor-morph{i}', 'off');"
+
+     Label "<div id='possessor-morph{i}' style='display:none'>"
+     
+	Radio possessor-type "Possessor morpheme type" "<p>Is the morpheme that marks the <b>possessor</b> an affix? Or is it a separate word or clitic?</p>" ""
+     	. affix "Possessor affix" "" "affix<br>"  "toggle_element.call(this, 'possessor-affix{i}', 'on'); toggle_element.call(this, 'possessor-non-affix{i}', 'off');"
+     	. non-affix "Possessor non-affix" "" "separate word or clitic<br>" "toggle_element.call(this, 'possessor-affix{i}', 'off'); toggle_element.call(this, 'possessor-non-affix{i}', 'on');"
+     
+     	   Label "<div id='possessor-affix{i}' style='display:none'>"
+	   
+	   Label "<p>NOTE: The possessor marked by this affix must be a full NP, not a pronoun. Please use the possessive pronoun section below, and analyze combinations of pronoun+possessive-marker as single lexical items.</p>"
+
+	   Radio possessor-affix-agr "Possessor agreement" "<p>Does the affix that marks the possessor agree with the possessum (e.g. in person, number, or gender)?</p>" ""
+	   . agree "Possessor agree" "" "yes<br>"
+	   . non-agree "Possessor non-agree" "" "no<br>"
+
+	   Label "<p> A feature called <span class=\"feat\">poss-strat{i}</span> with possible values <span class=\"tt\">possessor</span>, <span class=\"tt\">possessum</span>,  and <span class=\"tt\">nonpossessive</span> has been defined for use in defining morphemes on the morphology page.  In order to define a possessor-marking affix, add the appropriate position class and lexical rules, and mark the lexical rules as [<span class=\"feat\">poss-strat{i}</span> <span class=\"tt\">possessor</span>]. If you make the possessive marking obligatory (recommended), remember to also create a non-possessive inflecting rule in the same position class by creating a lexical rule type marked [<span class=\"feat\">poss-strat{i}</span> <span class=\"tt\">nonpossessive</span>]. Be sure to select the feature that corresponds to <span class=\"feat\">poss-strat{i}</span>. If the possessor-marking affix(es) agree(s) with the possessum, add appropriate person, number, and gender features to each lexical rule type. Note that any person/number/gender features that are listed on a possessor lexical rule type are assumed to be features that agree with the possessum.</p>"
+
+	   Label "</div>"
+
+     	   Label "<div id='possessor-non-affix{i}' style='display:none'>"
+
+	   Radio pronoun-allow "Pronoun allowability" "<p>Can the possessor marked by this word or clitic be a pronoun?</p>" ""
+	   . yes "Pronouns allowed" "" "yes<br>"
+	   . no "Pronouns disallowed" "" "no<br>"
+
+           Radio possessor-agr "Possessor agreement" "<p>Does the possessor agree with the possessum?</p>" ""
+	   . agree "Possessor agree" "" "yes<br>" "toggle_element.call(this, 'possessor-agr{i}', 'on'); toggle_element.call(this, 'possessor-non-agr{i}', 'off');"
+	   . non-agree "Possessor non agree" "" "no<br>"  "toggle_element.call(this, 'possessor-agr{i}', 'off');toggle_element.call(this, 'possessor-non-agr{i}', 'on');"
+
+	   Label "<div id='possessor-non-agr{i}' style='display:none'>"
+
+	   Text possessor-orth "Possessor word orth" "<br>The possessor-marking word is spelled " "<br>" 15
+
+	   Label "</div>"
+
+	   Label "<div id='possessor-agr{i}' style='display:none'>"
+
+	   BeginIter possessor-form{n} "a possessor-marking word with agreement features"
+
+	   Text name "Type name" "Type name: " "-adp-lex<br>" 15
+
+	   Text agr-orth "Agreement orthography" "<br> The form spelled: " "<br>carries the following agreement features<br>" 15
+
+	   BeginIter feat{k} "an agreement feature"
+	   
+	   Select name "Possessive strategy {i} possessor-marking word Form {n} Feature {k} Name" "Name: " " "
+      	   fillnames c=noun
+
+      	   MultiSelect value "Possessive Strategy {i} possessor-marking word Form {n} Feature {k} Value" "Value: " ""
+      	   fillvalues p=poss-strat{i}_possessor-form{n}_feat{k}_name
+
+    	   EndIter feat
+
+	   EndIter possessor-form
+
+	   Label "</div>"
+
+     	   Label "</div>"
+
+     Label "</div>"                                                                                                                            
+
+     Label "<div id='possessum-morph{i}' style='display:none'>"
+     
+     Radio possessum-type "Possessum morpheme type" "<p>Is the morpheme that marks the <b>possessum</b> an affix? Or is it a separate word or clitic?</p>" ""
+     . affix "Possessum affix" "" "affix<br>" "toggle_element.call(this, 'possessum-affix{i}', 'on'); toggle_element.call(this, 'possessum-non-affix{i}', 'off');"
+     . non-affix "Possessum non-affix" "" "separate word or clitic<br>"  "toggle_element.call(this, 'possessum-affix{i}', 'off'); toggle_element.call(this, 'possessum-non-affix{i}', 'on');"
+
+     	   Label "<div id='possessum-affix{i}' style='display:none'>"
+
+	   Radio possessum-affix-agr "Possessum agreement" "<p>Does the affix that marks the possessum agree with the possessor (e.g. in person, number, or gender)?</p>" ""
+	   . agree "Possessum agree" "" "yes<br>"
+	   . non-agree "Possessum non-agree" "" "no<br>"
+
+	   Label "<p>A feature called <span class=\"feat\">poss-strat{i}</span> with possible values <span class=\"tt\">possessor</span>, <span class=\"tt\">possessum</span>, and <span class=\"tt\">nonpossessive</span> has been defined for use in defining morphemes on the morphology page.  In order to define a possessum-marking affix, add the appropriate position class and lexical rules, and mark the lexical rules as [<span class=\"feat\">poss-strat{i}</span> <span class=\"tt\">possessum</span>]. If you make the possessive marking obligatory (recommended), remember to also create a non-possessive inflecting rule in the same position class by creating a lexical rule type marked [<span class=\"feat\">poss-strat{i}</span> <span class=\"tt\">nonpossessive</span>]. Be sure to select the feature that corresponds to <span class=\"feat\">poss-strat{i}</span>. If the possessum-marking affix(es) agree(s) with the possessor, add appropriate person, number, and gender features to each lexical rule type. Note that any person/number/gender features that are listed on a possessum lexical rule type are assumed to be features that agree with the possessor.</p>"
+	   
+	   Label "</div>"
+
+           Label "<div id='possessum-non-affix{i}' style='display:none'>"
+
+           Radio possessum-agr "Possessum agreement" "<p>Does the possessum agree with the possessor?</p>" ""
+           . agree "Possessum agree" "" "yes<br>" "toggle_element.call(this, 'possessum-agr{i}', 'on'); toggle_element.call(this, 'possessum-non-agr{i}', 'off');"
+           . non-agree "Possessum non agree" "" "no<br>"  "toggle_element.call(this, 'possessum-agr{i}', 'off');toggle_element.call(this, 'possessum-non-agr{i}', 'on');"
+
+	   Label "<div id='possessum-non-agr{i}' style='display:none'>" 
+
+           Text possessum-orth "Possessum word orth" "<br>The possessum-marking word is spelled " "<br>" 15
+
+	   Label "</div>"
+
+           Label "<div id='possessum-agr{i}' style='display:none'>"
+
+	   BeginIter possessum-form{m} "a possessum-marking word with agreement features"
+
+	   Text name "Type name" "Type name: " "-noun-lex<br>" 15
+
+	   Text agr-orth "Orthography agreement" "<br>The form spelled: " "<br> carries the following agreement features:<br>" 15
+
+           BeginIter feat{l} "an agreement feature"
+	   
+           Select name "Possessive strategy {i} possessum-marking word Form {k} Feature {l} Name" "Name: " " "
+           fillnames c=noun
+
+           MultiSelect value "Noun Position Class {i} Lexical Rule Type {j} Form {k} Feature {l} Value" "Value: " ""
+           fillvalues p=poss-strat{i}_possessum-form{m}_feat{l}_name
+
+           EndIter feat
+
+	   EndIter possessum-form
+
+           Label "</div>"
+
+           Label "</div>"
+
+     Label "</div>"                                                                                                                                                                                         
+EndIter poss-strat
+
+BeginIter poss-pron{i} "a class of possessor pronouns"
+
+  Radio type "Possessive Pronoun Type" "<p>Are these possessor pronouns affixes? Or are they separate words or clitics? </p>" ""
+  . affix "affix" "" "affixes<br>" "toggle_element.call(this, 'pron-non-affix{i}', 'off');toggle_element.call(this, 'pron-affix{i}', 'on');"
+  . non-affix "non-affix" "" "separate words or clitics<br>" "toggle_element.call(this, 'pron-non-affix{i}', 'on');toggle_element.call(this, 'pron-affix{i}', 'off');"
+
+  Label "<div id='pron-affix{i}' style='display:none'>"
+
+    Radio agr "Pronominal agreement" "<p>Do these affixes agree with the possessum in person, number, or gender?</p>" ""
+    . agree "agree" "" "yes<br>"
+    . non-agree "non-agree" "" "no<br>"
+
+    Radio mod-spec "Modifier or Specifier" "<p>If your language has determiners, does the possessum noun still appear with a determiner when marked with these affixes?</p>" ""
+    . mod "Mod" "" "yes<br>"
+    . spec "Spec" "" "no<br>"
+
+    Label "<p>A feature called <span class=\"feat\">poss-pron{i}</span> with possible values <span class=\"tt\">plus</span> and <span class=\"tt\">minus</span> has been defined for use in defining morphemes on the morphology page.  In order to define a pronominal affix, add the appropriate position class and lexical rules, and mark the lexical rules as [<span class=\"feat\">poss-pron{i}</span> <span class=\"tt\">plus</span>]. Be sure to select the feature that corresponds to <span class=\"feat\">poss-pron{i}</span>. Note that any person/number/gender features that are listed on a pronominal affix are assumed to be inherent features of that pronominal affix, rather than agreement features. Agreement features should all be added on this page.</p>"
+
+  Label "</div>"
+
+  Label "<div id='pron-non-affix{i}' style='display:none'>"
+  
+    Radio order "Possessive Pronoun Order" "<p>Do the possessor pronouns occur to the left or the right of the possessum?</p>" ""
+    . head-final "head-final" "" "left<br>"
+    . head-initial "head-initial" "" "right<br>"
+    . either "either" "" "either<br>"
+
+    Radio mod-spec "Modifier or Specifier" "<p>Does the possessor function more like a modifier or a specifier?</p>" ""
+    . mod "Modifier" "" "modifier<br>"
+    . spec "Specifier" "" "specifier<br>"
+
+    Radio agr "Pronominal agreement" "<p>Do these pronouns agree with the possessum in person, number, or gender?</p>" ""
+    . agree "agree" "" "yes<br>"
+    . non-agree "non-agree" "" "no<br>"
+
+    BeginIter  instance{j} "a possessor pronoun instance"
+
+      Text name "Possessive Pronoun Name" "<br>Form name: " "" 15
+
+      Text orth "Possessive Pronoun Orthography" "<br>Form spelling: " "" 15
+
+      Label "<p>Add a feature (e.g. person, number, gender, case) that belongs to this pronoun inherently:</p>"
+  
+      BeginIter feat{k} "an inherent feature to this pronoun"
+
+         Select name "Possessive pronoun {i} Instance {j} Feature {k} Name" "Name: " " "
+         fillnames c=noun
+
+      	 MultiSelect value "Possessive pronoun {i} Instance {j} Feature {k} Value" "Value: " ""
+      	 fillvalues p=poss-pron{i}_instance{j}_feat{k}_name
+
+      EndIter feat
+
+      Label "<p>Add any agreement features (person, number, or gender) to this pronoun that agree with the possessum:</p>"
+  
+      BeginIter agr-feat{k} "an agreement feature to this pronoun"
+
+         Select name "Possessive pronoun {i}  Instance {j} Feature {k} Name" "Name: " " "
+         fillnames c=noun
+
+         MultiSelect value "Possessive pronoun {i} Instance {j} Feature {k} Value" "Value: " ""
+         fillvalues p=poss-pron{i}_instance{j}_agr-feat{k}_name
+
+      EndIter agr-feat
+
+    EndIter instance
+
+  Label "</div>"
+
+EndIter poss-pron
+
+
 Section direct-inverse "Direct-inverse"
 
 Label "<p>In some languages, the pattern of marking of verbal
@@ -667,47 +884,6 @@ EndIter mood
 
 Label "</div>"
 
-Separator
-
-Label "<h3>Syntactic Feature</h3>"
-
-Label "<div style=\"padding-left: 16px\">"
-Label "<h4><span class=\"feat\">form</span></h4>"
-Label "<p>In addition to the semantic features tense and aspect, your
-grammar may utilize a syntactic feature characterizing the form the
-verb takes. The <span class=\"feat\">form</span> feature distinguishes
-finite from non-finite forms and can be used to constrain auxiliary
-complement forms. If not applicable, you may leave this section
-blank.</p>"
-Label "<p>If you have indicated on the word order page that your
-language has auxiliary verbs, your grammar will include
-<span class=\"tt\">finite</span> and <span class=\"tt\">nonfinite</span> as values of <span
-class=\"feat\">form</span>. If your language does not have auxiliaries
-you may still include <span class=\"tt\">finite</span> and <span class=\"tt\">nonfinite</span> as values
-of <span class=\"feat\">form</span> in your grammar:<br>"
-Check noaux-fin-nf "Finite-nonfinite" "" "My language has no auxiliaries but does make a syntactically relevant finite/non-finite distinction.</p>"
-
-Label "<p>It is often the case that languages have multiple non-finite
-forms, e.g., English: infinitive, past participle, present
-participle. If applicable, you may expand the hierarchy of verb <span
-class=\"feat\">form</span> values in your grammar by providing
-subtypes of <span class=\"tt\">finite</span> and <span class=\"tt\">nonfinite</span>:</p>"
-
-Label "<div style=\"padding-left: 35px\">"
-
-Label "<b>nonfinite</b>:"
-  BeginIter nf-subform{i} "a subtype"
-    Text name "Nonfinite subtype {i} name" "nonfinite subtype name: " "" 20
-  EndIter nf-subform
-
-Label "<br><br><b>finite</b>:"
-  BeginIter fin-subform{i} "a subtype"
-    Text name "Finite subtype {i} name" "finite subtype name: " "" 20
-  EndIter fin-subform
-
-Label "</div>"
-Label "</div>"
-
 Label "<h4>References</h4>"
 Label "<div style=\"font-size:2\">"
 Label "<p>Bybee, Joan L. 2003. Aspect. In: Frawley, W.J. (ed.)
@@ -725,7 +901,64 @@ Smith, Carlota. 1991. The Parameter of Aspect. Dordrecht: Kluwer
 Academic Publishers)."
 Label "</div>"
 
+Section evidentials "Evidentials"
 
+Label "<p>Evidentiality refers to the grammatical expression of information source, how the speaker knows what he/she is saying.  Common evidential meanings include \"I heard it from someone else,\" \"I saw it myself,\" \"I inferred it from evidence,\" etc.  Evidentials are most commonly expressed through inflection on the verb or through auxiliary verbs, often described simply as clitics or particles in the literature.</p>"
+
+Label "<p>Here, you may define an inventory of evidential terms.  On the Morphology and Lexicon pages, you may then add an evidential feature either to a lexical rule type on the Morphology page or an auxiliary verb on the Lexicon page.  Note that even though evidentials are specified as features in this interface, in the grammar produced by the Grammar Matrix, evidential semantics will be expressed by an indpendent predicate, not a feature.</p>"
+
+Label "<p>NOTE: For auxiliary verbs expressing evidentials, the evidential feature should be an auxiliary feature, not a complement feature.</p>"
+
+Label "<p>NOTE: For auxiliary verbs expressing evidentials, select \"No predicate.\"  If you specify an evidential feature AND define a predicate for the auxiliary verb, the evidential semantics will overwrite the defined predicate.</p>"
+
+Label "<p>NOTE: You should not specify more than one evidential value on each lexical rule type or auxiliary verb.</p>"
+
+Label "<h3>Semantic Features</h3>"
+
+Label "<div style=\"padding-left: 16px\">"
+
+  Radio evidential-definition "Evidential hierarchy definition style" "" ""
+  . noevid "No Evidentiality" "" "<strong>No evidentiality in this language</strong><br>"
+
+  Radio evidential-definition "Evidential hierarchy definition style" "" ""
+  . choose "Choose" "" "<strong>Select among common hierarchy elements</strong><br>"
+
+    Label "<div style=\"padding-left: 35px\">"
+
+    Label "<br>Which of the following are evidential hierarchy elements in this subsystem?<br><br>"
+
+    Check firsthand "Firsthand" "" "<b>firsthand</b><br>"
+
+    Check nonfirsthand "NonFirsthand" "" "<b>non-firsthand</b><br>"
+
+    Check visual "Visual" "" "<b>visual</b><br>"
+
+    Check nonvisual "NonVisualSensory" "" "<b>non-visual sensory</b><br>"
+
+    Check inferential "Inferential" "" "<b>inferential</b><br>"
+
+    Check reported "Reported" "" "<b>reported</b><br>"
+
+    Check quoatative "Quotative" "" "<b>quotative</b><br>"
+
+    Check everythingelse "EverythingElse" "" "<b>\"everything else\"</b><br>"
+
+    Label "</div>"
+
+  Radio evidential-definition "Evidential hierarchy definition style" "" ""
+  . build "Build" "" "<strong>Specify your own hierarchy</strong><br>"
+
+  BeginIter evidential{i} "an evidential term" 0 0
+    Text name "Evidential Term {i} Name" "<b>Evidential Term {i}</b>:<br/>Evidential Term Name: " " " 20
+  EndIter evidential
+
+Label "</div>"
+
+Label "<h4>References</h4>"
+Label "<div style=\"font-size:2\">"
+Label "<p>Aikhenvald, A. (2006). Evidentiality. Oxford linguistics. Oxford University Press."
+Label "<p>Murray, S. E. (2017). The Semantics of Evidentials. Oxford University Press."
+Label "</div>"
 
 Section other-features "Other Features"
 
@@ -736,13 +969,55 @@ class=\"feat\">pernum</span> instead of <span
 class=\"feat\">person</span> and <span class=\"feat\">number</span>,
 <span class=\"feat\">gendnum</span> instead of <span
 class=\"feat\">gender</span> and <span class=\"feat\">number</span>),
-they can be defined below.</p>"
+they can be defined below.
+<br><br>
+</p>"
 
-Label "<p>For each feature, you will define a type hierarchy, which
+Label "<h3>Syntactic FORM Feature for verbs</h3>"
+
+Label "<p>To start, your
+grammar may utilize a syntactic feature characterizing the form the
+verb takes. The <span class=\"feat\">form</span> feature distinguishes
+finite from non-finite forms and can be used to constrain auxiliary
+complement forms and for marking clausal complements (e.g. via morphology).
+If not applicable, you may leave this section
+blank.</p>"
+
+Label "<p>If you have indicated on the word order page that your
+language has auxiliary verbs, your grammar must include
+<span class=\"tt\">finite</span> and <span class=\"tt\">nonfinite</span> as values of <span
+class=\"feat\">form</span>. If your language does not have auxiliaries
+you may still include <span class=\"tt\">finite</span> and <span class=\"tt\">nonfinite</span> as values
+of <span class=\"feat\">form</span> in your grammar:<br><br>"
+
+Check form-fin-nf "Finite-nonfinite" "" "Add finite/non-finite FORM feature distinction.</p>"
+
+Label "<p>It is often the case that languages have multiple non-finite
+forms, e.g., English: infinitive, past participle, present
+participle. If applicable, you may expand the hierarchy of verb <span
+class=\"feat\">form</span> values in your grammar by providing
+subtypes of <span class=\"tt\">finite</span> and <span class=\"tt\">nonfinite</span>:</p>"
+
+
+BeginIter form-subtype{i} "a Subtype for FORM"
+
+  Text name "Feature FORM Subtype {i} name" "Name: " "" 20
+
+  MultiSelect supertype "FORM Subtype {i} supertype" " Supertype: " ""
+  fillforms
+
+EndIter form-subtype
+
+Label "<p>(Hint: Click Save and Stay to see the supertypes.)</p>"
+
+Label "<h3>Other Syntactic and Semantic Features</h3>"
+
+Label "<p>For each additional feature, you will define a type hierarchy, which
 consists of a root type you will name (e.g. <span
 class=\"feat\">pernum</span>), and then a series of other values of
 the feature, each of which is the subtype of at least one of the other
 values, possibly the root.</p>"
+
 
 Label "<input type=\"hidden\" name=\"existing_value_type1_name\"  value=\"bool\">
 <input type=\"hidden\" name=\"existing_value_type2_name\"  value=\"luk\">"
@@ -792,14 +1067,17 @@ BeginIter feature{i} "a Feature" 1
 EndIter feature
 
 
-
 Section sentential-negation "Sentential Negation"
 
 Cache verbpcs verb-pc[0-9]+$ name
 
-Label "<p>On this page you can select a strategy that your language uses for sentential negation.  In most cases, morpheme classes that you can further modify will be created on the morphology page.</p>"
+Label "<p>On this page you can select a strategy that your language uses for sentential negation.
+In most cases, morpheme classes that you can further modify will be created on the morphology page.</p>"
 
-Label "<p>Sentential negation constructions can be classified based on the number of overt morphemes required by the construction.  What's the morphosyntactic exponence of the negation construction you'd like to model?<p>"
+Label "<p>Sentential negation constructions can be classified based on the number
+of overt morphemes required by the construction.
+What's the morphosyntactic exponence of the negation construction you'd like to model?<p>"
+
 
 Radio neg-exp "neg exp" "" ""
 . 0 "0" "" "zero" "set_negexp('0')"
@@ -808,13 +1086,26 @@ Radio neg-exp "neg exp" "" ""
 . 3 "3" "" "tripartite" "set_negexp('3')"
 . more "n" "" "more?!" "set_negexp('more')"
 
-Label "<hr /><a id='anobutton' onclick='toggle_display_lex(\"asymmetric_negation_options\",\"anobutton\")'>&#9658; asymmetric negation options</a><div id='asymmetric_negation_options' style='display:none'>"
+Label "<hr /><a id='anobutton' onclick='toggle_display_lex(\"asymmetric_negation_options\",\"anobutton\")'>&#9658;
+asymmetric negation options</a><div id='asymmetric_negation_options' style='display:none'>"
 
 
-Label "<div id='anhdiv'><a id='anhbutton' onclick='toggle_display_lex(\"asymmetric_negation_help\", \"anhbutton\")'>&#9658; asymmetric negation help</a>
-<div id='asymmetric_negation_help' style='display:none'><p>Negation is marked with respect to affirmation (Givón 1984).  In many languages, there are certain tenses/moods/aspects which are not compatible with negation.  You might model this by enabling a HEAD feature, [NEGATED luk], set this to '+' on negated verbs and have certain constructions and/or lexical types specify an incompatible value.</p>
+Label "<div id='anhdiv'><a id='anhbutton'
+onclick='toggle_display_lex(\"asymmetric_negation_help\", \"anhbutton\")'>&#9658;
+asymmetric negation help</a>
+<div id='asymmetric_negation_help' style='display:none'><p>Negation
+is marked with respect to affirmation (Givón 1984).
+In many languages, there are certain tenses/moods/aspects
+which are not compatible with negation.
+You might model this by enabling a HEAD feature,
+[NEGATED luk], set this to '+' on negated verbs and have certain constructions
+and/or lexical types specify an incompatible value.</p>
 
-<p>Alternatively, you can have negation specify the values for particular features, and use an agreement mechanism to trigger the presence of any appropriate marking.  For example, in Maung [mph],  irrealis marking is obligatory with negation.  So you might have the negator specify an AGR feature of irrealis, then make sure that the head that it is attaching to agrees.</p>
+<p>Alternatively, you can have negation specify the values for particular features,
+and use an agreement mechanism to trigger the presence of any appropriate marking.
+For example, in Maung [mph],  irrealis marking is obligatory with negation.
+So you might have the negator specify an AGR feature of irrealis,
+then make sure that the head that it is attaching to agrees.</p>
 
 <pre>
 ŋi-udba
@@ -835,24 +1126,53 @@ I do not put.
 </pre>
 
 </div></div>"
-Check neg-head-feature "enable negated head feature" "<p>" "Enable a HEAD feature ([NEGATED luk]) which is appropriate for heads of type verb.<br />"
+Check neg-head-feature "enable negated head feature" "<p>" "Enable a HEAD feature
+([NEGATED luk]) which is appropriate for heads of type verb.<br />"
 Label "</div><hr />"
 
 
-Label "<div id='zero-neg' class='neg_exp_switch' style='display:none'><p>Negation without an overt marker.  In some south Dravidian languages such as (Historical Kannada [kan]), sentential negation was marked by the <em>absence</em> of the tense marking morpheme that appeared in the corresponding affirmative.  This sort of phenomenon is typologically rare.</p><p>You can model omissive negation as a phonologically empty inflectional rule ('lexical rule type/instance') which targets a particular position class in your morphotactic system.  You'll then have to specify at least one other morpheme that canuoccur in this position class so that negation is indicated by the lack of phonological material in this position.</p>"
+Label "<div id='zero-neg' class='neg_exp_switch' style='display:none'>
+<p>Negation without an overt marker.  In some south Dravidian languages such as
+(Historical Kannada [kan]), sentential negation was marked by the <em>absence</em>
+of the tense marking morpheme that appeared in the corresponding affirmative.
+This sort of phenomenon is typologically rare.</p><p>You can model omissive
+negation as a phonologically empty inflectional rule ('lexical rule type/instance')
+which targets a particular position class in your morphotactic system.
+You'll then have to specify at least one other morpheme that canuoccur
+in this position class so that negation is indicated by the lack of phonological
+material in this position.</p>"
 
-Select vpc-0-neg "0 neg vpc" "<p>I can create a phonologically empty negation affix for you here.  Choose a position class from the verbal position classes that you've defined (on the morphology page), or choose \"create\" to create a new pc for use with zero neg:" "  You'll see the result of this choice as a lexical rule instance with no affix and a feature called [NEGATION] with the value \"plus\".  This 'feature' is not a grammatical one---it won't appear in your grammar, it only indicates to the customization system that negative semantics should be added to this morpheme at customize time.</p>"
-fillcache c=verbpcs
-. create "Create" "create new pc"
+#Select vpc-0-neg "0 neg vpc" "<p>I can create a phonologically
+#empty negation affix for you here.  Choose a position class from the verbal
+#position classes that you've defined (on the morphology page),
+#or choose \"create\" to create a new pc for use with zero neg:" "
+#You'll see the result of this choice as a lexical rule instance with no affix and a
+#feature called [NEGATION] with the value \"plus\".
+#This 'feature' is not a grammatical one---it won't appear in your grammar,
+#it only indicates to the customization system that negative semantics should be added
+#to this morpheme at customize time.</p>"
+#fillcache c=verbpcs
+#. create "Create" "create new pc"
 
 Label "</div>"
 
 
-Label "<div id='uni-neg' class='neg_exp_switch' style='display:none'><p> Negation can be indicated by the presence of a single negative morpheme.  Your negative morpheme might be bound (negation by inflection) or it might be free (one of the other choices). Your free negator might be a syntactic head (a verb), or it might be a dependent (a complement or a modifier).  Specify it's syntax below.</p>"
+Label "<div id='uni-neg' class='neg_exp_switch' style='display:none'><p>
+Negation can be indicated by the presence of a single negative morpheme.
+Your negative morpheme might be bound (negation by inflection) or it might be free
+(one of the other choices). Your free negator might be a syntactic head (a verb),
+or it might be a dependent (a complement or a modifier).  Specify it's syntax below.</p>"
 
-Check infl-neg "Negation by inflection" "<p>" "Inflectional negation: Checking this box enables a feature called <span class=\"feat\">negation</span> with possible value <span class=\"tt\">plus</span> for use in defining morphemes on the morphology page.  Defining morphemes that specify [<span class=\"feat\">negation</span> <span class=\"tt\">plus</span>] will produce lexical rules that add the semantics of negation.</p>"
+Check infl-neg "Negation by inflection" "<p>" "Inflectional negation:
+Checking this box enables a feature called <span class=\"feat\">negation</span>
+with possible value <span class=\"tt\">plus</span> for use in defining morphemes
+on the morphology page.  Defining morphemes that specify [<span class=\"feat\">negation</span>
+<span class=\"tt\">plus</span>] will produce lexical rules that add the semantics of negation.</p>"
 
-Check neg-aux "Negation by auxiliary verb" "<p>" "Negative auxiliary verb: Checking this box creates a neg-aux type which contributes a neg_rel that outscopes it's complement's handle.  This lexical type will show up on the lexicon page where you'll need to further specify its syntax.</p>"
+Check neg-aux "Negation by auxiliary verb" "<p>" "Negative auxiliary verb:
+Checking this box creates a neg-aux type which contributes a neg_rel that
+outscopes it's complement's handle.  This lexical type will show up on the
+lexicon page where you'll need to further specify its syntax.</p>"
 
 Text neg-aux-index "index for neg aux" "<span style='display:none'>" "</span>" 1
 
@@ -870,14 +1190,17 @@ Radio neg-order "Negative adverb order" "and appears " ""
 
 Text neg-adv-orth "Negative adverb spelling" "...and which is spelled: " "" 20
 
-Check comp-neg "Negation by selected complement" "<p>" "An adverb like particle which is a selected complement.  This option will create a non-inflecting lexical rule that maps plain Vs to Vs which select for negation in addition to their regular COMPS.</p>" "neg_comp()"
+Check comp-neg "Negation by selected complement" "<p>" "An adverb like particle
+which is a selected complement.  This option will create a non-inflecting lexical
+rule that maps plain Vs to Vs which select for negation in addition to their regular COMPS.</p>" "neg_comp()"
 
 Label "<div style='margin-left:10px'>"
 Radio comp-neg-head "neg selected by" "Is neg selected by" "<br />"
 . aux "aux" "" "a (sub-)class of aux-verbs" "neg_comp()"
 . v   "v"   "" "any (finite) verb" "neg_comp()"
 
-Radio comp-neg-order "neg ordered" "How is neg ordered with resepct to other COMPS?" "<br />(NB: After other complements order is only available for non-argument composing auxiliaries.)<br />"
+Radio comp-neg-order "neg ordered" "How is neg ordered with respect to other COMPS?" "<br />(NB:
+After other complements order is only available for non-argument composing auxiliaries.)<br />"
 . before "before" "" "before "
 . after "after" "" "after "
 
@@ -886,11 +1209,18 @@ Text comp-neg-orth "neg spelling" "What's the ORTH value for neg?" "" 20
 
 Label "</div></div>"
 
-Label "<div id='bi-neg' class='neg_exp_switch' style='display:none'><p> Negation can be indicated by the required presence of two negative morphemes.  You'll have to specify their morphosyntax and their interactions.</p>"
+Label "<div id='bi-neg' class='neg_exp_switch' style='display:none'>
+<p> Negation can be indicated by the required presence of two negative morphemes.
+You'll have to specify their morphosyntax and their interactions.</p>"
 
 Hidden bineg-type "bineg type"
 
-Label "<p>We can label the two morphemes NEG1 and NEG2 and ask about the syntactic properties of each.  Perhaps in your language one of the two negative morphemes is more closely associated with the contribution of negative force to the sentence, and the other functions as a resumptive or specifying marker.  Call the primary indicator of negation NEG1 and the secondary one NEG2.  Please choose the morpheme type for each exponent of negation:</p>"
+Label "<p>We can label the two morphemes NEG1 and NEG2 and ask about the syntactic
+properties of each.  Perhaps in your language one of the two negative morphemes
+is more closely associated with the contribution of negative force to the sentence,
+and the other functions as a resumptive or specifying marker.  Call the primary
+indicator of negation NEG1 and the secondary one NEG2.  Please choose the morpheme
+type for each exponent of negation:</p>"
 
 Radio neg1-type "NEG1 type" "NEG1" "<br />"
 . b "bound" "" "bound" "display_neg_form()"
@@ -907,25 +1237,57 @@ Radio neg2-type "NEG2 type" "NEG2" ""
 . fm "free-mod" "" "free, syntactic modifier" "display_neg_form()"
 
 
-Label "<div id=\"infl-infl-neg\" class='bineg_switch' style='display:none'><p>If both NEG1 and NEG2 are bound to the same root, you can set up the dendency using the morphotactics system on the morphology page. Only specify that one of your LRIs is 'negation plus' (you only need one <em>neg_rel</em>), and set up a requires relation between the two morphemes.</p><p>If NEG1 is bound to an auxiliary and NEG2 is bound to a lexical verb, check the box below.  This will enable several options for you as you define your lexical rules for NEG1 and NEG2 on the morphology page.  A value for FORM 'negform' will be added to your grammar (as a subtype of nonfinite).  Indicate the lexical rule corresponding to NEG1 by setting [NEGATION +] (this adds the negative semantics) and the requirement that the complement be [FORM negform].  For the second negator, you can create it in the normal way using the morphology page.  Be sure that the FORM value for your NEG2 morpheme is set to negform.   This will set up the NEG2 lexical rule to change the FORM value on its head to negform.  In this way, auxiliary verbs inflected by NEG1 will require their complement to be headed by a verb which has been inflected by NEG2.</p>"
-Check neg1b-neg2b "neg1 bound to aux requires neg2 bound to lexical verb" "neg1 bound to aux requires neg2 bound to lexical verb" "</div>"
+Label "<div id=\"infl-infl-neg\" class='bineg_switch' style='display:none'>
+<p>If both NEG1 and NEG2 are bound to the same root, you can set up the dendency
+using the morphotactics system on the morphology page. Only specify that one of your
+LRIs is 'negation plus' (you only need one <em>neg_rel</em>), and set up a requires
+relation between the two morphemes.</p><p>If NEG1 is bound to an auxiliary and NEG2
+is bound to a lexical verb, check the box below.  This will enable several options
+for you as you define your lexical rules for NEG1 and NEG2 on the morphology page.
+A value for FORM 'negform' will be added to your grammar (as a subtype of nonfinite).
+Indicate the lexical rule corresponding to NEG1 by setting [NEGATION +] (this adds the
+negative semantics) and the requirement that the complement be [FORM negform].
+For the second negator, you can create it in the normal way using the morphology page.
+Be sure that the FORM value for your NEG2 morpheme is set to negform.
+This will set up the NEG2 lexical rule to change the FORM value on its head to negform.
+In this way, auxiliary verbs inflected by NEG1 will require their complement to be headed
+by a verb which has been inflected by NEG2.</p>"
+Check neg1b-neg2b "neg1 bound to aux requires neg2 bound to lexical verb" "neg1 bound
+to aux requires neg2 bound to lexical verb" "</div>"
 
-Label "<div id='infl-head-neg' class='bineg_switch' style='display:none'><p>You have selected a negation construction with a negative auxiliary verb and an inflectional rule.  When you save this page, the negative auxiliary will be created for you on the lexicon page (where you can further define and constrain its syntax.  A subtype of nonfinite (part of the FORM value hierarchy) called 'negform' has also been created and your negative auxiliary should select for a complement which is [FORM negform].  Indicate your negation lexical rule by marking it as [negation plus] on the morphology subpage.  This rule will change the FORM of verbs to which it attaches to [FORM negform].</p></div>"
+Label "<div id='infl-head-neg' class='bineg_switch' style='display:none'>
+<p>You have selected a negation construction with a negative auxiliary verb
+and an inflectional rule.  When you save this page, the negative auxiliary will be
+created for you on the lexicon page (where you can further define and constrain its syntax.
+A subtype of nonfinite (part of the FORM value hierarchy) called 'negform' has
+also been created and your negative auxiliary should select for a complement
+which is [FORM negform].  Indicate your negation lexical rule by marking
+it as [negation plus] on the morphology subpage.  This rule will change the FORM of
+verbs to which it attaches to [FORM negform].</p></div>"
 
-Label "<div id='infl-comp-neg' class='bineg_switch' style='display:none'><p>You have selected a construction with a negative inflectional rule and a negative selected complement.  Define your lexical rule on the morphology subpage and indicate it with [negation plus].  Please provide some specifics about the negative complement here:</p>"
+Label "<div id='infl-comp-neg' class='bineg_switch' style='display:none'><p>You have
+selected a construction with a negative inflectional rule and a negative selected complement.
+Define your lexical rule on the morphology subpage and indicate it with [negation plus].
+Please provide some specifics about the negative complement here:</p>"
 
 Radio comp-neg-head-infl-comp-neg "neg selected by" "Is neg selected by" "<br />"
 . aux "aux" "" "a (sub-)class of aux-verbs" "neg_comp()"
 . v   "v"   "" "any (finite) verb" "neg_comp()"
 
-Radio comp-neg-order-infl-head "neg ordered" "How is neg ordered with resepct to other COMPS?" "<br />(NB: After other complements order is only available for non-argument composing auxiliaries.)<br />"
+Radio comp-neg-order-infl-head "neg ordered" "How is neg ordered with resepct
+to other COMPS?" "<br />(NB: After other complements order is only available
+for non-argument composing auxiliaries.)<br />"
 . before "before" "" "before "
 . after "after" "" "after "
 
 Text comp-neg-orth "neg spelling" "What's the ORTH value for neg?" "" 20
 Label "</div>"
 
-Label "<div id='infl-mod-neg' class='bineg_switch' style='display:none'><p>You have selected a negation construction with a negative inflectional rule and a negative word attached through a head-modifier rule.  Define your lexical rule on the morphology subpage and indicate it with [negation plus].  Please provide some further information about the negative modifier here:</p><p>"
+Label "<div id='infl-mod-neg' class='bineg_switch' style='display:none'>
+<p>You have selected a negation construction with a negative inflectional
+rule and a negative word attached through a head-modifier rule.
+Define your lexical rule on the morphology subpage and indicate it with [negation plus].
+Please provide some further information about the negative modifier here:</p><p>"
 
 Radio neg-mod-infl-mod-neg "negative adv modifies" "NEG adverb modifies:" "<br />"
 . s "S" "" "S "
@@ -1052,14 +1414,13 @@ Label "<div id='tri-neg' class='neg_exp_switch' style='display:none'><p> Negatio
 
 Label "<div id='x-neg' class='neg_exp_switch' style='display:none'><p>We're not aware of natural languages reported to require more than 3 morphemes as an integral part of a negation construction.  Please send e-mail about this language to the matrix-dev mailing list.</p></div>"
 
-
-
 Label "<hr /><p>Notes: This section is under construction.  Expect problems.  Currently, some menu options (under bipartite negation) are only present as previews of future implementations and as of now provide no functionality.</p>"
 
 Label "<h5>References</h5>
 <ol>
 <li>Givón, Talmy. 1984. <em>Syntax: a typological-functional introduction [vol. III].</em>  John Benjamins. Amsterdam, Philidelphia.</li>
 </ol>"
+
 
 
 Section coordination "Coordination"
@@ -1130,7 +1491,7 @@ EndIter cs
 
 Label "<h3 style='display:inline'>Agreement Features in Coordinated Phrases</h3>"
 
-Label "<p>You may describe how agreement features work in coordinated structures. You can then link coordination strategies with a defined agreement pattern. You may also leave this section blank and not attach any agreement patterns to a coordination strategy, in which case the top node of coordinated phrases will be underspecified for agreement features.</p>"
+Label "<p>You may describe how agreement features work in coordinated structures. You can then link coordination strategies with a defined agreement pattern. You may also leave this section blank and not attach any agreement patterns to a coordination Type, in which case the top node of coordinated phrases will be underspecified for agreement features.</p>"
 
 Label "<b>Feature Resolution</b>"
 
@@ -1500,6 +1861,273 @@ Label "<p> Vainikka, A and Levy, Y. 1999. \"Empty Subjects in Finnish
 and Hebrew.\" Natural Language and Linguistic Theory 17: 614-71.</p>"
 Label "</div>"
 
+Section nominalclause "Nominalized Clauses"
+
+Label "<p>If your language uses nominalization in the context of clausal complements
+and/or clausal modifiers, define the nomminalization strategies here. They will then be available on the Clausal Complements, Clausal Modifers, and Morphology pages.</p>"
+
+BeginIter ns{i} "a Nominalization Strategy" 1
+
+  Text name "Nominalization Strategy {i} Name" "<b>Nominalization Strategy {i}</b>:<br/>Nominalization Strategy Name: " " " 20
+
+    Radio level "Nominalization Strategy {i} Level" "<br><b>The nominalization of the clause happens:</b><br>" ""
+  . low "Low" "" "at V"
+  . mid "Mid" "" "at VP"
+  . high "High" "" "at S"
+
+Radio nmzRel "Nominalization Strategy {i} Relation" "<br><br><b>Is the nominalization syntactic
+only or should it also be reflected in the semantics?</b><br>
+  (Note: for mid or low nominalization, currently you must say that it is reflected in the semantics).
+  </b><br>" ""
+    . no "No" "" "Nominalization is syntactic only<br>"
+    . yes "Yes" "" "Nominalization should be reflected in the semantics<br>"
+
+EndIter ns
+
+Section clausal-comp "Clausal Complements"
+
+Define strategies for <b>sentential,
+or clausal, complements</b> here.<br><br>
+
+Label "<p>You may define several types of object clausal complements below.
+You may also leave this section blank, in which case the starter
+grammar produced will not support clausal complements.</p>"
+
+Cache otherfeatures feature[0-9]+$ name
+
+BeginIter comps{i} "a Clausal Complement Type" 1
+
+  Label "<p>Clausal Complement Type {i}:<br>&nbsp;&nbsp;&nbsp;&nbsp;in which object complement clauses are placed:<br>"
+
+  Check clause-pos-same "Clause Same Position" "" "in the same position as regular noun complements <br>"
+  Check clause-pos-extra "Clause Extraposed" "" "in the extraposed position at the end of sentence.<br>"
+  
+  Label "<p>The complement clauses are marked by
+  a (semantically empty) complementizer that comes "
+
+  Check comp-pos-before "Complementizer Position Before" "" "before"
+  Check comp-pos-after "Complementizer Position After" "" "or after the complement clause"<br>
+
+  Radio comp "Clausal Complement Type {i} comp" " and is " ""
+  . opt "Optional Complementizer" "" "optional or"
+  . oblig "Obligatory Complementizer" ""  "obligatory."
+
+        BeginIter stem{j} "a Complementizer spelling" 0
+
+                Text orth "comps {i} stem {j} spelling" "Spelling: " "" 30 ""
+
+        EndIter stem
+
+        Label "<p> You can put a FORM feature on the obligatory complementizer if you want to constrain the clausal
+        verb in terms of which complementizers it can go with. (Note that all complementizers here
+        are still assumed to be semantically empty.)</p>"
+
+
+  Label "<p> The embedded verb
+  has the following features
+  e.g. finite, nonfinite form (define in Other Features; we assume that mostly FORM and MOOD will be used;
+  you can use custom syntactic but not semantic features; note that subject raising is not yet supported,
+  so be careful with infinitives: you will not get the right semantics),
+   nominalization (define in Nominalized Clauses):</p>"
+  
+    BeginIter feat{l} "a Feature"
+
+      Select name "Clausal Complement Type {i} Embedded Verb Feature {l} Name" "Name: " ""
+	  fillnames2 c=verb
+ 
+      MultiSelect value "Clausal Complement Type {i} Embedded Verb Feature {l} Value" "Value: " ""
+      fillvalues p=comps{i}_feat{l}_name
+
+    EndIter feat
+
+EndIter comps
+
+Separator
+
+Label "<p>
+NOTES:
+</p>"
+
+Label "<p>
+1. The current version
+of the questionnaire only covers objectival clausal complements.
+</p>"
+
+Label "<p>2. You will need to specify the word order in the complement
+clauses on the Word Order page. Currently, only one experimental
+case is supported:
+V2 order in the matrix and V-final in the subordinate clause, across all
+types of subordinate clauses.</p>"
+
+Label "<p>
+3. Sorry, no extraposition to sentence-initial position yet! (e.g. SOV becomes OSV).
+</p>"
+
+
+Label "<p>
+4. You will need to specify the position classes for the verbal morphology
+in the Morphology section.
+You will need to specify which verbs can take which type of complement in the Lexicon section.
+</p>"
+
+Label "<p>
+5. The number of various combinations of choices becomes really large
+when more than one complementation strategy is defined. You can specify multiple strategies,
+but one-strategy scenario was tested better.
+</p>"
+
+Label "<p>
+6. You can use different nominalization strategies in different complementation strategies,
+but the distinction will have no effect unless there are other things that distinguish
+the complementation strategies from each other. Using only nominalization type
+to create different complementation strategies is currently not supported. Let us
+know if your language does this!
+</p>"
+
+Label "<p>
+7. The only case frame change that is currently supported is via nominalization.
+ It is possible to mock up case change by leaving underlying verbs undespecified for case.
+</p>"
+
+Label "<p>
+8. More than one complementizer is not yet supported.
+</p>"
+
+Label "<p>
+9. Participial complements (where the participle is modifying the subject) are not yet supported.
+</p>"
+
+Label "<p>
+10. Subject raising, equi-deletion are not yet supported.
+</p>"
+
+
+
+Section clausalmods "Clausal Modifiers"
+
+Label "<p>Languages often have several different strategies for clausal modifers. You many define any number of clausal modifier strategies below or you can leave this page blank, in which case the starter grammar produced will not support clausal modifiers.</p>"
+
+Label "<p>The Grammar Matrix defines clausal modification with three types of subordinators:</p>"
+
+Label "<div style=\"padding-left: 16px\"><p><span
+class=\"dfn\">Free Subordinating Morpheme</span><br>&nbsp;&nbsp;&nbsp;&nbsp;A free morpheme
+that marks the subordinate clause<br><span
+class=\"dfn\">Free Subordinating Morpheme Pair</span><br>&nbsp;&nbsp;&nbsp;&nbsp;A pair of subordinator 
+morphemes, one  of which marks the subordinate clause, the other of which marks the matrix clause<br><span
+class=\"dfn\">No Free Subordinating Morpheme</span><br>&nbsp;&nbsp;&nbsp;&nbsp;The clausal modifier does not contain a free subordinator morpheme<br></div>"
+
+Label "<p>Clausal modifiers may also be marked by special verbal morphology, nominalization of the subordinate
+clause, special word order in the subordinate clause, and subject sharing. You may define any number of 
+clausal modifier strategies by combining the free morpheme type with subject sharing and various morphologial constraints.</p>"
+
+Label "<p>Note: Some characteristics of clausal modifiers must be defined on other pages of the grammar matrix.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Special Word order (currently only supported for V2 languages with Vfinal word order in the subordinate clause) should be specified on the word order page<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nominalization strategies should be defined on the Nominalized Clauses page. These stragies can then be added to a clausal modifier strategy under Add a Feature.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Additional features such as finite/non-finite, or features associated with bound subordinator morphemes should be defined on the Other Features page and added to a clausal modifier strategy under Add a Feature.</p>"
+
+
+BeginIter cms{i} "a Clausal Modifier Strategy" 1
+
+  Label "<p>Clausal Modifier Strategy {i}:<br>"
+
+    Radio position "Clause Position" "The clausal modifier is positioned:<br>" ""
+    . before "Before" "" "before the matrix clause<br>"
+    . after "After" "" "after the matrix clause<br>"
+    . either "Either" "" "either before or after the matrix clause<br><br>"
+
+    Radio modifier-attach "Clause Position" "The clausal modifier attaches to/modifies:<br>" ""
+    . vp "VP" "" "a VP<br>"
+    . s "S" "" "an S<br>"
+    . either "Either" "" "either a VP or an S <br><br>"
+
+    Radio subordinator "Clausal Modifier Strategy {i} pattern" "The subordinate predication is contributed by:<br><br>" ""
+  . free "Free Subordinator" "" "a free subordinator morpheme<br>""toggle_element.call(this, 'free{i}', 'on'); toggle_element.call(this, 'pair{i}', 'off'); toggle_element.call(this, 'none{i}', 'off');"
+  . pair "Subordinator Pair" "" "a free subordinator morpheme pair: one in the subordinate clause and one in the main clause<br>""toggle_element.call(this, 'free{i}', 'off'); toggle_element.call(this, 'pair{i}', 'on'); toggle_element.call(this, 'none{i}', 'off');"
+  . none "No Subordinator" "" "this strategy does not use a free subordinator morpheme""toggle_element.call(this, 'free{i}', 'off'); toggle_element.call(this, 'pair{i}', 'off'); toggle_element.call(this, 'none{i}', 'on');"
+
+    Label "<div id='free{i}' style='display:none'>"
+      Radio subposition "Subordinator Position" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The free subordinator morpheme is positioned:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
+      . before "Before" "" "before the VP or S it attaches to<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+      . after "After" "" "after the VP or S it attaches to<br>"
+
+      Radio subordinator-type "Subordinator Type" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Is the free subordinator morpheme treated as the head of its clause or as and adverbial?:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
+     	. head "Head" "" "it is the head of the subordinate clause<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"  "toggle_element.call(this, 'adverb{i}', 'off')"
+     	. adverb "Adverb" "" "it is an adverb (not the head of its clause)<br>" "toggle_element.call(this, 'adverb{i}', 'on')"
+     
+     	   Label "<div id='adverb{i}' style='display:none'>"
+
+	   Radio adverb-attach "Adverb Attach" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If the subordinator is an adverb, does it attach to VP, S or both?<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
+	   . vp "VP" "" "VP<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+          . s "S" "" "S<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+          . both "Both" "" "Both VP and S"
+
+	   Label "</div>"
+
+      BeginIter freemorph{j} "a Free Subordinator Morpheme" 0 1
+        Label "<p>Free Subordinator Morpheme {j}:<br>"
+          Text orth "subord {i} stem {j} spelling" "Spelling: " "" 30 "fill_pred('cms{i}_freemorph{j}', 'subord')"
+          Text pred "subord {i} stem {j} predicate" " Predicate: " "" 30
+      EndIter freemorph
+       Label "</div>"
+
+    Label "<div id='pair{i}' style='display:none'>"
+      Radio subposition "Subordinator Position" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Does the morpheme in the subordinate clause attach to the beginning or end of the clause?:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
+      . before "Before" "" "before the VP or S it attaches to<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+      . after "After" "" "after the VP or S it attaches to<br>"
+
+      Radio subordinator-type "Subordinator Type" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Is the morpheme in the subordinate clause treated as the head of its clause or as and adverbial?:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
+     	. head "Head" "" "it is the head of the subordinate clause<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"  "toggle_element.call(this, 'pair-adverb{i}', 'off')"
+     	. adverb "Adverb" "" "it is an adverb (not the head of its clause)<br>" "toggle_element.call(this, 'pair-adverb{i}', 'on')"
+     
+     	   Label "<div id='pair-adverb{i}' style='display:none'>"
+
+	   Radio adverb-attach "Adverb Attach" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If the morpheme in the subordinate clause is an adverb, does it attach to VP, S or both?<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
+	   . vp "VP" "" "VP<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+          . s "S" "" "S<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+          . both "Both" "" "Both VP and S"
+
+	   Label "</div>"
+
+    Radio matrix-subposition "Matrix Subordinator Position" "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Does the morpheme in the matrix clause attach to the beginning or end of the clause?:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
+    . before "Before" "" "before the VP or S it attaches to<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+    . after "After" "" "after the VP or S it attaches to<br>"
+
+    Radio matrix-adverb-attach "Matrix Adverb Attach" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Does the morpheme in the matrix clause attach to VP, S or both?:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
+    . vp "VP" "" "VP<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+    . s "S" "" "S<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+    . both "Both" "" "Both VP and S"
+
+
+      BeginIter morphpair{j} "a Free Subordinator Morpheme Pair" 0 1
+        Label "<p>Free Subordinator Morpheme Pair{j}:<br>"
+          Text matrixorth "adverb {i} stem {j} spelling" "Matrix Morpheme Spelling: " "" 30 "subpair_matrix_fill_pred('cms{i}_morphpair{j}', 'a')"
+          Text matrixpred "adverb {i} stem {j} predicate" " Matrix Morpheme Predicate: " "" 30
+          Text subordorth "subord {i} stem {j} spelling" "<br>Subordinate Morpheme Spelling: " "" 30 "subpair_subord_fill_pred('cms{i}_morphpair{j}', 'subord')"
+          Text subordpred "subord {i} stem {j} predicate" " Subordinate Morpheme Predicate: " "" 30
+
+      EndIter morphpair
+    Label "</div>"
+
+    Label "<div id='none{i}' style='display:none'>"
+    Label "The clausal modifier strategy contributes the following predication. (Note: if you do not enter a predication, a generic _subord_rel predication will be added) <br>"
+    Text pred "subord {i} stem {j} predicate" "Predicate: " "" 30<br>
+    Label "</div>"
+
+Label "<br><br>The clausal modifier has the following features<br> Note: Features can be defined on the Other Features page. If this morphological feature cannot head a matrix clause, it should be defined as a FORM feature.<br>"
+
+BeginIter feat{k} "a Feature"
+
+    Select name "Clausal Modifier Strategy {i} Embedded Verb Feature {k} Name" "Name: " ""
+      fillnames2 c=verb
+ 
+    MultiSelect value "Clausal Modifier Strategy {i} Embedded Verb Feature {k} Value" "Value: " ""
+      fillvalues p=cms{i}_feat{k}_name
+
+EndIter feat
+
+Label "<br><br>Is the subject of the subordinate clause unexpressed and shared with the subject of the main clause?<br>"
+Check shared-subj "Shared Subject" "" "Yes<br>"
+
+EndIter cms
+
+
 Section lexicon "Lexicon"
 
 Cache nounlrs noun-pc[0-9]+(_lrt[0-9]+)?$ name
@@ -1543,6 +2171,8 @@ BeginIter noun{i} "a Noun Type" 1 1
 
   MultiSelect supertypes "Noun type {i}" "Supertypes: " "<br />"
   fillregex p=noun(?!{i}_)[0-9]+_name
+
+  Check pron "Pronoun" "<br>" "This is a pronoun type<br><br>" 
 
   Label "Features:"
 
@@ -2051,13 +2681,13 @@ BeginIter noun-pc{i} "a Position Class" 1 0
 
   Check obligatory "Noun Position Class {i} Obligatory" "<br/>Obligatorily occurs:" ""
 
-  Select order "Noun Position Class {i} Order" "<br/>Appears as a prefix or suffix:" ""
-  . prefix "Prefix" "prefix"
-  . suffix "Suffix" "suffix"
+Select order "Noun Position Class {i} Order" "<br/>Appears as a prefix or suffix:" ""
+. prefix "Prefix" "prefix"
+. suffix "Suffix" "suffix"
 
   MultiSelect inputs "Noun Position Class {i} Input" "<br/>Possible inputs:" ""
   fillcache c=nouns
-  fillregex p=noun-pc[0-9]+(_lrt[0-9]+)?_name
+  fillregex p=(verb|noun)-pc[0-9]+(_lrt[0-9]+)?_name
   . noun "Any noun" "any noun"
 
   Label "<p>Morphotactic Constraints:</p>"
@@ -2089,7 +2719,7 @@ BeginIter noun-pc{i} "a Position Class" 1 0
     MultiSelect supertypes "Noun Position Class {i} Lexical Rule Type {j} Supertype" "<br/>Supertypes: " ""
     fillregex p=noun-pc{i}_lrt[0-9]+_name
 
-    Label "<p>Features:</p>"
+    Label "<p>Features:<br>Note: most nominal features are inherent to the noun, and should therefore be marked as 'specified on itself.' However, in some possessive constructions, a noun will agree with its possessum or possessor in some features. This should be indicated in the 'specified on' field below. </p>"
 
     BeginIter feat{k} "a Feature"
 
@@ -2098,6 +2728,11 @@ BeginIter noun-pc{i} "a Position Class" 1 0
 
       MultiSelect value "Noun Position Class {i} Lexical Rule Type {j} Feature {k} Value" "Value: " ""
       fillvalues p=noun-pc{i}_lrt{j}_feat{k}_name
+
+      Select head "Noun Position Class {i} Lexical Rule Type {j} Feature {k} Head" "Specified on: " ""
+      . itself "Itself" "itself"
+      . possessor "Possessor" "possessor"
+      . possessum "Possessum" "possessum"
 
     EndIter feat
 
@@ -2832,3 +3467,4 @@ BeginIter imported-entry{i} "an imported Entry"
     Text aff "Imported-Entry {i} Affix" "Affix:" "<br />" 20
 
 EndIter imported-entry
+

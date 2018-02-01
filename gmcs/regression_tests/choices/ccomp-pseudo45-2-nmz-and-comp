@@ -1,0 +1,98 @@
+
+version=29
+
+section=general
+language=ccomp-pseudo45-2-nmz-and-comp
+
+section=word-order
+word-order=sov
+has-dets=no
+has-aux=no
+subord-word-order=same
+
+section=number
+
+section=person
+person=none
+
+section=gender
+
+section=case
+case-marking=none
+
+section=direct-inverse
+
+section=tense-aspect-mood
+
+section=other-features
+form-fin-nf=on
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=info-str
+
+section=arg-opt
+
+section=nominalclause
+  ns1_name=mid
+  ns1_level=mid
+  ns1_nmzRel=yes
+
+section=clausalmods
+
+section=clausal-comp
+  comps1_clause-pos-extra=on
+  comps1_comp-pos-before=on
+  comps1_comp=opt
+    comps1_complementizer1_orth=comp1
+  comps2_clause-pos-same=on
+    comps2_feat1_name=nominalization
+    comps2_feat1_value=mid
+
+section=lexicon
+  noun1_name=noun
+  noun1_det=imp
+    noun1_stem1_orth=noun1
+    noun1_stem1_pred=_noun1_n_rel
+    noun1_stem2_orth=noun2
+    noun1_stem2_pred=_noun2_n_rel
+    noun1_stem3_orth=noun3
+    noun1_stem3_pred=_noun3_n_rel
+  verb1_name=tverb
+  verb1_valence=trans
+    verb1_stem1_orth=tverb
+    verb1_stem1_pred=_tverb_v_rel
+  verb2_name=cverb-nonextra
+  verb2_valence=comps1
+    verb2_stem1_orth=cverb1
+    verb2_stem1_pred=_cverb_v_rel
+  verb3_name=cverb-extra
+  verb3_valence=comps2
+    verb3_stem1_orth=cverb2
+    verb3_stem1_pred=_cverb2_v_rel
+
+section=morphology
+  verb-pc1_name=NMZ
+  verb-pc1_order=suffix
+  verb-pc1_inputs=verb
+    verb-pc1_lrt1_name=mid
+      verb-pc1_lrt1_feat1_name=nominalization
+      verb-pc1_lrt1_feat1_value=mid
+      verb-pc1_lrt1_feat1_head=verb
+      verb-pc1_lrt1_feat2_name=form
+      verb-pc1_lrt1_feat2_value=nonfinite
+      verb-pc1_lrt1_feat2_head=verb
+      verb-pc1_lrt1_lri1_inflecting=yes
+      verb-pc1_lrt1_lri1_orth=-NMZ
+
+section=toolbox-import
+
+section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon

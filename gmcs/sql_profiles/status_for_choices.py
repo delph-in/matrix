@@ -9,8 +9,8 @@ db = MySQLdb.connect(host='localhost', user='ebender',
 cursor = db.cursor()
 
 def sql_count(table):
-  cursor.execute('SELECT COUNT(*) FROM ' + table)
-  return cursor.fetchall()[0][0]
+    cursor.execute('SELECT COUNT(*) FROM ' + table)
+    return cursor.fetchall()[0][0]
 
 
 # Main
@@ -20,13 +20,13 @@ for t in ('orig_source_profile',
           'lt',
           'feat_grp',
           'lt_feat_grp',
-#          'filter',
-#          'fltr_mrs',
+          #          'filter',
+          #          'fltr_mrs',
           'fltr_feat_grp'):
-  old = sql_count(t + '_071907')
-  new = sql_count(t)
-  if old == new:
-    check = 'X'
-  else:
-    check = ''
-  print '%20s %8d %8d  %s' % (t, old, new, check)
+    old = sql_count(t + '_071907')
+    new = sql_count(t)
+    if old == new:
+        check = 'X'
+    else:
+        check = ''
+    print '%20s %8d %8d  %s' % (t, old, new, check)

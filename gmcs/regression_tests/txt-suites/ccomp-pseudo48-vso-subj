@@ -1,0 +1,9 @@
+tverb noun1 noun2
+cverb1 noun3 tverb-SBJ noun1 noun2
+cverb1 noun3 comp1 tverb-SBJ noun1 noun2
+cverb2 noun3 comp2 tverb noun1 noun2
+*cverb2 noun3 tverb noun1 noun2
+*cverb2 noun3 comp2 tverb-SBJ noun1 noun2
+*cverb1 noun3 comp2 tverb-SBJ noun1 noun2
+*cverb2 noun3 comp1 tverb-SBJ noun1 noun2
+*cverb1 noun3 tverb noun1 noun2

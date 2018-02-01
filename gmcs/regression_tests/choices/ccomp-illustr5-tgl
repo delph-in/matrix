@@ -1,0 +1,112 @@
+
+version=30
+
+section=general
+language=ccomp-illustr5-tgl
+
+section=word-order
+word-order=v-initial
+has-dets=no
+has-aux=no
+
+section=number
+
+section=person
+person=none
+
+section=gender
+
+section=case
+case-marking=focus
+focus-focus-case-name=foc
+focus-a-case-name=a_case
+focus-o-case-name=o_case
+
+section=direct-inverse
+
+section=tense-aspect-mood
+
+section=other-features
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=info-str
+
+section=arg-opt
+
+section=nominalclause
+
+section=clausalmods
+
+section=clausal-comp
+  comps1_clause-pos-same=on
+  comps1_clause-pos-extra=on
+  comps1_comp-pos-before=on
+  comps1_comp=oblig
+    comps1_complementizer1_orth=ng
+
+section=lexicon
+  noun1_name=common
+  noun1_det=imp
+    noun1_stem1_orth=babae
+    noun1_stem1_pred=_woman_n_rel
+    noun1_stem2_orth=lalaki
+    noun1_stem2_pred=man_n_rel
+  noun2_name=pronoun
+  noun2_det=imp
+    noun2_stem1_orth=ko
+    noun2_stem1_pred=_I_n_rel
+  verb1_valence=intrans
+    verb1_stem1_orth=tulog
+    verb1_stem1_pred=_sleep_v_rel
+  verb2_valence=trans
+    verb2_stem1_orth=kita
+    verb2_stem1_pred=_see_v_rel
+  verb3_name=speech
+  verb3_valence=trans,comps1
+    verb3_stem1_orth=sinabi
+    verb3_stem1_pred=_said_v_rel
+  adp1_orth=ang
+  adp1_opt=on
+  adp1_order=before
+    adp1_feat1_name=case
+    adp1_feat1_value=focus
+  adp2_orth=ng
+  adp2_order=before
+    adp2_feat1_name=case
+    adp2_feat1_value=a_case, o_case
+
+section=morphology
+  verb-pc1_obligatory=on
+  verb-pc1_order=prefix
+  verb-pc1_inputs=iverb
+      verb-pc1_lrt1_feat1_name=case
+      verb-pc1_lrt1_feat1_value=focus
+      verb-pc1_lrt1_feat1_head=subj
+      verb-pc1_lrt1_lri1_inflecting=yes
+      verb-pc1_lrt1_lri1_orth=ma
+  verb-pc2_obligatory=on
+  verb-pc2_order=prefix
+  verb-pc2_inputs=tverb
+      verb-pc2_lrt1_feat1_name=case
+      verb-pc2_lrt1_feat1_value=o_case
+      verb-pc2_lrt1_feat1_head=obj
+      verb-pc2_lrt1_lri1_inflecting=yes
+      verb-pc2_lrt1_lri1_orth=ma
+      verb-pc2_lrt2_feat1_name=case
+      verb-pc2_lrt2_feat1_value=a_case
+      verb-pc2_lrt2_feat1_head=subj
+      verb-pc2_lrt2_lri1_inflecting=yes
+      verb-pc2_lrt2_lri1_orth=maka
+
+section=toolbox-import
+
+section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon

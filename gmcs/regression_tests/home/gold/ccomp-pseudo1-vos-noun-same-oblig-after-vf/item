@@ -1,0 +1,10 @@
+1@unknown@formal@none@1@S@tverb-FIN noun1 noun2@@@@@@@olzama@2017-12-20
+2@unknown@formal@none@1@@noun1 tverb-FIN noun2@@@@@@@olzama@2017-12-20
+3@unknown@formal@none@1@@noun1 noun2 tverb-FIN@@@@@@@olzama@2017-12-20
+4@unknown@formal@none@1@S@cverb-FIN tverb-FIN noun1 noun2 comp1 noun3@@@@@@@olzama@2017-12-20
+5@unknown@formal@none@1@@cverb-FIN noun3 tverb-FIN noun1 noun2 comp1@@@@@@@olzama@2017-12-20
+6@unknown@formal@none@1@@cverb-FIN comp1 tverb-FIN noun1 noun2 noun3@@@@@@@olzama@2017-12-20
+7@unknown@formal@none@1@@tverb-NFIN noun1 noun2@@@@@@@olzama@2017-12-20
+8@unknown@formal@none@1@@cverb-FIN tverb-NFIN noun1 noun2 comp1 noun3@@@@@@@olzama@2017-12-20
+9@unknown@formal@none@1@@cverb-NFIN tverb-FIN noun1 noun2 comp1 noun3@@@@@@@olzama@2017-12-20
+10@unknown@formal@none@1@@cverb-NFIN tverb-NFIN noun1 noun2 comp1 noun3@@@@@@@olzama@2017-12-20

@@ -273,9 +273,9 @@ class StringModOne(StringMod):
         Functionality: Modifies copies of input strings according to modstring method.
         Tables accessed: none
         Tables modified: none
-        """        
+        """
         return_strings = []                                         # initialize output
-        
+
         for string in string_list:                                  # for every input string
             result = self.modstring(deepcopy(string))    # add the string to the output
 
@@ -298,7 +298,7 @@ class StringModOne(StringMod):
         Note: This probably isn't used...I believe subclasses override it and those will be used.
         """
         return string
-    
+
 class StringModAddWord(StringModOne):
     """
     Class: StringModAddWord
@@ -325,7 +325,7 @@ class StringModAddWord(StringModOne):
         StringModOne.__init__(self, mrs_id_list)    # call superclass constructor
         self.word = word                                       # set member word to input word
         self.name = word                                        # set member name to input word
-        
+
     def modstring(self, string):
         """
         Method: modstring
@@ -337,13 +337,13 @@ class StringModAddWord(StringModOne):
         Functionality: adds this StringMod's word member to string
         Tables accessed: none
         Tables modified: none
-        """        
+        """
         print self.name                                 # print out name/word
         [words,prefixes,suffixes] = string       # unpack variable
         print "Input is " + str(words)               # print out input string
         words.append(self.word)                    # add this StringMod's word to word list
         print "Output is " + str(words)            # print out output string
-        
+
         return [words,prefixes,suffixes]          # return output
 
 class StringModChangeWord(StringModOne):
@@ -375,7 +375,7 @@ class StringModChangeWord(StringModOne):
         Functionality: constructor
         Tables accessed: none
         Tables modified: none
-        """        
+        """
         StringModOne.__init__(self,mrs_id_list)         # call superclass constructor
         self.old_word = old_word                            # set old_word member to old_word input
         self.new_word = new_word                        # set new_word member to new_word input
@@ -432,7 +432,7 @@ class StringModDropWord(StringModOne):
         Functionality: constructor
         Tables accessed: none
         Tables modified: none
-        """        
+        """
         StringModOne.__init__(self, mrs_id_list)     # call superclass constructor
         self.drop_word = drop_word                        # set drop_word member to drop_word input
         self.name = "drop " + drop_word                 # set name member
@@ -449,7 +449,7 @@ class StringModDropWord(StringModOne):
         Functionality: removes this StringMod's drop_word member from string
         Tables accessed: none
         Tables modified: none
-        """                
+        """
         [words, prefixes, suffixes] = string        # unpack string
         print self.name                                   # print name
         print "Input is " + str(words)                  # print input string words
@@ -482,9 +482,9 @@ string_mods = [ StringModAddWord(g.all,"p-nom"),
                 # StringModChangeWord(g.trans,"tv","tv-nf"),
                 # StringModChangeWord(g.intrans,"iv","iv-nf"),
                 StringModAddAff(g.all, 'nf'),
-                
+
                 # assume harvesters for negation have 'neg' as word.                
-                StringModDropWord(g.neg, "neg"),  
+                StringModDropWord(g.neg, "neg"),
                 StringModDropWord(g.ques, "qpart"), # assume harvesters for questions have 'qpart'.
                 StringModChangeWord(["foo"],"bar","foo") # for testing
                 ]

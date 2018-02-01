@@ -1,0 +1,17 @@
+noun1 tverb-FIN noun2
+*noun1 tverb-NFIN noun2
+cverb1-FIN noun1 comp1 noun2 tverb-FIN noun3
+cverb1-FIN noun1 noun2 tverb-FIN noun3 comp1
+comp1 noun1 tverb-FIN noun2 cverb1-FIN noun3
+noun2 tverb-FIN noun3 comp1  cverb1-FIN noun1
+*noun2 tverb-NFIN noun3 comp1 cverb1-FIN noun1
+*comp1 noun2 tverb-NFIN noun3 cverb1-FIN noun1
+*cverb1-FIN noun1 noun2 tverb-NFIN noun3 comp1
+noun1 tverb-NFIN-NMZ noun2 cverb2-FIN noun3
+*noun1 tverb-NFIN-NMZ noun2 cverb2-FIN-NMZ noun3
+*noun1 tverb-FIN-NMZ noun2 cverb2-FIN noun3
+*noun1 tverb-FIN noun2 cverb2-FIN noun3
+*noun1 tverb-NFIN noun2 cverb2-FIN noun3
+*cverb2-FIN noun1 tverb-FIN-NMZ noun2 noun3
+*cverb2-FIN comp1 noun1 tverb-FIN-NMZ noun2 noun3
+*cverb2-FIN comp1 noun1 tverb-FIN noun2 noun3

@@ -1,5 +1,5 @@
 
-version=24
+version=28
 
 section=general
 language=aux-assigns-subj-case-vp
@@ -29,9 +29,11 @@ nom-acc-acc-case-name=accusative
 section=direct-inverse
 
 section=tense-aspect-mood
-  nf-subform1_name=infinitive
 
 section=other-features
+form-fin-nf=on
+  form-subtype1_name=infinitive
+  form-subtype1_supertype=nonfinite
 
 section=sentential-negation
 

@@ -149,12 +149,12 @@ def regexMatchWithLT(fgFeature, choices, groups):
         match = re.search(r'\\\d', fgFeature)           # try to find more backreferences in feature
 
     for ltFeature in choices:                     # for each feat/val pair in the language type...
-        
+
         # ...see if the filter's feature name matches the language type is a match for the filter's
         # feature name when it is interpreted as a regex
         match2 = re.match('^' + fgFeature + '$', ltFeature)
         if match2:
-            
+
             # if so, add its value to the list of possible matches
             answer.append(choices[ltFeature])
 
@@ -268,7 +268,7 @@ def check_lt_for_grp_ids(grp_ids,choices,conn):
         # put the feature and value of the first row of feature/value pairs of this group
         # into variables f and v
         (f, v) = conn.selQuery("SELECT fg_feat, fg_value FROM feat_grp " + \
-                              "WHERE fg_grp_id = %s",(grp_id))[0]
+                               "WHERE fg_grp_id = %s",(grp_id))[0]
 
         for o in omitFeatures:      # for all of the features we're ignoring...  
             if o.match(f):              # if this is one of those features...
@@ -277,7 +277,7 @@ def check_lt_for_grp_ids(grp_ids,choices,conn):
             # and the choices file's value of the feature doesn't match the value of the feature in the
             # group for the language type we're checking
             # TODO: seems this should use get_full, not get
-            if choices.get(f) != v:   
+            if choices.get(f) != v:
                 answer = False      # ...this language type doesn't match choices file
                 break                   # and get out of here
     else:                            # but if every feature's value matched...
@@ -313,14 +313,14 @@ def check_existing_lt_for_completeness(lt_id, choices, conn):
 
     for tr in toRemove:                             # for all ones to remove...
         relevantKeys.remove(tr)                  # ...remove it
-        
+
     for f in relevantKeys:        # for every relevant feature in the choices file...
         # check that that feature/value combo is included in the language type in MatrixTDB.
         res = conn.selQuery("SELECT fg_grp_id FROM feat_grp " + \
-                                       "INNER JOIN lt_feat_grp ON fg_grp_id = lfg_grp_id " + \
-                                       "WHERE fg_feat = %s " + \
-                                        "AND fg_value = %s " + \
-                                        "AND lfg_lt_id = %s", (f, choices.get(f), lt_id))
+                            "INNER JOIN lt_feat_grp ON fg_grp_id = lfg_grp_id " + \
+                            "WHERE fg_feat = %s " + \
+                            "AND fg_value = %s " + \
+                            "AND lfg_lt_id = %s", (f, choices.get(f), lt_id))
         if len(res) == 0: # we found a fv pair which isn't already in lfg_feat_grp for the lt.
             answer = False  # so this lt doesn't match the chocies file
             break                # and get out of here
@@ -351,18 +351,18 @@ def lt_exists(choices,conn):
     # is consistent (i.e., subsumed by choices)
 
     rows = conn.selQuery("SELECT lt_id FROM lt")  # get every language type id in database
-    
+
     for row in rows:          # for each row returned...
         lt_id = row[0]         # get the language type id
 
         # then get the feature groups (groups of feature/value pairs) associated with that language
         # type
         grp_ids = conn.selQuery("SELECT lfg_grp_id FROM lt_feat_grp " + \
-                                             "WHERE lfg_lt_id = %s", (lt_id))
+                                "WHERE lfg_lt_id = %s", (lt_id))
 
         # TODO: could these next two if statements be executed more clearly and quiclky by
         # getting the f/v pairs from both places as sets and comparing?
-        
+
         # if every f/v pair in this set of group IDs matches the lt defined by choices...
         if check_lt_for_grp_ids(grp_ids, choices, conn):
 
@@ -377,7 +377,7 @@ def lt_exists(choices,conn):
         answer = False        # set output to False
 
     return answer               # return output
-        
+
 
 ###############################################################
 # singleton_group_exists(f,v): Check whether the pair f:v is
@@ -398,13 +398,13 @@ def singleton_group_exists(f, v, conn):
     """
     # get rows with group IDs with this feat/val combo in it
     grpIDrows = conn.selQuery("SELECT fg_grp_id FROM feat_grp " +
-                                        "WHERE fg_feat = %s and fg_value = %s", (f,v))
+                              "WHERE fg_feat = %s and fg_value = %s", (f,v))
 
     for row in grpIDrows:               # for each row for grp with f/v combo in it...
         grpID = row[0]                    # ...get the group id
         # get all rows for feat/val pairs in that group
         fvRows = conn.selQuery("SELECT fg_id FROM feat_grp WHERE fg_grp_id = %s",
-                                                                                                                       (grpID))
+                               (grpID))
         if len(fvRows) == 1:            # if there's only one feat/val pair in that group...
             answer = True               # ...then f/v exist as a singleton group, set output to True
             break                            # and get out of here
@@ -428,7 +428,7 @@ def update_feat_group(choices, conn):
                          such a group doesn't already exist
     Tables accessed: feat_grp
     Tables modified: feat_grp
-    """    
+    """
     for f in choices.keys():            # for every feature in the ChoicesFile...
         v = choices.get(f)               # ...get that feature's value
 
@@ -445,7 +445,7 @@ def update_feat_group(choices, conn):
 
             # ...and enter f/v as singleton group into database
             conn.execute("INSERT INTO feat_grp " + \
-                                 "SET fg_grp_id = %s, fg_feat = %s, fg_value = %s", (fg_grp_id, f, v))
+                         "SET fg_grp_id = %s, fg_feat = %s, fg_value = %s", (fg_grp_id, f, v))
 
     return
 
@@ -484,12 +484,12 @@ def update_lt_in_lfg(choices, lt_id, conn):
 
         # Get all of the feature-value pairs in a group
         fvrows = conn.selQuery("SELECT fg_feat, fg_value FROM feat_grp " + \
-                                           "WHERE fg_grp_id = %s", (g_id))
+                               "WHERE fg_grp_id = %s", (g_id))
 
         # Find out if we already have this group associated with this lt by querying for a row that
         # has the language type and this group in it
         ltGrpRow = conn.selQuery("SELECT * FROM lt_feat_grp " + \
-                                                "WHERE lfg_lt_id = %s AND lfg_grp_id = %s",(lt_id, g_id))
+                                 "WHERE lfg_lt_id = %s AND lfg_grp_id = %s",(lt_id, g_id))
 
         if ltGrpRow == ():                             # if a row was not returned...
             row_exists_p = False                   # ...the row does not exist
@@ -503,7 +503,7 @@ def update_lt_in_lfg(choices, lt_id, conn):
         else:                                               # and if it was called with some other type...
             # ...then raise an error            
             raise ValueError, "Invalid type of choices argument in " + \
-                                     "sql_lg_type.update_lt_in_lfg. Expected dict or ChoicesFile."
+                              "sql_lg_type.update_lt_in_lfg. Expected dict or ChoicesFile."
 
         # if the value of every feature in this feature group match those in choices...
         if check_lt_for_fvs(fvrows, chcDict):
@@ -516,7 +516,7 @@ def update_lt_in_lfg(choices, lt_id, conn):
             if row_exists_p:        # ...and if there is a link between this group and this lt id
                 # ...delete it.
                 conn.execute("DELETE FROM lt_feat_grp " + \
-                                    "WHERE lfg_lt_id = %s, lfg_grp_id = %s",(lt_id,g_id))
+                             "WHERE lfg_lt_id = %s, lfg_grp_id = %s",(lt_id,g_id))
     return
 
 ###############################################################
@@ -552,7 +552,7 @@ def create_or_update_lt(choices, conn):
     if not lt_id:                                                       # if a matching lt was found...
         # ...make sure all f:v pairs are in database as singleton groups
         update_feat_group(choices, conn)
-            
+
         res = ''                                        # initialize input from user
         while (res != 'r' and res != 'p'):        # loop until we get answer we want
             # find out if lt represnted by choices was randomly generated or purpose-built 
@@ -569,7 +569,7 @@ def create_or_update_lt(choices, conn):
 
     # ensure that this language type is linkted to the right feature groups
     update_lt_in_lfg(choices,lt_id,conn)
-    
+
     return lt_id                                        # return output
 
 ###############################################################
@@ -592,7 +592,7 @@ def main(chcFilename, conn):
     # will cause all sorts of problems in the database, so verify here we've been given an actual
     # filename
     assert os.path.isfile(chcFilename), chcFilename + " not a file."
-    
+
     # create ChoicesFile from choices file
     choices = ChoicesFile(chcFilename)
 
@@ -626,7 +626,7 @@ elif moduleTest:                            # if module test is true...
 
     # ... and notify the user moduleTest is set to True.
     print >> sys.stderr, "Note: module testing turned on in sgl_lg_type.py.  " + \
-                                 "Unless testing locally, set moduleTest to False."
+                         "Unless testing locally, set moduleTest to False."
 
     # get name of choices file from user
     chcFilename = raw_input("Enter full path of choices filename:\n")

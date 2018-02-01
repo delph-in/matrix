@@ -1,0 +1,186 @@
+version=28
+
+section=general
+language=valchg-jpn-rom
+comment=valence change tests for Japanese (romanized)
+
+section=word-order
+word-order=v-final
+has-dets=yes
+noun-det-order=det-noun
+has-aux=yes
+aux-comp-order=after
+aux-comp=vp
+multiple-aux=no
+
+section=number
+  number1_name=sg
+  number2_name=pl
+
+section=person
+person=1-2-3
+first-person=none
+
+section=gender
+
+section=case
+case-marking=nom-acc
+nom-acc-nom-case-name=nom
+nom-acc-acc-case-name=acc
+  case1_name=dat
+
+section=direct-inverse
+scale-equal=direct
+
+section=tense-aspect
+tense-definition=choose
+past=on
+nonpast=on
+  aspect1_name=prog
+    aspect1_supertype1_name=aspect
+
+section=other-features
+
+section=sentential-negation
+neg-exp=1
+vpc-0-neg=create
+infl-neg=on
+
+section=coordination
+  cs1_np=on
+  cs1_pat=mono
+  cs1_mark=word
+  cs1_orth=to
+  cs1_order=after
+
+section=matrix-yes-no
+q-part-order=after
+q-part-orth=ka
+
+section=arg-opt
+subj-drop=subj-drop-all
+subj-mark-drop=subj-mark-drop-not
+subj-mark-no-drop=subj-mark-no-drop-not
+subj-con=subj-con-always
+obj-drop=obj-drop-all
+obj-mark-drop=obj-mark-drop-not
+obj-mark-no-drop=obj-mark-no-drop-not
+
+section=lexicon
+  noun1_name=common
+    noun1_feat1_name=person
+    noun1_feat1_value=3rd
+  noun1_det=opt
+    noun1_stem1_orth=neko
+    noun1_stem1_pred=_cat_n_rel
+    noun1_stem2_orth=nezumi
+    noun1_stem2_pred=_mouse_n_rel
+    noun1_stem3_orth=inu
+    noun1_stem3_pred=_dog_n_rel
+    noun1_stem4_orth=nattou
+    noun1_stem4_pred=_nattou_n_rel
+    noun1_stem5_orth=Suzuki
+    noun1_stem5_pred=_Suzuki_n_rel
+    noun1_stem6_orth=Tanaka
+    noun1_stem6_pred=_Tanaka_n_rel
+  verb1_name=trans
+  verb1_valence=nom-acc
+    verb1_stem1_orth=tabe
+    verb1_stem1_pred=_eat_v_rel
+    verb1_stem2_orth=o
+    verb1_stem2_pred=_chase_v_rel
+    verb1_stem3_orth=ot
+    verb1_stem3_pred=_chase_v_rel
+  verb2_name=intrans
+  verb2_valence=nom
+    verb2_stem1_orth=ne
+    verb2_stem1_pred=_sleep_v_rel
+  aux1_name=progressive
+  aux1_sem=no-pred
+  aux1_subj=np-comp-case
+    aux1_compfeature1_name=form
+    aux1_compfeature1_value=nonfinite
+    aux1_compfeature2_name=aspect
+    aux1_compfeature2_value=prog
+    aux1_stem1_orth=i
+  det1_name=demonstrative
+    det1_stem1_orth=sono
+    det1_stem1_pred=_exist_q_rel
+  adp1_orth=ga
+  adp1_opt=on
+  adp1_order=after
+    adp1_feat1_name=case
+    adp1_feat1_value=nom
+  adp2_orth=wo
+  adp2_opt=on
+  adp2_order=after
+    adp2_feat1_name=case
+    adp2_feat1_value=acc
+  adp3_orth=ni
+  adp3_opt=on
+  adp3_order=after
+    adp3_feat1_name=case
+    adp3_feat1_value=dat
+
+section=morphology
+  verb-pc1_name=tense
+  verb-pc1_obligatory=on
+  verb-pc1_order=suffix
+  verb-pc1_inputs=verb, verb-pc2, verb-pc3
+    verb-pc1_lrt1_name=non-past
+      verb-pc1_lrt1_feat1_name=tense
+      verb-pc1_lrt1_feat1_value=nonpast
+      verb-pc1_lrt1_feat1_head=verb
+      verb-pc1_lrt1_feat2_name=form
+      verb-pc1_lrt1_feat2_value=finite
+      verb-pc1_lrt1_feat2_head=verb
+      verb-pc1_lrt1_lri1_inflecting=yes
+      verb-pc1_lrt1_lri1_orth=ru
+    verb-pc1_lrt2_name=past
+      verb-pc1_lrt2_feat1_name=tense
+      verb-pc1_lrt2_feat1_value=past
+      verb-pc1_lrt2_feat1_head=verb
+      verb-pc1_lrt2_feat2_name=form
+      verb-pc1_lrt2_feat2_value=finite
+      verb-pc1_lrt2_feat2_head=verb
+      verb-pc1_lrt2_lri1_inflecting=yes
+      verb-pc1_lrt2_lri1_orth=ta
+    verb-pc1_lrt3_name=inf
+      verb-pc1_lrt3_feat1_name=form
+      verb-pc1_lrt3_feat1_value=nonfinite
+      verb-pc1_lrt3_feat1_head=verb
+      verb-pc1_lrt3_lri1_orth=te
+  verb-pc2_name=pass-pos
+  verb-pc2_order=suffix
+  verb-pc2_inputs=verb
+    verb-pc2_lrt1_name=passive-tr
+      verb-pc2_lrt1_feat1_name=case
+      verb-pc2_lrt1_feat1_value=dat
+      verb-pc2_lrt1_feat1_head=obj
+      verb-pc2_lrt1_feat2_name=case
+      verb-pc2_lrt1_feat2_value=nom
+      verb-pc2_lrt1_feat2_head=subj
+      verb-pc2_lrt1_valchg1_operation=subj-dem
+      verb-pc2_lrt1_valchg1_inputs=trans
+      verb-pc2_lrt1_valchg2_operation=obj-prom
+      verb-pc2_lrt1_valchg2_inputs=trans
+      verb-pc2_lrt1_lri1_inflecting=yes
+      verb-pc2_lrt1_lri1_orth=ware
+  verb-pc3_name=caus-pos
+  verb-pc3_order=suffix
+  verb-pc3_inputs=verb
+    verb-pc3_lrt1_name=caus-tr
+      verb-pc3_lrt1_feat1_name=case
+      verb-pc3_lrt1_feat1_value=dat
+      verb-pc3_lrt1_feat1_head=newobj
+      verb-pc3_lrt1_valchg1_operation=subj-add
+      verb-pc3_lrt1_valchg1_inputs=trans
+      verb-pc3_lrt1_valchg1_predname=_cause_v_rel
+      verb-pc3_lrt1_valchg1_argpos=post
+      verb-pc3_lrt1_valchg1_argtype=pp
+      verb-pc3_lrt1_lri1_inflecting=yes
+      verb-pc3_lrt1_lri1_orth=sase
+
+section=toolbox-import
+
+section=test-sentences

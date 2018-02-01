@@ -1,0 +1,5 @@
+tverb-FIN noun1 noun2
+cverb-FIN noun1 tverb-NFIN noun2 noun3
+*cverb-FIN noun1 tverb-FIN noun2 noun3
+*cverb-FIN tverb-NFIN noun2 noun3 noun1
+*cverb-NFIN noun1 tverb-NFIN noun2 noun3

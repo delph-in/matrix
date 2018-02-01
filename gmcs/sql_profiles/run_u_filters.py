@@ -72,20 +72,20 @@ def make_string(int_list, limit):
 
     # For when we are only updating a fe filters:
 
-#    output = "SELECT r_result_id, r_mrs FROM result FORCE INDEX (PRIMARY), fltr_mrs WHERE r_mrs = fm_mrs_tag AND (fm_fltr_id = "
-#    l = len(int_list)
-#    e = l - 1
-#    for i in int_list[0:e]:
-#        output += str(i)
-#        output += ' or fm_fltr_id = '
-#    output += str(int_list[l-1])
-#    output += ") LIMIT "
-#    output += str(limit)
-#    output += ", 100000"
+    #    output = "SELECT r_result_id, r_mrs FROM result FORCE INDEX (PRIMARY), fltr_mrs WHERE r_mrs = fm_mrs_tag AND (fm_fltr_id = "
+    #    l = len(int_list)
+    #    e = l - 1
+    #    for i in int_list[0:e]:
+    #        output += str(i)
+    #        output += ' or fm_fltr_id = '
+    #    output += str(int_list[l-1])
+    #    output += ") LIMIT "
+    #    output += str(limit)
+    #    output += ", 100000"
 
     output = "SELECT r_result_id, i_input, r_mrs " + \
-                 "FROM result FORCE INDEX (PRIMARY), item " + \
-                  "WHERE r_parse_id = i_id LIMIT " + str(limit) + ", 100000"
+             "FROM result FORCE INDEX (PRIMARY), item " + \
+             "WHERE r_parse_id = i_id LIMIT " + str(limit) + ", 100000"
 
     return output
 
@@ -110,11 +110,11 @@ def update_res_fltr(filter_list, conn):
 
     filter_ids = []                             # initalize list of Filter IDs
     filter_id_hash = {}                      # initailze hash from name to ID
-    
+
     for f in filter_list:                       # for each filter in input list...
         name = f.name                    # ...get its name...
         mrs_tag_list = f.mrs_id_list   #... and the list of mrs tags to which it applies
-    
+
         filter_id = filters.getFilterID(name, conn)     # get the ID of this filter from the database
 
         if not filter_id:                                           # if the filter isn't in the DB...
@@ -125,13 +125,13 @@ def update_res_fltr(filter_list, conn):
             # TODO: figure out why is this table not inserted into if we're adding results for new
             # strings
             row = conn.selQuery("SELECT * FROM fltr_mrs " + \
-                                            "WHERE fm_fltr_id = %s " + \
-                                             "AND fm_mrs_tag = %s", (filter_id, mrs_tag))
+                                "WHERE fm_fltr_id = %s " + \
+                                "AND fm_mrs_tag = %s", (filter_id, mrs_tag))
             if row == ():           # if there's no row there...
                 # ...then insert it
                 conn.execute("INSERT INTO fltr_mrs " + \
-                                     "SET fm_fltr_id = %s, fm_mrs_tag = %s, fm_value = 1",
-                                                                                                                (filter_id, mrs_tag))
+                             "SET fm_fltr_id = %s, fm_mrs_tag = %s, fm_value = 1",
+                             (filter_id, mrs_tag))
         filter_ids.append(filter_id)            # add the filter's id to the list of filter IDs
         filter_id_hash[name] = filter_id     # add the filter's name/ID to a hash to get IDs quickly
 
@@ -170,7 +170,7 @@ def update_res_fltr(filter_list, conn):
         for ID in ids:
 
             (key, string, mrs_id) = ID
-            
+
             filter_values = filters.filter_one_result(mrs_id,string,filter_list,filter_id_hash)
 
             #Should do error checking here: Are all of the values legit?
@@ -180,21 +180,21 @@ def update_res_fltr(filter_list, conn):
 
                 if not value == 2:
                     num = cursor.execute("UPDATE res_fltr SET rf_value = %s " + \
-                                                     "WHERE rf_res_id = %s AND  rf_fltr_id = %s",
-                                                        (value, key, f_id))
+                                         "WHERE rf_res_id = %s AND  rf_fltr_id = %s",
+                                         (value, key, f_id))
                     if num == 0:
                         cursor.execute("SELECT * FROM res_fltr " + \
-                                               "WHERE rf_res_id = %s AND rf_fltr_id = %s", (key, f_id))
+                                       "WHERE rf_res_id = %s AND rf_fltr_id = %s", (key, f_id))
                         row = cursor.fetchall()
                         if row == ():
                             cursor.execute("INSERT INTO res_fltr " + \
-                                                   "SET rf_value = %s, rf_res_id =%s, rf_fltr_id = %s",
-                                                    (value, key, f_id))
+                                           "SET rf_value = %s, rf_res_id =%s, rf_fltr_id = %s",
+                                           (value, key, f_id))
                         if len(row) > 1:
                             dupes.append(row)
                     if num > 1:
                         cursor.execute("SELECT * FROM res_fltr " + \
-                                               "WHERE rf_res_id = %s AND rf_fltr_id = %s", (key, f_id))
+                                       "WHERE rf_res_id = %s AND rf_fltr_id = %s", (key, f_id))
                         dupes.append(cursor.fetchall())
 
         else:
@@ -237,19 +237,19 @@ def add_to_res_fltr(osp_id, conn):
     # set parse id = item id = result id, but I'll do it here anyway because it shouldn't add that
     # much time to the query and in case we change things in the future.
     resultsToFilterRows = conn.selQuery("SELECT r.r_result_id, i.i_input, r.r_mrs " + \
-                                                          "FROM result r INNER JOIN item_tsdb i "  + \
-                                                             "ON r.r_result_id = i.i_id " + \
-                                                          "WHERE r.r_osp_id = %s ", (osp_id))
+                                        "FROM result r INNER JOIN item_tsdb i "  + \
+                                        "ON r.r_result_id = i.i_id " + \
+                                        "WHERE r.r_osp_id = %s ", (osp_id))
 
     count = len(resultsToFilterRows)          # get the number of items/results in that osp
 
     if count == 0:                                      # if there are no results for that osp in the database
-       # tell the user it's an error        
+        # tell the user it's an error
         print >> sys.stderr, "That is not a valid osp_id. It has no items/results to filter."
         sys.exit()                                                                                  # and exit
     else:                                                                                            # otherwise...
         print >> sys.stderr, 'There are', count, 'results in that osp to filter.' # ...monitoring message
-    
+
     # intialize a dict whose keys are filter names and whose values are their IDs in the database
     fltrNamesToIDs = {}
     failedResults = set()          # initalize a set of items/results that have failed at least one filter
@@ -285,18 +285,18 @@ def add_to_res_fltr(osp_id, conn):
                     failedResults.add(resultID)
 
                     # and add the result/filter pair into a set of fails to enter into res_fltr
-                    failedResFltrPairs.add((resultID, fID)) 
+                    failedResFltrPairs.add((resultID, fID))
 
                     if ((len(failedResFltrPairs) % 1000) == 0):     # if I have 1000 fails to enter
                         # print monitoring messages
                         print >> sys.stderr, "inserting 1000 ufilter fails, up to", \
-                                                                                                len(failedResults)
+                            len(failedResults)
                         print >> sys.stderr, "passedAllResults up to", len(passedAllResults)
                         insertManyUnivFails(failedResFltrPairs, conn)   # insert those fails into res_fltr
                         failedResFltrPairs.clear()                                  # clear set of fails
 
-                     # this break makes sure we don't check any string more than we have to
-                     # Once we get a fail, we're gone                        
+                        # this break makes sure we don't check any string more than we have to
+                        # Once we get a fail, we're gone
                     break
         else:
             # if the item/result passed every filter, add it to the list of strings that passed
@@ -317,8 +317,8 @@ def add_to_res_fltr(osp_id, conn):
     # tell the user how many item/results both passed all filters and failed at least one
     # sanity check...should be 0
     print >> sys.stderr, len(failedResults.intersection(passedAllResults)), " strings failed at " + \
-                                                  "least one filter while also passing all relevant filters."
-    
+                                                                            "least one filter while also passing all relevant filters."
+
     return
 
 def updatePassAllTable(passAll, ospToUpdate, conn):
@@ -333,18 +333,18 @@ def updatePassAllTable(passAll, ospToUpdate, conn):
         for osp in ospIDs:
             if osp != ospToUpdate:
                 resultRows = conn.selQuery("SELECT rpu_res_id FROM res_pass_univ " + \
-                                                           "INNER JOIN result on rpu_res_id = r_result_id " + \
-                                                           "WHERE r_osp_id = %s", (osp))
+                                           "INNER JOIN result on rpu_res_id = r_result_id " + \
+                                           "WHERE r_osp_id = %s", (osp))
                 resultIDs = db_utils.selColumnToSet(resultRows)
 
                 if len(resultIDs) > 0:
                     tableState[osp] = resultIDs
-                
+
         conn.execute("DELETE FROM res_pass_univ")
 
         for osp in tableState.keys():
             resultIDs = tableState[osp]
-            valuesClause = 'VALUE '            
+            valuesClause = 'VALUE '
 
             for resID in resultIDs:
                 valuesClause += '(' + str(resID) + '),'
@@ -354,16 +354,16 @@ def updatePassAllTable(passAll, ospToUpdate, conn):
             conn.execute(insertStmt)
 
         valuesClause = 'VALUE '
-        
+
         for resID in passAll:
             valuesClause += '(' + str(resID) + '),'
 
         valuesClause = valuesClause[:-1]
         insertStmt = 'INSERT INTO res_pass_univ (rpu_res_id) ' + valuesClause
-        conn.execute(insertStmt)            
-        
+        conn.execute(insertStmt)
+
         return
-    
+
 def insertManyUnivFails(failResFltrPairs, conn):
     """
     Function: insertManyUnivFails
@@ -382,7 +382,7 @@ def insertManyUnivFails(failResFltrPairs, conn):
             fID = rftuple[1]                      # get its filter ID
 
             # add the result/filter/fail result to VALUES clause            
-            valuesClause += '(' + str(resID) + ',' + str(fID) + ',0),' 
+            valuesClause += '(' + str(resID) + ',' + str(fID) + ',0),'
 
         valuesClause = valuesClause[:-1] # take off last comma
 
@@ -391,7 +391,7 @@ def insertManyUnivFails(failResFltrPairs, conn):
         conn.execute(insertStmt)            # insert fails into res_fltr
 
     return
-        
+
 
 ##########################################################################
 # Main program
@@ -409,8 +409,8 @@ def main(osp_id, conn):
     """
     # delete all existing results for the given osp in res_fltr
     conn.execute("DELETE FROM res_fltr WHERE rf_res_id in " + \
-                             "(SELECT r_result_id FROM result " + \
-                                     "WHERE r_osp_id = %s)", (osp_id))    
+                 "(SELECT r_result_id FROM result " + \
+                 "WHERE r_osp_id = %s)", (osp_id))
 
     # TODO: look into possible disconnect with add_permutes.  where that function does not
     # update the osp_id of a result if someone imports a harvester string/mrs tag that generates
@@ -444,17 +444,17 @@ if __name__ == "__main__":      # only run if run as main module...not if import
 
     except IndexError:                               # if no username and/or password supplied...
         myconn = MatrixTDBConn('2')           # connect to MySQL server and prompt for them
-        
+
     main(osp_id, myconn)                         # run the main function
     myconn.close()                                   # close the connection to the database
 elif moduleTest:                        # or if i'm testing, run it on MatrixTDB2
     # and notify the user moduleTest is set to True.
     print >> sys.stderr, "Note: module testing turned on in run_u_filters.py.  " + \
-                                 "Unless testing locally, set moduleTest to False."    
+                         "Unless testing locally, set moduleTest to False."
 
     # ask the user for the original source profile of the id they want to filter.
     osp_id = raw_input("\nWhat is the osp_id for the results you would lke to filter: ")
-    
+
     myconn = MatrixTDBConn('2')       # connect to MySQL server
     main(osp_id, myconn)                  # run the main function
     myconn.close()                            # close connection to MySQL server

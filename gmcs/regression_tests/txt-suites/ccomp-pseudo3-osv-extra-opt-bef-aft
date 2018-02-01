@@ -1,0 +1,15 @@
+noun1 noun2 tverb
+*noun1 tverb noun2
+*tverb noun1 noun2
+noun3 cverb comp1 noun1 noun2 tverb
+noun3 cverb noun1 noun2 tverb
+noun3 cverb noun1 noun2 tverb comp1
+*comp1 noun1 tverb noun2 noun1 cverb
+*noun1 comp1 noun1 tverb noun2 cverb
+*cverb noun3 comp1 noun1 noun2 tverb
+*noun3 noun1 noun2 tverb cverb
+*noun1 noun2 tverb cverb noun3
+*cverb noun3 noun1 noun2 tverb comp1
+*noun1 noun2 tverb comp1 cverb noun3
+*noun1 noun2 tverb comp1 noun3 cverb
+*noun3 cverb comp1 noun1 tverb noun2

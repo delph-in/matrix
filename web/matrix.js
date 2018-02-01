@@ -773,13 +773,14 @@ function fill_case_patterns(morph)
     var p = pats[i].split(':');
     items.push([p[1], p[0]]);
   }
+  // add clausal complement strategies as possible argument structure
   return items
 }
 
 // fill_numbers()
 // Return items from the array numbers[], where every OPTION is a value of the
 // number feature.
-function fill_numbers(select_name)
+function fill_numbers()
 {
   var items = new Array();
   for (var i = 0; i < numbers.length; i++) {
@@ -788,6 +789,18 @@ function fill_numbers(select_name)
   }
   return items
 }
+
+
+function fill_forms()
+{
+  var items = new Array();
+  for (var i = 0; i < forms.length; i++) {
+    var n = forms[i].split(':');
+    items.push([n[0],n[0]]);
+  }
+  return items
+}
+
 
 // fill_cache()
 // Return items from the given cache.
@@ -1086,6 +1099,79 @@ function aux_fill_pred(name, stem, pos)
   }
 }
 
+// subpair_matrix_fill_pred is similar to fill pred, except that it uses the matrixorth
+// and matrixpred values. These values distinguish between the subordinator morphemes
+// in the matrix and subordinate clauses in claual modifiers with subordinate pairs
+function subpair_matrix_fill_pred(name,pos)
+{
+  var elms = document.getElementsByName(name+'_matrixorth');
+  var word = '';
+  for (var i = 0; i < elms.length; i++) {
+    if (elms[i].type == "text") {
+      word = elms[i].value;
+    }
+  }
+  var matrixpred = "_"+word+"_"+pos+"_rel";
+  elms = document.getElementsByName(name+'_matrixpred');
+  for (var i = 0; i < elms.length; i++) {
+    if (elms[i].type == "text" && elms[i].value == '' && word != '') {
+      elms[i].value = matrixpred;
+      var text_elms = document.getElementsByTagName('input');
+      var match_inds = [];
+      for (var j = 0; j < text_elms.length; j++) {
+        if (text_elms[j].type == "text" && text_elms[j].value.match(new RegExp("^_"+word+"_"+pos+"_?[0-9]*_rel$",""))){
+          match_inds.push(j);
+        }  
+      }
+      if (match_inds.length > 1){
+        for (var j = 0; j < match_inds.length; j++) {
+          text_elms[match_inds[j]].value = matrixpred.replace("_rel", "_"+(j+1)+"_rel");
+        }
+      }
+    }
+  }
+}
+
+// subpair_matrix_fill_pred is similar to fill pred, except that it uses the matrixorth
+// and subord orth values to fill the and subordpred value in the form 
+// _subordorth+matrixorth_subord_rel (eg. _if+then_subord_rel). 
+function subpair_subord_fill_pred(name,pos)
+{
+  var elms = document.getElementsByName(name+'_matrixorth');
+  var matrixword = '';
+  for (var i = 0; i < elms.length; i++) {
+    if (elms[i].type == "text") {
+      matrixword = elms[i].value;
+    }
+  }
+  var elms = document.getElementsByName(name+'_subordorth');
+  var subordword = '';
+  for (var i = 0; i < elms.length; i++) {
+    if (elms[i].type == "text") {
+      subordword = elms[i].value;
+    }
+  }
+  var subordpred = "_"+subordword+"+"+matrixword+"_"+pos+"_rel";
+  elms = document.getElementsByName(name+'_subordpred');
+  for (var i = 0; i < elms.length; i++) {
+    if (elms[i].type == "text" && elms[i].value == '' && subordword != '') {
+      elms[i].value = subordpred;
+      var text_elms = document.getElementsByTagName('input');
+      var match_inds = [];
+      for (var j = 0; j < text_elms.length; j++) {
+        if (text_elms[j].type == "text" && text_elms[j].value.match(new RegExp("^_"+subordword+"+"+matrixword+"_"+pos+"_?[0-9]*_rel$",""))){
+          match_inds.push(j);
+        }  
+      }
+      if (match_inds.length > 1){
+        for (var j = 0; j < match_inds.length; j++) {
+          text_elms[match_inds[j]].value = subordpred.replace("_rel", "_"+(j+1)+"_rel");
+        }
+      }
+    }
+  }
+}
+
 // fill_hidden_errors()
 // This moves errors which are not displayed to the outside of
 // show/hide button. It should be called onload and no where else.
@@ -1136,6 +1222,24 @@ function import_toolbox_lexicon()
 ////////////////////////////////////////////////////////////
 
 ////////
+// Other Features Subpage
+////////
+
+
+// set_form_feature automatically hide and show section based on radio choice
+//
+function set_form_feature()
+{
+  var divs = document.getElementsByClassName("form_switch");
+	for(var i=0; i<divs.length;i++){
+    var d = divs[i];
+    d.style.display = 'none';
+	}
+  var d = document.getElementById('form');
+  d.style.display ='block';
+}
+
+////////
 // Sentential Negation Subpage
 ////////
 
@@ -1174,6 +1278,34 @@ function set_negexp(n)
     d.style.display ='block';
   }
 }
+//////////////////////////////////////////////////////////
+// For adnominal possession subpage                     //
+//////////////////////////////////////////////////////////
+function set_possessum(n)
+{
+  var value = n;
+  var divs = document.getElementsByClassName("possessum_affix_switch");
+	for(var i=0; i<divs.length;i++){
+    var d = divs[i];
+    d.style.display = 'none';
+	}
+  var d;
+  switch (n){
+    case '0':
+      var d = document.getElementById('agree');
+      break;
+    case '1':
+      var d = document.getElementById('non-agree');
+      break;
+    default:
+      var d = null; 
+  }
+  if (d != null)
+  {
+    d.style.display ='block';
+  }
+}
+
 
 function set_negmorph(t1,t2){
   // now calculate the bipartite negation type
@@ -1264,6 +1396,11 @@ function set_negmorph(t1,t2){
   }
 }
 
+function display_form_choice()
+{
+    set_form_feature('2')
+}
+
 function display_neg_form()
 {
   // this function constrols the logical constraints on the form
@@ -1348,7 +1485,8 @@ function scalenav() {
               "Test Sentences":"Test S",
               "Morphology":"Morph",
               "Other Features":"Features",
-              "Coordination":"Coord" };
+              "Coordination":"Coord", 
+	      "Adnominal possession" : "Poss"};
   if (window.scaled==0 && d.clientWidth<150) {
     window.scaled=1;
     var list = document.getElementsByClassName("navlinks");
@@ -1403,5 +1541,4 @@ function nav_customize(type) {
   f.removeChild(t);
   f.removeChild(i);
 }
-
 
