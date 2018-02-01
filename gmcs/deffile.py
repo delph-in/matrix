@@ -548,7 +548,7 @@ class MatrixDefFile:
                  'coordination':'Coordination', 'matrix-yes-no':'Matrix Yes/No Questions',
                  'info-str':'Information Structure',
                  'arg-opt':'Argument Optionality',
-                 'clausal-comp':'Clausal Complements', 'lexicon':'Lexicon',
+                 'clausal-comp':'Clausal Complements',
                  'nominalclause':'Nominalized Clauses',
                  'clausalmods':'Clausal Modifiers', 'lexicon':'Lexicon',
                  'morphology':'Morphology','toolbox-import':'Toolbox Import',
@@ -559,13 +559,14 @@ class MatrixDefFile:
     doclinks = { 'general':'GeneralInfo',
                  'word-order':'WordOrder', 'number':'Number',
                  'person':'Person', 'gender':'Gender', 'case':'Case',
-                 'adnom-poss':'AdnominalPossession', 'direct-inverse':'DirectInverse', 
-                 'tense-aspect-mood':'TenseAspectMood', 'evidentials': 'Evidentials',
+                 'adnom-poss':'AdnominalPossession',
+                 'direct-inverse':'DirectInverse', 'tense-aspect-mood':'TenseAspectMood', 
+                 'evidentials': 'Evidentials',
                  'other-features':'OtherFeatures', 'sentential-negation':'SententialNegation',
                  'coordination':'Coordination', 'matrix-yes-no':'YesNoQ',
                  'info-str':'InformationStructure',
                  'arg-opt':'ArgumentOptionality',
-                 'clausal-comp':'ClausalComplements','lexicon':'Lexicon',
+                 'clausal-comp':'ClausalComplements',
                  'nominalclause':'Nominalized Clauses',
                  'clausalmods':'Clausal Modifiers', 'lexicon':'Lexicon',
                  'morphology':'Morphology','toolbox-import':'ImportToolboxLexicon',
@@ -859,7 +860,7 @@ class MatrixDefFile:
                 if len(word) > 3:
                     items = [(k, v.get(word[3])) for (k, v) in items]
                 html += HTML_jscache % (cache_name,
-                                        '\n'.join(["'" + ':'.join((v, k)) + "',"
+                                        '\n'.join(["\"" + ':'.join((v, k)) + "\","
                                                    for (k, v) in items]))
             elif word[0] == 'Label':
                 if len(word) > 2:

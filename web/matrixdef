@@ -1890,8 +1890,6 @@ Section clausal-comp "Clausal Complements"
 Define strategies for <b>sentential,
 or clausal, complements</b> here.<br><br>
 
-Label "<p><b>New section! Report bugs to Olga Zamaraeva.</b></p>"
-
 Label "<p>You may define several types of object clausal complements below.
 You may also leave this section blank, in which case the starter
 grammar produced will not support clausal complements.</p>"
