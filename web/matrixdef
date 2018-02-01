@@ -588,9 +588,8 @@ BeginIter poss-pron{i} "a class of possessor pronouns"
 
   Label "</div>"
 
-
   Label "<div id='pron-non-affix{i}' style='display:none'>"
-
+  
     Radio order "Possessive Pronoun Order" "<p>Do the possessor pronouns occur to the left or the right of the possessum?</p>" ""
     . head-final "head-final" "" "left<br>"
     . head-initial "head-initial" "" "right<br>"
@@ -635,7 +634,7 @@ BeginIter poss-pron{i} "a class of possessor pronouns"
       EndIter agr-feat
 
     EndIter instance
- 
+
   Label "</div>"
 
 EndIter poss-pron
