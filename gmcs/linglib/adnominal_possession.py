@@ -89,10 +89,10 @@ POSSESSUM_NOUN_LEX=':= basic-two-arg &\
                                      ARG-ST < #spr, #comps > ].'
 
 # TODO: change one-arg to being added by the logic section, since the modifier-version is zero-arg.
-POSSESSOR_PRON_LEX=' := \
+POSSESSOR_PRON_LEX=' := basic-one-arg &\
                         [ SYNSEM [ LOCAL [ CONT.HOOK [ INDEX #possessor,\
                                                        LTOP #ltop ],\
-                                           CAT [ VAL [ SPR < [  ] >,\
+                                           CAT [ VAL [ SPR < [ OPT + ] >,\
                                                        COMPS olist,\
                                                        SUBJ olist ],\
                                                  HEAD noun & [ PRON + ] ] ],\
@@ -228,8 +228,8 @@ def customize_poss_rules(strat,mylang,ch,rules):
         # If possessor==spec, add a head-compositional variant of head-spec 
         if strat.get('mod-spec')=='spec':
             phrase_rule='head-spec-poss-phrase'+'-'+strat_num
-            mylang.add(phrase_rule+' :=  basic-head-spec-phrase-super & [  NON-HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL [ SPR olist,\
-                                                                                                                   COMPS olist ],\
+            mylang.add(phrase_rule+' :=  basic-head-spec-phrase-super & [  NON-HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL [ SPR < >,\
+                                                                                                                   COMPS < > ],\
                                                                                                                HEAD +nvjrpcmo ],\
                                                                                                    OPT - ],\
                                                                            HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK #hook ,\
@@ -651,7 +651,7 @@ def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
         mylang.add(noun_type+POSSESSOR_PRON_LEX)
         if mod_spec=='spec':
             agr_prefix='SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
-            mylang.add(noun_type+' := basic-one-arg &\
+            mylang.add(noun_type+' := \
                         [ SYNSEM.LOCAL [ CAT [ HEAD.POSSESSOR possessor-pron-'+strat_num+',\
                                                VAL.SPEC.FIRST.LOCAL [ CAT.HEAD.PRON -,\
                                                                       CONT.HOOK [ INDEX #possessum & [ COG-ST uniq+fam+act ],\
@@ -660,11 +660,10 @@ def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
                                                          '+POSS_REL+',\
                                                            #altkeyrel !>,\
                                                   HCONS <! qeq & [ HARG #harg,\
-                                                                   LARG #lbl ],\
-                                                            ] !> ] ] ].')
+                                                                   LARG #lbl ] !> ] ] ].')
         elif mod_spec=='mod':
             agr_prefix='SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
-            mylang.add(noun_type+' := noun-lex\
+            mylang.add(noun_type+' := \
                         [ SYNSEM.LOCAL [ CAT.HEAD [ POSSESSOR possessor-pron-'+strat_num+',\
                                                     MOD.FIRST.LOCAL [ CAT [ HEAD.PRON -,\
                                                                             VAL.SPR < [ ] > ],\
