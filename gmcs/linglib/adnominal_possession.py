@@ -202,10 +202,6 @@ def customize_poss_rules(strat,mylang,ch,rules):
     rule_added=False
     mylang.set_section('phrases')
     # Start adding rules:
-    # Add constraints to bare np rule:
-#    mylang.add('bare-np-phrase :=\
-#            [ HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR nonpossessive, \
-#                                          POSSESSUM nonpossessive ] ].',section='addenda')
     # If no marking exists, add one of two juxtaposition rules:
     if mark_loc=='neither' and not pron_strat:
         phrase_rule='poss-phrase'+'-'+strat_num
