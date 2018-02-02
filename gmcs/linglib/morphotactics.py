@@ -442,6 +442,7 @@ LEX_RULE_SUPERTYPES = ['cat-change-only-lex-rule',
                        'val-change-only-lex-rule',
                        'head-change-only-lex-rule',
                        'cont-change-only-lex-rule',
+	               'val-change-with-ccont-lex-rule',
                        'high-or-mid-nominalization-lex-rule',
                        'mid-nominalization-lex-rule',
                        'low-nmz-no-subjid-trans-lex-rule',
@@ -619,7 +620,7 @@ def write_rules(pch, mylang, irules, lrules, lextdl, choices):
             # TJT 2014-08-27: Write adjective position class features
             write_pc_adj_syntactic_behavior(lrt, mylang, choices)
             # CMC 2017-03-28 Write valence change operations rules
-            write_valence_change_behavior(lrt, mylang, choices)
+            write_valence_change_behavior(pc, lrt, mylang, choices)
             # MTH 2017-10-16 Write evidential behavior
             write_evidential_behavior(lrt, mylang, choices, pc.has_evidential())
             # EKN 2017-12-13 Write possessive behavior
@@ -843,7 +844,7 @@ def write_possessive_behavior(pc,lrt,mylang,choices):
         mylang.add(nonpossessive_rule_name+NON_POSS_LEX_RULE_DEFN,section='lexrules')
         lrt.supertypes.add(nonpossessive_rule_name)
 
-def write_valence_change_behavior(lrt, mylang, choices):
+def write_valence_change_behavior(pc, lrt, mylang, choices):
     from gmcs.linglib.valence_change import lexrule_name, added_argnum_for_vchop
 
     # Need to push down a stricter constraint to LRT created by argument optionality.
@@ -859,13 +860,10 @@ def write_valence_change_behavior(lrt, mylang, choices):
 	lrt_ops.add(operation)
         transitive = 'trans' in op.get('inputs','').split(',')
         argnum, numargs = added_argnum_for_vchop(op)
-        # NB: non-scopal always need same-cont added!
-        if operation != 'subj-add':
-            lrt.supertypes.add('same-cont-lex-rule')
 
         if operation == 'subj-rem':
             lrt.supertypes.add('local-change-only-lex-rule') # includes no-ccont
-            lrt.supertypes.add('xarg-change-only-ccont-lex-rule' if transitive else 'same-cont-lex-rule'
+            lrt.supertypes.add('xarg-change-only-ccont-lex-rule' if transitive else 'same-cont-lex-rule')
             mylang.add(lrt.identifier() + ' := ' + lexrule_name('subj-rem-op', transitive) + '.')
         elif operation == 'subj-dem':
             lrt.supertypes.add('local-change-only-lex-rule')
@@ -877,6 +875,7 @@ def write_valence_change_behavior(lrt, mylang, choices):
             mylang.add(lrt.identifier() + ' := ' + lexrule_name('obj-prom-op', argnum, numargs) + '.', merge=True)
         elif operation == 'obj-rem':
             lrt.supertypes.add('local-change-only-lex-rule') # includes no-ccont
+            lrt.supertypes.add('same-cont-lex-rule')
             mylang.add(lrt.identifier() + ' := ' + lexrule_name('obj-rem-op') + '.')
         elif operation == 'obj-add':
 	    lrt.supertypes.add('same-cont-lex-rule')
@@ -893,7 +892,7 @@ def write_valence_change_behavior(lrt, mylang, choices):
 
     # final cleanup once all ops are known
     if 'subj-dem' in lrt_ops and 'obj-prom' not in lrt_ops:
-    lrt.supertypes.add('same-cont-lex-rule')
+        lrt.supertypes.add('same-cont-lex-rule')
 
 def write_pc_adj_syntactic_behavior(lrt, mylang, choices):
     # TODO: Don't do this if a supertype is specified

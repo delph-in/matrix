@@ -587,12 +587,12 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
     nominalized_clauses.customize_nmcs(mylang, ch, rules)
     negation.customize_sentential_negation(mylang, ch, lexicon, rules, lrules, hierarchies)
 
-  add_lexrules_methods = [case.add_lexrules,
-                          argument_optionality.add_lexrules,
-                          valence_change.add_lexrules,
-                          direct_inverse.add_lexrules]
-  to_cfv = morphotactics.customize_inflection(ch, add_lexrules_methods,
-                                              mylang, irules, lrules, lexicon)
+    add_lexrules_methods = [case.add_lexrules,
+                            argument_optionality.add_lexrules,
+                            valence_change.add_lexrules,
+                            direct_inverse.add_lexrules]
+    to_cfv = morphotactics.customize_inflection(ch, add_lexrules_methods,
+                                                mylang, irules, lrules, lexicon)
 
     # customize_feature_values is called by process_cfv_list
     # negation.py needs to run first!
