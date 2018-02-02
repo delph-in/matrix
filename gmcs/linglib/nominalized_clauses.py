@@ -166,7 +166,7 @@ NMZ_CLAUSE = '-nominalized-clause-phrase := unary-phrase &\
 #A non-branching rule for nominalized clauses to form a NP, semantically emtpy.
 NO_REL_NLZ_CLAUSE = '-no-rel-nominalized-clause-phrase := unary-phrase &\
   [ SYNSEM [ LOCAL.CAT [ HEAD noun &\
-                            [ NMZ + ],\
+                            [ NMZ +, MOD < > ],\
                          VAL [ COMPS < >,\
                                         SUBJ < >,\
                                         SPR < >,\
@@ -188,7 +188,7 @@ NO_REL_NLZ_CLAUSE = '-no-rel-nominalized-clause-phrase := unary-phrase &\
 # For middle nominalization.
 SUBJ_NMZ_CLAUSE = '-nominalized-clause-phrase := unary-phrase &\
                           [ SYNSEM.LOCAL.CAT [ HEAD noun &\
-                            [ NMZ + ],\
+                            [ NMZ +, MOD < > ],\
 		       VAL [ SPR < [ OPT + ] >,'\
                            'COMPS < >,\
 					  SUBJ < >,\
