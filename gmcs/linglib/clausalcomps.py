@@ -407,7 +407,7 @@ def determine_clausal_verb_comp_head(cs):
 def find_clausalverb_typename(ch,cs):
     for v in ch.get(constants.VERB):
         if v.get(constants.VALENCE).endswith(cs.full_key):
-            return get_name(v) + '-clausal-verb-lex'
+            return get_name(v) + '-verb-lex'
 
 
 def constrain_transitive_verb(head,cs):
@@ -623,7 +623,8 @@ def update_verb_lextype(ch,verb, vtype):
             head = determine_clausal_verb_comp_head(ccs)
     if suffix:
         name = vtype[0:vtype.find('verb-lex')-1]
-        rest = 'clausal-verb-lex'
+        #rest = 'clausal-verb-lex'
+        rest = 'verb-lex'
         vtype = name + '-' + rest
     return vtype,head
 
@@ -650,6 +651,9 @@ def validate(ch,vr):
         pass
     matches = {}
     wo = ch.get(constants.WORD_ORDER)
+    for v in ch.get('verb'):
+        if get_name(v) == 'clausal':
+            vr.err("The word 'clausal' is reserved; please use another name.")
     for ccs in ch.get(COMPS):
         if wo in ['free','v2']:
             vr.warn(ccs.full_key + '_'+ SAME,WO_WARNING)
