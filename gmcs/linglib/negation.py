@@ -157,13 +157,16 @@ def customize_adv_neg(mylang, ch, lexicon, rules):
               'are defined in matrix.tdl.  The matrix customization script did\n' +
               'not need to add any further constraints, so no corresponding types\n' +
               'appear in ' + ch.get('language').lower() + '.tdl')
-    mylang.add('+nvcdmo :+ [ MOD < > ].',
-               'This grammar includes head-modifier rules.  To keep\n' +
-               'out extraneous parses, constrain the value of MOD on\n' +
-               'various subtypes of head.  This may need to be loosened later.\n' +
-               'This constraint says that only adverbs, adjectives,\n' +
-               'and adpositions can be modifiers.',
-               section='addenda')
+    # KPH 2-1-18 The following appears to be an artifact from before no-mod-lex was
+    # added as a supertype to the basic lecical types for noun verb, etc, so I have
+    # commented it out from now. 
+    # mylang.add('+nvcdmo :+ [ MOD < > ].',
+    #           'This grammar includes head-modifier rules.  To keep\n' +
+    #           'out extraneous parses, constrain the value of MOD on\n' +
+    #           'various subtypes of head.  This may need to be loosened later.\n' +
+    #           'This constraint says that only adverbs, adjectives,\n' +
+    #           'and adpositions can be modifiers.',
+    #           section='addenda')
     # that's all folks!
 
 def customize_comp_neg(mylang, ch, lexicon, rules, lrules):

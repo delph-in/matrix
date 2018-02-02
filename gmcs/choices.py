@@ -45,6 +45,8 @@ class ChoiceCategory:
             x = default if default is not None else ''
         except IndexError:
             x = default if default is not None else ChoiceDict()
+        except TypeError:
+            x = default if default is not None else ''
         # reset safe_get
         self.safe_get = True
         return x
