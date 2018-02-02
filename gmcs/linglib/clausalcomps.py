@@ -407,7 +407,8 @@ def determine_clausal_verb_comp_head(cs):
 def find_clausalverb_typename(ch,cs):
     for v in ch.get(constants.VERB):
         if v.get(constants.VALENCE).endswith(cs.full_key):
-            return get_name(v) + '-clausal-verb-lex'
+            name = get_name(v) + '-verb-lex' if not get_name(v).endswith('-verb-lex') else get_name(v)
+            return name
 
 
 def constrain_transitive_verb(head,cs):

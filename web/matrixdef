@@ -1922,6 +1922,8 @@ BeginIter comps{i} "a Clausal Complement Type" 1
         verb in terms of which complementizers it can go with. (Note that all complementizers here
         are still assumed to be semantically empty.)</p>"
 
+        Select cformvalue "Clausal Complement Type {i} Complementizer Form {k} Value" "Form Value: " ""
+        fillvalues p=form l=1
 
   Label "<p> The embedded verb
   has the following features
