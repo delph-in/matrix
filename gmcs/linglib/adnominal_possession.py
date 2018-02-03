@@ -653,9 +653,10 @@ def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
             agr_prefix='SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
             mylang.add(noun_type+' := \
                         [ SYNSEM.LOCAL [ CAT [ HEAD.POSSESSOR possessor-pron-'+strat_num+',\
-                                               VAL.SPEC.FIRST.LOCAL [ CAT.HEAD.PRON -,\
+                                               VAL.SPEC.FIRST [ OPT -,\
+                                                                LOCAL [ CAT.HEAD.PRON -,\
                                                                       CONT.HOOK [ INDEX #possessum & [ COG-ST uniq+fam+act ],\
-                                                                          LTOP #lbl ] ] ],\
+                                                                          LTOP #lbl ] ] ] ],\
                                          CONT [ RELS  <! '+POSSESSUM_EXIST_REL+',\
                                                          '+POSS_REL+',\
                                                            #altkeyrel !>,\
@@ -665,10 +666,11 @@ def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
             agr_prefix='SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
             mylang.add(noun_type+' := \
                         [ SYNSEM.LOCAL [ CAT.HEAD [ POSSESSOR possessor-pron-'+strat_num+',\
-                                                    MOD.FIRST.LOCAL [ CAT [ HEAD.PRON -,\
+                                                    MOD.FIRST [ OPT -,\
+                                                                LOCAL [ CAT [ HEAD.PRON -,\
                                                                             VAL.SPR < [ ] > ],\
                                                                       CONT.HOOK [ INDEX #possessum,\
-                                                                                  LTOP #lbl ] ] ],\
+                                                                                  LTOP #lbl ] ] ] ],\
                                          CONT [ RELS  <!  '+POSS_REL+',\
                                                            #altkeyrel !>,\
                                                   HCONS <! !> ] ] ].')
