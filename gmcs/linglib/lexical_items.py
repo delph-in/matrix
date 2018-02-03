@@ -982,7 +982,7 @@ def customize_cops(mylang, ch, lexicon, hierarchies, trigger):
         lexicon.add_literal(';;; Copulas')
 
         # Core definition
-        mylang.add('''%s := basic-verb-lex-super & trans-first-arg-raising-lex-item-2 &
+        mylang.add('''%s := basic-verb-lex-super & trans-first-arg-raising-lex-item-2 & non-mod-lex-item &
           [ SYNSEM.LOCAL [ CAT.VAL [ SUBJ < [ LOCAL [ CONT.HOOK.INDEX #xarg,
                                                       CAT cat-sat & [ VAL [ SPR < >,
                                                                   COMPS < > ],
