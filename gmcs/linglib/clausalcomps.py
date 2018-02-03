@@ -684,7 +684,7 @@ def validate(ch,vr):
     wo = ch.get(constants.WORD_ORDER)
     for v in ch.get('verb'):
         if get_name(v) == 'clausal':
-            vr.err("The word 'clausal' is reserved; please use another name.")
+            vr.err(v.full_key + '_name', "The word 'clausal' is reserved; please use another name.")
     for ccs in ch.get(COMPS):
         if wo in ['free','v2']:
             vr.warn(ccs.full_key + '_'+ SAME,WO_WARNING)
@@ -695,7 +695,7 @@ def validate(ch,vr):
                 matches[ccs.full_key] = vb.full_key
                 for f in vb['feat']:
                     if f['name'] == 'case' and f['head'] == 'obj' and not is_nominalized_complement(ccs):
-                        vr.err('You cannot specify case on the object of '
+                        vr.err(f.full_key + '_name', 'You cannot specify case on the object of '
                                'a clausal verb unless the complementation strategy involves nominalization.')
         for m in matches:
             if not matches[m]:
