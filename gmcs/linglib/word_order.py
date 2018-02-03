@@ -739,18 +739,25 @@ def customize_np_word_order(mylang, ch, rules):
     # cases but those where a possessum-marking possessive strategy with 
     # spec-like attachment exists.
 
+    # Default constraint on spec:
     spec_constraint='SYNSEM.LOCAL.CAT.VAL.SPEC < >, \
                         '
+    # Check for possessum-marking only:
+    # TODO: try adding same spec constraint here as in pronoun case below
     possessum_marking=False
     for strat in ch.get('poss-strat'):
         if strat.get('mark-loc')=='possessum' and strat.get('mod-spec')=='spec':
-            possessum_marking=True
-    if possessum_marking:
-        spec_constraint=''
-
+            spec_constraint=''
+    # Check for spec-like possessor pronouns:
+    spec_pron=False
+    for pron in ch.get('poss-pron'):
+        if pron.get('mod-spec')=='spec':
+            spec_constraint='SYNSEM.LOCAL.CAT.VAL.SPEC #spec, \
+                             HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPEC #spec,\
+                             '
     mylang.add('bare-np-phrase := basic-bare-np-phrase &\
-  [ '+spec_constraint+' C-CONT.RELS <! [ PRED \"exist_q_rel\" ] !> ].',
-               'Bare NP phrase.  Consider modifying the PRED value of the quantifier relation\nintroduced to match the semantic effect of bare NPs in your language.')
+                 [ '+spec_constraint+' C-CONT.RELS <! [ PRED \"exist_q_rel\" ] !> ].',
+                    'Bare NP phrase.  Consider modifying the PRED value of the quantifier relation\nintroduced to match the semantic effect of bare NPs in your language.')
 
     rules.add('bare-np := bare-np-phrase.')
 

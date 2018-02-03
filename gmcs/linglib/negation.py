@@ -415,7 +415,7 @@ def customize_infl_mod_neg(mylang,ch,lexicon,rules):
                   SYNSEM.LKEYS.KEYREL.PRED \"neg_rel\" ].')
 
 
-    mylang.add('+nvcdmo :+ [ MOD < > ].',
+    mylang.add('+vcdmo :+ [ MOD < > ].',
                'This grammar includes head-modifier rules.  To keep\n' +
                'out extraneous parses, constrain the value of MOD on\n' +
                'various subtypes of head.  This may need to be loosened later.\n' +
@@ -556,7 +556,7 @@ def customize_head_mod_neg(mylang, ch, lexicon,rules):
                 [ STEM < \"'+ orthstr +'\" > ].')
 
 
-    mylang.add('+nvcdmo :+ [ MOD < > ].',
+    mylang.add('+vcdmo :+ [ MOD < > ].',
                'This grammar includes head-modifier rules.  To keep\n' +
                'out extraneous parses, constrain the value of MOD on\n' +
                'various subtypes of head.  This may need to be loosened later.\n' +
@@ -777,7 +777,7 @@ def customize_comp_mod_neg(mylang,ch,lexicon,rules):
                 [ STEM < \"'+ orthstr +'\" > ].')
 
 
-    mylang.add('+nvcdmo :+ [ MOD < > ].',
+    mylang.add('+vcdmo :+ [ MOD < > ].',
                'This grammar includes head-modifier rules.  To keep\n' +
                'out extraneous parses, constrain the value of MOD on\n' +
                'various subtypes of head.  This may need to be loosened later.\n' +

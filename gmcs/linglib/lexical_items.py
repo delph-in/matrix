@@ -510,6 +510,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     nonaffixal_strat=False
     possessor_mark=False
     possessum_mark=False
+    poss_prons=False #Do possessor pronouns exist as separate words?
     pron_spec=False #Are pronouns which separate words w/ spec attachment?
     for strat in ch.get('poss-strat',[]):
         if strat.get('mod-spec')=='spec' and strat.get('mark-loc')!='neither':
@@ -527,9 +528,11 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
                 if strat.get('possessum-type')=='non-affix':
                     nonaffixal_strat=True
     for pron in ch.get('poss-pron',[]):
-        if pron.get('mod-spec')=='spec' and pron.get('type')!='affix':
-            spec_strat=True
-            pron_spec=True
+        if pron.get('type')!='affix':
+            poss_prons=True
+            if pron.get('mod-spec')=='spec':
+                spec_strat=True
+                pron_spec=True
     # Add a typedef that takes into account all strategies
     if spec_strat:
         if affixal_strat and nonaffixal_strat:
@@ -577,8 +580,10 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
                 'no-spr-noun-lex := noun-lex & \
                    [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT + ] > ].'
             mylang.add(typedef)
-
-    if seen['imp'] and ch.get('has-dets') == 'yes':
+    # EKN 2018-02-02 Possessor pronouns are a type which cannot
+    # take dets, but won't trigger 'imp' below. Adding a check 
+    # for them specifically:
+    if (seen['imp'] or poss_prons) and ch.get('has-dets') == 'yes':
         mylang.add(
             'head-spec-phrase := [ NON-HEAD-DTR.SYNSEM.OPT - ].',
             'Nouns which cannot take specifiers mark their SPR requirement\n' +
