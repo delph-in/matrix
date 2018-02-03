@@ -654,7 +654,8 @@ def update_verb_lextype(ch,verb, vtype):
             head = determine_clausal_verb_comp_head(ccs)
     if suffix:
         name = vtype[0:vtype.find('verb-lex')-1]
-        rest = 'clausal-verb-lex'
+        #rest = 'clausal-verb-lex'
+        rest = 'verb-lex'
         vtype = name + '-' + rest
     return vtype,head
 
@@ -724,3 +725,4 @@ def find_in_other_features(name,ch):
         if f['name'] == name:
             return f
     return None
+
