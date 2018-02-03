@@ -305,8 +305,10 @@ def customize_poss_rules(strat,mylang,ch,rules):
                 elif modpos=='either':
                     head_adj=True
                     adj_head=True
-        if head_adj: mylang.add('head-adj-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSSESSOR nonpossessive ].',merge=True)
-        if adj_head: mylang.add('adj-head-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSSESSOR nonpossessive ].',merge=True)
+        if head_adj: mylang.add('head-adj-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR nonpossessive,\
+                                                                                          POSSESSUM nonpossessive  ] ].',merge=True)
+        if adj_head: mylang.add('adj-head-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR nonpossessive,\
+                                                                                          POSSESSUM nonpossessive ] ].',merge=True)
         if phrase_rule=='head-comp-poss-phrase'+'-'+strat_num: # and rule_added and strat.get('possessum-type')!='non-affix':
             head_comp_order=customize_major_constituent_order(ch.get('word-order'),mylang,ch,rules)['hc']
             mylang.add(head_comp_order+'-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSSESSOR nonpossessive,\
