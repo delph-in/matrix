@@ -707,6 +707,8 @@ def validate(ch,vr):
             if wo in ['free','v2','svo','vso']:
                 vr.err(ccs.full_key + '_' + EXTRA,EXTRA_VO)
         for f in ccs['feat']:
+            if f['name'] in ['evidential','negation','OPT','tense']:
+                vr.err(f.full_key + '_name', 'Supported features: aspect, mood, form, nominalization, custom syntactic.')
             feat = find_in_other_features(f['name'],ch)
             if feat:
                 if feat['type'] and feat['type'] == 'index':
