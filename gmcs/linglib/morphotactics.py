@@ -1082,9 +1082,9 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
                 vr.err(vchop.full_key+'_argpos','An argument can only be added at the front ' + \
                        'or end of the complements list.')
             if vchop.get('argtype') not in ['np','pp']:
-                vr.warn(vchop.full_key+'_argtype','The type of the added argument ({}) is unconstrained.'.format(vchop.get('argtype','')))
+                vr.warn(vchop.full_key+'_argtype','The type of the added argument ({0}) is unconstrained.'.format(vchop.get('argtype','')))
             if not vchop.get('predname'):
-                vr.warn(vchop.full_key+'_predname','The added predicated should have a name specified.')
+                vr.warn(vchop.full_key+'_predname','The added predicate should have a name specified.')
 
     # EKN 2018-01-09: Check that only one possessive strategy or 
     # possessive pronoun is selected per LRT
