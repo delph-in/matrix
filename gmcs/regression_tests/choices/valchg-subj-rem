@@ -55,10 +55,18 @@ section=lexicon
 section=morphology
   verb-pc1_order=suffix
   verb-pc1_inputs=verb
-    verb-pc1_lrt1_name=subjrem
+    verb-pc1_lrt1_name=subjrem-itr
       verb-pc1_lrt1_valchg1_operation=subj-rem
+      verb-pc1_lrt1_valchg1_inputs=intrans
       verb-pc1_lrt1_lri1_inflecting=yes
-      verb-pc1_lrt1_lri1_orth=-nosubj
+      verb-pc1_lrt1_lri1_orth=-nosubjitr
+    verb-pc1_lrt2_name=subjrem-tr
+      verb-pc1_lrt2_valchg1_operation=subj-rem
+      verb-pc1_lrt2_valchg1_inputs=trans
+      verb-pc1_lrt2_lri1_inflecting=yes
+      verb-pc1_lrt2_lri1_orth=-nosubjtr
+
+section=toolbox-import
 
 section=test-sentences
 
