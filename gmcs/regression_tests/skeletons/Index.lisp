@@ -148,6 +148,7 @@
 ((:path . "valchg-subj-rem-obj-rem") (:content . "valchg-subj-rem-obj-rem: combining subject-removing and object-removing valence change"))
 ((:path . "valchg-subj-rem") (:content . "valchg-subj-rem: simple subject-removing valence change"))
 ((:path . "valchg-obj-rem") (:content . "valchg-obj-rem: simple object-removing valence change"))
+((:path . "valchg-lkt") (:content . "valchg-lkt: testing valence change in Lakota"))
 ((:path . "adj-adjn") (:content . "adj-adjn: Basic test for attributive adjectives."))
 ((:path . "infostr-foc-affix-subj-obj-hier") (:content . "infostr-foc-affix-subj-obj-hier: regression test for Yukaghir-like grammars"))
 ((:path . "adj-split-both+attr+pred") (:content . "adj-split-both+attr+pred: Test for adjectives where some adjectives are attributive only, some predicative only, and others can be both attributive and predicative."))

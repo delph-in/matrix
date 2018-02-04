@@ -21,19 +21,19 @@ def added_argnum_for_vchop(vchop):
 # These functions return the name the rule generator will use
 def subj_rem_op_lex_rule_name(transitive):
     tr_itr = 'tr' if transitive else 'itr'
-    return 'subj-rem-{}-op-lex-rule'.format(tr_itr)
+    return 'subj-rem-{0}-op-lex-rule'.format(tr_itr)
 
 def subj_dem_op_lex_rule_name(added_arg, total_args):
-    return 'subj-dem-to-arg{}of{}-op-lex-rule'.format(added_arg, total_args)
+    return 'subj-dem-to-arg{0}of{1}-op-lex-rule'.format(added_arg, total_args)
 
 def obj_prom_op_lex_rule_name(added_arg, total_args):
-    return 'obj-prom-from-arg{}of{}-op-lex-rule'.format(added_arg, total_args)
+    return 'obj-prom-from-arg{0}of{1}-op-lex-rule'.format(added_arg, total_args)
 
 def added_arg_non_local_lex_rule_name(added_arg, total_args):
-    return 'added-arg{}of{}-non-local-lex-rule'.format(added_arg, total_args)
+    return 'added-arg{0}of{1}-non-local-lex-rule'.format(added_arg, total_args)
 
 def added_arg_applicative_lex_rule_name(added_arg, total_args):
-    return 'added-arg{}of{}-applicative-lex-rule'.format(added_arg, total_args)
+    return 'added-arg{0}of{1}-applicative-lex-rule'.format(added_arg, total_args)
 
 def added_arg_head_lex_rule_name(added_arg, total_args, head_constraint):
     if head_constraint:
@@ -42,11 +42,11 @@ def added_arg_head_lex_rule_name(added_arg, total_args, head_constraint):
             head = 'np'
         elif hc == 'pp' or hc == 'adp':
             head = 'pp'
-    return 'added-arg{}of{}-{}-head-lex-rule'.format(added_arg, total_args, head)
+    return 'added-arg{0}of{1}-{2}-head-lex-rule'.format(added_arg, total_args, head)
 
 def causative_lex_rule_name(demoted_argnum, transitive):    
-    return 'causative-to-arg{}-{}-op-lex-rule'.format(demoted_argnum,
-                                                      'tr' if transitive else 'itr')
+    return 'causative-to-arg{0}-{1}-op-lex-rule'.format(demoted_argnum,
+                                                        'tr' if transitive else 'itr')
 #    if transitive:
 #        return 'causative-to-arg{}-transitive-lex-rule'
 #    else:
@@ -78,13 +78,13 @@ def lexrule_name(rule_type, *args):
 
 # this rule enforces COMPS to make sure the input really is intransitive.
 # (subject-change-only-lex-rule copies mother/daughter comps value)
-SUBJ_REM_OP_ITR_RULE_TEMPLATE = '''{} := subj-change-only-lex-rule & no-ccont-lex-rule &
+SUBJ_REM_OP_ITR_RULE_TEMPLATE = '''{0} := subj-change-only-lex-rule & no-ccont-lex-rule &
   [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >,
                            COMPS < > ],
     DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ < unexpressed >,
                                COMPS < > ] ].'''
 
-SUBJ_REM_OP_TR_RULE_TEMPLATE = '''{} := subj-and-comps-change-only-lex-rule &
+SUBJ_REM_OP_TR_RULE_TEMPLATE = '''{0} := subj-and-comps-change-only-lex-rule &
   [ SYNSEM [ LOCAL.CAT.VAL [ SUBJ < [ LOCAL [ CONT.HOOK.INDEX #sind,
                                               CAT [ HEAD [ MOD #mod,
                                                            KEYS #keys ], 
@@ -100,7 +100,7 @@ SUBJ_REM_OP_TR_RULE_TEMPLATE = '''{} := subj-and-comps-change-only-lex-rule &
                                                  NON-LOCAL #nl ],
                                          REST #rest ] ] ] ].'''
 
-SUBJ_DEM_OP_RULE_TEMPLATE = '''{} := subj-and-comps-change-only-lex-rule &
+SUBJ_DEM_OP_RULE_TEMPLATE = '''{0} := subj-and-comps-change-only-lex-rule &
   [ SYNSEM.LOCAL [ CAT.VAL [ SUBJ < #comp & [ LOCAL.CONT.HOOK.INDEX #sind ] >,
                              COMPS #rest ] ],
     C-CONT.HOOK.XARG #sind,
@@ -199,10 +199,10 @@ NEW_NON_LOCAL_FRAGMENT = '''[ NON-LOCAL [ SLASH [ LIST #smiddle,
 
 def added_arg_non_local_lex_rule(added_arg, total_args):
     if added_arg > total_args or total_args == 1 or total_args > 3:
-        raise Exception('Bad argument count ({} of {})'.format(added_arg, total_args))
+        raise Exception('Bad argument count ({0} of {1})'.format(added_arg, total_args))
 
     rulevars = {}
-    rulename = 'added-arg{}of{}-non-local-lex-rule'.format(added_arg, total_args)
+    rulename = 'added-arg{0}of{1}-non-local-lex-rule'.format(added_arg, total_args)
     if added_arg == 1:
         # added subject; existing rules should apply
         rule = rulename + ' := same-non-local-lex-rule.'
@@ -340,16 +340,16 @@ def added_arg_head_lex_rule(argnum, numargs, head):
         head_type = 'noun'
     elif hc == 'pp':
         head_type = 'adp'
-    head_constraint =  '[ LOCAL.CAT.HEAD {} ]'.format(head_type)
+    head_constraint =  '[ LOCAL.CAT.HEAD {0} ]'.format(head_type)
     if argnum == 1:
-        constraint = '  [ SYNSEM.LOCAL.CAT.VAL.SUBJ < {} > ].'.format(head_constraint)
+        constraint = '  [ SYNSEM.LOCAL.CAT.VAL.SUBJ < {0} > ].'.format(head_constraint)
     elif argnum == 2 or argnum == 3:
         comps = head_constraint
         if argnum == 2 and numargs == 3:
             comps = comps + ', [  ]'
         elif argnum == 3 and numargs == 3:
             comps = '[ ], ' + comps
-        constraint = '  [ SYNSEM.LOCAL.CAT.VAL.COMPS < {} > ].'.format(comps)
+        constraint = '  [ SYNSEM.LOCAL.CAT.VAL.COMPS < {0} > ].'.format(comps)
 #    elif argnum == 2:
 #        constraint = '  [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD {} ], [ ] > ].'.format(head_type)
 #    elif argnum == 3:
