@@ -653,19 +653,21 @@ def create_subordinated_feature(mylang, roots, cms, ch):
       [ SYNSEM.SUBORDINATED #subord,\
         NON-HEAD-DTR.SYNSEM.SUBORDINATED #subord ].')
     if 'cs' in ch:
-        mylang.add('coord-phrase :+ [ SYNSEM.SUBORDINATED #subordinated,\
-				    LCOORD-DTR.SYNSEM.SUBORDINATED #subordinated,\
-				    RCOORD-DTR.SYNSEM.SUBORDINATED #subordinated ].')
+        mylang.add('coord-phrase :+ [ SYNSEM.SUBORDINATED #subord,\
+				    LCOORD-DTR.SYNSEM.SUBORDINATED #subord,\
+				    RCOORD-DTR.SYNSEM.SUBORDINATED #subord ].')
     mylang.set_section('verb-lex')
     mylang.add('verb-lex := [ SYNSEM.SUBORDINATED none ].')
+    mylang.set_section('lexrules')
     mylang.add('same-subordinated-lex-rule := lex-rule &\
-  [ SYNSEM.SUBORDIANTED #subord,\
-    DTR.SYNSEM.SUBORDIANTED #subord ].')
-    mylang.add('non-local-change-only-lex-rule := same-subordinated-lex-rule.')
-    mylang.add('local-change-only-lex-rule := same-subordinated-lex-rule.')
-    mylang.add('cont-change-only-lex-rule := same-subordinated-lex-rule.')
-    mylang.add('cat-change-with-ccont-lex-rule := same-subordinated-lex-rule.')
-    mylang.add('add-only-rule := same-subordinated-lex-rule.')
+    [ SYNSEM.SUBORDINATED #subord,\
+    DTR.SYNSEM.SUBORDINATED #subord ].')
+    mylang.set_section('addenda')
+    mylang.add('non-local-change-only-lex-rule :+ same-subordinated-lex-rule.')
+    mylang.add('local-change-only-lex-rule :+ same-subordinated-lex-rule.')
+    mylang.add('cont-change-only-lex-rule :+ same-subordinated-lex-rule.')
+    mylang.add('cat-change-with-ccont-lex-rule :+ same-subordinated-lex-rule.')
+    mylang.add('add-only-rule :+ same-subordinated-lex-rule.')
     roots.add('root := [ SYNSEM.SUBORDINATED none ].')
 
 def create_subpair_feature(mylang, roots, morphpair, ch):
