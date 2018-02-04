@@ -1139,6 +1139,9 @@ valchg-subj-add-pre-sov=subject-adding, prepend, SOV
 valchg-subj-add-pre-case=subject-adding, with case constraints
 
 
+valchg-lkt=testing valence change in Lakota
+
+
 evidentials-infl-aux-kaz=testing coverage of Kazakh evidentials (infl, aux)
 
 
