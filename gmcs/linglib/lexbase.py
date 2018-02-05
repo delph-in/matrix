@@ -35,6 +35,20 @@ LEXICAL_SUPERTYPES = {'noun':'noun-lex',
                       'adj':'adj-lex',
                       'comp':'comp-lex'}
 
+
+# TYPE DEFINITIONS (that can be shared with other libraries)
+COMPLEMENTIZER = '''
+      complementizer-lex-item := raise-sem-lex-item & basic-one-arg &
+         [ SYNSEM.LOCAL.CAT [ HEAD comp &
+                                   [ MOD < > ],
+                              VAL [ SPR < >,
+                                    SUBJ < >,
+                                    COMPS < #comp > ]],
+           ARG-ST < #comp & [ LOCAL.CAT [ HEAD verb,
+                                          VAL [ SUBJ < >,
+                                                COMPS < > ]]] > ].'''
+
+
 ###############
 ### CLASSES ###
 ###############

@@ -22,18 +22,7 @@ AFT = 'comp-pos-after' # Choice name for complementizer attaching after embedded
 
 COMPLEX = 'complex' # TDL file section name for complementizer lexical items
 
-COMP_LEX_ITEM = 'comp-lex-item'
-
-COMP_LEX_ITEM_DEF = COMP_LEX_ITEM + ' := raise-sem-lex-item & basic-one-arg &\
-      [ SYNSEM.LOCAL.CAT [ HEAD comp &\
-                                [ MOD < > ],\
-                           VAL [ SPR < >,\
-                                 SUBJ < >,\
-                                 COMPS < #comps > ] ],\
-        ARG-ST < #comps & \
-                 [ LOCAL.CAT [ HEAD verb, MC -,\
-                               VAL [ SUBJ < >,\
-                                     COMPS < > ] ] ] > ].'
+COMP_LEX_ITEM = 'complementizer-lex-item'
 
 FORM = 'FORM' # FORM feature name
 FORM_PATH = 'SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD' # FORM feature path
@@ -214,12 +203,13 @@ def use_init(ch, mylang, wo):
     return init
 
 def add_complementizer_supertype(mylang):
-    mylang.add(COMP_LEX_ITEM_DEF, section=COMPLEX)
+    mylang.add(lexbase.COMPLEMENTIZER, section=COMPLEX,merge=True)
 
 def add_complementizer_subtype(cs, mylang,ch,extra):
     id = cs.full_key
     typename = id + '-' + COMP_LEX_ITEM
     mylang.add(typename + ' := ' + COMP_LEX_ITEM + '.', section=COMPLEX)
+    mylang.add(typename + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.MC - ].',merge=True)
     constrain_for_features(typename,cs,mylang,'SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.',ch,is_nominalized_complement(cs))
     if cs['cformvalue']:
         constrain_lexitem_for_feature(typename,'SYNSEM.LOCAL.CAT.HEAD','FORM',cs['cformvalue'],mylang)
