@@ -284,32 +284,56 @@ def customize_poss_rules(strat,mylang,ch,rules):
                                                                 HEAD +vjrcdmo &\
                                                                   [ POSSESSOR nonpossessive ] ] ].',merge=True)
 
-        adj_head=False
-        head_adj=False
+        # Determine word order for adjectives and make adjective phrases reject possessive nouns
+        adj_pos=''
         for adj in ch.get('adj',[]):
-            modpos=adj.get('modpos',[])
-            if modpos=='before':
-                head_adj=True
-            elif modpos=='after':
-                adj_head=True
-            elif modpos=='either':
-                head_adj=True
-                adj_head=True
+            mod_wo=adj.get('modpos',[])
+            if mod_wo=='before':
+                adj_pos='head-adj'
+            elif mod_wo=='after':
+                adj_pos='adj-head'
+            elif mod_wo=='either':
+                adj_pos='either'
         for pc in ch.get('adj-pc',[]):
             for lrt in pc.get('lrt'):
-                modpos=lrt.get('modpos')
-                if modpos=='before':
-                    head_adj=True
-                elif modpos=='after':
-                    adj_head=True
-                elif modpos=='either':
-                    head_adj=True
-                    adj_head=True
-        if head_adj: mylang.add('head-adj-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR nonpossessive,\
-                                                                                          POSSESSUM nonpossessive  ] ].',merge=True)
-        if adj_head: mylang.add('adj-head-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR nonpossessive,\
-                                                                                          POSSESSUM nonpossessive ] ].',merge=True)
-        if phrase_rule=='head-comp-poss-phrase'+'-'+strat_num: # and rule_added and strat.get('possessum-type')!='non-affix':
+                mod_wo=lrt.get('modpos')
+                if mod_wo=='before':
+                    adj_pos='head-adj'
+                elif mod_wo=='after':
+                    adj_pos='adj-head'
+                elif mod_wo=='either':
+                    adj_pos='either'
+        clmod_pos=''
+        for cms in ch.get('cms',[]):
+            # If this is the first strategy, then just store its info
+            if clmod_pos=='':
+                if cms.get('position')=='after':
+                    clmod_pos='head-adj'
+                elif cms.get('position')=='before':
+                    clmod_pos='adj-head'
+                elif cms.get('position')=='either':
+                    clmod_pos='either'
+            # If this isn't the first strategy, check if you need to
+            # update from one order to two orders
+            if clmod_pos=='adj-head':
+                if cms.get('position')=='after' or cms.get('position')=='either':
+                    clmod_pos='either'
+            if clmod_pos=='head-adj':
+                if cms.get('position')=='before' or cms.get('position')=='either':
+                    clmod_pos='either'
+        if adj_pos=='head-adj' or adj_pos=='either':
+            mylang.add('head-adj-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR nonpossessive,\
+                                                                                 POSSESSUM nonpossessive  ] ].',section='addenda')
+        if adj_pos=='adj-head' or adj_pos=='either':
+            mylang.add('adj-head-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR nonpossessive,\
+                                                                                 POSSESSUM nonpossessive ] ].',section='addenda')
+        if clmod_pos=='head-adj' or clmod_pos=='either':
+            mylang.add('head-adj-scop-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR nonpossessive,\
+                                                                                 POSSESSUM nonpossessive  ] ].',section='addenda')
+        if clmod_pos=='adj-head' or clmod_pos=='either':
+            mylang.add('adj-head-scop-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR nonpossessive,\
+                                                                                 POSSESSUM nonpossessive  ] ].',section='addenda')
+        if phrase_rule=='head-comp-poss-phrase'+'-'+strat_num: 
             head_comp_order=customize_major_constituent_order(ch.get('word-order'),mylang,ch,rules)['hc']
             mylang.add(head_comp_order+'-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSSESSOR nonpossessive,\
                                                          HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL [ SPR <>,\
