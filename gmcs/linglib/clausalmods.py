@@ -657,6 +657,8 @@ def create_subordinated_feature(mylang, roots, cms, ch):
         mylang.add('coord-phrase :+ [ SYNSEM.SUBORDINATED #subord,\
 				    LCOORD-DTR.SYNSEM.SUBORDINATED #subord,\
 				    RCOORD-DTR.SYNSEM.SUBORDINATED #subord ].')
+        mylang.add('unary-bottom-coord-rule :+ [ SYNSEM.SUBORDINATED #subord,\
+                   				    ARGS < [ SYNSEM.SUBORDINATED #subord ] > ].')
     mylang.set_section('verb-lex')
     mylang.add('verb-lex := [ SYNSEM.SUBORDINATED none ].')
     mylang.set_section('lexrules')
@@ -707,6 +709,8 @@ def create_subpair_feature(mylang, roots, morphpair, ch):
         mylang.add('coord-phrase :+ [ SYNSEM.LOCAL.CAT.SUBPAIR #subpair,\
 				    LCOORD-DTR.SYNSEM.LOCAL.CAT.SUBPAIR #subpair,\
 				    RCOORD-DTR.SYNSEM.LOCAL.CAT.SUBPAIR #subpair ].')
+        mylang.add('unary-bottom-coord-rule :+ [ SYNSEM.LOCAL.CAT.SUBPAIR #subpair,\
+                           				    ARGS < [ SYNSEM.LOCAL.CAT.SUBPAIR #subpair ] > ].')
     mylang.set_section('features')
     mylang.add('subpair := *top*.')
     mylang.add('nopair := subpair.')
