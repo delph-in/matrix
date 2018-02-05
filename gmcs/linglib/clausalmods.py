@@ -52,7 +52,8 @@ def create_head_subordinator_basic_lex_type(mylang, ch, cms):
                                                                 VAL [ COMPS < > ]]]]>],\
                                 VAL [ SUBJ < >,\
                                         SPR < >,\
-                                        COMPS < [LOCAL.CAT [ MC -,\
+                                        COMPS < [ OPT -,\
+                                                  LOCAL.CAT [ MC -,\
                                                             VAL.COMPS < >]] > ]]].')
 
     if nominalized == 'yes':
