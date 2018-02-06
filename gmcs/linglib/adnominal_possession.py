@@ -128,6 +128,10 @@ def customize_poss_addenda(mylang):
     mylang.add('nonpossessive := poss.',section='addenda')
     mylang.add('possessor := possessive.',section='addenda')
     mylang.add('possessum := possessive.',section='addenda')
+    mylang.add('basic-bare-np-phrase :+ [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #possessor,\
+                                                             POSSESSUM #possessum],\
+                                          HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #possessor,\
+                                                             POSSESSUM #possessum] ].',section='addenda')
 
 # Calls customize_poss_rules, customize_poss_irules, and customize_poss_lexicon
 # to build possessive strategies for cases where the possessor
