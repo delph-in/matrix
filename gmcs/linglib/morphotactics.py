@@ -854,17 +854,41 @@ def write_valence_change_behavior(pc, lrt, mylang, choices):
     if pc.has_valchg_ops() and not lrt.valchgops:
         lrt.supertypes.add('add-only-no-ccont-rule')
 
+    # first need to resolve combinations
     lrt_ops = set()
     for op in lrt.valchgops:
         operation = op.get('operation','').lower()
 	lrt_ops.add(operation)
-        transitive = 'trans' in op.get('inputs','').split(',')
-        argnum, numargs = added_argnum_for_vchop(op)
+
+    # need to know if *any* valchg op in this lrt adds an argument
+    added_arg = 1 if len(set(['subj-add', 'obj-add']) & lrt_ops) > 0 else 0
+
+    for op in lrt.valchgops:
+        operation = op.get('operation','').lower()
+        # NB. Current implementation only supports one input (the first)
+        # inputs[0] will always exist, just may be blank
+        transitive = False
+        input = op.get('inputs','').split(',')[0]
+        if input == 'intrans':
+            numargs = 1
+        elif input == 'ditrans':
+            numargs = 3
+	else:
+            # should always be explicitly 'trans' but default regardless
+            transitive = True
+            numargs = 2
+ 
+        # NB. for now, several rules only support intrans/trans inputs
+        pos = op.get('argpos','post').lower()
+	
+        numargs += added_arg
+        argnum = numargs
+        if numargs == 3 and pos == 'pre': argnum -= 1
 
         if operation == 'subj-rem':
             lrt.supertypes.add('local-change-only-lex-rule') # includes no-ccont
             lrt.supertypes.add('xarg-change-only-ccont-lex-rule' if transitive else 'same-cont-lex-rule')
-            mylang.add(lrt.identifier() + ' := ' + lexrule_name('subj-rem-op', transitive) + '.')
+            mylang.add(lrt.identifier() + ' := ' + lexrule_name('subj-rem-op', transitive) + '.', merge=True)
         elif operation == 'subj-dem':
             lrt.supertypes.add('local-change-only-lex-rule')
             lrt.supertypes.add('same-cont-lex-rule')
@@ -876,23 +900,26 @@ def write_valence_change_behavior(pc, lrt, mylang, choices):
         elif operation == 'obj-rem':
             lrt.supertypes.add('local-change-only-lex-rule') # includes no-ccont
             lrt.supertypes.add('same-cont-lex-rule')
-            mylang.add(lrt.identifier() + ' := ' + lexrule_name('obj-rem-op') + '.')
+            if len(lrt_ops) > 1:
+		mylang.add(lrt.identifier() + ' := ' + lexrule_name('obj-unexpressed-op', argnum) + '.', merge=True)
+            else:
+                mylang.add(lrt.identifier() + ' := ' + lexrule_name('obj-rem-op') + '.', merge=True)
         elif operation == 'obj-add':
 	    lrt.supertypes.add('same-cont-lex-rule')
             lrt.supertypes.add(lexrule_name('added-arg-applicative', argnum, numargs))
             lrt.supertypes.add(lexrule_name('added-arg-head-type', argnum, numargs, op['argtype'].lower()))
             predname = op.get('predname','undef_pred')
-            mylang.add(lrt.identifier() + ' := [ C-CONT.RELS <! [ PRED "' + predname +'" ] !> ].')
+            mylang.add(lrt.identifier() + ' := [ C-CONT.RELS <! [ PRED "' + predname +'" ] !> ].', merge=True)
         elif operation == 'subj-add':
             lrt.supertypes.add('same-non-local-lex-rule')
             lrt.supertypes.add(lexrule_name('subj-add', argnum, transitive))
             predname = op.get('predname','causative_rel')
-            mylang.add(lrt.identifier() + ' := [ C-CONT.RELS <! [ PRED "' + predname + '" ] !> ].')
-
+            mylang.add(lrt.identifier() + ' := [ C-CONT.RELS <! [ PRED "' + predname + '" ] !> ].', merge=True)
 
     # final cleanup once all ops are known
     if 'subj-dem' in lrt_ops and 'obj-prom' not in lrt_ops:
         lrt.supertypes.add('same-cont-lex-rule')
+
 
 def write_pc_adj_syntactic_behavior(lrt, mylang, choices):
     # TODO: Don't do this if a supertype is specified

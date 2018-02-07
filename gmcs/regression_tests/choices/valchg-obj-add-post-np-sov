@@ -61,6 +61,7 @@ section=morphology
   verb-pc1_inputs=tverb
     verb-pc1_lrt1_name=addobj
       verb-pc1_lrt1_valchg1_operation=obj-add
+      verb-pc1_lrt1_valchg1_inputs=trans
       verb-pc1_lrt1_valchg1_predname=added_rel
       verb-pc1_lrt1_valchg1_argpos=post
       verb-pc1_lrt1_valchg1_argtype=np

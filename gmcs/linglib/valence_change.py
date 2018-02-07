@@ -6,13 +6,27 @@ from functools import partial
 
 #### UTILITIES ####
 
-# currently only intransitive and strict transitive
+
+
+# trans?  add?  pos?  ->args  ->argnum
+# ------------------------------------
+#   N      N     pre    1         1
+#   N      N     post   1         1
+#   N      Y     pre    2         2
+#   N      Y     post   2         2
+#   Y      N     pre    2         2
+#   Y      N     post   2         2
+#   Y      Y     pre    3         2
+#   Y      Y     post   3         3
+
 def added_argnum_for_vchop(vchop):
     position = vchop.get('argpos','post').lower() # default to post
     inputs = vchop.get('inputs','').split(',') 
     transitive = 'trans' in inputs or (len(inputs) == 1 and inputs[0] == '') # default to transitive
-    numargs = 3 if transitive else 2
-    argnum = numargs - (1 if (transitive and position == 'pre') else 0)
+    adding_op = vchop.get('operation','') in ['subj-add', 'obj-add']
+    numargs = 2 if transitive else 1
+    if adding_op: numargs += 1
+    argnum = 2 if (numargs == 3 and position == 'pre') else numargs
     return (argnum, numargs)
     
 
@@ -22,6 +36,9 @@ def added_argnum_for_vchop(vchop):
 def subj_rem_op_lex_rule_name(transitive):
     tr_itr = 'tr' if transitive else 'itr'
     return 'subj-rem-{0}-op-lex-rule'.format(tr_itr)
+
+def obj_unexpressed_op_lex_rule_name(argnum):
+    return 'obj-{0}-unexpressed-op-lex-rule'.format(argnum)
 
 def subj_dem_op_lex_rule_name(added_arg, total_args):
     return 'subj-dem-to-arg{0}of{1}-op-lex-rule'.format(added_arg, total_args)
@@ -58,6 +75,7 @@ rulenamefns = {'subj-rem-op': subj_rem_op_lex_rule_name,
                'subj-dem-op': subj_dem_op_lex_rule_name,
                'obj-prom-op': obj_prom_op_lex_rule_name,
                'obj-rem-op': (lambda: 'obj-rem-op-lex-rule'),
+               'obj-unexpressed-op': obj_unexpressed_op_lex_rule_name,
                'added-arg-non-local': added_arg_non_local_lex_rule_name,
                'added-arg-applicative': added_arg_applicative_lex_rule_name,
                'added-arg-head-type': added_arg_head_lex_rule_name,
@@ -131,10 +149,14 @@ def subj_rem_op_lex_rule(transitive=True):
 #    DTR.SYNSEM.LOCAL.CAT.VAL {dtr-val} ].'''.format(**rulevars)
 
 def obj_rem_op_lex_rule():
-  return lexrule_name('obj-rem-op') + ''' := comps-change-only-lex-rule & no-ccont-lex-rule &
+    return lexrule_name('obj-rem-op') + ''' := comps-change-only-lex-rule & no-ccont-lex-rule &
   [ SYNSEM.LOCAL.CAT.VAL.COMPS #comps,
     DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < unexpressed . #comps > ].'''
 
+def obj_unexpressed_op_lex_rule(argnum):
+    obj_path = 'REST.FIRST' if argnum == 3 else 'FIRST'
+    return lexrule_name('obj-unexpressed-op', argnum) + ''' := lex-rule &
+  [ DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.{0} unexpressed ].'''.format(obj_path)
 
 def old_subj_dem_op_lex_rule():
   return lexrule_name('subj-dem-op') + ''' := subj-and-comps-change-only-lex-rule &
@@ -147,15 +169,19 @@ def subj_dem_op_lex_rule(demoted_argnum, total_args):
     # to copy up the one not being demoted.
     other_arg = ['#oarg'] if total_args == 3 else [] 
     hook = ['[ {hook} ]']
-    hook_path = 'LOCAL.CONT.HOOK.INDEX #sidx'
+    hook_path = '''LOCAL [ CAT.VAL [ SPR #spr,
+                                     COMPS #comps ],
+                           CONT.HOOK.INDEX #sidx ]'''
+    #hook_path = 'LOCAL.CONT.HOOK.INDEX #sidx'
     # ok here if only 2 args; adding [] doesn't do anything to the list
     compslist = ', '.join((other_arg + hook) if demoted_argnum == 3 else (hook + other_arg))
     rulevars['rulename'] = gen_rulename('subj-dem-op', demoted_argnum, total_args)
     rulevars['dtrcomps'] = compslist.format(hook='')
     rulevars['mtrcomps'] = compslist.format(hook=hook_path)
+    rulevars['hook_path'] = hook_path
     rule = '''{rulename} := subj-and-comps-change-only-lex-rule &
   [ SYNSEM.LOCAL.CAT.VAL.COMPS < {mtrcomps} >,
-    DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ < [ LOCAL.CONT.HOOK.INDEX #sidx ] >,
+    DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ < [ {hook_path} ] >,
                                COMPS < {dtrcomps} > ] ].'''.format(**rulevars)
     return rule
 
@@ -173,14 +199,18 @@ def obj_prom_op_lex_rule(promoted_argnum, total_args):
     ## to copy up the one not being promoted.
     other_arg = ['#oarg'] if total_args == 3 else [] 
     hook = ['[ {hook} ]']
-    hook_path = 'LOCAL.CONT.HOOK.INDEX #sidx'
+    #hook_path = 'LOCAL.CONT.HOOK.INDEX #sidx'
+    hook_path = '''LOCAL [ CAT.VAL [ SPR #spr,
+                                     COMPS #comps ],
+                           CONT.HOOK.INDEX #sidx ]'''
     # ok here if only 2 args; adding [] doesn't do anything to the list
     compslist = (other_arg + hook) if promoted_argnum == 3 else (hook + other_arg)
     rulevars['rulename'] = gen_rulename('obj-prom-op', promoted_argnum, total_args)
     rulevars['dtrcomps'] = ', '.join(compslist).format(hook=hook_path)
     rulevars['mtrcomps'] = ', '.join(compslist).format(hook='')
+    rulevars['hook_path'] = hook_path
     rule = '''{rulename} := subj-and-comps-change-only-lex-rule &
-  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < [ LOCAL.CONT.HOOK.INDEX #sidx ] >,
+  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < [ {hook_path} ] >,
                            COMPS < {mtrcomps} > ],
     DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < {dtrcomps} > ].'''.format(**rulevars)
     return rule
@@ -394,6 +424,7 @@ subj_rem_op_lex_rule_gen = subj_rem_op_lex_rule
 obj_rem_op_lex_rule_gen = obj_rem_op_lex_rule
 subj_dem_op_lex_rule_gen = subj_dem_op_lex_rule
 obj_prom_op_lex_rule_gen = obj_prom_op_lex_rule
+obj_unexpressed_op_lex_rule_gen = obj_unexpressed_op_lex_rule
 added_arg_applicative_lex_rule_gen = added_arg_applicative_lex_rule
 added_arg_non_local_lex_rule_gen = added_arg_non_local_lex_rule
 basic_applicative_lex_rule_gen = basic_applicative_lex_rule
@@ -403,6 +434,8 @@ rule_generators = {'subj-rem-op': {'name': subj_rem_op_lex_rule_name,
                                    'rule': subj_rem_op_lex_rule_gen},
                    'obj-rem-op':  {'name': (lambda: 'obj-rem-op-lex-rule'),
                                    'rule': obj_rem_op_lex_rule_gen },
+                   'obj-unexpressed-op': {'name': obj_unexpressed_op_lex_rule_name,
+                                          'rule': obj_unexpressed_op_lex_rule_gen},
                    'subj-dem-op': {'name': subj_dem_op_lex_rule_name,
                                    'rule': subj_dem_op_lex_rule_gen},
                    'obj-prom-op': {'name': obj_prom_op_lex_rule_name,
@@ -476,28 +509,61 @@ def customize_valence_change(mylang, ch, lexicon, rules, irules, lrules):
         pc_key = pc.full_key
         pc_inputs = pc.get('inputs', [])
         idx = pc['lrt'].next_iter_num() if 'lrt' in pc else 1
+        lrt_ops = set()
         for lrt in pc.get('lrt', []):
             for vchop in lrt.get('valchg', []):
-                inputs = vchop.get('inputs','').split(',')
-                # default to transitive
-                transitive = 'trans' in inputs or (len(inputs) == 1 and inputs[0] == '')
-                opname = vchop['operation'].lower()
-                argnum, numargs = added_argnum_for_vchop(vchop)
-                if opname == 'subj-rem':
+                operation = vchop.get('operation','').lower()
+                lrt_ops.add(operation)
+            added_arg = 1 if len(set(['subj-add', 'obj-add']) & lrt_ops) > 0 else 0
+
+            for vchop in lrt.get('valchg', []):
+                operation = vchop.get('operation','').lower()
+                # NB. Current implementation only supports one input (the first)
+                # inputs[0] will always exist, just may be blank
+                transitive = False
+                input = vchop.get('inputs','').split(',')[0]
+                if input == 'intrans':
+                    numargs = 1
+                elif input == 'ditrans':
+                            numargs = 3
+                else:
+                    # should always be explicitly 'trans' but default regardless
+                    transitive = True
+                    numargs = 2
+
+                # NB. for now, several rules only support intrans/trans inputs
+                pos = vchop.get('argpos','post').lower()
+		
+
+                numargs += added_arg
+                argnum = numargs
+                if numargs == 3 and pos == 'pre': argnum -= 1
+                ##inputs = vchop.get('inputs','').split(',')
+                ### default to transitive
+                ##transitive = 'trans' in inputs or (len(inputs) == 1 and inputs[0] == '')
+                ##opname = vchop['operation'].lower()
+                ##pos = vchop.get('argpos','post').lower()
+                ##argnum, _ = added_argnum_for_vchop(vchop)
+                ##numargs = (2 if transitive else 1) + added_arg
+                ##argnum = numargs
+                #if numargs == 3 and pos == 'pre': argnum -= 1
+
+                if operation == 'subj-rem':
                     rules.add('subj-rem-op', transitive)
-                elif opname == 'obj-rem':
+                elif operation == 'obj-rem':
+                    rules.add('obj-unexpressed-op', argnum)
                     rules.add('obj-rem-op')
-                elif opname == 'subj-dem':
+                elif operation == 'subj-dem':
                     rules.add('subj-dem-op', argnum, numargs)
-                elif opname == 'obj-prom':
+                elif operation == 'obj-prom':
                     rules.add('obj-prom-op', argnum, numargs)
-                elif opname == 'obj-add':
+                elif operation == 'obj-add':
                     rules.add('basic-applicative')
                     rules.add('added-arg-applicative', argnum, numargs)
                     rules.add('added-arg-non-local', argnum, numargs)
                     argtype = vchop.get('argtype','').lower()
                     rules.add('added-arg-head-type', argnum, numargs, argtype)
-                elif opname == 'subj-add':
+                elif operation == 'subj-add':
                     rules.add('scopal-rel')
                     position = vchop.get('argpos', '').lower()
                     inputval = vchop.get('input', '').lower()
