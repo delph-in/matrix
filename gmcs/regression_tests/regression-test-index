@@ -1747,3 +1747,6 @@ cagr-pseudo-urdu-mixed-agreement=Pseudo-Urdu mixed closest conjunct and feature 
 
 clausalmods-mandarin=an illustrative langauge for clausal modifiers based on mandarin
 clausalmods-wambaya=An illustrative grammar for clausal modifiers based on wambaya
+adnom-poss-spec-juxt-constraint=Juxtaposition poss construction w spec-like attachment and case constraints on possessor
+adnom-poss-spec-juxt-block-pron=Juxtaposition poss construction w spec-like attachment where prons can't be possessor or possessum
+adnom-poss-spec-juxt-block-head-pron-only=Juxtaposition poss construction w spec-like attachment where prons can't be head, can be dep

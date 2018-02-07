@@ -653,7 +653,6 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
         if pron:
             mylang.add(ntype + ' := [ SYNSEM.LOCAL.CAT.HEAD.PRON + ].')
         features.customize_feature_values(mylang, ch, hierarchies, noun, ntype, 'noun')
-
         for stem in noun.get('stem', []):
             orthstr = orth_encode(stem.get('orth'))
             pred = stem.get('pred')
