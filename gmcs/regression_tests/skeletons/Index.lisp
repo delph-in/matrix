@@ -22,6 +22,7 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "valchg-jpn-rom") (:content . "valchg-jpn-rom: Illustrative valence change examples for Japanese"))
 ((:path . "clausalmods-wambaya") (:content . "clausalmods-wambaya: An illustrative grammar for clausal modifiers based on wambaya"))
 ((:path . "clausalmods-mandarin") (:content . "clausalmods-mandarin: an illustrative langauge for clausal modifiers based on mandarin"))
 ((:path . "pseudo-urdu") (:content . "pseudo-urdu: Pseudo-Urdu mixed closest conjunct and feature resolution coordination and agreement grammar"))
