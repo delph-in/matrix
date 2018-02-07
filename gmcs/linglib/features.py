@@ -89,7 +89,12 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
         # it sets a boolean flag (poss_lrt or poss_pron_lrt),
         # which is subsequently used to correctly adjust the
         # feature geometry.
-        poss_lrt=False
+    
+        # Bool to id possessive affix lrts when this fn called by 
+        # process_cfv_list(), which is called in customize.py
+        # and not in adnominal_possession.py
+        poss_lrt=False 
+        # Bool to id poss-pron affix lrts
         poss_pron_lrt=False
         agreeing_element=''
         for feature in ch_dict.get('feat'):
@@ -123,7 +128,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
         # adjectives, copulas, and their lexical rules, allowing
         # the user to specify which argument the adjective or copula
         # is agreeing with
-        # EKN 2018-01-06: It now also appears on nouns, to distinguish
+        # EKN 2018-01-06: 'head' now also appears on nouns, to distinguish
         # a noun's inherent features from features that agree with
         # another nominal element in a possessive phrase; however,
         # the head feature for possessive phrases is dealt with above

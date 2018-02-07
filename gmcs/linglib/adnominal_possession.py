@@ -709,23 +709,23 @@ def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
             mylang.add(noun_type+' := [ SYNSEM.LOCAL.CAT.HEAD.POSSESSOR.POSS-AGR #png,\
                                               '+agr_prefix+' #png ].')
 
-        for instance in strat.get('instance'):
-            orth=instance.get('orth')
-            instance_name=noun_id(instance)
+        for pron_inst in strat.get('instance'):
+            orth=pron_inst.get('orth')
+            instance_name=noun_id(pron_inst)
             mylang.add(instance_name+' := '+noun_type+'.')
-            customize_feature_values(mylang,ch,hierarchies,instance,instance_name,'noun')
+            customize_feature_values(mylang,ch,hierarchies,pron_inst,instance_name,'noun')
             lexicon.add(instance_name.replace('-lex','')+' := '+instance_name+' &\
                                                           [ STEM < "'+orth+'" > ].')
 
             instance_tmp={}                
-            for key in instance.keys():
+            for key in pron_inst.keys():
                 # Relabel the inherent features as something else ('skip') 
                 # Relabel the agreement features as simply features ('feat')
                 # Then call customize_feature_values() with the 'poss-marker' setting
                 # so that the agreement features are added at POSS.POSS-AGR instead of HOOK.INDEX.PNG
                 new_key=key.replace('feat','skip')
                 new_key=new_key.replace('agr-skip','feat')
-                instance_tmp[new_key]=instance.get(key)
+                instance_tmp[new_key]=pron_inst.get(key)
             # TODO: Figure out how to cast instance_tmp from a dict to a ChoiceDict so that no future
             #  developers have to deal with this mess in features.py
             customize_feature_values(mylang,ch,hierarchies,instance_tmp,instance_name,'poss-marker')
