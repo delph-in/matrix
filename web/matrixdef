@@ -454,6 +454,10 @@ BeginIter poss-strat{i} "a possessive strategy"
      . neither "Neither marking" "" "No possessive morphemes appear<br>" "toggle_element.call(this, 'possessum-morph{i}', 'off'); toggle_element.call(this, 'possessor-morph{i}', 'off');toggle_element.call(this, 'juxt{i}', 'on');"
 
      Label "<div id='juxt{i}' style='display:none'>"
+
+        Radio pronoun-allow "Pronoun allowability" "<p>Can the possessor in these unmarked possessive constructions be a pronoun?</p>" ""
+        . yes "Pronouns allowed" "" "yes<br>"
+        . no "Pronouns disallowed" "" "no<br>" 	
      
         Label "<p>If there are constraints on the features of the possessor (e.g. case) in these unmarked possessive constructions, please use the button below to add them.</p>"
         BeginIter feat{j} "a feature constraint on the possessor"

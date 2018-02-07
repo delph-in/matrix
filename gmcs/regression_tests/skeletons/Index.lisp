@@ -22,6 +22,8 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "adnom-poss-spec-juxt-block-head-pron-only") (:content . "adnom-poss-spec-juxt-block-head-pron-only: Juxtaposition poss construction w spec-like attachment where prons can't be head, can be dep"))
+((:path . "adnom-poss-spec-juxt-block-pron") (:content . "adnom-poss-spec-juxt-block-pron: Juxtaposition poss construction w spec-like attachment where prons can't be possessor or possessum"))
 ((:path . "adnom-poss-spec-juxt-constraint") (:content . "adnom-poss-spec-juxt-constraint: Juxtaposition poss construction w spec-like attachment and case constraints on possessor"))
 ((:path . "clausalmods-mandarin") (:content . "clausalmods-mandarin: an illustrative langauge for clausal modifiers based on mandarin"))
 ((:path . "pseudo-urdu") (:content . "pseudo-urdu: Pseudo-Urdu mixed closest conjunct and feature resolution coordination and agreement grammar"))

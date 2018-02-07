@@ -57,7 +57,7 @@ JUXTAPOSITION_RULE=' := [ SYNSEM.LOCAL.CAT [ HEAD #head,\
                                                     SUBJ < > ] ],\
                            C-CONT [ HOOK #hook & [ INDEX #possessum ],\
                                     ICONS <! !>],\
-                           HEAD-DTR.SYNSEM.LOCAL [ CAT [ HEAD #head & noun ],\
+                           HEAD-DTR.SYNSEM.LOCAL [ CAT [ HEAD #head & noun & [ PRON - ] ],\
                                                    CONT.HOOK #hook & [ INDEX #possessum,\
                                                                LTOP #lbl ] ],\
                            NON-HEAD-DTR.SYNSEM.LOCAL [ CAT [ HEAD noun,\
@@ -212,16 +212,14 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
         mylang.add(phrase_rule+JUXTAPOSITION_RULE)
         if strat.get('mod-spec')=='spec':
             mylang.add(phrase_rule+' := [ SYNSEM.LOCAL.CAT.VAL.SPR < >,\
-                                          HEAD-DTR.SYNSEM.LOCAL [ CAT [ HEAD.PRON -,\
-                                                                        VAL.SPR <[ ]> ],\
+                                          HEAD-DTR.SYNSEM.LOCAL [ CAT [ VAL.SPR <[ ]> ],\
                                                                   CONT.HOOK.INDEX.COG-ST uniq-id  ],\
                                           C-CONT [ RELS <! '+POSS_REL+',\
                                                            '+POSSESSUM_EXIST_REL+' !>,\
                                                    HCONS <! qeq & [ HARG #harg, LARG #lbl] !> ] ].')
         elif strat.get('mod-spec')=='mod':
             mylang.add(phrase_rule+' := [ SYNSEM.LOCAL.CAT.VAL.SPR #spr,\
-                                          HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.PRON -,\
-                                                                      VAL.SPR #spr & <[ ]>],\
+                                          HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.SPR #spr & <[ ]>],\
                                           C-CONT [ RELS <! '+POSS_REL+' !>,\
                                                    HCONS <! !> ] ].')
         if strat.get('feat'):
