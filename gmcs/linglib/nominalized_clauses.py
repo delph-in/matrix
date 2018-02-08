@@ -138,12 +138,13 @@ LOW_LEXRULE_SUBJ_ID_COMPS_ID = 'low-nmz-subjid-compsid-lex-rule := low-nominaliz
 #A non-branching rule for nominalized clauses to form a NP, with nominalized_rel for the MRS.
 # For high nominalization.
 NMZ_CLAUSE = '-nominalized-clause-phrase := unary-phrase &\
-                                    [ SYNSEM.LOCAL.CAT [ HEAD noun &\
+                                    [ SYNSEM.LOCAL [ CAT [ HEAD noun &\
                                                 [ NMZ + ],\
             		                VAL [ SPR < [ OPT + ] >,\
                                             SPEC < >,\
                                             COMPS < >,\
             		                        SUBJ < #subj > ]],\
+            		                            COORD - ],\
                                     C-CONT [ RELS <! [ PRED "nominalized_rel",\
             	    	            LBL #ltop,\
             		                ARG0 ref-ind & #arg0,\
@@ -161,16 +162,18 @@ NMZ_CLAUSE = '-nominalized-clause-phrase := unary-phrase &\
             		    			  SPR < >,\
             			    		  SPEC < > ]],\
             			            CONT.HOOK [ XARG #xarg,\
-            			                LTOP #larg ]]]] > ].'
+            			                LTOP #larg ],\
+            			                COORD - ]]] > ].'
 
 #A non-branching rule for nominalized clauses to form a NP, semantically emtpy.
 NO_REL_NLZ_CLAUSE = '-no-rel-nominalized-clause-phrase := unary-phrase &\
-  [ SYNSEM [ LOCAL.CAT [ HEAD noun &\
-                            [ NMZ + ],\
+  [ SYNSEM [ LOCAL [ CAT [ HEAD noun &\
+                            [ NMZ +, MOD < > ],\
                          VAL [ COMPS < >,\
                                         SUBJ < >,\
                                         SPR < >,\
-                                        SPEC < > ]]],\
+                                        SPEC < > ]],\
+                COORD - ]],\
     C-CONT [ RELS <! !>,\
 	     HCONS <! !>,\
 	     HOOK [ XARG #xarg,\
@@ -182,17 +185,19 @@ NO_REL_NLZ_CLAUSE = '-no-rel-nominalized-clause-phrase := unary-phrase &\
                                         SPR < >,\
                                         SPEC < > ] ],\
 		CONT.HOOK [ XARG #xarg,\
-		            LTOP #ltop ] ] ] ] > ].'
+		            LTOP #ltop ],\
+		COORD - ] ] ] > ].'
 
 #A non-branching rule for nominalized clauses to form a NP, with nominalized_rel for the MRS.
 # For middle nominalization.
 SUBJ_NMZ_CLAUSE = '-nominalized-clause-phrase := unary-phrase &\
-                          [ SYNSEM.LOCAL.CAT [ HEAD noun &\
-                            [ NMZ + ],\
+                          [ SYNSEM.LOCAL [ CAT [ HEAD noun &\
+                            [ NMZ +, MOD < > ],\
 		       VAL [ SPR < [ OPT + ] >,'\
                            'COMPS < >,\
 					  SUBJ < >,\
 					  SPEC < > ]],\
+					                    COORD - ],\
     C-CONT [ RELS <! [ PRED "nominalized_rel",\
 		       LBL #ltop,\
 		       ARG0 ref-ind & #arg0,\
@@ -210,7 +215,8 @@ SUBJ_NMZ_CLAUSE = '-nominalized-clause-phrase := unary-phrase &\
 					  SPR < >,\
 					  SPEC < > ]],\
 			      CONT.HOOK [ XARG #xarg,\
-			                LTOP #larg ]]]] > ].'
+			                LTOP #larg ],\
+			        COORD - ]]] > ].'
 
 def customize_nmcs(mylang, ch, rules):
     """
@@ -220,7 +226,7 @@ def customize_nmcs(mylang, ch, rules):
     for ns in ch.get('ns'):
         level = ns.get('level')
         nmzrel = ns.get('nmzRel')
-        add_nmz_feature(mylang)
+        add_nmz_feature(mylang, ch)
         add_nonevent_subj_rules(ch, level, mylang, rules)
         add_nmz_lexrules(ch, level, mylang)
         add_nmz_clause_phrases(level, mylang, nmzrel, rules)
@@ -412,7 +418,7 @@ def update_lexical_rules(mylang, ch):
                         else:
                             lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') + [LOW_SUBJ_COMPS])
 
-def add_nmz_feature(mylang):
+def add_nmz_feature(mylang, ch):
     """
     Add NMZ feature to addenda, verb, and nouns.
     """
@@ -422,4 +428,11 @@ def add_nmz_feature(mylang):
     mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT.HEAD.NMZ - ].')
     mylang.set_section('verb-lex')
     mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HEAD.NMZ - ].')
+    if 'cs' in ch:
+        mylang.set_section('addenda')
+        mylang.add('coord-phrase :+ [ SYNSEM.LOCAL.CAT.HEAD.NMZ #nmz,\
+    	 		    LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.NMZ #nmz,\
+    			    RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.NMZ #nmz ].')
+        mylang.add('unary-bottom-coord-rule :+ [ SYNSEM.LOCAL.CAT.HEAD.NMZ #nmz,\
+           				    ARGS < [ SYNSEM.LOCAL.CAT.HEAD.NMZ #nmz ] > ].')
 

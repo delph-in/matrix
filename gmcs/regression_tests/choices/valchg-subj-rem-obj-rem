@@ -57,6 +57,7 @@ section=morphology
   verb-pc1_inputs=verb
     verb-pc1_lrt1_name=subjrem
       verb-pc1_lrt1_valchg1_operation=subj-rem
+      verb-pc1_lrt1_valchg1_inputs=trans
       verb-pc1_lrt1_lri1_inflecting=yes
       verb-pc1_lrt1_lri1_orth=-nosubj
   verb-pc2_order=suffix

@@ -1,4 +1,4 @@
-
+from gmcs.linglib import lexbase
 
 ######################################################################
 # customize_yesno_questions()
@@ -125,25 +125,15 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies):
         comment = \
             'We treat question particles as complementizers.\n' + \
             'Here is the lexical type for complementizers.'
-        typedef = '''
-      complementizer-lex-item := raise-sem-lex-item & basic-one-arg &
-         [ SYNSEM.LOCAL.CAT [ HEAD comp &
-                                   [ MOD < > ],
-                              VAL [ SPR < >,
-                                    SUBJ < >,
-                                    COMPS < #comp > ]],
-           ARG-ST < #comp & [ LOCAL.CAT [ MC +,
-                                          HEAD verb,
-                                          VAL [ SUBJ < >,
-                                                COMPS < > ]]] > ]
-                                                .'''
-        mylang.add(typedef, comment, section='otherlex')
+        typedef = lexbase.COMPLEMENTIZER
+        mylang.add(typedef, comment, section='complex')
 
         comment = 'Subtype for question particles. Constrains SF to ques.'
         typedef = '''
       qpart-lex-item := complementizer-lex-item &
-         [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques ].'''
-        mylang.add(typedef, comment, section='otherlex')
+         [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.SF ques,
+                          CAT.VAL.COMPS.FIRST.LOCAL.CAT.MC + ] ].'''
+        mylang.add(typedef, comment, section='complex')
 
         # ERB 2010-04-15 If we have a finite/non-finite distinction in the
         # language, the qpart should insist on attaching to finite clauses

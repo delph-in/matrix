@@ -31,7 +31,8 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
 
     # TJT 2014-08-15: changing this to a map for readability/speed
     prefix_map = { 'det': 'SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.',
-                   'con': 'HEAD-DTR.SYNSEM.' }
+                   'con': 'HEAD-DTR.SYNSEM.',
+                   'juxt-rule': 'NON-HEAD-DTR.SYNSEM.'}
     pos_geom_prefix = prefix_map[pos] if pos in prefix_map else 'SYNSEM.'
 
     iter_feat = 'feat' if pos != 'auxcomplement' else 'compfeature'
@@ -59,6 +60,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     head_map = {
         'subj': 'LOCAL.CAT.VAL.SUBJ.FIRST.',
         'obj': 'LOCAL.CAT.VAL.COMPS.FIRST.',
+        'obj2': 'LOCAL.CAT.VAL.COMPS.REST.FIRST.',
         'higher': 'SC-ARGS.FIRST.',
         'lower': 'SC-ARGS.REST.FIRST.',
         'xarg': 'LOCAL.CONT.HOOK.XARG.',  # XARG for adjectives
@@ -89,7 +91,12 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
         # it sets a boolean flag (poss_lrt or poss_pron_lrt),
         # which is subsequently used to correctly adjust the
         # feature geometry.
-        poss_lrt=False
+    
+        # Bool to id possessive affix lrts when this fn called by 
+        # process_cfv_list(), which is called in customize.py
+        # and not in adnominal_possession.py
+        poss_lrt=False 
+        # Bool to id poss-pron affix lrts
         poss_pron_lrt=False
         agreeing_element=''
         for feature in ch_dict.get('feat'):
@@ -123,7 +130,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
         # adjectives, copulas, and their lexical rules, allowing
         # the user to specify which argument the adjective or copula
         # is agreeing with
-        # EKN 2018-01-06: It now also appears on nouns, to distinguish
+        # EKN 2018-01-06: 'head' now also appears on nouns, to distinguish
         # a noun's inherent features from features that agree with
         # another nominal element in a possessive phrase; however,
         # the head feature for possessive phrases is dealt with above
@@ -366,18 +373,18 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                      [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques ].',
                         merge=True)
 
-            ## Specifiying OPT- on each user defined type instead of creating a supertype because
-            #It the supertype would need to inherit from transitive-verb-lex and the code already puts
-            #transitive-verb-lex as a supertype of user-defined typ thus causing an inheritance issue.
-            #elif(n=='OPT' and v[0] == 'plus'):
-            # SS 2009-05-26 argument optionality is added to user defined types here
-            #if h == 'subj':
-            #  tdlfile.add(type_name + ':= subj-drop-verb-lex.', merge = True)
-            #if h == 'obj':
-            #  tdlfile.add(type_name + ':= obj-drop-verb-lex.', merge = True)
+        ## Specifiying OPT- on each user defined type instead of creating a supertype because
+        #It the supertype would need to inherit from transitive-verb-lex and the code already puts
+        #transitive-verb-lex as a supertype of user-defined typ thus causing an inheritance issue.
+        #elif(n=='OPT' and v[0] == 'plus'):
+        # SS 2009-05-26 argument optionality is added to user defined types here
+        #if h == 'subj':
+        #  tdlfile.add(type_name + ':= subj-drop-verb-lex.', merge = True)
+        #if h == 'obj':
+        #  tdlfile.add(type_name + ':= obj-drop-verb-lex.', merge = True)
 
         elif n == 'OPT':
-            geom_map = {'subj': 'SUBJ', 'obj': 'COMPS'}
+            geom_map = {'subj': 'SUBJ', 'obj': 'COMPS', 'obj2': 'COMPS.REST'}
             if head in geom_map:
                 bool_val = {'plus': '+', 'minus': '-'}[v[0].lower()]
                 val_geom = geom_map[head.lower()]

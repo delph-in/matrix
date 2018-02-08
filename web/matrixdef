@@ -448,10 +448,29 @@ BeginIter poss-strat{i} "a possessive strategy"
      . mod "modifier" "" "modifier<br>"
 
      Radio mark-loc "Mark location" "<p> Do any morphemes (affixes, clitics, or separate words) appear which mark the noun phrase as possessive? If so, where?</p>" ""
-     . possessor "Possessor marking" "" "On the possessor<br>"  "toggle_element.call(this, 'possessor-morph{i}', 'on'); toggle_element.call(this, 'possessum-morph{i}', 'off');"
-     . possessum "Possessum marking" "" "On the possessum<br>"  "toggle_element.call(this, 'possessum-morph{i}', 'on'); toggle_element.call(this, 'possessor-morph{i}', 'off');"
-     . both "Both marking" "" "On both the possessor and the possessum<br>" "toggle_element.call(this, 'possessum-morph{i}', 'on'); toggle_element.call(this, 'possessor-morph{i}', 'on');"
-     . neither "Neither marking" "" "No possessive morphemes appear<br>" "toggle_element.call(this, 'possessum-morph{i}', 'off'); toggle_element.call(this, 'possessor-morph{i}', 'off');"
+     . possessor "Possessor marking" "" "On the possessor<br>"  "toggle_element.call(this, 'possessor-morph{i}', 'on'); toggle_element.call(this, 'possessum-morph{i}', 'off');toggle_element.call(this, 'juxt{i}', 'off');"
+     . possessum "Possessum marking" "" "On the possessum<br>"  "toggle_element.call(this, 'possessum-morph{i}', 'on'); toggle_element.call(this, 'possessor-morph{i}', 'off');toggle_element.call(this, 'juxt{i}', 'off');"
+     . both "Both marking" "" "On both the possessor and the possessum<br>" "toggle_element.call(this, 'possessum-morph{i}', 'on'); toggle_element.call(this, 'possessor-morph{i}', 'on');toggle_element.call(this, 'juxt{i}', 'off');"
+     . neither "Neither marking" "" "No possessive morphemes appear<br>" "toggle_element.call(this, 'possessum-morph{i}', 'off'); toggle_element.call(this, 'possessor-morph{i}', 'off');toggle_element.call(this, 'juxt{i}', 'on');"
+
+     Label "<div id='juxt{i}' style='display:none'>"
+
+        Radio pronoun-allow "Pronoun allowability" "<p>Can the possessor in these unmarked possessive constructions be a pronoun?</p>" ""
+        . yes "Pronouns allowed" "" "yes<br>"
+        . no "Pronouns disallowed" "" "no<br>" 	
+     
+        Label "<p>If there are constraints on the features of the possessor (e.g. case) in these unmarked possessive constructions, please use the button below to add them.</p>"
+        BeginIter feat{j} "a feature constraint on the possessor"
+     
+           Select name "Juxtaposition construction possessor feature {j} Name" "Name: " " "
+      	   fillnames c=noun
+
+      	   MultiSelect value "Juxtaposition construction possessor feature {j} Value" "Value: " ""
+      	   fillvalues p=poss-strat{i}_feat{j}_name      
+
+        EndIter feat
+
+     Label "</div>"
 
      Label "<div id='possessor-morph{i}' style='display:none'>"
      
@@ -467,7 +486,7 @@ BeginIter poss-strat{i} "a possessive strategy"
 	   . agree "Possessor agree" "" "yes<br>"
 	   . non-agree "Possessor non-agree" "" "no<br>"
 
-	   Label "<p> A feature called <span class=\"feat\">possessor_poss-strat{i}</span> with possible values <span class=\"tt\">plus</span> and <span class=\"tt\">minus</span> has been defined for use in defining morphemes on the morphology page.  In order to define a possessor-marking affix, add the appropriate position class and lexical rules, and mark the lexical rules as [<span class=\"feat\">possessor_poss-strat{i}</span> <span class=\"tt\">plus</span>]. If you make the possessive marking obligatory (recommended), remember to also create a non-possessive inflecting rule in the same position class by creating a lexical rule type marked [<span class=\"feat\">possessor_poss-strat{i}</span> <span class=\"tt\">minus</span>]. Be sure to select the feature that corresponds to <span class=\"feat\">possessor_poss-strat{i}</span>. If the possessor-marking affix(es) agree(s) with the possessum, add appropriate person, number, and gender features to each lexical rule type. Note that any person/number/gender features that are listed on a possessor lexical rule type are assumed to be features that agree with the possessum.</p>"
+	   Label "<p> A feature called <span class=\"feat\">poss-strat{i}</span> with possible values <span class=\"tt\">possessor</span>, <span class=\"tt\">possessum</span>,  and <span class=\"tt\">nonpossessive</span> has been defined for use in defining morphemes on the morphology page.  In order to define a possessor-marking affix, add the appropriate position class and lexical rules, and mark the lexical rules as [<span class=\"feat\">poss-strat{i}</span> <span class=\"tt\">possessor</span>]. If you make the possessive marking obligatory (recommended), remember to also create a non-possessive inflecting rule in the same position class by creating a lexical rule type marked [<span class=\"feat\">poss-strat{i}</span> <span class=\"tt\">nonpossessive</span>]. Be sure to select the feature that corresponds to <span class=\"feat\">poss-strat{i}</span>. If the possessor-marking affix(es) agree(s) with the possessum, add appropriate person, number, and gender features to each lexical rule type. Note that any person/number/gender features that are listed on a possessor lexical rule type are assumed to be features that agree with the possessum.</p>"
 
 	   Label "</div>"
 
@@ -525,7 +544,7 @@ BeginIter poss-strat{i} "a possessive strategy"
 	   . agree "Possessum agree" "" "yes<br>"
 	   . non-agree "Possessum non-agree" "" "no<br>"
 
-	   Label "<p>A feature called <span class=\"feat\">possessum_poss-strat{i}</span> with possible values <span class=\"tt\">plus</span> and <span class=\"tt\">minus</span> has been defined for use in defining morphemes on the morphology page.  In order to define a possessum-marking affix, add the appropriate position class and lexical rules, and mark the lexical rules as [<span class=\"feat\">possessum_poss-strat{i}</span> <span class=\"tt\">plus</span>]. If you make the possessive marking obligatory (recommended), remember to also create a non-possessive inflecting rule in the same position class by creating a lexical rule type marked [<span class=\"feat\">possessor_poss-strat{i}</span> <span class=\"tt\">minus</span>]. Be sure to select the feature that corresponds to <span class=\"feat\">possessum_poss-strat{i}</span>. If the possessum-marking affix(es) agree(s) with the possessor, add appropriate person, number, and gender features to each lexical rule type. Note that any person/number/gender features that are listed on a possessum lexical rule type are assumed to be features that agree with the possessor.</p>"
+	   Label "<p>A feature called <span class=\"feat\">poss-strat{i}</span> with possible values <span class=\"tt\">possessor</span>, <span class=\"tt\">possessum</span>, and <span class=\"tt\">nonpossessive</span> has been defined for use in defining morphemes on the morphology page.  In order to define a possessum-marking affix, add the appropriate position class and lexical rules, and mark the lexical rules as [<span class=\"feat\">poss-strat{i}</span> <span class=\"tt\">possessum</span>]. If you make the possessive marking obligatory (recommended), remember to also create a non-possessive inflecting rule in the same position class by creating a lexical rule type marked [<span class=\"feat\">poss-strat{i}</span> <span class=\"tt\">nonpossessive</span>]. Be sure to select the feature that corresponds to <span class=\"feat\">poss-strat{i}</span>. If the possessum-marking affix(es) agree(s) with the possessor, add appropriate person, number, and gender features to each lexical rule type. Note that any person/number/gender features that are listed on a possessum lexical rule type are assumed to be features that agree with the possessor.</p>"
 	   
 	   Label "</div>"
 
@@ -588,9 +607,8 @@ BeginIter poss-pron{i} "a class of possessor pronouns"
 
   Label "</div>"
 
-
   Label "<div id='pron-non-affix{i}' style='display:none'>"
-
+  
     Radio order "Possessive Pronoun Order" "<p>Do the possessor pronouns occur to the left or the right of the possessum?</p>" ""
     . head-final "head-final" "" "left<br>"
     . head-initial "head-initial" "" "right<br>"
@@ -635,7 +653,7 @@ BeginIter poss-pron{i} "a class of possessor pronouns"
       EndIter agr-feat
 
     EndIter instance
- 
+
   Label "</div>"
 
 EndIter poss-pron
@@ -1890,8 +1908,6 @@ Section clausal-comp "Clausal Complements"
 Define strategies for <b>sentential,
 or clausal, complements</b> here.<br><br>
 
-Label "<p><b>New section! Report bugs to Olga Zamaraeva.</b></p>"
-
 Label "<p>You may define several types of object clausal complements below.
 You may also leave this section blank, in which case the starter
 grammar produced will not support clausal complements.</p>"
@@ -1925,6 +1941,8 @@ BeginIter comps{i} "a Clausal Complement Type" 1
         verb in terms of which complementizers it can go with. (Note that all complementizers here
         are still assumed to be semantically empty.)</p>"
 
+        Select cformvalue "Clausal Complement Type {i} Complementizer Form {k} Value" "Form Value: " ""
+        fillvalues p=form l=1
 
   Label "<p> The embedded verb
   has the following features
@@ -2907,6 +2925,7 @@ BeginIter verb-pc{i} "a Position Class" 1
       . verb "The verb" "the verb"
       . subj "The subject" "the subject NP"
       . obj "The object" "the object NP"
+      . newobj "The added object" "the added object NP"
       . higher "Higher-ranked" "the higher-ranked NP"
       . lower "Lower-ranked" "the lower-ranked NP"
 
@@ -2920,15 +2939,25 @@ including changes to e.g. case frames or adding predicates. (<b>Experimental</b>
     BeginIter valchg{k} "a valence-changing operation"
 
       Select operation "Verb Position Class {i} Lexical Rule Type {j} Valence-changing Operation {k} Type" "Type: " "<br/>" "" ""
+      . subj-add "Subject-adding (e.g. causative)" "subject-adding"
+      . subj-dem "Subject-demoting (e.g. passive)" "subject-demoting"
       . subj-rem "Subject-removing" "subject-removing"
       . obj-rem "Object-removing" "object-removing"
-      . obj-add "Object-adding" "object-adding"
+      . obj-add "Object-adding (e.g. applicative)" "object-adding"
+      . obj-prom "Object-promoting" "object-promoting"
+
+      Label "<p>Most valence-changing operations currently must operate on a known input valence. If both intransitive and transitive
+inputs are possible, these need to be created as two separate lexical rule types. (This may change in the future).</p>"
+
+      Select inputs  "Verb Position Class {i} Lexical Rule Type {j} Valence-changing Operation {k} Target Valence" "Should apply to: " " targets"
+      . intrans "Intransitive" "intransitive"
+      . trans "Transitive" "transitive"
 
       Label "<p>Object-adding operations currently only support strict transitive verbs as inputs.<br/>
-        For object-adding operations, also specify (ignored for other operations):</P>"
+        For subject- and object-adding operations, also specify (ignored for other operations):</P>"
       Text predname "Verb Position Class {i} Lexical Rule Type {j} Valence-changing Operation {k} Predicate Name" "Predicate: " "<br/> " 20
 
-      Select argpos "Verb Position Class {i} Lexical Rule Type {j} Valence-changing Operation {k} Complement Position" "The added argument is at the: " " of the complements list.<br/>"
+      Select argpos "Verb Position Class {i} Lexical Rule Type {j} Valence-changing Operation {k} Complement Position" "The added argument/erstwhile subject is at the: " " of the complements list.<br/>"
       . pre "front" "front"
       . post "end" "end" 
 

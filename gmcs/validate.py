@@ -1509,32 +1509,35 @@ def validate_clausalmods(ch, vr):
                 vr.warn(cms.full_key + '_subordinator', mess)
 
         # Check for unsupoorted combinations with nominalization
-	nominalized = False
-	for feat in cms.get('feat'):
-	    if feat.get('name') == 'nominalization':
-		nominalized = True
-	if nominalized == True:    
+        nominalized = False
+        for feat in cms.get('feat'):
+            if feat.get('name') == 'nominalization':
+                nominalized = True
+        if nominalized == True:
             mess = 'If multiple nominalization strategies are allowed in the grammar,' +\
-                        ' and clausal modifiers require nominalization, the produced grammar' +\
-                        ' will allow any nominalinalization strategy for the clausal modifier strategy.'
+                   ' and clausal modifiers require nominalization, the produced grammar' +\
+                   ' will allow any nominalinalization strategy for the clausal modifier strategy.'
             vr.warn(feat.full_key + '_name', mess)
-	    if cms.get('subordinaotor-type') == 'adverb':
+            if cms.get('subordinaotor-type') == 'adverb':
                 mess = 'Nominalization is not supported of the adverb analysis.'
-                vr.err(feat.full_key + '_name', mess)
+                vr.err(cms.full_key + '_subordinator-type', mess)
             for feat in cms.get('feat'):
-	        if feat.get('type') == 'mood' or feat.get('type') == 'aspect':
-	       	    mess = 'Aspect and mood are not present on nominal projections,' +\
-                        	' and therefore are not supported in connection with nominalization.'
-	            vr.err(feat.full_key + '_name', mess)
+                if feat.get('name') == 'mood' or feat.get('name') == 'aspect':
+                    mess = 'Aspect and mood are not present on nominal projections,' +\
+                           ' and therefore are not supported in connection with nominalization.'
+                    vr.err(feat.full_key + '_name', mess)
 
         # Check for unsupported features
         for feat in cms.get('feat'):
-            if feat.get('type') == 'index':
+            if feat.get('name') == 'index':
                 mess = 'Index besides aspect and mood are not supported at this time.'
-                vr.err(feat.full_key + '_type', mess)
-            if feat.get('type') == 'situation':
+                vr.err(feat.full_key + '_name', mess)
+            if feat.get('name') == 'situation':
                 mess = 'Situation aspect is not supported at this time.'
-                vr.err(feat.full_key + '_type', mess)
+                vr.err(feat.full_key + '_name', mess)
+            if feat.get('name') == 'evidential':
+                mess = 'Evidential is not a supported feature at this time.'
+                vr.err(feat.full_key + '_name', mess)
 
 
 ######################################################################
