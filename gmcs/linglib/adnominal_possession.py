@@ -625,8 +625,6 @@ def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
                                         [ SYNSEM.LOCAL.CAT.HEAD.POSSESSOR.POSS-AGR #png,\
                                         '+prefix+' #png ].')
                     customize_feature_values(mylang,ch,hierarchies,form,adp_type,'poss-marker')
-                    print(form)
-                    print(adp_type)
                     orth=form.get('agr-orth')
                     lexicon.add(adp_type.replace('-lex','')+' := '+adp_type+' &\
                                          [ STEM < "'+orth+'" > ].')
