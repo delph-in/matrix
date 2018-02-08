@@ -1,9 +1,18 @@
+*iv
+iv-nosubjitr
+*iv-nosubjtr
 n1 iv
-*iv n2
-*iv-nosubj n2
-iv-nosubj
-*n1 iv-nosubj
-*n1 iv-nosubj n2
+*n1 iv-nosubjitr
+*n1 iv-nosubjtr
+*n1 iv n2
+*n1 iv-nosubjitr n2
+*n1 iv-nosubjtr n2
+*tv
+*tv-nosubjitr
+*tv-nosubjtr
+*n2 tv
+*n2 tv-nosubjitr
+n2 tv-nosubjtr
 n1 tv n2
-tv-nosubj n2
-*n1 tv-nosubj n2
+*n1 tv-nosubjitr n2
+*n1 tv-nosubjtr n2

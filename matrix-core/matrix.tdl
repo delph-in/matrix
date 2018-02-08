@@ -1103,6 +1103,37 @@ val-change-only-lex-rule := cat-change-only-lex-rule &
 ; valence-changing operations, e.g., may need to change
 ; local, non-local, and ccont.
 ; CMC 2017-04-10 Revised to be less-constrained for scopal predicates
+; CMC 2017-05-08 Renamed to reduce confusion of rule intent. Note that these two
+; rules (cat-change-with-ccont-lex-rule and val-change-with-ccont-lex-rule)
+; also leave local and non-local unconstrained.
+
+same-gtop-lex-rule := lex-rule &
+ [ C-CONT.HOOK.GTOP #gtop,
+   DTR.SYNSEM.LOCAL.CONT.HOOK.GTOP #gtop ].
+
+same-ltop-lex-rule := lex-rule &
+ [ C-CONT.HOOK.LTOP #ltop,
+   DTR.SYNSEM.LOCAL.CONT.HOOK.LTOP #ltop ].
+
+same-index-lex-rule := lex-rule &
+ [ C-CONT.HOOK.INDEX #idx,
+   DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX #idx ].
+
+same-icons-key-lex-rule := lex-rule &
+ [ C-CONT.HOOK.ICONS-KEY #icons,
+   DTR.SYNSEM.LOCAL.CONT.HOOK.ICONS-KEY #icons ].
+
+same-clause-key-lex-rule := lex-rule &
+ [ C-CONT.HOOK.CLAUSE-KEY #clause,
+   DTR.SYNSEM.LOCAL.CONT.HOOK.CLAUSE-KEY #clause ].
+
+
+
+xarg-change-only-ccont-lex-rule :=  same-gtop-lex-rule &
+                                    same-ltop-lex-rule &
+                                    same-index-lex-rule &
+                                    same-icons-key-lex-rule &
+                                    same-clause-key-lex-rule.
 
 cat-change-with-ccont-lex-rule := same-modified-lex-rule &
                                   same-light-lex-rule &
@@ -1122,6 +1153,9 @@ comps-change-only-lex-rule := same-subj-lex-rule &
 subj-change-only-lex-rule := same-comps-lex-rule &
                              same-spr-lex-rule &
                              same-spec-lex-rule.
+
+subj-and-comps-change-only-lex-rule := same-spr-lex-rule &
+                                       same-spec-lex-rule.
 
 ; EKN 2017-12-13 Convenience types for possessive rules:
 

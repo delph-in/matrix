@@ -440,6 +440,7 @@ LEX_RULE_SUPERTYPES = ['cat-change-only-lex-rule',
                        'add-only-rule',
                        'same-head-lex-rule',
                        'val-change-only-lex-rule',
+                       'val-change-with-ccont-lex-rule',
                        'head-change-only-lex-rule',
                        'cont-change-only-lex-rule',
                        'high-or-mid-nominalization-lex-rule',
@@ -619,7 +620,7 @@ def write_rules(pch, mylang, irules, lrules, lextdl, choices):
             # TJT 2014-08-27: Write adjective position class features
             write_pc_adj_syntactic_behavior(lrt, mylang, choices)
             # CMC 2017-03-28 Write valence change operations rules
-            write_valence_change_behavior(lrt, mylang, choices)
+            write_valence_change_behavior(pc, lrt, mylang, choices)
             # MTH 2017-10-16 Write evidential behavior
             write_evidential_behavior(lrt, mylang, choices, pc.has_evidential())
             # EKN 2017-12-13 Write possessive behavior
@@ -843,34 +844,55 @@ def write_possessive_behavior(pc,lrt,mylang,choices):
         mylang.add(nonpossessive_rule_name+NON_POSS_LEX_RULE_DEFN,section='lexrules')
         lrt.supertypes.add(nonpossessive_rule_name)
 
-def write_valence_change_behavior(lrt, mylang, choices):
-    from gmcs.linglib.valence_change import lexrule_name
+def write_valence_change_behavior(pc, lrt, mylang, choices):
+    from gmcs.linglib.valence_change import lexrule_name, added_argnum_for_vchop
+
+    # Need to push down a stricter constraint to LRT created by argument optionality.
+    # Specifically, if pc.has_valchg_ops() is True, then the PC supertype will inherit from
+    # val-change-with-ccont, which is too underspecified for the non-valence-changing rules
+    # (e.g. the -no-drop rules that *should* copy VAL features up).
+    if pc.has_valchg_ops() and not lrt.valchgops:
+        lrt.supertypes.add('add-only-no-ccont-rule')
+
+    lrt_ops = set()
     for op in lrt.valchgops:
         operation = op.get('operation','').lower()
-
-        # NB: non-scopal always need same-cont added!
-        if operation != 'subj-add':
-            lrt.supertypes.add('same-cont-lex-rule')
+	lrt_ops.add(operation)
+        transitive = 'trans' in op.get('inputs','').split(',')
+        argnum, numargs = added_argnum_for_vchop(op)
 
         if operation == 'subj-rem':
+            lrt.supertypes.add('local-change-only-lex-rule') # includes no-ccont
+            lrt.supertypes.add('xarg-change-only-ccont-lex-rule' if transitive else 'same-cont-lex-rule')
+            mylang.add(lrt.identifier() + ' := ' + lexrule_name('subj-rem-op', transitive) + '.')
+        elif operation == 'subj-dem':
             lrt.supertypes.add('local-change-only-lex-rule')
-            mylang.add(lrt.identifier() + ' := ' + lexrule_name('subj-rem-op') + '.') #'''subj-rem-op-lex-rule.''')
+            lrt.supertypes.add('same-cont-lex-rule')
+            mylang.add(lrt.identifier() + ' := ' + lexrule_name('subj-dem-op', argnum, numargs) + '.', merge=True)
+        elif operation == 'obj-prom':
+            lrt.supertypes.add('local-change-only-lex-rule')
+            lrt.supertypes.add('xarg-change-only-ccont-lex-rule')
+            mylang.add(lrt.identifier() + ' := ' + lexrule_name('obj-prom-op', argnum, numargs) + '.', merge=True)
         elif operation == 'obj-rem':
-            lrt.supertypes.add('local-change-only-lex-rule')
-            mylang.add(lrt.identifier() + ' := ' + lexrule_name('obj-rem-op') + '.') #obj-rem-op-lex-rule.''')
+            lrt.supertypes.add('local-change-only-lex-rule') # includes no-ccont
+            lrt.supertypes.add('same-cont-lex-rule')
+            mylang.add(lrt.identifier() + ' := ' + lexrule_name('obj-rem-op') + '.')
         elif operation == 'obj-add':
-            if op['argpos'].lower() == 'pre':
-                lrt.supertypes.add(lexrule_name('added-arg-applicative', 2, 3)) #'added-arg2of3-applicative-lex-rule')
-                lrt.supertypes.add(lexrule_name('added-arg-head-type', 2, op['argtype'].lower()))
-            else:
-                lrt.supertypes.add(lexrule_name('added-arg-applicative', 3, 3)) #'added-arg3of3-applicative-lex-rule')
-                lrt.supertypes.add(lexrule_name('added-arg-head-type', 3, op['argtype'].lower()))
+	    lrt.supertypes.add('same-cont-lex-rule')
+            lrt.supertypes.add(lexrule_name('added-arg-applicative', argnum, numargs))
+            lrt.supertypes.add(lexrule_name('added-arg-head-type', argnum, numargs, op['argtype'].lower()))
             predname = op.get('predname','undef_pred')
             mylang.add(lrt.identifier() + ' := [ C-CONT.RELS <! [ PRED "' + predname +'" ] !> ].')
-        elif operation.lower() == 'subj-add':
-            lrt.supertypes.add('causative-lex-rule')
+        elif operation == 'subj-add':
+            lrt.supertypes.add('same-non-local-lex-rule')
+            lrt.supertypes.add(lexrule_name('subj-add', argnum, transitive))
             predname = op.get('predname','causative_rel')
             mylang.add(lrt.identifier() + ' := [ C-CONT.RELS <! [ PRED "' + predname + '" ] !> ].')
+
+
+    # final cleanup once all ops are known
+    if 'subj-dem' in lrt_ops and 'obj-prom' not in lrt_ops:
+        lrt.supertypes.add('same-cont-lex-rule')
 
 def write_pc_adj_syntactic_behavior(lrt, mylang, choices):
     # TODO: Don't do this if a supertype is specified
@@ -1051,7 +1073,7 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
                    "This affix duplicates another, which is not allowed.")
         orths.add(orth)
 
-    # CMC 2017-04-07: Valence-changing operations validateion
+    # CMC 2017-04-07: Valence-changing operations validation
     for vchop in lrt.get('valchg',[]):
         optype = vchop.get('operation','')
         if not optype:
@@ -1061,9 +1083,9 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
                 vr.err(vchop.full_key+'_argpos','An argument can only be added at the front ' + \
                        'or end of the complements list.')
             if vchop.get('argtype') not in ['np','pp']:
-                vr.warn(vchop.full_key+'_argtype','The type of the added argument ({}) is unconstrained.'.format(vchop.get('argtype','')))
+                vr.warn(vchop.full_key+'_argtype','The type of the added argument ({0}) is unconstrained.'.format(vchop.get('argtype','')))
             if not vchop.get('predname'):
-                vr.warn(vchop.full_key+'_predname','The added predicated should have a name specified.')
+                vr.warn(vchop.full_key+'_predname','The added predicate should have a name specified.')
 
     # EKN 2018-01-09: Check that only one possessive strategy or 
     # possessive pronoun is selected per LRT

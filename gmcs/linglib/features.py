@@ -31,7 +31,8 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
 
     # TJT 2014-08-15: changing this to a map for readability/speed
     prefix_map = { 'det': 'SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.',
-                   'con': 'HEAD-DTR.SYNSEM.' }
+                   'con': 'HEAD-DTR.SYNSEM.',
+                   'juxt-rule': 'NON-HEAD-DTR.SYNSEM.'}
     pos_geom_prefix = prefix_map[pos] if pos in prefix_map else 'SYNSEM.'
 
     iter_feat = 'feat' if pos != 'auxcomplement' else 'compfeature'
@@ -59,6 +60,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     head_map = {
         'subj': 'LOCAL.CAT.VAL.SUBJ.FIRST.',
         'obj': 'LOCAL.CAT.VAL.COMPS.FIRST.',
+        'obj2': 'LOCAL.CAT.VAL.COMPS.REST.FIRST.',
         'higher': 'SC-ARGS.FIRST.',
         'lower': 'SC-ARGS.REST.FIRST.',
         'xarg': 'LOCAL.CONT.HOOK.XARG.',  # XARG for adjectives
@@ -371,18 +373,18 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                      [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques ].',
                         merge=True)
 
-            ## Specifiying OPT- on each user defined type instead of creating a supertype because
-            #It the supertype would need to inherit from transitive-verb-lex and the code already puts
-            #transitive-verb-lex as a supertype of user-defined typ thus causing an inheritance issue.
-            #elif(n=='OPT' and v[0] == 'plus'):
-            # SS 2009-05-26 argument optionality is added to user defined types here
-            #if h == 'subj':
-            #  tdlfile.add(type_name + ':= subj-drop-verb-lex.', merge = True)
-            #if h == 'obj':
-            #  tdlfile.add(type_name + ':= obj-drop-verb-lex.', merge = True)
+        ## Specifiying OPT- on each user defined type instead of creating a supertype because
+        #It the supertype would need to inherit from transitive-verb-lex and the code already puts
+        #transitive-verb-lex as a supertype of user-defined typ thus causing an inheritance issue.
+        #elif(n=='OPT' and v[0] == 'plus'):
+        # SS 2009-05-26 argument optionality is added to user defined types here
+        #if h == 'subj':
+        #  tdlfile.add(type_name + ':= subj-drop-verb-lex.', merge = True)
+        #if h == 'obj':
+        #  tdlfile.add(type_name + ':= obj-drop-verb-lex.', merge = True)
 
         elif n == 'OPT':
-            geom_map = {'subj': 'SUBJ', 'obj': 'COMPS'}
+            geom_map = {'subj': 'SUBJ', 'obj': 'COMPS', 'obj2': 'COMPS.REST'}
             if head in geom_map:
                 bool_val = {'plus': '+', 'minus': '-'}[v[0].lower()]
                 val_geom = geom_map[head.lower()]

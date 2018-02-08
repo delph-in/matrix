@@ -448,10 +448,29 @@ BeginIter poss-strat{i} "a possessive strategy"
      . mod "modifier" "" "modifier<br>"
 
      Radio mark-loc "Mark location" "<p> Do any morphemes (affixes, clitics, or separate words) appear which mark the noun phrase as possessive? If so, where?</p>" ""
-     . possessor "Possessor marking" "" "On the possessor<br>"  "toggle_element.call(this, 'possessor-morph{i}', 'on'); toggle_element.call(this, 'possessum-morph{i}', 'off');"
-     . possessum "Possessum marking" "" "On the possessum<br>"  "toggle_element.call(this, 'possessum-morph{i}', 'on'); toggle_element.call(this, 'possessor-morph{i}', 'off');"
-     . both "Both marking" "" "On both the possessor and the possessum<br>" "toggle_element.call(this, 'possessum-morph{i}', 'on'); toggle_element.call(this, 'possessor-morph{i}', 'on');"
-     . neither "Neither marking" "" "No possessive morphemes appear<br>" "toggle_element.call(this, 'possessum-morph{i}', 'off'); toggle_element.call(this, 'possessor-morph{i}', 'off');"
+     . possessor "Possessor marking" "" "On the possessor<br>"  "toggle_element.call(this, 'possessor-morph{i}', 'on'); toggle_element.call(this, 'possessum-morph{i}', 'off');toggle_element.call(this, 'juxt{i}', 'off');"
+     . possessum "Possessum marking" "" "On the possessum<br>"  "toggle_element.call(this, 'possessum-morph{i}', 'on'); toggle_element.call(this, 'possessor-morph{i}', 'off');toggle_element.call(this, 'juxt{i}', 'off');"
+     . both "Both marking" "" "On both the possessor and the possessum<br>" "toggle_element.call(this, 'possessum-morph{i}', 'on'); toggle_element.call(this, 'possessor-morph{i}', 'on');toggle_element.call(this, 'juxt{i}', 'off');"
+     . neither "Neither marking" "" "No possessive morphemes appear<br>" "toggle_element.call(this, 'possessum-morph{i}', 'off'); toggle_element.call(this, 'possessor-morph{i}', 'off');toggle_element.call(this, 'juxt{i}', 'on');"
+
+     Label "<div id='juxt{i}' style='display:none'>"
+
+        Radio pronoun-allow "Pronoun allowability" "<p>Can the possessor in these unmarked possessive constructions be a pronoun?</p>" ""
+        . yes "Pronouns allowed" "" "yes<br>"
+        . no "Pronouns disallowed" "" "no<br>" 	
+     
+        Label "<p>If there are constraints on the features of the possessor (e.g. case) in these unmarked possessive constructions, please use the button below to add them.</p>"
+        BeginIter feat{j} "a feature constraint on the possessor"
+     
+           Select name "Juxtaposition construction possessor feature {j} Name" "Name: " " "
+      	   fillnames c=noun
+
+      	   MultiSelect value "Juxtaposition construction possessor feature {j} Value" "Value: " ""
+      	   fillvalues p=poss-strat{i}_feat{j}_name      
+
+        EndIter feat
+
+     Label "</div>"
 
      Label "<div id='possessor-morph{i}' style='display:none'>"
      
@@ -2906,6 +2925,7 @@ BeginIter verb-pc{i} "a Position Class" 1
       . verb "The verb" "the verb"
       . subj "The subject" "the subject NP"
       . obj "The object" "the object NP"
+      . newobj "The added object" "the added object NP"
       . higher "Higher-ranked" "the higher-ranked NP"
       . lower "Lower-ranked" "the lower-ranked NP"
 
@@ -2919,15 +2939,25 @@ including changes to e.g. case frames or adding predicates. (<b>Experimental</b>
     BeginIter valchg{k} "a valence-changing operation"
 
       Select operation "Verb Position Class {i} Lexical Rule Type {j} Valence-changing Operation {k} Type" "Type: " "<br/>" "" ""
+      . subj-add "Subject-adding (e.g. causative)" "subject-adding"
+      . subj-dem "Subject-demoting (e.g. passive)" "subject-demoting"
       . subj-rem "Subject-removing" "subject-removing"
       . obj-rem "Object-removing" "object-removing"
-      . obj-add "Object-adding" "object-adding"
+      . obj-add "Object-adding (e.g. applicative)" "object-adding"
+      . obj-prom "Object-promoting" "object-promoting"
+
+      Label "<p>Most valence-changing operations currently must operate on a known input valence. If both intransitive and transitive
+inputs are possible, these need to be created as two separate lexical rule types. (This may change in the future).</p>"
+
+      Select inputs  "Verb Position Class {i} Lexical Rule Type {j} Valence-changing Operation {k} Target Valence" "Should apply to: " " targets"
+      . intrans "Intransitive" "intransitive"
+      . trans "Transitive" "transitive"
 
       Label "<p>Object-adding operations currently only support strict transitive verbs as inputs.<br/>
-        For object-adding operations, also specify (ignored for other operations):</P>"
+        For subject- and object-adding operations, also specify (ignored for other operations):</P>"
       Text predname "Verb Position Class {i} Lexical Rule Type {j} Valence-changing Operation {k} Predicate Name" "Predicate: " "<br/> " 20
 
-      Select argpos "Verb Position Class {i} Lexical Rule Type {j} Valence-changing Operation {k} Complement Position" "The added argument is at the: " " of the complements list.<br/>"
+      Select argpos "Verb Position Class {i} Lexical Rule Type {j} Valence-changing Operation {k} Complement Position" "The added argument/erstwhile subject is at the: " " of the complements list.<br/>"
       . pre "front" "front"
       . post "end" "end" 
 

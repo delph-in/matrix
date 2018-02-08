@@ -1103,6 +1103,7 @@ valchg-obj-rem=simple object-removing valence change
 
 
 valchg-subj-rem=simple subject-removing valence change
+valchg-subj-rem-obj-rem=combining subject-removing and object-removing valence change
 
 
 
@@ -1123,7 +1124,22 @@ cagr-pseudo-closest-conjunct=tests the part of coordination and agreement that c
 
 
 cagr-pseudospanish-feature-resolution=tests the part of coordination and agreement that creates feature resolution (using a grammar loosely based on Spanish)
+valchg-subj-rem=simple subject-removing valence change
+valchg-subj-rem-sov=basic subject-removing for SOV
+valchg-obj-rem-sov=simple obj-rem for SOV
+valchg-subj-rem-osv=simple subj-rem for OSV
+valchg-obj-rem-osv=simple obj-rem for OSV
+valchg-obj-add-pre-np-sov=obj-add for SOV with pre-append
+valchg-obj-add-post-np-sov=obj-add for SOV with post-append
+valchg-subj-rem-obj-add-pre-np=combining subj-rem and obj-add
+valchg-subj-rem-obj-add-post-np-sov=sub-rem and obj-add for SOV
+valchg-subj-add-pre=subject-adding, prepend, SVO
+valchg-subj-add-post=subject-adding, postpend, SVO
+valchg-subj-add-pre-sov=subject-adding, prepend, SOV
+valchg-subj-add-pre-case=subject-adding, with case constraints
 
+
+valchg-lkt=testing valence change in Lakota
 
 
 evidentials-infl-aux-kaz=testing coverage of Kazakh evidentials (infl, aux)
@@ -1730,3 +1746,7 @@ cagr-pseudo-urdu-mixed-agreement=Pseudo-Urdu mixed closest conjunct and feature 
 
 
 clausalmods-mandarin=an illustrative langauge for clausal modifiers based on mandarin
+clausalmods-wambaya=An illustrative grammar for clausal modifiers based on wambaya
+adnom-poss-spec-juxt-constraint=Juxtaposition poss construction w spec-like attachment and case constraints on possessor
+adnom-poss-spec-juxt-block-pron=Juxtaposition poss construction w spec-like attachment where prons can't be possessor or possessum
+adnom-poss-spec-juxt-block-head-pron-only=Juxtaposition poss construction w spec-like attachment where prons can't be head, can be dep

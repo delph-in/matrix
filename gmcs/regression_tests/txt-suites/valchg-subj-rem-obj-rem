@@ -5,7 +5,7 @@ iv-nosubj
 *n1 iv-nosubj
 *n1 iv-nosubj n2
 n1 tv n2
-tv-nosubj n2
+n2 tv-nosubj
 *n1 tv-nosubj n2
 n1 tv n2
 *n1 tv-noobj n2

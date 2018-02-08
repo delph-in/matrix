@@ -15,7 +15,6 @@ from gmcs.linglib.lexicon import get_all_supertypes
 from gmcs.linglib.clausalmods import get_subord_stemids
 from gmcs.linglib.clausalmods import add_subord_name
 
-
 # helper functions
 def verb_id(item):
     """Return the identifier for a verb lexical item."""
@@ -1083,7 +1082,7 @@ def update_lex_items_vcluster(ch, mylang):
             if cms.get('subordinator-type') == 'head':
                 mylang.add('adposition-subord-lex-item := [ SYNSEM.LOCAL.CAT.VC - ].', merge=True, section='subordlex')
     if 'comps' in ch:
-        mylang.add('comp-lex-item := [ SYNSEM.LOCAL.CAT.VC - ].', merge=True, section='complex')
+        mylang.add('complementizer-lex-item := [ SYNSEM.LOCAL.CAT.VC - ].', merge=True, section='complex')
     if 'has-adj' in ch:
         mylang.add('adj-lex := [ SYNSEM.LOCAL.CAT.VC - ].', merge=True, section='adjlex')
 

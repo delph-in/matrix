@@ -57,7 +57,7 @@ JUXTAPOSITION_RULE=' := [ SYNSEM.LOCAL.CAT [ HEAD #head,\
                                                     SUBJ < > ] ],\
                            C-CONT [ HOOK #hook & [ INDEX #possessum ],\
                                     ICONS <! !>],\
-                           HEAD-DTR.SYNSEM.LOCAL [ CAT [ HEAD #head & noun ],\
+                           HEAD-DTR.SYNSEM.LOCAL [ CAT [ HEAD #head & noun & [ PRON - ] ],\
                                                    CONT.HOOK #hook & [ INDEX #possessum,\
                                                                LTOP #lbl ] ],\
                            NON-HEAD-DTR.SYNSEM.LOCAL [ CAT [ HEAD noun,\
@@ -118,8 +118,10 @@ def customize_adnominal_possession(mylang,ch,rules,irules,lexicon,hierarchies):
 ## Secondary functions (called by customize_adnominal_possession() or other secondary functions)  ###
 #####################################################################################################
 
-# Adds things to the addenda section that are necessary
-# for any strategy
+"""
+Adds things to the addenda section that are necessary
+for any strategy
+"""
 def customize_poss_addenda(mylang):
     mylang.add('head :+ [ POSSESSOR poss ].',section='addenda')
     mylang.add('cat :+ [ POSSESSUM poss ].',section='addenda')
@@ -133,9 +135,10 @@ def customize_poss_addenda(mylang):
                                           HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #possessor,\
                                                              POSSESSUM #possessum] ].',section='addenda')
 
-# Calls customize_poss_rules, customize_poss_irules, and customize_poss_lexicon
-# to build possessive strategies for cases where the possessor
-# is a full NP
+"""
+Calls customize_poss_rules, customize_poss_irules, and customize_poss_lexicon
+to build possessive strategies for cases where the possessor is a full NP
+"""
 def customize_np_possession(mylang,ch,rules,irules,lexicon,hierarchies):
     for strat in ch.get('poss-strat',[]):
         strat_num=strat.full_keys()[0].split("_")[0][-1]
@@ -144,7 +147,7 @@ def customize_np_possession(mylang,ch,rules,irules,lexicon,hierarchies):
                     ' := possessor & possessive-'+str(strat_num)+'.',section='addenda')
         mylang.add('possessum-'+str(strat_num)+\
                     ' := possessum & possessive-'+str(strat_num)+'.',section='addenda')
-        customize_poss_rules(strat,mylang,ch,rules)
+        customize_poss_rules(strat,mylang,ch,rules,hierarchies)
         if strat.get('possessor-type')=='affix' or strat.get('possessum-type')=='affix':
             customize_poss_irules(strat,mylang,ch,irules,hierarchies)
         if strat.get('possessor-type')=='non-affix' or strat.get('possessum-type')=='non-affix':
@@ -155,33 +158,30 @@ def customize_np_possession(mylang,ch,rules,irules,lexicon,hierarchies):
             mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR nonpossessive,\
                                                          POSSESSUM nonpossessive ] ].')
 
-
-# Calls customize_poss_rules, customize_poss_irules, and customize_poss_lexicon
-# to build possessive strategies for cases where the possessor
-# is a pronoun
+"""
+Calls customize_poss_rules, customize_poss_irules, and customize_poss_lexicon
+to build possessive strategies for cases where the possessor is a pronoun
+"""
 def customize_pronominal_possession(mylang,ch,rules,irules,lexicon,hierarchies):
     for pron in ch.get('poss-pron',[]):
         pron_num=pron.full_keys()[0].split("_")[0][-1]
         mylang.add('possessive-pron-'+str(pron_num)+' := possessive.',section='addenda')
         mylang.add('possessor-pron-'+str(pron_num)+' :=\
                       possessor & '+'possessive-pron-'+str(pron_num)+'.',section='addenda')
-        customize_poss_rules(pron,mylang,ch,rules)
+        customize_poss_rules(pron,mylang,ch,rules,hierarchies)
         if pron.get('type')=='affix':
             customize_poss_irules(pron,mylang,ch,irules,hierarchies)
         if pron.get('type')=='non-affix':            
             customize_poss_lexicon(pron,mylang,ch,lexicon,rules,hierarchies)
 
 
-# Adds phrase rules needed to join possessor and possessum,
-# as well as rules needed to join possession marker and the 
-# constituent it marks.
-# Also adds constraints to non-possessive phrase rules to prevent
-# them from allowing possessive words in incorrect places
-def customize_poss_rules(strat,mylang,ch,rules):
-    """
-    Adds the necessary phrase rule to combine possessor and possessum
-    If rule already exists (head-comp case), then make sure its order is correct.
-    """
+"""
+Adds the necessary phrase rule to combine possessor and possessum
+If rule already exists (head-comp case), then make sure its order is correct.
+Also adds constraints to non-possessive phrase rules to prevent
+them from allowing possessive words in incorrect places
+"""
+def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
     # Define vars for all elements of strategy:
     strat_name=strat.full_keys()[0].split("_")[0]
     strat_num=strat_name[-1]
@@ -212,18 +212,18 @@ def customize_poss_rules(strat,mylang,ch,rules):
         mylang.add(phrase_rule+JUXTAPOSITION_RULE)
         if strat.get('mod-spec')=='spec':
             mylang.add(phrase_rule+' := [ SYNSEM.LOCAL.CAT.VAL.SPR < >,\
-                                          HEAD-DTR.SYNSEM.LOCAL [ CAT [ HEAD.PRON -,\
-                                                                        VAL.SPR <[ ]> ],\
+                                          HEAD-DTR.SYNSEM.LOCAL [ CAT [ VAL.SPR <[ ]> ],\
                                                                   CONT.HOOK.INDEX.COG-ST uniq-id  ],\
                                           C-CONT [ RELS <! '+POSS_REL+',\
                                                            '+POSSESSUM_EXIST_REL+' !>,\
                                                    HCONS <! qeq & [ HARG #harg, LARG #lbl] !> ] ].')
         elif strat.get('mod-spec')=='mod':
             mylang.add(phrase_rule+' := [ SYNSEM.LOCAL.CAT.VAL.SPR #spr,\
-                                          HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.PRON -,\
-                                                                      VAL.SPR #spr & <[ ]>],\
+                                          HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.SPR #spr & <[ ]>],\
                                           C-CONT [ RELS <! '+POSS_REL+' !>,\
                                                    HCONS <! !> ] ].')
+        if strat.get('feat'):
+            customize_feature_values(mylang,ch,hierarchies,strat,phrase_rule,'juxt-rule')
         if not pron_allowed:
             mylang.add(phrase_rule+' := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.PRON - ] ].')
         rule_added=True
