@@ -359,7 +359,8 @@ def add_non_branching_rules(mylang, rules, cms, ch):
     							VAL [ SPR < >,\
     							      COMPS < > ]],\
     						  CONT.HOOK [ LTOP #mcl,\
-    								INDEX #index ]]] > ]]]],\
+    								INDEX #index ]]] > ]],\
+    								COORD - ]],\
                 C-CONT [ RELS <! arg12-ev-relation &\
     		   [ ARG1 #mch,\
     		     ARG2 #sch ] !>,\
@@ -376,7 +377,8 @@ def add_non_branching_rules(mylang, rules, cms, ch):
     				        SPR < >,\
     					  COMPS < >,\
 					SPEC < > ]],\
-    			    CONT.HOOK.LTOP #scl ] ] ] > ].')
+    			    CONT.HOOK.LTOP #scl,\
+    			     COORD - ] ] ] > ].')
     if cms.get('subordinator') == 'pair':
         mylang.add('adv-marked-subord-clause-phrase := [ SYNSEM.LOCAL.CAT.SUBPAIR nopair,\
                                         SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.SUBPAIR #subpair ] >,\
@@ -519,7 +521,8 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
         							VAL [ SUBJ < >,\
         							      COMPS < > ]],\
         						  CONT.HOOK [ LTOP #mcl,\
-        								INDEX #index ]]] > ]]]],\
+        								INDEX #index ]]] > ]],\
+        					COORD - ]],\
             C-CONT [ RELS <! [ ARG1 #mch,\
         		     ARG2 #sch ] !>,\
         	     HCONS <! qeq &\
@@ -535,7 +538,8 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
         				    VAL [ SUBJ #subj,\
         				        SPR < >,\
         					  COMPS < > ]],\
-        			    CONT.HOOK.LTOP #scl ] ] ] > ].')
+        			    CONT.HOOK.LTOP #scl,\
+        			     COORD -] ] ] > ].')
         else:
             lextype.append('nmz')
             supertype = 'no-subordinator-nominalized-subord-clause-phrase'
@@ -549,7 +553,8 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
           							VAL [ SUBJ < >,\
           							      COMPS < > ]],\
           						  CONT.HOOK [ LTOP #mcl,\
-          								INDEX #index ]]] > ]]]],\
+          								INDEX #index ]]] > ]],\
+          						COORD - ]],\
               C-CONT [ RELS <! [ ARG1 #mch,\
           		     ARG2 #scl ] !>,\
           	     HCONS <! qeq &\
@@ -562,7 +567,8 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
           				    MC na-or-+,\
           				    VAL [ SUBJ #subj,\
           				        SPR < >,\
-          					  COMPS < > ]] ] ] ] > ].')
+          					  COMPS < > ]],\
+          					        COORD - ] ] ] > ].')
     else:
         supertype = 'morphological-subord-clause-phrase'
         mylang.add(supertype + ' := unary-phrase &\
@@ -576,7 +582,8 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
   							      SPR < >,\
   							      COMPS < > ]],\
   						  CONT.HOOK [ LTOP #mcl,\
-  								INDEX #index ]]] > ]]]],\
+  								INDEX #index ]]] > ]],\
+  						COORD -]],\
       C-CONT [ RELS <! [ ARG1 #mch,\
   		     ARG2 #sch ] !>,\
   	     HCONS <! qeq &\
@@ -591,7 +598,8 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
   				    VAL [ SUBJ #subj,\
   				    SPR < >,\
   					  COMPS < > ]],\
-  			    CONT.HOOK.LTOP #scl ] ] ] > ].')
+  			    CONT.HOOK.LTOP #scl,\
+  			     COORD -] ] ] > ].')
     type = build_type_name(lextype)
     pred = cms.get('pred')
     if pred == '':
