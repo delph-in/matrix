@@ -496,6 +496,18 @@ BeginIter poss-strat{i} "a possessive strategy"
 	   . yes "Pronouns allowed" "" "yes<br>"
 	   . no "Pronouns disallowed" "" "no<br>"
 
+	    Label "<p>If there are any feature constraints (such as case) on the noun marked by this word or clitic, please enter them using the button below:</p>"
+
+           BeginIter dep-comp-feat{j} "a feature constraint on the possessor"
+
+	     Select name "Non-affix marked possessor feature {j} Name" "Name: " " " 
+	     fillnames c=noun
+
+             MultiSelect value "Non-affix marked possessor feature {j} Value" "Value: " ""
+	     fillvalues p=poss-strat{i}_dep-comp-feat{j}_name
+
+           EndIter dep-comp-feat  
+
            Radio possessor-agr "Possessor agreement" "<p>Does the possessor agree with the possessum?</p>" ""
 	   . agree "Possessor agree" "" "yes<br>" "toggle_element.call(this, 'possessor-agr{i}', 'on'); toggle_element.call(this, 'possessor-non-agr{i}', 'off');"
 	   . non-agree "Possessor non agree" "" "no<br>"  "toggle_element.call(this, 'possessor-agr{i}', 'off');toggle_element.call(this, 'possessor-non-agr{i}', 'on');"
@@ -549,6 +561,17 @@ BeginIter poss-strat{i} "a possessive strategy"
 	   Label "</div>"
 
            Label "<div id='possessum-non-affix{i}' style='display:none'>"
+
+           Label "<p>If there are any feature constraints (such as case) on the noun marked by this word or clitic, please enter them using the button below:</p>"
+
+           BeginIter head-comp-feat{j} "a feature constraint on the possessum"
+                Select name "Non-affix marked possessum feature {j} Name" "Name: " " " 
+	        fillnames c=noun
+
+                MultiSelect value "Non-affix marked possessum feature {j} Value" "Value: " ""
+                fillvalues p=poss-strat{i}_head-comp-feat{j}_name
+
+           EndIter head-comp-feat 
 
            Radio possessum-agr "Possessum agreement" "<p>Does the possessum agree with the possessor?</p>" ""
            . agree "Possessum agree" "" "yes<br>" "toggle_element.call(this, 'possessum-agr{i}', 'on'); toggle_element.call(this, 'possessum-non-agr{i}', 'off');"
