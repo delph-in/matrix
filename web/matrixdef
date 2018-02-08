@@ -434,6 +434,8 @@ Label "</div>"
 
 Section adnom-poss "Adnominal Possession" 
 
+Label "Test"
+
 Label "<h3>Define a possessive strategy for possessive noun phrases or add a possessor pronoun:</h3>"
 
 BeginIter poss-strat{i} "a possessive strategy"
