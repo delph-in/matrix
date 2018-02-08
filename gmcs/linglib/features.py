@@ -31,8 +31,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
 
     # TJT 2014-08-15: changing this to a map for readability/speed
     prefix_map = { 'det': 'SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.',
-                   'con': 'HEAD-DTR.SYNSEM.',
-                   'juxt-rule': 'NON-HEAD-DTR.SYNSEM.'}
+                   'con': 'HEAD-DTR.SYNSEM.' }
     pos_geom_prefix = prefix_map[pos] if pos in prefix_map else 'SYNSEM.'
 
     iter_feat = 'feat' if pos != 'auxcomplement' else 'compfeature'

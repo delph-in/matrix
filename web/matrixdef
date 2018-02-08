@@ -448,29 +448,10 @@ BeginIter poss-strat{i} "a possessive strategy"
      . mod "modifier" "" "modifier<br>"
 
      Radio mark-loc "Mark location" "<p> Do any morphemes (affixes, clitics, or separate words) appear which mark the noun phrase as possessive? If so, where?</p>" ""
-     . possessor "Possessor marking" "" "On the possessor<br>"  "toggle_element.call(this, 'possessor-morph{i}', 'on'); toggle_element.call(this, 'possessum-morph{i}', 'off');toggle_element.call(this, 'juxt{i}', 'off');"
-     . possessum "Possessum marking" "" "On the possessum<br>"  "toggle_element.call(this, 'possessum-morph{i}', 'on'); toggle_element.call(this, 'possessor-morph{i}', 'off');toggle_element.call(this, 'juxt{i}', 'off');"
-     . both "Both marking" "" "On both the possessor and the possessum<br>" "toggle_element.call(this, 'possessum-morph{i}', 'on'); toggle_element.call(this, 'possessor-morph{i}', 'on');toggle_element.call(this, 'juxt{i}', 'off');"
-     . neither "Neither marking" "" "No possessive morphemes appear<br>" "toggle_element.call(this, 'possessum-morph{i}', 'off'); toggle_element.call(this, 'possessor-morph{i}', 'off');toggle_element.call(this, 'juxt{i}', 'on');"
-
-     Label "<div id='juxt{i}' style='display:none'>"
-
-        Radio pronoun-allow "Pronoun allowability" "<p>Can the possessor in these unmarked possessive constructions be a pronoun?</p>" ""
-        . yes "Pronouns allowed" "" "yes<br>"
-        . no "Pronouns disallowed" "" "no<br>" 	
-     
-        Label "<p>If there are constraints on the features of the possessor (e.g. case) in these unmarked possessive constructions, please use the button below to add them.</p>"
-        BeginIter feat{j} "a feature constraint on the possessor"
-     
-           Select name "Juxtaposition construction possessor feature {j} Name" "Name: " " "
-      	   fillnames c=noun
-
-      	   MultiSelect value "Juxtaposition construction possessor feature {j} Value" "Value: " ""
-      	   fillvalues p=poss-strat{i}_feat{j}_name      
-
-        EndIter feat
-
-     Label "</div>"
+     . possessor "Possessor marking" "" "On the possessor<br>"  "toggle_element.call(this, 'possessor-morph{i}', 'on'); toggle_element.call(this, 'possessum-morph{i}', 'off');"
+     . possessum "Possessum marking" "" "On the possessum<br>"  "toggle_element.call(this, 'possessum-morph{i}', 'on'); toggle_element.call(this, 'possessor-morph{i}', 'off');"
+     . both "Both marking" "" "On both the possessor and the possessum<br>" "toggle_element.call(this, 'possessum-morph{i}', 'on'); toggle_element.call(this, 'possessor-morph{i}', 'on');"
+     . neither "Neither marking" "" "No possessive morphemes appear<br>" "toggle_element.call(this, 'possessum-morph{i}', 'off'); toggle_element.call(this, 'possessor-morph{i}', 'off');"
 
      Label "<div id='possessor-morph{i}' style='display:none'>"
      
@@ -495,18 +476,6 @@ BeginIter poss-strat{i} "a possessive strategy"
 	   Radio pronoun-allow "Pronoun allowability" "<p>Can the possessor marked by this word or clitic be a pronoun?</p>" ""
 	   . yes "Pronouns allowed" "" "yes<br>"
 	   . no "Pronouns disallowed" "" "no<br>"
-
-	    Label "<p>If there are any feature constraints (such as case) on the noun marked by this word or clitic, please enter them using the button below:</p>"
-
-           BeginIter dep-comp-feat{j} "a feature constraint on the possessor"
-
-	     Select name "Non-affix marked possessor feature {j} Name" "Name: " " " 
-	     fillnames c=noun
-
-             MultiSelect value "Non-affix marked possessor feature {j} Value" "Value: " ""
-	     fillvalues p=poss-strat{i}_dep-comp-feat{j}_name
-
-           EndIter dep-comp-feat  
 
            Radio possessor-agr "Possessor agreement" "<p>Does the possessor agree with the possessum?</p>" ""
 	   . agree "Possessor agree" "" "yes<br>" "toggle_element.call(this, 'possessor-agr{i}', 'on'); toggle_element.call(this, 'possessor-non-agr{i}', 'off');"
@@ -561,17 +530,6 @@ BeginIter poss-strat{i} "a possessive strategy"
 	   Label "</div>"
 
            Label "<div id='possessum-non-affix{i}' style='display:none'>"
-
-           Label "<p>If there are any feature constraints (such as case) on the noun marked by this word or clitic, please enter them using the button below:</p>"
-
-           BeginIter head-comp-feat{j} "a feature constraint on the possessum"
-                Select name "Non-affix marked possessum feature {j} Name" "Name: " " " 
-	        fillnames c=noun
-
-                MultiSelect value "Non-affix marked possessum feature {j} Value" "Value: " ""
-                fillvalues p=poss-strat{i}_head-comp-feat{j}_name
-
-           EndIter head-comp-feat 
 
            Radio possessum-agr "Possessum agreement" "<p>Does the possessum agree with the possessor?</p>" ""
            . agree "Possessum agree" "" "yes<br>" "toggle_element.call(this, 'possessum-agr{i}', 'on'); toggle_element.call(this, 'possessum-non-agr{i}', 'off');"
