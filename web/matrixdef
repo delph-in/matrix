@@ -508,7 +508,7 @@ BeginIter poss-strat{i} "a possessive strategy"
 
            EndIter dep-comp-feat
 
-           Radio possessor-agr "Possessor agreement" "<p>Does the possessor agree with the possessum?</p>" ""
+           Radio possessor-agr "Possessor agreement" "<p>Does the possessor-marking word or clitic agree with the possessum?</p>" ""
 	   . agree "Possessor agree" "" "yes<br>" "toggle_element.call(this, 'possessor-agr{i}', 'on'); toggle_element.call(this, 'possessor-non-agr{i}', 'off');"
 	   . non-agree "Possessor non agree" "" "no<br>"  "toggle_element.call(this, 'possessor-agr{i}', 'off');toggle_element.call(this, 'possessor-non-agr{i}', 'on');"
 
@@ -562,7 +562,7 @@ BeginIter poss-strat{i} "a possessive strategy"
 
            Label "<div id='possessum-non-affix{i}' style='display:none'>"
 
-           Radio possessum-agr "Possessum agreement" "<p>Does the possessum agree with the possessor?</p>" ""
+           Radio possessum-agr "Possessum agreement" "<p>Does the possessum-marking word or clitic agree with the possessor?</p>" ""
            . agree "Possessum agree" "" "yes<br>" "toggle_element.call(this, 'possessum-agr{i}', 'on'); toggle_element.call(this, 'possessum-non-agr{i}', 'off');"
            . non-agree "Possessum non agree" "" "no<br>"  "toggle_element.call(this, 'possessum-agr{i}', 'off');toggle_element.call(this, 'possessum-non-agr{i}', 'on');"
 
