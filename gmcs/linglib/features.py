@@ -33,7 +33,9 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     prefix_map = { 'det': 'SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.',
                    'con': 'HEAD-DTR.SYNSEM.',
                    'juxt-rule': 'NON-HEAD-DTR.SYNSEM.',
-                   'poss-adp-comp': 'SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.'}
+                   'poss-adp-comp': 'SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.',
+                   'possessum-spec-mark': 'SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.',
+                   'possessum-mod-mark': 'SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.' }
     pos_geom_prefix = prefix_map[pos] if pos in prefix_map else 'SYNSEM.'
 
     iter_feat = 'feat' if pos != 'auxcomplement' else 'compfeature'
