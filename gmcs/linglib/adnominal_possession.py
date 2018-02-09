@@ -737,7 +737,6 @@ def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
                 instance_tmp[new_key]=pron_inst.get(key)
             # TODO: Figure out how to cast instance_tmp from a dict to a ChoiceDict so that no future
             #  developers have to deal with this mess in features.py
-            print(instance_tmp)
             customize_feature_values(mylang,ch,hierarchies,instance_tmp,instance_name,'poss-marker')
 
 
