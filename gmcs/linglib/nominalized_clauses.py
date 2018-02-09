@@ -138,12 +138,13 @@ LOW_LEXRULE_SUBJ_ID_COMPS_ID = 'low-nmz-subjid-compsid-lex-rule := low-nominaliz
 #A non-branching rule for nominalized clauses to form a NP, with nominalized_rel for the MRS.
 # For high nominalization.
 NMZ_CLAUSE = '-nominalized-clause-phrase := unary-phrase &\
-                                    [ SYNSEM.LOCAL.CAT [ HEAD noun &\
+                                    [ SYNSEM.LOCAL [ CAT [ HEAD noun &\
                                                 [ NMZ + ],\
             		                VAL [ SPR < [ OPT + ] >,\
                                             SPEC < >,\
                                             COMPS < >,\
             		                        SUBJ < #subj > ]],\
+            		                            COORD - ],\
                                     C-CONT [ RELS <! [ PRED "nominalized_rel",\
             	    	            LBL #ltop,\
             		                ARG0 ref-ind & #arg0,\
@@ -161,16 +162,18 @@ NMZ_CLAUSE = '-nominalized-clause-phrase := unary-phrase &\
             		    			  SPR < >,\
             			    		  SPEC < > ]],\
             			            CONT.HOOK [ XARG #xarg,\
-            			                LTOP #larg ]]]] > ].'
+            			                LTOP #larg ],\
+            			                COORD - ]]] > ].'
 
 #A non-branching rule for nominalized clauses to form a NP, semantically emtpy.
 NO_REL_NLZ_CLAUSE = '-no-rel-nominalized-clause-phrase := unary-phrase &\
-  [ SYNSEM [ LOCAL.CAT [ HEAD noun &\
+  [ SYNSEM [ LOCAL [ CAT [ HEAD noun &\
                             [ NMZ +, MOD < > ],\
                          VAL [ COMPS < >,\
                                         SUBJ < >,\
                                         SPR < >,\
-                                        SPEC < > ]]],\
+                                        SPEC < > ]],\
+                COORD - ]],\
     C-CONT [ RELS <! !>,\
 	     HCONS <! !>,\
 	     HOOK [ XARG #xarg,\
@@ -182,17 +185,19 @@ NO_REL_NLZ_CLAUSE = '-no-rel-nominalized-clause-phrase := unary-phrase &\
                                         SPR < >,\
                                         SPEC < > ] ],\
 		CONT.HOOK [ XARG #xarg,\
-		            LTOP #ltop ] ] ] ] > ].'
+		            LTOP #ltop ],\
+		COORD - ] ] ] > ].'
 
 #A non-branching rule for nominalized clauses to form a NP, with nominalized_rel for the MRS.
 # For middle nominalization.
 SUBJ_NMZ_CLAUSE = '-nominalized-clause-phrase := unary-phrase &\
-                          [ SYNSEM.LOCAL.CAT [ HEAD noun &\
+                          [ SYNSEM.LOCAL [ CAT [ HEAD noun &\
                             [ NMZ +, MOD < > ],\
 		       VAL [ SPR < [ OPT + ] >,'\
                            'COMPS < >,\
 					  SUBJ < >,\
 					  SPEC < > ]],\
+					                    COORD - ],\
     C-CONT [ RELS <! [ PRED "nominalized_rel",\
 		       LBL #ltop,\
 		       ARG0 ref-ind & #arg0,\
@@ -210,7 +215,8 @@ SUBJ_NMZ_CLAUSE = '-nominalized-clause-phrase := unary-phrase &\
 					  SPR < >,\
 					  SPEC < > ]],\
 			      CONT.HOOK [ XARG #xarg,\
-			                LTOP #larg ]]]] > ].'
+			                LTOP #larg ],\
+			        COORD - ]]] > ].'
 
 def customize_nmcs(mylang, ch, rules):
     """
