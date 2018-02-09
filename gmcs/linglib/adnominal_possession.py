@@ -605,6 +605,7 @@ def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
                                  [ SYNSEM.LOCAL [ CAT [ HEAD.POSSESSOR possessor-'+strat_num+',\
                                                         POSSESSUM nonpossessive, ]\
                                                   CONT.RELS <! !> ] ] .')
+            # Add agreement features to the possessive adposition
             # TODO: these lex items don't follow nomenclature conventions yet:
             if strat.get('possessor-agr')=='non-agree':
                 orth=strat.get('possessor-orth')
@@ -628,19 +629,26 @@ def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
                     orth=form.get('agr-orth')
                     lexicon.add(adp_type.replace('-lex','')+' := '+adp_type+' &\
                                          [ STEM < "'+orth+'" > ].')
-
-
+            # Add any necessary constraints to the complement of the possessor-marking word:
+            instance_tmp={}
+            if strat.get('dep-comp-feat'):
+                for key in strat.keys():
+                    new_key=key.replace('feat','skip')
+                    new_key=new_key.replace('dep-comp-skip','feat')
+                    instance_tmp[new_key]=strat.get(key)
+                customize_feature_values(mylang,ch,hierarchies,instance_tmp,'possessor-adp-lex-'+strat_num,'poss-adp-comp')
+                    
         if (mark_loc=='possessum' or mark_loc=='both') and possessum_type=='non-affix':
             mylang.set_section('nounlex')
             
             if mod_spec=='spec':
                 mylang.add('possessum-noun-lex-'+strat_num+' '+POSSESSUM_NOUN_LEX)
                 # TODO: move this up to gen definition at top
-                mylang.add('possessum-noun-lex-'+strat_num+' := [ SYNSEM.LOCAL [ CAT [ HEAD.POSSESSOR nonpossessive,\
+                mylang.add('possessum-noun-lex-'+strat_num+' := [ SYNSEM.LOCAL [ CAT [ HEAD #head & [ POSSESSOR nonpossessive ],\
                                                                                        POSSESSUM possessum-'+strat_num+',\
                                                                          VAL [ SPR < #spr & [ LOCAL [ CAT.VAL.SPR < >,\
                                                                                                       CONT.HOOK.INDEX #possessor ] ] >,\
-                                                                              COMPS < #comps & [ LOCAL [ CAT.HEAD.PRON -,\
+                                                                              COMPS < #comps & [ LOCAL [ CAT.HEAD #head & [ PRON - ],\
                                                                                                          CONT.HOOK [ INDEX #possessum,\
                                                                                                                      LTOP #lbl ] ] ] > ] ],\
                                                                 CONT [ RELS <! '+POSS_REL+',\
@@ -671,6 +679,7 @@ def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
                     orth=form.get('agr-orth')
                     lexicon.add(noun_type.replace('-lex','')+' := '+noun_type+' &\
                                          [ STEM < "'+orth+'" > ].')
+
     elif pron_strat:
         noun_type=noun_id(strat)
         if strat.get('agr')=='agree':
