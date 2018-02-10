@@ -41,22 +41,6 @@ prior-suffix :=
 %suffix (* nnga)
 prior-lex-rule.
 
-inf2-suffix :=
-%suffix (* barda)
-inf2-lex-rule.
-
-purp2-suffix :=
-%suffix (* nka)
-purp2-lex-rule.
-
-prior2-suffix :=
-%suffix (* nnga)
-prior2-lex-rule.
-
 fut-suffix :=
 %suffix (* ba)
 fut-lex-rule.
-
-fut2-suffix :=
-%suffix (* ba)
-fut2-lex-rule.

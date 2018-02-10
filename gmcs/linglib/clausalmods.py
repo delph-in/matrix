@@ -777,6 +777,7 @@ def add_head_compement_rules(mylang, rules, ch):
             mylang.add('comp-head-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT - ].')
             mylang.add('head-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT + ].')
     if ch.get('subord-word-order') == 'vfinal':
+        mylang.add('subord-comp-head-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT - ].')
         if 'before' in subpos:
             mylang.add('adp-head-comp-phrase := basic-head-1st-comp-phrase & head-initial &\
                                 [ SYNSEM.LOCAL.CAT.MC #mc,\

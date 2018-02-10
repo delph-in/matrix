@@ -1,20 +1,12 @@
 ;;; -*- Mode: TDL; Coding: utf-8 -*-
 abs-lex := abs-lex-rule.
 
-acc-lex := acc-lex-rule.
-
 aux-non-fin-lex := aux-non-fin-lex-rule.
 
 aux-fem-lex := aux-fem-lex-rule.
 
+pst-lex := pst-lex-rule.
+
 aux-masc-lex := aux-masc-lex-rule.
 
 aux-first-lex := aux-first-lex-rule.
-
-pst-lex := pst-lex-rule.
-
-non-pst-lex := non-pst-lex-rule.
-
-pst2-lex := pst2-lex-rule.
-
-non-pst2-lex := non-pst2-lex-rule.

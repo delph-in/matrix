@@ -1,10 +1,6 @@
 ;;; -*- Mode: TDL; Coding: utf-8 -*-
 decl-head-opt-subj := decl-head-opt-subj-phrase.
 
-non-event-subj-head := non-event-subj-head-phrase.
-
-non-event-head-subj := non-event-head-subj-phrase.
-
 head-comp := head-comp-phrase.
 
 head-subj := head-subj-phrase.
@@ -19,15 +15,15 @@ comp-head-2 := comp-head-phrase-2.
 
 bare-np := bare-np-phrase.
 
-nmz-PRIOR-shared-subject-modifying-clause-phrase := nmz-PRIOR-shared-subject-modifying-clause-phrase.
+shared-subject-PRIOR-modifying-clause-phrase := shared-subject-PRIOR-modifying-clause-phrase.
 
 adj-head-scop := adj-head-scop-phrase.
 
 head-adj-scop := head-adj-scop-phrase.
 
-nmz-posthead-PURP-shared-subject-modifying-clause-phrase := nmz-posthead-PURP-shared-subject-modifying-clause-phrase.
+shared-subject-posthead-PURP-modifying-clause-phrase := shared-subject-posthead-PURP-modifying-clause-phrase.
 
-nmz-posthead-INF-shared-subject-modifying-clause-phrase := nmz-posthead-INF-shared-subject-modifying-clause-phrase.
+shared-subject-posthead-INF-modifying-clause-phrase := shared-subject-posthead-INF-modifying-clause-phrase.
 
 finite-posthead-modifying-clause-phrase := finite-posthead-modifying-clause-phrase.
 

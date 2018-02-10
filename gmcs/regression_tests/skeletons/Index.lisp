@@ -22,6 +22,7 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "clausalmods-german") (:content . "clausalmods-german: an illustrative grammar for clausal modifiers based on german"))
 ((:path . "clausalmods-wambaya") (:content . "clausalmods-wambaya: An illustrative grammar for clausal modifiers based on wambaya"))
 ((:path . "adnom-poss-spec-juxt-block-head-pron-only") (:content . "adnom-poss-spec-juxt-block-head-pron-only: Juxtaposition poss construction w spec-like attachment where prons can't be head, can be dep"))
 ((:path . "adnom-poss-spec-juxt-block-pron") (:content . "adnom-poss-spec-juxt-block-pron: Juxtaposition poss construction w spec-like attachment where prons can't be possessor or possessum"))
