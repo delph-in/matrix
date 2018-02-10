@@ -108,7 +108,7 @@ fi
 
 # Customize (Performance needs a grammar, too, though)
 if [[ $customize || $performance ]]; then
-  $matrix_cmd --cheap-hack cf $1 $grammar/${lgname}
+  $matrix_cmd --cheap-hack cf $1 $grammar
   if [[ $customize && $? != 0 ]]; then
     echo "FAIL!"
     echo "There was an error during the customization of the grammar." >> $log
