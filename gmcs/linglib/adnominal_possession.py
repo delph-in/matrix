@@ -453,6 +453,14 @@ def customize_poss_irules(strat,mylang,ch,irules,hierarchies):
                                                                                        '+POSSESSUM_EXIST_REL+' !> ],\
                                                                                        DTR.SYNSEM.LOCAL.CONT.HOOK [ INDEX #possessum,\
                                                                                                                     LTOP #lbl ] ].')
+                                # Add any feature constraints to the possessor (only if the possessor is unmarked)
+                                instance_tmp={}
+                                if strat.get('possessor-feat'):
+                                    for key in strat.keys():
+                                        new_key=key.replace('feat','skip')
+                                        new_key=new_key.replace('possessor-skip','feat')
+                                        instance_tmp[new_key]=strat.get(key)
+                                    customize_feature_values(mylang,ch,hierarchies,instance_tmp,possessum_rule_name,'possessum-spec-mark')
                                 if mark_loc=='both':
                                     mylang.add(possessum_rule_name+' :=\
                                        [ SYNSEM.LOCAL.CAT.VAL.SPR < [ LOCAL.CAT.HEAD.POSSESSOR possessor-'+strat_num+' ] > ,\
@@ -474,9 +482,18 @@ def customize_poss_irules(strat,mylang,ch,irules,hierarchies):
                                                                                   VAL.SPR #spr ],\
                                                                             CONT.HOOK [ INDEX #possessum,\
                                                                                         LTOP #lbl ] ] ].',merge=True)
+                                # TODO: Add any feature constraints to the possessor (only if the possessor is unmarked)
+                                instance_tmp={}
+                                if strat.get('possessor-feat'):
+                                    for key in strat.keys():
+                                        new_key=key.replace('feat','skip')
+                                        new_key=new_key.replace('possessor-skip','feat')
+                                        instance_tmp[new_key]=strat.get(key)
+                                    customize_feature_values(mylang,ch,hierarchies,instance_tmp,possessum_rule_name,'possessum-mod-mark')
                                 if mark_loc=='both':
                                     mylang.add(possessum_rule_name+' :=\
                                            [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD +np & [ POSSESSOR possessor-'+strat_num+' ] ].')
+                            # Add agreement features to the possessum affix
                             if strat.get('possessum-affix-agr')=='agree':
                                 mylang.add(possessum_rule_name+' := [ SYNSEM.LOCAL.CAT.POSSESSUM.POSS-AGR #png,\
                                                              '+agr_prefix+' #png ].')
@@ -488,6 +505,7 @@ def customize_poss_irules(strat,mylang,ch,irules,hierarchies):
                                     mylang.add(possessum_rule_name+' :=\
                                          [ SYNSEM.LOCAL [ CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.POSSESSOR.POSS-AGR #poss-png,\
                                                           CONT.HOOK.INDEX.PNG #poss-png ] ].')
+                            
 # EKN 2018-01-29 This was in here to constrain non-possessive nouns, but was breaking the pronoun cases.
 # Taking it out doesn't cause any tests to break, but I'm leaving it commented out while still in active 
 # development
@@ -640,7 +658,6 @@ def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
                     
         if (mark_loc=='possessum' or mark_loc=='both') and possessum_type=='non-affix':
             mylang.set_section('nounlex')
-            
             if mod_spec=='spec':
                 mylang.add('possessum-noun-lex-'+strat_num+' '+POSSESSUM_NOUN_LEX)
                 # TODO: move this up to gen definition at top
@@ -655,7 +672,15 @@ def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
                                                                                '+POSSESSUM_EXIST_REL+' !>,\
                                                                                HCONS <! qeq & [ HARG #harg, LARG #lbl] !> ] ] ].',merge=True)
                 if mark_loc=='possessum':
-                        mylang.add('possessum-noun-lex-'+strat_num+' := [ SYNSEM.LOCAL.CAT.VAL.SPR < [ LOCAL.CAT.HEAD noun ] > ].')                    
+                    mylang.add('possessum-noun-lex-'+strat_num+' := [ SYNSEM.LOCAL.CAT.VAL.SPR < [ LOCAL.CAT.HEAD noun ] > ].')                                       # Add any feature constraints to the possessor (only if the possessor is unmarked)
+                    if strat.get('possessor-feat'):
+                        instance_tmp={}
+                        if strat.get('possessor-feat'):
+                            for key in strat.keys():
+                                new_key=key.replace('feat','skip')
+                                new_key=new_key.replace('possessor-skip','feat')
+                                instance_tmp[new_key]=strat.get(key)
+                                customize_feature_values(mylang,ch,hierarchies,instance_tmp,'possessum-noun-lex-'+strat_num,'possessum-spec-mark')
                 if mark_loc=='both':
                     if possessor_type=='affix':
                         mylang.add('possessum-noun-lex-'+strat_num+' := [ SYNSEM.LOCAL.CAT.VAL.SPR < [ LOCAL.CAT.HEAD noun ] > ].')

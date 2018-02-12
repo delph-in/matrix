@@ -1751,3 +1751,6 @@ adnom-poss-spec-juxt-constraint=Juxtaposition poss construction w spec-like atta
 adnom-poss-spec-juxt-block-pron=Juxtaposition poss construction w spec-like attachment where prons can't be possessor or possessum
 adnom-poss-spec-juxt-block-head-pron-only=Juxtaposition poss construction w spec-like attachment where prons can't be head, can be dep
 clausalmods-german=an illustrative language for clausal modifiers based on German
+adnom-poss-spec-dep-non-aff-hf-constraint=Dep non-affixally marked head final poss construction w spec-like attachment; dep must be nom case.
+adnom-poss-spec-head-non-aff-hf-constraint=Head non-affixally marked head final poss construction w spec-like attachment; dep must be nom case.
+adnom-poss-mod-head-aff-hf-constraint=Head affixally marked head final poss construction w mod-like attachment; dep must be nom case.

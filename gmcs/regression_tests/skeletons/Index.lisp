@@ -22,6 +22,9 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "adnom-poss-mod-head-aff-hf-constraint") (:content . "adnom-poss-mod-head-aff-hf-constraint: Head affixally marked head final poss construction w mod-like attachment; dep must be nom case."))
+((:path . "adnom-poss-spec-head-non-aff-hf-constraint") (:content . "adnom-poss-spec-head-non-aff-hf-constraint: Head non-affixally marked head final poss construction w spec-like attachment; dep must be nom case."))
+((:path . "adnom-poss-spec-dep-non-aff-hf-constraint") (:content . "adnom-poss-spec-dep-non-aff-hf-constraint: Dep non-affixally marked head final poss construction w spec-like attachment; dep must be nom case."))
 ((:path . "clausalmods-german") (:content . "clausalmods-german: an illustrative language for clausal modifiers based on German"))
 ((:path . "clausalmods-wambaya") (:content . "clausalmods-wambaya: An illustrative grammar for clausal modifiers based on wambaya"))
 ((:path . "adnom-poss-spec-juxt-block-head-pron-only") (:content . "adnom-poss-spec-juxt-block-head-pron-only: Juxtaposition poss construction w spec-like attachment where prons can't be head, can be dep"))

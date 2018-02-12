@@ -448,10 +448,10 @@ BeginIter poss-strat{i} "a possessive strategy"
      . mod "modifier" "" "modifier<br>"
 
      Radio mark-loc "Mark location" "<p> Do any morphemes (affixes, clitics, or separate words) appear which mark the noun phrase as possessive? If so, where?</p>" ""
-     . possessor "Possessor marking" "" "On the possessor<br>"  "toggle_element.call(this, 'possessor-morph{i}', 'on'); toggle_element.call(this, 'possessum-morph{i}', 'off');toggle_element.call(this, 'juxt{i}', 'off');"
-     . possessum "Possessum marking" "" "On the possessum<br>"  "toggle_element.call(this, 'possessum-morph{i}', 'on'); toggle_element.call(this, 'possessor-morph{i}', 'off');toggle_element.call(this, 'juxt{i}', 'off');"
-     . both "Both marking" "" "On both the possessor and the possessum<br>" "toggle_element.call(this, 'possessum-morph{i}', 'on'); toggle_element.call(this, 'possessor-morph{i}', 'on');toggle_element.call(this, 'juxt{i}', 'off');"
-     . neither "Neither marking" "" "No possessive morphemes appear<br>" "toggle_element.call(this, 'possessum-morph{i}', 'off'); toggle_element.call(this, 'possessor-morph{i}', 'off');toggle_element.call(this, 'juxt{i}', 'on');"
+     . possessor "Possessor marking" "" "On the possessor<br>"  "toggle_element.call(this, 'possessor-morph{i}', 'on'); toggle_element.call(this, 'possessum-morph{i}', 'off');toggle_element.call(this, 'juxt{i}', 'off');toggle_element.call(this, 'possessum-only{i}', 'off');"
+     . possessum "Possessum marking" "" "On the possessum<br>"  "toggle_element.call(this, 'possessum-morph{i}', 'on'); toggle_element.call(this, 'possessor-morph{i}', 'off');toggle_element.call(this, 'juxt{i}', 'off');toggle_element.call(this, 'possessum-only{i}', 'on');"
+     . both "Both marking" "" "On both the possessor and the possessum<br>" "toggle_element.call(this, 'possessum-morph{i}', 'on'); toggle_element.call(this, 'possessor-morph{i}', 'on');toggle_element.call(this, 'juxt{i}', 'off');toggle_element.call(this, 'possessum-only{i}', 'off');"
+     . neither "Neither marking" "" "No possessive morphemes appear<br>" "toggle_element.call(this, 'possessum-morph{i}', 'off'); toggle_element.call(this, 'possessor-morph{i}', 'off');toggle_element.call(this, 'juxt{i}', 'on');toggle_element.call(this, 'possessum-only{i}', 'off');"
 
      Label "<div id='juxt{i}' style='display:none'>"
 
@@ -460,6 +460,7 @@ BeginIter poss-strat{i} "a possessive strategy"
         . no "Pronouns disallowed" "" "no<br>" 	
      
         Label "<p>If there are constraints on the features of the possessor (e.g. case) in these unmarked possessive constructions, please use the button below to add them.</p>"
+
         BeginIter feat{j} "a feature constraint on the possessor"
      
            Select name "Juxtaposition construction possessor feature {j} Name" "Name: " " "
@@ -508,7 +509,7 @@ BeginIter poss-strat{i} "a possessive strategy"
 
            EndIter dep-comp-feat
 
-           Radio possessor-agr "Possessor agreement" "<p>Does the possessor agree with the possessum?</p>" ""
+           Radio possessor-agr "Possessor agreement" "<p>Does the possessor-marking word or clitic agree with the possessum?</p>" ""
 	   . agree "Possessor agree" "" "yes<br>" "toggle_element.call(this, 'possessor-agr{i}', 'on'); toggle_element.call(this, 'possessor-non-agr{i}', 'off');"
 	   . non-agree "Possessor non agree" "" "no<br>"  "toggle_element.call(this, 'possessor-agr{i}', 'off');toggle_element.call(this, 'possessor-non-agr{i}', 'on');"
 
@@ -544,6 +545,22 @@ BeginIter poss-strat{i} "a possessive strategy"
 
      Label "</div>"                                                                                                                            
 
+     Label "<div id='possessum-only{i}' style='display:none'>"
+     	   
+       Label "<p>If there are any feature constraints (such as case) on the possessor in this construction, please enter them using the button below:</p>"
+
+       BeginIter possessor-feat{j} "a feature constraint on the possessor"
+     
+           Select name "Unmarked possessor feature {j} Name" "Name: " " "
+      	   fillnames c=noun
+
+      	   MultiSelect value "Unmarked possessor feature {j} Value" "Value: " ""
+      	   fillvalues p=poss-strat{i}_possessor-feat{j}_name      
+
+       EndIter possessor-feat
+
+     Label "</div>"
+
      Label "<div id='possessum-morph{i}' style='display:none'>"
      
      Radio possessum-type "Possessum morpheme type" "<p>Is the morpheme that marks the <b>possessum</b> an affix? Or is it a separate word or clitic?</p>" ""
@@ -562,7 +579,7 @@ BeginIter poss-strat{i} "a possessive strategy"
 
            Label "<div id='possessum-non-affix{i}' style='display:none'>"
 
-           Radio possessum-agr "Possessum agreement" "<p>Does the possessum agree with the possessor?</p>" ""
+           Radio possessum-agr "Possessum agreement" "<p>Does the possessum-marking word or clitic agree with the possessor?</p>" ""
            . agree "Possessum agree" "" "yes<br>" "toggle_element.call(this, 'possessum-agr{i}', 'on'); toggle_element.call(this, 'possessum-non-agr{i}', 'off');"
            . non-agree "Possessum non agree" "" "no<br>"  "toggle_element.call(this, 'possessum-agr{i}', 'off');toggle_element.call(this, 'possessum-non-agr{i}', 'on');"
 
