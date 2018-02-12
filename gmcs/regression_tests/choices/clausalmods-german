@@ -1,0 +1,167 @@
+
+version=31
+
+section=general
+language=clausalmods-german
+
+section=word-order
+word-order=v2
+has-dets=no
+has-aux=yes
+aux-comp-order=before
+aux-comp=v
+multiple-aux=yes
+subord-word-order=vfinal
+
+section=number
+  number1_name=singular
+  number2_name=plural
+
+section=person
+person=1-2-3
+first-person=none
+
+section=gender
+
+section=case
+case-marking=nom-acc
+nom-acc-nom-case-name=nominative
+nom-acc-acc-case-name=accusative
+  case1_name=dative
+
+section=adnom-poss
+
+section=direct-inverse
+
+section=tense-aspect-mood
+tense-definition=choose
+past=on
+  aspect1_name=perfective
+    aspect1_supertype1_name=aspect
+
+section=evidentials
+
+section=other-features
+form-fin-nf=on
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=info-str
+
+section=arg-opt
+
+section=nominalclause
+
+section=clausal-comp
+
+section=clausalmods
+  cms1_position=after
+  cms1_modifier-attach=s
+  cms1_subordinator=free
+  cms1_subposition=before
+  cms1_subordinator-type=head
+    cms1_freemorph1_orth=wie
+    cms1_freemorph1_pred=_as_subord_rel
+    cms1_feat1_name=form
+    cms1_feat1_value=finite
+
+section=lexicon
+  noun1_name=1sg-pron
+  noun1_pron=on
+    noun1_feat1_name=person
+    noun1_feat1_value=1st
+    noun1_feat2_name=number
+    noun1_feat2_value=plural
+    noun1_feat3_name=case
+    noun1_feat3_value=nom
+  noun1_det=imp
+    noun1_stem1_orth=ich
+    noun1_stem1_pred=_I_n_rel
+  noun2_name=1pl-pron
+  noun2_pron=on
+    noun2_feat1_name=person
+    noun2_feat1_value=1st
+    noun2_feat2_name=number
+    noun2_feat2_value=plural
+    noun2_feat3_name=case
+    noun2_feat3_value=nom
+  noun2_det=imp
+    noun2_stem1_orth=wir
+    noun2_stem1_pred=_we_n_rel
+  noun3_name=2sg-pron
+  noun3_pron=on
+    noun3_feat1_name=person
+    noun3_feat1_value=2nd
+    noun3_feat2_name=case
+    noun3_feat2_value=dative
+  noun3_det=imp
+    noun3_stem1_orth=dir
+    noun3_stem1_pred=_you_n_rel
+  verb1_name=intrans
+  verb1_valence=intrans
+    verb1_stem1_orth=wohn
+    verb1_stem1_pred=_live_v_rel
+  verb2_name=trans
+    verb2_feat1_name=case
+    verb2_feat1_value=nom
+    verb2_feat1_head=subj
+    verb2_feat2_name=case
+    verb2_feat2_value=dative
+    verb2_feat2_head=obj
+  verb2_valence=trans
+    verb2_stem1_orth=gesagt
+    verb2_stem1_pred=_tell_v_rel
+  aux1_name=aux
+  aux1_sem=no-pred
+  aux1_subj=np
+    aux1_compfeature1_name=form
+    aux1_compfeature1_value=nonfinite
+    aux1_stem1_orth=habe
+
+section=morphology
+  verb-pc1_name=inflected
+  verb-pc1_obligatory=on
+  verb-pc1_order=suffix
+  verb-pc1_inputs=iverb, tverb
+    verb-pc1_lrt1_name=past
+      verb-pc1_lrt1_feat1_name=form
+      verb-pc1_lrt1_feat1_value=finite
+      verb-pc1_lrt1_feat1_head=verb
+      verb-pc1_lrt1_feat2_name=tense
+      verb-pc1_lrt1_feat2_value=past
+      verb-pc1_lrt1_feat2_head=verb
+      verb-pc1_lrt1_lri2_inflecting=yes
+      verb-pc1_lrt1_lri2_orth=ten
+    verb-pc1_lrt2_name=perf
+      verb-pc1_lrt2_feat1_name=aspect
+      verb-pc1_lrt2_feat1_value=perfective
+      verb-pc1_lrt2_feat1_head=verb
+      verb-pc1_lrt2_feat2_name=form
+      verb-pc1_lrt2_feat2_value=nonfinite
+      verb-pc1_lrt2_feat2_head=verb
+      verb-pc1_lrt2_lri1_inflecting=no
+  verb-pc2_name=aux-infl
+  verb-pc2_obligatory=on
+  verb-pc2_order=suffix
+  verb-pc2_inputs=aux1
+    verb-pc2_lrt1_name=aux-past
+      verb-pc2_lrt1_feat1_name=tense
+      verb-pc2_lrt1_feat1_value=past
+      verb-pc2_lrt1_feat1_head=verb
+      verb-pc2_lrt1_feat2_name=form
+      verb-pc2_lrt1_feat2_value=finite
+      verb-pc2_lrt1_feat2_head=verb
+      verb-pc2_lrt1_lri1_inflecting=no
+
+section=toolbox-import
+
+section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon
+
