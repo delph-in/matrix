@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of adnom-poss-spec-dep-non-aff-hf-constraint
 ;;; created at:
-;;;     Fri Feb 09 22:19:17 UTC 2018
+;;;     Mon Feb 12 21:12:31 UTC 2018
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -24,13 +24,13 @@ head :+ [ PRON bool,
 
 noun :+ [ CASE case ].
 
-inflected :+ [ CASE-FLAG luk,
-    NUM-FLAG luk,
-    PERNUM-FLAG luk ].
+inflected :+ [ NUM-FLAG luk,
+    PERNUM-FLAG luk,
+    CASE-FLAG luk ].
 
-infl-satisfied :+ [ CASE-FLAG na-or-+,
-    NUM-FLAG na-or-+,
-    PERNUM-FLAG na-or-+ ].
+infl-satisfied :+ [ NUM-FLAG na-or-+,
+    PERNUM-FLAG na-or-+,
+    CASE-FLAG na-or-+ ].
 
 png :+ [ PER person,
     NUM number ].
@@ -116,8 +116,8 @@ noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & non-mod-lex-ite
 
 common-noun-lex := noun-lex &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 3rd,
-    INFLECTED [ CASE-FLAG -,
-                NUM-FLAG - ] ].
+    INFLECTED [ NUM-FLAG -,
+                CASE-FLAG - ] ].
 
 ;;; Verbs
 
@@ -222,11 +222,11 @@ case-rule-dtr := word-or-lexrule.
 
 num-lex-rule-super := add-only-no-ccont-rule & case-rule-dtr &
   [ INFLECTED [ NUM-FLAG +,
-                CASE-FLAG #case,
-                PERNUM-FLAG #pernum ],
+                PERNUM-FLAG #pernum,
+                CASE-FLAG #case ],
     DTR common-noun-lex &
-        [ INFLECTED [ CASE-FLAG #case,
-                      PERNUM-FLAG #pernum ] ] ].
+        [ INFLECTED [ PERNUM-FLAG #pernum,
+                      CASE-FLAG #case ] ] ].
 
 singular-lex-rule := const-lex-rule & num-lex-rule-super &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM sg ].
@@ -236,11 +236,11 @@ plural-lex-rule := infl-lex-rule & num-lex-rule-super &
 
 case-lex-rule-super := add-only-no-ccont-rule &
   [ INFLECTED [ CASE-FLAG +,
-                PERNUM-FLAG #pernum,
-                NUM-FLAG #num ],
+                NUM-FLAG #num,
+                PERNUM-FLAG #pernum ],
     DTR case-rule-dtr &
-        [ INFLECTED [ PERNUM-FLAG #pernum,
-                      NUM-FLAG #num ] ] ].
+        [ INFLECTED [ NUM-FLAG #num,
+                      PERNUM-FLAG #pernum ] ] ].
 
 nom-lex-rule := case-lex-rule-super & const-lex-rule &
   [ SYNSEM.LOCAL.CAT.HEAD.CASE nom ].
@@ -250,11 +250,11 @@ acc-lex-rule := case-lex-rule-super & infl-lex-rule &
 
 pernum-lex-rule-super := add-only-no-ccont-rule &
   [ INFLECTED [ PERNUM-FLAG +,
-                CASE-FLAG #case,
-                NUM-FLAG #num ],
+                NUM-FLAG #num,
+                CASE-FLAG #case ],
     DTR verb-lex &
-        [ INFLECTED [ CASE-FLAG #case,
-                      NUM-FLAG #num ] ] ].
+        [ INFLECTED [ NUM-FLAG #num,
+                      CASE-FLAG #case ] ] ].
 
 3sg-lex-rule := infl-lex-rule & pernum-lex-rule-super &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ PER 3rd,
