@@ -1,0 +1,118 @@
+
+version=31
+
+section=general
+language=clausalmods-mandarin
+
+section=word-order
+word-order=svo
+has-dets=no
+has-aux=yes
+aux-comp-order=before
+aux-comp=vp
+multiple-aux=no
+
+section=number
+
+section=person
+person=1-2-3
+first-person=none
+
+section=gender
+
+section=case
+case-marking=none
+
+section=adnom-poss
+
+section=direct-inverse
+
+section=tense-aspect-mood
+
+section=evidentials
+
+section=other-features
+form-fin-nf=on
+
+section=sentential-negation
+neg-exp=1
+neg-aux=on
+neg-aux-index=1
+
+section=coordination
+  cs1_s=on
+  cs1_pat=mono
+  cs1_mark=word
+  cs1_orth=suoyi2
+  cs1_order=before
+
+section=matrix-yes-no
+
+section=info-str
+
+section=arg-opt
+
+section=nominalclause
+
+section=clausal-comp
+
+section=clausalmods
+  cms1_position=before
+  cms1_modifier-attach=either
+  cms1_subordinator=pair
+  cms1_subposition=before
+  cms1_subordinator-type=adverb
+  cms1_adverb-attach=both
+  cms1_matrix-subposition=before
+  cms1_matrix-adverb-attach=both
+    cms1_morphpair1_matrixorth=suoyi
+    cms1_morphpair1_matrixpred=_so_a_rel
+    cms1_morphpair1_subordorth=yinwei
+    cms1_morphpair1_subordpred=_because+so_subord_rel
+  cms2_position=before
+  cms2_modifier-attach=either
+  cms2_subordinator=free
+  cms2_subposition=before
+  cms2_subordinator-type=adverb
+  cms2_adverb-attach=both
+    cms2_freemorph1_orth=yinwei
+    cms2_freemorph1_pred=_because_subord_rel
+
+section=lexicon
+  noun2_name=pronoun
+  noun2_pron=on
+    noun2_feat1_name=person
+    noun2_feat1_value=1st
+  noun2_det=imp
+    noun2_stem1_orth=wo
+    noun2_stem1_pred=_I_n_rel
+  noun3_name=propernoun
+  noun3_det=imp
+    noun3_stem1_orth=Zhangsan
+    noun3_stem1_pred=_Zhangsan_n_rel
+  verb1_name=intrans
+  verb1_valence=intrans
+    verb1_stem1_orth=chu-qu
+    verb1_stem1_pred=_exit_v_rel
+  verb2_name=trans
+  verb2_valence=trans
+    verb2_stem1_orth=haipa
+    verb2_stem1_pred=_fear_v_rel
+  aux1_name=neg
+  aux1_sem=add-pred
+  aux1_subj=np
+    aux1_compfeature1_name=form
+    aux1_compfeature1_value=finite
+    aux1_stem1_orth=mei
+    aux1_stem1_pred=neg_rel
+
+section=morphology
+
+section=toolbox-import
+
+section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon
+

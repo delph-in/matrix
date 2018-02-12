@@ -1,0 +1,165 @@
+
+version=28
+
+section=general
+language=adnom-poss-spec-dep-aff-head-aff-hf-agr-mut
+comment=This is a sample choices file which exercises only a small range of the information provided by the customization system, in order to create a grammar for a very small fragment of English. It describes and SVO language with a small vocabulary drawn from English and subset of the (already simple) English verbal agreement paradigm.  Where it was not possible to leave a section blank, we have said the language does not manifest the phenomenon, even when this is not actually correct for English.
+
+section=word-order
+word-order=svo
+has-dets=yes
+noun-det-order=det-noun
+has-aux=no
+
+section=number
+  number1_name=sg
+  number2_name=pl
+
+section=person
+person=1-2-3
+first-person=none
+
+section=gender
+
+section=case
+case-marking=none
+
+section=direct-inverse
+scale-equal=direct
+
+section=tense-aspect-mood
+
+section=evidentials
+
+section=other-features
+
+section=sentential-negation
+vpc-0-neg=create
+
+section=coordination
+
+section=matrix-yes-no
+
+section=info-str
+
+section=arg-opt
+
+section=lexicon
+  noun1_name=common
+    noun1_feat1_name=person
+    noun1_feat1_value=3rd
+  noun1_det=obl
+    noun1_stem1_orth=noun1
+    noun1_stem1_pred=_noun1_n_rel
+    noun1_stem2_orth=noun2
+    noun1_stem2_pred=_noun2_n_rel
+  verb1_name=itr
+  verb1_valence=intrans
+    verb1_stem1_orth=itr-verb
+    verb1_stem1_pred=_itr-verb_v_rel
+    det1_stem1_orth=det
+    det1_stem1_pred=_def_q_rel
+
+section=morphology
+  noun-pc1_name=num
+  noun-pc1_obligatory=on
+  noun-pc1_order=suffix
+  noun-pc1_inputs=noun1
+    noun-pc1_lrt1_name=singular
+      noun-pc1_lrt1_feat1_name=number
+      noun-pc1_lrt1_feat1_value=sg
+      noun-pc1_lrt1_feat1_head=itself
+      noun-pc1_lrt1_lri1_inflecting=no
+    noun-pc1_lrt2_name=plural
+      noun-pc1_lrt2_feat1_name=number
+      noun-pc1_lrt2_feat1_value=pl
+      noun-pc1_lrt2_feat1_head=itself
+      noun-pc1_lrt2_lri1_inflecting=yes
+      noun-pc1_lrt2_lri1_orth=PL
+  noun-pc2_name=possessive
+  noun-pc2_obligatory=on
+  noun-pc2_order=suffix
+  noun-pc2_inputs=noun-pc1
+    noun-pc2_lrt1_name=possessor-3sg
+      noun-pc2_lrt1_feat1_name=poss-strat1
+      noun-pc2_lrt1_feat1_value=possessor
+      noun-pc2_lrt1_feat2_name=number
+      noun-pc2_lrt1_feat2_value=sg
+      noun-pc2_lrt1_feat3_name=person
+      noun-pc2_lrt1_feat3_value=3rd
+      noun-pc2_lrt1_lri1_inflecting=yes
+      noun-pc2_lrt1_lri1_orth=POSSESSOR3sg
+    noun-pc2_lrt3_name=possessor-3pl
+      noun-pc2_lrt3_feat1_name=poss-strat1
+      noun-pc2_lrt3_feat1_value=possessor
+      noun-pc2_lrt3_feat2_name=number
+      noun-pc2_lrt3_feat2_value=pl
+      noun-pc2_lrt3_feat3_name=person
+      noun-pc2_lrt3_feat3_value=3rd
+      noun-pc2_lrt3_lri1_inflecting=yes
+      noun-pc2_lrt3_lri1_orth=POSSESSOR3pl
+    noun-pc2_lrt2_name=possessum-3sg
+      noun-pc2_lrt2_feat1_name=poss-strat1
+      noun-pc2_lrt2_feat1_value=possessum
+      noun-pc2_lrt2_feat2_name=number
+      noun-pc2_lrt2_feat2_value=sg
+      noun-pc2_lrt2_feat3_name=person
+      noun-pc2_lrt2_feat3_value=3rd
+      noun-pc2_lrt2_lri1_inflecting=yes
+      noun-pc2_lrt2_lri1_orth=POSSESSUM3sg
+    noun-pc2_lrt4_name=possessum-3pl
+      noun-pc2_lrt4_feat1_name=poss-strat1
+      noun-pc2_lrt4_feat1_value=possessum
+      noun-pc2_lrt4_feat2_name=number
+      noun-pc2_lrt4_feat2_value=pl
+      noun-pc2_lrt4_feat3_name=person
+      noun-pc2_lrt4_feat3_value=3rd
+      noun-pc2_lrt4_lri1_inflecting=yes
+      noun-pc2_lrt4_lri1_orth=POSSESSUM3pl
+    noun-pc2_lrt5_name=non-possessive
+      noun-pc2_lrt5_feat1_name=poss-strat1
+      noun-pc2_lrt5_feat1_value=nonpossessive
+      noun-pc2_lrt5_feat1_head=itself
+      noun-pc2_lrt5_lri1_inflecting=no
+  verb-pc1_name=pernum
+  verb-pc1_obligatory=on
+  verb-pc1_order=suffix
+  verb-pc1_inputs=verb
+    verb-pc1_lrt1_name=3sg
+      verb-pc1_lrt1_feat1_name=person
+      verb-pc1_lrt1_feat1_value=3rd
+      verb-pc1_lrt1_feat1_head=subj
+      verb-pc1_lrt1_feat2_name=number
+      verb-pc1_lrt1_feat2_value=sg
+      verb-pc1_lrt1_feat2_head=subj
+      verb-pc1_lrt1_lri1_inflecting=yes
+      verb-pc1_lrt1_lri1_orth=3sg
+    verb-pc1_lrt2_name=pl
+      verb-pc1_lrt2_feat1_name=number
+      verb-pc1_lrt2_feat1_value=pl
+      verb-pc1_lrt2_feat1_head=subj
+      verb-pc1_lrt2_lri1_inflecting=no
+    verb-pc1_lrt3_name=non-3rd
+      verb-pc1_lrt3_feat1_name=person
+      verb-pc1_lrt3_feat1_value=1st, 2nd
+      verb-pc1_lrt3_feat1_head=subj
+      verb-pc1_lrt3_lri1_inflecting=no
+
+section=toolbox-import
+
+section=test-sentences
+  sentence1_orth=the cat chases the dog
+  sentence2_orth=the dogs sleep
+
+section=gen-options
+
+section=ToolboxLexicon
+
+section=adnom-poss
+  poss-strat1_order=head-final
+  poss-strat1_mod-spec=spec
+  poss-strat1_mark-loc=both
+  poss-strat1_possessor-type=affix
+  poss-strat1_possessor-affix-agr=agree
+  poss-strat1_possessum-type=affix
+  poss-strat1_possessum-affix-agr=agree
