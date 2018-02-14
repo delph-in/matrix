@@ -434,7 +434,9 @@ Label "</div>"
 
 Section adnom-poss "Adnominal Possession" 
 
-Label "<h3>Define a possessive strategy for possessive noun phrases or add a possessor pronoun:</h3>"
+Label "<p>There are two ways to add possessive constructions to your grammar: you can define <b>possessive strategies</b>, or define classes of <b>possessor pronouns</b>. For many languages, both are appropriate.</p>"
+
+Label "<p>An adnominal <b>possessive strategy</b> is a pattern wherein one noun phrase is marked as the possessor of another noun phrase. This strategy may consist of some morphological marking on either the possessor or the possessum, though some languages convey possession through simple juxtaposition of noun phrases. </p>"
 
 BeginIter poss-strat{i} "a possessive strategy"
 
@@ -615,6 +617,8 @@ BeginIter poss-strat{i} "a possessive strategy"
 
      Label "</div>"                                                                                                                                                                                         
 EndIter poss-strat
+
+Label "<p>In some constructions, the possessor can be a pronoun. If the possessor pronoun is identical to non-possessive pronouns and can appear in the same contexts as non-pronominal possessors, then it can be covered by adding a possessive strategy using the above button, and indicating that the possessor may be a pronoun. However, if the possessor pronouns are not identical to non-possessive pronouns, then they should be added as a class of <b>possessor pronouns</b> below. This includes possessor pronouns which appear as affixes on the possessum. See the documentation link above for examples of all of the above.</p> <p> <b>NOTE:</b> Currently, cases where pronouns are made possessive by adding affixes that are identical to the possessive affixes that other nouns take should be entered as possessor pronouns below, and analyzed as atomic units, rather than as pronoun+affix. This page is currently under development and this is subject to change. </p>"
 
 BeginIter poss-pron{i} "a class of possessor pronouns"
 
