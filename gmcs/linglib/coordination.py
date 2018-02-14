@@ -412,38 +412,17 @@ def customize_poss_feats(mylang, rule):
     Identify POSSESSOR and POSSESSUM across conjuncts
     """
     if rule=='top' or rule=='mid':
-        mylang.add(rule+'-coord-rule :+ [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #or,\
-                                                             POSSESSUM #um ],\
-                                          RCOORD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #or,\
-                                                                        POSSESSUM #um ],\
-                                          LCOORD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #or,\
-                                                                        POSSESSUM #um ] ].',section='addenda')
-#        mylang.add('n-coord-phrase :+ [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #or,\
-#                                                             POSSESSUM #um ],\
-#                                          RCOORD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #or,\
-#                                                                        POSSESSUM #um ],\
-#                                          LCOORD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #or,\
-#                                                                        POSSESSUM #um ] ].',section='addenda')
-#        mylang.add('np-coord-phrase :+ [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #or,\
-#                                                             POSSESSUM #um ],\
-#                                          RCOORD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #or,\
-#                                                                        POSSESSUM #um ],\
-#                                          LCOORD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #or,\
-#                                                                        POSSESSUM #um ] ].',section='addenda')
-
+        mylang.add(rule+'-coord-rule :+ [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #possessor,\
+                                                             POSSESSUM #possessum ],\
+                                          RCOORD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #possessor,\
+                                                                        POSSESSUM #possessum ],\
+                                          LCOORD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #possessor,\
+                                                                        POSSESSUM #possessum ] ].',section='addenda')
     elif rule=='bottom':
-#        mylang.add('n-bottom-coord-phrase :+ [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #or,\
-#                                                                POSSESSUM #um ],\
-#                                             CONJ-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #or,\
-#                                                                         POSSESSUM #um ] ].',section='addenda')
-#        mylang.add('np-bottom-coord-phrase :+ [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #or,\
-#                                                                POSSESSUM #um ],\
-#                                             CONJ-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #or,\
-#                                                                         POSSESSUM #um ] ].',section='addenda')
-        mylang.add('bottom-coord-phrase :+ [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #or,\
-                                                                POSSESSUM #um ],\
-                                             NONCONJ-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #or,\
-                                                                         POSSESSUM #um ] ].',section='addenda')
+        mylang.add('bottom-coord-phrase :+ [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #possessor,\
+                                                                POSSESSUM #possessum ],\
+                                             NONCONJ-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #possessor,\
+                                                                         POSSESSUM #possessum ] ].',section='addenda')
 
 def customize_coordination(mylang, ch, lexicon, rules, irules):
     """
