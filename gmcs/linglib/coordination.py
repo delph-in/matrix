@@ -109,7 +109,6 @@ def coord_strat_features(num, nm, mixed_strat):
         return '[ SYNSEM.LOCAL.COORD-STRAT "' + num + '" ].'
 
 def customize_feature_resolution(mylang, ch, ap):
-
     mylang.add_literal(';;; Feature Resolution Rules')
 
     if ap.get('feat'):
@@ -408,6 +407,23 @@ def customize_agreement_pattern(mylang, ch, csap, cs):
     return rules
 
 
+def customize_poss_feats(mylang, rule):
+    """
+    Identify POSSESSOR and POSSESSUM across conjuncts
+    """
+    if rule=='top' or rule=='mid':
+        mylang.add(rule+'-coord-rule :+ [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #possessor,\
+                                                             POSSESSUM #possessum ],\
+                                          RCOORD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #possessor,\
+                                                                        POSSESSUM #possessum ],\
+                                          LCOORD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #possessor,\
+                                                                        POSSESSUM #possessum ] ].',section='addenda')
+    elif rule=='bottom':
+        mylang.add('bottom-coord-phrase :+ [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #possessor,\
+                                                                POSSESSUM #possessum ],\
+                                             NONCONJ-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #possessor,\
+                                                                         POSSESSUM #possessum ] ].',section='addenda')
+
 def customize_coordination(mylang, ch, lexicon, rules, irules):
     """
     The main coordination customization routine
@@ -477,6 +493,15 @@ def customize_coordination(mylang, ch, lexicon, rules, irules):
                     bot += 'conj-last-'
                     if left:
                         left += 'conj-last-'
+
+        # EKN 02-13-2018 Add identification of possessive feats across
+        # conjuncts
+        poss = True if (ch.get('poss-strat') or ch.get('poss-pron'))\
+            else False
+        if poss:
+            if top: customize_poss_feats(mylang, 'top')
+            if mid: customize_poss_feats(mylang, 'mid')
+            if bot: customize_poss_feats(mylang, 'bottom')
 
         # If this CS uses feature resolution, we will set up closest conjunct as a mixed strategy
         # (with additional rules and specifications).

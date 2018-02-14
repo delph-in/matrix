@@ -263,7 +263,8 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
                                                              VAL [ SPEC #spec ] ], \
                                           HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD +np,\
                                                                       VAL.SPEC #spec ] ,\
-                                          NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.SPR < > ] ].')
+                                          NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD +np,\
+                                                                          VAL.SPR < > ] ].')
                 
                 rule_added=True
 
