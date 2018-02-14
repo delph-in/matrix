@@ -73,7 +73,8 @@ TWO_REL_ADP='two-rel-adposition-lex := basic-icons-lex-item &\
              LKEYS.KEYREL arg12-ev-relation & [ ARG2 #ind ] ] ].'
 
 POSSESSOR_ADP_LEX=':= two-rel-adposition-lex &\
-                                 [  SYNSEM.LOCAL [ CAT  [ VAL [ SPR < >,\
+                                 [  SYNSEM.LOCAL [ CAT  [ VAL [ SUBJ < >,\
+                                                                SPR < >,\
                                                                 COMPS.FIRST [ LOCAL.CAT [ HEAD noun,\
                                                                                           VAL.SPR < > ],\
                                                                               OPT - ] ] ],\
@@ -81,7 +82,8 @@ POSSESSOR_ADP_LEX=':= two-rel-adposition-lex &\
 
 POSSESSUM_NOUN_LEX=':= basic-two-arg &\
                                    [ SYNSEM.LOCAL [ CAT [ HEAD noun ,\
-                                                          VAL [ SPR < #spr  >,\
+                                                          VAL [ SUBJ < >,\
+                                                                SPR < #spr  >,\
                                                                 COMPS < #comps & [ LOCAL [ CONT.HOOK #hook,\
                                                                                            CAT.VAL.SPR <[ ]> ] ] > ] ],\
                                                     CONT [ HOOK #hook,\
