@@ -466,60 +466,8 @@ def customize_poss_irules(strat,mylang,ch,irules,hierarchies):
 
                 # Add irules for pronoun strategies:
                 elif pron_strat:
-
-                    if strat_name in str(feat['name']) and feat['value']!='minus':
-                        
-                        # Add general version of pronoun affix rule:
-                        mylang.add(get_name(lrt)+'-lex-rule :=\
-                                      [ SYNSEM.LOCAL.CAT.HEAD.POSSESSOR possessive-pron-'+strat_num+',\
-                                        DTR.SYNSEM.LOCAL.CONT.HOOK #hook & [ INDEX #possessum & [ COG-ST uniq+fam+act ],\
-                                                                             LTOP #lbl],\
-                                        C-CONT.HOOK #hook ].')
-                        # Add constraints to pronoun affix rule for spec version
-                        if mod_spec=='spec':
-                            mylang.add(get_name(lrt)+'-lex-rule := \
-                                                                   [ SYNSEM.LOCAL.CAT.VAL [ SPR < >,\
-                                                                                            SPEC #spec,\
-                                                                                            SUBJ #subj,\
-                                                                                            COMPS #comps ],\
-                                                                     C-CONT [ RELS  <! noun-relation &\
-                                                                                     [ PRED "pron_rel",\
-                                                                                       LBL #lbl2,\
-                                                                                       ARG0 #possessor & [ COG-ST activ-or-more,\
-                                                                                                           SPECI + ] ],\
-                                                                                     '+POSSESSUM_EXIST_REL+',\
-                                                                                     '+POSS_REL+',\
-                                                                                     quant-relation &\
-                                                                                     [ PRED "exist_q_rel",\
-                                                                                       ARG0 #possessor,\
-                                                                                       RSTR #harg2 ] !>,\
-                                                                             HCONS <! qeq & [ HARG #harg,\
-                                                                                             LARG #lbl ],\
-                                                                                     qeq & [ HARG #harg2,\
-                                                                                             LARG #lbl2 ] !> ],\
-                                                                     DTR.SYNSEM.LOCAL.CAT [ HEAD.PRON -,\
-                                                                                            VAL [ SPEC #spec,\
-                                                                                                SUBJ #subj,\
-                                                                                                COMPS #comps] ] ].')
-                        # Add constraints to pronoun affix rule for mod version
-                        elif mod_spec=='mod':
-                            mylang.add(get_name(lrt)+'-lex-rule := \
-                                                                   [ SYNSEM.LOCAL.CAT.VAL #val,\
-                                                                     DTR.SYNSEM.LOCAL.CAT [ HEAD.PRON -,\
-                                                                                            VAL #val ],\
-                                                                     C-CONT [ RELS  <! noun-relation &\
-                                                                                       [ PRED "pron_rel",\
-                                                                                         LBL #lbl2,\
-                                                                                         ARG0 #possessor & [ COG-ST activ-or-more,\
-                                                                                                             SPECI + ] ],\
-                                                                                       '+POSS_REL+',\
-                                                                                       quant-relation &\
-                                                                                       [ PRED "exist_q_rel",\
-                                                                                         ARG0 #possessor,\
-                                                                                         RSTR #harg2 ] !>,\
-                                                                            HCONS <! qeq & [ HARG #harg2,\
-                                                                                             LARG #lbl2 ] !> ] ].')
-
+                    
+                    customize_possessor_pron_irules(strat,mylang,ch,strat_name,strat_num,feat,lrt,mod_spec,hierarchies)
 
 def customize_possessor_irules(strat,mylang,ch,strat_num,mod_spec,mark_loc,hierarchies):
     
@@ -606,19 +554,19 @@ def customize_possessum_irules(strat,mylang,ch,strat_num,mod_spec,mark_loc,posse
 
         mylang.add(possessum_rule_name+':=  val-change-with-ccont-lex-rule & \
                          [ SYNSEM.LOCAL.CAT [ POSSESSUM possessum-'+strat_num+',\
-                         VAL [ COMPS #comps,\
-                         SPR < [ LOCAL [ CONT.HOOK.INDEX #possessor,\
-                         CAT [ VAL.SPR < >,\
-                         HEAD +np ] ] ] > ] ] ,\
-                         C-CONT [ HOOK #hook & [ INDEX.COG-ST uniq-id ],\
-                         HCONS <! qeq & [HARG #harg, LARG #lbl ] !>, \
-                         ICONS <! !>,\
-                         RELS <! '+POSS_REL+',\
-                         '+POSSESSUM_EXIST_REL+' !> ],\
-                         DTR.SYNSEM.LOCAL [ CONT.HOOK  [ INDEX #possessum,\
-                         LTOP #lbl],\
-                         CAT [ HEAD.PRON -,\
-                         VAL.COMPS #comps ] ] ].',merge=True)
+                                              VAL [ COMPS #comps,\
+                                                    SPR < [ LOCAL [ CONT.HOOK.INDEX #possessor,\
+                                                                    CAT [ VAL.SPR < >,\
+                                                                          HEAD +np ] ] ] > ] ] ,\
+                            C-CONT [ HOOK #hook & [ INDEX.COG-ST uniq-id ],\
+                                                    HCONS <! qeq & [HARG #harg, LARG #lbl ] !>, \
+                                                    ICONS <! !>,\
+                                                    RELS <! '+POSS_REL+',\
+                                                            '+POSSESSUM_EXIST_REL+' !> ],\
+                            DTR.SYNSEM.LOCAL [ CONT.HOOK  [ INDEX #possessum,\
+                                                            LTOP #lbl],\
+                                               CAT [ HEAD.PRON -,\
+                                                     VAL.COMPS #comps ] ] ].',merge=True)
 
         # Add any feature constraints to the possessor (only if the possessor is unmarked)
         instance_tmp={}
@@ -690,6 +638,65 @@ def customize_possessum_irules(strat,mylang,ch,strat_num,mod_spec,mark_loc,posse
 #                        if (mark_loc=='possessum' or mark_loc=='both') and mod_spec=='spec':
                             # This should keep normal head-spec constructions from letting noun phrases act as determiners:
 #                            mylang.add(get_name(lrt)+'-lex-rule := [ SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.LOCAL.CAT.HEAD det ].')
+
+
+
+def customize_possessor_pron_irules(strat,mylang,ch,strat_name,strat_num,feat,lrt,mod_spec,hierarchies):
+
+    if strat_name in str(feat['name']) and feat['value']!='minus':
+
+        # Add general version of pronoun affix rule:
+        mylang.add(get_name(lrt)+'-lex-rule :=\
+           [ SYNSEM.LOCAL.CAT.HEAD.POSSESSOR possessive-pron-'+strat_num+',\
+             DTR.SYNSEM.LOCAL.CONT.HOOK #hook & [ INDEX #possessum & [ COG-ST uniq+fam+act ],\
+                                                  LTOP #lbl],\
+              C-CONT.HOOK #hook ].')
+   
+        # Add constraints to pronoun affix rule for spec version
+        if mod_spec=='spec':
+            mylang.add(get_name(lrt)+'-lex-rule := \
+               [ SYNSEM.LOCAL.CAT.VAL [ SPR < >,\
+                                        SPEC #spec,\
+                                        SUBJ #subj,\
+                                        COMPS #comps ],\
+                 C-CONT [ RELS  <! noun-relation &\
+                                [ PRED "pron_rel",\
+                                  LBL #lbl2,\
+                                  ARG0 #possessor & [ COG-ST activ-or-more,\
+                                                      SPECI + ] ],\
+                                '+POSSESSUM_EXIST_REL+',\
+                                '+POSS_REL+',\
+                                quant-relation &\
+                               [ PRED "exist_q_rel",\
+                                 ARG0 #possessor,\
+                                 RSTR #harg2 ] !>,\
+                          HCONS <! qeq & [ HARG #harg,\
+                                           LARG #lbl ],\
+                                   qeq & [ HARG #harg2,\
+                                           LARG #lbl2 ] !> ],\
+                DTR.SYNSEM.LOCAL.CAT [ HEAD.PRON -,\
+                                       VAL [ SPEC #spec,\
+                                             SUBJ #subj,\
+                                             COMPS #comps] ] ].')
+            
+        # Add constraints to pronoun affix rule for mod version
+        elif mod_spec=='mod':
+            mylang.add(get_name(lrt)+'-lex-rule := \
+               [ SYNSEM.LOCAL.CAT.VAL #val,\
+                 DTR.SYNSEM.LOCAL.CAT [ HEAD.PRON -,\
+                                        VAL #val ],\
+                 C-CONT [ RELS  <! noun-relation &\
+                                  [ PRED "pron_rel",\
+                                    LBL #lbl2,\
+                                    ARG0 #possessor & [ COG-ST activ-or-more,\
+                                                        SPECI + ] ],\
+                                  '+POSS_REL+',\
+                                  quant-relation &\
+                                 [ PRED "exist_q_rel",\
+                                   ARG0 #possessor,\
+                                   RSTR #harg2 ] !>,\
+                          HCONS <! qeq & [ HARG #harg2,\
+                                           LARG #lbl2 ] !> ] ].')
 
 
 
