@@ -596,51 +596,51 @@ def customize_possessor_irules(strat,mylang,ch,strat_num,mod_spec,mark_loc,hiera
 
 def customize_possessum_irules(strat,mylang,ch,strat_num,mod_spec,mark_loc,possessum_type,hierarchies):
 
-                            # Add general possessum-marking rule:
-                            possessum_rule_name ='possessum-lex-rule-'+strat_num
-                            mylang.add(possessum_rule_name+POSSESSUM_RULE)
+    # Add general possessum-marking rule:
+    possessum_rule_name ='possessum-lex-rule-'+strat_num
+    mylang.add(possessum_rule_name+POSSESSUM_RULE)
                             
-                            # Add constraints to possessor rule for spec version                            
-                            if mod_spec=='spec':
-                                agr_prefix='SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
+    # Add constraints to possessor rule for spec version                            
+    if mod_spec=='spec':
+        agr_prefix='SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
 
-                                mylang.add(possessum_rule_name+':=  val-change-with-ccont-lex-rule & \
-                                           [ SYNSEM.LOCAL.CAT [ POSSESSUM possessum-'+strat_num+',\
-                                                                VAL [ COMPS #comps,\
-                                                                      SPR < [ LOCAL [ CONT.HOOK.INDEX #possessor,\
-                                                                                      CAT [ VAL.SPR < >,\
-                                                                                            HEAD +np ] ] ] > ] ] ,\
-                                             C-CONT [ HOOK #hook & [ INDEX.COG-ST uniq-id ],\
-                                                      HCONS <! qeq & [HARG #harg, LARG #lbl ] !>, \
-                                                      ICONS <! !>,\
-                                                      RELS <! '+POSS_REL+',\
-                                                              '+POSSESSUM_EXIST_REL+' !> ],\
-                                             DTR.SYNSEM.LOCAL [ CONT.HOOK  [ INDEX #possessum,\
-                                                                             LTOP #lbl],\
-                                                                CAT [ HEAD.PRON -,\
-                                                                      VAL.COMPS #comps ] ] ].',merge=True)
+        mylang.add(possessum_rule_name+':=  val-change-with-ccont-lex-rule & \
+                         [ SYNSEM.LOCAL.CAT [ POSSESSUM possessum-'+strat_num+',\
+                         VAL [ COMPS #comps,\
+                         SPR < [ LOCAL [ CONT.HOOK.INDEX #possessor,\
+                         CAT [ VAL.SPR < >,\
+                         HEAD +np ] ] ] > ] ] ,\
+                         C-CONT [ HOOK #hook & [ INDEX.COG-ST uniq-id ],\
+                         HCONS <! qeq & [HARG #harg, LARG #lbl ] !>, \
+                         ICONS <! !>,\
+                         RELS <! '+POSS_REL+',\
+                         '+POSSESSUM_EXIST_REL+' !> ],\
+                         DTR.SYNSEM.LOCAL [ CONT.HOOK  [ INDEX #possessum,\
+                         LTOP #lbl],\
+                         CAT [ HEAD.PRON -,\
+                         VAL.COMPS #comps ] ] ].',merge=True)
 
-                                # Add any feature constraints to the possessor (only if the possessor is unmarked)
-                                instance_tmp={}
-                                if strat.get('possessor-feat'):
-                                    for key in strat.keys():
-                                        new_key=key.replace('feat','skip')
-                                        new_key=new_key.replace('possessor-skip','feat')
-                                        instance_tmp[new_key]=strat.get(key)
-                                    customize_feature_values(mylang,ch,hierarchies,instance_tmp,possessum_rule_name,'possessum-spec-mark')
+        # Add any feature constraints to the possessor (only if the possessor is unmarked)
+        instance_tmp={}
+        if strat.get('possessor-feat'):
+            for key in strat.keys():
+                new_key=key.replace('feat','skip')
+                new_key=new_key.replace('possessor-skip','feat')
+                instance_tmp[new_key]=strat.get(key)
+            customize_feature_values(mylang,ch,hierarchies,instance_tmp,possessum_rule_name,'possessum-spec-mark')
                                     
-                                # Add constraints to spec version for double marking
-                                if mark_loc=='both':
-                                    mylang.add(possessum_rule_name+' :=\
-                                       [ SYNSEM.LOCAL.CAT.VAL.SPR < [ LOCAL.CAT.HEAD.POSSESSOR possessor-'+strat_num+' ] > ,\
-                                         DTR.SYNSEM.LOCAL.CAT.HEAD.PRON - ].')
+        # Add constraints to spec version for double marking
+        if mark_loc=='both':
+            mylang.add(possessum_rule_name+' :=\
+            [ SYNSEM.LOCAL.CAT.VAL.SPR < [ LOCAL.CAT.HEAD.POSSESSOR possessor-'+strat_num+' ] > ,\
+              DTR.SYNSEM.LOCAL.CAT.HEAD.PRON - ].')
 
-                            # Add constraints to possessor rule for mod version
-                            if mod_spec=='mod':
+    # Add constraints to possessor rule for mod version
+    if mod_spec=='mod':
 
-                                # Note: tried adding OPT - to the complement to try to correct overzealous head-comp application. Didn't work.
-                                agr_prefix='SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
-                                mylang.add(possessum_rule_name+':= val-change-with-ccont-lex-rule & \
+        # Note: tried adding OPT - to the complement to try to correct overzealous head-comp application. Didn't work.
+        agr_prefix='SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
+        mylang.add(possessum_rule_name+':= val-change-with-ccont-lex-rule & \
                                                        [ SYNSEM.LOCAL.CAT [ POSSESSUM possessum-'+strat_num+',\
                                                                             VAL [ SPR #spr, \
                                                                                   COMPS.FIRST [ LOCAL [ CAT cat-sat & [ HEAD +np ], \
@@ -655,32 +655,32 @@ def customize_possessum_irules(strat,mylang,ch,strat_num,mod_spec,mark_loc,posse
                                                                             CONT.HOOK [ INDEX #possessum,\
                                                                                         LTOP #lbl ] ] ].',merge=True)
 
-                                # Add any feature constraints to the possessor (only if the possessor is unmarked)
-                                instance_tmp={}
-                                if strat.get('possessor-feat'):
-                                    for key in strat.keys():
-                                        new_key=key.replace('feat','skip')
-                                        new_key=new_key.replace('possessor-skip','feat')
-                                        instance_tmp[new_key]=strat.get(key)
-                                    customize_feature_values(mylang,ch,hierarchies,instance_tmp,possessum_rule_name,'possessum-mod-mark')
+        # Add any feature constraints to the possessor (only if the possessor is unmarked)
+        instance_tmp={}
+        if strat.get('possessor-feat'):
+            for key in strat.keys():
+                new_key=key.replace('feat','skip')
+                new_key=new_key.replace('possessor-skip','feat')
+                instance_tmp[new_key]=strat.get(key)
+            customize_feature_values(mylang,ch,hierarchies,instance_tmp,possessum_rule_name,'possessum-mod-mark')
 
-                                # Add constraints to spec version for double marking
-                                if mark_loc=='both':
-                                    mylang.add(possessum_rule_name+' :=\
-                                           [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD +np & [ POSSESSOR possessor-'+strat_num+' ] ].')
+        # Add constraints to spec version for double marking
+        if mark_loc=='both':
+            mylang.add(possessum_rule_name+' :=\
+               [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD +np & [ POSSESSOR possessor-'+strat_num+' ] ].')
 
-                            # Add agreement features to the possessum affix
-                            if strat.get('possessum-affix-agr')=='agree':
-                                mylang.add(possessum_rule_name+' := [ SYNSEM.LOCAL.CAT.POSSESSUM.POSS-AGR #png,\
+    # Add agreement features to the possessum affix
+    if strat.get('possessum-affix-agr')=='agree':
+        mylang.add(possessum_rule_name+' := [ SYNSEM.LOCAL.CAT.POSSESSUM.POSS-AGR #png,\
                                                              '+agr_prefix+' #png ].')
 
-                            # Note: in the mutual agreement, double marking mod-like scenario, the possessor is a COMP.
-                            # Therefore, it has no access to the possessum's PNG info. When the possessor agrees with 
-                            # the possessum, therefore, all agreement must be done in the possessum-inflecting rule:
-                            if mark_loc=='both' and mod_spec=='mod' and strat.get('possessor-affix-agr')=='agree':
-                                if possessum_type=='affix':
-                                    mylang.add(possessum_rule_name+' :=\
-                                         [ SYNSEM.LOCAL [ CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.POSSESSOR.POSS-AGR #poss-png,\
+    # Note: in the mutual agreement, double marking mod-like scenario, the possessor is a COMP.
+    # Therefore, it has no access to the possessum's PNG info. When the possessor agrees with 
+    # the possessum, therefore, all agreement must be done in the possessum-inflecting rule:
+    if mark_loc=='both' and mod_spec=='mod' and strat.get('possessor-affix-agr')=='agree':
+        if possessum_type=='affix':
+            mylang.add(possessum_rule_name+' :=\
+            [ SYNSEM.LOCAL [ CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.POSSESSOR.POSS-AGR #poss-png,\
                                                           CONT.HOOK.INDEX.PNG #poss-png ] ].')
                             
 # EKN 2018-01-29 This was in here to constrain non-possessive nouns, but was breaking the pronoun cases.
