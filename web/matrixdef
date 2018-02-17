@@ -687,6 +687,67 @@ BeginIter poss-pron{i} "a class of possessor pronouns"
 
     EndIter instance
 
+
+
+    Radio possessum-mark "Possessum Marked When Possessor is Pronoun" "<p>Does the possessum take any marking when it appears with these possessor pronouns?</p>" ""
+    . yes "Yes" "" "yes<br>" "toggle_element.call(this, 'possessum-mark-pron{i}', 'on')"
+    . no "No" "" "no<br>" "toggle_element.call(this, 'possessum-mark-pron{i}', 'off')"
+
+    Label "<div id='possessum-mark-pron{i}' style='display:none'>"	
+
+     Radio possessum-type "Possessum morpheme type" "<p>Is the morpheme that marks the <b>possessum</b> an affix? Or is it a separate word or clitic?</p>" ""
+     . affix "Possessum affix" "" "affix<br>" "toggle_element.call(this, 'possessum-mark-affix{i}', 'on'); toggle_element.call(this, 'possessum-mark-non-affix{i}', 'off');"
+     . non-affix "Possessum non-affix" "" "separate word or clitic<br>"  "toggle_element.call(this, 'possessum-mark-affix{i}', 'off'); toggle_element.call(this, 'possessum-mark-non-affix{i}', 'on');"
+
+     	   Label "<div id='possessum-mark-affix{i}' style='display:none'>"
+
+	   Radio possessum-affix-agr "Possessum agreement" "<p>Does the affix that marks the possessum agree with the possessor (e.g. in person, number, or gender)?</p>" ""
+	   . agree "Possessum agree" "" "yes<br>"
+	   . non-agree "Possessum non-agree" "" "no<br>"
+
+	   Label "<p>A feature called <span class=\"feat\">poss-pron{i}_possessum</span> with possible values <span class=\"tt\">plus</span> and <span class=\"tt\">minus</span> has been defined for use in defining morphemes on the morphology page. In order to define a possessum-marking affix, add the appropriate position class and lexical rules, and mark the lexical rules as [<span class=\"feat\">poss-pron{i}_possessum</span> <span class=\"tt\">plus</span>]. If you make the possessive marking obligatory (recommended), remember to also create a non-possessive inflecting rule in the same position class by creating a lexical rule type marked [<span class=\"feat\">poss-pron{i}_possessum</span> <span class=\"tt\">minus</span>]. Be sure to select the feature that corresponds to <span class=\"feat\">poss-pron{i}_possessum</span>. If the possessum-marking affix(es) agree(s) with the possessor, add appropriate person, number, and gender features to each lexical rule type. Note that any person/number/gender features that are listed on a possessum lexical rule type are assumed to be features that agree with the possessor.</p>"
+	   
+          Label "</div>"
+
+     	   Label "<div id='possessum-mark-non-affix{i}' style='display:none'>"
+           Radio possessum-agr "Possessum agreement" "<p>Does the possessum-marking word or clitic agree with the possessor?</p>" ""
+           . agree "Possessum agree" "" "yes<br>" "toggle_element.call(this, 'possessum-agr{i}', 'on'); toggle_element.call(this, 'possessum-non-agr{i}', 'off');"
+           . non-agree "Possessum non agree" "" "no<br>"  "toggle_element.call(this, 'possessum-agr{i}', 'off');toggle_element.call(this, 'possessum-non-agr{i}', 'on');"
+
+	   Label "<div id='possessum-non-agr{i}' style='display:none'>" 
+
+           Text possessum-orth "Possessum word orth" "<br>The possessum-marking word is spelled " "<br>" 15
+
+	   Label "</div>"
+
+           Label "<div id='possessum-agr{i}' style='display:none'>"
+
+	   BeginIter possessum-form{m} "a possessum-marking word with agreement features"
+
+	   Text name "Type name" "Type name: " "-noun-lex<br>" 15
+
+	   Text agr-orth "Orthography agreement" "<br>The form spelled: " "<br> carries the following agreement features:<br>" 15
+
+           BeginIter feat{l} "an agreement feature"
+	   
+           Select name "Possessive strategy {i} possessum-marking word Form {k} Feature {l} Name" "Name: " " "
+           fillnames c=noun
+
+           MultiSelect value "Noun Position Class {i} Lexical Rule Type {j} Form {k} Feature {l} Value" "Value: " ""
+           fillvalues p=poss-pron{i}_possessum-form{m}_feat{l}_name
+
+           EndIter feat
+
+	   EndIter possessum-form
+
+           Label "</div>"
+
+
+	   
+          Label "</div>"
+
+    Label "</div>"
+
   Label "</div>"
 
 EndIter poss-pron
