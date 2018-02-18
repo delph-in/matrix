@@ -81,14 +81,21 @@ POSSESSOR_ADP_LEX=':= two-rel-adposition-lex &\
                                                   CONT [ ICONS <! !>   ] ] ].'
 
 POSSESSUM_NOUN_LEX=':= basic-two-arg &\
-                                   [ SYNSEM.LOCAL [ CAT [ HEAD noun ,\
+                                   [ SYNSEM.LOCAL [ CAT [ HEAD #head & noun ,\
                                                           VAL [ SUBJ < >,\
-                                                                SPR < #spr  >,\
-                                                                COMPS < #comps & [ LOCAL [ CONT.HOOK #hook,\
-                                                                                           CAT.VAL.SPR <[ ]> ] ] > ] ],\
-                                                    CONT [ HOOK #hook,\
+                                                                SPR < #spr & [ LOCAL [ CAT.VAL.SPR < >,\
+                                                                                       CONT.HOOK.INDEX #possessor ] ] >,\
+                                                                COMPS < #comps & [ LOCAL [ CONT.HOOK #hook & [ INDEX #possessum,\
+                                                                                                               LTOP #lbl ],\
+                                                                                           CAT [ VAL.SPR <[ ]>,\
+                                                                                                 HEAD #head & [ PRON - ] ] ] ] > ] ],\
+                                                    CONT [ RELS <! '+POSS_REL+',\
+                                                                               '+POSSESSUM_EXIST_REL+' !>,\
+                                                           HCONS <! qeq & [ HARG #harg, LARG #lbl] !>,\
+                                                           HOOK #hook,\
                                                            ICONS <! !> ] ],\
                                      ARG-ST < #spr, #comps > ].'
+
 
 # TODO: change one-arg to being added by the logic section, since the modifier-version is zero-arg.
 POSSESSOR_PRON_LEX=' := basic-one-arg &\
@@ -730,17 +737,10 @@ def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
             mylang.set_section('nounlex')
             if mod_spec=='spec':
                 mylang.add('possessum-noun-lex-'+strat_num+' '+POSSESSUM_NOUN_LEX)
-                # TODO: move this up to gen definition at top
-                mylang.add('possessum-noun-lex-'+strat_num+' := [ SYNSEM.LOCAL [ CAT [ HEAD #head & [ POSSESSOR nonpossessive ],\
-                                                                                       POSSESSUM possessum-'+strat_num+',\
-                                                                         VAL [ SPR < #spr & [ LOCAL [ CAT.VAL.SPR < >,\
-                                                                                                      CONT.HOOK.INDEX #possessor ] ] >,\
-                                                                              COMPS < #comps & [ LOCAL [ CAT.HEAD #head & [ PRON - ],\
-                                                                                                         CONT.HOOK [ INDEX #possessum,\
-                                                                                                                     LTOP #lbl ] ] ] > ] ],\
-                                                                CONT [ RELS <! '+POSS_REL+',\
-                                                                               '+POSSESSUM_EXIST_REL+' !>,\
-                                                                               HCONS <! qeq & [ HARG #harg, LARG #lbl] !> ] ] ].',merge=True)
+
+                mylang.add('possessum-noun-lex-'+strat_num+' := [ SYNSEM.LOCAL [ CAT [ HEAD [ POSSESSOR nonpossessive ],\
+                                                                                       POSSESSUM possessum-'+strat_num+' ] ] ].',merge=True)
+
                 if mark_loc=='possessum':
                     mylang.add('possessum-noun-lex-'+strat_num+' := [ SYNSEM.LOCAL.CAT.VAL.SPR < [ LOCAL.CAT.HEAD noun ] > ].')                                       # Add any feature constraints to the possessor (only if the possessor is unmarked)
                     if strat.get('possessor-feat'):
