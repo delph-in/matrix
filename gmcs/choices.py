@@ -1167,6 +1167,12 @@ class ChoicesFile:
             if pron.get('type')=='affix':
                 pron_name=pron.full_key
                 features += [ [ pron_name,'plus|plus;minus|minus', '', 'noun', 'y' ] ]
+            if pron.get('type')=='non-affix':
+                if pron.get('possessum-mark')=='yes':
+                    if pron.get('possessum-type')=='affix':
+                        pron_name=pron.full_key
+                        features += [ [ pron_name+'_possessum','plus|plus;minus|minus', '', 'noun', 'y' ] ]
+
 
         # Questions
         if 'q-infl' in self.choices:

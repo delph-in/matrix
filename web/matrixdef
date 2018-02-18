@@ -695,13 +695,13 @@ BeginIter poss-pron{i} "a class of possessor pronouns"
 
     Label "<div id='possessum-mark-pron{i}' style='display:none'>"	
 
-     Radio possessum-type "Possessum morpheme type" "<p>Is the morpheme that marks the <b>possessum</b> an affix? Or is it a separate word or clitic?</p>" ""
+     Radio possessum-mark-type "Possessum morpheme type" "<p>Is the morpheme that marks the <b>possessum</b> an affix? Or is it a separate word or clitic?</p>" ""
      . affix "Possessum affix" "" "affix<br>" "toggle_element.call(this, 'possessum-mark-affix{i}', 'on'); toggle_element.call(this, 'possessum-mark-non-affix{i}', 'off');"
      . non-affix "Possessum non-affix" "" "separate word or clitic<br>"  "toggle_element.call(this, 'possessum-mark-affix{i}', 'off'); toggle_element.call(this, 'possessum-mark-non-affix{i}', 'on');"
 
      	   Label "<div id='possessum-mark-affix{i}' style='display:none'>"
 
-	   Radio possessum-affix-agr "Possessum agreement" "<p>Does the affix that marks the possessum agree with the possessor (e.g. in person, number, or gender)?</p>" ""
+	   Radio possessum-mark-affix-agr "Possessum agreement" "<p>Does the affix that marks the possessum agree with the possessor (e.g. in person, number, or gender)?</p>" ""
 	   . agree "Possessum agree" "" "yes<br>"
 	   . non-agree "Possessum non-agree" "" "no<br>"
 
