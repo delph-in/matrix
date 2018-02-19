@@ -128,8 +128,7 @@ on the <a href="http://www.delph-in.net/matrix/index.html#pubs">project website<
 
 <p>Filling out this form will produce a starter grammar for a natural
 language, consisting of a language-independent core and customized
-support for the phenomena you describe below.  Note that this grammar
-fragment will only treat matrix (main) clauses. Be advised that this
+support for the phenomena you describe below. Be advised that this
 system is highly experimental.  We are interested in your feedback.
 If you have questions or comments, please email Emily Bender at:
 <strong>ebender at u dot washington dot edu</strong>.
