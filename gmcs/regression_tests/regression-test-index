@@ -1754,3 +1754,6 @@ clausalmods-german=an illustrative language for clausal modifiers based on Germa
 adnom-poss-spec-dep-non-aff-hf-constraint=Dep non-affixally marked head final poss construction w spec-like attachment; dep must be nom case.
 adnom-poss-spec-head-non-aff-hf-constraint=Head non-affixally marked head final poss construction w spec-like attachment; dep must be nom case.
 adnom-poss-mod-head-aff-hf-constraint=Head affixally marked head final poss construction w mod-like attachment; dep must be nom case.
+adnom-poss-spec-pron-head-aff-agr=Possessor pronoun accompanied by agreeing affix on possessum
+adnom-poss-mod-pron-head-aff-agr=Possessor pronoun accompanied by agreeing affix on possessum
+adnom-poss-spec-pron-head-non-aff-agr=Possessor pronoun accompanied by agreeing non-affixal mark on possessum

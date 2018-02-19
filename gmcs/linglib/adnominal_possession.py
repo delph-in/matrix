@@ -119,7 +119,7 @@ def customize_adnominal_possession(mylang,ch,rules,irules,lexicon,hierarchies):
     # If so, add the POSS head feature.
     for key in ch.full_keys():
         if 'poss-strat' in key or 'poss-pron' in key:
-            customize_poss_addenda(mylang)
+            customize_poss_addenda(mylang,ch)
 
     customize_np_possession(mylang,ch,rules,irules,lexicon,hierarchies)
 
@@ -133,7 +133,7 @@ def customize_adnominal_possession(mylang,ch,rules,irules,lexicon,hierarchies):
 Adds things to the addenda section that are necessary
 for any strategy
 """
-def customize_poss_addenda(mylang):
+def customize_poss_addenda(mylang,ch):
     mylang.add('head :+ [ POSSESSOR poss ].',section='addenda')
     mylang.add('cat :+ [ POSSESSUM poss ].',section='addenda')
     mylang.add('poss := *top* & [ POSS-AGR png ].',section='addenda')
@@ -145,6 +145,16 @@ def customize_poss_addenda(mylang):
                                                              POSSESSUM #possessum],\
                                           HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #possessor,\
                                                              POSSESSUM #possessum] ].',section='addenda')
+    # Set nouns to default nonpossessive behavior if no affixal strategies exist:
+    poss_strat_types=set()
+    for strat in ch.get('poss-strat'):
+        poss_strat_types.add(strat.get('possessor-type'))
+        poss_strat_types.add(strat.get('possessum-type'))
+        poss_strat_types.add(strat.get('possessum-mark-type'))
+    if 'affix' not in poss_strat_types:
+        mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR nonpossessive,\
+                                                     POSSESSUM nonpossessive ] ].',section='nounlex')
+
 
 
 """
@@ -174,15 +184,6 @@ def customize_np_possession(mylang,ch,rules,irules,lexicon,hierarchies):
         if strat.get('possessor-type')=='non-affix' or strat.get('possessum-type')=='non-affix':
             customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies)
 
-# TODO: This needs to be added here, but it's not fully correct.
-# The problem is that different strategies require different 
-# default feature values for nouns. Affixal strategies clash
-# with default nonpossessives; non-affixal strategies overproduce
-# without it. This creates problems when you have 2+ strategies.
-        # Set nouns to default nonpossessive behavior
-        if 'affix' not in (strat.get('possessor-type'), strat.get('possessum-type')):
-            mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR nonpossessive,\
-                                                         POSSESSUM nonpossessive ] ].')
 
 """
 Calls customize_poss_rules, customize_poss_irules, and customize_poss_lexicon
@@ -212,17 +213,6 @@ def customize_pronominal_possession(mylang,ch,rules,irules,lexicon,hierarchies):
         # Add lexical rules:
         if pron.get('type')=='non-affix':            
             customize_poss_lexicon(pron,mylang,ch,lexicon,rules,hierarchies)
-
-# TODO: This needs to be added here, but creates regressions
-# The problem is that different strategies require different 
-# default feature values for nouns. Affixal strategies clash
-# with default nonpossessives; non-affixal strategies overproduce
-# without it. This creates problems when you have 2+ strategies.
-        # Set nouns to default nonpossessive behavior
-#        # Set nouns to default nonpossessive behavior
-#        if pron.get('possessum-mark-type')!='affix':
-#            mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR nonpossessive,\
-#                                                         POSSESSUM nonpossessive ] ].')
 
 
 #########################################################################################
