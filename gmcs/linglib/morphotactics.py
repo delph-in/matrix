@@ -254,9 +254,22 @@ def create_lexical_rule_type(lrt, mtx_supertypes, cur_pc):
     for feat in lrt.get('feat'):
         if feat['name'] == 'evidential':
             new_lrt.evidential = feat['value']
-        elif feat['value']=='possessor' or feat['value']=='possessum' or feat['value']=='nonpossessive':
+        # EKN 2018-02-17 Add info about possessive lrts:
+        elif feat['value']=='possessor' or\
+             feat['value']=='possessum' or\
+             feat['value']=='nonpossessive':
             new_lrt.possessive=feat['value']
             new_lrt.poss_strat_num = feat['name'][-1]
+        # EKN 2018-02-17 Add info about lrts for possessum marking 
+        # that accompanies pronoun possessors:
+        elif '_possessum' in feat['name']: #TODO: improve feature name and retrieval
+            num = feat['name'].split('_')[0][-1]
+            if feat['value']=='plus':
+                new_lrt.possessive='possessum'
+                new_lrt.poss_strat_num = 'pron-'+num
+            else:
+                new_lrt.possessive='nonpossessive'
+                new_lrt.poss_strat_num = 'pron-'+num
         else:
             new_lrt.features[feat['name']] = {'value': feat['value'],
                                               'head': feat['head']}

@@ -108,8 +108,15 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                 poss_lrt=True
                 agreeing_element=feature.get('value')
             elif 'poss-pron' in feat_name:
-                poss_pron_lrt=True
-                agreeing_element='possessor'
+                # Possessum affix with possessor pronoun
+                # should behave like other possessive lrts:
+                if '_possessum' in feat_name:
+                    poss_lrt=True
+                    agreeing_element='possessum'
+                # Actual pronoun affixes should behave differently:
+                else:
+                    poss_pron_lrt=True
+                    agreeing_element='possessor'
             elif 'possessum' in feature.full_key:
                 agreeing_element='possessum'
             elif 'possessor' in feature.full_key:

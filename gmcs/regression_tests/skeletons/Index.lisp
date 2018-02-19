@@ -22,6 +22,9 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "adnom-poss-spec-pron-head-non-aff-agr") (:content . "adnom-poss-spec-pron-head-non-aff-agr: Possessor pronoun accompanied by agreeing non-affixal mark on possessum"))
+((:path . "adnom-poss-mod-pron-head-aff-agr") (:content . "adnom-poss-mod-pron-head-aff-agr: Possessor pronoun accompanied by agreeing affix on possessum"))
+((:path . "adnom-poss-spec-pron-head-aff-agr") (:content . "adnom-poss-spec-pron-head-aff-agr: Possessor pronoun accompanied by agreeing affix on possessum"))
 ((:path . "adnom-poss-mod-head-aff-hf-constraint") (:content . "adnom-poss-mod-head-aff-hf-constraint: Head affixally marked head final poss construction w mod-like attachment; dep must be nom case."))
 ((:path . "adnom-poss-spec-head-non-aff-hf-constraint") (:content . "adnom-poss-spec-head-non-aff-hf-constraint: Head non-affixally marked head final poss construction w spec-like attachment; dep must be nom case."))
 ((:path . "adnom-poss-spec-dep-non-aff-hf-constraint") (:content . "adnom-poss-spec-dep-non-aff-hf-constraint: Dep non-affixally marked head final poss construction w spec-like attachment; dep must be nom case."))
