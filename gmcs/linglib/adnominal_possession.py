@@ -283,7 +283,12 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
                                           HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.SPR #spr & <[ ]>],\
                                           C-CONT [ RELS <! '+POSS_REL+' !>,\
                                                    HCONS <! !> ] ].')
+        
+        #If both word orders are allowed, then you should add a type to this rule to inherit from:
+        if strat_order=='either': 
+            mylang.add(phrase_rule+' := binary-headed-phrase.')
 
+        # Add any feature constraints to possessor in juxt construction
         if strat.get('feat'):
             customize_feature_values(mylang,ch,hierarchies,strat,phrase_rule,'juxt-rule')
 
