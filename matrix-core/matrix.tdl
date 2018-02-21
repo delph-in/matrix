@@ -2439,6 +2439,13 @@ norm-hook-lex-item := norm-ltop-lex-item &
   [ SYNSEM [ LOCAL.CONT.HOOK.INDEX #index,
              LKEYS.KEYREL.ARG0 #index ] ].
 
+; EKN 2018-02-20 For determiners:
+no-ltop-lex-item := lex-item &
+  [ SYNSEM [ LOCAL.CONT [ RELS.LIST.FIRST #keyrel,
+    	     		  HOOK.INDEX #index ], 
+             LKEYS.KEYREL #keyrel & [ ARG0 #index ] ] ].
+
+
 ; ERB 2007-02-26 For modifiers. Elements that have a double life
 ; as attributive and predicative become tricky.  Attributive adjectives
 ; and PPs should be raise-index-mod-lex-item, while predicative
@@ -3269,7 +3276,7 @@ basic-noun-lex := norm-sem-lex-item & basic-icons-lex-item &
 ; language-specific.  In this case, however, it does not concern
 ; a mapping to ARG-ST.
 
-basic-determiner-lex := norm-hook-lex-item & 
+basic-determiner-lex := no-ltop-lex-item & 
   [ SYNSEM [ LOCAL [ CAT [ HEAD det,
 			   VAL.SPEC.FIRST.LOCAL.CONT.HOOK [ INDEX #ind,
 							    LTOP #larg ]],
