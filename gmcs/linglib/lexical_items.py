@@ -543,7 +543,9 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
         elif nonaffixal_strat:
             spr_head_type='+pd'            
         if possessum_mark:
-            spec_constraint=''
+#            spec_constraint=''
+            spec_constraint=',\
+                             SPEC <>'
         else:
             spec_constraint=',\
                              SPEC <>'

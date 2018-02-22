@@ -36,7 +36,7 @@ POSSESSUM_EXIST_REL = '''quant-relation & [ PRED "exist_q_rel", \
                                             ARG0 #possessum, \
                                             RSTR #harg ]'''
 
-POSSESSOR_RULE=' :=\
+POSSESSOR_NON_SPEC_RULE=' :=\
                   [ SYNSEM.LOCAL [ CAT.VAL [ SPR #spr,\
                                              COMPS #comps,\
                                              SUBJ #subj ] ],\
@@ -45,12 +45,28 @@ POSSESSOR_RULE=' :=\
                                                  SUBJ #subj ], \
                                        CONT.HOOK #hook & [ INDEX #possessor ] ] ] ].'
 
-POSSESSUM_RULE=' :=\
+POSSESSOR_SPEC_RULE=' :=\
+                  [ SYNSEM.LOCAL [ CAT.VAL [ SPR #spr,\
+                                             COMPS #comps,\
+                                             SUBJ #subj ] ],\
+                    DTR.SYNSEM.LOCAL [ CAT.VAL [ SPR #spr,\
+                                                 COMPS #comps,\
+                                                 SUBJ #subj  ] ] ].'
+
+
+POSSESSUM_NON_SPEC_RULE=' :=\
                   [ SYNSEM.LOCAL [ CAT.VAL [ SPEC #spec,\
                                              SUBJ #subj ] ],\
                     DTR.SYNSEM.LOCAL [ CAT.VAL [ SPEC #spec,\
                                                  SUBJ #subj ], \
                                        CONT.HOOK #hook ] ] ].'
+
+POSSESSUM_SPEC_RULE=' :=\
+                  [ SYNSEM.LOCAL [ CAT.VAL [ SPEC #spec,\
+                                             SUBJ #subj ] ],\
+                    DTR.SYNSEM.LOCAL [ CAT.VAL [ SPEC #spec,\
+                                                 SUBJ #subj ] ] ] ].'
+
 
 JUXTAPOSITION_RULE=' := [ SYNSEM.LOCAL.CAT [ HEAD #head,\
                                               VAL [ COMPS < >,\
@@ -80,21 +96,35 @@ POSSESSOR_ADP_LEX=':= two-rel-adposition-lex &\
                                                                               OPT - ] ] ],\
                                                   CONT [ ICONS <! !>   ] ] ].'
 
-POSSESSUM_NOUN_LEX=':= basic-two-arg &\
+#POSSESSUM_NOUN_LEX=':= basic-two-arg &\
+#                                   [ SYNSEM.LOCAL [ CAT [ HEAD #head & noun ,\
+#                                                          VAL [ SUBJ < >,\
+#                                                                SPR < #spr & [ LOCAL [ CAT.VAL.SPR < >,\
+#                                                                                       CONT.HOOK.INDEX #possessor ] ] >,\
+#                                                                COMPS < #comps & [ LOCAL [ CONT.HOOK #hook & [ INDEX #possessum,\
+#                                                                                                               LTOP #lbl ],\
+#                                                                                           CAT [ VAL.SPR <[ ]>,\
+#                                                                                                 HEAD #head & [ PRON - ] ] ] ] > ] ],\
+#                                                    CONT [ RELS <! '+POSS_REL+',\
+#                                                                               '+POSSESSUM_EXIST_REL+' !>,\
+#                                                           HCONS <! qeq & [ HARG #harg, LARG #lbl] !>,\
+#                                                           HOOK #hook,\
+#                                                           ICONS <! !> ] ],\
+#                                     ARG-ST < #spr, #comps > ].'
+
+POSSESSUM_NOUN_LEX=':= basic-one-arg &\
                                    [ SYNSEM.LOCAL [ CAT [ HEAD #head & noun ,\
                                                           VAL [ SUBJ < >,\
-                                                                SPR < #spr & [ LOCAL [ CAT.VAL.SPR < >,\
-                                                                                       CONT.HOOK.INDEX #possessor ] ] >,\
-                                                                COMPS < #comps & [ LOCAL [ CONT.HOOK #hook & [ INDEX #possessum,\
-                                                                                                               LTOP #lbl ],\
+                                                                SPR < >,\
+                                                                COMPS < #comps & [ LOCAL [ CONT.HOOK #hook,\
                                                                                            CAT [ VAL.SPR <[ ]>,\
                                                                                                  HEAD #head & [ PRON - ] ] ] ] > ] ],\
-                                                    CONT [ RELS <! '+POSS_REL+',\
-                                                                               '+POSSESSUM_EXIST_REL+' !>,\
-                                                           HCONS <! qeq & [ HARG #harg, LARG #lbl] !>,\
+                                                    CONT [ RELS <! !>,\
+                                                           HCONS <! !>,\
                                                            HOOK #hook,\
                                                            ICONS <! !> ] ],\
-                                     ARG-ST < #spr, #comps > ].'
+                                     ARG-ST < #comps > ].'
+
 
 
 # TODO: change one-arg to being added by the logic section, since the modifier-version is zero-arg.
@@ -235,6 +265,7 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
     mark_loc=strat.get('mark-loc')
     pron_allowed=True if strat.get('pronoun-allow')=='yes' else False
     adj_rule=False
+    spec_rule=False
     # Set flags for pronouns 
     if 'poss-pron' in strat_name:
         pron_strat=True
@@ -301,17 +332,49 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
         # If possessor==spec, add a head-compositional variant of head-spec 
         if strat.get('mod-spec')=='spec':
 
-            rule_added=True
-            phrase_rule='head-spec-poss-phrase'+'-'+strat_num
+            # TODO: add order info:
+            mylang.add('head-spec-phrase := basic-head-spec-phrase.')
+            
+#            rule_added=True
+#            phrase_rule='head-spec-poss-phrase'+'-'+strat_num
+#            mylang.add(phrase_rule+' :=  basic-head-spec-phrase-super & [  NON-HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL [ SPEC < [ LOCAL.CAT.POSSESSUM #poss ] >,\
+#                                                                                                                   SPR < >,\
+#                                                                                                                   COMPS < > ],\
+#                                                                                                               HEAD +nvjrpcmo ],\
+#                                                                                                   OPT - ],\
+#                                                                           HEAD-DTR.SYNSEM.LOCAL [ CAT.POSSESSUM #poss,\
+#                                                                                                   CONT.HOOK #hook ] ,\
+#                                                                           C-CONT.HOOK #hook ].')
 
-            mylang.add(phrase_rule+' :=  basic-head-spec-phrase-super & [  NON-HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL [ SPEC < [ LOCAL.CAT.POSSESSUM #poss ] >,\
-                                                                                                                   SPR < >,\
-                                                                                                                   COMPS < > ],\
-                                                                                                               HEAD +nvjrpcmo ],\
-                                                                                                   OPT - ],\
-                                                                           HEAD-DTR.SYNSEM.LOCAL [ CAT.POSSESSUM #poss,\
-                                                                                                   CONT.HOOK #hook ] ,\
-                                                                           C-CONT.HOOK #hook ].')
+            spec_rule=True
+
+            mylang.add('poss-unary-phrase := basic-unary-phrase & \
+              [ SYNSEM.LOCAL [ CONT.HOOK #hook,\
+                               CAT [ HEAD.POSSESSOR nonpossessive,\
+  	                 	   VAL [ SPR #spr\
+                                         COMPS #comps,\
+			                 SUBJ #subj,\
+		     	                 SPEC < [ LOCAL [ CAT.HEAD +np & [ PRON - ],\
+		     	      	                          CONT.HOOK #hook & [ INDEX #possessum & [ COG-ST uniq-id ],\
+				      		      	                      LTOP #lbl ] ] ] > ] ] ],\
+             C-CONT [ RELS <! arg12-ev-relation & [ PRED "poss_rel", \
+                                                      LBL #lbl, \
+                                                      ARG1 #possessum, \
+                                                      ARG2 #possessor ],\
+  		                quant-relation & [ PRED "exist_q_rel", \
+                                                   ARG0 #possessum, \
+                                                   RSTR #harg ] !>,\
+	                HCONS <! qeq & [ HARG #harg, LARG #lbl ]!>,\
+                        ICONS <! !>   ],\
+                ARGS < [ SYNSEM.LOCAL [ CAT [ VAL [ SPR #spr & olist,\
+       	       		      	                    COMPS #comps,\
+				                    SUBJ #subj,\
+                                                    SPEC < > ],\
+      	   		      	              HEAD noun ],\
+  			                CONT.HOOK.INDEX #possessor ] ] > ].')
+
+
+            rules.add('poss-unary := poss-unary-phrase.')
 
         # If possessor==mod, add either head-mod or head-comp
         # Exception: no rule added if preexistent head-comps has correct order
@@ -370,7 +433,7 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
     if rule_added and mark_loc!='neither': 
         
         # Make head-mod-poss and head-spec-poss accept only possessive phrases
-        if not (phrase_rule=='head-comp-poss-phrase-'+strat_num or adj_rule):
+        if not (phrase_rule=='head-comp-poss-phrase-'+strat_num or adj_rule or spec_rule):
             if strat.get('mark-loc')=='possessor':
                 mylang.add(phrase_rule+':= [ HEAD-DTR.SYNSEM.LOCAL.CAT [ POSSESSUM nonpossessive ],\
                                              NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR possessor-'+strat_num+' ] ].',merge=True)
@@ -397,12 +460,12 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
 
         # Make non-possessive phrases reject possessive nouns:
 
-        # Make head-spec reject possessive nouns:
-        if ch.get('has-dets')=='yes':
-            mylang.add('head-spec-phrase :=\
-                              [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.SPR <>,\
-                                                                HEAD +vjrcdmo &\
-                                                                  [ POSSESSOR nonpossessive ] ] ].',merge=True)
+#        # Make head-spec reject possessive nouns:
+#        if ch.get('has-dets')=='yes':
+#            mylang.add('head-spec-phrase :=\
+#                              [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.SPR <>,\
+#                                                                HEAD +vjrcdmo &\
+#                                                                  [ POSSESSOR nonpossessive ] ] ].',merge=True)
 
         # Determine word order for adjectives and make adjective phrases reject possessive nouns
 #        adj_pos=''
@@ -461,7 +524,7 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
                                                          HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL [ SPR <>,\
                                                                                            SPEC <> ] ] ].')
 
-    if rule_added and not adj_rule:
+    if rule_added and (not adj_rule) and (not spec_rule):
         # If a specialized poss phrase rule was added:
         #     Adds rule to rules.tdl
         #     Add word order info to rule
@@ -532,29 +595,41 @@ def customize_possessor_irules(strat,mylang,ch,strat_num,mod_spec,mark_loc,hiera
     # Add constraints to possessor rule for spec version
     if mod_spec=='spec':
         agr_prefix='SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
-        mylang.add(possessor_rule_name+POSSESSOR_RULE)
+        mylang.add(possessor_rule_name+POSSESSOR_SPEC_RULE)
 
         # Add constraints to spec version for single marking
-        if mark_loc=='possessor':
-            mylang.add(possessor_rule_name+' := val-change-with-ccont-lex-rule & \
-            [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR possessor-'+strat_num+',\
-                                 VAL [ SPEC.FIRST.LOCAL [ CAT [ HEAD noun & [ PRON - ] ],\
-                                                          CONT.HOOK [ INDEX #possessum & [ COG-ST uniq-id ],\
-                                                                      LTOP #lbl ] ] ] ] ,\
-              C-CONT [ HOOK #hook ,\
-                       RELS <! '+ POSS_REL  +' , '+POSSESSUM_EXIST_REL+ ' !>, \
-                       HCONS <! qeq & [ HARG #harg, LARG #lbl ] !>, \
+        if mark_loc=='possessor' or mark_loc=='both':
+#        if mark_loc=='possessor':
+#            mylang.add(possessor_rule_name+' := val-change-with-ccont-lex-rule & \
+#            [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR possessor-'+strat_num+',\
+#                                 VAL [ SPEC.FIRST.LOCAL [ CAT [ HEAD noun & [ PRON - ] ],\
+#                                                          CONT.HOOK [ INDEX #possessum & [ COG-ST uniq-id ],\
+#                                                                      LTOP #lbl ] ] ] ] ,\
+#              C-CONT [ HOOK #hook ,\
+#                       RELS <! '+ POSS_REL  +' , '+POSSESSUM_EXIST_REL+ ' !>, \
+#                       HCONS <! qeq & [ HARG #harg, LARG #lbl ] !>, \
+#                       ICONS <! !>  ] ].',merge=True)
+
+            mylang.add(possessor_rule_name+' := cat-change-only-lex-rule & \
+            [ SYNSEM.LOCAL.CAT [ VAL #val,\
+                                 HEAD.POSSESSOR possessor-'+strat_num+' ] ,\
+              DTR.SYNSEM.LOCAL.CAT.VAL #val,\
+              C-CONT [ RELS <! !>, \
+                       HCONS <! !>, \
                        ICONS <! !>  ] ].',merge=True)
 
+            mylang.add('poss-unary-phrase := [ ARGS < [ SYNSEM.LOCAL.CAT.HEAD noun & [ POSSESSOR possessor-'+strat_num+' ] ] > ].')
+
         # Add constraints to spec version for double marking
-        if mark_loc=='both':
-            mylang.add(possessor_rule_name+' := val-change-with-ccont-lex-rule & \
-                                           [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR possessor-'+strat_num+',\
-                                                                VAL [ SPEC.FIRST.LOCAL [ CAT [ HEAD noun & [ PRON - ] ] ] ] ] ,\
-                                             C-CONT [ HOOK #hook & [ INDEX #possessor ],\
-                                                      RELS <!  !>, \
-                                                      HCONS <! !>, \
-                                                      ICONS <! !>  ] ].',merge=True)
+#        if mark_loc=='both':
+#            mylang.add(possessor_rule_name+' := val-change-with-ccont-lex-rule & \
+#                                           [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR possessor-'+strat_num+',\
+#                                                                VAL [ SPEC.FIRST.LOCAL [ CAT [ HEAD noun & [ PRON - ] ] ] ] ] ,\
+#                                             C-CONT [ HOOK #hook & [ INDEX #possessor ],\
+#                                                      RELS <!  !>, \
+#                                                      HCONS <! !>, \
+#                                                      ICONS <! !>  ] ].',merge=True)
+
 
     # Add constraints to possessor rule for mod version
     elif mod_spec=='mod':
@@ -562,7 +637,7 @@ def customize_possessor_irules(strat,mylang,ch,strat_num,mod_spec,mark_loc,hiera
         # Add constraints to mod version for single marking
         if mark_loc=='possessor':
             agr_prefix='SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
-            mylang.add(possessor_rule_name+POSSESSOR_RULE)
+            mylang.add(possessor_rule_name+POSSESSOR_NON_SPEC_RULE)
             mylang.add(possessor_rule_name+' := head-change-with-ccont-lex-rule & \
                         [ SYNSEM.LOCAL.CAT [ HEAD [ MOD.FIRST [ LOCAL [ CAT [ VAL.SPR <[]>,\
                                                                         HEAD +np & [ PRON - ] ], \
@@ -601,30 +676,46 @@ def customize_possessum_irules(strat,mylang,ch,strat_num,mod_spec,mark_loc,posse
     
     # Add general possessum-marking rule:
     possessum_rule_name ='possessum-lex-rule-'+strat_num
-    mylang.add(possessum_rule_name+POSSESSUM_RULE)
+
                             
     # Add constraints to possessor rule for spec version                            
     if mod_spec=='spec':
-        
+
+        mylang.add(possessum_rule_name+POSSESSUM_SPEC_RULE)
+
         agr_prefix='SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
         
         # Add constraints in for single marking and double marking:
         if mark_loc=='possessum' or mark_loc=='both':
-            mylang.add(possessum_rule_name+':=  val-change-with-ccont-lex-rule & \
+
+#            mylang.add(possessum_rule_name+':=  val-change-with-ccont-lex-rule & \
+#                         [ SYNSEM.LOCAL.CAT [ POSSESSUM possessum-'+strat_num+',\
+#                                              VAL [ COMPS #comps,\
+#                                                    SPR < [ LOCAL [ CONT.HOOK.INDEX #possessor,\
+#                                                                    CAT [ VAL.SPR < >,\
+#                                                                          HEAD +np ] ] ] > ] ] ,\
+#                            C-CONT [ HOOK #hook & [ INDEX.COG-ST uniq-id ],\
+#                                                    HCONS <! qeq & [HARG #harg, LARG #lbl ] !>, \
+#                                                    ICONS <! !>,\
+#                                                    RELS <! '+POSS_REL+',\
+#                                                            '+POSSESSUM_EXIST_REL+' !> ],\
+#                            DTR.SYNSEM.LOCAL [ CONT.HOOK  [ INDEX #possessum,\
+#                                                            LTOP #lbl],\
+#                                               CAT [ HEAD.PRON -,\
+#                                                     VAL.COMPS #comps ] ] ].',merge=True)
+
+            mylang.add(possessum_rule_name+':=  cat-change-only-lex-rule & \
                          [ SYNSEM.LOCAL.CAT [ POSSESSUM possessum-'+strat_num+',\
-                                              VAL [ COMPS #comps,\
-                                                    SPR < [ LOCAL [ CONT.HOOK.INDEX #possessor,\
-                                                                    CAT [ VAL.SPR < >,\
-                                                                          HEAD +np ] ] ] > ] ] ,\
-                            C-CONT [ HOOK #hook & [ INDEX.COG-ST uniq-id ],\
-                                                    HCONS <! qeq & [HARG #harg, LARG #lbl ] !>, \
-                                                    ICONS <! !>,\
-                                                    RELS <! '+POSS_REL+',\
-                                                            '+POSSESSUM_EXIST_REL+' !> ],\
-                            DTR.SYNSEM.LOCAL [ CONT.HOOK  [ INDEX #possessum,\
-                                                            LTOP #lbl],\
-                                               CAT [ HEAD.PRON -,\
-                                                     VAL.COMPS #comps ] ] ].',merge=True)
+                                              VAL #val  ] ,\
+                            C-CONT [ HCONS <! !>, \
+                                     ICONS <! !>,\
+                                     RELS <! !> ],\
+                            DTR.SYNSEM.LOCAL [ CAT [ POSSESSUM nonpossessive,\
+                                                     HEAD.PRON - ,\
+                                                     VAL #val ] ] ].',merge=True)
+
+            mylang.add('poss-unary-phrase := [ SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CAT.HEAD noun &\
+                                                    [ POSSESSOR possessum-'+strat_num+' ] ].')
 
             # Add any feature constraints to the possessor (only if the possessor is unmarked)
             instance_tmp={}
@@ -636,10 +727,10 @@ def customize_possessum_irules(strat,mylang,ch,strat_num,mod_spec,mark_loc,posse
                 customize_feature_values(mylang,ch,hierarchies,instance_tmp,possessum_rule_name,'possessum-spec-mark')
                                     
         # Add constraints to spec version just for double marking
-        if mark_loc=='both':
-            mylang.add(possessum_rule_name+' :=\
-            [ SYNSEM.LOCAL.CAT.VAL.SPR < [ LOCAL.CAT.HEAD.POSSESSOR possessor-'+strat_num+' ] > ,\
-              DTR.SYNSEM.LOCAL.CAT.HEAD.PRON - ].')
+#        if mark_loc=='both':
+#            mylang.add(possessum_rule_name+' :=\
+#            [ SYNSEM.LOCAL.CAT.VAL.SPR < [ LOCAL.CAT.HEAD.POSSESSOR possessor-'+strat_num+' ] > ,\
+#              DTR.SYNSEM.LOCAL.CAT.HEAD.PRON - ].')
         
         # Add constraints to spec version for case where possessum is marked 
         # and possessor = pronoun
@@ -658,6 +749,7 @@ def customize_possessum_irules(strat,mylang,ch,strat_num,mod_spec,mark_loc,posse
     if mod_spec=='mod':
 
         agr_prefix='SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
+        mylang.add(possessum_rule_name+POSSESSUM_NON_SPEC_RULE)
 
         if mark_loc=='possessum' or mark_loc=='both':
             mylang.add(possessum_rule_name+':= val-change-with-ccont-lex-rule & \
@@ -840,22 +932,27 @@ def customize_possessor_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod
                                                        POSSESSUM nonpossessive,\
                                                        VAL [ SPEC.FIRST.LOCAL.CAT [ VAL.SPR < [ ] >,\
                                                                                     HEAD.PRON - ] ] ] ].')
+        mylang.add('possessor-adp-lex-'+strat_num+' := \
+                [  SYNSEM.LOCAL [ CONT [ RELS <! !>,\
+                                         HCONS <! !> ] ] ].')
+
+        mylang.add('poss-unary-phrase := [ ARGS < [ SYNSEM.LOCAL.CAT.HEAD noun & [ POSSESSOR possessor-'+strat_num+' ] ] > ].')
 
         # Add constraints to spec version for single-marking:
-        if mark_loc=='possessor':
-            mylang.add('possessor-adp-lex-'+strat_num+' := \
-                                 [  SYNSEM.LOCAL [ CAT  [ VAL [ COMPS.FIRST.LOCAL [ CONT.HOOK.INDEX #possessor ],\
-                                                                SPEC.FIRST.LOCAL [ CONT.HOOK [ INDEX #possessum,\
-                                                                                               LTOP #lbl ] ] ] ],\
-                                                  CONT [ RELS <! '+POSS_REL+',\
-                                                                 '+POSSESSUM_EXIST_REL+' !>,\
-                                                         HCONS <!  qeq & [ HARG #harg, LARG #lbl ] !> ] ] ].')
-
-        # Add constraints to spec version for double-marking:
-        elif mark_loc=='both':
-            mylang.add('possessor-adp-lex-'+strat_num+' := \
-                                 [  SYNSEM.LOCAL [ CONT [ RELS <! !>,\
-                                                          HCONS <! !> ] ] ].')
+#        if mark_loc=='possessor':
+#            mylang.add('possessor-adp-lex-'+strat_num+' := \
+#                                 [  SYNSEM.LOCAL [ CAT  [ VAL [ COMPS.FIRST.LOCAL [ CONT.HOOK.INDEX #possessor ],\
+#                                                                SPEC.FIRST.LOCAL [ CONT.HOOK [ INDEX #possessum,\
+#                                                                                               LTOP #lbl ] ] ] ],\
+#                                                  CONT [ RELS <! '+POSS_REL+',\
+#                                                                 '+POSSESSUM_EXIST_REL+' !>,\
+#                                                         HCONS <!  qeq & [ HARG #harg, LARG #lbl ] !> ] ] ].')
+#
+#        # Add constraints to spec version for double-marking:
+#        elif mark_loc=='both':
+#            mylang.add('possessor-adp-lex-'+strat_num+' := \
+#                                 [  SYNSEM.LOCAL [ CONT [ RELS <! !>,\
+#                                                          HCONS <! !> ] ] ].')
 
     # Add constraints to possessor adp for mod version
     if mod_spec=='mod':
@@ -932,6 +1029,9 @@ def customize_possessum_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod
     # Add spec-version (only version in this case)
     if mod_spec=='spec':
 
+        mylang.add('poss-unary-phrase := [ SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CAT.HEAD noun &\
+                                                             [ POSSESSOR possessum-'+strat_num+' ] ].')
+
         # Add constraints to spec version for single marking
         if mark_loc=='possessum':
 
@@ -939,7 +1039,7 @@ def customize_possessum_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod
             mylang.add('possessum-noun-lex-'+strat_num+' := [ SYNSEM.LOCAL [ CAT [ HEAD [ POSSESSOR nonpossessive ],\
                                                                                        POSSESSUM possessum-'+strat_num+' ] ] ].',merge=True)
 
-            mylang.add('possessum-noun-lex-'+strat_num+' := [ SYNSEM.LOCAL.CAT.VAL.SPR < [ LOCAL.CAT.HEAD noun ] > ].')                           
+#            mylang.add('possessum-noun-lex-'+strat_num+' := [ SYNSEM.LOCAL.CAT.VAL.SPR < [ LOCAL.CAT.HEAD noun ] > ].')                           
 
             # Add any feature constraints to the possessor (only if the possessor is unmarked)
             if strat.get('possessor-feat'):
@@ -958,11 +1058,11 @@ def customize_possessum_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod
             mylang.add('possessum-noun-lex-'+strat_num+' := [ SYNSEM.LOCAL [ CAT [ HEAD [ POSSESSOR nonpossessive ],\
                                                                                        POSSESSUM possessum-'+strat_num+' ] ] ].',merge=True)
 
-            if possessor_type=='affix':
-                mylang.add('possessum-noun-lex-'+strat_num+' := [ SYNSEM.LOCAL.CAT.VAL.SPR < [ LOCAL.CAT.HEAD noun ] > ].')
+#            if possessor_type=='affix':
+#                mylang.add('possessum-noun-lex-'+strat_num+' := [ SYNSEM.LOCAL.CAT.VAL.SPR < [ LOCAL.CAT.HEAD noun ] > ].')
 
-            else:
-                mylang.add('possessum-noun-lex-'+strat_num+' := [ SYNSEM.LOCAL.CAT.VAL.SPR < [ LOCAL.CAT.HEAD adp ] > ].')
+#            else:
+#                mylang.add('possessum-noun-lex-'+strat_num+' := [ SYNSEM.LOCAL.CAT.VAL.SPR < [ LOCAL.CAT.HEAD adp ] > ].')
                 
         if mark_loc=='possessum-with-pron':
             # TODO: generalize typedef in header so that this doesn't need to be declared separately
