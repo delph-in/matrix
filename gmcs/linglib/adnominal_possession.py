@@ -1202,6 +1202,12 @@ def customize_possessor_pron_lexicon(strat,mylang,ch,lexicon,strat_name,strat_nu
 
     # Add any necessary markings to the possessum:
     if strat.get('possessum-mark')=='yes':
+
+        # Make possessor pron to req a marked possessum:
+        if mod_spec=='mod':
+            mylang.add(noun_type+' := [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.POSSESSUM possessum-pron-'+strat_num+'] > ].')
+            
+
         
         # Add affixal markings:
         if strat.get('possessum-mark-type')=='affix':
