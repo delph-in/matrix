@@ -136,7 +136,8 @@ POSSESSUM_NOUN_LEX=':= basic-one-arg &\
 POSSESSOR_PRON_LEX=' := basic-one-arg &\
                         [ SYNSEM [ LOCAL [ CONT.HOOK [ INDEX #possessor,\
                                                        LTOP #ltop ],\
-                                           CAT [ VAL [ SPR < [ OPT + ] >,\
+                                           CAT [ VAL [ SPR < [ LOCAL.CAT.HEAD det,\
+                                                               OPT + ] >,\
                                                        COMPS olist,\
                                                        SUBJ olist ],\
                                                  HEAD noun & [ PRON + ] ] ],\
@@ -358,7 +359,7 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
             mylang.add('poss-unary-phrase-'+strat_num+' := basic-unary-phrase & \
               [ SYNSEM.LOCAL [ CONT.HOOK #hook,\
                                CAT [ HEAD det & [ POSSESSOR nonpossessive ],\
-  	                 	   VAL [ SPR #spr,\
+  	                 	   VAL [ SPR < >,\
                                          COMPS #comps,\
 			                 SUBJ #subj,\
 		     	                 SPEC < [ LOCAL [ CAT [ VAL.COMPS < > ,\
@@ -374,7 +375,7 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
                                                    RSTR #harg ] !>,\
 	                HCONS <! qeq & [ HARG #harg, LARG #lbl ]!>,\
                         ICONS <! !>   ],\
-                ARGS < [ SYNSEM.LOCAL [ CAT [ VAL [ SPR #spr & olist,\
+                ARGS < [ SYNSEM.LOCAL [ CAT [ VAL [ SPR < >,\
        	       		      	                    COMPS #comps & olist,\
 				                    SUBJ #subj,\
                                                     SPEC < > ],\
