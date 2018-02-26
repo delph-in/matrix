@@ -694,7 +694,6 @@ def customize_possessum_irules(strat,mylang,rules,ch,strat_num,mod_spec,mark_loc
     
     # Add general possessum-marking rule:
     possessum_rule_name ='possessum-lex-rule-'+strat_num
-
                             
     # Add constraints to possessor rule for spec version                            
     if mod_spec=='spec':
@@ -814,8 +813,12 @@ def customize_possessum_irules(strat,mylang,rules,ch,strat_num,mod_spec,mark_loc
 
     # Add agreement features to the possessum affix
     if strat.get('possessum-affix-agr')=='agree':
-        mylang.add(possessum_rule_name+' := [ SYNSEM.LOCAL.CAT.POSSESSUM.POSS-AGR #png,\
+        if mod_spec=='mod':
+            mylang.add(possessum_rule_name+' := [ SYNSEM.LOCAL.CAT.POSSESSUM.POSS-AGR #png,\
                                                              '+agr_prefix+' #png ].')
+        elif mod_spec=='spec':
+            mylang.add('poss-unary-phrase-'+strat_num+' := [ ARGS < [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png-um ] >,\
+                                                             SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CAT.POSSESSUM.POSS-AGR #png-um ].')
 
     # Note: in the mutual agreement, double marking mod-like scenario, the possessor is a COMP.
     # Therefore, it has no access to the possessum's PNG info. When the possessor agrees with 
@@ -1032,11 +1035,22 @@ def customize_possessor_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod
             # Add agreeing forms to mylang
             orth=form.get('agr-orth')
             adp_type=adp_id(form)
-            mylang.add(adp_type+' := possessor-adp-lex-'+strat_num+' &\
+            
+            # If mod, agreement constraint goes on adp
+            if mod_spec=='mod':
+                mylang.add(adp_type+' := possessor-adp-lex-'+strat_num+' &\
                                         [ SYNSEM.LOCAL.CAT.HEAD.POSSESSOR.POSS-AGR #png,\
                                         '+agr_prefix+' #png ].')
 
-            customize_feature_values(mylang,ch,hierarchies,form,adp_type,'poss-marker')
+                customize_feature_values(mylang,ch,hierarchies,form,adp_type,'poss-marker')
+
+            # If spec, agreement constraint goes on poss-unary-phrase:
+            elif mod_spec=='spec':
+                mylang.add('poss-unary-phrase-'+strat_num+' := \
+                          [ SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CONT.HOOK.INDEX.PNG #png-or,\
+                            ARGS < [ SYNSEM.LOCAL.CAT.HEAD.POSSESSOR.POSS-AGR #png-or ] > ].')
+                mylang.add(adp_type+' := possessor-adp-lex-'+strat_num+'.')
+                customize_feature_values(mylang,ch,hierarchies,form,adp_type,'poss-marker')
 
             # Add agreeing adps to lexicon:
             orth=form.get('agr-orth')
@@ -1130,11 +1144,22 @@ def customize_possessum_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod
                 prefix='SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
             noun_type=noun_id(form)
 
-            # Add appropriate agreeing forms to mylang:
-            mylang.add(noun_type+' := possessum-noun-lex-'+strat_num+' &\
+            # If mod, then agreeing happens on possessum marker:
+            if mod_spec=='mod':
+
+                # Add appropriate agreeing forms to mylang:
+                mylang.add(noun_type+' := possessum-noun-lex-'+strat_num+' &\
                           [ SYNSEM.LOCAL.CAT.POSSESSUM.POSS-AGR #png,\
                                 '+prefix+' #png ].')
+
+            # If spec, then agreeing happens on poss-unary-rule:
+            elif mod_spec=='spec':
+                mylang.add(noun_type+' := possessum-noun-lex-'+strat_num+'.')
+                mylang.add('poss-unary-phrase-'+strat_num+' := [ ARGS < [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png-um ] >,\
+                                                                 SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CAT.POSSESSUM.POSS-AGR #png-um ].')
+
             customize_feature_values(mylang,ch,hierarchies,form,noun_type,'poss-marker')
+
             orth=form.get('agr-orth')
             # Add appropriate number of agreeing forms to lexicon
             lexicon.add(noun_type.replace('-lex','')+' := '+noun_type+' &\
@@ -1179,6 +1204,11 @@ def customize_possessor_pron_lexicon(strat,mylang,ch,lexicon,strat_name,strat_nu
         mylang.add('poss-unary-phrase-pron-'+strat_num+' := poss-unary-phrase & [ ARGS < [ SYNSEM.LOCAL.CAT.HEAD [ POSSESSOR possessor-pron-'+strat_num+' ] ] > ].')
         rules.add('poss-unary-pron-'+strat_num+' := poss-unary-phrase-pron-'+strat_num+'.')
 
+        if agr: 
+            mylang.add('poss-unary-phrase-pron-'+strat_num+' := [ ARGS < [ SYNSEM.LOCAL.CAT.HEAD.POSSESSOR.POSS-AGR #png ] >,\
+                                                           '+agr_prefix+' #png ].')
+
+
     # Add constraints for mod version
     elif mod_spec=='mod':
         agr_prefix='SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
@@ -1193,8 +1223,8 @@ def customize_possessor_pron_lexicon(strat,mylang,ch,lexicon,strat_name,strat_nu
                                                            #altkeyrel !>,\
                                                 HCONS <! !> ] ] ].')
 
-    if agr: 
-        mylang.add(noun_type+' := [ SYNSEM.LOCAL.CAT.HEAD.POSSESSOR.POSS-AGR #png,\
+        if agr: 
+            mylang.add(noun_type+' := [ SYNSEM.LOCAL.CAT.HEAD.POSSESSOR.POSS-AGR #png,\
                                               '+agr_prefix+' #png ].')
 
 
