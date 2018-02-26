@@ -681,8 +681,12 @@ def customize_possessor_irules(strat,mylang,rules,ch,strat_num,mod_spec,mark_loc
         # Note: we don't do this in the mod-like both-marking scenario -- possessor is a COMP and has no access to 
         # possessum. In this scenario, the identification must be done on the possessum inflection.
         if not (mark_loc=='both' and mod_spec=='mod'):
-            mylang.add(possessor_rule_name+' := [ SYNSEM.LOCAL.CAT.HEAD.POSSESSOR.POSS-AGR #png,\
+            if mod_spec=='mod':
+                mylang.add(possessor_rule_name+' := [ SYNSEM.LOCAL.CAT.HEAD.POSSESSOR.POSS-AGR #png,\
                                                                                '+agr_prefix+' #png ].')
+            elif mod_spec=='spec':
+                mylang.add('poss-unary-phrase-'+strat_num+' := [ ARGS < [ SYNSEM.LOCAL.CAT.HEAD.POSSESSOR.POSS-AGR #png ] >,\
+                                                                                      '+agr_prefix+' #png ].')
 
 
 
