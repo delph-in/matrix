@@ -34,7 +34,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                    'con': 'HEAD-DTR.SYNSEM.',
                    'juxt-rule': 'NON-HEAD-DTR.SYNSEM.',
                    'poss-adp-comp': 'SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.',
-                   'possessum-spec-mark': 'SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.',
+                   'possessum-spec-mark': 'ARGS < [ SYNSEM.',
                    'possessum-mod-mark': 'SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.' }
     pos_geom_prefix = prefix_map[pos] if pos in prefix_map else 'SYNSEM.'
 
@@ -194,7 +194,9 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                 # EKN 2018-01-19: Add the closing brackets for the possessive
                 # pronoun's feature path
                 if poss_pron_lrt:
-                    value=value+'] !>'
+                    value=value+'] !>'                    
+                if pos=='possessum-spec-mark':
+                    value=value+'] >'                    
                 tdlfile.add(type_name +
                     ' := [ ' + geom + ' ' + value + ' ].',
                     merge=True)
