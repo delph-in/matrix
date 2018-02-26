@@ -1,0 +1,253 @@
+
+version=31
+
+section=general
+language=clausalmods-moseten
+
+section=word-order
+word-order=free
+has-dets=no
+has-aux=no
+
+section=number
+  number1_name=singular
+  number2_name=plural
+
+section=person
+person=1-2-3
+first-person=none
+
+section=gender
+  gender1_name=masculine
+  gender2_name=feminine
+
+section=case
+case-marking=nom-acc
+nom-acc-nom-case-name=nominative
+nom-acc-acc-case-name=accusative
+
+section=adnom-poss
+
+section=direct-inverse
+
+section=tense-aspect-mood
+  mood1_name=irrealis
+    mood1_supertype1_name=mood
+  mood2_name=nomood
+    mood2_supertype1_name=mood
+
+section=evidentials
+
+section=other-features
+form-fin-nf=on
+  feature1_name=subord
+  feature1_type=head
+  feature1_cat=verb
+  feature1_new=yes
+    feature1_value1_name=purp
+      feature1_value1_supertype1_name=subord
+    feature1_value2_name=simul
+      feature1_value2_supertype1_name=subord
+    feature1_value3_name=hypo
+      feature1_value3_supertype1_name=subord
+    feature1_value4_name=notsubord
+      feature1_value4_supertype1_name=subord
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=info-str
+
+section=arg-opt
+subj-drop=subj-drop-all
+subj-mark-drop=subj-mark-drop-req
+subj-mark-no-drop=subj-mark-no-drop-opt
+subj-con=subj-con-always
+
+section=nominalclause
+
+section=clausal-comp
+
+section=clausalmods
+  cms1_position=either
+  cms1_modifier-attach=either
+  cms1_subordinator=free
+  cms1_subposition=before
+  cms1_subordinator-type=head
+    cms1_freemorph1_orth=khaki
+    cms1_freemorph1_pred=_because_subord_rel
+    cms1_freemorph2_orth=meki
+    cms1_freemorph2_pred=_therefore_subord_rel
+    cms1_freemorph3_orth=meweki
+    cms1_freemorph3_pred=_reason_subord_rel
+    cms1_feat1_name=subord
+    cms1_feat1_value=notsubord
+  cms2_position=either
+  cms2_modifier-attach=either
+  cms2_subordinator=free
+  cms2_subposition=before
+  cms2_subordinator-type=head
+    cms2_freemorph1_orth=khaki
+    cms2_freemorph1_pred=_purpose_subord_rel
+    cms2_feat1_name=subord
+    cms2_feat1_value=purp
+  cms3_position=either
+  cms3_modifier-attach=either
+  cms3_subordinator=none
+  cms3_pred=_while_subord_rel
+    cms3_feat2_name=subord
+    cms3_feat2_value=simul
+  cms4_position=either
+  cms4_modifier-attach=either
+  cms4_subordinator=none
+  cms4_pred=_if_subord_rel
+    cms4_feat2_name=subord
+    cms4_feat2_value=hypo
+
+section=lexicon
+  noun1_name=3M-pron
+  noun1_pron=on
+    noun1_feat1_name=person
+    noun1_feat1_value=3rd
+    noun1_feat2_name=gender
+    noun1_feat2_value=masculine
+    noun1_feat3_name=number
+    noun1_feat3_value=singular
+  noun1_det=imp
+    noun1_stem1_orth=mi
+    noun1_stem1_pred=_3m_n_rel
+  noun2_name=1SG-pron
+  noun2_pron=on
+    noun2_feat1_name=number
+    noun2_feat1_value=singular
+    noun2_feat2_name=person
+    noun2_feat2_value=1st
+  noun2_det=imp
+    noun2_stem1_orth=yae
+    noun2_stem1_pred=_1sg_n_rel
+  noun3_name=common
+    noun3_feat1_name=gender
+    noun3_feat1_value=masculine
+    noun3_feat2_name=case
+    noun3_feat2_value=acc
+  noun3_det=imp
+    noun3_stem1_orth=kerecha
+    noun3_stem1_pred=_money_n_rel
+  verb1_name=intrans
+  verb1_valence=nom
+    verb1_stem1_orth=wenchhish
+    verb1_stem1_pred=_move.here_v_rel
+  verb2_name=trans
+  verb2_valence=nom-acc
+    verb2_stem1_orth=tyebaj
+    verb2_stem1_pred=_give.again_v_rel
+
+section=morphology
+  verb-pc1_name=agr
+  verb-pc1_obligatory=on
+  verb-pc1_order=suffix
+  verb-pc1_inputs=iverb, tverb
+    verb-pc1_lrt1_name=subj-m-fin
+      verb-pc1_lrt1_feat2_name=gender
+      verb-pc1_lrt1_feat2_value=masculine
+      verb-pc1_lrt1_feat2_head=subj
+      verb-pc1_lrt1_feat4_name=overt-arg
+      verb-pc1_lrt1_feat4_value=permitted
+      verb-pc1_lrt1_feat4_head=verb
+      verb-pc1_lrt1_feat5_name=form
+      verb-pc1_lrt1_feat5_value=finite
+      verb-pc1_lrt1_feat5_head=verb
+      verb-pc1_lrt1_require1_others=verb-pc2
+      verb-pc1_lrt1_lri1_inflecting=yes
+      verb-pc1_lrt1_lri1_orth=an
+    verb-pc1_lrt2_name=obj-m-fin
+      verb-pc1_lrt2_feat2_name=gender
+      verb-pc1_lrt2_feat2_value=masculine
+      verb-pc1_lrt2_feat2_head=obj
+      verb-pc1_lrt2_feat4_name=OPT
+      verb-pc1_lrt2_feat4_value=minus
+      verb-pc1_lrt2_feat4_head=subj
+      verb-pc1_lrt2_feat5_name=form
+      verb-pc1_lrt2_feat5_value=finite
+      verb-pc1_lrt2_feat5_head=verb
+      verb-pc1_lrt2_require1_others=verb-pc2
+      verb-pc1_lrt2_lri1_inflecting=yes
+      verb-pc1_lrt2_lri1_orth=te
+    verb-pc1_lrt3_name=subj-f-nonfin
+      verb-pc1_lrt3_feat1_name=gender
+      verb-pc1_lrt3_feat1_value=feminine
+      verb-pc1_lrt3_feat1_head=subj
+      verb-pc1_lrt3_feat3_name=overt-arg
+      verb-pc1_lrt3_feat3_value=not-permitted
+      verb-pc1_lrt3_feat3_head=verb
+      verb-pc1_lrt3_feat4_name=form
+      verb-pc1_lrt3_feat4_value=nonfinite
+      verb-pc1_lrt3_feat4_head=verb
+      verb-pc1_lrt3_require1_others=verb-pc3
+      verb-pc1_lrt3_lri1_inflecting=yes
+      verb-pc1_lrt3_lri1_orth=si
+    verb-pc1_lrt4_name=subj-m-fin-purp
+      verb-pc1_lrt4_feat1_name=subord
+      verb-pc1_lrt4_feat1_value=purp
+      verb-pc1_lrt4_feat1_head=verb
+      verb-pc1_lrt4_feat3_name=gender
+      verb-pc1_lrt4_feat3_value=masculine
+      verb-pc1_lrt4_feat3_head=subj
+      verb-pc1_lrt4_feat4_name=overt-arg
+      verb-pc1_lrt4_feat4_value=permitted
+      verb-pc1_lrt4_feat4_head=verb
+      verb-pc1_lrt4_feat5_name=form
+      verb-pc1_lrt4_feat5_value=nonfinite
+      verb-pc1_lrt4_feat5_head=verb
+      verb-pc1_lrt4_lri1_inflecting=yes
+      verb-pc1_lrt4_lri1_orth=dyeti
+  verb-pc2_name=fin-features
+  verb-pc2_order=suffix
+  verb-pc2_inputs=verb-pc1_lrt1, verb-pc1_lrt2
+    verb-pc2_lrt1_name=hypo
+      verb-pc2_lrt1_feat1_name=subord
+      verb-pc2_lrt1_feat1_value=hypo
+      verb-pc2_lrt1_feat1_head=verb
+      verb-pc2_lrt1_require1_others=verb-pc4
+      verb-pc2_lrt1_lri1_inflecting=yes
+      verb-pc2_lrt1_lri1_orth=ya
+    verb-pc2_lrt4_name=none
+      verb-pc2_lrt4_feat1_name=subord
+      verb-pc2_lrt4_feat1_value=notsubord
+      verb-pc2_lrt4_feat1_head=verb
+      verb-pc2_lrt4_lri1_inflecting=no
+  verb-pc3_name=nfin-features
+  verb-pc3_order=suffix
+  verb-pc3_inputs=verb-pc1_lrt3
+    verb-pc3_lrt1_name=simul
+      verb-pc3_lrt1_feat1_name=subord
+      verb-pc3_lrt1_feat1_value=simul
+      verb-pc3_lrt1_feat1_head=verb
+      verb-pc3_lrt1_lri1_inflecting=yes
+      verb-pc3_lrt1_lri1_orth=tom
+    verb-pc3_lrt2_name=nfin-none
+      verb-pc3_lrt2_feat1_name=subord
+      verb-pc3_lrt2_feat1_value=notsubord
+      verb-pc3_lrt2_feat1_head=verb
+      verb-pc3_lrt2_lri1_inflecting=no
+  verb-pc4_name=mood
+  verb-pc4_order=suffix
+  verb-pc4_inputs=verb-pc2_lrt1
+    verb-pc4_lrt1_name=irrealis
+      verb-pc4_lrt1_feat1_name=mood
+      verb-pc4_lrt1_feat1_value=irrealis
+      verb-pc4_lrt1_feat1_head=verb
+      verb-pc4_lrt1_lri1_inflecting=yes
+      verb-pc4_lrt1_lri1_orth=ra
+
+section=toolbox-import
+
+section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon
+

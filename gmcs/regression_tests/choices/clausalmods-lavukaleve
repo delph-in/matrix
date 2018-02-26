@@ -1,0 +1,275 @@
+
+version=31
+
+section=general
+language=clausalmods-lavukaleve
+
+section=word-order
+word-order=sov
+has-dets=yes
+noun-det-order=noun-det
+has-aux=no
+
+section=number
+  number1_name=singular
+  number2_name=plural
+
+section=person
+person=1-2-3
+first-person=incl-excl
+incl-excl-number=singular, plural
+
+section=gender
+  gender1_name=masculine
+  gender2_name=feminine
+  gender3_name=neuter
+
+section=case
+case-marking=nom-acc
+nom-acc-nom-case-name=nominative
+nom-acc-acc-case-name=accusative
+
+section=adnom-poss
+
+section=direct-inverse
+
+section=tense-aspect-mood
+
+section=evidentials
+
+section=other-features
+  feature1_name=feat
+  feature1_type=head
+  feature1_cat=verb
+  feature1_new=yes
+    feature1_value1_name=subord
+      feature1_value1_supertype1_name=feat
+    feature1_value2_name=matrix
+      feature1_value2_supertype1_name=feat
+    feature1_value3_name=purp
+      feature1_value3_supertype1_name=subord
+    feature1_value4_name=ant
+      feature1_value4_supertype1_name=subord
+    feature1_value5_name=surp
+      feature1_value5_supertype1_name=subord
+    feature1_value6_name=pot
+      feature1_value6_supertype1_name=subord
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=info-str
+
+section=arg-opt
+subj-drop=subj-drop-all
+subj-mark-drop=subj-mark-drop-opt
+subj-mark-no-drop=subj-mark-no-drop-opt
+subj-con=subj-con-always
+obj-drop=obj-drop-all
+obj-mark-drop=obj-mark-drop-req
+obj-mark-no-drop=obj-mark-no-drop-req
+
+section=nominalclause
+
+section=clausal-comp
+
+section=clausalmods
+  cms1_position=either
+  cms1_modifier-attach=s
+  cms1_subordinator=none
+  cms1_pred=_purposive_subord_rel
+    cms1_feat1_name=feat
+    cms1_feat1_value=purp
+  cms1_shared-subj=on
+  cms2_position=either
+  cms2_modifier-attach=s
+  cms2_subordinator=none
+  cms2_pred=purp
+    cms2_feat1_name=feat
+    cms2_feat1_value=purp
+  cms3_position=before
+  cms3_modifier-attach=s
+  cms3_subordinator=none
+  cms3_pred=_anterior_subord_rel
+    cms3_feat1_name=feat
+    cms3_feat1_value=ant
+  cms4_position=before
+  cms4_modifier-attach=s
+  cms4_subordinator=none
+  cms4_pred=_potential_subord_rel
+    cms4_feat1_name=feat
+    cms4_feat1_value=pot
+  cms5_position=before
+  cms5_modifier-attach=s
+  cms5_subordinator=none
+  cms5_pred=_surprise_subord_rel
+    cms5_feat1_name=feat
+    cms5_feat1_value=surp
+  cms6_position=before
+  cms6_modifier-attach=s
+  cms6_subordinator=free
+  cms6_subposition=before
+  cms6_subordinator-type=head
+    cms6_freemorph1_orth=olang
+    cms6_freemorph1_pred=__because_subord_rel
+    cms6_feat1_name=feat
+    cms6_feat1_value=ant
+
+section=lexicon
+  noun1_name=neuter
+    noun1_feat1_name=gender
+    noun1_feat1_value=neuter
+    noun1_feat2_name=pernum
+    noun1_feat2_value=3singular
+  noun1_det=opt
+    noun1_stem1_orth=lai
+    noun1_stem1_pred=_rain_n_rel
+    noun1_stem2_orth=le
+    noun1_stem2_pred=_sun_n_rel
+  noun2_name=masc
+    noun2_feat1_name=gender
+    noun2_feat1_value=masculine
+    noun2_feat2_name=pernum
+    noun2_feat2_value=3singular
+  noun2_det=opt
+    noun2_stem1_orth=taragau
+    noun2_stem1_pred=_sea.eagle_n_rel
+  noun3_name=plural
+    noun3_feat1_name=pernum
+    noun3_feat1_value=3plural
+  noun3_det=opt
+    noun3_stem1_orth=kiv
+    noun3_stem1_pred=_clothes_n_rel
+  verb1_name=trans
+  verb1_valence=nom-acc
+    verb1_stem1_orth=levalori
+    verb1_stem1_pred=_wake.up_v_rel
+    verb1_stem2_orth=oeo
+    verb1_stem2_pred=_go.all.around_v_rel
+    verb1_stem3_orth=ma
+    verb1_stem3_pred=_take_v_rel
+  verb2_name=intrans
+  verb2_valence=nom
+    verb2_stem1_orth=ga
+    verb2_stem1_pred=_emerge_v_rel
+    verb2_stem2_orth=ve
+    verb2_stem2_pred=_go_v_rel
+  det1_name=det-neut
+    det1_stem1_orth=ga
+    det1_stem1_pred=_def_q_rel
+    det1_feat1_name=pernum
+    det1_feat1_value=3singular
+    det1_feat2_name=gender
+    det1_feat2_value=neuter
+  det2_name=masc
+    det2_stem1_orth=na
+    det2_stem1_pred=_def_q_rel
+    det2_feat1_name=pernum
+    det2_feat1_value=3singular
+    det2_feat2_name=gender
+    det2_feat2_value=masculine
+
+section=morphology
+  verb-pc1_name=suffix
+  verb-pc1_obligatory=on
+  verb-pc1_order=suffix
+  verb-pc1_inputs=verb
+    verb-pc1_lrt1_name=agr-obj-m
+      verb-pc1_lrt1_feat1_name=pernum
+      verb-pc1_lrt1_feat1_value=3singular
+      verb-pc1_lrt1_feat1_head=obj
+      verb-pc1_lrt1_feat2_name=gender
+      verb-pc1_lrt1_feat2_value=masculine
+      verb-pc1_lrt1_feat2_head=obj
+      verb-pc1_lrt1_feat3_name=feat
+      verb-pc1_lrt1_feat3_value=matrix
+      verb-pc1_lrt1_feat3_head=verb
+      verb-pc1_lrt1_lri1_inflecting=yes
+      verb-pc1_lrt1_lri1_orth=m
+    verb-pc1_lrt2_name=agr-subj-m
+      verb-pc1_lrt2_feat1_name=pernum
+      verb-pc1_lrt2_feat1_value=3singular
+      verb-pc1_lrt2_feat1_head=subj
+      verb-pc1_lrt2_feat2_name=gender
+      verb-pc1_lrt2_feat2_value=masculine
+      verb-pc1_lrt2_feat2_head=subj
+      verb-pc1_lrt2_feat3_name=feat
+      verb-pc1_lrt2_feat3_value=matrix
+      verb-pc1_lrt2_feat3_head=verb
+      verb-pc1_lrt2_lri1_inflecting=yes
+      verb-pc1_lrt2_lri1_orth=m
+    verb-pc1_lrt3_name=purp
+      verb-pc1_lrt3_feat1_name=feat
+      verb-pc1_lrt3_feat1_value=purp
+      verb-pc1_lrt3_feat1_head=verb
+      verb-pc1_lrt3_lri1_inflecting=yes
+      verb-pc1_lrt3_lri1_orth=ham
+    verb-pc1_lrt4_name=ant
+      verb-pc1_lrt4_feat1_name=feat
+      verb-pc1_lrt4_feat1_value=ant
+      verb-pc1_lrt4_feat1_head=verb
+      verb-pc1_lrt4_lri1_inflecting=yes
+      verb-pc1_lrt4_lri1_orth=ge
+    verb-pc1_lrt5_name=pot
+      verb-pc1_lrt5_feat1_name=feat
+      verb-pc1_lrt5_feat1_value=pot
+      verb-pc1_lrt5_feat1_head=verb
+      verb-pc1_lrt5_lri1_inflecting=yes
+      verb-pc1_lrt5_lri1_orth=le
+    verb-pc1_lrt6_name=meon
+      verb-pc1_lrt6_feat1_name=feat
+      verb-pc1_lrt6_feat1_value=surp
+      verb-pc1_lrt6_feat1_head=verb
+      verb-pc1_lrt6_lri1_inflecting=yes
+      verb-pc1_lrt6_lri1_orth=meon
+    verb-pc1_lrt7_name=zero
+      verb-pc1_lrt7_feat1_name=feat
+      verb-pc1_lrt7_feat1_value=matrix
+      verb-pc1_lrt7_feat1_head=verb
+      verb-pc1_lrt7_lri1_inflecting=no
+  verb-pc2_name=subj-mark
+  verb-pc2_order=prefix
+  verb-pc2_inputs=verb-pc1
+    verb-pc2_lrt1_name=3SG-S
+      verb-pc2_lrt1_feat1_name=pernum
+      verb-pc2_lrt1_feat1_value=3singular
+      verb-pc2_lrt1_feat1_head=subj
+      verb-pc2_lrt1_lri1_inflecting=yes
+      verb-pc2_lrt1_lri1_orth=o
+    verb-pc2_lrt2_name=3PL-S
+      verb-pc2_lrt2_feat1_name=pernum
+      verb-pc2_lrt2_feat1_value=3plural
+      verb-pc2_lrt2_feat1_head=subj
+      verb-pc2_lrt2_lri1_inflecting=yes
+      verb-pc2_lrt2_lri1_orth=ma
+  verb-pc3_name=obj-mark
+  verb-pc3_order=prefix
+  verb-pc3_inputs=verb-pc1, verb-pc2
+    verb-pc3_forbid1_others=iverb
+    verb-pc3_lrt1_name=3PL-O
+      verb-pc3_lrt1_feat1_name=pernum
+      verb-pc3_lrt1_feat1_value=3plural
+      verb-pc3_lrt1_feat1_head=obj
+      verb-pc3_lrt1_lri1_inflecting=yes
+      verb-pc3_lrt1_lri1_orth=vo
+    verb-pc3_lrt2_name=3SG-M-O
+      verb-pc3_lrt2_feat1_name=pernum
+      verb-pc3_lrt2_feat1_value=3singular
+      verb-pc3_lrt2_feat1_head=obj
+      verb-pc3_lrt2_feat2_name=gender
+      verb-pc3_lrt2_feat2_value=masculine
+      verb-pc3_lrt2_feat2_head=obj
+      verb-pc3_lrt2_lri1_inflecting=yes
+      verb-pc3_lrt2_lri1_orth=a
+
+section=toolbox-import
+
+section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon
+

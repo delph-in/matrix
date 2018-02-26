@@ -40,6 +40,14 @@ section=evidentials
 
 section=other-features
 form-fin-nf=on
+  feature1_name=nmz-type
+  feature1_type=head
+  feature1_cat=both
+  feature1_new=yes
+    feature1_value1_name=generic
+      feature1_value1_supertype1_name=nmz-type
+    feature1_value2_name=reason
+      feature1_value2_supertype1_name=nmz-type
 
 section=sentential-negation
 
@@ -65,6 +73,8 @@ section=clausalmods
   cms1_pred=_reason_subord_rel
     cms1_feat1_name=nominalization
     cms1_feat1_value=nmz
+    cms1_feat2_name=nmz-type
+    cms1_feat2_value=reason
   cms2_position=before
   cms2_modifier-attach=s
   cms2_subordinator=free
@@ -74,6 +84,8 @@ section=clausalmods
     cms2_freemorph1_pred=_reason_subord_rel
     cms2_feat2_name=nominalization
     cms2_feat2_value=nmz
+    cms2_feat3_name=nmz-type
+    cms2_feat3_value=generic
 
 section=lexicon
   noun1_name=gen-pronoun
@@ -176,6 +188,9 @@ section=morphology
       verb-pc2_lrt2_feat2_name=case
       verb-pc2_lrt2_feat2_value=genitive
       verb-pc2_lrt2_feat2_head=subj
+      verb-pc2_lrt2_feat3_name=nmz-type
+      verb-pc2_lrt2_feat3_value=reason
+      verb-pc2_lrt2_feat3_head=verb
       verb-pc2_lrt2_require1_others=verb-pc3
       verb-pc2_lrt2_lri1_inflecting=yes
       verb-pc2_lrt2_lri1_orth=toa
@@ -195,6 +210,9 @@ section=morphology
       verb-pc4_lrt1_feat2_name=case
       verb-pc4_lrt1_feat2_value=genitive
       verb-pc4_lrt1_feat2_head=subj
+      verb-pc4_lrt1_feat3_name=nmz-type
+      verb-pc4_lrt1_feat3_value=generic
+      verb-pc4_lrt1_feat3_head=verb
       verb-pc4_lrt1_lri1_inflecting=no
 
 section=toolbox-import

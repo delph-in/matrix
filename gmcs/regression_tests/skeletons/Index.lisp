@@ -22,6 +22,12 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "clausalmods-rukai") (:content . "clausalmods-rukai: an illustrative grammar for clausal modifiers based on rukai"))
+((:path . "clausalmods-uranina") (:content . "clausalmods-uranina: a held out test for clausal modifiers based on uranina"))
+((:path . "clausalmods-moseten") (:content . "clausalmods-moseten: a held out test for clausal modifiers based on moseten"))
+((:path . "clausalmods-madi") (:content . "clausalmods-madi: a held out test for clausal modifiers based on ma'di"))
+((:path . "clausalmods-lavukaleve") (:content . "clausalmods-lavukaleve: a held out test for clausal modifiers based on lavukaleve"))
+((:path . "clausalmods-basque") (:content . "clausalmods-basque: a held out test for clausal modifiers based on basque"))
 ((:path . "adnom-poss-spec-pron-head-non-aff-agr") (:content . "adnom-poss-spec-pron-head-non-aff-agr: Possessor pronoun accompanied by agreeing non-affixal mark on possessum"))
 ((:path . "adnom-poss-mod-pron-head-aff-agr") (:content . "adnom-poss-mod-pron-head-aff-agr: Possessor pronoun accompanied by agreeing affix on possessum"))
 ((:path . "adnom-poss-spec-pron-head-aff-agr") (:content . "adnom-poss-spec-pron-head-aff-agr: Possessor pronoun accompanied by agreeing affix on possessum"))
