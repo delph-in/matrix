@@ -390,21 +390,22 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
             # Add head-comp rule if necessary
             if strat.get('mark-loc')=='possessum' or strat.get('mark-loc')=='both':
 
-                phrase_rule="head-comp-poss-phrase"+'-'+strat_num
+#                phrase_rule="head-comp-poss-phrase"+'-'+strat_num
 
                 # Check if the existing head-comp rule has the correct order; 
                 # if not, add a new rule with correct order that only applies to poss-phrases.
                 if head_comp_order!=strat_order:
+                    print("deal with order here")
+#                    rule_added=True
 
-                    rule_added=True
-
-                    mylang.add(phrase_rule +' := basic-head-1st-comp-phrase &\
-                                           [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +np,\
-                                             NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.SPR <>,\
-                                                                             HEAD +np ] ].')
+#                    mylang.add(phrase_rule +' := basic-head-1st-comp-phrase &\
+#                                           [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +np,\
+#                                             NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.SPR <>,\
+#                                                                             HEAD +np ] ].')
 
             # Add head-mod rule
             else:
+                # TODO: add POSTHEAD for actual order manipulation here
                 adj_rule=True
                 mylang.add('possessum-mod-rule := basic-head-mod-phrase-simple & [\
                                     NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.MOD.FIRST.LOCAL.CAT.POSSESSUM #poss ],\
@@ -420,6 +421,7 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
                     mylang.add('adj-head-int-phrase :+ possessum-mod-rule.')
                     rules.add('head-adj-int := head-adj-int-phrase.')
                     rules.add('adj-head-int := adj-head-int-phrase.')
+
 
                 rule_added=True
 #                phrase_rule="head-mod-poss-phrase"+'-'+strat_num
@@ -440,30 +442,30 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
     if rule_added and mark_loc!='neither': 
         
         # Make head-mod-poss and head-spec-poss accept only possessive phrases
-        if not (phrase_rule=='head-comp-poss-phrase-'+strat_num or adj_rule or spec_rule):
-            if strat.get('mark-loc')=='possessor':
-                mylang.add(phrase_rule+':= [ HEAD-DTR.SYNSEM.LOCAL.CAT [ POSSESSUM nonpossessive ],\
-                                             NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR possessor-'+strat_num+' ] ].',merge=True)
-            if strat.get('mark-loc')=='possessum':
-                mylang.add(phrase_rule+':= [ HEAD-DTR.SYNSEM.LOCAL.CAT [ POSSESSUM possessum-'+strat_num+' ],\
-                                             NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR nonpossessive ] ].',merge=True)
-            if strat.get('mark-loc')=='both':
-                mylang.add(phrase_rule+':= [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR possessor-'+strat_num+' ],\
-                                             HEAD-DTR.SYNSEM.LOCAL.CAT [ POSSESSUM possessum-'+strat_num+' ] ].',merge=True)
-            if pron_strat:
-                if strat.get('possessum-mark')=='yes':
-                    mylang.add(phrase_rule+':= [ HEAD-DTR.SYNSEM.LOCAL.CAT [ POSSESSUM possessum-'+strat_num+' ],\
-                                                 NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR possessor-'+strat_num+' ] ].',merge=True)
-                else:
-                    mylang.add(phrase_rule+':= [ HEAD-DTR.SYNSEM.LOCAL.CAT [ POSSESSUM nonpossessive ],\
-                                                 NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR possessor-'+strat_num+' ] ].',merge=True)
+#        if not (phrase_rule=='head-comp-poss-phrase-'+strat_num or adj_rule or spec_rule):
+#            if strat.get('mark-loc')=='possessor':
+#                mylang.add(phrase_rule+':= [ HEAD-DTR.SYNSEM.LOCAL.CAT [ POSSESSUM nonpossessive ],\
+#                                             NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR possessor-'+strat_num+' ] ].',merge=True)
+#            if strat.get('mark-loc')=='possessum':
+#                mylang.add(phrase_rule+':= [ HEAD-DTR.SYNSEM.LOCAL.CAT [ POSSESSUM possessum-'+strat_num+' ],\
+#                                             NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR nonpossessive ] ].',merge=True)
+#            if strat.get('mark-loc')=='both':
+#                mylang.add(phrase_rule+':= [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR possessor-'+strat_num+' ],\
+#                                             HEAD-DTR.SYNSEM.LOCAL.CAT [ POSSESSUM possessum-'+strat_num+' ] ].',merge=True)
+#            if pron_strat:
+#                if strat.get('possessum-mark')=='yes':
+#                    mylang.add(phrase_rule+':= [ HEAD-DTR.SYNSEM.LOCAL.CAT [ POSSESSUM possessum-'+strat_num+' ],\
+#                                                 NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR possessor-'+strat_num+' ] ].',merge=True)
+#                else:
+#                    mylang.add(phrase_rule+':= [ HEAD-DTR.SYNSEM.LOCAL.CAT [ POSSESSUM nonpossessive ],\
+#                                                 NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR possessor-'+strat_num+' ] ].',merge=True)
 
 
         # Make head-comp-poss accept only possessive phrases. 
-        elif phrase_rule=='head-comp-poss-phrase-'+strat_num:
-
-            if (mark_loc=='possessum' or mark_loc=='both') and strat.get('possessum-type')=='affix':
-                mylang.add(phrase_rule+':= [ HEAD-DTR.SYNSEM.LOCAL.CAT [ POSSESSUM possessum ] ].')
+#        elif phrase_rule=='head-comp-poss-phrase-'+strat_num:
+#
+#            if (mark_loc=='possessum' or mark_loc=='both') and strat.get('possessum-type')=='affix':
+#                mylang.add(phrase_rule+':= [ HEAD-DTR.SYNSEM.LOCAL.CAT [ POSSESSUM possessum ] ].')
 
         # Make non-possessive phrases reject possessive nouns:
 
@@ -647,13 +649,21 @@ def customize_possessor_irules(strat,mylang,rules,ch,strat_num,mod_spec,mark_loc
 
     # Add constraints to possessor rule for mod version
     elif mod_spec=='mod':
-
+        
+        # Set posthead flag on possessors acting as mods
+        if strat.get('order')=='head-initial':
+            ph='+'
+        elif strat.get('order')=='head-final':
+            ph='-'
+        else:
+            ph='bool'
         # Add constraints to mod version for single marking
         if mark_loc=='possessor':
             agr_prefix='SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
             mylang.add(possessor_rule_name+POSSESSOR_NON_SPEC_RULE)
             mylang.add(possessor_rule_name+' := head-change-with-ccont-lex-rule & \
-                        [ SYNSEM.LOCAL.CAT [ HEAD [ MOD.FIRST [ LOCAL [ CAT [ VAL.SPR <[]>,\
+                        [ SYNSEM.LOCAL.CAT [ POSTHEAD '+ph+',\
+                                             HEAD [ MOD.FIRST [ LOCAL [ CAT [ VAL.SPR <[]>,\
                                                                         HEAD +np & [ PRON - ] ], \
                                                                         CONT.HOOK [ INDEX #possessum, \
                                                                                     LTOP #lbl ] ], \
@@ -792,11 +802,11 @@ def customize_possessum_irules(strat,mylang,rules,ch,strat_num,mod_spec,mark_loc
                     instance_tmp[new_key]=strat.get(key)
                 customize_feature_values(mylang,ch,hierarchies,instance_tmp,possessum_rule_name,'possessum-mod-mark')
 
-        # Add constraints to spec version for double marking
+        # Add constraints to mod version for double marking
         if mark_loc=='both':
             mylang.add(possessum_rule_name+' :=\
                [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD +np & [ POSSESSOR possessor-'+strat_num+' ] ].')
-
+        
         # Add constraints to spec version for case where possessum is marked 
         # and possessor = pronoun
         if mark_loc=='possessum-with-pron':
@@ -988,10 +998,20 @@ def customize_possessor_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod
 
     # Add constraints to possessor adp for mod version
     if mod_spec=='mod':
+        
+        # Set posthead flag on possessors acting as mods
+        if strat.get('order')=='head-initial':
+            ph='+'
+        elif strat.get('order')=='head-final':
+            ph='-'
+        else:
+            ph='bool'
+
         mylang.add('possessor-adp-lex-'+strat_num+' := \
-                                 [ SYNSEM.LOCAL [ CAT.HEAD [ POSSESSOR possessor-'+strat_num+',\
+                                 [ SYNSEM.LOCAL [ CAT [ POSTHEAD '+ph+',\
+                                                        HEAD [ POSSESSOR possessor-'+strat_num+',\
                                                              MOD.FIRST.LOCAL [ CAT [ HEAD.PRON -,\
-                                                                                     VAL.SPR < [ ] > ] ] ],\
+                                                                                     VAL.SPR < [ ] > ] ] ] ],\
                                                   CONT [ HCONS <! !> ] ] ] .')
 
         # Add constraints to mod version for single-marking:
@@ -1210,14 +1230,24 @@ def customize_possessor_pron_lexicon(strat,mylang,ch,lexicon,strat_name,strat_nu
 
     # Add constraints for mod version
     elif mod_spec=='mod':
+
+        # Set posthead flag on possessors acting as mods
+        if strat.get('order')=='head-initial':
+            ph='+'
+        elif strat.get('order')=='head-final':
+            ph='-'
+        else:
+            ph='bool'
+
         agr_prefix='SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
         mylang.add(noun_type+' := \
-                        [ SYNSEM.LOCAL [ CAT.HEAD [ POSSESSOR possessor-pron-'+strat_num+',\
+                        [ SYNSEM.LOCAL [ CAT [ POSTHEAD '+ph+',\
+                                               HEAD [ POSSESSOR possessor-pron-'+strat_num+',\
                                                     MOD < [ OPT -,\
                                                             LOCAL [ CAT [ HEAD.PRON -,\
                                                                           VAL.SPR < [ ] > ],\
                                                                     CONT.HOOK [ INDEX #possessum,\
-                                                                                LTOP #lbl ] ] ] > ],\
+                                                                                LTOP #lbl ] ] ] > ] ],\
                                          CONT [ RELS  <!  '+POSS_REL+',\
                                                            #altkeyrel !>,\
                                                 HCONS <! !> ] ] ].')
