@@ -314,6 +314,17 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
                                           HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.SPR #spr & <[ ]>],\
                                           C-CONT [ RELS <! '+POSS_REL+' !>,\
                                                    HCONS <! !> ] ].')
+
+        # Add order variation and add rules to rules.tdl:
+        if strat_order=='either':
+            mylang.add(phrase_rule+'-head-initial := head-initial & '+phrase_rule+'.')
+            mylang.add(phrase_rule+'-head-final := head-final & '+phrase_rule+'.')
+            rules.add(phrase_rule.replace('-phrase','')+'-head-initial := '+phrase_rule+'-head-initial.'  )
+            rules.add(phrase_rule.replace('-phrase','')+'-head-final := '+phrase_rule+'-head-final. ' )
+        else:
+            mylang.add(phrase_rule +' := '+strat.get('order')+'.',merge=True)
+            rules.add(phrase_rule.replace('-phrase','') + ':= '+phrase_rule+'. ' )
+
         
         #If both word orders are allowed, then you should add a type to this rule to inherit from:
         if strat_order=='either': 
@@ -348,7 +359,7 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
 #                                                                                                   CONT.HOOK #hook ] ,\
 #                                                                           C-CONT.HOOK #hook ].')
 
-            spec_rule=True
+#            spec_rule=True
 
             mylang.add('poss-unary-phrase := basic-unary-phrase & \
               [ SYNSEM.LOCAL [ CONT.HOOK #hook,\
@@ -435,7 +446,7 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
 
             # Add head-mod rule
             else:
-                adj_rule=True
+#                adj_rule=True
                 mylang.add('possessum-mod-rule := basic-head-mod-phrase-simple & [\
                                     NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.MOD.FIRST.LOCAL.CAT.POSSESSUM #poss ],\
                                     HEAD-DTR.SYNSEM.LOCAL.CAT.POSSESSUM #poss ].')
@@ -561,18 +572,18 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
 #                                                         HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL [ SPR <>,\
 #                                                                                           SPEC <> ] ] ].')
 
-    if rule_added and (not adj_rule) and (not spec_rule):
+#    if rule_added and (not adj_rule) and (not spec_rule):
         # If a specialized poss phrase rule was added:
         #     Adds rule to rules.tdl
         #     Add word order info to rule
-        if strat_order=='either':
-            mylang.add(phrase_rule+'-head-initial := head-initial & '+phrase_rule+'.')
-            mylang.add(phrase_rule+'-head-final := head-final & '+phrase_rule+'.')
-            rules.add(phrase_rule.replace('-phrase','')+'-head-initial := '+phrase_rule+'-head-initial.'  )
-            rules.add(phrase_rule.replace('-phrase','')+'-head-final := '+phrase_rule+'-head-final. ' )
-        else:
-            mylang.add(phrase_rule +' := '+strat.get('order')+'.',merge=True)
-            rules.add(phrase_rule.replace('-phrase','') + ':= '+phrase_rule+'. ' )
+#        if strat_order=='either':
+#            mylang.add(phrase_rule+'-head-initial := head-initial & '+phrase_rule+'.')
+#            mylang.add(phrase_rule+'-head-final := head-final & '+phrase_rule+'.')
+#            rules.add(phrase_rule.replace('-phrase','')+'-head-initial := '+phrase_rule+'-head-initial.'  )
+#            rules.add(phrase_rule.replace('-phrase','')+'-head-final := '+phrase_rule+'-head-final. ' )
+#        else:
+#            mylang.add(phrase_rule +' := '+strat.get('order')+'.',merge=True)
+#            rules.add(phrase_rule.replace('-phrase','') + ':= '+phrase_rule+'. ' )
 
 
 #########################################################################################
