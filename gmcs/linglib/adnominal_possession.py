@@ -691,7 +691,7 @@ def customize_possessor_irules(strat,mylang,rules,ch,strat_num,mod_spec,mark_loc
 
 
 def customize_possessum_irules(strat,mylang,rules,ch,strat_num,mod_spec,mark_loc,possessum_type,hierarchies):
-    
+
     # Add general possessum-marking rule:
     possessum_rule_name ='possessum-lex-rule-'+strat_num
                             
@@ -758,7 +758,6 @@ def customize_possessum_irules(strat,mylang,rules,ch,strat_num,mod_spec,mark_loc
                                               VAL [ COMPS #comps,\
                                                     SPR < [ LOCAL [ CAT [ VAL.SPR < >,\
                                                                           HEAD +nd ] ] ] > ] ] ,\
-                            C-CONT.HOOK #hook,\
                             DTR.SYNSEM.LOCAL [ CAT [ HEAD.PRON -,\
                                                      VAL.COMPS #comps ] ] ].',merge=True)
             
@@ -1255,21 +1254,28 @@ def customize_possessor_pron_lexicon(strat,mylang,ch,lexicon,strat_name,strat_nu
     if strat.get('possessum-mark')=='yes':
 
         # Make possessor pron req a marked possessum:
+        if mod_spec=='spec':
+            mylang.add('poss-unary-phrase-pron-'+strat_num+' := [ SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CAT.POSSESSUM possessum-pron-'+strat_num+' ].')
+
         if mod_spec=='mod':
             mylang.add(noun_type+' := [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.POSSESSUM possessum-pron-'+strat_num+'] > ].')
       
         # Add affixal markings:
         if strat.get('possessum-mark-type')=='affix':
-
-            customize_possessum_irules(strat,mylang,ch,'pron-'+strat_num,mod_spec,'possessum-with-pron','affix',hierarchies,rules)
+            
+            customize_possessum_irules(strat,mylang,rules,ch,'pron-'+strat_num,mod_spec,'possessum-with-pron','affix',hierarchies)
 
             if strat.get('possessum-mark-affix-agr')=='agree':
                 if mod_spec=='spec':
-                            mylang.add(noun_type+' := \
-                              [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.PNG #png,\
-                                               CAT.VAL.SPEC.FIRST.LOCAL.CAT.POSSESSUM.POSS-AGR #png ] ].')
+#                            mylang.add(noun_type+' := \
+#                              [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.PNG #png,\
+#                                               CAT.VAL.SPEC.FIRST.LOCAL.CAT.POSSESSUM.POSS-AGR #png ] ].')
+                    mylang.add('poss-unary-phrase-pron-'+strat_num+' := \
+                              [ ARGS < [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png ] >,\
+                                SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CAT.POSSESSUM.POSS-AGR #png ].')
+
                 if mod_spec=='mod':
-                            mylang.add(noun_type+' := \
+                    mylang.add(noun_type+' := \
                               [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.PNG #png,\
                                                CAT.HEAD.MOD.FIRST.LOCAL.CAT.POSSESSUM.POSS-AGR #png ] ].')
                 
