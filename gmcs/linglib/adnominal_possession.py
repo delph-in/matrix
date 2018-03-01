@@ -56,6 +56,9 @@ POSSESSOR_SPEC_RULE=' :=\
                                                    COMPS #comps,\
                                                    SUBJ #subj  ] ] ] ].'
 
+POSSESSUM_ID_HS=' [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPEC < [ LOCAL.CAT.POSSESSUM #poss ] > ,\
+                    HEAD-DTR.SYNSEM.LOCAL.CAT.POSSESSUM #poss  ].'
+
 
 POSSESSUM_NON_SPEC_RULE=' :=\
                   [ SYNSEM.LOCAL [ CAT [ HEAD.POSSESSOR #poss & nonpossessive,\
@@ -362,6 +365,9 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
             else:
                 head_spec_order='none'
     
+            # Add possessum identification to any preexisting head-spec rule:
+            mylang.add('head-spec-phrase := '+POSSESSUM_ID_HS)
+
             if head_spec_order!=strat_order:
 
                 # If no head-spec rule, then just add the correct one here:
@@ -373,6 +379,7 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
 
                 # If a head-spec rule exists, check its order and adjust accordingly:
                 else:
+                  
                     # Add the correct default SPEC-INIT value for non-poss lexical items:
                     if head_spec_order!='either':
                         for pos in ['tverb','aux','det','cop']:
@@ -383,7 +390,7 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
                     # If head-initial rule exists, add head-final and add SPEC-INIT feats to both:
                     if head_spec_order=='head-initial':
                         mylang.add('head-spec-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.SPEC-INIT + ].')
-                        mylang.add('head-spec-phrase-2 := '+strat_order+' &  basic-head-spec-phrase &\
+                        mylang.add('head-spec-phrase-2 := head-final &  basic-head-spec-phrase &\
                                     [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.SPEC-INIT -,\
                                                                       VAL.SPEC < [ LOCAL.CAT.POSSESSUM #poss ] > ] ,\
                                       HEAD-DTR.SYNSEM.LOCAL.CAT.POSSESSUM #poss  ].')
@@ -391,7 +398,7 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
                     # If head-final rule exists, add head-initial and add SPEC-INIT feats to both:
                     if head_spec_order=='head-final':
                         mylang.add('head-spec-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.SPEC-INIT - ].')
-                        mylang.add('head-spec-phrase-2 := '+strat_order+' & basic-head-spec-phrase &\
+                        mylang.add('head-spec-phrase-2 := head-initial & basic-head-spec-phrase &\
                                          [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.SPEC-INIT +,\
                                                                            VAL.SPEC < [ LOCAL.CAT.POSSESSUM #poss ] > ] ,\
                                            HEAD-DTR.SYNSEM.LOCAL.CAT.POSSESSUM #poss  ].')
