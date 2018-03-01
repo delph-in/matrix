@@ -47,12 +47,10 @@ POSSESSOR_NON_SPEC_RULE=' :=\
                                        CONT.HOOK #hook & [ INDEX #possessor ] ] ] ].'
 
 POSSESSOR_SPEC_RULE=' :=\
-                  [ SYNSEM.LOCAL [ CAT [ HEAD.SPEC-INIT #si,\
-                                         VAL [ SPR #spr,\
+                  [ SYNSEM.LOCAL [ CAT [ VAL [ SPR #spr,\
                                                COMPS #comps,\
                                                SUBJ #subj ] ] ],\
-                    DTR.SYNSEM.LOCAL [ CAT [ HEAD.SPEC-INIT #si,\
-                                             VAL [ SPR #spr,\
+                    DTR.SYNSEM.LOCAL [ CAT [ VAL [ SPR #spr,\
                                                    COMPS #comps,\
                                                    SUBJ #subj  ] ] ] ].'
 
@@ -99,11 +97,10 @@ TWO_REL_ADP='two-rel-adposition-lex := basic-icons-lex-item &\
              LKEYS.KEYREL arg12-ev-relation & [ ARG2 #ind ] ] ].'
 
 POSSESSOR_ADP_LEX=':= two-rel-adposition-lex &\
-                                 [  SYNSEM.LOCAL [ CAT [ HEAD.SPEC-INIT #si,\
-                                                         VAL [ SPEC < >,\
+                                 [  SYNSEM.LOCAL [ CAT [ VAL [ SPEC < >,\
                                                                SUBJ < >,\
                                                                SPR < >,\
-                                                               COMPS.FIRST [ LOCAL.CAT [ HEAD noun & [ SPEC-INIT #si ] ,\
+                                                               COMPS.FIRST [ LOCAL.CAT [ HEAD noun ,\
                                                                                           VAL.SPR < > ],\
                                                                               OPT - ] ] ],\
                                                   CONT [ ICONS <! !>   ] ] ].'
@@ -349,10 +346,15 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
         # If possessor==spec, add a head-compositional variant of head-spec 
         if strat.get('mod-spec')=='spec':
 
-            # Add SPEC-INIT to handle order variations 
-            # TODO: add only when needed; only add to poss-unary phrase and 
-            # possessor lex-rules/-items whn necessary
+            # If possessives care about order, then add the correct SPEC_INIT value to nouns. 
+            # NB: possessors are the only nouns that act as specifiers, so this'll be added
+            # directly to the noun supertype, rather than on the possessor lex rules items.
+            # Otherwise leave nouns unconstrainted for SPEC_INIT, and they'll go through both:
             mylang.add('head :+ [ SPEC-INIT bool ].', section='addenda')
+            if strat_order!='either':
+                spec_init='-' if strat_order=='head-final' else '+'
+                mylang.add('poss-unary-phrase-'+strat_num+' := [ SYNSEM.LOCAL.CAT.HEAD.SPEC-INIT ' + spec_init + ' ].',section='phrases')
+
 
             # Check if you need to add any head-spec rules
             head_spec_order=ch.get('noun-det-order')
@@ -370,16 +372,26 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
 
             if head_spec_order!=strat_order:
 
-                # If no head-spec rule, then just add the correct one here:
+                # If no head-spec rule, then just add the correct one(s) here:
                 if head_spec_order=='none':
-                    mylang.add('head-spec-phrase := '+strat_order+' basic-head-spec-phrase &\
-                     [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPEC < [ LOCAL.CAT.POSSESSUM #poss ] > ,\
-                      HEAD-DTR.SYNSEM.LOCAL.CAT.POSSESSUM #poss  ].')
-                    rules.add('head-spec := head-spec-phrase.')
+                    if strat_order!='either':
+                        mylang.add('head-spec-phrase := '+strat_order+' &  basic-head-spec-phrase &\
+                              [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPEC < [ LOCAL.CAT.POSSESSUM #poss ] > ,\
+                                HEAD-DTR.SYNSEM.LOCAL.CAT.POSSESSUM #poss  ].')
+                        rules.add('head-spec := head-spec-phrase.')
+                    else:
+                        mylang.add('head-spec-phrase := head-final &  basic-head-spec-phrase &\
+                              [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPEC < [ LOCAL.CAT.POSSESSUM #poss ] > ,\
+                                HEAD-DTR.SYNSEM.LOCAL.CAT.POSSESSUM #poss  ].')
+                        rules.add('head-spec := head-spec-phrase.')
+                        mylang.add('head-spec-phrase-2 := head-initial & basic-head-spec-phrase &\
+                              [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPEC < [ LOCAL.CAT.POSSESSUM #poss ] > ,\
+                                HEAD-DTR.SYNSEM.LOCAL.CAT.POSSESSUM #poss  ].')
+                        rules.add('head-spec-2 := head-spec-phrase-2.')
 
                 # If a head-spec rule exists, check its order and adjust accordingly:
                 else:
-                  
+
                     # Add the correct default SPEC-INIT value for non-poss lexical items:
                     if head_spec_order!='either':
                         for pos in ['tverb','aux','det','cop']:
@@ -404,17 +416,11 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
                                            HEAD-DTR.SYNSEM.LOCAL.CAT.POSSESSUM #poss  ].')
                         rules.add('head-spec-2 := head-spec-phrase-2.')
                     
-                    # If possessives care about order, then add the correct SPEC_INIT value to nouns. 
-                    # NB: possessors are the only nouns that act as specifiers, so this'll be added
-                    # directly to the noun supertype, rather than on the possessor lex rules items.
-                    # Otherwise leave nouns unconstrainted for SPEC_INIT, and they'll go through both:
-                    if strat_order!='either':
-                        spec_init='-' if strat_order=='head-final' else '+'
-                        if ch.get('noun'):
-                            name = lexbase.LEXICAL_SUPERTYPES['noun']
-                            print name
-                            mylang.add(name + ' := [ SYNSEM.LOCAL.CAT.HEAD.SPEC-INIT ' + spec_init + ' ].', merge=True)
-                        
+#                        if ch.get('noun'):
+#                            name = lexbase.LEXICAL_SUPERTYPES['noun']
+#                            print name
+#                            mylang.add(name + ' := [ SYNSEM.LOCAL.CAT.HEAD.SPEC-INIT ' + spec_init + ' ].', merge=True)
+
  
                 
             
@@ -433,8 +439,7 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
 
             mylang.add('poss-unary-phrase := basic-unary-phrase & \
               [ SYNSEM.LOCAL [ CONT.HOOK #hook,\
-                               CAT [ HEAD det & [ POSSESSOR nonpossessive,\
-                                                  SPEC-INIT #si   ],\
+                               CAT [ HEAD det & [ POSSESSOR nonpossessive ],\
   	                 	   VAL [ SPR < >,\
                                          COMPS #comps,\
 			                 SUBJ #subj,\
@@ -455,9 +460,8 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
        	       		      	                    COMPS #comps & olist,\
 				                    SUBJ #subj,\
                                                     SPEC < > ],\
-      	   		      	              HEAD +np & [ SPEC-INIT #si ] ],\
+      	   		      	              HEAD +np ],\
   			                CONT.HOOK.INDEX #possessor ] ] > ].')
-
 
         # If possessor==mod, add either head-mod or head-comp
         # Exception: no rule added if preexistent head-comps has correct order
