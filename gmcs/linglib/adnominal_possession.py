@@ -712,6 +712,8 @@ def customize_poss_irules(strat,mylang,ch,irules,hierarchies,rules):
 
 def customize_possessor_irules(strat,mylang,rules,ch,strat_num,mod_spec,mark_loc,hierarchies):
     
+    case = True if ch.get('case-marking')!='none' else False
+
     # Add the basic possessor rule defn:
     possessor_rule_name ='possessor-lex-rule-'+strat_num
     
@@ -744,6 +746,13 @@ def customize_possessor_irules(strat,mylang,rules,ch,strat_num,mod_spec,mark_loc
             mylang.add('poss-unary-phrase-'+strat_num+' := poss-unary-phrase & [ ARGS < [ SYNSEM.LOCAL.CAT.HEAD [ POSSESSOR possessor-'+strat_num+' ] ] > ].')
             rules.add('poss-unary-'+strat_num+' := poss-unary-phrase-'+strat_num+'.')
         
+        # Add case constraints if case exists:
+        if case:
+
+            mylang.add('poss-case := case.',section='addenda')
+
+            mylang.add(possessor_rule_name+' := [ SYNSEM.LOCAL.CAT.HEAD.CASE poss-case ].')
+
         # If the possessor is the only marked constituent, forbid marking on the possessum:
         if mark_loc=='possessor':
 
@@ -1064,6 +1073,7 @@ def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
 
         # Add possessor-marking adpositons:
         if (mark_loc=='possessor' or mark_loc=='both') and possessor_type=='non-affix':
+
             customize_possessor_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod_spec,mark_loc,pron_allowed,hierarchies,rules)
 
         # Add possessum-marking nouns:
@@ -1071,6 +1081,7 @@ def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
             customize_possessum_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod_spec,mark_loc,pron_allowed,possessor_type,hierarchies,rules)
 
     elif pron_strat:
+
         customize_possessor_pron_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod_spec,hierarchies,rules)
         
 
@@ -1078,6 +1089,8 @@ def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
 
 def customize_possessor_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod_spec,mark_loc,pron_allowed,hierarchies,rules):
             
+    case = True if ch.get('case-marking')!='none' else False
+
     # Add most general defn of possessor-marking adp:
     mylang.set_section('otherlex')
     mylang.add(TWO_REL_ADP)
@@ -1158,6 +1171,13 @@ def customize_possessor_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod
                                  [ SYNSEM.LOCAL [ CAT [ HEAD.POSSESSOR possessor-'+strat_num+',\
                                                         POSSESSUM nonpossessive, ]\
                                                   CONT.RELS <! !> ] ] .')
+
+    if case:
+        
+        mylang.add('poss-case := case.',section='addenda')
+        
+        mylang.add('possessor-adp-lex-'+strat_num+' := [ SYNSEM.LOCAL.CAT.HEAD.CASE poss-case ].')
+
 
     # Add agreement features to the possessor adp if appropriate:
     # TODO: these lex items don't follow nomenclature conventions yet:
@@ -1317,6 +1337,8 @@ def customize_possessum_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod
 
 def customize_possessor_pron_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod_spec,hierarchies,rules):
 
+    case = True if ch.get('case-marking')!='none' else False
+
     # Set vars for pron strat:
     noun_type=noun_id(strat)
     if strat.get('agr')=='agree':
@@ -1385,6 +1407,12 @@ def customize_possessor_pron_lexicon(strat,mylang,ch,lexicon,strat_name,strat_nu
         if agr: 
             mylang.add(noun_type+' := [ SYNSEM.LOCAL.CAT.HEAD.POSSESSOR.POSS-AGR #png,\
                                               '+agr_prefix+' #png ].')
+
+    if case:
+        
+        mylang.add('poss-case := case.',section='addenda')
+
+        mylang.add(noun_type+' := [ SYNSEM.LOCAL.CAT.HEAD.CASE poss-case ].')
 
 
     # Add forms to lexicon.tdl:

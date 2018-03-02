@@ -106,15 +106,26 @@ def init_case_hierarchy(ch, hierarchies):
     # split-n and split-v, however, a more articulated hierarchy is required.
     if cm in ['nom-acc', 'erg-abs', 'tripartite', 'split-s', 'focus']:
         for c in cases:
-            hier.add(c[2], 'case', c[1])
+            # TODO: EKN 03-02-2018 Add real-case as intermediate level 
+            # iff possessives are implemented
+#            hier.add(c[2], 'case', c[1])
+            hier.add('real-case','case','intermediate case type for all real cases')
+            hier.add(c[2], 'real-case', c[1])
     elif cm in ['fluid-s']:
+        #############################
+        hier.add('real-case','case','intermediate case type for all real cases')
+        #############################
         abbr = canon_to_abbr('a_case+o_case', cases)
         for c in cases:
             if c[0] in ['a_case', 'o_case']:
                 hier.add(c[2], abbr, c[1])
             else:
-                hier.add(c[2], 'case', c[1])
+                hier.add(c[2], 'real-case', c[1])
+#                hier.add(c[2], 'case', c[1])
     elif cm in ['split-n', 'split-v']:
+        #############################
+        hier.add('real-case','case','intermediate case type for all real cases')
+        #############################
         nom_a = canon_to_abbr('nom', cases)
         acc_a = canon_to_abbr('acc', cases)
         erg_a = canon_to_abbr('erg', cases)
@@ -123,9 +134,12 @@ def init_case_hierarchy(ch, hierarchies):
             for c in cases:
                 hier.add(c[2], 'case', c[1])
         else:  # 'split-n':
-            hier.add('a_case', 'case', 'transitive agent')
-            hier.add('s_case', 'case', 'intransitive subject')
-            hier.add('o_case', 'case', 'transitive patient')
+#            hier.add('a_case', 'case', 'transitive agent')
+#            hier.add('s_case', 'case', 'intransitive subject')
+#            hier.add('o_case', 'case', 'transitive patient')
+            hier.add('a_case', 'real-case', 'transitive agent')
+            hier.add('s_case', 'real-case', 'intransitive subject')
+            hier.add('o_case', 'real-case', 'transitive patient')
             for c in cases:
                 if c[2] == erg_a:
                     hier.add(c[2], 'a_case', c[1])
@@ -150,6 +164,7 @@ def init_case_hierarchy(ch, hierarchies):
 def customize_case_type(mylang, hierarchies):
     if 'case' in hierarchies:
         hierarchies['case'].save(mylang)
+
 
 # customize_trigger_rules()
 #   Create trigger rules for case-marking adpositions
@@ -195,6 +210,9 @@ def customize_case_adpositions(mylang, lexicon, trigger, ch):
                   ARG-ST < #comps & [ LOCAL.CAT [ HEAD noun & [ CASE #case ], \
                                                   VAL.SPR < > ]] > ].'
         mylang.add(typedef)
+
+        # TODO: EKN 03-02-2018 Add CASE real-case to comp of adp
+        # the lg has case and has possessives
 
         if ch.has_mixed_case():
             mylang.add('+np :+ [ CASE-MARKED bool ].', section='addenda')

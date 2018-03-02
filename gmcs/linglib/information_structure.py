@@ -1031,6 +1031,9 @@ def customize_infostr_adpositions(mylang, lexicon, trigger, ch):
                                           VAL.SPR < > ] ] > ].'
     mylang.add(typedef)
 
+    # TODO: EKN 03-02-2018 Add CASE real-case to comp of adp
+    # the lg has case and has possessives
+
     # checking whether language has both prepositions and postpositions
     bidirectional = False
     infostr_marking = False

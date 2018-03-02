@@ -293,6 +293,9 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
 
     case.customize_verb_case(mylang, ch)
 
+    # TODO: EKN 03-02-2018 Add CASE real-case to all args of verbs iff 
+    # the lg has case and has possessives
+
     # Add constraints to choices to create lex rules for bipartite stems
     customize_bipartite_stems(ch)
 
