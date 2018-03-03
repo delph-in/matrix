@@ -27,7 +27,6 @@ from gmcs.linglib import lexbase
 ## Maximally general typedefs for use in library                                             ###
 ################################################################################################ 
 
-
 POSS_REL = '''arg12-ev-relation & [ PRED "poss_rel", \
                                     LBL #lbl, \
                                     ARG1 #possessum, \
@@ -150,6 +149,10 @@ POSSESSOR_PRON_LEX=' := basic-one-arg &\
                                                            LBL #ltop,\
                                                            ARG0 #possessor & [ COG-ST activ-or-more,\
                                                                                SPECI + ] ] ] ].'
+
+NON_POSS_LEX_ITEM = '[ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR nonpossessive,\
+                                                     POSSESSUM nonpossessive ] ].'
+
 
 ##################################################################
 ## Primary function (called from customize.py)                 ###
@@ -418,7 +421,6 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
                     
 #                        if ch.get('noun'):
 #                            name = lexbase.LEXICAL_SUPERTYPES['noun']
-#                            print name
 #                            mylang.add(name + ' := [ SYNSEM.LOCAL.CAT.HEAD.SPEC-INIT ' + spec_init + ' ].', merge=True)
 
  
@@ -439,7 +441,7 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
 
             mylang.add('poss-unary-phrase := basic-unary-phrase & \
               [ SYNSEM.LOCAL [ CONT.HOOK #hook,\
-                               CAT [ HEAD det & [ POSSESSOR nonpossessive ],\
+                               CAT [ HEAD det & [ POSSESSOR possessor ],\
   	                 	   VAL [ SPR < >,\
                                          COMPS #comps,\
 			                 SUBJ #subj,\
@@ -462,7 +464,8 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
                                                     SPEC < > ],\
       	   		      	              HEAD +np ],\
   			                CONT.HOOK.INDEX #possessor ] ] > ].')
-
+            mylang.add('basic-determiner-lex :+ '+NON_POSS_LEX_ITEM, section = 'addenda')
+            
         # If possessor==mod, add either head-mod or head-comp
         # Exception: no rule added if preexistent head-comps has correct order
         elif strat.get('mod-spec')=='mod':
@@ -857,7 +860,7 @@ def customize_possessum_irules(strat,mylang,rules,ch,strat_num,mod_spec,mark_loc
 
             mylang.add(possessum_rule_name+':=  cat-change-only-lex-rule & \
                          [ SYNSEM.LOCAL.CAT [ POSSESSUM possessum-'+strat_num+',\
-                                              VAL #val  ] ,\
+                                              VAL #val & [ SPR < [ LOCAL.CAT.HEAD.POSSESSOR possessor-'+strat_num+' ] > ]  ] ,\
                             C-CONT [ HCONS <! !>, \
                                      ICONS <! !>,\
                                      RELS <! !> ],\
@@ -1249,8 +1252,10 @@ def customize_possessum_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod
         if mark_loc=='possessum':
 
             mylang.add('possessum-noun-lex-'+strat_num+' '+POSSESSUM_NOUN_LEX)
-            mylang.add('possessum-noun-lex-'+strat_num+' := [ SYNSEM.LOCAL [ CAT [ HEAD [ POSSESSOR nonpossessive ],\
-                                                                                          POSSESSUM possessum-'+strat_num+' ] ] ].',merge=True)
+            mylang.add('possessum-noun-lex-'+strat_num+' := \
+                          [ SYNSEM.LOCAL [ CAT [ VAL.SPR < [ LOCAL.CAT.HEAD.POSSESSOR possessor-'+strat_num+' ] >,\
+                                           HEAD [ POSSESSOR nonpossessive ],\
+                                           POSSESSUM possessum-'+strat_num+' ] ] ].',merge=True)
 
 #            mylang.add('possessum-noun-lex-'+strat_num+' := [ SYNSEM.LOCAL.CAT.VAL.SPR < [ LOCAL.CAT.HEAD noun ] > ].')                           
 
@@ -1269,8 +1274,10 @@ def customize_possessum_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod
         if mark_loc=='both':
 
             mylang.add('possessum-noun-lex-'+strat_num+' '+POSSESSUM_NOUN_LEX)
-            mylang.add('possessum-noun-lex-'+strat_num+' := [ SYNSEM.LOCAL [ CAT [ HEAD [ POSSESSOR nonpossessive ],\
-                                                                                          POSSESSUM possessum-'+strat_num+' ] ] ].',merge=True)
+            mylang.add('possessum-noun-lex-'+strat_num+' := \
+                                             [ SYNSEM.LOCAL [ CAT [ VAL.SPR < [ LOCAL.CAT.HEAD.POSSESSOR possessor-'+strat_num+' ] >,\
+                                                                    HEAD [ POSSESSOR nonpossessive ],\
+                                                                    POSSESSUM possessum-'+strat_num+' ] ] ].',merge=True)
 
 #            if possessor_type=='affix':
 #                mylang.add('possessum-noun-lex-'+strat_num+' := [ SYNSEM.LOCAL.CAT.VAL.SPR < [ LOCAL.CAT.HEAD noun ] > ].')
@@ -1283,7 +1290,8 @@ def customize_possessum_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod
             POSSESSUM_NOUN_LEX_W_PRON=':= basic-two-arg &\
                                    [ SYNSEM.LOCAL [ CAT [ HEAD #head & noun ,\
                                                           VAL [ SUBJ < >,\
-                                                                SPR < #spr & [ LOCAL [ CAT.VAL.SPR < > ] ] >,\
+                                                                SPR < #spr & [ LOCAL [ CAT [ HEAD.POSSESSOR possessor-'+strat_num+',\
+                                                                                             VAL.SPR < > ] ] ] >,\
                                                                 COMPS < #comps & [ LOCAL [ CONT.HOOK #hook,\
                                                                                            CAT [ VAL.SPR <[ ]>,\
                                                                                                  HEAD #head & [ PRON - ] ] ] ] > ] ],\
