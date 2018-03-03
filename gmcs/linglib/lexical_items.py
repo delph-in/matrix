@@ -237,6 +237,7 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
             'aux-lex := verb-lex & \
                       [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].'
         mylang.add(typedef)
+
         if vcluster:
             mylang.add('main-verb-lex := [ SYNSEM.LOCAL.CAT.VC + ].')
             mylang.add('aux-lex := [ SYNSEM.LOCAL.CAT.VC - ].')
@@ -293,8 +294,15 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
 
     case.customize_verb_case(mylang, ch)
 
-    # TODO: EKN 03-02-2018 Add CASE real-case to all args of verbs iff 
-    # the lg has case and has possessives
+    # EKN 03-02-2018 Add [ CASE real-case ] to all args of verbs iff 
+    # the language has case and possessives:
+    poss = True if ch.get('poss-strat') or ch.get('poss-pron') else False
+    case_on = True if ch.get('case-marking')!='none' else False
+    if poss and case_on:
+        real_case='[ LOCAL.CAT.HEAD.CASE real-case ]'
+        mylang.add('intransitive-verb-lex := [ ARG-ST < '+real_case+' > ].')
+        mylang.add('transitive-verb-lex := [ ARG-ST < '+real_case+',\
+                                                      '+real_case+' > ].')
 
     # Add constraints to choices to create lex rules for bipartite stems
     customize_bipartite_stems(ch)
@@ -934,8 +942,18 @@ def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
                         {'supertype':'stative-pred-lex-rule := add-only-no-ccont-rule & ',
                          'comment':'Stative predicate adjective lexical rule definition',
                          'section':'lexrules'}}
+    # EKN 03-02-2018 Add [ CASE real-case ] to SUBJ of adj iff 
+    # the language has case and possessives:
+    poss = True if ch.get('poss-strat') or ch.get('poss-pron') else False
+    case_on = True if ch.get('case-marking')!='none' else False
+    if poss and case_on:
+        real_case = 'CAT.HEAD.CASE real-case'
+    else:
+        real_case= ''
+
     pred_adj_definition = '''%s
-    [ SYNSEM.LOCAL [ CAT.VAL.SUBJ < [ LOCAL [ CONT.HOOK.INDEX #xarg,
+    [ SYNSEM.LOCAL [ CAT.VAL.SUBJ < [ LOCAL [ '''+real_case+''',
+                                              CONT.HOOK.INDEX #xarg,
   		   		    	                       CAT [ VAL [ SPR < >,
                                                            COMPS < > ],
                                                     HEAD noun ] ] ] >,
@@ -1001,6 +1019,13 @@ def customize_cops(mylang, ch, lexicon, hierarchies, trigger):
                                      SPR < >,
                                      SPEC < > ],
                            CONT.HOOK.XARG #xarg ] ].''' % LEXICAL_SUPERTYPES['cop'])
+
+        # EKN 03-02-2018 Add [ CASE real-case ] to all subj of copula iff 
+        # the language has case and possessives:
+        poss = True if ch.get('poss-strat') or ch.get('poss-pron') else False
+        case_on = True if ch.get('case-marking')!='none' else False
+        if poss and case_on:
+            mylang.add('''%s := [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CAT.HEAD.CASE real-case ]  > ].''' % LEXICAL_SUPERTYPES['cop'])
 
         # only works for adj right now, change in future
         comment = '''Copula type taking adjectival complements.\nNeed to define more for additional complement types.'''

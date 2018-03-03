@@ -102,30 +102,35 @@ def init_case_hierarchy(ch, hierarchies):
 
     hier = TDLHierarchy('case')
 
+    # EKN 2018-03-02 If possessive strategy implemented, add an intermediate
+    # level to case hierarchy that contrasts with a 'false' case type that
+    # is assigned to possessors. Keeps possessors from being args of verbs, etc.
+    poss = True if ch.get('poss-strat') or ch.get('poss-pron') else False
+
     # For most case patterns, just make a flat hierarchy.  For fluid-s,
     # split-n and split-v, however, a more articulated hierarchy is required.
     if cm in ['nom-acc', 'erg-abs', 'tripartite', 'split-s', 'focus']:
         for c in cases:
-            # TODO: EKN 03-02-2018 Add real-case as intermediate level 
-            # iff possessives are implemented
-#            hier.add(c[2], 'case', c[1])
-            hier.add('real-case','case','intermediate case type for all real cases')
-            hier.add(c[2], 'real-case', c[1])
+            if poss:
+                hier.add('real-case','case','intermediate case type for all real cases')
+                hier.add(c[2], 'real-case', c[1])
+            else:
+                hier.add(c[2], 'case', c[1])
     elif cm in ['fluid-s']:
-        #############################
-        hier.add('real-case','case','intermediate case type for all real cases')
-        #############################
+        if poss:
+            hier.add('real-case','case','intermediate case type for all real cases')
         abbr = canon_to_abbr('a_case+o_case', cases)
         for c in cases:
             if c[0] in ['a_case', 'o_case']:
                 hier.add(c[2], abbr, c[1])
             else:
-                hier.add(c[2], 'real-case', c[1])
-#                hier.add(c[2], 'case', c[1])
+                if poss:
+                    hier.add(c[2], 'real-case', c[1])
+                else:
+                    hier.add(c[2], 'case', c[1])
     elif cm in ['split-n', 'split-v']:
-        #############################
-        hier.add('real-case','case','intermediate case type for all real cases')
-        #############################
+        if poss:
+            hier.add('real-case','case','intermediate case type for all real cases')
         nom_a = canon_to_abbr('nom', cases)
         acc_a = canon_to_abbr('acc', cases)
         erg_a = canon_to_abbr('erg', cases)
@@ -134,12 +139,14 @@ def init_case_hierarchy(ch, hierarchies):
             for c in cases:
                 hier.add(c[2], 'case', c[1])
         else:  # 'split-n':
-#            hier.add('a_case', 'case', 'transitive agent')
-#            hier.add('s_case', 'case', 'intransitive subject')
-#            hier.add('o_case', 'case', 'transitive patient')
-            hier.add('a_case', 'real-case', 'transitive agent')
-            hier.add('s_case', 'real-case', 'intransitive subject')
-            hier.add('o_case', 'real-case', 'transitive patient')
+            if poss:
+                hier.add('a_case', 'real-case', 'transitive agent')
+                hier.add('s_case', 'real-case', 'intransitive subject')
+                hier.add('o_case', 'real-case', 'transitive patient')
+            else:
+                hier.add('a_case', 'case', 'transitive agent')
+                hier.add('s_case', 'case', 'intransitive subject')
+                hier.add('o_case', 'case', 'transitive patient')
             for c in cases:
                 if c[2] == erg_a:
                     hier.add(c[2], 'a_case', c[1])
@@ -211,8 +218,10 @@ def customize_case_adpositions(mylang, lexicon, trigger, ch):
                                                   VAL.SPR < > ]] > ].'
         mylang.add(typedef)
 
-        # TODO: EKN 03-02-2018 Add CASE real-case to comp of adp
-        # the lg has case and has possessives
+        # EKN 03-02-2018 Add CASE real-case to comp of adp if possessives implemented:
+        poss = True if ch.get('poss-strat') or ch.get('poss-pron') else False
+        if poss:
+            mylang.add('case-marking-adp-lex := [ ARG-ST < [ LOCAL.CAT.HEAD.CASE real-case ] > ].')
 
         if ch.has_mixed_case():
             mylang.add('+np :+ [ CASE-MARKED bool ].', section='addenda')
