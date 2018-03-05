@@ -48,16 +48,16 @@ POSSESSUM_ID_HS=' [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPEC < [ LOCAL.CAT.POSSESS
                     HEAD-DTR.SYNSEM.LOCAL.CAT.POSSESSUM #poss  ].'
 
 
-POSSESSUM_NON_SPEC_RULE=' :=\
-                  [ SYNSEM.LOCAL [ CAT [ HEAD.POSSESSOR #poss & nonpossessive,\
-                                         VAL [ SPEC #spec,\
-                                             SUBJ #subj ] ] ],\
-                    DTR.SYNSEM.LOCAL [ CAT [ HEAD.POSSESSOR #poss,\
-                                             VAL [ SPEC #spec,\
-                                                 SUBJ #subj ] ], \
-                                       CONT.HOOK #hook ] ] ].'
+#POSSESSUM_NON_SPEC_RULE=' :=\
+#                  [ SYNSEM.LOCAL [ CAT [ HEAD.POSSESSOR #poss & nonpossessive,\
+#                                         VAL [ SPEC #spec,\
+#                                             SUBJ #subj ] ] ],\
+#                    DTR.SYNSEM.LOCAL [ CAT [ HEAD.POSSESSOR #poss,\
+#                                             VAL [ SPEC #spec,\
+#                                                 SUBJ #subj ] ], \
+#                                       CONT.HOOK #hook ] ] ].'
 
-POSSESSUM_SPEC_RULE=' :=\
+POSSESSUM_RULE=' :=\
                   [ SYNSEM.LOCAL [ CAT [ HEAD.POSSESSOR #poss & nonpossessive,\
                                          VAL [ SPEC #spec,\
                                              SUBJ #subj ] ] ],\
@@ -665,7 +665,7 @@ def customize_possessum_irules(strat,mylang,rules,ch,strat_num,mod_spec,mark_loc
     # Add constraints to possessor rule for spec version                            
     if mod_spec=='spec':
 
-        mylang.add(possessum_rule_name+POSSESSUM_SPEC_RULE)
+        mylang.add(possessum_rule_name+POSSESSUM_RULE)
 
         agr_prefix='SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
         
@@ -710,7 +710,8 @@ def customize_possessum_irules(strat,mylang,rules,ch,strat_num,mod_spec,mark_loc
     if mod_spec=='mod':
 
         agr_prefix='SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
-        mylang.add(possessum_rule_name+POSSESSUM_NON_SPEC_RULE)
+#        mylang.add(possessum_rule_name+POSSESSUM_NON_SPEC_RULE)
+        mylang.add(possessum_rule_name+POSSESSUM_RULE)
 
         if mark_loc=='possessum' or mark_loc=='both':
             mylang.add(possessum_rule_name+':= val-change-with-ccont-lex-rule & \
@@ -725,7 +726,7 @@ def customize_possessum_irules(strat,mylang,rules,ch,strat_num,mod_spec,mark_loc
                                                                   ICONS <! !>  ],\
                                                          DTR.SYNSEM.LOCAL [ CAT [ HEAD.PRON -,\
                                                                                   VAL.SPR #spr ],\
-                                                                            CONT.HOOK [ INDEX #possessum,\
+                                                                            CONT.HOOK #hook & [ INDEX #possessum,\
                                                                                         LTOP #lbl ] ] ].',merge=True)
             
             # Check if you need to add INIT to the possessum to keep it from going through wrong ordered head-comps
@@ -766,7 +767,8 @@ def customize_possessum_irules(strat,mylang,rules,ch,strat_num,mod_spec,mark_loc
                                                                   RELS <! !>,\
                                                                   HCONS <! !>,\
                                                                   ICONS <! !>  ],\
-                                                         DTR.SYNSEM.LOCAL [ CAT [ HEAD.PRON -,\
+                                                         DTR.SYNSEM.LOCAL [ CONT.HOOK #hook,\
+                                                                            CAT [ HEAD.PRON -,\
                                                                                   VAL.SPR #spr ] ] ].',merge=True)
 
     # Add agreement features to the possessum affix
