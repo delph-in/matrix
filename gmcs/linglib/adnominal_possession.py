@@ -36,16 +36,7 @@ POSSESSUM_EXIST_REL = '''quant-relation & [ PRED "exist_q_rel", \
                                             ARG0 #possessum, \
                                             RSTR #harg ]'''
 
-POSSESSOR_NON_SPEC_RULE=' :=\
-                  [ SYNSEM.LOCAL [ CAT.VAL [ SPR #spr,\
-                                             COMPS #comps,\
-                                             SUBJ #subj ] ],\
-                    DTR.SYNSEM.LOCAL [ CAT.VAL [ SPR #spr,\
-                                                 COMPS #comps,\
-                                                 SUBJ #subj ], \
-                                       CONT.HOOK #hook & [ INDEX #possessor ] ] ] ].'
-
-POSSESSOR_SPEC_RULE=' :=\
+POSSESSOR_RULE=' :=\
                   [ SYNSEM.LOCAL [ CAT [ VAL [ SPR #spr,\
                                                COMPS #comps,\
                                                SUBJ #subj ] ] ],\
@@ -582,7 +573,7 @@ def customize_possessor_irules(strat,mylang,rules,ch,strat_num,mod_spec,mark_loc
     # Add constraints to possessor rule for spec version
     if mod_spec=='spec':
         agr_prefix='SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
-        mylang.add(possessor_rule_name+POSSESSOR_SPEC_RULE)
+        mylang.add(possessor_rule_name+POSSESSOR_RULE)
 
         # Add constraints to spec version for single marking
         if mark_loc=='possessor' or mark_loc=='both':
@@ -623,7 +614,9 @@ def customize_possessor_irules(strat,mylang,rules,ch,strat_num,mod_spec,mark_loc
         # Add constraints to mod version for single marking
         if mark_loc=='possessor':
             agr_prefix='SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
-            mylang.add(possessor_rule_name+POSSESSOR_NON_SPEC_RULE)
+#            mylang.add(possessor_rule_name+POSSESSOR_NON_SPEC_RULE)
+            mylang.add(possessor_rule_name+POSSESSOR_RULE)
+
             mylang.add(possessor_rule_name+' := head-change-with-ccont-lex-rule & \
                         [ SYNSEM.LOCAL.CAT [ POSTHEAD '+ph+',\
                                              HEAD [ MOD.FIRST [ LOCAL [ CAT [ VAL.SPR <[]>,\
@@ -637,7 +630,8 @@ def customize_possessor_irules(strat,mylang,rules,ch,strat_num,mod_spec,mark_loc
                                    RELS <! '+POSS_REL+' !>,\
                                    HCONS <! !>, \
                                    ICONS <! !>  ], \
-                          DTR.SYNSEM.LOCAL.CAT.VAL.SPEC #spec  ].',merge=True)
+                          DTR.SYNSEM.LOCAL [ CONT.HOOK #hook & [ INDEX #possessor ],\
+                                             CAT.VAL.SPEC #spec  ] ].',merge=True)
 
         # Add constraints to mod version for double marking
         elif mark_loc=='both':
