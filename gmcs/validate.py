@@ -1655,25 +1655,30 @@ def validate_adnominal_possession(ch, vr):
                         vr.err(strat.full_key+'_possessum-orth',mess)
                 # Require input for the case when the possessum-marking word does do agreement
                 elif strat.get('possessum-agr')=='agree':
-                    for form in strat.get('possessum-form'):
-                        if not form.get('name'):
-                           mess='You must give a name for this form.'
-                           vr.err(form.full_key+'_name',mess)
-                        if not form.get('agr-orth'):
-                           mess='You must give the spelling for this form.'
-                           vr.err(form.full_key+'_agr-orth',mess)
-                        for feat in form.get('feat'):
-                           if not feat.get('name'):
-                              mess='You must give the name of this feature.'   
-                              vr.err(feat.full_key+'_name',mess)
-                           # Limit agr features to PNG
-                           elif feat.get('name') not in png_feats:
-                               mess='Agreement between elements of the possessive phrase ' +\
-                                   'is only supported for person, number, and gender.'
-                               vr.err(feat.full_key+'_name',mess)
-                           if not feat.get('value'):
-                              mess='You must give the value of this feature.'   
-                              vr.err(feat.full_key+'_value',mess)
+                    mess='Agreement between a possessum-marking word or clitic '+\
+                         'and the possessor is not supported.'
+                    vr.err(strat.full_key+'_possessum-agr',mess)
+
+                    
+#                    for form in strat.get('possessum-form'):
+#                        if not form.get('name'):
+#                           mess='You must give a name for this form.'
+#                           vr.err(form.full_key+'_name',mess)
+#                        if not form.get('agr-orth'):
+#                           mess='You must give the spelling for this form.'
+#                           vr.err(form.full_key+'_agr-orth',mess)
+#                        for feat in form.get('feat'):
+#                           if not feat.get('name'):
+#                              mess='You must give the name of this feature.'   
+#                              vr.err(feat.full_key+'_name',mess)
+#                           # Limit agr features to PNG
+#                           elif feat.get('name') not in png_feats:
+#                               mess='Agreement between elements of the possessive phrase ' +\
+#                                   'is only supported for person, number, and gender.'
+#                               vr.err(feat.full_key+'_name',mess)
+#                           if not feat.get('value'):
+#                              mess='You must give the value of this feature.'   
+#                              vr.err(feat.full_key+'_value',mess)
     for pron in ch.get('poss-pron'):
         # Require basic input for all possessive pronouns
         if not pron.get('type'):
@@ -1725,6 +1730,22 @@ def validate_adnominal_possession(ch, vr):
                     if not feat.get('value'):
                         mess='You must give a value for this feature.'
                         vr.err(feat.full_key+'_value',mess)
+#        if not pron.get('possessum-mark'):
+#            mess='You must specify the whether this pronoun affix appears with possessum marking or not.'
+#            vr.err(pron.full_key+'_possessum-mark',mess)
+        if pron.get('possessum-mark')=='yes':
+#            if not pron.get('possessum-mark-type'):
+#                mess='You must specify the type of the possessum marking.'
+#                vr.err(pron.full_key+'_possessum-mark-type',mess)
+#            if not pron.get('possessum-agr'):
+#                mess='You must specify if the possessum marking agrees with the possessor.'
+#                vr.err(pron.full_key+'_possessum-agr',mess)
+            if pron.get('possessum-agr')=='agree':
+                if pron.get('possessum-mark-type')=='non-affix':
+                    mess='Agreement between a possessum-marking word or clitic '+\
+                         'and the possessor is not supported.'
+                    vr.err(pron.full_key+'_possessum-agr',mess)
+            
         
 def validate(ch, extra = False):
     """

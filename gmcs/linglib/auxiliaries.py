@@ -37,6 +37,16 @@ def define_arg_str_and_valency(aux, auxcomp, ch, mylang, negaux):
                 [ SYNSEM.LOCAL.CAT.VAL [ SPR < >, \
                                          SPEC < > ] ].'
     mylang.add(basic_typedef)
+
+    # EKN 03-02-2018 Add [ CASE real-case ] to args of auxes iff
+    # the language has case and possessives:
+    poss = True if ch.get('poss-strat') or ch.get('poss-pron') else False
+    case_on = True if ch.get('case-marking')!='none' else False
+    if poss and case_on:
+        real_case = ' & [ LOCAL.CAT.HEAD.CASE real-case ]'
+    else:
+        real_case = ''
+
     if auxcomp == 's':
         if not negaux:
             comp_spec_typedef = supertypename + ' := basic-one-arg & \
@@ -92,7 +102,7 @@ def define_arg_str_and_valency(aux, auxcomp, ch, mylang, negaux):
     else:
         if not negaux:
             comp_spec_typedef = supertypename + ' := \
-                               [ SYNSEM.LOCAL [ CAT.VAL.SUBJ < #subj >, \
+                               [ SYNSEM.LOCAL [ CAT.VAL.SUBJ < #subj '+real_case+' >, \
                                                 CONT.HOOK.XARG #xarg ], \
                                  ARG-ST < #subj & \
                                           [ LOCAL [ CAT.VAL [ SUBJ < >, \
@@ -107,7 +117,7 @@ def define_arg_str_and_valency(aux, auxcomp, ch, mylang, negaux):
                 mylang.add(auxrest_type)
         else: #negaux
             comp_spec_typedef = supertypename + ' := \
-                               [ SYNSEM.LOCAL [ CAT.VAL.SUBJ < #subj >, \
+                               [ SYNSEM.LOCAL [ CAT.VAL.SUBJ < #subj '+real_case+' >, \
                                                 CONT.HOOK.XARG #xarg ], \
                                  ARG-ST < #subj & \
                                           [ LOCAL [ CAT.VAL [ SUBJ < >, \

@@ -237,6 +237,7 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
             'aux-lex := verb-lex & \
                       [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].'
         mylang.add(typedef)
+
         if vcluster:
             mylang.add('main-verb-lex := [ SYNSEM.LOCAL.CAT.VC + ].')
             mylang.add('aux-lex := [ SYNSEM.LOCAL.CAT.VC - ].')
@@ -292,6 +293,16 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
         clausalcomps.add_clausalcomp_verb_supertype(ch, mainorverbtype, mylang)
 
     case.customize_verb_case(mylang, ch)
+
+    # EKN 03-02-2018 Add [ CASE real-case ] to all args of verbs iff 
+    # the language has case and possessives:
+    poss = True if ch.get('poss-strat') or ch.get('poss-pron') else False
+    case_on = True if ch.get('case-marking')!='none' else False
+    if poss and case_on:
+        real_case='[ LOCAL.CAT.HEAD.CASE real-case ]'
+        mylang.add('intransitive-verb-lex := [ ARG-ST < '+real_case+' > ].')
+        mylang.add('transitive-verb-lex := [ ARG-ST < '+real_case+',\
+                                                      '+real_case+' > ].')
 
     # Add constraints to choices to create lex rules for bipartite stems
     customize_bipartite_stems(ch)
@@ -543,7 +554,9 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
         elif nonaffixal_strat:
             spr_head_type='+pd'            
         if possessum_mark:
-            spec_constraint=''
+#            spec_constraint=''
+            spec_constraint=',\
+                             SPEC <>'
         else:
             spec_constraint=',\
                              SPEC <>'
@@ -929,12 +942,26 @@ def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
                         {'supertype':'stative-pred-lex-rule := add-only-no-ccont-rule & ',
                          'comment':'Stative predicate adjective lexical rule definition',
                          'section':'lexrules'}}
-    pred_adj_definition = '''%s
+    # EKN 03-02-2018 Add [ CASE real-case ] to SUBJ of adj iff 
+    # the language has case and possessives:
+    poss = True if ch.get('poss-strat') or ch.get('poss-pron') else False
+    case_on = True if ch.get('case-marking')!='none' else False
+    if poss and case_on:
+        pred_adj_definition = '''%s
+          [ SYNSEM.LOCAL [ CAT.VAL.SUBJ < [ LOCAL [ CAT.HEAD.CASE real-case,
+                                                    CONT.HOOK.INDEX #xarg,
+  	   	   		    	                       CAT [ VAL [ SPR < >,
+                                                                           COMPS < > ],
+                                                                     HEAD noun ] ] ] >,
+                          CONT.HOOK.XARG #xarg ] ].'''
+    else:
+        pred_adj_definition = '''%s
     [ SYNSEM.LOCAL [ CAT.VAL.SUBJ < [ LOCAL [ CONT.HOOK.INDEX #xarg,
   		   		    	                       CAT [ VAL [ SPR < >,
                                                            COMPS < > ],
                                                     HEAD noun ] ] ] >,
                      CONT.HOOK.XARG #xarg ] ].'''
+
     for form in ("stative_word", "stative_lex"):
         if adj_types[form]:
             mylang.add(pred_adj_definition % pred_adj_map[form]['supertype'],
@@ -996,6 +1023,13 @@ def customize_cops(mylang, ch, lexicon, hierarchies, trigger):
                                      SPR < >,
                                      SPEC < > ],
                            CONT.HOOK.XARG #xarg ] ].''' % LEXICAL_SUPERTYPES['cop'])
+
+        # EKN 03-02-2018 Add [ CASE real-case ] to all subj of copula iff 
+        # the language has case and possessives:
+        poss = True if ch.get('poss-strat') or ch.get('poss-pron') else False
+        case_on = True if ch.get('case-marking')!='none' else False
+        if poss and case_on:
+            mylang.add('''%s := [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CAT.HEAD.CASE real-case ]  > ].''' % LEXICAL_SUPERTYPES['cop'])
 
         # only works for adj right now, change in future
         comment = '''Copula type taking adjectival complements.\nNeed to define more for additional complement types.'''
