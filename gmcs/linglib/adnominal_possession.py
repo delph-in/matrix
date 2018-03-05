@@ -586,16 +586,6 @@ def customize_possessor_irules(strat,mylang,rules,ch,strat_num,mod_spec,mark_loc
 
         # Add constraints to spec version for single marking
         if mark_loc=='possessor' or mark_loc=='both':
-#        if mark_loc=='possessor':
-#            mylang.add(possessor_rule_name+' := val-change-with-ccont-lex-rule & \
-#            [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR possessor-'+strat_num+',\
-#                                 VAL [ SPEC.FIRST.LOCAL [ CAT [ HEAD noun & [ PRON - ] ],\
-#                                                          CONT.HOOK [ INDEX #possessum & [ COG-ST uniq-id ],\
-#                                                                      LTOP #lbl ] ] ] ] ,\
-#              C-CONT [ HOOK #hook ,\
-#                       RELS <! '+ POSS_REL  +' , '+POSSESSUM_EXIST_REL+ ' !>, \
-#                       HCONS <! qeq & [ HARG #harg, LARG #lbl ] !>, \
-#                       ICONS <! !>  ] ].',merge=True)
 
             mylang.add(possessor_rule_name+' := cat-change-only-lex-rule & \
             [ SYNSEM.LOCAL.CAT [ VAL #val,\
@@ -619,18 +609,6 @@ def customize_possessor_irules(strat,mylang,rules,ch,strat_num,mod_spec,mark_loc
         if mark_loc=='possessor':
 
             mylang.add('poss-unary-phrase-'+strat_num+' := poss-unary-phrase & [ SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CAT [ POSSESSUM nonpossessive ] ].')
-
-
-        # Add constraints to spec version for double marking
-#        if mark_loc=='both':
-#            mylang.add(possessor_rule_name+' := val-change-with-ccont-lex-rule & \
-#                                           [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR possessor-'+strat_num+',\
-#                                                                VAL [ SPEC.FIRST.LOCAL [ CAT [ HEAD noun & [ PRON - ] ] ] ] ] ,\
-#                                             C-CONT [ HOOK #hook & [ INDEX #possessor ],\
-#                                                      RELS <!  !>, \
-#                                                      HCONS <! !>, \
-#                                                      ICONS <! !>  ] ].',merge=True)
-
 
     # Add constraints to possessor rule for mod version
     elif mod_spec=='mod':
@@ -700,23 +678,6 @@ def customize_possessum_irules(strat,mylang,rules,ch,strat_num,mod_spec,mark_loc
         # Add constraints in for single marking and double marking:
         if mark_loc=='possessum' or mark_loc=='both':
 
-#            mylang.add(possessum_rule_name+':=  val-change-with-ccont-lex-rule & \
-#                         [ SYNSEM.LOCAL.CAT [ POSSESSUM possessum-'+strat_num+',\
-#                                              VAL [ COMPS #comps,\
-#                                                    SPR < [ LOCAL [ CONT.HOOK #hook & [ INDEX #possessor ],\
-#                                                                    CAT [ VAL.SPR < >,\
-#                                                                          HEAD +np ] ] ] > ] ] ,\
-#                            C-CONT [ HOOK #hook & [ INDEX.COG-ST uniq-id ],\
-#                                                    HCONS <! qeq & [HARG #harg, LARG #lbl ] !>, \
-#                                                    ICONS <! !>,\
-#                                                    RELS <! '+POSS_REL+',\
-#                                                            '+POSSESSUM_EXIST_REL+' !> ],\
-#                            DTR.SYNSEM.LOCAL [ CONT.HOOK #hook & [ INDEX #possessum,\
-#                                                                   LTOP #lbl],\
-#                                               CAT [ HEAD.PRON -,\
-#                                                     VAL.COMPS #comps ] ] ].',merge=True)
-#        if mark_loc=='both':
-
             mylang.add(possessum_rule_name+':=  cat-change-only-lex-rule & \
                          [ SYNSEM.LOCAL.CAT [ POSSESSUM possessum-'+strat_num+',\
                                               VAL #val & [ SPR < [ LOCAL.CAT.HEAD.POSSESSOR possessor-'+strat_num+' ] > ]  ] ,\
@@ -738,13 +699,7 @@ def customize_possessum_irules(strat,mylang,rules,ch,strat_num,mod_spec,mark_loc
                     new_key=new_key.replace('possessor-skip','feat')
                     instance_tmp[new_key]=strat.get(key)
                 customize_feature_values(mylang,ch,hierarchies,instance_tmp,possessum_rule_name,'possessum-spec-mark')
-                                    
-        # Add constraints to spec version just for double marking
-#        if mark_loc=='both':
-#            mylang.add(possessum_rule_name+' :=\
-#            [ SYNSEM.LOCAL.CAT.VAL.SPR < [ LOCAL.CAT.HEAD.POSSESSOR possessor-'+strat_num+' ] > ,\
-#              DTR.SYNSEM.LOCAL.CAT.HEAD.PRON - ].')
-        
+                                            
         # Add constraints to spec version for case where possessum is marked 
         # and possessor = pronoun
         if mark_loc=='possessum-with-pron':
@@ -838,16 +793,6 @@ def customize_possessum_irules(strat,mylang,rules,ch,strat_num,mod_spec,mark_loc
             [ SYNSEM.LOCAL [ CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.POSSESSOR.POSS-AGR #poss-png,\
                                                           CONT.HOOK.INDEX.PNG #poss-png ] ].')
                             
-# EKN 2018-01-29 This was in here to constrain non-possessive nouns, but was breaking the pronoun cases.
-# Taking it out doesn't cause any tests to break, but I'm leaving it commented out while still in active 
-# development
-#                    elif strat_name==str(feat['name']) and feat['value']=='nonpossessive':
-#                        if (mark_loc=='possessum' or mark_loc=='both') and mod_spec=='spec':
-                            # This should keep normal head-spec constructions from letting noun phrases act as determiners:
-#                            mylang.add(get_name(lrt)+'-lex-rule := [ SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.LOCAL.CAT.HEAD det ].')
-
-
-
 def customize_possessor_pron_irules(strat,mylang,ch,strat_name,strat_num,feat,lrt,mod_spec,hierarchies):
 
     if strat_name in str(feat['name']) and feat['value']!='minus':
