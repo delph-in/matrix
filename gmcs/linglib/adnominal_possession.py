@@ -47,16 +47,6 @@ POSSESSOR_RULE=' :=\
 POSSESSUM_ID_HS=' [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPEC < [ LOCAL.CAT.POSSESSUM #poss ] > ,\
                     HEAD-DTR.SYNSEM.LOCAL.CAT.POSSESSUM #poss  ].'
 
-
-#POSSESSUM_NON_SPEC_RULE=' :=\
-#                  [ SYNSEM.LOCAL [ CAT [ HEAD.POSSESSOR #poss & nonpossessive,\
-#                                         VAL [ SPEC #spec,\
-#                                             SUBJ #subj ] ] ],\
-#                    DTR.SYNSEM.LOCAL [ CAT [ HEAD.POSSESSOR #poss,\
-#                                             VAL [ SPEC #spec,\
-#                                                 SUBJ #subj ] ], \
-#                                       CONT.HOOK #hook ] ] ].'
-
 POSSESSUM_RULE=' :=\
                   [ SYNSEM.LOCAL [ CAT [ HEAD.POSSESSOR #poss & nonpossessive,\
                                          VAL [ SPEC #spec,\
@@ -107,8 +97,6 @@ POSSESSUM_NOUN_LEX=':= basic-one-arg &\
                                                            HOOK #hook,\
                                                            ICONS <! !> ] ],\
                                      ARG-ST < #comps > ].'
-
-
 
 # TODO: change one-arg to being added by the logic section, since the modifier-version is zero-arg.
 POSSESSOR_PRON_LEX=' := basic-one-arg &\
@@ -614,7 +602,6 @@ def customize_possessor_irules(strat,mylang,rules,ch,strat_num,mod_spec,mark_loc
         # Add constraints to mod version for single marking
         if mark_loc=='possessor':
             agr_prefix='SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
-#            mylang.add(possessor_rule_name+POSSESSOR_NON_SPEC_RULE)
             mylang.add(possessor_rule_name+POSSESSOR_RULE)
 
             mylang.add(possessor_rule_name+' := head-change-with-ccont-lex-rule & \
@@ -710,7 +697,6 @@ def customize_possessum_irules(strat,mylang,rules,ch,strat_num,mod_spec,mark_loc
     if mod_spec=='mod':
 
         agr_prefix='SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
-#        mylang.add(possessum_rule_name+POSSESSUM_NON_SPEC_RULE)
         mylang.add(possessum_rule_name+POSSESSUM_RULE)
 
         if mark_loc=='possessum' or mark_loc=='both':
