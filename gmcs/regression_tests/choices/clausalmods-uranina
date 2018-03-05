@@ -1,0 +1,177 @@
+
+version=31
+
+section=general
+language=clausalmods-uranina
+
+section=word-order
+word-order=free
+has-dets=yes
+noun-det-order=det-noun
+has-aux=yes
+aux-comp-order=after
+aux-comp=v
+multiple-aux=no
+
+section=number
+  number1_name=singular
+  number2_name=plural
+
+section=person
+person=1-2-3
+first-person=none
+
+section=gender
+
+section=case
+case-marking=none
+
+section=adnom-poss
+
+section=direct-inverse
+
+section=tense-aspect-mood
+
+section=evidentials
+
+section=other-features
+form-fin-nf=on
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=info-str
+
+section=arg-opt
+
+section=nominalclause
+
+section=clausal-comp
+
+section=clausalmods
+  cms1_position=either
+  cms1_modifier-attach=s
+  cms1_subordinator=free
+  cms1_subposition=after
+  cms1_subordinator-type=head
+    cms1_freemorph1_orth=ne
+    cms1_freemorph1_pred=_if+or+when_subord_rel
+    cms1_freemorph2_orth=ne-hananiane
+    cms1_freemorph2_pred=_if_subord_rel
+    cms1_freemorph3_orth=hana
+    cms1_freemorph3_pred=_when_subord_rel
+    cms1_freemorph4_orth=bana
+    cms1_freemorph4_pred=_at+the+time+when_subord_rel
+    cms1_freemorph5_orth=baja
+    cms1_freemorph5_pred=_after_subord_rel
+    cms1_freemorph6_orth=sajhei
+    cms1_freemorph6_pred=_although_subord_rel
+    cms1_feat1_name=form
+    cms1_feat1_value=finite
+  cms2_position=either
+  cms2_modifier-attach=s
+  cms2_subordinator=pair
+  cms2_subposition=before
+  cms2_subordinator-type=head
+  cms2_matrix-subposition=before
+  cms2_matrix-adverb-attach=s
+    cms2_morphpair1_matrixorth=hananiane
+    cms2_morphpair1_matrixpred=_if_a_rel
+    cms2_morphpair1_subordorth=baana
+    cms2_morphpair1_subordpred=_if+emph_subord_rel
+    cms2_feat1_name=form
+    cms2_feat1_value=finite
+  cms3_position=either
+  cms3_modifier-attach=s
+  cms3_subordinator=free
+  cms3_subposition=after
+  cms3_subordinator-type=head
+    cms3_freemorph1_orth=hana
+    cms3_freemorph1_pred=_when_subord_rel
+    cms3_freemorph2_orth=bana
+    cms3_freemorph2_pred=_at+the+time+when_subord_rel
+    cms3_feat1_name=form
+    cms3_feat1_value=nonfinite
+
+section=lexicon
+  noun1_name=singular
+    noun1_feat1_name=number
+    noun1_feat1_value=singular
+  noun1_det=opt
+    noun1_stem1_orth=inyono
+    noun1_stem1_pred=_ayahuasc_n_rel
+    noun1_stem2_orth=itcauena
+    noun1_stem2_pred=_elder_n_rel
+  noun2_name=plural
+    noun2_feat1_name=number
+    noun2_feat1_value=plural
+  noun2_det=opt
+    noun2_stem1_orth=satii
+    noun2_stem1_pred=_all_n_rel
+  verb1_name=trans
+  verb1_valence=trans
+    verb1_stem1_orth=ku
+    verb1_stem1_pred=_drink_v_rel
+  verb2_name=intrans
+  verb2_valence=intrans
+    verb2_stem1_orth=ku
+    verb2_stem1_pred=_drink_v_rel
+  aux1_name=aux
+  aux1_sem=add-pred
+  aux1_subj=np
+    aux1_compfeature1_name=form
+    aux1_compfeature1_value=finite
+    aux1_stem1_orth=nerajnye
+    aux1_stem1_pred=_must_v_rel
+  det1_name=det
+    det1_stem1_orth=lejhii
+    det1_stem1_pred=_one_q_rel
+    det1_feat1_name=number
+    det1_feat1_value=singular
+
+section=morphology
+  verb-pc1_name=agr
+  verb-pc1_obligatory=on
+  verb-pc1_order=suffix
+  verb-pc1_inputs=iverb, tverb
+    verb-pc1_lrt1_name=3sg
+      verb-pc1_lrt1_feat1_name=person
+      verb-pc1_lrt1_feat1_value=3rd
+      verb-pc1_lrt1_feat1_head=subj
+      verb-pc1_lrt1_feat2_name=number
+      verb-pc1_lrt1_feat2_value=singular
+      verb-pc1_lrt1_feat2_head=subj
+      verb-pc1_lrt1_feat3_name=form
+      verb-pc1_lrt1_feat3_value=finite
+      verb-pc1_lrt1_feat3_head=verb
+      verb-pc1_lrt1_lri1_inflecting=yes
+      verb-pc1_lrt1_lri1_orth=a
+    verb-pc1_lrt2_name=3pl
+      verb-pc1_lrt2_feat1_name=person
+      verb-pc1_lrt2_feat1_value=3rd
+      verb-pc1_lrt2_feat1_head=subj
+      verb-pc1_lrt2_feat2_name=number
+      verb-pc1_lrt2_feat2_value=plural
+      verb-pc1_lrt2_feat2_head=subj
+      verb-pc1_lrt2_feat3_name=form
+      verb-pc1_lrt2_feat3_value=finite
+      verb-pc1_lrt2_feat3_head=verb
+      verb-pc1_lrt2_lri1_inflecting=yes
+      verb-pc1_lrt2_lri1_orth=urua
+    verb-pc1_lrt3_name=non-fin
+      verb-pc1_lrt3_feat1_name=form
+      verb-pc1_lrt3_feat1_value=nonfinite
+      verb-pc1_lrt3_feat1_head=verb
+      verb-pc1_lrt3_lri1_inflecting=no
+
+section=toolbox-import
+
+section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon
+

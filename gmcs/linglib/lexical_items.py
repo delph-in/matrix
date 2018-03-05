@@ -947,17 +947,21 @@ def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
     poss = True if ch.get('poss-strat') or ch.get('poss-pron') else False
     case_on = True if ch.get('case-marking')!='none' else False
     if poss and case_on:
-        real_case = 'CAT.HEAD.CASE real-case'
+        pred_adj_definition = '''%s
+          [ SYNSEM.LOCAL [ CAT.VAL.SUBJ < [ LOCAL [ CAT.HEAD.CASE real-case,
+                                                    CONT.HOOK.INDEX #xarg,
+  	   	   		    	                       CAT [ VAL [ SPR < >,
+                                                                           COMPS < > ],
+                                                                     HEAD noun ] ] ] >,
+                          CONT.HOOK.XARG #xarg ] ].'''
     else:
-        real_case= ''
-
-    pred_adj_definition = '''%s
-    [ SYNSEM.LOCAL [ CAT.VAL.SUBJ < [ LOCAL [ '''+real_case+''',
-                                              CONT.HOOK.INDEX #xarg,
+        pred_adj_definition = '''%s
+    [ SYNSEM.LOCAL [ CAT.VAL.SUBJ < [ LOCAL [ CONT.HOOK.INDEX #xarg,
   		   		    	                       CAT [ VAL [ SPR < >,
                                                            COMPS < > ],
                                                     HEAD noun ] ] ] >,
                      CONT.HOOK.XARG #xarg ] ].'''
+
     for form in ("stative_word", "stative_lex"):
         if adj_types[form]:
             mylang.add(pred_adj_definition % pred_adj_map[form]['supertype'],

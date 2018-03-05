@@ -1,0 +1,263 @@
+
+version=31
+
+section=general
+language=clausalmods-madi
+
+section=word-order
+word-order=free
+has-dets=yes
+noun-det-order=noun-det
+has-aux=yes
+aux-comp-order=after
+aux-comp=s
+multiple-aux=yes
+subord-word-order=same
+
+section=number
+  number1_name=singular
+  number2_name=plural
+
+section=person
+person=1-2-3
+first-person=none
+
+section=gender
+
+section=case
+case-marking=nom-acc
+nom-acc-nom-case-name=nominative
+nom-acc-acc-case-name=accusative
+  case1_name=dir-agr
+
+section=adnom-poss
+
+section=direct-inverse
+scale-equal=direct
+
+section=tense-aspect-mood
+tense-definition=choose
+nonpast=on
+  mood1_name=directive
+    mood1_supertype1_name=mood
+  mood2_name=non-directive
+    mood2_supertype1_name=mood
+  mood3_name=affirmative
+    mood3_supertype1_name=non-directive
+  mood4_name=possible
+    mood4_supertype1_name=non-directive
+
+section=evidentials
+
+section=other-features
+form-fin-nf=on
+  feature1_name=definiteness
+  feature1_type=index
+  feature1_cat=noun
+  feature1_new=yes
+    feature1_value1_name=def
+      feature1_value1_supertype1_name=definiteness
+    feature1_value2_name=indef
+      feature1_value2_supertype1_name=definiteness
+
+section=sentential-negation
+neg-aux=on
+neg-aux-index=1
+
+section=coordination
+
+section=matrix-yes-no
+
+section=info-str
+
+section=arg-opt
+subj-drop=subj-drop-all
+subj-mark-drop=subj-mark-drop-req
+subj-mark-no-drop=subj-mark-no-drop-opt
+subj-con=subj-con-all
+
+section=nominalclause
+
+section=clausal-comp
+
+section=clausalmods
+  cms1_position=either
+  cms1_modifier-attach=s
+  cms1_subordinator=free
+  cms1_subposition=after
+  cms1_subordinator-type=head
+    cms1_freemorph1_orth=a7i
+    cms1_freemorph1_pred=_because_subord_rel
+    cms1_freemorph2_orth=si
+    cms1_freemorph2_pred=_because_subord_rel
+  cms2_position=either
+  cms2_modifier-attach=s
+  cms2_subordinator=free
+  cms2_subposition=before
+  cms2_subordinator-type=adverb
+  cms2_adverb-attach=both
+    cms2_freemorph1_orth=dzho
+    cms2_freemorph1_pred=_if_subord_rel
+    cms2_freemorph2_orth=saa
+    cms2_freemorph2_pred=_if2_subord_rel
+    cms2_freemorph3_orth=dzho-saa
+    cms2_freemorph3_pred=_even+if_subord_rel
+  cms3_position=before
+  cms3_modifier-attach=s
+  cms3_subordinator=free
+  cms3_subposition=before
+  cms3_subordinator-type=adverb
+  cms3_adverb-attach=both
+    cms3_freemorph1_orth=kesu
+    cms3_freemorph1_pred=_if3_subord_rel
+  cms4_position=either
+  cms4_modifier-attach=s
+  cms4_subordinator=none
+  cms4_pred=_if_subord_rel
+    cms4_feat1_name=mood
+    cms4_feat1_value=directive
+
+section=lexicon
+  noun1_name=proper
+  noun1_det=imp
+    noun1_stem1_orth=opi
+    noun1_stem1_pred=_opi_n_rel
+  noun2_name=common
+  noun2_det=opt
+    noun2_stem1_orth=bara
+    noun2_stem1_pred=_child_n_rel
+    noun2_stem2_orth=ira
+    noun2_stem2_pred=_beer_n_rel
+  noun3_name=2sg-pron
+  noun3_pron=on
+    noun3_feat1_name=case
+    noun3_feat1_value=nom
+    noun3_feat2_name=number
+    noun3_feat2_value=singular
+    noun3_feat3_name=person
+    noun3_feat3_value=2nd
+  noun3_det=imp
+    noun3_stem1_orth=ni
+    noun3_stem1_pred=_2sg_n_rel
+  noun4_name=1sg
+  noun4_pron=on
+    noun4_feat1_name=case
+    noun4_feat1_value=nom
+    noun4_feat2_name=number
+    noun4_feat2_value=singular
+    noun4_feat3_name=person
+    noun4_feat3_value=1st
+  noun4_det=imp
+    noun4_stem1_orth=ma
+    noun4_stem1_pred=_1sg_n_rel
+  verb1_name=intrans
+  verb1_valence=intrans
+    verb1_stem2_orth=mu
+    verb1_stem2_pred=_go_v_rel
+    verb1_stem3_orth=ba-oru
+    verb1_stem3_pred=_put+up_v_rel
+  verb2_name=trans
+  verb2_valence=trans
+    verb2_stem1_orth=edzhi
+    verb2_stem1_pred=_take_v_rel
+    verb2_stem2_orth=ebe
+    verb2_stem2_pred=_leave_v_rel
+  aux1_name=neg
+  aux1_sem=add-pred
+  aux1_subj=np-comp-case
+    aux1_compfeature1_name=form
+    aux1_compfeature1_value=finite
+    aux1_stem1_orth=ku
+    aux1_stem1_pred=neg_rel
+  aux2_name=aff
+  aux2_sem=add-pred
+    aux2_feat1_name=mood
+    aux2_feat1_value=affirmative
+    aux2_feat1_head=verb
+    aux2_compfeature1_name=form
+    aux2_compfeature1_value=finite
+    aux2_compfeature2_name=mood
+    aux2_compfeature2_value=affirmative
+    aux2_stem1_orth=ra
+    aux2_stem1_pred=_affirmative_v_rel
+  aux3_name=poss
+  aux3_sem=add-pred
+    aux3_feat1_name=mood
+    aux3_feat1_value=possible
+    aux3_feat1_head=verb
+    aux3_compfeature1_name=form
+    aux3_compfeature1_value=finite
+    aux3_compfeature2_name=mood
+    aux3_compfeature2_value=possible
+    aux3_stem1_orth=wa
+    aux3_stem1_pred=_possible_v_rel
+  det1_name=det
+    det1_stem1_orth=ri
+    det1_stem1_pred=_def_q_rel
+    det1_feat1_name=definiteness
+    det1_feat1_value=def
+
+section=morphology
+  noun-pc1_name=case
+  noun-pc1_obligatory=on
+  noun-pc1_order=prefix
+  noun-pc1_inputs=noun
+    noun-pc1_lrt1_name=nom
+      noun-pc1_lrt1_feat1_name=case
+      noun-pc1_lrt1_feat1_value=nom
+      noun-pc1_lrt1_feat1_head=itself
+      noun-pc1_lrt1_lri1_inflecting=no
+  verb-pc1_name=tense
+  verb-pc1_obligatory=on
+  verb-pc1_order=prefix
+  verb-pc1_inputs=iverb, tverb
+    verb-pc1_lrt1_name=non-past
+      verb-pc1_lrt1_feat1_name=tense
+      verb-pc1_lrt1_feat1_value=nonpast
+      verb-pc1_lrt1_feat1_head=verb
+      verb-pc1_lrt1_lri1_inflecting=no
+  verb-pc2_name=mood
+  verb-pc2_obligatory=on
+  verb-pc2_order=prefix
+  verb-pc2_inputs=verb-pc1
+    verb-pc2_lrt1_name=directive
+      verb-pc2_lrt1_feat1_name=mood
+      verb-pc2_lrt1_feat1_value=directive
+      verb-pc2_lrt1_feat1_head=verb
+      verb-pc2_lrt1_feat2_name=case
+      verb-pc2_lrt1_feat2_value=dir-agr
+      verb-pc2_lrt1_feat2_head=subj
+      verb-pc2_lrt1_lri1_inflecting=no
+    verb-pc2_lrt2_name=other
+      verb-pc2_lrt2_feat1_name=case
+      verb-pc2_lrt2_feat1_value=nom
+      verb-pc2_lrt2_feat1_head=subj
+      verb-pc2_lrt2_feat3_name=mood
+      verb-pc2_lrt2_feat3_value=non-directive
+      verb-pc2_lrt2_feat3_head=verb
+      verb-pc2_lrt2_lri1_inflecting=no
+  verb-pc3_name=agr
+  verb-pc3_obligatory=off
+  verb-pc3_order=prefix
+  verb-pc3_inputs=verb-pc2
+    verb-pc3_lrt1_name=subj-nom
+      verb-pc3_lrt1_feat1_name=case
+      verb-pc3_lrt1_feat1_value=nom
+      verb-pc3_lrt1_feat1_head=subj
+      verb-pc3_lrt1_lri1_inflecting=yes
+      verb-pc3_lrt1_lri1_orth=o
+    verb-pc3_lrt2_name=subj-dir
+      verb-pc3_lrt2_feat1_name=case
+      verb-pc3_lrt2_feat1_value=dir-agr
+      verb-pc3_lrt2_feat1_head=subj
+      verb-pc3_lrt2_lri1_inflecting=yes
+      verb-pc3_lrt2_lri1_orth=ko
+
+section=toolbox-import
+
+section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon
+

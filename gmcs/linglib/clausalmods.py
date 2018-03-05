@@ -679,7 +679,10 @@ def create_subordinated_feature(mylang, roots, cms, ch):
     mylang.add('cont-change-only-lex-rule :+ same-subordinated-lex-rule.')
     mylang.add('cat-change-with-ccont-lex-rule :+ same-subordinated-lex-rule.')
     mylang.add('add-only-rule :+ same-subordinated-lex-rule.')
-    roots.add('root := [ SYNSEM.SUBORDINATED none ].')
+    #KPH- removed because subordinator adverbs are blocked from the matrix clause 
+    #by the MC feature. I think this is an artifact from before that was properly      
+    #constrained
+    #roots.add('root := [ SYNSEM.SUBORDINATED none ].')
 
 def create_subpair_feature(mylang, roots, morphpair, ch):
     """
