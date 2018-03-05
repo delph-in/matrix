@@ -137,6 +137,33 @@ POSSESSOR_PRON_LEX=' := basic-one-arg &\
 NON_POSS_LEX_ITEM = '[ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR nonpossessive,\
                                                      POSSESSUM nonpossessive ] ].'
 
+POSS_UNARY = ' := basic-unary-phrase & \
+              [ SYNSEM.LOCAL [ CONT.HOOK #hook,\
+                               CAT [ HEAD det & [ POSSESSOR possessor ],\
+  	                 	   VAL [ SPR < >,\
+                                         COMPS #comps,\
+			                 SUBJ #subj,\
+		     	                 SPEC < [ LOCAL [ CAT [ VAL.COMPS < > ,\
+                                                                HEAD +np & [ PRON - ] ],\
+		     	      	                          CONT.HOOK #hook & [ INDEX #possessum & [ COG-ST uniq-id ],\
+				      		      	                      LTOP #lbl ] ] ] > ] ] ],\
+             C-CONT [ RELS <! arg12-ev-relation & [ PRED "poss_rel", \
+                                                      LBL #lbl, \
+                                                      ARG1 #possessum, \
+                                                      ARG2 #possessor ],\
+  		                quant-relation & [ PRED "exist_q_rel", \
+                                                   ARG0 #possessum, \
+                                                   RSTR #harg ] !>,\
+	                HCONS <! qeq & [ HARG #harg, LARG #lbl ]!>,\
+                        ICONS <! !>   ],\
+                ARGS < [ SYNSEM.LOCAL [ CAT [ VAL [ SPR < >,\
+       	       		      	                    COMPS #comps & olist,\
+				                    SUBJ #subj,\
+                                                    SPEC < > ],\
+      	   		      	              HEAD +np ],\
+  			                CONT.HOOK.INDEX #possessor ] ] > ].'
+
+
 
 ##################################################################
 ## Primary function (called from customize.py)                 ###
@@ -403,31 +430,7 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
                                            HEAD-DTR.SYNSEM.LOCAL.CAT.POSSESSUM #poss  ].')
                         rules.add('head-spec-2 := head-spec-phrase-2.')
                     
-            mylang.add('poss-unary-phrase := basic-unary-phrase & \
-              [ SYNSEM.LOCAL [ CONT.HOOK #hook,\
-                               CAT [ HEAD det & [ POSSESSOR possessor ],\
-  	                 	   VAL [ SPR < >,\
-                                         COMPS #comps,\
-			                 SUBJ #subj,\
-		     	                 SPEC < [ LOCAL [ CAT [ VAL.COMPS < > ,\
-                                                                HEAD +np & [ PRON - ] ],\
-		     	      	                          CONT.HOOK #hook & [ INDEX #possessum & [ COG-ST uniq-id ],\
-				      		      	                      LTOP #lbl ] ] ] > ] ] ],\
-             C-CONT [ RELS <! arg12-ev-relation & [ PRED "poss_rel", \
-                                                      LBL #lbl, \
-                                                      ARG1 #possessum, \
-                                                      ARG2 #possessor ],\
-  		                quant-relation & [ PRED "exist_q_rel", \
-                                                   ARG0 #possessum, \
-                                                   RSTR #harg ] !>,\
-	                HCONS <! qeq & [ HARG #harg, LARG #lbl ]!>,\
-                        ICONS <! !>   ],\
-                ARGS < [ SYNSEM.LOCAL [ CAT [ VAL [ SPR < >,\
-       	       		      	                    COMPS #comps & olist,\
-				                    SUBJ #subj,\
-                                                    SPEC < > ],\
-      	   		      	              HEAD +np ],\
-  			                CONT.HOOK.INDEX #possessor ] ] > ].')
+            mylang.add('poss-unary-phrase'+POSS_UNARY)
             mylang.add('basic-determiner-lex :+ '+NON_POSS_LEX_ITEM, section = 'addenda')
             
         elif strat.get('mod-spec')=='mod':
