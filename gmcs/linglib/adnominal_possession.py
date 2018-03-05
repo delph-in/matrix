@@ -1034,8 +1034,6 @@ def customize_possessum_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod
                                            HEAD [ POSSESSOR nonpossessive ],\
                                            POSSESSUM possessum-'+strat_num+' ] ] ].',merge=True)
 
-#            mylang.add('possessum-noun-lex-'+strat_num+' := [ SYNSEM.LOCAL.CAT.VAL.SPR < [ LOCAL.CAT.HEAD noun ] > ].')                           
-
             # Add any feature constraints to the possessor (only if the possessor is unmarked)
             if strat.get('possessor-feat'):
                 instance_tmp={}
@@ -1044,7 +1042,6 @@ def customize_possessum_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod
                         new_key=key.replace('feat','skip')
                         new_key=new_key.replace('possessor-skip','feat')
                         instance_tmp[new_key]=strat.get(key)
-#                    customize_feature_values(mylang,ch,hierarchies,instance_tmp,'possessum-noun-lex-'+strat_num,'possessum-spec-mark')
                     customize_feature_values(mylang,ch,hierarchies,instance_tmp,'poss-unary-phrase-'+strat_num,'possessum-spec-mark')
 
         # Add constraints to spec version for double marking
