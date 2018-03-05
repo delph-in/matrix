@@ -1178,6 +1178,7 @@ def customize_possessor_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod
 
     if case:
         
+        mylang.add('+np :+ [ CASE case ].', section='addenda')
         mylang.add('poss-case := case.',section='addenda')
         
         mylang.add('possessor-adp-lex-'+strat_num+' := [ SYNSEM.LOCAL.CAT.HEAD.CASE poss-case ].')
