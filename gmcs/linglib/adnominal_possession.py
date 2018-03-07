@@ -341,7 +341,7 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
 
         # Add any feature constraints to possessor in juxt construction
         if strat.get('feat'):
-            customize_feature_values(mylang,ch,hierarchies,strat,phrase_rule,'juxt-rule')
+            customize_feature_values(mylang,ch,hierarchies,strat,phrase_rule,'poss-juxt-rule')
 
         if not pron_allowed:
             mylang.add(phrase_rule+' := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.PRON - ] ].')
@@ -991,7 +991,8 @@ def customize_possessor_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod
                                         [ SYNSEM.LOCAL.CAT.HEAD.POSSESSOR.POSS-AGR #png,\
                                         '+agr_prefix+' #png ].')
 
-                customize_feature_values(mylang,ch,hierarchies,form,adp_type,'poss-marker')
+#                customize_feature_values(mylang,ch,hierarchies,form,adp_type,'poss-marker')
+                customize_feature_values(mylang,ch,hierarchies,form,adp_type,'possessor-marker')
 
             # If spec, agreement constraint goes on poss-unary-phrase:
             elif mod_spec=='spec':
@@ -999,7 +1000,8 @@ def customize_possessor_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod
                           [ SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CONT.HOOK.INDEX.PNG #png-or,\
                             ARGS < [ SYNSEM.LOCAL.CAT.HEAD.POSSESSOR.POSS-AGR #png-or ] > ].',section='phrases')
                 mylang.add(adp_type+' := possessor-adp-lex-'+strat_num+'.')
-                customize_feature_values(mylang,ch,hierarchies,form,adp_type,'poss-marker')
+#                customize_feature_values(mylang,ch,hierarchies,form,adp_type,'poss-marker')
+                customize_feature_values(mylang,ch,hierarchies,form,adp_type,'possessor-marker')
 
             # Add agreeing adps to lexicon:
             orth=form.get('agr-orth')
@@ -1090,7 +1092,8 @@ def customize_possessum_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod
                 mylang.add('poss-unary-phrase-'+strat_num+' := [ ARGS < [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png-um ] >,\
                                                                  SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CAT.POSSESSUM.POSS-AGR #png-um ].',section='phrases')
 
-            customize_feature_values(mylang,ch,hierarchies,form,noun_type,'poss-marker')
+#            customize_feature_values(mylang,ch,hierarchies,form,noun_type,'poss-marker')
+            customize_feature_values(mylang,ch,hierarchies,form,noun_type,'possessum-marker')
 
             orth=form.get('agr-orth')
             # Add appropriate number of agreeing forms to lexicon
@@ -1177,6 +1180,7 @@ def customize_possessor_pron_lexicon(strat,mylang,ch,lexicon,strat_name,strat_nu
 
         # Add agr features where appropriate
         instance_tmp={}                
+        instance_tmp_case={}                
         for key in pron_inst.keys():
             # Relabel the inherent features as something else ('skip') 
             # Relabel the agreement features as simply features ('feat')
@@ -1184,10 +1188,15 @@ def customize_possessor_pron_lexicon(strat,mylang,ch,lexicon,strat_name,strat_nu
             # so that the agreement features are added at POSS.POSS-AGR instead of HOOK.INDEX.PNG
             new_key=key.replace('feat','skip')
             new_key=new_key.replace('agr-skip','feat')
-            instance_tmp[new_key]=pron_inst.get(key)
+            if 'case' in pron_inst.get(key):
+                instance_tmp[new_key]=pron_inst.get(key)
+            else:
+                instance_tmp_case[new_key]=pron_inst.get(key)
         # TODO: Figure out how to cast instance_tmp from a dict to a ChoiceDict so that no future
         #  developers have to deal with this mess in features.py
-        customize_feature_values(mylang,ch,hierarchies,instance_tmp,instance_name,'poss-marker')
+        customize_feature_values(mylang,ch,hierarchies,instance_tmp,instance_name,'possessor-marker')
+#        customize_feature_values(mylang,ch,hierarchies,instance_tmp,instance_name,'poss-marker')
+        customize_feature_values(mylang,ch,hierarchies,instance_tmp_case,instance_name,'poss-pron-'+strat.get('mod-spec'))
 
     # Add any necessary markings to the possessum:
     if strat.get('possessum-mark')=='yes':

@@ -32,10 +32,14 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     # TJT 2014-08-15: changing this to a map for readability/speed
     prefix_map = { 'det': 'SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.',
                    'con': 'HEAD-DTR.SYNSEM.',
-                   'juxt-rule': 'NON-HEAD-DTR.SYNSEM.',
+                   'poss-juxt-rule': 'NON-HEAD-DTR.SYNSEM.',
+                   'possessor-marker':'SYNSEM.LOCAL.CAT.HEAD.POSSESSOR.POSS-AGR.',
+                   'possessum-marker':'SYNSEM.LOCAL.CAT.POSSESSUM.POSS-AGR.',
                    'poss-adp-comp': 'SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.',
                    'possessum-spec-mark': 'ARGS < [ SYNSEM.',
-                   'possessum-mod-mark': 'SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.' }
+                   'possessum-mod-mark': 'SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.',
+                   'poss-pron-mod': 'SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.',
+                   'poss-pron-spec': 'SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.'   }
     pos_geom_prefix = prefix_map[pos] if pos in prefix_map else 'SYNSEM.'
 
     iter_feat = 'feat' if pos != 'auxcomplement' else 'compfeature'
@@ -123,7 +127,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                 agreeing_element='possessor'
             elif 'poss-pron' in feature.full_key:
                 agreeing_element='possessor'
-        if pos=='poss-marker' or poss_lrt:
+        if poss_lrt:
             if agreeing_element=='possessor':
                 geom_prefix = 'SYNSEM.LOCAL.CAT.HEAD.POSSESSOR.POSS-AGR.'
             elif agreeing_element=='possessum':
@@ -177,7 +181,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                     # EKN 2018-1-6: when adding a possessive rule, the standard feature path
                     # won't work. This removes all but the feature name and value from the
                     # variable value.
-                    if pos=='poss-marker' or poss_lrt:
+                    if pos=='possessor-marker' or pos=='possessum-marker' or poss_lrt:
                         value=value.replace('LOCAL.CONT.HOOK.INDEX.PNG.','')
                     if poss_pron_lrt:
                         value=value.replace('LOCAL.CONT.HOOK.INDEX.PNG','')
