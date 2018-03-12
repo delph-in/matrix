@@ -1134,7 +1134,10 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
                'A given rule can only be marked for one possessive behavior.')
     # EKN 2018-01-09: Check that only PNG features are 
     # added as agreement features to possessive strategies
-    png_feats=set(['person','number','gender'])
+    png_feats=set(['person','number','gender','pernum'])
+    for feat in choices.get('feature'):
+        if feat.get('type')!='type':
+            png_feats.add(feat.get('name'))
     for feat_key in other_feats:
         if (poss_strats or poss_prons) and other_feats[feat_key][0] not in png_feats:
             vr.err(feat_key+'_name',

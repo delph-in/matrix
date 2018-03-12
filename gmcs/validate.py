@@ -1567,6 +1567,9 @@ def validate_nominalized_clauses(ch, vr):
 #   Validate the user's choices about adnominal possession
 def validate_adnominal_possession(ch, vr):
     png_feats=set(['person','number','gender','pernum'])
+    for feat in ch.get('feature'):
+        if feat.get('type')!='type':
+            png_feats.add(feat.get('name'))
     # Add any user-defined non-syntactic feats:
     for feat in ch.get('feature'):
         if feat.get('type','')!='head':
@@ -1621,6 +1624,7 @@ def validate_adnominal_possession(ch, vr):
                               vr.err(feat.full_key+'_name',mess)
                            # Limit agr features to PNG
                            elif feat.get('name') not in png_feats:
+                               print feat.get('name')
                                mess='Agreement between elements of the possessive phrase ' +\
                                    'is only supported for person, number, and gender.'
                                vr.err(feat.full_key+'_name',mess)
