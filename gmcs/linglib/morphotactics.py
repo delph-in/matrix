@@ -260,6 +260,11 @@ def create_lexical_rule_type(lrt, mtx_supertypes, cur_pc):
              feat['value']=='nonpossessive':
             new_lrt.possessive=feat['value']
             new_lrt.poss_strat_num = feat['name'][-1]
+        elif 'poss-pron' in feat['name'] and\
+             'possessum' not in feat['name']:
+            if feat['value']=='minus':
+                new_lrt.possessive='nonpossessive'
+                new_lrt.poss_strat_num = feat['name'][-1]
         # EKN 2018-02-17 Add info about lrts for possessum marking 
         # that accompanies pronoun possessors:
         elif '_possessum' in feat['name']: #TODO: improve feature name and retrieval

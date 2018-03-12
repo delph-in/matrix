@@ -553,18 +553,12 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
             spr_head_type='+nd'            
         elif nonaffixal_strat:
             spr_head_type='+pd'            
-        if possessum_mark:
-#            spec_constraint=''
-            spec_constraint=',\
-                             SPEC <>'
-        else:
-            spec_constraint=',\
-                             SPEC <>'
         typedef= \
         'noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & \
            [ SYNSEM.LOCAL [ CAT.VAL [ SPR < #spr & [ LOCAL.CAT.HEAD '+spr_head_type+' ] >,\
                                       COMPS < >, \
-                                      SUBJ < > '+spec_constraint+' ] ], \
+                                      SUBJ < >, \
+                                      SPEC < > ] ], \
              ARG-ST < #spr > ].'
 
     mylang.add(typedef)
