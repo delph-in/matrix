@@ -1225,7 +1225,7 @@ def customize_possessor_pron_lexicon(strat,mylang,ch,lexicon,strat_name,strat_nu
 
         # Add agr features where appropriate
         instance_tmp={}                
-        instance_tmp_non_case={}                
+        # Add PNG agr features:
         for key in pron_inst.keys():
             # Relabel the inherent features as something else ('skip') 
             # Relabel the agreement features as simply features ('feat')
@@ -1234,22 +1234,27 @@ def customize_possessor_pron_lexicon(strat,mylang,ch,lexicon,strat_name,strat_nu
             
             new_key=key.replace('feat','skip')
             new_key=new_key.replace('agr-skip','feat')
-            # TODO: this is currently not separating out features but rather instances, bsed on if they have 
-            # a case feat in them anywhere. Need to edit questionnaire to allow PNG and other feats to be
-            # added separately.
-            if 'case' in pron_inst.get(key):
-                instance_tmp[new_key]=pron_inst.get(key)
-            else:
-                instance_tmp_non_case[new_key]=pron_inst.get(key)
+
+            instance_tmp[new_key]=pron_inst.get(key)
 
         # TODO: Figure out how to cast instance_tmp from a dict to a ChoiceDict so that no future
         #  developers have to deal with this mess in features.py
         customize_feature_values(mylang,ch,hierarchies,instance_tmp,instance_name,'possessor-marker')
         # TODO: the case feature only works on mod prons. Fix for spec prons too.
+
+        # Add non-PNG features:
+        instance_tmp={}
+        for key in pron_inst.keys():
+            
+            new_key=key.replace('feat','skip')
+            new_key=new_key.replace('non-png-skip','feat')
+            instance_tmp[new_key]=pron_inst.get(key)
+
         if strat.get('mod-spec')=='mod':
-            customize_feature_values(mylang,ch,hierarchies,instance_tmp_non_case,instance_name,'poss-pron-mod')
-        else:
-            customize_feature_values(mylang,ch,hierarchies,instance_tmp_non_case,instance_name,'possessor-marker')
+            customize_feature_values(mylang,ch,hierarchies,instance_tmp,instance_name,'poss-pron-mod')
+        
+#        else:
+#            customize_feature_values(mylang,ch,hierarchies,instance_tmp,instance_name,'possessor-marker')
 
     # Add any necessary markings to the possessum:
     if strat.get('possessum-mark')=='yes':
