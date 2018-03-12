@@ -1566,7 +1566,11 @@ def validate_nominalized_clauses(ch, vr):
 # validate_adnominal_possession(ch, vr)
 #   Validate the user's choices about adnominal possession
 def validate_adnominal_possession(ch, vr):
-    png_feats=set(['person','number','gender'])
+    png_feats=set(['person','number','gender','pernum'])
+    # Add any user-defined non-syntactic feats:
+    for feat in ch.get('feature'):
+        if feat.get('type','')!='head':
+            png_feats.add(feat.get('name',''))
     for strat in ch.get('poss-strat'):
         # CHECK THAT ALL THE CHOICES ARE CHOSEN
         # Require basic input for all possessive strategies:
