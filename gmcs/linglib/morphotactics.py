@@ -547,7 +547,7 @@ def percolate_supertypes(pc):
                 # add any supertype but lex-rule, but adding this causes inheritance issues.
                 # So no supertypes for possessive rules are added here; instead, supertypes
                 # are handled by write_possessive_behavior(). If any other lrt shares a pc
-                # with a possessive rule, it wil have its specific super types added
+                # with a possessive rule, it wil have its specific supertypes added
                 # in write_possessive_behavior() as well.
                 elif not pc.has_possessive():
                     x.supertypes.add('add-only-no-ccont-rule')
@@ -864,19 +864,10 @@ def write_possessive_behavior(pc,lrt,mylang,choices):
         mylang.add(nonpossessive_rule_name+NON_POSS_LEX_RULE_DEFN,section='lexrules')
         lrt.supertypes.add(nonpossessive_rule_name)
     # If a non-possessive rule is in the same pc as a possessive rule, make 
-    # sure it isn't missing supertypes:
+    # sure it isn't missing supertypes. Note: to keep this simple, validating
+    # against all but 'generic' lrts:
     elif lrt.possessive==None and pc.has_possessive():
-        if pc.is_lex_rule:
-            if not any(st in LEX_RULE_SUPERTYPES for st in lrt.supertypes):
-                if pc.has_incorporated_stems():
-                    lrt.supertypes.add('add-only-rule')
-                    lrt.supertypes.add('adj_incorporation-lex-rule')
-                elif pc.has_valchg_ops():
-                    lrt.supertypes.add('val-change-with-ccont-lex-rule')
-                elif pc.has_evidential():
-                    lrt.supertypes.add('cont-change-only-lex-rule')
-                else:
-                    lrt.supertypes.add('add-only-no-ccont-rule')
+        lrt.supertypes.add('add-only-no-ccont-rule')
 
 def write_valence_change_behavior(pc, lrt, mylang, choices):
     from gmcs.linglib.valence_change import lexrule_name, added_argnum_for_vchop
@@ -1185,8 +1176,6 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
                     mess='Only possessive rules should have features specified on ' +\
                         'anything other than \'itself.\''
                     vr.err(feat.full_key+'_head', mess)
-   
-       
 
     # TJT 2014-08-21: Incorporated Adjective validation
     if incorp:
@@ -1412,7 +1401,6 @@ def hierarchy_validation(choices, pc, vr):
                        "redundant link that will result in an LKB error.  "+t+
                        " is both an immediate supertype of "+lrt.full_key+" and also "+
                        "an ancestor of another supertype.")
-
 
 # check for a cycle in the inputs
 def cycle_validation(choices, vr):
