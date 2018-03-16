@@ -265,6 +265,12 @@ def create_lexical_rule_type(lrt, mtx_supertypes, cur_pc):
             if feat['value']=='minus':
                 new_lrt.possessive='nonpossessive'
                 new_lrt.poss_strat_num = feat['name'][-1]
+            # This'll mark the lrt as a possessive type of
+            # some kind, though it won't actually be used 
+            # to add any tdl here. It'll just prevent this
+            # lrt from getting a default supertype added.
+            elif feat['value']=='plus':
+                new_lrt.possessive='pron'
         # EKN 2018-02-17 Add info about lrts for possessum marking 
         # that accompanies pronoun possessors:
         elif '_possessum' in feat['name']: #TODO: improve feature name and retrieval
