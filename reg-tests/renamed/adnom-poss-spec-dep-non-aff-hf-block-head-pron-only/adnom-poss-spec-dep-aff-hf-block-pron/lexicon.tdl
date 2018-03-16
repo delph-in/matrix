@@ -1,0 +1,37 @@
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+;;; Nouns
+
+noun1 := common-noun-lex &
+  [ STEM < "noun1" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_noun1_n_rel" ].
+
+noun2 := common-noun-lex &
+  [ STEM < "noun2" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_noun2_n_rel" ].
+
+pron3sg := 3sg-pronoun-noun-lex &
+  [ STEM < "pron3sg" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_pronoun_n_rel" ].
+
+;;; Adjectives
+
+;;; Verbs
+
+itr-verb := itr-verb-lex &
+  [ STEM < "itr-verb" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_itr-verb_v_rel" ].
+
+;;; Determiners
+
+det := det1-determiner-lex &
+  [ STEM < "det" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_def_q_rel" ].
+
+possessor-adp-1 := possessor-adp-lex-1 &
+  [ STEM < "POSSESSOR" > ].
+
+possessor-1sg-noun := possessor-1sg-noun-lex &
+  [ STEM < "possessor1sg" > ].
+
+possessor-1pl-noun := possessor-1pl-noun-lex &
+  [ STEM < "possessor1pl" > ].

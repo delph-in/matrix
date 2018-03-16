@@ -1,0 +1,324 @@
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Grammar of adnom-poss-spec-dep-non-aff-hf-constraint
+;;; created at:
+;;;     Mon Mar 05 18:04:57 UTC 2018
+;;; based on Matrix customization system version of:
+;;;     unknown time
+;;;
+;;; same as adnom-poss-spec-dep-non-aff-hf, but with the req that the
+;;; complement of the possessor adp be CASE nom.
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+; Type assigning empty mod list. Added to basic types for nouns, verbs and determiners.
+
+non-mod-lex-item := lex-item &
+  [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].
+
+;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Matrix Type Addenda
+;;;;;;;;;;;;;;;;;;;;;;;;;
+
+head :+ [ PRON bool,
+    POSSESSOR poss,
+    SPEC-INIT bool ].
+
+noun :+ [ CASE case ].
+
+inflected :+ [ CASE-FLAG luk,
+    NUM-FLAG luk,
+    PERNUM-FLAG luk ].
+
+infl-satisfied :+ [ CASE-FLAG na-or-+,
+    NUM-FLAG na-or-+,
+    PERNUM-FLAG na-or-+ ].
+
+png :+ [ PER person,
+    NUM number ].
+
+cat :+ [ POSSESSUM poss ].
+
+poss := *top* &
+  [ POSS-AGR png ].
+
+possessive := poss.
+
+nonpossessive := poss.
+
+possessor := possessive.
+
+possessum := possessive.
+
+basic-bare-np-phrase :+ [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #possessor,
+                       POSSESSUM #possessum ],
+    HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #possessor,
+                                POSSESSUM #possessum ] ].
+
+possessive-1 := possessive.
+
+possessor-1 := possessor & possessive-1.
+
+possessum-1 := possessum & possessive-1.
+
+basic-determiner-lex :+ [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR nonpossessive,
+                       POSSESSUM nonpossessive ] ].
+
++np :+ [ CASE case ].
+
+poss-case := case.
+
+basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.MC #mc,
+    HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
+
+basic-head-opt-subj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
+
+;;;;;;;;;;;;;;
+;;; Features
+;;;;;;;;;;;;;;
+
+;;; Case
+
+case := *top*.
+real-case := case.  ; intermediate case type for all real cases
+nom := real-case.  ; nom
+acc := real-case.  ; acc
+dat := real-case.  ; dat
+
+;;; Person
+
+person := *top*.
+3rd := person.
+non-3rd := person.
+2nd := non-3rd.
+1st := non-3rd.
+
+;;; Number
+
+number := *top*.
+sg := number.
+pl := number.
+
+;;;;;;;;;;;;;;;;;;;
+;;; Lexical Types
+;;;;;;;;;;;;;;;;;;;
+
+;;; Nouns
+
+noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & non-mod-lex-item & case-rule-dtr &
+  [ ARG-ST < #spr >,
+    SYNSEM.LOCAL.CAT [ VAL [ COMPS < >,
+                             SUBJ < >,
+                             SPEC < >,
+                             SPR < #spr &
+                                   [ LOCAL.CAT.HEAD +pd,
+                                     OPT - ] > ],
+                       HEAD.POSSESSOR nonpossessive,
+                       POSSESSUM nonpossessive ] ].
+
+common-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 3rd,
+    INFLECTED [ CASE-FLAG -,
+                NUM-FLAG - ] ].
+
+;;; Verbs
+
+verb-lex := basic-verb-lex & non-mod-lex-item &
+  [ SYNSEM.LOCAL [ CAT.VAL [ SPR < >,
+                             SPEC < >,
+                             SUBJ < #subj > ],
+                   CONT.HOOK.XARG #xarg ],
+    ARG-ST.FIRST #subj &
+                 [ LOCAL [ CAT cat-sat &
+                               [ VAL [ SPR < >,
+                                       COMPS < > ] ],
+                           CONT.HOOK.INDEX #xarg ] ],
+    INFLECTED.PERNUM-FLAG - ].
+
+intransitive-verb-lex := verb-lex & intransitive-lex-item &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < >,
+    ARG-ST < [ LOCAL.CAT.HEAD noun &
+                              [ CASE real-case ] ] > ].
+
+transitive-verb-lex := verb-lex & transitive-lex-item &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >,
+    ARG-ST < [ LOCAL.CAT.HEAD noun &
+                              [ CASE real-case ] ],
+             #comps &
+             [ LOCAL.CAT cat-sat &
+                         [ VAL [ SPR < >,
+                                 COMPS < > ],
+                           HEAD noun &
+                                [ CASE real-case ] ] ] > ].
+
+nom-intransitive-verb-lex := intransitive-verb-lex &
+  [ ARG-ST.FIRST.LOCAL.CAT.HEAD noun &
+                                [ CASE nom ] ].
+
+nom-acc-transitive-verb-lex := transitive-verb-lex &
+  [ ARG-ST < [ LOCAL.CAT.HEAD noun &
+                              [ CASE nom ] ],
+             [ LOCAL.CAT.HEAD noun &
+                              [ CASE acc ] ] > ].
+
+itr-verb-lex := intransitive-verb-lex.
+
+;;; Complementizers
+
+;;; Others
+
+;;; Determiners
+;;; SPEC is non-empty, and already specified by basic-determiner-lex.
+
+determiner-lex := basic-determiner-lex & norm-zero-arg & non-mod-lex-item &
+  [ SYNSEM.LOCAL.CAT.VAL [ SPR < >,
+                           COMPS < >,
+                           SUBJ < > ] ].
+
+det1-determiner-lex := determiner-lex & no-icons-lex-item.
+
+two-rel-adposition-lex := basic-icons-lex-item &
+  [ SYNSEM [ LOCAL [ CAT [ HEAD adp,
+                           VAL.COMPS < [ LOCAL [ CAT cat-sat,
+                                                 CONT.HOOK #hook &
+                                                           [ INDEX #ind,
+                                                             ICONS-KEY.IARG1 #clause ] ] ] > ],
+                     CONT.HOOK #hook &
+                               [ CLAUSE-KEY #clause ] ],
+             LKEYS.KEYREL arg12-ev-relation &
+                          [ ARG2 #ind ] ] ].
+
+possessor-adp-lex-1 := two-rel-adposition-lex &
+  [ SYNSEM.LOCAL [ CONT [ ICONS <!  !>,
+                          RELS <!  !>,
+                          HCONS <!  !> ],
+                   CAT [ POSSESSUM nonpossessive,
+                         HEAD [ POSSESSOR possessor-1,
+                                CASE poss-case ],
+                         VAL [ SPEC < >,
+                               SUBJ < >,
+                               SPR < >,
+                               COMPS.FIRST [ OPT -,
+                                             LOCAL.CAT [ VAL.SPR < >,
+                                                         HEAD noun &
+                                                              [ PRON -,
+                                                                CASE nom ] ] ] ] ] ] ].
+
+;;;;;;;;;;;;;;;;;;;
+;;; Lexical Rules
+;;;;;;;;;;;;;;;;;;;
+
+;;; Intermediate rule types
+
+case-rule-dtr := word-or-lexrule.
+
+;;; Lexical rule types
+
+num-lex-rule-super := add-only-no-ccont-rule & case-rule-dtr &
+  [ INFLECTED [ NUM-FLAG +,
+                PERNUM-FLAG #pernum,
+                CASE-FLAG #case ],
+    DTR common-noun-lex &
+        [ INFLECTED [ PERNUM-FLAG #pernum,
+                      CASE-FLAG #case ] ] ].
+
+singular-lex-rule := const-lex-rule & num-lex-rule-super &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM sg ].
+
+plural-lex-rule := infl-lex-rule & num-lex-rule-super &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM pl ].
+
+case-lex-rule-super := add-only-no-ccont-rule &
+  [ INFLECTED [ CASE-FLAG +,
+                PERNUM-FLAG #pernum,
+                NUM-FLAG #num ],
+    DTR case-rule-dtr &
+        [ INFLECTED [ PERNUM-FLAG #pernum,
+                      NUM-FLAG #num ] ] ].
+
+nom-lex-rule := case-lex-rule-super & const-lex-rule &
+  [ SYNSEM.LOCAL.CAT.HEAD.CASE nom ].
+
+acc-lex-rule := case-lex-rule-super & infl-lex-rule &
+  [ SYNSEM.LOCAL.CAT.HEAD.CASE acc ].
+
+pernum-lex-rule-super := add-only-no-ccont-rule &
+  [ INFLECTED [ PERNUM-FLAG +,
+                NUM-FLAG #num,
+                CASE-FLAG #case ],
+    DTR verb-lex &
+        [ INFLECTED [ NUM-FLAG #num,
+                      CASE-FLAG #case ] ] ].
+
+3sg-lex-rule := infl-lex-rule & pernum-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ PER 3rd,
+                                                                NUM sg ] ].
+
+pl-lex-rule := const-lex-rule & pernum-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.NUM pl ].
+
+non-3rd-lex-rule := const-lex-rule & pernum-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG.PER non-3rd ].
+
+;;;;;;;;;;;;;;;;;;;
+;;; Phrasal Types
+;;;;;;;;;;;;;;;;;;;
+
+poss-unary-phrase-1 := poss-unary-phrase &
+  [ ARGS < [ SYNSEM.LOCAL.CAT.HEAD.POSSESSOR possessor-1 ] >,
+    SYNSEM.LOCAL.CAT [ HEAD.SPEC-INIT -,
+                       VAL.SPEC.FIRST.LOCAL.CAT.POSSESSUM nonpossessive ] ].
+
+; Rules for building NPs.  Note that the Matrix uses SPR for
+; the specifier of nouns and SUBJ for the subject (specifier) of verbs.
+
+head-spec-phrase := basic-head-spec-phrase & head-final &
+  [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPEC < [ LOCAL.CAT.POSSESSUM #poss ] >,
+    HEAD-DTR.SYNSEM.LOCAL.CAT.POSSESSUM #poss ].
+
+poss-unary-phrase := basic-unary-phrase &
+  [ SYNSEM.LOCAL [ CONT.HOOK #hook,
+                   CAT [ HEAD det &
+                              [ POSSESSOR possessor ],
+                         VAL [ SPR < >,
+                               COMPS #comps,
+                               SUBJ #subj,
+                               SPEC < [ LOCAL [ CAT [ VAL.COMPS < >,
+                                                      HEAD +np &
+                                                           [ PRON - ] ],
+                                                CONT.HOOK #hook &
+                                                          [ INDEX #possessum &
+                                                                  [ COG-ST uniq-id ],
+                                                            LTOP #lbl ] ] ] > ] ] ],
+    C-CONT [ RELS <! arg12-ev-relation &
+                     [ PRED "poss_rel",
+                       LBL #lbl,
+                       ARG1 #possessum,
+                       ARG2 #possessor ], quant-relation &
+                                          [ PRED "exist_q_rel",
+                                            ARG0 #possessum,
+                                            RSTR #harg ] !>,
+             HCONS <! qeq &
+                      [ HARG #harg,
+                        LARG #lbl ] !>,
+             ICONS <!  !> ],
+    ARGS < [ SYNSEM.LOCAL [ CAT [ VAL [ SPR < >,
+                                        COMPS #comps & olist,
+                                        SUBJ #subj,
+                                        SPEC < > ],
+                                  HEAD +np ],
+                            CONT.HOOK.INDEX #possessor ] ] > ].
+
+;Constraint on MC used to be part of matrix.tdl
+;;it applies to all wo implementations, except for v2
+
+head-comp-phrase := basic-head-1st-comp-phrase & head-initial.
+
+subj-head-phrase := decl-head-subj-phrase & head-final &
+  [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
+
+; Bare NP phrase.  Consider modifying the PRED value of the quantifier relation
+; introduced to match the semantic effect of bare NPs in your language.
+
+bare-np-phrase := basic-bare-np-phrase &
+  [ SYNSEM.LOCAL.CAT.VAL.SPEC < >,
+    C-CONT.RELS <! [ PRED "exist_q_rel" ] !> ].

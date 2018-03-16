@@ -1,0 +1,26 @@
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+;;; Inflecting Lexical Rule Instances
+
+plural-suffix :=
+%suffix (* PL)
+plural-lex-rule.
+
+possessor-3sg-suffix :=
+%suffix (* POSSESSOR3sg)
+possessor-3sg-lex-rule.
+
+possessum-3sg-suffix :=
+%suffix (* POSSESSUM3sg)
+possessum-3sg-lex-rule.
+
+possessor-3pl-suffix :=
+%suffix (* POSSESSOR3pl)
+possessor-3pl-lex-rule.
+
+possessum-3pl-suffix :=
+%suffix (* POSSESSUM3pl)
+possessum-3pl-lex-rule.
+
+3sg-suffix :=
+%suffix (* 3sg)
+3sg-lex-rule.

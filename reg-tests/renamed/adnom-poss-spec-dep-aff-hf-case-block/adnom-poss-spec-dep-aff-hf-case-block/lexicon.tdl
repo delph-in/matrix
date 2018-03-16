@@ -1,0 +1,42 @@
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+;;; Nouns
+
+noun1 := common-noun-lex &
+  [ STEM < "noun1" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_noun1_n_rel" ].
+
+noun2 := common-noun-lex &
+  [ STEM < "noun2" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_noun2_n_rel" ].
+
+;;; Adjectives
+
+ADJ := predadj-adj-lex &
+  [ STEM < "ADJ" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_ADJ_a_rel" ].
+
+copadj := predcopadj-adj-lex &
+  [ STEM < "copadj" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_copadj_a_rel" ].
+
+;;; Verbs
+
+itr-verb := itr-verb-lex &
+  [ STEM < "itr-verb" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_itr-verb_v_rel" ].
+
+;;; Auxiliaries
+
+aux := aux-aux-lex &
+  [ STEM < "aux" > ].
+
+;;; Copulas
+
+cop := cop-cop-lex &
+  [ STEM < "cop" > ].
+
+;;; Determiners
+
+det := det1-determiner-lex &
+  [ STEM < "det" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_def_q_rel" ].
