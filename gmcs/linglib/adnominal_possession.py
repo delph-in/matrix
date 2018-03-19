@@ -54,7 +54,8 @@ POSSESSUM_RULE=' :=\
                     DTR.SYNSEM.LOCAL [ CAT [ HEAD.POSSESSOR #poss,\
                                              VAL [ SPEC #spec,\
                                                  SUBJ #subj ] ] ] ] ].'
-
+"""
+# TODO: figure out whether or not those nonpossessive are really needed
 JUXTAPOSITION_RULE=' := [ SYNSEM.LOCAL [ CAT [ HEAD #head,\
                                               VAL [ COMPS < >,\
                                                     SUBJ < >, \
@@ -69,6 +70,24 @@ JUXTAPOSITION_RULE=' := [ SYNSEM.LOCAL [ CAT [ HEAD #head,\
                            NON-HEAD-DTR.SYNSEM.LOCAL [ CAT [ HEAD noun,\
                                                              VAL.SPR < > ],\
                                                        CONT.HOOK.INDEX #possessor ] ].'
+"""
+JUXTAPOSITION_RULE=' := [ SYNSEM.LOCAL [ CAT [ HEAD #head,\
+                                              VAL [ COMPS < >,\
+                                                    SUBJ < >, \
+                                                    SPEC < > ] ] ],\
+                           C-CONT [ HOOK #hook & [ INDEX #possessum ],\
+                                    ICONS <! !>],\
+                           HEAD-DTR.SYNSEM.LOCAL [ CAT [ POSSESSUM nonpossessive,\
+                                                         HEAD #head & noun & [ POSSESSOR nonpossessive,\
+                                                                               PRON - ] ],\
+                                                   CONT.HOOK #hook & [ INDEX #possessum,\
+                                                               LTOP #lbl ] ],\
+                           NON-HEAD-DTR.SYNSEM.LOCAL [ CAT [ POSSESSUM nonpossessive,\
+                                                             HEAD noun & [ POSSESSOR nonpossessive ],\
+                                                             VAL.SPR < > ],\
+                                                       CONT.HOOK.INDEX #possessor ] ].'
+
+
 
 TWO_REL_ADP='two-rel-adposition-lex := basic-icons-lex-item &\
   [ SYNSEM [ LOCAL [ CAT [ HEAD adp,\
