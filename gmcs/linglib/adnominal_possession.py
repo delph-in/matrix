@@ -154,10 +154,10 @@ POSS_UNARY = ' := basic-unary-phrase & \
               [ SYNSEM.LOCAL [ CONT.HOOK #hook,\
                                CAT [ HEAD det & [ POSSESSOR possessor ],\
   	                 	   VAL [ SPR < >,\
-                                         COMPS #comps,\
-			                 SUBJ #subj,\
+                                         COMPS < >,\
+			                 SUBJ < >,\
 		     	                 SPEC < [ LOCAL [ CAT [ VAL.COMPS < > ,\
-                                                                HEAD +np & [ PRON - ] ],\
+                                                                HEAD noun & [ PRON - ] ],\
 		     	      	                          CONT.HOOK #hook & [ INDEX #possessum & [ COG-ST uniq-id ],\
 				      		      	                      LTOP #lbl ] ] ] > ] ] ],\
              C-CONT [ RELS <! arg12-ev-relation & [ PRED "poss_rel", \
@@ -170,8 +170,8 @@ POSS_UNARY = ' := basic-unary-phrase & \
 	                HCONS <! qeq & [ HARG #harg, LARG #lbl ]!>,\
                         ICONS <! !>   ],\
                 ARGS < [ SYNSEM.LOCAL [ CAT [ VAL [ SPR < >,\
-       	       		      	                    COMPS #comps & olist,\
-				                    SUBJ #subj,\
+       	       		      	                    COMPS < >,\
+				                    SUBJ < >,\
                                                     SPEC < > ],\
       	   		      	              HEAD +np ],\
   			                CONT.HOOK.INDEX #possessor ] ] > ].'
