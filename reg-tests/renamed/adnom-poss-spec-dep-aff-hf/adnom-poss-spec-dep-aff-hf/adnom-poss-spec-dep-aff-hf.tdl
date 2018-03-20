@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of adnom-poss-spec-dep-aff-hf
 ;;; created at:
-;;;     Tue Mar 20 23:15:12 UTC 2018
+;;;     Tue Mar 20 23:25:33 UTC 2018
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -185,20 +185,15 @@ possessive-lex-rule-super := lex-rule &
         [ INFLECTED [ PERNUM-FLAG #pernum,
                       NUM-FLAG #num ] ] ].
 
-possessor-lex-rule-1 := cat-change-only-lex-rule &
-  [ SYNSEM.LOCAL.CAT [ VAL #val &
-                           [ SPR #spr,
+possessor-lex-rule-1 := head-change-only-lex-rule &
+  [ DTR.SYNSEM.LOCAL.CAT.VAL [ SPR #spr,
+                               COMPS #comps,
+                               SUBJ #subj ],
+    SYNSEM.LOCAL.CAT [ VAL [ SPR #spr,
                              COMPS #comps,
                              SUBJ #subj ],
                        HEAD noun &
-                            [ POSSESSOR possessor-1 ] ],
-    DTR.SYNSEM.LOCAL.CAT.VAL #val &
-                             [ SPR #spr,
-                               COMPS #comps,
-                               SUBJ #subj ],
-    C-CONT [ RELS <!  !>,
-             HCONS <!  !>,
-             ICONS <!  !> ] ].
+                            [ POSSESSOR possessor-1 ] ] ].
 
 possessor-lex-rule := infl-lex-rule & possessive-lex-rule-super & possessor-lex-rule-1.
 

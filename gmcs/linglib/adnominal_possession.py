@@ -605,7 +605,7 @@ def customize_possessor_irules(strat,mylang,rules,ch,strat_num,mod_spec,mark_loc
     # Add constraints to possessor rule for spec version
     if mod_spec=='spec':
         agr_prefix='SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
-        mylang.add(possessor_rule_name+POSSESSOR_RULE)
+#        mylang.add(possessor_rule_name+POSSESSOR_RULE)
 
         # Add constraints to spec version for single marking
         if mark_loc=='possessor' or mark_loc=='both':
