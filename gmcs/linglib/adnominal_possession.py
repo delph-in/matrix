@@ -610,15 +610,11 @@ def customize_possessor_irules(strat,mylang,rules,ch,strat_num,mod_spec,mark_loc
         # Add constraints to spec version for single marking
         if mark_loc=='possessor' or mark_loc=='both':
 
-            mylang.add(possessor_rule_name+' := cat-change-only-lex-rule & \
-            [ SYNSEM.LOCAL.CAT [ VAL #val,\
-                                 HEAD.POSSESSOR possessor-'+strat_num+' ] ,\
-              DTR.SYNSEM.LOCAL.CAT.VAL #val,\
-              C-CONT [ RELS <! !>, \
-                       HCONS <! !>, \
-                       ICONS <! !>  ] ].',merge=True)
+            mylang.add(possessor_rule_name+' := head-change-only-lex-rule & \
+            [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR possessor-'+strat_num+' ] ].',merge=True)
 
-            mylang.add('poss-unary-phrase-'+strat_num+' := poss-unary-phrase & [ ARGS < [ SYNSEM.LOCAL.CAT.HEAD [ POSSESSOR possessor-'+strat_num+' ] ] > ].')
+            mylang.add('poss-unary-phrase-'+strat_num+' := poss-unary-phrase &\
+                               [ ARGS < [ SYNSEM.LOCAL.CAT.HEAD [ POSSESSOR possessor-'+strat_num+' ] ] > ].')
             rules.add('poss-unary-'+strat_num+' := poss-unary-phrase-'+strat_num+'.')
         
         # Add case constraints if case exists:

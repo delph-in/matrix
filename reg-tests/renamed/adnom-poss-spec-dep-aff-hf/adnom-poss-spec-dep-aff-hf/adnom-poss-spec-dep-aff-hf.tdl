@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of adnom-poss-spec-dep-aff-hf
 ;;; created at:
-;;;     Tue Mar 20 00:12:26 UTC 2018
+;;;     Tue Mar 20 23:15:12 UTC 2018
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -248,10 +248,10 @@ poss-unary-phrase := basic-unary-phrase &
                    CAT [ HEAD det &
                               [ POSSESSOR possessor ],
                          VAL [ SPR < >,
-                               COMPS #comps,
-                               SUBJ #subj,
+                               COMPS < >,
+                               SUBJ < >,
                                SPEC < [ LOCAL [ CAT [ VAL.COMPS < >,
-                                                      HEAD +np &
+                                                      HEAD noun &
                                                            [ PRON - ] ],
                                                 CONT.HOOK #hook &
                                                           [ INDEX #possessum &
@@ -270,8 +270,8 @@ poss-unary-phrase := basic-unary-phrase &
                         LARG #lbl ] !>,
              ICONS <!  !> ],
     ARGS < [ SYNSEM.LOCAL [ CAT [ VAL [ SPR < >,
-                                        COMPS #comps & olist,
-                                        SUBJ #subj,
+                                        COMPS < >,
+                                        SUBJ < >,
                                         SPEC < > ],
                                   HEAD +np ],
                             CONT.HOOK.INDEX #possessor ] ] > ].
