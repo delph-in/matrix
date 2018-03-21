@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of adnom-poss-spec-dep-aff-hf
 ;;; created at:
-;;;     Tue Mar 20 23:37:16 UTC 2018
+;;;     Wed Mar 21 04:56:19 UTC 2018
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -45,24 +45,10 @@ cat :+ [ POSSESSUM poss ].
 poss := *top* &
   [ POSS-AGR png ].
 
-possessive := poss.
-
-nonpossessive := poss.
-
-possessor := possessive.
-
-possessum := possessive.
-
 basic-bare-np-phrase :+ [ SYNSEM.LOCAL.CAT [ HEAD #head,
                        POSSESSUM #possessum ],
     HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD #head,
                                 POSSESSUM #possessum & nonpossessive ] ].
-
-possessive-1 := possessive.
-
-possessor-1 := possessor & possessive-1.
-
-possessum-1 := possessum & possessive-1.
 
 basic-determiner-lex :+ [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR nonpossessive,
                        POSSESSUM nonpossessive ] ].
@@ -89,6 +75,17 @@ non-3rd := person.
 number := *top*.
 sg := number.
 pl := number.
+
+;;; Possession
+
+possession := *top*.
+possessive := poss.  ; supertype for possessive features
+nonpossessive := poss.  ; type for nonpossessive
+possessor := possessive.
+possessum := possessive.
+possessive-1 := possessive.  ; supertype for strategy 1
+possessor-1 := possessor & possessive-1.
+possessum-1 := possessum & possessive-1.
 
 ;;;;;;;;;;;;;;;;;;;
 ;;; Lexical Types
@@ -186,8 +183,7 @@ possessive-lex-rule-super := lex-rule &
                       PERNUM-FLAG #pernum ] ] ].
 
 possessor-lex-rule-1 := head-change-only-lex-rule &
-  [ DTR.SYNSEM.LOCAL.CAT.HEAD #head,
-    SYNSEM.LOCAL.CAT.HEAD #head & noun &
+  [ SYNSEM.LOCAL.CAT.HEAD noun &
                           [ POSSESSOR possessor-1 ] ].
 
 possessor-lex-rule := infl-lex-rule & possessive-lex-rule-super & possessor-lex-rule-1.

@@ -1,9 +1,9 @@
 ;;; -*- Mode: TDL; Coding: utf-8 -*-
+poss-unary-1 := poss-unary-phrase-1.
+
 head-comp := head-comp-phrase.
 
 subj-head := subj-head-phrase.
-
-poss-unary-1 := poss-unary-phrase-1.
 
 head-spec := head-spec-phrase.
 

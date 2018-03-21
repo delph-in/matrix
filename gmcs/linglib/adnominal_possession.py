@@ -1,4 +1,5 @@
 import gmcs.tdl
+from gmcs.lib import TDLHierarchy
 import gmcs.utils
 from gmcs.utils import get_name
 from gmcs.choices import ChoiceDict
@@ -38,31 +39,16 @@ POSSESSUM_EXIST_REL = '''quant-relation & [ PRED "exist_q_rel", \
 
 POSSESSUM_ID_HS=' [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPEC < [ LOCAL.CAT.POSSESSUM #poss ] > ,\
                     HEAD-DTR.SYNSEM.LOCAL.CAT.POSSESSUM #poss  ].'
+"""
+POSSESSUM_RULE=' :=\
+                  [ SYNSEM.LOCAL [ CAT [ HEAD.POSSESSOR #poss & nonpossessive ] ],\
+                    DTR.SYNSEM.LOCAL [ CAT [ HEAD.POSSESSOR #poss ] ] ] ].'
+"""
 
 POSSESSUM_RULE=' :=\
-                  [ SYNSEM.LOCAL [ CAT [ HEAD.POSSESSOR #poss & nonpossessive,\
-                                         VAL [ SPEC #spec,\
-                                             SUBJ #subj ] ] ],\
-                    DTR.SYNSEM.LOCAL [ CAT [ HEAD.POSSESSOR #poss,\
-                                             VAL [ SPEC #spec,\
-                                                 SUBJ #subj ] ] ] ] ].'
-"""
-# TODO: figure out whether or not those nonpossessive are really needed
-JUXTAPOSITION_RULE=' := [ SYNSEM.LOCAL [ CAT [ HEAD #head,\
-                                              VAL [ COMPS < >,\
-                                                    SUBJ < >, \
-                                                    SPEC < > ] ] ],\
-                           C-CONT [ HOOK #hook & [ INDEX #possessum ],\
-                                    ICONS <! !>],\
-                           HEAD-DTR.SYNSEM.LOCAL [ CAT [ POSSESSUM nonpossessive,\
-                                                         HEAD #head & noun & [ POSSESSOR nonpossessive,\
-                                                                               PRON - ] ],\
-                                                   CONT.HOOK #hook & [ INDEX #possessum,\
-                                                               LTOP #lbl ] ],\
-                           NON-HEAD-DTR.SYNSEM.LOCAL [ CAT [ HEAD noun,\
-                                                             VAL.SPR < > ],\
-                                                       CONT.HOOK.INDEX #possessor ] ].'
-"""
+                  [ SYNSEM.LOCAL.CAT.HEAD.POSSESSOR nonpossessive ].'
+
+
 JUXTAPOSITION_RULE=' := [ SYNSEM.LOCAL [ CAT [ HEAD #head,\
                                               VAL [ COMPS < >,\
                                                     SUBJ < >, \
@@ -196,10 +182,11 @@ def customize_poss_addenda(mylang,ch):
     mylang.add('head :+ [ POSSESSOR poss ].',section='addenda')
     mylang.add('cat :+ [ POSSESSUM poss ].',section='addenda')
     mylang.add('poss := *top* & [ POSS-AGR png ].',section='addenda')
-    mylang.add('possessive := poss.',section='addenda')
-    mylang.add('nonpossessive := poss.',section='addenda')
-    mylang.add('possessor := possessive.',section='addenda')
-    mylang.add('possessum := possessive.',section='addenda')
+
+#    mylang.add('possessive := poss.',section='addenda')
+#    mylang.add('nonpossessive := poss.',section='addenda')
+#    mylang.add('possessor := possessive.',section='addenda')
+#    mylang.add('possessum := possessive.',section='addenda')
     mylang.add('basic-bare-np-phrase :+ [ SYNSEM.LOCAL.CAT [ HEAD #head,\
                                                              POSSESSUM #possessum],\
                                           HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD #head,\
@@ -216,6 +203,17 @@ def customize_poss_addenda(mylang,ch):
                                                      POSSESSUM nonpossessive ] ].',section='nounlex')
 
 
+def customize_poss_hier(mylang,strat_num):
+    hier = TDLHierarchy('possession')
+    hier.add('possessive','poss','supertype for possessive features')
+    hier.add('nonpossessive','poss','type for nonpossessive')
+    hier.add('possessor','possessive','')
+    hier.add('possessum','possessive','')
+    hier.add('possessive-'+str(strat_num),'possessive','supertype for strategy '+str(strat_num))
+    hier.add('possessor-'+str(strat_num),'possessor & possessive-'+str(strat_num),'')
+    hier.add('possessum-'+str(strat_num),'possessum & possessive-'+str(strat_num),'')
+    hier.save(mylang)
+
 
 """
 Calls customize_poss_rules, customize_poss_irules, and customize_poss_lexicon
@@ -226,13 +224,16 @@ def customize_np_possession(mylang,ch,rules,irules,lexicon,hierarchies):
 
         strat_num=strat.full_keys()[0].split("_")[0][-1]
 
+        
         # Add subtypes of POSSESSOR and POSSESSUM features for this strategy
+        customize_poss_hier(mylang,strat_num)
+        """
         mylang.add('possessive-'+str(strat_num)+' := possessive.',section='addenda')
         mylang.add('possessor-'+str(strat_num)+\
                     ' := possessor & possessive-'+str(strat_num)+'.',section='addenda')
         mylang.add('possessum-'+str(strat_num)+\
                     ' := possessum & possessive-'+str(strat_num)+'.',section='addenda')
-
+        """
         # Add phrase rules:
         customize_poss_rules(strat,mylang,ch,rules,hierarchies)
 
@@ -256,12 +257,16 @@ def customize_pronominal_possession(mylang,ch,rules,irules,lexicon,hierarchies):
         pron_num=pron.full_keys()[0].split("_")[0][-1]
 
         # Add subtypes of POSSESSOR feature for this strategy:
+        """
         mylang.add('possessive-pron-'+str(pron_num)+' := possessive.',section='addenda')
         mylang.add('possessor-pron-'+str(pron_num)+' :=\
                       possessor & '+'possessive-pron-'+str(pron_num)+'.',section='addenda')
         if pron.get('possessum-mark')=='yes':
             mylang.add('possessum-pron-'+str(pron_num)+' :=\
                       possessum & '+'possessive-pron-'+str(pron_num)+'.',section='addenda')
+        """
+        customize_poss_hier(mylang,'pron-'+pron_num)
+
 
         # Add phrase rules:        
         customize_poss_rules(pron,mylang,ch,rules,hierarchies)
@@ -699,7 +704,7 @@ def customize_possessum_irules(strat,mylang,rules,ch,strat_num,mod_spec,mark_loc
                                      ICONS <! !>,\
                                      RELS <! !> ],\
                             DTR.SYNSEM.LOCAL [ CAT [ POSSESSUM nonpossessive,\
-                                                     HEAD.PRON - ,\
+                                                     HEAD.PRON -,\
                                                      VAL #val ] ] ].',merge=True)
 
             mylang.add('poss-unary-phrase-'+strat_num+' := poss-unary-phrase & [ SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CAT [ POSSESSUM possessum-'+strat_num+' ] ].',section='phrases')
