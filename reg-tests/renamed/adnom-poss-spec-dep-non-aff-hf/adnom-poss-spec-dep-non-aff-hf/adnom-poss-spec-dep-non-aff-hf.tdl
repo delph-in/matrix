@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of adnom-poss-spec-dep-non-aff-hf
 ;;; created at:
-;;;     Fri Mar 02 23:08:34 UTC 2018
+;;;     Wed Mar 21 00:21:27 UTC 2018
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -29,11 +29,11 @@ head :+ [ PRON bool,
     POSSESSOR poss,
     SPEC-INIT bool ].
 
-inflected :+ [ NUM-FLAG luk,
-    PERNUM-FLAG luk ].
+inflected :+ [ PERNUM-FLAG luk,
+    NUM-FLAG luk ].
 
-infl-satisfied :+ [ NUM-FLAG na-or-+,
-    PERNUM-FLAG na-or-+ ].
+infl-satisfied :+ [ PERNUM-FLAG na-or-+,
+    NUM-FLAG na-or-+ ].
 
 png :+ [ PER person,
     NUM number ].
@@ -51,16 +51,19 @@ possessor := possessive.
 
 possessum := possessive.
 
-basic-bare-np-phrase :+ [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #possessor,
+basic-bare-np-phrase :+ [ SYNSEM.LOCAL.CAT [ HEAD #head,
                        POSSESSUM #possessum ],
-    HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #possessor,
-                                POSSESSUM #possessum ] ].
+    HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD #head,
+                                POSSESSUM #possessum & nonpossessive ] ].
 
 possessive-1 := possessive.
 
 possessor-1 := possessor & possessive-1.
 
 possessum-1 := possessum & possessive-1.
+
+basic-determiner-lex :+ [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR nonpossessive,
+                       POSSESSUM nonpossessive ] ].
 
 basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.MC #mc,
     HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
@@ -227,12 +230,12 @@ head-spec-phrase := basic-head-spec-phrase & head-final &
 poss-unary-phrase := basic-unary-phrase &
   [ SYNSEM.LOCAL [ CONT.HOOK #hook,
                    CAT [ HEAD det &
-                              [ POSSESSOR nonpossessive ],
+                              [ POSSESSOR possessor ],
                          VAL [ SPR < >,
-                               COMPS #comps,
-                               SUBJ #subj,
+                               COMPS < >,
+                               SUBJ < >,
                                SPEC < [ LOCAL [ CAT [ VAL.COMPS < >,
-                                                      HEAD +np &
+                                                      HEAD noun &
                                                            [ PRON - ] ],
                                                 CONT.HOOK #hook &
                                                           [ INDEX #possessum &
@@ -251,8 +254,8 @@ poss-unary-phrase := basic-unary-phrase &
                         LARG #lbl ] !>,
              ICONS <!  !> ],
     ARGS < [ SYNSEM.LOCAL [ CAT [ VAL [ SPR < >,
-                                        COMPS #comps & olist,
-                                        SUBJ #subj,
+                                        COMPS < >,
+                                        SUBJ < >,
                                         SPEC < > ],
                                   HEAD +np ],
                             CONT.HOOK.INDEX #possessor ] ] > ].

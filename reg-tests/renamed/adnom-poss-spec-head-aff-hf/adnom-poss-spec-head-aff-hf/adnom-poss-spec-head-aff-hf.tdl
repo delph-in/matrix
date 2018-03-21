@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of adnom-poss-spec-head-aff-hf
 ;;; created at:
-;;;     Sat Mar 03 02:59:37 UTC 2018
+;;;     Wed Mar 21 01:06:52 UTC 2018
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -53,10 +53,10 @@ possessor := possessive.
 
 possessum := possessive.
 
-basic-bare-np-phrase :+ [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #possessor,
+basic-bare-np-phrase :+ [ SYNSEM.LOCAL.CAT [ HEAD #head,
                        POSSESSUM #possessum ],
-    HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #possessor,
-                                POSSESSUM #possessum ] ].
+    HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD #head,
+                                POSSESSUM #possessum & nonpossessive ] ].
 
 possessive-1 := possessive.
 
@@ -192,7 +192,8 @@ possessum-lex-rule-1 := cat-change-only-lex-rule &
                        VAL #val &
                            [ SPEC #spec,
                              SUBJ #subj,
-                             SPR < [ LOCAL.CAT.HEAD.POSSESSOR possessor-1 ] > ] ],
+                             SPR < [ LOCAL.CAT [ VAL.SPR < >,
+                                                 HEAD.POSSESSOR possessor-1 ] ] > ] ],
     C-CONT [ HCONS <!  !>,
              ICONS <!  !>,
              RELS <!  !> ],
@@ -250,10 +251,10 @@ poss-unary-phrase := basic-unary-phrase &
                    CAT [ HEAD det &
                               [ POSSESSOR possessor ],
                          VAL [ SPR < >,
-                               COMPS #comps,
-                               SUBJ #subj,
+                               COMPS < >,
+                               SUBJ < >,
                                SPEC < [ LOCAL [ CAT [ VAL.COMPS < >,
-                                                      HEAD +np &
+                                                      HEAD noun &
                                                            [ PRON - ] ],
                                                 CONT.HOOK #hook &
                                                           [ INDEX #possessum &
@@ -272,8 +273,8 @@ poss-unary-phrase := basic-unary-phrase &
                         LARG #lbl ] !>,
              ICONS <!  !> ],
     ARGS < [ SYNSEM.LOCAL [ CAT [ VAL [ SPR < >,
-                                        COMPS #comps & olist,
-                                        SUBJ #subj,
+                                        COMPS < >,
+                                        SUBJ < >,
                                         SPEC < > ],
                                   HEAD +np ],
                             CONT.HOOK.INDEX #possessor ] ] > ].

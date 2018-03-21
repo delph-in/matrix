@@ -36,14 +36,6 @@ POSSESSUM_EXIST_REL = '''quant-relation & [ PRED "exist_q_rel", \
                                             ARG0 #possessum, \
                                             RSTR #harg ]'''
 
-POSSESSOR_RULE=' :=\
-                  [ SYNSEM.LOCAL [ CAT [ VAL [ SPR #spr,\
-                                               COMPS #comps,\
-                                               SUBJ #subj ] ] ],\
-                    DTR.SYNSEM.LOCAL [ CAT [ VAL [ SPR #spr,\
-                                                   COMPS #comps,\
-                                                   SUBJ #subj  ] ] ] ].'
-
 POSSESSUM_ID_HS=' [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPEC < [ LOCAL.CAT.POSSESSUM #poss ] > ,\
                     HEAD-DTR.SYNSEM.LOCAL.CAT.POSSESSUM #poss  ].'
 
@@ -642,7 +634,7 @@ def customize_possessor_irules(strat,mylang,rules,ch,strat_num,mod_spec,mark_loc
         # Add constraints to mod version for single marking
         if mark_loc=='possessor':
             agr_prefix='SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
-            mylang.add(possessor_rule_name+POSSESSOR_RULE)
+#            mylang.add(possessor_rule_name+POSSESSOR_RULE)
 
             mylang.add(possessor_rule_name+' := head-change-with-ccont-lex-rule & \
                         [ SYNSEM.LOCAL.CAT [ POSTHEAD '+ph+',\
