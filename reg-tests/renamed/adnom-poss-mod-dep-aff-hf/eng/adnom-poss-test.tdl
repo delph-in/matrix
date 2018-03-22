@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of adnom-poss-test
 ;;; created at:
-;;;     Fri Jan 12 18:27:29 UTC 2018
+;;;     Thu Mar 22 00:14:51 UTC 2018
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -25,6 +25,9 @@ non-mod-lex-item := lex-item &
 ;;; Matrix Type Addenda
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 
+head :+ [ PRON bool,
+    POSSESSOR poss ].
+
 inflected :+ [ PERNUM-FLAG luk,
     POSSESSIVE-FLAG luk,
     NUM-FLAG luk ].
@@ -36,15 +39,20 @@ infl-satisfied :+ [ PERNUM-FLAG na-or-+,
 png :+ [ PER person,
     NUM number ].
 
+cat :+ [ POSSESSUM poss ].
+
+poss := *top* &
+  [ POSS-AGR png ].
+
+basic-bare-np-phrase :+ [ SYNSEM.LOCAL.CAT [ HEAD #head,
+                       POSSESSUM #possessum ],
+    HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD #head,
+                                POSSESSUM #possessum & nonpossessive ] ].
+
 basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.MC #mc,
     HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
 
-basic-head-mod-phrase-simple :+ [ SYNSEM.LOCAL.CAT.MC #mc,
-    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
-
 basic-head-opt-subj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
-
-poss :+ [ POSS-AGR png ].
 
 ;;;;;;;;;;;;;;
 ;;; Features
@@ -64,13 +72,16 @@ number := *top*.
 sg := number.
 pl := number.
 
-;Constraint on MC used to be part of matrix.tdl
-;;it applies to all wo implementations, except for v2
+;;; Possession
 
-head-comp-phrase := basic-head-1st-comp-phrase & head-initial.
-
-subj-head-phrase := decl-head-subj-phrase & head-final &
-  [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
+possession := *top*.
+possessive := poss.  ; supertype for possessive features
+nonpossessive := poss.  ; type for nonpossessive
+possessor := possessive.
+possessum := possessive.
+possessive-1 := possessive.  ; supertype for strategy 1
+possessor-1 := possessor & possessive-1.
+possessum-1 := possessum & possessive-1.
 
 ;;;;;;;;;;;;;;;;;;;
 ;;; Lexical Types
@@ -121,6 +132,8 @@ transitive-verb-lex := verb-lex & transitive-lex-item &
 
 itr-verb-lex := intransitive-verb-lex.
 
+;;; Complementizers
+
 ;;; Others
 
 ;;; Determiners
@@ -157,7 +170,7 @@ singular-lex-rule := const-lex-rule & num-lex-rule-super &
 plural-lex-rule := infl-lex-rule & num-lex-rule-super &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM pl ].
 
-possessive-lex-rule-super := lex-rule &
+possessive-lex-rule-super := add-only-no-ccont-rule &
   [ INFLECTED [ POSSESSIVE-FLAG +,
                 PERNUM-FLAG #pernum,
                 NUM-FLAG #num ],
@@ -165,42 +178,9 @@ possessive-lex-rule-super := lex-rule &
         [ INFLECTED [ PERNUM-FLAG #pernum,
                       NUM-FLAG #num ] ] ].
 
-possessor-lex-rule-1 := head-change-with-ccont-lex-rule &
-  [ C-CONT [ HOOK #hook,
-             RELS <! arg12-ev-relation &
-                     [ PRED "poss_rel",
-                       LBL #lbl,
-                       ARG1 #possessum,
-                       ARG2 #possessor ] !>,
-             HCONS <!  !>,
-             ICONS <!  !> ],
-    DTR.SYNSEM.LOCAL [ CONT.HOOK #hook &
-                                 [ INDEX #possessor ],
-                       CAT.VAL [ SPR #spr,
-                                 COMPS #comps,
-                                 SUBJ #subj,
-                                 SPEC #spec ] ],
-    SYNSEM.LOCAL.CAT [ VAL [ SPR #spr,
-                             COMPS #comps,
-                             SUBJ #subj,
-                             SPEC #spec ],
-                       HEAD noun &
-                            [ POSS possessor &
-                                   [ POSS-AGR #png ],
-                              MOD.FIRST [ OPT -,
-                                          LOCAL [ CAT [ VAL.SPR < [ ] >,
-                                                        HEAD +np ],
-                                                  CONT.HOOK [ LTOP #lbl,
-                                                              INDEX #possessum &
-                                                                    [ PNG #png ] ] ] ] ] ] ].
+possessor-lex-rule := infl-lex-rule & possessive-lex-rule-super.
 
-possessor-lex-rule := infl-lex-rule & possessive-lex-rule-super & possessor-lex-rule-1.
-
-nonpossessive-lex-rule-1 := add-only-no-ccont-rule &
-  [ SYNSEM.LOCAL.CAT.HEAD noun &
-                          [ POSS nonpossessive ] ].
-
-nonpossessive-lex-rule := const-lex-rule & nonpossessive-lex-rule-1 & possessive-lex-rule-super.
+nonpossessive-lex-rule := const-lex-rule & possessive-lex-rule-super.
 
 pernum-lex-rule-super := add-only-no-ccont-rule &
   [ INFLECTED [ PERNUM-FLAG +,
@@ -224,24 +204,28 @@ non-3rd-lex-rule := const-lex-rule & pernum-lex-rule-super &
 ;;; Phrasal Types
 ;;;;;;;;;;;;;;;;;;;
 
-head-mod-poss-phrase := basic-head-mod-phrase-simple & head-compositional & head-final &
-  [ SYNSEM.LOCAL.CAT.VAL.SPEC #spec,
-    HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.SPEC #spec,
-                                HEAD.POSS nonpossessive ],
-    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSS possessor ].
+possessum-mod-rule := basic-head-mod-phrase-simple &
+  [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.POSSESSUM #poss,
+    HEAD-DTR.SYNSEM.LOCAL.CAT.POSSESSUM #poss ].
+
+adj-head-int-phrase :+ possessum-mod-rule.
+
+;Constraint on MC used to be part of matrix.tdl
+;;it applies to all wo implementations, except for v2
+
+head-comp-phrase := basic-head-1st-comp-phrase & head-initial.
+
+subj-head-phrase := decl-head-subj-phrase & head-final &
+  [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
 
 ; Rules for building NPs.  Note that the Matrix uses SPR for
 ; the specifier of nouns and SUBJ for the subject (specifier) of verbs.
 
-head-spec-phrase := basic-head-spec-phrase & head-final &
-  [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.SPR < >,
-                                    HEAD.POSS nonpossessive ] ].
-
-;Constraint on MC used to be part of matrix.tdl
-;;it applies to all wo implementations, except for v2
+head-spec-phrase := basic-head-spec-phrase & head-final.
 
 ; Bare NP phrase.  Consider modifying the PRED value of the quantifier relation
 ; introduced to match the semantic effect of bare NPs in your language.
 
 bare-np-phrase := basic-bare-np-phrase &
-  [ C-CONT.RELS <! [ PRED "exist_q_rel" ] !> ].
+  [ SYNSEM.LOCAL.CAT.VAL.SPEC < >,
+    C-CONT.RELS <! [ PRED "exist_q_rel" ] !> ].

@@ -8,6 +8,7 @@ from gmcs.linglib.morphotactics import all_position_classes
 from gmcs.linglib.features import customize_feature_values
 from gmcs.linglib.lexical_items import adp_id, noun_id
 from gmcs.linglib import lexbase
+
 ###############################################################################################
 # Parts of a possessive strategy:
 #
@@ -1101,20 +1102,24 @@ def customize_possessum_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod
                                                                                           POSSESSUM possessum-'+strat_num+' ] ] ].',merge=True)
 
 ########################################################################################################################################
-#    if mod_spec=='mod':
-#        mylang.add('possessum-noun-lex-'+strat_num+' := basic-two-arg &\
-#                          [ SYNSEM.LOCAL [ CAT [ POSSESSUM possessum,\
-#                                                 HEAD noun & [ POSSESSOR nonpossessive ],\
-#                                                 VAL.COMPS < #possessum-comp & [ LOCAL [ CONT.HOOK [ INDEX #possessum,\
-#                                                                                                     LTOP #lbl ]  ,\
-#                                                                                         CAT.VAL.SPR < > ] ],\
-#                                                             #possessor-comp & [ LOCAL [ CAT.HEAD +np,\
-#                                                                                         CONT.HOOK.INDEX #possessor ] ] > ],\
-#                                           CONT [ RELS <! '+POSS_REL+' !>,\
-#                                                  HCONS <! !>,\
-#                                                  ICONS <! !>  ] ],\
-#                            ARG-ST < #possessum-comp, #possessor-comp > ].')
-#                                                                   
+    if mod_spec=='mod':
+        mylang.add('possessum-noun-lex-'+strat_num+' := basic-two-arg &\
+                          [ SYNSEM.LOCAL [ CAT [ POSSESSUM possessum,\
+                                                 HEAD noun & [ POSSESSOR nonpossessive ],\
+                                                 VAL [ COMPS < #possessum-comp & [ LOCAL [ CONT.HOOK #hook &\
+                                                                                                   [ INDEX #possessum,\
+                                                                                                     LTOP #lbl ]  ,\
+                                                                                         CAT.VAL.SPR #spr & < [ ] > ] ],\
+                                                             #possessor-comp & [ LOCAL [ CAT [ VAL.SPR < >,\
+                                                                                               HEAD +np ],\
+                                                                                         CONT.HOOK.INDEX #possessor ] ] >,\
+                                                      SPR #spr ] ],\
+                                           CONT [ HOOK #hook,\
+                                                  RELS <! '+POSS_REL+' !>,\
+                                                  HCONS <! !>,\
+                                                  ICONS <! !>  ] ],\
+                            ARG-ST < #possessum-comp, #possessor-comp > ].')
+                                                                   
 ########################################################################################################################################
 
 

@@ -23,5 +23,5 @@ det := det1-determiner-lex &
   [ STEM < "det" >,
     SYNSEM.LKEYS.KEYREL.PRED "_def_q_rel" ].
 
-possessor-adp-1 := possessor-adp-lex &
+possessor-adp-1 := possessor-adp-lex-1 &
   [ STEM < "POSSESSOR" > ].

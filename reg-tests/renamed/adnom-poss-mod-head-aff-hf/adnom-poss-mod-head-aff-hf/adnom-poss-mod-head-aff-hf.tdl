@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of adnom-poss-mod-head-aff-hf
 ;;; created at:
-;;;     Sun Mar 11 23:43:09 UTC 2018
+;;;     Thu Mar 22 02:10:39 UTC 2018
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -45,24 +45,10 @@ cat :+ [ POSSESSUM poss ].
 poss := *top* &
   [ POSS-AGR png ].
 
-possessive := poss.
-
-nonpossessive := poss.
-
-possessor := possessive.
-
-possessum := possessive.
-
 basic-bare-np-phrase :+ [ SYNSEM.LOCAL.CAT [ HEAD #head,
                        POSSESSUM #possessum ],
     HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD #head,
                                 POSSESSUM #possessum & nonpossessive ] ].
-
-possessive-1 := possessive.
-
-possessor-1 := possessor & possessive-1.
-
-possessum-1 := possessum & possessive-1.
 
 basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.MC #mc,
     HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
@@ -86,6 +72,17 @@ non-3rd := person.
 number := *top*.
 sg := number.
 pl := number.
+
+;;; Possession
+
+possession := *top*.
+possessive := poss.  ; supertype for possessive features
+nonpossessive := poss.  ; type for nonpossessive
+possessor := possessive.
+possessum := possessive.
+possessive-1 := possessive.  ; supertype for strategy 1
+possessor-1 := possessor & possessive-1.
+possessum-1 := possessum & possessive-1.
 
 ;;;;;;;;;;;;;;;;;;;
 ;;; Lexical Types
@@ -193,24 +190,20 @@ possessum-lex-rule-1 := val-change-with-ccont-lex-rule &
                        ARG2 #possessor ] !>,
              HCONS <!  !>,
              ICONS <!  !> ],
-    DTR.SYNSEM.LOCAL [ CAT [ HEAD [ POSSESSOR #poss,
-                                    PRON - ],
-                             VAL [ SPEC #spec,
-                                   SUBJ #subj,
-                                   SPR #spr ] ],
+    DTR.SYNSEM.LOCAL [ CAT [ HEAD.PRON -,
+                             VAL.SPR #spr ],
                        CONT.HOOK #hook &
                                  [ INDEX #possessum,
                                    LTOP #lbl ] ],
     SYNSEM.LOCAL.CAT [ POSSESSUM possessum-1,
-                       VAL [ SPEC #spec,
-                             SUBJ #subj,
-                             SPR #spr,
+                       VAL [ SPR #spr,
                              COMPS.FIRST [ OPT -,
                                            LOCAL [ CAT cat-sat &
-                                                       [ HEAD +np ],
+                                                       [ HEAD +np,
+                                                         VAL.SPR < > ],
                                                    CONT.HOOK.INDEX #possessor ] ] ],
                        HEAD noun &
-                            [ POSSESSOR #poss & nonpossessive,
+                            [ POSSESSOR nonpossessive,
                               INIT - ] ] ].
 
 possessum-lex-rule := infl-lex-rule & possessive-lex-rule-super & possessum-lex-rule-1.
