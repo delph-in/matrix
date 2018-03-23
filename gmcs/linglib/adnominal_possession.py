@@ -1110,6 +1110,8 @@ def customize_possessum_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod
         if order!='either':
             init_val='-' if order=='head-initial' else '+'
 
+        possessor_constr='& [ POSSESSOR possessor-'+strat_num+' ]' if mark_loc=='both' else ''
+        
         mylang.add('possessum-noun-lex-'+strat_num+' := basic-two-arg &\
                           [ SYNSEM.LOCAL [ CAT [ POSSESSUM possessum,\
                                                  HEAD noun & [ POSSESSOR nonpossessive,\
@@ -1118,10 +1120,10 @@ def customize_possessum_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod
                                                                                    LOCAL [ CONT.HOOK #hook &\
                                                                                                    [ INDEX #possessum,\
                                                                                                      LTOP #lbl ]  ,\
-                                                                                         CAT.VAL.SPR #spr & < [ ] > ] ],\
+                                                                                         CAT [ VAL.SPR #spr & < [ ] > ] ] ],\
                                                              #possessor-comp & [ OPT -,\
                                                                                  LOCAL [ CAT [ VAL.SPR < >,\
-                                                                                               HEAD +np ],\
+                                                                                               HEAD +np '+possessor_constr+' ],\
                                                                                          CONT.HOOK.INDEX #possessor ] ] >,\
                                                       SPR #spr ] ],\
                                            CONT [ HOOK #hook,\
@@ -1129,11 +1131,8 @@ def customize_possessum_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod
                                                   HCONS <! !>,\
                                                   ICONS <! !>  ] ],\
                             ARG-ST < #possessum-comp, #possessor-comp > ].')
-        
-                                                                   
+
 ########################################################################################################################################
-
-
 
 
     # Add agreement features where appropriate
