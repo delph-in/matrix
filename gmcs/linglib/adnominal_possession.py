@@ -1113,16 +1113,19 @@ def customize_possessum_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod
         possessor_constr='& [ POSSESSOR possessor-'+strat_num+' ]' if mark_loc=='both' else ''
         
         mylang.add('possessum-noun-lex-'+strat_num+' := basic-two-arg &\
-                          [ SYNSEM.LOCAL [ CAT [ POSSESSUM possessum,\
+                          [ SYNSEM.LOCAL [ CAT [ POSSESSUM possessum-'+strat_num+',\
                                                  HEAD noun & [ POSSESSOR nonpossessive,\
                                                                INIT '+init_val+' ],\
                                                  VAL [ COMPS < #possessum-comp & [ OPT -,\
                                                                                    LOCAL [ CONT.HOOK #hook &\
                                                                                                    [ INDEX #possessum,\
                                                                                                      LTOP #lbl ]  ,\
-                                                                                         CAT [ VAL.SPR #spr & < [ ] > ] ] ],\
+                                                                                          CAT [ VAL.SPR #spr & < [ ] >,\
+                                                                                                HEAD noun & [ POSSESSOR nonpossessive ],\
+                                                                                                POSSESSUM nonpossessive ] ] ],\
                                                              #possessor-comp & [ OPT -,\
-                                                                                 LOCAL [ CAT [ VAL.SPR < >,\
+                                                                                 LOCAL [ CAT [ POSSESSUM nonpossessive,\
+                                                                                               VAL.SPR < >,\
                                                                                                HEAD +np '+possessor_constr+' ],\
                                                                                          CONT.HOOK.INDEX #possessor ] ] >,\
                                                       SPR #spr ] ],\
