@@ -224,7 +224,6 @@ def customize_np_possession(mylang,ch,rules,irules,lexicon,hierarchies):
     for strat in ch.get('poss-strat',[]):
 
         strat_num=strat.full_keys()[0].split("_")[0][-1]
-
         
         # Add subtypes of POSSESSOR and POSSESSUM features for this strategy
         customize_poss_hier(mylang,strat_num)
@@ -240,6 +239,7 @@ def customize_np_possession(mylang,ch,rules,irules,lexicon,hierarchies):
 
         # Add inflectional rules:
         if strat.get('possessor-type')=='affix' or strat.get('possessum-type')=='affix':
+
             customize_poss_irules(strat,mylang,ch,irules,hierarchies,rules)
 
         # Add lexical items:
@@ -921,6 +921,7 @@ def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
 
         # Add possessum-marking nouns:
         if (mark_loc=='possessum' or mark_loc=='both') and possessum_type=='non-affix':
+
             customize_possessum_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod_spec,mark_loc,pron_allowed,possessor_type,hierarchies,rules)
 
     elif pron_strat:
@@ -1059,7 +1060,7 @@ def customize_possessor_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod
 
 def customize_possessum_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod_spec,mark_loc,pron_allowed,possessor_type,hierarchies,rules):
     mylang.set_section('nounlex')
-  
+
     # Add spec-version (only version in this case)
     if mod_spec=='spec':
 
@@ -1103,14 +1104,23 @@ def customize_possessum_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod
 
 ########################################################################################################################################
     if mod_spec=='mod':
+
+        init_val='bool'
+        order=strat.get('order')
+        if order!='either':
+            init_val='-' if order=='head-initial' else '+'
+
         mylang.add('possessum-noun-lex-'+strat_num+' := basic-two-arg &\
                           [ SYNSEM.LOCAL [ CAT [ POSSESSUM possessum,\
-                                                 HEAD noun & [ POSSESSOR nonpossessive ],\
-                                                 VAL [ COMPS < #possessum-comp & [ LOCAL [ CONT.HOOK #hook &\
+                                                 HEAD noun & [ POSSESSOR nonpossessive,\
+                                                               INIT '+init_val+' ],\
+                                                 VAL [ COMPS < #possessum-comp & [ OPT -,\
+                                                                                   LOCAL [ CONT.HOOK #hook &\
                                                                                                    [ INDEX #possessum,\
                                                                                                      LTOP #lbl ]  ,\
                                                                                          CAT.VAL.SPR #spr & < [ ] > ] ],\
-                                                             #possessor-comp & [ LOCAL [ CAT [ VAL.SPR < >,\
+                                                             #possessor-comp & [ OPT -,\
+                                                                                 LOCAL [ CAT [ VAL.SPR < >,\
                                                                                                HEAD +np ],\
                                                                                          CONT.HOOK.INDEX #possessor ] ] >,\
                                                       SPR #spr ] ],\
@@ -1119,6 +1129,7 @@ def customize_possessum_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod
                                                   HCONS <! !>,\
                                                   ICONS <! !>  ] ],\
                             ARG-ST < #possessum-comp, #possessor-comp > ].')
+        
                                                                    
 ########################################################################################################################################
 

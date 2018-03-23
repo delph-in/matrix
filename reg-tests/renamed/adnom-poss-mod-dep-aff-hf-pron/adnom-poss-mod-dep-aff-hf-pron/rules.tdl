@@ -1,9 +1,9 @@
 ;;; -*- Mode: TDL; Coding: utf-8 -*-
+adj-head-int := adj-head-int-phrase.
+
 head-comp := head-comp-phrase.
 
 subj-head := subj-head-phrase.
-
-adj-head-int := adj-head-int-phrase.
 
 head-spec := head-spec-phrase.
 
