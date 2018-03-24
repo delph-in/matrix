@@ -475,6 +475,7 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
                     else:
                         hi='head-initial'
                         hf='head-final'
+
                     mylang.add('head :+ [ INIT bool ].', section='addenda')
                     if strat_order!='head-initial':
                         # Add new rule:
@@ -1109,10 +1110,16 @@ def customize_possessum_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod
         order=strat.get('order')
         if order!='either':
             init_val='-' if order=='head-initial' else '+'
+        # Make sure INIT is already declared as a head feat
+        if init_val!='':
+            mylang.add('head :+ [ INIT bool ].', section='addenda')
 
         possessor_constr='& [ POSSESSOR possessor-'+strat_num+' ]' if mark_loc=='both' else ''
+
+
+        if mark_loc!='possessum-with-pron':
         
-        mylang.add('possessum-noun-lex-'+strat_num+' := basic-two-arg &\
+            mylang.add('possessum-noun-lex-'+strat_num+' := basic-two-arg &\
                           [ SYNSEM.LOCAL [ CAT [ POSSESSUM possessum-'+strat_num+',\
                                                  HEAD noun & [ POSSESSOR nonpossessive,\
                                                                INIT '+init_val+' ],\
@@ -1134,6 +1141,25 @@ def customize_possessum_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod
                                                   HCONS <! !>,\
                                                   ICONS <! !>  ] ],\
                             ARG-ST < #possessum-comp, #possessor-comp > ].')
+        else:
+
+            # When the possessum is marked and the possessor = pron, then the pron is the modifier of the possessum:
+            mylang.add('possessum-noun-lex-'+strat_num+' := basic-one-arg &\
+                          [ SYNSEM.LOCAL [ CAT [ POSSESSUM possessum-'+strat_num+',\
+                                                 HEAD noun & [ POSSESSOR nonpossessive,\
+                                                               INIT '+init_val+' ],\
+                                                 VAL [ COMPS < #possessum-comp & [ OPT -,\
+                                                                                   LOCAL [ CONT.HOOK #hook  & [ INDEX #possessum ] ,\
+                                                                                           CAT [ VAL.SPR #spr & < [ ] >,\
+                                                                                                HEAD noun & [ POSSESSOR nonpossessive ],\
+                                                                                                POSSESSUM nonpossessive ] ] ] >,\
+                                                      SPR #spr ] ],\
+                                           CONT [ HOOK #hook & [ INDEX #possessum ] ,\
+                                                  RELS <! !>,\
+                                                  HCONS <! !>,\
+                                                  ICONS <! !>  ] ],\
+                            ARG-ST < #possessum-comp > ].')
+
 
 ########################################################################################################################################
 
@@ -1154,11 +1180,20 @@ def customize_possessum_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod
                 prefix='SYNSEM.LOCAL.CAT.VAL.COMPS.REST.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
             noun_type=noun_id(form)
 
-            # If mod, then agreeing happens on possessum marker:
+
             if mod_spec=='mod':
 
-                # Add appropriate agreeing forms to mylang:
-                mylang.add(noun_type+' := possessum-noun-lex-'+strat_num+' &\
+                # If mod and appearing w pronoun, then pronoun handles agr
+                if mark_loc=='possessum-with-pron':
+                    pron_type=noun_id(strat)
+                    mylang.add(pron_type+' :=\
+                              [ SYNSEM.LOCAL [ CAT.HEAD.MOD.FIRST.LOCAL.CAT.POSSESSUM.POSS-AGR #head-png,\
+                                               CONT.HOOK.INDEX.PNG #head-png ] ].')
+                    mylang.add(noun_type+' := possessum-noun-lex-'+strat_num+'.')
+                    
+                else:
+                    # If mod and not w pronoun, then agreeing happens on possessum marker:                
+                    mylang.add(noun_type+' := possessum-noun-lex-'+strat_num+' &\
                           [ SYNSEM.LOCAL.CAT.POSSESSUM.POSS-AGR #png,\
                                 '+prefix+' #png ].')
 
@@ -1182,10 +1217,7 @@ def customize_possessor_pron_lexicon(strat,mylang,ch,lexicon,strat_name,strat_nu
 
     # Set vars for pron strat:
     noun_type=noun_id(strat)
-    if strat.get('agr')=='agree':
-        agr=True
-    else:
-        agr=False
+    agr=True if strat.get('agr')=='agree' else False
 
     # Add general form of pronoun:
     mylang.set_section('nounlex')
@@ -1227,7 +1259,8 @@ def customize_possessor_pron_lexicon(strat,mylang,ch,lexicon,strat_name,strat_nu
                                                HEAD [ POSSESSOR possessor-pron-'+strat_num+',\
                                                     MOD < [ OPT -,\
                                                             LOCAL [ CAT [ HEAD.PRON -,\
-                                                                          VAL.SPR < [ ] > ],\
+                                                                          VAL [ SPR < [ ] >,\
+                                                                                COMPS < > ] ],\
                                                                     CONT.HOOK [ INDEX #possessum,\
                                                                                 LTOP #lbl ] ] ] > ] ],\
                                          CONT [ RELS  <!  '+POSS_REL+',\
@@ -1241,7 +1274,6 @@ def customize_possessor_pron_lexicon(strat,mylang,ch,lexicon,strat_name,strat_nu
     if case:
         
         mylang.add('poss-case := case.',section='addenda')
-
         mylang.add(noun_type+' := [ SYNSEM.LOCAL.CAT.HEAD.CASE poss-case ].')
 
     # Add forms to lexicon.tdl:
