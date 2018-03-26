@@ -512,54 +512,6 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     # the possessum is marked, since in these cases, the possessor
     # noun must have a non-empty SPEC list even though it has gone
     # through no lexical rules.
-    
-    # Check all possessive strategies and pronouns to see what combo
-    # of strategies you have:
-    spec_strat=False #Does the strategy use the head-spec rule?
-    affixal_strat=False #Does the strategy include affixal poss markers?
-    nonaffixal_strat=False
-    possessor_mark=False
-    possessum_mark=False
-    poss_prons=False #Do possessor pronouns exist as separate words?
-    pron_spec=False #Are pronouns which separate words w/ spec attachment?
-    for strat in ch.get('poss-strat',[]):
-        if strat.get('mod-spec')=='spec' and strat.get('mark-loc')!='neither':
-            spec_strat=True
-            if strat.get('mark-loc')=='possessor' or strat.get('mark-loc')=='both':
-                possessor_mark=True
-                if strat.get('possessor-type')=='affix':
-                    affixal_strat=True
-                else:
-                    nonaffixal_strat=True
-            elif strat.get('mark-loc')=='possessum':
-                possessum_mark=True
-                if strat.get('possessum-type')=='affix':
-                    affixal_strat=True
-                if strat.get('possessum-type')=='non-affix':
-                    nonaffixal_strat=True
-    for pron in ch.get('poss-pron',[]):
-        if pron.get('type')!='affix':
-            poss_prons=True
-            if pron.get('mod-spec')=='spec':
-                spec_strat=True
-                pron_spec=True
-    # Add a typedef that takes into account all strategies
-    if spec_strat:
-        if affixal_strat and nonaffixal_strat:
-            spr_head_type='+npd'
-        elif pron_spec:
-            spr_head_type='+npd'
-        elif affixal_strat:
-            spr_head_type='+nd'            
-        elif nonaffixal_strat:
-            spr_head_type='+pd'            
-        typedef= \
-        'noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & \
-           [ SYNSEM.LOCAL [ CAT.VAL [ SPR < #spr & [ LOCAL.CAT.HEAD '+spr_head_type+' ] >,\
-                                      COMPS < >, \
-                                      SUBJ < >, \
-                                      SPEC < > ] ], \
-             ARG-ST < #spr > ].'
 
     mylang.add(typedef)
 
@@ -589,6 +541,10 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     # EKN 2018-02-02 Possessor pronouns are a type which cannot
     # take dets, but won't trigger 'imp' below. Adding a check 
     # for them specifically:
+    poss_prons=False
+    for pron in ch.get('poss-pron',[]):
+        if pron.get('type')!='affix':
+            poss_prons=True
     if (seen['imp'] or poss_prons) and ch.get('has-dets') == 'yes':
         mylang.add(
             'head-spec-phrase := [ NON-HEAD-DTR.SYNSEM.OPT - ].',
