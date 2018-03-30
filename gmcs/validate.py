@@ -1624,7 +1624,6 @@ def validate_adnominal_possession(ch, vr):
                               vr.err(feat.full_key+'_name',mess)
                            # Limit agr features to PNG
                            elif feat.get('name') not in png_feats:
-                               print feat.get('name')
                                mess='Agreement between elements of the possessive phrase ' +\
                                    'is only supported for person, number, and gender.'
                                vr.err(feat.full_key+'_name',mess)
@@ -1712,7 +1711,7 @@ def validate_adnominal_possession(ch, vr):
                 mess='You must specify the order this pronoun appears in.'
                 vr.err(pron.full_key+'_order',mess)
             if not pron.get('mod-spec'):
-                mess='You must specify the whether this pronoun affix appears with determiners or not.'
+                mess='You must specify the whether this pronoun appears with determiners or not.'
                 vr.err(pron.full_key+'_mod-spec',mess)
             if not pron.get('agr'):
                 mess='You must specify the whether this pronoun affix agrees with the possessum.'
@@ -1738,6 +1737,12 @@ def validate_adnominal_possession(ch, vr):
                     if not feat.get('value'):
                         mess='You must give a value for this feature.'
                         vr.err(feat.full_key+'_value',mess)
+                for feat in inst.get('non-png-feat'):
+                    if pron.get('mod-spec')=='spec':
+                        mess='Agreement for features other than person, number, and gender '+\
+                            'is not currently supported for specifier-like pronouns. '+\
+                            'Modifier-like pronouns are supported.'
+                        vr.err(feat.full_key+'_name',mess)
 #        if not pron.get('possessum-mark'):
 #            mess='You must specify the whether this pronoun affix appears with possessum marking or not.'
 #            vr.err(pron.full_key+'_possessum-mark',mess)

@@ -648,7 +648,7 @@ BeginIter poss-pron{i} "a class of possessor pronouns"
     . either "either" "" "either<br>"
 
     Radio mod-spec "Modifier or Specifier" "<p>Does the possessor function more like a modifier or a specifier?</p>" ""
-    . mod "Modifier" "" "modifier<br>"
+    . mod "Modifier" "" "modifier<br>" 
     . spec "Specifier" "" "specifier<br>"
 
     Radio agr "Pronominal agreement" "<p>Do these pronouns agree with the possessum in person, number, gender, case, or other features?</p>" ""
@@ -696,7 +696,6 @@ BeginIter poss-pron{i} "a class of possessor pronouns"
          fillvalues p=poss-pron{i}_instance{j}_non-png-feat{k}_name
 
       EndIter non-png-feat
-
 
     EndIter instance
 
