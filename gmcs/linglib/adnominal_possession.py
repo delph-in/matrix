@@ -484,6 +484,9 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
                         rules.add('comp-head := comp-head-phrase.')
                         # Add INIT to old rule:
                         mylang.add('head-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT + ].')
+                        if ch.get('word-order')=='free' or ch.get('word-order')=='v2':
+                            mylang.add('head-comp-phrase-2 := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT + ].')
+                            mylang.add('comp-head-phrase-2 := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT - ].')
                     elif strat_order!='head-final':
                         # Add new rule:
                         mylang.add('head-comp-phrase := basic-head-1st-comp-phrase & '+hi+' &\
@@ -491,6 +494,9 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
                         rules.add('head-comp := head-comp-phrase.')
                         # Add INIT to old rule:
                         mylang.add('comp-head-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT - ].')
+                        if ch.get('word-order')=='free' or ch.get('word-order')=='v2':
+                            mylang.add('head-comp-phrase-2 := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT + ].')
+                            mylang.add('comp-head-phrase-2 := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT - ].')
 
                     # If general order of head-comps is more restricted, add the correct default INIT 
                     # value for non-poss lexical items:
@@ -1078,7 +1084,7 @@ def customize_possessum_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod
                                            POSSESSUM possessum-'+strat_num+' ] ] ].',merge=True)
 
             # Add any feature constraints to the possessor (only if the possessor is unmarked)
-            if strat.get('possessor-feat'):
+            if strat.get('possessor-feat'): #TODO change to checking if possessor is marked
                 instance_tmp={}
                 if strat.get('possessor-feat'):
                     for key in strat.keys():
@@ -1132,7 +1138,7 @@ def customize_possessum_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod
                                                                                                 POSSESSUM nonpossessive ] ] ],\
                                                              #possessor-comp & [ OPT -,\
                                                                                  LOCAL [ CAT [ POSSESSUM nonpossessive,\
-                                                                                               VAL.SPR < >,\
+                                                                                               VAL.SPR <  >,\
                                                                                                HEAD +np '+possessor_constr+' ],\
                                                                                          CONT.HOOK.INDEX #possessor ] ] >,\
                                                       SPR #spr ] ],\
@@ -1159,6 +1165,14 @@ def customize_possessum_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod
                                                   HCONS <! !>,\
                                                   ICONS <! !>  ] ],\
                             ARG-ST < #possessum-comp > ].')
+        # Add any feature constraints to the possessor (only if the possessor is unmarked)
+        instance_tmp={}
+        if strat.get('possessor-feat'):
+            for key in strat.keys():
+                new_key=key.replace('feat','skip')
+                new_key=new_key.replace('possessor-skip','feat')
+                instance_tmp[new_key]=strat.get(key)
+            customize_feature_values(mylang,ch,hierarchies,instance_tmp,'possessum-noun-lex-'+strat_num,'possessum-mod-mark2')
 
 
 ########################################################################################################################################

@@ -1645,11 +1645,11 @@ def validate_adnominal_possession(ch, vr):
             # Require input for non-affix possessum-marking
             elif strat.get('possessum-type')=='non-affix':
                 # Rule out the scenario: mod-like attachment + non-affixal possessum mark
-                if strat.get('mod-spec')=='mod':
-                    mess='A modifier-like analysis is not supported in the case where '+ \
-                         'the possessum is marked by a separate word or clitic. ' + \
-                         'Please select a modifier-like analysis.'
-                    vr.err(strat.full_key+'_mod-spec',mess)
+#                if strat.get('mod-spec')=='mod':
+#                    mess='A modifier-like analysis is not supported in the case where '+ \
+#                         'the possessum is marked by a separate word or clitic. ' + \
+#                         'Please select a modifier-like analysis.'
+#                    vr.err(strat.full_key+'_mod-spec',mess)
 #                if not strat.get('possessum-marker-order'):
 #                    mess='You must indicate the word order of the possessum-marking word.'
 #                    vr.err(strat.full_key+'_possessum-marker-order',mess)

@@ -38,6 +38,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                    'poss-adp-comp': 'SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.',
                    'possessum-spec-mark': 'ARGS < [ SYNSEM.',
                    'possessum-mod-mark': 'SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.',
+                   'possessum-mod-mark2': 'SYNSEM.LOCAL.CAT.VAL.COMPS.REST.FIRST.',
                    'poss-pron-mod': 'SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.',
                    'poss-pron-spec': 'SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.'   }
     pos_geom_prefix = prefix_map[pos] if pos in prefix_map else 'SYNSEM.'
