@@ -449,6 +449,10 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
             # Add head-comp rule if necessary
             if strat.get('mark-loc')=='possessum' or strat.get('mark-loc')=='both':
 
+                mylang.add('basic-head-1st-comp-phrase :+ [ \
+                               SYNSEM.LOCAL.CAT.POSSESSUM #poss,\
+                               HEAD-DTR.SYNSEM.LOCAL.CAT.POSSESSUM #poss ].',section='addenda')
+
                 # Define var to keep track of major constituent word order
                 head_comp_order=customize_major_constituent_order(ch.get('word-order'),mylang,ch,rules)['hc']
                 if head_comp_order=='head-comp':
