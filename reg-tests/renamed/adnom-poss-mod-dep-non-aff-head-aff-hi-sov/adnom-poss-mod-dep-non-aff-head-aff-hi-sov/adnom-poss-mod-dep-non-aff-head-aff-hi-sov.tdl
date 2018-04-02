@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of adnom-poss-mod-dep-non-aff-head-aff-hi-sov
 ;;; created at:
-;;;     Wed Feb 28 18:41:12 UTC 2018
+;;;     Mon Apr 02 21:08:51 UTC 2018
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -29,13 +29,13 @@ head :+ [ PRON bool,
     POSSESSOR poss,
     INIT bool ].
 
-inflected :+ [ PERNUM-FLAG luk,
-    POSSESSIVE-FLAG luk,
-    NUM-FLAG luk ].
+inflected :+ [ POSSESSIVE-FLAG luk,
+    NUM-FLAG luk,
+    PERNUM-FLAG luk ].
 
-infl-satisfied :+ [ PERNUM-FLAG na-or-+,
-    POSSESSIVE-FLAG na-or-+,
-    NUM-FLAG na-or-+ ].
+infl-satisfied :+ [ POSSESSIVE-FLAG na-or-+,
+    NUM-FLAG na-or-+,
+    PERNUM-FLAG na-or-+ ].
 
 png :+ [ PER person,
     NUM number ].
@@ -45,29 +45,18 @@ cat :+ [ POSSESSUM poss ].
 poss := *top* &
   [ POSS-AGR png ].
 
-possessive := poss.
-
-nonpossessive := poss.
-
-possessor := possessive.
-
-possessum := possessive.
-
-basic-bare-np-phrase :+ [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #possessor,
+basic-bare-np-phrase :+ [ SYNSEM.LOCAL.CAT [ HEAD #head,
                        POSSESSUM #possessum ],
-    HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #possessor,
-                                POSSESSUM #possessum ] ].
-
-possessive-1 := possessive.
-
-possessor-1 := possessor & possessive-1.
-
-possessum-1 := possessum & possessive-1.
+    HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD #head,
+                                POSSESSUM #possessum & nonpossessive ] ].
 
 basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.MC #mc,
     HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
 
 basic-head-opt-subj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
+
+basic-head-1st-comp-phrase :+ [ SYNSEM.LOCAL.CAT.POSSESSUM #poss,
+    HEAD-DTR.SYNSEM.LOCAL.CAT.POSSESSUM #poss ].
 
 ;;;;;;;;;;;;;;
 ;;; Features
@@ -87,6 +76,26 @@ number := *top*.
 sg := number.
 pl := number.
 
+;;; Possession
+
+possession := *top*.
+possessive := poss.  ; supertype for possessive features
+nonpossessive := poss.  ; type for nonpossessive
+possessor := possessive.
+possessum := possessive.
+possessive-1 := possessive.  ; supertype for strategy 1
+possessor-1 := possessor & possessive-1.
+possessum-1 := possessum & possessive-1.
+
+;Constraint on MC used to be part of matrix.tdl
+;;it applies to all wo implementations, except for v2
+
+comp-head-phrase := basic-head-1st-comp-phrase & head-final &
+  [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT - ].
+
+subj-head-phrase := decl-head-subj-phrase & head-final &
+  [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
+
 ;;;;;;;;;;;;;;;;;;;
 ;;; Lexical Types
 ;;;;;;;;;;;;;;;;;;;
@@ -104,8 +113,8 @@ noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & non-mod-lex-ite
 
 common-noun-lex := noun-lex &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 3rd,
-    INFLECTED [ POSSESSIVE-FLAG -,
-                NUM-FLAG - ] ].
+    INFLECTED [ NUM-FLAG -,
+                POSSESSIVE-FLAG - ] ].
 
 ;;; Verbs
 
@@ -180,6 +189,9 @@ possessor-adp-lex-1 := two-rel-adposition-lex &
                           HCONS <!  !>,
                           RELS <!  !> ] ] ].
 
+basic-adposition-lex :+ [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR nonpossessive,
+                       POSSESSUM nonpossessive ] ].
+
 ;;;;;;;;;;;;;;;;;;;
 ;;; Lexical Rules
 ;;;;;;;;;;;;;;;;;;;
@@ -192,11 +204,11 @@ possessive-rule-dtr := word-or-lexrule.
 
 num-lex-rule-super := add-only-no-ccont-rule & possessive-rule-dtr &
   [ INFLECTED [ NUM-FLAG +,
-                PERNUM-FLAG #pernum,
-                POSSESSIVE-FLAG #possessive ],
+                POSSESSIVE-FLAG #possessive,
+                PERNUM-FLAG #pernum ],
     DTR common-noun-lex &
-        [ INFLECTED [ PERNUM-FLAG #pernum,
-                      POSSESSIVE-FLAG #possessive ] ] ].
+        [ INFLECTED [ POSSESSIVE-FLAG #possessive,
+                      PERNUM-FLAG #pernum ] ] ].
 
 singular-lex-rule := const-lex-rule & num-lex-rule-super &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.NUM sg ].
@@ -206,11 +218,11 @@ plural-lex-rule := infl-lex-rule & num-lex-rule-super &
 
 possessive-lex-rule-super := lex-rule &
   [ INFLECTED [ POSSESSIVE-FLAG +,
-                PERNUM-FLAG #pernum,
-                NUM-FLAG #num ],
+                NUM-FLAG #num,
+                PERNUM-FLAG #pernum ],
     DTR possessive-rule-dtr &
-        [ INFLECTED [ PERNUM-FLAG #pernum,
-                      NUM-FLAG #num ] ] ].
+        [ INFLECTED [ NUM-FLAG #num,
+                      PERNUM-FLAG #pernum ] ] ].
 
 possessum-lex-rule-1 := val-change-with-ccont-lex-rule &
   [ C-CONT [ HOOK #hook,
@@ -221,25 +233,22 @@ possessum-lex-rule-1 := val-change-with-ccont-lex-rule &
                        ARG2 #possessor ] !>,
              HCONS <!  !>,
              ICONS <!  !> ],
-    DTR.SYNSEM.LOCAL [ CAT [ HEAD [ POSSESSOR #poss,
-                                    PRON - ],
-                             VAL [ SPEC #spec,
-                                   SUBJ #subj,
-                                   SPR #spr ] ],
+    DTR.SYNSEM.LOCAL [ CAT [ HEAD.PRON -,
+                             VAL.SPR #spr ],
                        CONT.HOOK #hook &
                                  [ INDEX #possessum,
                                    LTOP #lbl ] ],
     SYNSEM.LOCAL.CAT [ POSSESSUM possessum-1,
                        HEAD noun &
-                            [ POSSESSOR #poss & nonpossessive,
+                            [ POSSESSOR nonpossessive,
                               INIT + ],
-                       VAL [ SPEC #spec,
-                             SUBJ #subj,
-                             SPR #spr,
-                             COMPS.FIRST.LOCAL [ CONT.HOOK.INDEX #possessor,
-                                                 CAT cat-sat &
-                                                     [ HEAD +np &
-                                                            [ POSSESSOR possessor-1 ] ] ] ] ] ].
+                       VAL [ SPR #spr,
+                             COMPS.FIRST [ OPT -,
+                                           LOCAL [ CONT.HOOK.INDEX #possessor,
+                                                   CAT cat-sat &
+                                                       [ VAL.SPR < >,
+                                                         HEAD +np &
+                                                              [ POSSESSOR possessor-1 ] ] ] ] ] ] ].
 
 possessum-lex-rule := infl-lex-rule & possessive-lex-rule-super & possessum-lex-rule-1.
 
@@ -252,11 +261,11 @@ nonpossessive-lex-rule := const-lex-rule & nonpossessive-lex-rule-1 & possessive
 
 pernum-lex-rule-super := add-only-no-ccont-rule &
   [ INFLECTED [ PERNUM-FLAG +,
-                NUM-FLAG #num,
-                POSSESSIVE-FLAG #possessive ],
+                POSSESSIVE-FLAG #possessive,
+                NUM-FLAG #num ],
     DTR verb-lex &
-        [ INFLECTED [ NUM-FLAG #num,
-                      POSSESSIVE-FLAG #possessive ] ] ].
+        [ INFLECTED [ POSSESSIVE-FLAG #possessive,
+                      NUM-FLAG #num ] ] ].
 
 3sg-lex-rule := infl-lex-rule & pernum-lex-rule-super &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK.INDEX.PNG [ PER 3rd,
@@ -275,15 +284,6 @@ non-3rd-lex-rule := const-lex-rule & pernum-lex-rule-super &
 ;;; Phrasal Types
 ;;;;;;;;;;;;;;;;;;;
 
-;Constraint on MC used to be part of matrix.tdl
-;;it applies to all wo implementations, except for v2
-
-comp-head-phrase := basic-head-1st-comp-phrase & head-final &
-  [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT - ].
-
-subj-head-phrase := decl-head-subj-phrase & head-final &
-  [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
-
 head-comp-phrase := basic-head-1st-comp-phrase & head-initial &
   [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT + ].
 
@@ -299,5 +299,4 @@ head-spec-phrase := basic-head-spec-phrase & head-final.
 ; introduced to match the semantic effect of bare NPs in your language.
 
 bare-np-phrase := basic-bare-np-phrase &
-  [ SYNSEM.LOCAL.CAT.VAL.SPEC < >,
-    C-CONT.RELS <! [ PRED "exist_q_rel" ] !> ].
+  [ C-CONT.RELS <! [ PRED "exist_q_rel" ] !> ].

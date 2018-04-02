@@ -2,7 +2,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Grammar of adnom-poss-spec-dep-non-aff-head-non-aff-free-wo
 ;;; created at:
-;;;     Thu Mar 01 02:56:41 UTC 2018
+;;;     Mon Apr 02 18:13:24 UTC 2018
 ;;; based on Matrix customization system version of:
 ;;;     unknown time
 ;;;
@@ -29,11 +29,11 @@ head :+ [ PRON bool,
     POSSESSOR poss,
     SPEC-INIT bool ].
 
-inflected :+ [ NUM-FLAG luk,
-    PERNUM-FLAG luk ].
+inflected :+ [ PERNUM-FLAG luk,
+    NUM-FLAG luk ].
 
-infl-satisfied :+ [ NUM-FLAG na-or-+,
-    PERNUM-FLAG na-or-+ ].
+infl-satisfied :+ [ PERNUM-FLAG na-or-+,
+    NUM-FLAG na-or-+ ].
 
 png :+ [ PER person,
     NUM number ].
@@ -43,29 +43,18 @@ cat :+ [ POSSESSUM poss ].
 poss := *top* &
   [ POSS-AGR png ].
 
-possessive := poss.
-
-nonpossessive := poss.
-
-possessor := possessive.
-
-possessum := possessive.
-
-basic-bare-np-phrase :+ [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #possessor,
+basic-bare-np-phrase :+ [ SYNSEM.LOCAL.CAT [ HEAD #head,
                        POSSESSUM #possessum ],
-    HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #possessor,
-                                POSSESSUM #possessum ] ].
-
-possessive-1 := possessive.
-
-possessor-1 := possessor & possessive-1.
-
-possessum-1 := possessum & possessive-1.
+    HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD #head,
+                                POSSESSUM #possessum & nonpossessive ] ].
 
 basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.MC #mc,
     HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].
 
 basic-head-opt-subj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
+
+basic-determiner-lex :+ [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR nonpossessive,
+                       POSSESSUM nonpossessive ] ].
 
 ;;;;;;;;;;;;;;
 ;;; Features
@@ -85,6 +74,25 @@ number := *top*.
 sg := number.
 pl := number.
 
+;;; Possession
+
+possession := *top*.
+possessive := poss.  ; supertype for possessive features
+nonpossessive := poss.  ; type for nonpossessive
+possessor := possessive.
+possessum := possessive.
+possessive-1 := possessive.  ; supertype for strategy 1
+possessor-1 := possessor & possessive-1.
+possessum-1 := possessum & possessive-1.
+
+;Constraint on MC used to be part of matrix.tdl
+;;it applies to all wo implementations, except for v2
+
+head-comp-phrase := basic-head-1st-comp-phrase & head-initial.
+
+subj-head-phrase := decl-head-subj-phrase & head-final &
+  [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
+
 ;;;;;;;;;;;;;;;;;;;
 ;;; Lexical Types
 ;;;;;;;;;;;;;;;;;;;
@@ -97,7 +105,7 @@ noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & non-mod-lex-ite
                              SUBJ < >,
                              SPEC < >,
                              SPR < #spr &
-                                   [ LOCAL.CAT.HEAD +pd,
+                                   [ LOCAL.CAT.HEAD det,
                                      OPT - ] > ],
                        HEAD.POSSESSOR nonpossessive,
                        POSSESSUM nonpossessive ] ].
@@ -113,12 +121,13 @@ possessum-noun-lex-1 := basic-one-arg &
                           HOOK #hook,
                           ICONS <!  !> ],
                    CAT [ VAL [ SUBJ < >,
-                               SPR < [ LOCAL.CAT.HEAD det ] >,
                                COMPS < #comps &
                                        [ LOCAL [ CONT.HOOK #hook,
                                                  CAT [ VAL.SPR < [ ] >,
                                                        HEAD #head &
-                                                            [ PRON - ] ] ] ] > ],
+                                                            [ PRON - ] ] ] ] >,
+                               SPR < [ LOCAL.CAT.HEAD det &
+                                                      [ POSSESSOR possessor-1 ] ] > ],
                          HEAD #head & noun &
                               [ POSSESSOR nonpossessive ],
                          POSSESSUM possessum-1 ] ] ].
@@ -186,14 +195,15 @@ possessor-adp-lex-1 := two-rel-adposition-lex &
                                COMPS.FIRST [ OPT -,
                                              LOCAL.CAT [ VAL.SPR < >,
                                                          HEAD noun &
-                                                              [ SPEC-INIT #si,
-                                                                PRON - ] ] ] ],
-                         HEAD [ SPEC-INIT #si,
-                                POSSESSOR possessor-1 ],
+                                                              [ PRON - ] ] ] ],
+                         HEAD.POSSESSOR possessor-1,
                          POSSESSUM nonpossessive ],
                    CONT [ ICONS <!  !>,
                           RELS <!  !>,
                           HCONS <!  !> ] ] ].
+
+basic-adposition-lex :+ [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR nonpossessive,
+                       POSSESSUM nonpossessive ] ].
 
 ;;;;;;;;;;;;;;;;;;;
 ;;; Lexical Rules
@@ -249,13 +259,12 @@ head-spec-phrase-2 := head-initial & basic-head-spec-phrase &
 poss-unary-phrase := basic-unary-phrase &
   [ SYNSEM.LOCAL [ CONT.HOOK #hook,
                    CAT [ HEAD det &
-                              [ POSSESSOR nonpossessive,
-                                SPEC-INIT #si ],
+                              [ POSSESSOR possessor ],
                          VAL [ SPR < >,
-                               COMPS #comps,
-                               SUBJ #subj,
+                               COMPS < >,
+                               SUBJ < >,
                                SPEC < [ LOCAL [ CAT [ VAL.COMPS < >,
-                                                      HEAD +np &
+                                                      HEAD noun &
                                                            [ PRON - ] ],
                                                 CONT.HOOK #hook &
                                                           [ INDEX #possessum &
@@ -274,11 +283,10 @@ poss-unary-phrase := basic-unary-phrase &
                         LARG #lbl ] !>,
              ICONS <!  !> ],
     ARGS < [ SYNSEM.LOCAL [ CAT [ VAL [ SPR < >,
-                                        COMPS #comps & olist,
-                                        SUBJ #subj,
+                                        COMPS < >,
+                                        SUBJ < >,
                                         SPEC < > ],
-                                  HEAD +np &
-                                       [ SPEC-INIT #si ] ],
+                                  HEAD +np ],
                             CONT.HOOK.INDEX #possessor ] ] > ].
 
 poss-unary-phrase-1 := poss-unary-phrase &
@@ -288,14 +296,8 @@ poss-unary-phrase-1 := poss-unary-phrase &
 ;Constraint on MC used to be part of matrix.tdl
 ;;it applies to all wo implementations, except for v2
 
-head-comp-phrase := basic-head-1st-comp-phrase & head-initial.
-
-subj-head-phrase := decl-head-subj-phrase & head-final &
-  [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
-
 ; Bare NP phrase.  Consider modifying the PRED value of the quantifier relation
 ; introduced to match the semantic effect of bare NPs in your language.
 
 bare-np-phrase := basic-bare-np-phrase &
-  [ SYNSEM.LOCAL.CAT.VAL.SPEC < >,
-    C-CONT.RELS <! [ PRED "exist_q_rel" ] !> ].
+  [ C-CONT.RELS <! [ PRED "exist_q_rel" ] !> ].

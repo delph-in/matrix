@@ -298,6 +298,7 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
     strat_name=strat.full_keys()[0].split("_")[0]
     strat_num=strat_name[-1]
     mark_loc=strat.get('mark-loc')
+    mod_spec=strat.get('mod-spec')
     pron_allowed=True if strat.get('pronoun-allow')=='yes' else False
     adj_rule=False
     spec_rule=False
@@ -384,21 +385,75 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
     # If possessor isn't an affix pronoun, add a phrase rule
     elif not pron_affix:
 
-        # Figure out if you need to add anything to manipulate the order of the marker
-        # and the marked word.
+        # Figure out if you need to add anything to manipulate the order head-comp:
+        # Either if poss phrase is a head-comp, or if markers are non-affixal (which
+        # are always joined by head-comp).
         order_manip=False
         if head_comp_order != strat_order:
-            order_manip=True
+            if (mark_loc=='possessum' or mark_loc=='both') and mod_spec=='mod':
+                order_manip=True
         if strat.get('possessor-type')=='non-affix':
-            if not (dep_mark_order == strat_order == head_comp_order):
-                order_manip=True
-            if strat.get('possessum-type')=='non-affix':
-                if dep_mark_order != head_mark_order:
+            if dep_mark_order:
+                if dep_mark_order != head_comp_order:
                     order_manip=True
+            if strat.get('possessum-type')=='non-affix':
+                if head_mark_order:
+                    if dep_mark_order != head_mark_order:
+                        order_manip=True
         if strat.get('possessum-type')=='non-affix':
-            if not (head_mark_order == strat_order == head_comp_order):
-                order_manip=True
-        
+            if head_mark_order:
+                if head_mark_order != head_comp_order:
+                    order_manip=True
+
+        # Check if the existing head-comp rules include the correct order for poss; 
+        # if not, add a new rule with correct order. Add the INIT feature so that
+        # poss head-comp order can be distinguished from the general order.
+#       if head_comp_order!=strat_order:
+        if order_manip:
+            # In order to play nice with the wo library, you have to 
+            # not inherit directly from head-initial and head-final 
+            # in cases where there's already a head-initial/final-head-nexus
+            # rule that a head-comp rule might be inheriting from.
+            if ch.get('has-aux') and ch.get('word-order')=='free':
+                hi='head-initial-head-nexus'
+                hf='head-final-head-nexus'
+            else:
+                hi='head-initial'
+                hf='head-final'
+
+            mylang.add('head :+ [ INIT bool ].', section='addenda')
+            # If the order of head-comps outside this lib is head-initial:
+#            if strat_order!='head-initial':
+            if head_comp_order!='head-final':
+                # Add new rule:
+                mylang.add('comp-head-phrase := basic-head-1st-comp-phrase & '+hf+' &\
+                                     [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT - ].',section='phrases')
+                rules.add('comp-head := comp-head-phrase.')
+                # Add INIT to old rule:
+                mylang.add('head-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT + ].')
+                if ch.get('word-order')=='free' or ch.get('word-order')=='v2':
+                    mylang.add('head-comp-phrase-2 := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT + ].')
+                    mylang.add('comp-head-phrase-2 := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT - ].')
+                # If the order of head-comps outside this lib is head-final:
+#                    elif strat_order!='head-final':
+            elif head_comp_order!='head-initial':
+                # Add new rule:
+                mylang.add('head-comp-phrase := basic-head-1st-comp-phrase & '+hi+' &\
+                                     [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT + ].',section='phrases')
+                rules.add('head-comp := head-comp-phrase.')
+                # Add INIT to old rule:
+                mylang.add('comp-head-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT - ].')
+                if ch.get('word-order')=='free' or ch.get('word-order')=='v2':
+                    mylang.add('head-comp-phrase-2 := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT + ].')
+                    mylang.add('comp-head-phrase-2 := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT - ].')
+
+            # If general order of head-comps is more restricted, add the correct default INIT 
+            # value for non-poss lexical items:
+            if head_comp_order!='either':
+                for pos in ['tverb','aux','det','cop']:
+                    if ch.get(pos) or pos in ['tverb']:
+                        name = lexbase.LEXICAL_SUPERTYPES[pos]
+                        mylang.add(name + ' := [ SYNSEM.LOCAL.CAT.HEAD.INIT ' + default_init + ' ].', merge=True)
 
         if strat.get('mod-spec')=='spec':
 
@@ -484,59 +539,6 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
                                SYNSEM.LOCAL.CAT.POSSESSUM #poss,\
                                HEAD-DTR.SYNSEM.LOCAL.CAT.POSSESSUM #poss ].',section='addenda')
                
-                # TODO INIT: Add the same methods, more or less, for possessor marker order and possessum marker order
-                # But need to figure out first exactly how I'm dealing with when strat_order and marker_order aren't equal
-                    
-                # Check if the existing head-comp rules include the correct order for poss; 
-                # if not, add a new rule with correct order. Add the INIT feature so that
-                # poss head-comp order can be distinguished from the general order.
-#                if head_comp_order!=strat_order:
-                if order_manip:
-                    # In order to play nice with the wo library, you have to 
-                    # not inherit directly from head-initial and head-final 
-                    # in cases where there's already a head-initial/final-head-nexus
-                    # rule that a head-comp rule might be inheriting from.
-                    if ch.get('has-aux') and ch.get('word-order')=='free':
-                        hi='head-initial-head-nexus'
-                        hf='head-final-head-nexus'
-                    else:
-                        hi='head-initial'
-                        hf='head-final'
-
-                    mylang.add('head :+ [ INIT bool ].', section='addenda')
-                    # If the order of head-comps outside this lib is head-initial:
-#                    if strat_order!='head-initial':
-                    if head_comp_order!='head-final':
-                        # Add new rule:
-                        mylang.add('comp-head-phrase := basic-head-1st-comp-phrase & '+hf+' &\
-                                     [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT - ].',section='phrases')
-                        rules.add('comp-head := comp-head-phrase.')
-                        # Add INIT to old rule:
-                        mylang.add('head-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT + ].')
-                        if ch.get('word-order')=='free' or ch.get('word-order')=='v2':
-                            mylang.add('head-comp-phrase-2 := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT + ].')
-                            mylang.add('comp-head-phrase-2 := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT - ].')
-                    # If the order of head-comps outside this lib is head-final:
-#                    elif strat_order!='head-final':
-                    elif head_comp_order!='head-initial':
-                        # Add new rule:
-                        mylang.add('head-comp-phrase := basic-head-1st-comp-phrase & '+hi+' &\
-                                     [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT + ].',section='phrases')
-                        rules.add('head-comp := head-comp-phrase.')
-                        # Add INIT to old rule:
-                        mylang.add('comp-head-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT - ].')
-                        if ch.get('word-order')=='free' or ch.get('word-order')=='v2':
-                            mylang.add('head-comp-phrase-2 := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT + ].')
-                            mylang.add('comp-head-phrase-2 := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT - ].')
-
-                    # If general order of head-comps is more restricted, add the correct default INIT 
-                    # value for non-poss lexical items:
-                    if head_comp_order!='either':
-                        for pos in ['tverb','aux','det','cop']:
-                            if ch.get(pos) or pos in ['tverb']:
-                                name = lexbase.LEXICAL_SUPERTYPES[pos]
-                                mylang.add(name + ' := [ SYNSEM.LOCAL.CAT.HEAD.INIT ' + default_init + ' ].', merge=True)
-
             # Add head-mod rule
             else:
 
