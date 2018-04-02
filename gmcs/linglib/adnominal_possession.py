@@ -297,9 +297,6 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
     # Define vars for all elements of strategy:
     strat_name=strat.full_keys()[0].split("_")[0]
     strat_num=strat_name[-1]
-    strat_order=strat.get('order')
-    dep_mark_order=strat.get('possessor-mark-order')
-    head_mark_order=strat.get('possessum-mark-order')
     mark_loc=strat.get('mark-loc')
     pron_allowed=True if strat.get('pronoun-allow')=='yes' else False
     adj_rule=False
@@ -319,6 +316,22 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
     # Add vars to keep track of what rules have been added:
     phrase_rule=""
     rule_added=False
+
+    # Add vars to keep track of ordering of various types of phrases:
+    strat_order=strat.get('order')
+    dep_mark_order=strat.get('possessor-mark-order')
+    head_mark_order=strat.get('possessum-mark-order')
+    # Define var to keep track of major constituent word order
+    head_comp_order=customize_major_constituent_order(ch.get('word-order'),mylang,ch,rules)['hc']
+    if head_comp_order=='head-comp':
+        head_comp_order='head-initial'
+        default_init='+'
+    elif head_comp_order=='comp-head':
+        head_comp_order='head-final'
+        default_init='-'
+    else:
+        head_comp_order='either'
+        default_init='either'
 
     # Start adding rules:
     mylang.set_section('phrases')
@@ -370,6 +383,22 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
 
     # If possessor isn't an affix pronoun, add a phrase rule
     elif not pron_affix:
+
+        # Figure out if you need to add anything to manipulate the order of the marker
+        # and the marked word.
+        order_manip=False
+        if head_comp_order != strat_order:
+            order_manip=True
+        if strat.get('possessor-type')=='non-affix':
+            if not (dep_mark_order == strat_order == head_comp_order):
+                order_manip=True
+            if strat.get('possessum-type')=='non-affix':
+                if dep_mark_order != head_mark_order:
+                    order_manip=True
+        if strat.get('possessum-type')=='non-affix':
+            if not (head_mark_order == strat_order == head_comp_order):
+                order_manip=True
+        
 
         if strat.get('mod-spec')=='spec':
 
@@ -454,26 +483,15 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
                 mylang.add('basic-head-1st-comp-phrase :+ [ \
                                SYNSEM.LOCAL.CAT.POSSESSUM #poss,\
                                HEAD-DTR.SYNSEM.LOCAL.CAT.POSSESSUM #poss ].',section='addenda')
-
-                # Define var to keep track of major constituent word order
-                head_comp_order=customize_major_constituent_order(ch.get('word-order'),mylang,ch,rules)['hc']
-                if head_comp_order=='head-comp':
-                    head_comp_order='head-initial'
-                    default_init='+'
-                elif head_comp_order=='comp-head':
-                    head_comp_order='head-final'
-                    default_init='-'
-                else:
-                    head_comp_order='either'
-                    default_init='either'
-                
+               
                 # TODO INIT: Add the same methods, more or less, for possessor marker order and possessum marker order
                 # But need to figure out first exactly how I'm dealing with when strat_order and marker_order aren't equal
                     
                 # Check if the existing head-comp rules include the correct order for poss; 
                 # if not, add a new rule with correct order. Add the INIT feature so that
                 # poss head-comp order can be distinguished from the general order.
-                if head_comp_order!=strat_order:
+#                if head_comp_order!=strat_order:
+                if order_manip:
                     # In order to play nice with the wo library, you have to 
                     # not inherit directly from head-initial and head-final 
                     # in cases where there's already a head-initial/final-head-nexus
@@ -486,7 +504,9 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
                         hf='head-final'
 
                     mylang.add('head :+ [ INIT bool ].', section='addenda')
-                    if strat_order!='head-initial':
+                    # If the order of head-comps outside this lib is head-initial:
+#                    if strat_order!='head-initial':
+                    if head_comp_order!='head-final':
                         # Add new rule:
                         mylang.add('comp-head-phrase := basic-head-1st-comp-phrase & '+hf+' &\
                                      [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT - ].',section='phrases')
@@ -496,7 +516,9 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
                         if ch.get('word-order')=='free' or ch.get('word-order')=='v2':
                             mylang.add('head-comp-phrase-2 := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT + ].')
                             mylang.add('comp-head-phrase-2 := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT - ].')
-                    elif strat_order!='head-final':
+                    # If the order of head-comps outside this lib is head-final:
+#                    elif strat_order!='head-final':
+                    elif head_comp_order!='head-initial':
                         # Add new rule:
                         mylang.add('head-comp-phrase := basic-head-1st-comp-phrase & '+hi+' &\
                                      [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT + ].',section='phrases')
@@ -955,6 +977,8 @@ def customize_possessor_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod
     mylang.set_section('otherlex')
     mylang.add(TWO_REL_ADP)
     mylang.add('possessor-adp-lex-'+strat_num+' '+POSSESSOR_ADP_LEX)
+    mylang.add('basic-adposition-lex :+ [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR nonpossessive ,\
+                                                             POSSESSUM nonpossessive ] ].')
     
     # Optionally block PRON + items from being possessors
     if not pron_allowed:
