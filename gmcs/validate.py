@@ -1699,14 +1699,14 @@ def validate_adnominal_possession(ch, vr):
                 mess='You must specify the whether this pronoun affix appears with determiners or not.'
                 vr.err(pron.full_key+'_mod-spec',mess)
         elif pron.get('type')=='non-affix':
-            if pron.get('possessum-mark')=='yes':
-                if pron.get('possessum-mark-type')=='non-affix':
-                    if pron.get('mod-spec')=='mod':
-                        mess='This option is not supported when the possessum is marked by a '+\
-                             'separate word or clitic. Please select specifier-like possessor '+\
-                             'pronouns. If you have evidence of a language that requires this '+\
-                             'analysis, please contact the developers of the Matrix.'
-                        vr.err(pron.full_key+'_mod-spec',mess)
+#            if pron.get('possessum-mark')=='yes':
+#                if pron.get('possessum-mark-type')=='non-affix':
+#                    if pron.get('mod-spec')=='mod':
+#                        mess='This option is not supported when the possessum is marked by a '+\
+#                             'separate word or clitic. Please select specifier-like possessor '+\
+#                             'pronouns. If you have evidence of a language that requires this '+\
+#                             'analysis, please contact the developers of the Matrix.'
+#                        vr.err(pron.full_key+'_mod-spec',mess)
             if not pron.get('order'):
                 mess='You must specify the order this pronoun appears in.'
                 vr.err(pron.full_key+'_order',mess)

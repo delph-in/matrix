@@ -298,6 +298,8 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
     strat_name=strat.full_keys()[0].split("_")[0]
     strat_num=strat_name[-1]
     strat_order=strat.get('order')
+    dep_mark_order=strat.get('possessor-mark-order')
+    head_mark_order=strat.get('possessum-mark-order')
     mark_loc=strat.get('mark-loc')
     pron_allowed=True if strat.get('pronoun-allow')=='yes' else False
     adj_rule=False
@@ -465,6 +467,9 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
                     head_comp_order='either'
                     default_init='either'
                 
+                # TODO INIT: Add the same methods, more or less, for possessor marker order and possessum marker order
+                # But need to figure out first exactly how I'm dealing with when strat_order and marker_order aren't equal
+                    
                 # Check if the existing head-comp rules include the correct order for poss; 
                 # if not, add a new rule with correct order. Add the INIT feature so that
                 # poss head-comp order can be distinguished from the general order.
@@ -955,6 +960,8 @@ def customize_possessor_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod
     if not pron_allowed:
         mylang.add('possessor-adp-lex-'+strat_num+' := [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.PRON - ].')
 
+        # TODO INIT: Add INIT value to adp lex if it's not free wo (check circs for adding INIT)
+
     # Add constraints to possessor adp for spec version
     if mod_spec=='spec':
 
@@ -1075,6 +1082,8 @@ def customize_possessum_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod
     # Add spec-version (only version in this case)
     if mod_spec=='spec':
 
+        # TODO INIT: Add INIT value to noun lex if it's not free wo (check circs for adding INIT)
+
         mylang.add('poss-unary-phrase-'+strat_num+' := poss-unary-phrase & [ SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CAT [ POSSESSUM possessum-'+strat_num+' ] ].',section='phrases')
         rules.add('poss-unary-'+strat_num+' := poss-unary-phrase-'+strat_num+'.')
 
@@ -1115,6 +1124,8 @@ def customize_possessum_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod
 
 ########################################################################################################################################
     if mod_spec=='mod':
+
+        # TODO INIT: Add INIT value to noun lex if it's not free wo (check circs for adding INIT)
 
         init_val='bool'
         order=strat.get('order')

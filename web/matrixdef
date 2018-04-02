@@ -495,6 +495,11 @@ BeginIter poss-strat{i} "a possessive strategy"
 
      	   Label "<div id='possessor-non-affix{i}' style='display:none'>"
 
+	   Radio possessor-mark-order "Mark Order" "<p>Does the word that marks the possessor appear before or after it?</p>" ""
+	   . head-initial "Marker before" "" "before<br>"
+	   . head-final "Marker after" "" "after<br>"
+	   . either "Marter either order" "" "either<br>"
+
 	   Radio pronoun-allow "Pronoun allowability" "<p>Can the possessor marked by this word or clitic be a pronoun?</p>" ""
 	   . yes "Pronouns allowed" "" "yes<br>"
 	   . no "Pronouns disallowed" "" "no<br>"
@@ -580,6 +585,11 @@ BeginIter poss-strat{i} "a possessive strategy"
 	   Label "</div>"
 
            Label "<div id='possessum-non-affix{i}' style='display:none'>"
+
+	   Radio possessum-mark-order "Mark Order" "<p>Does the word that marks the possessum appear before or after it?</p>" ""
+	   . head-initial "Marker before" "" "before<br>"
+	   . head-final "Marker after" "" "after<br>"
+	   . either "Marter either order" "" "either<br>"
 
            Radio possessum-agr "Possessum agreement" "<p>Does the possessum-marking word or clitic agree with the possessor?</p>" ""
            . agree "Possessum agree" "" "yes<br>" "toggle_element.call(this, 'possessum-agr{i}', 'on'); toggle_element.call(this, 'possessum-non-agr{i}', 'off');"
