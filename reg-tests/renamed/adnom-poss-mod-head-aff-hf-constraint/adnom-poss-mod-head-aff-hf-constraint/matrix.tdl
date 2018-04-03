@@ -2353,6 +2353,18 @@ scopal-mod-phrase := basic-head-mod-phrase-simple &
 	     HCONS <! !>,
 	     ICONS <! !> ] ].
 
+; EKN 2018-02-23 Adding adv-list to use as constraint on SPR
+; value non-head dtr of isect-mod-phrase, so that the SPR of 
+; the non-head dtr will be either empty or only adverbs
+
+adv-list := olist.
+
+adv-cons := adv-list & ocons &
+[ FIRST [ LOCAL.CAT.HEAD adv ],
+REST adv-list ].
+
+adv-null := adv-list & onull.
+
 ; ERB 2004-05-18 I'm guessing that MSG no-msg on the head
 ; daughter here is going to turn out too restrictive for other
 ; languages.  
@@ -2363,7 +2375,7 @@ scopal-mod-phrase := basic-head-mod-phrase-simple &
 
 isect-mod-phrase := basic-head-mod-phrase-simple & head-compositional &
   [ HEAD-DTR.SYNSEM.LOCAL [ CAT.MKG #mkg, CONT [ HOOK.LTOP #hand ] ],
-    NON-HEAD-DTR.SYNSEM.LOCAL [ CAT [ VAL.SPR olist,
+    NON-HEAD-DTR.SYNSEM.LOCAL [ CAT [ VAL.SPR adv-list,
     			      	      HEAD.MOD < [ LOCAL intersective-mod & [ CAT.MKG #mkg ] ] > ],
 				CONT.HOOK.LTOP #hand ],
     C-CONT [ HCONS <! !>,
@@ -2438,6 +2450,13 @@ norm-ltop-lex-item := lex-item &
 norm-hook-lex-item := norm-ltop-lex-item &
   [ SYNSEM [ LOCAL.CONT.HOOK.INDEX #index,
              LKEYS.KEYREL.ARG0 #index ] ].
+
+; EKN 2018-02-20 For determiners:
+no-ltop-lex-item := lex-item &
+  [ SYNSEM [ LOCAL.CONT [ RELS.LIST.FIRST #keyrel,
+    	     		  HOOK.INDEX #index ], 
+             LKEYS.KEYREL #keyrel & [ ARG0 #index ] ] ].
+
 
 ; ERB 2007-02-26 For modifiers. Elements that have a double life
 ; as attributive and predicative become tricky.  Attributive adjectives
@@ -3269,7 +3288,7 @@ basic-noun-lex := norm-sem-lex-item & basic-icons-lex-item &
 ; language-specific.  In this case, however, it does not concern
 ; a mapping to ARG-ST.
 
-basic-determiner-lex := norm-hook-lex-item & 
+basic-determiner-lex := no-ltop-lex-item & 
   [ SYNSEM [ LOCAL [ CAT [ HEAD det,
 			   VAL.SPEC.FIRST.LOCAL.CONT.HOOK [ INDEX #ind,
 							    LTOP #larg ]],
