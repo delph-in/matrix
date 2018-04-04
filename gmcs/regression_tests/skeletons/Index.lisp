@@ -22,6 +22,9 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "adnom-poss-mod-dep-aff-head-non-aff-hf") (:content . "adnom-poss-mod-dep-aff-head-non-aff-hf: Head non-affixally marked, spec non-affixally marked, head final poss construction w mod-like attachment"))
+((:path . "adnom-poss-mod-dep-non-aff-head-non-aff-hf") (:content . "adnom-poss-mod-dep-non-aff-head-non-aff-hf: Head non-affixally marked, spec affixally marked, head final poss construction w mod-like attachment"))
+((:path . "adnom-poss-mod-head-non-aff-hf") (:content . "adnom-poss-mod-head-non-aff-hf: Head non-affixally marked, head final poss construction w mod-like attachment"))
 ((:path . "clausalmods-rukai") (:content . "clausalmods-rukai: an illustrative grammar for clausal modifiers based on rukai"))
 ((:path . "clausalmods-uranina") (:content . "clausalmods-uranina: a held out test for clausal modifiers based on uranina"))
 ((:path . "clausalmods-moseten") (:content . "clausalmods-moseten: a held out test for clausal modifiers based on moseten"))
