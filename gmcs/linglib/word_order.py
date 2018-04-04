@@ -732,33 +732,8 @@ def customize_np_word_order(mylang, ch, rules):
     # the Bare NP phrase.  Eventually there will be some choices about
     # this (given an appropriate module).  For now, use this stand in.
 
-    # EKN 2018-01-30 In cases where there is a possessum-marked 
-    # possessive strategy in the language, pronouns that have gone 
-    # through bare-np-phrase cannot be SPEC < >, since they must appear 
-    # as possessors in the specifier slot in at least some cases; in 
-    # other cases, pronouns have nothing on their SPEC list. This check 
-    # inserts the constraint that the bare-np-phrase be SPEC < > in all
-    # cases but those where a possessum-marking possessive strategy with 
-    # spec-like attachment exists.
-
-    # Default constraint on spec:
-    spec_constraint='SYNSEM.LOCAL.CAT.VAL.SPEC < >, \
-                        '
-    # Check for possessum-marking only:
-    # TODO: try adding same spec constraint here as in pronoun case below
-    possessum_marking=False
-    for strat in ch.get('poss-strat'):
-        if strat.get('mark-loc')=='possessum' and strat.get('mod-spec')=='spec':
-            spec_constraint=''
-    # Check for spec-like possessor pronouns:
-    spec_pron=False
-    for pron in ch.get('poss-pron'):
-        if pron.get('mod-spec')=='spec':
-            spec_constraint='SYNSEM.LOCAL.CAT.VAL.SPEC #spec, \
-                             HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPEC #spec,\
-                             '
     mylang.add('bare-np-phrase := basic-bare-np-phrase &\
-                 [ '+spec_constraint+' C-CONT.RELS <! [ PRED \"exist_q_rel\" ] !> ].',
+                 [ C-CONT.RELS <! [ PRED \"exist_q_rel\" ] !> ].',
                     'Bare NP phrase.  Consider modifying the PRED value of the quantifier relation\nintroduced to match the semantic effect of bare NPs in your language.')
 
     rules.add('bare-np := bare-np-phrase.')

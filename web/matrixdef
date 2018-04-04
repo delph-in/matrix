@@ -495,6 +495,11 @@ BeginIter poss-strat{i} "a possessive strategy"
 
      	   Label "<div id='possessor-non-affix{i}' style='display:none'>"
 
+	   Radio possessor-mark-order "Mark Order" "<p>Does the word that marks the possessor appear before or after it?</p>" ""
+	   . head-initial "Marker before" "" "before<br>"
+	   . head-final "Marker after" "" "after<br>"
+	   . either "Marter either order" "" "either<br>"
+
 	   Radio pronoun-allow "Pronoun allowability" "<p>Can the possessor marked by this word or clitic be a pronoun?</p>" ""
 	   . yes "Pronouns allowed" "" "yes<br>"
 	   . no "Pronouns disallowed" "" "no<br>"
@@ -581,6 +586,11 @@ BeginIter poss-strat{i} "a possessive strategy"
 
            Label "<div id='possessum-non-affix{i}' style='display:none'>"
 
+	   Radio possessum-mark-order "Mark Order" "<p>Does the word that marks the possessum appear before or after it?</p>" ""
+	   . head-initial "Marker before" "" "before<br>"
+	   . head-final "Marker after" "" "after<br>"
+	   . either "Marter either order" "" "either<br>"
+
            Radio possessum-agr "Possessum agreement" "<p>Does the possessum-marking word or clitic agree with the possessor?</p>" ""
            . agree "Possessum agree" "" "yes<br>" "toggle_element.call(this, 'possessum-agr{i}', 'on'); toggle_element.call(this, 'possessum-non-agr{i}', 'off');"
            . non-agree "Possessum non agree" "" "no<br>"  "toggle_element.call(this, 'possessum-agr{i}', 'off');toggle_element.call(this, 'possessum-non-agr{i}', 'on');"
@@ -648,10 +658,10 @@ BeginIter poss-pron{i} "a class of possessor pronouns"
     . either "either" "" "either<br>"
 
     Radio mod-spec "Modifier or Specifier" "<p>Does the possessor function more like a modifier or a specifier?</p>" ""
-    . mod "Modifier" "" "modifier<br>"
+    . mod "Modifier" "" "modifier<br>" 
     . spec "Specifier" "" "specifier<br>"
 
-    Radio agr "Pronominal agreement" "<p>Do these pronouns agree with the possessum in person, number, or gender?</p>" ""
+    Radio agr "Pronominal agreement" "<p>Do these pronouns agree with the possessum in person, number, gender, case, or other features?</p>" ""
     . agree "agree" "" "yes<br>"
     . non-agree "non-agree" "" "no<br>"
 
@@ -673,9 +683,9 @@ BeginIter poss-pron{i} "a class of possessor pronouns"
 
       EndIter feat
 
-      Label "<p>Add any agreement features (person, number, or gender) to this pronoun that agree with the possessum:</p>"
+      Label "<p>Add any <b>person, number, or gender</b> agreement features to this pronoun that agree with the possessum:</p>"
   
-      BeginIter agr-feat{k} "an agreement feature to this pronoun"
+      BeginIter agr-feat{k} "a PNG agreement feature to this pronoun"
 
          Select name "Possessive pronoun {i}  Instance {j} Feature {k} Name" "Name: " " "
          fillnames c=noun
@@ -684,6 +694,18 @@ BeginIter poss-pron{i} "a class of possessor pronouns"
          fillvalues p=poss-pron{i}_instance{j}_agr-feat{k}_name
 
       EndIter agr-feat
+
+      Label "<p>Add any agreement features <b>other</b> than person, number, or gender to this pronoun that agree with the possessum:</p>"
+
+      BeginIter non-png-feat{k} "a non-PNG agreement feature to this pronoun"
+
+         Select name "Possessive pronoun {i}  Instance {j} Feature {k} Name" "Name: " " "
+         fillnames c=noun
+
+         MultiSelect value "Possessive pronoun {i} Instance {j} Feature {k} Value" "Value: " ""
+         fillvalues p=poss-pron{i}_instance{j}_non-png-feat{k}_name
+
+      EndIter non-png-feat
 
     EndIter instance
 

@@ -260,6 +260,17 @@ def create_lexical_rule_type(lrt, mtx_supertypes, cur_pc):
              feat['value']=='nonpossessive':
             new_lrt.possessive=feat['value']
             new_lrt.poss_strat_num = feat['name'][-1]
+        elif 'poss-pron' in feat['name'] and\
+             'possessum' not in feat['name']:
+            if feat['value']=='minus':
+                new_lrt.possessive='nonpossessive'
+                new_lrt.poss_strat_num = feat['name'][-1]
+            # This'll mark the lrt as a possessive type of
+            # some kind, though it won't actually be used 
+            # to add any tdl here. It'll just prevent this
+            # lrt from getting a default supertype added.
+            elif feat['value']=='plus':
+                new_lrt.possessive='pron'
         # EKN 2018-02-17 Add info about lrts for possessum marking 
         # that accompanies pronoun possessors:
         elif '_possessum' in feat['name']: #TODO: improve feature name and retrieval
@@ -541,7 +552,9 @@ def percolate_supertypes(pc):
                 # EKN 2017-12-18 Possessive lexical rules have too much variation to 
                 # add any supertype but lex-rule, but adding this causes inheritance issues.
                 # So no supertypes for possessive rules are added here; instead, supertypes
-                # are handled by write_possessive_behavior().
+                # are handled by write_possessive_behavior(). If any other lrt shares a pc
+                # with a possessive rule, it wil have its specific supertypes added
+                # in write_possessive_behavior() as well.
                 elif not pc.has_possessive():
                     x.supertypes.add('add-only-no-ccont-rule')
 
@@ -856,6 +869,11 @@ def write_possessive_behavior(pc,lrt,mylang,choices):
         nonpossessive_rule_name='nonpossessive-lex-rule-'+lrt.poss_strat_num
         mylang.add(nonpossessive_rule_name+NON_POSS_LEX_RULE_DEFN,section='lexrules')
         lrt.supertypes.add(nonpossessive_rule_name)
+    # If a non-possessive rule is in the same pc as a possessive rule, make 
+    # sure it isn't missing supertypes. Note: to keep this simple, validating
+    # against all but 'generic' lrts:
+    elif lrt.possessive==None and pc.has_possessive():
+        lrt.supertypes.add('add-only-no-ccont-rule')
 
 def write_valence_change_behavior(pc, lrt, mylang, choices):
     from gmcs.linglib.valence_change import lexrule_name, added_argnum_for_vchop
@@ -1129,7 +1147,10 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
                'A given rule can only be marked for one possessive behavior.')
     # EKN 2018-01-09: Check that only PNG features are 
     # added as agreement features to possessive strategies
-    png_feats=set(['person','number','gender'])
+    png_feats=set(['person','number','gender','pernum'])
+    for feat in choices.get('feature'):
+        if feat.get('type')!='type':
+            png_feats.add(feat.get('name'))
     for feat_key in other_feats:
         if (poss_strats or poss_prons) and other_feats[feat_key][0] not in png_feats:
             vr.err(feat_key+'_name',
@@ -1161,8 +1182,6 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
                     mess='Only possessive rules should have features specified on ' +\
                         'anything other than \'itself.\''
                     vr.err(feat.full_key+'_head', mess)
-   
-       
 
     # TJT 2014-08-21: Incorporated Adjective validation
     if incorp:
@@ -1388,7 +1407,6 @@ def hierarchy_validation(choices, pc, vr):
                        "redundant link that will result in an LKB error.  "+t+
                        " is both an immediate supertype of "+lrt.full_key+" and also "+
                        "an ancestor of another supertype.")
-
 
 # check for a cycle in the inputs
 def cycle_validation(choices, vr):

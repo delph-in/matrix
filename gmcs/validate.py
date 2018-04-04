@@ -1566,7 +1566,14 @@ def validate_nominalized_clauses(ch, vr):
 # validate_adnominal_possession(ch, vr)
 #   Validate the user's choices about adnominal possession
 def validate_adnominal_possession(ch, vr):
-    png_feats=set(['person','number','gender'])
+    png_feats=set(['person','number','gender','pernum'])
+    for feat in ch.get('feature'):
+        if feat.get('type')!='type':
+            png_feats.add(feat.get('name'))
+    # Add any user-defined non-syntactic feats:
+    for feat in ch.get('feature'):
+        if feat.get('type','')!='head':
+            png_feats.add(feat.get('name',''))
     for strat in ch.get('poss-strat'):
         # CHECK THAT ALL THE CHOICES ARE CHOSEN
         # Require basic input for all possessive strategies:
@@ -1637,11 +1644,11 @@ def validate_adnominal_possession(ch, vr):
             # Require input for non-affix possessum-marking
             elif strat.get('possessum-type')=='non-affix':
                 # Rule out the scenario: mod-like attachment + non-affixal possessum mark
-                if strat.get('mod-spec')=='mod':
-                    mess='A modifier-like analysis is not supported in the case where '+ \
-                         'the possessum is marked by a separate word or clitic. ' + \
-                         'Please select a modifier-like analysis.'
-                    vr.err(strat.full_key+'_mod-spec',mess)
+#                if strat.get('mod-spec')=='mod':
+#                    mess='A modifier-like analysis is not supported in the case where '+ \
+#                         'the possessum is marked by a separate word or clitic. ' + \
+#                         'Please select a modifier-like analysis.'
+#                    vr.err(strat.full_key+'_mod-spec',mess)
 #                if not strat.get('possessum-marker-order'):
 #                    mess='You must indicate the word order of the possessum-marking word.'
 #                    vr.err(strat.full_key+'_possessum-marker-order',mess)
@@ -1654,10 +1661,10 @@ def validate_adnominal_possession(ch, vr):
                         mess='You must give the possessum marker\'s orthographic form.'
                         vr.err(strat.full_key+'_possessum-orth',mess)
                 # Require input for the case when the possessum-marking word does do agreement
-                elif strat.get('possessum-agr')=='agree':
-                    mess='Agreement between a possessum-marking word or clitic '+\
-                         'and the possessor is not supported.'
-                    vr.err(strat.full_key+'_possessum-agr',mess)
+#                elif strat.get('possessum-agr')=='agree':
+#                    mess='Agreement between a possessum-marking word or clitic '+\
+#                         'and the possessor is not supported.'
+#                    vr.err(strat.full_key+'_possessum-agr',mess)
 
                     
 #                    for form in strat.get('possessum-form'):
@@ -1692,19 +1699,19 @@ def validate_adnominal_possession(ch, vr):
                 mess='You must specify the whether this pronoun affix appears with determiners or not.'
                 vr.err(pron.full_key+'_mod-spec',mess)
         elif pron.get('type')=='non-affix':
-            if pron.get('possessum-mark')=='yes':
-                if pron.get('possessum-mark-type')=='non-affix':
-                    if pron.get('mod-spec')=='mod':
-                        mess='This option is not supported when the possessum is marked by a '+\
-                             'separate word or clitic. Please select specifier-like possessor '+\
-                             'pronouns. If you have evidence of a language that requires this '+\
-                             'analysis, please contact the developers of the Matrix.'
-                        vr.err(pron.full_key+'_mod-spec',mess)
+#            if pron.get('possessum-mark')=='yes':
+#                if pron.get('possessum-mark-type')=='non-affix':
+#                    if pron.get('mod-spec')=='mod':
+#                        mess='This option is not supported when the possessum is marked by a '+\
+#                             'separate word or clitic. Please select specifier-like possessor '+\
+#                             'pronouns. If you have evidence of a language that requires this '+\
+#                             'analysis, please contact the developers of the Matrix.'
+#                        vr.err(pron.full_key+'_mod-spec',mess)
             if not pron.get('order'):
                 mess='You must specify the order this pronoun appears in.'
                 vr.err(pron.full_key+'_order',mess)
             if not pron.get('mod-spec'):
-                mess='You must specify the whether this pronoun affix appears with determiners or not.'
+                mess='You must specify the whether this pronoun appears with determiners or not.'
                 vr.err(pron.full_key+'_mod-spec',mess)
             if not pron.get('agr'):
                 mess='You must specify the whether this pronoun affix agrees with the possessum.'
@@ -1730,21 +1737,27 @@ def validate_adnominal_possession(ch, vr):
                     if not feat.get('value'):
                         mess='You must give a value for this feature.'
                         vr.err(feat.full_key+'_value',mess)
+                for feat in inst.get('non-png-feat'):
+                    if pron.get('mod-spec')=='spec':
+                        mess='Agreement for features other than person, number, and gender '+\
+                            'is not currently supported for specifier-like pronouns. '+\
+                            'Modifier-like pronouns are supported.'
+                        vr.err(feat.full_key+'_name',mess)
 #        if not pron.get('possessum-mark'):
 #            mess='You must specify the whether this pronoun affix appears with possessum marking or not.'
 #            vr.err(pron.full_key+'_possessum-mark',mess)
-        if pron.get('possessum-mark')=='yes':
+#        if pron.get('possessum-mark')=='yes':
 #            if not pron.get('possessum-mark-type'):
 #                mess='You must specify the type of the possessum marking.'
 #                vr.err(pron.full_key+'_possessum-mark-type',mess)
 #            if not pron.get('possessum-agr'):
 #                mess='You must specify if the possessum marking agrees with the possessor.'
 #                vr.err(pron.full_key+'_possessum-agr',mess)
-            if pron.get('possessum-agr')=='agree':
-                if pron.get('possessum-mark-type')=='non-affix':
-                    mess='Agreement between a possessum-marking word or clitic '+\
-                         'and the possessor is not supported.'
-                    vr.err(pron.full_key+'_possessum-agr',mess)
+#            if pron.get('possessum-agr')=='agree':
+#                if pron.get('possessum-mark-type')=='non-affix':
+#                    mess='Agreement between a possessum-marking word or clitic '+\
+#                         'and the possessor is not supported.'
+#                    vr.err(pron.full_key+'_possessum-agr',mess)
             
         
 def validate(ch, extra = False):
