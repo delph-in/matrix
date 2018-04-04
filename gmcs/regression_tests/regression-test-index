@@ -459,3 +459,4 @@ clausalmods-rukai=an illustrative grammar for clausal modifiers based on rukai
 adnom-poss-mod-head-non-aff-hf=Head non-affixally marked, head final poss construction w mod-like attachment
 adnom-poss-mod-dep-non-aff-head-non-aff-hf-agr-mut=Head non-affixally marked, spec affixally marked, head final poss construction w mod-like attachment, head agr with dep
 adnom-poss-mod-dep-non-aff-head-non-aff-hf-sov-right-marker=Head and dep non-affixally mark w mod-like attachment, and only one kind of head-comp order
+adnom-poss-mod-dep-non-aff-head-aff-hf-sov-marker-left=Dep non-affixally marked, head affixally marked w mod-like attachment, and possessor marker taking opposite ordering from possessive phrase

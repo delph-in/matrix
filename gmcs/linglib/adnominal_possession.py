@@ -342,7 +342,6 @@ def check_hc_order_manip(ch,strat,hc):
             st.get('possessum-type')=='non-affix' and\
             st_head_mark!=st.get('order') :
             conflict=True
-
     return order_manip,default_init,head_comp_order,conflict
 
 
