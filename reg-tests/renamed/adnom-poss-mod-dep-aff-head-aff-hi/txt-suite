@@ -1,7 +1,0 @@
-det noun2possessum  det noun1possessor itr-verb3sg
-*det det noun1possessor noun2possessum  itr-verb3sg
-*det noun1possessor noun2possessum  itr-verb3sg
-*noun2possessum det noun1possessor itr-verb3sg
-*det noun2 det noun1possessor itr-verb3sg
-*det noun2possessum det noun1 itr-verb3sg
-

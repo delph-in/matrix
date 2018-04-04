@@ -1,0 +1,8 @@
+det possessor1sg possessum1sgagr noun1 itr-verb3sg
+
+*det possessor1sg noun1 itr-verb3sg
+*possessor1sg possessum1sgagr noun1 itr-verb3sg
+*det possessor1sg itr-verb3sg
+*det possessor1sg noun1 possessum1sgagr itr-verb3sg
+*possessor1sg det possessum1sgagr noun1 itr-verb3sg
+*possessor1sg possessum1sgagr det noun1 itr-verb3sg

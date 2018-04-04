@@ -1746,18 +1746,18 @@ def validate_adnominal_possession(ch, vr):
 #        if not pron.get('possessum-mark'):
 #            mess='You must specify the whether this pronoun affix appears with possessum marking or not.'
 #            vr.err(pron.full_key+'_possessum-mark',mess)
-        if pron.get('possessum-mark')=='yes':
+#        if pron.get('possessum-mark')=='yes':
 #            if not pron.get('possessum-mark-type'):
 #                mess='You must specify the type of the possessum marking.'
 #                vr.err(pron.full_key+'_possessum-mark-type',mess)
 #            if not pron.get('possessum-agr'):
 #                mess='You must specify if the possessum marking agrees with the possessor.'
 #                vr.err(pron.full_key+'_possessum-agr',mess)
-            if pron.get('possessum-agr')=='agree':
-                if pron.get('possessum-mark-type')=='non-affix':
-                    mess='Agreement between a possessum-marking word or clitic '+\
-                         'and the possessor is not supported.'
-                    vr.err(pron.full_key+'_possessum-agr',mess)
+#            if pron.get('possessum-agr')=='agree':
+#                if pron.get('possessum-mark-type')=='non-affix':
+#                    mess='Agreement between a possessum-marking word or clitic '+\
+#                         'and the possessor is not supported.'
+#                    vr.err(pron.full_key+'_possessum-agr',mess)
             
         
 def validate(ch, extra = False):
