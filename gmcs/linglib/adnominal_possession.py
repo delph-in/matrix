@@ -326,6 +326,11 @@ def check_hc_order_manip(ch,strat,hc):
         if head_mark_order:
             if head_mark_order != head_comp_order:
                 order_manip=True
+    # Checks if the possessum-marking with pronoun case reqs order manipulation
+    if strat.get('possessum-mark')=='yes':
+        if strat.get('possessum-mark-type')=='non-affix':
+            if head_mark_order != strat_order or head_mark_order != head_comp_order:
+                order_manip=True
                 
     # If you have the very specific scenario where both the
     # major and minor phrase types are head-comps and they
@@ -1171,7 +1176,8 @@ def customize_possessum_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod
     hc=customize_major_constituent_order(ch.get('word-order'),mylang,ch,rules)['hc']    
     order_manip,default_init,head_comp_order,conflict=check_hc_order_manip(ch,strat,hc)
     if order_manip:
-        marker_order=strat.get('possessor-mark-order')
+        marker_order=strat.get('possessum-mark-order')
+
         # Temporary fix: If the marker order differs from the major
         # phrase order, underconstrain the ordering and then just let 
         # the user know that overgeneration will happen.
