@@ -1,12 +1,11 @@
 
-version=28
+version=31
 
 section=general
-language=adnom-poss-mod-dep-aff-head-non-aff-hf
-comment=This is a sample choices file which exercises only a small range of the information provided by the customization system, in order to create a grammar for a very small fragment of English. It describes and SVO language with a small vocabulary drawn from English and subset of the (already simple) English verbal agreement paradigm.  Where it was not possible to leave a section blank, we have said the language does not manifest the phenomenon, even when this is not actually correct for English.
+language=adnom-poss-mod-dep-non-aff-head-non-aff-hf-sov-right-marker
 
 section=word-order
-word-order=svo
+word-order=sov
 has-dets=yes
 noun-det-order=det-noun
 has-aux=no
@@ -24,6 +23,20 @@ section=gender
 section=case
 case-marking=none
 
+section=adnom-poss
+  poss-strat1_order=head-final
+  poss-strat1_mod-spec=mod
+  poss-strat1_mark-loc=both
+  poss-strat1_pronoun-allow=no
+  poss-strat1_possessor-type=non-affix
+  poss-strat1_possessor-mark-order=head-final
+  poss-strat1_possessor-agr=non-agree
+  poss-strat1_possessor-orth=POSSESSOR
+  poss-strat1_possessum-type=non-affix
+  poss-strat1_possessum-mark-order=head-final
+  poss-strat1_possessum-agr=non-agree
+  poss-strat1_possessum-orth=POSSESSUM
+
 section=direct-inverse
 scale-equal=direct
 
@@ -34,7 +47,6 @@ section=evidentials
 section=other-features
 
 section=sentential-negation
-vpc-0-neg=create
 
 section=coordination
 
@@ -43,6 +55,12 @@ section=matrix-yes-no
 section=info-str
 
 section=arg-opt
+
+section=nominalclause
+
+section=clausal-comp
+
+section=clausalmods
 
 section=lexicon
   noun1_name=common
@@ -76,19 +94,6 @@ section=morphology
       noun-pc1_lrt2_feat1_head=itself
       noun-pc1_lrt2_lri1_inflecting=yes
       noun-pc1_lrt2_lri1_orth=PL
-  noun-pc2_name=possessive
-  noun-pc2_obligatory=on
-  noun-pc2_order=suffix
-  noun-pc2_inputs=noun-pc1
-    noun-pc2_lrt1_name=possessor
-      noun-pc2_lrt1_feat1_name=poss-strat1
-      noun-pc2_lrt1_feat1_value=possessor
-      noun-pc2_lrt1_lri1_inflecting=yes
-      noun-pc2_lrt1_lri1_orth=POSSESSOR
-    noun-pc2_lrt2_name=nonpossessive
-      noun-pc2_lrt2_feat1_name=poss-strat1
-      noun-pc2_lrt2_feat1_value=nonpossessive
-      noun-pc2_lrt2_lri1_inflecting=no
   verb-pc1_name=pernum
   verb-pc1_obligatory=on
   verb-pc1_order=suffix
@@ -122,14 +127,3 @@ section=test-sentences
 section=gen-options
 
 section=ToolboxLexicon
-
-section=adnom-poss
-  poss-strat1_order=head-final
-  poss-strat1_mod-spec=mod
-  poss-strat1_mark-loc=both
-  poss-strat1_possessum-type=non-affix
-  poss-strat1_possessum-mark-order=head-initial
-  poss-strat1_possessum-agr=non-agree
-  poss-strat1_possessum-orth=POSSESSUM
-  poss-strat1_possessor-type=affix
-  poss-strat1_possessor-affix-agr=non-agree

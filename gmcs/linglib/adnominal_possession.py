@@ -285,6 +285,8 @@ def customize_pronominal_possession(mylang,ch,rules,irules,lexicon,hierarchies):
 # Add phrase rules
 #########################################################################################
 
+# Helper function to determine if you'll need to
+# manipulate the order of head-comp rules:
 def check_hc_order_manip(ch,strat,hc):
 
     # Order of major poss phrase
@@ -330,6 +332,7 @@ def check_hc_order_manip(ch,strat,hc):
     # have different order, then don't add INIT features.
     # Check ALL strategies, so that INIT isn't added if 
     # even one strategy would object.
+    conflict=False
     for st in ch.get('poss-strat'):
         st_head_mark=st.get('possessum-mark-order')
         if not st_head_mark:
@@ -338,9 +341,9 @@ def check_hc_order_manip(ch,strat,hc):
             (st.get('mark-loc')=='possessum' or 'both') and\
             st.get('possessum-type')=='non-affix' and\
             st_head_mark!=st.get('order') :
-            order_manip=False
+            conflict=True
 
-    return order_manip,default_init,head_comp_order
+    return order_manip,default_init,head_comp_order,conflict
 
 
 """
@@ -440,7 +443,7 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
         # if not, add a new rule with correct order. Add the INIT feature so that
         # poss head-comp order can be distinguished from the general order.
         hc=customize_major_constituent_order(ch.get('word-order'),mylang,ch,rules)['hc']
-        order_manip,default_init,head_comp_order=check_hc_order_manip(ch,strat,hc)
+        order_manip,default_init,head_comp_order,conflict=check_hc_order_manip(ch,strat,hc)
         if order_manip:
             # In order to play nice with the wo library, you have to 
             # not inherit directly from head-initial and head-final 
@@ -456,27 +459,30 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
             mylang.add('head :+ [ INIT bool ].', section='addenda')
             # If the order of head-comps outside this lib is head-initial:
             # TODO: maybe check  == head-initial instead of != head-final
+            init_min = '  [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT - ]' if not conflict else ''
+            init_plus = '  [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT + ]' if not conflict else ''
             if head_comp_order!='head-final':
                 # Add new rule:
-                mylang.add('comp-head-phrase := basic-head-1st-comp-phrase & '+hf+' &\
-                                     [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT - ].',section='phrases')
+                mylang.add('comp-head-phrase := basic-head-1st-comp-phrase & '+hf+' & '+init_min+'.',section='phrases')
                 rules.add('comp-head := comp-head-phrase.')
                 # Add INIT to old rule:
-                mylang.add('head-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT + ].')
-                if ch.get('word-order')=='free' or ch.get('word-order')=='v2':
-                    mylang.add('head-comp-phrase-2 := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT + ].')
-                    mylang.add('comp-head-phrase-2 := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT - ].')
+                if not conflict:
+                    mylang.add('head-comp-phrase := '+init_plus+'.')
+                if (ch.get('word-order')=='free' or ch.get('word-order')=='v2') and not conflict:
+                    mylang.add('head-comp-phrase-2 := '+init_plus+'.')
+                    mylang.add('comp-head-phrase-2 := '+init_min+'.')
                 # If the order of head-comps outside this lib is head-final:
             elif head_comp_order!='head-initial':
                 # Add new rule:
                 mylang.add('head-comp-phrase := basic-head-1st-comp-phrase & '+hi+' &\
-                                     [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT + ].',section='phrases')
+                                     '+init_plus+'.',section='phrases')
                 rules.add('head-comp := head-comp-phrase.')
                 # Add INIT to old rule:
-                mylang.add('comp-head-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT - ].')
-                if ch.get('word-order')=='free' or ch.get('word-order')=='v2':
-                    mylang.add('head-comp-phrase-2 := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT + ].')
-                    mylang.add('comp-head-phrase-2 := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT - ].')
+                if not conflict:
+                    mylang.add('comp-head-phrase := '+init_min+'.')
+                if (ch.get('word-order')=='free' or ch.get('word-order')=='v2') and not conflict:
+                    mylang.add('head-comp-phrase-2 := '+init_plus+'.')
+                    mylang.add('comp-head-phrase-2 := '+init_min+'.')
 
             # If general order of head-comps is more restricted, add the correct default INIT 
             # value for non-poss lexical items:
@@ -839,7 +845,7 @@ def customize_possessum_irules(strat,mylang,rules,ch,strat_num,mod_spec,mark_loc
 #            if head_comp_order!=strat_order and strat_order!='either':
 #                init_val='+' if strat_order=='head-initial' else '-'
             hc=customize_major_constituent_order(ch.get('word-order'),mylang,ch,rules)['hc']    
-            order_manip,default_init,head_comp_order=check_hc_order_manip(ch,strat,hc)
+            order_manip,default_init,head_comp_order,conflict=check_hc_order_manip(ch,strat,hc)
             if order_manip:
                 init='+' if strat.get('order')=='head-initial' else '-'
                 if strat.get('order')!='either':
@@ -1020,7 +1026,7 @@ def customize_possessor_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod
 
     # Check if ordering info needs to be added to adp
     hc=customize_major_constituent_order(ch.get('word-order'),mylang,ch,rules)['hc']    
-    order_manip,default_init,head_comp_order=check_hc_order_manip(ch,strat,hc)
+    order_manip,default_init,head_comp_order,conflict=check_hc_order_manip(ch,strat,hc)
     if order_manip:
         marker_order=strat.get('possessor-mark-order')
         # Temporary fix: If the marker order differs from the major
@@ -1164,7 +1170,7 @@ def customize_possessum_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod
     # Check if ordering info needs to be added to adp
     init='bool'
     hc=customize_major_constituent_order(ch.get('word-order'),mylang,ch,rules)['hc']    
-    order_manip,default_init,head_comp_order=check_hc_order_manip(ch,strat,hc)
+    order_manip,default_init,head_comp_order,conflict=check_hc_order_manip(ch,strat,hc)
     if order_manip:
         marker_order=strat.get('possessor-mark-order')
         # Temporary fix: If the marker order differs from the major

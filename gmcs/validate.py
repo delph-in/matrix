@@ -1661,10 +1661,10 @@ def validate_adnominal_possession(ch, vr):
                         mess='You must give the possessum marker\'s orthographic form.'
                         vr.err(strat.full_key+'_possessum-orth',mess)
                 # Require input for the case when the possessum-marking word does do agreement
-                elif strat.get('possessum-agr')=='agree':
-                    mess='Agreement between a possessum-marking word or clitic '+\
-                         'and the possessor is not supported.'
-                    vr.err(strat.full_key+'_possessum-agr',mess)
+#                elif strat.get('possessum-agr')=='agree':
+#                    mess='Agreement between a possessum-marking word or clitic '+\
+#                         'and the possessor is not supported.'
+#                    vr.err(strat.full_key+'_possessum-agr',mess)
 
                     
 #                    for form in strat.get('possessum-form'):

@@ -457,5 +457,5 @@ clausalmods-moseten=a held out test for clausal modifiers based on moseten
 clausalmods-uranina=a held out test for clausal modifiers based on uranina
 clausalmods-rukai=an illustrative grammar for clausal modifiers based on rukai
 adnom-poss-mod-head-non-aff-hf=Head non-affixally marked, head final poss construction w mod-like attachment
-adnom-poss-mod-dep-non-aff-head-non-aff-hf=Head non-affixally marked, spec affixally marked, head final poss construction w mod-like attachment
-adnom-poss-mod-dep-aff-head-non-aff-hf=Head non-affixally marked, spec non-affixally marked, head final poss construction w mod-like attachment
+adnom-poss-mod-dep-non-aff-head-non-aff-hf-agr-mut=Head non-affixally marked, spec affixally marked, head final poss construction w mod-like attachment, head agr with dep
+adnom-poss-mod-dep-non-aff-head-non-aff-hf-sov-right-marker=Head and dep non-affixally mark w mod-like attachment, and only one kind of head-comp order
