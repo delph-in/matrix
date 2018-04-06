@@ -628,7 +628,7 @@ BeginIter poss-strat{i} "a possessive strategy"
      Label "</div>"                                                                                                                                                                                         
 EndIter poss-strat
 
-Label "<p>In some constructions, the possessor can be a pronoun. If the possessor pronoun is identical to non-possessive pronouns and can appear in the same contexts as non-pronominal possessors, then it can be covered by adding a possessive strategy using the above button, and indicating that the possessor may be a pronoun. However, if the possessor pronouns are not identical to non-possessive pronouns, then they should be added as a class of <b>possessor pronouns</b> below. This includes possessor pronouns which appear as affixes on the possessum. See the documentation link above for examples of all of the above.</p> <p> <b>NOTE:</b> Currently, cases where pronouns are made possessive by adding affixes that are identical to the possessive affixes that other nouns take should be entered as possessor pronouns below, and analyzed as atomic units, rather than as pronoun+affix. This page is currently under development and this is subject to change. </p>"
+Label "<p>In some constructions, the possessor can be a pronoun. Possessor pronouns which constitute entirely novel forms can be entered as <b>classes of possessor pronouns</b> below. If the possessor pronoun is identical to non-possessive pronouns and can appear in the same contexts as non-pronominal possessors, then it can be covered by adding a possessive strategy using the above button, and indicating that the possessor may be a pronoun. Likewise, if the possessor pronoun is formed by inflecting pronouns in the same manner as common nouns, it can be covered by a possessive strategy above. </p>"
 
 BeginIter poss-pron{i} "a class of possessor pronouns"
 
@@ -732,6 +732,11 @@ BeginIter poss-pron{i} "a class of possessor pronouns"
           Label "</div>"
 
      	   Label "<div id='possessum-mark-non-affix{i}' style='display:none'>"
+
+	   Radio possessum-mark-order "Mark Order" "<p>Does the word that marks the possessum appear before or after it?</p>" ""
+	   . head-initial "Marker before" "" "before<br>"
+	   . head-final "Marker after" "" "after<br>"
+	   . either "Marter either order" "" "either<br>"
 
            Text possessum-orth "Possessum word orth" "<br>The possessum-marking word is spelled " "<br>" 15
 	   
