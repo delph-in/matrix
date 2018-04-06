@@ -1598,9 +1598,9 @@ def validate_adnominal_possession(ch, vr):
                     vr.err(strat.full_key+'_possessor-agr',mess)
             # Require input for non-affix possessor-marking
             elif strat.get('possessor-type')=='non-affix':
-#                if not strat.get('possessor-marker-order'):
-#                    mess='You must indicate the word order of the possessor marking word.'
-#                    vr.err(strat.full_key+'_possessor-marker-order',mess)
+                if not strat.get('possessor-mark-order'):
+                    mess='You must indicate the word order of the possessor marking word.'
+                    vr.err(strat.full_key+'_possessor-marker-order',mess)
                 if not strat.get('possessor-agr'):
                     mess='You must indicate whether the possessor affix agrees with the possessum.'
                     vr.err(strat.full_key+'_possessor-agr',mess)
@@ -1644,14 +1644,16 @@ def validate_adnominal_possession(ch, vr):
             # Require input for non-affix possessum-marking
             elif strat.get('possessum-type')=='non-affix':
                 # Rule out the scenario: mod-like attachment + non-affixal possessum mark
-#                if strat.get('mod-spec')=='mod':
-#                    mess='A modifier-like analysis is not supported in the case where '+ \
-#                         'the possessum is marked by a separate word or clitic. ' + \
-#                         'Please select a modifier-like analysis.'
-#                    vr.err(strat.full_key+'_mod-spec',mess)
-#                if not strat.get('possessum-marker-order'):
-#                    mess='You must indicate the word order of the possessum-marking word.'
-#                    vr.err(strat.full_key+'_possessum-marker-order',mess)
+                if strat.get('mod-spec')=='mod':
+                    if strat.get('possessum-mark-order'):
+                        if strat.get('possessum-mark-order')!=strat.get('order'):
+                            mess='The possessum-marking word must attach to the possessum from '+ \
+                                'the same side as the possessor in the modifier-like scenario. ' + \
+                                'Please select a specifier-like analysis if possible.'
+                            vr.err(strat.full_key+'_mod-spec',mess)
+                if not strat.get('possessum-mark-order'):
+                    mess='You must indicate the word order of the possessum-marking word.'
+                    vr.err(strat.full_key+'_possessum-marker-order',mess)
                 if not strat.get('possessum-agr'):
                     mess='You must indicate whether the possessum affix agrees with the possessor.'
                     vr.err(strat.full_key+'_possessum-agr',mess)

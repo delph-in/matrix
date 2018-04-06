@@ -115,6 +115,6 @@ section=adnom-poss
   poss-strat1_mod-spec=mod
   poss-strat1_mark-loc=possessum
   poss-strat1_possessum-type=non-affix
-  poss-strat1_possessum-marker-order=head-initial
+  poss-strat1_possessum-mark-order=head-final
   poss-strat1_possessum-agr=non-agree
   poss-strat1_possessum-orth=POSSESSUM

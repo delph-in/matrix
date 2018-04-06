@@ -1,4 +1,4 @@
-### $Id: choices.py,v 1.24 2008-09-30 23:50:02 lpoulson Exp $
+ ### $Id: choices.py,v 1.24 2008-09-30 23:50:02 lpoulson Exp $
 
 ######################################################################
 # imports
@@ -577,6 +577,8 @@ class ChoicesFile:
             self.convert_29_to_30()
         if self.version < 31:
             self.convert_30_to_31()
+        if self.version < 32:
+            self.convert_31_to_32()
 
 
 
@@ -1287,7 +1289,7 @@ class ChoicesFile:
     # convert_value(), followed by a sequence of calls to convert_key().
     # That way the calls always contain an old name and a new name.
     def current_version(self):
-        return 31
+        return 32
 
     def convert_value(self, key, old, new, partial=False):
         if key in self:
@@ -2238,6 +2240,21 @@ class ChoicesFile:
         for cs in self.get('comps'):
             self.convert_key('complementizer','stem',cs.full_key)
 
+    def convert_31_to_32(self):
+        wo = self.get('word-order')
+        if wo == 'sov' or wo == 'osv' or wo == 'ovs' or wo == 'v-final':
+            hc = 'head-final'
+        elif wo == 'svo' or wo == 'vos' or wo == 'vso' or wo == 'v-initial':
+            hc = 'head-initial'
+        else:
+            hc = 'either'
+        for strat in self.get('poss-strat'):
+            if strat.get('possessor-type')=='non-affix':
+                if not strat.get('possessor-mark-order'):
+                    strat['possessor-mark-order'] = hc
+            if strat.get('possessum-type')=='non-affix':
+                if not strat.get('possessum-mark-order'):
+                    strat['possessum-mark-order'] = hc
 ########################################################################
 # FormData Class
 # This Class acts like form data which would normally
