@@ -1,0 +1,118 @@
+
+version=31
+
+section=general
+language=adnom-poss-yor
+
+punctuation-chars=discard-all
+archive=yes
+
+section=word-order
+word-order=svo
+has-dets=no
+has-aux=no
+
+section=number
+  number1_name=sg
+  number2_name=pl
+
+section=person
+person=1-2-3
+first-person=none
+
+section=gender
+
+section=case
+case-marking=none
+
+section=adnom-poss
+  poss-strat1_order=head-initial
+  poss-strat1_mod-spec=spec
+  poss-strat1_mark-loc=neither
+  poss-strat1_pronoun-allow=yes
+  poss-strat2_order=head-initial
+  poss-strat2_mod-spec=spec
+  poss-strat2_mark-loc=possessor
+  poss-strat2_pronoun-allow=yes
+  poss-strat2_possessor-type=non-affix
+  poss-strat2_possessor-affix-agr=non-agree
+  poss-strat2_possessor-agr=non-agree
+  poss-strat2_possessor-orth=ti
+
+section=direct-inverse
+
+section=tense-aspect-mood
+
+section=evidentials
+
+section=other-features
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=info-str
+
+section=arg-opt
+
+section=nominalclause
+
+section=clausal-comp
+
+section=clausalmods
+
+section=lexicon
+  noun1_name=common
+  noun1_det=imp
+    noun1_stem1_orth=ewa
+    noun1_stem1_pred=_beauty_n_rel
+    noun1_stem2_orth=iwe
+    noun1_stem2_pred=_book_n_rel
+  noun2_name=proper
+  noun2_det=imp
+    noun2_stem1_orth=Olu
+    noun2_stem1_pred=_named_n_rel
+    noun2_stem2_orth=Ade
+    noun2_stem2_pred=_named_n_rel
+  noun3_name=pronoun
+  noun3_pron=on
+  noun3_det=imp
+  noun4_name=1sg-pron
+  noun4_supertypes=noun3
+    noun4_feat1_name=person
+    noun4_feat1_value=1st
+    noun4_feat2_name=number
+    noun4_feat2_value=sg
+  noun4_det=imp
+    noun4_stem1_orth=mi
+    noun4_stem1_pred=_pron_n_rel
+  noun5_name=1pl-pron
+    noun5_feat1_name=number
+    noun5_feat1_value=pl
+    noun5_feat2_name=person
+    noun5_feat2_value=1st
+  noun5_det=imp
+    noun5_stem1_orth=wa
+    noun5_stem1_pred=_pron_n_rel
+  verb1_name=intrans
+  verb1_valence=intrans
+    verb1_stem1_orth=lo
+    verb1_stem1_pred=_go_v_rel
+    verb1_stem2_orth=sun
+    verb1_stem2_pred=_sleep_v_rel
+  verb2_name=trans
+  verb2_valence=trans
+    verb2_stem1_orth=kan
+    verb2_stem1_pred=_break_v_rel
+
+section=morphology
+
+section=toolbox-import
+
+section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon

@@ -22,6 +22,11 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "adnom-poss-fij") (:content . "adnom-poss-fij: Fijian illustrative test for adnominal possession"))
+((:path . "adnom-poss-grc") (:content . "adnom-poss-grc: Ancient Greek illustrative test for adnominal possession"))
+((:path . "adnom-poss-jpn") (:content . "adnom-poss-jpn: Japanese illustrative test for adnominal possession"))
+((:path . "adnom-poss-yor") (:content . "adnom-poss-yor: Yoruba illustrative test for adnominal possession"))
+((:path . "adnom-poss-fin") (:content . "adnom-poss-fin: Finnish illustrative test for adnominal possession."))
 ((:path . "adnom-poss-mod-head-non-aff-hf") (:content . "adnom-poss-mod-head-non-aff-hf: Mod-like strat, possessum marked w non-affix"))
 ((:path . "adnom-poss-mod-pron-head-non-aff-agr") (:content . "adnom-poss-mod-pron-head-non-aff-agr: Mod-like pron strat w head non-affixally marked, agr with dep"))
 ((:path . "adnom-poss-mod-dep-non-aff-head-aff-hf-sov-marker-left") (:content . "adnom-poss-mod-dep-non-aff-head-aff-hf-sov-marker-left: Dep non-affixally marked, head affixally marked w mod-like attachment, and possessor marker taking opposite ordering from possessive phrase"))

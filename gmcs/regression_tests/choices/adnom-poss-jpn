@@ -1,0 +1,186 @@
+
+version=31
+
+section=general
+language=adnom-poss-jpn
+
+comment=Sample grammar for Japanese.
+
+section=word-order
+word-order=v-final
+has-dets=yes
+noun-det-order=det-noun
+has-aux=yes
+aux-comp-order=after
+aux-comp=vp
+multiple-aux=no
+
+section=number
+  number1_name=sg
+  number2_name=pl
+
+section=person
+person=1-2-3
+first-person=none
+
+section=gender
+
+section=case
+case-marking=nom-acc
+nom-acc-nom-case-name=nom
+nom-acc-acc-case-name=acc
+
+section=adnom-poss
+  poss-strat1_order=head-final
+  poss-strat1_mod-spec=spec
+  poss-strat1_mark-loc=possessor
+  poss-strat1_pronoun-allow=yes
+  poss-strat1_possessor-type=non-affix
+    poss-strat1_dep-comp-feat1_name=case
+    poss-strat1_dep-comp-feat1_value=nom
+  poss-strat1_possessor-agr=non-agree
+  poss-strat1_possessor-orth=no
+
+section=direct-inverse
+
+section=tense-aspect-mood
+tense-definition=choose
+past=on
+nonpast=on
+  aspect1_name=prog
+    aspect1_supertype1_name=aspect
+
+section=evidentials
+
+section=other-features
+form-fin-nf=on
+
+section=sentential-negation
+neg-exp=1
+infl-neg=on
+
+section=coordination
+  cs1_np=on
+  cs1_pat=mono
+  cs1_mark=word
+  cs1_orth=と
+  cs1_order=after
+
+section=matrix-yes-no
+q-part-order=after
+q-part-orth=か
+
+section=info-str
+
+section=arg-opt
+subj-drop=subj-drop-all
+subj-mark-drop=subj-mark-drop-not
+subj-mark-no-drop=subj-mark-no-drop-not
+subj-con=subj-con-always
+obj-drop=obj-drop-all
+obj-mark-drop=obj-mark-drop-not
+obj-mark-no-drop=obj-mark-no-drop-not
+
+section=nominalclause
+
+section=clausal-comp
+
+section=clausalmods
+
+section=lexicon
+  noun1_name=common
+    noun1_feat1_name=person
+    noun1_feat1_value=3rd
+  noun1_det=opt
+    noun1_stem1_orth=neko
+    noun1_stem1_pred=_cat_n_rel
+    noun1_stem2_orth=nezumi
+    noun1_stem2_pred=_mouse_n_rel
+  noun2_name=pronoun
+  noun2_pron=on
+  noun2_det=imp
+  noun3_name=1sg-pron
+  noun3_supertypes=noun2
+    noun3_feat1_name=person
+    noun3_feat1_value=1st
+    noun3_feat2_name=number
+    noun3_feat2_value=sg
+  noun3_det=imp
+    noun3_stem1_orth=watashi
+    noun3_stem1_pred=_pron_n_rel
+  noun4_name=2sg-pron
+  noun4_supertypes=noun2
+    noun4_feat1_name=number
+    noun4_feat1_value=sg
+    noun4_feat2_name=person
+    noun4_feat2_value=2nd
+  noun4_det=imp
+    noun4_stem1_orth=anata
+    noun4_stem1_pred=_pron_n_rel
+  verb1_name=trans
+  verb1_valence=nom-acc
+    verb1_stem1_orth=kuu
+    verb1_stem1_pred=_eat_v_rel
+  verb2_name=intrans
+  verb2_valence=nom
+    verb2_stem1_orth=ne
+    verb2_stem1_pred=_sleep_v_rel
+  aux1_name=progressive
+  aux1_sem=no-pred
+  aux1_subj=np-comp-case
+    aux1_compfeature1_name=form
+    aux1_compfeature1_value=nonfinite
+    aux1_compfeature2_name=aspect
+    aux1_compfeature2_value=prog
+    aux1_stem1_orth=I
+  det1_name=demonstrative
+    det1_stem1_orth=sono
+    det1_stem1_pred=_exist_q_rel
+  adp1_orth=ga
+  adp1_opt=on
+  adp1_order=after
+    adp1_feat1_name=case
+    adp1_feat1_value=nom
+  adp2_orth=o
+  adp2_opt=on
+  adp2_order=after
+    adp2_feat1_name=case
+    adp2_feat1_value=acc
+
+section=morphology
+  verb-pc1_name=tense
+  verb-pc1_obligatory=on
+  verb-pc1_order=suffix
+  verb-pc1_inputs=verb
+    verb-pc1_lrt1_name=non-past
+      verb-pc1_lrt1_feat1_name=tense
+      verb-pc1_lrt1_feat1_value=nonpast
+      verb-pc1_lrt1_feat1_head=verb
+      verb-pc1_lrt1_feat2_name=form
+      verb-pc1_lrt1_feat2_value=finite
+      verb-pc1_lrt1_feat2_head=verb
+      verb-pc1_lrt1_lri1_inflecting=yes
+      verb-pc1_lrt1_lri1_orth=ru
+    verb-pc1_lrt2_name=past
+      verb-pc1_lrt2_feat1_name=tense
+      verb-pc1_lrt2_feat1_value=past
+      verb-pc1_lrt2_feat1_head=verb
+      verb-pc1_lrt2_feat2_name=form
+      verb-pc1_lrt2_feat2_value=finite
+      verb-pc1_lrt2_feat2_head=verb
+      verb-pc1_lrt2_lri1_inflecting=yes
+      verb-pc1_lrt2_lri1_orth=ta
+    verb-pc1_lrt3_name=inf
+      verb-pc1_lrt3_feat1_name=form
+      verb-pc1_lrt3_feat1_value=nonfinite
+      verb-pc1_lrt3_feat1_head=verb
+      verb-pc1_lrt3_lri1_inflecting=yes
+      verb-pc1_lrt3_lri1_orth=te
+
+section=toolbox-import
+
+section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon
