@@ -183,7 +183,8 @@ def customize_poss_addenda(mylang,ch):
 #    mylang.add('nonpossessive := poss.',section='addenda')
 #    mylang.add('possessor := possessive.',section='addenda')
 #    mylang.add('possessum := possessive.',section='addenda')
-    mylang.add('basic-bare-np-phrase :+ [ SYNSEM.LOCAL.CAT [ HEAD #head,\
+    mylang.add('basic-bare-np-phrase :+ [ SYNSEM.LOCAL.CAT [ VAL.SPEC < >,\
+                                                             HEAD #head,\
                                                              POSSESSUM #possessum],\
                                           HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD #head,\
                                                              POSSESSUM #possessum & nonpossessive ] ].',section='addenda')
@@ -774,7 +775,8 @@ def customize_possessum_irules(strat,mylang,rules,ch,strat_num,mod_spec,mark_loc
 
             mylang.add(possessum_rule_name+':=  cat-change-only-lex-rule & \
                          [ SYNSEM.LOCAL.CAT [ POSSESSUM possessum-'+strat_num+',\
-                                              VAL #val & [ SPR < [ LOCAL.CAT [ VAL.SPR < >,\
+                                              VAL #val & [ SPEC < >,\
+                                                           SPR < [ LOCAL.CAT [ VAL.SPR < >,\
                                                                                HEAD.POSSESSOR possessor-'+strat_num+' ] ] > ]  ] ,\
                             C-CONT [ HCONS <! !>, \
                                      ICONS <! !>,\

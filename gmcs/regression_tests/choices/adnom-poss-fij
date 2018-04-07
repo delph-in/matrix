@@ -1,0 +1,162 @@
+
+version=31
+
+section=general
+language=adnom-poss-fij
+
+punctuation-chars=discard-all
+archive=yes
+
+section=word-order
+word-order=free
+has-dets=yes
+noun-det-order=det-noun
+has-aux=no
+
+section=number
+  number1_name=singular
+  number2_name=non-singular
+  number3_name=dual
+    number3_supertype1_name=non-singular
+  number4_name=paucal
+    number4_supertype1_name=non-singular
+  number5_name=plural
+    number5_supertype1_name=non-singular
+
+section=person
+person=1-2-3
+first-person=incl-excl
+incl-excl-number=non-singular
+
+section=gender
+
+section=case
+case-marking=none
+
+section=adnom-poss
+  poss-strat1_order=head-initial
+  poss-strat1_mod-spec=mod
+  poss-strat1_mark-loc=possessor
+  poss-strat1_pronoun-allow=yes
+  poss-strat1_possessor-type=non-affix
+  poss-strat1_possessor-mark-order=head-initial
+    poss-strat1_dep-comp-feat1_name=proper
+    poss-strat1_dep-comp-feat1_value=+
+  poss-strat1_possessor-agr=non-agree
+  poss-strat1_possessor-orth=i
+  poss-strat2_order=head-initial
+  poss-strat2_mod-spec=mod
+  poss-strat2_mark-loc=possessor
+  poss-strat2_pronoun-allow=no
+  poss-strat2_possessor-type=non-affix
+    poss-strat2_dep-comp-feat1_name=proper
+    poss-strat2_dep-comp-feat1_value=-
+  poss-strat2_possessor-agr=non-agree
+  poss-strat2_possessor-orth=ni
+
+  poss-pron1_type=non-affix
+  poss-pron1_agr=non-agree
+  poss-pron1_mod-spec=mod
+  poss-pron1_order=head-initial
+    poss-pron1_instance1_name=2du
+    poss-pron1_instance1_orth=mudrau
+      poss-pron1_instance1_feat1_name=pernum
+      poss-pron1_instance1_feat1_value=2dual
+    poss-pron1_instance2_name=1sg
+    poss-pron1_instance2_orth=qu
+      poss-pron1_instance2_feat1_name=pernum
+      poss-pron1_instance2_feat1_value=1singular
+  poss-pron1_possessum-mark=no
+
+section=direct-inverse
+
+section=tense-aspect-mood
+
+section=evidentials
+
+section=other-features
+  feature1_name=bound
+  feature1_type=head
+  feature1_cat=noun
+  feature1_new=no
+  feature1_existing=bool
+  feature2_name=proper
+  feature2_type=head
+  feature2_cat=noun
+  feature2_new=no
+  feature2_existing=bool
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=info-str
+
+section=arg-opt
+
+section=nominalclause
+
+section=clausal-comp
+
+section=clausalmods
+
+section=lexicon
+  noun1_name=bound
+    noun1_feat1_name=bound
+    noun1_feat1_value=+
+    noun1_feat2_name=proper
+    noun1_feat2_value=-
+  noun1_det=opt
+    noun1_stem1_orth=liga
+    noun1_stem1_pred=_hand_n_rel
+  noun2_name=free
+    noun2_feat1_name=bound
+    noun2_feat1_value=-
+    noun2_feat2_name=proper
+    noun2_feat2_value=-
+  noun2_det=opt
+    noun2_stem1_orth=vale
+    noun2_stem1_pred=_house_n_rel
+    noun2_stem2_orth=tuuraga
+    noun2_stem2_pred=_chief_n_rel
+  noun3_name=pron
+  noun3_pron=on
+    noun3_feat1_name=pernum
+    noun3_feat1_value=1dual
+    noun3_feat2_name=bound
+    noun3_feat2_value=-
+    noun3_feat3_name=proper
+    noun3_feat3_value=+
+  noun3_det=opt
+    noun3_stem1_orth=eirau
+    noun3_stem1_pred=_pron_n_rel
+  noun4_name=prop
+    noun4_feat1_name=proper
+    noun4_feat1_value=+
+    noun4_feat2_name=bound
+    noun4_feat2_value=-
+  noun4_det=opt
+    noun4_stem1_orth=Jone
+    noun4_stem1_pred=_named_n_rel
+  verb1_name=itr
+  verb1_valence=intrans
+    verb1_stem1_orth=lao
+    verb1_stem1_pred=_leave_v_rel
+  det1_name=common-det
+    det1_stem1_orth=a
+    det1_stem1_pred=_exists_q_rel
+  det2_name=prop-pron-det
+    det2_stem1_orth=o
+    det2_stem1_pred=_exists_q_rel
+
+section=morphology
+
+section=toolbox-import
+
+section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon
