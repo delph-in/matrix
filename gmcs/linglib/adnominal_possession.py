@@ -425,8 +425,7 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
             init_min = '  [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT - ]' 
             init_plus = '  [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT + ]'
             # If the order of head-comps outside this lib is head-initial:
-            # TODO: maybe check  == head-initial instead of != head-final
-            if head_comp_order!='head-final':
+            if head_comp_order=='head-initial':
                 # Add new rule:
                 mylang.add('comp-head-phrase := basic-head-1st-comp-phrase & '+hf+' & '+init_min+'.',section='phrases')
                 rules.add('comp-head := comp-head-phrase.')
@@ -435,8 +434,8 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
                 if (ch.get('word-order')=='free' or ch.get('word-order')=='v2'): 
                     mylang.add('head-comp-phrase-2 := '+init_plus+'.')
                     mylang.add('comp-head-phrase-2 := '+init_min+'.')
-                # If the order of head-comps outside this lib is head-final:
-            elif head_comp_order!='head-initial':
+            # If the order of head-comps outside this lib is head-final:
+            elif head_comp_order=='head-final':
                 # Add new rule:
                 mylang.add('head-comp-phrase := basic-head-1st-comp-phrase & '+hi+' &\
                                      '+init_plus+'.',section='phrases')
@@ -862,16 +861,6 @@ def customize_possessor_pron_irules(strat,mylang,ch,strat_name,strat_num,feat,lr
                                 CONT.HOOK #hook & [ INDEX #possessum & [ COG-ST uniq+fam+act ],\
                                                   LTOP #lbl] ],\
               C-CONT.HOOK #hook ].')
-
-        """
-        mylang.add(get_name(lrt)+'-lex-rule :=\
-           [ SYNSEM.LOCAL.CAT.HEAD #head & [ POSSESSOR possessive-pron-'+strat_num+' ],\
-             DTR.SYNSEM.LOCAL [ CAT.HEAD #head ,\
-                                CONT.HOOK #hook & [ INDEX #possessum & [ COG-ST uniq+fam+act ],\
-                                                  LTOP #lbl] ],\
-              C-CONT.HOOK #hook ].')
-
-        """
    
         # Add constraints to pronoun affix rule for spec version
         if mod_spec=='spec':
@@ -969,6 +958,8 @@ def customize_possessor_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod
     mylang.set_section('otherlex')
     mylang.add(TWO_REL_ADP)
     mylang.add('possessor-adp-lex-'+strat_num+' '+POSSESSOR_ADP_LEX)
+    
+    # Make sure no other adps are going to show up where possessor adp should:
     mylang.add('basic-adposition-lex :+ [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR nonpossessive ,\
                                                              POSSESSUM nonpossessive ] ].')
 
