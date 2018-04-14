@@ -22,6 +22,7 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "adnom-poss-grc") (:content . "adnom-poss-grc: Illustrative test for Ancient Greek"))
 ((:path . "adnom-poss-fij") (:content . "adnom-poss-fij: Fijian illustrative test for adnominal possession"))
 ((:path . "adnom-poss-grc") (:content . "adnom-poss-grc: Ancient Greek illustrative test for adnominal possession"))
 ((:path . "adnom-poss-jpn") (:content . "adnom-poss-jpn: Japanese illustrative test for adnominal possession"))
