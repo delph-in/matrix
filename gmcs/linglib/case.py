@@ -207,6 +207,9 @@ def customize_case_adpositions(mylang, lexicon, trigger, ch):
 
         mylang.add('+np :+ [ CASE case ].', section='addenda')
 
+        # EKN 2018-04-14 Case marking adps need to be marked as nonpossessive
+        poss = True if ch.get('poss-strat') or ch.get('poss-pron') else False
+
         typedef = \
             'case-marking-adp-lex := basic-one-arg & raise-sem-lex-item & \
                 [ SYNSEM.LOCAL.CAT [ HEAD adp & [ CASE #case, MOD < > ], \
@@ -219,9 +222,11 @@ def customize_case_adpositions(mylang, lexicon, trigger, ch):
         mylang.add(typedef)
 
         # EKN 03-02-2018 Add CASE real-case to comp of adp if possessives implemented:
-        poss = True if ch.get('poss-strat') or ch.get('poss-pron') else False
         if poss:
-            mylang.add('case-marking-adp-lex := [ ARG-ST < [ LOCAL.CAT.HEAD.CASE real-case ] > ].')
+            mylang.add('case-marking-adp-lex := [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR nonpossessive,\
+                                                                     POSSESSUM nonpossessive ],\
+                                                  ARG-ST < [ LOCAL.CAT.HEAD.CASE real-case ] > ].')
+
 
         if ch.has_mixed_case():
             mylang.add('+np :+ [ CASE-MARKED bool ].', section='addenda')
