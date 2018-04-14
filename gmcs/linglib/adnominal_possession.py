@@ -45,7 +45,7 @@ POSSESSUM_RULE=' :=\
                   [ SYNSEM.LOCAL.CAT.HEAD.POSSESSOR nonpossessive ].'
 
 
-JUXTAPOSITION_RULE=' := [ SYNSEM.LOCAL [ CAT [ HEAD #head,\
+JUXTAPOSITION_RULE=' := binary-headed-phrase & [ SYNSEM.LOCAL [ CAT [ HEAD #head,\
                                               VAL [ COMPS < >,\
                                                     SUBJ < >, \
                                                     SPEC < > ] ] ],\
