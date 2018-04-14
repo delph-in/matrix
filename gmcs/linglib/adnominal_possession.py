@@ -637,6 +637,13 @@ def customize_possessor_irules(strat,mylang,rules,ch,strat_num,mod_spec,mark_loc
 
     # Add the basic possessor rule defn:
     possessor_rule_name ='possessor-lex-rule-'+strat_num
+
+    # Add case constraints if case exists:
+    if case:
+        
+        mylang.add('poss-case := case.',section='addenda')
+        mylang.add(possessor_rule_name+' := [ SYNSEM.LOCAL.CAT.HEAD.CASE poss-case ].')
+
     
     # Add constraints to possessor rule for spec version
     if mod_spec=='spec':
@@ -653,11 +660,9 @@ def customize_possessor_irules(strat,mylang,rules,ch,strat_num,mod_spec,mark_loc
             rules.add('poss-unary-'+strat_num+' := poss-unary-phrase-'+strat_num+'.')
         
         # Add case constraints if case exists:
-        if case:
-
-            mylang.add('poss-case := case.',section='addenda')
-
-            mylang.add(possessor_rule_name+' := [ SYNSEM.LOCAL.CAT.HEAD.CASE poss-case ].')
+#        if case:
+#            mylang.add('poss-case := case.',section='addenda')
+#            mylang.add(possessor_rule_name+' := [ SYNSEM.LOCAL.CAT.HEAD.CASE poss-case ].')
 
         # If the possessor is the only marked constituent, forbid marking on the possessum:
         if mark_loc=='possessor':
