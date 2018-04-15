@@ -462,17 +462,17 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
             # Otherwise leave nouns unconstrainted for SPEC_INIT, and they'll go through both:
             mylang.add('head :+ [ SPEC-INIT bool ].', section='addenda')
             if strat_order!='either':
-                spec_init='-' if strat_order=='head-final' else '+'
+                spec_init='+' if strat_order=='head-final' else '-'
                 mylang.add('poss-unary-phrase-'+strat_num+' := [ SYNSEM.LOCAL.CAT.HEAD.SPEC-INIT ' + spec_init + ' ].',section='phrases')
 
             # Check if you need to add any head-spec rules
             head_spec_order=ch.get('noun-det-order')
             if head_spec_order=='noun-det':
                 head_spec_order='head-initial'
-                default_spec_init='+'
+                default_spec_init='-'
             elif head_spec_order=='det-noun':
                 head_spec_order='head-final'
-                default_spec_init='-'
+                default_spec_init='+'
             else:
                 head_spec_order='none'
     
@@ -510,17 +510,18 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
 
                     # If head-initial rule exists, add head-final and add SPEC-INIT feats to both:
                     if head_spec_order=='head-initial':
-                        mylang.add('head-spec-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.SPEC-INIT + ].')
+                        mylang.add('head-spec-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.SPEC-INIT - ].')
                         mylang.add('head-spec-phrase-2 := head-final &  basic-head-spec-phrase &\
-                                    [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.SPEC-INIT -,\
+                                    [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.SPEC-INIT +,\
                                                                       VAL.SPEC < [ LOCAL.CAT.POSSESSUM #poss ] > ] ,\
                                       HEAD-DTR.SYNSEM.LOCAL.CAT.POSSESSUM #poss  ].')
+
                         rules.add('head-spec-2 := head-spec-phrase-2.')
                     # If head-final rule exists, add head-initial and add SPEC-INIT feats to both:
                     if head_spec_order=='head-final':
-                        mylang.add('head-spec-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.SPEC-INIT - ].')
+                        mylang.add('head-spec-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.SPEC-INIT + ].')
                         mylang.add('head-spec-phrase-2 := head-initial & basic-head-spec-phrase &\
-                                         [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.SPEC-INIT +,\
+                                         [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.SPEC-INIT -,\
                                                                            VAL.SPEC < [ LOCAL.CAT.POSSESSUM #poss ] > ] ,\
                                            HEAD-DTR.SYNSEM.LOCAL.CAT.POSSESSUM #poss  ].')
                         rules.add('head-spec-2 := head-spec-phrase-2.')
