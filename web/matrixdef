@@ -2111,7 +2111,7 @@ Label "<p>
 
 Section clausalmods "Clausal Modifiers"
 
-Label "<p>Languages often have several different strategies for clausal modifers. You many define any number of clausal modifier strategies below or you can leave this page blank, in which case the starter grammar produced will not support clausal modifiers.</p>"
+Label "<p>Languages often have several different strategies for clausal modifers. You may define any number of clausal modifier strategies below or you can leave this page blank, in which case the starter grammar produced will not support clausal modifiers.</p>"
 
 Label "<p>The Grammar Matrix defines clausal modification with three types of subordinators:</p>"
 
@@ -2193,7 +2193,8 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
 
     Radio matrix-subposition "Matrix Subordinator Position" "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Does the morpheme in the matrix clause attach to the beginning or end of the clause?:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
     . before "Before" "" "before the VP or S it attaches to<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-    . after "After" "" "after the VP or S it attaches to<br>"
+    . after "After" "" "after the VP or S it attaches to<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+    . either "Either" "" "either before or after the VP or S it attaches to<br>"
 
     Radio matrix-adverb-attach "Matrix Adverb Attach" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Does the morpheme in the matrix clause attach to VP, S or both?:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
     . vp "VP" "" "VP<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"

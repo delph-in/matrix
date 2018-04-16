@@ -490,6 +490,12 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
     elif pos == 'after':
         lextype.append('posthead')
         constraints.append('SYNSEM.LOCAL.CAT.POSTHEAD +')
+    if cms.get('modifier-attach') == 's':
+        lextype.append('s-attach')
+        constraints.append('SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL.SUBJ < > ] >')
+    elif cms.get('modifier-attach') == 'vp':
+        lextype.append('vp-attach')
+        constraints.append('SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.VAL.SUBJ < [ ] > ] >')
     lextype, constraints = add_morphological_constraints(lextype, constraints, cms, 'phrase')
     if has_subpairs(ch) == True:
         constraints.append('SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.SUBPAIR nopair ] >')
@@ -578,8 +584,7 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
                                   COMPS < > ],\
                             HEAD adp & [ MOD < [ LOCAL scopal-mod &\
   						[ CAT [ HEAD verb,\
-  							VAL [ SUBJ < >,\
-  							      SPR < >,\
+  							VAL [ SPR < >,\
   							      COMPS < > ]],\
   						  CONT.HOOK [ LTOP #mcl,\
   								INDEX #index ]]] > ]],\
