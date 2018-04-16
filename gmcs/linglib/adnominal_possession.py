@@ -644,7 +644,6 @@ def customize_possessor_irules(strat,mylang,rules,ch,strat_num,mod_spec,mark_loc
         
         mylang.add('poss-case := case.',section='addenda')
         mylang.add(possessor_rule_name+' := [ SYNSEM.LOCAL.CAT.HEAD.CASE poss-case ].')
-
     
     # Add constraints to possessor rule for spec version
     if mod_spec=='spec':
@@ -692,13 +691,13 @@ def customize_possessor_irules(strat,mylang,rules,ch,strat_num,mod_spec,mark_loc
                                                                                     LTOP #lbl ] ], \
                                                                 OPT - ],\
                                                     POSSESSOR possessor-'+strat_num+' ], \
-                                             VAL [ SPEC #spec ] ] ,\
+                                             VAL #val ] ,\
                           C-CONT [ HOOK #hook,\
                                    RELS <! '+POSS_REL+' !>,\
                                    HCONS <! !>, \
                                    ICONS <! !>  ], \
                           DTR.SYNSEM.LOCAL [ CONT.HOOK #hook & [ INDEX #possessor ],\
-                                             CAT.VAL.SPEC #spec  ] ].',merge=True)
+                                             CAT.VAL #val  ] ].',merge=True)
 
         # Add constraints to mod version for double marking
         elif mark_loc=='both':
