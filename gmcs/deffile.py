@@ -242,6 +242,8 @@ HTML_prebody = '''<body onload="animate(); focus_all_fields(); multi_init(); fil
 
 HTML_prebody_sn = '''<body onload="animate(); focus_all_fields(); multi_init(); fill_hidden_errors();display_neg_form();scalenav();">'''
 
+HTML_prebody_ap = '''<body onload="animate(); focus_all_fields(); multi_init(); fill_hidden_errors();display_poss();scalenav();">'''
+
 HTML_method = 'post'
 
 HTML_preform = '<form action="matrix.cgi" method="' + HTML_method + '" enctype="multipart/form-data" name="choices_form">'
@@ -1277,6 +1279,8 @@ class MatrixDefFile:
 
             if section == 'sentential-negation':
                 print HTML_prebody_sn
+            elif section == 'adnom-poss':
+                print HTML_prebody_ap
             else:
                 print HTML_prebody
 

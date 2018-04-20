@@ -1250,8 +1250,8 @@ function set_negexp(n)
   var value = n;
   var divs = document.getElementsByClassName("neg_exp_switch");
 	for(var i=0; i<divs.length;i++){
-    var d = divs[i];
-    d.style.display = 'none';
+	    var d = divs[i];
+	    d.style.display = 'none';
 	}
   var d;
   switch (n){
@@ -1278,34 +1278,6 @@ function set_negexp(n)
     d.style.display ='block';
   }
 }
-//////////////////////////////////////////////////////////
-// For adnominal possession subpage                     //
-//////////////////////////////////////////////////////////
-function set_possessum(n)
-{
-  var value = n;
-  var divs = document.getElementsByClassName("possessum_affix_switch");
-	for(var i=0; i<divs.length;i++){
-    var d = divs[i];
-    d.style.display = 'none';
-	}
-  var d;
-  switch (n){
-    case '0':
-      var d = document.getElementById('agree');
-      break;
-    case '1':
-      var d = document.getElementById('non-agree');
-      break;
-    default:
-      var d = null; 
-  }
-  if (d != null)
-  {
-    d.style.display ='block';
-  }
-}
-
 
 function set_negmorph(t1,t2){
   // now calculate the bipartite negation type
@@ -1470,6 +1442,59 @@ function neg_comp() {
 
 var scaled = 0;
 window.onresize=scalenav;
+
+//////////////////////////////////////////////////////////
+// For adnominal possession subpage                     //
+//////////////////////////////////////////////////////////
+
+
+function display_poss(){
+  var poss = document.forms["choices_form"]["dummy"];
+  for (var i=0; i<poss.length;i++)
+  {
+    if(poss[i].checked){
+      set_poss(poss[i].value); 
+    }
+  }
+}
+
+function set_poss(n)
+{
+  var value = n;
+  var divs = document.getElementsByClassName("poss_switch");
+	for(var i=0; i<divs.length;i++){
+	    var d = divs[i];
+	    d.style.display = 'none';
+	}
+  var d;
+  switch (n){
+    case 'yes':
+      var d = document.getElementById('dummy');
+      d.style.display = d.style.display === 'none' ? '' : 'none';
+      break;
+    case 'no':
+      var d = document.getElementById('dummy2');
+      d.style.display = d.style.display === 'none' ? '' : 'none';
+      dummy_vis='block'
+      break
+    case '2':
+      var d = document.getElementById('bi-neg');
+      break;
+    case '3':
+      var d = document.getElementById('tri-neg');
+      break;
+    case 'more':
+      var d = document.getElementById('x-neg');
+      break;
+    default:
+      var d = null; 
+  }
+//  if (d != null)
+//  {
+//      d.style.display = dummy_vis;
+//  }
+}
+
 
 function scalenav() {
   // make smaller nav is below threshold
