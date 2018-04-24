@@ -77,6 +77,10 @@ function toggle_element(id, how, switchOn) {
   how = how || "toggle"; // set default to "toggle"
   switchOn = switchOn || null; // set default to null
   switchActive = true; // Ignore switch unless switchOn activates
+    console.log("===========")
+    console.log(id)
+    console.log(how)
+    console.log("===========")
   // Get element to toggle
   element = document.getElementById(id);
   if (switchOn) {
@@ -94,6 +98,7 @@ function toggle_element(id, how, switchOn) {
   }
   // If element found and switch active, do the toggling
   if (element != null && switchActive) {
+      console.log(element)
     if (how == "toggle") {
       element.style.display = (element.style.display != 'block') ? 'block' : 'none';
     }
@@ -1449,19 +1454,27 @@ window.onresize=scalenav;
 
 
 function display_poss(){
-  var poss = document.forms["choices_form"]["dummy"];
-  for (var i=0; i<poss.length;i++)
-  {
-    if(poss[i].checked){
-      set_poss(poss[i].value); 
+    for(var i=1; i<2; i++){
+	var poss = document.forms['choices_form']['poss-strat'+i+'_dummyq'];
+	//var poss = document.forms["choices_form"]["dummyq"];
+	for (var n=0; n<poss.length;n++){
+	    console.log(poss[n]);
+	    console.log(poss[n].checked);
+	    if(poss[n].checked){
+		//	set_poss(poss[i].value); 
+		toggle_element('dummy'+i,'on');
+		//	toggle_element('dummy','on');
+	    }
+	}
     }
-  }
 }
 
 function set_poss(n)
 {
-  var value = n;
-  var divs = document.getElementsByClassName("poss_switch");
+    console.log(n);
+    var divs = document.getElementsByClassName("poss_switch");
+//    var divs = document.getElementsByClassName("poss-strat{i}_poss_switch");
+    console.log(divs);
 	for(var i=0; i<divs.length;i++){
 	    var d = divs[i];
 	    d.style.display = 'none';
@@ -1469,30 +1482,22 @@ function set_poss(n)
   var d;
   switch (n){
     case 'yes':
+//      var d = document.getElementById('poss-strat{i}_dummy');
       var d = document.getElementById('dummy');
-      d.style.display = d.style.display === 'none' ? '' : 'none';
       break;
     case 'no':
-      var d = document.getElementById('dummy2');
-      d.style.display = d.style.display === 'none' ? '' : 'none';
-      dummy_vis='block'
+//      var d = document.getElementById('poss-strat{i}_dummy2');
+      var d = document.getElementById('dummy2');      
       break
-    case '2':
-      var d = document.getElementById('bi-neg');
-      break;
-    case '3':
-      var d = document.getElementById('tri-neg');
-      break;
-    case 'more':
-      var d = document.getElementById('x-neg');
-      break;
     default:
       var d = null; 
   }
-//  if (d != null)
-//  {
-//      d.style.display = dummy_vis;
-//  }
+  if (d != null) {
+      console.log(d);
+      console.log(d.style.display);
+      d.style.display = 'block'
+      console.log(d.style.display);
+  }
 }
 
 
@@ -1506,7 +1511,7 @@ function scalenav() {
               "Matrix Yes/No Questions":"Y/N Qs",
               "Information Structure": "Info Str",
               "Argument Optionality":"Arg Opt",
-              "Toolbox Import":"Tb Import",
+              "Tolbox Import":"Tb Import",
               "Test Sentences":"Test S",
               "Morphology":"Morph",
               "Other Features":"Features",

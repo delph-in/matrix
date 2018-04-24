@@ -441,6 +441,23 @@ Label "<p>An adnominal <b>possessive strategy</b> is a pattern wherein one noun 
 
 BeginIter poss-strat{i} "a possessive strategy"
 
+     Radio dummyq "dummyq" "<p>Click yes to see text.</p>" ""
+     . yes "yes" "" "yes<br>" "toggle_element.call(this, 'dummy{i}', 'on');"
+     . no "no" "" "no<br>" "toggle_element.call(this, 'dummy2{i}', 'on');"
+
+     Label "<div id='dummy{i}' style='display:none'>"
+
+     	   Label "<p>In the room the women come and go.</p>"     
+
+     Label "</div>"
+
+     Label "<div id='dummy2{i}' style='display:none'>"
+
+     	   Label "<p>Talking of Michelangelo.</p>"     
+
+     Label "</div>"
+
+
      Radio order "Word order" "<p>The word order within a possessive phrase is:</p>" ""
      . head-final "head-final" "" "possessor-first<br>"
      . head-initial "head-initial" "" "possessum-first<br>"
@@ -455,25 +472,6 @@ BeginIter poss-strat{i} "a possessive strategy"
      . possessum "Possessum marking" "" "On the possessum<br>"  "toggle_element.call(this, 'possessum-morph{i}', 'on'); toggle_element.call(this, 'possessor-morph{i}', 'off');toggle_element.call(this, 'juxt{i}', 'off');toggle_element.call(this, 'possessum-only{i}', 'on');"
      . both "Both marking" "" "On both the possessor and the possessum<br>" "toggle_element.call(this, 'possessum-morph{i}', 'on'); toggle_element.call(this, 'possessor-morph{i}', 'on');toggle_element.call(this, 'juxt{i}', 'off');toggle_element.call(this, 'possessum-only{i}', 'off');"
      . neither "Neither marking" "" "No possessive morphemes appear<br>" "toggle_element.call(this, 'possessum-morph{i}', 'off'); toggle_element.call(this, 'possessor-morph{i}', 'off');toggle_element.call(this, 'juxt{i}', 'on');toggle_element.call(this, 'possessum-only{i}', 'off');"
-
-
-     Radio dummy "dummy" "<p>Click yes to see text.</p>" ""
-     . yes "yes" "" "yes<br>" "set_poss('yes');"
-     . no "no" "" "no<br>" "set_poss('no');"
-
-     Label "<div id='dummy' class='poss_switch' style='display:none'>"
-
-     	   Label "<p>In the room the women come and go.</p>"     
-
-     Label "</div>"
-
-     Label "<div id='dummy2' class='poss_switch' style='display:none'>"
-
-     	   Label "<p>Talking of Michelangelo.</p>"     
-
-     Label "</div>"
-
-
 
 
      Label "<div id='juxt{i}' style='display:none'>"
