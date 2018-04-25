@@ -1459,8 +1459,6 @@ function display_poss_strat(){
 
     for(var i=1; i<10; i++){
 	var dict = {
-	    "yes" : "dummy"+i,
-	    "no" : "dummy2"+i,
 	    "possessor" : "possessor-morph"+i,
 	    "possessum" : "possessum-morph"+i+",possessum-only"+i,
 	    "both" : "possessor-morph"+i+",possessum-morph"+i,
@@ -1471,7 +1469,7 @@ function display_poss_strat(){
 	    "non-agree" : "possessor-non-agr"+i+",possessum-non-agr"+i
 	};
 
-	var toggle_questions = ['dummyq','mark-loc','possessor-type','possessum-type','possessor-agr','possessum-agr'];
+	var toggle_questions = ['mark-loc','possessor-type','possessum-type','possessor-agr','possessum-agr'];
 	for(var j=0; j<toggle_questions.length; j++){
 	
 	    var poss = document.forms['choices_form']['poss-strat'+i+'_'+toggle_questions[j]];

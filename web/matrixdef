@@ -441,23 +441,6 @@ Label "<p>An adnominal <b>possessive strategy</b> is a pattern wherein one noun 
 
 BeginIter poss-strat{i} "a possessive strategy"
 
-     Radio dummyq "dummyq" "<p>Click yes to see text.</p>" ""
-     . yes "yes" "" "yes<br>" "toggle_element.call(this, 'dummy{i}', 'on');toggle_element.call(this, 'dummy2{i}', 'off');"
-     . no "no" "" "no<br>" "toggle_element.call(this, 'dummy2{i}', 'on');toggle_element.call(this, 'dummy{i}', 'off');"
-
-     Label "<div id='dummy{i}' style='display:none'>"
-
-     	   Label "<p>In the room the women come and go.</p>"     
-
-     Label "</div>"
-
-     Label "<div id='dummy2{i}' style='display:none'>"
-
-     	   Label "<p>Talking of Michelangelo.</p>"     
-
-     Label "</div>"
-
-
      Radio order "Word order" "<p>The word order within a possessive phrase is:</p>" ""
      . head-final "head-final" "" "possessor-first<br>"
      . head-initial "head-initial" "" "possessum-first<br>"
