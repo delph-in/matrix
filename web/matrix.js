@@ -1459,18 +1459,32 @@ function display_poss(){
     // an arbitrary number of poss-strats
 
     for(var i=1; i<5; i++){
+	var dict = {
+	    "yes" : "dummy"+i,
+	    "no" : "dummy2"+i,
+	    "possessor" : "possessor-morph"+i,
+	    "possessum" : "possessum-morph"+i+",possessum-only"+i,
+	    "both" : "possessor-morph"+i+",possessum-morph"+i,
+	    "neither" : "juxt"+i,
+	    "affix" : "possessor-affix"+i+",possessum-affix"+i,
+	    "non-affix" : "possessor-non-affix"+i+",possessum-non-affix"+i,
+	    "agree" : "possessor-agr"+i+",possessum-agr"+i,
+	    "non-agree" : "possessor-non-agr"+i+",possessum-non-agr"+i
+	};
 
-	var toggle_q = ['dummyq','mark-loc'];
-	for(var x=0; x<toggle_q.length; x++){
+	var toggle_questions = ['dummyq','mark-loc','possessor-type','possessum-type','possessor-agr','possessum-agr'];
+	for(var j=0; j<toggle_questions.length; j++){
 	
-	    var poss = document.forms['choices_form']['poss-strat'+i+'_'+toggle_q[x]];
+	    var poss = document.forms['choices_form']['poss-strat'+i+'_'+toggle_questions[j]];
 	    for (var n=0; n<poss.length;n++){
-		console.log(poss[n]);
-		console.log(poss[n].checked);
 		if(poss[n].checked){
-		    var vals = poss[n].value.split(",")
-		    for (var k=0; k<vals.length;k++){
-			toggle_element(vals[k],'on');
+		    console.log("++++++++")
+		    console.log(poss[n].value)
+		    console.log(dict[poss[n].value])
+		    console.log("++++++++")
+		    var secs = dict[poss[n].value].split(",")
+		    for (var k=0; k<secs.length;k++){
+			toggle_element(secs[k],'on');
 		    }
 		}
 	    }

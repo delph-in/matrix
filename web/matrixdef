@@ -442,8 +442,8 @@ Label "<p>An adnominal <b>possessive strategy</b> is a pattern wherein one noun 
 BeginIter poss-strat{i} "a possessive strategy"
 
      Radio dummyq "dummyq" "<p>Click yes to see text.</p>" ""
-     . yes "yes" "" "yes<br>" "toggle_element.call(this, 'dummy{i}', 'on');getElementByID("poss-strat{i}_dummyq").setAttribute("tog", "dummy{i}");"
-     . no "no" "" "no<br>" "toggle_element.call(this, 'dummy2{i}', 'on');"
+     . yes "yes" "" "yes<br>" "toggle_element.call(this, 'dummy{i}', 'on');toggle_element.call(this, 'dummy2{i}', 'off');"
+     . no "no" "" "no<br>" "toggle_element.call(this, 'dummy2{i}', 'on');toggle_element.call(this, 'dummy{i}', 'off');"
 
      Label "<div id='dummy{i}' style='display:none'>"
 
