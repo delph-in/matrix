@@ -1447,13 +1447,17 @@ window.onresize=scalenav;
 // For adnominal possession subpage                     //
 //////////////////////////////////////////////////////////
 
-
 function display_poss(){
+    display_poss_strat();
+    display_poss_pron();
+}
+
+function display_poss_strat(){
 
     // TODO: fix this so it iterates over all poss-strats, not over 
     // an arbitrary number of poss-strats
 
-    for(var i=1; i<5; i++){
+    for(var i=1; i<10; i++){
 	var dict = {
 	    "yes" : "dummy"+i,
 	    "no" : "dummy2"+i,
@@ -1477,6 +1481,38 @@ function display_poss(){
 		    console.log(poss[n].value)
 		    console.log(dict[poss[n].value])
 		    console.log("++++++++")
+		    var secs = dict[poss[n].value].split(",")
+		    for (var k=0; k<secs.length;k++){
+			toggle_element(secs[k],'on');
+		    }
+		}
+	    }
+	}
+    }
+}
+
+function display_poss_strat(){
+
+    // TODO: fix this so it iterates over all poss-strats, not over 
+    // an arbitrary number of poss-strats
+
+    for(var i=1; i<10; i++){
+	var dict = {
+	    "affix" : "pron-affix"+i+",possessum-mark-affix"+i,
+	    "non-affix" : "pron-non-affix"+i+",possessum-mark-non-affix"+i,
+	    "yes" : "possessum-mark-pron"+i
+	};
+
+	var toggle_questions = ['type','possessum-mark-type','possessum-mark'];
+	for(var j=0; j<toggle_questions.length; j++){
+	
+	    var poss = document.forms['choices_form']['poss-pron'+i+'_'+toggle_questions[j]];
+	    for (var n=0; n<poss.length;n++){
+		if(poss[n].checked){
+		    console.log("========")
+		    console.log(poss[n].value)
+		    console.log(dict[poss[n].value])
+		    console.log("========")
 		    var secs = dict[poss[n].value].split(",")
 		    for (var k=0; k<secs.length;k++){
 			toggle_element(secs[k],'on');

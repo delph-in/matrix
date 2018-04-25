@@ -502,8 +502,6 @@ BeginIter poss-strat{i} "a possessive strategy"
      
         Label "<div id='possessor-affix{i}' style='display:none'>"
 	   
-	   Label "<p>NOTE: The possessor marked by this affix must be a full NP, not a pronoun. Please use the possessive pronoun section below, and analyze combinations of pronoun+possessive-marker as single lexical items.</p>"
-
 	   Radio possessor-affix-agr "Possessor agreement" "<p>Does the affix that marks the possessor agree with the possessum (e.g. in person, number, or gender)?</p>" ""
 	   . agree "Possessor agree" "" "yes<br>"
 	   . non-agree "Possessor non-agree" "" "no<br>"
