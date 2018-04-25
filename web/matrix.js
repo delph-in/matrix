@@ -1454,21 +1454,32 @@ window.onresize=scalenav;
 
 
 function display_poss(){
-    for(var i=1; i<2; i++){
-	var poss = document.forms['choices_form']['poss-strat'+i+'_dummyq'];
-	//var poss = document.forms["choices_form"]["dummyq"];
-	for (var n=0; n<poss.length;n++){
-	    console.log(poss[n]);
-	    console.log(poss[n].checked);
-	    if(poss[n].checked){
-		//	set_poss(poss[i].value); 
-		toggle_element('dummy'+i,'on');
-		//	toggle_element('dummy','on');
+
+    // TODO: fix this so it iterates over all poss-strats, not over 
+    // an arbitrary number of poss-strats
+
+    for(var i=1; i<5; i++){
+
+	var toggle_q = ['dummyq','mark-loc'];
+	for(var x=0; x<toggle_q.length; x++){
+	
+	    var poss = document.forms['choices_form']['poss-strat'+i+'_'+toggle_q[x]];
+	    for (var n=0; n<poss.length;n++){
+		console.log(poss[n]);
+		console.log(poss[n].checked);
+		if(poss[n].checked){
+		    var vals = poss[n].value.split(",")
+		    for (var k=0; k<vals.length;k++){
+			toggle_element(vals[k],'on');
+		    }
+		}
 	    }
 	}
     }
 }
 
+
+/*
 function set_poss(n)
 {
     console.log(n);
@@ -1499,7 +1510,7 @@ function set_poss(n)
       console.log(d.style.display);
   }
 }
-
+*/
 
 function scalenav() {
   // make smaller nav is below threshold
