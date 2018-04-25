@@ -77,10 +77,6 @@ function toggle_element(id, how, switchOn) {
   how = how || "toggle"; // set default to "toggle"
   switchOn = switchOn || null; // set default to null
   switchActive = true; // Ignore switch unless switchOn activates
-    console.log("===========")
-    console.log(id)
-    console.log(how)
-    console.log("===========")
   // Get element to toggle
   element = document.getElementById(id);
   if (switchOn) {
@@ -98,7 +94,6 @@ function toggle_element(id, how, switchOn) {
   }
   // If element found and switch active, do the toggling
   if (element != null && switchActive) {
-      console.log(element)
     if (how == "toggle") {
       element.style.display = (element.style.display != 'block') ? 'block' : 'none';
     }
