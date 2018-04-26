@@ -85,8 +85,10 @@ POSSESSUM_NOUN_LEX=':= basic-one-arg &\
                                                           VAL [ SUBJ < >,\
                                                                 SPR < [ LOCAL.CAT.HEAD det ] >,\
                                                                 COMPS < #comps & [ LOCAL [ CONT.HOOK #hook,\
-                                                                                           CAT [ VAL.SPR <[ ]>,\
-                                                                                                 HEAD #head & [ PRON - ] ] ] ] > ] ],\
+                                                                                           CAT [ POSSESSUM nonpossessive,\
+                                                                                                 VAL.SPR <[ ]>,\
+                                                                                                 HEAD #head & [ PRON - ,\
+                                                                                                                POSSESSOR nonpossessive ] ] ] ] > ] ],\
                                                     CONT [ RELS <! !>,\
                                                            HCONS <! !>,\
                                                            HOOK #hook,\
