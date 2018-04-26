@@ -1,0 +1,143 @@
+
+version=32
+
+section=general
+language=adnom-poss-kat
+punctuation-chars=discard-all
+
+section=word-order
+word-order=free
+has-dets=yes
+noun-det-order=det-noun
+has-aux=no
+
+section=number
+  number1_name=sg
+  number2_name=pl
+
+section=person
+person=1-2-3
+first-person=none
+
+section=gender
+
+section=case
+case-marking=nom-acc
+nom-acc-nom-case-name=nominative
+nom-acc-acc-case-name=accusative
+  case1_name=genitive
+
+section=adnom-poss
+  poss-strat1_order=head-final
+  poss-strat1_mod-spec=spec
+  poss-strat1_mark-loc=neither
+  poss-strat1_pronoun-allow=no
+    poss-strat1_feat1_name=case
+    poss-strat1_feat1_value=genitive
+
+  poss-pron1_type=non-affix
+  poss-pron1_agr=agree
+  poss-pron1_mod-spec=mod
+  poss-pron1_order=head-final
+    poss-pron1_instance1_name=1sg-nom
+    poss-pron1_instance1_orth=chemi
+      poss-pron1_instance1_feat1_name=number
+      poss-pron1_instance1_feat1_value=sg
+      poss-pron1_instance1_feat2_name=person
+      poss-pron1_instance1_feat2_value=1st
+      poss-pron1_instance1_non-png-feat1_name=case
+      poss-pron1_instance1_non-png-feat1_value=nom
+    poss-pron1_instance2_name=1sg-acc
+    poss-pron1_instance2_orth=chems
+      poss-pron1_instance2_feat1_name=number
+      poss-pron1_instance2_feat1_value=sg
+      poss-pron1_instance2_feat2_name=person
+      poss-pron1_instance2_feat2_value=1st
+      poss-pron1_instance2_non-png-feat1_name=case
+      poss-pron1_instance2_non-png-feat1_value=acc
+  poss-pron1_possessum-mark=no
+
+section=direct-inverse
+
+section=tense-aspect-mood
+
+section=evidentials
+
+section=other-features
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=info-str
+
+section=arg-opt
+
+section=nominalclause
+
+section=clausal-comp
+
+section=clausalmods
+
+section=lexicon
+  noun1_name=common
+    noun1_feat1_name=person
+    noun1_feat1_value=3rd
+  noun1_det=opt
+    noun1_stem1_orth=sakhl
+    noun1_stem1_pred=_house_n_rel
+    noun1_stem2_orth=gasagheb
+    noun1_stem2_pred=_key_n_rel
+    noun1_stem3_orth=gazet
+    noun1_stem3_pred=_newspaper_n_rel
+  verb1_name=trans
+  verb1_valence=nom-acc
+    verb1_stem1_orth=kitkhulob
+    verb1_stem1_pred=_read_v_rel
+
+section=morphology
+  noun-pc1_name=case
+  noun-pc1_obligatory=on
+  noun-pc1_order=suffix
+  noun-pc1_inputs=noun1
+    noun-pc1_lrt1_name=nom
+      noun-pc1_lrt1_feat1_name=case
+      noun-pc1_lrt1_feat1_value=nom
+      noun-pc1_lrt1_feat1_head=itself
+      noun-pc1_lrt1_lri1_inflecting=yes
+      noun-pc1_lrt1_lri1_orth=i
+    noun-pc1_lrt2_name=acc
+      noun-pc1_lrt2_feat1_name=case
+      noun-pc1_lrt2_feat1_value=acc
+      noun-pc1_lrt2_feat1_head=itself
+      noun-pc1_lrt2_lri1_inflecting=yes
+      noun-pc1_lrt2_lri1_orth=s
+    noun-pc1_lrt3_name=gen
+      noun-pc1_lrt3_feat1_name=case
+      noun-pc1_lrt3_feat1_value=genitive
+      noun-pc1_lrt3_feat1_head=itself
+      noun-pc1_lrt3_lri1_inflecting=yes
+      noun-pc1_lrt3_lri1_orth=is
+  verb-pc1_name=pernum
+  verb-pc1_obligatory=on
+  verb-pc1_order=suffix
+  verb-pc1_inputs=verb
+    verb-pc1_lrt1_name=3sg-pres
+      verb-pc1_lrt1_feat1_name=number
+      verb-pc1_lrt1_feat1_value=sg
+      verb-pc1_lrt1_feat1_head=subj
+      verb-pc1_lrt1_feat2_name=person
+      verb-pc1_lrt1_feat2_value=3rd
+      verb-pc1_lrt1_feat2_head=subj
+      verb-pc1_lrt1_lri1_inflecting=yes
+      verb-pc1_lrt1_lri1_orth=s
+
+section=toolbox-import
+
+section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon
