@@ -752,6 +752,13 @@ def customize_possessum_irules(strat,mylang,rules,ch,strat_num,mod_spec,mark_loc
                                                      VAL #val ] ] ].',merge=True)
 
             mylang.add('poss-unary-phrase-'+strat_num+' := poss-unary-phrase & [ SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CAT [ POSSESSUM possessum-'+strat_num+' ] ].',section='phrases')
+
+            # If possessor isn't marked, don't let it be possessive
+            if mark_loc=='possessum': 
+                mylang.add('poss-unary-phrase-'+strat_num+' := poss-unary-phrase &\
+                               [ ARGS < [ SYNSEM.LOCAL.CAT [ HEAD [ POSSESSOR nonpossessive ],\
+                                                             POSSESSUM nonpossessive ] ] > ] .')
+
             rules.add('poss-unary-'+strat_num+' := poss-unary-phrase-'+strat_num+'.')
 
             # Add any feature constraints to the possessor (only if the possessor is unmarked)
