@@ -1448,43 +1448,53 @@ window.onresize=scalenav;
 //////////////////////////////////////////////////////////
 
 
-
 function display_poss(){
     /*
       Included in HTML prebody section for the adnominal
       possession page. Loops through possessive choices and
-      toggles on appropriate sections.
+      toggles on appropriate sections before displaying page.
      */
 
+    // Currently iterates over 10 possible poss-strats or poss-prons;
+    // should be changed to iterate over only the number of poss-strats
+    // or poss-prons that are specified.
     for (var i=1; i<10; i++){
+
+	// Map an answer in the questionnaire to the id of
+	// the div it toggles on.
 	var strat_dict = {
 	    "possessor" : "possessor-morph"+i,
 	    "possessum" : "possessum-morph"+i+",possessum-only"+i,
 	    "both" : "possessor-morph"+i+",possessum-morph"+i,
 	    "neither" : "juxt"+i,
-	    "affix" : "possessor-affix"+i+",possessum-affix"+i,
-	    "non-affix" : "possessor-non-affix"+i+",possessum-non-affix"+i,
-	    "agree" : "possessor-agr"+i+",possessum-agr"+i,
-	    "non-agree" : "possessor-non-agr"+i+",possessum-non-agr"+i
+	    "affix" : "possessor-affix"+i+",possessum-affix"+i, // TODO: differentiate these cases
+	    "non-affix" : "possessor-non-affix"+i+",possessum-non-affix"+i,  // TODO: differentiate these cases
+	    "agree" : "possessor-agr"+i+",possessum-agr"+i,  // TODO: differentiate these cases
+	    "non-agree" : "possessor-non-agr"+i+",possessum-non-agr"+i  // TODO: differentiate these cases
 	};
+	// List of questions whose answers toggle sections:
 	var strat_q = ['mark-loc','possessor-type','possessum-type','possessor-agr','possessum-agr'];
+
+	// Display questions for poss-strats
 	display_poss_choices(strat_dict,strat_q,"poss-strat"+i);
 
+
+	// Map an answer in the questionnaire to the id of
+	// the div it toggles on.
 	var pron_dict = {
 	    "affix" : "pron-affix"+i+",possessum-mark-affix"+i,
 	    "non-affix" : "pron-non-affix"+i+",possessum-mark-non-affix"+i,
 	    "yes" : "possessum-mark-pron"+i
 	};
-
+	// List of questions whose answers toggle sections:
 	var pron_q = ['type','possessum-mark-type','possessum-mark'];
+
+	// Display questions for poss-prons
 	display_poss_choices(pron_dict,pron_q,"poss-pron"+i);
     }
 }
 
 function display_poss_choices(answer_to_sec,toggle_questions,prefix){
-
-    // TODO: fix this so it iterates over all poss-strats, not over 
-    // an arbitrary number of poss-strats
 
     for(var j=0; j<toggle_questions.length; j++){
 	
@@ -1492,10 +1502,6 @@ function display_poss_choices(answer_to_sec,toggle_questions,prefix){
 	if(poss){
 	    for (var n=0; n<poss.length;n++){
 		if(poss[n].checked){
-		    console.log("++++++++")
-		    console.log(poss[n].value)
-		    console.log(answer_to_sec[poss[n].value])
-		    console.log("++++++++")
 		    var secs = answer_to_sec[poss[n].value].split(",")
 		    for (var k=0; k<secs.length;k++){
 			toggle_element(secs[k],'on');
@@ -1505,67 +1511,6 @@ function display_poss_choices(answer_to_sec,toggle_questions,prefix){
 	}
     }
 }
-
-function display_poss_pron(){
-
-    // TODO: fix this so it iterates over all poss-strats, not over 
-    // an arbitrary number of poss-strats
-
-    for(var i=1; i<10; i++){
-	for(var j=0; j<toggle_questions.length; j++){
-	
-	    var poss = document.forms['choices_form']['poss-pron'+i+'_'+toggle_questions[j]];
-	    if(poss){
-		for (var n=0; n<poss.length;n++){
-		    if(poss[n].checked){
-			console.log("========")
-			console.log(poss[n].value)
-			console.log(dict[poss[n].value])
-			console.log("========")
-			var secs = dict[poss[n].value].split(",")
-			for (var k=0; k<secs.length;k++){
-			    toggle_element(secs[k],'on');
-			}
-		    }
-		}
-	    }
-	}
-    }
-}
-
-
-/*
-function set_poss(n)
-{
-    console.log(n);
-    var divs = document.getElementsByClassName("poss_switch");
-//    var divs = document.getElementsByClassName("poss-strat{i}_poss_switch");
-    console.log(divs);
-	for(var i=0; i<divs.length;i++){
-	    var d = divs[i];
-	    d.style.display = 'none';
-	}
-  var d;
-  switch (n){
-    case 'yes':
-//      var d = document.getElementById('poss-strat{i}_dummy');
-      var d = document.getElementById('dummy');
-      break;
-    case 'no':
-//      var d = document.getElementById('poss-strat{i}_dummy2');
-      var d = document.getElementById('dummy2');      
-      break
-    default:
-      var d = null; 
-  }
-  if (d != null) {
-      console.log(d);
-      console.log(d.style.display);
-      d.style.display = 'block'
-      console.log(d.style.display);
-  }
-}
-*/
 
 function scalenav() {
   // make smaller nav is below threshold
