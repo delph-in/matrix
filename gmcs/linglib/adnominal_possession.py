@@ -871,7 +871,7 @@ def customize_possessor_pron_irules(strat,mylang,ch,strat_name,strat_num,feat,lr
         mylang.add(get_name(lrt)+'-lex-rule :=\
            [ SYNSEM.LOCAL.CAT.HEAD #head ,\
              DTR.SYNSEM.LOCAL [ CAT.HEAD #head ,\
-                                CONT.HOOK #hook & [ INDEX #possessum & [ COG-ST uniq+fam+act ],\
+                                CONT.HOOK #hook & [ INDEX #possessum & [ COG-ST activ-or-more ],\
                                                   LTOP #lbl] ],\
               C-CONT.HOOK #hook ].')
    
