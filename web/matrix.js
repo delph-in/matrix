@@ -1455,17 +1455,9 @@ function display_poss(){
       possession page. Loops through possessive choices and
       toggles on appropriate sections.
      */
-    display_poss_strat();
-    display_poss_pron();
-}
 
-function display_poss_strat(){
-
-    // TODO: fix this so it iterates over all poss-strats, not over 
-    // an arbitrary number of poss-strats
-
-    for(var i=1; i<10; i++){
-	var answer_to_sec = {
+    for (var i=1; i<10; i++){
+	var strat_dict = {
 	    "possessor" : "possessor-morph"+i,
 	    "possessum" : "possessum-morph"+i+",possessum-only"+i,
 	    "both" : "possessor-morph"+i+",possessum-morph"+i,
@@ -1475,22 +1467,38 @@ function display_poss_strat(){
 	    "agree" : "possessor-agr"+i+",possessum-agr"+i,
 	    "non-agree" : "possessor-non-agr"+i+",possessum-non-agr"+i
 	};
+	var strat_q = ['mark-loc','possessor-type','possessum-type','possessor-agr','possessum-agr'];
+	display_poss_choices(strat_dict,strat_q,"poss-strat"+i);
 
-	var toggle_questions = ['mark-loc','possessor-type','possessum-type','possessor-agr','possessum-agr'];
-	for(var j=0; j<toggle_questions.length; j++){
+	var pron_dict = {
+	    "affix" : "pron-affix"+i+",possessum-mark-affix"+i,
+	    "non-affix" : "pron-non-affix"+i+",possessum-mark-non-affix"+i,
+	    "yes" : "possessum-mark-pron"+i
+	};
+
+	var pron_q = ['type','possessum-mark-type','possessum-mark'];
+	display_poss_choices(pron_dict,pron_q,"poss-pron"+i);
+    }
+}
+
+function display_poss_choices(answer_to_sec,toggle_questions,prefix){
+
+    // TODO: fix this so it iterates over all poss-strats, not over 
+    // an arbitrary number of poss-strats
+
+    for(var j=0; j<toggle_questions.length; j++){
 	
-	    var poss = document.forms['choices_form']['poss-strat'+i+'_'+toggle_questions[j]];
-	    if(poss){
-		for (var n=0; n<poss.length;n++){
-		    if(poss[n].checked){
-			console.log("++++++++")
-			console.log(poss[n].value)
-			console.log(answer_to_sec[poss[n].value])
-			console.log("++++++++")
-			var secs = answer_to_sec[poss[n].value].split(",")
-			for (var k=0; k<secs.length;k++){
-			    toggle_element(secs[k],'on');
-			}
+	var poss = document.forms['choices_form'][prefix+'_'+toggle_questions[j]];
+	if(poss){
+	    for (var n=0; n<poss.length;n++){
+		if(poss[n].checked){
+		    console.log("++++++++")
+		    console.log(poss[n].value)
+		    console.log(answer_to_sec[poss[n].value])
+		    console.log("++++++++")
+		    var secs = answer_to_sec[poss[n].value].split(",")
+		    for (var k=0; k<secs.length;k++){
+			toggle_element(secs[k],'on');
 		    }
 		}
 	    }
@@ -1504,13 +1512,6 @@ function display_poss_pron(){
     // an arbitrary number of poss-strats
 
     for(var i=1; i<10; i++){
-	var dict = {
-	    "affix" : "pron-affix"+i+",possessum-mark-affix"+i,
-	    "non-affix" : "pron-non-affix"+i+",possessum-mark-non-affix"+i,
-	    "yes" : "possessum-mark-pron"+i
-	};
-
-	var toggle_questions = ['type','possessum-mark-type','possessum-mark'];
 	for(var j=0; j<toggle_questions.length; j++){
 	
 	    var poss = document.forms['choices_form']['poss-pron'+i+'_'+toggle_questions[j]];
