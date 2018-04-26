@@ -1476,6 +1476,9 @@ def validate_clausalmods(ch, vr):
                 if not cms.get('adverb-attach'):
                     mess = 'You must makes a selection for whether the subordinator attaches to a VP or S.'
                     vr.err(cms.full_key + '_adverb-attach', mess)
+            if cms.get('subordinator-type') == 'head' and cms.get('subposition') == 'either':
+                    mess = 'Only adverb subordinators can attach either before or after the clause.'
+                    vr.err(cms.full_key + '_subposition', mess)
 
         # Check the choices required for free subordinators only
         if cms.get('subordinator') == 'free':

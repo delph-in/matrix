@@ -183,6 +183,10 @@ def customize_poss_addenda(mylang,ch):
                                                              POSSESSUM #possessum],\
                                           HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD #head,\
                                                              POSSESSUM #possessum & nonpossessive ] ].',section='addenda')
+    mylang.add('basic-head-1st-comp-phrase :+ [ \
+                  SYNSEM.LOCAL.CAT.POSSESSUM #poss,\
+                  HEAD-DTR.SYNSEM.LOCAL.CAT.POSSESSUM #poss ].',section='addenda')
+
 
     # Set nouns to default nonpossessive behavior if no affixal strategies exist:
     poss_strat_types=set()
@@ -531,16 +535,11 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
             
         elif strat.get('mod-spec')=='mod':
 
-            # Add head-comp rule if necessary
-            if strat.get('mark-loc')=='possessum' or strat.get('mark-loc')=='both':
+#            if strat.get('mark-loc')=='possessum' or strat.get('mark-loc')=='both':
+#                pass
 
-                mylang.add('basic-head-1st-comp-phrase :+ [ \
-                               SYNSEM.LOCAL.CAT.POSSESSUM #poss,\
-                               HEAD-DTR.SYNSEM.LOCAL.CAT.POSSESSUM #poss ].',section='addenda')
-               
             # Add head-mod rule
-            else:
-
+            if strat.get('mark-loc')!='possessum' and strat.get('mark-loc')!='both':
                 mylang.add('possessum-mod-rule := basic-head-mod-phrase-simple & [\
                                     NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.MOD.FIRST.LOCAL.CAT.POSSESSUM #poss ],\
                                     HEAD-DTR.SYNSEM.LOCAL.CAT.POSSESSUM #poss ].')
