@@ -1,0 +1,190 @@
+
+version=32
+
+section=general
+language=adnom-poss-ztp
+punctuation-chars=discard-all
+archive=yes
+
+section=word-order
+word-order=vso
+has-dets=yes
+noun-det-order=noun-det
+has-aux=no
+
+section=number
+  number1_name=sg
+  number2_name=pl
+
+section=person
+person=1-2-3
+first-person=incl-excl
+incl-excl-number=pl
+
+section=gender
+
+section=case
+case-marking=nom-acc
+nom-acc-nom-case-name=nominative
+nom-acc-acc-case-name=accusative
+
+section=adnom-poss
+  poss-strat1_order=head-initial
+  poss-strat1_mod-spec=spec
+  poss-strat1_mark-loc=possessum
+    poss-strat1_possessor-feat1_name=case
+    poss-strat1_possessor-feat1_value=nom
+  poss-strat1_possessum-type=affix
+  poss-strat1_possessum-affix-agr=agree
+  poss-strat2_order=head-initial
+  poss-strat2_mod-spec=spec
+  poss-strat2_mark-loc=possessum
+    poss-strat2_possessor-feat1_name=case
+    poss-strat2_possessor-feat1_value=nom
+  poss-strat2_possessum-type=non-affix
+  poss-strat2_possessum-mark-order=head-final
+  poss-strat2_possessum-agr=agree
+    poss-strat2_possessum-form1_name=possessum-non-1sg
+    poss-strat2_possessum-form1_agr-orth=te
+      poss-strat2_possessum-form1_feat1_name=pernum
+      poss-strat2_possessum-form1_feat1_value=2sg, 3sg, 1pl, 2pl, 3pl
+    poss-strat2_possessum-form2_name=possessum-1sg
+    poss-strat2_possessum-form2_agr-orth=teHI
+      poss-strat2_possessum-form2_feat1_name=pernum
+      poss-strat2_possessum-form2_feat1_value=1sg
+
+section=direct-inverse
+
+section=tense-aspect-mood
+
+section=evidentials
+
+section=other-features
+  feature1_name=inalienable
+  feature1_type=head
+  feature1_cat=noun
+  feature1_new=no
+  feature1_existing=bool
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=info-str
+
+section=arg-opt
+
+section=nominalclause
+
+section=clausal-comp
+
+section=clausalmods
+
+section=lexicon
+  noun1_name=common
+    noun1_feat1_name=pernum
+    noun1_feat1_value=3rd
+  noun1_det=opt
+  noun2_name=inalienable
+  noun2_supertypes=noun1
+  noun2_det=opt
+    noun2_stem1_orth=ab
+    noun2_stem1_pred=_bark_n_rel
+    noun2_stem2_orth=uz
+    noun2_stem2_pred=_father_n_rel
+    noun2_stem3_orth=ya
+    noun2_stem3_pred=_tree_n_rel
+  noun3_name=alienable
+  noun3_supertypes=noun1
+  noun3_det=opt
+    noun3_stem1_orth=ni
+    noun3_stem1_pred=_house_n_rel
+    noun3_stem2_orth=mbek
+    noun3_stem2_pred=_dog_n_rel
+  noun4_name=pronoun
+  noun4_pron=on
+  noun4_det=opt
+  noun5_name=1sg-pron
+  noun5_supertypes=noun4
+    noun5_feat1_name=pernum
+    noun5_feat1_value=1sg
+  noun5_det=opt
+    noun5_stem1_orth=na
+    noun5_stem1_pred=_pron_n_rel
+  noun6_name=3sg-pron
+  noun6_supertypes=noun4
+    noun6_feat1_name=pernum
+    noun6_feat1_value=3sg
+  noun6_det=opt
+    noun6_stem1_orth=ar
+    noun6_stem1_pred=_pron_n_rel
+  verb1_name=intrans
+  verb1_valence=nom
+    verb1_stem1_orth=mnith
+    verb1_stem1_pred=_lose_v_rel
+  det1_name=det
+    det1_stem1_orth=ba
+    det1_stem1_pred=_exists_q_rel
+
+section=morphology
+  noun-pc1_name=inal-poss
+  noun-pc1_obligatory=on
+  noun-pc1_order=prefix
+  noun-pc1_inputs=noun2
+    noun-pc1_lrt1_name=possessum-non-1sg
+      noun-pc1_lrt1_feat1_name=poss-strat1
+      noun-pc1_lrt1_feat1_value=possessum
+      noun-pc1_lrt1_feat1_head=itself
+      noun-pc1_lrt1_feat2_name=pernum
+      noun-pc1_lrt1_feat2_value=2sg, 3sg, 1pl, 2pl, 3pl
+      noun-pc1_lrt1_feat2_head=itself
+      noun-pc1_lrt1_lri1_inflecting=yes
+      noun-pc1_lrt1_lri1_orth=x
+    noun-pc1_lrt2_name=possessum-1sg
+      noun-pc1_lrt2_feat1_name=poss-strat1
+      noun-pc1_lrt2_feat1_value=possessum
+      noun-pc1_lrt2_feat1_head=itself
+      noun-pc1_lrt2_feat2_name=pernum
+      noun-pc1_lrt2_feat2_value=1sg
+      noun-pc1_lrt2_feat2_head=itself
+      noun-pc1_lrt2_lri1_inflecting=yes
+      noun-pc1_lrt2_lri1_orth=xHI
+    noun-pc1_lrt3_name=nonposs
+      noun-pc1_lrt3_feat1_name=poss-strat1
+      noun-pc1_lrt3_feat1_value=nonpossessive
+      noun-pc1_lrt3_feat1_head=itself
+      noun-pc1_lrt3_lri1_inflecting=no
+  noun-pc2_name=other-non-poss
+  noun-pc2_obligatory=on
+  noun-pc2_order=suffix
+  noun-pc2_inputs=noun3, noun4
+    noun-pc2_lrt1_name=nonpossessive
+      noun-pc2_lrt1_feat1_name=poss-strat1
+      noun-pc2_lrt1_feat1_value=nonpossessive
+      noun-pc2_lrt1_feat1_head=itself
+      noun-pc2_lrt1_lri1_inflecting=no
+  verb-pc1_name=pernumtense
+  verb-pc1_obligatory=on
+  verb-pc1_order=suffix
+  verb-pc1_inputs=verb
+    verb-pc1_lrt1_name=non-1sg
+      verb-pc1_lrt1_feat1_name=pernum
+      verb-pc1_lrt1_feat1_value=2sg, 3sg, 1pl, 2pl, 3pl
+      verb-pc1_lrt1_feat1_head=subj
+      verb-pc1_lrt1_lri1_inflecting=no
+    verb-pc1_lrt2_name=1sg
+      verb-pc1_lrt2_feat1_name=pernum
+      verb-pc1_lrt2_feat1_value=1sg
+      verb-pc1_lrt2_feat1_head=subj
+      verb-pc1_lrt2_lri1_inflecting=yes
+      verb-pc1_lrt2_lri1_orth=HI
+
+section=toolbox-import
+
+section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon

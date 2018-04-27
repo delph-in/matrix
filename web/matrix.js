@@ -1250,8 +1250,8 @@ function set_negexp(n)
   var value = n;
   var divs = document.getElementsByClassName("neg_exp_switch");
 	for(var i=0; i<divs.length;i++){
-    var d = divs[i];
-    d.style.display = 'none';
+	    var d = divs[i];
+	    d.style.display = 'none';
 	}
   var d;
   switch (n){
@@ -1278,34 +1278,6 @@ function set_negexp(n)
     d.style.display ='block';
   }
 }
-//////////////////////////////////////////////////////////
-// For adnominal possession subpage                     //
-//////////////////////////////////////////////////////////
-function set_possessum(n)
-{
-  var value = n;
-  var divs = document.getElementsByClassName("possessum_affix_switch");
-	for(var i=0; i<divs.length;i++){
-    var d = divs[i];
-    d.style.display = 'none';
-	}
-  var d;
-  switch (n){
-    case '0':
-      var d = document.getElementById('agree');
-      break;
-    case '1':
-      var d = document.getElementById('non-agree');
-      break;
-    default:
-      var d = null; 
-  }
-  if (d != null)
-  {
-    d.style.display ='block';
-  }
-}
-
 
 function set_negmorph(t1,t2){
   // now calculate the bipartite negation type
@@ -1471,6 +1443,75 @@ function neg_comp() {
 var scaled = 0;
 window.onresize=scalenav;
 
+//////////////////////////////////////////////////////////
+// For adnominal possession subpage                     //
+//////////////////////////////////////////////////////////
+
+
+function display_poss(){
+    /*
+      Included in HTML prebody section for the adnominal
+      possession page. Loops through possessive choices and
+      toggles on appropriate sections before displaying page.
+     */
+
+    // Currently iterates over 10 possible poss-strats or poss-prons;
+    // should be changed to iterate over only the number of poss-strats
+    // or poss-prons that are specified.
+    for (var i=1; i<10; i++){
+
+	// Map an answer in the questionnaire to the id of
+	// the div it toggles on.
+	var strat_dict = {
+	    "possessor" : "possessor-morph"+i,
+	    "possessum" : "possessum-morph"+i+",possessum-only"+i,
+	    "both" : "possessor-morph"+i+",possessum-morph"+i,
+	    "neither" : "juxt"+i,
+	    "affix" : "possessor-affix"+i+",possessum-affix"+i, // TODO: differentiate these cases
+	    "non-affix" : "possessor-non-affix"+i+",possessum-non-affix"+i,  // TODO: differentiate these cases
+	    "agree" : "possessor-agr"+i+",possessum-agr"+i,  // TODO: differentiate these cases
+	    "non-agree" : "possessor-non-agr"+i+",possessum-non-agr"+i  // TODO: differentiate these cases
+	};
+	// List of questions whose answers toggle sections:
+	var strat_q = ['mark-loc','possessor-type','possessum-type','possessor-agr','possessum-agr'];
+
+	// Display questions for poss-strats
+	display_poss_choices(strat_dict,strat_q,"poss-strat"+i);
+
+
+	// Map an answer in the questionnaire to the id of
+	// the div it toggles on.
+	var pron_dict = {
+	    "affix" : "pron-affix"+i+",possessum-mark-affix"+i,
+	    "non-affix" : "pron-non-affix"+i+",possessum-mark-non-affix"+i,
+	    "yes" : "possessum-mark-pron"+i
+	};
+	// List of questions whose answers toggle sections:
+	var pron_q = ['type','possessum-mark-type','possessum-mark'];
+
+	// Display questions for poss-prons
+	display_poss_choices(pron_dict,pron_q,"poss-pron"+i);
+    }
+}
+
+function display_poss_choices(answer_to_sec,toggle_questions,prefix){
+
+    for(var j=0; j<toggle_questions.length; j++){
+	
+	var poss = document.forms['choices_form'][prefix+'_'+toggle_questions[j]];
+	if(poss){
+	    for (var n=0; n<poss.length;n++){
+		if(poss[n].checked){
+		    var secs = answer_to_sec[poss[n].value].split(",")
+		    for (var k=0; k<secs.length;k++){
+			toggle_element(secs[k],'on');
+		    }
+		}
+	    }
+	}
+    }
+}
+
 function scalenav() {
   // make smaller nav is below threshold
   var d = document.getElementById("navmenu");
@@ -1481,7 +1522,7 @@ function scalenav() {
               "Matrix Yes/No Questions":"Y/N Qs",
               "Information Structure": "Info Str",
               "Argument Optionality":"Arg Opt",
-              "Toolbox Import":"Tb Import",
+              "Tolbox Import":"Tb Import",
               "Test Sentences":"Test S",
               "Morphology":"Morph",
               "Other Features":"Features",

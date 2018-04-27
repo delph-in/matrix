@@ -37,9 +37,10 @@ nom-acc-acc-case-name=accusative
 section=adnom-poss
   poss-strat1_order=either
   poss-strat1_mod-spec=mod
-  poss-strat1_mark-loc=possessor
-  poss-strat1_possessor-type=affix
-  poss-strat1_possessor-affix-agr=non-agree
+  poss-strat1_mark-loc=neither
+  poss-strat1_pronoun-allow=no
+    poss-strat1_feat1_name=case
+    poss-strat1_feat1_value=genitive
   poss-pron1_type=non-affix
   poss-pron1_agr=agree
   poss-pron1_mod-spec=mod
@@ -82,7 +83,6 @@ section=adnom-poss
       poss-pron1_instance3_non-png-feat3_value=gen
 
   poss-pron1_possessum-mark=no
-
 
 section=direct-inverse
 
@@ -294,13 +294,6 @@ section=morphology
       noun-pc1_lrt6_feat3_head=itself
       noun-pc1_lrt6_lri1_inflecting=yes
       noun-pc1_lrt6_lri1_orth=on
-    noun-pc1_lrt7_name=possessor
-      noun-pc1_lrt7_feat1_name=poss-strat1
-      noun-pc1_lrt7_feat1_value=possessor
-      noun-pc1_lrt7_feat1_head=itself
-      noun-pc1_lrt7_lri1_inflecting=yes
-      noun-pc1_lrt7_lri1_orth=oy
-
   verb-pc1_name=verb-ending
   verb-pc1_obligatory=on
   verb-pc1_order=suffix
