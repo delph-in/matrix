@@ -534,11 +534,12 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
                     
             mylang.add('poss-unary-phrase'+POSS_UNARY)
             mylang.add('basic-determiner-lex :+ '+NON_POSS_LEX_ITEM, section = 'addenda')
+
+            # If the possessive phrase type is head-spec, then head-mod should pass up the POSSESSUM and POSSESSOR values of the head:
+            mylang.add('basic-head-mod-phrase-simple :+ [ SYNSEM.LOCAL.CAT.POSSESSUM #um,\
+                                                          HEAD-DTR.SYNSEM.LOCAL.CAT.POSSESSUM #um  ].', section = 'addenda')
             
         elif strat.get('mod-spec')=='mod':
-
-#            if strat.get('mark-loc')=='possessum' or strat.get('mark-loc')=='both':
-#                pass
 
             # Add head-mod rule
             if strat.get('mark-loc')!='possessum' and strat.get('mark-loc')!='both':
