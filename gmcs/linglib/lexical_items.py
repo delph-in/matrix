@@ -504,15 +504,6 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
                                       SPEC < > ] ], \
              ARG-ST < #spr > ].'
 
-    # EKN 2017-12-18 In some languages, possessor nouns or 
-    # possessor-marking adpositions act as specifiers to nouns. 
-    # This checks to see which kinds of possessive strategies
-    # have been defined, and makes the head type of the noun-lex's
-    # SPR conditional on that. It also checks for cases where only 
-    # the possessum is marked, since in these cases, the possessor
-    # noun must have a non-empty SPEC list even though it has gone
-    # through no lexical rules.
-
     mylang.add(typedef)
 
     # Adding empty MOD on general definitiion for noun-lex
@@ -543,8 +534,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     # for them specifically:
     poss_prons=False
     for pron in ch.get('poss-pron',[]):
-        if pron.get('type')!='affix':
-            poss_prons=True
+        poss_prons=True
     if (seen['imp'] or poss_prons) and ch.get('has-dets') == 'yes':
         mylang.add(
             'head-spec-phrase := [ NON-HEAD-DTR.SYNSEM.OPT - ].',

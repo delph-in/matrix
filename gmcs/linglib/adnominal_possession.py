@@ -879,7 +879,7 @@ def customize_possessor_pron_irules(strat,mylang,ch,strat_name,strat_num,feat,lr
         # Add constraints to pronoun affix rule for spec version
         if mod_spec=='spec':
             mylang.add(get_name(lrt)+'-lex-rule := \
-               [ SYNSEM.LOCAL.CAT.VAL [ SPR < >,\
+               [ SYNSEM.LOCAL.CAT.VAL [ SPR < [ OPT + ] >,\
                                         SPEC #spec,\
                                         SUBJ #subj,\
                                         COMPS #comps ],\
@@ -888,15 +888,12 @@ def customize_possessor_pron_irules(strat,mylang,ch,strat_name,strat_num,feat,lr
                                   LBL #lbl2,\
                                   ARG0 #possessor & [ COG-ST activ-or-more,\
                                                       SPECI + ] ],\
-                                '+POSSESSUM_EXIST_REL+',\
                                 '+POSS_REL+',\
                                 quant-relation &\
                                [ PRED "exist_q_rel",\
                                  ARG0 #possessor,\
                                  RSTR #harg2 ] !>,\
-                          HCONS <! qeq & [ HARG #harg,\
-                                           LARG #lbl ],\
-                                   qeq & [ HARG #harg2,\
+                          HCONS <! qeq & [ HARG #harg2,\
                                            LARG #lbl2 ] !> ],\
                 DTR.SYNSEM.LOCAL.CAT [ HEAD.PRON -,\
                                        VAL [ SPEC #spec & < >,\
