@@ -7,7 +7,7 @@ from gmcs.utils import orth_encode,TDLencode
 
 ######################################################################
 
-def customize_clausalmods(mylang, ch, lexicon, rules, roots):
+def customize_clausalmods(mylang, ch, lexicon, rules, roots, trigger):
     """
     The main clausal modifier customization routine
     """
@@ -27,7 +27,7 @@ def customize_clausalmods(mylang, ch, lexicon, rules, roots):
             if subtype == 'adverb':
                 create_subordinated_feature(mylang, roots, cms, ch)
                 create_adverb_subordinator_basic_lex_type(mylang)
-                create_adverb_subordinator_lexical_subtypes(mylang, lexicon, cms)
+                create_adverb_subordinator_lexical_subtypes(mylang, lexicon, trigger, cms)
                 add_non_branching_rules(mylang, rules, cms, ch)
 
         if subord == 'pair':
@@ -221,7 +221,7 @@ def create_head_subordinator_lexical_subtypes(mylang, lexicon, ch, cms):
             for morphpair in cms.get('morphpair'):
                 add_to_lexicon(morphpair, type, 'subord', lexicon)
 
-def create_adverb_subordinator_lexical_subtypes(mylang, lexicon, cms):
+def create_adverb_subordinator_lexical_subtypes(mylang, lexicon, trigger, cms):
     """
     Create the lexical subtype for the adverb subordinator with constraints for
     subordinator's position (before/after a vp/s), morphological constraints,
@@ -278,6 +278,11 @@ def create_adverb_subordinator_lexical_subtypes(mylang, lexicon, cms):
             orthstr = orth_encode(orth)
             name = TDLencode(adverb.get('name'))
             lexicon.add(name + ' := ' + type + ' & [ STEM < "' + orthstr + '" > ].')
+            trigger_rule = TDLencode(orth) +'_gr := arg0e_gtr & \
+                   [ CONTEXT [ RELS <! [ PRED "' + TDLencode(pred) + '" ] !> ], \
+                     FLAGS.TRIGGER "' + TDLencode(orth) + '" ].'
+            trigger.add(trigger_rule)
+
     # each adverb gets it's own lexical type with a special SUBORDINATED value so that the non-branching
     # rule can select it and so that the SUBPAIR feature can be added
     elif cms.get('subordinator') == 'pair':
@@ -867,6 +872,7 @@ def add_to_lexicon(morphtype, typename, type, lexicon):
     lexicon.add(name + ' := ' + typename + ' &\
                       [ STEM < "' + orthstr + '" >,\
                    SYNSEM.LKEYS.KEYREL.PRED "' + pred + '"].')
+
 
 def get_subord_stemids(ch, stemids):
     """
