@@ -433,7 +433,7 @@ def validate_general(ch, vr):
             sys.stderr.write('''
 [iso-code not validated] Get the latest code table file from sil.org and put it in
 your installation root directory as iso.tab to enable iso validation:
-\n$wget http://www.sil.org/iso639-3/iso-639-3_20120206.tab -O iso.tab\n\n''')
+\n$ wget https://iso639-3.sil.org/sites/iso639-3/files/downloads/iso-639-3.tab -O iso.tab\n''')
 
     if not ch.get('archive'):
         vr.warn('archive',
