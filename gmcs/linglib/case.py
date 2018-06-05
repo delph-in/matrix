@@ -3,6 +3,7 @@ from gmcs.utils import orth_encode
 from gmcs.lib import TDLHierarchy
 from gmcs.utils import get_name
 
+
 ######################################################################
 # customize_case()
 #   Create the type definitions associated with the user's choices
@@ -72,11 +73,12 @@ def case_names(ch):
     # if possible without causing collisions, shorten the case names to
     # three-letter abbreviations; otherwise, just use the names as the
     # abbreviations
-    abbrev = [ l[0:3] for l in user ]
+    abbrev = [l[0:3] for l in user]
     if len(set(abbrev)) != len(abbrev):
         abbrev = user
 
     return zip(canon, user, abbrev)
+
 
 # Given the canonical (i.e. choices variable) name of a case, return
 # its abbreviation from the list of cases, which should be created by
@@ -87,6 +89,7 @@ def canon_to_abbr(name, cases):
             return c[2]
     return name
 
+
 # Given the name of a case, return its abbreviation from the list of
 # cases, which should be created by calling case_names().  If there
 # is no abbreviation, return the name.
@@ -96,6 +99,7 @@ def name_to_abbr(name, cases):
             return c[2]
     return name
 
+
 def init_case_hierarchy(ch, hierarchies):
     cm = ch.get('case-marking')
     cases = case_names(ch)
@@ -103,8 +107,8 @@ def init_case_hierarchy(ch, hierarchies):
     hier = TDLHierarchy('case')
 
     # EKN 2018-03-02 If possessive strategy implemented, add an intermediate
-    # level to case hierarchy that contrasts with a 'false' case type that
-    # is assigned to possessors. Keeps possessors from being args of verbs, etc.
+    # level to case hierarchy that contrasts with a 'false' case type that is
+    # assigned to possessors. Keeps possessors from being args of verbs, etc.
     poss = True if ch.get('poss-strat') or ch.get('poss-pron') else False
 
     # For most case patterns, just make a flat hierarchy.  For fluid-s,
@@ -112,13 +116,15 @@ def init_case_hierarchy(ch, hierarchies):
     if cm in ['nom-acc', 'erg-abs', 'tripartite', 'split-s', 'focus']:
         for c in cases:
             if poss:
-                hier.add('real-case','case','intermediate case type for all real cases')
+                hier.add('real-case', 'case',
+                         'intermediate case type for all real cases')
                 hier.add(c[2], 'real-case', c[1])
             else:
                 hier.add(c[2], 'case', c[1])
     elif cm in ['fluid-s']:
         if poss:
-            hier.add('real-case','case','intermediate case type for all real cases')
+            hier.add('real-case', 'case',
+                     'intermediate case type for all real cases')
         abbr = canon_to_abbr('a_case+o_case', cases)
         for c in cases:
             if c[0] in ['a_case', 'o_case']:
@@ -130,7 +136,8 @@ def init_case_hierarchy(ch, hierarchies):
                     hier.add(c[2], 'case', c[1])
     elif cm in ['split-n', 'split-v']:
         if poss:
-            hier.add('real-case','case','intermediate case type for all real cases')
+            hier.add('real-case', 'case',
+                     'intermediate case type for all real cases')
         nom_a = canon_to_abbr('nom', cases)
         acc_a = canon_to_abbr('acc', cases)
         erg_a = canon_to_abbr('erg', cases)
@@ -167,7 +174,6 @@ def init_case_hierarchy(ch, hierarchies):
 
 # customize_case_type()
 #   Create a type for case
-
 def customize_case_type(mylang, hierarchies):
     if 'case' in hierarchies:
         hierarchies['case'].save(mylang)
@@ -176,26 +182,26 @@ def customize_case_type(mylang, hierarchies):
 # customize_trigger_rules()
 #   Create trigger rules for case-marking adpositions
 def customize_trigger_rules(adp_type, trigger):
-
-    grdef1 = adp_type +'_gr_1 := arg0e_gtr & \
-                      [ CONTEXT [ RELS <!  [ ARG1 individual & #i ] !> ], \
-                        FLAGS [ SUBSUME < #i >, TRIGGER "' + adp_type + '" ] ].'
-    grdef2 = adp_type +'_gr_2 := arg0e_gtr & \
-                        [ CONTEXT [ RELS <!  [ ARG2 individual & #i ] !> ], \
-                          FLAGS [ SUBSUME < #i >, TRIGGER "' + adp_type + '" ] ].'
-    grdef3 = adp_type +'_gr_3 := arg0e_gtr & \
-                        [ CONTEXT [ RELS <!  [ ARG3 individual & #i ] !> ], \
-                          FLAGS [ SUBSUME < #i >, TRIGGER "' + adp_type + '" ] ].'
+    grdef1 = adp_type + '_gr_1 := arg0e_gtr & \
+                  [ CONTEXT [ RELS <!  [ ARG1 individual & #i ] !> ], \
+                    FLAGS [ SUBSUME < #i >, TRIGGER "' + adp_type + '" ] ].'
+    grdef2 = adp_type + '_gr_2 := arg0e_gtr & \
+                  [ CONTEXT [ RELS <!  [ ARG2 individual & #i ] !> ], \
+                    FLAGS [ SUBSUME < #i >, TRIGGER "' + adp_type + '" ] ].'
+    grdef3 = adp_type + '_gr_3 := arg0e_gtr & \
+                  [ CONTEXT [ RELS <!  [ ARG3 individual & #i ] !> ], \
+                    FLAGS [ SUBSUME < #i >, TRIGGER "' + adp_type + '" ] ].'
 
     trigger.add(grdef1)
     trigger.add(grdef2)
     trigger.add(grdef3)
 
+
 # customize_case_adpositions()
 #   Create the appropriate types for case-marking adpositions
 def customize_case_adpositions(mylang, lexicon, trigger, ch):
     cases = case_names(ch)
-    #features = ch.features()
+    # features = ch.features()
     to_cfv = []
 
     if ch.has_adp_case():
@@ -221,12 +227,13 @@ def customize_case_adpositions(mylang, lexicon, trigger, ch):
                                                   VAL.SPR < > ]] > ].'
         mylang.add(typedef)
 
-        # EKN 03-02-2018 Add CASE real-case to comp of adp if possessives implemented:
+        # EKN 03-02-2018 Add CASE real-case to comp of adp if possessives
+        # implemented:
         if poss:
-            mylang.add('case-marking-adp-lex := [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR nonpossessive,\
-                                                                     POSSESSUM nonpossessive ],\
-                                                  ARG-ST < [ LOCAL.CAT.HEAD.CASE real-case ] > ].')
-
+            mylang.add('case-marking-adp-lex := [ SYNSEM.LOCAL.CAT \
+                           [ HEAD.POSSESSOR nonpossessive, \
+                                  POSSESSUM nonpossessive ], \
+                             ARG-ST < [ LOCAL.CAT.HEAD.CASE real-case ] > ].')
 
         if ch.has_mixed_case():
             mylang.add('+np :+ [ CASE-MARKED bool ].', section='addenda')
@@ -234,13 +241,12 @@ def customize_case_adpositions(mylang, lexicon, trigger, ch):
                 'case-marking-adp-lex := \
                  [ ARG-ST < [ LOCAL.CAT.HEAD.CASE-MARKED - ] > ].')
 
-
         # checking whether language has both prepositions and postpositions
         bidirectional = False
         adporders = []
-        for adp in ch.get('adp',[]):
+        for adp in ch.get('adp', []):
             adp_order = adp.get('order')
-            if not adp_order in adporders:
+            if adp_order not in adporders:
                 adporders.append(adp_order)
         if len(adporders) == 2:
             bidirectional = True
@@ -249,11 +255,10 @@ def customize_case_adpositions(mylang, lexicon, trigger, ch):
             mylang.add('case-marking-postp-lex := case-marking-adp-lex & \
                [ SYNSEM.LOCAL.CAT.HEADFINAL + ].')
 
-
         # Lexical entries
         lexicon.add_literal(';;; Case-marking adpositions')
 
-        for adp in ch.get('adp',[]):
+        for adp in ch.get('adp', []):
             orth = orth_encode(adp.get('orth'))
             infix_tname = 'ad'
             if bidirectional:
@@ -283,15 +288,22 @@ def customize_case_adpositions(mylang, lexicon, trigger, ch):
             for feat in adp.get('feat', []):
                 if feat['name'] == "information-structure meaning":
                     has_inforstr_feat = True
-                    typedef = \
-                        adp_type + ' := [ SYNSEM.LOCAL [ CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX #target ] >, \
-                                           CONT [ HOOK.ICONS-KEY #icons, \
-                                                  ICONS <! info-str & #icons & [ IARG2 #target ] !> ] ] ] ].'
+                    typedef = adp_type + \
+                        ' := [ SYNSEM.LOCAL \
+                                [ CAT.VAL.COMPS < \
+                                    [ LOCAL.CONT.HOOK.INDEX #target ] >, \
+                                  CONT [ HOOK.ICONS-KEY #icons, \
+                                         ICONS <! info-str & \
+                                         #icons & [ \
+                                             IARG2 #target ] !> ] ] ] ].'
                     lexicon.add(typedef)
                     break
             if not has_inforstr_feat:
                 typedef = \
-                    adp_type + ' := [ SYNSEM.LOCAL.CONT [ HOOK [ ICONS-KEY.IARG1 #clause, CLAUSE-KEY #clause ], ICONS <! !> ] ].'
+                    adp_type + ' := [ SYNSEM.LOCAL.CONT [ \
+                                        HOOK [ ICONS-KEY.IARG1 #clause, \
+                                               CLAUSE-KEY #clause ], \
+                                        ICONS <! !> ] ].'
                 lexicon.add(typedef)
 
             if cn.strip() != '':
@@ -300,6 +312,7 @@ def customize_case_adpositions(mylang, lexicon, trigger, ch):
             to_cfv += [(adp.full_key, adp_type, 'adp')]
 
     return to_cfv
+
 
 def customize_case(mylang, ch, hierarchies):
     # first we need to peek in things like lex-rules for when something
@@ -316,11 +329,13 @@ def customize_case(mylang, ch, hierarchies):
     # now output the case hierarchies
     customize_case_type(mylang, hierarchies)
 
+
 def convert_mixed_case(item, hierarchies, cases):
-    for feat in item.get('feat',[]):
+    for feat in item.get('feat', []):
         if feat['name'] == 'case' and ',' in feat['value']:
             v = [canon_to_abbr(c, cases) for c in feat['value'].split(', ')]
             feat['value'] = hierarchies['case'].get_type_covering(v)
+
 
 def add_lexrules(ch):
     # only need to add rules for mixed_case
@@ -328,7 +343,6 @@ def add_lexrules(ch):
         return
     for pc in ch['noun-pc']:
         # TJT 2014-09-08: changing to set comprehension for speed
-        #feature_names = {feat['name'] for lrt in pc['lrt'] for feat in lrt['feat']}
         feature_names = set()
         for lrt in pc['lrt']:
             for feat in lrt['feat']:
@@ -344,6 +358,7 @@ def add_lexrules(ch):
                     ch[lrt_key + '_lri1_inflecting'] = 'no'
                     ch[lrt_key + '_lri1_orth'] = ''
 
+
 def interpret_verb_valence(valence):
     '''
     Return the canonical valence name (e.g. iverb, tverb) given the
@@ -355,9 +370,7 @@ def interpret_verb_valence(valence):
         return 'iverb'
 
 
-
 def customize_verb_case(mylang, ch):
-    cm = ch.get('case-marking')
     cases = case_names(ch)
 
     # Pass through the list of case-marking patterns.  If a pattern is a
@@ -403,7 +416,8 @@ def customize_verb_case(mylang, ch):
 
                 if a_case and o_case:
                     if not clausal:
-                        t_type = dir_inv + a_case + '-' + o_case + '-transitive-verb-lex'
+                        t_type = dir_inv + a_case + '-' + \
+                                   o_case + '-transitive-verb-lex'
                     else:
                         t_type = clausal + a_case + '-' + o_case + '-verb-lex'
                 else:
@@ -411,7 +425,8 @@ def customize_verb_case(mylang, ch):
                         t_type = dir_inv + 'transitive-verb-lex'
                     else:
                         t_type = clausal + 'verb-lex'
-                if t_type != 'transitive-verb-lex' and t_type != 'clausal-verb-lex':
+                if t_type != 'transitive-verb-lex' and \
+                        t_type != 'clausal-verb-lex':
                     if not clausal:
                         mylang.add(t_type + ' := transitive-verb-lex.')
                     else:
@@ -426,14 +441,15 @@ def customize_verb_case(mylang, ch):
                 if a_case:
                     typedef = \
                         t_type + ' := \
-            [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + a_case + ' ].'
+          [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + a_case + ' ].'
                     mylang.add(typedef)
 
                 # constrain CASE-MARKING of the agent/subject, if appropriate
-                if a_case and ch.has_mixed_case() and not ch.has_optadp_case(a_case):
+                if a_case and ch.has_mixed_case() and \
+                        not ch.has_optadp_case(a_case):
                     typedef = \
                         t_type + ' := \
-            [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CAT.HEAD.CASE-MARKED + ] > ].'
+          [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CAT.HEAD.CASE-MARKED + ] > ].'
                     mylang.add(typedef)
 
                 # constrain the head of the patient/object
@@ -447,16 +463,17 @@ def customize_verb_case(mylang, ch):
                 if o_case:
                     typedef = \
                         t_type + ' := \
-            [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.CASE ' + o_case + ' ] > ].'
+          [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.CASE ' + o_case + ' ] > ].'
                     mylang.add(typedef)
 
                 # constrain CASE-MARKING of the patient/object, if appropriate
-                if o_case and ch.has_mixed_case() and not ch.has_optadp_case(o_case):
+                if o_case and ch.has_mixed_case() and \
+                        not ch.has_optadp_case(o_case):
                     typedef = \
                         t_type + ' := \
-            [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.CASE-MARKED + ] > ].'
+          [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.CASE-MARKED + ] > ].'
                     mylang.add(typedef)
-            else:     # intransitive or clausal with constrained subject
+            else:  # intransitive or clausal with constrained subject
                 if c[0] == 'intrans':
                     s_case = ''
                     s_head = ch.case_head()
@@ -475,7 +492,8 @@ def customize_verb_case(mylang, ch):
                     else:
                         i_type = clausal + 'verb-lex'
 
-                if i_type != 'intransitive-verb-lex' and i_type !='clausal-verb-lex':
+                if i_type != 'intransitive-verb-lex' and \
+                        i_type != 'clausal-verb-lex':
                     if not clausal:
                         mylang.add(i_type + ' := intransitive-verb-lex.')
                     else:
@@ -491,23 +509,21 @@ def customize_verb_case(mylang, ch):
                 if s_case:
                     typedef = \
                         i_type + ' := \
-            [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + s_case + ' ].'
+          [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + s_case + ' ].'
                     mylang.add(typedef)
 
                 # constrain CASE-MARKING of the subject, if appropriate
-                if s_case and ch.has_mixed_case() and not ch.has_optadp_case(s_case):
+                if s_case and ch.has_mixed_case() and \
+                        not ch.has_optadp_case(s_case):
                     typedef = \
                         i_type + ' := \
-            [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CAT.HEAD.CASE-MARKED + ] > ].'
+          [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CAT.HEAD.CASE-MARKED + ] > ].'
                     mylang.add(typedef)
 
 
-
-
-
-##################
-### VALIDATION ###
-##################
+##############
+# VALIDATION #
+##############
 
 def validate(choices, vr):
     cm = choices.get('case-marking')
@@ -541,13 +557,12 @@ def validate(choices, vr):
                'you must say what direction the verb is ' +
                'when the agent and patient have equal rank.')
 
+
 ######################################################################
 # validate_one_case(pre)
 #   A helper function to validate the user's choices about one case.
 #   pre is the first few characters of the associated choices names
 #  (e.g. 'nom-acc-nom')
-
 def validate_one_case(ch, vr, pre):
     if not ch.get(pre + '-case-name'):
         vr.err(pre + '-case-name', 'You must specify a name for every case.')
-
