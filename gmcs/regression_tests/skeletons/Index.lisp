@@ -22,7 +22,6 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
-((:path . "ccomp-bxl") (:content . "ccomp-bxl: ccomp jalkunan"))
 ((:path . "adnom-poss-was") (:content . "adnom-poss-was: Washo held-out test for adnominal possession"))
 ((:path . "adnom-poss-ztp") (:content . "adnom-poss-ztp: Coatlan-Loxicha Zapotec held-out test for adnominal possession"))
 ((:path . "adnom-poss-kat") (:content . "adnom-poss-kat: Georgian held-out test for adnominal possession"))
