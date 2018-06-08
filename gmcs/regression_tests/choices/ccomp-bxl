@@ -1,0 +1,235 @@
+
+version=31
+
+section=general
+language=ccomp-bxl
+
+section=word-order
+word-order=sov
+has-dets=no
+has-aux=no
+subord-word-order=same
+
+section=number
+  number1_name=sg
+  number2_name=pl
+
+section=person
+person=1-2-3
+first-person=none
+
+section=gender
+  gender1_name=hum
+  gender2_name=nonhum
+
+section=case
+case-marking=none
+
+section=adnom-poss
+  poss-pron1_type=non-affix
+  poss-pron1_agr=non-agree
+  poss-pron1_mod-spec=spec
+  poss-pron1_order=head-final
+    poss-pron1_instance1_name=1sg
+    poss-pron1_instance1_orth=mā
+      poss-pron1_instance1_feat1_name=person
+      poss-pron1_instance1_feat1_value=1st
+      poss-pron1_instance1_feat2_name=number
+      poss-pron1_instance1_feat2_value=sg
+
+section=direct-inverse
+
+section=tense-aspect-mood
+tense-definition=choose
+future=on
+nonfuture=on
+perimper=on
+
+section=evidentials
+
+section=other-features
+form-fin-nf=on
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=info-str
+
+section=arg-opt
+
+section=nominalclause
+
+section=clausal-comp
+  comps1_clause-pos-extra=on
+  comps1_comp-pos-before=on
+  comps1_comp=opt
+    comps1_stem1_orth=á
+    comps1_stem2_orth=à
+
+section=clausalmods
+
+section=lexicon
+  noun1_name=common-sg
+    noun1_feat1_name=number
+    noun1_feat1_value=sg
+    noun1_feat2_name=person
+    noun1_feat2_value=3rd
+  noun1_det=imp
+    noun1_stem1_orth=jɛ́ⁿ
+    noun1_stem1_pred=_father_n_rel
+    noun1_stem2_orth=yǐ
+    noun1_stem2_pred=_water_n_rel
+  noun2_name=common-pl
+    noun2_feat1_name=number
+    noun2_feat1_value=pl
+    noun2_feat2_name=person
+    noun2_feat2_value=3rd
+  noun2_det=imp
+    noun2_stem1_orth=díkpɛ́ʔràáⁿ
+    noun2_stem1_pred=_children_n_rel
+  noun3_name=proper
+    noun3_feat1_name=person
+    noun3_feat1_value=3rd
+    noun3_feat2_name=number
+    noun3_feat2_value=sg
+  noun3_det=imp
+    noun3_stem1_orth=zàkíì
+    noun3_stem1_pred=_Zaki_n_rel
+    noun3_stem2_orth=bákàrí
+    noun3_stem2_pred=_Bakari_n_rel
+  noun4_name=1sg-pron
+  noun4_pron=on
+    noun4_feat1_name=number
+    noun4_feat1_value=sg
+    noun4_feat2_name=person
+    noun4_feat2_value=1st
+  noun4_det=imp
+    noun4_stem1_orth=mā
+    noun4_stem1_pred=_1sg_n_rel
+  noun5_name=3sgHum
+  noun5_pron=on
+    noun5_feat1_name=person
+    noun5_feat1_value=3rd
+    noun5_feat2_name=number
+    noun5_feat2_value=sg
+    noun5_feat3_name=gender
+    noun5_feat3_value=hum
+  noun5_det=imp
+    noun5_stem1_orth=à
+    noun5_stem1_pred=_3sgHum_n_rel
+  noun6_name=3plHum
+  noun6_pron=on
+    noun6_feat1_name=number
+    noun6_feat1_value=pl
+    noun6_feat2_name=person
+    noun6_feat2_value=3rd
+    noun6_feat3_name=gender
+    noun6_feat3_value=hum
+  noun6_det=imp
+    noun6_stem1_orth=àⁿ
+    noun6_stem1_pred=_3plHum_n_rel
+  noun7_name=3SgNonhObj
+  noun7_pron=on
+    noun7_feat1_name=number
+    noun7_feat1_value=sg
+    noun7_feat2_name=person
+    noun7_feat2_value=3rd
+    noun7_feat3_name=gender
+    noun7_feat3_value=nonhum
+  noun7_det=imp
+    noun7_stem1_orth=í
+    noun7_stem1_pred=_3SgNonhObj_n_rel
+    noun7_stem2_orth=ń
+    noun7_stem2_pred=_3SgNonhObj_n_rel
+  verb1_name=cl
+    verb1_feat1_name=tense
+    verb1_feat1_value=nonfuture
+    verb1_feat1_head=verb
+    verb1_feat2_name=aspect
+    verb1_feat2_value=perfective
+    verb1_feat2_head=verb
+    verb1_feat3_name=person
+    verb1_feat3_value=1st, 3rd
+    verb1_feat3_head=subj
+    verb1_feat4_name=number
+    verb1_feat4_value=sg, pl
+    verb1_feat4_head=subj
+  verb1_valence=trans,comps1
+    verb1_stem1_orth=sɔ̀
+    verb1_stem1_pred=_know_v_rel
+    verb1_stem2_orth=dɛ́
+    verb1_stem2_pred=_say_v_rel
+  verb2_name=intran-perf-nonfut
+    verb2_feat1_name=aspect
+    verb2_feat1_value=perfective
+    verb2_feat1_head=verb
+    verb2_feat2_name=tense
+    verb2_feat2_value=nonfuture
+    verb2_feat2_head=verb
+    verb2_feat3_name=number
+    verb2_feat3_value=sg, pl
+    verb2_feat3_head=subj
+    verb2_feat4_name=person
+    verb2_feat4_value=1st, 3rd
+    verb2_feat4_head=subj
+  verb2_valence=intrans
+    verb2_stem1_orth=sɛ̀ɛ́
+    verb2_stem1_pred=_come_v_rel
+  verb3_name=intran-imperf
+    verb3_feat1_name=aspect
+    verb3_feat1_value=imperfective
+    verb3_feat1_head=verb
+    verb3_feat2_name=number
+    verb3_feat2_value=sg, pl
+    verb3_feat2_head=subj
+    verb3_feat3_name=person
+    verb3_feat3_value=1st, 3rd
+    verb3_feat3_head=subj
+  verb3_valence=intrans
+    verb3_stem1_orth=sáá
+    verb3_stem1_pred=_come_v_rel
+  verb4_name=pseudotrans
+    verb4_feat1_name=aspect
+    verb4_feat1_value=imperfective
+    verb4_feat1_head=verb
+    verb4_feat2_name=person
+    verb4_feat2_value=3rd
+    verb4_feat2_head=obj
+    verb4_feat3_name=number
+    verb4_feat3_value=sg
+    verb4_feat3_head=obj
+    verb4_feat4_name=gender
+    verb4_feat4_value=nonhum
+    verb4_feat4_head=obj
+  verb4_valence=trans
+    verb4_stem1_orth=wàá
+    verb4_stem1_pred=_go_v_rel
+  verb5_name=trans
+    verb5_feat1_name=aspect
+    verb5_feat1_value=perfective
+    verb5_feat1_head=verb
+    verb5_feat2_name=tense
+    verb5_feat2_value=nonfuture
+    verb5_feat2_head=verb
+    verb5_feat3_name=number
+    verb5_feat3_value=sg, pl
+    verb5_feat3_head=subj
+    verb5_feat4_name=person
+    verb5_feat4_value=1st, 3rd
+    verb5_feat4_head=subj
+  verb5_valence=trans
+    verb5_stem1_orth=sɔ̀
+    verb5_stem1_pred=_know_v_rel
+
+section=morphology
+
+section=toolbox-import
+
+section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon
