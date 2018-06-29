@@ -29,7 +29,7 @@ def customize_arg_op(mylang, ch, rules, hierarchies):
         rules to allow argument dropping"""
 
     if 'scale' in ch and (ch.get('subj-drop')or ch.get('obj-drop')):
-        mylang.add('dir-inv-scale := unexpressed-reg')
+        mylang.add('dir-inv-scale := unexpressed-reg.')
 
     mylang.set_section('verblex')
     ##Adding potential fix for integrating argument optionality and direct-inverse
