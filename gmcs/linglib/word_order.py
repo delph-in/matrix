@@ -93,27 +93,27 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
 
     # Head-comp order
 
-    if wo == 'sov' or wo == 'osv' or wo == 'ovs' or wo == 'v-final':
+    if wo in ['sov', 'osv', 'ovs', 'v-final']:
         hc = 'comp-head'
         mylang.add(hc + '-phrase := basic-head-1st-comp-phrase & head-final.')
 
-    if wo == 'svo' or wo == 'vos' or wo == 'vso' or wo == 'v-initial':
+    if wo in ['svo', 'vos', 'vso', 'v-initial']:
         hc = 'head-comp'
         mylang.add(hc + '-phrase := basic-head-1st-comp-phrase & head-initial.')
 
     # Head-subj order
 
-    if wo == 'osv' or wo == 'sov' or wo == 'svo' or wo == 'v-final':
+    if wo in ['osv', 'sov', 'svo', 'v-final']:
         hs = 'subj-head'
         mylang.add(hs + '-phrase := decl-head-subj-phrase & head-final.')
 
-    if wo == 'ovs' or wo == 'vos' or wo == 'vso' or wo == 'v-initial':
+    if wo in ['ovs', 'vos', 'vso', 'v-initial']:
         hs = 'head-subj'
         mylang.add(hs + '-phrase := decl-head-subj-phrase & head-initial.')
 
 
     # Complements attach before subjects
-    if wo == 'ovs' or wo == 'vos' or wo == 'sov' or wo == 'svo':
+    if wo in ['ovs', 'vos', 'sov', 'svo']:
         # If the language is OVS and extraposes clausal complements, we need subjects to attach low:
         if not ((wo == 'ovs' or wo == 'vos') and 'comps' in ch and extraposed_comps(ch)):
             mylang.add(hs + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].')
@@ -124,7 +124,7 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
     # constraint on the hs-rule.
     # OZ 2017-12-21 We also need low subject attachment for OVS languages with extraposed clausal complements.
     auxcomp = ch.get('aux-comp')
-    if (wo == 'vso' or wo == 'osv') or (wo == 'ovs'
+    if (wo in ['vso', 'osv']) or (wo == 'ovs'
                                         and 'comps' in ch and extraposed_comps(ch)):
         if ch.get('has-aux') == 'yes' and auxcomp == 'vp':
             mylang.add(hs + '-phrase := [ HEAD-DTR.SYNSEM.LIGHT + ].')
@@ -136,7 +136,7 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
         # only add it with languages where O attaches lower than S. To prevent spurious
         # ambiguity, we add SUBJ < > to head-opt-comp in these languages instead.
 
-    if wo == 'vso' or wo == 'osv':
+    if wo in ['vso', 'osv']:
         mylang.add('basic-head-opt-comp-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].', section='addenda')
     else:
         mylang.add('basic-head-opt-subj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].', section='addenda')
@@ -260,7 +260,7 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
 
         #rules shared among free and v2
 
-    if wo == 'free' or wo == 'v2':
+    if wo in ['free', 'v2']:
         mylang.add('head-subj-phrase := decl-head-subj-phrase & head-initial-head-nexus.')
         mylang.add('subj-head-phrase := decl-head-subj-phrase & head-final-head-nexus.')
         mylang.add('head-comp-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus.')
@@ -271,7 +271,7 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
 
     # Add rule definitions for major constituent order.
 
-    if wo == 'free' or wo == 'v2':
+    if wo in ['free', 'v2']:
         rules.add('head-comp := head-comp-phrase.')
         rules.add('head-subj := head-subj-phrase.')
         rules.add('comp-head := comp-head-phrase.')
