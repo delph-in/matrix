@@ -22,6 +22,7 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "ccomp-wgg") (:content . "ccomp-wgg: Clausal complements held-out Wangkagurru (wgg)"))
 ((:path . "ccomp-pab") (:content . "ccomp-pab: Clausal complements held-out: Paresi-Haliti (pab)"))
 ((:path . "ccomp-bxl") (:content . "ccomp-bxl: Clausal complements held-out Jalkunan"))
 ((:path . "ccomp-heb") (:content . "ccomp-heb: Clausal complements h-out Hebrew"))
