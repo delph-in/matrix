@@ -1,0 +1,127 @@
+
+version=31
+
+section=general
+language=ccomp-heb
+
+section=word-order
+word-order=svo
+has-dets=no
+has-aux=no
+subord-word-order=same
+
+section=number
+  number1_name=sg
+
+section=person
+person=1-2-3
+first-person=none
+
+section=gender
+  gender1_name=masc
+  gender2_name=fem
+
+section=case
+case-marking=none
+
+section=adnom-poss
+
+section=direct-inverse
+
+section=tense-aspect-mood
+
+section=evidentials
+
+section=other-features
+form-fin-nf=on
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=info-str
+
+section=arg-opt
+
+section=nominalclause
+
+section=clausal-comp
+  comps1_clause-pos-same=on
+  comps1_comp-pos-before=on
+  comps1_comp=oblig
+    comps1_stem1_orth=she
+    comps1_feat1_name=form
+    comps1_feat1_value=finite
+
+section=clausalmods
+
+section=lexicon
+  noun1_name=proper-f
+    noun1_feat1_name=person
+    noun1_feat1_value=3rd
+    noun1_feat2_name=number
+    noun1_feat2_value=sg
+    noun1_feat3_name=gender
+    noun1_feat3_value=fem
+  noun1_det=imp
+    noun1_stem1_orth=Ester
+    noun1_stem1_pred=_Esther_n_rel
+  noun2_name=1sg-m
+  noun2_pron=on
+    noun2_feat1_name=number
+    noun2_feat1_value=sg
+    noun2_feat2_name=person
+    noun2_feat2_value=1st
+    noun2_feat3_name=gender
+    noun2_feat3_value=masc
+  noun2_det=imp
+    noun2_stem1_orth=anì
+    noun2_stem1_pred=_1sg_n_rel
+  noun3_name=common-m
+    noun3_feat1_name=number
+    noun3_feat1_value=sg
+    noun3_feat2_name=person
+    noun3_feat2_value=3rd
+    noun3_feat3_name=gender
+    noun3_feat3_value=masc
+  noun3_det=imp
+    noun3_stem1_orth=tapúakh
+    noun3_stem1_pred=_apple_n_rel
+  verb1_name=tran
+    verb1_feat1_name=gender
+    verb1_feat1_value=fem
+    verb1_feat1_head=subj
+    verb1_feat2_name=number
+    verb1_feat2_value=sg
+    verb1_feat2_head=subj
+    verb1_feat3_name=person
+    verb1_feat3_value=3rd
+    verb1_feat3_head=subj
+  verb1_valence=trans
+    verb1_stem1_orth=akhlá
+    verb1_stem1_pred=_akhlá_v_rel
+  verb2_name=cl
+    verb2_feat1_name=number
+    verb2_feat1_value=sg
+    verb2_feat1_head=subj
+    verb2_feat2_name=person
+    verb2_feat2_value=1st
+    verb2_feat2_head=subj
+    verb2_feat3_name=gender
+    verb2_feat3_value=masc
+    verb2_feat3_head=subj
+  verb2_valence=trans,comps1
+    verb2_stem1_orth=yodéa
+    verb2_stem1_pred=_know_v_rel
+
+section=morphology
+
+section=toolbox-import
+
+section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon
