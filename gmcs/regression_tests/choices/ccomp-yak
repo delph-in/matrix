@@ -1,0 +1,178 @@
+
+version=31
+
+section=general
+language=ccomp-yak
+punctuation-chars=keep-list
+punctuation-chars-list=`-
+
+section=word-order
+word-order=free
+has-dets=no
+has-aux=no
+subord-word-order=same
+
+section=number
+  number1_name=sg
+  number2_name=pl
+
+section=person
+person=1-2-3
+first-person=none
+
+section=gender
+
+section=case
+case-marking=nom-acc
+nom-acc-nom-case-name=nom
+nom-acc-acc-case-name=obj
+  case1_name=dat
+
+section=adnom-poss
+
+section=direct-inverse
+
+section=tense-aspect-mood
+perimper=on
+
+section=evidentials
+
+section=other-features
+form-fin-nf=on
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=info-str
+
+section=arg-opt
+subj-drop=subj-drop-all
+subj-mark-drop=subj-mark-drop-req
+subj-mark-no-drop=subj-mark-no-drop-opt
+subj-con=subj-con-always
+obj-drop=obj-drop-all
+obj-mark-drop=obj-mark-drop-opt
+obj-mark-no-drop=obj-mark-no-drop-opt
+
+section=nominalclause
+  ns1_name=nmz
+  ns1_level=low
+  ns1_nmzRel=yes
+
+section=clausal-comp
+  comps1_clause-pos-same=on
+    comps1_feat1_name=nominalization
+    comps1_feat1_value=nmz
+
+section=clausalmods
+
+section=lexicon
+  noun1_name=proper
+    noun1_feat1_name=person
+    noun1_feat1_value=3rd
+    noun1_feat2_name=number
+    noun1_feat2_value=sg
+  noun1_det=imp
+    noun1_stem1_orth=Maali
+    noun1_stem1_pred=_Maali_n_rel
+    noun1_stem2_orth=Sam
+    noun1_stem2_pred=_Sam_n_rel
+  noun2_name=common
+    noun2_feat1_name=person
+    noun2_feat1_value=3rd
+    noun2_feat2_name=number
+    noun2_feat2_value=sg
+  noun2_det=imp
+    noun2_stem1_orth=ay`ay
+    noun2_stem1_pred=_magpie_n_rel
+  verb2_name=trans
+  verb2_valence=nom-acc
+    verb2_stem1_orth=k`inu
+    verb2_stem1_pred=_see_v_rel
+  verb3_name=cl
+    verb3_feat1_name=case
+    verb3_feat1_value=dat
+    verb3_feat1_head=obj
+  verb3_valence=nom,comps1
+    verb3_stem1_orth=k`inu
+    verb3_stem1_pred=_see_v_rel
+  verb4_name=intrans
+  verb4_valence=nom
+    verb4_stem1_orth=t`il
+    verb4_stem1_pred=_croak_v_rel
+
+section=morphology
+  noun-pc1_name=case
+  noun-pc1_obligatory=on
+  noun-pc1_order=suffix
+  noun-pc1_inputs=noun, verb-pc1
+    noun-pc1_lrt1_name=nom
+      noun-pc1_lrt1_feat1_name=case
+      noun-pc1_lrt1_feat1_value=nom
+      noun-pc1_lrt1_feat1_head=itself
+      noun-pc1_lrt1_lri1_inflecting=no
+    noun-pc1_lrt2_name=obj
+      noun-pc1_lrt2_feat1_name=case
+      noun-pc1_lrt2_feat1_value=acc
+      noun-pc1_lrt2_feat1_head=itself
+      noun-pc1_lrt2_lri1_inflecting=yes
+      noun-pc1_lrt2_lri1_orth=-nan
+    noun-pc1_lrt3_name=dat
+      noun-pc1_lrt3_feat1_name=case
+      noun-pc1_lrt3_feat1_value=dat
+      noun-pc1_lrt3_feat1_head=itself
+      noun-pc1_lrt3_lri1_inflecting=yes
+      noun-pc1_lrt3_lri1_orth=-yaw
+  verb-pc1_name=nzr
+  verb-pc1_order=suffix
+  verb-pc1_inputs=verb
+    verb-pc1_forbid1_others=verb-pc3
+    verb-pc1_lrt1_name=low
+      verb-pc1_lrt1_feat1_name=nominalization
+      verb-pc1_lrt1_feat1_value=nmz
+      verb-pc1_lrt1_feat1_head=verb
+      verb-pc1_lrt1_feat2_name=case
+      verb-pc1_lrt1_feat2_value=acc
+      verb-pc1_lrt1_feat2_head=subj
+      verb-pc1_lrt1_feat3_name=form
+      verb-pc1_lrt1_feat3_value=nonfinite
+      verb-pc1_lrt1_feat3_head=verb
+      verb-pc1_lrt1_lri1_inflecting=yes
+      verb-pc1_lrt1_lri1_orth=-t
+  verb-pc2_name=pernum
+  verb-pc2_order=prefix
+  verb-pc2_inputs=verb
+    verb-pc2_lrt1_name=3sgS
+      verb-pc2_lrt1_feat1_name=number
+      verb-pc2_lrt1_feat1_value=sg
+      verb-pc2_lrt1_feat1_head=subj
+      verb-pc2_lrt1_feat2_name=person
+      verb-pc2_lrt1_feat2_value=3rd
+      verb-pc2_lrt1_feat2_head=subj
+      verb-pc2_lrt1_lri1_inflecting=yes
+      verb-pc2_lrt1_lri1_orth=i-
+  verb-pc3_name=asp
+  verb-pc3_obligatory=on
+  verb-pc3_order=suffix
+  verb-pc3_inputs=verb, verb-pc2
+    verb-pc3_forbid1_others=verb-pc1
+    verb-pc3_lrt1_name=pst
+      verb-pc3_lrt1_feat2_name=aspect
+      verb-pc3_lrt1_feat2_value=imperfective
+      verb-pc3_lrt1_feat2_head=verb
+      verb-pc3_lrt1_feat3_name=form
+      verb-pc3_lrt1_feat3_value=finite
+      verb-pc3_lrt1_feat3_head=verb
+      verb-pc3_lrt1_lri1_inflecting=yes
+      verb-pc3_lrt1_lri1_orth=-sha
+
+section=toolbox-import
+
+section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon
