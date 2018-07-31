@@ -1,0 +1,200 @@
+
+version=32
+
+section=general
+language=ccomp-pab
+
+section=word-order
+word-order=sov
+has-dets=no
+has-aux=no
+subord-word-order=same
+
+section=number
+  number1_name=sg
+  number2_name=pl
+
+section=person
+person=1-2-3
+first-person=none
+
+section=gender
+
+section=case
+case-marking=none
+
+section=adnom-poss
+
+section=direct-inverse
+
+section=tense-aspect-mood
+tense-definition=choose
+future=on
+nonfuture=on
+  aspect1_name=imperfective
+    aspect1_supertype1_name=aspect
+  aspect2_name=transitional
+    aspect2_supertype1_name=aspect
+
+section=evidentials
+
+section=other-features
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=info-str
+
+section=arg-opt
+subj-drop=subj-drop-all
+subj-mark-drop=subj-mark-drop-req
+subj-mark-no-drop=subj-mark-no-drop-req
+subj-con=subj-con-always
+
+section=nominalclause
+  ns1_name=high
+  ns1_level=high
+  ns1_nmzRel=no
+
+section=clausal-comp
+  comps1_clause-pos-extra=on
+    comps1_feat1_name=nominalization
+    comps1_feat1_value=high
+
+section=clausalmods
+
+section=lexicon
+  noun1_name=common
+    noun1_feat1_name=person
+    noun1_feat1_value=3rd
+    noun1_feat2_name=number
+    noun1_feat2_value=sg
+  noun1_det=imp
+    noun1_stem1_orth=zoimahaliti
+    noun1_stem1_pred=_boy_n_rel
+    noun1_stem2_orth=zoimahaloti
+    noun1_stem2_pred=_girl_n_rel
+    noun1_stem3_orth=oliti
+    noun1_stem3_pred=_game_n_rel
+  verb1_name=cl
+  verb1_valence=trans,comps1
+    verb1_stem1_orth=waiyore
+    verb1_stem1_pred=_know_v_rel
+    verb1_stem2_orth=aheko
+    verb1_stem2_pred=_think_v_rel
+  verb2_name=trans
+  verb2_valence=trans
+    verb2_stem1_orth=waiya
+    verb2_stem1_pred=_see_v_rel
+    verb2_stem2_orth=aitse
+    verb2_stem2_pred=_kill_v_rel
+  verb3_name=intran
+  verb3_valence=intrans
+    verb3_stem1_orth=kaoka
+    verb3_stem1_pred=_arrive_v_rel
+
+section=morphology
+  verb-pc1_name=subj-tran
+  verb-pc1_obligatory=on
+  verb-pc1_order=prefix
+  verb-pc1_inputs=tverb, verb1
+    verb-pc1_lrt1_name=1sg
+      verb-pc1_lrt1_feat1_name=number
+      verb-pc1_lrt1_feat1_value=sg
+      verb-pc1_lrt1_feat1_head=subj
+      verb-pc1_lrt1_feat2_name=person
+      verb-pc1_lrt1_feat2_value=1st
+      verb-pc1_lrt1_feat2_head=subj
+      verb-pc1_lrt1_lri1_inflecting=yes
+      verb-pc1_lrt1_lri1_orth=n=
+    verb-pc1_lrt2_name=3sg
+      verb-pc1_lrt2_feat1_name=number
+      verb-pc1_lrt2_feat1_value=sg
+      verb-pc1_lrt2_feat1_head=subj
+      verb-pc1_lrt2_feat2_name=person
+      verb-pc1_lrt2_feat2_value=3rd
+      verb-pc1_lrt2_feat2_head=subj
+      verb-pc1_lrt2_lri1_inflecting=no
+    verb-pc1_lrt3_name=1pl
+      verb-pc1_lrt3_feat1_name=number
+      verb-pc1_lrt3_feat1_value=pl
+      verb-pc1_lrt3_feat1_head=subj
+      verb-pc1_lrt3_feat2_name=person
+      verb-pc1_lrt3_feat2_value=1st
+      verb-pc1_lrt3_feat2_head=subj
+      verb-pc1_lrt3_lri1_inflecting=yes
+      verb-pc1_lrt3_lri1_orth=wa=
+  verb-pc2_name=subj-intran
+  verb-pc2_obligatory=on
+  verb-pc2_order=prefix
+  verb-pc2_inputs=iverb
+    verb-pc2_lrt1_name=3sg-a
+      verb-pc2_lrt1_feat1_name=number
+      verb-pc2_lrt1_feat1_value=sg
+      verb-pc2_lrt1_feat1_head=subj
+      verb-pc2_lrt1_feat2_name=person
+      verb-pc2_lrt1_feat2_value=3rd
+      verb-pc2_lrt1_feat2_head=subj
+      verb-pc2_lrt1_lri1_inflecting=yes
+      verb-pc2_lrt1_lri1_orth=e=
+  verb-pc3_name=asp
+  verb-pc3_order=suffix
+  verb-pc3_inputs=verb-pc1, verb-pc2
+    verb-pc3_forbid1_others=verb-pc5
+    verb-pc3_lrt1_name=ifv
+      verb-pc3_lrt1_feat1_name=aspect
+      verb-pc3_lrt1_feat1_value=imperfective
+      verb-pc3_lrt1_feat1_head=verb
+      verb-pc3_lrt1_lri1_inflecting=yes
+      verb-pc3_lrt1_lri1_orth=-ita
+    verb-pc3_lrt2_name=trs
+      verb-pc3_lrt2_feat1_name=aspect
+      verb-pc3_lrt2_feat1_value=transitional
+      verb-pc3_lrt2_feat1_head=verb
+      verb-pc3_lrt2_lri1_inflecting=yes
+      verb-pc3_lrt2_lri1_orth=-hene
+  verb-pc4_name=nmz1
+  verb-pc4_order=suffix
+  verb-pc4_inputs=verb2, verb-pc3
+    verb-pc4_lrt1_name=re
+      verb-pc4_lrt1_feat1_name=nominalization
+      verb-pc4_lrt1_feat1_value=high
+      verb-pc4_lrt1_feat1_head=verb
+      verb-pc4_lrt1_lri1_inflecting=yes
+      verb-pc4_lrt1_lri1_orth=-re
+  verb-pc5_name=nmz2
+  verb-pc5_order=suffix
+  verb-pc5_inputs=verb-pc2
+    verb-pc5_forbid1_others=verb-pc3
+    verb-pc5_lrt1_name=ne
+      verb-pc5_lrt1_feat1_name=nominalization
+      verb-pc5_lrt1_feat1_value=high
+      verb-pc5_lrt1_feat1_head=verb
+      verb-pc5_lrt1_lri1_inflecting=yes
+      verb-pc5_lrt1_lri1_orth=-ne
+  verb-pc6_name=tense
+  verb-pc6_obligatory=on
+  verb-pc6_order=suffix
+  verb-pc6_inputs=verb-pc1, verb-pc2, verb-pc3, verb-pc4, verb-pc5
+    verb-pc6_lrt1_name=nonfut
+      verb-pc6_lrt1_feat1_name=tense
+      verb-pc6_lrt1_feat1_value=nonfuture
+      verb-pc6_lrt1_feat1_head=verb
+      verb-pc6_lrt1_lri1_inflecting=no
+    verb-pc6_lrt2_name=fut
+      verb-pc6_lrt2_feat1_name=tense
+      verb-pc6_lrt2_feat1_value=future
+      verb-pc6_lrt2_feat1_head=verb
+      verb-pc6_lrt2_lri1_inflecting=yes
+      verb-pc6_lrt2_lri1_orth==ite
+
+section=toolbox-import
+
+section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon
