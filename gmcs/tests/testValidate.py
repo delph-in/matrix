@@ -50,8 +50,7 @@ class TestValidate(unittest.TestCase):
                      ['tense1_', ''],
                      ['aspect1_', ''],
                      ['situation1_', ''],
-                     ['nf-subform1_', ''],
-                     ['fin-subform1_', ''],
+                     ['form-subtype1_', ''],
                      ['noun1_', '-noun-lex'],
                      ['noun2_', '-noun-lex'],
                      ['det1_', '-determiner-lex'],
@@ -74,6 +73,7 @@ class TestValidate(unittest.TestCase):
                 c = ChoicesFile()
                 c[name] = 'head-comp-phrase'
                 self.assertError(c, name)
+                
 
             # next try colliding pairs of names
             for v2 in [x for x in variables if x[0] != v1[0]]:
@@ -322,7 +322,6 @@ class TestValidate(unittest.TestCase):
 
     def test_tanda(self):
         tenses = ['past', 'present', 'future', 'nonpast', 'nonfuture']
-
         ## Tense
         # subtypes defined for incorrect supertype
         for st in tenses:
@@ -358,13 +357,13 @@ class TestValidate(unittest.TestCase):
         ## Form
         c = ChoicesFile()
         c['has-aux'] = 'yes'
-        c['noaux-fin-nf'] = 'on'
-        self.assertError(c, 'noaux-fin-nf')
+        c['form-fin-nf'] = ''
+        self.assertError(c, 'form-fin-nf')
 
         c['has-aux'] = 'no'
-        c['noaux-fin-nf'] = ''
-        c['nf-subform1_dummy'] = 'dummy'
-        self.assertError(c, 'noaux-fin-nf')
+        c['form-fin-nf'] = 'off'
+        c['form-subtype1_name'] = 'finite'
+        self.assertError(c, 'form-subtype')
 
 
     def test_lexicon(self):

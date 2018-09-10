@@ -2207,7 +2207,7 @@ class ChoicesFile:
     def convert_28_to_29(self):
         """
         Updates the treatment of FORM.
-        FORM will no longerbe implicit with has-aux=yes.
+        FORM will no longer be implicit with has-aux=yes.
         It will be explicitly initialized in Other Features section.
         FORM will no longer be available in Tense, Aspect, and Mood section.
         FORM will no longer be a special hierarchy but will look much like other features,

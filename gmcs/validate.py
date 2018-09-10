@@ -1152,15 +1152,14 @@ def validate_tanda(ch, vr):
     ## validate form
     if ch.get('has-aux') == 'yes' and not ch.get('form-fin-nf') == 'on':
         mess = 'You have indicated on the word order page that ' + \
-               'your language has auxiliaries or picked a sentential negation strategy' \
+               'your language has auxiliaries or picked a sentential negation strategy ' \
                'that assumes auxiliaries, but have not initialized a FORM hierarchy.'
         vr.err('form-fin-nf', mess)
 
-    # if ch.get('has-aux') == 'no' and not (ch.get('noaux-fin-nf') == 'on'):
-    #     if 'nf-subform' in ch:
-    #         mess = 'You have indicated that your language has no auxiliaries ' + \
-    #                'but you have entered subforms of finite or non-finite.'
-    #         vr.err('noaux-fin-nf', mess)
+    if not (ch.get('form-fin-nf') == 'on') and ch.get('form-subtype'):
+        mess = 'You have not initialized a FORM hierarchy ' \
+               'but you have entered a form subtype.'
+        vr.err('form-subtype', mess)
 
 ######################################################################
 # validate_test_sentences(ch, vr)
