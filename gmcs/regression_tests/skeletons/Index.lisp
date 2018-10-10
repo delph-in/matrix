@@ -22,6 +22,10 @@
 (
 ((:path . "tiniest") (:content . "tiniest: A very basic grammar just to get the regression tests started.  SOV word order, no frills."))
  ;;; new-regression-test-here
+((:path . "ctn-oracle-test") (:content . "ctn-oracle-test: oracle choices file on test-data"))
+((:path . "ctn-oracle-test") (:content . "ctn-oracle-test: oracle choices on item from 2014"))
+((:path . "ctn-oracle-test") (:content . "ctn-oracle-test: testing oracle choices"))
+((:path . "clausalmods-german-test") (:content . "clausalmods-german-test: test to see if i can add reg test"))
 ((:path . "ccomp-yak") (:content . "ccomp-yak: Clausal complements held-out: Yakima Sahaptin (yak)"))
 ((:path . "ccomp-wgg") (:content . "ccomp-wgg: Clausal complements held-out Wangkagurru (wgg)"))
 ((:path . "ccomp-pab") (:content . "ccomp-pab: Clausal complements held-out: Paresi-Haliti (pab)"))
