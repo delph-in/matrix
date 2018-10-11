@@ -476,3 +476,7 @@ ccomp-bxl=Clausal complements held-out Jalkunan
 ccomp-pab=Clausal complements held-out: Paresi-Haliti (pab)
 ccomp-wgg=Clausal complements held-out Wangkagurru (wgg)
 ccomp-yak=Clausal complements held-out: Yakima Sahaptin (yak)
+oracle-ctn=ctn-oracle
+Chintang=ctn-06-dev-attempt
+ctn-06=ctn-06
+oracle-ctn1=ctn-oracle
