@@ -477,4 +477,4 @@ ccomp-pab=Clausal complements held-out: Paresi-Haliti (pab)
 ccomp-wgg=Clausal complements held-out Wangkagurru (wgg)
 ccomp-yak=Clausal complements held-out: Yakima Sahaptin (yak)
 clausalmods-german-test=test to see if i can add reg test
-ctn-oracle-test=oracle choices file on test-data
+ctn-oracle-test=oracle choices file on ctn test data
