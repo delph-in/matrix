@@ -824,7 +824,7 @@ list := avm.
 
 cons := list &
   [ FIRST *top*,
-    REST *top* ].
+    REST list ].
 
 0-1-list := list.
 1-list := 0-1-list & cons &
