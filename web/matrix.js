@@ -213,7 +213,7 @@ function submit_go(subpage){
 
 // toggle_display_lex()
 // Handle a click on a section show/hide button on the Lexicon Page
-function toggle_display_lex(element_id, button_id)
+function toggle_display_lex(element_id, button_id, dont_do_multi_select)
 {
   p = document.getElementById(element_id);
   text_boxes = document.getElementsByName(element_id+'_name');
@@ -235,6 +235,9 @@ function toggle_display_lex(element_id, button_id)
     }
     //    document.cookie = element_id+"=block";
     //    document.cookie = button_id+"=block";
+    if (!dont_do_multi_select) {
+      multi_init();
+    }
   } else {
     p.style.display = 'none';
     if (errs != null) {
@@ -272,13 +275,17 @@ function toggle_all_display_lex(on)
       if (button != null) {
 	if(on==1){
 	  if(iter.style.display == 'block' || iter.style.display == '')
-	    toggle_display_lex(iter.id, button.id);
+	    toggle_display_lex(iter.id, button.id, false);
         } else {
           if(iter.style.display == 'none' || iter.style.display == '')
-            toggle_display_lex(iter.id, button.id);
+            toggle_display_lex(iter.id, button.id, false);
 	}
       }
     }
+  }
+
+  if (on == 1) {
+    multi_init();
   }
 }
 
@@ -302,6 +309,8 @@ function fill_display_name(id)
 // calculate their size.
 function focus_all_fields()
 {
+  toggle_all_display_lex(1); // hide everything
+
   // Surrounded by try...catch because IE doesn't like to give focus to
   // undisplayed form elements.
   try {
@@ -679,10 +688,16 @@ function fill_regex(pattern, nameOnly)
   pattern = '^' + pattern + '$';
   var items = new Array();
 
-  // Pass through the form fields in the page, looking for ones whose
-  // name attribute matches the pattern.  When one is found, use its
-  // contents to create an option.
-  var e = document.forms[0].elements;
+  var m = pattern.match(/(noun|verb)-pc[0-9]+/);
+  if (m != null) {
+    var e = document.querySelectorAll('#' + m[0] + ' input, #' + m[0] + ' select'); // just get children of that PC
+  } else {
+    // Pass through the form fields in the page, looking for ones whose
+    // name attribute matches the pattern.  When one is found, use its
+    // contents to create an option.
+    var e = document.forms[0].elements;
+  }
+
   for (var i = 0; i < e.length; i++) {
     if (e[i].name.search(pattern) != -1) {
       var val = e[i].name.replace(/_[^_]*$/, '');
