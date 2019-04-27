@@ -127,7 +127,8 @@ NON_POSS_LEX_ITEM = '[ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR nonpossessive,\
                                                      POSSESSUM nonpossessive ] ].'
 
 POSS_UNARY = ' := basic-unary-phrase & \
-              [ SYNSEM.LOCAL [ CONT.HOOK #hook,\
+              [ SYNSEM.LOCAL [ COORD -,\
+                               CONT.HOOK #hook,\
                                CAT [ HEAD det & [ POSSESSOR possessor ],\
   	                 	   VAL [ SPR < >,\
                                          COMPS < >,\
@@ -145,7 +146,8 @@ POSS_UNARY = ' := basic-unary-phrase & \
                                                    RSTR #harg ] !>,\
 	                HCONS <! qeq & [ HARG #harg, LARG #lbl ]!>,\
                         ICONS <! !>   ],\
-                ARGS < [ SYNSEM.LOCAL [ CAT [ VAL [ SPR < >,\
+                ARGS < [ SYNSEM.LOCAL [ COORD -,\
+                                        CAT [ VAL [ SPR < >,\
        	       		      	                    COMPS < >,\
 				                    SUBJ < >,\
                                                     SPEC < > ],\
