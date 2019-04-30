@@ -1692,38 +1692,7 @@ Label "<p>Please indicate which strategy your language uses to form
 constituent (aka wh-) questions.  You may leave this section blank, in which
 case your grammar will not include a wh-question-forming strategy.</p>"
 
-BeginIter qword{i} "a Question Word" 0
-  Label "<b>Question Word type {i}</b>:"
-  Label "<div style=\"padding-left: 16px\">"
-  Text name "Question Word {i} name" "Type name: " "<br>" 20
-  BeginIter stem{j} "a Stem" 0 1
-    Text orth "Question Word {i} spelling" "Spelling: " "" 30 "fill_pred('qword{i}_stem{j}', 'q')"
-    Text pred "Question Word {i} predicate" " Predicate: " "<br>" 30
-  EndIter stem
-  #Label "<br><br>Features:"
-  #BeginIter feat{j} "a Feature"
-  #  Select name "Question Word {i} feature {j} name" "Name: " " "
-  #  fillnames c=noun
-  #  MultiSelect value "Question Word {i} feature {j} value" "Value: " ""
-  #  fillvalues p=qword{i}_feat{j}_name
-  #EndIter feat
-  Label "</div>"
-EndIter qword
-
-
-        #BeginIter qword{i} " question words" 0 1
-        #        Text orth "qword {i} spelling" "Question word: " "" 30 "fill_pred('qword{i}', 'qword')"
-        #        Text pred "qword {i} predicate" " Predicate: which..." "" 30
-        #EndIter qword
-
-
-
-      #BeginIter freemorph{j} "a Free Subordinator Morpheme" 0 1
-      #  Label "<p>Free Subordinator Morpheme {j}:<br>"
-      #    Text orth "subord {i} stem {j} spelling" "Spelling: " "" 30 "fill_pred('cms{i}_freemorph{j}', 'subord')"
-      #    Text pred "subord {i} stem {j} predicate" " Predicate: " "" 30
-      #EndIter freemorph
-
+<p>If you fill out this page, you must also fill out the Question Words section on the Lexicon page.</p>
 
 Check wh-q-pos "Wh-questions position" "<p>" "Constituent questions fronting: "
 
@@ -2311,6 +2280,7 @@ Cache verbpcs verb-pc[0-9]+$ name
 Cache verblrs verb-pc[0-9]+(_lrt[0-9]+)?$ name
 Cache adjlrs adj-pc[0-9]+(_lrt[0-9]+)?$ name
 Cache detlrs det-pc[0-9]+(_lrt[0-9]+)?$ name
+Cache qdetlrs q-det-pc[0-9]+(_lrt[0-9]+)?$ name
 
 Label "<p>On this page you will define <span class=\"dfn\">lexical
 types</span> and <span class=\"dfn\">lexical items</span> within those
@@ -2800,6 +2770,70 @@ BeginIter det{i} "a Determiner" 1
   Label "</div>"
 
 EndIter det
+
+Separator
+
+Label "<h3>Question words</h3>"
+
+#BeginIter qword{i} "a Question Word" 0
+#  Label "<b>Question Word type {i}</b>:"
+#  Label "<div style=\"padding-left: 16px\">"
+#  Text name "Question Word {i} name" "Type name: " "<br>" 20
+#  BeginIter stem{j} "a Stem" 0 1
+#    Text orth "Question Word {i} spelling" "Spelling: " "" 30 "fill_pred('qword{i}_stem{j}', 'q')"
+#    Text pred "Question Word {i} predicate" " Predicate: " "<br>" 30
+#  EndIter stem
+#  Label "</div>"
+#EndIter qword
+
+BeginIter q-det{i} "a Question Determiner" 1
+
+  Label "<b>Question Determiner type {i}</b>:"
+
+  Label "<div style=\"padding-left: 16px\">"
+
+  Text name "Question Determiner {i} name" "Type name: " "<br>" 20
+
+  BeginIter stem{j} "a Stem" 0 1
+
+    Text orth "Question Determiner {i} spelling" "Spelling: " "" 30 "fill_pred('q-det{i}_stem{j}', 'q')"
+
+    Text pred "Question Determiner {i} predicate" " Predicate: " "<br>" 30
+
+  EndIter stem
+
+  Label "<br><br>Features:"
+
+  BeginIter feat{j} "a Feature"
+
+    Select name "Question Determiner {i} feature {j} name" "Name: " " "
+    fillnames c=noun
+
+    MultiSelect value "Question Determiner {i} feature {j} value" "Value: " ""
+    fillvalues p=q-det{i}_feat{j}_name
+
+  EndIter feat
+
+  Label "<p>Morphotactic Constraints:</p>"
+
+  BeginIter require{j} "a Require constraint"
+
+    MultiSelect others "Question Determiner {i} requires" "Question Determiner {i} requires one of the following position classes: " ""
+    fillcache c=qdetlrs
+
+  EndIter require
+
+  BeginIter forbid{j} "a Forbid constraint"
+
+    MultiSelect others "Question Determiner {i} requires" "Question Determiner {i} requires one of the following position classes: " ""
+    fillcache c=qdetlrs
+
+  EndIter forbid
+
+  Label "</div>"
+
+EndIter q-det
+
 
 Separator
 
