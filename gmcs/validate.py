@@ -1763,7 +1763,21 @@ def validate_adnominal_possession(ch, vr):
 #                         'and the possessor is not supported.'
 #                    vr.err(pron.full_key+'_possessum-agr',mess)
             
-        
+
+def validate_wh_ques(ch, vr):
+    wh_q_strat = None
+    if ch.get('wh-q-pos')=='on':
+        wh_q_strat = 'wh-q-pos'
+    elif ch.get('wh-q-part')=='on':
+        wh_q_strat = 'wh-q-part'
+    elif ch.get('wh-q-infl')=='on':
+        wh_q_strat = 'wh-q-infl'
+    elif ch.get('wh-q-inter-verbs')=='on':
+        wh_q_strat = 'wh-q-inter-verbs'
+    if wh_q_strat and not (ch.get('q-det') or ch.get('q-pro')):
+        mess = 'Please specify question words on the Lexicon page'
+        vr.err(wh_q_strat,mess)
+
 def validate(ch, extra = False):
     """
     Validate the ChoicesFile ch.  Return a ValidationResult that
@@ -1795,6 +1809,7 @@ def validate(ch, extra = False):
     validate_features(ch, vr)
     validate_hierarchy(ch, vr)
     validate_arg_opt(ch, vr)
+    validate_wh_ques(ch,vr)
 
     if extra:
         validate_extra_constraints(ch, vr)
