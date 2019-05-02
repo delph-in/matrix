@@ -12,15 +12,15 @@ import sys
 # OZ 2018-01-25 comps is not really a lexical type;
 # it is a complementation strategy that is defined by a complementizer type.
 # Ideally we would have complementizers as actual lexical items some day.
-ALL_LEX_TYPES = ('noun', 'verb', 'det', 'aux', 'adj', 'cop', 'comps', 'qword')
+ALL_LEX_TYPES = ('noun', 'verb', 'det', 'aux', 'adj', 'cop', 'comps', 'qdet', 'qpro')
 
 # types used for lexical rules (verb and aux are merged)
 # TJT 2014-08-15: adding "cop"
 # TJT 2014-08-15: changing to tuple for speed
-LEXICAL_CATEGORIES = ('noun', 'verb', 'det', 'adj', 'cop')
+LEXICAL_CATEGORIES = ('noun', 'verb', 'det', 'adj', 'cop', 'qdet', 'qpro')
 
 # TJT 2014-09-03: Types not automatically added to mylanguage.tdl
-NON_ESSENTIAL_LEX_CATEGORIES = ('det', 'adj', 'cop', 'comps', 'qword')
+NON_ESSENTIAL_LEX_CATEGORIES = ('det', 'adj', 'cop', 'comps', 'qdet', 'qpro')
 
 # lexical_supertypes is a dictionary mapping the choices file
 # encodings to the actual lex-type identifiers of the supertypes.
@@ -34,7 +34,8 @@ LEXICAL_SUPERTYPES = {'noun':'noun-lex',
                       'aux':'aux-lex',
                       'adj':'adj-lex',
                       'comp':'comp-lex',
-                      'qword':'qword-lex'}
+                      'qdet':'q-determiner-lex',
+                      'qpro':'q-pronoun-noun-lex'}
 
 
 # TYPE DEFINITIONS (that can be shared with other libraries)

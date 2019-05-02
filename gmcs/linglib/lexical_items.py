@@ -315,9 +315,6 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
     for verb in ch.get('verb',[]):
         create_verb_lex_type(cases, ch, hierarchies, lexicon, mylang, verb)
 
-
-
-
 def create_verb_lex_type(cases, ch, hierarchies, lexicon, mylang, verb):
     stypes = verb.get('supertypes').split(', ')
     stype_names = [verb_id(ch[st]) for st in stypes if st != '']
@@ -386,7 +383,7 @@ def construct_supertype_names(cases, ch, stype_names, verb):
             else:
                 #OZ 2018-01-03: This is awkward, has to do with the current format of the choices file...
                 #We should not ideally end up here at all if we are not an intransitive verb...
-                #The reason we end up here is some clausal verbs will only have subject case specified.
+                #The reason we end up here is some clause-embedding verbs will only have subject case specified.
                 if not s_case == 'trans':
                     tivity += s_case
                     tivity += '-'
@@ -428,31 +425,37 @@ def customize_determiners(mylang, ch, lexicon, hierarchies):
         lexicon.add_literal(';;; Determiners')
 
     for det in ch.get('det',[]):
-        stype = 'determiner-lex'
-        dtype = det_id(det)
+        add_determiner(ch, det, hierarchies, lexicon, mylang)
 
-        mylang.add(dtype + ' := ' + stype + '.')
+    if 'qdet' in ch:
+        lexicon.add_literal(';;; Question Determiners')
 
-        has_inforstr_feat = False
-        for feat in det.get('feat', []):
-            if feat['name'] == "information-structure meaning":
-                has_inforstr_feat = True
-                mylang.add(dtype + ' := infostr-marking-determiner-lex.')
-                break
-        if not has_inforstr_feat:
-            mylang.add(dtype + ' := no-icons-lex-item.')
+    for det in ch.get('qdet',[]):
+        add_determiner(ch, det, hierarchies, lexicon, mylang)
 
-        features.customize_feature_values(mylang, ch, hierarchies, det, dtype, 'det')
 
-        for stem in det.get('stem',[]):
-            orthstr = orth_encode(stem.get('orth'))
-            pred = stem.get('pred')
-            name = stem.get('name')
-            typedef = \
-                TDLencode(name) + ' := ' + dtype + ' & \
+def add_determiner(ch, det, hierarchies, lexicon, mylang):
+    stype = 'determiner-lex'
+    dtype = det_id(det)
+    mylang.add(dtype + ' := ' + stype + '.')
+    has_inforstr_feat = False
+    for feat in det.get('feat', []):
+        if feat['name'] == "information-structure meaning":
+            has_inforstr_feat = True
+            mylang.add(dtype + ' := infostr-marking-determiner-lex.')
+            break
+    if not has_inforstr_feat:
+        mylang.add(dtype + ' := no-icons-lex-item.')
+    features.customize_feature_values(mylang, ch, hierarchies, det, dtype, 'det')
+    for stem in det.get('stem', []):
+        orthstr = orth_encode(stem.get('orth'))
+        pred = stem.get('pred')
+        name = stem.get('name')
+        typedef = \
+            TDLencode(name) + ' := ' + dtype + ' & \
                     [ STEM < "' + orthstr + '" >, \
                       SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
-            lexicon.add(typedef)
+        lexicon.add(typedef)
 
 
 def customize_misc_lex(ch, lexicon, trigger):

@@ -651,6 +651,7 @@ def write_rules(pch, mylang, irules, lrules, lextdl, choices):
             write_evidential_behavior(lrt, mylang, choices, pc.has_evidential())
             # EKN 2017-12-13 Write possessive behavior
             write_possessive_behavior(pc,lrt,mylang,choices)
+            write_determiner_noun_agreement(lrt,mylang,choices)
             # CMC 2017-04-07 moved merged LRT/PCs handling to write_supertypes
             write_supertypes(mylang, lrt.identifier(), lrt.all_supertypes())
         write_daughter_types(mylang, pc)
@@ -960,6 +961,13 @@ def write_pc_adj_syntactic_behavior(lrt, mylang, choices):
                 lrt.supertypes.add('stative-pred-lex-rule')
                 # TJT: 2014-09-24: Stative predicate lexical rule is PRD -
                 mylang.add(lrt.identifier() + ''' := [ SYNSEM.LOCAL.CAT.HEAD.PRD - ].''')
+
+def write_determiner_noun_agreement(lrt, mylang, choices):
+    if lrt.key.startswith('qdet'):
+        for f in lrt.features:
+            if f == 'case':
+                mylang.add(lrt.identifier() + ''' := [ SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CAT.HEAD.CASE '''
+                       + lrt.features[f]['value'] + ''' ].''')
 
 ##################
 ### VALIDATION ###

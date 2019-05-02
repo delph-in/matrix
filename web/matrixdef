@@ -2280,8 +2280,8 @@ Cache verbpcs verb-pc[0-9]+$ name
 Cache verblrs verb-pc[0-9]+(_lrt[0-9]+)?$ name
 Cache adjlrs adj-pc[0-9]+(_lrt[0-9]+)?$ name
 Cache detlrs det-pc[0-9]+(_lrt[0-9]+)?$ name
-Cache qdetlrs q-det-pc[0-9]+(_lrt[0-9]+)?$ name
-Cache qprolrs q-pro-pc[0-9]+(_lrt[0-9]+)?$ name
+Cache qdetlrs qdet-pc[0-9]+(_lrt[0-9]+)?$ name
+Cache qprolrs qpro-pc[0-9]+(_lrt[0-9]+)?$ name
 
 Label "<p>On this page you will define <span class=\"dfn\">lexical
 types</span> and <span class=\"dfn\">lexical items</span> within those
@@ -2776,7 +2776,7 @@ Separator
 
 Label "<h3>Question words</h3>"
 
-BeginIter q-det{i} "a Question Determiner" 1
+BeginIter qdet{i} "a Question Determiner" 1
 
   Label "<b>Question Determiner type {i}</b>:"
 
@@ -2786,7 +2786,7 @@ BeginIter q-det{i} "a Question Determiner" 1
 
   BeginIter stem{j} "a Stem" 0 1
 
-    Text orth "Question Determiner {i} spelling" "Spelling: " "" 30 "fill_pred('q-det{i}_stem{j}', 'q')"
+    Text orth "Question Determiner {i} spelling" "Spelling: " "" 30 "fill_pred('qdet{i}_stem{j}', 'q')"
 
     Text pred "Question Determiner {i} predicate" " Predicate: " "<br>" 30
 
@@ -2800,7 +2800,7 @@ BeginIter q-det{i} "a Question Determiner" 1
     fillnames c=noun
 
     MultiSelect value "Question Determiner {i} feature {j} value" "Value: " ""
-    fillvalues p=q-det{i}_feat{j}_name
+    fillvalues p=qdet{i}_feat{j}_name
 
   EndIter feat
 
@@ -2822,9 +2822,9 @@ BeginIter q-det{i} "a Question Determiner" 1
 
   Label "</div>"
 
-EndIter q-det
+EndIter qdet
 
-BeginIter q-pro{i} "a Question Pronoun Type" 1 1
+BeginIter qpro{i} "a Question Pronoun Type" 1 1
 
   Label "<b>Question Pronoun type {i}</b>:"
 
@@ -2833,7 +2833,7 @@ BeginIter q-pro{i} "a Question Pronoun Type" 1 1
   Text name "Question Pronoun {i} name" "Type name: " "<br /><br />" 20
 
   MultiSelect supertypes "Question Pronoun type {i}" "Supertypes: " "<br />"
-  fillregex p=q-pro(?!{i}_)[0-9]+_name
+  fillregex p=qpro(?!{i}_)[0-9]+_name
 
   Label "Features:"
 
@@ -2843,7 +2843,7 @@ BeginIter q-pro{i} "a Question Pronoun Type" 1 1
     fillnames c=noun
 
     MultiSelect value "Question Pronoun {i} feature {j} value" "Value: " ""
-    fillvalues p=q-pro{i}_feat{j}_name
+    fillvalues p=qpro{i}_feat{j}_name
 
   EndIter feat
 
@@ -2851,7 +2851,7 @@ BeginIter q-pro{i} "a Question Pronoun Type" 1 1
 
   BeginIter stem{j} "a Stem" 0 1
 
-    Text orth "Question Pronoun {i} stem {j} spelling" "Spelling: " "" 30 "fill_pred('q-pro{i}_stem{j}', 'n')"
+    Text orth "Question Pronoun {i} stem {j} spelling" "Spelling: " "" 30 "fill_pred('qpro{i}_stem{j}', 'n')"
 
     Text pred "Question Pronoun {i} stem {j} predicate" " Predicate: " "" 30
 
@@ -2875,7 +2875,7 @@ BeginIter q-pro{i} "a Question Pronoun Type" 1 1
 
   Label "</div>"
 
-EndIter q-pro
+EndIter qpro
 
 Separator
 
@@ -2911,6 +2911,8 @@ Cache auxes aux[0-9]+$ name
 Cache dets det[0-9]+$ name
 Cache adjs adj[0-9]+$ name
 Cache cops cop[0-9]+$ name
+Cache qdets qdet[0-9]+$ name
+Cache qpros qpro[0-9]+$ name
 
 Label "<p>Here you can define inflectional morphology for nouns, verbs, and
 determiners.  To do so, first define one or more inflectional <span
@@ -3521,6 +3523,9 @@ BeginIter det-pc{i} "a Position Class" 1
       MultiSelect value "Determiner Position Class {i} Lexical Rule Type {j} Feature {k} Value" "Value: " ""
       fillvalues p=det-pc{i}_lrt{j}_feat{k}_name
 
+      Select head "Determiner Position Class {i} Lexical Rule Type {j} Feature {k} Head" "Specified on: " "" "" "toggle_element.call(this, 'adj-pc{i}_lrt{j}_adj_pc_note', 'on', ['subj', 'mod'])"
+      . noun "The noun" "the noun"
+
     EndIter feat
 
     Label "<p>Morphotactic Constraints:</p>"
@@ -3558,6 +3563,207 @@ BeginIter det-pc{i} "a Position Class" 1
   EndIter lrt
 
 EndIter det-pc
+
+Separator
+
+Label "<h3>Question Pronoun Inflection</h3>"
+
+BeginIter qpro-pc{i} "a Position Class" 1 0
+
+  Text name "Question Pronoun Position Class {i} Name" "<b>Question Pronoun Position Class {i}</b>:<br/>Position Class Name: " " " 20
+
+  Check obligatory "Question Pronoun Position Class {i} Obligatory" "<br/>Obligatorily occurs:" ""
+
+Select order "Question Pronoun Position Class {i} Order" "<br/>Appears as a prefix or suffix:" ""
+. prefix "Prefix" "prefix"
+. suffix "Suffix" "suffix"
+
+  MultiSelect inputs "Question Pronoun Position Class {i} Input" "<br/>Possible inputs:" ""
+  fillcache c=qpros
+  fillregex p=qpro-pc[0-9]+(_lrt[0-9]+)?_name
+  . noun "Any question pronoun" "any question pronoun"
+
+  Label "<p>Morphotactic Constraints:</p>"
+
+  BeginIter require{j} "a Require constraint"
+
+    MultiSelect others "Question Pronoun Position Class {i} Requires" "Question Pronoun Position Class {i} requires one of the following: " ""
+    fillcache c=qpros
+    fillregex p=qpro-pc[0-9]+(_lrt[0-9]+)?_name
+    . noun "Any question pronoun" "any question pronoun"
+
+  EndIter require
+
+  BeginIter forbid{j} "a Forbid constraint"
+
+    Select others "Question Pronoun Position Class {i} Forbids" "Question Pronoun Position Class {i} forbids the following: " ""
+    fillcache c=qpros
+    fillregex p=qpro-pc[0-9]+(_lrt[0-9]+)?_name
+    . noun "Any question pronoun" "any question pronoun"
+
+  EndIter forbid
+
+  Label "<p>Lexical Rule Types that appear in this Position Class:</p>"
+
+  BeginIter lrt{j} "a Lexical Rule Type" 1 0
+
+    Text name "Question Pronoun Position Class {i} Lexical Rule Type {j} Name" "<b>Lexical Rule Type {j}</b>:<br/>Name: " "" 20
+
+    MultiSelect supertypes "Question Pronoun Position Class {i} Lexical Rule Type {j} Supertype" "<br/>Supertypes: " ""
+    fillregex p=qpro-pc{i}_lrt[0-9]+_name
+
+    Label "<p>Features:<br>Note: most nominal features are inherent to the noun, and should therefore be marked as 'specified on itself.' However, in some possessive constructions, a noun will agree with its possessum or possessor in some features. This should be indicated in the 'specified on' field below. </p>"
+
+    BeginIter feat{k} "a Feature"
+
+      Select name "Question Pronoun Position Class {i} Lexical Rule Type {j} Feature {k} Name" "Name: " " "
+      fillnames c=both
+
+      MultiSelect value "Question Pronoun Position Class {i} Lexical Rule Type {j} Feature {k} Value" "Value: " ""
+      fillvalues p=qpro-pc{i}_lrt{j}_feat{k}_name
+
+      Select head "Question Pronoun Position Class {i} Lexical Rule Type {j} Feature {k} Head" "Specified on: " ""
+      . itself "Itself" "itself"
+      . possessor "Possessor" "possessor"
+      . possessum "Possessum" "possessum"
+
+    EndIter feat
+
+    Label "<p>Morphotactic Constraints:</p>"
+
+    BeginIter require{k} "a Require constraint"
+
+      MultiSelect others "Question Pronoun Position Class {i} Lexical Rule Type {j} Requires" "Lexical Rule Type {j} requires one of the following: " ""
+      fillcache c=qpros
+      fillregex p=qpro-pc[0-9]+(_lrt[0-9]+)?_name
+      . noun "Any question pronoun" "any question pronoun"
+
+    EndIter require
+
+    BeginIter forbid{k} "a Forbid constraint"
+
+      Select others "Question Pronoun Position Class {i} Lexical Rule Type {j} forbids" "Lexical Rule Type {j} forbids the following: " ""
+      fillcache c=qpros
+      fillregex p=qpro-pc[0-9]+(_lrt[0-9]+)?_name
+      . noun "Any question pronoun" "any question pronoun"
+
+    EndIter forbid
+
+    Label "<p>Lexical Rule Instances:</p>"
+
+    BeginIter lri{k} "a Lexical Rule Instance" 0 1
+
+      Radio inflecting "Question Pronoun Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Has Orthography" "Instance {k}" ""
+      . no "No" "" "No affix"
+      . yes "Yes" "" "Affix spelled"
+
+      Text orth "Question Pronoun Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Spelling" "" "" 20
+
+    EndIter lri
+
+  EndIter lrt
+
+EndIter qpro-pc
+
+Separator
+
+
+Label "<h3>Question Determiner Inflection</h3>"
+
+BeginIter qdet-pc{i} "a Position Class" 1
+
+  Text name "Question Determiner Position Class {i} Name" "<b>Question Determiner Position Class {i}</b>:<br/>Position Class Name: " " " 20
+
+  Check obligatory "Question Determiner Position Class {i} Obligatory" "<br/>Obligatorily occurs:" ""
+
+  Select order "Question Determiner Position Class {i} Order" "<br/>Appears as a prefix or suffix:" ""
+  . prefix "Prefix" "prefix"
+  . suffix "Suffix" "suffix"
+
+  MultiSelect inputs "Question Determiner Position Class {i} Input" "<br/>Possible inputs:" ""
+  fillcache c=qdets
+  fillregex p=qdet-pc[0-9]+(_lrt[0-9]+)?_name
+  . det "Any question determiner" "any questiondeterminer"
+
+  Label "<p>Morphotactic Constraints:</p>"
+
+  BeginIter require{j} "a Require constraint"
+
+    MultiSelect others "Question Determiner Position Class {i} Requires" "Question Determiner Position Class {i} requires one of the following: " ""
+    fillcache c=qdets
+    fillregex p=qdet-pc[0-9]+(_lrt[0-9]+)?_name
+    . det "Any question determiner" "any question determiner"
+
+  EndIter require
+
+  BeginIter forbid{j} "a Forbid constraint"
+
+    Select others "Question Determiner Position Class {i} Forbids" "Question Determiner Position Class {i} forbids the following: " ""
+    fillcache c=qdets
+    fillregex p=qdet-pc[0-9]+(_lrt[0-9]+)?_name
+    . det "Any question determiner" "any question determiner"
+
+  EndIter forbid
+
+  Label "<p>Lexical Rule Types that appear in this Position Class:</p>"
+
+  BeginIter lrt{j} "a Lexical Rule Type" 1 1
+
+    Text name "Question Determiner Position Class {i} Lexical Rule Type {j} Name" "<b>Lexical Rule Type {j}</b>:<br/>Name: " "" 20
+
+    MultiSelect supertypes "Question Determiner Position Class {i} Lexical Rule Type {j} Supertype" "<br/>Supertypes: " ""
+    fillregex p=qdet-pc{i}_lrt[0-9]+_name
+
+    Label "<p>Features:</p>"
+
+    BeginIter feat{k} "a Feature"
+
+      Select name "Question Determiner Position Class {i} Lexical Rule Type {j} Feature {k} Name" "Name: " " "
+      fillnames c=noun
+
+      MultiSelect value "Question Determiner Position Class {i} Lexical Rule Type {j} Feature {k} Value" "Value: " ""
+      fillvalues p=qdet-pc{i}_lrt{j}_feat{k}_name
+
+     Select head "Question Determiner Position Class {i} Lexical Rule Type {j} Feature {k} Head" "Specified on: " "" "" "toggle_element.call(this, 'adj-pc{i}_lrt{j}_adj_pc_note', 'on', ['subj', 'mod'])"
+      . noun "The noun" "the noun"
+
+    EndIter feat
+
+    Label "<p>Morphotactic Constraints:</p>"
+
+    BeginIter require{k} "a Require constraint"
+
+      MultiSelect others "Question Determiner Position Class {i} Lexical Rule Type {j} Requires" "Lexical Rule Type {j} requires one of the following: " ""
+      fillcache c=qdets
+      fillregex p=qdet-pc[0-9]+(_lrt[0-9]+)?_name
+      . det "Any question determiner" "any question determiner"
+
+    EndIter require
+
+    BeginIter forbid{k} "a Forbid constraint"
+
+      Select others "Question Determiner Position Class {i} Lexical Rule Type {j} forbids" "Lexical Rule Type {j} forbids the following: " ""
+      fillcache c=qdets
+      fillregex p=qdet-pc[0-9]+(_lrt[0-9]+)?_name
+      . det "Any question determiner" "any question determiner"
+
+    EndIter forbid
+
+    Label "<p>Lexical Rule Instances:</p>"
+
+    BeginIter lri{k} "a Lexical Rule Instance" 0 1
+
+      Radio inflecting "Question Determiner Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Has Orthography" "Instance {k}" ""
+      . no "No" "" "No affix"
+      . yes "Yes" "" "Affix"
+
+      Text orth "Question Determiner Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Spelling" "spelled" "" 20
+
+    EndIter lri
+
+  EndIter lrt
+
+EndIter qdet-pc
 
 Section toolbox-import "Import Toolbox Lexicon"
 

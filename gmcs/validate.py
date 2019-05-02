@@ -1774,7 +1774,7 @@ def validate_wh_ques(ch, vr):
         wh_q_strat = 'wh-q-infl'
     elif ch.get('wh-q-inter-verbs')=='on':
         wh_q_strat = 'wh-q-inter-verbs'
-    if wh_q_strat and not (ch.get('q-det') or ch.get('q-pro')):
+    if wh_q_strat and not (ch.get('qdet') or ch.get('qpro')):
         mess = 'Please specify question words on the Lexicon page'
         vr.err(wh_q_strat,mess)
 

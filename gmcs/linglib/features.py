@@ -74,6 +74,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
         'xarg': 'LOCAL.CONT.HOOK.XARG.',  # XARG for adjectives
         'mod': 'LOCAL.CAT.HEAD.MOD.FIRST.',  # MOD for adjectives
         'comp': 'LOCAL.CAT.VAL.COMPS.FIRST.', # COMP for copulas
+        'noun': 'LOCAL.CAT.VAL.SPEC.FIRST.', # for determiners
     }
 
     for feat in ch_dict.get(iter_feat,[]):
