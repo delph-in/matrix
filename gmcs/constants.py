@@ -33,3 +33,9 @@ HEAD_COMP = 'head-comp'
 OV_ORDERS = ['sov', 'ovs', 'osv', 'v-final']
 VFINAL = ['sov','osv','v-final']
 VO_ORDERS = ['svo', 'vos', 'vso', 'v-initial']
+
+### WH-QUESTIONS
+
+SINGLE = 'single'
+
+MULT = 'multiple'

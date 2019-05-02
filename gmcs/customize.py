@@ -42,6 +42,7 @@ from gmcs.linglib import valence_change
 from gmcs.linglib import clausalmods
 from gmcs.linglib import nominalized_clauses
 from gmcs.linglib import clausalcomps
+from gmcs.linglib import  wh_ques
 
 ######################################################################
 # globals
@@ -619,6 +620,7 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
     yes_no_questions.customize_yesno_questions(mylang, ch, rules, lrules, hierarchies)
     clausalmods.customize_clausalmods(mylang, ch, lexicon, rules, roots, trigger)
     clausalcomps.customize_clausalcomps(mylang,ch,lexicon,rules)
+    wh_ques.customize_wh_ques(mylang,ch)
     #customize_punctuation(grammar_path)
     #customize_test_sentences(grammar_path)
     #customize_itsdb(grammar_path)
