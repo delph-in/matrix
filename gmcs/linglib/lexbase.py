@@ -34,8 +34,8 @@ LEXICAL_SUPERTYPES = {'noun':'noun-lex',
                       'aux':'aux-lex',
                       'adj':'adj-lex',
                       'comp':'comp-lex',
-                      'qdet':'q-determiner-lex',
-                      'qpro':'q-pronoun-noun-lex'}
+                      'qdet':'determiner-lex',
+                      'qpro':'wh-pronoun-noun-lex'}
 
 
 # TYPE DEFINITIONS (that can be shared with other libraries)
@@ -49,6 +49,23 @@ COMPLEMENTIZER = '''
            ARG-ST < #comp & [ LOCAL.CAT [ HEAD verb,
                                           VAL [ SUBJ < >,
                                                 COMPS < > ]]] > ].'''
+
+
+WH_PRONOUN =  '''wh-pronoun-noun-lex := norm-hook-lex-item & basic-icons-lex-item &
+  [ SYNSEM [ LOCAL [ CAT [ HEAD noun,
+			   VAL [ SPR < >,
+				 SUBJ < >,
+				 COMPS < >,
+				 SPEC < > ] ],
+		     CONT [ HOOK.INDEX.PNG.PER 3rd,
+	                    RELS <! [ LBL #larg,
+				       ARG0 #ind & ref-ind ],
+				  [ PRED "wh_q_rel",
+				    ARG0 #ind,
+				    RSTR #harg ] !>,
+			    HCONS <! [ HARG #harg,
+				        LARG #larg ] !> ] ],
+	     NON-LOCAL.QUE <! #ind !> ] ].'''
 
 
 ###############

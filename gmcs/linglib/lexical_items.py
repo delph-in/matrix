@@ -4,6 +4,7 @@ from gmcs.utils import get_name
 from gmcs.utils import TDLencode
 from gmcs.utils import orth_encode
 
+from gmcs.linglib import lexbase
 from gmcs.linglib import case
 from gmcs.linglib import features
 from gmcs.linglib import auxiliaries
@@ -429,6 +430,7 @@ def customize_determiners(mylang, ch, lexicon, hierarchies):
 
     if 'qdet' in ch:
         lexicon.add_literal(';;; Question Determiners')
+        mylang.add_literal(';;; Question Determiners')
 
     for det in ch.get('qdet',[]):
         add_determiner(ch, det, hierarchies, lexicon, mylang)
@@ -620,6 +622,8 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
             mylang.add(ntype + ' := [ SYNSEM.LOCAL.CAT.HEAD.PRON + ].')
         features.customize_feature_values(mylang, ch, hierarchies, noun, ntype, 'noun')
         for stem in noun.get('stem', []):
+            # consider instead using (should be the same effect):
+            # add_stem_to_lexicon(lexicon, stem, ntype)
             orthstr = orth_encode(stem.get('orth'))
             pred = stem.get('pred')
             name = stem.get('name')
@@ -627,6 +631,24 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
                   [ STEM < "' + orthstr + '" >, \
                     SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
             lexicon.add(typedef)
+    # Question pronouns
+    if ch.get('qpro'):
+        customize_question_pronouns(mylang,ch,lexicon)
+
+
+
+def customize_question_pronouns(mylang,ch,lexicon):
+        mylang.add_literal(';;; Question pronouns')
+        lexicon.add_literal(';;; Question pronouns')
+        supertypedef = lexbase.WH_PRONOUN
+        mylang.add(supertypedef)
+        for qpro in ch.get('qpro'):
+            typename = qpro['name'] + '-wh-pronoun-noun-lex'
+            typedef = typename + ''' := wh-pronoun-noun-lex. '''
+            mylang.add(typedef)
+            for stem in qpro['stem']:
+                add_stem_to_lexicon(lexicon,stem,typedef)
+
 
 # TJT 2014-05-05
 def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
