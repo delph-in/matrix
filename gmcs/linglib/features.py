@@ -139,8 +139,6 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                 geom_prefix = 'DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG'
             else:
                 geom_prefix = 'C-CONT.RELS <! [ ARG0.PNG'
-        if poss_lrt:
-            import pdb;pdb.set_trace()
         # The 'head' choice only appears on verb pcs, and allows the
         # user to specify features on the subject and object as well
         # TJT 2014-08-15: the 'head' choice now also appears on
