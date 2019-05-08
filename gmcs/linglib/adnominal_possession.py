@@ -795,10 +795,10 @@ def customize_possessum_irules(strat,mylang,rules,ch,strat_num,mod_spec,mark_loc
             mylang.add(possessum_rule_name+':= val-change-with-ccont-lex-rule & \
                             [ SYNSEM.LOCAL.CAT [ POSSESSUM possessum-'+strat_num+',\
                                                  VAL [ SPR #spr, \
-                                                       COMPS.FIRST [ OPT - ,\
+                                                       COMPS <[ OPT - ,\
                                                                      LOCAL [ CAT cat-sat & [ HEAD +np,\
                                                                                              VAL.SPR < > ], \
-                                                                             CONT.HOOK [ INDEX #possessor ] ] ] ] ],\
+                                                                             CONT.HOOK [ INDEX #possessor ] ] ]> ] ],\
                               C-CONT [ HOOK #hook ,\
                                        RELS <! '+POSS_REL+' !>,\
                                        HCONS <! !>,\
