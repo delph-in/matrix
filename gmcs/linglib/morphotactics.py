@@ -1153,7 +1153,6 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
             png_feats.add(feat.get('name'))
     for feat_key in other_feats:
         if (poss_strats or poss_prons) and other_feats[feat_key][0] not in png_feats and other_feats[feat_key][2]!='itself':
-            import pdb;pdb.set_trace()
             vr.err(feat_key+'_name',
                    'Only person, number, and gender features are supported for agreement ' +\
                    'between possessor and possessum.')
