@@ -84,7 +84,6 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
             v = [case.canon_to_abbr(c, cases) for c in v]
 
         geom_prefix = pos_geom_prefix
-
         # EKN 2017-01-02 If adding AGREEMENT PNG features to a
         # possessive marker or affix, they should be at
         # POSS.POSS-AGR, rather than at CONT.HOOK.INDEX.PNG.
@@ -106,8 +105,9 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
         poss_lrt=False 
         # Bool to id poss-pron affix lrts
         poss_pron_lrt=False
+        possessum_pron_aff=False
         agreeing_element=''
-        for feature in ch_dict.get('feat'):
+        for feature in ch_dict.get('feat'): # EKN TODO: choose a better var name than 'feature'
             feat_name=feature.get('name')
             if 'poss-strat' in feat_name:
                 poss_lrt=True
@@ -116,7 +116,8 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                 # Possessum affix with possessor pronoun
                 # should behave like other possessive lrts:
                 if '_possessum' in feat_name:
-                    poss_lrt=True
+#                    poss_lrt=True
+                    possessum_pron_aff=True
                     agreeing_element='possessum'
                 # Actual pronoun affixes should behave differently:
                 else:
@@ -128,7 +129,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                 agreeing_element='possessor'
             elif 'poss-pron' in feature.full_key:
                 agreeing_element='possessor'
-        if poss_lrt:
+        if (poss_lrt and feat.get('head')!='itself') or possessum_pron_aff:
             if agreeing_element=='possessor':
                 geom_prefix = 'SYNSEM.LOCAL.CAT.HEAD.POSSESSOR.POSS-AGR.'
             elif agreeing_element=='possessum':
@@ -138,7 +139,6 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                 geom_prefix = 'DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG'
             else:
                 geom_prefix = 'C-CONT.RELS <! [ ARG0.PNG'
-
         # The 'head' choice only appears on verb pcs, and allows the
         # user to specify features on the subject and object as well
         # TJT 2014-08-15: the 'head' choice now also appears on
@@ -182,11 +182,12 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                     # EKN 2018-1-6: when adding a possessive rule, the standard feature path
                     # won't work. This removes all but the feature name and value from the
                     # variable value.
-                    if pos=='possessor-marker' or pos=='possessum-marker' or poss_lrt:
+                    if (pos=='possessor-marker' or pos=='possessum-marker') or (poss_lrt and feat.get('head')!='itself') or possessum_pron_aff:
                         value=value.replace('LOCAL.CONT.HOOK.INDEX.PNG.','')
                     if poss_pron_lrt:
                         value=value.replace('LOCAL.CONT.HOOK.INDEX.PNG','')
                     geom = geom_prefix + value
+
 #           if head == 'mod':
 #               geom += "] >"  # TJT 2014-05-27: close MOD
                 break # TJT 2014-05-08 stop looking!

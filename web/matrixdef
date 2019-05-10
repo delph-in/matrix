@@ -446,7 +446,7 @@ BeginIter poss-strat{i} "a possessive strategy"
      . head-initial "head-initial" "" "possessum-first<br>"
      . either "either" "" "either<br>"
 
-     Radio mod-spec "Modifier or specifier" "<p>In some possessive strategies, the possessor acts like a <b>specifier</b> of the possessum; in other strategies, the possessor is more like a <b>modifier</b> of the possessum. For a full explanation of the tests used to distinguish these two behaviors, see the documentation link above. <br><br> In this strategy, is the possessor more like a </p>" ""
+     Radio mod-spec "Modifier or specifier" "<p>In some possessive strategies, the possessor acts like a <b>specifier</b> of the possessum; in other strategies, the possessor is more like a <b>modifier</b> of the possessum. For a full explanation of the tests used to distinguish these two behaviors, see the documentation link above. <br><br> <b>Note:</b> The primary test for this property is whether or not the possessum can take both a possessor and a determiner at the same time. If it can, then the possessor is modifier-like; if it cannot, the possessor is specifier-like. <b>If there is no strong evidence either way, the specifier-like analysis should be chosen.</b> <br><br> In this strategy, is the possessor more like a </p>" ""
      . spec "specifier" "" "specifier<br>"
      . mod "modifier" "" "modifier<br>"
 
@@ -629,7 +629,7 @@ BeginIter poss-strat{i} "a possessive strategy"
 
 EndIter poss-strat
 
-Label "<p>In some constructions, the possessor can be a pronoun. Possessor pronouns which constitute entirely novel forms can be entered as <b>classes of possessor pronouns</b> below. If the possessor pronoun is identical to non-possessive pronouns and can appear in the same contexts as non-pronominal possessors, then it can be covered by adding a possessive strategy using the above button, and indicating that the possessor may be a pronoun. Likewise, if the possessor pronoun is formed by inflecting pronouns in the same manner as common nouns, it can be covered by a possessive strategy above. </p>"
+Label "<p>In some constructions, the possessor can be a pronoun. <b>This pronoun can be either an independent word or an affix.</b> Possessor pronouns which constitute entirely novel forms can be entered as <b>classes of possessor pronouns</b> below. If the possessor pronoun is identical to non-possessive pronouns and can appear in the same contexts as non-pronominal possessors, then it can be covered by adding a possessive strategy using the above button, and indicating that the possessor may be a pronoun. Likewise, if the possessor pronoun is formed by inflecting pronouns in the same manner as common nouns, it can be covered by a possessive strategy above. </p>"
 
 BeginIter poss-pron{i} "a class of possessor pronouns"
 
