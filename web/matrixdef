@@ -2824,7 +2824,7 @@ BeginIter qdet{i} "a Question Determiner" 1
 
 EndIter qdet
 
-BeginIter qpro{i} "a Question Pronoun Type" 1 1
+BeginIter qpro{i} "a Question Pronoun Type" 1
 
   Label "<b>Question Pronoun type {i}</b>:"
 
@@ -2876,6 +2876,26 @@ BeginIter qpro{i} "a Question Pronoun Type" 1 1
   Label "</div>"
 
 EndIter qpro
+
+BeginIter qadv{i} "a Question Adverb" 1
+
+  Label "<b>Question Adverb type {i}</b>:"
+
+  Label "<div style=\"padding-left: 16px\">"
+
+  Text name "Question Adverb {i} name" "Type name: " "<br>" 20
+
+  BeginIter stem{j} "a Stem" 0 1
+
+    Text orth "Question Adverb {i} spelling" "Spelling: " "" 30 "fill_pred('qadv{i}_stem{j}', 'a')"
+
+    Text pred "Question Adverb {i} predicate" " Predicate: " "<br>" 30
+
+  EndIter stem
+
+  Label "</div>"
+
+EndIter qadv
 
 Separator
 

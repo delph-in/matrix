@@ -12,15 +12,15 @@ import sys
 # OZ 2018-01-25 comps is not really a lexical type;
 # it is a complementation strategy that is defined by a complementizer type.
 # Ideally we would have complementizers as actual lexical items some day.
-ALL_LEX_TYPES = ('noun', 'verb', 'det', 'aux', 'adj', 'cop', 'comps', 'qdet', 'qpro')
+ALL_LEX_TYPES = ('noun', 'verb', 'det', 'aux', 'adj', 'cop', 'comps', 'qdet', 'qpro', 'qadv')
 
 # types used for lexical rules (verb and aux are merged)
 # TJT 2014-08-15: adding "cop"
 # TJT 2014-08-15: changing to tuple for speed
-LEXICAL_CATEGORIES = ('noun', 'verb', 'det', 'adj', 'cop', 'qdet', 'qpro')
+LEXICAL_CATEGORIES = ('noun', 'verb', 'det', 'adj', 'cop', 'qdet', 'qpro','qadv')
 
 # TJT 2014-09-03: Types not automatically added to mylanguage.tdl
-NON_ESSENTIAL_LEX_CATEGORIES = ('det', 'adj', 'cop', 'comps', 'qdet', 'qpro')
+NON_ESSENTIAL_LEX_CATEGORIES = ('det', 'adj', 'cop', 'comps', 'qdet', 'qpro', 'qadv')
 
 # lexical_supertypes is a dictionary mapping the choices file
 # encodings to the actual lex-type identifiers of the supertypes.
@@ -35,7 +35,8 @@ LEXICAL_SUPERTYPES = {'noun':'noun-lex',
                       'adj':'adj-lex',
                       'comp':'comp-lex',
                       'qdet':'determiner-lex',
-                      'qpro':'wh-pronoun-noun-lex'}
+                      'qpro':'wh-pronoun-noun-lex',
+                      'qadv': 'wh-adverb-lex'}
 
 
 # TYPE DEFINITIONS (that can be shared with other libraries)
@@ -50,23 +51,36 @@ COMPLEMENTIZER = '''
                                           VAL [ SUBJ < >,
                                                 COMPS < > ]]] > ].'''
 
-
-WH_PRONOUN =  '''wh-pronoun-noun-lex := norm-hook-lex-item & basic-icons-lex-item &
-  [ SYNSEM [ LOCAL [ CAT [ HEAD noun,
-			   VAL [ SPR < >,
+WH_WORD = '''wh-word-lex := norm-hook-lex-item & basic-icons-lex-item &
+  [ SYNSEM [ LOCAL [ CAT [ VAL [ SPR < >,
 				 SUBJ < >,
 				 COMPS < >,
 				 SPEC < > ] ],
-		     CONT [ HOOK.INDEX.PNG.PER 3rd,
-	                    RELS <! [ LBL #larg,
-				       ARG0 #ind & ref-ind ],
-				  [ PRED "wh_q_rel",
-				    ARG0 #ind,
+		     CONT [ RELS <! [ LBL #larg,
+				       ARG0 #arg0 ],
+				  [ PRED "which_q_rel",
+				    ARG0 #arg0,
 				    RSTR #harg ] !>,
 			    HCONS <! [ HARG #harg,
 				        LARG #larg ] !> ] ],
-	     NON-LOCAL.QUE <! #ind !> ] ].'''
+	     NON-LOCAL.QUE <! #arg0 !> ] ].'''
 
+WH_PRONOUN =  '''wh-pronoun-noun-lex := wh-word-lex & non-mod-lex-item &
+  [ SYNSEM [ LOCAL [ CAT.HEAD noun,
+		     CONT [ HOOK.INDEX.PNG.PER 3rd,
+	                RELS <![ ARG0 ref-ind ], [] !> ] ] ] ].'''
+
+ADV_LEX = '''adverb-lex-item := norm-hook-lex-item &
+  [ SYNSEM.LOCAL.CAT [ VAL [ SUBJ < >,
+                             SPR < >,
+                             COMPS < > ],
+                       HEAD adv &
+                            [ MOD < [ LOCAL intersective-mod &
+                                            [ CAT [ MC +,
+                                                    HEAD verb ] ] ] > ] ] ].
+'''
+
+WH_ADV =  '''wh-adverb-lex := adverb-lex-item & wh-word-lex.'''
 
 ###############
 ### CLASSES ###

@@ -3173,10 +3173,18 @@ scopal-mod-lex := lex-item &
 				   LARG #larg ] !> ],
 	     LKEYS.KEYREL.ARG1 #harg ]].
 
-intersective-mod-lex := no-hcons-lex-item &
-  [ SYNSEM [ LOCAL.CAT.HEAD.MOD < [ LOCAL intersective-mod &
+basic-intersective-mod-lex := lex-item & 
+[ SYNSEM [ LOCAL.CAT.HEAD.MOD < [ LOCAL intersective-mod &
 					  [ CONT.HOOK.INDEX #ind ]] >,
 	     LKEYS.KEYREL.ARG1 #ind ] ].
+
+intersective-mod-lex :=  basic-intersective-mod-lex & no-hcons-lex-item.
+
+; OZ 2019-05-22 Adverbs may need multiple relations (e.g. "where" we want
+; to correspond to "to which place"), so we need to be able to
+; use HCONS.
+
+intersective-adverb-lex := basic-intersective-mod-lex.
 
 no-mod-lex := no-hcons-lex-item &
   [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].

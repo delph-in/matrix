@@ -338,12 +338,12 @@ def create_verb_lex_type(cases, ch, hierarchies, lexicon, mylang, verb):
         add_stem_to_lexicon(lexicon, stem, vtype)
 
 
-def add_stem_to_lexicon(lexicon, stem, vtype):
+def add_stem_to_lexicon(lexicon, stem, stype):
     orthstr = orth_encode(stem.get('orth'))
     pred = stem.get('pred')
     name = stem.get('name')
     typedef = \
-        TDLencode(name) + ' := ' + vtype + ' & \
+        TDLencode(name) + ' := ' + stype + ' & \
                     [ STEM < "' + orthstr + '" >, \
                       SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
     lexicon.add(typedef)
@@ -599,7 +599,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     for noun in ch.get('noun',[]):
         ntype = noun_id(noun)
         det = noun.get('det')
-        pron = True if noun.get('pron')=='on' else False
+        pron = noun.get('pron')=='on'
         if noun.full_key in stopdets:
             det = ''
 
@@ -635,19 +635,35 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     if ch.get('qpro'):
         customize_question_pronouns(mylang,ch,lexicon)
 
-
-
 def customize_question_pronouns(mylang,ch,lexicon):
-        mylang.add_literal(';;; Question pronouns')
-        lexicon.add_literal(';;; Question pronouns')
-        supertypedef = lexbase.WH_PRONOUN
-        mylang.add(supertypedef)
-        for qpro in ch.get('qpro'):
-            typename = qpro['name'] + '-wh-pronoun-noun-lex'
-            typedef = typename + ''' := wh-pronoun-noun-lex. '''
-            mylang.add(typedef)
-            for stem in qpro['stem']:
-                add_stem_to_lexicon(lexicon,stem,typedef)
+    subsection = ';;; Question pronouns'
+    section = 'nounlex'
+    lexbase_type = lexbase.WH_PRONOUN
+    supertype = 'wh-pronoun-noun-lex'
+    subsection_key = 'qpro'
+    customize_type_and_stems(mylang,ch,lexicon,section,subsection,subsection_key,supertype,lexbase_type)
+
+def customize_question_adverbs(mylang,ch,lexicon):
+    subsection = ';;; Question adverbs'
+    section = 'otherlex'
+    lexbase_type = lexbase.WH_ADV
+    supertype = 'wh-adverb-lex'
+    subsection_key = 'qadv'
+    customize_type_and_stems(mylang,ch,lexicon,section,subsection,subsection_key,supertype,lexbase_type)
+
+def customize_type_and_stems(mylang,ch,lexicon,section,subsection,subsection_key,supertype,lexbase_type):
+    lexicon.add_literal(subsection)
+    mylang.set_section(section)
+    mylang.add_literal(subsection)
+    supertypedef = lexbase_type
+    mylang.add(supertypedef)
+    for qadv in ch.get(subsection_key):
+        typename = qadv['name'] + '-' + supertype
+        typedef = TDLencode(typename) + ' := ' + supertype + '.'
+        mylang.add(typedef)
+        for stem in qadv['stem']:
+            add_stem_to_lexicon(lexicon,stem,typename)
+
 
 
 # TJT 2014-05-05
@@ -1076,6 +1092,7 @@ def customize_lexicon(mylang, ch, lexicon, trigger, hierarchies, rules):
 
     mylang.set_section('otherlex')
     customize_determiners(mylang, ch, lexicon, hierarchies)
+    customize_question_adverbs(mylang,ch,lexicon)
     customize_misc_lex(ch, lexicon, trigger)
 
 # Used by the word order library, for different matrix-subordinate word order
@@ -1094,4 +1111,5 @@ def update_lex_items_vcluster(ch, mylang):
         mylang.add('complementizer-lex-item := [ SYNSEM.LOCAL.CAT.VC - ].', merge=True, section='complex')
     if 'has-adj' in ch:
         mylang.add('adj-lex := [ SYNSEM.LOCAL.CAT.VC - ].', merge=True, section='adjlex')
+
 
