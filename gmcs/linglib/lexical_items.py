@@ -426,18 +426,17 @@ def customize_determiners(mylang, ch, lexicon, hierarchies):
         lexicon.add_literal(';;; Determiners')
 
     for det in ch.get('det',[]):
-        add_determiner(ch, det, hierarchies, lexicon, mylang)
+        add_determiner(ch, det, 'determiner-lex',hierarchies, lexicon, mylang)
 
     if 'qdet' in ch:
         lexicon.add_literal(';;; Question Determiners')
         mylang.add_literal(';;; Question Determiners')
+        mylang.add(lexbase.WH_DET)
 
     for det in ch.get('qdet',[]):
-        add_determiner(ch, det, hierarchies, lexicon, mylang)
+        add_determiner(ch, det, 'wh-determiner-lex',hierarchies, lexicon, mylang)
 
-
-def add_determiner(ch, det, hierarchies, lexicon, mylang):
-    stype = 'determiner-lex'
+def add_determiner(ch, det, stype, hierarchies, lexicon, mylang):
     dtype = det_id(det)
     mylang.add(dtype + ' := ' + stype + '.')
     has_inforstr_feat = False
@@ -458,7 +457,6 @@ def add_determiner(ch, det, hierarchies, lexicon, mylang):
                     [ STEM < "' + orthstr + '" >, \
                       SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
         lexicon.add(typedef)
-
 
 def customize_misc_lex(ch, lexicon, trigger):
 
@@ -655,8 +653,7 @@ def customize_type_and_stems(mylang,ch,lexicon,section,subsection,subsection_key
     lexicon.add_literal(subsection)
     mylang.set_section(section)
     mylang.add_literal(subsection)
-    supertypedef = lexbase_type
-    mylang.add(supertypedef)
+    mylang.add(lexbase_type)
     for qadv in ch.get(subsection_key):
         typename = qadv['name'] + '-' + supertype
         typedef = TDLencode(typename) + ' := ' + supertype + '.'

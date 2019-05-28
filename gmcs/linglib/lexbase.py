@@ -17,7 +17,7 @@ ALL_LEX_TYPES = ('noun', 'verb', 'det', 'aux', 'adj', 'cop', 'comps', 'qdet', 'q
 # types used for lexical rules (verb and aux are merged)
 # TJT 2014-08-15: adding "cop"
 # TJT 2014-08-15: changing to tuple for speed
-LEXICAL_CATEGORIES = ('noun', 'verb', 'det', 'adj', 'cop', 'qdet', 'qpro','qadv')
+LEXICAL_CATEGORIES = ('noun', 'verb', 'det', 'adj', 'cop', 'qdet', 'qpro', 'qadv')
 
 # TJT 2014-09-03: Types not automatically added to mylanguage.tdl
 NON_ESSENTIAL_LEX_CATEGORIES = ('det', 'adj', 'cop', 'comps', 'qdet', 'qpro', 'qadv')
@@ -34,7 +34,7 @@ LEXICAL_SUPERTYPES = {'noun':'noun-lex',
                       'aux':'aux-lex',
                       'adj':'adj-lex',
                       'comp':'comp-lex',
-                      'qdet':'determiner-lex',
+                      'qdet':'wh-determiner-lex',
                       'qpro':'wh-pronoun-noun-lex',
                       'qadv': 'wh-adverb-lex'}
 
@@ -70,17 +70,34 @@ WH_PRONOUN =  '''wh-pronoun-noun-lex := wh-word-lex & non-mod-lex-item &
 		     CONT [ HOOK.INDEX.PNG.PER 3rd,
 	                RELS <![ ARG0 ref-ind ], [] !> ] ] ] ].'''
 
-ADV_LEX = '''adverb-lex-item := norm-hook-lex-item &
-  [ SYNSEM.LOCAL.CAT [ VAL [ SUBJ < >,
+ADV_LEX = '''adverb-lex-item := intersective-adverb-lex &
+  [ SYNSEM [ LOCAL [ CAT [ VAL [ SUBJ < >,
                              SPR < >,
                              COMPS < > ],
                        HEAD adv &
-                            [ MOD < [ LOCAL intersective-mod &
-                                            [ CAT [ MC +,
-                                                    HEAD verb ] ] ] > ] ] ].
-'''
+                            [ MOD < [ LOCAL [ CAT [ MC +,
+                                                    HEAD verb,
+                                                    VAL [ SPR < >, COMPS < >, SUBJ < > ] ],
+                                              CONT.HOOK [ CLAUSE-KEY #clause, LTOP #ltop ] ] ] > ] ],
+                   CONT [ RELS <! [ PRED "unsp_adv_rel", LBL #ltop, ARG0 event,
+                                    ARG1 #clause, ARG2 #ind ],
+                                  [ PRED #pred, ARG0 #ind, LBL #larg ],[ ARG0 #ind, RSTR #harg ] !>,
+                          HOOK.LTOP #ltop,
+                          HCONS <! qeq & [ HARG #harg,
+                                            LARG #larg ] !> ] ],
+              LKEYS.KEYREL [ PRED #pred, ARG0 ref-ind & #ind, LBL #ltop ] ] ].'''
 
-WH_ADV =  '''wh-adverb-lex := adverb-lex-item & wh-word-lex.'''
+WH_ADV =  '''wh-adverb-lex := adverb-lex-item &
+[ SYNSEM [ LOCAL.CONT [ RELS <! [ ], [ ARG0 #arg0 ], quant-relation & [ PRED "which_q_rel" ] !>  ],
+           NON-LOCAL.QUE <! #arg0 !> ] ].'''
+
+
+WH_DET = '''wh-determiner-lex := basic-determiner-lex & non-mod-lex-item  & zero-arg-nonslash &
+  [ SYNSEM [ LOCAL.CAT.VAL [ SPR < >,
+                           SPEC.FIRST.LOCAL.CONT.HOOK.INDEX #arg0,
+                           COMPS < >,
+                           SUBJ < > ],
+             NON-LOCAL.QUE <! #arg0 !> ] ].'''
 
 ###############
 ### CLASSES ###
