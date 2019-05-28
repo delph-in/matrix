@@ -636,6 +636,9 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
 def customize_question_pronouns(mylang,ch,lexicon):
     subsection = ';;; Question pronouns'
     section = 'nounlex'
+    mylang.add(lexbase.WH_WORD)
+    if ch.get('person') == '1-2-3':
+        mylang.add('wh-pronoun-noun-lex := [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 3rd ].')
     lexbase_type = lexbase.WH_PRONOUN
     supertype = 'wh-pronoun-noun-lex'
     subsection_key = 'qpro'
@@ -644,6 +647,7 @@ def customize_question_pronouns(mylang,ch,lexicon):
 def customize_question_adverbs(mylang,ch,lexicon):
     subsection = ';;; Question adverbs'
     section = 'otherlex'
+    mylang.add(lexbase.ADV_LEX)
     lexbase_type = lexbase.WH_ADV
     supertype = 'wh-adverb-lex'
     subsection_key = 'qadv'

@@ -67,8 +67,7 @@ WH_WORD = '''wh-word-lex := norm-hook-lex-item & basic-icons-lex-item &
 
 WH_PRONOUN =  '''wh-pronoun-noun-lex := wh-word-lex & non-mod-lex-item &
   [ SYNSEM [ LOCAL [ CAT.HEAD noun,
-		     CONT [ HOOK.INDEX.PNG.PER 3rd,
-	                RELS <![ ARG0 ref-ind ], [] !> ] ] ] ].'''
+		     CONT [ RELS <![ ARG0 ref-ind ], [] !> ] ] ] ].'''
 
 ADV_LEX = '''adverb-lex-item := intersective-adverb-lex &
   [ SYNSEM [ LOCAL [ CAT [ VAL [ SUBJ < >,
