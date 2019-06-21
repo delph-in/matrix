@@ -353,7 +353,7 @@ def add_stem_to_lexicon(lexicon, stem, vtype):
 
 def construct_supertype_names(cases, ch, stype_names, verb):
     val = verb.get('valence')
-    if not val == '':
+    if val:
         i = val.find(',')
         dir_inv = ''
         tivity = ''
