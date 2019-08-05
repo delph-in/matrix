@@ -176,7 +176,7 @@ def update_test(args):
     name, desc, chc, dat, txt, skel, prof, gold = tests[0]
 
     try:
-        db = tsdb.Database(dat.parent)
+        db = tsdb.Database(prof)
         tsdb.write_database(db, gold)
     except tsdb.TSDBError as exc:
         raise RegressionTestError('Failed to update gold.') from exc
