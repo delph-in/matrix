@@ -4,7 +4,7 @@
 """
 Grammar Matrix Regression Testing
 """
-
+import os
 import traceback
 import shutil
 import argparse
@@ -104,9 +104,13 @@ def run_tests(args):
     """
     Run regression tests and report the results.
     """
+    total_passed = 0
+    total_error = 0
+    total_failed = 0
+    total = 0
     for name, desc, chc, dat, txt, skel, prof, gold in _discover(args):
         log = _unique_log_path(name)
-
+        total += 1
         passed = None
         with log.open(mode='at') as logf:
             _lognow('== Testing {} at {} ==\n'
@@ -126,9 +130,14 @@ def run_tests(args):
                     _process(name, dat, prof, logf)
                 if args.compare:
                     passed = _compare(name, prof, gold, logf)
+                    if passed:
+                        total_passed += 1
+                    else:
+                        total_failed += 1
 
             except Exception:
                 _report(name, ERROR, logf)
+                total_error += 1
                 _lognow('\n=====', logf)
                 traceback.print_exc(file=logf)
                 print('  see: {}'.format(str(log)))
@@ -142,6 +151,10 @@ def run_tests(args):
                 else:
                     _report(name, FAIL, logf)
                     print('  see: {}'.format(str(log)))
+    print('\n******** SUMMARY *************')
+    print('Passed {0}/{1} tests;'.format(total_passed,total))
+    print('Failed {0} /{1} tests;'.format(total_failed,total))
+    print('{0} errors.'.format(total_error))
 
 
 def list_tests(args):

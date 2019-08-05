@@ -3173,10 +3173,33 @@ scopal-mod-lex := lex-item &
 				   LARG #larg ] !> ],
 	     LKEYS.KEYREL.ARG1 #harg ]].
 
-intersective-mod-lex := no-hcons-lex-item &
+; OZ 2019-05-23 The use of "intersective" below is incorrect; it should just be 
+; "nonscopal". 
+; We are leaving it as "intersective" for now because it needs to be changed in lots 
+; of places, inlucing Wikis.
+
+
+; OZ 2019-05-23 
+; All nonscopal modifiers take the modified expression as their semantic
+; argument (such as ARG1), which does not require HCONS.
+; Some have empty HCONS lists (as opposed to 
+; scopal modifiers which all have at least one qeq on the HCONS relating their ARG1 to 
+; their MOD’s LTOP).
+; Others (e.g. adverbs like "where", "which place") 
+; have decomposed lexical semantics, including quantifiers on their RELS list, 
+; which means they’ll have non-empty HCONS lists 
+; linking the handles of relations. 
+
+basic-intersective-mod-lex := lex-item &
   [ SYNSEM [ LOCAL.CAT.HEAD.MOD < [ LOCAL intersective-mod &
 					  [ CONT.HOOK.INDEX #ind ]] >,
 	     LKEYS.KEYREL.ARG1 #ind ] ].
+
+
+
+intersective-mod-lex := basic-intersective-mod-lex & no-hcons-lex-item.
+
+intersective-adverb-lex := basic-intersective-mod-lex.
 
 no-mod-lex := no-hcons-lex-item &
   [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].
