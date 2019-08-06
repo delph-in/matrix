@@ -1,5 +1,7 @@
 from collections import defaultdict
 
+from gmcs import feature_use
+
 from gmcs.utils import get_name
 from gmcs.utils import TDLencode
 from gmcs.utils import orth_encode
@@ -1056,6 +1058,27 @@ def customize_cops(mylang, ch, lexicon, hierarchies, trigger):
 
                 # TODO: Add copula types to trigger.mtr
 
+def customize_adpositions(mylang, lexicon, ch,hierarchies):
+    #If not constrained as below, prepositions will go as head daughters in head-subject rules
+    mylang.add('decl-head-subj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +nvj ].')
+    mylang.add(lexbase.ADP_LEX)
+    supertype = 'norm-adposition-lex'
+    for adp in ch.get('normadp'):
+        typename = adp.full_key + '-' + supertype
+        mylang.add(typename + ' := ' + supertype + '.')
+        for stem in adp['stem']:
+            add_stem_to_lexicon(lexicon,stem,typename)
+        features.customize_feature_values(mylang,ch,hierarchies,adp,typename,'normadp')
+        if not feature_use.USED_FEATURES['INIT']:
+            feature_use.USED_FEATURES['INIT'] = True
+            mylang.add('head :+ [ INIT bool ].', section='addenda')
+        if adp['order'] == 'before':
+            mylang.add(typename + ' := ' + supertype + '& [ SYNSEM.LOCAL.CAT.HEAD.INIT + ].')
+        else:
+            mylang.add(typename + ' := ' + supertype + '& [ SYNSEM.LOCAL.CAT.HEAD.INIT - ].')
+
+
+
 ######################################################################
 # customize_lexicon()
 #   Create the type definitions associated with the user's test
@@ -1080,6 +1103,9 @@ def customize_lexicon(mylang, ch, lexicon, trigger, hierarchies, rules):
     if ch.has_adp_only_infostr():
         to_cfv = information_structure.customize_infostr_adpositions(mylang, lexicon, trigger, ch)
         features.process_cfv_list(mylang, ch, hierarchies, to_cfv, tdlfile=lexicon)
+
+    if ch.get('normadp'):
+        customize_adpositions(mylang, lexicon,ch,hierarchies)
 
     mylang.set_section('verblex')
     customize_verbs(mylang, ch, lexicon, hierarchies)

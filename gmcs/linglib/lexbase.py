@@ -12,7 +12,7 @@ import sys
 # OZ 2018-01-25 comps is not really a lexical type;
 # it is a complementation strategy that is defined by a complementizer type.
 # Ideally we would have complementizers as actual lexical items some day.
-ALL_LEX_TYPES = ('noun', 'verb', 'det', 'aux', 'adj', 'cop', 'comps', 'qdet', 'qpro', 'qadv')
+ALL_LEX_TYPES = ('noun', 'verb', 'det', 'aux', 'adj', 'cop', 'comps', 'qdet', 'qpro', 'qadv', 'normadp')
 
 # types used for lexical rules (verb and aux are merged)
 # TJT 2014-08-15: adding "cop"
@@ -20,7 +20,7 @@ ALL_LEX_TYPES = ('noun', 'verb', 'det', 'aux', 'adj', 'cop', 'comps', 'qdet', 'q
 LEXICAL_CATEGORIES = ('noun', 'verb', 'det', 'adj', 'cop', 'qdet', 'qpro', 'qadv')
 
 # TJT 2014-09-03: Types not automatically added to mylanguage.tdl
-NON_ESSENTIAL_LEX_CATEGORIES = ('det', 'adj', 'cop', 'comps', 'qdet', 'qpro', 'qadv')
+NON_ESSENTIAL_LEX_CATEGORIES = ('det', 'adj', 'cop', 'comps', 'qdet', 'qpro', 'qadv', 'normadp')
 
 # lexical_supertypes is a dictionary mapping the choices file
 # encodings to the actual lex-type identifiers of the supertypes.
@@ -36,7 +36,8 @@ LEXICAL_SUPERTYPES = {'noun':'noun-lex',
                       'comp':'comp-lex',
                       'qdet':'wh-determiner-lex',
                       'qpro':'wh-pronoun-noun-lex',
-                      'qadv': 'wh-adverb-lex'}
+                      'qadv': 'wh-adverb-lex',
+                      'normadp': 'wh-adposition-lex'}
 
 
 # TYPE DEFINITIONS (that can be shared with other libraries)
@@ -74,8 +75,7 @@ ADV_LEX = '''adverb-lex-item := intersective-adverb-lex &
                              SPR < >,
                              COMPS < > ],
                        HEAD adv &
-                            [ MOD < [ LOCAL [ CAT [ MC +,
-                                                    HEAD verb,
+                            [ MOD < [ LOCAL [ CAT [ HEAD verb,
                                                     VAL [ SPR < >, COMPS < >, SUBJ < > ] ],
                                               CONT.HOOK [ CLAUSE-KEY #clause, LTOP #ltop ] ] ] > ] ],
                    CONT [ RELS <! [ PRED "unsp_adv_rel", LBL #ltop, ARG0 event,
@@ -97,6 +97,15 @@ WH_DET = '''wh-determiner-lex := basic-determiner-lex & non-mod-lex-item  & zero
                            COMPS < >,
                            SUBJ < > ],
              NON-LOCAL.QUE <! #arg0 !> ] ].'''
+
+ADP_LEX = '''norm-adposition-lex := norm-sem-lex-item & basic-intersective-mod-lex &
+  [ SYNSEM [ LOCAL [ CAT [ HEAD adp,
+                           VAL.COMPS < [ LOCAL [ CAT [ HEAD noun, VAL.SPR < > ],
+                                                 CONT.HOOK.INDEX #ind ],
+                                         NON-LOCAL.QUE #que ] > ],
+                     CONT.RELS <! [ PRED #pred, ARG0 event, ARG1 event ] !> ],
+             LKEYS.KEYREL arg12-ev-relation & [ PRED #pred, ARG2 #ind ],
+             NON-LOCAL.QUE #que ] ].'''
 
 ###############
 ### CLASSES ###

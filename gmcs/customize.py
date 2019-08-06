@@ -43,6 +43,7 @@ from gmcs.linglib import clausalmods
 from gmcs.linglib import nominalized_clauses
 from gmcs.linglib import clausalcomps
 from gmcs.linglib import  wh_ques
+from gmcs.linglib import adverbs_adpositions
 
 ######################################################################
 # globals
@@ -621,6 +622,9 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
     clausalmods.customize_clausalmods(mylang, ch, lexicon, rules, roots, trigger)
     clausalcomps.customize_clausalcomps(mylang,ch,lexicon,rules)
     wh_ques.customize_wh_ques(mylang,ch,rules)
+    adverbs_adpositions.customize_adv_adp(ch,mylang,rules)
+
+    # Service customization
     customize_punctuation(grammar_path)
     customize_test_sentences(grammar_path)
     customize_itsdb(grammar_path)

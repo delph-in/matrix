@@ -1,6 +1,6 @@
 from gmcs.utils import get_name,TDLencode, orth_encode
 
-from gmcs import constants
+from gmcs import constants, feature_use
 from gmcs.linglib import lexbase
 
 ######################################################################
@@ -110,7 +110,9 @@ def constrain_for_extra(wo,general, additional, cs, mylang):
 def constrain_wrt_quest_part(cs,wo,ch,mylang,typename):
     additional = has_additional(ch,cs,wo)
     if additional:
-        mylang.add('head :+ [ INIT bool ].', section='addenda')
+        if not feature_use.USED_FEATURES['INIT']:
+            feature_use.USED_FEATURES['INIT'] = True
+            mylang.add('head :+ [ INIT bool ].', section='addenda')
         my_phrase = 'head-comp' if additional == 'comp-head' else 'comp-head'
         path = 'SYNSEM.LOCAL.CAT.HEAD'
         init_val = '+' if additional == 'head-comp' else '-'

@@ -1641,13 +1641,13 @@ clause := phrasal &
 
 ; SSH 2012-05-07 ICONS <! !>
 ; SSH 2014-11-26 CLAUSE -> IARG1
+; OZ 2019-06-13 Removing QUE constraint to allow multiple wh-questions.
 basic-non-rel-clause := clause & head-compositional &
   [ SYNSEM.NON-LOCAL.REL 0-dlist,
     HEAD-DTR.SYNSEM [ LOCAL.CONT.HOOK [ INDEX #index,
 					ICONS-KEY.IARG1 #index,
 					CLAUSE-KEY #index ],
-		      NON-LOCAL [ QUE 0-dlist,
-				  REL 0-dlist ] ],
+		      NON-LOCAL.REL 0-dlist ],
     C-CONT [ RELS <! !>,
 	     HCONS <! !> ] ].
 
@@ -1714,6 +1714,9 @@ imperative-clause := basic-non-rel-clause &
 ; Thus basic-filler-phrase does not inherit form headed-phrase.
 ; We provide a subtype, basic-head-filler-phrase, below, which does.
 
+; OZ 2019-06-13 Removing empty QUE constraint from the second daughter
+; to allow multiple wh-questions.
+
 basic-filler-phrase := binary-phrase & phrasal &
   [ SYNSEM [ LOCAL.CAT.VAL [ COMPS < >,
                              SPR < > ],
@@ -1729,7 +1732,6 @@ basic-filler-phrase := binary-phrase & phrasal &
 					[ LIST [ FIRST #slash,
 						 REST < > & #last ],
 					  LAST #last ],
-				  QUE 0-dlist,
 				  REL 0-dlist ] ] ] > ].
 
 ; ASF 2011-10-05 changed supertype 'headed-phrase' to more specific 'head-compostional'

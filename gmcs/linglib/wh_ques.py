@@ -31,11 +31,11 @@ EX_SUBJ = ''' extracted-subj-phrase := basic-extracted-subj-phrase &
   [ SYNSEM.LOCAL.CAT.HEAD verb,
     HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].'''
 
-EX_ADJ = '''extracted-adj-phrase := basic-extracted-adj-phrase &
+EX_ADJ = '''extracted-adv-adp-adj-phrase := basic-extracted-adj-phrase &
   [ SYNSEM [ LOCAL.CAT [ POSTHEAD #ph,
                          MC #mc ],
 	     NON-LOCAL.SLASH 1-dlist &
-		   <! [ CAT [ HEAD adv & [ MOD < [ LOCAL intersective-mod &
+		   <! [ CAT [ HEAD +rp & [ MOD < [ LOCAL intersective-mod &
                                                    [ CAT [ HEAD #head,
                                                            VAL #val,
                                                            POSTHEAD #ph,
@@ -59,14 +59,15 @@ EX_ADJ = '''extracted-adj-phrase := basic-extracted-adj-phrase &
 	     HCONS <! !>,
 	     ICONS <! !> ] ].'''
 
-FRONTING = 'wh-q-pos'
 
-FRONT_TYPE = 'wh-q-pos-type'
+
+SG_FRONT = 'matrix-single-front'
+SG_FRONT_OBLIG = 'matrix-single-oblig'
 
 
 def customize_wh_ques(mylang,ch,rules):
     mylang.add_literal(';;; Wh-question-related phrasal types')
-    if ch.get(FRONTING) == constants.ON and ch.get(FRONT_TYPE) == constants.SINGLE:
+    if ch.get(SG_FRONT) == SG_FRONT_OBLIG:
         mylang.add_literal('''; Do not allow extracting "And Kim"''')
         mylang.add('''basic-head-filler-phrase :+
    [ ARGS < [ SYNSEM.LOCAL.COORD - ], [ SYNSEM.LOCAL.COORD - ] > ].''')
@@ -83,4 +84,4 @@ def customize_wh_ques(mylang,ch,rules):
         rules.add('ex-subj := extracted-subj-phrase.')
         mylang.add_literal('; Adjunct extraction')
         mylang.add(EX_ADJ)
-        rules.add('ex-adj := extracted-adj-phrase.')
+        rules.add('ex-adj := extracted-adv-adp-adj-phrase.')

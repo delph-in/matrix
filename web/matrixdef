@@ -1676,7 +1676,8 @@ Radio q-part-order "Question particle order" "" ""
 
 Text q-part-orth "Question particle spelling" "&nbsp;&nbsp;&nbsp;&nbsp;Spelling of question particle: " "<br>" 40
 
-Check q-infl "Inflection" "<p>" "Verbal inflection: Checking this box enables a feature called <span class=\"feat\">question</span> with possible value <span class=\"tt\">plus</span> for use in defining lexical rules on the morphology page.  Defining lexical rules that specify [<span class=\"feat\">question</span> <span class=\"tt\">plus</span>] will produce lexical rules in the grammar that add the semantics of questions.</p>"
+Check q-infl "Inflection" "<p>" "Verbal inflection: Checking this box enables a feature called <span class=\"feat\">question</span> with possible value <span class=\"tt\">plus</span> for use in defining lexical rules on the morphology page.
+Defining lexical rules that specify [<span class=\"feat\">question</span> <span class=\"tt\">plus</span>] will produce lexical rules in the grammar that add the semantics of questions.</p>"
 
 Check q-inv "Subject-verb inversion" "" "Subject-verb inversion: "
 
@@ -1694,31 +1695,116 @@ case your grammar will not include a wh-question-forming strategy.</p>"
 
 Label "<p>If you fill out this page, you must also fill out the Question Words section on the Lexicon page.</p>"
 
-Check wh-q-pos "Wh-questions position" "<p>" "Constituent questions fronting: "
+Label "<h3>Choices regarding the position of wh-phrases</h3>"
 
-Radio wh-q-pos-type "Wh-question position type" "" ""
-. in-situ "In-Situ" "" "none (in situ) "
-. single "Single" "" "single fronting "
-. multiple "Multiple" "" "multiple fronting</p>"
+Separator
+
+Label "<p>In <span class=\"dfn\">matrix</span> questions (<i>Who did you see?</i>):<br><br>"
+
+  Check matrix-single-front "Single Fronting" "" "A single question phrase can be fronted<br>"
+  Check matrix-multi-front "Multiple Fronting" "" "All question phrases can be fronted (only choose this if multiple questions are allowed)<br>"
+  Check matrix-in-situ "In Situ" "" "Question phrases cannot be fronted (stay in-situ)<br><br>"
+
+  Radio single-front "Fronting optionality" " There is <span class=\"dfn\">obligatory</span> fronting: <br>" ""
+  . matrix-single-oblig "Obligatory Single Fronting" "" "of at least one question phrase<br>"
+  . matrix-all-oblig "Obligatory Multiple Fronting" ""  "of all question phrases (only choose this if multiple questions are allowed)<br>"
+  . matrix-nondlinked-oblig "Obligatory Multiple Fronting" ""  "of all question pronouns and adverbs
+  (but not phrases with determiners)</p>"
+
+    Label "<p>Pied-piping: Wh-determiners can be extracted
+    along with"
+
+    Check pied-pip "Pied-Piping" "" "nouns, "
+    Check oblig-pied-pip-noun "Obligatory Pied Piping Of Nouns" "" "and it is obligatory; "
+    Check pied-pip-prep "Pied-Piping Of Adpositions" "" "adpositions, "
+    Check oblig-pied-pip-adp "Obligatory Pied Piping Of Adpositions" "" "and it is obligatory.</p>"
+
+
+  Separator
+
+Label "<p>In <span class=\"dfn\">embedded</span> questions: (<i>Do you know who did this?</i>) <br><br>"
+
+  Check embed-single-front "Single Fronting" "" "A single question phrase can be fronted within the embedded clause<br>"
+  Check embed-multi-front "Multiple Fronting" "" "All question phrases can be fronted within the embedded clause (only choose this if multiple questions are allowed)<br>"
+  Check embed-in-situ "In Situ" "" "Question phrases cannot be fronted (stay in-situ) within the embedded clause<br><br>"
+
+  Radio single-front "Fronting optionality" " Within the embedded clause, there is obligatory fronting: <br>" ""
+  . embed-single-oblig "Obligatory Single Fronting" "" "of at least one question phrase<br>"
+  . embed-multi-oblig "Obligatory Multiple Fronting" ""  "of all question phrases (only choose this if multiple questions are allowed)<br>"
+   . matrix-nondlinked-oblig "Obligatory Multiple Fronting" ""  "of all question pronouns and adverbs
+  (but not phrases with determiners)</p>"
+
+    Label "<p>Pied-piping: Wh-determiners can be extracted
+    along with"
+
+    Check embed-pied-pip "Pied-Piping" "" "nouns, "
+    Check embed-oblig-pied-pip-noun "Obligatory Pied Piping Of Nouns" "" "and it is obligatory; "
+    Check embed-pied-pip-prep "Pied-Piping Of Adpositions" "" "adpositions, "
+    Check embed-oblig-pied-pip-adp "Obligatory Pied Piping Of Adpositions" "" "and it is obligatory.</p>"
+
+
+Separator
+
+Label "<p>When the question phrase is extracted <span class=\"dfn\">from an embedded clause</span> and put
+in <span class=\"dfn\">the front of the matrix clause</span> (<i>Who do you think that did this?</i>): <br><br>"
+
+  Check from-embed-multi-front "Multiple Fronting" "" "All constituents can also be fronted<br><br>"
+
+  Radio from-embed-single-front "Fronting optionality" "There is <span class=\"dfn\">obligatory</span> extraction from the embedded clause to the front of the matrix clause: <br>" ""
+  . from-embed-single-oblig "Obligatory Single Fronting" "" "of at least one question phrase<br>"
+  . from-embed-multi-oblig "Obligatory Multiple Fronting" ""  "of all question phrases (only choose this if multiple questions are allowed)<br>"
+   . from-embed-nondlinked-oblig "Obligatory Multiple Fronting" ""  "of all question pronouns and adverbs
+  (but not phrases with determiners)</p>"
+
+    Label "<p>Pied-piping: Wh-determiners can be extracted
+    along with"
+
+    Check from-embed-pied-pip "Pied-Piping" "" "nouns, "
+    Check from-embed-oblig-pied-pip-noun "Obligatory Pied Piping Of Nouns" "" "and it is obligatory; "
+    Check from-embed-pied-pip-prep "Pied-Piping Of Adpositions" "" "adpositions, "
+    Check from-embed-oblig-pied-pip-adp "Obligatory Pied Piping Of Adpositions" "" "and it is obligatory.</p>"
+
+
+Separator
+
+Label "<h3>Other choices</h3>"
+
+Check no-multi-ques "No Multiple Questions" "<p>" "Only one question phrase is allowed per sentence.</p>"
+
+Label "<p>Information structure:</p>"
+
+Radio infostr-marking "Information Structure Marking" "Question words may bear an overt focus marking: <br>" ""
+  . infostr-same "Same as focus marking" "" "which is the same<br>"
+  . infostr-diff "Different from focus marking" ""  "or different from the regular focus marking you defined on the Information
+  Structure page.<br>"
+
+Label "<p> Auxiliary-subject inversion in "
+Check wh-inv-matrix "Matrix Inversion" "" "matrix clauses and "
+Check wh-inv-embed "Embedded Inversion" "" "embedded clauses with questions.</p>"
 
 Check wh-q-part "Question particle" "" "A question particle: "
 
 Radio wh-q-part-order "Question particle order with respect to questioned predicate/clause" "" ""
-. before "Before" "" "clause initial "
-. after "After" "" "clause final"
-. second "Second" "" "second position<br>"
+. init "Before" "" "clause initial "
+. fin "After" "" "clause final"
+. afterqw "Second" "" "after the question word<br>"
+. afterqp "Second" "" "after the entire question phrase (e.g. the NP or the PP) <br>"
 
 Text wh-q-part-orth "Question particle spelling" "Spelling: " "<br>" 40
 
+Label "<p> Interrogative "
+Check wh-q-inter-verbs "Iterrogative verbs" "" "verbs or "
+Check wh-q-inter-cop "Interrogative copula" "" "copula (add appropriate entries on the Lexicon page).</p>"
+
+#Check wh-q-inter-mood "Iterrogative mood" "<p>" "Interrogative mood (add appropriate entry on the TAM page).</p>"
+
 Check wh-q-infl "Inflection" "<p>" "Verbal inflection: Checking this box enables a
 feature called <span class=\"feat\">question</span> with possible
-value <span class=\"tt\">plus</span> for use in defining lexical
+value <span class=\"tt\">plus</span> <br>for use in defining lexical
 rules on the morphology page.  Defining lexical rules that
-specify [<span class=\"feat\">question</span> <span class=\"tt\">plus</span>] will
+specify [<span class=\"feat\">question</span> <span class=\"tt\">plus</span>] <br> will
 produce lexical rules in the grammar that add the semantics of questions.</p>"
 
-Check wh-q-inter-verbs "Iterrogative verbs" "<p>" "Interrogative verbs (if you check this box,
-please add appropriate entries on the Lexicon page).</p>"
 
 Section info-str "Information Structure"
 
@@ -2282,6 +2368,7 @@ Cache adjlrs adj-pc[0-9]+(_lrt[0-9]+)?$ name
 Cache detlrs det-pc[0-9]+(_lrt[0-9]+)?$ name
 Cache qdetlrs qdet-pc[0-9]+(_lrt[0-9]+)?$ name
 Cache qprolrs qpro-pc[0-9]+(_lrt[0-9]+)?$ name
+Cache qverblrs qverb-pc[0-9]+(_lrt[0-9]+)?$ name
 
 Label "<p>On this page you will define <span class=\"dfn\">lexical
 types</span> and <span class=\"dfn\">lexical items</span> within those
@@ -2718,6 +2805,8 @@ BeginIter cop{i} "a Copula Type" 1
 
   Label "</div>"
 
+  Check quescop "Interrogative Copula" "<p>" "This is a special copula that is used only in interrogative constructions.</p>"
+
 EndIter cop
 
 Separator
@@ -2776,54 +2865,6 @@ Separator
 
 Label "<h3>Question words</h3>"
 
-BeginIter qdet{i} "a Question Determiner" 1
-
-  Label "<b>Question Determiner type {i}</b>:"
-
-  Label "<div style=\"padding-left: 16px\">"
-
-  Text name "Question Determiner {i} name" "Type name: " "<br>" 20
-
-  BeginIter stem{j} "a Stem" 0 1
-
-    Text orth "Question Determiner {i} spelling" "Spelling: " "" 30 "fill_pred('qdet{i}_stem{j}', 'q')"
-
-    Text pred "Question Determiner {i} predicate" " Predicate: " "<br>" 30
-
-  EndIter stem
-
-  Label "<br><br>Features:"
-
-  BeginIter feat{j} "a Feature"
-
-    Select name "Question Determiner {i} feature {j} name" "Name: " " "
-    fillnames c=noun
-
-    MultiSelect value "Question Determiner {i} feature {j} value" "Value: " ""
-    fillvalues p=qdet{i}_feat{j}_name
-
-  EndIter feat
-
-  Label "<p>Morphotactic Constraints:</p>"
-
-  BeginIter require{j} "a Require constraint"
-
-    MultiSelect others "Question Determiner {i} requires" "Question Determiner {i} requires one of the following position classes: " ""
-    fillcache c=qdetlrs
-
-  EndIter require
-
-  BeginIter forbid{j} "a Forbid constraint"
-
-    MultiSelect others "Question Determiner {i} requires" "Question Determiner {i} requires one of the following position classes: " ""
-    fillcache c=qdetlrs
-
-  EndIter forbid
-
-  Label "</div>"
-
-EndIter qdet
-
 BeginIter qpro{i} "a Question Pronoun Type" 1
 
   Label "<b>Question Pronoun type {i}</b>:"
@@ -2877,6 +2918,54 @@ BeginIter qpro{i} "a Question Pronoun Type" 1
 
 EndIter qpro
 
+BeginIter qdet{i} "a Question Determiner" 1
+
+  Label "<b>Question Determiner type {i}</b>:"
+
+  Label "<div style=\"padding-left: 16px\">"
+
+  Text name "Question Determiner {i} name" "Type name: " "<br>" 20
+
+  BeginIter stem{j} "a Stem" 0 1
+
+    Text orth "Question Determiner {i} spelling" "Spelling: " "" 30 "fill_pred('qdet{i}_stem{j}', 'q')"
+
+    Text pred "Question Determiner {i} predicate" " Predicate: " "<br>" 30
+
+  EndIter stem
+
+  Label "<br><br>Features:"
+
+  BeginIter feat{j} "a Feature"
+
+    Select name "Question Determiner {i} feature {j} name" "Name: " " "
+    fillnames c=noun
+
+    MultiSelect value "Question Determiner {i} feature {j} value" "Value: " ""
+    fillvalues p=qdet{i}_feat{j}_name
+
+  EndIter feat
+
+  Label "<p>Morphotactic Constraints:</p>"
+
+  BeginIter require{j} "a Require constraint"
+
+    MultiSelect others "Question Determiner {i} requires" "Question Determiner {i} requires one of the following position classes: " ""
+    fillcache c=qdetlrs
+
+  EndIter require
+
+  BeginIter forbid{j} "a Forbid constraint"
+
+    MultiSelect others "Question Determiner {i} requires" "Question Determiner {i} requires one of the following position classes: " ""
+    fillcache c=qdetlrs
+
+  EndIter forbid
+
+  Label "</div>"
+
+EndIter qdet
+
 BeginIter qadv{i} "a Question Adverb" 1
 
   Label "<b>Question Adverb type {i}</b>:"
@@ -2897,11 +2986,89 @@ BeginIter qadv{i} "a Question Adverb" 1
 
 EndIter qadv
 
+BeginIter qverb{i} "a Question Verb" 1
+
+  Label "<b>Question Verb type {i}</b>:"
+
+  Label "<div style=\"padding-left: 16px\">"
+
+  Text name "Question Verb {i} name" "Type name: " "<br>" 20
+
+  BeginIter stem{j} "a Stem" 0 1
+
+    Text orth "Question Verb {i} spelling" "Spelling: " "" 30 "fill_pred('qverb{i}_stem{j}', 'q')"
+
+    Text pred "Question Verb {i} predicate" " Predicate: " "<br>" 30
+
+  EndIter stem
+
+  Label "<br><br>Features:"
+
+  BeginIter feat{j} "a Feature"
+
+    Select name "Question Verb {i} feature {j} name" "Name: " " "
+    fillnames c=verb
+
+    MultiSelect value "Question Verb {i} feature {j} value" "Value: " ""
+    fillvalues p=qverb{i}_feat{j}_name
+
+  EndIter feat
+
+  Label "<p>Morphotactic Constraints:</p>"
+
+  BeginIter require{j} "a Require constraint"
+
+    MultiSelect others "Question Verb {i} requires" "Question Verb {i} requires one of the following position classes: " ""
+    fillcache c=qverblrs
+
+  EndIter require
+
+  BeginIter forbid{j} "a Forbid constraint"
+
+    MultiSelect others "Question Verb {i} requires" "Question Verb {i} requires one of the following position classes: " ""
+    fillcache c=qverblrs
+
+  EndIter forbid
+
+  Label "</div>"
+
+EndIter qverb
+
+
 Separator
 
-Label "<h3>Case-marking and/or Information Structural Adpositions</h3>"
+Label "<h3>Adpositions</h3>"
 
-BeginIter adp{i} "an Adposition" 1
+BeginIter normadp{i} "an Adposition" 0
+
+    BeginIter stem{j} "a Stem" 0 1
+
+      Text orth "Adposition {i} spelling" "Spelling: " "" 30 "fill_pred('normadp{i}_stem{j}', 'p')"
+
+      Text pred "Adposition {i} predicate" " Predicate: " "<br>" 30
+
+    EndIter stem
+
+  Select order "Adposition {i} order" " <br><br> The adposition appears " " a noun phrase<br><br>Features:<br>"
+  . after "After" "after"
+  . before "Before" "before"
+  . both "Before and After" "before and after"
+
+  BeginIter feat{j} "a Feature on Adposition's Complement" 0 1
+
+    Select name "Adposition {i} feature {j} name" "Name: " " "
+    fillnames c=noun
+
+    MultiSelect value "Adposition's Complement {i} feature {j} value" "Value: " ""
+    fillvalues p=normadp{i}_feat{j}_name
+
+  EndIter feat
+
+
+EndIter normadp
+
+
+BeginIter adp{i} "a Case-marking and/or Information Structural Adposition" 1
 
   Text orth "Adposition {i} spelling" "Spelling: " "" 20
 
@@ -2922,6 +3089,8 @@ BeginIter adp{i} "an Adposition" 1
   EndIter feat
 
 EndIter adp
+
+
 
 Section morphology "Morphology"
 

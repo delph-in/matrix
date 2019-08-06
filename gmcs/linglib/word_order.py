@@ -805,6 +805,14 @@ def determine_consistent_order(wo,hc,ch):
         if not adp_order in adporders:
             adporders.append(adp_order)
 
+    # OZ: The above is for info-str marking and case marking adpositions.
+    # The below is for "normal" adpositions (which have content relations).
+    for adp in ch.get('normadp',[]):
+        adp_order = adp.get('order')
+        if not adp_order in adporders:
+            adporders.append(adp_order)
+
+
     # ERB 2006-10-05 Fixing bug in free word order case.
     adporder = ''
     if len(adporders) == 2:
