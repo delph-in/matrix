@@ -108,15 +108,18 @@ def run_tests(args):
     total_error = 0
     total_failed = 0
     total = 0
+
     for name, desc, chc, dat, txt, skel, prof, gold in _discover(args):
         log = _unique_log_path(name)
         total += 1
         passed = None
+
         with log.open(mode='at') as logf:
             _lognow('== Testing {} at {} ==\n'
                     .format(name, datetime.datetime.now().isoformat()),
                     logf)
             _progress(name, 'begin', logf)
+
             try:
                 if args.customize:
                     grm = _customize(name, chc, logf)
@@ -130,17 +133,13 @@ def run_tests(args):
                     _process(name, dat, prof, logf)
                 if args.compare:
                     passed = _compare(name, prof, gold, logf)
-                    if passed:
-                        total_passed += 1
-                    else:
-                        total_failed += 1
 
             except Exception:
                 _report(name, ERROR, logf)
-                total_error += 1
                 _lognow('\n=====', logf)
                 traceback.print_exc(file=logf)
                 print('  see: {}'.format(str(log)))
+                total_error += 1
 
             else:
                 if passed is None:  # only if _compare() was not run
@@ -148,13 +147,18 @@ def run_tests(args):
                 elif passed:
                     _progress(name, '', logf)  # clear progress only if passed
                     _report(name, PASS, logf)
+                    total_passed += 1
                 else:
                     _report(name, FAIL, logf)
                     print('  see: {}'.format(str(log)))
-    print('\n******** SUMMARY *************')
-    print('Passed {0}/{1} tests;'.format(total_passed,total))
-    print('Failed {0} /{1} tests;'.format(total_failed,total))
-    print('{0} errors.'.format(total_error))
+                    total_failed += 1
+
+    if args.compare:
+        print('\n******** SUMMARY *************')
+        width = len(str(total))  # to align the numbers on /
+        print('Passed {0:{2}}/{1} tests;'.format(total_passed, total, width))
+        print('Failed {0:{2}}/{1} tests;'.format(total_failed, total, width))
+        print('Errors {0:{2}}/{1} tests.'.format(total_error, total, width))
 
 
 def list_tests(args):
