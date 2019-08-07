@@ -152,8 +152,11 @@ def run_tests(args):
                     _report(name, FAIL, logf)
                     print('  see: {}'.format(str(log)))
                     total_failed += 1
+    
+    if total == 0:
+        print('(nothing to do; if an unindexed test was requested, try --all-tests)')
 
-    if args.compare:
+    elif args.compare:
         print('\n******** SUMMARY *************')
         width = len(str(total))  # to align the numbers on /
         print('Passed {0:{2}}/{1} tests;'.format(total_passed, total, width))
