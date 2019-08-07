@@ -78,7 +78,7 @@ ADV_LEX = '''adverb-lex-item := intersective-adverb-lex &
                             [ MOD < [ LOCAL [ CAT [ HEAD verb,
                                                     VAL [ SPR < >, COMPS < >, SUBJ < > ] ],
                                               CONT.HOOK [ CLAUSE-KEY #clause, LTOP #ltop ] ] ] > ] ],
-                   CONT [ RELS <! [ PRED "unsp_adv_rel", LBL #ltop, ARG0 event,
+                   CONT [ RELS <! [ PRED "loc_nonsp_rel", LBL #ltop, ARG0 event,
                                     ARG1 #clause, ARG2 #ind ],
                                   [ PRED #pred, ARG0 #ind, LBL #larg ],[ ARG0 #ind, RSTR #harg ] !>,
                           HOOK.LTOP #ltop,
