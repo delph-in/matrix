@@ -98,7 +98,7 @@ WH_DET = '''wh-determiner-lex := basic-determiner-lex & non-mod-lex-item  & zero
                            SUBJ < > ],
              NON-LOCAL.QUE <! #arg0 !> ] ].'''
 
-ADP_LEX = '''norm-adposition-lex := norm-sem-lex-item & basic-intersective-mod-lex &
+ADP_LEX = '''norm-adposition-lex := norm-sem-lex-item & no-hcons-lex-item & basic-intersective-mod-lex &
   [ SYNSEM [ LOCAL [ CAT [ HEAD adp,
                            VAL.COMPS < [ LOCAL [ CAT [ HEAD noun, VAL.SPR < > ],
                                                  CONT.HOOK.INDEX #ind ],
