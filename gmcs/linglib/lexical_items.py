@@ -641,6 +641,7 @@ def customize_question_pronouns(mylang,ch,lexicon):
     mylang.add(lexbase.WH_WORD)
     if ch.get('person') == '1-2-3':
         mylang.add('wh-pronoun-noun-lex := [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 3rd ].')
+    #TODO need to add PNG if PN are specified in choices
     lexbase_type = lexbase.WH_PRONOUN
     supertype = 'wh-pronoun-noun-lex'
     subsection_key = 'qpro'

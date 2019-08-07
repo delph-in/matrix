@@ -1705,10 +1705,10 @@ Label "<p>In <span class=\"dfn\">matrix</span> questions (<i>Who did you see?</i
   Check matrix-multi-front "Multiple Fronting" "" "All question phrases can be fronted (only choose this if multiple questions are allowed)<br>"
   Check matrix-in-situ "In Situ" "" "Question phrases cannot be fronted (stay in-situ)<br><br>"
 
-  Radio single-front "Fronting optionality" " There is <span class=\"dfn\">obligatory</span> fronting: <br>" ""
-  . matrix-single-oblig "Obligatory Single Fronting" "" "of at least one question phrase<br>"
-  . matrix-all-oblig "Obligatory Multiple Fronting" ""  "of all question phrases (only choose this if multiple questions are allowed)<br>"
-  . matrix-nondlinked-oblig "Obligatory Multiple Fronting" ""  "of all question pronouns and adverbs
+  Radio matrix-front-opt "Fronting optionality" " There is <span class=\"dfn\">obligatory</span> fronting: <br>" ""
+  . single-oblig "Obligatory Single Fronting" "" "of at least one question phrase<br>"
+  . all-oblig "Obligatory Multiple Fronting" ""  "of all question phrases (only choose this if multiple questions are allowed)<br>"
+  . nondlinked-oblig "Obligatory Multiple Fronting" ""  "of all question pronouns and adverbs
   (but not phrases with determiners)</p>"
 
     Label "<p>Pied-piping: Wh-determiners can be extracted
@@ -1728,10 +1728,10 @@ Label "<p>In <span class=\"dfn\">embedded</span> questions: (<i>Do you know who 
   Check embed-multi-front "Multiple Fronting" "" "All question phrases can be fronted within the embedded clause (only choose this if multiple questions are allowed)<br>"
   Check embed-in-situ "In Situ" "" "Question phrases cannot be fronted (stay in-situ) within the embedded clause<br><br>"
 
-  Radio single-front "Fronting optionality" " Within the embedded clause, there is obligatory fronting: <br>" ""
-  . embed-single-oblig "Obligatory Single Fronting" "" "of at least one question phrase<br>"
-  . embed-multi-oblig "Obligatory Multiple Fronting" ""  "of all question phrases (only choose this if multiple questions are allowed)<br>"
-   . matrix-nondlinked-oblig "Obligatory Multiple Fronting" ""  "of all question pronouns and adverbs
+  Radio embed-single-front-opt "Fronting optionality" " Within the embedded clause, there is obligatory fronting: <br>" ""
+  . single-oblig "Obligatory Single Fronting" "" "of at least one question phrase<br>"
+  . all-oblig "Obligatory Multiple Fronting" ""  "of all question phrases (only choose this if multiple questions are allowed)<br>"
+   . nondlinked-oblig "Obligatory Multiple Fronting" ""  "of all question pronouns and adverbs
   (but not phrases with determiners)</p>"
 
     Label "<p>Pied-piping: Wh-determiners can be extracted
@@ -1750,10 +1750,10 @@ in <span class=\"dfn\">the front of the matrix clause</span> (<i>Who do you thin
 
   Check from-embed-multi-front "Multiple Fronting" "" "All constituents can also be fronted<br><br>"
 
-  Radio from-embed-single-front "Fronting optionality" "There is <span class=\"dfn\">obligatory</span> extraction from the embedded clause to the front of the matrix clause: <br>" ""
-  . from-embed-single-oblig "Obligatory Single Fronting" "" "of at least one question phrase<br>"
-  . from-embed-multi-oblig "Obligatory Multiple Fronting" ""  "of all question phrases (only choose this if multiple questions are allowed)<br>"
-   . from-embed-nondlinked-oblig "Obligatory Multiple Fronting" ""  "of all question pronouns and adverbs
+  Radio from-embed-single-front-opt "Fronting optionality" "There is <span class=\"dfn\">obligatory</span> extraction from the embedded clause to the front of the matrix clause: <br>" ""
+  . single-oblig "Obligatory Single Fronting" "" "of at least one question phrase<br>"
+  . all-oblig "Obligatory Multiple Fronting" ""  "of all question phrases (only choose this if multiple questions are allowed)<br>"
+   . nondlinked-oblig "Obligatory Multiple Fronting" ""  "of all question pronouns and adverbs
   (but not phrases with determiners)</p>"
 
     Label "<p>Pied-piping: Wh-determiners can be extracted

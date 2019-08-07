@@ -61,13 +61,13 @@ EX_ADJ = '''extracted-adv-adp-adj-phrase := basic-extracted-adj-phrase &
 
 
 
-SG_FRONT = 'matrix-single-front'
-SG_FRONT_OBLIG = 'matrix-single-oblig'
+MTX_SG_FRONT = 'matrix-front-opt'
+SG_OBLIG = 'single-oblig'
 
 
 def customize_wh_ques(mylang,ch,rules):
     mylang.add_literal(';;; Wh-question-related phrasal types')
-    if ch.get(SG_FRONT) == SG_FRONT_OBLIG:
+    if ch.get(MTX_SG_FRONT) == SG_OBLIG:
         mylang.add_literal('''; Do not allow extracting "And Kim"''')
         mylang.add('''basic-head-filler-phrase :+
    [ ARGS < [ SYNSEM.LOCAL.COORD - ], [ SYNSEM.LOCAL.COORD - ] > ].''')
