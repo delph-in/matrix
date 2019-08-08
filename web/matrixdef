@@ -1748,7 +1748,7 @@ Separator
 Label "<p>When the question phrase is extracted <span class=\"dfn\">from an embedded clause</span> and put
 in <span class=\"dfn\">the front of the matrix clause</span> (<i>Who do you think that did this?</i>): <br><br>"
 
-  Check from-embed-multi-front "Multiple Fronting" "" "All constituents can also be fronted<br><br>"
+  Check from-embed-multi-front "Multiple Fronting" "" "All other question phrases can also be fronted<br><br>"
 
   Radio from-embed-single-front-opt "Fronting optionality" "There is <span class=\"dfn\">obligatory</span> extraction from the embedded clause to the front of the matrix clause: <br>" ""
   . single-oblig "Obligatory Single Fronting" "" "of at least one question phrase<br>"
