@@ -1,105 +1,17 @@
-1@@@@1@@@@@@1@0@@@
-2@@@@1@@version=32@@@@1@1@@@
-3@@@@1@@@@@@1@0@@@
-4@@@@1@@section=general@@@@1@1@@@
-5@@@@1@@language=wh-svo-sg-oblig@@@@1@1@@@
-6@@@@1@@@@@@1@0@@@
-7@@@@1@@section=word-order@@@@1@1@@@
-8@@@@1@@word-order=svo@@@@1@1@@@
-9@@@@1@@has-dets=no@@@@1@1@@@
-10@@@@1@@has-aux=no@@@@1@1@@@
-11@@@@1@@@@@@1@0@@@
-12@@@@1@@section=number@@@@1@1@@@
-13@@@@1@@@@@@1@0@@@
-14@@@@1@@section=person@@@@1@1@@@
-15@@@@1@@person=none@@@@1@1@@@
-16@@@@1@@@@@@1@0@@@
-17@@@@1@@section=gender@@@@1@1@@@
-18@@@@1@@@@@@1@0@@@
-19@@@@1@@section=case@@@@1@1@@@
-20@@@@1@@case-marking=none@@@@1@1@@@
-21@@@@1@@@@@@1@0@@@
-22@@@@1@@section=adnom-poss@@@@1@1@@@
-23@@@@1@@@@@@1@0@@@
-24@@@@1@@section=direct-inverse@@@@1@1@@@
-25@@@@1@@@@@@1@0@@@
-26@@@@1@@section=tense-aspect-mood@@@@1@1@@@
-27@@@@1@@@@@@1@0@@@
-28@@@@1@@section=evidentials@@@@1@1@@@
-29@@@@1@@@@@@1@0@@@
-30@@@@1@@section=other-features@@@@1@1@@@
-31@@@@1@@@@@@1@0@@@
-32@@@@1@@section=sentential-negation@@@@1@1@@@
-33@@@@1@@@@@@1@0@@@
-34@@@@1@@section=coordination@@@@1@1@@@
-35@@@@1@@@@@@1@0@@@
-36@@@@1@@section=matrix-yes-no@@@@1@1@@@
-37@@@@1@@@@@@1@0@@@
-38@@@@1@@section=wh-q@@@@1@1@@@
-39@@@@1@@matrix-single-front=on@@@@1@1@@@
-40@@@@1@@matrix-front-opt=single-oblig@@@@1@1@@@
-41@@@@1@@@@@@1@0@@@
-42@@@@1@@section=info-str@@@@1@1@@@
-43@@@@1@@@@@@1@0@@@
-44@@@@1@@section=arg-opt@@@@1@1@@@
-45@@@@1@@@@@@1@0@@@
-46@@@@1@@section=nominalclause@@@@1@1@@@
-47@@@@1@@@@@@1@0@@@
-48@@@@1@@section=clausal-comp@@@@1@1@@@
-49@@@@1@@@@@@1@0@@@
-50@@@@1@@section=clausalmods@@@@1@1@@@
-51@@@@1@@@@@@1@0@@@
-52@@@@1@@section=lexicon@@@@1@1@@@
-53@@@@1@@  noun1_det=opt@@@@1@1@@@
-54@@@@1@@    noun1_stem1_orth=cat@@@@1@1@@@
-55@@@@1@@    noun1_stem1_pred=_cat_n_rel@@@@1@1@@@
-56@@@@1@@  noun2_det=opt@@@@1@1@@@
-57@@@@1@@    noun2_stem1_orth=house@@@@1@1@@@
-58@@@@1@@    noun2_stem1_pred=_house_n_rel@@@@1@1@@@
-59@@@@1@@  verb1_valence=intrans@@@@1@1@@@
-60@@@@1@@    verb1_stem1_orth=sleeps@@@@1@1@@@
-61@@@@1@@    verb1_stem1_pred=_sleep_v_rel@@@@1@1@@@
-62@@@@1@@  verb2_valence=trans@@@@1@1@@@
-63@@@@1@@    verb2_stem1_orth=sees@@@@1@1@@@
-64@@@@1@@    verb2_stem1_pred=_sees_v_rel@@@@1@1@@@
-65@@@@1@@  qpro1_name=who@@@@1@1@@@
-66@@@@1@@    qpro1_stem1_orth=who@@@@1@1@@@
-67@@@@1@@    qpro1_stem1_pred=_person_n_rel@@@@1@1@@@
-68@@@@1@@    qpro1_stem2_orth=what@@@@1@1@@@
-69@@@@1@@    qpro1_stem2_pred=_thing_n_rel@@@@1@1@@@
-70@@@@1@@  qadv1_name=loc@@@@1@1@@@
-71@@@@1@@    qadv1_stem1_orth=where@@@@1@1@@@
-72@@@@1@@    qadv1_stem1_pred=_place_n_rel@@@@1@1@@@
-73@@@@1@@    normadp1_stem1_orth=in@@@@1@1@@@
-74@@@@1@@    normadp1_stem1_pred=_in_p_rel@@@@1@1@@@
-75@@@@1@@  normadp1_order=before@@@@1@1@@@
-76@@@@1@@@@@@1@0@@@
-77@@@@1@@section=morphology@@@@1@1@@@
-78@@@@1@@@@@@1@0@@@
-79@@@@1@@section=toolbox-import@@@@1@1@@@
-80@@@@1@@@@@@1@0@@@
-81@@@@1@@section=test-sentences@@@@1@1@@@
-82@@@@1@@  sentence1_orth=cat sleeps@@@@1@2@@@
-83@@@@1@@  sentence2_orth=sleeps cat@@@@1@2@@@
-84@@@@1@@  sentence2_star=on@@@@1@1@@@
-85@@@@1@@  sentence3_orth=cat sees house@@@@1@3@@@
-86@@@@1@@  sentence4_orth=cat house sees@@@@1@3@@@
-87@@@@1@@  sentence4_star=on@@@@1@1@@@
-88@@@@1@@  sentence5_orth=who sleeps?@@@@1@2@@@
-89@@@@1@@  sentence6_orth=sleeps who?@@@@1@2@@@
-90@@@@1@@  sentence6_star=on@@@@1@1@@@
-91@@@@1@@  sentence7_orth=what cat sees?@@@@1@3@@@
-92@@@@1@@  sentence8_orth=cat sees what?@@@@1@3@@@
-93@@@@1@@  sentence8_star=on@@@@1@1@@@
-94@@@@1@@  sentence9_orth=cat what sees?@@@@1@3@@@
-95@@@@1@@  sentence9_star=on@@@@1@1@@@
-96@@@@1@@  sentence10_orth=cat sleeps in house@@@@1@4@@@
-97@@@@1@@  sentence11_orth=where cat sleeps?@@@@1@3@@@
-98@@@@1@@  sentence12_orth=cat sleeps where?@@@@1@3@@@
-99@@@@1@@  sentence12_star=on@@@@1@1@@@
-100@@@@1@@  sentence13_orth=cat where sleeps?@@@@1@3@@@
-101@@@@1@@  sentence13_star=on@@@@1@1@@@
-102@@@@1@@@@@@1@0@@@
-103@@@@1@@section=gen-options@@@@1@1@@@
-104@@@@1@@@@@@1@0@@@
-105@@@@1@@section=ToolboxLexicon@@@@1@1@@@
+1@@@@1@@cat sleeps@@@@1@2@@@
+2@@@@1@@sleeps cat@@@@0@2@@@
+3@@@@1@@cat sees house@@@@1@3@@@
+4@@@@1@@cat house sees@@@@0@3@@@
+5@@@@1@@who sleeps?@@@@1@2@@@
+6@@@@1@@sleeps who?@@@@0@2@@@
+7@@@@1@@what cat sees?@@@@1@3@@@
+8@@@@1@@cat sees what?@@@@0@3@@@
+9@@@@1@@cat what sees?@@@@0@3@@@
+10@@@@1@@cat sleeps in house@@@@1@4@@@
+11@@@@1@@where cat sleeps?@@@@1@3@@@
+12@@@@1@@cat sleeps where?@@@@0@3@@@
+13@@@@1@@where sleeps cat?@@@@0@3@@@
+14@@@@1@@cat where sleeps?@@@@0@3@@@
+15@@@@1@@cat sees cat in house.@@@@1@5@@@
+16@@@@1@@what cat sees in house?@@@@1@5@@@
+17@@@@1@@cat sees what in house?@@@@0@5@@@

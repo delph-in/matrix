@@ -2,7 +2,7 @@
 version=32
 
 section=general
-language=wh-svo-sg-oblig
+language=wh-svo-sg-oblig-min
 
 section=word-order
 word-order=svo
