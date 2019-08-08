@@ -1,0 +1,10 @@
+1@@@@1@@cat house sees@@@@1@3@@@
+2@@@@1@@cat sees house@@@@0@3@@@
+3@@@@1@@what cat sees?@@@@1@3@@@
+4@@@@1@@cat sees what?@@@@0@3@@@
+5@@@@1@@cat what sees?@@@@0@3@@@
+6@@@@1@@cat cat sees in house@@@@1@5@@@
+7@@@@1@@what cat sees in house?@@@@1@5@@@
+8@@@@1@@cat sees cat in house@@@@0@5@@@
+9@@@@1@@cat what sees in house?@@@@0@5@@@
+10@@@@1@@cat sees what in house?@@@@0@5@@@
