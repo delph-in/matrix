@@ -306,14 +306,15 @@ def remove_test(args):
             else:
                 newlines.append(ln)
         if not found:
-            raise RegressionTestError('Could not find {} in regression-test-index'.format(name))
-        Path.unlink(INDEX)
-        with open(INDEX,'w') as new_index:
-            new_index.writelines(newlines)
-        print('Successfully removed all files and directories associated with {}, and the corresponding '
-              'line in the regression-test-index'.format(name))
+            print('Could not find {} in regression-test-index'.format(name))
+        else:
+            Path.unlink(INDEX)
+            with open(INDEX,'w') as new_index:
+                new_index.writelines(newlines)
+            print('Successfully removed all files and directories associated with {}, and the corresponding '
+                  'line in the regression-test-index'.format(name))
     except:
-        raise RegressionTestError('Failed to delete some file or directory.')
+        raise RegressionTestError('Failed to remove regression test {}.'.format(name))
 
 # HELPER FUNCTIONS ############################################################
 
