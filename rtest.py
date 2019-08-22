@@ -167,11 +167,8 @@ def run_tests(args):
                     _report(name, FAIL, logf)
                     print('  see: {}'.format(str(log)))
                     total_failed += 1
-    
-    if total == 0:
-        print('(nothing to do; if an unindexed test was requested, try --all-tests)')
 
-    elif args.compare:
+    if args.compare:
         print('\n******** SUMMARY *************')
         width = len(str(total))  # to align the numbers on /
         print('Passed {0:{2}}/{1} tests;'.format(total_passed, total, width))
@@ -264,8 +261,20 @@ def add_test(args):
     run_tests(args)
     print('New regression test {} added successfully.'.format(name))
 
-
 def remove_test(args):
+    '''
+    Remove a test given a name. Will look for:
+    1) choices
+    2) txt-suite
+    3) skeleton
+    4) current profile
+    5) gold profile
+    6) the corresponding line in regression-test-index
+
+    Will silently delete whichever files and directories are found,
+    so, good for removing partially created tests.
+    TODO: svn del
+    '''
     name = args.test[0]
     try:
         if Path.exists(CHOICES_DIR / name):
@@ -284,6 +293,7 @@ def remove_test(args):
             print('Deleting {}'.format(GOLD_DIR / name))
             shutil.rmtree(GOLD_DIR / name)
 
+        # Recreate regression-test-index:
         shutil.copy(INDEX, str(INDEX)+'-backup')
         with open(INDEX,'r') as regression_test_index:
             lines = regression_test_index.readlines()
