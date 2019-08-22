@@ -14,6 +14,8 @@ import subprocess
 import datetime
 import textwrap
 
+from pathlib import Path
+
 from delphin import ace
 from delphin import tsdb
 from delphin.commands import (
@@ -79,7 +81,7 @@ def main(args):
     # if no steps are specified, do all of them (but this may be
     # avoided by using --list or --update)
     if not any([args.customize, args.mkskel, args.mkprof,
-                args.process, args.compare]):
+                args.process, args.compare, args.test]):
         args.customize = True
         args.mkskel = None  # `None` here means "only if needed"
         args.mkprof = True
@@ -96,6 +98,19 @@ def main(args):
         list_tests(args)
     elif args.update:
         update_test(args)
+    elif args.add:
+        if args.test[1] == None and args.test[2] == None:
+            raise RegressionTestError('For --add command,  provide a path to the choices file and to the test suite.')
+        args.customize = True
+        args.mkskel = None
+        args.mkprof = True
+        args.process = True
+        args.compare = False
+        add_test(args)
+    elif args.remove:
+        if args.test[0] == None:
+            raise RegressionTestError('For --remove command, add a name for the test to be removed.')
+        remove_test(args)
     else:
         run_tests(args)
 
@@ -201,6 +216,94 @@ def update_test(args):
     except tsdb.TSDBError as exc:
         raise RegressionTestError('Failed to update gold.') from exc
 
+def add_test(args):
+    """
+    name = name for the new regression test
+    comment = Description
+    choices = path to the choices file
+    txt = path to the test suite
+
+    Copy the choices and the txt suite to the right locations, renaming them to the new test's name
+    if necessary. Create a skeleton using the txt suite. Copy the skeleton to home/gold.
+    Create a grammar using the current customization
+    system, process the profile. TODO: Add files to SVN.
+    """
+    name = args.test[0]
+    comment = args.test[1]
+    choices = args.test[2]
+    txt = args.test[3]
+    mess = 'File {} already exists; if you want to update the test, use the --update command; ' \
+           'if you are sure the file is rogue, delete it. Otherwise, use a different name for a new test.'
+    if Path(CHOICES_DIR / name).is_file():
+        raise RegressionTestError(mess.format(CHOICES_DIR / name))
+    if Path(TXT_SUITE_DIR / name).is_file():
+        raise RegressionTestError(mess.format(TXT_SUITE_DIR / name))
+    shutil.copy(choices,CHOICES_DIR / name)
+    shutil.copy(txt,TXT_SUITE_DIR / name)
+
+    with open(INDEX, 'a+') as regression_test_index:
+        all_tests = regression_test_index.readlines()
+        # Check that the test name hasn't been used:
+        for t in all_tests:
+            if t.startswith(name):
+                raise RegressionTestError('A test with this name is already in {}. '
+                                          'You should use a different name unless you are sure this is a mistake,'
+                                          'in which case you should carefully remove this name, along with any '
+                                          'rogue files and profiles, from the index, before proceeding.'.format(INDEX))
+        # After making sure the name isn't already in the index, add it to the index:
+        regression_test_index.write('\n'+name+'='+comment)
+    # Now we can actually run the test, creating the skeleton and the current profile.
+    run_tests(args)
+    try:
+        # Need to copy current profile to gold, as at this stage the assumption is they are the same.
+        shutil.copytree(CURRENT_DIR / name, GOLD_DIR / name)
+    except:
+        raise RegressionTestError('Failed to copy the current profile to the gold directory.')
+    # Test the new test:
+    args.compare = True
+    run_tests(args)
+    print('New regression test {} added successfully.'.format(name))
+
+
+def remove_test(args):
+    name = args.test[0]
+    try:
+        if Path.exists(CHOICES_DIR / name):
+            print('Deleting {}'.format(CHOICES_DIR / name))
+            Path.unlink(CHOICES_DIR / name)
+        if Path.exists(TXT_SUITE_DIR / name):
+            print('Deleting {}'.format(TXT_SUITE_DIR / name))
+            Path.unlink(TXT_SUITE_DIR / name)
+        if Path.exists(SKELETONS_DIR / name):
+            print('Deleting {}'.format(SKELETONS_DIR / name))
+            shutil.rmtree(SKELETONS_DIR / name)
+        if Path.exists(CURRENT_DIR / name):
+            print('Deleting {}'.format(CURRENT_DIR / name))
+            shutil.rmtree(CURRENT_DIR / name)
+        if Path.exists(GOLD_DIR / name):
+            print('Deleting {}'.format(GOLD_DIR / name))
+            shutil.rmtree(GOLD_DIR / name)
+
+        shutil.copy(INDEX, str(INDEX)+'-backup')
+        with open(INDEX,'r') as regression_test_index:
+            lines = regression_test_index.readlines()
+        newlines = []
+        found = False
+        for ln in lines:
+            this_name,comment = ln.split('=')
+            if this_name == name:
+                found = True
+            else:
+                newlines.append(ln)
+        if not found:
+            raise RegressionTestError('Could not find {} in regression-test-index'.format(name))
+        Path.unlink(INDEX)
+        with open(INDEX,'w') as new_index:
+            new_index.writelines(newlines)
+        print('Successfully removed all files and directories associated with {}, and the corresponding '
+              'line in the regression-test-index'.format(name))
+    except:
+        raise RegressionTestError('Failed to delete some file or directory.')
 
 # HELPER FUNCTIONS ############################################################
 
@@ -345,7 +448,8 @@ def _mkskel(name, txt, logf):
 
     dest = SKELETONS_DIR / name
     _lognow('  Destination: {!s}'.format(dest), logf)
-
+    if not txt:
+        raise RegressionTestError('Did you forget to add the new txt-suite to gmcs/regression_tests/txt-suites?')
     try:
         mkprof(dest, source=txt, schema=RELATIONS_FILE, quiet=True)
     except CommandError as exc:
@@ -475,6 +579,10 @@ if __name__ == '__main__':
         ===========  =============  ============================
         --mkskel     txt-suite      skeleton
         --update     profile        gold (profile)
+        --add        name, comment  regression test added 
+                     choices,
+                     txt-suite 
+        --remove     name           regression test removed
         '''),
         epilog=textwrap.dedent('''\
         Examples:
@@ -483,6 +591,8 @@ if __name__ == '__main__':
             %(prog)s TEST1 "TEST2*"  # run TEST1 and all matching TEST2*
             %(prog)s --mkskel TEST   # build skeleton for TEST
             %(prog)s --update TEST   # update gold profile for TEST
+            %(prog)s --add NAME COMMENT CHOICES TXT-SUITE # add TEST
+            %(prog)s --remove NAME   # remove TEST
         '''))
     parser.add_argument('-v', '--verbose',
                         action='count',
@@ -516,6 +626,12 @@ if __name__ == '__main__':
     parser.add_argument('-u', '--update',
                         action='store_true',
                         help='copy the current profile to gold')
+    parser.add_argument('-a', '--add',
+                        action='store_true',
+                        help='Add a new test from a choices and a txt suite')
+    parser.add_argument('-rm','--remove',
+                        action='store_true',
+                        help='Remove a test from the system')
     parser.add_argument('test',
                         nargs='*')
 
