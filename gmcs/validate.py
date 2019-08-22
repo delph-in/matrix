@@ -607,7 +607,8 @@ def validate_information_structure(ch, vr):
                 break
     for m in infostr_markers:
         if not validate_information_structure_affix(ch, m, infostr_values[m]):
-            validate_information_structure_msg(ch, vr, m, 'affix', 'You must create at least one affix involving this feature on Morphology.')
+            validate_information_structure_msg(ch, vr, m, 'affix', 'You must create at least '
+                                                                   'one affix involving this feature on Morphology.')
 
     infostr_markers = []
     for marker in infostr_values.keys():
@@ -617,7 +618,8 @@ def validate_information_structure(ch, vr):
                 break
     for m in infostr_markers:
         if not validate_information_structure_adp(ch, m, infostr_values[m]):
-            validate_information_structure_msg(ch, vr, m, 'adp', 'You must create at least one adposition involving this feature on Lexicon.')
+            validate_information_structure_msg(ch, vr, m, 'adp', 'You must create at least '
+                                                                 'one adposition involving this feature on Lexicon.')
 
 
 
@@ -625,11 +627,14 @@ def validate_information_structure(ch, vr):
         for m in ch.get(marker):
             if m['type'].strip() in ['affix', 'adp']:
                 if m['pos'].strip() != '' or m['cat'].strip() != '' or m['orth'].strip() != '':
-                    vr.err(m.full_key + '_type', 'You must either check a modifier or delete the choices following a modifier.')
+                    vr.err(m.full_key + '_type', 'You must either check a modifier or delete '
+                                                 'the choices following a modifier.')
 
 
     if ch.get('word-order') == 'free':
-        warning_msg = 'Information structural modules for free word order languages are under development. If positions are multiply checked, your grammar may have some overgeneration.'
+        warning_msg = 'Information structural modules for free word order languages are ' \
+                      'under development. If positions are multiply checked, ' \
+                      'your grammar may have some overgeneration.'
         if ch.get('focus-pos') != '' and ch.get('topic-first') != '':
             if ch.get('focus-pos') != 'clause-initial':
                 vr.warn('focus-pos', warning_msg)
@@ -644,12 +649,14 @@ def validate_information_structure(ch, vr):
 
 
     if ch.get('topic-first') != '' and ch.get('topic-marker') != '':
-        vr.warn('topic-first', 'You may need some additional constraint(s) on sentence positioning of topic-marked constituents.')
+        vr.warn('topic-first', 'You may need some additional constraint(s) on '
+                               'sentence positioning of topic-marked constituents.')
 
     if ch.get('focus-pos') == '' and ch.get('c-focus') != '':
         vr.err('c-focus', 'You must check a specific position for focus above.')
     if ch.get('c-focus') != '' and ch.get('c-focus-pos') != '':
-        vr.err('c-focus', 'Your description is inconsistent. You must either check this or choose a specific position below.')
+        vr.err('c-focus', 'Your description is inconsistent. You must either check '
+                          'this or choose a specific position below.')
 
 
 
@@ -830,8 +837,10 @@ def validate_coordination(ch, vr):
                 obj = True
         if cs.get('csap') and (subj == False or obj == False):
             mess = 'You have added an agreement pattern but have not accounted for both subjects and objects. ' \
-                   'In general, \'subject/object only\' is used with languages that, for example, use distinguished conjunct for ' \
-                   'subject and feature resolution for the object. \'All arguments\' should be the default in most other cases.'
+                   'In general, \'subject/object only\' is used with languages that, ' \
+                   'for example, use distinguished conjunct for ' \
+                   'subject and feature resolution for the object. \'All arguments\' ' \
+                   'should be the default in most other cases.'
             vr.warn(csap.full_key+'_target', mess)
 
 
@@ -852,7 +861,8 @@ def validate_coordination(ch, vr):
 
             # an ap must apply to N or NPs to do anything (although it won't break anything)
             if not (cs_n or cs_np):
-                mess = 'You have attached an agreement pattern to this coordination strategy, but it won\'t do anything because ' \
+                mess = 'You have attached an agreement pattern to this coordination strategy, ' \
+                       'but it won\'t do anything because ' \
                        'the coordination strategy doesn\'t coordinate nouns or NPs.'
                 vr.warn(csap.full_key + "_pat", mess)
 
@@ -887,7 +897,8 @@ def validate_coordination(ch, vr):
 
         # warn if a fr has been defined but not used
         if fr.full_key not in used_patterns:
-            mess = "You defined an agreement pattern but didn't attach it to a coordination strategy. You must attach it to a" \
+            mess = "You defined an agreement pattern but didn't attach it to a coordination strategy. " \
+                   "You must attach it to a" \
                    " coordination strategy before the rules will apply to coordinated N/NPs."
             vr.warn(fr.full_key+ '_name', mess)
 
@@ -1469,7 +1480,7 @@ def validate_clausalmods(ch, vr):
                 mess = 'You must select a position for the subordinator.'
                 vr.err(cms.full_key + '_subposition', mess)
             if not cms.get('subordinator-type'):
-                mess = 'You must makes a selection for whether the subordinator is an adverb or head.'
+                mess = 'You must make a selection for whether the subordinator is an adverb or head.'
                 vr.err(cms.full_key + '_subordinator-type', mess)
             if cms.get('subordinator-type') == 'adverb':
                 if not cms.get('adverb-attach'):
@@ -1518,7 +1529,7 @@ def validate_clausalmods(ch, vr):
         if nominalized == True:
             mess = 'If multiple nominalization strategies are allowed in the grammar,' +\
                    ' and clausal modifiers require nominalization, the produced grammar' +\
-                   ' will allow any nominalinalization strategy for the clausal modifier strategy.'
+                   ' will allow any nominalization strategy for the clausal modifier strategy.'
             vr.warn(feat.full_key + '_name', mess)
             if cms.get('subordinaotor-type') == 'adverb':
                 mess = 'Nominalization is not supported of the adverb analysis.'

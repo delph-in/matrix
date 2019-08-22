@@ -821,7 +821,8 @@ def validate_lexicon(ch, vr):
                 mess = 'You must specify a value for this feature.'
                 vr.err(cf.full_key + '_value', mess)
             if name == 'evidential':
-                vr.err(cf.full_key + '_name', 'Evidentials should be specified as an auxiliary feature, not a complement feature.')
+                vr.err(cf.full_key + '_name', 'Evidentials should be specified as an auxiliary feature, '
+                                              'not a complement feature.')
 
         if not compform == 'yes':
             mess = 'You must specify the form of the verb in the complement, ' + \
