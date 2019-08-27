@@ -4,7 +4,7 @@
 """
 Grammar Matrix Regression Testing
 """
-import os
+
 import traceback
 import shutil
 import argparse
@@ -99,17 +99,8 @@ def main(args):
     elif args.update:
         update_test(args)
     elif args.add:
-        if args.test[1] == None and args.test[2] == None:
-            raise RegressionTestError('For --add command,  provide a path to the choices file and to the test suite.')
-        args.customize = True
-        args.mkskel = None
-        args.mkprof = True
-        args.process = True
-        args.compare = False
         add_test(args)
     elif args.remove:
-        if args.test[0] == None:
-            raise RegressionTestError('For --remove command, add a name for the test to be removed.')
         remove_test(args)
     else:
         run_tests(args)
@@ -176,7 +167,7 @@ def run_tests(args):
         print('Errors {0:{2}}/{1} tests.'.format(total_error, total, width))
 
 
-def list_tests(args):
+def list_tests(args, verbose=False):
     """
     Print each test name and exit.
 
@@ -188,8 +179,8 @@ def list_tests(args):
 
         print(name)
 
-        if args.verbosity >= 2:
-            print('    Description: ', desc)
+        if verbose or args.verbosity >= 2:
+            print('    Description: ' + desc)
             print('    Indexed:     ' + yes_or_no(desc))
             print('    Txt-suite:   ' + yes_or_no(txt))
             print('    Choices:     ' + yes_or_no(chc))
@@ -213,108 +204,123 @@ def update_test(args):
     except tsdb.TSDBError as exc:
         raise RegressionTestError('Failed to update gold.') from exc
 
+
 def add_test(args):
     """
-    name = name for the new regression test
-    comment = Description
-    choices = path to the choices file
-    txt = path to the test suite
+    Add a new regression test.
 
-    Copy the choices and the txt suite to the right locations, renaming them to the new test's name
-    if necessary. Create a skeleton using the txt suite. Copy the skeleton to home/gold.
-    Create a grammar using the current customization
-    system, process the profile. TODO: Add files to SVN.
+    Copy the choices and the txt suite to the right locations,
+    renaming them to the new test's name if necessary. Create a
+    skeleton using the txt suite. Copy the skeleton to home/gold.
+    Create a grammar using the current customization system, process
+    the profile. TODO: Add files to SVN.
     """
-    name = args.test[0]
-    comment = args.test[1]
-    choices = args.test[2]
-    txt = args.test[3]
-    mess = 'File {} already exists; if you want to update the test, use the --update command; ' \
-           'if you are sure the file is rogue, delete it. Otherwise, use a different name for a new test.'
-    if Path(CHOICES_DIR / name).is_file():
-        raise RegressionTestError(mess.format(CHOICES_DIR / name))
-    if Path(TXT_SUITE_DIR / name).is_file():
-        raise RegressionTestError(mess.format(TXT_SUITE_DIR / name))
-    shutil.copy(choices,CHOICES_DIR / name)
-    shutil.copy(txt,TXT_SUITE_DIR / name)
+    args.all_tests = True  # necessary for adding new tests
+    tests = list(_discover(args))
+    if len(tests) == 0 and len(args.test) == 1:
+        name = args.test[0]
+        desc, chc, txt = None, None, None
+    elif len(tests) == 1:
+        name, desc, chc, _, txt, _, _, _ = tests[0]
+    else:
+        raise RegressionTestError('only 1 test may be added at a time')
 
-    with open(INDEX, 'a+') as regression_test_index:
-        all_tests = regression_test_index.readlines()
-        # Check that the test name hasn't been used:
-        for t in all_tests:
-            if t.startswith(name):
-                raise RegressionTestError('A test with this name is already in {}. '
-                                          'You should use a different name unless you are sure this is a mistake,'
-                                          'in which case you should carefully remove this name, along with any '
-                                          'rogue files and profiles, from the index, before proceeding.'.format(INDEX))
-        # After making sure the name isn't already in the index, add it to the index:
-        regression_test_index.write('\n'+name+'='+comment)
-    # Now we can actually run the test, creating the skeleton and the current profile.
+    msg = ('File {!s} already exists; if you want to update the test, use '
+           'the --update command; if you are sure the file is rogue, delete '
+           'it. Otherwise, use a different name for a new test.')
+    if desc is not None:
+        raise RegressionTestError(
+            'test already exists in index: {}'.format(name))
+    if chc is not None:
+        raise RegressionTestError(msg.format(chc))
+    if txt is not None:
+        raise RegressionTestError(msg.format(txt))
+    chc, txt = args.add
+
+    desc = input('Test description: ')
+    index = _parse_index(args.index)
+    index[name] = desc.strip()
+
+    # Copy files and recreate the index
+    shutil.copy(chc, CHOICES_DIR / name)
+    shutil.copy(txt, TXT_SUITE_DIR / name)
+    _recreate_index(index, args.index)
+
+    # Now we can actually run the test, creating the skeleton and the
+    # current profile.
+    args.customize = True
+    args.mkskel = True
+    args.mkprof = True
+    args.process = True
+    args.compare = False
     run_tests(args)
     try:
-        # Need to copy current profile to gold, as at this stage the assumption is they are the same.
+        # Need to copy current profile to gold, as at this stage the
+        # assumption is they are the same.
         shutil.copytree(CURRENT_DIR / name, GOLD_DIR / name)
-    except:
-        raise RegressionTestError('Failed to copy the current profile to the gold directory.')
+    except shutil.Error:
+        raise RegressionTestError(
+            'Failed to copy the current profile to the gold directory.')
+
     # Test the new test:
+    args.customize = False
+    args.mkskel = False
+    args.mkprof = False
+    args.process = False
     args.compare = True
     run_tests(args)
+
+    # list the current state
+    list_tests(args, verbose=True)
+
     print('New regression test {} added successfully.'.format(name))
+
 
 def remove_test(args):
     '''
-    Remove a test given a name. Will look for:
-    1) choices
-    2) txt-suite
-    3) skeleton
-    4) current profile
-    5) gold profile
-    6) the corresponding line in regression-test-index
+    Remove a test from the filesystem.
 
-    Will silently delete whichever files and directories are found,
-    so, good for removing partially created tests.
+    This will look for and remove:
+
+    1) choices
+    2) grammar directory
+    3) txt-suite
+    4) skeleton
+    5) current profile
+    6) gold profile
+    7) the corresponding line in regression-test-index
+
+    As this will silently delete whichever files and directories are
+    found, it is also good for removing partially created tests.
     TODO: svn del
     '''
-    name = args.test[0]
-    try:
-        if Path.exists(CHOICES_DIR / name):
-            print('Deleting {}'.format(CHOICES_DIR / name))
-            Path.unlink(CHOICES_DIR / name)
-        if Path.exists(TXT_SUITE_DIR / name):
-            print('Deleting {}'.format(TXT_SUITE_DIR / name))
-            Path.unlink(TXT_SUITE_DIR / name)
-        if Path.exists(SKELETONS_DIR / name):
-            print('Deleting {}'.format(SKELETONS_DIR / name))
-            shutil.rmtree(SKELETONS_DIR / name)
-        if Path.exists(CURRENT_DIR / name):
-            print('Deleting {}'.format(CURRENT_DIR / name))
-            shutil.rmtree(CURRENT_DIR / name)
-        if Path.exists(GOLD_DIR / name):
-            print('Deleting {}'.format(GOLD_DIR / name))
-            shutil.rmtree(GOLD_DIR / name)
+    args.all_tests = True  # necessary for partial tests
+    tests = list(_discover(args))
+    if len(tests) > 1:
+        raise RegressionTestError('only 1 test may be removed at a time')
+    name, desc, chc, dat, txt, skel, prof, gold = tests[0]
 
-        # Recreate regression-test-index:
-        shutil.copy(INDEX, str(INDEX)+'-backup')
-        with open(INDEX,'r') as regression_test_index:
-            lines = regression_test_index.readlines()
-        newlines = []
-        found = False
-        for ln in lines:
-            this_name,comment = ln.split('=')
-            if this_name == name:
-                found = True
+    for obj in (chc, txt, skel, prof, gold):
+        if obj is not None:
+            print('Deleting {!s}'.format(chc))
+            if obj.is_file():
+                obj.unlink()
             else:
-                newlines.append(ln)
-        if not found:
-            print('Could not find {} in regression-test-index'.format(name))
-        else:
-            Path.unlink(INDEX)
-            with open(INDEX,'w') as new_index:
-                new_index.writelines(newlines)
-            print('Successfully removed all files and directories associated with {}, and the corresponding '
-                  'line in the regression-test-index'.format(name))
-    except:
-        raise RegressionTestError('Failed to remove regression test {}.'.format(name))
+                shutil.rmtree(obj)
+    # do the grammar dir separately in case it has unexpected depth
+    grm = GRAMMARS_DIR / name
+    if grm.is_dir():
+        shutil.rmtree(grm)
+
+    index = _parse_index(args.index)
+    if name in index:
+        del index[name]
+    _recreate_index(index, args.index)
+
+    print('Successfully removed all files and directories associated with '
+          '{}, and any corresponding line in the regression-test-index.'
+          .format(name))
+
 
 # HELPER FUNCTIONS ############################################################
 
@@ -323,13 +329,13 @@ def _discover(args):
     Find tests by any of their locations.
 
     Test information is scattered across an index file, a directory of
-    sentence files (txt-suites), a directory of choices files, a
-    directory of [incr tsdb()] skeleton subdirectories, and a
-    directory of gold [incr tsdb()] profiles, joined by a shared test
-    name. Collect and merge these sources of information and yield
-    each as a tuple of (name, description, txt-suite-path,
-    choices-path, skeleton-path, gold-path). If --all-tests is used,
-    partially described tests not in the index will be yielded, too.
+    sentence files (txt-suites), a directory of choices files, and
+    directories of [incr tsdb()] skeletons, current profiles, and gold
+    profiles, joined by a shared test name. Collect and merge these
+    sources of information and yield each as a tuple of (name,
+    description, txt-suite-path, choices-path, skeleton-path,
+    current-path, gold-path). If --all-tests is used, partially
+    described tests not in the index will be yielded, too.
     """
     index     = _parse_index(args.index)
     choices   = _list_files(CHOICES_DIR)
@@ -368,9 +374,22 @@ def _parse_index(path):
     for line in open(path):
         line = line.strip()
         if line:
-            name, _, description = line.partition('=')
+            name, description = _split_index_line(line)
             index[name] = description
     return index
+
+
+def _recreate_index(index, path):
+    """Overwrite the index with an updated one."""
+    with open(path, 'w') as f:
+        for _name, _desc in index.items():
+            print('{}={}'.format(_name, _desc), file=f)
+
+
+def _split_index_line(line):
+    """Return the name and description for an index entry."""
+    name, _, description = line.partition('=')
+    return name, description
 
 
 def _list_testsuites(dir):
@@ -460,7 +479,9 @@ def _mkskel(name, txt, logf):
     dest = SKELETONS_DIR / name
     _lognow('  Destination: {!s}'.format(dest), logf)
     if not txt:
-        raise RegressionTestError('Did you forget to add the new txt-suite to gmcs/regression_tests/txt-suites?')
+        raise RegressionTestError(
+            'Did you forget to add the new txt-suite to '
+            'gmcs/regression_tests/txt-suites?')
     try:
         mkprof(dest, source=txt, schema=RELATIONS_FILE, quiet=True)
     except CommandError as exc:
@@ -590,20 +611,20 @@ if __name__ == '__main__':
         ===========  =============  ============================
         --mkskel     txt-suite      skeleton
         --update     profile        gold (profile)
-        --add        name, comment  regression test added 
+        --add        name, comment  regression test added
                      choices,
-                     txt-suite 
+                     txt-suite
         --remove     name           regression test removed
         '''),
         epilog=textwrap.dedent('''\
         Examples:
-            %(prog)s                 # run all indexed regression tests
-            %(prog)s --customize     # customize and compile only
-            %(prog)s TEST1 "TEST2*"  # run TEST1 and all matching TEST2*
-            %(prog)s --mkskel TEST   # build skeleton for TEST
-            %(prog)s --update TEST   # update gold profile for TEST
-            %(prog)s --add NAME COMMENT CHOICES TXT-SUITE # add TEST
-            %(prog)s --remove NAME   # remove TEST
+            %(prog)s                        # run all indexed regression tests
+            %(prog)s --customize            # customize and compile only
+            %(prog)s dir-inv-fore "case-*"  # run matching tests
+            %(prog)s --mkskel "adj-*"       # build skeleton for adj-*
+            %(prog)s --update Zulu          # update gold profile for Zulu
+            %(prog)s --add choices txt abc  # add new test named abc
+            %(prog)s --remove my-old-test   # remove a test
         '''))
     parser.add_argument('-v', '--verbose',
                         action='count',
@@ -638,11 +659,12 @@ if __name__ == '__main__':
                         action='store_true',
                         help='copy the current profile to gold')
     parser.add_argument('-a', '--add',
+                        nargs=2,
+                        metavar=('CHOICES', 'TXTSUITE'),
+                        help='add a new test to the system')
+    parser.add_argument('-r', '--remove',
                         action='store_true',
-                        help='Add a new test from a choices and a txt suite')
-    parser.add_argument('-rm','--remove',
-                        action='store_true',
-                        help='Remove a test from the system')
+                        help='remove a test from the system')
     parser.add_argument('test',
                         nargs='*')
 
