@@ -9,6 +9,7 @@ import re
 import os
 
 from gmcs import tdl
+from gmcs import constants
 from gmcs.choices import ChoicesFile
 from gmcs.utils import get_name
 
@@ -1774,20 +1775,50 @@ def validate_adnominal_possession(ch, vr):
 #                         'and the possessor is not supported.'
 #                    vr.err(pron.full_key+'_possessum-agr',mess)
             
+#############################################################
+#####$$$$$$ Constituent questions validation ################
+#############################################################
 
 def validate_wh_ques(ch, vr):
+    from gmcs.constants import ON,IN_SITU,MATRIX_FRONTING, WH_QUE_PTCL, \
+        WH_QUE_INFL
     wh_q_strat = None
-    if ch.get('wh-q-pos')=='on':
-        wh_q_strat = 'wh-q-pos'
-    elif ch.get('wh-q-part')=='on':
-        wh_q_strat = 'wh-q-part'
-    elif ch.get('wh-q-infl')=='on':
-        wh_q_strat = 'wh-q-infl'
-    elif ch.get('wh-q-inter-verbs')=='on':
+    if ch.get(MATRIX_FRONTING) is not None:
+        wh_q_strat = MATRIX_FRONTING
+    elif ch.get(WH_QUE_PTCL) == ON:
+        wh_q_strat = WH_QUE_PTCL
+    elif ch.get(WH_QUE_INFL) == ON:
+        wh_q_strat = WH_QUE_INFL
+    elif ch.get('wh-q-inter-verbs') == ON:
         wh_q_strat = 'wh-q-inter-verbs'
     if wh_q_strat and not (ch.get('qdet') or ch.get('qpro') or ch.get('qadv')):
         mess = 'Please specify question words on the Lexicon page'
         vr.err(wh_q_strat,mess)
+    # Pied piping only makes sense when some fronting options were chosen
+    if (ch.get('pied-pip') == ON or ch.get('pied-pip-adp') == ON) and \
+            (ch.get(MATRIX_FRONTING)== None or ch.get('front-matrix')== IN_SITU):
+        mess = 'Pied piping only makes sense when fronting is possible; choose a fronting strategy.'
+        vr.err('pied-pip',mess)
+    if (ch.get('embed-pied-pip') == ON or ch.get('embed-pied-pip-adp') == ON) and \
+            (ch.get('front-embed')== None or ch.get('front-embed') == IN_SITU):
+        mess = 'Pied piping only makes sense when fronting is possible; choose a fronting strategy.'
+        vr.err('embed-pied-pip',mess)
+    # Pied piping obligatoriness only makes sense when there is pied piping
+    if ch.get('oblig-pied-pip-noun') == ON and not ch.get('pied-pip'):
+        mess = 'You did not check pied piping itself but said it is obligatory'
+        vr.err('pied-pip', mess)
+    if ch.get('oblig-pied-pip-adp') == ON and not ch.get('pied-pip-adp'):
+        mess = 'You did not check pied piping itself but said it is obligatory'
+        vr.err('pied-pip-adp', mess)
+    if ch.get('embed-oblig-pied-pip-noun') == ON and not ch.get('embed-pied-pip'):
+        mess = 'You did not check pied piping itself but said it is obligatory'
+        vr.err('embed-pied-pip', mess)
+    if ch.get('embed--oblig-pied-pip-adp') == ON and not ch.get('embed-pied-pip-adp'):
+        mess = 'You did not check pied piping itself but said it is obligatory'
+        vr.err('embed-pied-pip-adp', mess)
+
+
+
 
 def validate(ch, extra = False):
     """

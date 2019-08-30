@@ -1,6 +1,6 @@
 from collections import defaultdict
 
-from gmcs import feature_use
+from gmcs import feature_type_use
 
 from gmcs.utils import get_name
 from gmcs.utils import TDLencode
@@ -17,6 +17,7 @@ from gmcs.linglib.lexbase import ALL_LEX_TYPES, LEXICAL_SUPERTYPES
 from gmcs.linglib.lexicon import get_all_supertypes
 from gmcs.linglib.clausalmods import get_subord_stemids
 from gmcs.linglib.clausalmods import add_subord_name
+from gmcs.feature_type_use import USED_TYPES
 
 # helper functions
 def verb_id(item):
@@ -405,7 +406,7 @@ def main_or_verb(ch):
 
 
 def customize_determiners(mylang, ch, lexicon, hierarchies):
-
+    from gmcs.constants import QDET
     # Lexical type for determiners, if the language has any:
     if ch.get('has-dets') == 'yes':
         comment = \
@@ -428,15 +429,21 @@ def customize_determiners(mylang, ch, lexicon, hierarchies):
         lexicon.add_literal(';;; Determiners')
 
     for det in ch.get('det',[]):
-        add_determiner(ch, det, 'determiner-lex',hierarchies, lexicon, mylang)
+        if det[QDET] == 'on':
+            if not USED_TYPES[QDET]:
+                mylang.add(lexbase.WH_DET)
+                USED_TYPES[QDET] = True
+            add_determiner(ch, det, 'wh-determiner-lex', hierarchies, lexicon, mylang)
+        else:
+            add_determiner(ch, det, 'determiner-lex',hierarchies, lexicon, mylang)
 
-    if 'qdet' in ch:
-        lexicon.add_literal(';;; Question Determiners')
-        mylang.add_literal(';;; Question Determiners')
-        mylang.add(lexbase.WH_DET)
-
-    for det in ch.get('qdet',[]):
-        add_determiner(ch, det, 'wh-determiner-lex',hierarchies, lexicon, mylang)
+    # if 'qdet' in ch:
+    #     lexicon.add_literal(';;; Question Determiners')
+    #     mylang.add_literal(';;; Question Determiners')
+    #     mylang.add(lexbase.WH_DET)
+    #
+    # for det in ch.get('qdet',[]):
+    #     add_determiner(ch, det, 'wh-determiner-lex',hierarchies, lexicon, mylang)
 
 def add_determiner(ch, det, stype, hierarchies, lexicon, mylang):
     dtype = det_id(det)
@@ -1070,8 +1077,8 @@ def customize_adpositions(mylang, lexicon, ch,hierarchies):
         for stem in adp['stem']:
             add_stem_to_lexicon(lexicon,stem,typename)
         features.customize_feature_values(mylang,ch,hierarchies,adp,typename,'normadp')
-        if not feature_use.USED_FEATURES['INIT']:
-            feature_use.USED_FEATURES['INIT'] = True
+        if not feature_type_use.USED_FEATURES['INIT']:
+            feature_type_use.USED_FEATURES['INIT'] = True
             mylang.add('head :+ [ INIT bool ].', section='addenda')
         if adp['order'] == 'before':
             mylang.add(typename + ' := ' + supertype + '& [ SYNSEM.LOCAL.CAT.HEAD.INIT + ].')

@@ -3,4 +3,7 @@
 # the clausal complements library, the clausal modifiers library, and the Wh-questions library
 # (and possibly other libraries).
 
+from constants import QDET
+
 USED_FEATURES = {'INIT':False}
+USED_TYPES = {QDET:False}

@@ -18,6 +18,7 @@ ON = 'on' # Choice convention for checked box
 YES = 'yes' # Choice convention for selected radio button
 
 ORTH = 'orth' # Choice convention for orthographies associated with stems and affixes.
+
 ### Section names ###
 
 WORD_ORDER = 'word-order' # Choices section associated with word order subpage
@@ -36,3 +37,10 @@ VO_ORDERS = ['svo', 'vos', 'vso', 'v-initial']
 
 ### WH-QUESTIONS
 
+IN_SITU = 'in-situ' # No question phrase fronting
+MATRIX_FRONTING = 'matrix-front' # Question phrases fronting in matrix clauses
+WH_QUE_PTCL = 'wh-q-part' # Question particle for constituent questions
+WH_QUE_INFL = 'wh-q-infl' # Inflectional paradigm for constituent questions
+
+### LEXICAL TYPE NAMES (SOME); see lexbase.py
+QDET = 'qdet' # Interrogative determiners (like "which")
