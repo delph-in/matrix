@@ -81,7 +81,7 @@ def main(args):
     # if no steps are specified, do all of them (but this may be
     # avoided by using --list or --update)
     if not any([args.customize, args.mkskel, args.mkprof,
-                args.process, args.compare, args.test]):
+                args.process, args.compare]):
         args.customize = True
         args.mkskel = None  # `None` here means "only if needed"
         args.mkprof = True
