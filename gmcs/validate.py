@@ -148,6 +148,7 @@ cust_types = (
     'basic-copula-verb-lex',
     'adj-comp-copula-verb-lex',
     'adj_incorporation-lex-rule',
+    'wh-determiner-lex',
 )
 
 # regex patterns for sets of names that are not available for

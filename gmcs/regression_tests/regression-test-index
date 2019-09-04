@@ -476,4 +476,4 @@ ccomp-wgg=Clausal complements held-out Wangkagurru (wgg)
 ccomp-yak=Clausal complements held-out: Yakima Sahaptin (yak)
 wh-svo-sg-oblig-min=Wh-questions: Minimal; SVO, matrix clauses only, one question phrase, obligatory fronting; no info structure or any other choices; no determiners or auxiliaries.
 wh2-sov-sg-oblig-min=Wh-questions: Minimal; SOV, matrix clauses only, one question phrase, obligatory fronting; no info structure or any other choices; no determiners or auxiliaries.
-wh3-vso-sg-oblig-det=Wh-questions: VSO, obligatory single fronting, and determiners.
+wh3-vso-sg-oblig-det=Constituent questions, obligatory single fronting with VSO order, determiners.

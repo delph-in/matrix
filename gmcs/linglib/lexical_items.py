@@ -406,7 +406,7 @@ def main_or_verb(ch):
 
 
 def customize_determiners(mylang, ch, lexicon, hierarchies):
-    from gmcs.constants import QDET
+    from gmcs.constants import QDET, ON
     # Lexical type for determiners, if the language has any:
     if ch.get('has-dets') == 'yes':
         comment = \
@@ -421,7 +421,6 @@ def customize_determiners(mylang, ch, lexicon, hierarchies):
                                          COMPS < >, \
                                          SUBJ < > ]].'
         mylang.add(typedef)
-
         mylang.add('determiner-lex := non-mod-lex-item.')
 
     # Determiners
@@ -429,21 +428,13 @@ def customize_determiners(mylang, ch, lexicon, hierarchies):
         lexicon.add_literal(';;; Determiners')
 
     for det in ch.get('det',[]):
-        if det[QDET] == 'on':
+        if det[QDET] == ON:
             if not USED_TYPES[QDET]:
                 mylang.add(lexbase.WH_DET)
                 USED_TYPES[QDET] = True
             add_determiner(ch, det, 'wh-determiner-lex', hierarchies, lexicon, mylang)
         else:
             add_determiner(ch, det, 'determiner-lex',hierarchies, lexicon, mylang)
-
-    # if 'qdet' in ch:
-    #     lexicon.add_literal(';;; Question Determiners')
-    #     mylang.add_literal(';;; Question Determiners')
-    #     mylang.add(lexbase.WH_DET)
-    #
-    # for det in ch.get('qdet',[]):
-    #     add_determiner(ch, det, 'wh-determiner-lex',hierarchies, lexicon, mylang)
 
 def add_determiner(ch, det, stype, hierarchies, lexicon, mylang):
     dtype = det_id(det)
@@ -484,19 +475,26 @@ def customize_misc_lex(ch, lexicon, trigger):
 
 
 def customize_nouns(mylang, ch, lexicon, hierarchies):
+    from gmcs.constants import QPRO, ON, WH_PRO
+
     # EKN 2018-01-26 Adding a PRON feature to mark all pronouns:
     mylang.add('head :+ [ PRON bool ].',section='addenda')
 
     # Figure out which kinds of determiner-marking are in the language
     seen = {'obl':False, 'opt':False, 'imp':False}
     seenCount = 0
+    # Also note if question pronouns were specified:
+    qpron = False
 
     for noun in ch.get('noun',[]):
         det = noun.get('det')
         if not det == '' and not seen[det]:
             seen[det] = True
             seenCount += 1
-    
+        if noun.get(QPRO):
+            qpron = True
+            mylang.add(lexbase.WH_WORD)
+            mylang.add(lexbase.WH_PRONOUN)
     singlentype = (seenCount == 1)
 
     # Playing fast and loose with the meaning of OPT on SPR.  Using
@@ -602,11 +600,11 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
                     else:
                         parents = next_parents
 
-
     for noun in ch.get('noun',[]):
         ntype = noun_id(noun)
         det = noun.get('det')
-        pron = noun.get('pron')=='on'
+        pron = noun.get('pron') == ON
+        qpron = noun.get(QPRO) == ON
         if noun.full_key in stopdets:
             det = ''
 
@@ -615,11 +613,13 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
 
         #if singlentype or det == 'opt':
         #  stype = 'noun-lex'
-        if not singlentype:
+        if not singlentype and not qpron:
             if det == 'obl':
                 stype_names.append('obl-spr-noun-lex')
             elif det == 'imp':
                 stype_names.append('no-spr-noun-lex')
+        if qpron:
+            stype_names.append(WH_PRO)
         if len(stype_names) == 0:
             mylang.add(ntype + ' := noun-lex .')
         else:
@@ -639,8 +639,8 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
                     SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
             lexicon.add(typedef)
     # Question pronouns
-    if ch.get('qpro'):
-        customize_question_pronouns(mylang,ch,lexicon)
+    #if ch.get('qpro'):
+    #    customize_question_pronouns(mylang,ch,lexicon)
 
 def customize_question_pronouns(mylang,ch,lexicon):
     subsection = ';;; Question pronouns'
@@ -1069,6 +1069,7 @@ def customize_cops(mylang, ch, lexicon, hierarchies, trigger):
 def customize_adpositions(mylang, lexicon, ch,hierarchies):
     #If not constrained as below, prepositions will go as head daughters in head-subject rules
     mylang.add('decl-head-subj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +nvj ].')
+    #mylang.add('head-spec-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD noun ].')
     mylang.add(lexbase.ADP_LEX)
     supertype = 'norm-adposition-lex'
     for adp in ch.get('normadp'):
