@@ -1792,9 +1792,9 @@ def validate_wh_ques(ch, vr):
         wh_q_strat = WH_QUE_INFL
     elif ch.get('wh-q-inter-verbs') == ON:
         wh_q_strat = 'wh-q-inter-verbs'
-    if wh_q_strat and not (ch.get('qdet') or ch.get('qpro') or ch.get('qadv')):
-        mess = 'Please specify question words on the Lexicon page'
-        vr.err(wh_q_strat,mess)
+    #if wh_q_strat and not (ch.get('qdet') or ch.get('qpro') or ch.get('qadv')):
+    #    mess = 'Please specify question words on the Lexicon page'
+    #    vr.err(wh_q_strat,mess)
     # Pied piping only makes sense when some fronting options were chosen
     if (ch.get('pied-pip') == ON or ch.get('pied-pip-adp') == ON) and \
             (ch.get(MATRIX_FRONTING)== None or ch.get('front-matrix')== IN_SITU):
