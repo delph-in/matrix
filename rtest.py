@@ -441,14 +441,14 @@ def _customize(name, chc, logf):
     # customize.customize_matrix() directly. This way, at least, makes
     # it easy to capture stdout and stderr.
     result = subprocess.run(
-        ['python2', str(cmd), 'c', str(chc), str(dest)],
+        ['python2', str(cmd), 'cd', str(chc), str(dest)],
         stdout=logf,
         stderr=logf)
 
     if result.returncode != 0:
         raise RegressionTestError('Failed to customize.')
 
-    return next(dest.iterdir())
+    return dest
 
 
 def _compile(name, grm, logf):
