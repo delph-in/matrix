@@ -242,8 +242,8 @@ def add_test(args):
     index[name] = desc.strip()
 
     # Copy files and recreate the index
-    shutil.copy(chc, CHOICES_DIR / name)
-    shutil.copy(txt, TXT_SUITE_DIR / name)
+    shutil.copy(str(chc), str(CHOICES_DIR / name))
+    shutil.copy(str(txt), str(TXT_SUITE_DIR / name))
     _recreate_index(index, args.index)
 
     # Now we can actually run the test, creating the skeleton and the
@@ -257,7 +257,7 @@ def add_test(args):
     try:
         # Need to copy current profile to gold, as at this stage the
         # assumption is they are the same.
-        shutil.copytree(CURRENT_DIR / name, GOLD_DIR / name)
+        shutil.copytree(str(CURRENT_DIR / name, GOLD_DIR / name))
     except shutil.Error:
         raise RegressionTestError(
             'Failed to copy the current profile to the gold directory.')
@@ -306,11 +306,11 @@ def remove_test(args):
             if obj.is_file():
                 obj.unlink()
             else:
-                shutil.rmtree(obj)
+                shutil.rmtree(str(obj))
     # do the grammar dir separately in case it has unexpected depth
     grm = GRAMMARS_DIR / name
     if grm.is_dir():
-        shutil.rmtree(grm)
+        shutil.rmtree(str(grm))
 
     index = _parse_index(args.index)
     if name in index:
@@ -371,7 +371,7 @@ def _discover(args):
 def _parse_index(path):
     """Map names to descriptions in the index at *path*."""
     index = {}
-    for line in open(path):
+    for line in path.open():
         line = line.strip()
         if line:
             name, description = _split_index_line(line)
@@ -381,7 +381,7 @@ def _parse_index(path):
 
 def _recreate_index(index, path):
     """Overwrite the index with an updated one."""
-    with open(path, 'w') as f:
+    with path.open('w') as f:
         for _name, _desc in index.items():
             print('{}={}'.format(_name, _desc), file=f)
 
