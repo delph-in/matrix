@@ -406,7 +406,7 @@ def main_or_verb(ch):
 
 
 def customize_determiners(mylang, ch, lexicon, hierarchies):
-    from gmcs.constants import QDET, ON
+    from gmcs.constants import INTER, ON
     # Lexical type for determiners, if the language has any:
     if ch.get('has-dets') == 'yes':
         comment = \
@@ -428,10 +428,10 @@ def customize_determiners(mylang, ch, lexicon, hierarchies):
         lexicon.add_literal(';;; Determiners')
 
     for det in ch.get('det',[]):
-        if det[QDET] == ON:
-            if not USED_TYPES[QDET]:
+        if det[INTER] == ON:
+            if not USED_TYPES['qdet']:
                 mylang.add(lexbase.WH_DET)
-                USED_TYPES[QDET] = True
+                USED_TYPES['qdet'] = True
             add_determiner(ch, det, 'wh-determiner-lex', hierarchies, lexicon, mylang)
         else:
             add_determiner(ch, det, 'determiner-lex',hierarchies, lexicon, mylang)
@@ -475,7 +475,7 @@ def customize_misc_lex(ch, lexicon, trigger):
 
 
 def customize_nouns(mylang, ch, lexicon, hierarchies):
-    from gmcs.constants import QPRO, ON, WH_PRO
+    from gmcs.constants import INTER, ON, WH_PRO
 
     # EKN 2018-01-26 Adding a PRON feature to mark all pronouns:
     mylang.add('head :+ [ PRON bool ].',section='addenda')
@@ -491,7 +491,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
         if not det == '' and not seen[det]:
             seen[det] = True
             seenCount += 1
-        if noun.get(QPRO):
+        if noun.get(INTER):
             qpron = True
             mylang.add(lexbase.WH_WORD)
             mylang.add(lexbase.WH_PRONOUN)
@@ -604,7 +604,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
         ntype = noun_id(noun)
         det = noun.get('det')
         pron = noun.get('pron') == ON
-        qpron = noun.get(QPRO) == ON
+        qpron = noun.get(INTER) == ON
         if noun.full_key in stopdets:
             det = ''
 
@@ -638,44 +638,25 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
                   [ STEM < "' + orthstr + '" >, \
                     SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
             lexicon.add(typedef)
-    # Question pronouns
-    #if ch.get('qpro'):
-    #    customize_question_pronouns(mylang,ch,lexicon)
 
-def customize_question_pronouns(mylang,ch,lexicon):
-    subsection = ';;; Question pronouns'
-    section = 'nounlex'
-    mylang.add(lexbase.WH_WORD)
-    if ch.get('person') == '1-2-3':
-        mylang.add('wh-pronoun-noun-lex := [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 3rd ].')
-    #TODO need to add PNG if PN are specified in choices
-    lexbase_type = lexbase.WH_PRONOUN
-    supertype = 'wh-pronoun-noun-lex'
-    subsection_key = 'qpro'
-    customize_type_and_stems(mylang,ch,lexicon,section,subsection,subsection_key,supertype,lexbase_type)
-
-def customize_question_adverbs(mylang,ch,lexicon):
-    subsection = ';;; Question adverbs'
-    section = 'otherlex'
-    mylang.add(lexbase.ADV_LEX)
-    lexbase_type = lexbase.WH_ADV
-    supertype = 'wh-adverb-lex'
-    subsection_key = 'qadv'
-    customize_type_and_stems(mylang,ch,lexicon,section,subsection,subsection_key,supertype,lexbase_type)
-
-def customize_type_and_stems(mylang,ch,lexicon,section,subsection,subsection_key,supertype,lexbase_type):
-    lexicon.add_literal(subsection)
-    mylang.set_section(section)
-    mylang.add_literal(subsection)
-    mylang.add(lexbase_type)
-    for qadv in ch.get(subsection_key):
-        typename = qadv['name'] + '-' + supertype
+def customize_adverbs(mylang,ch,lexicon):
+    mylang.set_section('otherlex')
+    mylang.add_literal(';;; Adverbs')
+    lexicon.add_literal(';;; Adverbs')
+    if ch.get('adv'):
+        mylang.add(lexbase.ADV_ITEM)
+    for adv in ch.get('adv'):
+        if adv['inter'] == 'on':
+            supertype = 'wh-adverb-lex'
+            mylang.add(lexbase.WH_ADV)
+        else:
+            supertype = 'adverb-lex'
+            mylang.add(lexbase.ADV)
+        typename = adv['name'] + '-' + supertype
         typedef = TDLencode(typename) + ' := ' + supertype + '.'
         mylang.add(typedef)
-        for stem in qadv['stem']:
+        for stem in adv['stem']:
             add_stem_to_lexicon(lexicon,stem,typename)
-
-
 
 # TJT 2014-05-05
 def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
@@ -1128,7 +1109,7 @@ def customize_lexicon(mylang, ch, lexicon, trigger, hierarchies, rules):
 
     mylang.set_section('otherlex')
     customize_determiners(mylang, ch, lexicon, hierarchies)
-    customize_question_adverbs(mylang,ch,lexicon)
+    customize_adverbs(mylang,ch,lexicon)
     customize_misc_lex(ch, lexicon, trigger)
 
 # Used by the word order library, for different matrix-subordinate word order

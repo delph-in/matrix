@@ -2363,8 +2363,6 @@ Cache verbpcs verb-pc[0-9]+$ name
 Cache verblrs verb-pc[0-9]+(_lrt[0-9]+)?$ name
 Cache adjlrs adj-pc[0-9]+(_lrt[0-9]+)?$ name
 Cache detlrs det-pc[0-9]+(_lrt[0-9]+)?$ name
-Cache qdetlrs qdet-pc[0-9]+(_lrt[0-9]+)?$ name
-Cache qprolrs qpro-pc[0-9]+(_lrt[0-9]+)?$ name
 Cache qverblrs qverb-pc[0-9]+(_lrt[0-9]+)?$ name
 
 Label "<p>On this page you will define <span class=\"dfn\">lexical
@@ -2404,7 +2402,7 @@ BeginIter noun{i} "a Noun Type" 1 1
   fillregex p=noun(?!{i}_)[0-9]+_name
 
   Check pron "Pronoun" "<br>" "This is a personal pronoun type<br>"
-  Check qpro "Question Pronoun" "<br>" "This is a question pronoun (like <i>who/what</i>)<br><br>"
+  Check inter "Question Pronoun" "<br>" "This is a question pronoun (like <i>who/what</i>)<br><br>"
 
   Label "Features:"
 
@@ -2819,7 +2817,7 @@ BeginIter det{i} "a Determiner" 1
 
   Text name "Determiner {i} name" "Type name: " "<br>" 20
 
-  Check qdet "Interrogative Determiner" "<br>" "This is a question determiner (like <i>which</i>) <br><br>"
+  Check inter "Interrogative Determiner" "<br>" "This is a question determiner (like <i>which</i>) <br><br>"
 
   BeginIter stem{j} "a Stem" 0 1
 
@@ -2863,80 +2861,32 @@ EndIter det
 
 Separator
 
-Label "<h3>Question words</h3>"
+Label "<h3>Adverbs</h3>"
 
-BeginIter qpro{i} "a Question Pronoun Type" 1
 
-  Label "<b>Question Pronoun type {i}</b>:"
+BeginIter adv{i} "an Adverb" 1
 
-  Label "<div style=\"padding-left: 16px\">"
-
-  Text name "Question Pronoun {i} name" "Type name: " "<br /><br />" 20
-
-  MultiSelect supertypes "Question Pronoun type {i}" "Supertypes: " "<br />"
-  fillregex p=qpro(?!{i}_)[0-9]+_name
-
-  Label "Features:"
-
-  BeginIter feat{j} "a Feature"
-
-    Select name "Question Pronoun {i} feature {j} name" "Name: " " "
-    fillnames c=noun
-
-    MultiSelect value "Question Pronoun {i} feature {j} value" "Value: " ""
-    fillvalues p=qpro{i}_feat{j}_name
-
-  EndIter feat
-
-  Label "<br />Stems:"
-
-  BeginIter stem{j} "a Stem" 0 1
-
-    Text orth "Question Pronoun {i} stem {j} spelling" "Spelling: " "" 30 "fill_pred('qpro{i}_stem{j}', 'n')"
-
-    Text pred "Question Pronoun {i} stem {j} predicate" " Predicate: " "" 30
-
-  EndIter stem
-
-  Label "<p>Morphotactic Constraints:</p>"
-
-  BeginIter require{j} "a Require constraint"
-
-    MultiSelect others "Question Pronoun {i} Requires" "Noun {i} requires one of the following: " ""
-    fillcache c=qprolrs
-
-  EndIter require
-
-  BeginIter forbid{j} "a Forbid constraint"
-
-    Select others "Question Pronoun {i} Forbids" "Noun {i} forbids the following position class: " ""
-    fillcache c=qprolrs
-
-  EndIter forbid
-
-  Label "</div>"
-
-EndIter qpro
-
-BeginIter qadv{i} "a Question Adverb" 1
-
-  Label "<b>Question Adverb type {i}</b>:"
+  Label "<b>Adverb type {i}</b>:"
 
   Label "<div style=\"padding-left: 16px\">"
 
-  Text name "Question Adverb {i} name" "Type name: " "<br>" 20
+  Text name "Adverb {i} name" "Type name: " "<br>" 20
 
   BeginIter stem{j} "a Stem" 0 1
 
-    Text orth "Question Adverb {i} spelling" "Spelling: " "" 30 "fill_pred('qadv{i}_stem{j}', 'a')"
+    Text orth "Adverb {i} spelling" "Spelling: " "" 30 "fill_pred('adv{i}_stem{j}', 'a')"
 
-    Text pred "Question Adverb {i} predicate" " Predicate: " "<br>" 30
+    Text pred "Adverb {i} predicate" " Predicate: " "<br>" 30
 
   EndIter stem
 
+  Check inter "Interrogative Adverb" "<br>" "This is a question adverb (like <i>where/when</i>) <br><br>"
+
   Label "</div>"
 
-EndIter qadv
+EndIter adv
+
+Label "<p>Note that the adverbs are not yet fully supported and will be underspecified as to where they attach.</p>"
 
 BeginIter qverb{i} "a Question Verb" 1
 
@@ -3052,9 +3002,6 @@ Cache auxes aux[0-9]+$ name
 Cache dets q?det[0-9]+$ name
 Cache adjs adj[0-9]+$ name
 Cache cops cop[0-9]+$ name
-Cache qdets qdet[0-9]+$ name
-Cache qpros qpro[0-9]+$ name
-Cache qprosnouns (qpro|noun)[0-9]+$ name
 
 Label "<p>Here you can define inflectional morphology for nouns, verbs, and
 determiners.  To do so, first define one or more inflectional <span
@@ -3082,8 +3029,8 @@ Select order "Noun Position Class {i} Order" "<br/>Appears as a prefix or suffix
 . suffix "Suffix" "suffix"
 
   MultiSelect inputs "Noun Position Class {i} Input" "<br/>Possible inputs:" ""
-  fillcache c=qprosnouns
-  fillregex p=(verb|noun|qpro)-pc[0-9]+(_lrt[0-9]+)?_name
+  fillcache c=nouns
+  fillregex p=(verb|noun)-pc[0-9]+(_lrt[0-9]+)?_name
   . noun "Any noun" "any noun"
 
   Label "<p>Morphotactic Constraints:</p>"

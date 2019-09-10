@@ -12,15 +12,15 @@ import sys
 # OZ 2018-01-25 comps is not really a lexical type;
 # it is a complementation strategy that is defined by a complementizer type.
 # Ideally we would have complementizers as actual lexical items some day.
-ALL_LEX_TYPES = ('noun', 'verb', 'det', 'aux', 'adj', 'cop', 'comps', 'qpro', 'qadv', 'normadp')
+ALL_LEX_TYPES = ('noun', 'verb', 'det', 'aux', 'adj', 'cop', 'comps', 'adv', 'normadp')
 
 # types used for lexical rules (verb and aux are merged)
 # TJT 2014-08-15: adding "cop"
 # TJT 2014-08-15: changing to tuple for speed
-LEXICAL_CATEGORIES = ('noun', 'verb', 'det', 'adj', 'cop', 'qpro', 'qadv')
+LEXICAL_CATEGORIES = ('noun', 'verb', 'det', 'adj', 'cop', 'adv')
 
 # TJT 2014-09-03: Types not automatically added to mylanguage.tdl
-NON_ESSENTIAL_LEX_CATEGORIES = ('det', 'adj', 'cop', 'comps', 'qpro', 'qadv', 'normadp')
+NON_ESSENTIAL_LEX_CATEGORIES = ('det', 'adj', 'cop', 'comps', 'normadp', 'adv')
 
 # lexical_supertypes is a dictionary mapping the choices file
 # encodings to the actual lex-type identifiers of the supertypes.
@@ -34,10 +34,8 @@ LEXICAL_SUPERTYPES = {'noun':'noun-lex',
                       'aux':'aux-lex',
                       'adj':'adj-lex',
                       'comp':'comp-lex',
-                      'qpro':'wh-pronoun-noun-lex',
-                      'qadv': 'wh-adverb-lex',
-                      'normadp': 'wh-adposition-lex'}
-
+                      'adv': 'adverb-lex',
+                      'normadp': 'norm-adposition-lex'}
 
 # TYPE DEFINITIONS (that can be shared with other libraries)
 COMPLEMENTIZER = '''
@@ -69,7 +67,7 @@ WH_PRONOUN =  '''wh-pronoun-noun-lex := wh-word-lex & non-mod-lex-item &
   [ SYNSEM [ LOCAL [ CAT.HEAD noun,
 		     CONT [ RELS <![ ARG0 ref-ind ], [] !> ] ] ] ].'''
 
-ADV_LEX = '''adverb-lex-item := intersective-adverb-lex &
+ADV_ITEM = '''adverb-lex-item := intersective-adverb-lex &
   [ SYNSEM [ LOCAL [ CAT [ VAL [ SUBJ < >,
                              SPR < >,
                              COMPS < > ],
@@ -84,6 +82,11 @@ ADV_LEX = '''adverb-lex-item := intersective-adverb-lex &
                           HCONS <! qeq & [ HARG #harg,
                                             LARG #larg ] !> ] ],
               LKEYS.KEYREL [ PRED #pred, ARG0 ref-ind & #ind, LBL #ltop ] ] ].'''
+
+ADV =  '''adverb-lex := adverb-lex-item &
+[ SYNSEM [ LOCAL.CONT [ RELS <! [ ], [ ], [ PRED "exist_q_rel" ] !>  ],
+           NON-LOCAL.QUE <! !> ] ].'''
+
 
 WH_ADV =  '''wh-adverb-lex := adverb-lex-item &
 [ SYNSEM [ LOCAL.CONT [ RELS <! [ ], [ ARG0 #arg0 ], quant-relation & [ PRED "which_q_rel" ] !>  ],

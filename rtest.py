@@ -211,10 +211,11 @@ def add_test(args):
     """
     Add a new regression test.
 
-    Copy the choices and the txt suite to the right locations, renaming them to the new test's name
-    if necessary. Create a skeleton using the txt suite. Copy the skeleton to home/gold.
-    Create a grammar using the current customization
-    system, process the profile. TODO: Add files to SVN.
+    Copy the choices and the txt suite to the right locations,
+    renaming them to the new test's name if necessary. Create a
+    skeleton using the txt suite. Copy the skeleton to home/gold.
+    Create a grammar using the current customization system, process
+    the profile. TODO: Add files to SVN.
     """
     args.all_tests = True  # necessary for adding new tests
     tests = list(_discover(args))
@@ -226,10 +227,9 @@ def add_test(args):
     else:
         raise RegressionTestError('only 1 test may be added at a time')
 
-    msg = 'File {} already exists; if you want to update the test, use the --update command; ' \
-           'if you are sure the file is rogue, delete it (you can use the --remove command' \
-           'to remove any files associated with this name). Otherwise, use a different name for a new test.'
-
+    msg = ('File {!s} already exists; if you want to update the test, use '
+           'the --update command; if you are sure the file is rogue, delete '
+           'it. Otherwise, use a different name for a new test.')
     if desc is not None:
         raise RegressionTestError(
             'test already exists in index: {}'.format(name))
@@ -244,11 +244,11 @@ def add_test(args):
     index[name] = desc.strip()
 
     # Copy files and recreate the index
-    shutil.copy(chc,CHOICES_DIR / name)
-    shutil.copy(txt,TXT_SUITE_DIR / name)
+    shutil.copy(str(chc), str(CHOICES_DIR / name))
+    shutil.copy(str(txt), str(TXT_SUITE_DIR / name))
     _recreate_index(index, args.index)
 
-    # Now we can actually run the test, creating the skeleton and the 
+    # Now we can actually run the test, creating the skeleton and the
     # current profile.
     args.customize = True
     args.mkskel = True
@@ -257,11 +257,12 @@ def add_test(args):
     args.compare = False
     run_tests(args)
     try:
-        # Need to copy current profile to gold, as at this stage the 
+        # Need to copy current profile to gold, as at this stage the
         # assumption is they are the same.
-        shutil.copytree(CURRENT_DIR / name, GOLD_DIR / name)
+        shutil.copytree(str(CURRENT_DIR / name, GOLD_DIR / name))
     except shutil.Error:
-        raise RegressionTestError('Failed to copy the current profile to the gold directory.')
+        raise RegressionTestError(
+            'Failed to copy the current profile to the gold directory.')
 
     # Test the new test:
     args.customize = False
@@ -272,7 +273,7 @@ def add_test(args):
     run_tests(args)
 
     # list the current state
-    list_tests(args, verbose=True)   
+    list_tests(args, verbose=True)
 
     print('New regression test {} added successfully.'.format(name))
     # Add files to svn
@@ -288,9 +289,10 @@ def add_test(args):
 
 def remove_test(args):
     '''
-    Remove a test. 
+    Remove a test from the filesystem.
 
     This will look for and remove:
+
     1) choices
     2) grammar directory
     3) txt-suite
@@ -315,7 +317,7 @@ def remove_test(args):
             if obj.is_file():
                 obj.unlink()
             else:
-                shutil.rmtree(obj)
+                shutil.rmtree(str(obj))
             if args.svn:
                 cmd = 'svn del ' + obj
                 if os.system(cmd) == 0:
@@ -326,7 +328,7 @@ def remove_test(args):
     # do the grammar dir separately in case it has unexpected depth
     grm = GRAMMARS_DIR / name
     if grm.is_dir():
-        shutil.rmtree(grm)
+        shutil.rmtree(str(grm))
  
     index = _parse_index(args.index)
     if name in index:
@@ -387,7 +389,7 @@ def _discover(args):
 def _parse_index(path):
     """Map names to descriptions in the index at *path*."""
     index = {}
-    for line in open(path):
+    for line in path.open():
         line = line.strip()
         if line:
             name, description = _split_index_line(line)
@@ -396,7 +398,7 @@ def _parse_index(path):
 
 def _recreate_index(index, path):
     """Overwrite the index with an updated one."""
-    with open(path, 'w') as f:
+    with path.open('w') as f:
         for _name, _desc in index.items():
             print('{}={}'.format(_name, _desc), file=f)
 
@@ -456,14 +458,14 @@ def _customize(name, chc, logf):
     # customize.customize_matrix() directly. This way, at least, makes
     # it easy to capture stdout and stderr.
     result = subprocess.run(
-        ['python2', str(cmd), 'c', str(chc), str(dest)],
+        ['python2', str(cmd), 'cd', str(chc), str(dest)],
         stdout=logf,
         stderr=logf)
 
     if result.returncode != 0:
         raise RegressionTestError('Failed to customize.')
 
-    return next(dest.iterdir())
+    return dest
 
 
 def _compile(name, grm, logf):
@@ -626,14 +628,13 @@ if __name__ == '__main__':
         ===========  =============  ============================
         --mkskel     txt-suite      skeleton
         --update     profile        gold (profile)
-        --add        choices,       regression test added
-                     txt-suite,
-                     name 
+        --add        name, comment  regression test added
+                     choices,
+                     txt-suite
         --remove     name           regression test removed
         '''),
         epilog=textwrap.dedent('''\
         Examples:
-            %(prog)s                 # run all indexed regression tests
             %(prog)s                        # run all indexed regression tests
             %(prog)s --customize            # customize and compile only
             %(prog)s dir-inv-fore "case-*"  # run matching tests
@@ -677,10 +678,10 @@ if __name__ == '__main__':
     parser.add_argument('-a', '--add',
                         nargs=2,
                         metavar=('CHOICES', 'TXTSUITE'),
-                        help='Add a new test from a choices and a txt suite')
-    parser.add_argument('-r','--remove',
+                        help='add a new test to the system')
+    parser.add_argument('-r', '--remove',
                         action='store_true',
-                        help='Remove a test from the system')
+                        help='remove a test from the system')
     parser.add_argument('--svn',
                          action='store_true',
                          help='Add or remove files from an SVN repo')

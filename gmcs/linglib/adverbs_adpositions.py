@@ -18,7 +18,7 @@ HEAD_ADJ = '''s-head-adj-phrase := head-adj-int-phrase &
  '''
 
 def customize_adv_adp(ch, mylang, rules):
-    if len(ch.get('qadv',[])) > 0 or len (ch.get('normadp',[])) > 0:
+    if len(ch.get('adv',[])) > 0 or len (ch.get('normadp',[])) > 0:
         mylang.add_literal(';;; Head Adjunct rules')
         mylang.add_literal('; For adjuncts attaching on the S-level:')
         mylang.add(HEAD_ADJ)

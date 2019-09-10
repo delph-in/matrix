@@ -43,6 +43,5 @@ WH_QUE_PTCL = 'wh-q-part' # Question particle for constituent questions
 WH_QUE_INFL = 'wh-q-infl' # Inflectional paradigm for constituent questions
 
 ### LEXICAL TYPE NAMES (SOME); see lexbase.py
-QDET = 'qdet' # Interrogative determiners (like "which")
-QPRO = 'qpro' # Interrogative pronouns (like "who/what")
 WH_PRO = 'wh-pronoun-noun-lex'
+INTER = 'inter' # Interrogative words flag
