@@ -90,7 +90,7 @@ def add_types_to_grammar(mylang,ch,rules,have_complementizer):
         customize_clausal_verb(clausalverb,mylang,ch,cs,extra)
         typename = add_complementizer_subtype(cs, mylang,ch,extra) if cs[COMP] else None
         if not additional_hcr_needed(cs,wo):
-            constrain_wrt_quest_part(cs,wo,ch,mylang,typename)
+            constrain_wrt_comp(cs,wo,ch,mylang)
         if wo in OV or wo in VO:
             general, additional = determine_head_comp_rule_type(ch.get(constants.WORD_ORDER),cs)
             customize_order(ch, cs, mylang, rules, typename, init,general,additional)
@@ -99,7 +99,7 @@ def add_types_to_grammar(mylang,ch,rules,have_complementizer):
             if extra:
                 constrain_for_extra(wo,general, additional, cs, mylang)
         elif wo == 'free':
-            constrain_complementizer(wo,cs,mylang,typename)
+            constrain_wrt_comp(cs,wo,ch,mylang)
 
 
 def constrain_for_extra(wo,general, additional, cs, mylang):
@@ -107,29 +107,22 @@ def constrain_for_extra(wo,general, additional, cs, mylang):
         mylang.add(additional + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.EXTRA + ].', merge=True)
         mylang.add(general + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.EXTRA - ].', merge=True)
 
-def constrain_wrt_quest_part(cs,wo,ch,mylang,typename):
+def constrain_wrt_comp(cs,wo,ch,mylang):
     additional = has_additional(ch,cs,wo)
     if additional:
-        if not feature_type_use.USED_FEATURES['INIT']:
-            feature_type_use.USED_FEATURES['INIT'] = True
-            mylang.add('head :+ [ INIT bool ].', section='addenda')
-        my_phrase = 'head-comp' if additional == 'comp-head' else 'comp-head'
-        path = 'SYNSEM.LOCAL.CAT.HEAD'
-        init_val = '+' if additional == 'head-comp' else '-'
-        default_init_val = '+' if init_val ==  '-' else '-'
-        constrain_lexitem_for_feature(typename,path,'INIT',default_init_val,mylang)
-        mylang.add(my_phrase + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT ' + default_init_val + ' ].',
+        mylang.add(additional + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +nv ].',
                    merge=True,section='phrases')
-        mylang.add(additional + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT ' + init_val + ' ].',
-                   merge=True,section='phrases')
-        #quest_part_name = TDLencode(ch.get('q-part-orth'))
-        constrain_lexitem_for_feature('qpart-lex-item',path,'INIT',init_val,mylang)
 
 '''
 Did the word order library added a HCR constrained for HEAD comp on the HEAD-DTR? (For question particles).
 If so, constrain complementizers and HCR accordingly.
 '''
 def has_additional(ch,cs,wo):
+    if wo == 'free':
+        if cs[AFT]:
+            return 'head-comp'
+        if cs[BEF]:
+            return 'comp-head'
     if wo in OV:
         if not cs[COMP] == 'before' and ch['q-part-order'] == 'before':
             return 'head-comp'
@@ -196,7 +189,7 @@ def constrain_complementizer(wo,cs,mylang,typename):
 
 def use_init(ch, mylang, wo):
     init = False
-    if wo in OV or wo in VO or wo == 'free':
+    if wo in OV or wo in VO:
         for cs in ch.get(COMPS):
             is_flex = is_more_flexible_order(wo,cs)
             init = init_needed(wo, cs, mylang, is_flex)
