@@ -1701,12 +1701,12 @@ Separator
 
 Radio front-matrix "Fronting in Matrix Clauses" "<p>In <span class=\"dfn\">matrix</span> questions (<i>Who did you see?</i>):<br><br>" ""
   . single "Single Fronting" "" "A single question phrase can be fronted<br>"
-  . multi "Multiple Fronting" "" "All question phrases can be fronted (only choose this if multiple questions are allowed)<br>"
+  . multi "Multiple Fronting" "" "All question phrases can be fronted<br>"
   . in-situ "In Situ" "" "Question phrases cannot be fronted (stay in situ)<br><br>"
 
   Radio matrix-front-opt "Fronting optionality" " There is <span class=\"dfn\">obligatory</span> fronting: <br>" ""
   . single-oblig "Obligatory Single Fronting" "" "of at least one question phrase<br>"
-  . all-oblig "Obligatory Multiple Fronting" ""  "of all question phrases (only choose this if multiple questions are allowed)</p>"
+  . all-oblig "Obligatory Multiple Fronting" ""  "of all question phrases</p>"
 #  . nondlinked-oblig "Obligatory Multiple Fronting" ""  "of all question pronouns and adverbs
 #  (but not phrases with determiners)<br><br>"
 
@@ -1722,12 +1722,12 @@ Radio front-matrix "Fronting in Matrix Clauses" "<p>In <span class=\"dfn\">matri
 
 Radio front-embed "Fronting in Embedded Clauses" "<p>In <span class=\"dfn\">embedded</span> questions: (<i>Do you know who did this?</i>) <br><br>" ""
   . single "Single Fronting" "" "A single question phrase can be fronted within the embedded clause<br>"
-  . multi "Multiple Fronting" "" "All question phrases can be fronted within the embedded clause (only choose this if multiple questions are allowed)<br>"
+  . multi "Multiple Fronting" "" "All question phrases can be fronted within the embedded clause<br>"
   . in-situ "In Situ" "" "Question phrases cannot be fronted (stay in situ) within the embedded clause<br><br>"
 
   Radio embed-front-opt "Fronting optionality" " Within the embedded clause, there is obligatory fronting: <br>" ""
   . single-oblig "Obligatory Single Fronting" "" "of at least one question phrase<br>"
-  . all-oblig "Obligatory Multiple Fronting" ""  "of all question phrases (only choose this if multiple questions are allowed)</p>"
+  . all-oblig "Obligatory Multiple Fronting" ""  "of all question phrases</p>"
  #  . nondlinked-oblig "Obligatory Multiple Fronting" ""  "of all question pronouns and adverbs
  # (but not phrases with determiners)</p>"
 
@@ -1749,7 +1749,7 @@ in <span class=\"dfn\">the front of the matrix clause</span> (<i>Who do you thin
 
   Radio from-embed-front-opt "Fronting optionality" "There is <span class=\"dfn\">obligatory</span> extraction from the embedded clause to the front of the matrix clause: <br>" ""
   . single-oblig "Obligatory Single Fronting" "" "of at least one question phrase<br>"
-  . all-oblig "Obligatory Multiple Fronting" ""  "of all question phrases (only choose this if multiple questions are allowed)</p>"
+  . all-oblig "Obligatory Multiple Fronting" ""  "of all question phrases</p>"
  #  . nondlinked-oblig "Obligatory Multiple Fronting" ""  "of all question pronouns and adverbs
  # (but not phrases with determiners)</p>"
 
@@ -2948,6 +2948,9 @@ BeginIter normadp{i} "an Adposition" 0
       Text orth "Adposition {i} spelling" "Spelling: " "" 30 "fill_pred('normadp{i}_stem{j}', 'p')"
 
       Text pred "Adposition {i} predicate" " Predicate: " "<br>" 30
+
+      Select form "Adposition {i} Form {k} Value" "Form Value: " ""
+        fillvalues p=form l=1
 
     EndIter stem
 

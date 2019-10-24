@@ -783,8 +783,6 @@ def customize_subord_word_order(mylang,ch,wo,rules):
 # for adp and aux.  It takes in the values of wo and hc determined in
 # the course of creating the basic word order rules.
 
-
-
 def determine_consistent_order(wo,hc,ch):
 
     adp = 'easy'

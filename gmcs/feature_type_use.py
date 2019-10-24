@@ -4,4 +4,4 @@
 # (and possibly other libraries).
 
 USED_FEATURES = {'INIT':False}
-USED_TYPES = {'qdet':False}
+USED_TYPES = {'qdet':False,'qpro':False,'qadv':False,'qverb':False}

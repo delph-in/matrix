@@ -1781,42 +1781,58 @@ def validate_adnominal_possession(ch, vr):
 #############################################################
 
 def validate_wh_ques(ch, vr):
-    from gmcs.constants import ON,IN_SITU,MATRIX_FRONTING, WH_QUE_PTCL, \
-        WH_QUE_INFL
+    from gmcs.constants import ON,IN_SITU,MTRX_FRONT, WH_QUE_PTCL, \
+        WH_QUE_INFL, EMBED_FRONT, MULTI, ALL_OBLIG, NO_MULTI, PIED, \
+        PIED_ADP, EMB_PIP, EMB_PIP_ADP, OBL_PIP_NOUN, OBL_PIP_ADP, \
+        EMB_OBL_PIP_ADP, EMB_OBL_PIP_N, MTRX_FR_OPT, EMB_FR_OPT, X_FR_OPT
     wh_q_strat = None
-    if ch.get(MATRIX_FRONTING) is not None:
-        wh_q_strat = MATRIX_FRONTING
+    if ch.get(MTRX_FRONT) is not None:
+        wh_q_strat = MTRX_FRONT
     elif ch.get(WH_QUE_PTCL) == ON:
         wh_q_strat = WH_QUE_PTCL
     elif ch.get(WH_QUE_INFL) == ON:
         wh_q_strat = WH_QUE_INFL
     elif ch.get('wh-q-inter-verbs') == ON:
         wh_q_strat = 'wh-q-inter-verbs'
-    #if wh_q_strat and not (ch.get('qdet') or ch.get('qpro') or ch.get('qadv')):
-    #    mess = 'Please specify question words on the Lexicon page'
-    #    vr.err(wh_q_strat,mess)
+    found_ques_word = False
+    for pos in ['noun','det','verb','adv']:
+        for type in ch.get(pos):
+            if type.get('inter') == ON:
+                found_ques_word = True
+                break
+    if wh_q_strat and not found_ques_word:
+        mess = 'Please specify question words on the Lexicon page'
+        vr.err(wh_q_strat,mess)
     # Pied piping only makes sense when some fronting options were chosen
-    if (ch.get('pied-pip') == ON or ch.get('pied-pip-adp') == ON) and \
-            (ch.get(MATRIX_FRONTING)== None or ch.get('front-matrix')== IN_SITU):
+    if (ch.get(PIED) == ON or ch.get(PIED_ADP) == ON) and \
+            (ch.get(MTRX_FRONT)== None or ch.get(MTRX_FRONT)== IN_SITU):
         mess = 'Pied piping only makes sense when fronting is possible; choose a fronting strategy.'
-        vr.err('pied-pip',mess)
-    if (ch.get('embed-pied-pip') == ON or ch.get('embed-pied-pip-adp') == ON) and \
-            (ch.get('front-embed')== None or ch.get('front-embed') == IN_SITU):
+        vr.err(PIED,mess)
+    if (ch.get(EMB_PIP) == ON or ch.get(EMB_PIP_ADP) == ON) and \
+            (ch.get(EMBED_FRONT)== None or ch.get(EMBED_FRONT) == IN_SITU):
         mess = 'Pied piping only makes sense when fronting is possible; choose a fronting strategy.'
-        vr.err('embed-pied-pip',mess)
+        vr.err(EMB_PIP,mess)
     # Pied piping obligatoriness only makes sense when there is pied piping
-    if ch.get('oblig-pied-pip-noun') == ON and not ch.get('pied-pip'):
+    if ch.get(OBL_PIP_NOUN) == ON and not ch.get(PIED):
         mess = 'You did not check pied piping itself but said it is obligatory'
-        vr.err('pied-pip', mess)
-    if ch.get('oblig-pied-pip-adp') == ON and not ch.get('pied-pip-adp'):
+        vr.err(PIED, mess)
+    if ch.get(OBL_PIP_ADP) == ON and not ch.get(PIED_ADP):
         mess = 'You did not check pied piping itself but said it is obligatory'
-        vr.err('pied-pip-adp', mess)
-    if ch.get('embed-oblig-pied-pip-noun') == ON and not ch.get('embed-pied-pip'):
+        vr.err(PIED_ADP, mess)
+    if ch.get(EMB_OBL_PIP_N) == ON and not ch.get(EMB_PIP):
         mess = 'You did not check pied piping itself but said it is obligatory'
-        vr.err('embed-pied-pip', mess)
-    if ch.get('embed--oblig-pied-pip-adp') == ON and not ch.get('embed-pied-pip-adp'):
+        vr.err(EMB_PIP, mess)
+    if ch.get(EMB_OBL_PIP_ADP) == ON and not ch.get(EMB_PIP_ADP):
         mess = 'You did not check pied piping itself but said it is obligatory'
-        vr.err('embed-pied-pip-adp', mess)
+        vr.err(EMB_PIP_ADP, mess)
+    if ch.get(NO_MULTI) == ON:
+        if (ch.get(MTRX_FRONT) == MULTI or ch.get(EMBED_FRONT) == MULTI
+            or ch.get(MTRX_FR_OPT == ALL_OBLIG)
+            or ch.get(EMB_FR_OPT == ALL_OBLIG)
+            or ch.get(X_FR_OPT == ALL_OBLIG)):
+            mess = 'You have made choices regarding multiple question fronting, ' \
+                   'so you cannot say multiple questions are not allowed in one clause.'
+            vr.err(NO_MULTI,mess)
 
 
 

@@ -23,3 +23,4 @@ def customize_adv_adp(ch, mylang, rules):
         mylang.add_literal('; For adjuncts attaching on the S-level:')
         mylang.add(HEAD_ADJ)
         rules.add('head-adj := s-head-adj-phrase.')
+        # If the word order is free, may need to constrain one of the head complement rules.

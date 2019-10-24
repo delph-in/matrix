@@ -259,7 +259,7 @@ def add_test(args):
     try:
         # Need to copy current profile to gold, as at this stage the
         # assumption is they are the same.
-        shutil.copytree(str(CURRENT_DIR / name, GOLD_DIR / name))
+        shutil.copytree(str(CURRENT_DIR / name), str(GOLD_DIR / name))
     except shutil.Error:
         raise RegressionTestError(
             'Failed to copy the current profile to the gold directory.')

@@ -483,8 +483,6 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     # Figure out which kinds of determiner-marking are in the language
     seen = {'obl':False, 'opt':False, 'imp':False}
     seenCount = 0
-    # Also note if question pronouns were specified:
-    qpron = False
 
     for noun in ch.get('noun',[]):
         det = noun.get('det')
@@ -492,7 +490,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
             seen[det] = True
             seenCount += 1
         if noun.get(INTER):
-            qpron = True
+            USED_TYPES['qpro'] = True
             mylang.add(lexbase.WH_WORD)
             mylang.add(lexbase.WH_PRONOUN)
     singlentype = (seenCount == 1)

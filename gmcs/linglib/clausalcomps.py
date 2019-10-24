@@ -101,22 +101,20 @@ def add_types_to_grammar(mylang,ch,rules,have_complementizer):
         elif wo == 'free':
             constrain_wrt_comp(cs,wo,ch,mylang)
 
-
 def constrain_for_extra(wo,general, additional, cs, mylang):
     if cs[EXTRA] and additional_hcr_needed(cs, wo):
         mylang.add(additional + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.EXTRA + ].', merge=True)
         mylang.add(general + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.EXTRA - ].', merge=True)
 
+
+# TODO: This should be handled in word order, and there is already relevant code, though it is mostly
+# about adpositions and auxiliaries. But it should be able to incorporate this there.
 def constrain_wrt_comp(cs,wo,ch,mylang):
     additional = has_additional(ch,cs,wo)
     if additional:
         mylang.add(additional + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +nv ].',
                    merge=True,section='phrases')
 
-'''
-Did the word order library added a HCR constrained for HEAD comp on the HEAD-DTR? (For question particles).
-If so, constrain complementizers and HCR accordingly.
-'''
 def has_additional(ch,cs,wo):
     if wo == 'free':
         if cs[AFT]:
