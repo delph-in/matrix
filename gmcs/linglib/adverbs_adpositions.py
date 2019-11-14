@@ -11,12 +11,14 @@ from gmcs import constants
 # Constants
 
 HEAD_ADJ = '''decl-head-adj-phrase := head-adj-int-phrase &
- [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH 0-dlist,
+ [ HEAD-DTR.SYNSEM [ NON-LOCAL.SLASH 0-dlist,
+                     LOCAL.CAT.HEAD +nv ],
    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < >].
  '''
 
 ADJ_HEAD = '''decl-adj-head-phrase := adj-head-int-phrase &
- [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH 0-dlist,
+ [ HEAD-DTR.SYNSEM [ NON-LOCAL.SLASH 0-dlist,
+                     LOCAL.CAT.HEAD +nv ],
    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < >].
  '''
 

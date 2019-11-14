@@ -106,7 +106,7 @@ ADP_LEX = '''norm-adposition-lex := norm-sem-lex-item & no-hcons-lex-item & basi
                                          NON-LOCAL.QUE #que ] >,
                                  SPR < >,
                                  SUBJ < > ] ],
-                     CONT.RELS <! [ PRED #pred, ARG0 event, ARG1 event ] !> ],
+                     CONT.RELS <! [ PRED #pred, ARG0 event, ARG1 event-or-ref-index ] !> ],
              LKEYS.KEYREL arg12-ev-relation & [ PRED #pred, ARG2 #ind ],
              NON-LOCAL.QUE #que ] ].'''
 
