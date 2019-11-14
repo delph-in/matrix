@@ -1800,8 +1800,10 @@ feature called <span class=\"feat\">question</span> with possible
 value <span class=\"tt\">plus</span> <br>for use in defining lexical
 rules on the morphology page.  Defining lexical rules that
 specify [<span class=\"feat\">question</span> <span class=\"tt\">plus</span>] <br> will
-produce lexical rules in the grammar that add the semantics of questions.</p>"
+produce lexical rules in the grammar that add the semantics of questions."
 
+#Check wh-q-infl-oblig "Obligatory Interrogative Inflections" "<br><br>" "Special morphology is obligatory in
+#questions.</p>"
 
 Section info-str "Information Structure"
 

@@ -1786,7 +1786,7 @@ def validate_wh_ques(ch, vr):
         PIED_ADP, EMB_PIP, EMB_PIP_ADP, OBL_PIP_NOUN, OBL_PIP_ADP, \
         EMB_OBL_PIP_ADP, EMB_OBL_PIP_N, MTRX_FR_OPT, EMB_FR_OPT, X_FR_OPT
     wh_q_strat = None
-    if ch.get(MTRX_FRONT) is not None:
+    if ch.get(MTRX_FRONT):
         wh_q_strat = MTRX_FRONT
     elif ch.get(WH_QUE_PTCL) == ON:
         wh_q_strat = WH_QUE_PTCL

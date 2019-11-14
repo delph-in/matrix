@@ -10,17 +10,22 @@ from gmcs import constants
 
 # Constants
 
-HEAD_ADJ = '''s-head-adj-phrase := head-adj-int-phrase &
- [ HEAD-DTR.SYNSEM [ LOCAL.CAT.VAL [ SPR < >, SUBJ < >, COMPS < > ],
-                     NON-LOCAL.SLASH 0-dlist ],
-    NON-HEAD-DTR.SYNSEM [ NON-LOCAL.QUE 0-dlist,
-    					  LOCAL.CAT.VAL  [ SPR < >, SUBJ < >, COMPS < > ] ] ].
+HEAD_ADJ = '''decl-head-adj-phrase := head-adj-int-phrase &
+ [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH 0-dlist,
+   NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < >].
+ '''
+
+ADJ_HEAD = '''decl-adj-head-phrase := adj-head-int-phrase &
+ [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH 0-dlist,
+   NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < >].
  '''
 
 def customize_adv_adp(ch, mylang, rules):
     if len(ch.get('adv',[])) > 0 or len (ch.get('normadp',[])) > 0:
         mylang.add_literal(';;; Head Adjunct rules')
-        mylang.add_literal('; For adjuncts attaching on the S-level:')
+        mylang.add_literal('; For intersective adjuncts with underspecified attachment locations:')
         mylang.add(HEAD_ADJ)
-        rules.add('head-adj := s-head-adj-phrase.')
+        mylang.add(ADJ_HEAD)
+        rules.add('head-adj := decl-head-adj-phrase.')
+        rules.add('adj-head := decl-adj-head-phrase.')
         # If the word order is free, may need to constrain one of the head complement rules.
