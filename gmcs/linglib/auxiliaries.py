@@ -324,7 +324,6 @@ def create_semantics(sem, aux, auxcomp, mylang, ch, hierarchies, negaux):
             mylang.add(auxres_type)
 
         mylang.add(typedef)
-
     customize_users_auxtype(auxtypename, aux, ch, mylang, hierarchies)
 
 
@@ -351,7 +350,7 @@ def get_users_type_name(aux):
     userstypename = name + '-aux-lex'
     return userstypename
 
-def add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon, trigger):
+def add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon, trigger, hierarchies):
     for stem in aux.get('stem',[]):
         orth = orth_encode(stem.get('orth'))
         id = stem.get('name')
@@ -375,16 +374,16 @@ def add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon, trigger):
             lexicon.add(typedef, merge=True)
         else:
             tense = aspect = mood = evidential = ''
-
             for feat in aux.get('feat',[]):
+                value = hierarchies[feat.get('name')].get_type_covering(feat.get('value').split(', '))
                 if feat.get('name') == 'tense':
-                    tense = feat.get('value')
+                    tense = value
                 if feat.get('name') == 'aspect':
-                    aspect = feat.get('value')
+                    aspect = value
                 if feat.get('name') == 'mood':
-                    mood = feat.get('value')
+                    mood = value
                 if feat.get('name') == 'evidential':
-                    evidential = feat.get('value')
+                    evidential = value
 
             grdef = TDLencode(id) +'_gr := arg0e_gtr & \
                     [ CONTEXT [ RELS <! [ '
@@ -427,7 +426,7 @@ def customize_auxiliaries(mylang, ch, lexicon, trigger, hierarchies):
 
         define_arg_str_and_valency(aux, auxcomp, ch, mylang, negaux)
         create_semantics(sem, aux, auxcomp, mylang, ch, hierarchies, negaux)
-        add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon, trigger)
+        add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon, trigger, hierarchies)
 
 
 
