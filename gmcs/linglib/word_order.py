@@ -733,7 +733,7 @@ def customize_np_word_order(mylang, ch, rules):
     # this (given an appropriate module).  For now, use this stand in.
 
     mylang.add('bare-np-phrase := basic-bare-np-phrase &\
-                 [ C-CONT.RELS <! [ PRED \"exist_q_rel\" ] !> ].',
+                 [ C-CONT.RELS.LIST < [ PRED \"exist_q_rel\" ] > ].',
                     'Bare NP phrase.  Consider modifying the PRED value of the quantifier relation\nintroduced to match the semantic effect of bare NPs in your language.')
 
     rules.add('bare-np := bare-np-phrase.')

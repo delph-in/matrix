@@ -50,13 +50,13 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                    [ C-CONT [ HOOK [ XARG #xarg,\
                      LTOP #ltop,\
                      INDEX #ind ],\
-              RELS <! event-relation &\
+              RELS.LIST < event-relation &\
                       [ PRED "neg_rel",\
                         LBL #ltop,\
-                        ARG1 #harg ] !>,\
-              HCONS <! qeq &\
+                        ARG1 #harg ] >,\
+              HCONS.LIST < qeq &\
                        [ HARG #harg,\
-                         LARG #larg ] !> ],\
+                         LARG #larg ] > ],\
               SYNSEM.LKEYS #lkeys,\
             DTR [ SYNSEM [ LKEYS #lkeys,\
                     LOCAL [ CONT.HOOK [ XARG #xarg,\
@@ -139,7 +139,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
             if feat.get('head')=='possessum':
                 geom_prefix = 'DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG'
             else:
-                geom_prefix = 'C-CONT.RELS <! [ ARG0.PNG'
+                geom_prefix = 'C-CONT.RELS.LIST < [ ARG0.PNG'
 
         # The 'head' choice only appears on verb pcs, and allows the
         # user to specify features on the subject and object as well
@@ -201,7 +201,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                 # EKN 2018-01-19: Add the closing brackets for the possessive
                 # pronoun's feature path
                 if poss_pron_lrt:
-                    value=value+'] !>'                    
+                    value=value+'] >'
                 if pos=='possessum-spec-mark':
                     value=value+'] >'                    
                 tdlfile.add(type_name +
@@ -328,7 +328,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                            COMPS < canonical-synsem &
                                    [ LOCAL [ CAT.HEAD [ NEGATED +,
                                                       MOD < [ LOCAL.CONT.HOOK #hook ] > ],
-                                              CONT.RELS <! arg1-ev-relation !>   ] ] . [ FIRST [ LOCAL [ CAT [ VAL #v,
+                                              CONT.RELS.LIST < arg1-ev-relation >   ] ] . [ FIRST [ LOCAL [ CAT [ VAL #v,
                                       HEAD verb & [ NEGATED + ] ],
                                 CONT #c ],
                         NON-LOCAL #nl ] ] > ],
@@ -353,7 +353,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                              COMPS < canonical-synsem &
                                      [ LOCAL [ CAT.HEAD [ NEGATED +,
                                                         MOD < [ LOCAL.CONT.HOOK #hook ] > ],
-                                                CONT.RELS <! !> ] ] . #oldcomps > ],
+                                                CONT.RELS 0-alist ] ] . #oldcomps > ],
                        HEAD verb & [ NEGATED +,
                               AUX - ] ],
     DTR verb-lex &

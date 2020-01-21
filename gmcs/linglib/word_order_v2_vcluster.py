@@ -113,8 +113,8 @@ def add_basic_phrases_v2_with_cluster(ch, mylang, rules, climb_gwo):
   mylang.add('subj-head-vc-phrase := decl-head-subj-phrase & head-final-invc & nonverbal-comp-phrase.')
   climb_gwo.add('subj-head-vc-phrase := decl-head-subj-phrase & head-final-invc & nonverbal-comp-phrase.')
   if ch.get('wh-questions') == 'yes':
-    mylang.add('subj-head-vc-phrase := [ SYNSEM.NON-LOCAL.QUE 0-dlist ].')
-    climb_gwo.add('subj-head-vc-phrase := [ SYNSEM.NON-LOCAL.QUE 0-dlist ].')
+    mylang.add('subj-head-vc-phrase := [ SYNSEM.NON-LOCAL.QUE 0-alist ].')
+    climb_gwo.add('subj-head-vc-phrase := [ SYNSEM.NON-LOCAL.QUE 0-alist ].')
  
 ###2011-10-23 in-vc phrases are are per definition verbal
   hf_invc = ''
@@ -676,12 +676,12 @@ def create_wh_wo_phrases(ch, mylang, climb_wh):
          HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc, \
          NON-HEAD-DTR.SYNSEM.OPT - ].')
 
-  mylang.add('bare-np-phrase :=[ HEAD-DTR.SYNSEM.NON-LOCAL.QUE 0-dlist ].')
-  climb_wh.add('bare-np-phrase :=[ HEAD-DTR.SYNSEM.NON-LOCAL.QUE 0-dlist ].')
+  mylang.add('bare-np-phrase :=[ HEAD-DTR.SYNSEM.NON-LOCAL.QUE 0-alist ].')
+  climb_wh.add('bare-np-phrase :=[ HEAD-DTR.SYNSEM.NON-LOCAL.QUE 0-alist ].')
   
   #no wh when definite marker has been added
   if ch.get('def-morph-mark') == 'yes': 
-    mylang.add('bare-def-np-phrase := [ SYNSEM.NON-LOCAL.QUE 0-dlist ].')
+    mylang.add('bare-def-np-phrase := [ SYNSEM.NON-LOCAL.QUE 0-alist ].')
 
 def create_wh_rules(ch, rules, climb_wh):
   rules.add('head-wh-subj := head-wh-subj-phrase.')
@@ -753,9 +753,9 @@ def create_nachfeld_phrases(ch, mylang, rules, climb_gwo):
 			       VC bool,
 			       MC #mc ],
    NON-HEAD-DTR.SYNSEM [ LOCAL.CAT [ HEAD +vpc & [ FORM nf-form ] ],
-			 NON-LOCAL [ SLASH 0-dlist,
-                                     REL 0-dlist,
-				     QUE 0-dlist ],
+			 NON-LOCAL [ SLASH 0-alist,
+                                     REL 0-alist,
+				     QUE 0-alist ],
 			 LIGHT - ] ].'''
  
   mylang.add(nf_type)
@@ -1555,8 +1555,8 @@ def spec_word_order_phrases_aux_plus_verb(ch, mylang, climb_gwo):
                 [ SYNSEM.LOCAL [ CAT.VAL [ SPR #spr, \
                                            SPEC #spec ], \
 		                 CONT.HOOK #hook ], \
-                  C-CONT [ RELS <! !>, \
-	                   HCONS <! !>, \
+                  C-CONT [ RELS 0-alist, \
+	                   HCONS 0-alist, \
 	                   HOOK #hook ], \
                   HEAD-DTR.SYNSEM.LOCAL [ CAT.HEAD verb, \
 			                  CONT.HOOK #hook ], \
@@ -1567,8 +1567,8 @@ def spec_word_order_phrases_aux_plus_verb(ch, mylang, climb_gwo):
                 [ SYNSEM.LOCAL [ CAT.VAL [ SPR #spr, \
                                            SPEC #spec ], \
 		                 CONT.HOOK #hook ], \
-                  C-CONT [ RELS <! !>, \
-	                   HCONS <! !>, \
+                  C-CONT [ RELS 0-alist, \
+	                   HCONS 0-alist, \
 	                   HOOK #hook ], \
                   HEAD-DTR.SYNSEM.LOCAL [ CAT.HEAD verb, \
 			                  CONT.HOOK #hook ], \
@@ -1801,8 +1801,8 @@ def split_cluster_phrases_aux_plus_verb(ch, mylang, climb_gwo):
                            basic-binary-headed-phrase & head-valence-phrase & \
            [ SYNSEM.LOCAL [ CAT.VAL #val, \
                             CONT.HOOK #hook ], \
-             C-CONT [ RELS <! !>, \
-                      HCONS <! !>, \
+             C-CONT [ RELS 0-alist, \
+                      HCONS 0-alist, \
                       HOOK #hook ], \
              HEAD-DTR.SYNSEM.LOCAL [ CAT [ HEAD verb & [ AUX + ], \
                                            VAL.COMPS.FIRST.LOCAL.CONT #cont ], \
@@ -1815,8 +1815,8 @@ def split_cluster_phrases_aux_plus_verb(ch, mylang, climb_gwo):
                            basic-binary-headed-phrase & head-valence-phrase & \
            [ SYNSEM.LOCAL [ CAT.VAL #val, \
                             CONT.HOOK #hook ], \
-             C-CONT [ RELS <! !>, \
-                      HCONS <! !>, \
+             C-CONT [ RELS 0-alist, \
+                      HCONS 0-alist, \
                       HOOK #hook ], \
              HEAD-DTR.SYNSEM.LOCAL [ CAT [ HEAD verb & [ AUX + ], \
                                            VAL.COMPS.FIRST.LOCAL.CONT #cont ], \
@@ -1845,15 +1845,13 @@ def split_cluster_phrases_aux_plus_verb(ch, mylang, climb_gwo):
   
   mylang.add('special-insert-aux-phrase := headed-phrase & \
          [ SYNSEM.LOCAL [ CONT [ HOOK #hook, \
-		                 RELS [ LIST #first,\
-				 LAST #last ], \
-			 HCONS [ LIST [ FIRST [ HARG #harg1,\
-				        	LARG #larg1 ],\
-					REST #scfirst ],\
-				 LAST #sclast ] ],\
-		          CAT [ VAL #val,\
-			        MC #mc,\
-			        VFRONT - ] ],\
+		                         RELS.APPEND < #r1, #r2, #r3 >, \
+			                     HCONS [ LIST < [ HARG #harg1,\
+				        	                      LARG #larg1 ] >,\
+					                     APPEND < #h1, #h2, #h3 > ] ],\
+		                  CAT [ VAL #val,\
+			              MC #mc,\
+			              VFRONT - ] ],\
             HEAD-DTR #firstarg & head-initial & \
               [ SYNSEM [ LOCAL [ CAT [ HEAD verb & [ AUX +,\
 						     DTR-FORM #dform ],\
@@ -1862,37 +1860,28 @@ def split_cluster_phrases_aux_plus_verb(ch, mylang, climb_gwo):
 				       MC #mc,\
 				       VFRONT + ],\
 				 CONT [ HOOK #hook,\
-				 HCONS [ LIST.FIRST [ HARG #harg1, \
-                                                      LARG #larg2 ] ] ] ] ] ], \
+				 HCONS [ LIST  < [ HARG #harg1, LARG #larg2 ] > ] ] ] ] ], \
            INSERT-DTR #secarg & [ SYNSEM [ LOCAL [ CAT [ HEAD verb & [ AUX + ],\
 						         VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM #dform ],\
 COORD -, \
 					            CONT [ HOOK.LTOP #larg1,\
 						    HCONS [ LIST.FIRST [ LARG #larg2 ] ] ] ] ],\
 			                   INFLECTED infl-satisfied ], \
-                                  C-CONT [ RELS [ LIST #middle2,\
-		                                  LAST #last ],\
-	                          HCONS [ LIST #scmiddle2,\
-		                          LAST #sclast ] ],\
+                                  C-CONT [ RELS #r3,\
+	                          HCONS #h3],\
            ARGS < #firstarg & [ SYNSEM.LOCAL local & \
-                                     [ CONT [ RELS [ LIST #first,\
-						     LAST #middle1 ],\
-				       HCONS [ LIST [ FIRST [ ],\
-						      REST #scfirst ],\
-					       LAST #scmiddle1 ] ] ] ], \
+                                     [ CONT [ RELS #r1,\
+				       HCONS #h1 & 0-alist ] ] ], \
 	          #secarg  & [ SYNSEM.LOCAL local & \
-                                     [ CONT [ RELS [ LIST #middle1,\
-						     LAST #middle2 ],\
-				       HCONS [ LIST #scmiddle1,\
-					       LAST #scmiddle2 ] ] ] ] > ].')
+                                     [ CONT [ RELS #r2,\
+				       HCONS #h2 ] ] ] > ].')
+
   climb_gwo.add('special-insert-aux-phrase := headed-phrase & \
          [ SYNSEM.LOCAL [ CONT [ HOOK #hook, \
-		                 RELS [ LIST #first,\
-				 LAST #last ], \
+		                 RELS.APPEND < #r1, #r2, #r3 >, \
 			 HCONS [ LIST [ FIRST [ HARG #harg1,\
-				        	LARG #larg1 ],\
-					REST #scfirst ],\
-				 LAST #sclast ] ],\
+				        	LARG #larg1 ] ],\
+				     APPEND < #h1, #h2, #h3 > ] ],\
 		          CAT [ VAL #val,\
 			        MC #mc,\
 			        VFRONT - ] ],\
@@ -1912,21 +1901,14 @@ COORD -, \
 					            CONT [ HOOK.LTOP #larg1,\
 						    HCONS [ LIST.FIRST [ LARG #larg2 ] ] ] ] ],\
 			                   INFLECTED infl-satisfied ], \
-                                  C-CONT [ RELS [ LIST #middle2,\
-		                                  LAST #last ],\
-	                          HCONS [ LIST #scmiddle2,\
-		                          LAST #sclast ] ],\
+                                  C-CONT [ RELS #r2,\
+	                          HCONS #h3 ],\
            ARGS < #firstarg & [ SYNSEM.LOCAL local & \
-                                     [ CONT [ RELS [ LIST #first,\
-						     LAST #middle1 ],\
-				       HCONS [ LIST [ FIRST [ ],\
-						      REST #scfirst ],\
-					       LAST #scmiddle1 ] ] ] ], \
+                                     [ CONT [ RELS #r1,\
+				       HCONS #h1 & [ LIST [ FIRST [ ] ] ] ] ] ], \
 	          #secarg  & [ SYNSEM.LOCAL local & \
-                                     [ CONT [ RELS [ LIST #middle1,\
-						     LAST #middle2 ],\
-				       HCONS [ LIST #scmiddle1,\
-					       LAST #scmiddle2 ] ] ] ] > ].')
+                                     [ CONT [ RELS #r3,\
+				       HCONS #h2 ] ] ] > ].')\
   if ch.get('q-inv'):
     mylang.add('special-insert-aux-phrase := \
                   [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INV -, \
@@ -2056,8 +2038,8 @@ def create_rel_clause_phrases(mylang, rules, climb_gwo, ch):
                                                  INDEX #ind,
 						 XARG #xarg ] ] ] >,	
              NON-LOCAL.SLASH #slash ],	
-    NON-MARKER-DTR.SYNSEM [ NON-LOCAL [ QUE 0-dlist,
-				        REL 1-dlist & 
+    NON-MARKER-DTR.SYNSEM [ NON-LOCAL [ QUE 0-alist,
+				        REL append-list & 
                                                [ LIST < [ INDEX #ind ] > ] ],
 			  LOCAL.CONT.HOOK [ LTOP #hand,
 					    XARG #xarg ] ],
@@ -2281,23 +2263,23 @@ def filler_gap_word_order(ch, mylang, climb_gwo):
   
   if ch.get('clz-optionality'):
     mylang.add('create-informal-vcomp-phrase := \
-               [ ARGS < [ SYNSEM.NON-LOCAL.SLASH 0-dlist ] >, \
-                 SYNSEM.NON-LOCAL.SLASH 0-dlist ].')
+               [ ARGS < [ SYNSEM.NON-LOCAL.SLASH 0-alist ] >, \
+                 SYNSEM.NON-LOCAL.SLASH 0-alist ].')
     climb_gwo.add('create-informal-vcomp-phrase := \
-               [ ARGS < [ SYNSEM.NON-LOCAL.SLASH 0-dlist ] >, \
-                 SYNSEM.NON-LOCAL.SLASH 0-dlist ].')
+               [ ARGS < [ SYNSEM.NON-LOCAL.SLASH 0-alist ] >, \
+                 SYNSEM.NON-LOCAL.SLASH 0-alist ].')
 
   mylang.add('subj-v-inv-lrule := [ SYNSEM [ NON-LOCAL.SLASH #slash, \
                                              LOCAL [ CAT.HEAD.AUX #aux ] ], \
                                     DTR.SYNSEM [ NON-LOCAL.SLASH #slash, \
                                                  LOCAL [ CAT.HEAD.AUX #aux ] ] ].')
-  mylang.add('int-cl := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH 0-dlist \
+  mylang.add('int-cl := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH 0-alist \
                                                            & [ LIST < > ] ].')
   climb_gwo.add('subj-v-inv-lrule := [ SYNSEM [ NON-LOCAL.SLASH #slash, \
                                              LOCAL [ CAT.HEAD.AUX #aux ] ], \
                                     DTR.SYNSEM [ NON-LOCAL.SLASH #slash, \
                                                  LOCAL [ CAT.HEAD.AUX #aux ] ] ].')
-  climb_gwo.add('int-cl := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH 0-dlist \
+  climb_gwo.add('int-cl := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH 0-alist \
                                                            & [ LIST < > ] ].')
   
   comment = ''';;;;;;;;;;;;;extraction phrases \
@@ -2363,10 +2345,10 @@ def filler_gap_word_order(ch, mylang, climb_gwo):
 				     SPR < > ], \
 			       SECOND #scd ], \
                       NON-LOCAL.QUE #que ], \
-   SYNSEM [ NON-LOCAL [ SLASH <! [ CAT [ HEAD +nrp & [ PRD - ], \
+   SYNSEM [ NON-LOCAL [ SLASH.LIST < [ CAT [ HEAD +nrp & [ PRD - ], \
 				     VAL [ SUBJ < >, \
 					   COMPS < >, \
-					   SPR < > ] ] ]!>, \
+					   SPR < > ] ] ] >, \
                         QUE #que ], \
 	    LOCAL.CAT.SECOND #scd ] ].')
 
@@ -2377,10 +2359,10 @@ def filler_gap_word_order(ch, mylang, climb_gwo):
 				     SPR < > ], \
 			       SECOND #scd ], \
                       NON-LOCAL.QUE #que ], \
-   SYNSEM [ NON-LOCAL [ SLASH <! [ CAT [ HEAD +nrp & [ PRD - ], \
+   SYNSEM [ NON-LOCAL [ SLASH.LIST < [ CAT [ HEAD +nrp & [ PRD - ], \
 				     VAL [ SUBJ < >, \
 					   COMPS < >, \
-					   SPR < > ] ] ]!>, \
+					   SPR < > ] ] ]>, \
                         QUE #que ], \
 	    LOCAL.CAT.SECOND #scd ] ].')
 

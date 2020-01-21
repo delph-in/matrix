@@ -54,18 +54,18 @@ WH_WORD = '''wh-word-lex := norm-hook-lex-item & basic-icons-lex-item &
 				 SUBJ < >,
 				 COMPS < >,
 				 SPEC < > ] ],
-		     CONT [ RELS <! [ LBL #larg,
+		     CONT [ RELS.LIST < [ LBL #larg,
 				       ARG0 #arg0 ],
 				  [ PRED "which_q_rel",
 				    ARG0 #arg0,
-				    RSTR #harg ] !>,
-			    HCONS <! [ HARG #harg,
-				        LARG #larg ] !> ] ],
-	     NON-LOCAL.QUE <! #arg0 !> ] ].'''
+				    RSTR #harg ] >,
+			    HCONS.LIST < [ HARG #harg,
+				        LARG #larg ] > ] ],
+	     NON-LOCAL.QUE.LIST < #arg0 > ] ].'''
 
 WH_PRONOUN =  '''wh-pronoun-noun-lex := wh-word-lex & non-mod-lex-item &
   [ SYNSEM [ LOCAL [ CAT.HEAD noun,
-		     CONT [ RELS <![ ARG0 ref-ind ], [] !> ] ] ] ].'''
+		     CONT [ RELS.LIST < [ ARG0 ref-ind ], [] > ] ] ] ].'''
 
 ADV_ITEM = '''adverb-lex-item := intersective-adverb-lex &
   [ SYNSEM [ LOCAL [ CAT [ VAL [ SUBJ < >,
@@ -74,22 +74,22 @@ ADV_ITEM = '''adverb-lex-item := intersective-adverb-lex &
                        HEAD adv &
                             [ MOD < [ LOCAL [ CAT.HEAD verb,
                                               CONT.HOOK [ CLAUSE-KEY #clause, LTOP #ltop ] ] ] > ] ],
-                   CONT [ RELS <! [ PRED "loc_nonsp_rel", LBL #ltop, ARG0 event,
+                   CONT [ RELS.LIST < [ PRED "loc_nonsp_rel", LBL #ltop, ARG0 event,
                                     ARG1 #clause, ARG2 #ind ],
-                                  [ PRED #pred, ARG0 #ind, LBL #larg ],[ ARG0 #ind, RSTR #harg ] !>,
+                                  [ PRED #pred, ARG0 #ind, LBL #larg ],[ ARG0 #ind, RSTR #harg ] >,
                           HOOK.LTOP #ltop,
-                          HCONS <! qeq & [ HARG #harg,
-                                            LARG #larg ] !> ] ],
+                          HCONS.LIST < qeq & [ HARG #harg,
+                                            LARG #larg ] > ] ],
               LKEYS.KEYREL [ PRED #pred, ARG0 ref-ind & #ind, LBL #ltop ] ] ].'''
 
 ADV =  '''adverb-lex := adverb-lex-item &
-[ SYNSEM [ LOCAL.CONT [ RELS <! [ ], [ ], [ PRED "exist_q_rel" ] !>  ],
-           NON-LOCAL.QUE <! !> ] ].'''
+[ SYNSEM [ LOCAL.CONT [ RELS.LIST < [ ], [ ], [ PRED "exist_q_rel" ] >  ],
+           NON-LOCAL.QUE 0-alist ] ].'''
 
 
 WH_ADV =  '''wh-adverb-lex := adverb-lex-item &
-[ SYNSEM [ LOCAL.CONT [ RELS <! [ ], [ ARG0 #arg0 ], quant-relation & [ PRED "which_q_rel" ] !>  ],
-           NON-LOCAL.QUE <! #arg0 !> ] ].'''
+[ SYNSEM [ LOCAL.CONT [ RELS.LIST < [ ], [ ARG0 #arg0 ], quant-relation & [ PRED "which_q_rel" ] >  ],
+           NON-LOCAL.QUE.LIST < #arg0 > ] ].'''
 
 
 WH_DET = '''wh-determiner-lex := basic-determiner-lex & non-mod-lex-item  & zero-arg-nonslash &
@@ -97,7 +97,7 @@ WH_DET = '''wh-determiner-lex := basic-determiner-lex & non-mod-lex-item  & zero
                            SPEC.FIRST.LOCAL.CONT.HOOK.INDEX #arg0,
                            COMPS < >,
                            SUBJ < > ],
-             NON-LOCAL.QUE <! #arg0 !> ] ].'''
+             NON-LOCAL.QUE.LIST < #arg0 > ] ].'''
 
 ADP_LEX = '''norm-adposition-lex := norm-sem-lex-item & no-hcons-lex-item & basic-intersective-mod-lex &
   [ SYNSEM [ LOCAL [ CAT [ HEAD adp,
@@ -106,7 +106,7 @@ ADP_LEX = '''norm-adposition-lex := norm-sem-lex-item & no-hcons-lex-item & basi
                                          NON-LOCAL.QUE #que ] >,
                                  SPR < >,
                                  SUBJ < > ] ],
-                     CONT.RELS <! [ PRED #pred, ARG0 event, ARG1 event-or-ref-index ] !> ],
+                     CONT.RELS.LIST < [ PRED #pred, ARG0 event, ARG1 event-or-ref-index ] > ],
              LKEYS.KEYREL arg12-ev-relation & [ PRED #pred, ARG2 #ind ],
              NON-LOCAL.QUE #que ] ].'''
 

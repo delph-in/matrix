@@ -190,12 +190,9 @@ def obj_prom_op_lex_rule(promoted_argnum, total_args):
 ## NOTE: This might require revisiting if we ever have multiple non-local
 ## values (b/c order might matter); kicking that can down the road.
 
-NEW_NON_LOCAL_FRAGMENT = '''[ NON-LOCAL [ SLASH [ LIST #smiddle,
-	                       		          LAST #slast ],
-			                  REL [ LIST #rmiddle,
-			                        LAST #rlast ],
-			                  QUE [ LIST #qmiddle,
-				                LAST #qlast ] ] ] '''
+NEW_NON_LOCAL_FRAGMENT = '''[ NON-LOCAL [ SLASH #s2,
+			                  REL #r2,
+			                  QUE #q2 ] ] '''
 
 def added_arg_non_local_lex_rule(added_arg, total_args):
     if added_arg > total_args or total_args == 1 or total_args > 3:
@@ -217,18 +214,12 @@ def added_arg_non_local_lex_rule(added_arg, total_args):
         rulevars['comps'] = ', '.join(compslist)
         rule = '''{rulename} := lex-rule &
   [ SYNSEM [ LOCAL.CAT.VAL.COMPS < {comps} >,
-             NON-LOCAL [ SLASH [ LIST #sfirst,
-                                 LAST #slast ],
-		         REL [ LIST #rfirst,
-			       LAST #rlast ],
-		         QUE [ LIST #qfirst,
-			       LAST #qlast ] ] ],
-    DTR.SYNSEM.NON-LOCAL [ SLASH [ LIST #sfirst,
-                                   LAST #smiddle ],
-			   REL [ LIST #rfirst,
-				 LAST #rmiddle ],
-			   QUE [ LIST #qfirst,
-				 LAST #qmiddle ] ] ].'''.format(**rulevars)
+             NON-LOCAL [ SLASH.APPEND < #s1, #s2 >,
+		         REL.APPEND < #r1, #r2 >,
+		         QUE.APPEND < #q1, #q2 > ] ],
+    DTR.SYNSEM.NON-LOCAL [ SLASH #s1,
+			   REL #r1,
+			   QUE #q1 ] ].'''.format(**rulevars)
     return rule
 
 
@@ -242,9 +233,9 @@ def added_arg_non_local_lex_rule(added_arg, total_args):
 # Generates the generic applicative (non-scopal) rule
 def basic_applicative_lex_rule():
     return  '''{rulename} := comps-change-only-lex-rule &
-  [ C-CONT [ RELS <! event-relation &
-                   [ ARG1 #evt ] !>,
-             HCONS <! !> ],
+  [ C-CONT [ RELS.LIST < event-relation &
+                   [ ARG1 #evt ] >,
+             HCONS 0-alist ],
     DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX #evt ].'''.format(rulename=lexrule_name('basic-applicative'))
 
 
@@ -261,17 +252,17 @@ OSUBJ_ARG_FRAG_MIN = ''' [ LOCAL [ CONT.HOOK.INDEX #arg2,
                            NON-LOCAL #nl ]'''
 
 SCOPAL_REL_LEX_RULE = '''scopal-rel-lex-rule := lex-rule &
-  [ C-CONT [ RELS <! event-relation &
+  [ C-CONT [ RELS.LIST < event-relation &
                    [ LBL #ltop,
                      ARG0 #hidx,
                      ARG1 #arg1,
                      ARG2 #arg2,
-                     ARG3 #harg ] !>,
+                     ARG3 #harg ] >,
              HOOK [ LTOP #ltop,
                     INDEX #hidx,
                     XARG #arg1 ],
-             HCONS <! qeq & [ HARG #harg,
-                              LARG #scoped ] !> ],
+             HCONS.LIST < qeq & [ HARG #harg,
+                              LARG #scoped ] > ],
     SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX #arg1 ] >,
     DTR.SYNSEM.LOCAL [ CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX #arg2 ] >,
                        CONT.HOOK.LTOP #scoped ] ].'''          
@@ -312,14 +303,14 @@ def ocausative_lex_rule_gen(demoted_argnum, transitive=True):
     rulevars['comps'] = ', '.join(compslist)
     rulevars['dtr-comps'] = '#comp' if transitive else ''
     rule = '''{rulename} := same-spr-lex-rule & same-spec-lex-rule &
-  [ C-CONT [ RELS <! event-relation &
+  [ C-CONT [ RELS.LIST < event-relation &
                    [ LBL #ltop,
                      ARG0 #hidx,
                      ARG1 #causer,
                      ARG2 #causee,
-                     ARG3 #harg ] !>,
-             HCONS <! qeq & [ HARG #harg,
-                              LARG #larg ] !>,
+                     ARG3 #harg ] >,
+             HCONS.LIST < qeq & [ HARG #harg,
+                              LARG #larg ] >,
              HOOK [ LTOP #ltop,
                     INDEX #hidx,
                     XARG #causer ] ],
@@ -382,7 +373,7 @@ def added_arg_applicative_lex_rule(added_arg, total_args):
                  
     rule = '''{rulename} := {basic-applicative-rule} & {added-arg-non-local-rule} &
   [ SYNSEM.LOCAL.CAT.VAL.COMPS < {comps} >,
-    C-CONT [ RELS <! [ ARG2 #nind ] !> ],
+    C-CONT [ RELS.LIST < [ ARG2 #nind ] > ],
     DTR [ SYNSEM.LOCAL [ CAT.VAL.COMPS < {dtr-comps} > ] ] ].'''.format(**rulevars)
     return rule
 

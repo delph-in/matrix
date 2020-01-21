@@ -1710,11 +1710,22 @@ Radio front-matrix "Fronting in Matrix Clauses" "<p>In <span class=\"dfn\">matri
 #  . nondlinked-oblig "Obligatory Multiple Fronting" ""  "of all question pronouns and adverbs
 #  (but not phrases with determiners)<br><br>"
 
-    Label "<p>Pied-piping: question determiners can be extracted
-    along with"
+    Label "<p><b>Pied-piping:</b> In many languages, not only the question word but an entire question phrase
+    can or must be fronted. Languages place different constraints on how this works. In English, for example:</p>"
+
+    Label "<p><i>Which book did you read?</i><br>
+              <i>*Which did you read book</i><br>
+              <i>With whom did you speak?</i><br>
+              <i>Who did you speak with?</i>
+    </p>"
+
+    Label "<p>In your language, question determiners can be extracted
+    along with:<br><br>"
 
     Check pied-pip "Pied-Piping" "" "nouns, "
-    Check oblig-pied-pip-noun "Obligatory Pied Piping Of Nouns" "" "and it is obligatory; "
+    Check oblig-pied-pip-noun "Obligatory Pied Piping Of Nouns" "" "and it is obligatory;<br>"
+    Check pied-pip-adv "Pied-Piping of Adverbs" "" "adverbs, "
+    Check oblig-pied-pip-adv "Obligatory Pied Piping Of Adverbs" "" "and it is obligatory;<br>"
     Check pied-pip-adp "Pied-Piping Of Adpositions" "" "adpositions, "
     Check oblig-pied-pip-adp "Obligatory Pied Piping Of Adpositions" "" "and it is obligatory.</p>"
 
@@ -1731,11 +1742,13 @@ Radio front-embed "Fronting in Embedded Clauses" "<p>In <span class=\"dfn\">embe
  #  . nondlinked-oblig "Obligatory Multiple Fronting" ""  "of all question pronouns and adverbs
  # (but not phrases with determiners)</p>"
 
-    Label "<p>Pied-piping: Wh-determiners can be extracted
-    along with"
+    Label "<p>Pied-piping: Question determiners can be extracted
+    along with:<br><br>"
 
     Check embed-pied-pip "Pied-Piping" "" "nouns, "
-    Check embed-oblig-pied-pip-noun "Obligatory Pied Piping Of Nouns" "" "and it is obligatory; "
+    Check embed-oblig-pied-pip-noun "Obligatory Pied Piping Of Nouns" "" "and it is obligatory;<br>"
+    Check embed-pied-pip-adv "Pied-Piping of Adverbs" "" "adverbs, "
+    Check embed-oblig-pied-pip-adv "Obligatory Pied Piping Of Adverbs" "" "and it is obligatory;<br>"
     Check embed-pied-pip-adp "Pied-Piping Of Adpositions" "" "adpositions, "
     Check embed-oblig-pied-pip-adp "Obligatory Pied Piping Of Adpositions" "" "and it is obligatory.</p>"
 
@@ -1753,11 +1766,13 @@ in <span class=\"dfn\">the front of the matrix clause</span> (<i>Who do you thin
  #  . nondlinked-oblig "Obligatory Multiple Fronting" ""  "of all question pronouns and adverbs
  # (but not phrases with determiners)</p>"
 
-    Label "<p>Pied-piping: Wh-determiners can be extracted
-    along with"
+    Label "<p>Pied-piping: Question determiners can be extracted
+    along with:<br><br>"
 
     Check from-embed-pied-pip "Pied-Piping" "" "nouns, "
-    Check from-embed-oblig-pied-pip-noun "Obligatory Pied Piping Of Nouns" "" "and it is obligatory; "
+    Check from-embed-oblig-pied-pip-noun "Obligatory Pied Piping Of Nouns" "" "and it is obligatory;<br> "
+    Check from-embed-pied-pip-adv "Pied-Piping" "" "adverbs, "
+    Check from-embed-oblig-pied-pip-adv "Obligatory Pied Piping Of Adverbs" "" "and it is obligatory;<br> "
     Check from-embed-pied-pip-prep "Pied-Piping Of Adpositions" "" "adpositions, "
     Check from-embed-oblig-pied-pip-adp "Obligatory Pied Piping Of Adpositions" "" "and it is obligatory.</p>"
 

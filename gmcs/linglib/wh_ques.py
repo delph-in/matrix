@@ -20,7 +20,7 @@ WH_Q_PHR = ''' wh-ques-phrase := basic-head-filler-phrase & interrogative-clause
      HEAD-DTR.SYNSEM.LOCAL.CAT [ MC na,
 				 VAL #val & [ SUBJ < >,
 					      COMPS < > ] ],
-     NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE <! ref-ind !> ].'''
+     NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < ref-ind > ].'''
 
 
 EX_COMP = ''' extracted-comp-phrase := basic-extracted-comp-phrase &
@@ -34,8 +34,8 @@ EX_SUBJ = ''' extracted-subj-phrase := basic-extracted-subj-phrase &
 EX_ADJ = '''extracted-adv-adp-adj-phrase := basic-extracted-adj-phrase &
   [ SYNSEM [ LOCAL.CAT [ POSTHEAD #ph,
                          MC #mc ],
-	     NON-LOCAL.SLASH 1-dlist &
-		   <! [ CAT [ HEAD +rp & [ MOD < [ LOCAL intersective-mod &
+	     NON-LOCAL.SLASH append-list &
+		   [ LIST < [ CAT [ HEAD +rp & [ MOD < [ LOCAL intersective-mod &
                                                    [ CAT [ HEAD #head,
                                                            VAL #val,
                                                            POSTHEAD #ph,
@@ -44,7 +44,7 @@ EX_ADJ = '''extracted-adv-adp-adj-phrase := basic-extracted-adj-phrase &
                                                      CTXT #ctxt ] ] > ],
                               VAL [ SUBJ olist,
                                     COMPS olist,
-                                    SPR olist ] ] ] !> ],
+                                    SPR olist ] ] ] > ] ],
     HEAD-DTR.SYNSEM canonical-synsem &
 	   [ LOCAL local &
 		   [ CAT [ HEAD verb & #head,
@@ -53,11 +53,12 @@ EX_ADJ = '''extracted-adv-adp-adj-phrase := basic-extracted-adj-phrase &
                            MC #mc ],
                      CONT.HOOK #hook,
                      CTXT #ctxt ],
-             NON-LOCAL.SLASH 0-dlist,
+             NON-LOCAL.SLASH 0-alist,
 	     MODIFIED notmod ],
     C-CONT [ HOOK #hook,
-	     HCONS <! !>,
-	     ICONS <! !> ] ].'''
+         RELS.LIST < >,
+	     HCONS.LIST < >,
+	     ICONS.LIST < > ] ].'''
 
 
 

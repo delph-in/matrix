@@ -244,17 +244,17 @@ def create_semantics(sem, aux, auxcomp, mylang, ch, hierarchies, negaux):
                 if norder=='after':
                     typedef = auxtypename + ''' := norm-sem-lex-item &
           [ ARG-ST < [ ], [ LOCAL.CONT.HOOK.LTOP #larg ], [ ] >,
-            SYNSEM [ LOCAL.CONT.HCONS <! qeq & 
+            SYNSEM [ LOCAL.CONT.HCONS.LIST < qeq & 
                                         [ HARG #harg,
-                                          LARG #larg ] !>,
+                                          LARG #larg ] >,
                      LKEYS.KEYREL event-relation & 
                        [ ARG1 #harg ]]].'''
                 else: #norder=='before'
                     typedef = auxtypename + ''' := norm-sem-lex-item &
           [ ARG-ST < [ ], [ ], [ LOCAL.CONT.HOOK.LTOP #larg ] >,
-            SYNSEM [ LOCAL.CONT.HCONS <! qeq & 
+            SYNSEM [ LOCAL.CONT.HCONS.LIST < qeq & 
                                         [ HARG #harg,
-                                          LARG #larg ] !>,
+                                          LARG #larg ] >,
                      LKEYS.KEYREL event-relation & 
                        [ ARG1 #harg ]]].'''
         else:
@@ -275,9 +275,9 @@ def create_semantics(sem, aux, auxcomp, mylang, ch, hierarchies, negaux):
             mylang.add_literal(comment)
 
             typedef = auxtypename +  ' := hcons-lex-item & \
-               [ SYNSEM [ LOCAL [ CONT.HCONS <! qeq & \
+               [ SYNSEM [ LOCAL [ CONT.HCONS.LIST < qeq & \
                                                 [ HARG #harg, \
-                                                  LARG #larg ] !> ], \
+                                                  LARG #larg ] > ], \
                           LKEYS.KEYREL event-relation & \
                                        [ ARG1 #harg ]],' + arg_def + ' ].'
 
@@ -387,10 +387,10 @@ def add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon, trigger):
                     evidential = feat.get('value')
 
             grdef = TDLencode(id) +'_gr := arg0e_gtr & \
-                    [ CONTEXT [ RELS <! [ '
+                    [ CONTEXT [ RELS.LIST < [ '
 
             if tense == '' and aspect == '' and mood == '':
-                grdef += 'PRED "non_existing_rel" ] !> ],'
+                grdef += 'PRED "non_existing_rel" ] > ],'
             else:
                 grdef += 'ARG0.E [ '
                 if tense != '':
@@ -422,7 +422,7 @@ def customize_auxiliaries(mylang, ch, lexicon, trigger, hierarchies):
         # need to add a feature here for 'head-mod-neg' analysis
         if ch.get('bineg-type') == 'head-mod':
             if  'negation' in [f['name'] for f in aux['feat']]:
-                mylang.add(userstypename + ':= [SYNSEM.NEG-SAT -].')
+                mylang.add(userstypename + ':= [ SYNSEM.NEG-SAT - ].')
         sem = aux.get('sem', '')
 
         define_arg_str_and_valency(aux, auxcomp, ch, mylang, negaux)

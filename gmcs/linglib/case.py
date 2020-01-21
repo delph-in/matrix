@@ -183,13 +183,13 @@ def customize_case_type(mylang, hierarchies):
 #   Create trigger rules for case-marking adpositions
 def customize_trigger_rules(adp_type, trigger):
     grdef1 = adp_type + '_gr_1 := arg0e_gtr & \
-                  [ CONTEXT [ RELS <!  [ ARG1 individual & #i ] !> ], \
+                  [ CONTEXT [ RELS.LIST <  [ ARG1 individual & #i ] > ], \
                     FLAGS [ SUBSUME < #i >, TRIGGER "' + adp_type + '" ] ].'
     grdef2 = adp_type + '_gr_2 := arg0e_gtr & \
-                  [ CONTEXT [ RELS <!  [ ARG2 individual & #i ] !> ], \
+                  [ CONTEXT [ RELS.LIST <  [ ARG2 individual & #i ] > ], \
                     FLAGS [ SUBSUME < #i >, TRIGGER "' + adp_type + '" ] ].'
     grdef3 = adp_type + '_gr_3 := arg0e_gtr & \
-                  [ CONTEXT [ RELS <!  [ ARG3 individual & #i ] !> ], \
+                  [ CONTEXT [ RELS.LIST <  [ ARG3 individual & #i ] > ], \
                     FLAGS [ SUBSUME < #i >, TRIGGER "' + adp_type + '" ] ].'
 
     trigger.add(grdef1)
@@ -293,9 +293,9 @@ def customize_case_adpositions(mylang, lexicon, trigger, ch):
                                 [ CAT.VAL.COMPS < \
                                     [ LOCAL.CONT.HOOK.INDEX #target ] >, \
                                   CONT [ HOOK.ICONS-KEY #icons, \
-                                         ICONS <! info-str & \
+                                         ICONS.LIST < info-str & \
                                          #icons & [ \
-                                             IARG2 #target ] !> ] ] ] ].'
+                                             IARG2 #target ] > ] ] ] ].'
                     lexicon.add(typedef)
                     break
             if not has_inforstr_feat:
@@ -303,7 +303,7 @@ def customize_case_adpositions(mylang, lexicon, trigger, ch):
                     adp_type + ' := [ SYNSEM.LOCAL.CONT [ \
                                         HOOK [ ICONS-KEY.IARG1 #clause, \
                                                CLAUSE-KEY #clause ], \
-                                        ICONS <! !> ] ].'
+                                        ICONS 0-alist ] ].'
                 lexicon.add(typedef)
 
             if cn.strip() != '':
