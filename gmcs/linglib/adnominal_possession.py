@@ -876,7 +876,8 @@ def customize_possessor_pron_irules(strat,mylang,ch,strat_name,strat_num,feat,lr
               C-CONT.HOOK #hook ].')
    
         # Add constraints to pronoun affix rule for spec version
-        tmp_str = get_name(lrt)+'-lex-rule := \
+        if mod_spec=='spec':
+            mylang.add(get_name(lrt)+'-lex-rule := \
                [ SYNSEM.LOCAL.CAT.VAL [ SPR < >,\
                                         SPEC #spec,\
                                         SUBJ #subj,\
@@ -899,9 +900,7 @@ def customize_possessor_pron_irules(strat,mylang,ch,strat_name,strat_num,feat,lr
                 DTR.SYNSEM.LOCAL.CAT [ HEAD.PRON -,\
                                        VAL [ SPEC #spec & < >,\
                                              SUBJ #subj,\
-                                             COMPS #comps] ] ].'
-        if mod_spec=='spec':
-            mylang.add(tmp_str)
+                                             COMPS #comps] ] ].')
 
            
         # Add constraints to pronoun affix rule for mod version
