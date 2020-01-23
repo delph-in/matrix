@@ -476,6 +476,30 @@ class TDLelem_dlist(TDLelem):
 
 
 ###########################################################################
+# A TDLelem_list corresponds to a normal list (e.g. < [ PRED "_q_rel" ] >)
+
+class TDLelem_list(TDLelem_feat):
+    def __init__(self):
+        self.child = []
+
+    def write(self):
+        if debug_write:
+            TDLwrite('list\n')
+
+        TDLwrite('< ')
+        for ch in self.child[0:1]:
+            ch.write()
+        for ch in self.child[1:]:
+            TDLwrite(', ')
+            ch.write()
+        TDLwrite(' >')
+
+    def ordered(self):
+        return True
+
+
+
+###########################################################################
 # TDL Parsing functions
 # These functions, one for each of the types of TDL element, all consume
 # tokens from the global list "tok".
@@ -522,7 +546,6 @@ def TDLparse_feat():
 def TDLparse_list():
     global tok
     tok.pop(0) # '<'
-
     term = True       # is the list terminated (i.e. doesn't end in ...)?
     seen_dot = False  # were the items separated by a .?
     child = []
@@ -659,6 +682,7 @@ def TDLparse_typedef():
 def TDLparse(s):
     global tok
     tok = TDLtokenize(s)
+    local_tok = tok
     return TDLparse_typedef()
 
 
@@ -671,6 +695,7 @@ def TDLparse(s):
 #   feat:  always true
 #   list:  always true
 #   dlist: always true
+
 
 def TDLmergeable(e1, e2):
     if type(e1) != type(e2):
@@ -706,21 +731,22 @@ def TDLmerge(e1, e2):
                 c0 += '\n\n'
             c0 += c2
         e0.set_comment(c0)
-
         # if the elements are ordered (list or dlist), merge the list
         # items in order.  That is, <a,b,c> + <A,B,C> = <a&A,b&B,c&C>.
+        # or (isinstance(e1,TDLelem_feat) and not e1.empty_list and e1.is_list())
         if e1.ordered():
             for i in range(max(len(e1.child), len(e2.child))):
                 if i < len(e1.child) and i < len(e2.child) and \
-                        TDLmergeable(e1.child[i], e2.child[i]):
+                        TDLmergeable(e1.child[i], e2.child[i]) and len(e2.child) > 0:
                     e0.add(TDLmerge(e1.child[i], e2.child[i]))
                 else:
-                    if i < len(e1.child):
+                    if i < len(e1.child) and len(e1.child) > 0:
                         e0.add(copy.copy(e1.child[i]))
-                    if i < len(e2.child):
+                    if i < len(e2.child) and len(e2.child) > 0:
                         e0.add(copy.copy(e2.child[i]))
         else:
-            for c in e1.child + e2.child:
+            children = e1.child + e2.child
+            for c in children:
                 handled = False
                 for c0 in e0.child:
                     if TDLmergeable(c0, c):
@@ -728,6 +754,14 @@ def TDLmerge(e1, e2):
                         e0.add(TDLmerge(c0, c))
                         handled = True
                         break
+                    else:
+                        # Sometimes need to merge the end of list with a longer list:
+                        if isinstance(c0, TDLelem_type) and c0.type == 'null' \
+                                and isinstance(c, TDLelem_feat) and c.is_list() and not c.empty_list:
+                            e0.child.remove(c0)
+                            e0.add(copy.copy(c))
+                            handled = True
+                            break
                 if not handled:
                     e0.add(copy.copy(c))
     else:
@@ -738,6 +772,9 @@ def TDLmerge(e1, e2):
     e0.sort()
 
     return e0
+
+def mergeRest(e1,e2):
+    pass
 
 ###########################################################################
 # A TDLsection describes a section in a TDLfile.  It has four attributes:

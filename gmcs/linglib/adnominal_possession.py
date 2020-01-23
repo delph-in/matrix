@@ -383,7 +383,7 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
             mylang.add(phrase_rule+' := [ SYNSEM.LOCAL.CAT.VAL.SPR #spr,\
                                           HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL.SPR #spr & <[ ]>],\
                                           C-CONT [ RELS.LIST < '+POSS_REL+' >,\
-                                                   HCONS.LIST 0-alist ] ].')
+                                                   HCONS.LIST < > ] ].')
 
         # Add order variation and add rules to rules.tdl:
         if strat_order=='either':
@@ -876,8 +876,7 @@ def customize_possessor_pron_irules(strat,mylang,ch,strat_name,strat_num,feat,lr
               C-CONT.HOOK #hook ].')
    
         # Add constraints to pronoun affix rule for spec version
-        if mod_spec=='spec':
-            mylang.add(get_name(lrt)+'-lex-rule := \
+        tmp_str = get_name(lrt)+'-lex-rule := \
                [ SYNSEM.LOCAL.CAT.VAL [ SPR < >,\
                                         SPEC #spec,\
                                         SUBJ #subj,\
@@ -900,7 +899,9 @@ def customize_possessor_pron_irules(strat,mylang,ch,strat_name,strat_num,feat,lr
                 DTR.SYNSEM.LOCAL.CAT [ HEAD.PRON -,\
                                        VAL [ SPEC #spec & < >,\
                                              SUBJ #subj,\
-                                             COMPS #comps] ] ].')
+                                             COMPS #comps] ] ].'
+        if mod_spec=='spec':
+            mylang.add(tmp_str)
 
            
         # Add constraints to pronoun affix rule for mod version
@@ -918,8 +919,8 @@ def customize_possessor_pron_irules(strat,mylang,ch,strat_name,strat_num,feat,lr
                                   quant-relation &\
                                  [ PRED "exist_q_rel",\
                                    ARG0 #possessor,\
-                                   RSTR #harg2 ] !>,\
-                          HCONS <! qeq & [ HARG #harg2,\
+                                   RSTR #harg2 ] >,\
+                          HCONS.LIST < qeq & [ HARG #harg2,\
                                            LARG #lbl2 ] > ] ].')
 
 
@@ -1296,7 +1297,7 @@ def customize_possessor_pron_lexicon(strat,mylang,ch,lexicon,strat_name,strat_nu
                         [ SYNSEM.LOCAL [ CAT [ HEAD.POSSESSOR possessor-pron-'+strat_num+',\
                                                VAL.SPEC < > ],\
                                          CONT [ RELS.LIST  < #altkeyrel >,\
-                                                  HCONS <! !> ] ] ].')
+                                                  HCONS.LIST < > ] ] ].')
 
            
         mylang.add('poss-unary-phrase-pron-'+strat_num+' := poss-unary-phrase & [ ARGS < [ SYNSEM.LOCAL.CAT.HEAD [ POSSESSOR possessor-pron-'+strat_num+' ] ] > ].',section='phrases')
