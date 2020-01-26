@@ -484,3 +484,4 @@ wh6-svo-sg-opt=Optional fronting of one question phrase; SVO word order; adverbs
 wh7-sov-sg-opt=SOV word order, optional fronting of a single question phrase; adverbs; multiple questions.
 wh8-ovs-insitu=OVS word order, in-situ wh questionss.
 wh9-vos-sg-oblig-ppip-all-oblig=Obligatory pied piping of all types of phrases in a VOS language with single question phrase fronted obligatorily in matrix clauses.
+wh10-svo-multi-all-oblig-min=Obligatory fronting of all question phrases in an SVO language.

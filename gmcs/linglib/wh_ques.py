@@ -18,7 +18,7 @@ WH_Q_PHR = ''' wh-ques-phrase := basic-head-filler-phrase & interrogative-clause
 			VAL #val,
 			HEAD verb ],
 			 NON-LOCAL.QUE #que],
-     HEAD-DTR.SYNSEM [ LOCAL.CAT [ MC na,
+     HEAD-DTR.SYNSEM [ LOCAL.CAT [ MC na-or-+,
 				 VAL #val & [ SUBJ < >,
 					      COMPS < > ] ],
 					    NON-LOCAL.QUE #que ],
@@ -97,13 +97,13 @@ BASIC_FILLER_SG = '''basic-filler-phrase :+ [ SYNSEM.NON-LOCAL.SLASH.LIST < >,
                                                              NON-LOCAL.SLASH.LIST < > ] ], 
                                                     [SYNSEM.NON-LOCAL.SLASH.LIST < #slash >] >]. '''
 
-FIRST_FILLER = '''1st-head-filler-phrase := experimental-basic-filler-phrase & head-compositional &
+FIRST_FILLER = '''1st-head-filler-phrase := basic-filler-phrase & head-compositional &
   [  SYNSEM.NON-LOCAL.SLASH.LIST #slash,
      ARGS < [ SYNSEM.LOCAL #local ],
 	   [ SYNSEM.NON-LOCAL [ SLASH.LIST < #local . #slash >,
 				                  REL 0-alist ] ] > ].'''
 
-SEC_FILLER = '''experimental-2nd-head-filler-phrase := binary-phrase & phrasal & head-compositional &
+SEC_FILLER = '''2nd-head-filler-phrase := binary-phrase & phrasal & head-compositional &
   [ SYNSEM.NON-LOCAL.SLASH.LIST < #firstarg . #otherargs >,
     ARGS < [ SYNSEM.LOCAL #local ],
      [ SYNSEM.NON-LOCAL [ SLASH.LIST [ FIRST #firstarg, REST < #local . #otherargs > ],
@@ -152,11 +152,11 @@ def customize_wh_ques(mylang,ch,rules):
     if ch.get(MTX_FRONT) == 'multi':
         mylang.add('wh-ques-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < [], ... > ].')
         mylang.add(FIRST_FILLER)
-        mylang.add(SEC_FILLER)
+        #mylang.add(SEC_FILLER)
         mylang.add('wh-1st-ques-phrase := 1st-head-filler-phrase & wh-ques-phrase.')
-        mylang.add('wh-2nd-ques-phrase := 2nd-head-filler-phrase & wh-ques-phrase.')
+        #mylang.add('wh-2nd-ques-phrase := 2nd-head-filler-phrase & wh-ques-phrase.')
         rules.add('wh1-ques := wh-1st-ques-phrase.')
-        rules.add('wh2-ques := wh-2nd-ques-phrase.')
+        #rules.add('wh2-ques := wh-2nd-ques-phrase.')
 
     # If the fronting isn't obligatory or if only one question phrase
     # is obligatorily fronted, need also in-situ rules:
