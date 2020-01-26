@@ -1779,46 +1779,46 @@ in <span class=\"dfn\">the front of the matrix clause</span> (<i>Who do you thin
 
 Separator
 
-Label "<h3>Other choices</h3>"
+# Label "<h3>Other choices</h3>"
 
-Check no-multi-ques "No Multiple Questions" "<p>" "Only one question phrase is allowed per sentence.</p>"
+# Check no-multi-ques "No Multiple Questions" "<p>" "Only one question phrase is allowed per sentence.</p>"
 
-Label "<p>Information structure:</p>"
+# Label "<p>Information structure:</p>"
 
-Radio infostr-marking "Information Structure Marking" "Question words may bear an overt focus marking: <br>" ""
-  . infostr-same "Same as focus marking" "" "which is the same<br>"
-  . infostr-diff "Different from focus marking" ""  "or different from the regular focus marking you defined on the Information
-  Structure page.<br>"
+# Radio infostr-marking "Information Structure Marking" "Question words may bear an overt focus marking: <br>" ""
+#   . infostr-same "Same as focus marking" "" "which is the same<br>"
+#   . infostr-diff "Different from focus marking" ""  "or different from the regular focus marking you defined on the Information
+#   Structure page.<br>"
 
-Label "<p> Auxiliary-subject inversion in "
-Check wh-inv-matrix "Matrix Inversion" "" "matrix clauses and "
-Check wh-inv-embed "Embedded Inversion" "" "embedded clauses with questions.</p>"
+# Label "<p> Auxiliary-subject inversion in "
+# Check wh-inv-matrix "Matrix Inversion" "" "matrix clauses and "
+# Check wh-inv-embed "Embedded Inversion" "" "embedded clauses with questions.</p>"
 
-Check wh-q-part "Question particle" "" "A question particle: "
+# Check wh-q-part "Question particle" "" "A question particle: "
 
-Radio wh-q-part-order "Question particle order with respect to questioned predicate/clause" "" ""
-. init "Before" "" "clause initial "
-. fin "After" "" "clause final"
-. afterqw "Second" "" "after the question word<br>"
-. afterqp "Second" "" "after the entire question phrase (e.g. the NP or the PP) <br>"
+# Radio wh-q-part-order "Question particle order with respect to questioned predicate/clause" "" ""
+# . init "Before" "" "clause initial "
+# . fin "After" "" "clause final"
+# . afterqw "Second" "" "after the question word<br>"
+# . afterqp "Second" "" "after the entire question phrase (e.g. the NP or the PP) <br>"
 
-Text wh-q-part-orth "Question particle spelling" "Spelling: " "<br>" 40
+# Text wh-q-part-orth "Question particle spelling" "Spelling: " "<br>" 40
 
-Label "<p> Interrogative "
-Check wh-q-inter-verbs "Iterrogative verbs" "" "verbs or "
-Check wh-q-inter-cop "Interrogative copula" "" "copula (add appropriate entries on the Lexicon page).</p>"
+# Label "<p> Interrogative "
+# Check wh-q-inter-verbs "Iterrogative verbs" "" "verbs or "
+# Check wh-q-inter-cop "Interrogative copula" "" "copula (add appropriate entries on the Lexicon page).</p>"
 
-#Check wh-q-inter-mood "Iterrogative mood" "<p>" "Interrogative mood (add appropriate entry on the TAM page).</p>"
+# #Check wh-q-inter-mood "Iterrogative mood" "<p>" "Interrogative mood (add appropriate entry on the TAM page).</p>"
 
-Check wh-q-infl "Inflection" "<p>" "Verbal inflection: Checking this box enables a
-feature called <span class=\"feat\">question</span> with possible
-value <span class=\"tt\">plus</span> <br>for use in defining lexical
-rules on the morphology page.  Defining lexical rules that
-specify [<span class=\"feat\">question</span> <span class=\"tt\">plus</span>] <br> will
-produce lexical rules in the grammar that add the semantics of questions."
+# Check wh-q-infl "Inflection" "<p>" "Verbal inflection: Checking this box enables a
+# feature called <span class=\"feat\">question</span> with possible
+# value <span class=\"tt\">plus</span> <br>for use in defining lexical
+# rules on the morphology page.  Defining lexical rules that
+# specify [<span class=\"feat\">question</span> <span class=\"tt\">plus</span>] <br> will
+# produce lexical rules in the grammar that add the semantics of questions."
 
-#Check wh-q-infl-oblig "Obligatory Interrogative Inflections" "<br><br>" "Special morphology is obligatory in
-#questions.</p>"
+# #Check wh-q-infl-oblig "Obligatory Interrogative Inflections" "<br><br>" "Special morphology is obligatory in
+# #questions.</p>"
 
 Section info-str "Information Structure"
 

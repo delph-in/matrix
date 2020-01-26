@@ -1613,8 +1613,10 @@ head-compositional := headed-phrase &
 ; ERB 2007-01-21 COMPS olist is no longer a fair constraint on
 ; clauses, under current analysis.
 
-clause := phrasal &
-  [ SYNSEM.NON-LOCAL.QUE 0-alist ].
+; OZ 2020-01-25 Removing the QUE constraint to allow in-situ questions.
+
+clause := phrasal. ; &
+;  [ SYNSEM.NON-LOCAL.QUE 0-alist ].
 
 
 ; The following subtypes of clause will need more constraints,
@@ -1732,7 +1734,7 @@ imperative-clause := basic-non-rel-clause &
 ; Thus basic-filler-phrase does not inherit form headed-phrase.
 ; We provide a subtype, basic-head-filler-phrase, below, which does.
 
-; OZ 2019-06-13 Removing empty QUE constraint from the second daughter
+; OZ 2020-01-25 Relaxing QUE constraint
 ; to allow multiple wh-questions.
 
 basic-filler-phrase := binary-phrase & phrasal &
@@ -1744,12 +1746,12 @@ basic-filler-phrase := binary-phrase & phrasal &
 					COMPS olist,
 					SPR olist ],
 			      CTXT.ACTIVATED + ],
-		      NON-LOCAL.SLASH 0-alist ] ],
+		      NON-LOCAL [ SLASH 0-alist, QUE append-list, REL 0-alist ] ] ],
 	   [ SYNSEM [ LOCAL.CAT [ VAL.COMPS olist ],
 		      NON-LOCAL [ SLASH append-list &
 					[ LIST < #slash > ],
 				  REL 0-alist,
-				  QUE 0-alist ] ] ] > ].
+				  QUE append-list ] ] ] > ].
 
 ; ASF 2011-10-05 changed supertype 'headed-phrase' to more specific 'head-compostional'
 ; in order to make sure matrix.tdl provides the right semantics.
@@ -1812,6 +1814,8 @@ nc-head-filler-phrase := nc-filler-phrase & head-compositional.
 ; JDC 2012-06-02 adding [HC-LIGHT -] to basic-head-* phrases
 ; (with the exception of except head-comps)
 
+; OZ 2020-01-25 removing [ QUE 0-alist ] from the non-head daughter to allow in-situ questions.
+
 basic-head-subj-phrase := head-valence-phrase & head-compositional &
 			  basic-binary-headed-phrase &
   [ SYNSEM phr-synsem &
@@ -1827,8 +1831,7 @@ basic-head-subj-phrase := head-valence-phrase & head-compositional &
                                  COMPS olist,
                                  SPR olist ] ] ],
              NON-LOCAL [ SLASH 0-alist,
-                         REL 0-alist,
-                         QUE 0-alist ] ],
+                         REL 0-alist ] ],
     C-CONT [ RELS.LIST < >, HCONS.LIST < >, ICONS.LIST < > ] ].
 
 decl-head-subj-phrase := basic-head-subj-phrase & declarative-clause.
@@ -2229,7 +2232,10 @@ basic-extracted-subj-phrase := basic-extracted-arg-phrase & head-compositional &
 ; non-empty comps lists.  The head-mod-phrase will pass up
 ; the COMPS requirement, whatever it was.
 
-head-mod-phrase := head-nexus-phrase &
+; OZ 2020-01-25 Changing the parent from head-nexus-phrase to head-nexus-rel
+; phrase, to allow appending QUE values, for multiple questions.
+
+head-mod-phrase := head-nexus-rel-phrase &
   [ SYNSEM [ LOCAL.CAT.VAL [ SUBJ #subj,
                              SPR #spr,
                              COMPS #comps ],
@@ -2276,11 +2282,12 @@ extracted-adj-phrase := basic-extracted-adj-phrase &
 ; mother and non-head-daughter, token-identity removed
 ; TJT 2015-01-31 Adding [MOD.OPT -] to NON-HEAD-DTR to keep predicative
 ; adjectives out of optional subject constructions
+; OZ 2020-01-25 Adding QUE append to support multiple questions.
 
 basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
   [ SYNSEM [ LOCAL.CAT.MKG #mkg,
              NON-LOCAL [ SLASH.APPEND < #s1, #s2 >,
-                         REL 0-alist ] ],
+                         REL 0-alist, QUE.APPEND < #q1, #q2 > ] ],
     HEAD-DTR.SYNSEM
            [ LOCAL [ CAT [ HEAD #head,
                            VAL #val,
@@ -2291,7 +2298,7 @@ basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
                                            CLAUSE-KEY #clause ],
                      AGR #agr ],
              NON-LOCAL #nonloc &
-                   [ SLASH #s2 ],
+                   [ SLASH #s2, QUE #q2 ],
              LIGHT #light,
              MODIFIED #modif ],
     NON-HEAD-DTR.SYNSEM
@@ -2311,8 +2318,7 @@ basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
                            MKG #mkg ],
                      CONT.HOOK [ ICONS-KEY.IARG1 #clause,
                      CLAUSE-KEY #clause ] ],
-             NON-LOCAL [ SLASH #s1,
-                         QUE 0-alist ] ],
+             NON-LOCAL [ SLASH #s1, QUE #q1 ] ],
     C-CONT [ RELS.LIST < >, ICONS.LIST < > ] ].
 
 ;;;2011-11-07 removing head-mod-phrase-simple
@@ -2344,8 +2350,7 @@ adj-head-phrase := basic-head-mod-phrase-simple & head-final &
 head-adj-phrase := basic-head-mod-phrase-simple & head-initial & phrasal &
   [ SYNSEM.MODIFIED rmod,
     NON-HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL.SPR olist,
-                                      POSTHEAD + ],
-                          NON-LOCAL.QUE 0-alist ] ].
+                                      POSTHEAD + ] ] ].
 
 ; We split head-adj-phrase and adj-head-phrase into two each,
 ; one for intersective modifiers and one for scopal modifiers, in order to
