@@ -1739,17 +1739,15 @@ imperative-clause := basic-non-rel-clause &
 
 basic-filler-phrase := binary-phrase & phrasal &
   [ SYNSEM [ LOCAL.CAT.VAL [ COMPS < >,
-                             SPR < > ],
-	     NON-LOCAL.SLASH 0-alist ],
-    ARGS < [ SYNSEM [ LOCAL #slash & local &
+                             SPR < > ] ],
+    ARGS < [ SYNSEM [ LOCAL local &
 			    [ CAT.VAL [ SUBJ olist,
 					COMPS olist,
 					SPR olist ],
 			      CTXT.ACTIVATED + ],
-		      NON-LOCAL [ SLASH 0-alist, QUE append-list, REL 0-alist ] ] ],
+		      NON-LOCAL [ SLASH append-list, QUE append-list, REL 0-alist ] ] ],
 	   [ SYNSEM [ LOCAL.CAT [ VAL.COMPS olist ],
-		      NON-LOCAL [ SLASH append-list &
-					[ LIST < #slash > ],
+		      NON-LOCAL [ SLASH append-list,
 				  REL 0-alist,
 				  QUE append-list ] ] ] > ].
 

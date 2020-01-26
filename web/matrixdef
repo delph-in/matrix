@@ -1719,15 +1719,21 @@ Radio front-matrix "Fronting in Matrix Clauses" "<p>In <span class=\"dfn\">matri
               <i>Who did you speak with?</i>
     </p>"
 
-    Label "<p>In your language, question determiners can be extracted
+    Label "<p>Development note: Obligatory pied-piping is actually the default; it is harder
+    to model optional pied-piping or situations where there is an adposition dangling separately
+    in the front or at the end of the clause. Optional pied piping of noun phrases (i.e. when the
+    determiner can be extracted to the front of the clause) should be working now; combinations
+    with adpositions probably aren't. Extracting the entire PP should be working.</p>"
+
+    Label "<p>In your language, question determiners are extracted
     along with:<br><br>"
 
     Check pied-pip "Pied-Piping" "" "nouns, "
     Check oblig-pied-pip-noun "Obligatory Pied Piping Of Nouns" "" "and it is obligatory;<br>"
-    Check pied-pip-adv "Pied-Piping of Adverbs" "" "adverbs, "
-    Check oblig-pied-pip-adv "Obligatory Pied Piping Of Adverbs" "" "and it is obligatory;<br>"
-    Check pied-pip-adp "Pied-Piping Of Adpositions" "" "adpositions, "
-    Check oblig-pied-pip-adp "Obligatory Pied Piping Of Adpositions" "" "and it is obligatory.</p>"
+    #Check pied-pip-adv "Pied-Piping of Adverbs" "" "adverbs, "
+    #Check oblig-pied-pip-adv "Obligatory Pied Piping Of Adverbs" "" "and it is obligatory;<br>"
+    #Check pied-pip-adp "Pied-Piping Of Adpositions" "" "adpositions, "
+    #Check oblig-pied-pip-adp "Obligatory Pied Piping Of Adpositions" "" "and it is obligatory.</p>"
 
   Separator
 
@@ -1742,15 +1748,15 @@ Radio front-embed "Fronting in Embedded Clauses" "<p>In <span class=\"dfn\">embe
  #  . nondlinked-oblig "Obligatory Multiple Fronting" ""  "of all question pronouns and adverbs
  # (but not phrases with determiners)</p>"
 
-    Label "<p>Pied-piping: Question determiners can be extracted
+    Label "<p>Pied-piping: Question determiners are extracted
     along with:<br><br>"
 
     Check embed-pied-pip "Pied-Piping" "" "nouns, "
     Check embed-oblig-pied-pip-noun "Obligatory Pied Piping Of Nouns" "" "and it is obligatory;<br>"
-    Check embed-pied-pip-adv "Pied-Piping of Adverbs" "" "adverbs, "
-    Check embed-oblig-pied-pip-adv "Obligatory Pied Piping Of Adverbs" "" "and it is obligatory;<br>"
-    Check embed-pied-pip-adp "Pied-Piping Of Adpositions" "" "adpositions, "
-    Check embed-oblig-pied-pip-adp "Obligatory Pied Piping Of Adpositions" "" "and it is obligatory.</p>"
+    #Check embed-pied-pip-adv "Pied-Piping of Adverbs" "" "adverbs, "
+    #Check embed-oblig-pied-pip-adv "Obligatory Pied Piping Of Adverbs" "" "and it is obligatory;<br>"
+    #Check embed-pied-pip-adp "Pied-Piping Of Adpositions" "" "adpositions, "
+    #Check embed-oblig-pied-pip-adp "Obligatory Pied Piping Of Adpositions" "" "and it is obligatory.</p>"
 
 
 Separator
@@ -1766,15 +1772,15 @@ in <span class=\"dfn\">the front of the matrix clause</span> (<i>Who do you thin
  #  . nondlinked-oblig "Obligatory Multiple Fronting" ""  "of all question pronouns and adverbs
  # (but not phrases with determiners)</p>"
 
-    Label "<p>Pied-piping: Question determiners can be extracted
+    Label "<p>Pied-piping: Question determiners are extracted
     along with:<br><br>"
 
     Check from-embed-pied-pip "Pied-Piping" "" "nouns, "
     Check from-embed-oblig-pied-pip-noun "Obligatory Pied Piping Of Nouns" "" "and it is obligatory;<br> "
-    Check from-embed-pied-pip-adv "Pied-Piping" "" "adverbs, "
-    Check from-embed-oblig-pied-pip-adv "Obligatory Pied Piping Of Adverbs" "" "and it is obligatory;<br> "
-    Check from-embed-pied-pip-prep "Pied-Piping Of Adpositions" "" "adpositions, "
-    Check from-embed-oblig-pied-pip-adp "Obligatory Pied Piping Of Adpositions" "" "and it is obligatory.</p>"
+    #Check from-embed-pied-pip-adv "Pied-Piping" "" "adverbs, "
+    #Check from-embed-oblig-pied-pip-adv "Obligatory Pied Piping Of Adverbs" "" "and it is obligatory;<br> "
+    #Check from-embed-pied-pip-prep "Pied-Piping Of Adpositions" "" "adpositions, "
+    #Check from-embed-oblig-pied-pip-adp "Obligatory Pied Piping Of Adpositions" "" "and it is obligatory.</p>"
 
 
 Separator

@@ -481,3 +481,6 @@ wh5-free-sg-oblig-det=Free word order but determiners must come before nouns
 adv-s-vp-v-min=A minimal test to see underspecified attachment of adverbs.
 wh3-vso-sg-oblig-det=Wh-questions in VSO order with Noun-Det, obligatory single fronting
 wh6-svo-sg-opt=Optional fronting of one question phrase; SVO word order; adverbs; multiple questions.
+wh7-sov-sg-opt=SOV word order, optional fronting of a single question phrase; adverbs; multiple questions.
+wh8-ovs-insitu=OVS word order, in-situ wh questionss.
+wh9-vos-sg-oblig-ppip-all-oblig=Obligatory pied piping of all types of phrases in a VOS language with single question phrase fronted obligatorily in matrix clauses.

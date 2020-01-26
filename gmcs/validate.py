@@ -1803,6 +1803,10 @@ def validate_wh_ques(ch, vr):
     if wh_q_strat and not found_ques_word:
         mess = 'Please specify question words on the Lexicon page'
         vr.err(wh_q_strat,mess)
+    #Pied piping only makes sense when there are determiners:
+    if (ch.get(PIED) == ON or ch.get(PIED_ADP) == ON) and not len(ch.get('det', [])) > 0:
+        mess = 'Pied piping only makes sense when there are determiners; specify a wh-determiner on the Lexicon page.'
+        vr.err(PIED, mess)
     # Pied piping only makes sense when some fronting options were chosen
     if (ch.get(PIED) == ON or ch.get(PIED_ADP) == ON) and \
             (ch.get(MTRX_FRONT)== None or ch.get(MTRX_FRONT)== IN_SITU):
