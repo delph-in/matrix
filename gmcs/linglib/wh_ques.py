@@ -12,16 +12,18 @@ from gmcs import constants
 CONSTANTS
 '''
 
+WH_Q_PHR_SG_OR_OBLIG_FRONT = ''' wh-ques-phrase := 
+   [ SYNSEM.NON-LOCAL.QUE #que,
+     HEAD-DTR.SYNSEM.NON-LOCAL.QUE #que ].'''
+
 WH_Q_PHR = ''' wh-ques-phrase := basic-head-filler-phrase & interrogative-clause &
 		  head-final &
    [ SYNSEM [ LOCAL.CAT [ MC bool,
 			VAL #val,
-			HEAD verb ],
-			 NON-LOCAL.QUE #que],
+			HEAD verb ] ],
      HEAD-DTR.SYNSEM [ LOCAL.CAT [ MC na-or-+,
 				 VAL #val & [ SUBJ < >,
-					      COMPS < > ] ],
-					    NON-LOCAL.QUE #que ],
+					      COMPS < > ] ] ],
      NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < ref-ind > ].'''
 
 
@@ -31,10 +33,24 @@ EX_COMP = ''' extracted-comp-phrase := basic-extracted-comp-phrase &
 
 EX_SUBJ = ''' extracted-subj-phrase := basic-extracted-subj-phrase &
   [ SYNSEM.LOCAL.CAT.HEAD verb,
-    HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].'''
+    HEAD-DTR.SYNSEM [ LOCAL.CAT.VAL [ COMPS < >,
+                                      SUBJ.FIRST.LOCAL #slash & local ],
+                      NON-LOCAL.SLASH.LIST < #slash, ... > ] ].'''
 
-SG_EX_SUBJ = '''extracted-subj-phrase := [ HEAD-DTR.SYNSEM [ LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL #slash & local,
-                                                             NON-LOCAL.SLASH.LIST < #slash > ] ].'''
+EX_SUBJ_MULTI = '''extracted-subj-phrase := basic-extracted-arg-phrase & head-compositional &
+  [ SYNSEM [ LOCAL.CAT.VAL [ SUBJ < >,
+                           SPR < > ,
+                           COMPS < > ] ],
+    HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL [ SUBJ < gap &
+                                             [ LOCAL local &
+                                               [ CONT.HOOK.INDEX ref-ind ] ] >,
+                                        COMPS < > ], MC na ] ],
+    C-CONT [ RELS.LIST < >,
+             HCONS.LIST < >,
+             ICONS.LIST < > ] ].'''
+
+#SG_EX_SUBJ = '''extracted-subj-phrase := [ HEAD-DTR.SYNSEM [ LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL #slash & local,
+#                                                             NON-LOCAL.SLASH.LIST < #slash, ... > ] ].'''
 
 EX_ADJ = '''extracted-adv-adp-adj-phrase := basic-extracted-adj-phrase &
   [ SYNSEM [ LOCAL.CAT [ POSTHEAD #ph,
@@ -67,7 +83,7 @@ EX_ADJ = '''extracted-adv-adp-adj-phrase := basic-extracted-adj-phrase &
 
 
 IN_SITU_PHRASE = '''insitu-int-cl := interrogative-clause & head-only &
-  [ SYNSEM [ LOCAL.CAT [ MC +, VAL #val,
+  [ SYNSEM [ LOCAL.CAT [ VAL #val,
        MC bool ],
        NON-LOCAL non-local-none ],
     C-CONT [ RELS.LIST < >,
@@ -119,7 +135,11 @@ MULTI = 'multi'
 
 
 def customize_wh_ques(mylang,ch,rules):
-    if (not ch.get(MTX_FRONT)) or ch.get(MTX_FRONT_OPT) == SG_OBLIG:
+    if (not ch.get(MTX_FRONT)) or ch.get(MTX_FRONT) == 'single':
+        if len(ch.get('adv', [])) > 0 or len(ch.get('normadp', [])) > 0:
+            mylang.add('''my-head-adj-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH 0-alist ].''')
+            mylang.add('''my-adj-head-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH 0-alist ].''')
+    if (not ch.get(MTX_FRONT)) or (ch.get(MTX_FRONT) == 'single' and ch.get(MTX_FRONT_OPT) == SG_OBLIG):
         mylang.add('''clause :+ [ SYNSEM.NON-LOCAL.QUE.LIST < > ]. ''')
         if len(ch.get('adv', [])) > 0 or len(ch.get('normadp', [])) > 0:
             mylang.add('''my-head-adj-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ]. ''')
@@ -135,9 +155,6 @@ def customize_wh_ques(mylang,ch,rules):
         mylang.add_literal('; Complement extraction')
         mylang.add(EX_COMP)
         rules.add('ex-comp := extracted-comp-phrase.')
-        mylang.add_literal('; Subject extraction')
-        mylang.add(EX_SUBJ)
-        rules.add('ex-subj := extracted-subj-phrase.')
         mylang.add_literal('; Adjunct extraction')
         mylang.add(EX_ADJ)
         rules.add('ex-adj := extracted-adv-adp-adj-phrase.')
@@ -145,11 +162,18 @@ def customize_wh_ques(mylang,ch,rules):
     if ch.get(MTX_FRONT) in [SINGLE, SG_OBLIG]:
         # With single fronting, can restrict SLASH to one element at most
         mylang.add(BASIC_FILLER_SG)
+        mylang.add_literal('; Subject extraction')
+        mylang.add(EX_SUBJ)
+        rules.add('ex-subj := extracted-subj-phrase.')
         rules.add('wh-ques := wh-ques-phrase.')
         mylang.add('extracted-adv-adp-adj-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < > ].')
-        mylang.add(SG_EX_SUBJ)
+        #mylang.add(SG_EX_SUBJ)
+        # Pass up QUE from the HEAD-DTR in this case:
+        mylang.add(WH_Q_PHR_SG_OR_OBLIG_FRONT)
 
     if ch.get(MTX_FRONT) == 'multi':
+        mylang.add(EX_SUBJ_MULTI)
+        rules.add('ex-subj := extracted-subj-phrase.')
         mylang.add('wh-ques-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < [], ... > ].')
         mylang.add(FIRST_FILLER)
         #mylang.add(SEC_FILLER)
@@ -157,15 +181,22 @@ def customize_wh_ques(mylang,ch,rules):
         #mylang.add('wh-2nd-ques-phrase := 2nd-head-filler-phrase & wh-ques-phrase.')
         rules.add('wh1-ques := wh-1st-ques-phrase.')
         #rules.add('wh2-ques := wh-2nd-ques-phrase.')
+        if ch.get(MTX_FRONT_OPT) == 'all-oblig':
+            mylang.add(WH_Q_PHR_SG_OR_OBLIG_FRONT) # Pass up QUE from HEAD-DTR
 
     # If the fronting isn't obligatory or if only one question phrase
     # is obligatorily fronted, need also in-situ rules:
     if (ch.get(MTX_FRONT) == SINGLE and not ch.get(MTX_FRONT_OPT) == SG_OBLIG) \
-            or ch.get(MTX_FRONT) == 'in-situ':
+            or ch.get(MTX_FRONT) == 'in-situ' \
+            or (ch.get(MTX_FRONT) == 'multi' and ch.get(MTX_FRONT_OPT) == SG_OBLIG):
         mylang.add_literal('; In-situ interrogative clause.')
         mylang.add(IN_SITU_PHRASE)
         rules.add('in-situ-ques := insitu-int-cl.')
-
+        if (ch.get(MTX_FRONT) == SINGLE and not ch.get(MTX_FRONT_OPT) == SG_OBLIG) \
+            or ch.get(MTX_FRONT) == 'in-situ':
+            mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.MC + ].')
+        elif ch.get(MTX_FRONT) == 'multi' and ch.get(MTX_FRONT_OPT) == SG_OBLIG:
+            mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.MC - ].')
         # For non-free word orders, need to rule out structural ambiguity:
         if ch.get('word-order') in ['svo', 'sov']:
             mylang.add('subj-head-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')

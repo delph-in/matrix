@@ -1699,10 +1699,15 @@ Label "<h3>Choices regarding the position of question phrases</h3>"
 
 Separator
 
+Label "<p><b>Develoment note:</b> I only included choices for fronting in main clauses. Depending on the language,
+you may find that  the grammar will work for embedded questions as well. If you need to model
+different fronting choices in main and embedded clauses, look in the direction of the MC feature
+in wh-ques-phrase rules as well as insitu-ques-phrase rule...</p>"
+
 Radio front-matrix "Fronting in Matrix Clauses" "<p>In <span class=\"dfn\">matrix</span> questions (<i>Who did you see?</i>):<br><br>" ""
   . single "Single Fronting" "" "A single question phrase can be fronted<br>"
   . multi "Multiple Fronting" "" "All question phrases can be fronted<br>"
-  . in-situ "In Situ" "" "Question phrases cannot be fronted (stay in situ)<br><br>"
+  . in-situ "In Situ" "" "Question phrases cannot be fronted (stay <i>in situ</i>)<br><br>"
 
   Radio matrix-front-opt "Fronting optionality" " There is <span class=\"dfn\">obligatory</span> fronting: <br>" ""
   . single-oblig "Obligatory Single Fronting" "" "of at least one question phrase<br>"
@@ -1710,7 +1715,7 @@ Radio front-matrix "Fronting in Matrix Clauses" "<p>In <span class=\"dfn\">matri
 #  . nondlinked-oblig "Obligatory Multiple Fronting" ""  "of all question pronouns and adverbs
 #  (but not phrases with determiners)<br><br>"
 
-Label"<p>Note: If a <i>wh</i>-adverb intervenes between the subject and the verb, such adverb
+Label "<p>Note: If a <i>wh</i>-adverb intervenes between the subject and the verb, such adverb
 is analyzed as <i>in situ</i> and will be ruled out by the obligatory multiple fronting option.</p>"
 
     Label "<p><b>Pied-piping:</b> In many languages, not only the question word but an entire question phrase
@@ -1722,7 +1727,7 @@ is analyzed as <i>in situ</i> and will be ruled out by the obligatory multiple f
               <i>Who did you speak with?</i>
     </p>"
 
-    Label "<p>Development note: Obligatory pied-piping is actually the default; it is harder
+    Label "<p><b>Development note:</b> Obligatory pied-piping is actually the default; it is harder
     to model optional pied-piping or situations where there is an adposition dangling separately
     in the front or at the end of the clause. Optional pied piping of noun phrases (i.e. when the
     determiner can be extracted to the front of the clause) should be working now; combinations
@@ -1740,53 +1745,53 @@ is analyzed as <i>in situ</i> and will be ruled out by the obligatory multiple f
 
   Separator
 
-Radio front-embed "Fronting in Embedded Clauses" "<p>In <span class=\"dfn\">embedded</span> questions: (<i>Do you know who did this?</i>) <br><br>" ""
-  . single "Single Fronting" "" "A single question phrase can be fronted within the embedded clause<br>"
-  . multi "Multiple Fronting" "" "All question phrases can be fronted within the embedded clause<br>"
-  . in-situ "In Situ" "" "Question phrases cannot be fronted (stay in situ) within the embedded clause<br><br>"
+# Radio front-embed "Fronting in Embedded Clauses" "<p>In <span class=\"dfn\">embedded</span> questions: (<i>Do you know who did this?</i>) <br><br>" ""
+#   . single "Single Fronting" "" "A single question phrase can be fronted within the embedded clause<br>"
+#   . multi "Multiple Fronting" "" "All question phrases can be fronted within the embedded clause<br>"
+#   . in-situ "In Situ" "" "Question phrases cannot be fronted (stay in situ) within the embedded clause<br><br>"
 
-  Radio embed-front-opt "Fronting optionality" " Within the embedded clause, there is obligatory fronting: <br>" ""
-  . single-oblig "Obligatory Single Fronting" "" "of at least one question phrase<br>"
-  . all-oblig "Obligatory Multiple Fronting" ""  "of all question phrases</p>"
+#   Radio embed-front-opt "Fronting optionality" " Within the embedded clause, there is obligatory fronting: <br>" ""
+#   . single-oblig "Obligatory Single Fronting" "" "of at least one question phrase<br>"
+#   . all-oblig "Obligatory Multiple Fronting" ""  "of all question phrases</p>"
+#  #  . nondlinked-oblig "Obligatory Multiple Fronting" ""  "of all question pronouns and adverbs
+#  # (but not phrases with determiners)</p>"
+
+#     Label "<p>Pied-piping: Question determiners are extracted
+#     along with:<br><br>"
+
+#     Check embed-pied-pip "Pied-Piping" "" "nouns, "
+#     Check embed-oblig-pied-pip-noun "Obligatory Pied Piping Of Nouns" "" "and it is obligatory;<br>"
+#     #Check embed-pied-pip-adv "Pied-Piping of Adverbs" "" "adverbs, "
+#     #Check embed-oblig-pied-pip-adv "Obligatory Pied Piping Of Adverbs" "" "and it is obligatory;<br>"
+#     #Check embed-pied-pip-adp "Pied-Piping Of Adpositions" "" "adpositions, "
+#     #Check embed-oblig-pied-pip-adp "Obligatory Pied Piping Of Adpositions" "" "and it is obligatory.</p>"
+
+
+# Separator
+
+# Label "<p>When the question phrase is extracted <span class=\"dfn\">from an embedded clause</span> and put
+# in <span class=\"dfn\">the front of the matrix clause</span> (<i>Who do you think that did this?</i>): <br><br>"
+
+#   Check from-embed-multi-front "Multiple Fronting" "" "All other question phrases can also be fronted<br><br>"
+
+#   Radio from-embed-front-opt "Fronting optionality" "There is <span class=\"dfn\">obligatory</span> extraction from the embedded clause to the front of the matrix clause: <br>" ""
+#   . single-oblig "Obligatory Single Fronting" "" "of at least one question phrase<br>"
+#   . all-oblig "Obligatory Multiple Fronting" ""  "of all question phrases</p>"
  #  . nondlinked-oblig "Obligatory Multiple Fronting" ""  "of all question pronouns and adverbs
  # (but not phrases with determiners)</p>"
 
-    Label "<p>Pied-piping: Question determiners are extracted
-    along with:<br><br>"
+#     Label "<p>Pied-piping: Question determiners are extracted
+#     along with:<br><br>"
 
-    Check embed-pied-pip "Pied-Piping" "" "nouns, "
-    Check embed-oblig-pied-pip-noun "Obligatory Pied Piping Of Nouns" "" "and it is obligatory;<br>"
-    #Check embed-pied-pip-adv "Pied-Piping of Adverbs" "" "adverbs, "
-    #Check embed-oblig-pied-pip-adv "Obligatory Pied Piping Of Adverbs" "" "and it is obligatory;<br>"
-    #Check embed-pied-pip-adp "Pied-Piping Of Adpositions" "" "adpositions, "
-    #Check embed-oblig-pied-pip-adp "Obligatory Pied Piping Of Adpositions" "" "and it is obligatory.</p>"
-
-
-Separator
-
-Label "<p>When the question phrase is extracted <span class=\"dfn\">from an embedded clause</span> and put
-in <span class=\"dfn\">the front of the matrix clause</span> (<i>Who do you think that did this?</i>): <br><br>"
-
-  Check from-embed-multi-front "Multiple Fronting" "" "All other question phrases can also be fronted<br><br>"
-
-  Radio from-embed-front-opt "Fronting optionality" "There is <span class=\"dfn\">obligatory</span> extraction from the embedded clause to the front of the matrix clause: <br>" ""
-  . single-oblig "Obligatory Single Fronting" "" "of at least one question phrase<br>"
-  . all-oblig "Obligatory Multiple Fronting" ""  "of all question phrases</p>"
- #  . nondlinked-oblig "Obligatory Multiple Fronting" ""  "of all question pronouns and adverbs
- # (but not phrases with determiners)</p>"
-
-    Label "<p>Pied-piping: Question determiners are extracted
-    along with:<br><br>"
-
-    Check from-embed-pied-pip "Pied-Piping" "" "nouns, "
-    Check from-embed-oblig-pied-pip-noun "Obligatory Pied Piping Of Nouns" "" "and it is obligatory;<br> "
-    #Check from-embed-pied-pip-adv "Pied-Piping" "" "adverbs, "
-    #Check from-embed-oblig-pied-pip-adv "Obligatory Pied Piping Of Adverbs" "" "and it is obligatory;<br> "
-    #Check from-embed-pied-pip-prep "Pied-Piping Of Adpositions" "" "adpositions, "
-    #Check from-embed-oblig-pied-pip-adp "Obligatory Pied Piping Of Adpositions" "" "and it is obligatory.</p>"
+#     Check from-embed-pied-pip "Pied-Piping" "" "nouns, "
+#     Check from-embed-oblig-pied-pip-noun "Obligatory Pied Piping Of Nouns" "" "and it is obligatory;<br> "
+#     #Check from-embed-pied-pip-adv "Pied-Piping" "" "adverbs, "
+#     #Check from-embed-oblig-pied-pip-adv "Obligatory Pied Piping Of Adverbs" "" "and it is obligatory;<br> "
+#     #Check from-embed-pied-pip-prep "Pied-Piping Of Adpositions" "" "adpositions, "
+#     #Check from-embed-oblig-pied-pip-adp "Obligatory Pied Piping Of Adpositions" "" "and it is obligatory.</p>"
 
 
-Separator
+#  Separator
 
 # Label "<h3>Other choices</h3>"
 
