@@ -27,11 +27,14 @@ WH_Q_PHR = ''' wh-ques-phrase := basic-head-filler-phrase & interrogative-clause
 
 EX_COMP = ''' extracted-comp-phrase := basic-extracted-comp-phrase &
   [ SYNSEM.LOCAL.CAT.HEAD verb,
-    HEAD-DTR.SYNSEM.LOCAL.CAT.VAL [  SUBJ cons, COMPS 0-1-list  ]].'''
+    HEAD-DTR.SYNSEM.LOCAL.CAT.VAL [  SUBJ cons, COMPS < [], ... >  ]].'''
 
 EX_SUBJ = ''' extracted-subj-phrase := basic-extracted-subj-phrase &
   [ SYNSEM.LOCAL.CAT.HEAD verb,
     HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].'''
+
+SG_EX_SUBJ = '''extracted-subj-phrase := [ HEAD-DTR.SYNSEM [ LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL #slash & local,
+                                                             NON-LOCAL.SLASH.LIST < #slash > ] ].'''
 
 EX_ADJ = '''extracted-adv-adp-adj-phrase := basic-extracted-adj-phrase &
   [ SYNSEM [ LOCAL.CAT [ POSTHEAD #ph,
@@ -55,7 +58,7 @@ EX_ADJ = '''extracted-adv-adp-adj-phrase := basic-extracted-adj-phrase &
                            MC #mc ],
                      CONT.HOOK #hook,
                      CTXT #ctxt ],
-             NON-LOCAL [ SLASH 0-alist, QUE #que ],
+             NON-LOCAL [ QUE #que ],
 	     MODIFIED notmod ],
     C-CONT [ HOOK #hook,
          RELS.LIST < >,
@@ -94,6 +97,19 @@ BASIC_FILLER_SG = '''basic-filler-phrase :+ [ SYNSEM.NON-LOCAL.SLASH.LIST < >,
                                                              NON-LOCAL.SLASH.LIST < > ] ], 
                                                     [SYNSEM.NON-LOCAL.SLASH.LIST < #slash >] >]. '''
 
+FIRST_FILLER = '''1st-head-filler-phrase := experimental-basic-filler-phrase & head-compositional &
+  [  SYNSEM.NON-LOCAL.SLASH.LIST #slash,
+     ARGS < [ SYNSEM.LOCAL #local ],
+	   [ SYNSEM.NON-LOCAL [ SLASH.LIST < #local . #slash >,
+				                  REL 0-alist ] ] > ].'''
+
+SEC_FILLER = '''experimental-2nd-head-filler-phrase := binary-phrase & phrasal & head-compositional &
+  [ SYNSEM.NON-LOCAL.SLASH.LIST < #firstarg . #otherargs >,
+    ARGS < [ SYNSEM.LOCAL #local ],
+     [ SYNSEM.NON-LOCAL [ SLASH.LIST [ FIRST #firstarg, REST < #local . #otherargs > ],
+          REL 0-alist ] ] > ].'''
+
+
 MTX_FRONT = 'front-matrix'
 MTX_FRONT_OPT = 'matrix-front-opt'
 SG_OBLIG = 'single-oblig'
@@ -114,14 +130,8 @@ def customize_wh_ques(mylang,ch,rules):
         mylang.add('''basic-head-filler-phrase :+
    [ ARGS < [ SYNSEM.LOCAL.COORD - ], [ SYNSEM.LOCAL.COORD - ] > ].''')
         mylang.add(WH_Q_PHR)
-        rules.add('wh-ques := wh-ques-phrase.')
         if ch.get('form-fin-nf') == 'on':
             mylang.add('wh-ques-phrase := [ SYNSEM.LOCAL.CAT.HEAD.FORM finite ].')
-
-    if ch.get(MTX_FRONT) in [SINGLE, SG_OBLIG]:
-        # With single fronting, can restrict SLASH to one element at most
-        mylang.add(BASIC_FILLER_SG)
-        mylang.add('wh-ques-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < [], ... > ].')
         mylang.add_literal('; Complement extraction')
         mylang.add(EX_COMP)
         rules.add('ex-comp := extracted-comp-phrase.')
@@ -131,6 +141,22 @@ def customize_wh_ques(mylang,ch,rules):
         mylang.add_literal('; Adjunct extraction')
         mylang.add(EX_ADJ)
         rules.add('ex-adj := extracted-adv-adp-adj-phrase.')
+
+    if ch.get(MTX_FRONT) in [SINGLE, SG_OBLIG]:
+        # With single fronting, can restrict SLASH to one element at most
+        mylang.add(BASIC_FILLER_SG)
+        rules.add('wh-ques := wh-ques-phrase.')
+        mylang.add('extracted-adv-adp-adj-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < > ].')
+        mylang.add(SG_EX_SUBJ)
+
+    if ch.get(MTX_FRONT) == 'multi':
+        mylang.add('wh-ques-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < [], ... > ].')
+        mylang.add(FIRST_FILLER)
+        mylang.add(SEC_FILLER)
+        mylang.add('wh-1st-ques-phrase := 1st-head-filler-phrase & wh-ques-phrase.')
+        mylang.add('wh-2nd-ques-phrase := 2nd-head-filler-phrase & wh-ques-phrase.')
+        rules.add('wh1-ques := wh-1st-ques-phrase.')
+        rules.add('wh2-ques := wh-2nd-ques-phrase.')
 
     # If the fronting isn't obligatory or if only one question phrase
     # is obligatorily fronted, need also in-situ rules:

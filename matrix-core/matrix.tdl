@@ -1667,7 +1667,7 @@ basic-non-rel-clause := clause & head-compositional &
     HEAD-DTR.SYNSEM [ LOCAL.CONT.HOOK [ INDEX #index,
 					ICONS-KEY.IARG1 #index,
 					CLAUSE-KEY #index ],
-		      NON-LOCAL.REL 0-alist ],
+		      NON-LOCAL [ REL 0-alist, QUE append-list ] ],
     C-CONT [ RELS.LIST < >,
 	     HCONS.LIST < > ] ].
 
@@ -2217,11 +2217,10 @@ basic-extracted-subj-phrase := basic-extracted-arg-phrase & head-compositional &
                            SPR < >,
                            COMPS < > ],
     HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL [ SUBJ < gap &
-                                             [ LOCAL #local & local &
+                                             [ LOCAL local &
                                                [ CONT.HOOK.INDEX ref-ind ] ] >,
                                         COMPS olist ],
-                                  MC na ],
-                      NON-LOCAL.SLASH.LIST < #local > ],
+                                  MC na ] ],
     C-CONT [ RELS 0-alist,
              HCONS 0-alist,
              ICONS 0-alist ] ].
