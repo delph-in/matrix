@@ -1784,7 +1784,7 @@ def validate_wh_ques(ch, vr):
     from gmcs.constants import ON,IN_SITU,MTRX_FRONT, WH_QUE_PTCL, \
         WH_QUE_INFL, EMBED_FRONT, MULTI, ALL_OBLIG, NO_MULTI, PIED, \
         PIED_ADP, EMB_PIP, EMB_PIP_ADP, OBL_PIP_NOUN, OBL_PIP_ADP, \
-        EMB_OBL_PIP_ADP, EMB_OBL_PIP_N, MTRX_FR_OPT, EMB_FR_OPT, X_FR_OPT
+        EMB_OBL_PIP_ADP, EMB_OBL_PIP_N, MTRX_FR_OPT, EMB_FR_OPT, X_FR_OPT, SG_OBLIG
     wh_q_strat = None
     if ch.get(MTRX_FRONT):
         wh_q_strat = MTRX_FRONT
@@ -1837,7 +1837,9 @@ def validate_wh_ques(ch, vr):
             mess = 'You have made choices regarding multiple question fronting, ' \
                    'so you cannot say multiple questions are not allowed in one clause.'
             vr.err(NO_MULTI,mess)
-
+    if ch.get(MTRX_FRONT) == IN_SITU and ch.get(MTRX_FR_OPT) in [ALL_OBLIG,SG_OBLIG]:
+        mess = 'In-situ position and obligatory fronting are not compatible choices.'
+        vr.err(MTRX_FR_OPT,mess)
 
 
 

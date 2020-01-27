@@ -44,6 +44,7 @@ WH_QUE_PTCL = 'wh-q-part' # Question particle for constituent questions
 WH_QUE_INFL = 'wh-q-infl' # Inflectional paradigm for constituent questions
 MULTI = 'multi' # Multiple (e.g. fronting)
 ALL_OBLIG = 'all-oblig' # All question phrases are fronted obligatorily
+SG_OBLIG = 'single-oblig' # One question phrase is obligatorily fronted
 NO_MULTI = 'no-multi-ques' # No multiple questions in one clause
 PIED = 'pied-pip' # Pied piping
 PIED_ADP = 'pied-pip-adp' # Pied piping of specifically adpositions

@@ -135,6 +135,9 @@ MULTI = 'multi'
 
 
 def customize_wh_ques(mylang,ch,rules):
+    if not ch.get(MTX_FRONT):
+        mylang.add(BASIC_FILLER_SG,section='phrases')
+        mylang.add(EX_SUBJ,section='phrases')
     if (not ch.get(MTX_FRONT)) or ch.get(MTX_FRONT) == 'single':
         if len(ch.get('adv', [])) > 0 or len(ch.get('normadp', [])) > 0:
             mylang.add('''my-head-adj-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH 0-alist ].''')
@@ -183,6 +186,13 @@ def customize_wh_ques(mylang,ch,rules):
         #rules.add('wh2-ques := wh-2nd-ques-phrase.')
         if ch.get(MTX_FRONT_OPT) == 'all-oblig':
             mylang.add(WH_Q_PHR_SG_OR_OBLIG_FRONT) # Pass up QUE from HEAD-DTR
+        # Rule out structural ambiguity for sentences like "Who sleeps where?"
+        if ch.get('word-order') in ['svo', 'sov', 'osv']:
+            mylang.add('''my-head-adj-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ cons ].''')
+        if ch.get('word-order') in ['ovs', 'vos', 'vso']:
+            mylang.add('''my-adj-head-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ cons ].''')
+
+
 
     # If the fronting isn't obligatory or if only one question phrase
     # is obligatorily fronted, need also in-situ rules:
@@ -203,7 +213,7 @@ def customize_wh_ques(mylang,ch,rules):
 
     # Obligatory pied piping of both nouns and adpositions is the default.
     # If there is no pied piping or it is optional, additional extraction rules are needed.
-    if len(ch.get('det', [])) > 0:
+    if ch.get(MTX_FRONT) in [SINGLE, SG_OBLIG, MULTI] and len(ch.get('det', [])) > 0:
         if (not ch.get('pied-pip') == 'on' or (ch.get('pied-pip')=='on'
                                                and not ch.get('oblig-pied-pip')== 'on')):
             mylang.add_literal('; If there is no obligatory pied-piping, determiners can be extracted separately:')
