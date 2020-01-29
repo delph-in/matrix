@@ -12,9 +12,12 @@ from gmcs import constants
 CONSTANTS
 '''
 
-WH_Q_PHR_SG_OR_OBLIG_FRONT = ''' wh-ques-phrase := 
+WH_Q_PHR_NO_OR_SG_OBLIG_MULTI = ''' wh-ques-phrase := 
    [ SYNSEM.NON-LOCAL.QUE #que,
      HEAD-DTR.SYNSEM.NON-LOCAL.QUE #que ].'''
+
+WH_Q_PHR_SG_OR_OBLIG_FRONT = ''' wh-ques-phrase := 
+   [ SYNSEM.NON-LOCAL.QUE.LIST < > ].'''
 
 WH_Q_PHR = ''' wh-ques-phrase := basic-head-filler-phrase & interrogative-clause &
 		  head-final &
@@ -131,18 +134,25 @@ MTX_FRONT_OPT = 'matrix-front-opt'
 SG_OBLIG = 'single-oblig'
 SINGLE = 'single'
 MULTI = 'multi'
-
+NO_MULTI = 'no-multi'
 
 
 def customize_wh_ques(mylang,ch,rules):
     if not ch.get(MTX_FRONT):
+        # If there are no wh-questions, need to put the default
+        # constraints to establish the semantic links between
+        # the filler and the gap and the extracted subject and the verb:
         mylang.add(BASIC_FILLER_SG,section='phrases')
         mylang.add(EX_SUBJ,section='phrases')
-    if (not ch.get(MTX_FRONT)) or ch.get(MTX_FRONT) == 'single':
+        mylang.add('''clause :+ [ SYNSEM.NON-LOCAL.QUE.LIST < > ]. ''')
+
+    if (not ch.get(MTX_FRONT)) or ch.get(MTX_FRONT) == 'single' or ch.get(NO_MULTI) == 'on':
         if len(ch.get('adv', [])) > 0 or len(ch.get('normadp', [])) > 0:
             mylang.add('''my-head-adj-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH 0-alist ].''')
             mylang.add('''my-adj-head-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH 0-alist ].''')
-    if (not ch.get(MTX_FRONT)) or (ch.get(MTX_FRONT) == 'single' and ch.get(MTX_FRONT_OPT) == SG_OBLIG):
+
+    if (not ch.get(MTX_FRONT)) or ch.get(NO_MULTI) == 'on' \
+                or (ch.get(MTX_FRONT) == 'single' and ch.get(MTX_FRONT_OPT) == SG_OBLIG):
         mylang.add('''clause :+ [ SYNSEM.NON-LOCAL.QUE.LIST < > ]. ''')
         if len(ch.get('adv', [])) > 0 or len(ch.get('normadp', [])) > 0:
             mylang.add('''my-head-adj-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ]. ''')
@@ -185,7 +195,7 @@ def customize_wh_ques(mylang,ch,rules):
         rules.add('wh1-ques := wh-1st-ques-phrase.')
         #rules.add('wh2-ques := wh-2nd-ques-phrase.')
         if ch.get(MTX_FRONT_OPT) == 'all-oblig':
-            mylang.add(WH_Q_PHR_SG_OR_OBLIG_FRONT) # Pass up QUE from HEAD-DTR
+            mylang.add(WH_Q_PHR_NO_OR_SG_OBLIG_MULTI) # Pass up QUE from HEAD-DTR
         # Rule out structural ambiguity for sentences like "Who sleeps where?"
         if ch.get('word-order') in ['svo', 'sov', 'osv']:
             mylang.add('''my-head-adj-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ cons ].''')

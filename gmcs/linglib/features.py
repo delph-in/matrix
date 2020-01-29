@@ -23,7 +23,9 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
 
     # TJT 2014-11-05: moving this up to get the proper geometry for case
     # get the feature geometry of CASE
-    if cases:
+    # OZ 2020-01-28 The above only works for case-marking adpositions
+    # but not for normal adpositions, for which CASE goes on the complement.
+    if cases and not pos == 'normadp':
         for f in features:
             if f[0] == 'case':
                 case_geom = f[2]
@@ -41,7 +43,8 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                    'possessum-mod-mark2': 'SYNSEM.LOCAL.CAT.VAL.COMPS.REST.FIRST.',
                    'poss-pron-mod': 'SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.',
                    'poss-pron-spec': 'SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.',
-                   'nounadp': 'SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.'}
+                   'nounadp': 'SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.',
+                   'normadp': 'SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.'}
     pos_geom_prefix = prefix_map[pos] if pos in prefix_map else 'SYNSEM.'
 
     iter_feat = 'feat' if pos != 'auxcomplement' else 'compfeature'
