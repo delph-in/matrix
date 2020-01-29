@@ -151,11 +151,12 @@ def customize_wh_ques(mylang,ch,rules):
             mylang.add('''my-head-adj-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH 0-alist ].''')
             mylang.add('''my-adj-head-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH 0-alist ].''')
 
-    if (not ch.get(MTX_FRONT)) or ch.get(NO_MULTI) == 'on' \
-                or (ch.get(MTX_FRONT) == 'single' and ch.get(MTX_FRONT_OPT) == SG_OBLIG):
+    if (not ch.get(MTX_FRONT)) or ch.get(NO_MULTI) == 'on': # \
+                #or (ch.get(MTX_FRONT) == 'single' and ch.get(MTX_FRONT_OPT) == SG_OBLIG):
         mylang.add('''clause :+ [ SYNSEM.NON-LOCAL.QUE.LIST < > ]. ''')
         if len(ch.get('adv', [])) > 0 or len(ch.get('normadp', [])) > 0:
             mylang.add('''my-head-adj-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ]. ''')
+
     mylang.add_literal(';;; Wh-question-related phrasal types')
 
     if ch.get(MTX_FRONT) in [SINGLE, SG_OBLIG, MULTI]:
