@@ -54,10 +54,16 @@ sign := basic-sign &
 ; C-CONT encodes the semantic contribution of the rule (phrasal
 ; or lexical).
 
+; OZ 2020-01-29 Adding a feature L-QUE to mark a wh-word at the left periphery.
+; This is needed to rule out spurious ambiguity in languages which have both
+; extracted and in-situ questions.
+
 phrase-or-lexrule := sign &
   [ SYNSEM canonical-synsem &
-	   [ LOCAL.CONT.HOOK #hook],
-    C-CONT mrs-min & [ HOOK #hook] ].
+	   [ LOCAL.CONT.HOOK #hook,
+	     L-QUE #wh ],
+    C-CONT mrs-min & [ HOOK #hook],
+    ARGS.FIRST.SYNSEM.L-QUE #wh ].
 
 word-or-lexrule-min := sign-min.
 
@@ -148,8 +154,12 @@ lex-or-phrase-synsem := synsem-min &
 ; SSH (2013-03-05) L/R-PERIPH are newly added in order to constrain
 ; clause-initial/final focus.
 
+; OZ 2020-01-28 Adding L-QUE feature to mark whether or not there
+; is a wh-word at the left periphery.
+
 synsem := synsem-min &
-  [ L-PERIPH luk,
+  [ L-QUE bool,
+    L-PERIPH luk,
     R-PERIPH luk ].
 
 expressed-synsem := synsem.
@@ -947,6 +957,27 @@ ocons := olist & cons &
     REST  olist ].
 
 onull := olist & null.
+
+; A list that is either empty or contains canonical-sysnems,
+; so, no gaps. This is to rule out ambiguity when a head-adjunct
+; phrase would attach both before and after complement/subject extraction.
+
+clist := list.
+
+oclist := clist & olist.
+
+ccons := clist & cons &
+  [ FIRST canonical-synsem,
+    REST  clist ].
+
+; OZ 2020-01-30 The below type isn't possible
+; but possibly isn't needed either.
+
+;occons := ccons & ocons.
+
+cnull := clist & null.
+
+ocnull := cnull & onull.
 
 ; The LinGO grammar also makes use of a prolist -- or list
 ; of synsems of type pro-ss.

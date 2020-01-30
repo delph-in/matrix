@@ -40,14 +40,15 @@ LEXICAL_SUPERTYPES = {'noun':'noun-lex',
 # TYPE DEFINITIONS (that can be shared with other libraries)
 COMPLEMENTIZER = '''
       complementizer-lex-item := raise-sem-lex-item & basic-one-arg &
-         [ SYNSEM.LOCAL.CAT [ HEAD comp &
+         [ SYNSEM [ LOCAL.CAT [ HEAD comp &
                                    [ MOD < > ],
                               VAL [ SPR < >,
                                     SUBJ < >,
-                                    COMPS < #comp > ]],
+                                    COMPS < #comp > ] ],
+                    L-QUE - ],
            ARG-ST < #comp & [ LOCAL.CAT [ HEAD verb,
                                           VAL [ SUBJ < >,
-                                                COMPS < > ]]] > ].'''
+                                                COMPS < > ] ] ] > ].'''
 
 WH_WORD = '''wh-word-lex := norm-hook-lex-item & basic-icons-lex-item &
   [ SYNSEM [ LOCAL [ CAT [ VAL [ SPR < >,
@@ -61,7 +62,8 @@ WH_WORD = '''wh-word-lex := norm-hook-lex-item & basic-icons-lex-item &
 				    RSTR #harg ] >,
 			    HCONS.LIST < [ HARG #harg,
 				        LARG #larg ] > ] ],
-	     NON-LOCAL.QUE.LIST < #arg0 > ] ].'''
+	     NON-LOCAL.QUE.LIST < #arg0 >,
+	     L-QUE + ] ].'''
 
 WH_PRONOUN =  '''wh-pronoun-noun-lex := wh-word-lex & non-mod-lex-item & zero-arg-que &
   [ SYNSEM [ LOCAL [ CAT.HEAD noun,
@@ -84,12 +86,14 @@ ADV_ITEM = '''adverb-lex-item := intersective-adverb-lex &
 
 ADV =  '''adverb-lex := adverb-lex-item &
 [ SYNSEM [ LOCAL.CONT [ RELS.LIST < [ ], [ ], [ PRED "exist_q_rel" ] >  ],
-           NON-LOCAL.QUE 0-alist ] ].'''
+           NON-LOCAL.QUE 0-alist,
+           L-QUE - ] ].'''
 
 
 WH_ADV =  '''wh-adverb-lex := adverb-lex-item & zero-arg-que &
 [ SYNSEM [ LOCAL.CONT [ RELS.LIST < [ ], [ ARG0 #arg0 ], quant-relation & [ PRED "which_q_rel" ] >  ],
-           NON-LOCAL.QUE.LIST < #arg0 > ] ].'''
+           NON-LOCAL.QUE.LIST < #arg0 >,
+           L-QUE + ] ].'''
 
 
 WH_DET = '''wh-determiner-lex := basic-determiner-lex & non-mod-lex-item  & zero-arg-nonslash &
@@ -97,18 +101,21 @@ WH_DET = '''wh-determiner-lex := basic-determiner-lex & non-mod-lex-item  & zero
                            SPEC.FIRST.LOCAL.CONT.HOOK.INDEX #arg0,
                            COMPS < >,
                            SUBJ < > ],
-             NON-LOCAL.QUE.LIST < #arg0 > ] ].'''
+             NON-LOCAL.QUE.LIST < #arg0 >,
+             L-QUE + ] ].'''
 
-ADP_LEX = '''norm-adposition-lex := norm-sem-lex-item & no-hcons-lex-item & basic-intersective-mod-lex &
+ADP_LEX = '''norm-adposition-lex := norm-sem-lex-item & no-hcons-lex-item & basic-intersective-mod-lex & basic-one-arg &
   [ SYNSEM [ LOCAL [ CAT [ HEAD adp,
-                           VAL [ COMPS < [ LOCAL [ CAT [ HEAD noun, VAL.SPR < > ],
+                           VAL [ COMPS < #comp & [ LOCAL [ CAT [ HEAD noun, VAL.SPR < > ],
                                                  CONT.HOOK.INDEX #ind ],
                                          NON-LOCAL.QUE #que ] >,
                                  SPR < >,
                                  SUBJ < > ] ],
                      CONT.RELS.LIST < [ PRED #pred, ARG0 event, ARG1 event-or-ref-index ] > ],
              LKEYS.KEYREL arg12-ev-relation & [ PRED #pred, ARG2 #ind ],
-             NON-LOCAL.QUE #que ] ].'''
+             NON-LOCAL.QUE #que,
+             L-QUE - ],
+    ARG-ST < #comp > ].'''
 
 ###############
 ### CLASSES ###

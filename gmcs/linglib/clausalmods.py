@@ -401,7 +401,7 @@ def add_non_branching_rules(mylang, rules, cms, ch):
         value = shortform_pred(pred)
         type = value + '-modifying-clause-phrase'
         mylang.add(type + ' := adv-marked-subord-clause-phrase &\
-                    [ C-CONT.RELS <! [ PRED "' + pred + '" ] !>,\
+                    [ C-CONT.RELS.LIST < [ PRED "' + pred + '" ] >,\
                         ARGS < [ SYNSEM.SUBORDINATED ' + value + ' ] > ].')
         if pos == 'before':
             mylang.add(type + ' := [ SYNSEM.LOCAL.CAT.POSTHEAD - ].')
@@ -619,7 +619,7 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
     mylang.add(type + ' := ' + supertype + '.')
     while constraints != []:
         mylang.add(type + ' := [ ' + constraints.pop() + ' ].')
-    mylang.add(type + ' := [ C-CONT.RELS <! [ PRED "' + pred + '" ] !> ].')
+    mylang.add(type + ' := [ C-CONT.RELS.LIST < [ PRED "' + pred + '" ] > ].')
     mylang.set_section('addenda')
     mylang.add('basic-head-mod-phrase-simple :+ [ SYNSEM.LOCAL.CAT.MC #mc,\
       HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].')

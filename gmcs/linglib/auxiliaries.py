@@ -400,7 +400,7 @@ def add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon, trigger):
                 if mood != '':
                     grdef += 'MOOD ' + mood + ','
 
-                grdef = grdef[:len(grdef)-1] + ' ] ] !> ], '
+                grdef = grdef[:len(grdef)-1] + ' ] ] > ], '
 
             grdef += 'FLAGS.TRIGGER "' + TDLencode(id) + '" ].'
             trigger.add(grdef)

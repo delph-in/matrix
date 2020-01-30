@@ -146,13 +146,16 @@ def customize_wh_ques(mylang,ch,rules):
         mylang.add(EX_SUBJ,section='phrases')
         mylang.add('''clause :+ [ SYNSEM.NON-LOCAL.QUE.LIST < > ]. ''')
 
-    if (not ch.get(MTX_FRONT)) or ch.get(MTX_FRONT) == 'single' or ch.get(NO_MULTI) == 'on':
+    if (not ch.get(MTX_FRONT)) or ch.get(MTX_FRONT) == 'single':
         if len(ch.get('adv', [])) > 0 or len(ch.get('normadp', [])) > 0:
-            mylang.add('''my-head-adj-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH 0-alist ].''')
+            if  ch.get(NO_MULTI) == 'on':
+                mylang.add('''my-head-adj-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH 0-alist ].''')
+            else:
+                mylang.add('''my-head-adj-phrase := [ HEAD-DTR.SYNSEM [ L-QUE -,
+                                LOCAL.CAT.VAL [ SUBJ clist, COMPS clist ] ] ].''')
             mylang.add('''my-adj-head-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH 0-alist ].''')
 
-    if (not ch.get(MTX_FRONT)) or ch.get(NO_MULTI) == 'on': # \
-                #or (ch.get(MTX_FRONT) == 'single' and ch.get(MTX_FRONT_OPT) == SG_OBLIG):
+    if (not ch.get(MTX_FRONT)) or ch.get(NO_MULTI) == 'on':
         mylang.add('''clause :+ [ SYNSEM.NON-LOCAL.QUE.LIST < > ]. ''')
         if len(ch.get('adv', [])) > 0 or len(ch.get('normadp', [])) > 0:
             mylang.add('''my-head-adj-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ]. ''')
@@ -199,9 +202,11 @@ def customize_wh_ques(mylang,ch,rules):
             mylang.add(WH_Q_PHR_NO_OR_SG_OBLIG_MULTI) # Pass up QUE from HEAD-DTR
         # Rule out structural ambiguity for sentences like "Who sleeps where?"
         if ch.get('word-order') in ['svo', 'sov', 'osv']:
-            mylang.add('''my-head-adj-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ cons ].''')
+            mylang.add('''my-head-adj-phrase := [ HEAD-DTR.SYNSEM [ L-QUE -,
+             LOCAL.CAT.VAL [ SUBJ clist, COMPS clist ] ] ].''')
+        # The below does not make sense?
         if ch.get('word-order') in ['ovs', 'vos', 'vso']:
-            mylang.add('''my-adj-head-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ cons ].''')
+            mylang.add('''my-adj-head-phrase := [ HEAD-DTR.SYNSEM.L-QUE - ].''')
 
 
 

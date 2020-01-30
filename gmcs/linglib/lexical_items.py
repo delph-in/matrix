@@ -235,11 +235,13 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
         mylang.add(typedef)
         typedef = \
             'main-verb-lex := verb-lex & basic-verb-lex & \
-                            [ SYNSEM.LOCAL.CAT.HEAD.AUX - ].'
+                            [ SYNSEM [ LOCAL.CAT.HEAD.AUX -,' \
+                                       'L-QUE - ] ].'
         mylang.add(typedef)
         typedef = \
             'aux-lex := verb-lex & \
-                      [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].'
+                      [ SYNSEM [ LOCAL.CAT.HEAD.AUX +,' \
+                                'L-QUE - ] ].'
         mylang.add(typedef)
 
         if vcluster:
@@ -439,6 +441,8 @@ def customize_determiners(mylang, ch, lexicon, hierarchies):
 def add_determiner(ch, det, stype, hierarchies, lexicon, mylang):
     dtype = det_id(det)
     mylang.add(dtype + ' := ' + stype + '.')
+    if stype == 'determiner-lex':
+        mylang.add(dtype + ':= [ SYNSEM.L-QUE - ].')
     has_inforstr_feat = False
     for feat in det.get('feat', []):
         if feat['name'] == "information-structure meaning":
@@ -506,10 +510,11 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
 
     typedef = \
         'noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & \
-           [ SYNSEM.LOCAL [ CAT.VAL [ SPR < #spr & [ LOCAL.CAT.HEAD det ] >, \
+           [ SYNSEM [ LOCAL [ CAT.VAL [ SPR < #spr & [ LOCAL.CAT.HEAD det ] >, \
                                       COMPS < >, \
                                       SUBJ < >, \
-                                      SPEC < > ] ], \
+                                      SPEC < > ] ],' \
+                      'L-QUE - ], \
              ARG-ST < #spr > ].'
 
     # EKN 2017-12-18 In some languages, possessor nouns or 

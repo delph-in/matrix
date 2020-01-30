@@ -39,6 +39,7 @@ section=matrix-yes-no
 section=wh-q
 front-matrix=single
 matrix-front-opt=single-oblig
+no-multi=on
 
 section=info-str
 
