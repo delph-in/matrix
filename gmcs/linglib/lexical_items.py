@@ -666,7 +666,7 @@ def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
 
     # Add basic adjective definition
     # OZ 2020-02-18 In fact, all adjectives must also inherit from either zero-norm-arg
-    # or from basic-one-arg. Otherwise our nonlocal values are underspecified.
+    # or from basic-one-arg. Otherwise the nonlocal values are underspecified.
     if ch.get('adj',[]):
         mylang.add("adj-lex := basic-intersective-adjective-lex.")
 

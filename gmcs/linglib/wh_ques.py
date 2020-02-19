@@ -31,8 +31,12 @@ WH_Q_PHR = ''' wh-ques-phrase := basic-head-filler-phrase & interrogative-clause
 
 
 EX_COMP = ''' extracted-comp-phrase := basic-extracted-comp-phrase &
-  [ SYNSEM.LOCAL.CAT.HEAD verb,
-    HEAD-DTR.SYNSEM.LOCAL.CAT.VAL [  SUBJ cons, COMPS < [], ... >  ]].'''
+  [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < [], ... >  ].'''
+
+EX_COMP_PIED = ''' extracted-adp-comp-phrase := basic-extracted-comp-phrase &
+  [ SYNSEM.LOCAL.CAT.HEAD adp,
+    HEAD-DTR.SYNSEM.LOCAL.CAT.VAL [  SUBJ < >, COMPS < [] >  ]].'''
+
 
 EX_SUBJ = ''' extracted-subj-phrase := basic-extracted-subj-phrase &
   [ SYNSEM.LOCAL.CAT.HEAD verb,
@@ -160,25 +164,29 @@ def customize_wh_ques(mylang,ch,rules):
         if len(ch.get('adv', [])) > 0 or len(ch.get('normadp', [])) > 0:
             mylang.add('''my-head-adj-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ]. ''')
 
-    mylang.add_literal(';;; Wh-question-related phrasal types')
+    mylang.add_literal(';;; Wh-question-related phrasal types',section='phrases')
 
     if ch.get(MTX_FRONT) in [SINGLE, MULTI]:
         mylang.add_literal('''; Do not allow extracting "And Kim"''')
         mylang.add('''basic-head-filler-phrase :+
    [ ARGS < [ SYNSEM.LOCAL.COORD - ], [ SYNSEM.LOCAL.COORD - ] > ].''')
-        mylang.add(WH_Q_PHR)
+        mylang.add(WH_Q_PHR,section='phrases')
         if ch.get('form-fin-nf') == 'on':
             mylang.add('wh-ques-phrase := [ SYNSEM.LOCAL.CAT.HEAD.FORM finite ].')
-        mylang.add_literal('; Complement extraction')
+        mylang.add_literal('; Complement extraction',section='phrases')
         mylang.add(EX_COMP)
         rules.add('ex-comp := extracted-comp-phrase.')
-        mylang.add_literal('; Adjunct extraction')
+        mylang.add_literal('; Adjunct extraction',section='phrases')
         mylang.add(EX_ADJ)
         rules.add('ex-adj := extracted-adv-adp-adj-phrase.')
+        if ch.get('word-order') in ['free','svo','sov']:
+            mylang.add('extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ cons ].')
+        #else:
+        #    mylang.add('extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].')
 
     if ch.get(MTX_FRONT) in [SINGLE]:
         # With single fronting, can restrict SLASH to one element at most
-        mylang.add(BASIC_FILLER_SG)
+        mylang.add(BASIC_FILLER_SG,section='phrases')
         mylang.add_literal('; Subject extraction')
         mylang.add(EX_SUBJ)
         rules.add('ex-subj := extracted-subj-phrase.')
@@ -189,7 +197,7 @@ def customize_wh_ques(mylang,ch,rules):
         mylang.add(WH_Q_PHR_SG_OR_OBLIG_FRONT)
 
     if ch.get(MTX_FRONT) in [MULTI]:
-        mylang.add(EX_SUBJ_MULTI)
+        mylang.add(EX_SUBJ_MULTI,section='phrases')
         rules.add('ex-subj := extracted-subj-phrase.')
         mylang.add('wh-ques-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < [], ... > ].')
         mylang.add(FIRST_FILLER)
@@ -215,7 +223,7 @@ def customize_wh_ques(mylang,ch,rules):
     if (ch.get(MTX_FRONT) == SINGLE and not ch.get(MTX_FRONT_OPT) == SG_OBLIG) \
             or ch.get(MTX_FRONT) == 'in-situ' \
             or (ch.get(MTX_FRONT) == MULTI and ch.get(MTX_FRONT_OPT) == SG_OBLIG):
-        mylang.add_literal('; In-situ interrogative clause.')
+        mylang.add_literal('; In-situ interrogative clause.',section='phrases')
         mylang.add(IN_SITU_PHRASE)
         rules.add('in-situ-ques := insitu-int-cl.')
         if (ch.get(MTX_FRONT) == SINGLE and not ch.get(MTX_FRONT_OPT) == SG_OBLIG) \
@@ -231,7 +239,13 @@ def customize_wh_ques(mylang,ch,rules):
     # If there is no pied piping or it is optional, additional extraction rules are needed.
     if ch.get(MTX_FRONT) in [SINGLE, MULTI] and len(ch.get('det', [])) > 0:
         if (not ch.get('pied-pip') == 'on' or (ch.get('pied-pip')=='on'
-                                               and not ch.get('oblig-pied-pip')== 'on')):
-            mylang.add_literal('; If there is no obligatory pied-piping, determiners can be extracted separately:')
-            mylang.add(EX_DET_PHRASE)
+                                               and not (ch.get('oblig-pied-pip-noun')== 'on'))):
+            mylang.add_literal('; If there is no obligatory pied-piping, determiners can be extracted separately:',section='phrasal')
+            mylang.add(EX_DET_PHRASE,section='phrases')
             rules.add('ex-det := extracted-det-phrase.')
+        if ch.get('pied-pip-adp') == 'on' and not ch.get('oblig-pied-pip-adp') == 'on':
+            mylang.add('extracted-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD +vp ].')
+            #mylang.add(EX_COMP_PIED)
+            #rules.add('ex-adp-comp := extracted-adp-comp-phrase.')
+        else:
+            mylang.add('extracted-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD verb ].')
