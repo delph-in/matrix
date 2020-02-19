@@ -666,7 +666,7 @@ def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
 
     # Add basic adjective definition
     if ch.get('adj',[]):
-        mylang.add("adj-lex := basic-intersective-adjective-lex.")
+        mylang.add("adj-lex := basic-intersective-adjective-lex & basic-one-arg.")
 
     # Check which rules need to be added to rules.tdl
     adj_rules = {'adj_head': False, 'head_adj': False}

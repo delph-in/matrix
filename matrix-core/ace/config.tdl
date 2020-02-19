@@ -27,7 +27,7 @@ handle-type               := h.
 list-type                 := list.
 cons-type                 := cons.
 null-type                 := null.
-diff-list-type            := diff-list.
+diff-list-type            := append-list.
 
 ;chart-dependencies := .
 

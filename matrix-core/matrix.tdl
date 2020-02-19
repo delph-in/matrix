@@ -891,6 +891,9 @@ append-list := list-wrapper &
   [ LIST #list,
     APPEND list-of-alists & [ APPEND-RESULT #list ] ].
 
+; OZ 2020-02-18 needed for generation with ACE to work:
+append-diff-list := append-list & diff-list.
+
 ; START is the start of the new list (result of append)
 list-of-alists := list &
   [ APPEND-RESULT list ].

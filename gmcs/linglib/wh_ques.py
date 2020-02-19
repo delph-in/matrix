@@ -162,7 +162,7 @@ def customize_wh_ques(mylang,ch,rules):
 
     mylang.add_literal(';;; Wh-question-related phrasal types')
 
-    if ch.get(MTX_FRONT) in [SINGLE, SG_OBLIG, MULTI]:
+    if ch.get(MTX_FRONT) in [SINGLE, MULTI]:
         mylang.add_literal('''; Do not allow extracting "And Kim"''')
         mylang.add('''basic-head-filler-phrase :+
    [ ARGS < [ SYNSEM.LOCAL.COORD - ], [ SYNSEM.LOCAL.COORD - ] > ].''')
@@ -176,7 +176,7 @@ def customize_wh_ques(mylang,ch,rules):
         mylang.add(EX_ADJ)
         rules.add('ex-adj := extracted-adv-adp-adj-phrase.')
 
-    if ch.get(MTX_FRONT) in [SINGLE, SG_OBLIG]:
+    if ch.get(MTX_FRONT) in [SINGLE]:
         # With single fronting, can restrict SLASH to one element at most
         mylang.add(BASIC_FILLER_SG)
         mylang.add_literal('; Subject extraction')
@@ -188,7 +188,7 @@ def customize_wh_ques(mylang,ch,rules):
         # Pass up QUE from the HEAD-DTR in this case:
         mylang.add(WH_Q_PHR_SG_OR_OBLIG_FRONT)
 
-    if ch.get(MTX_FRONT) == 'multi':
+    if ch.get(MTX_FRONT) in [MULTI]:
         mylang.add(EX_SUBJ_MULTI)
         rules.add('ex-subj := extracted-subj-phrase.')
         mylang.add('wh-ques-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < [], ... > ].')
@@ -214,7 +214,7 @@ def customize_wh_ques(mylang,ch,rules):
     # is obligatorily fronted, need also in-situ rules:
     if (ch.get(MTX_FRONT) == SINGLE and not ch.get(MTX_FRONT_OPT) == SG_OBLIG) \
             or ch.get(MTX_FRONT) == 'in-situ' \
-            or (ch.get(MTX_FRONT) == 'multi' and ch.get(MTX_FRONT_OPT) == SG_OBLIG):
+            or (ch.get(MTX_FRONT) == MULTI and ch.get(MTX_FRONT_OPT) == SG_OBLIG):
         mylang.add_literal('; In-situ interrogative clause.')
         mylang.add(IN_SITU_PHRASE)
         rules.add('in-situ-ques := insitu-int-cl.')
@@ -224,12 +224,12 @@ def customize_wh_ques(mylang,ch,rules):
         elif ch.get(MTX_FRONT) == 'multi' and ch.get(MTX_FRONT_OPT) == SG_OBLIG:
             mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.MC - ].')
         # For non-free word orders, need to rule out structural ambiguity:
-        if ch.get('word-order') in ['svo', 'sov']:
+        if ch.get('word-order') in ['svo', 'sov'] and not ch.get(MTX_FRONT) == 'in-situ':
             mylang.add('subj-head-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
 
     # Obligatory pied piping of both nouns and adpositions is the default.
     # If there is no pied piping or it is optional, additional extraction rules are needed.
-    if ch.get(MTX_FRONT) in [SINGLE, SG_OBLIG, MULTI] and len(ch.get('det', [])) > 0:
+    if ch.get(MTX_FRONT) in [SINGLE, MULTI] and len(ch.get('det', [])) > 0:
         if (not ch.get('pied-pip') == 'on' or (ch.get('pied-pip')=='on'
                                                and not ch.get('oblig-pied-pip')== 'on')):
             mylang.add_literal('; If there is no obligatory pied-piping, determiners can be extracted separately:')
