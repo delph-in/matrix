@@ -1,0 +1,114 @@
+
+version=32
+
+section=general
+language=wh12-vos-sg-oblig-pied-adp-opt
+
+section=word-order
+word-order=vos
+has-dets=yes
+noun-det-order=det-noun
+has-aux=no
+
+section=number
+
+section=person
+person=none
+
+section=gender
+
+section=case
+case-marking=none
+
+section=adnom-poss
+
+section=direct-inverse
+
+section=tense-aspect-mood
+
+section=evidentials
+
+section=other-features
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=wh-q
+front-matrix=single
+matrix-front-opt=single-oblig
+pied-pip=on
+oblig-pied-pip-noun=on
+pied-pip-adp=on
+
+section=info-str
+
+section=arg-opt
+
+section=nominalclause
+
+section=clausal-comp
+
+section=clausalmods
+
+section=lexicon
+  noun1_det=obl
+    noun1_stem1_orth=cat
+    noun1_stem1_pred=_cat_n_rel
+  noun2_det=obl
+    noun2_stem1_orth=house
+    noun2_stem1_pred=_house_n_rel
+  noun3_name=wh
+  noun3_inter=on
+  noun3_det=imp
+    noun3_stem1_orth=who
+    noun3_stem1_pred=_person_n_rel
+    noun3_stem2_orth=what
+    noun3_stem2_pred=_thing_n_rel
+  verb1_valence=intrans
+    verb1_stem1_orth=sleeps
+    verb1_stem1_pred=_sleep_v_rel
+  verb2_valence=trans
+    verb2_stem1_orth=sees
+    verb2_stem1_pred=_sees_v_rel
+  det1_name=def
+    det1_stem1_orth=the
+    det1_stem1_pred=_the_q_rel
+  det2_name=which
+  det2_inter=on
+    det2_stem1_orth=which
+    det2_stem1_pred=_which_q_rel
+    normadp1_stem1_orth=in
+    normadp1_stem1_pred=_in_p_rel
+  normadp1_order=before
+
+section=morphology
+
+section=toolbox-import
+
+section=test-sentences
+  sentence27_orth=which cat sleeps?
+  sentence28_orth=cat which sleeps?
+  sentence28_star=on
+  sentence29_orth=sleeps which cat?
+  sentence29_star=on
+  sentence30_orth=sleeps cat which?
+  sentence30_star=on
+  sentence31_orth=which house sees the cat ?
+  sentence32_orth=the house which cat sees?
+  sentence32_star=on
+  sentence33_orth=sees the cat which house?
+  sentence33_star=on
+  sentence36_orth=which sees the cat house?
+  sentence36_star=on
+  sentence37_orth=in which house sleeps the cat?
+  sentence38_orth=which house sleeps the cat in?
+  sentence39_orth=sleeps the cat in the house
+  sentence40_orth=in the house sleeps the cat
+  sentence40_star=on
+
+section=gen-options
+
+section=ToolboxLexicon
