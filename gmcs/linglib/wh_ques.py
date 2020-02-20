@@ -40,18 +40,15 @@ EX_COMP_PIED = ''' extracted-adp-comp-phrase := basic-extracted-comp-phrase &
 
 EX_SUBJ = ''' extracted-subj-phrase := basic-extracted-subj-phrase &
   [ SYNSEM.LOCAL.CAT.HEAD verb,
-    HEAD-DTR.SYNSEM [ LOCAL.CAT.VAL [ COMPS < >,
-                                      SUBJ.FIRST.LOCAL #slash & local ],
+    HEAD-DTR.SYNSEM [ LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL #slash & local,
                       NON-LOCAL.SLASH.LIST < #slash, ... > ] ].'''
 
 EX_SUBJ_MULTI = '''extracted-subj-phrase := basic-extracted-arg-phrase & head-compositional &
   [ SYNSEM [ LOCAL.CAT.VAL [ SUBJ < >,
-                           SPR < > ,
-                           COMPS < > ] ],
+                           SPR < > ] ],
     HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL [ SUBJ < gap &
                                              [ LOCAL local &
-                                               [ CONT.HOOK.INDEX ref-ind ] ] >,
-                                        COMPS < > ], MC na ] ],
+                                               [ CONT.HOOK.INDEX ref-ind ] ] > ], MC na ] ],
     C-CONT [ RELS.LIST < >,
              HCONS.LIST < >,
              ICONS.LIST < > ] ].'''
@@ -179,10 +176,6 @@ def customize_wh_ques(mylang,ch,rules):
         mylang.add_literal('; Adjunct extraction',section='phrases')
         mylang.add(EX_ADJ)
         rules.add('ex-adj := extracted-adv-adp-adj-phrase.')
-        if ch.get('word-order') in ['free','svo','sov']:
-            mylang.add('extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ cons ].')
-        #else:
-        #    mylang.add('extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].')
 
     if ch.get(MTX_FRONT) in [SINGLE]:
         # With single fronting, can restrict SLASH to one element at most
@@ -249,3 +242,15 @@ def customize_wh_ques(mylang,ch,rules):
             #rules.add('ex-adp-comp := extracted-adp-comp-phrase.')
         else:
             mylang.add('extracted-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD verb ].')
+
+    if ch.get(MTX_FRONT) in [SINGLE, MULTI]:
+        # Free probably shouldn't belong here? check
+        if ch.get('word-order') in ['vos','svo','sov','free']:
+            if ch.get('pied-pip-adp') != 'on' or ch.get('oblig-pied-pip-adp') == 'on':
+                mylang.add('extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ cons ].',merge=True)
+            mylang.add('extracted-subj-phrase := [ SYNSEM.LOCAL.CAT.VAL.COMPS  < >,'
+                                                 ' HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].',merge=True)
+        elif ch.get('word-order') in ['vso','osv','ovs']:
+            mylang.add('extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].',merge=True)
+            mylang.add('extracted-subj-phrase := [ SYNSEM.LOCAL.CAT.VAL.COMPS #comps,'
+                                                 ' HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS #comps ].',merge=True)

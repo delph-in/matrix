@@ -2245,15 +2245,15 @@ basic-extracted-comp-phrase := basic-extracted-arg-phrase &
 ; to analysis of subject extraction for English.
 ; ASF 2011-10-05 Added supertype 'head-compositional' to basic-extracted-subj-phrase
 ; in order to make sure matrix.tdl provides the right semantics for extracted subjects.
+; OZ 2020-02-20 Removing COMPS constrants from mother and head daughter to accommodate
+; extraction from VSO languages (possibly required in other situations, too).
 
 basic-extracted-subj-phrase := basic-extracted-arg-phrase & head-compositional &
   [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >,
-                           SPR < >,
-                           COMPS < > ],
+                           SPR < > ],
     HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL [ SUBJ < gap &
                                              [ LOCAL local &
-                                               [ CONT.HOOK.INDEX ref-ind ] ] >,
-                                        COMPS olist ],
+                                               [ CONT.HOOK.INDEX ref-ind ] ] > ],
                                   MC na ] ],
     C-CONT [ RELS 0-alist,
              HCONS 0-alist,
