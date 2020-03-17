@@ -33,11 +33,6 @@ WH_Q_PHR = ''' wh-ques-phrase := basic-head-filler-phrase & interrogative-clause
 EX_COMP = ''' extracted-comp-phrase := basic-extracted-comp-phrase &
   [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < [], ... >  ].'''
 
-EX_COMP_PIED = ''' extracted-adp-comp-phrase := basic-extracted-comp-phrase &
-  [ SYNSEM.LOCAL.CAT.HEAD adp,
-    HEAD-DTR.SYNSEM.LOCAL.CAT.VAL [  SUBJ < >, COMPS < [] >  ]].'''
-
-
 EX_SUBJ = ''' extracted-subj-phrase := basic-extracted-subj-phrase &
   [ SYNSEM.LOCAL.CAT.HEAD verb,
     HEAD-DTR.SYNSEM [ LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL #slash & local,
@@ -238,8 +233,6 @@ def customize_wh_ques(mylang,ch,rules):
             rules.add('ex-det := extracted-det-phrase.')
         if ch.get('pied-pip-adp') == 'on' and not ch.get('oblig-pied-pip-adp') == 'on':
             mylang.add('extracted-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD +vp ].')
-            #mylang.add(EX_COMP_PIED)
-            #rules.add('ex-adp-comp := extracted-adp-comp-phrase.')
         else:
             mylang.add('extracted-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD verb ].')
 

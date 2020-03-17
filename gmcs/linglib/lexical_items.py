@@ -44,6 +44,9 @@ def adp_id(item):
     """Return the identifier for an adposition lexical item."""
     return get_name(item) + '-adp-lex'
 
+def qpart_id(item):
+    """Return the identifier for a determiner lexical item."""
+    return get_name(item) + '-lex'
 
 ##########################################################
 # insert_ids()
@@ -229,9 +232,10 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
         auxorder = ch.get('aux-comp-order')
         vcluster = determine_vcluster(auxcomp, auxorder, wo, ch)
 
+        # OZ 2020-02-20 May need to push this down for question verbs.
         typedef = \
             'verb-lex := non-mod-lex-item & \
-                       [ SYNSEM.LOCAL.CAT.HEAD verb ].'
+                       [ SYNSEM [ LOCAL.CAT.HEAD verb, L-QUE - ] ].'
         mylang.add(typedef)
         typedef = \
             'main-verb-lex := verb-lex & basic-verb-lex & \
@@ -463,19 +467,20 @@ def add_determiner(ch, det, stype, hierarchies, lexicon, mylang):
         lexicon.add(typedef)
 
 def customize_misc_lex(ch, lexicon, trigger):
-
     # Question particle
-    if ch.get('q-part'):
-        orth = ch.get('q-part-orth')
-        orthstr = orth_encode(orth)
-        typedef = \
-            TDLencode(orth) + ' := qpart-lex-item & \
-                   [ STEM < "' + orthstr + '" > ].'
-        lexicon.add(typedef)
-        grdef = TDLencode(orth) +'_gr := generator_rule & \
-                   [ CONTEXT [ RELS.LIST < [ ARG0.SF ques ] > ], \
-                     FLAGS.TRIGGER "' + TDLencode(orth) + '" ].'
-        trigger.add(grdef)
+    if ch.get('q-part') == 'on':
+        for qpart in ch.get('q-particle'):
+            parent = qpart_id(qpart)
+            orth = qpart['orth']
+            orthstr = orth_encode(orth)
+            typedef = \
+                TDLencode(orth) + ' := ' + parent + ' & \
+                       [ STEM < "' + orthstr + '" > ].'
+            lexicon.add(typedef)
+            grdef = TDLencode(orth) +'_gr := generator_rule & \
+                       [ CONTEXT [ RELS.LIST < [ ARG0.SF ques ] > ], \
+                         FLAGS.TRIGGER "' + TDLencode(orth) + '" ].'
+            trigger.add(grdef)
 
 
 def customize_nouns(mylang, ch, lexicon, hierarchies):

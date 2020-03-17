@@ -579,7 +579,7 @@ def add_clausalcomp_verb_supertype(ch, mainorverbtype,mylang):
       [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >,\
         ARG-ST < [ LOCAL.CAT.HEAD ' + head + ' ],\
                  #comps &\
-                 [ LOCAL.CAT.VAL [ SPR < >, COMPS < >, SUBJ < > ] ] > ].'
+                 [ LOCAL.CAT [ MC na-or--, VAL [ SPR < >, COMPS < >, SUBJ < > ] ] ] > ].'
     mylang.add(typedef,section='verblex')
 
 
@@ -605,7 +605,9 @@ def customize_clausal_verb(clausalverb,mylang,ch,cs,extra):
         if val:
             mylang.add(clausalverb + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.EXTRA '+ val + ' ] > ].'
                        , merge=True)
-
+    # From the wh-questions library; disallow questions from crossing clause boundary
+    #if ch.get('front-across-cl') != 'on' or ch.get(''):
+    #    mylang.add(clausalverb + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ NON-LOCAL.QUE.LIST < > ] > ].', merge=True)
 
 '''
 Semantically non-empty nominalization requires that

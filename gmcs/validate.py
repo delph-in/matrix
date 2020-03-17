@@ -1533,9 +1533,9 @@ def validate_clausalmods(ch, vr):
                    ' and clausal modifiers require nominalization, the produced grammar' +\
                    ' will allow any nominalization strategy for the clausal modifier strategy.'
             vr.warn(feat.full_key + '_name', mess)
-            if cms.get('subordinaotor-type') == 'adverb':
-                mess = 'Nominalization is not supported of the adverb analysis.'
-                vr.err(cms.full_key + '_subordinator-type', mess)
+            if cms.get('subordinator-type') == 'adverb':
+                mess = 'Nominalization is not supported for the adverb analysis.'
+                vr.err(feat.full_key + '_name', mess)
             for feat in cms.get('feat'):
                 if feat.get('name') == 'mood' or feat.get('name') == 'aspect':
                     mess = 'Aspect and mood are not present on nominal projections,' +\

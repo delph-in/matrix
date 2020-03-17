@@ -68,6 +68,38 @@ class ChoiceCategory:
         return full_keys
 
 class ChoiceDict(ChoiceCategory, dict):
+    '''
+    olzama March 13 2019.
+    This constructor overrides the inherited constructor.
+    The purpose is to be able to build a ChoiceDict from a python dictionary
+    (rather than a choices file where you are guaranteed to find a full dictionary key
+    on the LHS of the =). Here, we need to build the keys paying attention
+    to where we are in the data structure.
+    '''
+    def __init__(self, full_key=None, python_dicts=None):
+        self.safe_get = True
+        self.full_key = full_key
+        if python_dicts:
+            self.dict2ChoiceDict(python_dicts,self)
+
+    def dict2ChoiceDict(self,list_of_python_dicts,choicedict):
+        for d in list_of_python_dicts:
+            key_so_far = d['name']
+            self.dict2ChoiceDict_helper(d,key_so_far,choicedict)
+
+    def dict2ChoiceDict_helper(self,python_dict,key_so_far,choicedict):
+        list_attrs = []
+        for k in python_dict:
+            if isinstance(python_dict[k],str):
+                choicedict[key_so_far + '_' + k] = python_dict[k]
+            else:
+                list_attrs.append((python_dict[k],k))
+        if len(list_attrs) == 0:
+            return
+        for l,k in list_attrs:
+            for i,ll in enumerate(l):
+                new_key = key_so_far + '_' + k + str(i+1)
+                self.dict2ChoiceDict_helper(ll, new_key, choicedict)
 
     def __getitem__(self, key):
         cur, remaining = get_next_key(key)
@@ -579,6 +611,8 @@ class ChoicesFile:
             self.convert_30_to_31()
         if self.version < 32:
             self.convert_31_to_32()
+        if self.version < 33:
+            self.convert_32_to_33()
 
 
 
@@ -1289,7 +1323,7 @@ class ChoicesFile:
     # convert_value(), followed by a sequence of calls to convert_key().
     # That way the calls always contain an old name and a new name.
     def current_version(self):
-        return 32
+        return 33
 
     def convert_value(self, key, old, new, partial=False):
         if key in self:
@@ -2202,8 +2236,6 @@ class ChoicesFile:
                         orth = lri['orth']
                         self.convert_value(lri.full_key + '_orth', orth, orth.lower())
 
-
-
     def convert_28_to_29(self):
         """
         Updates the treatment of FORM.
@@ -2255,6 +2287,17 @@ class ChoicesFile:
             if strat.get('possessum-type')=='non-affix':
                 if not strat.get('possessum-mark-order'):
                     strat['possessum-mark-order'] = hc
+
+    def convert_32_to_33(self):
+        pass
+        if self.get('q-part') == 'on':
+            orth = self.get('q-part-orth')
+            self.delete('q-part-orth')
+            self['q-particle'] = ChoiceList(full_key='q-particle')
+            cdict = ChoiceDict(full_key = 'q-particle1')
+            cdict['orth'] = orth
+            self['q-particle'].append(cdict)
+
 ########################################################################
 # FormData Class
 # This Class acts like form data which would normally

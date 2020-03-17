@@ -121,6 +121,25 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies):
     # which I think doesn't handle the facts well.  These look more like complementizers
     # to me.
 
+
+# def add_complementizers_to_lexicon(lexicon,ch):
+#     lexicon.add_literal(';;; Complementizers')
+#     have_comp = False
+#     for comp_strategy in ch[COMPS]:
+#         id = comp_strategy.full_key
+#         stype = id + '-' + COMP_LEX_ITEM
+#         #TODO: Perhaps turn complementizers into full-blown
+#         # lexical items and then can call insert_ids() from lexical_items.py instead
+#         # This would need to be done via redesigning the questionnaire a little.
+#         for complementizer in comp_strategy[COMPLEMENTIZER]:
+#             orth = orth_encode(complementizer.get('orth'))
+#             name = TDLencode(complementizer.get('name'))
+#             typedef = name + ' := ' + stype + ' & \
+#                           [ STEM < "' + orth + '" > ].'
+#             lexicon.add(typedef)
+#             have_comp = True
+#     return have_comp
+
     if ch.get('q-part'):
         comment = \
             'We treat question particles as complementizers.\n' + \
@@ -130,7 +149,7 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies):
 
         comment = 'Subtype for question particles. Constrains SF to ques.'
         typedef = '''
-      qpart-lex-item := complementizer-lex-item &
+        qpart-lex-item := complementizer-lex-item &
          [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.SF ques,
                           CAT.VAL.COMPS.FIRST.LOCAL.CAT.MC + ] ].'''
         mylang.add(typedef, comment, section='complex')
@@ -148,6 +167,10 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies):
         if 'form' in hierarchies:
             mylang.add('qpart-lex-item := [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM finite ].')
 
-
+        # Add subtypes for each question particle:
+        for qpart in ch.get('q-particle'):
+            typename = qpart.full_key + '-lex'
+            typedef = typename + ' := qpart-lex-item.'
+            mylang.add(typedef,section='complex')
 
 

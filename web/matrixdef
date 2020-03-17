@@ -1668,13 +1668,27 @@ Label "<p>Please indicate which strategy your language uses to form
 matrix yes-no questions.  You may leave this section blank, in which
 case your grammar will not include a question-forming strategy.</p>"
 
-Check q-part "Yes/No question particle" "" "A separate question particle: "
+Check qpart "" "" "One or more separate question particles:<br>"
 
-Radio q-part-order "Question particle order" "" ""
-. before "Before" "" "sentence initial "
-. after "After" "" "sentence final<br>"
+Radio order "Question Particle Position" "which occur: " "<br>"
+. before "Before" "" "clause initially "
+. after "After" "" "clause finally"
 
-Text q-part-orth "Question particle spelling" "&nbsp;&nbsp;&nbsp;&nbsp;Spelling of question particle: " "<br>" 40
+BeginIter q-particle{i} "a Question Particle" 1
+
+Text orth "Question particle {i} spelling" "Spelling of question particle: " "<br>" 40
+
+ Label "<p>If this particle is not possible in constituent questions, leave the rest blank. <br><br>
+ In constituent questions, this particle occurs in"
+
+ Check wh-main "Wh-questions in Main Clauses" "" "main"
+ Check wh-embed "Wh-questions in Embedded Clauses" "and" "embedded clauses, and is<br>"
+
+ Radio wh-opt "Question particle in Constituent Questions" "" ""
+ . oblig "Obligatory" "" "obligatory<br>"
+ . opt "Optional" "" "optional"
+
+EndIter q-particle
 
 Check q-infl "Inflection" "<p>" "Verbal inflection: Checking this box enables a feature called <span class=\"feat\">question</span> with possible value <span class=\"tt\">plus</span> for use in defining lexical rules on the morphology page.
 Defining lexical rules that specify [<span class=\"feat\">question</span> <span class=\"tt\">plus</span>] will produce lexical rules in the grammar that add the semantics of questions.</p>"
@@ -1699,14 +1713,20 @@ Label "<h3>Choices regarding the position of question phrases</h3>"
 
 Separator
 
-Radio front-matrix "Fronting in Matrix Clauses" "<p>In <span class=\"dfn\">matrix</span> questions (<i>Who did you see?</i>):<br><br>" ""
-  . single "Single Fronting" "" "A single question phrase can be fronted<br>"
+Radio front-matrix "Fronting" "<p> Question phrases can appear at the left edge of the sentence regardless of the position the questioned constituent would appear in (<i>Who did you see? I know who you saw</i> etc. ):<br><br>" ""
+  . single "Single Fronting" "" "Only one question phrase can be fronted<br>"
   . multi "Multiple Fronting" "" "All question phrases can be fronted<br>"
   . in-situ "In Situ" "" "Question phrases cannot be fronted (stay <i>in situ</i>)<br><br>"
 
   Radio matrix-front-opt "Fronting optionality" " There is <span class=\"dfn\">obligatory</span> fronting: <br>" ""
   . single-oblig "Obligatory Single Fronting" "" "of at least one question phrase<br>"
-  . all-oblig "Obligatory Multiple Fronting" ""  "of all question phrases</p>"
+  . all-oblig "Obligatory Multiple Fronting" ""  "of all question phrases <br>"
+  . none-oblig "No Obligatory Fronting" ""  "fronting is optional <br><br>
+
+  NB: You may use the optional multiple fronting option to model the syntax of echo questions
+   but there is currently no distinction between echo and canonical qiestions
+   in the semantic representation that you obtain from this library.</p>"
+
 #  . nondlinked-oblig "Obligatory Multiple Fronting" ""  "of all question pronouns and adverbs
 #  (but not phrases with determiners)<br><br>"
 
@@ -1723,103 +1743,43 @@ Radio front-matrix "Fronting in Matrix Clauses" "<p>In <span class=\"dfn\">matri
     #          <i>Who did you speak with?</i>
     #</p>"
 
-    Label "<p>In your language, question determiners are extracted
-    along with:<br><br>"
+    Label "<p>There is pied piping of:<br><br>"
 
-    Check pied-pip "Pied-Piping" "" "nouns, "
-    Check oblig-pied-pip-noun "Obligatory Pied Piping Of Nouns" "" "and it is obligatory;<br>"
+    Check pied-pip "Pied-Piping" "" "noun phrases (<i>Which book did you read?</i> is possible), "
+    Check oblig-pied-pip-noun "Obligatory Pied Piping Of Nouns" "" "and it is obligatory (<i>*Which did you read book?</i> is impossible in your language);<br>"
     #Check pied-pip-adv "Pied-Piping of Adverbs" "" "adverbs, "
     #Check oblig-pied-pip-adv "Obligatory Pied Piping Of Adverbs" "" "and it is obligatory;<br>"
-    Check pied-pip-adp "Pied-Piping Of Adpositions" "" "adpositions, "
-    Check oblig-pied-pip-adp "Obligatory Pied Piping Of Adpositions" "" "and it is obligatory.</p>"
-
-  Separator
-
- Radio front-embed "Fronting in Embedded Clauses" "<p>In <span class=\"dfn\">embedded</span> questions: (<i>Do you know who did this?</i>) <br><br>" ""
-   . single "Single Fronting" "" "A single question phrase can be fronted within the embedded clause<br>"
-   . multi "Multiple Fronting" "" "All question phrases can be fronted within the embedded clause<br>"
-   . in-situ "In Situ" "" "Question phrases cannot be fronted (stay in situ) within the embedded clause<br><br>"
-
-   Radio embed-front-opt "Fronting optionality" " Within the embedded clause, there is obligatory fronting: <br>" ""
-   . single-oblig "Obligatory Single Fronting" "" "of at least one question phrase<br>"
-   . all-oblig "Obligatory Multiple Fronting" ""  "of all question phrases</p>"
-  #  . nondlinked-oblig "Obligatory Multiple Fronting" ""  "of all question pronouns and adverbs
-  # (but not phrases with determiners)</p>"
-
-     Label "<p>Pied-piping: Question determiners are extracted
-     along with:<br><br>"
-
-     Check embed-pied-pip "Pied-Piping" "" "nouns, "
-     Check embed-oblig-pied-pip-noun "Obligatory Pied Piping Of Nouns" "" "and it is obligatory;<br>"
-     #Check embed-pied-pip-adv "Pied-Piping of Adverbs" "" "adverbs, "
-     #Check embed-oblig-pied-pip-adv "Obligatory Pied Piping Of Adverbs" "" "and it is obligatory;<br>"
-     Check embed-pied-pip-adp "Pied-Piping Of Adpositions" "" "adpositions, "
-     Check embed-oblig-pied-pip-adp "Obligatory Pied Piping Of Adpositions" "" "and it is obligatory.</p>"
-
-
- Separator
-
- Label "<p>When the question phrase is extracted <span class=\"dfn\">from an embedded clause</span> and put
- in <span class=\"dfn\">the front of the matrix clause</span> (<i>Who do you think that did this?</i>): <br><br>"
-
-   Check from-embed-multi-front "Multiple Fronting" "" "All other question phrases can also be fronted<br><br>"
-
-   Radio from-embed-front-opt "Fronting optionality" "There is <span class=\"dfn\">obligatory</span> extraction from the embedded clause to the front of the matrix clause: <br>" ""
-   . single-oblig "Obligatory Single Fronting" "" "of at least one question phrase<br>"
-   . all-oblig "Obligatory Multiple Fronting" ""  "of all question phrases</p>"
- #  . nondlinked-oblig "Obligatory Multiple Fronting" ""  "of all question pronouns and adverbs
- # (but not phrases with determiners)</p>"
-
-     Label "<p>Pied-piping: Question determiners are extracted
-     along with:<br><br>"
-
-     Check from-embed-pied-pip "Pied-Piping" "" "nouns, "
-     Check from-embed-oblig-pied-pip-noun "Obligatory Pied Piping Of Nouns" "" "and it is obligatory;<br> "
-     #Check from-embed-pied-pip-adv "Pied-Piping" "" "adverbs, "
-     #Check from-embed-oblig-pied-pip-adv "Obligatory Pied Piping Of Adverbs" "" "and it is obligatory;<br> "
-     Check from-embed-pied-pip-prep "Pied-Piping Of Adpositions" "" "adpositions, "
-     Check from-embed-oblig-pied-pip-adp "Obligatory Pied Piping Of Adpositions" "" "and it is obligatory.</p>"
-
+    Check pied-pip-adp "Pied-Piping Of Adpositions" "" "adpositional phrases (<i>To whom did you speak?</i> is possible), "
+    Check oblig-pied-pip-adp "Obligatory Pied Piping Of Adpositions" "" "and it is obligatory (<i>*Who did you speak to?</i> is impossible in your language).</p>"
 
   Separator
 
  Label "<h3>Other choices</h3>"
 
- Check no-multi-ques "No Multiple Questions" "<p>" "Only one question phrase is allowed per sentence.</p>"
+ #Check no-multi-ques "No Multiple Questions" "<p>" "Only one question phrase is allowed per sentence.</p>"
 
- Label "<p>Information structure:</p>"
+ #Label "<p>If you filled out the Information Structure questionnaire:</p>"
+
+ Label "<p> If you specified Auxiliary-Subject inversion for polar questions, does it also happen in constituent questions?<br><br>"
+ Check wh-inv-matrix "Matrix Inversion" "" "yes, in matrix clauses <br>"
+ Check wh-inv-embed "Embedded Inversion" "" "also in embedded clauses with constituent questions.</p>"
+
+
+  #Check wh-q-inter-mood "Iterrogative mood" "<p>" "Interrogative mood (add appropriate entry on the TAM page).</p>"
+
+ Check wh-q-infl "Inflection" "<p>" "Check here if the verbal inflectional morphological marking you specified for polar questions
+ is also used in constituent questions.</p>"
 
  Radio infostr-marking "Information Structure Marking" "Question words may bear an overt focus marking: <br>" ""
-   . infostr-same "Same as focus marking" "" "which is the same<br>"
-   . infostr-diff "Different from focus marking" ""  "or different from the regular focus marking you defined on the Information
+   . infostr-same "same as focus marking" "" "which is the same<br>"
+   . infostr-diff "different from focus marking" ""  "or different from the regular focus marking you defined on the Information
    Structure page.<br>"
 
- Label "<p> Auxiliary-subject inversion in "
- Check wh-inv-matrix "Matrix Inversion" "" "matrix clauses and "
- Check wh-inv-embed "Embedded Inversion" "" "embedded clauses with questions.</p>"
-
- Check wh-q-part "Question particle" "" "A question particle: "
-
- Radio wh-q-part-order "Question particle order with respect to questioned predicate/clause" "" ""
- . init "Before" "" "clause initial "
- . fin "After" "" "clause final"
- . afterqw "Second" "" "after the question word<br>"
- . afterqp "Second" "" "after the entire question phrase (e.g. the NP or the PP) <br>"
-
- Text wh-q-part-orth "Question particle spelling" "Spelling: " "<br>" 40
-
- Label "<p> Interrogative "
+Label "<p> Interrogative "
  Check wh-q-inter-verbs "Iterrogative verbs" "" "verbs or "
  Check wh-q-inter-cop "Interrogative copula" "" "copula (add appropriate entries on the Lexicon page).</p>"
 
- #Check wh-q-inter-mood "Iterrogative mood" "<p>" "Interrogative mood (add appropriate entry on the TAM page).</p>"
 
- Check wh-q-infl "Inflection" "<p>" "Verbal inflection: Checking this box enables a
- feature called <span class=\"feat\">question</span> with possible
- value <span class=\"tt\">plus</span> <br>for use in defining lexical
-  rules on the morphology page.  Defining lexical rules that
- specify [<span class=\"feat\">question</span> <span class=\"tt\">plus</span>] <br> will
- produce lexical rules in the grammar that add the semantics of questions."
 
 # #Check wh-q-infl-oblig "Obligatory Interrogative Inflections" "<br><br>" "Special morphology is obligatory in
 # #questions.</p>"
