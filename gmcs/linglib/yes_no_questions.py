@@ -8,8 +8,6 @@ from gmcs.linglib import lexbase
 def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies):
 
     qinvverb = ch.get('q-inv-verb')
-    qpartposthead = ch.get('q-part-order')
-    qpartform = ch.get('q-part-orth')
 
     if ch.get('q-inv'):
         comment = \
@@ -86,7 +84,7 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies):
         # ERB 2010-04-15 If we have a finite/non-finite disctintion,
         # the FORM value needs to be copied up.  FIXME: More generally,
         # any verby head features should be copied by this rule.
-        # See notes on FORM and qpart below.
+        # See notes on FORM and q-part below.
 
         if 'form' in hierarchies:
             mylang.add('''

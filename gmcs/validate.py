@@ -1015,8 +1015,8 @@ def validate_coordination(ch, vr):
 def validate_yesno_questions(ch, vr):
     qinvverb = ch.get('q-inv-verb')
     qpartorder = ch.get('q-part-order')
-    qpartorth = ch.get('q-part-orth')
-    qinfltype = ch.get('q-infl-type')
+    #qpartorth = ch.get('q-part-orth')
+    #qinfltype = ch.get('q-infl-type')
 
     if ch.get('q-part'):
         if not qpartorder:
@@ -1024,11 +1024,12 @@ def validate_yesno_questions(ch, vr):
                    'for yes-no questions, you must specify ' + \
                    'where the question particle appears.'
             vr.err('q-part-order', mess)
-        if not qpartorth:
-            mess = 'If you chose the question particle strategy ' + \
-                   'for yes-no questions, you must specify ' + \
-                   'the form of the question particle.'
-            vr.err('q-part-orth', mess)
+        for qpart in ch.get('q-particle'):
+            if not qpart['orth']:
+                mess = 'If you chose the question particle strategy ' + \
+                       'for yes-no questions, you must specify ' + \
+                       'the form of the question particle.'
+                vr.err('q-particle', mess)
 
     if ch.get('q-inv'):
         #    if qinvverb != 'aux' and qinvverb != 'main' and qinvverb != 'main-aux':

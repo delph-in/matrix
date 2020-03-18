@@ -1668,9 +1668,9 @@ Label "<p>Please indicate which strategy your language uses to form
 matrix yes-no questions.  You may leave this section blank, in which
 case your grammar will not include a question-forming strategy.</p>"
 
-Check qpart "" "" "One or more separate question particles:<br>"
+Check q-part "" "" "One or more separate question particles:<br>"
 
-Radio order "Question Particle Position" "which occur: " "<br>"
+Radio q-part-order "Question Particle Position" "which occur: " "<br>"
 . before "Before" "" "clause initially "
 . after "After" "" "clause finally"
 
@@ -1678,15 +1678,17 @@ BeginIter q-particle{i} "a Question Particle" 1
 
 Text orth "Question particle {i} spelling" "Spelling of question particle: " "<br>" 40
 
- Label "<p>If this particle is not possible in constituent questions, leave the rest blank. <br><br>
- In constituent questions, this particle occurs in"
+Label "<p>This particle occurs in"
 
- Check wh-main "Wh-questions in Main Clauses" "" "main"
- Check wh-embed "Wh-questions in Embedded Clauses" "and" "embedded clauses, and is<br>"
+ Check main "Wh-questions in Main Clauses" "" "main"
+ Check embed "Wh-questions in Embedded Clauses" "and" "embedded clauses</p>"
 
- Radio wh-opt "Question particle in Constituent Questions" "" ""
- . oblig "Obligatory" "" "obligatory<br>"
+ Label "<p>In constituent questions, this particle is:<br>"
+
+ Radio wh "Question particle in Constituent Questions" "" ""
+ . oblig "Obligatory" "" "obligatory"
  . opt "Optional" "" "optional"
+ . imp "Impossible" "" "impossible"
 
 EndIter q-particle
 
