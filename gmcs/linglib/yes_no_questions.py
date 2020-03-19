@@ -148,9 +148,9 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies):
         comment = 'Subtype for question particles. Constrains SF to ques.'
         typedef = '''
         qpart-lex-item := complementizer-lex-item &
-         [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.SF ques,
-                          CAT.VAL.COMPS.FIRST.LOCAL.CAT.MC + ] ].'''
+         [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.SF ques ] ].'''
         mylang.add(typedef, comment, section='complex')
+
 
         # ERB 2010-04-15 If we have a finite/non-finite distinction in the
         # language, the qpart should insist on attaching to finite clauses
@@ -170,5 +170,13 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies):
             typename = qpart.full_key + '-lex'
             typedef = typename + ' := qpart-lex-item.'
             mylang.add(typedef,section='complex')
+            if qpart['main'] == 'on' and qpart['embed'] != 'on':
+                mylang.add(typename + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.MC + ].')
+            elif qpart['embed'] == 'on' and qpart['main'] != 'on':
+                mylang.add(typename + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.MC - ].')
+            # An ad-hoc solution to force the particle to attach AFTER the in-situ rule
+            # to avoid spurious ambiguity in complex sentences
+            elif qpart['main'] == 'on' and qpart['embed'] == 'on' and ch.get('front-matrix') == 'in-situ':
+                mylang.add(typename + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.NON-LOCAL.QUE.LIST < > ].')
 
 
