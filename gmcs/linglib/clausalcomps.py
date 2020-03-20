@@ -81,7 +81,7 @@ def add_complementizers_to_lexicon(lexicon,ch):
 def add_types_to_grammar(mylang,ch,rules,have_complementizer):
     if have_complementizer:
         mylang.set_section(COMPLEX)
-        add_complementizer_supertype(mylang)
+        add_complementizer_supertype(mylang,ch)
     wo = ch.get(constants.WORD_ORDER)
     init = use_init(ch, mylang, wo)
     extra = extra_needed(ch,mylang)
@@ -195,8 +195,11 @@ def use_init(ch, mylang, wo):
                 break
     return init
 
-def add_complementizer_supertype(mylang):
+def add_complementizer_supertype(mylang,ch):
     mylang.add(lexbase.COMPLEMENTIZER, section=COMPLEX,merge=True)
+    if ch.get('front-matrix') == 'in-situ' and ch.get('q-part') == 'on':
+        mylang.add('complementizer-lex-item := [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.NON-LOCAL.QUE.LIST < > ].')
+
 
 def add_complementizer_subtype(cs, mylang,ch,extra):
     id = cs.full_key

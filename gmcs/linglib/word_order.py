@@ -75,7 +75,7 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
     # head - comp and not from mod to mother, putting it back for other wo options
 
     # KPH 2017-12-14 Removed mc identity between non head daughter and mother in
-    # basic-head-mod. This is not the case for clausal modifiers (in whcih the modifer
+    # basic-head-mod. This is not the case for clausal modifiers (in which the modifer
     # is MC -).
 
     if not wo == 'v2':

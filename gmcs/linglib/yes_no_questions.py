@@ -171,12 +171,9 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies):
             typedef = typename + ' := qpart-lex-item.'
             mylang.add(typedef,section='complex')
             if qpart['main'] == 'on' and qpart['embed'] != 'on':
-                mylang.add(typename + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.MC + ].')
+                mylang.add(typename + ' := [ SYNSEM.LOCAL.CAT [ MC #mc,'
+                                      'VAL.COMPS.FIRST.LOCAL.CAT.MC #mc & + ] ].')
             elif qpart['embed'] == 'on' and qpart['main'] != 'on':
-                mylang.add(typename + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.MC - ].')
-            # An ad-hoc solution to force the particle to attach AFTER the in-situ rule
-            # to avoid spurious ambiguity in complex sentences
-            elif qpart['main'] == 'on' and qpart['embed'] == 'on' and ch.get('front-matrix') == 'in-situ':
-                mylang.add(typename + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.NON-LOCAL.QUE.LIST < > ].')
-
+                mylang.add(typename + ' := [ SYNSEM.LOCAL.CAT [ MC #mc '
+                                      'VAL.COMPS.FIRST.LOCAL.CAT.MC #mc & -  ] ].')
 
