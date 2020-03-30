@@ -251,6 +251,6 @@ def customize_wh_ques(mylang,ch,rules):
     if ch.get('q-part') == 'on':
         if ch.get(MTX_FRONT) == 'in-situ':
             if len(ch.get('q-particle')) == 1:
-                qpart = ch.get('q-particle')[0]
+                qpart = ch.get('q-particle')[1] # This is 1 and not 0 because the Choices len method is overriden; see Choices.py
                 if qpart['wh'] == 'oblig':
                     mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.MC - ].')
