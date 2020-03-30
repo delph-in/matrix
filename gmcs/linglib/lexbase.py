@@ -63,7 +63,7 @@ WH_WORD = '''wh-word-lex := norm-hook-lex-item & basic-icons-lex-item &
 			    HCONS.LIST < [ HARG #harg,
 				        LARG #larg ] > ] ],
 	     NON-LOCAL.QUE.LIST < #arg0 >,
-	     L-QUE + ] ].'''
+	     L-QUE +] ].'''
 
 WH_PRONOUN =  '''wh-pronoun-noun-lex := wh-word-lex & non-mod-lex-item & zero-arg-que &
   [ SYNSEM [ LOCAL [ CAT.HEAD noun,
@@ -87,7 +87,7 @@ ADV_ITEM = '''adverb-lex-item := intersective-adverb-lex &
 ADV =  '''adverb-lex := adverb-lex-item &
 [ SYNSEM [ LOCAL.CONT [ RELS.LIST < [ ], [ ], [ PRED "exist_q_rel" ] >  ],
            NON-LOCAL.QUE 0-alist,
-           L-QUE - ] ].'''
+           L-QUE -] ].'''
 
 
 WH_ADV =  '''wh-adverb-lex := adverb-lex-item & zero-arg-que &

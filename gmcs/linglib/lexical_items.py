@@ -446,7 +446,7 @@ def add_determiner(ch, det, stype, hierarchies, lexicon, mylang):
     dtype = det_id(det)
     mylang.add(dtype + ' := ' + stype + '.')
     if stype == 'determiner-lex':
-        mylang.add(dtype + ':= [ SYNSEM.L-QUE - ].')
+        mylang.add(dtype + ':= [ SYNSEM [ L-QUE -, ] ].')
     has_inforstr_feat = False
     for feat in det.get('feat', []):
         if feat['name'] == "information-structure meaning":

@@ -227,7 +227,8 @@ def customize_wh_ques(mylang,ch,rules):
     if ch.get(MTX_FRONT) in [SINGLE, MULTI] and len(ch.get('det', [])) > 0:
         if (not ch.get('pied-pip') == 'on' or (ch.get('pied-pip')=='on'
                                                and not (ch.get('oblig-pied-pip-noun')== 'on'))):
-            mylang.add_literal('; If there is no obligatory pied-piping, determiners can be extracted separately:',section='phrasal')
+            mylang.add_literal('; If there is no obligatory pied-piping, determiners '
+                               'can be extracted separately:',section='phrasal')
             mylang.add(EX_DET_PHRASE,section='phrases')
             rules.add('ex-det := extracted-det-phrase.')
         if ch.get('pied-pip-adp') == 'on' and not ch.get('oblig-pied-pip-adp') == 'on':
@@ -248,4 +249,8 @@ def customize_wh_ques(mylang,ch,rules):
                                                  ' HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS #comps ].',merge=True)
 
     if ch.get('q-part') == 'on':
-        pass
+        if ch.get(MTX_FRONT) == 'in-situ':
+            if len(ch.get('q-particle')) == 1:
+                qpart = ch.get('q-particle')[0]
+                if qpart['wh'] == 'oblig':
+                    mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.MC - ].')

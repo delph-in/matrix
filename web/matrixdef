@@ -1674,6 +1674,11 @@ Radio q-part-order "Question Particle Position" "which occur: " "<br>"
 . before "Before" "" "clause initially "
 . after "After" "" "clause finally"
 
+ Check q-part-allopt "<p>" "" "Check if all particles are optional in constituent questions.</p>"
+
+Label "<p>Note: If you mark more than one particle as obligatory below,
+only one particle will be licensed per clause; the particles won't iterate.</p>"
+
 BeginIter q-particle{i} "a Question Particle" 1
 
 Text orth "Question particle {i} spelling" "Spelling of question particle: " "<br>" 40
@@ -1687,7 +1692,6 @@ Label "<p>This particle occurs in"
 
  Radio wh "Question particle in Constituent Questions" "" ""
  . oblig "Obligatory" "" "obligatory"
- . opt "Optional" "" "optional"
  . imp "Impossible" "" "impossible"
 
 EndIter q-particle

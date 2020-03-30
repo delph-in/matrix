@@ -157,6 +157,9 @@ lex-or-phrase-synsem := synsem-min &
 ; OZ 2020-01-28 Adding L-QUE feature to mark whether or not there
 ; is a wh-word at the left periphery.
 
+; OZ 2020-03-26 Adding WH feature to track whether there was a WH-word in the clause.
+; Needed to question particles analysis.
+
 synsem := synsem-min &
   [ L-QUE bool,
     L-PERIPH luk,
@@ -1391,10 +1394,10 @@ const-add-only-no-ccont-lex-rule := add-only-no-ccont-rule & const-lex-rule.
 ; coordination.  Also identify the COORD-REL so it gets passed up.
 
 headed-phrase := phrase &
-  [ SYNSEM.LOCAL [ CAT.HEAD head & #head,
+  [ SYNSEM [ LOCAL [ CAT.HEAD head & #head,
                    AGR #agr,
                    COORD -,
-                   COORD-REL #crel ],
+                   COORD-REL #crel ] ],
     C-CONT.HOOK.ICONS-KEY #icons,
     HEAD-DTR.SYNSEM.LOCAL local &
 		 [ CAT.HEAD #head,
@@ -3402,7 +3405,7 @@ basic-subord-conjunction-lex := basic-one-arg &
 
 ; Coming soon:
 ; Lexical type for negative particles like English "not"
-; Lexical type for WH elements
+; Lexical type for WH elements <-- look in lexbase.py
 ; Documentation listing the phenomena handled by these lexical types.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

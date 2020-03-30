@@ -1019,6 +1019,7 @@ def validate_yesno_questions(ch, vr):
     #qinfltype = ch.get('q-infl-type')
 
     if ch.get('q-part'):
+        optionality_validation = False
         if not qpartorder:
             mess = 'If you chose the question particle strategy ' + \
                    'for yes-no questions, you must specify ' + \
@@ -1030,6 +1031,13 @@ def validate_yesno_questions(ch, vr):
                        'for yes-no questions, you must specify ' + \
                        'the form of the question particle.'
                 vr.err('q-particle', mess)
+            if ch.get('q-part-allopt') == 'on':
+                if qpart['wh'] == 'imp' or qpart['wh'] == 'oblig':
+                    optionality_validation = True
+        if optionality_validation:
+            mess = 'Either all particles are optional or each particle can be obligatory ' \
+                           'or impossible; choose one or the other.'
+            vr.err ('q-part-allopt',mess)
 
     if ch.get('q-inv'):
         #    if qinvverb != 'aux' and qinvverb != 'main' and qinvverb != 'main-aux':
