@@ -5,7 +5,7 @@ email olzama@uw.edu with both constituent and polar questions about the library.
 
 from gmcs.utils import get_name,TDLencode, orth_encode
 
-from gmcs import constants
+from gmcs import constants,globals
 
 
 '''
@@ -254,3 +254,28 @@ def customize_wh_ques(mylang,ch,rules):
                 qpart = ch.get('q-particle')[1] # This is 1 and not 0 because the Choices len method is overriden; see Choices.py
                 if qpart['wh'] == 'oblig':
                     mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.MC - ].')
+                elif qpart['wh'] == 'imp':
+                    mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.WH + ].')
+        if len(ch.get('q-particle')) > 1:
+            # If we have some particles which are possible in wh-questions and some which are not:
+            if globals.div_particles:
+                mylang.add('declarative-clause :+ [ SYNSEM.LOCAL.CAT.WH #wh,'
+                                                    'HEAD-DTR.SYNSEM.LOCAL.CAT.WH #wh ].',section='addenda')
+                mylang.add('imperative-clause :+ [ SYNSEM.LOCAL.CAT.WH #wh,'
+                                                    'HEAD-DTR.SYNSEM.LOCAL.CAT.WH #wh ].',section='addenda')
+                mylang.add('adj-head-phrase :+ [ SYNSEM.LOCAL.CAT.WH #wh,'
+                                                'HEAD-DTR.SYNSEM.LOCAL.CAT.WH #wh ].',section='addenda')
+                mylang.add('head-adj-phrase :+ [ SYNSEM.LOCAL.CAT.WH #wh,'
+                                                'HEAD-DTR.SYNSEM.LOCAL.CAT.WH #wh ].',section='addenda')
+                mylang.add('basic-head-spec-phrase :+ [ SYNSEM.LOCAL.CAT.WH #wh,'
+                                                'HEAD-DTR.SYNSEM.LOCAL.CAT.WH #wh ].',section='addenda')
+                mylang.add('basic-head-subj-phrase :+ [ SYNSEM.LOCAL.CAT.WH #wh,'
+                                                'HEAD-DTR.SYNSEM.LOCAL.CAT.WH #wh ].',section='addenda')
+                mylang.add('basic-head-comp-phrase :+ [ SYNSEM.LOCAL.CAT.WH #wh,'
+                                                'HEAD-DTR.SYNSEM.LOCAL.CAT.WH #wh ].',section='addenda')
+                mylang.add('word-or-lexrule :+ [ SYNSEM.LOCAL.CAT.WH - ].',section='addenda')
+                if ch.get(MTX_FRONT) == 'in-situ':
+                    mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.WH + ].')
+                else:
+                    mylang.add('wh-ques-phrase := [ SYNSEM.LOCAL.CAT.WH + ].')
+

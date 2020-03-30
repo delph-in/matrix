@@ -268,13 +268,18 @@ cat-min := avm.
 ; SSH 2012-02-16 MKG stands for "MarKinG" which represents lexical
 ; markings for information structure.
 
+; OZ 2020-03-30 Adding WH feature to model Mandarin-like languages where a particle
+; occurs with polar but not with constituent questions.
+
+
 cat := cat-min &
   [ HEAD head-min,
     VAL valence-min,
     MC luk,
     MKG mkg,
     HC-LIGHT luk,
-    POSTHEAD bool ].
+    POSTHEAD bool,
+    WH bool].
 
 cat-sat := cat &
  [ VAL [ SPR olist,

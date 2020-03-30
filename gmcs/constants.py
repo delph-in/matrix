@@ -11,7 +11,6 @@ Append with new constants, if they are likely to be used across modules.
 '''
 
 
-
 ### Choices for values of checkboxes, radio buttons ###
 
 ON = 'on' # Choice convention for checked box
