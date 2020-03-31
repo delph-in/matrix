@@ -488,3 +488,4 @@ wh10-svo-multi-all-oblig-min=Obligatory fronting of all question phrases in an S
 wh11-svo-multi-one-oblig=Multiple fronting of wh-questions, one being obligatory but the other possible in situ. SVO word order.
 wh12-vos-sg-oblig-pied-adp-opt=Obligatory pied piping of nouns and optional of adpositions; VOS word order (constituent questions)
 wh13-oblig-particle-osv=Wh-questions via particles; OSV order, obligatory particle
+wh14-oblig-imposs-part=Constituent questions; OSV order; two question particles: one occurs with both polar and constituent questions, another only with polar.
