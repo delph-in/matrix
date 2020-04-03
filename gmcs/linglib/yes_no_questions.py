@@ -140,31 +140,49 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies):
 #     return have_comp
 
     if ch.get('q-part'):
-        comment = \
-            'We treat question particles as complementizers.\n' + \
-            'Here is the lexical type for complementizers.'
-        typedef = lexbase.COMPLEMENTIZER
-        mylang.add(typedef, comment, section='complex')
+        # Clause-initial and clause-final particles are analyzed as complementizers:
+        if not ch.get('q-part-order') == 'second':
+            comment = \
+                'We treat question particles as complementizers.\n' + \
+                'Here is the lexical type for complementizers.'
+            typedef = lexbase.COMPLEMENTIZER
+            mylang.add(typedef, comment, section='complex')
 
-        comment = 'Subtype for question particles. Constrains SF to ques.'
-        typedef = '''
-        qpart-lex-item := complementizer-lex-item &
-         [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.SF ques ] ].'''
-        mylang.add(typedef, comment, section='complex')
+            comment = 'Subtype for question particles. Constrains SF to ques.'
+            typedef = '''
+            qpart-lex-item := complementizer-lex-item &
+             [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.SF ques ] ].'''
+            mylang.add(typedef, comment, section='complex')
+            supertype = 'qpart-lex-item'
 
+            # ERB 2010-04-15 If we have a finite/non-finite distinction in the
+            # language, the qpart should insist on attaching to finite clauses
+            # only.  An alternative would be to have it raise the FORM value, but
+            # I don't see any evidence for that just now. Using presence of 'form'
+            # in hierarchies to detect this situation. This could break if someone
+            # named their own feature "form", but the name-space validation should
+            # catch that.  This works because customize_form() is called before
+            # customize_yesno_questions. This is an example of cross-library
+            # interaction.
+            if 'form' in hierarchies:
+                mylang.add('qpart-lex-item := [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM finite ].')
 
-        # ERB 2010-04-15 If we have a finite/non-finite distinction in the
-        # language, the qpart should insist on attaching to finite clauses
-        # only.  An alternative would be to have it raise the FORM value, but
-        # I don't see any evidence for that just now. Using presence of 'form'
-        # in hierarchies to detect this situation. This could break if someone
-        # named their own feature "form", but the name-space validation should
-        # catch that.  This works because customize_form() is called before
-        # customize_yesno_questions. This is an example of cross-library
-        # interaction.
-
-        if 'form' in hierarchies:
-            mylang.add('qpart-lex-item := [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM finite ].')
+        # Second position  clitics are treated as modifiers:
+        elif ch.get('q-part-order') == 'second':
+            mylang.add('basic-binary-phrase :+ '
+                       '[ SYNSEM.L-PERIPH #periph, '
+                       'ARGS < [ SYNSEM.L-PERIPH #periph ], [SYNSEM.L-PERIPH -] > ].',section='addenda')
+            mylang.add('basic-head-mod-phrase-simple :+ '
+                       '[ HEAD-DTR.SYNSEM.L-PERIPH #periph, '
+                       'NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.MOD < [ L-PERIPH #periph ] > ].',section='addenda')
+            mylang.add('same-periph-unary-phrase := '
+                       'unary-phrase & [ SYNSEM.L-PERIPH #periph, '
+                       'ARGS < [ SYNSEM.L-PERIPH #periph ] > ].',section='phrases')
+            mylang.add('bare-np-phrase := same-periph-unary-phrase & [ SYNSEM.LIGHT - ].')
+            comment = 'Second position question particles are treated as modifiers.'
+            typedef = lexbase.QUES_CLITIC
+            mylang.add(typedef, comment, section='complex')
+            supertype = 'ques-clitic-lex'
 
         # Add subtypes for each question particle.
         # First figure out if there are diverse particles:
@@ -180,7 +198,7 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies):
         # Now add particles:
         for qpart in ch.get('q-particle'):
             typename = qpart.full_key + '-lex'
-            typedef = typename + ' := qpart-lex-item.'
+            typedef = typename + ' := ' + supertype + '.'
             mylang.add(typedef,section='complex')
             if qpart['main'] == 'on' and qpart['embed'] != 'on':
                 mylang.add(typename + ' := [ SYNSEM.LOCAL.CAT [ MC #mc,'

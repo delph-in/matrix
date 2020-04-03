@@ -100,6 +100,7 @@ EX_DET_PHRASE = '''extracted-det-phrase := basic-extracted-arg-phrase & head-com
   HEAD-DTR.SYNSEM [ LOCAL.CAT.VAL.SPR < gap & [ LOCAL  
                                                 [ CAT.HEAD det,
                                                   CONT.HOOK #hook ] ] >,
+                    L-PERIPH -,
                    NON-LOCAL.SLASH.LIST < [ CAT.HEAD det,
                                             CONT.HOOK #hook ] > ],
     C-CONT [ RELS.LIST < >,

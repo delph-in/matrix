@@ -138,8 +138,12 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
 
     if wo in ['vso', 'osv']:
         mylang.add('basic-head-opt-comp-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].', section='addenda')
+        if ch.get('q-part-order') == 'second':
+            mylang.add('basic-head-opt-comp-phrase :+ same-periph-unary-phrase.')
     else:
         mylang.add('basic-head-opt-subj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].', section='addenda')
+        if ch.get('q-part-order') == 'second':
+            mylang.add('basic-head-opt-subj-phrase :+ same-periph-unary-phrase.')
 
     # ERB 2006-09-14 Free word order is a big fat special case:
 
@@ -734,8 +738,9 @@ def customize_np_word_order(mylang, ch, rules):
 
     mylang.add('bare-np-phrase := basic-bare-np-phrase &\
                  [ C-CONT.RELS.LIST < [ PRED \"exist_q_rel\" ] > ].',
-                    'Bare NP phrase.  Consider modifying the PRED value of the quantifier relation\nintroduced to match the semantic effect of bare NPs in your language.')
-
+                    'Bare NP phrase.  Consider modifying the PRED value '
+                    'of the quantifier relation\nintroduced to match '
+                    'the semantic effect of bare NPs in your language.')
     rules.add('bare-np := bare-np-phrase.')
 
 # OZ 2017-11-13 A subroutine to create appropriate phrase structure rules

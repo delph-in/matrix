@@ -1872,7 +1872,8 @@ basic-head-subj-phrase := head-valence-phrase & head-compositional &
                                  SPR olist ] ] ],
              NON-LOCAL [ SLASH 0-alist,
                          REL 0-alist ] ],
-    C-CONT [ RELS.LIST < >, HCONS.LIST < >, ICONS.LIST < > ] ].
+    C-CONT [ HOOK.INDEX.SF prop-or-ques,
+             RELS.LIST < >, HCONS.LIST < >, ICONS.LIST < > ] ].
 
 decl-head-subj-phrase := basic-head-subj-phrase & declarative-clause.
 imp-head-subj-phrase := basic-head-subj-phrase & imperative-clause.

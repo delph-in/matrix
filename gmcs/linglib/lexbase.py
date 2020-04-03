@@ -50,6 +50,19 @@ COMPLEMENTIZER = '''
                                           VAL [ SUBJ < >,
                                                 COMPS < > ] ] ] > ].'''
 
+
+QUES_CLITIC = '''
+ques-clitic-lex := no-hcons-lex-item &
+ [ SYNSEM [ LOCAL [ CAT [ VAL [ SPR < >, COMPS < >, SUBJ < >, SPEC < >],
+                                        HEAD adv &
+                                                [ MOD < [ LIGHT +,
+                                                          LOCAL intersective-mod,
+                                                          L-PERIPH +,
+                                                          L-QUE - ] > ] ],
+                             CONT.RELS.LIST < > ],
+            NON-LOCAL.QUE.LIST < *top* > ] ].
+'''
+
 WH_WORD = '''wh-word-lex := norm-hook-lex-item & basic-icons-lex-item &
   [ SYNSEM [ LOCAL [ CAT [ VAL [ SPR < >,
 				 SUBJ < >,
