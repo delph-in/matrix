@@ -27,7 +27,8 @@ WH_Q_PHR = ''' wh-ques-phrase := basic-head-filler-phrase & interrogative-clause
      HEAD-DTR.SYNSEM [ LOCAL.CAT [ MC na-or-+,
 				 VAL #val & [ SUBJ < >,
 					      COMPS < > ] ] ],
-     NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < ref-ind > ].'''
+     NON-HEAD-DTR.SYNSEM [ NON-LOCAL.QUE.LIST < ref-ind >,
+                           LOCAL.CONT.HOOK.ICONS-KEY focus ] ].'''
 
 
 EX_COMP = ''' extracted-comp-phrase := basic-extracted-comp-phrase &
@@ -142,6 +143,9 @@ def customize_wh_ques(mylang,ch,rules):
         mylang.add(BASIC_FILLER_SG,section='phrases')
         mylang.add(EX_SUBJ,section='phrases')
         mylang.add('''clause :+ [ SYNSEM.NON-LOCAL.QUE.LIST < > ]. ''')
+    else:
+        if ch.get('person') == '1-2-3':
+            mylang.add('wh-pronoun-noun-lex := [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 3rd ].')
 
     if (not ch.get(MTX_FRONT)) or ch.get(MTX_FRONT) == 'single':
         if len(ch.get('adv', [])) > 0 or len(ch.get('normadp', [])) > 0:
@@ -149,7 +153,7 @@ def customize_wh_ques(mylang,ch,rules):
                 mylang.add('''my-head-adj-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH 0-alist ].''')
             else:
                 mylang.add('''my-head-adj-phrase := [ HEAD-DTR.SYNSEM [ L-QUE -,
-                                LOCAL.CAT.VAL [ SUBJ clist, COMPS clist ] ] ].''')
+                                LOCAL.CAT.VAL [ SPR < >, SUBJ clist, COMPS clist ] ] ].''')
             mylang.add('''my-adj-head-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH 0-alist ].''')
 
     if (not ch.get(MTX_FRONT)) or ch.get(NO_MULTI) == 'on':
@@ -234,6 +238,8 @@ def customize_wh_ques(mylang,ch,rules):
             rules.add('ex-det := extracted-det-phrase.')
         if ch.get('pied-pip-adp') == 'on' and not ch.get('oblig-pied-pip-adp') == 'on':
             mylang.add('extracted-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD +vp ].')
+            if ch.get('word-order') in ['vos', 'vso', 'ovs','v-initial']:
+                mylang.add('head-subj-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < > ].')
         else:
             mylang.add('extracted-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD verb ].')
 

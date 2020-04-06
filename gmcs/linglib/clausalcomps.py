@@ -205,7 +205,8 @@ def add_complementizer_subtype(cs, mylang,ch,extra):
     id = cs.full_key
     typename = id + '-' + COMP_LEX_ITEM
     mylang.add(typename + ' := ' + COMP_LEX_ITEM + '.', section=COMPLEX)
-    mylang.add(typename + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.MC - ].',merge=True)
+    mylang.add(typename + ' := [ SYNSEM.LOCAL.CAT [ VAL.COMPS.FIRST.LOCAL.CAT.MC -,'
+                                                    'MC na-or-- ] ].',merge=True)
     constrain_for_features(typename,cs,mylang,'SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.',ch,is_nominalized_complement(cs))
     if cs['cformvalue']:
         constrain_lexitem_for_feature(typename,'SYNSEM.LOCAL.CAT.HEAD','FORM',cs['cformvalue'],mylang)

@@ -1870,12 +1870,12 @@ basic-head-subj-phrase := head-valence-phrase & head-compositional &
            [ LOCAL [ CAT [ VAL [ SUBJ olist,
                                  COMPS olist,
                                  SPR olist ] ] ],
-             NON-LOCAL [ SLASH 0-alist,
+             NON-LOCAL [ SLASH append-list,
                          REL 0-alist ] ],
-    C-CONT [ HOOK.INDEX.SF prop-or-ques,
-             RELS.LIST < >, HCONS.LIST < >, ICONS.LIST < > ] ].
+    C-CONT [ RELS.LIST < >, HCONS.LIST < >, ICONS.LIST < > ] ].
 
 decl-head-subj-phrase := basic-head-subj-phrase & declarative-clause.
+
 imp-head-subj-phrase := basic-head-subj-phrase & imperative-clause.
 
 ; SSH 2013-04-08 non-canonical and non-matrix clausal head-subj-phrase

@@ -454,7 +454,11 @@ def add_determiner(ch, det, stype, hierarchies, lexicon, mylang):
             mylang.add(dtype + ' := infostr-marking-determiner-lex.')
             break
     if not has_inforstr_feat:
-        mylang.add(dtype + ' := no-icons-lex-item.')
+        if stype == 'determiner-lex':
+            mylang.add(dtype + ' := no-icons-lex-item.')
+        elif stype == 'wh-determiner-lex':
+            mylang.add(dtype + ' := one-icons-lex-item.')
+
     features.customize_feature_values(mylang, ch, hierarchies, det, dtype, 'det')
     for stem in det.get('stem', []):
         orthstr = orth_encode(stem.get('orth'))
