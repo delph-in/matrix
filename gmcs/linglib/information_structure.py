@@ -746,121 +746,121 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
     elif wo == 'free':
         # future research
         pass
-        if pos == 'clause-initial' or infostr_type == 'topic-first':
-            ph_types['head-subj-phrase'] = """head-subj-phrase :=
-                                        [ SYNSEM.L-PERIPH #periph,
-                                          HEAD-DTR.SYNSEM.L-PERIPH #periph ].."""
-            tdl = """head-periph-subj-phrase := decl-head-subj-phrase & head-initial-head-nexus &
-                [ SYNSEM.L-PERIPH +,
-                  HEAD-DTR.SYNSEM [ L-PERIPH +,
-                                    LOCAL [ CAT.VAL.COMPS < [], ... >,
-                                            CONT.HOOK.ICONS-KEY $ ] ] ]."""
-            ph_types['head-periph-subj-phrase'] = tdl.replace('$', infostr)
-            ph_rules['head-periph-subj-phrase'] = 'head-periph-subj'
-
-            ph_types['subj-head-phrase'] = """subj-head-phrase :=
-                                         [ SYNSEM.L-PERIPH -,
-                                           HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < [], ... >,
-                                           NON-HEAD-DTR.SYNSEM.L-PERIPH - ]."""
-            tdl = """periph-subj-head-phrase := decl-head-subj-phrase & head-final-head-nexus &
-                [ SYNSEM.L-PERIPH +,
-                  HEAD-DTR.SYNSEM [ L-PERIPH -,
-                                    LOCAL.CAT.VAL.COMPS < > ],
-                  NON-HEAD-DTR.SYNSEM [ L-PERIPH +,
-                                        LOCAL.CONT.HOOK.ICONS-KEY $ ] ]."""
-            ph_types['periph-subj-head-phrase'] = tdl.replace('$', infostr)
-            ph_rules['periph-subj-head-phrase'] = 'periph-subj-head'
-
-            ph_types['head-comp-phrase'] = """head-comp-phrase :=
-                                         [ SYNSEM.L-PERIPH #periph,
-                                           HEAD-DTR.SYNSEM.L-PERIPH #periph ]."""
-            tdl = """head-periph-comp-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus &
-                [ SYNSEM.L-PERIPH +,
-                  HEAD-DTR.SYNSEM [ L-PERIPH +,
-                                    LOCAL [ CAT.VAL.SUBJ.FIRST [ ],
-				            CONT.HOOK.ICONS-KEY $ ] ] ]."""
-            ph_types['head-periph-comp-phrase'] = tdl.replace('$', infostr)
-            ph_rules['head-periph-comp-phrase'] = 'head-periph-comp'
-
-            ph_types['comp-head-phrase'] = """comp-head-phrase :=
-                                        [ SYNSEM.L-PERIPH -,
-                                          HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < [], ... >,
-                                          NON-HEAD-DTR.SYNSEM.L-PERIPH - ]."""
-            tdl = """periph-comp-head-phrase := basic-head-1st-comp-phrase & head-final-head-nexus &
-                [ SYNSEM.L-PERIPH +,
-                  HEAD-DTR.SYNSEM [ L-PERIPH -, 
-                                    LOCAL.CAT.VAL.SUBJ < > ],
-                  NON-HEAD-DTR.SYNSEM [ L-PERIPH +,
-					LOCAL.CONT.HOOK.ICONS-KEY $ ] ]."""
-            ph_types['periph-comp-head-phrase'] = tdl.replace('$', infostr)
-            ph_rules['periph-comp-head-phrase'] = 'periph-comp-head'
-
-        elif pos == 'clause-final':
-            ph_types['head-subj-phrase'] = """head-subj-phrase :=
-                                         [ SYNSEM.R-PERIPH -,
-                                           HEAD-DTR.SYNSEM [ R-PERIPH na-or--,
-					                     LOCAL.CAT.VAL.COMPS.FIRST [ ] ] ]."""
-            tdl = """head-periph-subj-phrase := decl-head-subj-phrase & head-initial-head-nexus &
-                [ SYNSEM.R-PERIPH +,
-                  HEAD-DTR.SYNSEM.R-PERIPH -,
-                  NON-HEAD-DTR.SYNSEM [ R-PERIPH +,
-                                        LOCAL.CONT.HOOK.ICONS-KEY $ ] ]."""
-            ph_types['head-periph-subj-phrase'] = tdl.replace('$', infostr)
-            ph_rules['head-periph-subj-phrase'] = 'head-periph-subj'
-
-            ph_types['subj-head-phrase'] = """subj-head-phrase :=
-                                         [ SYNSEM.R-PERIPH +,
-                                           HEAD-DTR.SYNSEM [ R-PERIPH na-or-+,
-                                                             LOCAL.CAT.MKG fc-only ] ]."""
-            tdl = """periph-subj-head-phrase := decl-head-subj-phrase & head-final-head-nexus &
-               [ SYNSEM.R-PERIPH +,
-                 HEAD-DTR.SYNSEM [ R-PERIPH +,
-	                           LOCAL [ CAT.VAL.COMPS < [], ... >,
-                                           CONT.HOOK.ICONS-KEY $ ] ] ]."""
-            ph_types['periph-subj-head-phrase'] = tdl.replace('$', infostr)
-            ph_rules['periph-subj-head-phrase'] = 'periph-subj-head'
-
-            ph_types['head-comp-phrase'] = """head-comp-phrase :=
-                                        [ SYNSEM.R-PERIPH -,
-                                          HEAD-DTR.SYNSEM [ R-PERIPH na-or--,
-					                    LOCAL.CAT.VAL.SUBJ.FIRST [ ] ] ]."""
-            tdl = """head-periph-comp-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus &
-                 [ SYNSEM.R-PERIPH +,
-                   HEAD-DTR.SYNSEM.R-PERIPH -, 
-                   NON-HEAD-DTR.SYNSEM [ R-PERIPH +,
-                                         LOCAL.CONT.HOOK.ICONS-KEY $ ] ]."""
-            ph_types['head-periph-comp-phrase'] = tdl.replace('$', infostr)
-            ph_rules['head-periph-comp-phrase'] = 'head-periph-comp'
-
-            ph_types['comp-head-phrase'] = """comp-head-phrase :=
-                                        [ SYNSEM.R-PERIPH +,
-                                          HEAD-DTR.SYNSEM [ R-PERIPH na-or-+,
-                                                            LOCAL.CAT.MKG fc-only ] ]."""
-            tdl = """periph-comp-head-phrase := basic-head-1st-comp-phrase & head-final-head-nexus &
-               [ SYNSEM.R-PERIPH +,
-                 HEAD-DTR.SYNSEM [ R-PERIPH +,
-                                   LOCAL [ CAT.VAL.SUBJ.FIRST [ ],
-                                           CONT.HOOK.ICONS-KEY $ ] ] ]."""
-            ph_types['periph-comp-head-phrase'] = tdl.replace('$', infostr)
-            ph_rules['periph-comp-head-phrase'] = 'periph-comp-head'
-        elif pos == 'preverbal':
-            ph_types['subj-head-phrase'] = 'subj-head-phrase := [ HEAD-DTR.SYNSEM.LIGHT - ].'
-            ph_types['comp-head-phrase'] = 'comp-head-phrase := [ SYNSEM.LOCAL.CAT.HC-LIGHT -, HEAD-DTR.SYNSEM.LIGHT - ].'
-            ph_types['head-comp-phrase'] = 'head-comp-phrase := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].'
-            ph_types['nf-subj-head-phrase'] = nf_subj_head_phrase_simple.replace('$', infostr)
-            ph_rules['nf-subj-head-phrase'] = 'nf-subj-head'
-            ph_types['nf-comp-head-phrase'] = nf_comp_head_phrase.replace('$', infostr)
-            ph_rules['nf-comp-head-phrase'] = 'nf-comp-head'
-        elif pos == 'postverbal':
-            ph_types['comp-head-phrase'] = 'comp-head-phrase := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].'
-            ph_types['head-subj-phrase'] = 'head-subj-phrase := [ HEAD-DTR.SYNSEM.LIGHT - ].'
-            ph_types['head-comp-phrase'] = 'head-comp-phrase := [ SYNSEM.LOCAL.CAT.HC-LIGHT -, HEAD-DTR.SYNSEM.LIGHT - ].'
-            ph_types['head-nf-subj-phrase'] = head_nf_subj_phrase.replace('$', infostr)
-            ph_rules['head-nf-subj-phrase'] = 'head-nf-subj'
-            ph_types['head-nf-comp-phrase'] = head_nf_comp_phrase.replace('$', infostr)
-            ph_rules['head-nf-comp-phrase'] = 'head-nf-comp'
-        else:
-            pass
+        # if pos == 'clause-initial' or infostr_type == 'topic-first':
+        #     ph_types['head-subj-phrase'] = """head-subj-phrase :=
+        #                                 [ SYNSEM.L-PERIPH #periph,
+        #                                   HEAD-DTR.SYNSEM.L-PERIPH #periph ].."""
+        #     tdl = """head-periph-subj-phrase := decl-head-subj-phrase & head-initial-head-nexus &
+        #         [ SYNSEM.L-PERIPH +,
+        #           HEAD-DTR.SYNSEM [ L-PERIPH +,
+        #                             LOCAL [ CAT.VAL.COMPS < [], ... >,
+        #                                     CONT.HOOK.ICONS-KEY $ ] ] ]."""
+        #     ph_types['head-periph-subj-phrase'] = tdl.replace('$', infostr)
+        #     ph_rules['head-periph-subj-phrase'] = 'head-periph-subj'
+        #
+        #     ph_types['subj-head-phrase'] = """subj-head-phrase :=
+        #                                  [ SYNSEM.L-PERIPH -,
+        #                                    HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < [], ... >,
+        #                                    NON-HEAD-DTR.SYNSEM.L-PERIPH - ]."""
+        #     tdl = """periph-subj-head-phrase := decl-head-subj-phrase & head-final-head-nexus &
+        #         [ SYNSEM.L-PERIPH +,
+        #           HEAD-DTR.SYNSEM [ L-PERIPH -,
+        #                             LOCAL.CAT.VAL.COMPS < > ],
+        #           NON-HEAD-DTR.SYNSEM [ L-PERIPH +,
+        #                                 LOCAL.CONT.HOOK.ICONS-KEY $ ] ]."""
+        #     ph_types['periph-subj-head-phrase'] = tdl.replace('$', infostr)
+        #     ph_rules['periph-subj-head-phrase'] = 'periph-subj-head'
+        #
+        #     ph_types['head-comp-phrase'] = """head-comp-phrase :=
+        #                                  [ SYNSEM.L-PERIPH #periph,
+        #                                    HEAD-DTR.SYNSEM.L-PERIPH #periph ]."""
+        #     tdl = """head-periph-comp-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus &
+        #         [ SYNSEM.L-PERIPH +,
+        #           HEAD-DTR.SYNSEM [ L-PERIPH +,
+        #                             LOCAL [ CAT.VAL.SUBJ.FIRST [ ],
+			# 	            CONT.HOOK.ICONS-KEY $ ] ] ]."""
+        #     ph_types['head-periph-comp-phrase'] = tdl.replace('$', infostr)
+        #     ph_rules['head-periph-comp-phrase'] = 'head-periph-comp'
+        #
+        #     ph_types['comp-head-phrase'] = """comp-head-phrase :=
+        #                                 [ SYNSEM.L-PERIPH -,
+        #                                   HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < [], ... >,
+        #                                   NON-HEAD-DTR.SYNSEM.L-PERIPH - ]."""
+        #     tdl = """periph-comp-head-phrase := basic-head-1st-comp-phrase & head-final-head-nexus &
+        #         [ SYNSEM.L-PERIPH +,
+        #           HEAD-DTR.SYNSEM [ L-PERIPH -,
+        #                             LOCAL.CAT.VAL.SUBJ < > ],
+        #           NON-HEAD-DTR.SYNSEM [ L-PERIPH +,
+			# 		LOCAL.CONT.HOOK.ICONS-KEY $ ] ]."""
+        #     ph_types['periph-comp-head-phrase'] = tdl.replace('$', infostr)
+        #     ph_rules['periph-comp-head-phrase'] = 'periph-comp-head'
+        #
+        # elif pos == 'clause-final':
+        #     ph_types['head-subj-phrase'] = """head-subj-phrase :=
+        #                                  [ SYNSEM.R-PERIPH -,
+        #                                    HEAD-DTR.SYNSEM [ R-PERIPH na-or--,
+			# 		                     LOCAL.CAT.VAL.COMPS.FIRST [ ] ] ]."""
+        #     tdl = """head-periph-subj-phrase := decl-head-subj-phrase & head-initial-head-nexus &
+        #         [ SYNSEM.R-PERIPH +,
+        #           HEAD-DTR.SYNSEM.R-PERIPH -,
+        #           NON-HEAD-DTR.SYNSEM [ R-PERIPH +,
+        #                                 LOCAL.CONT.HOOK.ICONS-KEY $ ] ]."""
+        #     ph_types['head-periph-subj-phrase'] = tdl.replace('$', infostr)
+        #     ph_rules['head-periph-subj-phrase'] = 'head-periph-subj'
+        #
+        #     ph_types['subj-head-phrase'] = """subj-head-phrase :=
+        #                                  [ SYNSEM.R-PERIPH +,
+        #                                    HEAD-DTR.SYNSEM [ R-PERIPH na-or-+,
+        #                                                      LOCAL.CAT.MKG fc-only ] ]."""
+        #     tdl = """periph-subj-head-phrase := decl-head-subj-phrase & head-final-head-nexus &
+        #        [ SYNSEM.R-PERIPH +,
+        #          HEAD-DTR.SYNSEM [ R-PERIPH +,
+	     #                       LOCAL [ CAT.VAL.COMPS < [], ... >,
+        #                                    CONT.HOOK.ICONS-KEY $ ] ] ]."""
+        #     ph_types['periph-subj-head-phrase'] = tdl.replace('$', infostr)
+        #     ph_rules['periph-subj-head-phrase'] = 'periph-subj-head'
+        #
+        #     ph_types['head-comp-phrase'] = """head-comp-phrase :=
+        #                                 [ SYNSEM.R-PERIPH -,
+        #                                   HEAD-DTR.SYNSEM [ R-PERIPH na-or--,
+			# 		                    LOCAL.CAT.VAL.SUBJ.FIRST [ ] ] ]."""
+        #     tdl = """head-periph-comp-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus &
+        #          [ SYNSEM.R-PERIPH +,
+        #            HEAD-DTR.SYNSEM.R-PERIPH -,
+        #            NON-HEAD-DTR.SYNSEM [ R-PERIPH +,
+        #                                  LOCAL.CONT.HOOK.ICONS-KEY $ ] ]."""
+        #     ph_types['head-periph-comp-phrase'] = tdl.replace('$', infostr)
+        #     ph_rules['head-periph-comp-phrase'] = 'head-periph-comp'
+        #
+        #     ph_types['comp-head-phrase'] = """comp-head-phrase :=
+        #                                 [ SYNSEM.R-PERIPH +,
+        #                                   HEAD-DTR.SYNSEM [ R-PERIPH na-or-+,
+        #                                                     LOCAL.CAT.MKG fc-only ] ]."""
+        #     tdl = """periph-comp-head-phrase := basic-head-1st-comp-phrase & head-final-head-nexus &
+        #        [ SYNSEM.R-PERIPH +,
+        #          HEAD-DTR.SYNSEM [ R-PERIPH +,
+        #                            LOCAL [ CAT.VAL.SUBJ.FIRST [ ],
+        #                                    CONT.HOOK.ICONS-KEY $ ] ] ]."""
+        #     ph_types['periph-comp-head-phrase'] = tdl.replace('$', infostr)
+        #     ph_rules['periph-comp-head-phrase'] = 'periph-comp-head'
+        # elif pos == 'preverbal':
+        #     ph_types['subj-head-phrase'] = 'subj-head-phrase := [ HEAD-DTR.SYNSEM.LIGHT - ].'
+        #     ph_types['comp-head-phrase'] = 'comp-head-phrase := [ SYNSEM.LOCAL.CAT.HC-LIGHT -, HEAD-DTR.SYNSEM.LIGHT - ].'
+        #     ph_types['head-comp-phrase'] = 'head-comp-phrase := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].'
+        #     ph_types['nf-subj-head-phrase'] = nf_subj_head_phrase_simple.replace('$', infostr)
+        #     ph_rules['nf-subj-head-phrase'] = 'nf-subj-head'
+        #     ph_types['nf-comp-head-phrase'] = nf_comp_head_phrase.replace('$', infostr)
+        #     ph_rules['nf-comp-head-phrase'] = 'nf-comp-head'
+        # elif pos == 'postverbal':
+        #     ph_types['comp-head-phrase'] = 'comp-head-phrase := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].'
+        #     ph_types['head-subj-phrase'] = 'head-subj-phrase := [ HEAD-DTR.SYNSEM.LIGHT - ].'
+        #     ph_types['head-comp-phrase'] = 'head-comp-phrase := [ SYNSEM.LOCAL.CAT.HC-LIGHT -, HEAD-DTR.SYNSEM.LIGHT - ].'
+        #     ph_types['head-nf-subj-phrase'] = head_nf_subj_phrase.replace('$', infostr)
+        #     ph_rules['head-nf-subj-phrase'] = 'head-nf-subj'
+        #     ph_types['head-nf-comp-phrase'] = head_nf_comp_phrase.replace('$', infostr)
+        #     ph_rules['head-nf-comp-phrase'] = 'head-nf-comp'
+        # else:
+        #     pass
     elif wo == 'v2':
         if pos == 'clause-initial' or pos == 'preverbal' or infostr_type == 'topic-first':
             ph_types['nf-comp-head-phrase'] = nf_comp_head_phrase_v2.replace('$', infostr)
@@ -934,6 +934,7 @@ def customize_information_structure_marker(mylang, ch, rules, irules, lexicon, t
         _orth = m['orth'].strip()
         _head = ''
         _light = 'luk'
+        _ph = ''
         if _cat == 'nouns':
             _head = 'noun'
             _light = '-'
@@ -942,9 +943,13 @@ def customize_information_structure_marker(mylang, ch, rules, irules, lexicon, t
             _light = '+'
         else: #both
             _head = '+nv'
+        if _pos == 'before':
+            _ph = '-'
+        elif _pos == 'after':
+            _ph = '+'
 
         if _type == 'modifier':
-            tdl = """infostr-marking-mod-lex := no-rels-hcons-lex-item & one-icons-lex-item &
+            tdl = """infostr-marking-mod-lex := no-rels-hcons-lex-item & one-icons-lex-item & norm-zero-arg &
                [ SYNSEM.LOCAL [ CAT [ HEAD adv & [ MOD < [ LIGHT $
                                                            LOCAL [ CAT.MKG [ FC na-or--, TP na-or-- ],
                                                                    CONT.HOOK [ INDEX #target,
@@ -960,19 +965,22 @@ def customize_information_structure_marker(mylang, ch, rules, irules, lexicon, t
                                                                  LOCAL [ CAT.HEAD ' + _head + ', \
                                                                          CONT.HOOK.ICONS-KEY ' + infostr + ' ] ] > ] ].'
             add_lextypes(mylang, tdl)
+            if _ph:
+                mylang.add(modifier_lex + ' := [ SYNSEM.LOCAL.CAT.POSTHEAD ' + _ph + ' ].')
 
             tdl = rule = ''
-            if _pos == 'before':
-                rule = 'adj-head-int := adj-head-int-phrase.'
-                rules.add(rule)
-            elif _pos == 'after':
-                rule = 'head-adj-int := head-adj-int-phrase.'
-                rules.add(rule)
-            else: #both
-                rule = 'adj-head-int := adj-head-int-phrase.'
-                rules.add(rule)
-                rule = 'head-adj-int := head-adj-int-phrase.'
-                rules.add(rule)
+            if ch.get('front-matrix') == '': # Constituent questions library will add its own head-adj phrase
+                if _pos == 'before':
+                    rule = 'adj-head-int := adj-head-int-phrase.'
+                    rules.add(rule)
+                elif _pos == 'after':
+                    rule = 'head-adj-int := head-adj-int-phrase.'
+                    rules.add(rule)
+                else: #both
+                    rule = 'adj-head-int := adj-head-int-phrase.'
+                    rules.add(rule)
+                    rule = 'head-adj-int := head-adj-int-phrase.'
+                    rules.add(rule)
 
             orth = orth_encode(_orth)
             if _head == '+nv':
