@@ -135,7 +135,7 @@ MULTI = 'multi'
 NO_MULTI = 'no-multi'
 
 
-def customize_wh_ques(mylang,ch,rules):
+def customize_wh_ques(mylang,ch,rules,roots):
     if not ch.get(MTX_FRONT):
         # If there are no wh-questions, need to put the default
         # constraints to establish the semantic links between

@@ -242,12 +242,14 @@ non-local-min := avm.
 non-local := non-local-min &
   [ SLASH append-list,
     QUE append-list,
-    REL append-list ].
+    REL append-list,
+    YNQ append-list ].
 
 non-local-none := non-local &
   [ SLASH 0-alist,
     QUE 0-alist,
-    REL 0-alist ].
+    REL 0-alist,
+    YNQ 0-alist ].
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;  CAT values
@@ -3472,14 +3474,14 @@ coord-phrase := binary-phrase &
   [ SYNSEM [ LOCAL [ COORD-STRAT #cstrat,
                    CAT [ HEAD.MOD #mod,
                          VAL #val ] ],
-	     NON-LOCAL #nl ],
+	     NON-LOCAL [ SLASH #slash, REL #rel, QUE.APPEND < #que1, #que2 >, YNQ.APPEND < #ynq1, #ynq2 > ] ],
     LCOORD-DTR #ldtr & sign & [ SYNSEM [ LOCAL [ CAT [ HEAD.MOD #mod,
                                                      VAL #val ] ],
-				         NON-LOCAL #nl ] ],
+				         NON-LOCAL [ SLASH #slash, REL #rel, QUE #que1, YNQ #ynq1 ] ] ],
     RCOORD-DTR #rdtr & sign & [ SYNSEM [ LOCAL [ COORD-STRAT #cstrat,
                                                CAT [ HEAD.MOD #mod,
                                                      VAL #val ] ],
-					 NON-LOCAL #nl ] ],
+					 NON-LOCAL [ SLASH #slash, REL #rel, QUE #que2, YNQ #ynq2 ] ] ],
     ARGS < #ldtr, #rdtr > ].
 
 topormid-coord-phrase := coord-phrase &
@@ -3499,9 +3501,9 @@ mid-coord-rule := topormid-coord-phrase &
                    COORD-REL implicit-coord-rel ]].
 
 bottom-coord-phrase := phrase &
-  [ SYNSEM.NON-LOCAL #nl,
+  [ SYNSEM.NON-LOCAL [ SLASH #slash, REL #rel ],
     CONJ-DTR sign,
-    NONCONJ-DTR sign & [ SYNSEM.NON-LOCAL #nl ] ].
+    NONCONJ-DTR sign & [ SYNSEM.NON-LOCAL [ SLASH #slash, REL #rel ] ] ].
 
 unary-bottom-coord-rule := bottom-coord-phrase & unary-phrase &
   [ SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,

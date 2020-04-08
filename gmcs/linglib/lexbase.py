@@ -60,7 +60,10 @@ ques-clitic-lex := no-hcons-lex-item &
                                                           L-PERIPH +,
                                                           L-QUE - ] > ] ],
                              CONT.RELS.LIST < > ],
-            NON-LOCAL.QUE.LIST < *top* > ] ].
+            NON-LOCAL [ SLASH.LIST < >,
+                        REL.LIST < >,
+                        QUE.LIST <  >,
+                        YNQ.LIST < *top* > ] ] ].
 '''
 
 WH_WORD = '''wh-word-lex := norm-hook-lex-item & basic-icons-lex-item &
@@ -110,10 +113,10 @@ WH_ADV =  '''wh-adverb-lex := adverb-lex-item & zero-arg-que &
 
 
 WH_DET = '''wh-determiner-lex := basic-determiner-lex & non-mod-lex-item  & zero-arg-nonslash &
-  [ SYNSEM [ LOCAL.CAT.VAL [ SPR < >,
-                           SPEC.FIRST.LOCAL.CONT.HOOK.INDEX #arg0,
+  [ SYNSEM [ LOCAL [ CAT.VAL [ SPR < >,
+                           SPEC.FIRST.LOCAL [ CONT.HOOK.INDEX #arg0 ],
                            COMPS < >,
-                           SUBJ < > ],
+                           SUBJ < > ] ],
              NON-LOCAL.QUE.LIST < #arg0 >,
              L-QUE + ] ].'''
 

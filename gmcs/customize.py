@@ -618,10 +618,10 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
     valence_change.customize_valence_change(mylang, ch, lexicon, rules, lrules, hierarchies)
     word_order.customize_word_order(mylang, ch, rules)
     coordination.customize_coordination(mylang, ch, lexicon, rules, irules)
-    yes_no_questions.customize_yesno_questions(mylang, ch, rules, lrules, hierarchies)
+    yes_no_questions.customize_yesno_questions(mylang, ch, rules, lrules, hierarchies,roots)
     clausalmods.customize_clausalmods(mylang, ch, lexicon, rules, roots, trigger)
     clausalcomps.customize_clausalcomps(mylang,ch,lexicon,rules)
-    wh_ques.customize_wh_ques(mylang,ch,rules)
+    wh_ques.customize_wh_ques(mylang,ch,rules,roots)
     adverbs_adpositions.customize_adv_adp(ch,mylang,rules)
 
     # Service customization

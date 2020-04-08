@@ -6,7 +6,35 @@ from gmcs import globals
 #   Create the type definitions associated with the user's choices
 #   about matrix yes/no questions.
 
-def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies):
+
+INT_CL = '''int-cl := head-only & interrogative-clause &
+  [ SYNSEM [ LOCAL.CAT [ HEAD +vc, VAL #val,
+                                         MC bool ],
+                    NON-LOCAL.YNQ.LIST < > ],
+    HEAD-DTR.SYNSEM [ LOCAL.CAT [ MC na,
+                                  VAL #val & [ SUBJ < >, COMPS < >, SPR < >, SPEC < > ] ],
+                                  NON-LOCAL [ YNQ.LIST < *top* >, SLASH.LIST < > ] ] ].'''
+
+DECL_CL = '''decl-cl := head-only & declarative-clause & same-ynq-unary-phrase &
+  [ SYNSEM.LOCAL.CAT [ VAL #val,
+                                         MC bool ],
+    HEAD-DTR.SYNSEM [ LOCAL.CAT [ MC na,
+                                                           VAL #val ],
+                                      NON-LOCAL.YNQ.LIST < > ]].'''
+
+MC_NA = '''mc-na-headed-phrase := headed-phrase &
+  [ SYNSEM.LOCAL.CAT.MC na,
+    HEAD-DTR.SYNSEM.LOCAL.CAT.MC na ].'''
+
+SAME_PERIPH = '''same-periph-unary-phrase :=
+                       unary-phrase & [ SYNSEM [ L-PERIPH #periph ],
+                       ARGS < [ SYNSEM [ L-PERIPH #periph ] ] > ].'''
+
+SAME_YNQ = '''same-ynq-unary-phrase :=
+                       unary-phrase & [ SYNSEM [ NON-LOCAL.YNQ #ynq ],
+                       ARGS < [ SYNSEM [ NON-LOCAL.YNQ #ynq ] ] > ].'''
+
+def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies,roots):
 
     qinvverb = ch.get('q-inv-verb')
 
@@ -169,20 +197,37 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies):
 
         # Second position  clitics are treated as modifiers:
         elif ch.get('q-part-order') == 'second':
-            mylang.add('basic-binary-phrase :+ '
-                       '[ SYNSEM.L-PERIPH #periph, '
-                       'ARGS < [ SYNSEM.L-PERIPH #periph ], [SYNSEM.L-PERIPH -] > ].',section='addenda')
+            mylang.add('''basic-binary-phrase :+ [ SYNSEM [ L-PERIPH #periph,
+                                  NON-LOCAL.YNQ.APPEND < #ynq1,
+                                    #ynq2 > ],
+             ARGS < [ SYNSEM [ L-PERIPH #periph,
+                               NON-LOCAL.YNQ #ynq1 ] ],
+                    [ SYNSEM [ L-PERIPH -,
+                               NON-LOCAL.YNQ #ynq2 ] ] > ].''',section='addenda')
             mylang.add('basic-head-mod-phrase-simple :+ '
                        '[ HEAD-DTR.SYNSEM.L-PERIPH #periph, '
                        'NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.MOD < [ L-PERIPH #periph ] > ].',section='addenda')
-            mylang.add('same-periph-unary-phrase := '
-                       'unary-phrase & [ SYNSEM.L-PERIPH #periph, '
-                       'ARGS < [ SYNSEM.L-PERIPH #periph ] > ].',section='phrases')
-            mylang.add('bare-np-phrase := same-periph-unary-phrase & [ SYNSEM.LIGHT - ].')
+            mylang.add(SAME_PERIPH,section='phrases')
+            mylang.add(SAME_YNQ,section='phrases')
+            mylang.add('bare-np-phrase := same-periph-unary-phrase & same-ynq-unary-phrase & [ SYNSEM.LIGHT - ].')
             comment = 'Second position question particles are treated as modifiers.'
             typedef = lexbase.QUES_CLITIC
             mylang.add(typedef, comment, section='complex')
             supertype = 'ques-clitic-lex'
+            # Constrain all other words to be YNQ-empty:
+            mylang.add('non-ynq-word := word-or-lexrule & [ SYNSEM.NON-LOCAL.YNQ.LIST < > ].')
+            mylang.add('basic-zero-arg :+ non-ynq-word.',section='addenda')
+            mylang.add('basic-one-arg :+ non-ynq-word.',section='addenda')
+            mylang.add('basic-two-arg :+ non-ynq-word.',section='addenda')
+            mylang.add('basic-three-arg :+ non-ynq-word.',section='addenda')
+            mylang.add('intersective-mod-lex :+ non-ynq-word.',section='addenda')
+            roots.add('root := [ SYNSEM.NON-LOCAL.YNQ.LIST < > ].')
+            mylang.add(INT_CL,section='phrases')
+            mylang.add(DECL_CL,section='phrases')
+            rules.add('int-cl := int-cl.')
+            #rules.add('decl-cl := decl-cl.')
+            mylang.add(MC_NA,section='phrases')
+            #mylang.add('binary-headed-phrase :+ mc-na-headed-phrase.',section='addenda')
 
         # Add subtypes for each question particle.
         # First figure out if there are diverse particles:

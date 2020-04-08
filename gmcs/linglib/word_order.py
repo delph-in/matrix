@@ -139,11 +139,11 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
     if wo in ['vso', 'osv']:
         mylang.add('basic-head-opt-comp-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].', section='addenda')
         if ch.get('q-part-order') == 'second':
-            mylang.add('basic-head-opt-comp-phrase :+ same-periph-unary-phrase.')
+            mylang.add('basic-head-opt-comp-phrase :+ same-periph-unary-phrase & same-ynq-unary-phrase & mc-na-headed-phrase.')
     else:
         mylang.add('basic-head-opt-subj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].', section='addenda')
         if ch.get('q-part-order') == 'second':
-            mylang.add('basic-head-opt-subj-phrase :+ same-periph-unary-phrase.')
+            mylang.add('basic-head-opt-subj-phrase :+ same-periph-unary-phrase & same-ynq-unary-phrase & mc-na-headed-phrase.')
 
     # ERB 2006-09-14 Free word order is a big fat special case:
 
