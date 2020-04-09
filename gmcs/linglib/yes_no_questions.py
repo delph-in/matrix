@@ -20,6 +20,8 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies):
             'All verbs start off as not inverted.'
         mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HEAD.INV - ].',
                    comment, section='verblex')
+        if any(ch.get('cop')):
+            mylang.add('cop-lex := [ SYNSEM.LOCAL.CAT.HEAD.INV - ].', comment)
 
 
         comment = \

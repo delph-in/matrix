@@ -1,6 +1,30 @@
 n1 iv
+n2 iv
 n1 tv n2
-n1 aux iv 
+n2 tv n1
+n1 aux iv
+n2 aux iv
 n1 aux tv n2
+n2 aux tv n1
 aux n1 iv
 aux n1 tv n2
+aux n2 tv n1
+*iv n1
+*n1 n2 tv
+*tv n1 n2
+*tv n2 n1
+*n1 iv aux
+*iv n1 aux
+*iv aux n1
+*aux iv n1
+*n1 aux n2 tv
+*aux n1 n2 tv
+*aux n2 n1 tv
+*aux tv n1 n2
+*aux tv n2 n1
+*tv aux n1 n2
+*tv aux n2 n1
+*tv n1 aux n2
+*tv n1 n2 aux
+*tv n2 aux n1
+*tv n2 n1 aux
