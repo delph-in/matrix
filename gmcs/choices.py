@@ -715,6 +715,29 @@ class ChoicesFile:
         return False
 
 
+    def has_det_case(self, case = '', check_opt = False):
+        """
+        Returns True iff the target language has inflecting determiners
+        which agree with nouns in CASE.
+        """
+
+        for det in self.get('det'):
+            opt = det.get('opt')
+            if opt or not check_opt:
+                for feat in det.get('feat', []):
+                    if self.has_case(feat, case):
+                        return True
+
+        for det_pc in self.get('det-pc'):
+            for lrt in det_pc['lrt']:
+                for feat in lrt.get('feat', []):
+                    if feat['name'] == 'case':
+                        return True
+
+        return False
+
+
+
     def has_optadp_case(self, case = ''):
         """
         Returns True iff the target language has optional case-marking

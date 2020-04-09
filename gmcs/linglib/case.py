@@ -199,7 +199,7 @@ def customize_trigger_rules(adp_type, trigger):
 
 # customize_case_adpositions()
 #   Create the appropriate types for case-marking adpositions
-def customize_case_adpositions(mylang, lexicon, trigger, ch):
+def customize_case_adpositions(mylang, lexicon, trigger, ch, case_pos):
     cases = case_names(ch)
     # features = ch.features()
     to_cfv = []
@@ -210,8 +210,8 @@ def customize_case_adpositions(mylang, lexicon, trigger, ch):
             ';;; Case marking adpositions are constrained not to\n' + \
             ';;; be modifiers.'
         mylang.add_literal(comment)
-
-        mylang.add('+np :+ [ CASE case ].', section='addenda')
+        case_pos.add('adp')
+        #mylang.add('+np :+ [ CASE case ].', section='addenda')
 
         # EKN 2018-04-14 Case marking adps need to be marked as nonpossessive
         poss = True if ch.get('poss-strat') or ch.get('poss-pron') else False
@@ -310,7 +310,6 @@ def customize_case_adpositions(mylang, lexicon, trigger, ch):
                 customize_trigger_rules(adp_type, trigger)
 
             to_cfv += [(adp.full_key, adp_type, 'adp')]
-
     return to_cfv
 
 
@@ -328,6 +327,7 @@ def customize_case(mylang, ch, hierarchies):
                 convert_mixed_case(lrt, hierarchies, cases)
     # now output the case hierarchies
     customize_case_type(mylang, hierarchies)
+
 
 
 def convert_mixed_case(item, hierarchies, cases):

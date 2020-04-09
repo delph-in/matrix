@@ -575,7 +575,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
             'keeps such nouns out.')
 
     if ch.get('case-marking') != 'none':
-        if not ch.has_adp_case():
+        if not ch.has_adp_case() and not ch.has_det_case():
             mylang.add('noun :+ [ CASE case ].', section='addenda')
 
     # Add the lexical entries
@@ -1101,8 +1101,22 @@ def customize_lexicon(mylang, ch, lexicon, trigger, hierarchies, rules):
     customize_adjs(mylang, ch, lexicon, hierarchies, rules)
 
     mylang.set_section('otherlex')
-    to_cfv = case.customize_case_adpositions(mylang, lexicon, trigger, ch)
+    # Need to pick up other POS which inflect for case.
+    case_pos = set()
+    to_cfv = case.customize_case_adpositions(mylang, lexicon, trigger, ch, case_pos)
+
     features.process_cfv_list(mylang, ch, hierarchies, to_cfv, tdlfile=lexicon)
+
+    # Specify CASE on determiners if needed:
+    if ch.has_det_case():
+        case_pos.add('det')
+    if len(case_pos) == 2:
+        mylang.add('+npd :+ [ CASE case ].', section='addenda')
+    elif len(case_pos) == 1 and 'det' in case_pos:
+        mylang.add('+nd :+ [ CASE case ].', section='addenda')
+    elif len(case_pos) == 1 and 'adp' in case_pos:
+        mylang.add('+np :+ [ CASE case ].', section='addenda')
+
 
     if ch.has_adp_only_infostr():
         to_cfv = information_structure.customize_infostr_adpositions(mylang, lexicon, trigger, ch)
