@@ -11,6 +11,10 @@ def process_cfv_list(mylang, ch, hierarchies, to_cfv, tdlfile=None):
         customize_feature_values(mylang, ch, hierarchies, ch[ch_key], type_id, pos,
                                  tdlfile=tdlfile or mylang)
 
+# olzama 2020-04-09 The below function has the benefit of serving many POS at once
+# however it is very difficult to follow and debug.
+# Consider improving it and perhaps even have several separate functions?
+
 def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, features=None, cases=None, tdlfile=None):
 
     if not features:
@@ -79,6 +83,8 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
         'mod': 'LOCAL.CAT.HEAD.MOD.FIRST.',  # MOD for adjectives
         'comp': 'LOCAL.CAT.VAL.COMPS.FIRST.', # COMP for copulas
         #'noun': 'LOCAL.CAT.VAL.SPEC.FIRST.', # olzama 2020-04-08 I think this was a bug.
+        # There was interference between this line for determiner inflection and prefix_map
+        # for full-form determiners.
     }
 
     for feat in ch_dict.get(iter_feat,[]):
@@ -210,11 +216,21 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                 tdlfile.add(type_name +
                     ' := [ ' + geom + ' ' + value + ' ].',
                     merge=True)
+                # olzama 2020-04-09 I don't know why this special case is needed here.
+                # This being a general purpose function, it should service determiners
+                # just like it serves adjective agreement etc. But it doesn't, without the special case.
+                # Need to understand the general case better (or to improve this long and convoluted function!)
+                if n == 'case' and pos == 'det':
+                    tdlfile.add(type_name + ' := [ SYNSEM.' + case_geom + ' ' + value + ' ].', merge=True)
+                if n in ['person','number','gender'] and pos == 'det':
+                    tdlfile.add(type_name + ' := [ SYNSEM.'  + f[2] +  ' ' + value + ' ].', merge=True)
+
                 if n == 'case' and ch.has_mixed_case():
                     val = '-' if '-synth-' + value in type_name else '+'
                     tdlfile.add(type_name +
                       ' := [ ' + geom + '-MARKED ' + val + ' ].',
                       merge=True)
+
             else:
                 for value in v:
                     tdlfile.add(type_name +

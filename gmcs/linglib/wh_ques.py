@@ -236,10 +236,15 @@ def customize_wh_ques(mylang,ch,rules,roots):
                                'can be extracted separately:',section='phrasal')
             mylang.add(EX_DET_PHRASE,section='phrases')
             if ch.get('case'):
-                mylang.add('+nd :+ [ CASE case ].')
-                mylang.add('''extracted-det-phrase := [ SYNSEM.LOCAL.CAT.HEAD.CASE #case,
-                                                        HEAD-DTR.SYNSEM [ LOCAL.CAT.VAL.SPR.FIRST.LOCAL.CAT.HEAD.CASE #case,
-                                                                          NON-LOCAL.SLASH.LIST.FIRST.CAT.HEAD.CASE #case ] ].''')
+                mylang.add('''extracted-det-phrase :=
+                [ SYNSEM.LOCAL.CAT.HEAD.CASE #case,
+                HEAD-DTR.SYNSEM [ LOCAL.CAT.VAL.SPR.FIRST.LOCAL.CAT.HEAD.CASE #case,
+                NON-LOCAL.SLASH.LIST.FIRST.CAT.HEAD.CASE #case ] ].''')
+            if ch.has_png():
+                mylang.add('''extracted-det-phrase :=
+                [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png,
+                HEAD-DTR.SYNSEM [ LOCAL.CAT.VAL.SPR.FIRST.LOCAL.CONT.HOOK.INDEX.PNG #png,
+                NON-LOCAL.SLASH.LIST.FIRST.CONT.HOOK.INDEX.PNG #png ] ].''')
             rules.add('ex-det := extracted-det-phrase.')
         if ch.get('pied-pip-adp') == 'on' and not ch.get('oblig-pied-pip-adp') == 'on':
             mylang.add('extracted-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD +vp ].')
