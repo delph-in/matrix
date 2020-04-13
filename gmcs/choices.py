@@ -791,7 +791,7 @@ class ChoicesFile:
         return 'gender' in self.choices
 
     def has_png(self):
-        return ('person' in self.choices or 'pernum' in self.choices
+        return ('pernum' in self.choices
                 or 'number' in self.choices or 'gender' in self.choices)
 
     def has_SCARGS(self):

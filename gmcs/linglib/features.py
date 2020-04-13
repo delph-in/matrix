@@ -220,10 +220,10 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                 # This being a general purpose function, it should service determiners
                 # just like it serves adjective agreement etc. But it doesn't, without the special case.
                 # Need to understand the general case better (or to improve this long and convoluted function!)
-                if n == 'case' and pos == 'det':
-                    tdlfile.add(type_name + ' := [ SYNSEM.' + case_geom + ' ' + value + ' ].', merge=True)
-                if n in ['person','number','gender'] and pos == 'det':
-                    tdlfile.add(type_name + ' := [ SYNSEM.'  + f[2] +  ' ' + value + ' ].', merge=True)
+                # if n == 'case' and pos == 'det':
+                #     tdlfile.add(type_name + ' := [ SYNSEM.' + case_geom + ' ' + value + ' ].', merge=True)
+                # if n in ['person','number','gender'] and pos == 'det':
+                #     tdlfile.add(type_name + ' := [ SYNSEM.'  + f[2] +  ' ' + value + ' ].', merge=True)
 
                 if n == 'case' and ch.has_mixed_case():
                     val = '-' if '-synth-' + value in type_name else '+'

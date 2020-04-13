@@ -2261,10 +2261,15 @@ basic-extracted-comp-phrase := basic-extracted-arg-phrase &
 
 basic-extracted-subj-phrase := basic-extracted-arg-phrase & head-compositional &
   [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >,
-                           SPR < > ],
+                           SPR < >,
+                           COMPS #comps,
+                           SPEC #spec ],
     HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL [ SUBJ < gap &
                                              [ LOCAL local &
-                                               [ CONT.HOOK.INDEX ref-ind ] ] > ],
+                                               [ CONT.HOOK.INDEX ref-ind ] ] >,
+                                        SPR < >,
+                                        COMPS #comps,
+                                        SPEC #spec],
                                   MC na ] ],
     C-CONT [ RELS 0-alist,
              HCONS 0-alist,
