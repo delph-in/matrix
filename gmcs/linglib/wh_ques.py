@@ -133,6 +133,7 @@ SG_OBLIG = 'single-oblig'
 SINGLE = 'single'
 MULTI = 'multi'
 NO_MULTI = 'no-multi'
+ALL_OBLIG = 'all-oblig'
 
 
 def customize_wh_ques(mylang,ch,rules,roots):
@@ -215,7 +216,7 @@ def customize_wh_ques(mylang,ch,rules,roots):
     # is obligatorily fronted, need also in-situ rules:
     if (ch.get(MTX_FRONT) == SINGLE and not ch.get(MTX_FRONT_OPT) == SG_OBLIG) \
             or ch.get(MTX_FRONT) == 'in-situ' \
-            or (ch.get(MTX_FRONT) == MULTI and ch.get(MTX_FRONT_OPT) == SG_OBLIG):
+            or (ch.get(MTX_FRONT) == MULTI and not ch.get(MTX_FRONT_OPT) == ALL_OBLIG):
         mylang.add_literal('; In-situ interrogative clause.',section='phrases')
         mylang.add(IN_SITU_PHRASE)
         rules.add('in-situ-ques := insitu-int-cl.')
