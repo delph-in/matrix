@@ -98,12 +98,11 @@ IN_SITU_PHRASE = '''insitu-int-cl := interrogative-clause & head-only &
 
 EX_DET_PHRASE = '''extracted-det-phrase := basic-extracted-arg-phrase & head-compositional &
 [ SYNSEM [ LOCAL.CAT [ VAL [ SUBJ < >, COMPS < >, SPR < > ] ] ],
-  HEAD-DTR.SYNSEM [ LOCAL.CAT.VAL.SPR < gap & [ LOCAL  
+  HEAD-DTR.SYNSEM [ LOCAL.CAT.VAL.SPR <  gap & [ LOCAL #local & local & 
                                                 [ CAT.HEAD det,
                                                   CONT.HOOK #hook ] ] >,
                    L-PERIPH -,
-                   NON-LOCAL.SLASH.LIST < [ CAT.HEAD det,
-                                            CONT.HOOK #hook ] > ],
+                   NON-LOCAL.SLASH.LIST < #local > ],
     C-CONT [ RELS.LIST < >,
              HCONS.LIST < >,
              ICONS.LIST < >,
@@ -239,13 +238,11 @@ def customize_wh_ques(mylang,ch,rules,roots):
             if ch.get('case'):
                 mylang.add('''extracted-det-phrase :=
                 [ SYNSEM.LOCAL.CAT.HEAD.CASE #case,
-                HEAD-DTR.SYNSEM [ LOCAL.CAT.VAL.SPR.FIRST.LOCAL.CAT.VAL.SPEC.FIRST.CAT.HEAD.CASE #case,
-                NON-LOCAL.SLASH.LIST.FIRST.CAT.VAL.SPEC.FIRST.CAT.HEAD.CASE #case ] ].''')
+                HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CAT.HEAD.CASE #case ].''')
             if ch.has_png():
                 mylang.add('''extracted-det-phrase :=
                 [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png,
-                HEAD-DTR.SYNSEM [ LOCAL.CAT.VAL.SPR.FIRST.LOCAL.CAT.VAL.SPEC.FIRST.CONT.HOOK.INDEX.PNG #png,
-                NON-LOCAL.SLASH.LIST.FIRST.CAT.VAL.SPEC.FIRST.CONT.HOOK.INDEX.PNG #png ] ].''')
+                HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CONT.HOOK.INDEX.PNG #png ].''')
             rules.add('ex-det := extracted-det-phrase.')
         if ch.get('pied-pip-adp') == 'on' and not ch.get('oblig-pied-pip-adp') == 'on':
             mylang.add('extracted-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD +vp ].')
