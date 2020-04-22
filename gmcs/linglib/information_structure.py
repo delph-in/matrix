@@ -984,10 +984,11 @@ def customize_information_structure_marker(mylang, ch, rules, irules, lexicon, t
 
             orth = orth_encode(_orth)
             if _head == '+nv':
+                mylang.add('bare-np-phrase := [ SYNSEM.LIGHT - ].',section='phrases')
                 modifier1 = TDLencode(_orth + '-marker-n')
                 modifier2 = TDLencode(_orth + '-marker-v')
                 tdl1 = modifier1 + ' := ' + modifier_lex + ' & \
-                        [ STEM < "' + orth + '" >, SYNSEM.LOCAL.CAT.HEAD.MOD < [ LIGHT -, LOCAL.CAT.HEAD noun ] > ].'
+                        [ STEM < "' + orth + '" >, SYNSEM.LOCAL.CAT.HEAD.MOD < [ LIGHT +, LOCAL.CAT.HEAD noun ] > ].'
                 tdl2 = modifier2 + ' := ' + modifier_lex + ' & \
                         [ STEM < "' + orth + '" >, SYNSEM.LOCAL.CAT.HEAD.MOD < [ LIGHT +, LOCAL.CAT.HEAD verb ] > ].'
                 lexicon.add_literal(';;; Modifiers of expressing information structure')
