@@ -153,8 +153,7 @@ def customize_adv_neg(mylang, ch, lexicon, rules):
 
     # olzama 2020-04-22 Since this is for sentential negation,
     # these rules should probably always be constrained to only
-    # take verby head daughters. Otherwise they apply to noun-modifying
-    # intersective focus/question particles.
+    # take verby head daughters? I did not make any changes though.
     rules.add('adj-head-scop := adj-head-scop-phrase.')
     rules.add('head-adj-scop := head-adj-scop-phrase.',
               'Rule instances for head-modifier structures. Corresponding types\n' +
