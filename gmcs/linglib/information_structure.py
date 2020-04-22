@@ -949,7 +949,8 @@ def customize_information_structure_marker(mylang, ch, rules, irules, lexicon, t
             _ph = '+'
 
         if _type == 'modifier':
-            tdl = """infostr-marking-mod-lex := no-rels-hcons-lex-item & one-icons-lex-item & norm-zero-arg &
+            tdl = """infostr-marking-mod-lex := no-rels-hcons-lex-item
+            & one-icons-lex-item & norm-zero-arg & intersective-mod-lex &
                [ SYNSEM.LOCAL [ CAT [ HEAD adv & [ MOD < [ LIGHT $
                                                            LOCAL [ CAT.MKG [ FC na-or--, TP na-or-- ],
                                                                    CONT.HOOK [ INDEX #target,
