@@ -55,7 +55,7 @@ EX_SUBJ_MULTI = '''extracted-subj-phrase := basic-extracted-arg-phrase & head-co
 EX_ADJ = '''extracted-adv-adp-adj-phrase := basic-extracted-adj-phrase &
   [ SYNSEM [ LOCAL.CAT [ POSTHEAD #ph,
                          MC #mc ],
-	     NON-LOCAL [ QUE #que, SLASH append-list &
+	     NON-LOCAL [ QUE #que, YNQ #ynq, SLASH append-list &
 		   [ LIST < [ CAT [ HEAD +rp & [ MOD < [ LOCAL intersective-mod &
                                                    [ CAT [ HEAD #head,
                                                            VAL #val,
@@ -74,7 +74,7 @@ EX_ADJ = '''extracted-adv-adp-adj-phrase := basic-extracted-adj-phrase &
                            MC #mc ],
                      CONT.HOOK #hook,
                      CTXT #ctxt ],
-             NON-LOCAL [ QUE #que, SLASH.LIST #slash ],
+             NON-LOCAL [ QUE #que, SLASH.LIST #slash, YNQ #ynq ],
 	     MODIFIED notmod ],
     C-CONT [ HOOK #hook,
          RELS.LIST < >,
@@ -115,7 +115,7 @@ BASIC_FILLER_SG = '''basic-filler-phrase :+ [ SYNSEM.NON-LOCAL.SLASH.LIST < >,
                                                     [SYNSEM.NON-LOCAL.SLASH.LIST < #slash >] >]. '''
 
 FIRST_FILLER = '''1st-head-filler-phrase := basic-filler-phrase & head-compositional &
-  [  SYNSEM.NON-LOCAL.SLASH.LIST #slash,
+  [  SYNSEM.NON-LOCAL [ SLASH.LIST #slash, QUE 0-alist ],
      ARGS < [ SYNSEM.LOCAL #local ],
 	   [ SYNSEM.NON-LOCAL [ SLASH.LIST < #local . #slash >,
 				                  REL 0-alist ] ] > ].'''
