@@ -42,7 +42,8 @@ EX_SUBJ = ''' extracted-subj-phrase := basic-extracted-subj-phrase &
 EX_SUBJ_MULTI = '''extracted-subj-phrase := basic-extracted-arg-phrase & head-compositional &
   [ SYNSEM [ LOCAL.CAT.VAL [ SUBJ < >,
                            SPR < > ] ],
-    HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL [ SUBJ < gap &
+    HEAD-DTR.SYNSEM [ L-QUE -,
+                      LOCAL.CAT [ VAL [ SUBJ < gap &
                                              [ LOCAL local &
                                                [ CONT.HOOK.INDEX ref-ind ] ] > ], MC na ] ],
     C-CONT [ RELS.LIST < >,
