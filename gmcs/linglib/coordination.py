@@ -46,7 +46,6 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, mylang,
                [ SYNSEM.LOCAL.COORD-STRAT "' + num + '",\
                  SYNSEM.LOCAL.COORD-REL.PRED "_and_coord_rel",\
                  DTR.SYNSEM.LOCAL.CAT.HEAD ' + headtype + ' ].')
-
         # now the spelling change rule in irules.tdl
         rule = pn + '-bottom :=\n'
         if pre:
@@ -518,6 +517,19 @@ def customize_coordination(mylang, ch, lexicon, rules, irules):
         else:
             agrrules = [('', '')]
 
+        # olzama 2020-04-28 Add adverb coordination if adverbs are present.
+        # For now, I just hard coded Strategy 1 because I don't really know
+        # how this library works. Adverbs are unlikely to require agreement though?
+        if len(ch.get('adv')) > 0:
+            mylang.add('adv1-top-coord-rule := basic-adv-top-coord-rule & monopoly-top-coord-rule & \
+                            [ SYNSEM.LOCAL.COORD-STRAT "1" ].')
+            mylang.add('''adv1-mid-coord-rule := basic-adv-mid-coord-rule & monopoly-mid-coord-rule &
+                            [ SYNSEM.LOCAL.COORD-STRAT "1" ].''')
+            mylang.add('''adv1-bottom-coord-rule := conj-first-bottom-coord-rule & adv-bottom-coord-phrase &
+                            [ SYNSEM.LOCAL.COORD-STRAT "1" ].''')
+            rules.add('adv1-bottom-coord := adv1-bottom-coord-rule.')
+            rules.add('adv1-mid-coord := adv1-mid-coord-rule.')
+            rules.add('adv1-top-coord := adv1-top-coord-rule.')
 
         for pos in ('n', 'np', 'vp', 's'):
             # don't use noun-y agreement rules with VP or S

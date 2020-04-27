@@ -3836,8 +3836,9 @@ vp-bottom-coord-phrase := bottom-coord-phrase &
 ; S Coordination rules
 
 s-coord-phrase := event-coord-phrase &
-  [ SYNSEM.LOCAL.CAT [ HEAD verb,
+  [ SYNSEM [ LOCAL.CAT [ HEAD verb,
                        VAL.SUBJ < > ],
+              NON-LOCAL non-local-none ],
     LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD verb,
     RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD verb ].
 
@@ -3851,10 +3852,12 @@ basic-s-mid-coord-rule := s-coord-phrase &
 	     HCONS 0-alist ]].
 
 s-bottom-coord-phrase := bottom-coord-phrase &
-  [ SYNSEM.LOCAL.CAT [ HEAD verb,
+  [ SYNSEM [ LOCAL.CAT [ HEAD verb,
                        VAL.SUBJ < > ],
-    NONCONJ-DTR.SYNSEM.LOCAL.CAT [ HEAD verb,
-                                   VAL.SUBJ < > ]].
+             NON-LOCAL non-local-none ],
+    NONCONJ-DTR.SYNSEM [ LOCAL.CAT [ HEAD verb,
+                                   VAL.SUBJ < > ],
+                         NON-LOCAL non-local-none ]].
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -3,6 +3,7 @@ version=32
 
 section=general
 language=wh7-sov-sg-opt
+punctuation-chars=discard-all
 
 section=word-order
 word-order=sov

@@ -3,6 +3,7 @@ version=32
 
 section=general
 language=wh10-svo-multi-oblig
+punctuation-chars=discard-all
 
 section=word-order
 word-order=svo

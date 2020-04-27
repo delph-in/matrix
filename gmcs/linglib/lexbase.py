@@ -124,7 +124,7 @@ ADP_LEX = '''norm-adposition-lex := norm-sem-lex-item & no-hcons-lex-item & basi
   [ SYNSEM [ LOCAL [ CAT [ HEAD adp,
                            VAL [ COMPS < #comp & [ LOCAL [ CAT [ HEAD noun, VAL.SPR < > ],
                                                  CONT.HOOK.INDEX #ind ],
-                                         NON-LOCAL.QUE #que ] >,
+                                         NON-LOCAL [ QUE #que ] ] >,
                                  SPR < >,
                                  SUBJ < > ] ],
                      CONT.RELS.LIST < [ PRED #pred, ARG0 event, ARG1 event-or-ref-index ] > ],

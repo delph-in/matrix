@@ -62,7 +62,7 @@ EX_ADJ = '''extracted-adv-adp-adj-phrase := basic-extracted-adj-phrase &
                                                            POSTHEAD #ph,
                                                            MC #mc ],
                                                      CONT.HOOK #hook,
-                                                     CTXT #ctxt ] ] > ],
+                                                     CTXT #ctxt ] ] . #slash > ],
                               VAL [ SUBJ olist,
                                     COMPS olist,
                                     SPR olist ] ] ] > ] ] ],
@@ -74,7 +74,7 @@ EX_ADJ = '''extracted-adv-adp-adj-phrase := basic-extracted-adj-phrase &
                            MC #mc ],
                      CONT.HOOK #hook,
                      CTXT #ctxt ],
-             NON-LOCAL [ QUE #que ],
+             NON-LOCAL [ QUE #que, SLASH.LIST #slash ],
 	     MODIFIED notmod ],
     C-CONT [ HOOK #hook,
          RELS.LIST < >,
@@ -220,6 +220,8 @@ def customize_wh_ques(mylang,ch,rules,roots):
         mylang.add_literal('; In-situ interrogative clause.',section='phrases')
         mylang.add(IN_SITU_PHRASE)
         rules.add('in-situ-ques := insitu-int-cl.')
+        if ch.get(MTX_FRONT) in [SINGLE,MULTI]:
+            mylang.add('insitu-int-cl := [ SYNSEM.L-QUE - ].')
         if (ch.get(MTX_FRONT) == SINGLE and not ch.get(MTX_FRONT_OPT) == SG_OBLIG):
             mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.MC + ].')
         elif ch.get(MTX_FRONT) == 'multi' and ch.get(MTX_FRONT_OPT) == SG_OBLIG:
@@ -251,6 +253,11 @@ def customize_wh_ques(mylang,ch,rules,roots):
                 mylang.add('head-subj-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < > ].')
         else:
             mylang.add('extracted-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD verb ].')
+
+        if ch.get('pied-pip-adp') == 'on' and \
+                ch.get('oblig-pied-pip-noun') != 'on' \
+                and ch.get('oblig-pied-pip-adp') == 'on':
+            mylang.add('norm-adposition-lex := [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.NON-LOCAL.SLASH.LIST < > ].')
 
     if ch.get(MTX_FRONT) in [SINGLE, MULTI]:
         # Free probably shouldn't belong here? check

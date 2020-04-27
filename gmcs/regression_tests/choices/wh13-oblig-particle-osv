@@ -3,6 +3,7 @@ version=33
 
 section=general
 language=wh13-insitu-particle-oblig
+punctuation-chars=discard-all
 
 section=word-order
 word-order=osv

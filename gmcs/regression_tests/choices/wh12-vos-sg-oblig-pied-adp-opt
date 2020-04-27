@@ -3,6 +3,7 @@ version=32
 
 section=general
 language=wh12-vos-sg-oblig-pied-adp-opt
+punctuation-chars=discard-all
 
 section=word-order
 word-order=vos

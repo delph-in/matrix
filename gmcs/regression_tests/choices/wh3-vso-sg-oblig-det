@@ -3,6 +3,7 @@ version=32
 
 section=general
 language=wh3-vso-sg-oblig-det
+punctuation-chars=discard-all
 
 section=word-order
 word-order=vso
