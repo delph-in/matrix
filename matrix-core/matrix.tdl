@@ -1789,11 +1789,11 @@ basic-filler-phrase := binary-phrase & phrasal &
 					COMPS olist,
 					SPR olist ],
 			      CTXT.ACTIVATED + ],
-		      NON-LOCAL [ SLASH append-list, QUE append-list, REL 0-alist ] ] ],
+		      NON-LOCAL [ SLASH append-list, QUE append-list, REL 0-alist, YNQ append-list ] ] ],
 	   [ SYNSEM [ LOCAL.CAT [ VAL.COMPS olist ],
 		      NON-LOCAL [ SLASH append-list,
 				  REL 0-alist,
-				  QUE append-list ] ] ] > ].
+				  QUE append-list, YNQ append-list ] ] ] > ].
 
 ; ASF 2011-10-05 changed supertype 'headed-phrase' to more specific 'head-compostional'
 ; in order to make sure matrix.tdl provides the right semantics.
@@ -2334,7 +2334,7 @@ extracted-adj-phrase := basic-extracted-adj-phrase &
 basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
   [ SYNSEM [ LOCAL.CAT.MKG #mkg,
              NON-LOCAL [ SLASH.APPEND < #s1, #s2 >,
-                         REL 0-alist, QUE.APPEND < #q1, #q2 > ] ],
+                         REL 0-alist, QUE.APPEND < #q1, #q2 >, YNQ.APPEND < #ynq1, #ynq2 > ] ],
     HEAD-DTR.SYNSEM
            [ LOCAL [ CAT [ HEAD #head,
                            VAL #val,
@@ -2345,7 +2345,7 @@ basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
                                            CLAUSE-KEY #clause ],
                      AGR #agr ],
              NON-LOCAL #nonloc &
-                   [ SLASH #s2, QUE #q2 ],
+                   [ SLASH #s2, QUE #q2, YNQ #ynq2 ],
              LIGHT #light,
              MODIFIED #modif ],
     NON-HEAD-DTR.SYNSEM
@@ -2365,7 +2365,7 @@ basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
                            MKG #mkg ],
                      CONT.HOOK [ ICONS-KEY.IARG1 #clause,
                      CLAUSE-KEY #clause ] ],
-             NON-LOCAL [ SLASH #s1, QUE #q1 ] ],
+             NON-LOCAL [ SLASH #s1, QUE #q1, YNQ #ynq1 ] ],
     C-CONT [ RELS.LIST < >, ICONS.LIST < > ] ].
 
 ;;;2011-11-07 removing head-mod-phrase-simple

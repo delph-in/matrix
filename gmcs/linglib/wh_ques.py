@@ -84,7 +84,8 @@ EX_ADJ = '''extracted-adv-adp-adj-phrase := basic-extracted-adj-phrase &
 
 
 IN_SITU_PHRASE = '''insitu-int-cl := interrogative-clause & head-only &
-  [ SYNSEM [ LOCAL.CAT [ VAL #val,
+  [ SYNSEM [ MODIFIED hasmod,
+             LOCAL.CAT [ VAL #val,
        MC bool ],
        NON-LOCAL non-local-none ],
     C-CONT [ RELS.LIST < >,
@@ -116,10 +117,10 @@ BASIC_FILLER_SG = '''basic-filler-phrase :+ [ SYNSEM.NON-LOCAL.SLASH.LIST < >,
                                                     [SYNSEM.NON-LOCAL.SLASH.LIST < #slash >] >]. '''
 
 FIRST_FILLER = '''1st-head-filler-phrase := basic-filler-phrase & head-compositional &
-  [  SYNSEM.NON-LOCAL [ SLASH.LIST #slash, QUE 0-alist ],
-     ARGS < [ SYNSEM.LOCAL #local ],
+  [  SYNSEM.NON-LOCAL [ SLASH.LIST #slash, REL #rel, QUE 0-alist, YNQ 0-alist ],
+     ARGS < [ SYNSEM.LOCAL #local & [ CAT.HEAD +nrp ] ],
 	   [ SYNSEM.NON-LOCAL [ SLASH.LIST < #local . #slash >,
-				                  REL 0-alist ] ] > ].'''
+				                  REL #rel & 0-alist ] ] > ].'''
 
 SEC_FILLER = '''2nd-head-filler-phrase := binary-phrase & phrasal & head-compositional &
   [ SYNSEM.NON-LOCAL.SLASH.LIST < #firstarg . #otherargs >,
