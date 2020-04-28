@@ -265,12 +265,12 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
         #rules shared among free and v2
 
     if wo in ['free', 'v2']:
-        if not (ch.get('front-matrix') == 'multi' and ch.get('matrix-front-opt')=='none-oblig'):
-            mylang.add('head-subj-phrase := decl-head-subj-phrase & head-initial-head-nexus.')
-            mylang.add('subj-head-phrase := decl-head-subj-phrase & head-final-head-nexus.')
-        else:
-            mylang.add('head-subj-phrase := basic-head-subj-phrase & head-initial-head-nexus.')
-            mylang.add('subj-head-phrase := basic-head-subj-phrase & head-final-head-nexus.')
+        #if not (ch.get('front-matrix') == 'multi' and ch.get('matrix-front-opt')=='none-oblig'):
+        mylang.add('head-subj-phrase := decl-head-subj-phrase & head-initial-head-nexus.')
+        mylang.add('subj-head-phrase := decl-head-subj-phrase & head-final-head-nexus.')
+        #else:
+        #    mylang.add('head-subj-phrase := basic-head-subj-phrase & head-initial-head-nexus & declarative-clause.')
+        #    mylang.add('subj-head-phrase := basic-head-subj-phrase & head-final-head-nexus.')
         mylang.add('head-comp-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus.')
         mylang.add('comp-head-phrase := basic-head-1st-comp-phrase & head-final-head-nexus.')
         mylang.add('head-comp-phrase-2 := basic-head-2nd-comp-phrase & head-initial-head-nexus.')

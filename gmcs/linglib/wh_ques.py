@@ -118,7 +118,7 @@ BASIC_FILLER_SG = '''basic-filler-phrase :+ [ SYNSEM.NON-LOCAL.SLASH.LIST < >,
 
 FIRST_FILLER = '''1st-head-filler-phrase := basic-filler-phrase & head-compositional &
   [  SYNSEM.NON-LOCAL [ SLASH.LIST #slash, REL #rel, QUE 0-alist, YNQ 0-alist ],
-     ARGS < [ SYNSEM.LOCAL #local & [ CAT.HEAD +nrp ] ],
+     ARGS < [ SYNSEM.LOCAL #local & [ CAT.HEAD +nrpd ] ],
 	   [ SYNSEM.NON-LOCAL [ SLASH.LIST < #local . #slash >,
 				                  REL #rel & 0-alist ] ] > ].'''
 
