@@ -655,17 +655,31 @@ def customize_adverbs(mylang,ch,lexicon):
     mylang.set_section('otherlex')
     mylang.add_literal(';;; Adverbs')
     lexicon.add_literal(';;; Adverbs')
+    loc_adv_added = False
+    manner_adv_added = False
     if ch.get('adv'):
         mylang.add(lexbase.ADV_ITEM)
     for adv in ch.get('adv'):
+        stypes = []
+        if adv['type'] == 'loc':
+            if not loc_adv_added:
+                mylang.add(lexbase.LOC_ADV_ITEM)
+                loc_adv_added = True
+            stypes.append('loc-adverb-lex-item')
+        elif adv['type'] == 'manner':
+            if not manner_adv_added:
+                mylang.add(lexbase.MANNER_ADV_ITEM)
+                manner_adv_added = True
+            stypes.append('manner-adverb-lex-item')
         if adv['inter'] == 'on':
-            supertype = 'wh-adverb-lex'
+            stypes.append('wh-adverb-lex')
             mylang.add(lexbase.WH_ADV)
         else:
-            supertype = 'adverb-lex'
+            stypes.append('adverb-lex')
             mylang.add(lexbase.ADV)
-        typename = adv['name'] + '-' + supertype
-        typedef = TDLencode(typename) + ' := ' + supertype + '.'
+        supertypes = ' & '.join(stypes)
+        typename = adv['name'] + '-' + 'adverb-lex'
+        typedef = TDLencode(typename) + ' := ' + supertypes + '.'
         mylang.add(typedef)
         for stem in adv['stem']:
             add_stem_to_lexicon(lexicon,stem,typename)

@@ -3246,6 +3246,7 @@ intersective-adverb-lex := basic-intersective-mod-lex.
 no-mod-lex := no-hcons-lex-item &
   [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].
 
+
 ;;; Adjectives
 
 ;basic-adjective-lex := single-rel-lex-item &

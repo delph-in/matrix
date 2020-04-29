@@ -75,6 +75,7 @@ section=lexicon
     verb2_stem1_orth=tv
     verb2_stem1_pred=_tv_v_rel
   adv1_name=wh-loc
+    adv1_type=loc
     adv1_stem1_orth=where
     adv1_stem1_pred=_place_a_rel
   adv1_inter=on

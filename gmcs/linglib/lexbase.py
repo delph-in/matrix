@@ -92,13 +92,20 @@ ADV_ITEM = '''adverb-lex-item := intersective-adverb-lex &
                        HEAD adv &
                             [ MOD < [ LOCAL [ CAT.HEAD verb,
                                               CONT.HOOK [ CLAUSE-KEY #clause, LTOP #ltop ] ] ] > ] ],
-                   CONT [ RELS.LIST < [ PRED "loc_nonsp_rel", LBL #ltop, ARG0 event,
+                   CONT [ RELS.LIST < [ LBL #ltop, ARG0 event,
                                     ARG1 #clause, ARG2 #ind ],
                                   [ PRED #pred, ARG0 #ind, LBL #larg ],[ ARG0 #ind, RSTR #harg ] >,
                           HOOK.LTOP #ltop,
                           HCONS.LIST < qeq & [ HARG #harg,
                                             LARG #larg ] > ] ],
               LKEYS.KEYREL [ PRED #pred, ARG0 ref-ind & #ind, LBL #ltop ] ] ].'''
+
+
+LOC_ADV_ITEM = '''loc-adverb-lex-item := adverb-lex-item &
+  [ SYNSEM.LOCAL.CONT.RELS.LIST.FIRST.PRED "loc_nonsp_rel" ].'''
+
+MANNER_ADV_ITEM = '''manner-adverb-lex-item := adverb-lex-item &
+  [ SYNSEM.LOCAL.CONT.RELS.LIST.FIRST.PRED "manner_nonsp_rel" ].'''
 
 ADV =  '''adverb-lex := adverb-lex-item &
 [ SYNSEM [ LOCAL.CONT [ RELS.LIST < [ ], [ ], [ PRED "exist_q_rel" ] >  ],
