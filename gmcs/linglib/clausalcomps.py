@@ -215,6 +215,16 @@ def add_complementizer_subtype(cs, mylang,ch,extra):
             mylang.add(typename + ':= [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.EXTRA + ] > ].',merge=True)
         elif cs[SAME] and not cs[EXTRA]:
             mylang.add(typename + ':= [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.EXTRA - ] > ].',merge=True)
+    if cs['ques'] == 'ques': # Should this be disallowed in validation?
+        mylang.add(typename + ':= [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques ].', merge=True)
+    elif cs['ques'] == 'prop':
+        mylang.add(typename + ':= [ SYNSEM [ LOCAL.CONT.HOOK.INDEX.SF prop,'
+                              'NON-LOCAL non-local-none ] ].', merge=True)
+    else:
+        mylang.add(typename + ':= [ SYNSEM [ LOCAL [ CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.SF #sf ] >,'
+                              'CONT.HOOK.INDEX.SF #sf ] ] ].', merge=True)
+
+
     return typename
 
 '''
@@ -609,6 +619,18 @@ def customize_clausal_verb(clausalverb,mylang,ch,cs,extra):
         if val:
             mylang.add(clausalverb + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.EXTRA '+ val + ' ] > ].'
                        , merge=True)
+
+    # OZ 2020-05-09 The below doesn't work because it violates compositionality of semantics. Delete once sure.
+    # if not is_nominalized_complement(cs):
+    #     if cs['ques'] == 'prop':
+    #         mylang.add(clausalverb + ' := [ SYNSEM [ LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.SF prop,'
+    #                                  'NON-LOCAL non-local-none ] >,'
+    #                                  'NON-LOCAL.QUE 0-alist ] ].'
+    #                    , merge=True)
+    #     elif cs['ques'] == 'ques':
+    #         mylang.add(clausalverb + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.SF ques ] > ].'
+    #                    , merge=True)
+
     # From the wh-questions library; disallow questions from crossing clause boundary
     #if ch.get('front-across-cl') != 'on' or ch.get(''):
     #    mylang.add(clausalverb + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ NON-LOCAL.QUE.LIST < > ] > ].', merge=True)

@@ -62,23 +62,27 @@ section=clausalmods
 
 section=clausal-comp
   comps1_clause-pos-same=on
+comps1_ques=prop
     comps1_feat1_name=nominalization
     comps1_feat1_value=low
     comps1_feat2_name=form
     comps1_feat2_value=nonfinite
   comps2_clause-pos-extra=on
+comps2_ques=prop
   comps2_comp-pos-before=on
   comps2_comp=opt
     comps2_complementizer1_orth=ki
     comps2_feat1_name=form
     comps2_feat1_value=finite
   comps3_clause-pos-same=on
+comps3_ques=prop
   comps3_comp-pos-after=on
   comps3_comp=opt
     comps3_complementizer1_orth=diye
     comps3_feat1_name=form
     comps3_feat1_value=finite
   comps4_clause-pos-same=on
+comps4_ques=prop
     comps4_feat1_name=form
     comps4_feat1_value=subjunctive
 

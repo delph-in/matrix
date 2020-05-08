@@ -45,6 +45,7 @@ section=clausal-comp
   comps1_clause-pos-same=on
   comps1_clause-pos-extra=on
   comps1_comp-pos-after=on
+comps1_ques=prop
   comps1_comp=oblig
     comps1_complementizer1_orth=comp1
 

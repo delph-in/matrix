@@ -117,7 +117,7 @@ BASIC_FILLER_SG = '''basic-filler-phrase :+ [ SYNSEM.NON-LOCAL.SLASH.LIST < >,
                                                     [SYNSEM.NON-LOCAL.SLASH.LIST < #slash >] >]. '''
 
 FIRST_FILLER = '''1st-head-filler-phrase := basic-filler-phrase & head-compositional &
-  [  SYNSEM.NON-LOCAL [ SLASH.LIST #slash, REL #rel, QUE 0-alist, YNQ 0-alist ],
+  [  SYNSEM [ NON-LOCAL [ SLASH.LIST #slash, REL #rel, QUE 0-alist, YNQ 0-alist ] ],
      ARGS < [ SYNSEM.LOCAL #local & [ CAT.HEAD +nrpd ] ],
 	   [ SYNSEM.NON-LOCAL [ SLASH.LIST < #local . #slash >,
 				                  REL #rel & 0-alist ] ] > ].'''
@@ -197,6 +197,11 @@ def customize_wh_ques(mylang,ch,rules,roots):
         rules.add('ex-subj := extracted-subj-phrase.')
         mylang.add('wh-ques-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < [], ... > ].')
         mylang.add(FIRST_FILLER)
+        # prevent adjunct extraction, as it will be done out of head-subj
+        if ch.get(MTX_FRONT_OPT) == 'none-oblig':
+            mylang.add('1st-head-filler-phrase := [ SYNSEM.MODIFIED hasmod ].')
+            #if len(ch.get('adv', [])) > 0 or len(ch.get('normadp', [])) > 0:
+            #    mylang.add('headv-adj-phrase := [ HEAD-DTR.SYNSEM.MODIFIED notmod ].')
         #mylang.add(SEC_FILLER)
         mylang.add('wh-1st-ques-phrase := 1st-head-filler-phrase & wh-ques-phrase.')
         #mylang.add('wh-2nd-ques-phrase := 2nd-head-filler-phrase & wh-ques-phrase.')

@@ -50,6 +50,7 @@ section=nominalclause
 section=clausal-comp
   comps1_clause-pos-same=on
   comps1_comp-pos-before=on
+comps1_ques=prop
   comps1_comp=oblig
     comps1_stem1_orth=she
     comps1_feat1_name=form

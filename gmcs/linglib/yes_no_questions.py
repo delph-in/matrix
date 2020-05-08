@@ -178,7 +178,7 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies,roots):
 
             comment = 'Subtype for question particles. Constrains SF to ques.'
             typedef = '''
-            qpart-lex-item := complementizer-lex-item &
+            qpart-lex-item := complementizer-lex-item & raise-sem-lex-item &
              [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.SF ques ] ].'''
             mylang.add(typedef, comment, section='complex')
             supertype = 'qpart-lex-item'

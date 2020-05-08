@@ -2136,6 +2136,17 @@ BeginIter comps{i} "a Clausal Complement Type" 1
         Select cformvalue "Clausal Complement Type {i} Complementizer Form {k} Value" "Form Value: " ""
         fillvalues p=form l=1
 
+  Label "<p> Please indicate whether this complementation strategy is for embedding questions.
+  Often times it makes sense to create two completely separate strategies for embedding questions
+  and for propositions, and have some clause-embedding verbs (like <i>ask</i>) only be associated
+  with one and for other verbs (like <i>know</i>) to have two lexical entries.<br><br>"
+
+  Radio ques "Embedded Clause Type" " This strategy is for embedding " ""
+  . prop "Embedded Proposition" "" "propositions, "
+  . ques "Embedded Questions" ""  "questions.</p>"
+
+
+
   Label "<p> The embedded verb
   has the following features
   e.g. finite, nonfinite form (define in Other Features; we assume that mostly FORM and MOOD will be used;
