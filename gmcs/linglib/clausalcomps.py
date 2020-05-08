@@ -623,8 +623,7 @@ def customize_clausal_verb(clausalverb,mylang,ch,cs,extra):
 
     if not is_nominalized_complement(cs):
         if cs['ques'] == 'prop':
-            mylang.add(clausalverb + ' := [ SYNSEM [ LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.SF prop,'
-                                     'NON-LOCAL non-local-none ] >,'
+            mylang.add(clausalverb + ' := [ SYNSEM [ LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.SF prop ] >,'
                                      'NON-LOCAL.QUE 0-alist ] ].'
                        , merge=True)
         elif cs['ques'] == 'ques':
