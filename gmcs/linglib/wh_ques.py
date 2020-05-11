@@ -171,8 +171,8 @@ def customize_wh_ques(mylang,ch,rules,roots):
         mylang.add('''basic-head-filler-phrase :+
    [ ARGS < [ SYNSEM.LOCAL.COORD - ], [ SYNSEM.LOCAL.COORD - ] > ].''')
         mylang.add(WH_Q_PHR,section='phrases')
-        if ch.get('form-fin-nf') == 'on':
-            mylang.add('wh-ques-phrase := [ SYNSEM.LOCAL.CAT.HEAD.FORM finite ].')
+        #if ch.get('form-fin-nf') == 'on':
+        #    mylang.add('wh-ques-phrase := [ SYNSEM.LOCAL.CAT.HEAD.FORM finite ].')
         mylang.add_literal('; Complement extraction',section='phrases')
         mylang.add(EX_COMP)
         rules.add('ex-comp := extracted-comp-phrase.')
