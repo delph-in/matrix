@@ -129,7 +129,8 @@ WH_DET = '''wh-determiner-lex := basic-determiner-lex & non-mod-lex-item  & zero
 
 ADP_LEX = '''norm-adposition-lex := norm-sem-lex-item & no-hcons-lex-item & basic-intersective-mod-lex & basic-one-arg &
   [ SYNSEM [ LOCAL [ CAT [ HEAD adp,
-                           VAL [ COMPS < #comp & [ LOCAL [ CAT [ HEAD noun, VAL.SPR < > ],
+                           VAL [ COMPS < #comp & [ L-QUE #lque,
+                                                 LOCAL [ CAT [ HEAD noun, VAL.SPR < > ],
                                                  CONT.HOOK.INDEX #ind ],
                                          NON-LOCAL [ QUE #que ] ] >,
                                  SPR < >,
@@ -137,7 +138,7 @@ ADP_LEX = '''norm-adposition-lex := norm-sem-lex-item & no-hcons-lex-item & basi
                      CONT.RELS.LIST < [ PRED #pred, ARG0 event, ARG1 event-or-ref-index ] > ],
              LKEYS.KEYREL arg12-ev-relation & [ PRED #pred, ARG2 #ind ],
              NON-LOCAL.QUE #que,
-             L-QUE - ],
+             L-QUE #lque ],
     ARG-ST < #comp > ].'''
 
 ###############
