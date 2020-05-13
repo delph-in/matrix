@@ -4,7 +4,7 @@
 # imports
 
 import re
-from gmcs.util.misc import safe_int, get_valid_lines
+from gmcs.util.misc import safe_int
 from gmcs.linglib import case, clausalcomps
 
 ######################################################################
@@ -292,11 +292,13 @@ def get_choice(choice, choices):
     The choice must be fully specified choice (not a sub-structure).
     Returns None if the choice does not result in a value.
     """
-    choice_lines = choices
-    if type(choices) is str:
-        choice_lines = open(choices).readlines()
-    elif type(choices) is file:
+    if hasattr(choices, 'readlines'):
         choice_lines = choices.readlines()
+    elif isinstance(choices, str):
+        with open(choices, encoding='utf-8-sig') as fh:
+            choice_lines = fh.readlines()
+    else:
+        choice_lines = choices
 
     for line in [l.strip() for l in choice_lines if '=' in l]:
         key, val = line.split('=')
@@ -361,9 +363,9 @@ class ChoicesFile:
             try:
                 f = choices_file
                 if type(choices_file) == str:
-                    f = open(choices_file, 'r')
+                    f = open(choices_file, 'r', encoding='utf-8-sig')
                 f.seek(0)
-                lines = get_valid_lines(f.readlines())
+                lines = [line.strip() for line in f if line.strip()]
                 self.load_choices(lines)
                 if type(choices_file) == str:
                     f.close()
