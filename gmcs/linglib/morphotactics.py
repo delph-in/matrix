@@ -889,7 +889,7 @@ def write_valence_change_behavior(pc, lrt, mylang, choices):
     lrt_ops = set()
     for op in lrt.valchgops:
         operation = op.get('operation','').lower()
-	lrt_ops.add(operation)
+        lrt_ops.add(operation)
         transitive = 'trans' in op.get('inputs','').split(',')
         argnum, numargs = added_argnum_for_vchop(op)
 
@@ -910,7 +910,7 @@ def write_valence_change_behavior(pc, lrt, mylang, choices):
             lrt.supertypes.add('same-cont-lex-rule')
             mylang.add(lrt.identifier() + ' := ' + lexrule_name('obj-rem-op') + '.')
         elif operation == 'obj-add':
-	    lrt.supertypes.add('same-cont-lex-rule')
+            lrt.supertypes.add('same-cont-lex-rule')
             lrt.supertypes.add(lexrule_name('added-arg-applicative', argnum, numargs))
             lrt.supertypes.add(lexrule_name('added-arg-head-type', argnum, numargs, op['argtype'].lower()))
             predname = op.get('predname','undef_pred')
