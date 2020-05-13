@@ -436,12 +436,10 @@ def _customize(name, chc, logf):
         dest.mkdir(exist_ok=True)
         # should we clear any existing files?
 
-    # need to run this with Python2 until the Matrix is ported to
-    # Python3. At that time, we can just call
-    # customize.customize_matrix() directly. This way, at least, makes
-    # it easy to capture stdout and stderr.
+    # We can just call customize.customize_matrix() directly. This
+    # way, at least, makes it easy to capture stdout and stderr.
     result = subprocess.run(
-        ['python2', str(cmd), 'cd', str(chc), str(dest)],
+        ['python3', str(cmd), 'cd', str(chc), str(dest)],
         stdout=logf,
         stderr=logf)
 

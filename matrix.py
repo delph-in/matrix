@@ -389,11 +389,11 @@ def validate_python_version():
     """
     Make sure the user is running Python 2.5 or greater.
     """
-    if sys.version_info[0] != 2 or sys.version_info[1] < 5:
+    if sys.version_info < (3, 5):
         version = '.'.join(str(x) for x in sys.version_info[0:2])
         print("Operation aborted: incompatible Python version.")
         print("  You are running Python " + version + ", but the Grammar ")
-        print("  Matrix Customization System requires Python 2.5, 2.6, or 2.7.")
+        print("  Matrix Customization System requires Python 3.5 or later.")
         sys.exit(2)
 
 
