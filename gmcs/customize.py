@@ -105,7 +105,7 @@ def customize_punctuation(grammar_path):
     # TODO: pet.set output needs to be updated for
     # current questionnaire choices and for repp!
 
-    default_splits_str = ' \\t!"#$%&\'()\*\+,-\./:;<=>?@\[\]\^_`{|}~\\\\'.encode('utf-8')
+    default_splits_str = ' \\t!"#$%&\'()\*\+,-\./:;<=>?@\[\]\^_`{|}~\\\\'
 
     if ch.get('punctuation-chars') == 'keep-all':
         # in this case, we just split on [ \t], and that's
@@ -129,7 +129,7 @@ def customize_punctuation(grammar_path):
         # keep list with the hyphen on the keep list is the new default
         # here we split on the default list (like discard-all),
         # but *minus* whatevers on the keep list
-        chars = list(str(ch['punctuation-chars-list'], 'utf8'))
+        chars = list(ch['punctuation-chars-list'])
         if not chars:
             chars = [ '-','=',':' ]
         filename = os.path.join(grammar_path, 'repp', 'vanilla.rpp')

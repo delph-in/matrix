@@ -1,7 +1,6 @@
 from gmcs.utils import TDLencode
 #from gmcs.linglib.morphotactics import all_position_classes
 
-from string import join
 from functools import partial
 
 #### UTILITIES ####

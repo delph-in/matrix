@@ -344,7 +344,7 @@ def validate_names(ch, vr):
 
     # Force all the user_types into lower case (obeying the appropriate
     # Unicode character semantics), because TDL is case-insensitive.
-    user_types = [[str(x[0], 'utf-8').lower().encode('utf-8'), x[1]]
+    user_types = [[x[0].lower().encode('utf-8'), x[1]]
                   for x in user_types]
 
     # Whew!  OK, now we have two sets of type names and a set of
@@ -444,7 +444,7 @@ your installation root directory as iso.tab to enable iso validation:
         vr.warn('punctuation-chars',
                 'Please provide an answer about tokenization and punctuation ' + \
                 'characters.')
-    chars = str(ch.get('punctuation-chars-list',''), 'utf8')
+    chars = ch.get('punctuation-chars-list','')
     if chars:
         if ' ' in chars:
             vr.err('punctuation-chars',
@@ -463,7 +463,7 @@ your installation root directory as iso.tab to enable iso validation:
     char_re = re.compile(r'(' + r'|'.join(non_chars) + r')')
     for (key, val) in ch.walk():
         if key.endswith('orth') and not key.startswith('sentence'):
-            if char_re.search(str(val, 'utf8')):
+            if char_re.search(val):
                 vr.warn(key, 'String contains an unparsable punctuation character.' + \
                         ' Please see the General subpage.')
 

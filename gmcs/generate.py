@@ -113,7 +113,7 @@ def generate_sentences(grammar, mrs_files, verb_preds, delphin_dir,session):
                 print("#Stack overflow#<br />")
 
         elif state == "sentence":
-            sentence = str(line.lstrip('( \n').rstrip(') .\n').replace('"',''), 'utf-8').lower().encode('utf-8')
+            sentence = line.lstrip('( \n').rstrip(') .\n').replace('"','').lower().encode('utf-8')
         elif state == "parse":
             parse += "&nbsp&nbsp&nbsp&nbsp " + line.strip()
         elif state == "mrs":
