@@ -60,7 +60,7 @@ def insert_ids(ch):
             # as the basis of the identifier.
             for stem in pos.get('stem'):
                 orth = stem.get('orth')
-                if orth in stemids.keys():
+                if orth in list(stemids.keys()):
                     stemids[orth] += 1
                 else:
                     stemids[orth] = 1
@@ -72,7 +72,7 @@ def insert_ids(ch):
                 orth = bistem.get('orth')
                 id = orth + '+' + aff
 
-                if id in stemids.keys():
+                if id in list(stemids.keys()):
                     stemids[id] += 1
                 else:
                     stemids[id] = 1
@@ -144,7 +144,7 @@ def customize_bipartite_stems(ch):
                 #orth = stem.get('orth')
 
                 # Update affix-stem dictionary
-                if aff in avpairs.keys():
+                if aff in list(avpairs.keys()):
                     avpairs[aff].append(stem.full_key)
                 else:
                     avpairs[aff] = [stem.full_key]
@@ -153,7 +153,7 @@ def customize_bipartite_stems(ch):
             # info I've added since first initializing stems
             bistems = verb.get('bistem')
 
-            for aff in avpairs.keys():
+            for aff in list(avpairs.keys()):
                 # Get iter number for lrts:
                 if pc['lrt']:
                     iternum = str(pc['lrt'].next_iter_num())
@@ -581,7 +581,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
                     next_parents = []
                     for p in parents:
                         if p in children:
-                            for c in children[p].keys():
+                            for c in list(children[p].keys()):
                                 stopdets[c]=True
                                 if not c in next_parents:
                                     next_parents.append(c)
@@ -996,7 +996,7 @@ def customize_cops(mylang, ch, lexicon, hierarchies, trigger):
             if '' in stypes: # Found root
                 stype_def = 'adj-comp-copula-verb-lex & ' # Change for new complement types
             else:
-                stype_names = [cop_id(ch[st]) for st in filter(None,stypes)]
+                stype_names = [cop_id(ch[st]) for st in [_f for _f in stypes if _f]]
                 stype_def = " & ".join(stype_names) or ""
                 if stype_def: stype_def += " & "
 

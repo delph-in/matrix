@@ -469,7 +469,7 @@ def normalize_group_spec(group_spec):
             return group_spec                     # ...just return that list
         # ...but if it's of length one and the only member is not a string...
         else:
-            raise ValueError, "Ill-formed group spec."  # ...then it's ill-fomed, so raise an error
+            raise ValueError("Ill-formed group spec.")  # ...then it's ill-fomed, so raise an error
 
     #Take possibly flat tree and make it binary for easier processing.
     gs = make_binary_gs(group_spec)
@@ -730,8 +730,8 @@ def normalize_gs_helper(gs, finished):
             return_value = [new_gs, finished]
         else:
             # if none of the above condtions are true, then we have an error, so print the spec...
-            print gs
-            raise ValueError, "Something is wrong with Group_spec."     # ...and raise an error
+            print(gs)
+            raise ValueError("Something is wrong with Group_spec.")     # ...and raise an error
 
     return return_value         # return output
 
@@ -777,18 +777,18 @@ def make_binary_gs(group_spec):
     # Check syntax of group_spec.
 
     if not type(group_spec) == list:                        # if group_spec is not a list...
-        raise ValueError, "Group_spec is not a list." # ...raise an error
+        raise ValueError("Group_spec is not a list.") # ...raise an error
 
     # if group_spec is shorter than 3 elements (the case where it's one element is handled in
     # normalize_group_spec)...
     if l < 3:
         # ...raise an error
-        raise ValueError, "Group_spec does not have enough elements (must be at least 3)."
+        raise ValueError("Group_spec does not have enough elements (must be at least 3).")
 
     # if group_spec doesn't start with either 'and' or 'or' as its first element...
     if not (group_spec[0] == 'and'
             or group_spec[0] == 'or'):
-        raise ValueError, "Group_spec does not being with 'and' or 'or'."           # ...raise an error
+        raise ValueError("Group_spec does not being with 'and' or 'or'.")           # ...raise an error
 
     # Check if we have more than two daughters
 
@@ -903,7 +903,7 @@ def make_string(limit):
 
 def getLT_FVs(fvdict):
     answer = set()
-    for k in fvdict.keys():
+    for k in list(fvdict.keys()):
         answer.add(k+':'+fvdict[k])
     return answer
 
@@ -965,10 +965,10 @@ def main(osp_id, conn):
                  "WHERE r_osp_id = %s)", (osp_id))
 
     if len(passAllUnivs) == 0:                  # if no strings in that osp_id pass all u filters...
-        print "That is not a valid osp_id."   # ...give error message
+        print("That is not a valid osp_id.")   # ...give error message
 
     # for purposes of logging/monitoring, tell user how many results we have left to filter
-    print "There are " + str(len(passAllUnivs)) + " results to filter."
+    print("There are " + str(len(passAllUnivs)) + " results to filter.")
 
 
     # TODO: some of this code is repeated in run_u_filters...consider combining
@@ -982,7 +982,7 @@ def main(osp_id, conn):
         res_id, mrs_id, string = row   # get its result_id, its mrs tag, and the string
 
         if ((i % 1000) == 0):
-            print >> sys.stderr, "working on string number", i # for monitoring progress only
+            print("working on string number", i, file=sys.stderr) # for monitoring progress only
 
         # TODO: why do all the string results above have a space at the end?  consider fixing.
 
@@ -1008,7 +1008,7 @@ def main(osp_id, conn):
                 if ((len(resultsToInsert) % 1000) == 0):                # if we have 1000 results to insert
 
                     # print logging message
-                    print >> sys.stderr, 'inserting 1000 specific results, up to', 1000*thousandCounter
+                    print('inserting 1000 specific results, up to', 1000*thousandCounter, file=sys.stderr)
                     thousandCounter += 1                                    # increment thousand counter
 
                     # insert those results into database
@@ -1016,7 +1016,7 @@ def main(osp_id, conn):
                     resultsToInsert.clear()                                     # clear set of results to insert
 
     # print logging message about the final results that were the mod 1000 of the whole group
-    print >> sys.stderr, 'flushing final', len(resultsToInsert), 'specific results into res_sfltr'
+    print('flushing final', len(resultsToInsert), 'specific results into res_sfltr', file=sys.stderr)
 
     # insert final set of specific results for those where i didn't get up to 1000
     filters.insertManyFilteredSpecResults(resultsToInsert, conn)
@@ -1033,7 +1033,7 @@ if __name__ == "__main__":      # only run if run as main module...not if import
     except IndexError:               # if the user didn't give it...
 
         # ...throw an error message indicating how to call the function
-        print >> sys.stderr, 'Usage: python run_specific_filters.py osp_id [username] [password]'
+        print('Usage: python run_specific_filters.py osp_id [username] [password]', file=sys.stderr)
         sys.exit()                       # and exit
 
     try:                                        # try to get...
@@ -1053,13 +1053,13 @@ if __name__ == "__main__":      # only run if run as main module...not if import
     myconn.close()                              # close connection to MySQL server
 elif moduleTest:                        # or if i'm testing, run it on MatrixTDB2
     # notify user moduleTest is set to True
-    print >> sys.stderr, "Note: module testing turned on in run_specific_filters.py.  " + \
-                         "Unless testing locally, set moduleTest to False."
+    print("Note: module testing turned on in run_specific_filters.py.  " + \
+                         "Unless testing locally, set moduleTest to False.", file=sys.stderr)
 
     # get the osp_id for the results we want to filter.  Doing it by osp_id instead of just all of the
     # strings allows us to import new strings and not re-run the specific filters on every single
     # string we already have in the database
-    osp_id = raw_input("\nWhat is the osp_id for the results you would lke to filter: ")
+    osp_id = input("\nWhat is the osp_id for the results you would lke to filter: ")
 
     myconn = MatrixTDBConn('2')       # connect to MySQL server 
 

@@ -126,14 +126,14 @@ def main(lngTypeID, dbroot, profilename, conn):
     upass = db_utils.selColumnToSet(selResults)   # ...and convert to a set of IDs
 
     # monitoring progress
-    print >> sys.stderr, "found", len(upass), "items that passed all universal filters"
+    print("found", len(upass), "items that passed all universal filters", file=sys.stderr)
 
     # get itemIDs that also pass specific filters relevant to this language type
     passAll = getGrammItems(lngTypeID, upass, conn)
 
     # monitoring progress
-    print >> sys.stderr, "found", len(passAll), "items that also passed all specific filters for " + \
-                                  "language type"
+    print("found", len(passAll), "items that also passed all specific filters for " + \
+                                  "language type", file=sys.stderr)
 
     # get a dict that has all the strings that passed all relevant filters as the keys and a list of
     # the IDs that are that string as its values
@@ -143,8 +143,8 @@ def main(lngTypeID, dbroot, profilename, conn):
     failOne = getFailOneItems(lngTypeID, readingCounter, conn)
 
     # monitoring progress
-    print >> sys.stderr, "sampled", len(failOne), "items that failed exactly one specific filter " + \
-                                  "relevant to this language type"
+    print("sampled", len(failOne), "items that failed exactly one specific filter " + \
+                                  "relevant to this language type", file=sys.stderr)
 
     # generate a profile with items that passed all relevant filters and a sampling of those that
     # failed exactly one specific filter
@@ -225,8 +225,8 @@ def getGrammItems(ltID, upass, conn):
     itemsFailedSFltrs = db_utils.selColumnToSet(selResults)         # ...and convert to a set of IDs
 
     # monitoring progress
-    print >> sys.stderr, "found", len(itemsFailedSFltrs), "items that failed specific filters " + \
-                                  " to this language type"
+    print("found", len(itemsFailedSFltrs), "items that failed specific filters " + \
+                                  " to this language type", file=sys.stderr)
 
     # get set of grammatical items  These are item/mrs pairings.  So while a sentence may be
     # ungrammatical when paired with some mrs tag, when represented as an item id here it is
@@ -266,8 +266,8 @@ def getFailOneItems(lt_id, passAllStringsToIDs, conn):
     failOneRows = conn.selQuery(queryItemsFailOne, (lt_id))
 
     # monitoring progress
-    print >> sys.stderr, "There are", len(failOneRows), "total items that failed exactly one " + \
-                                  "specific filters relevant to this language type"
+    print("There are", len(failOneRows), "total items that failed exactly one " + \
+                                  "specific filters relevant to this language type", file=sys.stderr)
 
     for row in failOneRows:             # for every item that failed exactly one specific filter...
         itemID = row[0]                    # ...get the item ID
@@ -317,7 +317,7 @@ def genParseFile(passReadingCounter, failOne, profpath, conn):
 
     outlines = []               # initialize list of lines to go in output file
     
-    for itemString in passReadingCounter.keys():    # for each string that passed all relevant filters
+    for itemString in list(passReadingCounter.keys()):    # for each string that passed all relevant filters
         # get the list of IDs for all semantic pairings that passed
         idList = passReadingCounter[itemString]
         firstID = idList[0]                     # we just need one ID for parse and item, so just tkae first
@@ -413,7 +413,7 @@ def genItemFile(passReadingCounter, failOne, profpath, conn):
     # for every string that passed all relevant filters...
     # (regardless of how many grammatical semantic pairings it has, we only want each string
     # printed once in this file and in the parse file)
-    for itemString in passReadingCounter.keys():
+    for itemString in list(passReadingCounter.keys()):
         
         # get the list of item IDs that represent grammatical mrs pairings for that string
         idList = passReadingCounter[itemString]
@@ -483,7 +483,7 @@ def genResultFile(passReadingCounter, failOne, profpath, conn):
     outlines = []               # initialize list of lines to go in output file    
 
     # for every string that passed all relevant filters...
-    for itemString in passReadingCounter.keys():
+    for itemString in list(passReadingCounter.keys()):
 
         # get the list of semantic pairings that were grammatical for it
         idList = passReadingCounter[itemString]
@@ -505,7 +505,7 @@ def genResultFile(passReadingCounter, failOne, profpath, conn):
                                             "INNER JOIN mrs m ON r.r_mrs = m.mrs_tag " + \
                                             "WHERE mrs_current = 1 AND p.p_i_id = %s", (resID))[0]
             except IndexError:
-                print >> sys.stderr, "sel query in genResultFile returns no rows on resID", resID
+                print("sel query in genResultFile returns no rows on resID", resID, file=sys.stderr)
 
             # initalize string in output file representing that row
             rowstring = str(parseID) + '@' + str(resID) + '@'
@@ -699,7 +699,7 @@ def readInIds(idfile):
 
     # remove newlines from lines, turn each into a long, and create a set from a list
     # comprehensionof those
-    idset = set([long(line.strip()) for line in lines])
+    idset = set([int(line.strip()) for line in lines])
     return idset                    # return that set of IDs
 
 def genItemList(readingCounter, failOne, itemListName, conn):
@@ -720,7 +720,7 @@ def genItemList(readingCounter, failOne, itemListName, conn):
     """
     outfile = open(itemListName, 'wb')               # open output file
 
-    for itemString in readingCounter.keys():                  # TODO: comment this function
+    for itemString in list(readingCounter.keys()):                  # TODO: comment this function
         outfile.write(itemString + '\n')                         # write the item's string as a line to output file
 
     # now do the fails
@@ -743,8 +743,8 @@ if __name__ == '__main__':      # only run if run as main module...not if import
         profilename = sys.argv[3]  # get the name of the profile to generate
     except IndexError:              # if they didn't give a command line argument...
          # ...give user usage info
-        print >> sys.stderr, "Usage: python generate_s_profile.py language_type_id dbroot " + \
-                                                                                                                      "profileName"
+        print("Usage: python generate_s_profile.py language_type_id dbroot " + \
+                                                                                                                      "profileName", file=sys.stderr)
     try:                                        # try to get...
         username = sys.argv[4]       # ...username...
         password = sys.argv[5]       # ...and password off of command line
@@ -760,10 +760,10 @@ if __name__ == '__main__':      # only run if run as main module...not if import
     myconn.close()                              # close connection to MySQL database
 # the code following here only exists for testing on my local PC.  It can be ignored.
 elif moduleTest:
-    print >>sys.stderr, "Warning: moduleTest on for generate_s_profile"
-    lt_id = raw_input("Enter language type id:\n")
-    profDBroot = raw_input("Enter full path of db root, ending in '/':\n")
-    profilename = raw_input("Enter name of profile to generate:\n")
+    print("Warning: moduleTest on for generate_s_profile", file=sys.stderr)
+    lt_id = input("Enter language type id:\n")
+    profDBroot = input("Enter full path of db root, ending in '/':\n")
+    profilename = input("Enter name of profile to generate:\n")
     myconn = MatrixTDBConn('2')    
     main(lt_id, profDBroot, profilename, myconn)
     # TODO: set up code to create directories if they don't exist

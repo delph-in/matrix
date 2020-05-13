@@ -96,24 +96,24 @@ def generate_sentences(grammar, mrs_files, verb_preds, delphin_dir,session):
                 sentences[index][2].append('')
                 sentences[index][3].append('')
             except IndexError:
-                print "#NO-SENTENCES#<br />"
+                print("#NO-SENTENCES#<br />")
         elif line.find('*maximum-number-of-edges*') > -1:
             try:
                 sentences[index][1].append('#EDGE-ERROR#')
                 sentences[index][2].append('')
                 sentences[index][3].append('')
             except IndexError:
-                print "#EDGE-ERROR#<br />"
+                print("#EDGE-ERROR#<br />")
         elif line.find('Stack overflow') > -1:
             try:
                 sentences[index][1].append('#EDGE-ERROR#')
                 sentences[index][2].append('')
                 sentences[index][3].append('')
             except IndexError:
-                print "#Stack overflow#<br />"
+                print("#Stack overflow#<br />")
 
         elif state == "sentence":
-            sentence = unicode(line.lstrip('( \n').rstrip(') .\n').replace('"',''), 'utf-8').lower().encode('utf-8')
+            sentence = str(line.lstrip('( \n').rstrip(') .\n').replace('"',''), 'utf-8').lower().encode('utf-8')
         elif state == "parse":
             parse += "&nbsp&nbsp&nbsp&nbsp " + line.strip()
         elif state == "mrs":
@@ -133,7 +133,7 @@ def remove_duplicates(list):
     new_list = []
     while(list != []):
         new_list.append(list[0])
-        list = filter((lambda x:x[0] != list[0][0]),list)
+        list = list(filter((lambda x:x[0] != list[0][0]),list))
     return new_list
 
 # Extract predications from the grammar
@@ -213,7 +213,7 @@ def get_v_predications(grammar_dir,lang):
         language = open(lang,'r')
         for line in language:
             if line.find(":=") > -1:
-                for verb in verbs.keys():
+                for verb in list(verbs.keys()):
                     for type in verbs[verb]:
                         if line.find(type) == 0:
                             verbs[verb].remove(type)
@@ -280,7 +280,7 @@ class Template:
     def replace_features_from_grammar(self,repl_feats):
         if self.name in repl_feats:
             repl_feats = repl_feats[self.name]
-            for replacement in repl_feats.values():
+            for replacement in list(repl_feats.values()):
                 self.replace_feat(replacement[0],var(replacement[1])+": "+replacement[2]+" @"+replacement[0]+"@")
                 self.feats.add(replacement[0])
         for feat in self.feats.copy():
@@ -320,7 +320,7 @@ def get_replacement_features_from_grammar(grammar_dir):
             m2,m3 = choice_re.match(line),temp_re.match(line)
             if m3:
                 result[m3.group(1)] = {}
-            elif m2 and m2.group(1).strip() in result.keys():
+            elif m2 and m2.group(1).strip() in list(result.keys()):
                 name = m2.group(1).strip()
                 if m2.group(2) not in result[name]:
                     result[name][m2.group(2)] = ["","",""]

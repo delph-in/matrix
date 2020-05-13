@@ -165,7 +165,7 @@ def customize_verbal_features(mylang, hierarchies):
     customize_mood(mylang, hierarchies)
 
 def make_vpm_order(name, h, o):
-    if name not in h.keys(): return []
+    if name not in list(h.keys()): return []
     for n in h[name]:
         make_vpm_order(n, h, o)
     o.append(name)
@@ -191,11 +191,11 @@ def create_vpm_tense(ch, vpm):
             tenses = ch.get('tense',[])
             for tense in tenses:
                 name = tense.get('name')
-                if name not in _hier.keys():
+                if name not in list(_hier.keys()):
                     _hier[name] = []
                 for supertype in tense.get('supertype', []):
                     supername = supertype.get('name')
-                    if supername not in _hier.keys():
+                    if supername not in list(_hier.keys()):
                         _hier[supername] = [name]
                     else:
                         _hier[supername].append(name)
@@ -221,11 +221,11 @@ def create_vpm_aspect(ch, vpm):
     _hier = {}
     for aspect in ch.get('aspect',[]):
         name = aspect.get('name')
-        if name not in _hier.keys():
+        if name not in list(_hier.keys()):
             _hier[name] = []
         for supertype in aspect.get('supertype', []):
             supername = supertype.get('name')
-            if supername not in _hier.keys():
+            if supername not in list(_hier.keys()):
                 _hier[supername] = [name]
             else:
                 _hier[supername].append(name)
@@ -247,11 +247,11 @@ def create_vpm_mood(ch, vpm):
 
     for mood in ch.get('mood',[]):
         name = mood.get('name')
-        if name not in _hier.keys():
+        if name not in list(_hier.keys()):
             _hier[name] = []
         for supertype in mood.get('supertype', []):
             supername = supertype.get('name')
-            if supername not in _hier.keys():
+            if supername not in list(_hier.keys()):
                 _hier[supername] = [name]
             else:
                 _hier[supername].append(name)
@@ -273,11 +273,11 @@ def create_vpm_situation(ch, vpm):
 
     for situation in ch.get('situation',[]):
         name = situation.get('name')
-        if name not in _hier.keys():
+        if name not in list(_hier.keys()):
             _hier[name] = []
         for supertype in situation.get('supertype', []):
             supername = supertype.get('name')
-            if supername not in _hier.keys():
+            if supername not in list(_hier.keys()):
                 _hier[supername] = [name]
             else:
                 _hier[supername].append(name)

@@ -49,7 +49,7 @@ def find_filter_from_name(n, filter_list):
             break               # and quit the loop
     else:                       # if we go through entire loop without a match...
         # ...raise an error
-        raise ValueError, "Unknown filter: " + n
+        raise ValueError("Unknown filter: " + n)
 
     return answer           # return output
 
@@ -140,9 +140,9 @@ def update_res_fltr(filter_list, conn):
 
     limit = 8700000
 
-    print filter_ids
+    print(filter_ids)
     f_string = make_string(filter_ids,limit)
-    print f_string
+    print(f_string)
 
     limit += 100000
 
@@ -153,7 +153,7 @@ def update_res_fltr(filter_list, conn):
     while ids != ():
 
         update_string = "Now working results " + str(limit-100000) + " through " + str(limit)
-        print update_string
+        print(update_string)
 
         outfile = open('ufltrs_updates','a')
         outfile.write(update_string)
@@ -175,7 +175,7 @@ def update_res_fltr(filter_list, conn):
 
             #Should do error checking here: Are all of the values legit?
 
-            for f_id in filter_values.keys():
+            for f_id in list(filter_values.keys()):
                 value = filter_values[f_id]
 
                 if not value == 2:
@@ -199,7 +199,7 @@ def update_res_fltr(filter_list, conn):
 
         else:
             update_string = "Last item updated: " + str(key) + " at " + str(datetime.datetime.now())
-            print update_string
+            print(update_string)
             outfile = open('ufltrs_updates','a')
             outfile.write(update_string)
             outfile.write("\n")
@@ -245,10 +245,10 @@ def add_to_res_fltr(osp_id, conn):
 
     if count == 0:                                      # if there are no results for that osp in the database
         # tell the user it's an error
-        print >> sys.stderr, "That is not a valid osp_id. It has no items/results to filter."
+        print("That is not a valid osp_id. It has no items/results to filter.", file=sys.stderr)
         sys.exit()                                                                                  # and exit
     else:                                                                                            # otherwise...
-        print >> sys.stderr, 'There are', count, 'results in that osp to filter.' # ...monitoring message
+        print('There are', count, 'results in that osp to filter.', file=sys.stderr) # ...monitoring message
 
     # intialize a dict whose keys are filter names and whose values are their IDs in the database
     fltrNamesToIDs = {}
@@ -289,9 +289,9 @@ def add_to_res_fltr(osp_id, conn):
 
                     if ((len(failedResFltrPairs) % 1000) == 0):     # if I have 1000 fails to enter
                         # print monitoring messages
-                        print >> sys.stderr, "inserting 1000 ufilter fails, up to", \
-                            len(failedResults)
-                        print >> sys.stderr, "passedAllResults up to", len(passedAllResults)
+                        print("inserting 1000 ufilter fails, up to", \
+                            len(failedResults), file=sys.stderr)
+                        print("passedAllResults up to", len(passedAllResults), file=sys.stderr)
                         insertManyUnivFails(failedResFltrPairs, conn)   # insert those fails into res_fltr
                         failedResFltrPairs.clear()                                  # clear set of fails
 
@@ -303,21 +303,21 @@ def add_to_res_fltr(osp_id, conn):
             # everything so we can move on in the while loop
             passedAllResults.add(resultID)
 
-    print >> sys.stderr, "flushing last", len(failedResFltrPairs), "fails" # print monitoring message
+    print("flushing last", len(failedResFltrPairs), "fails", file=sys.stderr) # print monitoring message
     insertManyUnivFails(failedResFltrPairs, conn)   # insert the last fails that were the mod of 1000
 
     # tell the user how many item/results failed at least one filter
-    print >> sys.stderr, len(failedResults), " strings failed at least one filter."
+    print(len(failedResults), " strings failed at least one filter.", file=sys.stderr)
 
     # tell the user how many item/results passed all universal filters. 
-    print >> sys.stderr, len(passedAllResults), " strings passed all universal filters."
+    print(len(passedAllResults), " strings passed all universal filters.", file=sys.stderr)
     # next line is an experiment I tried on 8/12/09 but went a different direction on 8/13
     # updatePassAllTable(passedAllResults, osp_id, conn)
 
     # tell the user how many item/results both passed all filters and failed at least one
     # sanity check...should be 0
-    print >> sys.stderr, len(failedResults.intersection(passedAllResults)), " strings failed at " + \
-                                                                            "least one filter while also passing all relevant filters."
+    print(len(failedResults.intersection(passedAllResults)), " strings failed at " + \
+                                                                            "least one filter while also passing all relevant filters.", file=sys.stderr)
 
     return
 
@@ -325,7 +325,7 @@ def updatePassAllTable(passAll, ospToUpdate, conn):
     # NOT USING FOR NOW 8/13/09
     # probably quickest just to delete all and re-insert all
     if len(passAll) > 0:
-        print >> sys.stderr, "rebuilding res_pass_univ"
+        print("rebuilding res_pass_univ", file=sys.stderr)
         ospRows = conn.selQuery("SELECT DISTINCT r_osp_id FROM result")
         ospIDs = db_utils.selColumnToSet(ospRows)
         tableState = {}
@@ -342,7 +342,7 @@ def updatePassAllTable(passAll, ospToUpdate, conn):
 
         conn.execute("DELETE FROM res_pass_univ")
 
-        for osp in tableState.keys():
+        for osp in list(tableState.keys()):
             resultIDs = tableState[osp]
             valuesClause = 'VALUE '
 
@@ -432,7 +432,7 @@ if __name__ == "__main__":      # only run if run as main module...not if import
     except IndexError:               # if the user didn't give it...
 
         # ...throw an error message indicating how to call the function
-        print >> sys.stderr, 'Usage: python run_u_filters.py osp_id [username] [password]'
+        print('Usage: python run_u_filters.py osp_id [username] [password]', file=sys.stderr)
         sys.exit()                       # and exit
 
     try:                                        # try to get...
@@ -449,11 +449,11 @@ if __name__ == "__main__":      # only run if run as main module...not if import
     myconn.close()                                   # close the connection to the database
 elif moduleTest:                        # or if i'm testing, run it on MatrixTDB2
     # and notify the user moduleTest is set to True.
-    print >> sys.stderr, "Note: module testing turned on in run_u_filters.py.  " + \
-                         "Unless testing locally, set moduleTest to False."
+    print("Note: module testing turned on in run_u_filters.py.  " + \
+                         "Unless testing locally, set moduleTest to False.", file=sys.stderr)
 
     # ask the user for the original source profile of the id they want to filter.
-    osp_id = raw_input("\nWhat is the osp_id for the results you would lke to filter: ")
+    osp_id = input("\nWhat is the osp_id for the results you would lke to filter: ")
 
     myconn = MatrixTDBConn('2')       # connect to MySQL server
     main(osp_id, myconn)                  # run the main function

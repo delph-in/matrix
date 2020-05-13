@@ -71,7 +71,7 @@ for pair in pairs:
     cursor.execute("SELECT i_id FROM item WHERE i_input = %s",(input))
     ids = cursor.fetchall()
     if len(ids) > 1:
-        print "Error: More than one item with the same i_input."
+        print("Error: More than one item with the same i_input.")
         sys.exit
     i_id = ids[0]
 
@@ -81,7 +81,7 @@ for pair in pairs:
     cursor.execute("SELECT r_mrs,r_result_id FROM parse, result WHERE parse.p_i_id = %s AND parse.p_parse_id = result.r_parse_id", (i_id))
     mrss = cursor.fetchall()
     if len(mrss) > 1:
-        print "Error: More than one mrs associated with harvester string."
+        print("Error: More than one mrs associated with harvester string.")
         sys.exit
     mrs = mrss[0]
     mrs_value = mrs[0]

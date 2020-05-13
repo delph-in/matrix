@@ -429,7 +429,7 @@ def update_feat_group(choices, conn):
     Tables accessed: feat_grp
     Tables modified: feat_grp
     """
-    for f in choices.keys():            # for every feature in the ChoicesFile...
+    for f in list(choices.keys()):            # for every feature in the ChoicesFile...
         v = choices.get(f)               # ...get that feature's value
 
         # if f is not one of the featues we don't want to track, and if f/v do not exist as singleton
@@ -502,8 +502,8 @@ def update_lt_in_lfg(choices, lt_id, conn):
             chcDict = choices                        # ...then just set chcDit to that.
         else:                                               # and if it was called with some other type...
             # ...then raise an error            
-            raise ValueError, "Invalid type of choices argument in " + \
-                              "sql_lg_type.update_lt_in_lfg. Expected dict or ChoicesFile."
+            raise ValueError("Invalid type of choices argument in " + \
+                              "sql_lg_type.update_lt_in_lfg. Expected dict or ChoicesFile.")
 
         # if the value of every feature in this feature group match those in choices...
         if check_lt_for_fvs(fvrows, chcDict):
@@ -556,10 +556,10 @@ def create_or_update_lt(choices, conn):
         res = ''                                        # initialize input from user
         while (res != 'r' and res != 'p'):        # loop until we get answer we want
             # find out if lt represnted by choices was randomly generated or purpose-built 
-            res = raw_input("Is this language type [r]andomly generated or [p]urpose-built? [r/p] ")
+            res = input("Is this language type [r]andomly generated or [p]urpose-built? [r/p] ")
 
         # get a comment about the language type from the user
-        comment = raw_input("Enter a short comment describing this language type: ")
+        comment = input("Enter a short comment describing this language type: ")
 
         # insert a row for the language type into the lt table.
         conn.execute("INSERT INTO lt SET lt_origin = %s, lt_comment = %s", (res,comment))
@@ -600,7 +600,7 @@ def main(chcFilename, conn):
     lt_id = create_or_update_lt(choices, conn)
 
     # Okay, we're done.  Print out the lt_id for future reference.
-    print "Language type id (lt_id) is: " + str(lt_id)
+    print("Language type id (lt_id) is: " + str(lt_id))
 
     return
 
@@ -619,17 +619,17 @@ if __name__ == "__main__":          # only run if run as main module...not if im
         myconn.close()
     except IndexError:                      # if user doesn't give enough arguments...
         # ...let them know with error message...
-        print >> sys.stderr, "Usage: python sgl_lg_type.py choicesFilename"
+        print("Usage: python sgl_lg_type.py choicesFilename", file=sys.stderr)
         sys.exit()                              # ...and exit
 elif moduleTest:                            # if module test is true...
     myconn = MatrixTDBConn('2')      # ...create a connection to the smaller, newer database...
 
     # ... and notify the user moduleTest is set to True.
-    print >> sys.stderr, "Note: module testing turned on in sgl_lg_type.py.  " + \
-                         "Unless testing locally, set moduleTest to False."
+    print("Note: module testing turned on in sgl_lg_type.py.  " + \
+                         "Unless testing locally, set moduleTest to False.", file=sys.stderr)
 
     # get name of choices file from user
-    chcFilename = raw_input("Enter full path of choices filename:\n")
+    chcFilename = input("Enter full path of choices filename:\n")
 
     # print id of language type that matches choices file, or create it and print that ID    
     main(chcFilename, myconn)

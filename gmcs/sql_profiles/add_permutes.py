@@ -136,8 +136,8 @@ def process_harvester(s, mrs_tag, conn):
         if len(seed_tuple) > 1:             # if it's already in the database more than once...
             # ...raise an error
             # TODO: consider making this the primary key if we want uniqueness.
-            raise ValueError, "MatrixTDB.seed_str contains more than one seed string with the " + \
-                                      "same form."
+            raise ValueError("MatrixTDB.seed_str contains more than one seed string with the " + \
+                                      "same form.")
 
         if len(seed_tuple) == 0:        # if it's not in the database already
             # We have a new seed string. Don't even have to check if it's a new
@@ -162,7 +162,7 @@ def process_harvester(s, mrs_tag, conn):
 
             if len(mrs_tuple) > 1:      # if it's paired with mrs_tag more than once
                 # raise an error
-                raise ValueError, "A string is paired with the same mrs_tag twice in table str_lsti."
+                raise ValueError("A string is paired with the same mrs_tag twice in table str_lsti.")
             
             elif len(mrs_tuple) == 0:     # if it's not paired with that mrs_tag
                 # We haven't seen this string with this MRS yet, so add it.
@@ -179,8 +179,8 @@ def process_harvester(s, mrs_tag, conn):
             # else, we've seen this seed-mrs pair already, so do nothing.
 
     # print a status message telling the user how many new string/mrs pairs we found
-    print "Process harvester found", len(new_strings), "seed strings that are either not in the " + \
-            "database or not paired with the semantic class given for the harvester string."
+    print("Process harvester found", len(new_strings), "seed strings that are either not in the " + \
+            "database or not paired with the semantic class given for the harvester string.")
 
     # Okay, pass out the list of new_strings for mrs_tag so that we can
     # then run them through the permute functions.
@@ -493,15 +493,15 @@ def verify_perms(return_perms) :
     Tables modified: none
     """
     if type(return_perms) != list :                 # if it's not a list...
-        raise ValueError, "Error: verify_perms: outer list is bad"   # ...that's a problem
+        raise ValueError("Error: verify_perms: outer list is bad")   # ...that's a problem
 
     for item in return_perms :                        # for each permutation...
         if type(item) != list :                             # ...if it is not a list...
-            raise ValueError, "Error: verify_perms: inner list is bad"   # ...that is a problem
+            raise ValueError("Error: verify_perms: inner list is bad")   # ...that is a problem
 
         for i in item :                                     # for every word in a permutation...
             if type(i) != str :                             # ...if it is not a string...
-                raise ValueError, "Error: verify_perms: inner string is bad"         # ...that is a problem
+                raise ValueError("Error: verify_perms: inner string is bad")         # ...that is a problem
                 
 
 def fix_affix_spelling(perms, flag):
@@ -632,7 +632,7 @@ def glue_on_affixes(affixes, stem, flag):
     """
     if len(affixes) == 0:       # if there are no affixes
         # we shouldn't be here, so print an error
-        print "Error: We shouldn't call glue_on_affixes if we have no affixes."
+        print("Error: We shouldn't call glue_on_affixes if we have no affixes.")
         sys.exit()              # and exit
 
     affix_perms = permute_helper(affixes)   # put those affixes into every possible order
@@ -687,7 +687,7 @@ def get_harvester_strings_to_update(osp_id, conn):
     except ValueError:
         if osp_id != 'a': # but if they sent in 'a', it won't work, so don't worry about it.
             # but if it was a non-int and non-a string, raise an error.
-            raise ValueError, "Invald osp_id given to get_harvester_strings_to_update"
+            raise ValueError("Invald osp_id given to get_harvester_strings_to_update")
     
 
     # if it was an int (or an int-as-string that got converted above) they sent in...
@@ -705,11 +705,11 @@ def get_harvester_strings_to_update(osp_id, conn):
     else:
         # I can't imagine I would be here given the checking I do up above, but I'll leave this in just
         # in case
-        raise ValueError, "Invalid osp_id given to get_harvester_strings_to_update, msg 2"
+        raise ValueError("Invalid osp_id given to get_harvester_strings_to_update, msg 2")
 
     # if there were no harvester strings most recently imported by that profile id...
     if len(harv_tuples) == 0: 
-        raise ValueError, "No harvester strings in MatrixTDB for that osp_id."  # ...raise an error
+        raise ValueError("No harvester strings in MatrixTDB for that osp_id.")  # ...raise an error
         
     for harv_tup in harv_tuples:                                        # for each row of harvester string
         (hs_string,hs_mrs_tag, row_osp_id) = harv_tup       # assign columns to variables
@@ -884,7 +884,7 @@ def main(osp_id, conn):
         # for every seed string we either hadn't seen before or hadn't seen paired with mrs_tag
         for s in new_strings:
             perms = uniq_permute(s)     # Get all permutations of the string
-            print >> sys.stderr, "Processing", len(perms), "permutations of", s       # for monitoring
+            print("Processing", len(perms), "permutations of", s, file=sys.stderr)       # for monitoring
             passAllList = []                # initialize list of string/mrs pairs that pass all universal filters
 
             for p in perms:                         # for every permutation
@@ -903,7 +903,7 @@ def main(osp_id, conn):
                     passAllList.append((instring, mrs_tag))
 
             # print monitoring message of how many permutes passed all universal filters
-            print >> sys.stderr, 'inserting', len(passAllList), 'items that passed all universal filters'
+            print('inserting', len(passAllList), 'items that passed all universal filters', file=sys.stderr)
 
             # insert the parse/result/item for those items that pass all universal filters
             insert_many_items(passAllList, osp_id, conn)
@@ -958,7 +958,7 @@ if __name__ == "__main__":      # only run if run as main module...not if import
     except IndexError:               # if the user didn't give it...
 
         # ...throw an error message indicating how to call the function
-        print >> sys.stderr, 'Usage: python add_permutes.py osp_id [username] [password]'
+        print('Usage: python add_permutes.py osp_id [username] [password]', file=sys.stderr)
         sys.exit()                       # and exit
 
     try:                                        # try to get...
@@ -976,12 +976,12 @@ if __name__ == "__main__":      # only run if run as main module...not if import
 elif moduleTest:                        # or if i'm testing, run it on MatrixTDB2
     myconn = MatrixTDBConn('2')       # connect to MySQL server
     # ... and notify the user moduleTest is set to True.
-    print >> sys.stderr, "Note: module testing turned on in add_permutes.py.  " + \
-                                 "Unless testing locally, set moduleTest to False."
+    print("Note: module testing turned on in add_permutes.py.  " + \
+                                 "Unless testing locally, set moduleTest to False.", file=sys.stderr)
     
     # get the id of the original source profile the user wants to add permutes for.  This is given to
     # you by import_from_itsdb.
-    osp_id = raw_input("Please input original source profile id (osp_id) for the source\n" + \
+    osp_id = input("Please input original source profile id (osp_id) for the source\n" + \
                                  "profile you're working with.  If you've updated the string\n" + \
                                   "modifications and wish to update seed strings for all harvester\n" + \
                                   "strings, enter 'a' ")

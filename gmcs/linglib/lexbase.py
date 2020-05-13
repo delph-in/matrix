@@ -1,5 +1,6 @@
 from gmcs.lib import Hierarchy, HierarchyNode
 import sys
+from functools import reduce
 # Base class for lexical types (lexicon.py) and lexical rules (morphotatics.py)
 
 ################################
@@ -96,7 +97,7 @@ class MorphotacticNode(HierarchyNode):
         Return True if self occurs before other. This is True if self's
         position class is among the position classes of other's input span.
         """
-        return self.pc in [o.pc for o in other.input_span().values()]
+        return self.pc in [o.pc for o in list(other.input_span().values())]
 
     def percolate_down(self, items, validate):
         """
@@ -106,7 +107,7 @@ class MorphotacticNode(HierarchyNode):
         if len(self.children()) > 0:
             # The following assumes incompatible types won't be merged onto
             # common descendants (this should be validated)
-            for c in self.children().values():
+            for c in list(self.children().values()):
                 items(c).update(items(self))
                 c.percolate_down(items, validate)
         # if it is a leaf node, make sure it is valid
@@ -121,12 +122,12 @@ class MorphotacticNode(HierarchyNode):
         # Can't do set.intersection(*list) until Python2.6, so using reduce
         common_items = reduce(set.intersection,
                               [c.percolate_up(items, redundancies)
-                               for c in self.children().values()])
+                               for c in list(self.children().values())])
         if common_items:
             # now update the current node's values
             items(self).update(common_items)
             # and schedule the common values from descendants to be removed
-            for c in self.children().values():
+            for c in list(self.children().values()):
                 redundancies[c].update(common_items)
         return common_items
 
@@ -165,13 +166,13 @@ class PositionClass(MorphotacticNode):
         hierarchy for this position class. Note that there may be more than
         one root for any given position class.
         """
-        return [n for n in self.nodes.values() if len(n.parents()) == 0]
+        return [n for n in list(self.nodes.values()) if len(n.parents()) == 0]
 
     def input_span(self):
         return self.hierarchy.get_lineage(key=self.key, relation='input')
 
     def valid_inputs(self):
-        all_inps = self.input_span().values()
+        all_inps = list(self.input_span().values())
         # there are two conditions preventing an ancestor from being an input:
         # 1. A node, or all its ancestors, req-fwd an intervening node
         # 2. This pc, or all its followers, req-bkwd an intervening node
@@ -183,7 +184,7 @@ class PositionClass(MorphotacticNode):
         # 2017-02-20 CMC: Keep track of whether a position class has
         # valence-changing operations in its rules
         if self._has_vcops == None:
-            for lrt in self.nodes.values():
+            for lrt in list(self.nodes.values()):
                 if len(lrt.valchgops) > 0:
                     self._has_vcops = True
                     return self._has_vcops
@@ -191,13 +192,13 @@ class PositionClass(MorphotacticNode):
         return self._has_vcops
 
     def has_evidential(self):
-        for lrt in self.nodes.values():
+        for lrt in list(self.nodes.values()):
             if lrt.evidential != None:
                 return True
         return False
 
     def has_possessive(self):
-        for lrt in self.nodes.values():
+        for lrt in list(self.nodes.values()):
             poss_pron=False
             for feature in lrt.features:
                 if 'poss-pron' in feature:
@@ -210,7 +211,7 @@ class PositionClass(MorphotacticNode):
         # 2014-08-21 TJT: Keep track of whether a PositionClass has
         # Incorporated Stem Lexical Rule Instances
         if self._has_is == None: # Only do this once
-            for lrt in self.nodes.values():
+            for lrt in list(self.nodes.values()):
                 for lri in lrt.lris:
                     if lri.pred:
                         self._has_is = True # Keep track of result
@@ -260,7 +261,7 @@ class LexicalRuleType(MorphotacticNode):
         Return the LRT's supertypes and parents or, if there are no
         parents, the LRT's PC.
         """
-        parents = [lrt.identifier() for lrt in self.parents().values()]
+        parents = [lrt.identifier() for lrt in list(self.parents().values())]
         if len(parents) == 0:
             parents = [self.pc.identifier()]
         # LLD 1-3-2016 Now returns only supertypes that are not shared by the PC (to

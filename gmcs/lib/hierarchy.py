@@ -44,9 +44,9 @@ class Hierarchy(object):
         node.hierarchy = self
         self.nodes[node.key] = node
         # add corollary relationships
-        for parent in node.parents().values():
+        for parent in list(node.parents().values()):
             parent.children()[node.key] = node
-        for child in node.children().values():
+        for child in list(node.children().values()):
             child.parents()[node.key] = node
         # adding nodes invalidates the cache
         self.__cache = {}
@@ -67,8 +67,8 @@ class Hierarchy(object):
         self.__cache.setdefault(node.key, {})
         self.__cache[node.key][relation] = node.relatives(relation)
         self.__cache[node.key][relation].update(
-            dict(i for n in self.__cache[node.key][relation].values()
-                 for i in self.find_lineage(n, relation).items()))
+            dict(i for n in list(self.__cache[node.key][relation].values())
+                 for i in list(self.find_lineage(n, relation).items())))
         return self.__cache[node.key][relation]
 
     def get_ancestors(self, key=None, node=None):

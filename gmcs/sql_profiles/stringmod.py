@@ -187,17 +187,17 @@ class StringModAddAff(StringMod):
         Tables accessed: none
         Tables modified: none
         """
-        print self.name             # print name of this StringMod
+        print(self.name)             # print name of this StringMod
         return_strings = []         # initialize output
         for string in string_list:                      # for each string in input
-            print "Input is " + str(string)           # print out the string
+            print("Input is " + str(string))           # print out the string
 
             # add the affix as a prefix
             return_strings.append(self.modstring1(deepcopy(string)))
 
             # add the affix as a suffix
             return_strings.append(self.modstring2(deepcopy(string)))
-            print "Output is " + str(return_strings)    # print all output strings
+            print("Output is " + str(return_strings))    # print all output strings
 
         return return_strings                                # return output
 
@@ -338,11 +338,11 @@ class StringModAddWord(StringModOne):
         Tables accessed: none
         Tables modified: none
         """
-        print self.name                                 # print out name/word
+        print(self.name)                                 # print out name/word
         [words,prefixes,suffixes] = string       # unpack variable
-        print "Input is " + str(words)               # print out input string
+        print("Input is " + str(words))               # print out input string
         words.append(self.word)                    # add this StringMod's word to word list
-        print "Output is " + str(words)            # print out output string
+        print("Output is " + str(words))            # print out output string
 
         return [words,prefixes,suffixes]          # return output
 
@@ -395,14 +395,14 @@ class StringModChangeWord(StringModOne):
         """
         # TODO: make this more efficient.
         [words, prefixes, suffixes] = string                # unpack string
-        print self.name                                            # print name
-        print "Input is " + str(words)                          # print input string words
+        print(self.name)                                            # print name
+        print("Input is " + str(words))                          # print input string words
         s = glue(words)                                           # put the words together into one string
 
         # substitute old_word out for new_word in glued together string
         t = re.sub(self.old_word,self.new_word,s)
         words = t.split(' ')                                        # split the words back up
-        print "Output is " + str(words)                       # print output string words
+        print("Output is " + str(words))                       # print output string words
         return [words,prefixes,suffixes]                    # return output
 
 class StringModDropWord(StringModOne):
@@ -451,15 +451,15 @@ class StringModDropWord(StringModOne):
         Tables modified: none
         """
         [words, prefixes, suffixes] = string        # unpack string
-        print self.name                                   # print name
-        print "Input is " + str(words)                  # print input string words
+        print(self.name)                                   # print name
+        print("Input is " + str(words))                  # print input string words
         c = words.count(self.drop_word)             # count number of times drop_word is in input
         i = 0                                                   # initialize index
 
         while i < c:                                         # for each occurence of drop_word in input
             words.remove(self.drop_word)            # remove drop_word
             i += 1                                              # increment index
-        print "Output is " + str(words)               # print output words
+        print("Output is " + str(words))               # print output words
 
         if c > 0:                                               # if drop_word did occur in sentence
             answer = [words, prefixes, suffixes]          # return new output string

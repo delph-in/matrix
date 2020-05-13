@@ -193,7 +193,7 @@ def permute(s,mrs_id):
     perms = permlist.get()
 
     if len(perms) > 1000:
-        print 'found ' + str(len(perms)) + ' permutations of ' + s
+        print('found ' + str(len(perms)) + ' permutations of ' + s)
     return perms
 
 
@@ -210,8 +210,8 @@ def validate_string_list(string_list):
             wrong.append(s)
 
     if wrong != []:
-        print 'Error in string_list: The following strings are improperly formatted:'
-        print wrong
+        print('Error in string_list: The following strings are improperly formatted:')
+        print(wrong)
         sys.exit
 
 
@@ -261,8 +261,8 @@ def make_intermediate_resource(string_list_file, in_profile, out_profile):
         i[9] = mrs_id
 
         if not mrs_id:
-            print 'Warning: The harvester string ' + string + ' has no associated mrs-id.'
-            print 'This means many filters won\'t work on permutations of this string.'
+            print('Warning: The harvester string ' + string + ' has no associated mrs-id.')
+            print('This means many filters won\'t work on permutations of this string.')
 
     # Figure out where to start with i-id, parse-id, and result-id
 
@@ -319,7 +319,7 @@ def make_intermediate_resource(string_list_file, in_profile, out_profile):
                     items.append(new_i)
                     break
             if not found:
-                print 'Warning: No harvester string for mrs-id ' + s[0] +'. String not added: ' + s[2]
+                print('Warning: No harvester string for mrs-id ' + s[0] +'. String not added: ' + s[2])
 
     # Write out the items, parses, and result
     if not os.path.exists(out_profile):
@@ -372,9 +372,9 @@ def make_master_resource(string_list_file, in_profile, out_profile):
         local_est += factorial(l)
 
     avg_len = local_total / len_list
-    print 'Total permutations considered: ' + str(local_est)
-    print 'Longest string is ' + str(local_max) + ' words long'
-    print 'Average string length is ' + str(avg_len) + ' words'
+    print('Total permutations considered: ' + str(local_est))
+    print('Longest string is ' + str(local_max) + ' words long')
+    print('Average string length is ' + str(avg_len) + ' words')
 
     # Read in the items, parses, and results
     items = read_profile_file(in_profile + 'item')
@@ -433,7 +433,7 @@ def make_master_resource(string_list_file, in_profile, out_profile):
             next_i += 1
             new_i[6] = perm
             items.append(new_i)
-        print 'Done with item '+ i[0]
+        print('Done with item '+ i[0])
 
     # Write out the items, parses, and results
     if not os.path.exists(out_profile):

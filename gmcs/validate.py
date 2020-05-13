@@ -344,7 +344,7 @@ def validate_names(ch, vr):
 
     # Force all the user_types into lower case (obeying the appropriate
     # Unicode character semantics), because TDL is case-insensitive.
-    user_types = [[unicode(x[0], 'utf-8').lower().encode('utf-8'), x[1]]
+    user_types = [[str(x[0], 'utf-8').lower().encode('utf-8'), x[1]]
                   for x in user_types]
 
     # Whew!  OK, now we have two sets of type names and a set of
@@ -444,7 +444,7 @@ your installation root directory as iso.tab to enable iso validation:
         vr.warn('punctuation-chars',
                 'Please provide an answer about tokenization and punctuation ' + \
                 'characters.')
-    chars = unicode(ch.get('punctuation-chars-list',''), 'utf8')
+    chars = str(ch.get('punctuation-chars-list',''), 'utf8')
     if chars:
         if ' ' in chars:
             vr.err('punctuation-chars',
@@ -458,12 +458,12 @@ your installation root directory as iso.tab to enable iso validation:
     # LLD 12-03-2015 Excluded test sentences from this check, since they often
     # contain punctuation that is meant to be discarded.
     non_chars = [re.escape(c)
-                 for c in u'!"&\'()*+,−./\;<>?@[]^`{|}~。！？…．　○●◎＊☆★◇◆'
+                 for c in '!"&\'()*+,−./\;<>?@[]^`{|}~。！？…．　○●◎＊☆★◇◆'
                  if c not in chars]
     char_re = re.compile(r'(' + r'|'.join(non_chars) + r')')
     for (key, val) in ch.walk():
         if key.endswith('orth') and not key.startswith('sentence'):
-            if char_re.search(unicode(val, 'utf8')):
+            if char_re.search(str(val, 'utf8')):
                 vr.warn(key, 'String contains an unparsable punctuation character.' + \
                         ' Please see the General subpage.')
 
@@ -600,7 +600,7 @@ def validate_information_structure(ch, vr):
     }
 
     infostr_markers = []
-    for marker in infostr_values.keys():
+    for marker in list(infostr_values.keys()):
         for m in ch.get(marker):
             if m['type'].strip() == 'affix' and marker not in infostr_markers:
                 infostr_markers.append(marker)
@@ -610,7 +610,7 @@ def validate_information_structure(ch, vr):
             validate_information_structure_msg(ch, vr, m, 'affix', 'You must create at least one affix involving this feature on Morphology.')
 
     infostr_markers = []
-    for marker in infostr_values.keys():
+    for marker in list(infostr_values.keys()):
         for m in ch.get(marker):
             if m['type'].strip() == 'adp' and marker not in infostr_markers:
                 infostr_markers.append(marker)
@@ -621,7 +621,7 @@ def validate_information_structure(ch, vr):
 
 
 
-    for marker in infostr_values.keys():
+    for marker in list(infostr_values.keys()):
         for m in ch.get(marker):
             if m['type'].strip() in ['affix', 'adp']:
                 if m['pos'].strip() != '' or m['cat'].strip() != '' or m['orth'].strip() != '':
@@ -1818,21 +1818,21 @@ def validate_choices(choices_file, extra = False):
 
 if __name__ == "__main__":
     vr = validate_choices(sys.argv[1])
-    print sys.argv[1]
-    for k in vr.errors.keys():
-        print '  ' + k + ':'
+    print(sys.argv[1])
+    for k in list(vr.errors.keys()):
+        print('  ' + k + ':')
 
-        print '   ',
+        print('   ', end=' ')
         column = 4
         for w in vr.errors[k].split():
             if column + len(w) > 70:
-                print
-                print '    ' + w,
+                print()
+                print('    ' + w, end=' ')
                 column = len(w) + 5
             else:
-                print w,
+                print(w, end=' ')
                 column += len(w) + 1
-        print
-    print
+        print()
+    print()
 
 

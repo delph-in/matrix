@@ -90,7 +90,7 @@ class AllPagesEmptyChoices(unittest.TestCase):
     
     def is_element_present(self, how, what):
         try: self.driver.find_element(by=how, value=what)
-        except NoSuchElementException, e: return False
+        except NoSuchElementException as e: return False
         return True
     
     def tearDown(self):
@@ -184,7 +184,7 @@ class AllPagesJamamadiChoices(unittest.TestCase):
     
     def is_element_present(self, how, what):
         try: self.driver.find_element(by=how, value=what)
-        except NoSuchElementException, e: return False
+        except NoSuchElementException as e: return False
         return True
     
     def tearDown(self):
@@ -219,7 +219,7 @@ class GeneralErrors(unittest.TestCase):
     
     def is_element_present(self, how, what):
         try: self.driver.find_element(by=how, value=what)
-        except NoSuchElementException, e: return False
+        except NoSuchElementException as e: return False
         return True
     
     def tearDown(self):
@@ -277,7 +277,7 @@ class WordOrderErrors(unittest.TestCase):
 
     def is_element_present(self, how, what):
         try: self.driver.find_element(by=how, value=what)
-        except NoSuchElementException, e: return False
+        except NoSuchElementException as e: return False
         return True
     
     def tearDown(self):
@@ -309,7 +309,7 @@ class NumberErrors(unittest.TestCase):
 
     def is_element_present(self, how, what):
         try: self.driver.find_element(by=how, value=what)
-        except NoSuchElementException, e: return False
+        except NoSuchElementException as e: return False
         return True
     
     def tearDown(self):
@@ -342,7 +342,7 @@ class PersonErrors(unittest.TestCase):
 
     def is_element_present(self, how, what):
         try: self.driver.find_element(by=how, value=what)
-        except NoSuchElementException, e: return False
+        except NoSuchElementException as e: return False
         return True
     
     def tearDown(self):
@@ -378,7 +378,7 @@ class CaseErrors(unittest.TestCase):
         
     def is_element_present(self, how, what):
         try: self.driver.find_element(by=how, value=what)
-        except NoSuchElementException, e: return False
+        except NoSuchElementException as e: return False
         return True
     
     def tearDown(self):
@@ -408,7 +408,7 @@ class DirectInverseErrors(unittest.TestCase):
         
     def is_element_present(self, how, what):
         try: self.driver.find_element(by=how, value=what)
-        except NoSuchElementException, e: return False
+        except NoSuchElementException as e: return False
         return True
     
     def tearDown(self):
@@ -493,7 +493,7 @@ class TenseAspectMoodErrors(unittest.TestCase):
         
     def is_element_present(self, how, what):
         try: self.driver.find_element(by=how, value=what)
-        except NoSuchElementException, e: return False
+        except NoSuchElementException as e: return False
         return True
     
     def tearDown(self):

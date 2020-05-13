@@ -906,7 +906,7 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
 def customize_information_structure_pos(mylang, ch, rules):
     pos_type = ch.get('focus-pos').strip() + ';' + ch.get('topic-first').strip()  + ';'
     pos_type += ch.get('c-focus').strip() + ';' + ch.get('c-focus-pos').strip()
-    if pos_type in g_pos_types.keys():
+    if pos_type in list(g_pos_types.keys()):
         pos = g_pos_types[pos_type][0].strip().split(';')
         for i in range(0,len(pos)):
             infostr = pos[i].strip().split('|')

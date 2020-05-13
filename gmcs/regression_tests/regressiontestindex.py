@@ -29,14 +29,14 @@ class RegressionTestIndex:
 if __name__ == "__main__":
     cust_root = os.environ.get("CUSTOMIZATIONROOT")
     if not os.path.exists(cust_root + "/regression_tests/regression-test-index"):
-        raise ValueError, "Invalid path name for customization root or missing regression test index."
+        raise ValueError("Invalid path name for customization root or missing regression test index.")
 
     index = RegressionTestIndex(cust_root + "/regression_tests/regression-test-index")
 
     keys = ""
 
     if sys.argv[1] == "--lg-names":
-        print " ".join(sorted(index.tests.keys()))
+        print(" ".join(sorted(index.tests.keys())))
 
     if sys.argv[1] == "--comment":
-        print index.tests[sys.argv[2]]
+        print(index.tests[sys.argv[2]])

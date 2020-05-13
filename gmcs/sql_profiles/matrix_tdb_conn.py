@@ -41,7 +41,7 @@ class MatrixTDBConn(MySQLdb.connections.Connection):
         """
 
         if username == '':                                          # if user didn't give a username
-            self.uname=raw_input("Username:")          # prompt user for username and store
+            self.uname=input("Username:")          # prompt user for username and store
         else:                                                           # otherwise
             self.uname = username                           # assign given username to uname
 
@@ -88,7 +88,7 @@ class MatrixTDBConn(MySQLdb.connections.Connection):
         try:
             answer = self.tdbCursor.execute(query, args)        # for now, just pass call on to cursor
         except MySQLdb.OperationalError:                    # but if I lost my connection
-            print >> sys.stderr, 'lost connection...reconnecting'   # inform user
+            print('lost connection...reconnecting', file=sys.stderr)   # inform user
             self.connect()                                                          # reconnect
             answer = self.tdbCursor.execute(query, args)        # and try again
         return answer                                                   # return its output

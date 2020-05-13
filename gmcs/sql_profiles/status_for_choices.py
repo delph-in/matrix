@@ -15,7 +15,7 @@ def sql_count(table):
 
 # Main
 
-print '%20s %8s %8s' % ('', 'old', 'new')
+print('%20s %8s %8s' % ('', 'old', 'new'))
 for t in ('orig_source_profile',
           'lt',
           'feat_grp',
@@ -29,4 +29,4 @@ for t in ('orig_source_profile',
         check = 'X'
     else:
         check = ''
-    print '%20s %8d %8d  %s' % (t, old, new, check)
+    print('%20s %8d %8d  %s' % (t, old, new, check))

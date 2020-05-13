@@ -882,18 +882,18 @@ def get_subord_stemids(ch, stemids):
     for cms in ch.get('cms'):
         for freemorph in cms.get('freemorph'):
             orth = freemorph.get('orth')
-            if orth in stemids.keys():
+            if orth in list(stemids.keys()):
                 stemids[orth] += 1
             else:
                 stemids[orth] = 1
         for morphpair in cms.get('morphpair'):
             subordorth = morphpair.get('subordorth')
             matrixorth = morphpair.get('matrixorth')
-            if subordorth in stemids.keys():
+            if subordorth in list(stemids.keys()):
                 stemids[subordorth] += 1
             else:
                 stemids[subordorth] = 1
-            if matrixorth in stemids.keys():
+            if matrixorth in list(stemids.keys()):
                 stemids[matrixorth] += 1
             else:
                 stemids[matrixorth] = 1

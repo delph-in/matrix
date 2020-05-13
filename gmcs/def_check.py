@@ -10,7 +10,7 @@
 
 import re
 import sys
-import utils
+from . import utils
 tokenize_def = utils.tokenize_def
 
 
@@ -52,7 +52,7 @@ for l in line:
                 repl2 = re.compile('\'\).*')
                 w = repl2.sub('',w,1)
 
-                if not var_list.has_key(w):
-                    print 'Error: You are trying to look up a variable\n that is not defined in matrixdef: ' + w + '\n'
+                if w not in var_list:
+                    print('Error: You are trying to look up a variable\n that is not defined in matrixdef: ' + w + '\n')
 
 

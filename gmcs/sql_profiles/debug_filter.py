@@ -25,7 +25,7 @@ cursor = db.cursor()
 cursor.execute("SELECT i_input, r_mrs FROM item, result WHERE r_result_id = %s and r_parse_id = i_id",(result_id))
 res = cursor.fetchone()
 
-print f.exe(res[1],res[0])
+print(f.exe(res[1],res[0]))
 
     
 

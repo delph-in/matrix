@@ -77,7 +77,7 @@ def case_names(ch):
     if len(set(abbrev)) != len(abbrev):
         abbrev = user
 
-    return zip(canon, user, abbrev)
+    return list(zip(canon, user, abbrev))
 
 
 # Given the canonical (i.e. choices variable) name of a case, return

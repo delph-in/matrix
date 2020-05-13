@@ -73,7 +73,7 @@ def create_cookie():
     return cookie
 
 if not cookie:
-  if form_data.has_key('g-recaptcha-response'):
+  if 'g-recaptcha-response' in form_data:
      public  = "6LfEeisUAAAAAGdbbNlfjxKjkRxcSWhSovyq9oik"
      private = "6LfEeisUAAAAAKb8ODRb6c06-TER8MhdmJ3Rkx9u"
      response = form_data['g-recaptcha-response'].value
@@ -115,7 +115,7 @@ if cookie and not os.path.exists(session_path):
 # uploaded choices file or the name of a sample choices file (which
 # will begin with 'sample-choices/') to replace the current choices.
 # TJT 2014-09-18: Get choices files from Language CoLLAGE links
-if form_data.has_key('choices'):
+if 'choices' in form_data:
   choices = form_data['choices'].value
   if choices:
     data = ''
@@ -127,18 +127,18 @@ if form_data.has_key('choices'):
       # Get choices files from CoLLAGE
       # should be 3 or 7 letter keys... doesn't work for other length keys
       if len(choices) in ((len('collage/') + 3), (len('collage/') + 7)):
-	import urllib2, tarfile, StringIO
+	import urllib.request, urllib.error, urllib.parse, tarfile, io
         choices = 'http://www.delph-in.net/matrix/language-'+choices+'/choices-final.tgz'
         try:
-          tar = urllib2.urlopen(choices)
-          tar = tarfile.open(fileobj=StringIO.StringIO(tar.read()), mode='r|*')
+          tar = urllib.request.urlopen(choices)
+          tar = tarfile.open(fileobj=io.StringIO(tar.read()), mode='r|*')
           for tarinfo in tar:
             if tarinfo.isreg() and tarinfo.name[-len('choices'):] == 'choices':
               choicesData = tar.extractfile(tarinfo)
               data = choicesData.read()
               choicesData.close()
               break # Found the choices file...
-        except (urllib2.HTTPError, urllib2.URLError, tarfile.TarError):
+        except (urllib.error.HTTPError, urllib.error.URLError, tarfile.TarError):
           data = ''
 	finally:
  	  tar.close()
@@ -150,13 +150,13 @@ if form_data.has_key('choices'):
       f.close()
 
 # if the 'section' field is defined, we have submitted values to save
-if form_data.has_key('section'):
+if 'section' in form_data:
   matrixdef.save_choices(form_data, os.path.join(session_path, 'choices'))
 
 # if we have recieved toolbox files, then we want to add these lexical items after saving the toolbox configuration (done above).
-if form_data.has_key('import_toolbox'):
+if 'import_toolbox' in form_data:
   toolbox_files = []
-  for key in form_data.keys():
+  for key in list(form_data.keys()):
     if key[-10:] == 'tbfilename' and form_data[key].value != "":
       fout = tempfile.NamedTemporaryFile(dir=session_path)
       fout.write(form_data[key].value)
@@ -168,7 +168,7 @@ if form_data.has_key('import_toolbox'):
     tbfile.close()
 
 # If the 'verbpred' field is defined, then the user wishes to generate more sentences with that predication
-if form_data.has_key('verbpred'):
+if 'verbpred' in form_data:
   matrixdef.more_sentences_page(session_path,form_data['grammar'].value, form_data['verbpred'].value, form_data['template'].value, cookie)
   sys.exit()
 
@@ -187,11 +187,11 @@ except:
 # modified to support captcha
 if need_verify:
   matrixdef.verification()
-elif form_data.has_key('customize'):
+elif 'customize' in form_data:
 	# if the 'customize' field is defined, create a customized copy of the matrix
 	# based on the current choices file
   # ERB 2006-10-03 Checking has_key here to enable local debugging.
-  if form_data.has_key('delivery'):
+  if 'delivery' in form_data:
     arch_type = form_data['delivery'].value
   else:
     arch_type = ''
@@ -230,11 +230,11 @@ elif form_data.has_key('customize'):
                                      exc)
       sys.exit()
 
-    if form_data.has_key('sentences'):
+    if 'sentences' in form_data:
       matrixdef.sentences_page(session_path, grammar_dir, cookie)
     else:
       matrixdef.custom_page(session_path, grammar_dir, arch_type)
-elif form_data.has_key('subpage'):
+elif 'subpage' in form_data:
   if browser_cookie:
     matrixdef.sub_page(form_data['subpage'].value, cookie, vr)
   else:

@@ -19,7 +19,7 @@ result_file = open(sys.argv[1].strip() + "/result", 'w')
 for line in lines:
 	line = line.strip()
 	if line.find("@") == -1: 
-		print line
+		print(line)
 		continue
 	each = line.split("@")
 	if each[0].strip() not in numbers:

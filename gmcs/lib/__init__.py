@@ -1,2 +1,2 @@
-from hierarchy import Hierarchy, HierarchyNode
-from tdlhierarchy import TDLHierarchy
+from .hierarchy import Hierarchy, HierarchyNode
+from .tdlhierarchy import TDLHierarchy

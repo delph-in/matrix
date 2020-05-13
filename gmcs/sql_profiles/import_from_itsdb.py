@@ -149,8 +149,8 @@ def validate_string_list(harv_mrs, itsdbDir):
             mrs_dict[line[1]] = line[0]
         except IndexError:                  # if the line array doesn't have enough items...
             # ...raise an error indicating problem.
-            raise ValueError, "File " + harv_mrs + " is not a well-formed input file. " + \
-                                      "Line format should be mrs_tag@string"
+            raise ValueError("File " + harv_mrs + " is not a well-formed input file. " + \
+                                      "Line format should be mrs_tag@string")
 
     itemFile = open(itsdbDir + "item", 'r')        # open item file from source profile
 
@@ -162,21 +162,21 @@ def validate_string_list(harv_mrs, itsdbDir):
     for item in ilines:                             # for each item in the profile...
         if item not in mrs_dict:      # ..verify it is was given in the harv string file
             # ...and if not, raise an error.
-            raise ValueError, "Item " + item + " in " + itsdbDir + "item is not represented in " + \
-                                      harv_mrs + "."
+            raise ValueError("Item " + item + " in " + itsdbDir + "item is not represented in " + \
+                                      harv_mrs + ".")
 
     for string in mrs_dict:                  # for each harvester string...
         if ilines.count(string) == 0:        # ...verify it is in the profile as an item...
             # ...if not, raise an error.
-            raise ValueError, "Item " + string + " in " + harv_mrs + " is not represented in " + \
-                                      itsdbDir + "item."
+            raise ValueError("Item " + string + " in " + harv_mrs + " is not represented in " + \
+                                      itsdbDir + "item.")
 
-    mrs_tags = mrs_dict.values()        # get the set of given mrs tags.
+    mrs_tags = list(mrs_dict.values())        # get the set of given mrs tags.
 
     for tag in mrs_tags:                        # for each given mrs tag...
         if mrs_tags.count(tag) > 1:         # ...verify it only appears once in the harv file.
             # if it appears more than once, raise an error.
-            raise ValueError, "Mrs tag " + string + " appears more than once in " + harv_mrs + "."
+            raise ValueError("Mrs tag " + string + " appears more than once in " + harv_mrs + ".")
   
     return mrs_dict                             # return output
 
@@ -220,7 +220,7 @@ def check_for_known_mrs_tags(mrs_dict, conn):
     
     if len(known_mrs_tags) == 0:                # if every given tag is new...
         # ...ask user if that was the intent.
-        res  =  raw_input("All of the mrs_tags you are reporting are new.\n" + \
+        res  =  input("All of the mrs_tags you are reporting are new.\n" + \
                                   "If this is right, press 'y' to continue.  Press any other key to abort. ")
         if res != 'y':      # if they say anything but yes...
             sys.exit()    # ...exit
@@ -258,26 +258,26 @@ def check_for_known_mrs_tags(mrs_dict, conn):
         # in db...
         if len(diff_string_tags) > 0:
             # tell user they created a problem and exit
-            print "The following mrs_tags are already in MatrixTDB with\n different harvester " + \
-                     "strings associated with them.\n"
-            print diff_string_tags
-            print "\n"
-            print "Either you have inadvertently reused an mrs_tag or you\n should be " + \
-                     "modifying stringmod.py rather than\n adding harvester strings.\n"
-            print "MatrixTDB has not been modified.\n"
+            print("The following mrs_tags are already in MatrixTDB with\n different harvester " + \
+                     "strings associated with them.\n")
+            print(diff_string_tags)
+            print("\n")
+            print("Either you have inadvertently reused an mrs_tag or you\n should be " + \
+                     "modifying stringmod.py rather than\n adding harvester strings.\n")
+            print("MatrixTDB has not been modified.\n")
             sys.exit()
 
         # otherwise, if the user tried to input a tag/harv_string pair already in the db...            
         elif len(same_string_tags) > 0:
             #... let the user know about it
-            print "The following mrs_tags already exist in MatrixTDB with\n the harvester " + \
-                    "string indicated.\n"
-            print same_string_tags
+            print("The following mrs_tags already exist in MatrixTDB with\n the harvester " + \
+                    "string indicated.\n")
+            print(same_string_tags)
 
             # and ask them if they want to update the MRSs associated with those.
             # NB: by MRS here we seem to mean not the tag, which we've established is the same,
             # but the actual semantic representation
-            res = raw_input("If you mean to update the MRSs associated with them,\n press " + \
+            res = input("If you mean to update the MRSs associated with them,\n press " + \
                                     "'y' to continue (any other key will abort): ")
             if res != 'y':          # if that's not what they want,...
                 sys.exit()        # ...exit
@@ -285,12 +285,12 @@ def check_for_known_mrs_tags(mrs_dict, conn):
         # if they gave some mrs tags in their file that aren't in the database...
         if len(new_mrs_tags) > 0:
             # ...tell them which tags they're adding.
-            print "In addition, you are adding the following new mrs tags:\n"
-            print new_mrs_tags
-            print "\n"
+            print("In addition, you are adding the following new mrs tags:\n")
+            print(new_mrs_tags)
+            print("\n")
 
             # verify they want to add those
-            res = raw_input("If this is correct, press 'y' to continue (any other key to abort): ")
+            res = input("If this is correct, press 'y' to continue (any other key to abort): ")
             if res != 'y':      # if they don't...
                 sys.exit()    # ...exit
 
@@ -322,7 +322,7 @@ def update_orig_source_profile(lt_id, conn):
     comment = ''                                 # initialize comment from user
     while comment == '':                      # while they haven't entered a comment...
         # ...prompt user for a comment.
-        comment = raw_input("Enter a non-empty description of this source profile " + \
+        comment = input("Enter a non-empty description of this source profile " + \
                                         "(1000 char max): ")
 
     t = datetime.datetime.now()                             # get current date and time
@@ -357,7 +357,7 @@ def update_harv_str(new_mrs_tags, known_mrs_tags, mrs_dict, osp_id, conn):
     Tables accessed: harv_str
     Tables modified: harv_str
     """
-    for (harv, tag) in mrs_dict.items():    # for every string and tag in mrs_dict...
+    for (harv, tag) in list(mrs_dict.items()):    # for every string and tag in mrs_dict...
         if tag in new_mrs_tags:               # ...if it is a new mrs tag...
 
             # ...insert the string/tag combo into the database and link it to osp_id for both its original
@@ -372,8 +372,8 @@ def update_harv_str(new_mrs_tags, known_mrs_tags, mrs_dict, osp_id, conn):
                                "WHERE hs_mrs_tag = %s", (osp_id, tag))
         else:                                         # ...and if it's neither a new nor known mrs tag...
             # ...tell the user we have a problem and exit
-            raise ValueError, 'update_harv_str: tag in mrs_dict that is neither in new_mrs_tags, ' + \
-                                      'nor in known_mrs_tags. harv: ' + harv + '. tag: ' + tag
+            raise ValueError('update_harv_str: tag in mrs_dict that is neither in new_mrs_tags, ' + \
+                                      'nor in known_mrs_tags. harv: ' + harv + '. tag: ' + tag)
     return
 
 ###########################################################################
@@ -395,14 +395,14 @@ def find_string(tag, mrs_dict):
     Tables accessed: none
     Tables modified: none
     """
-    for (key, value) in mrs_dict.items():       # for each key/value pair in mrs_dict
+    for (key, value) in list(mrs_dict.items()):       # for each key/value pair in mrs_dict
         if value == tag:                                # look for the tag matching input tag
             answer = key                              # if found, set answer to corresponding harv string
             break                                         # and exit loop
     else:                                                  # else is for for loop, not if stmt.
         # if tag was never found in mrs_dict.values(), raise error
-        raise ValueError, "Error: import_from_itsdb.find_string() was passed an mrs tag with " + \
-                                  "no corresponding harvester string."
+        raise ValueError("Error: import_from_itsdb.find_string() was passed an mrs tag with " + \
+                                  "no corresponding harvester string.")
 
     return answer                                       # return output
 
@@ -658,8 +658,8 @@ def main(itsdb_dir, harv_mrs, choices_filename, conn = None):
         
     if not validateProfile(itsdb_dir):          # if the [incr_tsdb()] profile isn't valid...
         # ...raise an error
-        raise ValueError, "The first argument must be the path to a directory containing a valid " + \
-                                  "[incr tsdb()] profile, ending in /."
+        raise ValueError("The first argument must be the path to a directory containing a valid " + \
+                                  "[incr tsdb()] profile, ending in /.")
 
     # validate that harv/mrs file is formatted right and corresponds to [incr_tsdb()] profile
     # this will raise an error if not.
@@ -677,7 +677,7 @@ def main(itsdb_dir, harv_mrs, choices_filename, conn = None):
     # if any choices in the file were wrong...
     if len(wrong) > 0:
         # ...inform user and exit.
-        raise ValueError, "Invalid choices file.  Wrong choices: " + str(wrong)
+        raise ValueError("Invalid choices file.  Wrong choices: " + str(wrong))
 
     # convert the choices file into a ChoicesFile object.
     choices = ChoicesFile(choices_filename)
@@ -708,7 +708,7 @@ def main(itsdb_dir, harv_mrs, choices_filename, conn = None):
 
     # 7) Print out osp_orig_src_prof_id for user to use as input
     # to add_permutes.py
-    print "The original source profile id for your profile is: " + str(osp_id)
+    print("The original source profile id for your profile is: " + str(osp_id))
 
     # 8) Print out message about updating g.py to map include ne
     # mrs_tags in the mrs_tag sets they belong in, and updating
@@ -716,16 +716,16 @@ def main(itsdb_dir, harv_mrs, choices_filename, conn = None):
     # stringmod.py as well.
 
     if len(known_mrs_tags) > 0:
-        print "The following mrs_tags now have updated mrs_values in MatrixTDB:\n"
-        print known_mrs_tags
+        print("The following mrs_tags now have updated mrs_values in MatrixTDB:\n")
+        print(known_mrs_tags)
 
     if len(new_mrs_tags) > 0:
-        print "The following mrs_tags and their corresponding strings and values have been " + \
+        print("The following mrs_tags and their corresponding strings and values have been " + \
                 "added to MatrixTDB:\n" + str(new_mrs_tags) + "\nBe sure to map them to the " + \
                 "right sets of mrs_tags\n in g.py (for proper functioning of existing filters).\nBe " + \
                 "sure to update s_filters.py, u_filters.py and\n potentially stringmod.py to reflect " + \
                 "your new strings.  Then run add_permutes.py with the osp_id " + str(osp_id) + \
-                ".  Then run run_u_filters.py and run_specific_filters.py."
+                ".  Then run run_u_filters.py and run_specific_filters.py.")
 
     return
 
@@ -735,8 +735,8 @@ moduleTest = False
 if __name__ == '__main__':      # only run if run as main module...not if imported
     if len(sys.argv) < 4:                # if the user gave too few arguments....
         # ...give an error message indicating usage.
-        print >> sys.stderr, "Usage: python import_from_itsdb.py itsdb_directory " + \
-                                     "harv_mrs_filename choices_filename"
+        print("Usage: python import_from_itsdb.py itsdb_directory " + \
+                                     "harv_mrs_filename choices_filename", file=sys.stderr)
     else:                                             # if the user gave at least three arguments...
         # ...get the directory of the [incr_tsdb()] directory from the command line...
         itsdbDir = sys.argv[1]
@@ -758,18 +758,18 @@ elif moduleTest:                        # if we are testing this module locally.
     myconn = MatrixTDBConn('2')      # ...create a connection to the smaller, newer database...
 
     # ... and notify the user moduleTest is set to True.
-    print >> sys.stderr, "Note: module testing turned on in import_from_itsdb.py.  " + \
-                                 "Unless testing locally, set moduleTest to False."
+    print("Note: module testing turned on in import_from_itsdb.py.  " + \
+                                 "Unless testing locally, set moduleTest to False.", file=sys.stderr)
 
     # get path of source profile
-    itsdbDir = raw_input("Enter full path of source profile:\n")
+    itsdbDir = input("Enter full path of source profile:\n")
 
     # get name of choices file
-    choicesFilename = raw_input("enter full path and name of choices file of grammar used " + \
+    choicesFilename = input("enter full path and name of choices file of grammar used " + \
                                                 "to create source profile:\n")
 
     # get name of file with harvester strings and mrs tags
-    harvMrsFilename = raw_input("enter full path and name of file with harvester strings and " + \
+    harvMrsFilename = input("enter full path and name of file with harvester strings and " + \
                                                 "mrs tags:\n")
 
     # call the main program to import a source profile into MatrixTDB2

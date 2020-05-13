@@ -8,11 +8,11 @@ import os
 from copy import copy
 import re
 
-from utils import read_choices
+from .utils import read_choices
 
 from random import randint
 
-from randgram import random_validated_grammar
+from .randgram import random_validated_grammar
 
 import shutil
 import sys
@@ -35,7 +35,7 @@ est = 0
 #   Return the value of choice s, or '' if it has none
 
 def ch(s):
-    if choices.has_key(s):
+    if s in choices:
         return choices[s]
     else:
         return ''
@@ -1159,7 +1159,7 @@ def permute(s,mrs_id):
     survived += len(perms)
 
     if len(perms) > 1000:
-        print 'found ' + str(len(perms)) + ' permutations of ' + s
+        print('found ' + str(len(perms)) + ' permutations of ' + s)
     return [perms, keeps]
 
 
@@ -1176,8 +1176,8 @@ def validate_string_list(string_list):
             wrong.append(s)
 
     if wrong != []:
-        print 'Error in string_list: The following strings are improperly formatted:'
-        print wrong
+        print('Error in string_list: The following strings are improperly formatted:')
+        print(wrong)
         sys.exit
 
 
@@ -1238,8 +1238,8 @@ def make_intermediate_resource(string_list_file, in_profile, out_profile):
         i[9] = mrs_id
 
         if not mrs_id:
-            print 'Warning: The harvester string ' + string + ' has no associated mrs-id.'
-            print 'This means many filters won\'t work on permutations of this string.'
+            print('Warning: The harvester string ' + string + ' has no associated mrs-id.')
+            print('This means many filters won\'t work on permutations of this string.')
 
     # Figure out where to start with i-id, parse-id, and result-id
 
@@ -1296,7 +1296,7 @@ def make_intermediate_resource(string_list_file, in_profile, out_profile):
                     items.append(new_i)
                     break
             if not found:
-                print 'Warning: No harvester string for mrs-id ' + s[0] +'. String not added: ' + s[2]
+                print('Warning: No harvester string for mrs-id ' + s[0] +'. String not added: ' + s[2])
 
     # Write out the items, parses, and result
     if not os.path.exists(out_profile):
@@ -1349,9 +1349,9 @@ def make_universal_resource(string_list_file, in_profile, out_profile):
         local_est += factorial(l)
 
     avg_len = local_total / len_list
-    print 'Total permutations considered: ' + str(local_est)
-    print 'Longest string is ' + str(local_max) + ' words long'
-    print 'Average string length is ' + str(avg_len) + ' words'
+    print('Total permutations considered: ' + str(local_est))
+    print('Longest string is ' + str(local_max) + ' words long')
+    print('Average string length is ' + str(avg_len) + ' words')
 
     # Read in the items, parses, and results
     items = read_profile_file(in_profile + 'item')
@@ -1425,12 +1425,12 @@ def make_universal_resource(string_list_file, in_profile, out_profile):
             new_i[6] = keep
             new_i[7] = '0'
             items.append(new_i)
-        print 'Done with item '+ i[0]
+        print('Done with item '+ i[0])
 
     #  print 'considered ' + str(total_perms) + 'total permutations.'
-    print str(u_kept) + ' universally ungrammatical examples kept.'
-    print str(survived) + ' total strings survived into universal resource.'
-    print str(killed) + ' strings were filtered.'
+    print(str(u_kept) + ' universally ungrammatical examples kept.')
+    print(str(survived) + ' total strings survived into universal resource.')
+    print(str(killed) + ' strings were filtered.')
 
     # Write out the items, parses, and results
     if not os.path.exists(out_profile):
@@ -1499,10 +1499,10 @@ def make_gold_standard(in_profile, out_profile):
             else:
                 wf += 1
 
-    print str(len(items)) + ' items received from universal resource.'
-    print str(filtered) + ' items filtered.'
-    print str(wf) + ' grammatical examples found.'
-    print str(g_kept) + ' locally ungrammatical examples kept.'
+    print(str(len(items)) + ' items received from universal resource.')
+    print(str(filtered) + ' items filtered.')
+    print(str(wf) + ' grammatical examples found.')
+    print(str(g_kept) + ' locally ungrammatical examples kept.')
 
     # Pass through the lists *backwards*, removing any items, parses, or
     # results whose IDs have been set to None
@@ -1604,7 +1604,7 @@ def make_gold_standard(in_profile, out_profile):
         if results[r][1] == None:
             del results[r]
 
-    print str(len(items)) + ' unique items found.'
+    print(str(len(items)) + ' unique items found.')
 
     # Write out the items, parses, and result
     if not os.path.exists(out_profile):

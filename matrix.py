@@ -51,7 +51,7 @@ def main():
                                     'force', 'help', 'warning',
                                     'cheap-hack', 'lkb', 'iso'])
     except getopt.GetoptError as err:
-        print str(err)
+        print(str(err))
         usage()
     for o, a in opts:
         if o in ('-C', '--customizationroot', '--CUSTOMIZATIONROOT'):
@@ -103,7 +103,7 @@ def main():
 
     elif args[0] in ('uc', 'update-choices'):
         c = ChoicesFile(args[1])
-        print c
+        print(c)
 
     ###########
     # TESTING #
@@ -117,15 +117,15 @@ def main():
         import gmcs.validate
         v = gmcs.validate.validate_choices(choices_file)
         for x in v.errors:
-            print x
-            print '  ', v.errors[x].message
+            print(x)
+            print('  ', v.errors[x].message)
         if show_warnings:
             for x in v.warnings:
-                print x
-                print '  ', v.warnings[x].message
+                print(x)
+                print('  ', v.warnings[x].message)
             for x in v.infos:
-                print x
-                print '  ', v.infos[x].message
+                print(x)
+                print('  ', v.infos[x].message)
         # If there are errors, exit with a return code of 1, otherwise 0
         sys.exit(len(v.errors) > 0)
 
@@ -139,7 +139,7 @@ def main():
         import gmcs.generate
         c = gmcs.choices.ChoicesFile(choices_file)
         for mrs_string in gmcs.generate.configure_mrs(c):
-            print mrs_string
+            print(mrs_string)
 
     elif args[0] in ('u', 'unit-test'):
         run_unit_tests()
@@ -180,7 +180,7 @@ def main():
             p = subprocess.Popen([cmd] + lgnames, env=os.environ)
             p.wait()
         except KeyboardInterrupt:
-            print "\nProcess interrupted. Aborting regression tests.\n"
+            print("\nProcess interrupted. Aborting regression tests.\n")
             import signal
             os.kill(p.pid, signal.SIGKILL)
 
@@ -191,7 +191,7 @@ def main():
         try:
             lg = gmcs.regression_tests.add_regression_test.add(choices,
                                                                txtsuite)
-            print 'Succeeded copying files for %s.' % lg
+            print('Succeeded copying files for %s.' % lg)
 
             # TJT 2014-09-14: Fixing this: it was not adding files to svn
             rpath = os.path.join(os.environ['CUSTOMIZATIONROOT'],
@@ -208,23 +208,23 @@ def main():
                              os.path.join(rpath, 'skeletons', lg),
                              os.path.join(rpath, 'choices', lg),
                              os.path.join(rpath, 'txt-suites', lg)])
-            print 'Succeeded adding files to Subversion. Be sure to commit!'
-        except ValueError, er:
-            print "Error adding regression test."
-            print er.message
-        except OSError, er:
-            print "OS Error. Most likely Subversion is not installed."
-            print er.message
+            print('Succeeded adding files to Subversion. Be sure to commit!')
+        except ValueError as er:
+            print("Error adding regression test.")
+            print(er.message)
+        except OSError as er:
+            print("OS Error. Most likely Subversion is not installed.")
+            print(er.message)
 
     elif args[0] in ('regression-test-update', 'ru'):
         from gmcs import utils
         test = args[1]
         cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'],
                            'regression_tests/update-gold-standard.sh')
-        print "Updating regression test gold standards assumes you have "
-        print "manually compared results with TSDB and have determined the "
-        print "current set is better than the gold standard. Only continue"
-        print "if you have done this!"
+        print("Updating regression test gold standards assumes you have ")
+        print("manually compared results with TSDB and have determined the ")
+        print("current set is better than the gold standard. Only continue")
+        print("if you have done this!")
         if utils.verify():
             subprocess.call([cmd, test], env=os.environ)
             # TJT 2015-02-06: Add to SVN
@@ -233,7 +233,7 @@ def main():
             subprocess.call(['svn', '-q', 'add'] +
                             [os.path.join(rpath, 'home', 'gold', test)])
         else:
-            print "Aborted."
+            print("Aborted.")
         sys.exit(1)
 
     elif args[0] in ('regression-test-remove', 'rr'):
@@ -248,13 +248,13 @@ def main():
                           os.path.join(rpath, 'txt-suites', test)]:
             if os.path.exists(test_path):
                 test_paths += [test_path]
-        print "The following paths were found relating to the test:\n"
+        print("The following paths were found relating to the test:\n")
         for test_path in test_paths:
-            print "  ", test_path
-        print
-        print "Do you want to remove them from subversion? If you choose to "
-        print "remove them, the test entry in regression-test-index will "
-        print "also be removed."
+            print("  ", test_path)
+        print()
+        print("Do you want to remove them from subversion? If you choose to ")
+        print("remove them, the test entry in regression-test-index will ")
+        print("also be removed.")
         if utils.verify():
             try:
                 # Remove the relevant files from subversion
@@ -269,13 +269,13 @@ def main():
                 rti_file = open(rti_path, 'w')
                 for l in rti:
                     if l.split('=')[0] != test:
-                        print >>rti_file, l.strip()
+                        print(l.strip(), file=rti_file)
                 rti_file.close()
-            except OSError, er:
-                print "OS Error. Most likely Subversion is not installed."
-                print er.message
+            except OSError as er:
+                print("OS Error. Most likely Subversion is not installed.")
+                print(er.message)
         else:
-            print "Aborted."
+            print("Aborted.")
         sys.exit(1)
 
     elif args[0] in ('regression-test-rename', 'rn'):
@@ -285,7 +285,7 @@ def main():
                              'regression_tests')
         rti = open(os.path.join(rpath, 'regression-test-index')).readlines()
         if oldname not in (l.split('=')[0] for l in rti):
-            print 'Error: cannot find test', oldname
+            print('Error: cannot find test', oldname)
             sys.exit(2)
         try:
             subprocess.call(['svn', '-q', '--non-interactive', 'mv',
@@ -305,13 +305,13 @@ def main():
             rti_file = open(os.path.join(rpath, 'regression-test-index'), 'w')
             for l in rti:
                 if l.split('=')[0] == oldname:
-                    print >>rti_file, l.replace(oldname, newname, 1)
+                    print(l.replace(oldname, newname, 1), file=rti_file)
                 else:
-                    print >>rti_file, l
+                    print(l, file=rti_file)
             rti_file.close()
-        except OSError, er:
-            print "OS Error. Most likely Subversion is not installed."
-            print er.message
+        except OSError as er:
+            print("OS Error. Most likely Subversion is not installed.")
+            print(er.message)
 
     elif args[0] in ('regression-test-list', 'rl'):
         patterns = ['*']
@@ -321,7 +321,7 @@ def main():
         if tests is None:
             return
         for test in tests:
-            print test
+            print(test)
 
     #############
     # WEB TESTS #
@@ -354,8 +354,8 @@ def main():
         # args[1] is the install target location
         if args[1].strip('/') == 'customize':
             # Installations to the live site require validations, so abort.
-            print "Error: For installation to the live site, please use:"
-            print "  matrix.py vivify"
+            print("Error: For installation to the live site, please use:")
+            print("  matrix.py vivify")
             sys.exit(2)
         cmd = [os.path.join(os.environ['CUSTOMIZATIONROOT'], '../install')]
         if install_lkb:
@@ -377,12 +377,12 @@ def main():
 
 
 def uncommitted_changes_reminder(rpath):
-    print "Remember you must commit your changes to subversion. Also,"
-    print "there may still be files not in the repository related to "
-    print "this test. Look in the following directories:"
-    print os.path.join(rpath, 'grammars')
-    print os.path.join(rpath, 'home', 'current')
-    print os.path.join(rpath, 'logs')
+    print("Remember you must commit your changes to subversion. Also,")
+    print("there may still be files not in the repository related to ")
+    print("this test. Look in the following directories:")
+    print(os.path.join(rpath, 'grammars'))
+    print(os.path.join(rpath, 'home', 'current'))
+    print(os.path.join(rpath, 'logs'))
 
 
 def validate_python_version():
@@ -391,9 +391,9 @@ def validate_python_version():
     """
     if sys.version_info[0] != 2 or sys.version_info[1] < 5:
         version = '.'.join(str(x) for x in sys.version_info[0:2])
-        print "Operation aborted: incompatible Python version."
-        print "  You are running Python " + version + ", but the Grammar "
-        print "  Matrix Customization System requires Python 2.5, 2.6, or 2.7."
+        print("Operation aborted: incompatible Python version.")
+        print("  You are running Python " + version + ", but the Grammar ")
+        print("  Matrix Customization System requires Python 2.5, 2.6, or 2.7.")
         sys.exit(2)
 
 
@@ -406,14 +406,14 @@ def ensure_customization_root_set():
     if 'CUSTOMIZATIONROOT' in os.environ:
         if not os.path.exists(os.path.join(os.environ['CUSTOMIZATIONROOT'],
                                            'customize.py')):
-            print "CUSTOMIZATIONROOT is incorrectly set."
+            print("CUSTOMIZATIONROOT is incorrectly set.")
             sys.exit(2)
     elif os.path.exists(os.path.join(cwd, 'customize.py')):
         os.environ['CUSTOMIZATIONROOT'] = cwd
     elif os.path.exists(os.path.join(cwd, 'gmcs/customize.py')):
         os.environ['CUSTOMIZATIONROOT'] = os.path.join(cwd, 'gmcs')
     else:
-        print "CUSTOMIZATIONROOT is not set and cannot be found."
+        print("CUSTOMIZATIONROOT is not set and cannot be found.")
         sys.exit(2)
 
 
@@ -507,9 +507,9 @@ def usage(command=None, exitcode=2):
         Print the message with necessary indentation and linebreaks.
         """
         if nobreak:
-            print " " * indent + msg,
+            print(" " * indent + msg, end=' ')
         else:
-            print " " * indent + msg
+            print(" " * indent + msg)
 
     p("Usage: matrix.py [OPTION]", nobreak=True, indent=0)
     if not command or command == 'all':
@@ -692,9 +692,9 @@ def customize_grammar(
         if not os.path.exists(irules_path) or \
                 not any(':=' in line for line in open(irules_path, 'r')):
             irules = open(irules_path, 'a')
-            print >>irules, 'CHEAP-HACK-RULE :='
-            print >>irules, '%prefix (xyx zyz)'
-            print >>irules, 'lex-rule & [ NEEDS-AFFIX + ].'
+            print('CHEAP-HACK-RULE :=', file=irules)
+            print('%prefix (xyx zyz)', file=irules)
+            print('lex-rule & [ NEEDS-AFFIX + ].', file=irules)
             irules.close()
     # Now a grammar has been created, so we can flop it
     if flop:
@@ -716,21 +716,21 @@ def run_unit_tests():
     import gmcs.linglib.tests.testToolboxImport
 
     def print_line():
-        print 75 * '='
+        print(75 * '=')
 
     loader = unittest.defaultTestLoader
     runner = unittest.TextTestRunner(verbosity=1)
 
     print_line()
-    print 'Choices tests:'
+    print('Choices tests:')
     runner.run(loader.loadTestsFromModule(gmcs.tests.testChoices))
 
     print_line()
-    print 'Validate tests:'
+    print('Validate tests:')
     runner.run(loader.loadTestsFromModule(gmcs.tests.testValidate))
 
     print_line()
-    print 'Toolbox import tests:'
+    print('Toolbox import tests:')
     runner.run(
             loader.loadTestsFromModule(gmcs.linglib.tests.testToolboxImport))
 
@@ -744,7 +744,7 @@ def run_unit_tests():
 def get_regression_tests(patterns):
     import fnmatch
     rpath = os.path.join(os.environ['CUSTOMIZATIONROOT'], 'regression_tests')
-    if isinstance(patterns, basestring):
+    if isinstance(patterns, str):
         patterns = [patterns]
     names = []
     for line in open(os.path.join(rpath, 'regression-test-index')):
@@ -777,7 +777,7 @@ def run_web_tests():
                 "Seleinum not installed: run \"pip install -U selenium\"\n")
         sys.exit(1)
     cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'], '../install')
-    user_name = raw_input("Patas user name:")
+    user_name = input("Patas user name:")
     host = 'patas.ling.washington.edu'
     path = '/home2/www-uakari/html/matrix/test'
     subprocess.call([cmd, user_name + host + path], env=os.environ)
@@ -786,10 +786,10 @@ def run_web_tests():
     import gmcs.web_tests.testWeb
     loader = unittest.defaultTestLoader
     runner = unittest.TextTestRunner(verbosity=1)
-    print 75 * '='
-    print 'Web tests:'
+    print(75 * '=')
+    print('Web tests:')
     runner.run(loader.loadTestsFromModule(gmcs.web_tests.testWeb))
-    print 75 * '='
+    print(75 * '=')
 
 
 def add_web_test(filename, comment):
@@ -843,8 +843,8 @@ def validate_html(arg):
     # takes name of a subpage, or 'main' or no argument = all
     import time
     errors = 0
-    print "Checking html validation for " + \
-          (arg if arg != '' else 'all')
+    print("Checking html validation for " + \
+          (arg if arg != '' else 'all'))
 
     # to check any subpages, we'll need a cookie
     # (ie, a session number) that we get by hitting
@@ -862,14 +862,14 @@ def validate_html(arg):
     # the http headers
 
     if arg in ['main', 'm', '']:
-        print "main page:"
+        print("main page:")
 
         # need to drop the first few lines of the reply from
         # matrix.cgi (HTTP headers!), validation starts at
         # doctype
         i = httpstr.lower().find('<!doctype')
         if i == -1:
-            print "No doctype string found, validator will complain."
+            print("No doctype string found, validator will complain.")
             i = httpstr.lower().find('<html')
             html = httpstr[i:]
         else:
@@ -877,24 +877,24 @@ def validate_html(arg):
 
         e = send_page(html)
         if e == 0:
-            print "  No errors were found."
+            print("  No errors were found.")
         else:
             errors += e
 
     if arg == '':
         # get the list of subpages by instantiating matrixdef
         md = MatrixDefFile('web/matrixdef')
-        print "subpages:"
-        for s in md.sections.keys():
+        print("subpages:")
+        for s in list(md.sections.keys()):
             time.sleep(2)  # w3c asks for >= 1s  b/t requests
-            print "\nsending subpage: ", s, "..."
+            print("\nsending subpage: ", s, "...")
             cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'],
                                '../matrix.cgi')
             httpstr = os.popen(cmd+' subpage='+s).read()
 
             i = httpstr.lower().find('<!doctype')
             if i == -1:
-                print "No doctype string found, validator will complain."
+                print("No doctype string found, validator will complain.")
                 i = httpstr.lower().find('<html')
                 html = httpstr[i:]
             else:
@@ -902,19 +902,19 @@ def validate_html(arg):
 
             e = send_page(html)
             if e == 0:
-                print "  No errors were found."
+                print("  No errors were found.")
             else:
                 errors += e
     else:
         # else run the specific subpage in the arg
-        print "\nsending subpage: ", arg, "..."
+        print("\nsending subpage: ", arg, "...")
         cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'],
                            '../matrix.cgi')
         httpstr = os.popen(cmd+' subpage='+arg).read()
 
         i = httpstr.lower().find('<!doctype')
         if i == -1:
-            print "No doctype string found in reply, validator will complain."
+            print("No doctype string found in reply, validator will complain.")
             i = httpstr.lower().find('<html')
             html = httpstr[i:]
         else:
@@ -922,49 +922,49 @@ def validate_html(arg):
 
         e = send_page(html)
         if e == 0:
-            print "  No errors were found."
+            print("  No errors were found.")
         else:
             errors += e
 
-    print "Total errors on all checked pages: ", errors
+    print("Total errors on all checked pages: ", errors)
 
 
 def send_page(page):
-    import urllib
-    import urllib2
+    import urllib.request, urllib.parse, urllib.error
+    import urllib.request, urllib.error, urllib.parse
     from xml.dom.minidom import parseString
     values = {'uploaded_file': page, 'output': 'soap12'}
-    data = urllib.urlencode(values)
-    req = urllib2.Request('http://validator.w3.org/check', data)
-    reply = urllib2.urlopen(req).read()
+    data = urllib.parse.urlencode(values)
+    req = urllib.request.Request('http://validator.w3.org/check', data)
+    reply = urllib.request.urlopen(req).read()
 
     dom = parseString(reply)
     ecount = int(dom.getElementsByTagName('m:errorcount')[0].firstChild.data)
     try:
         dc = dom.getElementsByTagName('m:doctype')[0].firstChild.data
-        print "  Checked document as type:", dc
+        print("  Checked document as type:", dc)
     except:
         pass
     if ecount > 0:
-        print "  The W3C validator found " + str(ecount) +\
-                  " error(s) in the document submitted."
+        print("  The W3C validator found " + str(ecount) +\
+                  " error(s) in the document submitted.")
         errors = dom.getElementsByTagName('m:error')
         for e in errors:
             l = e.getElementsByTagName('m:line')[0].firstChild.data
             s = e.getElementsByTagName('m:source')[0].firstChild.data
             m = e.getElementsByTagName('m:message')[0].firstChild.data
-            print "  error at line "+l+":"
+            print("  error at line "+l+":")
             s = s.replace(
                     '<strong title="Position where error was detected.">', '')
             s = s.replace('</strong>', '')
-            print "    source: \"" + unescape(s) + "\""
-            print "    message:\"" + unescape(m) + "\""
-            print "  --------------------"
+            print("    source: \"" + unescape(s) + "\"")
+            print("    message:\"" + unescape(m) + "\"")
+            print("  --------------------")
     return ecount
 
 
 def unescape(text):
-    import htmlentitydefs
+    import html.entities
 
     def fixup(m):
         text = m.group(0)
@@ -972,15 +972,15 @@ def unescape(text):
             # character reference
             try:
                 if text[:3] == "&#x":
-                    return unichr(int(text[3:-1], 16))
+                    return chr(int(text[3:-1], 16))
                 else:
-                    return unichr(int(text[2:-1]))
+                    return chr(int(text[2:-1]))
             except ValueError:
                 pass
         else:
             # named entity
             try:
-                text = unichr(htmlentitydefs.name2codepoint[text[1:-1]])
+                text = chr(html.entities.name2codepoint[text[1:-1]])
             except KeyError:
                 pass
             return text  # leave as is

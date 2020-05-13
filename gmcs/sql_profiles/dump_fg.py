@@ -19,7 +19,7 @@ for i in ids:
     cursor.execute('SELECT fg_feat,fg_value FROM %s WHERE fg_grp_id = %s' %
                    (sys.argv[1], i))
     res = cursor.fetchall()
-    print str(i) + ', ',
+    print(str(i) + ', ', end=' ')
     for r in res:
-        print r[0] + '=' + r[1] + ',',
-    print
+        print(r[0] + '=' + r[1] + ',', end=' ')
+    print()

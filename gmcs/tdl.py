@@ -874,7 +874,7 @@ class TDLfile(object):
         type_count = {}
         for i in range(len(self.typedefs)):
             t = self.typedefs[i].get_type()
-            if type_count.has_key(t):
+            if t in type_count:
                 type_count[t] += 1
             else:
                 type_count[t] = 1
@@ -884,7 +884,7 @@ class TDLfile(object):
             if type_count[t] > 1:
                 index = 1
                 new_type = t + '_' + str(index)
-                while type_count.has_key(new_type):
+                while new_type in type_count:
                     index += 1
                     new_type = t + '_' + str(index)
                 self.typedefs[i].set_type(new_type)

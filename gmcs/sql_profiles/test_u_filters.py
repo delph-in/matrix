@@ -44,12 +44,12 @@ cursor.execute("SELECT r_result_id,r_mrs_tag FROM result,parse,item WHERE item.i
 candidates = cursor.fetchall()
 
 if len(candidates) == 0:
-    print "Sorry, no results match the string you requested."
+    print("Sorry, no results match the string you requested.")
 
 for cand in candidates:
 
     mrs_id = cand[1]
-    print mrs_id
+    print(mrs_id)
     r_id = cand[0]
     filter_values = filters.filter_one_result(mrs_id,input,filter_list)
 
@@ -62,5 +62,5 @@ for cand in candidates:
     else:
         print_values = filter_values
 
-    print str(r_id) + " : " + str(print_values)
+    print(str(r_id) + " : " + str(print_values))
     

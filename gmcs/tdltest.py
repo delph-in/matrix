@@ -1,6 +1,6 @@
 ### $Id: test.py,v 1.13 2008-06-27 20:45:22 sfd Exp $
 
-import tdl
+from . import tdl
 
 foo = tdl.TDLfile('foo')
 

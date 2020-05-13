@@ -41,7 +41,7 @@ def make_pred(tbentry,stemtag,glosstag,predchoice,lextype):
     elif lex_cat == 'noun':
         rel = '_n_rel'
     else:
-        print "Error: lex cat isn't verb or noun."
+        print("Error: lex cat isn't verb or noun.")
     # Construct stem
     if predchoice == 'stem':
         pred = TDLencode('_' + tbentry[stemtag] + rel)
@@ -56,7 +56,7 @@ def make_pred(tbentry,stemtag,glosstag,predchoice,lextype):
         else:
             pred = TDLencode('_' + tbentry[stemtag] + rel)
     else:
-        print "Error: bad predchoice."
+        print("Error: bad predchoice.")
 
     return pred
 
@@ -76,7 +76,7 @@ def process_tb_entry(tbentry,lexclasses,stemtag,
         lextype = lexclass.get('importlextype')
         tvps = lexclass.get('toolboxtag')
         for tagvaluepair in tvps:
-            if tagvaluepair.get('tbtag') in tbentry.keys() \
+            if tagvaluepair.get('tbtag') in list(tbentry.keys()) \
                     and tbentry[tagvaluepair.get('tbtag')] == tagvaluepair.get('tbvalue'):
                 match += 1
 
@@ -87,10 +87,10 @@ def process_tb_entry(tbentry,lexclasses,stemtag,
             #                n = 1
             prefix = 'imported-entry' + str(n)
             pred = make_pred(tbentry,stemtag,glosstag,predchoice,lextype)
-            if stemtag in tbentry.keys():
+            if stemtag in list(tbentry.keys()):
                 #                choices[prefix + '_orth'] = tbentry[stemtag]
                 formdata[prefix + '_orth'].value = tbentry[stemtag]
-                if bistemtag in tbentry.keys():
+                if bistemtag in list(tbentry.keys()):
                     #                    choices[prefix + '_aff'] = tbentry[bistemtag]
                     formdata[prefix + '_aff'].value = tbentry[bistemtag]
                     affixes.append(tbentry[bistemtag])
@@ -111,7 +111,7 @@ def get_affix_from_entry(tbentry,idtag,stemtag,affixes,affix_strings):
     affix, If so, find the orthography of the affix and store it in
     the affix_strings dictionary.
     '''
-    if idtag not in tbentry.keys():
+    if idtag not in list(tbentry.keys()):
         #print tbentry
         #print "Error: tbentry without tbid"
         tbid = 0
@@ -133,7 +133,7 @@ def insert_affixes(form_data, affix_strings, number):
     for entry in range(1,number):
         affix_id = form_data['imported-entry'+str(entry)+'_aff'].value
         #        full_key = entry.full_key
-        if affix_id in affix_strings.keys():
+        if affix_id in list(affix_strings.keys()):
             form_data['imported-entry'+str(entry)+'_aff'].value = affix_strings[affix_id]
 
 def import_toolbox_lexicon(choicesfile):
@@ -193,7 +193,7 @@ def import_toolbox_lexicon(choicesfile):
                 if words:
                     if words[0] == starttag:
                         affixes = process_tb_entry(tbentry,lexclasses,stemtag,bistemtag,glosstag,predchoice,choices,affixes,form_data,form_data_entries)
-                        if form_data.has_key('imported-entry'+str(form_data_entries)+'_orth'):
+                        if 'imported-entry'+str(form_data_entries)+'_orth' in form_data:
                             form_data_entries += 1
                         tbentry = {}
                         tbentries += 1

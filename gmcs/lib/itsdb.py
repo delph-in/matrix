@@ -74,9 +74,9 @@ class TsdbProfile:
         relations = get_relations(relations_filename)
         shutil.copyfile(relations_filename, os.path.join(profile_directory,
                                                          _relations_filename))
-        for tbl_name in tables.keys():
+        for tbl_name in list(tables.keys()):
             tbl = open(os.path.join(profile_directory, tbl_name), 'w')
             for row in tables[tbl_name]:
-                print >>tbl, _field_delimiter.join(
-                    row.get(f, '') for f in relations[tbl_name])
+                print(_field_delimiter.join(
+                    row.get(f, '') for f in relations[tbl_name]), file=tbl)
             tbl.close()

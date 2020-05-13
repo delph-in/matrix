@@ -226,12 +226,12 @@ class Filter:
             if type(fvlist) is list:
                 # or if i'm a list i should be a list of just one string
                 if len(fvlist) > 1:
-                    print >> sys.stderr, self.name
-                    print >> sys.stderr, self.fv
-                    print >> sys.stderr, len(fvlist)
+                    print(self.name, file=sys.stderr)
+                    print(self.fv, file=sys.stderr)
+                    print(len(fvlist), file=sys.stderr)
                     for fv in fvlist:
-                        print >> sys.stderr, fv
-                    raise TypeError, "Ill-formed fv"
+                        print(fv, file=sys.stderr)
+                    raise TypeError("Ill-formed fv")
                 else:
                     fvlist = fvlist[0]
             if fvlist in fvset:
@@ -287,7 +287,7 @@ class Filter:
         Tables accessed: none
         Tables modified: none                             
         """
-        print "Error"
+        print("Error")
         assert False    # this will raise an AssertionError
 
 class FalseFilter(Filter):
@@ -601,9 +601,9 @@ class AndFilter(Filter):
         History: 8/19/09: added warning message to tell user it was deprecated
         """
         # first warn user about creating depcreated class
-        print >> sys.stderr, 'You are instantiating AndFilter, a deprecated class, for filter', name, \
+        print('You are instantiating AndFilter, a deprecated class, for filter', name, \
                                       '.  Please use the logicallequivalence of two MatchFilter classes ' + \
-                                      "instead.  Those two filters' comments should reference each other."
+                                      "instead.  Those two filters' comments should reference each other.", file=sys.stderr)
         Filter.__init__(self, name, mrs_id_list, comment, fv)   # call superclass constructor
         self.re1 = re1                                                          # set self.re1 to re1
         self.re2 = re2                                                          # set self.re2 to re2
@@ -661,10 +661,10 @@ class AndNotFilter(Filter):
         Tables modified: none
         """                        
         # first warn user about creating depcreated class
-        print >> sys.stderr, 'You are instantiating AndNotFilter, a deprecated class, for filter', \
+        print('You are instantiating AndNotFilter, a deprecated class, for filter', \
                                       name, '.  Please use the logical equivalence of a MatchFilter and ' + \
                                       "a NotMatchFilter instead.  Those two filters' comments should " + \
-                                      "reference each other."
+                                      "reference each other.", file=sys.stderr)
         Filter.__init__(self, name, mrs_id_list, comment, fv)   # call superclass constructor
         self.re1 = re1                                                          # set self.re1 to re1
         self.re2 = re2                                                          # set self.re2 to re2
@@ -723,8 +723,8 @@ class NandFilter(Filter):
         History: 8/19/09: added warning message to tell user it was deprecated
         """
         # first warn user about creating depcreated class
-        print >> sys.stderr, 'You are instantiating NandFilter, a deprecated class, for filter', name, \
-                                      '.  Please use the logically equivalent class IfNotFilter instead.'
+        print('You are instantiating NandFilter, a deprecated class, for filter', name, \
+                                      '.  Please use the logically equivalent class IfNotFilter instead.', file=sys.stderr)
         Filter.__init__(self, name, mrs_id_list, comment, fv)   # call superclass constructor
         self.re1 = re1                                                          # set self.re1 to re1
         self.re2 = re2                                                          # set self.re2 to re2
@@ -799,7 +799,7 @@ def filter_results(filter_list,filter_type):
 
     while ids != ():
 
-        print "Now working results " + str(limit) + " through " + str(limit + 1000000)
+        print("Now working results " + str(limit) + " through " + str(limit + 1000000))
 
         #`ids' is now a tuple containing elements for each item in a 100,000 slice of the
         #relevant table.  Each of those elements is a tuple which contains
@@ -820,12 +820,12 @@ def filter_results(filter_list,filter_type):
 
             #Should do error checking here: Are all of the values legit?
 
-            for filter_key in filter_values.keys():
+            for filter_key in list(filter_values.keys()):
                 cursor.execute("SELECT filter_id FROM filter WHERE filter_name = %s",
                                (filter_key))
                 f_id = cursor.fetchall()
                 if len(f_id) > 1:
-                    print "Error: Multiple filters with the same name." + filter_key
+                    print("Error: Multiple filters with the same name." + filter_key)
                 else:
                     value = filter_values[filter_key]
                     if not value == 2:

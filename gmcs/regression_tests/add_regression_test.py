@@ -32,17 +32,17 @@ def add(choices_file, txt_suite):
     txt_suite = os.path.join(rt_root, 'scratch', *txt_suite.split('/'))
 
     if not os.path.exists(cust_root):
-        raise ValueError, "Invalid path name for customization root."
+        raise ValueError("Invalid path name for customization root.")
 
     if not os.path.exists(choices_file):
-        raise ValueError, "Invalid path name for choices file."
+        raise ValueError("Invalid path name for choices file.")
 
     if not os.path.exists(txt_suite):
-        raise ValueError, "Invalid path name for txt-suite file."
+        raise ValueError("Invalid path name for txt-suite file.")
 
     # CMC 2017-04-08: don't do path joins by hand
     if not os.path.exists(os.path.join(rt_root, "regression-test-index")):
-        raise ValueError, "No file regression_tests/regression-test-index in customization root.  Invalid customization root or missing file."
+        raise ValueError("No file regression_tests/regression-test-index in customization root.  Invalid customization root or missing file.")
 
     # Get the language name
 
@@ -52,7 +52,7 @@ def add(choices_file, txt_suite):
     # Make sure illegal characters (for lisp strings) are not in the lg_name.
     # For now this is just double-quotes "
     if any(c in ('"',) for c in lg_name):
-        raise ValueError, 'Double-quotes are not allowed in the language name.'
+        raise ValueError('Double-quotes are not allowed in the language name.')
 
     # Load up the current regression test index
     index = RegressionTestIndex(os.path.join(rt_root, "regression-test-index"))
@@ -63,28 +63,28 @@ def add(choices_file, txt_suite):
     if index.exists(lg_name):
         # TJT 2014-09-11: Updating this error to suggest using matrix.py to remove test
         #raise ValueError, "A regression test with that language name already exists.  If you must remove it, be sure to edit regression-test-index."
-        raise ValueError, "A regression test with that language name already exists.  If you need to remove the existing test, use matrix.py rr TEST"
+        raise ValueError("A regression test with that language name already exists.  If you need to remove the existing test, use matrix.py rr TEST")
 
     if os.path.exists(os.path.join(rt_root, "choices", lg_name)):
-        raise ValueError, "Move regression_tests/choices/" + lg_name +", it is in the way."
+        raise ValueError("Move regression_tests/choices/" + lg_name +", it is in the way.")
 
     if os.path.exists(os.path.join(rt_root, "txt-suites", lg_name)):
-        raise ValueError, "Move regression_tests/txt-suites/" + lg_name +", it is in the way."
+        raise ValueError("Move regression_tests/txt-suites/" + lg_name +", it is in the way.")
 
     if os.path.exists(os.path.join(rt_root, "home", "gold", lg_name)):
-        raise ValueError, "Move regression_tests/home/gold/" + lg_name +", it is in the way."
+        raise ValueError("Move regression_tests/home/gold/" + lg_name +", it is in the way.")
 
     # CMC 2018-04-09: this path was wrong (skeletons dir is rt_root, not rt_root/home)
     if os.path.exists(os.path.join(rt_root, "skeletons", lg_name)):
-        raise ValueError, "Move regression_tests/skeletons/" + lg_name +", it is in the way. You might also need to edit regression_tests/skeletons/Index.lisp."
+        raise ValueError("Move regression_tests/skeletons/" + lg_name +", it is in the way. You might also need to edit regression_tests/skeletons/Index.lisp.")
 
     # Prompt user for comment on test.
-    comment = raw_input("Enter a short comment describing this regression test: ")
+    comment = input("Enter a short comment describing this regression test: ")
 
     # Make sure illegal characters (for lisp strings) are not in the comment.
     # For now this is just double-quotes "
     if any(c in ('"',) for c in comment):
-        raise ValueError, 'Double-quotes are not allowed in the comment.'
+        raise ValueError('Double-quotes are not allowed in the comment.')
 
     # Make the profile
     cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'], 'regression_tests', 'add_regression_test.sh')

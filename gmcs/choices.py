@@ -110,7 +110,7 @@ class ChoiceDict(ChoiceCategory, dict):
             retval = dict.__getitem__(self, key)
             if remaining:
                 retval = retval[remaining]
-        except KeyError, e:
+        except KeyError as e:
             if self.safe_get:
                 retval = ''
             else:
@@ -152,7 +152,7 @@ class ChoiceDict(ChoiceCategory, dict):
     def walk(self, intermediates=False):
         if intermediates and self.full_key != None:
             yield (self.full_key, self)
-        for key in self.keys():
+        for key in list(self.keys()):
             if isinstance(self[key], ChoiceCategory):
                 for result in self[key].walk(intermediates):
                     yield result
@@ -193,7 +193,7 @@ class ChoiceList(ChoiceCategory, list):
             retval = list.__getitem__(self, index - 1)
             if remaining:
                 retval = retval[remaining]
-        except IndexError, e:
+        except IndexError as e:
             if self.safe_get:
                 retval = ChoiceDict()
             else:
@@ -258,7 +258,7 @@ class ChoiceList(ChoiceCategory, list):
         # The custom iterator will take care of finding non-None items.
         i = iter(self)
         try:
-            return i.next()
+            return next(i)
         except StopIteration:
             return None
 
@@ -378,14 +378,14 @@ class ChoicesFile:
             return False
         else:
             if len(self.full_keys()) != len(object.full_keys()):
-                print self.full_keys()
-                print str(len(self.full_keys()))+"/"+str(len(object.full_keys()))
+                print(self.full_keys())
+                print(str(len(self.full_keys()))+"/"+str(len(object.full_keys())))
                 return False
             else:
                 for i in self.full_keys():
                     if object[i] != self[i]:
-                        print object[i]
-                        print self[i]
+                        print(object[i])
+                        print(self[i])
                         return False
         return True
 
@@ -513,7 +513,7 @@ class ChoicesFile:
                 self.__reset_full_keys(key + str(idx))
 
     def keys(self):
-        return self.choices.keys()
+        return list(self.choices.keys())
 
     def full_keys(self):
         return self.choices.full_keys()
@@ -628,7 +628,7 @@ class ChoicesFile:
 
     # Return the keys for the choices dict
     def keys(self):
-        return self.choices.keys()
+        return list(self.choices.keys())
 
     def clear_cached_values(self):
         self.cached_values = {}
@@ -655,7 +655,7 @@ class ChoicesFile:
         """
 
         k = 'has_noun_case(' + case + ')'
-        if self.cached_values.has_key(k):
+        if k in self.cached_values:
             return self.cached_values[k]
 
         result = False
@@ -2194,7 +2194,7 @@ class ChoicesFile:
 
 
         for feature in self.get('feature'):
-            if not feature.has_key('new'):
+            if 'new' not in feature:
                 feature['new'] = 'yes'
                 feature['cat'] = 'both'
 
@@ -2313,7 +2313,7 @@ class FormData:
         return key in self.data
 
     def keys(self):
-        return self.data.keys()
+        return list(self.data.keys())
 
 class FormInfo:
     def __init__(self, key, value):

@@ -11,6 +11,7 @@ from gmcs.linglib.lexbase import (PositionClass, LexicalRuleType,
 
 from gmcs.lib import Hierarchy
 from gmcs.utils import get_name
+from functools import reduce
 #from gmcs.utils import TDLencode
 
 ### Contents
@@ -92,7 +93,7 @@ def ordered_constraints(mn, constraint_type):
     according to their input order, or, if nonsequential, their keys.
     """
     ordered = []
-    for c in mn.constraints.get(constraint_type, {}).values():
+    for c in list(mn.constraints.get(constraint_type, {}).values()):
         loc = len(ordered)
         for i, o in enumerate(ordered):
             if c.precedes(o) \
@@ -109,7 +110,7 @@ def get_input_map(pch):
     classes taking those inputs as the values.
     """
     inp_map = defaultdict(list)
-    for pc in pch.nodes.values():
+    for pc in list(pch.nodes.values()):
         i_s = tuple(sorted(pc.valid_inputs(), key=lambda x: x.tdl_order))
         if len(i_s) > 0:
             inp_map[i_s] += [pc]
@@ -311,7 +312,7 @@ def create_lexical_rule_type(lrt, mtx_supertypes, cur_pc):
 
 def interpret_constraints(choices):
     convert_obligatoriness_to_req(choices)
-    for mn in _mns.values():
+    for mn in list(_mns.values()):
         # don't bother if the morphotactic node is not defined in choices
         if mn.key not in choices \
                 or not isinstance(choices[mn.key], dict): continue
@@ -319,9 +320,9 @@ def interpret_constraints(choices):
         for req in choices[mn.key].get('require', []):
             others = dict([(o, _mns[o]) for o in req['others'].split(', ')])
             mn.disjunctive_flag_sets[tuple(sorted(others.keys()))] = others
-            if all(o.precedes(mn) for o in others.values()):
+            if all(o.precedes(mn) for o in list(others.values())):
                 mn.constraints['req-bkwd'].update(others)
-            elif all(mn.precedes(o) for o in others.values()):
+            elif all(mn.precedes(o) for o in list(others.values())):
                 mn.constraints['req-fwd'].update(others)
                 # we're not covering the case where others appear before
                 # and after the current pc.
@@ -342,7 +343,7 @@ def convert_obligatoriness_to_req(choices):
     """
     for pc in all_position_classes(choices):
         if pc.get('obligatory','') == 'on':
-            basetypes = [i for i in _mns[pc.full_key].input_span().values()
+            basetypes = [i for i in list(_mns[pc.full_key].input_span().values())
                          if len(i.inputs()) == 0]
             for bt in basetypes:
                 bt.constraints['req-fwd'][pc.full_key] = _mns[pc.full_key]
@@ -355,28 +356,28 @@ def create_flags():
     reqfwd  = (('-', None), ('+', None))
     reqbkwd = ((None, '+'), ('+', None))
     forbid  = ((None, 'na'), ('+', None))
-    for mn in _mns.values():
+    for mn in list(_mns.values()):
         assign_flags(mn, reqfwd, minimal_flag_set(mn, 'req-fwd'))
         assign_flags(mn, reqbkwd, minimal_flag_set(mn, 'req-bkwd'))
         assign_flags(mn, forbid, minimal_flag_set(mn, 'forbid'))
 
 def assign_flags(mn, flag_values, flag_groups):
     for flag_group in flag_groups:
-        flag_tuple = tuple(sorted(flag_group.values(), key=lambda x: x.tdl_order))
+        flag_tuple = tuple(sorted(list(flag_group.values()), key=lambda x: x.tdl_order))
         # first apply the value to the LR making the constraint
         if flag_values[0][1] is not None:
             mn.flags['in'][flag_tuple] = flag_values[0][1]
         if flag_values[0][0] is not None:
             mn.flags['out'][flag_tuple] = flag_values[0][0]
         # now apply the flag values to all objects of the flag
-        for other in flag_group.values():
+        for other in list(flag_group.values()):
             if flag_values[1][1] is not None:
                 other.flags['in'][flag_tuple] = flag_values[1][1]
             if flag_values[1][0] is not None:
                 other.flags['out'][flag_tuple] = flag_values[1][0]
         # also set initial flag values for req-bkwd constraints
         if flag_values[0][1] == '+':
-            basetypes = [i for i in mn.input_span().values() if len(i.inputs()) == 0]
+            basetypes = [i for i in list(mn.input_span().values()) if len(i.inputs()) == 0]
             for bt in basetypes:
                 set_req_bkwd_initial_flags(bt.pc, flag_tuple)
 
@@ -393,7 +394,7 @@ def minimal_flag_set(mn, constraint_type):
         if accounted_for[c.key]: continue
         flag_group = {}
         # first add disjunctive sets
-        for ds in mn.disjunctive_flag_sets.values():
+        for ds in list(mn.disjunctive_flag_sets.values()):
             if c.key in ds:
                 flag_group.update(ds)
         # nonseq are all nodes nonsequential with c (but may be with each other)
@@ -410,13 +411,13 @@ def minimal_flag_set(mn, constraint_type):
         # finally, account for flags in new flag group and store it
         if len(flag_group) != 0 and flag_group not in all_flag_groups:
             all_flag_groups += [flag_group]
-            for x in flag_group.values():
+            for x in list(flag_group.values()):
                 accounted_for[x.key] = True
     return all_flag_groups
 
 def get_all_flags(out_or_in):
     flags = set()
-    for mn in _mns.values():
+    for mn in list(_mns.values()):
         flags.update(set(mn.flags[out_or_in].keys()))
     return flags
 
@@ -439,7 +440,7 @@ def set_req_bkwd_initial_flags(lex_pc, flag_tuple):
     for root in lex_pc.roots():
         root.percolate_up(items=lambda x: x.flags['out'], redundancies=to_remove)
     # don't forget to remove redundant items
-    for child in to_remove.keys():
+    for child in list(to_remove.keys()):
         for item in to_remove[child]:
             # recall common_items are dict items, so a (key, value) pair
             del child.flags['out'][item[0]]
@@ -504,7 +505,7 @@ def set_lexical_rule_supertypes(lrt, mtx_supertypes):
 def calculate_supertypes(pch):
     # calculate daughter types first, because we want to percolate them
     calculate_daughter_types(pch)
-    for pc in pch.nodes.values():
+    for pc in list(pch.nodes.values()):
         percolate_supertypes(pc)
         # in the case a lex-rule PC has no supertypes, give it a generic one
         if not any(st in ALL_LEX_RULE_SUPERTYPES for st in pc.supertypes):
@@ -566,7 +567,7 @@ def percolate_supertypes(pc):
     for r in pc.roots():
         r.percolate_up(items=lambda x: x.supertypes, redundancies=to_remove)
     # now we have to remove redundant items
-    for child in to_remove.keys():
+    for child in list(to_remove.keys()):
         child.supertypes.difference_update(to_remove[child])
     # since we don't use the pc node of lexical types, only do the
     # following if it is a lex rule
@@ -590,9 +591,9 @@ def percolate_supertypes(pc):
 ######################
 
 def get_infostr_constraint(k, cur):
-    if not _supertypes.has_key(k): return
+    if k not in _supertypes: return
     for st in _supertypes[k]:
-        if _infostr_head.has_key(cur) and _infostr_head.has_key(st):
+        if cur in _infostr_head and st in _infostr_head:
             for h in _infostr_head[st]:
                 if h not in _infostr_head[cur]: _infostr_head[cur].append(h)
                 get_infostr_constraint(st, k)
@@ -604,7 +605,7 @@ def get_infostr_constraints(choices):
             for st in _supertypes[lrt.full_key]:
                 if st not in _nonleaves:
                     _nonleaves.append(st)
-            if not _infostr_head.has_key(lrt.full_key):
+            if lrt.full_key not in _infostr_head:
                 _infostr_head[lrt.full_key] = []
             for feat in lrt.get('feat'):
                 if feat['name'] == "information-structure meaning":
@@ -629,19 +630,19 @@ def write_rules(pch, mylang, irules, lrules, lextdl, choices):
     # First write any intermediate types (keep them together)
     write_intermediate_types(mylang)
     mylang.add_literal(';;; Lexical rule types')
-    for pc in sorted(pch.nodes.values(), key=lambda x: x.tdl_order):
+    for pc in sorted(list(pch.nodes.values()), key=lambda x: x.tdl_order):
         # set the appropriate section
         mylang.set_section(get_section_from_pc(pc))
         # if it's a lexical type, just write flags and move on
         if not pc.is_lex_rule:
             write_pc_flags(mylang, lextdl, pc, all_flags, choices)
-            for lt in pc.nodes.values():
+            for lt in list(pc.nodes.values()):
                 write_supertypes(mylang, lt.identifier(), lt.supertypes)
             continue
         # only lexical rules from this point
         write_supertypes(mylang, pc.identifier(), pc.supertypes)
         write_pc_flags(mylang, lextdl, pc, all_flags, choices)
-        for lrt in sorted(pc.nodes.values(), key=lambda x: x.tdl_order):
+        for lrt in sorted(list(pc.nodes.values()), key=lambda x: x.tdl_order):
             write_i_or_l_rules(irules, lrules, lrt, pc.order)
             # TJT 2014-08-27: Write adjective position class features
             write_pc_adj_syntactic_behavior(lrt, mylang, choices)
@@ -656,7 +657,7 @@ def write_rules(pch, mylang, irules, lrules, lextdl, choices):
         write_daughter_types(mylang, pc)
     # features need to be written later
     return [(mn.key, mn.identifier(), mn.key.split('-')[0])
-            for mn in _mns.values()
+            for mn in list(_mns.values())
             if isinstance(mn, LexicalRuleType) and len(mn.features) > 0]
 
 def write_intermediate_types(mylang):
@@ -737,7 +738,7 @@ def write_mn_flags(mylang, lextdl, mn, output_flags, all_flags, choices):
         write_flags(mylang, mn)
     to_copy = {}
     cur_output_flags = output_flags.union(set(mn.flags['out'].keys()))
-    for sub_mn in mn.children().values():
+    for sub_mn in list(mn.children().values()):
         to_copy[sub_mn.key] = write_mn_flags(mylang, lextdl, sub_mn,
                                              cur_output_flags, all_flags, choices)
     copied_flags = write_copy_up_flags(mylang, to_copy, all_flags)
@@ -761,7 +762,7 @@ def write_flags(tdlfile, mn):
 def write_copy_up_flags(mylang, to_copy, all_flags, force_write=False):
     copied_flags = set()
     if len(to_copy) == 0: return copied_flags
-    common_flags = reduce(set.intersection, to_copy.values())
+    common_flags = reduce(set.intersection, list(to_copy.values()))
     for mn_key in to_copy:
         mn = _mns[mn_key]
         if mn.identifier_suffix in ('lex-super', 'lex', ''): continue
@@ -796,7 +797,7 @@ def write_i_or_l_rules(irules, lrules, lrt, order):
         elif order.lower() in ('suffix', 'after'):
             order = 'suffix'
         # if there's only one LRI don't give the rule a number
-        num = [''] if len(lrt.lris) == 1 else range(1, len(lrt.lris) + 1)
+        num = [''] if len(lrt.lris) == 1 else list(range(1, len(lrt.lris) + 1))
         for i, lri in enumerate(lrt.lris):
             # TJT 2014-08-20: Adding incorporated adjective stems
             # TJT 2014-12-21: Adding sections to irules.tdl
@@ -979,7 +980,7 @@ def validate(choices, vr):
         pc_switching_inputs = set()
         if pc.get('switching',''):
             inputs = pc.get('inputs',[]).split(', ')
-            if isinstance(inputs, basestring):
+            if isinstance(inputs, str):
                 pc_switching_inputs.add(inputs)
             else: # assume list
                 pc_switching_inputs.update(inputs)
@@ -1083,7 +1084,7 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
                    'Choose only one evidential term.')
 
     # TJT 2015-02-02: Any given LRT should be either inflecting or non-inflecting
-    inflecting_count = len(filter(None, [lri.get('inflecting')=="yes" for lri in lrt.get('lri',[])]))
+    inflecting_count = len([_f for _f in [lri.get('inflecting')=="yes" for lri in lrt.get('lri',[])] if _f])
     if inflecting_count not in (0, len(lrt.get('lri',[]))):
         vr.err(lrt.full_key + '_name',
                'Any given Lexical Rule Type should contain either inflecting Lexical Rule Instances ' + \
@@ -1304,7 +1305,7 @@ def hierarchy_validation(choices, pc, vr):
                     sts = lrt.get('supertypes', '').split(", ")
                     if sts:
                         sts_dict[lrt.full_key] = sts
-    for lrt, sts in sts_dict.items():
+    for lrt, sts in list(sts_dict.items()):
         for st in sts:
             if st in has_no_affix_lri:
                 has_no_affix_lri.remove(st)  # because we won't need to warn about this LRT again
@@ -1414,8 +1415,8 @@ def cycle_validation(choices, vr):
         pch = position_class_hierarchy(choices)
     except KeyError:
         return # there is probably another error that validation will pick up
-    for pc in pch.nodes.values():
-        cyclic_inps = set([i.key for i in pc.input_span().values()
+    for pc in list(pch.nodes.values()):
+        cyclic_inps = set([i.key for i in list(pc.input_span().values())
                            if pc.precedes(i) and i.precedes(pc)])
         if len(cyclic_inps) > 0:
             vr.err(pc.key + '_inputs', 'The inputs of this position class might ' + \
@@ -1442,7 +1443,7 @@ def warn_merged_pcs(all_pcs, vr):
         order = pc.get('order','') # prefix or suffix
         inputs = pc.get('inputs',[])
         # Not sure why inputs is a string instead of a list...
-        if isinstance(inputs, basestring):
+        if isinstance(inputs, str):
             input_map[inputs][order].add(pc_name)
         else:
             for inp in pc.get('inputs',[]):

@@ -73,7 +73,7 @@ def format_comment_block(comment_string, max_chars=70, prefix=';;;'):
     return '\n'.join(lines)
 
 def verify():
-    return raw_input("  Do you want to continue? (y/n): ").lower() in ('y','yes')
+    return input("  Do you want to continue? (y/n): ").lower() in ('y','yes')
 
 '''
 2017-12-08 OZ: An attempt to start modularizing the customization code better.

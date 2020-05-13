@@ -223,7 +223,7 @@ def validate_lexicon(ch, vr):
 
     for noun in ch.get('noun'):
         sts = noun.get('supertypes').split(', ')
-        undefined_sts = filter(lambda x: x not in ch, sts)
+        undefined_sts = [x for x in sts if x not in ch]
         if undefined_sts:
             vr.err(noun.full_key + '_supertypes',
                    "The following supertypes are not defined: "
@@ -563,7 +563,7 @@ def validate_lexicon(ch, vr):
     for adj_pc in ch.get('adj-pc',[]):
         if adj_pc.get('switching',''):
             inputs = adj_pc.get('inputs',[]).split(', ')
-            if isinstance(inputs, basestring):
+            if isinstance(inputs, str):
                 adj_pc_switching_inputs[inputs].append(adj_pc)
             else:
                 # Else, assume list
@@ -594,7 +594,7 @@ def validate_lexicon(ch, vr):
 
         # Supertypes must be defined
         supertypes = adj.get('supertypes','').split(', ')
-        undefined_supertypes = filter(lambda x: x not in ch, supertypes)
+        undefined_supertypes = [x for x in supertypes if x not in ch]
         if undefined_supertypes:
             vr.err(adj.full_key + '_supertypes',
                    "The following supertypes are not defined: "
@@ -613,7 +613,7 @@ def validate_lexicon(ch, vr):
         # Adjective agreement features on one adjective are exclusively set
         # through the Morphology page
         for feat in adj.get('feat',[]):
-            if feat.get('head','') in illegal_heads.values():
+            if feat.get('head','') in list(illegal_heads.values()):
                 vr.err(feat.full_key+'_head',
                        'This head is available here to enable features on the Morphology ' + \
                        'page. If you are encountering this error, make sure you have ' + \
@@ -853,7 +853,7 @@ def validate_lexicon(ch, vr):
 
         # Supertypes must be defined
         immediate_supertypes = cop.get('supertypes','').split(', ')
-        undefined_supertypes = filter(lambda st: st not in ch, immediate_supertypes)
+        undefined_supertypes = [st for st in immediate_supertypes if st not in ch]
         if undefined_supertypes:
             vr.err(adj.full_key+'_supertypes',
                    "The following supertypes are not defined: "

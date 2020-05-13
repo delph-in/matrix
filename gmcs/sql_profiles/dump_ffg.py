@@ -19,7 +19,7 @@ for i in ids:
     cursor.execute('SELECT ffg_grp_id FROM %s WHERE ffg_fltr_id = %s' %
                    (sys.argv[1], i))
     res = cursor.fetchall()
-    print str(i) + ': ',
+    print(str(i) + ': ', end=' ')
     for r in res:
-        print str(r[0]) + ',',
-    print
+        print(str(r[0]) + ',', end=' ')
+    print()

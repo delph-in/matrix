@@ -7,7 +7,7 @@
 import os
 import datetime
 import shutil
-import tdl
+from . import tdl
 #import tarfile
 #import gzip
 #import zipfile
@@ -123,13 +123,13 @@ def customize_punctuation(grammar_path):
         for line in lines:
             if line.startswith(':'):
                 line = ":["+default_splits_str+"]".rstrip()
-            print >>van_rpp, line.rstrip('\n')
+            print(line.rstrip('\n'), file=van_rpp)
         van_rpp.close()
     else: #ch.get('punctuation-chars') == 'keep-list':
         # keep list with the hyphen on the keep list is the new default
         # here we split on the default list (like discard-all),
         # but *minus* whatevers on the keep list
-        chars = list(unicode(ch['punctuation-chars-list'], 'utf8'))
+        chars = list(str(ch['punctuation-chars-list'], 'utf8'))
         if not chars:
             chars = [ '-','=',':' ]
         filename = os.path.join(grammar_path, 'repp', 'vanilla.rpp')
@@ -147,7 +147,7 @@ def customize_punctuation(grammar_path):
                         c = '\\\\'
                     default_splits_str = default_splits_str.replace(c,'')
                 line= ":["+default_splits_str+"]".rstrip()
-            print >>van_rpp,line.rstrip('\n')
+            print(line.rstrip('\n'), file=van_rpp)
         van_rpp.close()
 
 
@@ -283,7 +283,7 @@ def customize_acetdl(grammar_path):
     replace_strings = {'mylanguage': os.path.join('..', myl + '-pet.tdl')}
     lines = open(ace_config, 'r').read()
     a_out = open(ace_config, 'w')
-    print >>a_out, lines % replace_strings
+    print(lines % replace_strings, file=a_out)
     a_out.close()
 
 ######################################################################
@@ -432,9 +432,9 @@ def setup_vcs(ch, grammar_path):
                      stdout=IGNORE, stderr=IGNORE)
                 call(['bzr', 'commit', '-m "Initial commit."'],
                      stdout=IGNORE, stderr=IGNORE)
-        except OSError, er:
-            print "OS Error. Most likely %s is not installed." % ch['vcs']
-            print er.message
+        except OSError as er:
+            print("OS Error. Most likely %s is not installed." % ch['vcs'])
+            print(er.message)
         os.chdir(cwd)
         IGNORE.close()
 
@@ -475,9 +475,9 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
         call(['rsync', '-a', '--exclude=.svn',
               get_matrix_core_path() + os.path.sep, grammar_path],
              stdout=IGNORE, stderr=IGNORE)
-    except OSError, er:
-        print "OS Error. Most likely rsync is not installed."
-        print er.message
+    except OSError as er:
+        print("OS Error. Most likely rsync is not installed.")
+        print(er.message)
         sys.exit(1)
     IGNORE.close()
 

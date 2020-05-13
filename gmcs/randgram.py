@@ -4,7 +4,7 @@
 # imports
 
 from random import randint
-from StringIO import StringIO
+from io import StringIO
 
 from gmcs.utils import tokenize_def
 from gmcs.validate import validate_choices
@@ -90,7 +90,7 @@ def load_vars():
             varname.append(vn)
             # In case of nested radio buttons, we might be looking
             # at a button in a series that was started some lines previously.
-            if not var.has_key(vn):
+            if vn not in var:
                 var[vn] = []
             i += 1
             while line[i] != '\n':
@@ -109,7 +109,7 @@ def load_vars():
 def random_grammar(choices_file):
     load_vars()
     choice = {}
-    for k in var.keys():
+    for k in list(var.keys()):
         v = var[k]
         if len(v) == 1 and v[0] == 'BOOLEAN':
             if randint(0, 1):
@@ -128,7 +128,7 @@ def random_grammar(choices_file):
     for k in varname:
         if k == 'Section':
             f.write('\n')
-        elif choice.has_key(k):
+        elif k in choice:
             f.write(k + '=' + choice[k] + '\n')
 
     if type(choices_file) == str:

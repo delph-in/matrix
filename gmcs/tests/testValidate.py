@@ -64,7 +64,7 @@ class TestValidate(unittest.TestCase):
 
         # Name for causing collisions, made up of the lower-case letter 'a' in:
         #   Latin, accented Latin, accented Latin, Greek, Cyrillic, Armenian
-        value = u'aáāαаա'
+        value = 'aáāαаա'
 
         for v1 in variables:
             # first try colliding with an existing name (head-comp-phrase)
