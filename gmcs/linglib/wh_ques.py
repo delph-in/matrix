@@ -86,7 +86,7 @@ EX_ADJ = '''extracted-adv-adp-adj-phrase := basic-extracted-adj-phrase &
 IN_SITU_PHRASE = '''insitu-int-cl := interrogative-clause & head-only &
   [ SYNSEM [ MODIFIED hasmod,
              LOCAL.CAT [ VAL #val,
-       MC bool, WH.BOOL + ],
+       MC bool ],
        NON-LOCAL non-local-none ],
     C-CONT [ RELS.LIST < >,
        HCONS.LIST < > ],
@@ -282,6 +282,7 @@ def customize_wh_ques(mylang,ch,rules,roots):
     # Like with the WH feature?
     if ch.get('q-part') == 'on':
         if ch.get(MTX_FRONT) == 'in-situ':
+            mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.WH.BOOL + ].')
             if len(ch.get('q-particle')) == 1:
                 qpart = ch.get('q-particle')[1] # This is 1 and not 0 because the Choices len method is overriden; see Choices.py
                 if qpart['wh'] == 'oblig':
