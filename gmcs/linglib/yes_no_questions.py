@@ -144,29 +144,6 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies,roots):
 
         rules.add('int := int-cl.')
 
-    # ERB 2006-10-05 Moving away from the modifier analysis of question particles
-    # which I think doesn't handle the facts well.  These look more like complementizers
-    # to me.
-
-
-# def add_complementizers_to_lexicon(lexicon,ch):
-#     lexicon.add_literal(';;; Complementizers')
-#     have_comp = False
-#     for comp_strategy in ch[COMPS]:
-#         id = comp_strategy.full_key
-#         stype = id + '-' + COMP_LEX_ITEM
-#         #TODO: Perhaps turn complementizers into full-blown
-#         # lexical items and then can call insert_ids() from lexical_items.py instead
-#         # This would need to be done via redesigning the questionnaire a little.
-#         for complementizer in comp_strategy[COMPLEMENTIZER]:
-#             orth = orth_encode(complementizer.get('orth'))
-#             name = TDLencode(complementizer.get('name'))
-#             typedef = name + ' := ' + stype + ' & \
-#                           [ STEM < "' + orth + '" > ].'
-#             lexicon.add(typedef)
-#             have_comp = True
-#     return have_comp
-
     if ch.get('q-part'):
         # Clause-initial and clause-final particles are analyzed as complementizers:
         if not ch.get('q-part-order') == 'second':
@@ -178,7 +155,7 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies,roots):
 
             comment = 'Subtype for question particles. Constrains SF to ques.'
             typedef = '''
-            qpart-lex-item := complementizer-lex-item & raise-sem-lex-item &
+            qpart-lex-item := complementizer-lex-item &
              [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.SF ques ] ].'''
             mylang.add(typedef, comment, section='complex')
             supertype = 'qpart-lex-item'
@@ -254,10 +231,10 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies,roots):
             #if globals.div_particles:
             if qpart['wh'] == 'imp':
                 if ch.get('q-part-order') != 'second':
-                    mylang.add(typename + ':= [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST [ LOCAL.CAT.WH -,'
+                    mylang.add(typename + ':= [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST [ LOCAL.CAT.WH.BOOL -,'
                                           '                                        NON-LOCAL.QUE.LIST < > ] ].')
                 else:
-                    mylang.add(typename + ':= [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST [ LOCAL.CAT.WH -,'
+                    mylang.add(typename + ':= [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST [ LOCAL.CAT.WH.BOOL -,'
                                                                                  'NON-LOCAL.QUE.LIST < > ] ].')
 
 

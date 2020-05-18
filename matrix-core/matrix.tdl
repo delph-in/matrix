@@ -281,7 +281,7 @@ cat := cat-min &
     MKG mkg,
     HC-LIGHT luk,
     POSTHEAD bool,
-    WH bool].
+    WH logical-or].
 
 cat-sat := cat &
  [ VAL [ SPR olist,
@@ -995,6 +995,87 @@ ocnull := cnull & onull.
 ; The LinGO grammar also makes use of a prolist -- or list
 ; of synsems of type pro-ss.
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Logical operations
+
+bool-wrapper := avm &
+  [ BOOL bool ].
+
+logical-and := bool-wrapper &
+  [ BOOL #result,
+    AND list-of-bools-with-and & [ AND-RESULT #result ] ].
+
+logical-or := bool-wrapper &
+  [ BOOL #result,
+    OR list-of-bools-with-or & [ OR-RESULT #result ] ].
+
+logical-not := bool-wrapper &
+  [ BOOL #result,
+    NOT bool-wrapper & [ BOOL bool-with-not & [ RESULT-BOOL #result ] ] ].
+
+list-of-bools-with-and := list &
+  [ AND-RESULT bool ].
+
+cons-of-bools-with-and := list-of-bools-with-and & cons &
+  [ FIRST.BOOL bool-with-and & [ OTHER-BOOL #other,
+         RESULT-BOOL #result ],
+    REST list-of-bools-with-and & [ AND-RESULT #other ],
+    AND-RESULT #result ].
+
+null-of-bools-with-and := list-of-bools-with-and & null &
+  [ AND-RESULT + ].
+
+list-of-bools-with-or := list &
+  [ OR-RESULT bool ].
+
+cons-of-bools-with-or := list-of-bools-with-or & cons &
+  [ FIRST.BOOL bool-with-or & [ OTHER-BOOL #other,
+        RESULT-BOOL #result ],
+    REST list-of-bools-with-or & [ OR-RESULT #other ],
+    OR-RESULT #result ].
+
+null-of-bools-with-or := list-of-bools-with-or & null &
+  [ OR-RESULT - ].
+
+bool-with-operation := bool &
+  [ RESULT-BOOL bool ].
+
+bool-with-not := bool-with-operation.
+
++-with-not := bool-with-not & + &
+  [ RESULT-BOOL - ].
+
+--with-not := bool-with-not & - &
+  [ RESULT-BOOL + ].
+
+bool-with-binary-operation := bool-with-operation &
+  [ OTHER-BOOL bool ].
+
+bool-with-and := bool-with-binary-operation.
+
++-with-and := bool-with-and & + &
+  [ OTHER-BOOL #result,
+    RESULT-BOOL #result ].
+
+--with-and := bool-with-and & - &
+  [ RESULT-BOOL - ].
+
+bool-with-or := bool-with-binary-operation.
+
++-with-or := bool-with-or & + &
+  [ RESULT-BOOL + ].
+
+--with-or := bool-with-or & - &
+  [ OTHER-BOOL #result,
+    RESULT-BOOL #result ].
+
+my-and := *top* &
+  [ TEST1 [ AND < [ BOOL + ], [ BOOL + ], [ BOOL + ], [ BOOL + ] > ],
+    TEST2 [ AND < [ BOOL + ], [ BOOL - ] > ],
+    TEST3 [ OR < [ BOOL + ], [ BOOL - ] > ],
+    TEST4 [ OR < [ BOOL - ], [ BOOL - ] > ],
+    TEST5 [ NOT [ BOOL - ] ],
+    TEST6 [ OR < [ BOOL - ], [ NOT [ BOOL - ] ] > ] ].
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Lexical rules
@@ -1010,13 +1091,15 @@ ocnull := cnull & onull.
 ; SSH 2012-03-03 ICONS is newly added in lex-rule.
 lex-rule := phrase-or-lexrule & word-or-lexrule &
   [ NEEDS-AFFIX bool,
-    SYNSEM.LOCAL.CONT [ RELS.APPEND < #r1, #r2 >,
+    SYNSEM.LOCAL [ CAT.WH #wh,
+                   CONT [ RELS.APPEND < #r1, #r2 >,
 			HCONS.APPEND < #h1, #h2 >,
-			ICONS.APPEND < #i1, #i2 > ],
+			ICONS.APPEND < #i1, #i2 > ] ],
     DTR #dtr & word-or-lexrule &
-		[ SYNSEM.LOCAL.CONT [ RELS #r1,
+		[ SYNSEM.LOCAL [ CAT.WH #wh,
+		               CONT [ RELS #r1,
 				      HCONS #h1,
-				      ICONS #i1 ],
+				      ICONS #i1 ] ],
 		  ALTS #alts ],
     C-CONT [ RELS #r2,
 	     HCONS #h2,
@@ -1501,9 +1584,9 @@ unary-phrase := basic-unary-phrase &
     ARGS < [ INFLECTED infl-satisfied ] > ].
 
 basic-binary-phrase := phrase &
-  [ SYNSEM.LOCAL.CONT [ RELS.APPEND < #r1, #r2, #r3 >,
+  [ SYNSEM.LOCAL [ CONT [ RELS.APPEND < #r1, #r2, #r3 >,
 			HCONS.APPEND < #h1, #h2, #h3 >,
-			ICONS.APPEND < #i1, #i2, #i3 > ],
+			ICONS.APPEND < #i1, #i2, #i3 > ] ],
     C-CONT [ RELS #r1,
 	     HCONS #h1,
 	     ICONS #i1 ],
@@ -1861,15 +1944,18 @@ nc-head-filler-phrase := nc-filler-phrase & head-compositional.
 basic-head-subj-phrase := head-valence-phrase & head-compositional &
 			  basic-binary-headed-phrase &
   [ SYNSEM phr-synsem &
-           [ LOCAL.CAT [ HC-LIGHT -,
+           [ LOCAL.CAT [ WH.OR < #wh1, #wh2 >,
+                         HC-LIGHT -,
                          VAL [ SUBJ < >,
                                COMPS #comps,
                                SPR #spr ] ] ],
-    HEAD-DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ < #synsem >,
+    HEAD-DTR.SYNSEM.LOCAL.CAT [ WH #wh1,
+                                VAL [ SUBJ < #synsem >,
                                     COMPS #comps,
-                                    SPR #spr ],
+                                    SPR #spr ] ],
     NON-HEAD-DTR.SYNSEM #synsem & canonical-synsem &
-           [ LOCAL [ CAT [ VAL [ SUBJ olist,
+           [ LOCAL [ CAT [ WH #wh2,
+                           VAL [ SUBJ olist,
                                  COMPS olist,
                                  SPR olist ] ] ],
              NON-LOCAL [ SLASH append-list,
@@ -1916,7 +2002,8 @@ basic-head-subj-nmc-phrase := head-valence-phrase & basic-binary-headed-phrase &
 basic-head-spec-phrase-super := head-valence-phrase & phrasal &
               binary-headed-phrase &
   [ INFLECTED infl-satisfied,
-    SYNSEM [ LOCAL.CAT [ VAL [ SUBJ #subj,
+    SYNSEM [ LOCAL.CAT [ WH.OR < #wh1, #wh2 >,
+                         VAL [ SUBJ #subj,
                                COMPS #spcomps,
                                SPR #spr,
                                SPEC #spec ],
@@ -1924,7 +2011,8 @@ basic-head-spec-phrase-super := head-valence-phrase & phrasal &
                          HC-LIGHT - ],
               MODIFIED #modif ],
     HEAD-DTR [ INFLECTED infl-satisfied,
-               SYNSEM [ LOCAL [ CAT [ HEAD #head,
+               SYNSEM [ LOCAL [ CAT [ WH #wh1,
+                                      HEAD #head,
                                       VAL [ SUBJ #subj,
                                             COMPS olist & #comps,
                                             SPR < #synsem &
@@ -1934,7 +2022,7 @@ basic-head-spec-phrase-super := head-valence-phrase & phrasal &
                                 CONT.HOOK #hdhook ],
                         MODIFIED #hmodif ] ],
     NON-HEAD-DTR.SYNSEM #synsem &
-     [ LOCAL [ CAT [ VAL [ SPEC < [ LOCAL [ CAT [ HEAD #head,
+     [ LOCAL [ CAT [ WH #wh2, VAL [ SPEC < [ LOCAL [ CAT [ HEAD #head,
                                                   VAL.COMPS #comps ],
                                             CONT.HOOK #hdhook ],
                                     MODIFIED #hmodif ] >,
@@ -1960,18 +2048,20 @@ basic-head-spec-phrase := basic-head-spec-phrase-super &
 basic-head-comp-phrase := head-valence-phrase & head-compositional &
               binary-headed-phrase &
   [ SYNSEM phr-synsem-min &
-           [ LOCAL.CAT [ VAL [ SUBJ #subj,
+           [ LOCAL.CAT [ WH.OR < #wh1, #wh2 >,
+                         VAL [ SUBJ #subj,
                                SPEC #spec,
                                SPR #spr ],
                          POSTHEAD #ph,
                          HC-LIGHT #light ],
              LIGHT #light ],
-    HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL [ SUBJ #subj,
+    HEAD-DTR.SYNSEM [ LOCAL.CAT [ WH #wh1,
+                                  VAL [ SUBJ #subj,
                                         SPEC #spec,
                                         SPR #spr ],
                                   HC-LIGHT #light,
                                   POSTHEAD #ph ]],
-    NON-HEAD-DTR.SYNSEM canonical-synsem,
+    NON-HEAD-DTR.SYNSEM canonical-synsem & [ LOCAL.CAT.WH #wh2 ],
     C-CONT [ RELS 0-alist, HCONS 0-alist, ICONS 0-alist ] ].
 
 
@@ -2211,10 +2301,12 @@ marker-final-phrase := basic-binary-marker-phrase &
 
 ; EKN 2018-01-30
 basic-bare-np-phrase := head-only & head-valence-phrase &
-  [ SYNSEM.LOCAL.CAT.VAL [ SPR < >,
+  [ SYNSEM.LOCAL.CAT [ WH #wh,
+                       VAL [ SPR < >,
                            SUBJ < >,
-                           COMPS < > ],
-    HEAD-DTR.SYNSEM.LOCAL [ CAT [ HEAD noun,
+                           COMPS < > ] ],
+    HEAD-DTR.SYNSEM.LOCAL [ CAT [ WH #wh,
+                                  HEAD noun,
                                   VAL [ SPR < unexpressed &
                                               [ LOCAL.CAT.HEAD +nd,
                                                 OPT + ] >,

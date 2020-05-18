@@ -67,7 +67,8 @@ ques-clitic-lex := no-hcons-lex-item &
 '''
 
 WH_WORD = '''wh-word-lex := norm-hook-lex-item & basic-icons-lex-item &
-  [ SYNSEM [ LOCAL [ CAT [ VAL [ SPR < >,
+  [ SYNSEM [ LOCAL [ CAT [ WH.BOOL +,
+                           VAL [ SPR < >,
 				 SUBJ < >,
 				 COMPS < >,
 				 SPEC < > ] ],
@@ -108,27 +109,30 @@ MANNER_ADV_ITEM = '''manner-adverb-lex-item := adverb-lex-item &
   [ SYNSEM.LOCAL.CONT.RELS.LIST.FIRST.PRED "manner_nonsp_rel" ].'''
 
 ADV =  '''adverb-lex := adverb-lex-item &
-[ SYNSEM [ LOCAL.CONT [ RELS.LIST < [ ], [ ], [ PRED "exist_q_rel" ] >  ],
+[ SYNSEM [ LOCAL [ CAT.WH.BOOL -,
+                   CONT [ RELS.LIST < [ ], [ ], [ PRED "exist_q_rel" ] >  ] ],
            NON-LOCAL.QUE 0-alist,
            L-QUE -] ].'''
 
-
 WH_ADV =  '''wh-adverb-lex := adverb-lex-item & zero-arg-que &
-[ SYNSEM [ LOCAL [ CONT [ RELS.LIST < [ ], [ ARG0 #arg0 ], quant-relation & [ PRED "which_q_rel" ] >  ] ],
+[ SYNSEM [ LOCAL [ CAT.WH.BOOL +,
+                   CONT [ RELS.LIST < [ ], [ ARG0 #arg0 ], quant-relation & [ PRED "which_q_rel" ] >  ] ],
            NON-LOCAL.QUE.LIST < #arg0 >,
            L-QUE + ] ].'''
 
 
 WH_DET = '''wh-determiner-lex := basic-determiner-lex & non-mod-lex-item  & zero-arg-nonslash &
-  [ SYNSEM [ LOCAL [ CAT.VAL [ SPR < >,
+  [ SYNSEM [ LOCAL [ CAT [ WH.BOOL +,
+                           VAL [ SPR < >,
                            SPEC.FIRST.LOCAL [ CONT.HOOK.INDEX #arg0 ],
                            COMPS < >,
-                           SUBJ < > ] ],
+                           SUBJ < > ] ] ],
              NON-LOCAL.QUE.LIST < #arg0 >,
              L-QUE + ] ].'''
 
 ADP_LEX = '''norm-adposition-lex := norm-sem-lex-item & no-hcons-lex-item & basic-intersective-mod-lex & basic-one-arg &
-  [ SYNSEM [ LOCAL [ CAT [ HEAD adp,
+  [ SYNSEM [ LOCAL [ CAT [ WH.BOOL -,
+                           HEAD adp,
                            VAL [ COMPS < #comp & [ L-QUE #lque,
                                                  LOCAL [ CAT [ HEAD noun, VAL.SPR < > ],
                                                  CONT.HOOK.INDEX #ind ],

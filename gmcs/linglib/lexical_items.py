@@ -257,9 +257,9 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
         mylang.add('verb-lex := basic-verb-lex & non-mod-lex-item.')
 
     typedef = mainorverbtype + ' :=  \
-       [ SYNSEM.LOCAL [ CAT.VAL [ SPR < >, \
+       [ SYNSEM.LOCAL [ CAT [ WH.BOOL -, VAL [ SPR < >, \
                                   SPEC < >, \
-                                  SUBJ < #subj > ], \
+                                  SUBJ < #subj > ] ], \
                         CONT.HOOK.XARG #xarg ], \
          ARG-ST < #subj & \
                   [ LOCAL [ CAT cat-sat & [ VAL [ SPR < >, \
@@ -423,9 +423,10 @@ def customize_determiners(mylang, ch, lexicon, hierarchies):
         # LLD 2016-04-04 changed basic-zero-arg to norm-zero-arg
         typedef = \
             'determiner-lex := basic-determiner-lex & norm-zero-arg & \
-                [ SYNSEM.LOCAL.CAT.VAL [ SPR < >, \
+                [ SYNSEM.LOCAL.CAT [ WH.BOOL -,' \
+            '                        VAL [ SPR < >, \
                                          COMPS < >, \
-                                         SUBJ < > ]].'
+                                         SUBJ < > ]]].'
         mylang.add(typedef)
         mylang.add('determiner-lex := non-mod-lex-item.')
 
@@ -519,10 +520,11 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
 
     typedef = \
         'noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & \
-           [ SYNSEM [ LOCAL [ CAT.VAL [ SPR < #spr & [ LOCAL.CAT.HEAD det ] >, \
+           [ SYNSEM [ LOCAL [ CAT [ WH.BOOL -,' \
+        '                           VAL [ SPR < #spr & [ LOCAL.CAT.HEAD det ] >, \
                                       COMPS < >, \
                                       SUBJ < >, \
-                                      SPEC < > ] ],' \
+                                      SPEC < > ] ] ],' \
                       'L-QUE - ], \
              ARG-ST < #spr > ].'
 
