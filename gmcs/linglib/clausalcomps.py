@@ -623,11 +623,13 @@ def customize_clausal_verb(clausalverb,mylang,ch,cs,extra):
 
     if not is_nominalized_complement(cs):
         if cs['ques'] == 'prop':
-            mylang.add(clausalverb + ' := [ SYNSEM [ LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.SF prop ] >,'
+            mylang.add(clausalverb + ' := [ SYNSEM [ LOCAL.CAT.VAL.COMPS < [ LOCAL [ CAT.WH.BOOL -, '
+                                     '                                               CONT.HOOK.INDEX.SF prop ] ] >,'
                                      'NON-LOCAL.QUE 0-alist ] ].'
                        , merge=True)
         elif cs['ques'] == 'ques':
-            mylang.add(clausalverb + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.SF ques ] > ].'
+            mylang.add(clausalverb + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL [ CAT.WH.BOOL +, '
+                                     '                                             CONT.HOOK.INDEX.SF ques ] ]> ].'
                        , merge=True)
 
     # From the wh-questions library; disallow questions from crossing clause boundary
