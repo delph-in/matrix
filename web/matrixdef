@@ -1728,9 +1728,11 @@ Radio front-matrix "Fronting" "<p> Question phrases can appear at the left edge 
   Radio matrix-front-opt "Fronting optionality" " There is <span class=\"dfn\">obligatory</span> fronting: <br>" ""
   . single-oblig "Obligatory Single Fronting" "" "of at least one question phrase<br>"
   . all-oblig "Obligatory Multiple Fronting" ""  "of all question phrases <br>"
-  . none-oblig "No Obligatory Fronting" ""  "fronting is optional <br><br>
+  . none-oblig "No Obligatory Fronting" ""  "fronting is optional <br><br>"
 
-  NB: You may use the optional multiple fronting option to model the syntax of echo questions
+  Check embed-insitu "In Situ Embedded Questions" "" "If fronting is optional, it is possible to have embedded in situ questions."
+
+  Label"<p>NB: You may use the optional multiple fronting option to model the syntax of echo questions
    but there is currently no distinction between echo and canonical qiestions
    in the semantic representation that you obtain from this library.</p>"
 

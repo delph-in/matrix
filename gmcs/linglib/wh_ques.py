@@ -50,9 +50,6 @@ EX_SUBJ_MULTI = '''extracted-subj-phrase := basic-extracted-arg-phrase & head-co
              HCONS.LIST < >,
              ICONS.LIST < > ] ].'''
 
-#SG_EX_SUBJ = '''extracted-subj-phrase := [ HEAD-DTR.SYNSEM [ LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL #slash & local,
-#                                                             NON-LOCAL.SLASH.LIST < #slash, ... > ] ].'''
-
 EX_ADJ = '''extracted-adv-adp-adj-phrase := basic-extracted-adj-phrase &
   [ SYNSEM [ LOCAL.CAT [ POSTHEAD #ph,
                          MC #mc ],
@@ -227,6 +224,11 @@ def customize_wh_ques(mylang,ch,rules,roots):
         mylang.add_literal('; In-situ interrogative clause.',section='phrases')
         mylang.add(IN_SITU_PHRASE)
         rules.add('in-situ-ques := insitu-int-cl.')
+        if not ch.get(MTX_FRONT) == 'in-situ':
+            if ch.get('embed-insitu') == 'on':
+                mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.WH.BOOL + ].')
+            else:
+                mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.WH.BOOL - ].')
         if ch.get(MTX_FRONT) in [SINGLE,MULTI]:
             mylang.add('insitu-int-cl := [ SYNSEM.L-QUE - ].')
         if (ch.get(MTX_FRONT) == SINGLE and not ch.get(MTX_FRONT_OPT) == SG_OBLIG):
