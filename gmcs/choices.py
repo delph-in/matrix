@@ -520,6 +520,9 @@ class ChoicesFile:
     def full_keys(self):
         return self.choices.full_keys()
 
+    def clear_cached_values(self):
+        self.cached_values = {}
+
     ############################################################################
     ### Up-revisioning handler
 
@@ -627,13 +630,6 @@ class ChoicesFile:
         # now reset the full keys in case something was changed
         for top_level_key in self:
             self.__reset_full_keys(top_level_key)
-
-    # Return the keys for the choices dict
-    def keys(self):
-        return list(self.choices.keys())
-
-    def clear_cached_values(self):
-        self.cached_values = {}
 
     ######################################################################
     # Methods for accessing "derived" values -- that is, groups of values
