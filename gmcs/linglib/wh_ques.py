@@ -51,7 +51,8 @@ EX_SUBJ_MULTI = '''extracted-subj-phrase := basic-extracted-arg-phrase & head-co
              ICONS.LIST < > ] ].'''
 
 EX_ADJ = '''extracted-adv-adp-adj-phrase := basic-extracted-adj-phrase &
-  [ SYNSEM [ LOCAL.CAT [ POSTHEAD #ph,
+  [ SYNSEM [ LOCAL.CAT [ WH #wh,
+                         POSTHEAD #ph,
                          MC #mc ],
 	     NON-LOCAL [ QUE #que, YNQ #ynq, SLASH append-list &
 		   [ LIST < [ CAT [ HEAD +rp & [ MOD < [ LOCAL intersective-mod &
@@ -66,7 +67,8 @@ EX_ADJ = '''extracted-adv-adp-adj-phrase := basic-extracted-adj-phrase &
                                     SPR olist ] ] ] > ] ] ],
     HEAD-DTR.SYNSEM canonical-synsem &
 	   [ LOCAL local &
-		   [ CAT [ HEAD verb & #head,
+		   [ CAT [ WH #wh,
+		           HEAD verb & #head,
                            VAL #val & [ SUBJ < > ],
 			   POSTHEAD #ph,
                            MC #mc ],

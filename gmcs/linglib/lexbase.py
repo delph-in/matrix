@@ -111,11 +111,11 @@ MANNER_ADV_ITEM = '''manner-adverb-lex-item := adverb-lex-item &
 ADV =  '''adverb-lex := adverb-lex-item &
 [ SYNSEM [ LOCAL [ CAT.WH.BOOL -,
                    CONT [ RELS.LIST < [ ], [ ], [ PRED "exist_q_rel" ] >  ] ],
-           NON-LOCAL.QUE 0-alist,
+           NON-LOCAL [ QUE 0-alist, YNQ 0-alist ],
            L-QUE -] ].'''
 
 WH_ADV =  '''wh-adverb-lex := adverb-lex-item & zero-arg-que &
-[ SYNSEM [ LOCAL [ CAT.WH.BOOL +,
+[ SYNSEM [ LOCAL [ CAT [ WH.BOOL +, HEAD.MOD < [ LOCAL.CAT.WH.BOOL - ] > ],
                    CONT [ RELS.LIST < [ ], [ ARG0 #arg0 ], quant-relation & [ PRED "which_q_rel" ] >  ] ],
            NON-LOCAL.QUE.LIST < #arg0 >,
            L-QUE + ] ].'''

@@ -2446,11 +2446,12 @@ extracted-adj-phrase := basic-extracted-adj-phrase &
 ; OZ 2020-01-25 Adding QUE append to support multiple questions.
 
 basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
-  [ SYNSEM [ LOCAL.CAT.MKG #mkg,
+  [ SYNSEM [ LOCAL.CAT [ MKG #mkg, WH.OR < #wh1, #wh2 > ],
              NON-LOCAL [ SLASH.APPEND < #s1, #s2 >,
                          REL 0-alist, QUE.APPEND < #q1, #q2 >, YNQ.APPEND < #ynq1, #ynq2 > ] ],
     HEAD-DTR.SYNSEM
-           [ LOCAL [ CAT [ HEAD #head,
+           [ LOCAL [ CAT [ WH #wh1,
+                           HEAD #head,
                            VAL #val,
                            POSTHEAD #ph,
                            MC #hmc,
@@ -2463,7 +2464,7 @@ basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
              LIGHT #light,
              MODIFIED #modif ],
     NON-HEAD-DTR.SYNSEM
-           [ LOCAL [ CAT [ HEAD [ MOD < [ LOCAL local &
+           [ LOCAL [ CAT [ WH #wh2, HEAD [ MOD < [ LOCAL local &
                                               [ CAT [ HEAD #head,
                                                       VAL #val,
                                                       POSTHEAD #ph,
@@ -3868,11 +3869,11 @@ np-bottom-coord-phrase := bottom-coord-phrase &
 ; Event Coordination rules (for verbs and adjectives)
 
 event-coord-phrase := coord-phrase &
-  [ SYNSEM.LOCAL.CONT.HOOK.INDEX [ E #tam ],
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX [ E #tam, SF #sf ],
     LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.LTOP #lhndl,
     RCOORD-DTR.SYNSEM.LOCAL [ COORD-REL [ L-HNDL #lhndl,
                                           R-HNDL #rhndl,
-                                          R-INDEX.E #tam ],
+                                          R-INDEX [ E #tam, SF #sf ] ],
                               CONT.HOOK.LTOP #rhndl ]].
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
