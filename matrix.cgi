@@ -1,4 +1,5 @@
-#!/usr/bin/env python2
+
+#!/usr/bin/env python3
 
 ### $Id: matrix.cgi,v 1.27 2008-09-09 08:37:52 sfd Exp $
 
@@ -34,7 +35,7 @@ disable_captcha = True
 # this should hopefully delete it before the rest of the script can break. Still unsure what is causing the file
 # to end up there in the first place.
 if os.path.exists('sessions/choices'):
-	os.remove('sessions/choices')
+        os.remove('sessions/choices')
 
 ######################################################################
 # beginning of main program
@@ -88,7 +89,7 @@ if not cookie:
 #          cookie = str(randint(1000,9999))
   elif disable_captcha:
     cookie = create_cookie()
-  	
+
   else:
      need_verify=True
 
@@ -127,7 +128,7 @@ if 'choices' in form_data:
       # Get choices files from CoLLAGE
       # should be 3 or 7 letter keys... doesn't work for other length keys
       if len(choices) in ((len('collage/') + 3), (len('collage/') + 7)):
-	import urllib.request, urllib.error, urllib.parse, tarfile, io
+        import urllib.request, urllib.error, urllib.parse, tarfile, io
         choices = 'http://www.delph-in.net/matrix/language-'+choices+'/choices-final.tgz'
         try:
           tar = urllib.request.urlopen(choices)
@@ -140,8 +141,8 @@ if 'choices' in form_data:
               break # Found the choices file...
         except (urllib.error.HTTPError, urllib.error.URLError, tarfile.TarError):
           data = ''
-	finally:
- 	  tar.close()
+        finally:
+           tar.close()
     else: # Uploaded choices data
       data = choices
     if data or choices.endswith('/empty'):
@@ -188,8 +189,8 @@ except:
 if need_verify:
   matrixdef.verification()
 elif 'customize' in form_data:
-	# if the 'customize' field is defined, create a customized copy of the matrix
-	# based on the current choices file
+        # if the 'customize' field is defined, create a customized copy of the matrix
+        # based on the current choices file
   # ERB 2006-10-03 Checking has_key here to enable local debugging.
   if 'delivery' in form_data:
     arch_type = form_data['delivery'].value
