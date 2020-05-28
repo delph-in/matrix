@@ -218,8 +218,7 @@ def add_complementizer_subtype(cs, mylang,ch,extra):
     if cs['ques'] == 'ques': # Should this be disallowed in validation? Or, is this the English "whether"?
         mylang.add(typename + ':= [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques ].', merge=True)
     elif cs['ques'] == 'prop':
-        mylang.add(typename + ':= [ SYNSEM [ LOCAL.CONT.HOOK.INDEX.SF prop,'
-                              'NON-LOCAL non-local-none ] ].', merge=True)
+        mylang.add(typename + ':= [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF prop ].', merge=True)
     # OZ 2020-05-09 The below doesn't work because it violates compositionality of semantics. Delete once sure.
 #    else:
 #        mylang.add(typename + ':= [ SYNSEM [ LOCAL [ CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.SF #sf ] >,'
