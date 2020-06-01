@@ -29,7 +29,7 @@ from delphin.commands import (
 # COMMON FILES AND DIRECTORIES ################################################
 
 SCRIPT_DIR     = pathlib.Path(__file__).parent.resolve()
-RTEST_DIR      = SCRIPT_DIR / 'gmcs' / 'regression_tests'
+RTEST_DIR      = SCRIPT_DIR / 'tests' / 'regression'
 CHOICES_DIR    = RTEST_DIR / 'choices'
 GRAMMARS_DIR   = RTEST_DIR / 'grammars'
 SKELETONS_DIR  = RTEST_DIR / 'skeletons'
