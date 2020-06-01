@@ -1,33 +1,22 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
+
+"""
+A general-purpose script for running Matrix code.
+
+The intention of this script is to define options, commands, and
+arguments for running Matrix code, validating the user's input, and
+offering helpful messages for improper input, missing files, etc.
+"""
+
 import sys
 import os
 import getopt
 import subprocess
 import random
 import re
+
 from gmcs.choices import ChoicesFile
 from gmcs.deffile import MatrixDefFile
-
-# import cgi
-
-# matrix.py
-# A general-purpose script for running Matrix code.
-# The intention of this script is to define options, commands, and
-# arguments for running Matrix code, validates the user's input, and
-# offers helpful messages for improper input, missing files, etc. It
-# should not have a general try-except wrapper unless it re-raises
-# the errors (otherwise they will be hidden from the user). Further,
-# if possible it should check to make sure the developer is following
-# best-practices for Matrix development (e.g. running regression tests
-# and checking in code before vivifying, etc.).
-
-# NOTE TO DEVELOPERS
-# Because we are unsure of the Python version being used (and some systems
-# we rely on use 2.4), this module should check the version and fail
-# gracefully if it's less than our 'officially supported' version (currently
-# this is 2.5). In order to fail gracefully, this script must not have any
-# syntax from later Python versions (otherwise it will throw a SyntaxError
-# before it does anything).
 
 
 def main():
@@ -387,7 +376,7 @@ def uncommitted_changes_reminder(rpath):
 
 def validate_python_version():
     """
-    Make sure the user is running Python 2.5 or greater.
+    Make sure the user is running Python 3.5 or greater.
     """
     if sys.version_info < (3, 5):
         version = '.'.join(str(x) for x in sys.version_info[0:2])
