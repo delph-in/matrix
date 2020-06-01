@@ -213,7 +213,8 @@ def add_test(args):
     renaming them to the new test's name if necessary. Create a
     skeleton using the txt suite. Copy the skeleton to home/gold.
     Create a grammar using the current customization system, process
-    the profile. TODO: Add files to SVN.
+    the profile. It is the developer's responsibility to add these
+    files to Git afterwards.
     """
     args.all_tests = True  # necessary for adding new tests
     tests = list(_discover(args))
@@ -291,8 +292,9 @@ def remove_test(args):
     7) the corresponding line in regression-test-index
 
     As this will silently delete whichever files and directories are
-    found, it is also good for removing partially created tests.
-    TODO: svn del
+    found, it is also good for removing partially created tests. It is
+    the developer's responsibility to commit these changes to Git
+    afterwards.
     '''
     args.all_tests = True  # necessary for partial tests
     tests = list(_discover(args))
@@ -478,8 +480,7 @@ def _mkskel(name, txt, logf):
     _lognow('  Destination: {!s}'.format(dest), logf)
     if not txt:
         raise RegressionTestError(
-            'Did you forget to add the new txt-suite to '
-            'gmcs/regression_tests/txt-suites?')
+            f'Did you forget to add the new txt-suite to {TXT_SUITE_DIR!s}?')
     try:
         mkprof(dest, source=txt, schema=RELATIONS_FILE, quiet=True)
     except CommandError as exc:
