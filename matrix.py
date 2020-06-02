@@ -130,9 +130,6 @@ def main():
         for mrs_string in gmcs.generate.configure_mrs(c):
             print(mrs_string)
 
-    elif args[0] in ('u', 'unit-test'):
-        run_unit_tests()
-
     elif args[0] in ('hv', 'html-validate'):
         if len(args) > 1:
             validate_html(args[1])
@@ -248,8 +245,6 @@ def validate_args(args):
     elif args[0] in ('gm', 'generate-mrs'):
         if len(args) < 2:
             usage(command='generate-mrs')
-    elif args[0] in ('u', 'unit-test'):
-        pass  # no other arguments needed
     elif args[0] in ('wa', 'web-test-add'):
         if len(args) < 2:
             usage(command='web-test-add')
@@ -350,10 +345,6 @@ def usage(command=None, exitcode=2):
         p("generate-mrs (gm) PATH")
         p("        Create MRS strings from MRS templates using the choices")
         p("        file at PATH")
-    if command in ('unit-test', 'u', 'all'):
-        p("unit-test (u)")
-        p("        Run all unit tests.")
-        something_printed = True
     if command in ('web-test', 'w', 'all'):
         p("web-test (w)")
         p("        Run all web tests.")
@@ -447,38 +438,6 @@ def customize_grammar(
         devnull = open('/dev/null', 'w')
         subprocess.call([cmd, pet_file], cwd=grammar_dir,
                         env=os.environ, stderr=devnull)
-
-
-def run_unit_tests():
-    import unittest
-    import gmcs.tests.testChoices
-    import gmcs.tests.testValidate
-    # import gmcs.linglib.tests.testToolboxImport
-
-    def print_line():
-        print(75 * '=')
-
-    loader = unittest.defaultTestLoader
-    runner = unittest.TextTestRunner(verbosity=1)
-
-    print_line()
-    print('Choices tests:')
-    runner.run(loader.loadTestsFromModule(gmcs.tests.testChoices))
-
-    print_line()
-    print('Validate tests:')
-    runner.run(loader.loadTestsFromModule(gmcs.tests.testValidate))
-
-    # print_line()
-    # print('Toolbox import tests:')
-    # runner.run(
-    #         loader.loadTestsFromModule(gmcs.linglib.tests.testToolboxImport))
-
-    # print_line()
-    # print('Linglib/Morphotactics tests:')
-    # import gmcs.linglib.tests.testMorphotactics
-    # runner.run(loader.loadTestsFromModule(gmcs.linglib.tests.testMorphotactics))
-    print_line()
 
 
 def vivify(force):
