@@ -702,7 +702,7 @@ def run_unit_tests():
     import unittest
     import gmcs.tests.testChoices
     import gmcs.tests.testValidate
-    import gmcs.linglib.tests.testToolboxImport
+    # import gmcs.linglib.tests.testToolboxImport
 
     def print_line():
         print(75 * '=')
@@ -718,15 +718,15 @@ def run_unit_tests():
     print('Validate tests:')
     runner.run(loader.loadTestsFromModule(gmcs.tests.testValidate))
 
-    print_line()
-    print('Toolbox import tests:')
-    runner.run(
-            loader.loadTestsFromModule(gmcs.linglib.tests.testToolboxImport))
+    # print_line()
+    # print('Toolbox import tests:')
+    # runner.run(
+    #         loader.loadTestsFromModule(gmcs.linglib.tests.testToolboxImport))
 
-    #   print_line()
-    #   print 'Linglib/Morphotactics tests:'
-    #   import gmcs.linglib.tests.testMorphotactics
-    #   runner.run(loader.loadTestsFromModule(gmcs.linglib.tests.testMorphotactics))
+    # print_line()
+    # print('Linglib/Morphotactics tests:')
+    # import gmcs.linglib.tests.testMorphotactics
+    # runner.run(loader.loadTestsFromModule(gmcs.linglib.tests.testMorphotactics))
     print_line()
 
 
