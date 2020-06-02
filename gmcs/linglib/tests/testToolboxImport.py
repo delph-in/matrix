@@ -23,7 +23,7 @@ class TestToolboxImport(unittest.TestCase):
 
     def save_choices(self, choices):
         '''This writes a choices file using matrix def.'''
-        tmp = tempfile.NamedTemporaryFile()
+        tmp = tempfile.NamedTemporaryFile(mode='w+')
         tmp.write('version=' + str(choices.current_version()) + '\n\n')
         tmp.write(str(choices))
         formdata = FormData()
@@ -40,7 +40,7 @@ class TestToolboxImport(unittest.TestCase):
         '''
         for i in range(len(tb_strings)):
             for j in range(len(tb_strings[i])):
-                fout = tempfile.NamedTemporaryFile()
+                fout = tempfile.NamedTemporaryFile(mode='w+')
                 fout.write(str(tb_strings[i][j]))
                 self.toolbox_files.append(fout);
                 choices["toolboximportconfig"+str(i+1)+"_toolboxfile"+str(j+1)+"_tbfilename"] = fout.name
