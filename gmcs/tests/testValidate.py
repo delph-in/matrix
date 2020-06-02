@@ -84,12 +84,12 @@ class TestValidate(unittest.TestCase):
                     c = ChoicesFile()
 
                     # same case
-                    c[name1] = value.encode('utf-8')
-                    c[name2] = value.encode('utf-8')
+                    c[name1] = value
+                    c[name2] = value
 
                     # different case (should still collide)
-                    c[name1] = value.lower().encode('utf-8')
-                    c[name2] = value.upper().encode('utf-8')
+                    c[name1] = value.lower()
+                    c[name2] = value.upper()
                     self.assertErrors(c, [name1, name2])
 
 

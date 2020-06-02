@@ -344,8 +344,7 @@ def validate_names(ch, vr):
 
     # Force all the user_types into lower case (obeying the appropriate
     # Unicode character semantics), because TDL is case-insensitive.
-    user_types = [[x[0].lower().encode('utf-8'), x[1]]
-                  for x in user_types]
+    user_types = [[x[0].lower(), x[1]] for x in user_types]
 
     # Whew!  OK, now we have two sets of type names and a set of
     # patterns:
@@ -359,7 +358,7 @@ def validate_names(ch, vr):
     # sort the list by type name, and check to see if we have any
     # duplicates.  Mark all errors on the appropriate variables.
 
-    user_types.sort(lambda x, y: cmp(x[0], y[0]))
+    user_types.sort()
 
     last_was_collision = False
     for i in range(len(user_types)):
