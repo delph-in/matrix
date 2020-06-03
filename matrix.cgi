@@ -10,12 +10,12 @@ import os
 import glob
 import shutil
 import cgi
-import cgitb; cgitb.enable()
+import cgitb
 import time
-import glob
 import tempfile
 from random import randint
-from distutils.dir_util import remove_tree
+
+import requests
 
 from gmcs.deffile import MatrixDefFile
 from gmcs.customize import customize_matrix
@@ -23,9 +23,8 @@ from gmcs.validate import validate_choices
 from gmcs.choices import ChoicesFile
 from gmcs.linglib.toolboximport import import_toolbox_lexicon
 
-from gmcs.deffile import HTTP_header
-import requests
 
+cgitb.enable()
 
 #Production Check
 disable_captcha = True
@@ -34,13 +33,10 @@ disable_captcha = True
 # this should hopefully delete it before the rest of the script can break. Still unsure what is causing the file
 # to end up there in the first place.
 if os.path.exists('sessions/choices'):
-        os.remove('sessions/choices')
+    os.remove('sessions/choices')
 
 ######################################################################
 # beginning of main program
-
-# Uncomment this to see the output from print in the HTML page
- #print HTTP_header + '\n'
 
 
 matrixdef = MatrixDefFile('web/matrixdef')
@@ -101,7 +97,7 @@ now = time.time()
 sessions = glob.glob('sessions/*')
 for s in sessions:
   if now - os.path.getmtime(s) > 86400:
-    remove_tree(s)
+    shutil.rmtree(s)
 
 # figure out the path to the current session's directory, creating it
 # if necessary
