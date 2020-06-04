@@ -95,6 +95,7 @@ IN_SITU_PHRASE = '''insitu-int-cl := interrogative-clause & head-only &
               COMPS < > ] ],
           NON-LOCAL [ SLASH.LIST < >,
           REL.LIST < >,
+          YNQ.LIST < >,
           QUE.LIST < ref-ind, ... > ] ] ].'''
 
 EX_DET_PHRASE = '''extracted-det-phrase := basic-extracted-arg-phrase & head-compositional &

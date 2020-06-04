@@ -10,10 +10,10 @@ from gmcs import globals
 INT_CL = '''int-cl := head-only & interrogative-clause &
   [ SYNSEM [ LOCAL.CAT [ HEAD +vc, VAL #val,
                                          MC bool ],
-                    NON-LOCAL.YNQ.LIST < > ],
+                    NON-LOCAL non-local-none ],
     HEAD-DTR.SYNSEM [ LOCAL.CAT [ MC na,
                                   VAL #val & [ SUBJ < >, COMPS < >, SPR < >, SPEC < > ] ],
-                                  NON-LOCAL [ YNQ.LIST < *top* >, SLASH.LIST < > ] ] ].'''
+                                  NON-LOCAL [ YNQ.LIST < *top* >, SLASH.LIST < >, QUE.LIST < > ] ] ].'''
 
 DECL_CL = '''decl-cl := head-only & declarative-clause & same-ynq-unary-phrase &
   [ SYNSEM.LOCAL.CAT [ VAL #val,
