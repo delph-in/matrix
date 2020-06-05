@@ -11,7 +11,7 @@ INT_CL = '''int-cl := head-only & interrogative-clause &
   [ SYNSEM [ LOCAL.CAT [ HEAD +vc, VAL #val,
                                          MC bool ],
                     NON-LOCAL non-local-none ],
-    HEAD-DTR.SYNSEM [ LOCAL.CAT [ MC na,
+    HEAD-DTR.SYNSEM [ LOCAL.CAT [ MC na-or--,
                                   VAL #val & [ SUBJ < >, COMPS < >, SPR < >, SPEC < > ] ],
                                   NON-LOCAL [ YNQ.LIST < *top* >, SLASH.LIST < >, QUE.LIST < > ] ] ].'''
 

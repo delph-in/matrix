@@ -86,7 +86,7 @@ IN_SITU_PHRASE = '''insitu-int-cl := interrogative-clause & head-only &
   [ SYNSEM [ MODIFIED hasmod,
              LOCAL.CAT [ VAL #val,
        MC bool ],
-       NON-LOCAL non-local-none ],
+       NON-LOCAL [ SLASH.LIST < >, QUE.LIST < >, REL.LIST < > ] ],
     C-CONT [ RELS.LIST < >,
        HCONS.LIST < > ],
     HEAD-DTR.SYNSEM [ LOCAL.CAT [ HEAD verb,
@@ -227,6 +227,7 @@ def customize_wh_ques(mylang,ch,rules,roots):
         mylang.add(IN_SITU_PHRASE)
         rules.add('in-situ-ques := insitu-int-cl.')
         if not ch.get(MTX_FRONT) == 'in-situ':
+            mylang.add('insitu-int-cl := [ SYNSEM.NON-LOCAL.YNQ.LIST < > ].')
             if ch.get('embed-insitu') == 'on':
                 mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.WH.BOOL + ].')
             else:
@@ -282,13 +283,18 @@ def customize_wh_ques(mylang,ch,rules,roots):
             mylang.add('extracted-subj-phrase := [ SYNSEM.LOCAL.CAT.VAL.COMPS #comps,'
                                                  ' HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS #comps ].',merge=True)
 
-    # Perhaps this special case below can be dealt with differently?
-    # Like with the WH feature?
     if ch.get('q-part') == 'on':
         if ch.get(MTX_FRONT) == 'in-situ':
             mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.WH.BOOL + ].')
+            # Perhaps this special case below can be dealt with differently?
+            # Like with the WH feature?
             if len(ch.get('q-particle')) == 1:
                qpart = ch.get('q-particle')[1] # This is 1 and not 0 because the Choices len method is overriden; see Choices.py
-               if qpart['wh'] == 'oblig' and ch.get('q-part-order') != 'second':
+               if qpart['wh'] == 'oblig':
                    mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.MC - ].')
 
+            if ch.get('q-part-order') == 'second':
+                mylang.add('insitu-int-cl := [ SYNSEM.NON-LOCAL.YNQ #ynq,'
+                           'HEAD-DTR.SYNSEM.NON-LOCAL.YNQ #ynq ].')
+            else:
+                mylang.add('insitu-int-cl := [ SYNSEM.NON-LOCAL.YNQ.LIST < > ].')

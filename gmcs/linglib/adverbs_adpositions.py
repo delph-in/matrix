@@ -30,6 +30,17 @@ ADJ_HEADN = '''adj-headn-phrase := adj-head-int-phrase &
    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
  '''
 
+ADJ_HEADADV = '''adj-headadv-phrase := adj-head-int-phrase &
+ [ HEAD-DTR.SYNSEM [ LOCAL.CAT.HEAD adv, LIGHT + ],
+   NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
+ '''
+
+HEADADV_ADJ = '''headadv-adj-phrase := head-adj-int-phrase &
+ [ HEAD-DTR.SYNSEM [ LOCAL.CAT.HEAD adv, LIGHT + ],
+   NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
+ '''
+
+
 
 def customize_adv_adp(ch, mylang, rules):
     if len(ch.get('adv',[])) > 0 or len (ch.get('normadp',[])) > 0:
@@ -45,3 +56,6 @@ def customize_adv_adp(ch, mylang, rules):
         rules.add('headn-adj := headn-adj-phrase.')
         rules.add('adj-headn := adj-headn-phrase.')
         # If the word order is free, may need to constrain one of the head complement rules.
+        if ch.get('q-part') == 'on' and ch.get('q-part-order') == 'second':
+            mylang.add(HEADADV_ADJ, section='phrases')
+            rules.add('headadv-adj := headadv-adj-phrase.')
