@@ -138,7 +138,7 @@ ALL_OBLIG = 'all-oblig'
 
 
 def customize_wh_ques(mylang,ch,rules,roots):
-    if not ch.get(MTX_FRONT):
+    if (not ch.get(MTX_FRONT)) and ch.get('wh-q-infl') != 'on':
         # If there are no wh-questions, need to put the default
         # constraints to establish the semantic links between
         # the filler and the gap and the extracted subject and the verb:
@@ -158,7 +158,7 @@ def customize_wh_ques(mylang,ch,rules,roots):
                                 LOCAL.CAT.VAL [ SPR < >, SUBJ clist, COMPS clist ] ] ].''',section='addenda')
             mylang.add('''adj-head-int-phrase :+ [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH 0-alist ].''',section='addenda')
 
-    if (not ch.get(MTX_FRONT)) or ch.get(NO_MULTI) == 'on':
+    if (not ch.get(MTX_FRONT) and ch.get('wh-q-infl') != 'on') or ch.get(NO_MULTI) == 'on':
         mylang.add('''clause :+ [ SYNSEM.NON-LOCAL.QUE.LIST < > ]. ''')
         if len(ch.get('adv', [])) > 0 or len(ch.get('normadp', [])) > 0:
             mylang.add('''head-adj-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ]. ''',section='addenda')
@@ -222,7 +222,8 @@ def customize_wh_ques(mylang,ch,rules,roots):
     # is obligatorily fronted, need also in-situ rules:
     if (ch.get(MTX_FRONT) == SINGLE and not ch.get(MTX_FRONT_OPT) == SG_OBLIG) \
             or ch.get(MTX_FRONT) == 'in-situ' \
-            or (ch.get(MTX_FRONT) == MULTI and not ch.get(MTX_FRONT_OPT) == ALL_OBLIG):
+            or (ch.get(MTX_FRONT) == MULTI and not ch.get(MTX_FRONT_OPT) == ALL_OBLIG) \
+            or ch.get('wh-q-infl') == 'on':
         mylang.add_literal('; In-situ interrogative clause.',section='phrases')
         mylang.add(IN_SITU_PHRASE)
         rules.add('in-situ-ques := insitu-int-cl.')
