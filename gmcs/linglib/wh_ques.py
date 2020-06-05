@@ -95,7 +95,6 @@ IN_SITU_PHRASE = '''insitu-int-cl := interrogative-clause & head-only &
               COMPS < > ] ],
           NON-LOCAL [ SLASH.LIST < >,
           REL.LIST < >,
-          YNQ.LIST < >,
           QUE.LIST < ref-ind, ... > ] ] ].'''
 
 EX_DET_PHRASE = '''extracted-det-phrase := basic-extracted-arg-phrase & head-compositional &
@@ -289,7 +288,7 @@ def customize_wh_ques(mylang,ch,rules,roots):
         if ch.get(MTX_FRONT) == 'in-situ':
             mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.WH.BOOL + ].')
             if len(ch.get('q-particle')) == 1:
-                qpart = ch.get('q-particle')[1] # This is 1 and not 0 because the Choices len method is overriden; see Choices.py
-                if qpart['wh'] == 'oblig':
-                    mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.MC - ].')
+               qpart = ch.get('q-particle')[1] # This is 1 and not 0 because the Choices len method is overriden; see Choices.py
+               if qpart['wh'] == 'oblig' and ch.get('q-part-order') != 'second':
+                   mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.MC - ].')
 
