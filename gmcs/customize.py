@@ -621,8 +621,8 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
     yes_no_questions.customize_yesno_questions(mylang, ch, rules, lrules, hierarchies,roots)
     clausalmods.customize_clausalmods(mylang, ch, lexicon, rules, roots, trigger)
     clausalcomps.customize_clausalcomps(mylang,ch,lexicon,rules)
-    wh_ques.customize_wh_ques(mylang,ch,rules,roots)
     adverbs_adpositions.customize_adv_adp(ch,mylang,rules)
+    wh_ques.customize_wh_ques(mylang,ch,rules,roots)
 
     # Service customization
     customize_punctuation(grammar_path)

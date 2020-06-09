@@ -172,7 +172,7 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies,roots):
             if 'form' in hierarchies:
                 mylang.add('qpart-lex-item := [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM finite ].')
 
-        # Second position  clitics are treated as modifiers:
+        # OZ: Second position  clitics are treated as modifiers:
         elif ch.get('q-part-order') == 'second':
             mylang.add('''basic-binary-phrase :+ [ SYNSEM [ L-PERIPH #periph,
                                   NON-LOCAL.YNQ.APPEND < #ynq1,

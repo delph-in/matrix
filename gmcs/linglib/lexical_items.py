@@ -323,7 +323,34 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
     # Now create the lexical entries for all the defined verb types
     cases = case.case_names(ch)
     for verb in ch.get('verb',[]):
-        create_verb_lex_type(cases, ch, hierarchies, lexicon, mylang, verb)
+        if not verb['inter'] == 'on':
+            create_verb_lex_type(cases, ch, hierarchies, lexicon, mylang, verb)
+        else:
+            mylang.add(lexbase.ITRG_VB)
+            create_interrogative_verb_type(cases,ch,hierarchies,lexicon,mylang,verb)
+
+def create_interrogative_verb_type(cases,ch,hierarchies,lexicon,mylang,verb):
+    stypes = verb.get('supertypes').split(', ')
+    stype_names = [verb_id(ch[st]) for st in stypes if st != '']
+    vtype = verb_id(verb)
+    construct_supertype_names(cases, ch, stype_names, verb)
+    # clausal verb's valence and its complement's head constraint:
+    vtype,head = clausalcomps.update_verb_lextype(ch,verb,vtype)
+    if len(stype_names) == 0:
+        mylang.add(vtype + ' := interrogative-verb-lex .')
+    else:
+        if stype_names[0].endswith('-transitive-verb-lex'):
+            mylang.add(vtype + lexbase.ITRG_TRAN)
+        else:
+            mylang.add(vtype + ' := ' + ' interrogative-verb-lex & intransitive-lex-item.')
+    features.customize_feature_values(mylang, ch, hierarchies, verb, vtype, 'verb', None, cases)
+
+    stems = verb.get('stem', [])
+    stems.extend(verb.get('bistem', []))
+    for stem in stems:
+        add_stem_to_lexicon(lexicon, stem, vtype)
+
+
 
 def create_verb_lex_type(cases, ch, hierarchies, lexicon, mylang, verb):
     stypes = verb.get('supertypes').split(', ')

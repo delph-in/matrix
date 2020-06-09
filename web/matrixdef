@@ -2468,6 +2468,8 @@ BeginIter verb{i} "a Verb Type" 1 2
   MultiSelect supertypes "Verb type {i}" "Supertypes: " "<br /><br />"
   fillregex p=verb(?!{i}_)[0-9]+_name
 
+  Check inter "Interrogative Verb" "<br>" "This is a question verb (like <i>do.what</i>) <br><br>"
+
   Label "Features:"
 
   BeginIter feat{j} "a Feature"
@@ -2892,54 +2894,6 @@ BeginIter adv{i} "an Adverb" 1
 EndIter adv
 
 Label "<p>Note that the adverbs are not yet fully supported and will be underspecified as to where they attach.</p>"
-
-BeginIter qverb{i} "a Question Verb" 1
-
-  Label "<b>Question Verb type {i}</b>:"
-
-  Label "<div style=\"padding-left: 16px\">"
-
-  Text name "Question Verb {i} name" "Type name: " "<br>" 20
-
-  BeginIter stem{j} "a Stem" 0 1
-
-    Text orth "Question Verb {i} spelling" "Spelling: " "" 30 "fill_pred('qverb{i}_stem{j}', 'q')"
-
-    Text pred "Question Verb {i} predicate" " Predicate: " "<br>" 30
-
-  EndIter stem
-
-  Label "<br><br>Features:"
-
-  BeginIter feat{j} "a Feature"
-
-    Select name "Question Verb {i} feature {j} name" "Name: " " "
-    fillnames c=verb
-
-    MultiSelect value "Question Verb {i} feature {j} value" "Value: " ""
-    fillvalues p=qverb{i}_feat{j}_name
-
-  EndIter feat
-
-  Label "<p>Morphotactic Constraints:</p>"
-
-  BeginIter require{j} "a Require constraint"
-
-    MultiSelect others "Question Verb {i} requires" "Question Verb {i} requires one of the following position classes: " ""
-    fillcache c=qverblrs
-
-  EndIter require
-
-  BeginIter forbid{j} "a Forbid constraint"
-
-    MultiSelect others "Question Verb {i} requires" "Question Verb {i} requires one of the following position classes: " ""
-    fillcache c=qverblrs
-
-  EndIter forbid
-
-  Label "</div>"
-
-EndIter qverb
 
 
 Separator

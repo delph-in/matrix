@@ -145,6 +145,39 @@ ADP_LEX = '''norm-adposition-lex := norm-sem-lex-item & no-hcons-lex-item & basi
              L-QUE #lque ],
     ARG-ST < #comp > ].'''
 
+
+ITRG_VB = '''interrogative-verb-lex := basic-verb-lex-super & non-mod-lex-item &
+[ SYNSEM [ LOCAL [ CONT.HOOK [ INDEX.SF ques, XARG #xarg ],
+                   CAT [ WH.BOOL +,
+                         VAL [ SPR < >,
+                               SPEC < >,
+                               COMPS < >,
+                               SUBJ < #subj > ] ] ] ],
+    ARG-ST.FIRST #subj &
+                 [ LOCAL [ CAT cat-sat &
+                               [ VAL [ SPR < >,
+                                       COMPS < > ] ],
+                           CONT.HOOK.INDEX #xarg ] ] ].
+'''
+
+ITRG_TRAN = ''' := interrogative-verb-lex & basic-icons-lex-item & norm-hook-lex-item & 
+[ ARG-ST < [ LOCAL [ CAT cat-sat & [ HEAD noun &
+                                [ CASE abs ] ],
+                      CONT.HOOK [ INDEX  ref-ind & #ind,
+                      ICONS-KEY.IARG1 #clause ] ] ] >,
+ SYNSEM [ LKEYS.KEYREL event-relation & [ ARG1 #ind, ARG2 ref-ind & #ind2],
+             LOCAL.CONT [ HOOK.CLAUSE-KEY #clause,
+                          RELS.LIST < [ ARG2 #ind2 ], 
+                                      quant-relation & [ PRED "which_q_rel",
+                                                        ARG0 #ind2,
+                                                        RSTR #harg ], 
+                                       noun-relation & [ PRED "thing_n_rel",
+                                                         LBL #larg,
+                                                         ARG0 #ind2 ] >,
+               HCONS.LIST < [ HARG #harg,
+                LARG #larg ] > ] ] ].'''
+
+
 ###############
 ### CLASSES ###
 ###############

@@ -209,9 +209,12 @@ def customize_wh_ques(mylang,ch,rules,roots):
         if ch.get(MTX_FRONT_OPT) == 'all-oblig':
             mylang.add(WH_Q_PHR_NO_OR_SG_OBLIG_MULTI) # Pass up QUE from HEAD-DTR
         # Rule out structural ambiguity for sentences like "Who sleeps where?"
-        if ch.get('word-order') in ['svo', 'sov', 'osv']:
+        if ch.get('word-order') in ['svo', 'sov', 'osv' ]:
             mylang.add('''head-adj-int-phrase :+ [ HEAD-DTR.SYNSEM [ L-QUE -,
              LOCAL.CAT.VAL [ SUBJ clist, COMPS clist ] ] ].''',section='addenda')
+        if ch.get('word-order') == 'free':
+            mylang.add('''adj-headv-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ clist ].''', merge=True)
+            mylang.add('''headv-adj-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ clist ].''', merge=True)
         # The below does not make sense?
         if ch.get('word-order') in ['ovs', 'vos', 'vso']:
             mylang.add('''adj-head-int-phrase := [ HEAD-DTR.SYNSEM.L-QUE - ].''',section='addenda')
