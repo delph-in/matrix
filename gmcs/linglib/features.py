@@ -405,7 +405,17 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
             if ch.get('neg-head-feature') == 'on':
                 tdlfile.add(type_name + ':= [ ARGS.FIRST.SYNSEM.LOCAL.CAT.HEAD.NEGATED - ].',merge=True)
 
-        elif (n == 'question' and v[0] == 'plus'):
+        elif (n == 'question' and v[0] == 'polar'):
+            tdlfile.add(type_name + ':= \
+                     [ SYNSEM [ LOCAL.CONT.HOOK.INDEX.SF ques,'
+                                    'NON-LOCAL.QUE.LIST < > ] ].',
+                        merge=True)
+        elif (n == 'question' and v[0] == 'wh'):
+            tdlfile.add(type_name + ':= \
+                     [ SYNSEM [ LOCAL.CONT.HOOK.INDEX.SF ques,'
+                                    'NON-LOCAL.QUE.LIST cons ] ].',
+                        merge=True)
+        elif (n == 'question' and v[0] == 'both'):
             # ERB 2009-07-01 Adding in semantics for question affixes
             tdlfile.add(type_name + ':= \
                      [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques ].',

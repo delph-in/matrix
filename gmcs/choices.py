@@ -613,6 +613,9 @@ class ChoicesFile:
             self.convert_31_to_32()
         if self.version < 33:
             self.convert_32_to_33()
+        if self.version < 34:
+            self.convert_33_to_34()
+
 
 
 
@@ -1241,9 +1244,10 @@ class ChoicesFile:
 
 
         # Questions
-        if 'q-infl' in self.choices:
-            features += [ ['question', 'plus|plus', '', 'verb', 'y'] ]
-
+        if 'q-infl' in self.choices and not 'wh-q-infl' in self.choices:
+            features += [ ['question', 'polar|polar', '', 'verb', 'y'] ]
+        elif 'q-infl' in self.choices and 'wh-q-infl' in self.choices:
+            features += [ ['question', 'polar|polar;wh|wh;both|both', '', 'verb', 'y'] ]
         # Information Structure
         infostr_values = 'focus|focus;topic|topic;contrast|contrast;semantic-focus|non-contrastive-focus;contrast-focus|contrastive-focus;aboutness-topic|non-contrastive-topic;contrast-topic|contrastive-topic;focus-or-topic|focus-or-topic;contrast-or-focus|contrast-or-focus;contrast-or-topic|contrast-or-topic;non-topic|non-topic;non-focus|non-focus;bg|background'
         #mkg_values = 'fc|focus;tp|topic;fc-only|focus-only;tp-only|topic-only;fc-+-tp|focus-and-topic;non-tp|non-topic;non-fc|non-focus;unmkg|unmarking'
@@ -1353,7 +1357,7 @@ class ChoicesFile:
     # convert_value(), followed by a sequence of calls to convert_key().
     # That way the calls always contain an old name and a new name.
     def current_version(self):
-        return 33
+        return 34
 
     def convert_value(self, key, old, new, partial=False):
         if key in self:
@@ -2328,7 +2332,22 @@ class ChoicesFile:
             cdict['orth'] = orth
             self['q-particle'].append(cdict)
 
-########################################################################
+
+    def convert_33_to_34(self):
+        """
+        The feature question's value "plus" was renamed "polar".
+        """
+        if self.get('q-infl') == 'on':
+            for cat in ['verb-pc']:
+                for pc in self.get(cat):
+                    #self.convert_value(pc.full_key + '_name', 'topic', '_topic')
+                    for lrt in pc['lrt']:
+                        for feat in lrt['feat']:
+                            if feat['name'] == 'question' and feat['value'] == 'plus':
+                                feat['value'] = 'polar'
+
+
+ ########################################################################
 # FormData Class
 # This Class acts like form data which would normally
 # be sent from the server. Used for testing purposes.
