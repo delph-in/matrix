@@ -520,6 +520,42 @@ def customize_verb_case(mylang, ch):
           [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CAT.HEAD.CASE-MARKED + ] > ].'
                     mylang.add(typedef)
 
+'''
+OZ 2020-06-09
+This is a reduced duplicate of the customize_verb_case() function; I did 
+not want to make it any more long or complex.
+'''
+def get_verb_case(ch):
+    cases = case_names(ch)
+    mycases = {'tran':None,'intran':None}
+    for p in ch.patterns():
+        if not ('(case unspecified)' in p[1]):
+            rule_pattern = p[2]
+            p = p[0].split(',')
+            if not rule_pattern:
+                c = p[0].split('-')  # split 'agentcase-patientcase'
+                if p[0] == 'trans' or len(c) > 1:  # transitive
+                    if p[0] == 'trans':
+                        a_case = ''
+                        o_case = ''
+                        a_head = ch.case_head()
+                        o_head = ch.case_head()
+                    else:
+                        a_case = canon_to_abbr(c[0], cases)
+                        o_case = canon_to_abbr(c[1], cases)
+                        a_head = ch.case_head(c[0])
+                        o_head = ch.case_head(c[1])
+                    mycases['tran']={'A':a_case,'AH':a_head,'O':o_case,'OH':o_head}
+
+                else:  # intransitive
+                    if c[0] == 'intrans':
+                        s_case = ''
+                        s_head = ch.case_head()
+                    else:
+                        s_case = canon_to_abbr(c[0], cases)
+                        s_head = ch.case_head(c[0])
+                    mycases['intran'] = {'S':s_case,'SH':s_head}
+    return mycases
 
 ##############
 # VALIDATION #

@@ -161,8 +161,7 @@ ITRG_VB = '''interrogative-verb-lex := basic-verb-lex-super & non-mod-lex-item &
 '''
 
 ITRG_TRAN = ''' := interrogative-verb-lex & basic-icons-lex-item & norm-hook-lex-item & 
-[ ARG-ST < [ LOCAL [ CAT cat-sat & [ HEAD noun &
-                                [ CASE abs ] ],
+[ ARG-ST < [ LOCAL [ CAT cat-sat & [ HEAD noun ],
                       CONT.HOOK [ INDEX  ref-ind & #ind,
                       ICONS-KEY.IARG1 #clause ] ] ] >,
  SYNSEM [ LKEYS.KEYREL event-relation & [ ARG1 #ind, ARG2 ref-ind & #ind2],
