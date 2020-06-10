@@ -2340,7 +2340,6 @@ class ChoicesFile:
         if self.get('q-infl') == 'on':
             for cat in ['verb-pc']:
                 for pc in self.get(cat):
-                    #self.convert_value(pc.full_key + '_name', 'topic', '_topic')
                     for lrt in pc['lrt']:
                         for feat in lrt['feat']:
                             if feat['name'] == 'question' and feat['value'] == 'plus':

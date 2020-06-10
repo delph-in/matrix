@@ -243,7 +243,8 @@ def customize_wh_ques(mylang,ch,rules,roots):
         elif ch.get(MTX_FRONT) == 'multi' and ch.get(MTX_FRONT_OPT) == SG_OBLIG:
             mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.MC - ].')
         # For non-free word orders, need to rule out structural ambiguity:
-        if ch.get('word-order') in ['svo', 'sov'] and not ch.get(MTX_FRONT) == 'in-situ':
+        if ch.get('word-order') in ['svo', 'sov'] \
+                and not (ch.get(MTX_FRONT) == 'in-situ' or ch.get('wh-q-infl') == 'on'):
             mylang.add('subj-head-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
 
     # Obligatory pied piping of both nouns and adpositions is the default.
