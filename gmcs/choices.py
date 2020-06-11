@@ -1247,7 +1247,7 @@ class ChoicesFile:
         if 'q-infl' in self.choices and not 'wh-q-infl' in self.choices:
             features += [ ['question', 'polar|polar', '', 'verb', 'y'] ]
         elif 'q-infl' in self.choices and 'wh-q-infl' in self.choices:
-            features += [ ['question', 'polar|polar;wh|wh;both|both', '', 'verb', 'y'] ]
+            features += [ ['question', 'polar|polar;wh|wh;both|both;no|no', '', 'verb', 'y'] ]
         # Information Structure
         infostr_values = 'focus|focus;topic|topic;contrast|contrast;semantic-focus|non-contrastive-focus;contrast-focus|contrastive-focus;aboutness-topic|non-contrastive-topic;contrast-topic|contrastive-topic;focus-or-topic|focus-or-topic;contrast-or-focus|contrast-or-focus;contrast-or-topic|contrast-or-topic;non-topic|non-topic;non-focus|non-focus;bg|background'
         #mkg_values = 'fc|focus;tp|topic;fc-only|focus-only;tp-only|topic-only;fc-+-tp|focus-and-topic;non-tp|non-topic;non-fc|non-focus;unmkg|unmarking'

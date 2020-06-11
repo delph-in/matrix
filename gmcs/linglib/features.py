@@ -405,6 +405,11 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
             if ch.get('neg-head-feature') == 'on':
                 tdlfile.add(type_name + ':= [ ARGS.FIRST.SYNSEM.LOCAL.CAT.HEAD.NEGATED - ].',merge=True)
 
+        elif (n == 'question' and v[0] == 'no'):
+            tdlfile.add(type_name + ':= \
+                     [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF prop ].',
+                        merge=True)
+
         elif (n == 'question' and v[0] == 'polar'):
             tdlfile.add(type_name + ':= \
                      [ SYNSEM [ LOCAL.CONT.HOOK.INDEX.SF ques,'
