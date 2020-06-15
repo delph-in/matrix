@@ -323,10 +323,10 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
     # Now create the lexical entries for all the defined verb types
     cases = case.case_names(ch)
     for verb in ch.get('verb',[]):
-        if not verb['inter'] == 'on':
-            create_verb_lex_type(cases, ch, hierarchies, lexicon, mylang, verb)
-        else:
-            mylang.add(lexbase.ITRG_VB)
+        create_verb_lex_type(cases, ch, hierarchies, lexicon, mylang, verb)
+    if ch.get('wh-q-inter-verbs') == 'on':
+        mylang.add(lexbase.ITRG_VB)
+        for verb in ch.get('qverb',[]):
             create_interrogative_verb_type(cases,ch,hierarchies,lexicon,mylang,verb)
 
 def create_interrogative_verb_type(cases,ch,hierarchies,lexicon,mylang,verb):
@@ -342,25 +342,29 @@ def create_interrogative_verb_type(cases,ch,hierarchies,lexicon,mylang,verb):
         mylang.add(vtype + ' := interrogative-verb-lex .')
 
     else:
-        if stype_names[0].endswith('-transitive-verb-lex'):
-            mylang.add(vtype + lexbase.ITRG_TRAN)
-            mylang.add(vtype + ' := [ ARG-ST.FIRST.LOCAL.CAT.HEAD '
-                       + mycases['tran']['AH'] + ' ].')
-            mylang.add(vtype + ' := [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE '
-                       + mycases['tran']['A'] + ' ] ].')
-
-        else:
-            mylang.add(vtype + ' := ' + ' interrogative-verb-lex & intransitive-lex-item.')
-            mylang.add(vtype + ' := [ ARG-ST.FIRST.LOCAL.CAT.HEAD '
-                       + mycases['intran']['SH'] + ' ].')
-            mylang.add(vtype + ' := [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE '
-                       + mycases['intran']['S'] + ' ] ].')
+        mylang.add(vtype + lexbase.ITRG_THREE_REL)
+        mylang.add(vtype + ' := [ ARG-ST.FIRST.LOCAL.CAT.HEAD '
+                   + mycases['tran']['AH'] + ' ].')
+        mylang.add(vtype + ' := [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE '
+                   + mycases['tran']['A'] + ' ] ].')
 
     features.customize_feature_values(mylang, ch, hierarchies, verb, vtype, 'verb', None, cases)
     stems = verb.get('stem', [])
     stems.extend(verb.get('bistem', []))
     for stem in stems:
-        add_stem_to_lexicon(lexicon, stem, vtype)
+        add_itg_stem_to_lexicon(lexicon, stem, vtype)
+
+def add_itg_stem_to_lexicon(lexicon, stem, stype):
+    orthstr = orth_encode(stem.get('orth'))
+    vpred = stem.get('verbpred')
+    npred = stem.get('nounpred')
+    name = stem.get('name')
+    typedef = \
+        TDLencode(name) + ' := ' + stype + ' & \
+                    [ STEM < "' + orthstr + '" >, \
+                      SYNSEM [ LKEYS.KEYREL.PRED "_' + vpred + '_v_rel", ' \
+                               'LOCAL.CONT.RELS.LIST < [], [], [ PRED "_' + npred + '_n_rel" ] > ] ].'
+    lexicon.add(typedef)
 
 
 

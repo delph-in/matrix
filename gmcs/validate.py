@@ -1803,12 +1803,13 @@ def validate_wh_ques(ch, vr):
         wh_q_strat = WH_QUE_INFL
     elif ch.get('wh-q-inter-verbs') == ON:
         wh_q_strat = 'wh-q-inter-verbs'
-    found_ques_word = False
-    for pos in ['noun','det','verb','adv']:
-        for type in ch.get(pos):
-            if type.get('inter') == ON:
-                found_ques_word = True
-                break
+    found_ques_word = True if ch.get('qverb') else False
+    if not found_ques_word:
+        for pos in ['noun','det','verb','adv']:
+            for type in ch.get(pos):
+                if type.get('inter') == ON:
+                    found_ques_word = True
+                    break
     if wh_q_strat and not found_ques_word:
         mess = 'Please specify question words on the Lexicon page'
         vr.err(wh_q_strat,mess)

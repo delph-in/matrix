@@ -2539,6 +2539,88 @@ EndIter verb
 
 Separator
 
+Label "<h3 style='display:inline'>Question Verb Types</h3>"
+Label "<span>| <a href='javascript:void(0);' onclick=\"draw_hierarchy('verb')\">visualize verb hierarchy</a> (experimental)</span><br />"
+
+BeginIter qverb{i} "a Question Verb Type" 1 2
+
+  Label "<b>Question Verb type {i}</b>:"
+
+  Label "<div style=\"padding-left: 16px\">"
+
+  Text name "Question Verb {i} name" "Type name: " "<br /><br />" 20
+
+  MultiSelect supertypes "Question Verb type {i}" "Supertypes: " "<br /><br />"
+  fillregex p=qverb(?!{i}_)[0-9]+_name
+
+  Label "Features:"
+
+  BeginIter feat{j} "a Feature"
+
+    Select name "Question Verb {i} feature {j} name" "Name: " " "
+    fillnames c=both
+
+    MultiSelect value "Question Verb {i} feature {j} value" "Value: " ""
+    fillvalues p=qverb{i}_feat{j}_name
+
+    Select head "Question Verb {i} feature {j} head" "Specified on: " ""
+    . verb "The verb" "the verb"
+    . subj "The subject" "the subject NP"
+    . obj "The object" "the object NP"
+    . higher "Higher-ranked" "the higher-ranked NP"
+    . lower "Lower-ranked" "the lower-ranked NP"
+
+  EndIter feat
+
+  Select valence "Question Verb {i} arguments" "<br /><br />Argument structure: " "<br />"
+  fillverbpat
+
+  Select bipartitepc "Question Verb {i} bipartite stems position class" "If this verb class includes bipartite stems, select the position class for the affix portion of the stems: " "<br />"
+  fillcache c=verbpcs
+
+  Label "Stems:"
+  BeginIter stem{j} "a simple Stem" 0 0
+
+    Text orth "Question Verb {i} stem {j} spelling" "Spelling: " "" 30
+
+    Text verbpred "Question Verb {i} stem {j} verbpred" " Event Predicate (e.g. <i>do</i>): " "" 30
+
+    Text nounpred "Question Verb {i} stem {j} nounpred" " Referential Predicate (e.g. <i>thing</i>): " "" 30
+
+  EndIter stem
+
+  BeginIter bistem{j} "a bipartite Stem"
+
+    Text orth "Question Verb {i} bipartite stem {j} spelling" "Root spelling: " "" 30 "fill_pred('qverb{i}_bistem{j}', 'v')"
+
+    Text aff "Question Verb {i} bipartite stem {j} affix" "Affix spelling: " "" 30
+
+    Text pred "Question Verb {i} bipartite stem {j} predicate" " Predicate: " "" 30
+
+  EndIter bistem
+
+  Label "<p>Morphotactic Constraints:</p>"
+
+  BeginIter require{j} "a Require constraint"
+
+    MultiSelect others "Question Verb {i} requires" "Verb {i} requires one of the following position classes: " ""
+    fillcache c=verblrs
+
+  EndIter require
+
+  BeginIter forbid{j} "a Forbid constraint"
+
+    Select others "Question Verb {i} forbids" "Verb {i} forbids the following position class: " ""
+    fillcache c=verblrs
+
+  EndIter forbid
+
+  Label "</div>"
+
+EndIter qverb
+
+Separator
+
 Label "<h3 style='display:inline'>Adjective Types</h3>"
 Label "<span>| <a href='javascript:void(0);' onclick=\"draw_hierarchy('adj')\">visualize adjective hierarchy</a> (experimental)</span><br />"
 
