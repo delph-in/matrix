@@ -17,7 +17,7 @@ ALL_LEX_TYPES = ('noun', 'verb', 'det', 'aux', 'adj', 'cop', 'comps', 'adv', 'no
 # types used for lexical rules (verb and aux are merged)
 # TJT 2014-08-15: adding "cop"
 # TJT 2014-08-15: changing to tuple for speed
-LEXICAL_CATEGORIES = ('noun', 'verb', 'det', 'adj', 'cop', 'adv')
+LEXICAL_CATEGORIES = ('noun', 'verb', 'det', 'adj', 'cop', 'adv', 'qverb')
 
 # TJT 2014-09-03: Types not automatically added to mylanguage.tdl
 NON_ESSENTIAL_LEX_CATEGORIES = ('det', 'adj', 'cop', 'comps', 'normadp', 'adv', 'qverb')
@@ -176,6 +176,18 @@ ITRG_THREE_REL = ''' := interrogative-verb-lex & basic-icons-lex-item & norm-hoo
                HCONS.LIST < [ HARG #harg,
                 LARG #larg ] > ] ] ].'''
 
+ITRG_FOUR_REL = ''' := interrogative-verb-lex & basic-icons-lex-item & norm-hook-lex-item & 
+[ ARG-ST < [ LOCAL [ CAT cat-sat & [ HEAD noun ],
+                      CONT.HOOK [ INDEX  ref-ind & #ind,
+                      ICONS-KEY.IARG1 #clause ] ] ] >,
+ SYNSEM [ LKEYS.KEYREL event-relation & [ ARG1 #ind ],
+             LOCAL.CONT [ HOOK.CLAUSE-KEY #clause,
+                          RELS.LIST < [ LBL #ltop, ARG0 #clause ], 
+                                      [ LBL #ltop, ARG0 event,
+                                    ARG1 #clause, ARG2 #ind2 ],
+                                  [ ARG0 #ind2, LBL #larg ],[ PRED "which_q_rel", ARG0 #ind2, RSTR #harg ] >,
+               HCONS.LIST < [ HARG #harg,
+                LARG #larg ] > ] ] ].'''
 
 ###############
 ### CLASSES ###

@@ -31,6 +31,9 @@ def lexical_type_hierarchy(choices, lexical_supertype):
         st = get_lexical_supertype('tverb', choices)
         lth.add_node(LexicalType('tverb', get_lt_name('tverb', choices),
                                  parents={st:lth.nodes[st]}))
+
+    if lexical_supertype == 'qverb':
+        st = get_lexical_supertype('qverb',choices)
     for lst in lts_to_add:
         for lt in choices[lst]:
             st = get_lexical_supertype(lt.full_key, choices)
@@ -39,7 +42,7 @@ def lexical_type_hierarchy(choices, lexical_supertype):
             # If we're dealing with a verb add nodes for all lexical entries
             # because bistems can give rise to flags that need to appear on
             # all verbs.
-            if lexical_supertype == 'verb':
+            if lexical_supertype in ['verb', 'qverb']:
                 bistems = choices[lt.full_key]['bistem'] or []
                 stems = choices[lt.full_key]['stem'] or []
                 stems.extend(bistems)
@@ -57,7 +60,7 @@ def get_lexical_supertype(lt_key, choices):
         return 'verb'
     elif lexical_category == 'verb':
         return case.interpret_verb_valence(choices[lt_key]['valence'])
-    elif lexical_category in ('noun', 'det', 'adv', 'adj', 'cop'): # TJT Added adj, cop, removed aux
+    elif lexical_category in ('noun', 'det', 'adv', 'adj', 'cop','qverb'): # TJT Added adj, cop, removed aux
         return lexical_category
     return None
 

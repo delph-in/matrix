@@ -22,7 +22,10 @@ from gmcs.feature_type_use import USED_TYPES
 # helper functions
 def verb_id(item):
     """Return the identifier for a verb lexical item."""
-    return get_name(item) + '-verb-lex'
+    if not item.full_key.startswith('qverb'):
+        return get_name(item) + '-verb-lex'
+    else:
+        return get_name(item) + '-interrogative-verb-lex'
 
 def noun_id(item):
     """Return the identifier for a noun lexical item."""
@@ -342,7 +345,10 @@ def create_interrogative_verb_type(cases,ch,hierarchies,lexicon,mylang,verb):
         mylang.add(vtype + ' := interrogative-verb-lex .')
 
     else:
-        mylang.add(vtype + lexbase.ITRG_THREE_REL)
+        if verb['predtype'] in ['manner','loc']:
+            mylang.add(vtype + lexbase.ITRG_FOUR_REL)
+        elif verb['predtype'] == 'ref':
+            mylang.add(vtype + lexbase.ITRG_THREE_REL)
         mylang.add(vtype + ' := [ ARG-ST.FIRST.LOCAL.CAT.HEAD '
                    + mycases['tran']['AH'] + ' ].')
         mylang.add(vtype + ' := [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE '
@@ -352,19 +358,31 @@ def create_interrogative_verb_type(cases,ch,hierarchies,lexicon,mylang,verb):
     stems = verb.get('stem', [])
     stems.extend(verb.get('bistem', []))
     for stem in stems:
-        add_itg_stem_to_lexicon(lexicon, stem, vtype)
+        add_itg_stem_to_lexicon(lexicon, stem, vtype, verb['predtype'])
 
-def add_itg_stem_to_lexicon(lexicon, stem, stype):
+def add_itg_stem_to_lexicon(lexicon, stem, stype, predtype):
     orthstr = orth_encode(stem.get('orth'))
     vpred = stem.get('verbpred')
-    npred = stem.get('nounpred')
     name = stem.get('name')
     typedef = \
         TDLencode(name) + ' := ' + stype + ' & \
                     [ STEM < "' + orthstr + '" >, \
-                      SYNSEM [ LKEYS.KEYREL.PRED "_' + vpred + '_v_rel", ' \
-                               'LOCAL.CONT.RELS.LIST < [], [], [ PRED "_' + npred + '_n_rel" ] > ] ].'
+                      SYNSEM.LKEYS.KEYREL.PRED "_' + vpred + '_v_rel" ].'
     lexicon.add(typedef)
+    npred = stem.get('nounpred')
+    if predtype == 'ref':
+        typedef = \
+            TDLencode(name) + ' := [ SYNSEM.LOCAL.CONT.RELS.LIST < [], [], [ PRED "_' + npred + '_n_rel" ] > ] ].'
+        lexicon.add(typedef,merge=True)
+    elif predtype in ['manner','loc']:
+        if predtype == 'manner':
+            pred = 'manner_nonsp_rel'
+        elif predtype == 'loc':
+            pred = 'loc_nonsp_rel'
+        typedef = \
+            TDLencode(name) + ' := [ SYNSEM.LOCAL.CONT.RELS.LIST < [], [PRED "_' + pred + '"], ' \
+                                                            '[ PRED "_' + npred + '_n_rel" ], [] > ] ].'
+        lexicon.add(typedef,merge=True)
 
 
 

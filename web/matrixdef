@@ -2572,20 +2572,26 @@ BeginIter qverb{i} "a Question Verb Type" 1 2
 
   EndIter feat
 
-  Select valence "Question Verb {i} arguments" "<br /><br />Argument structure: " "<br />"
+  Select valence "Question Verb {i} case frame" "<br /><br />Case frame: " " (only S/A case will be used)<br />"
   fillverbpat
 
-  Select bipartitepc "Question Verb {i} bipartite stems position class" "If this verb class includes bipartite stems, select the position class for the affix portion of the stems: " "<br />"
-  fillcache c=verbpcs
+  Radio predtype "Question Verb {i} stem {j} second predicate type" "<p>The second
+  predicate that this verb contributes is <br>" "</p>"
+  . ref "Referential" "" " referential (<i>thing, person</i>) <br>"
+  . loc "Location" "" " location in time/space (<i>when, where</i>)<br>"
+  . manner "Manner" "" " manner (<i>how</i>)<br>"
+
+  #Select bipartitepc "Question Verb {i} bipartite stems position class" "If this verb class includes bipartite stems, select the position class for the affix portion of the stems: " "<br />"
+  #fillcache c=verbpcs
 
   Label "Stems:"
   BeginIter stem{j} "a simple Stem" 0 0
 
     Text orth "Question Verb {i} stem {j} spelling" "Spelling: " "" 30
 
-    Text verbpred "Question Verb {i} stem {j} verbpred" " Event Predicate (e.g. <i>do</i>): " "" 30
+    Text verbpred "Question Verb {i} stem {j} verbpred" " Event predicate (e.g. <i>do</i>): " "" 30
 
-    Text nounpred "Question Verb {i} stem {j} nounpred" " Referential Predicate (e.g. <i>thing</i>): " "" 30
+    Text nounpred "Question Verb {i} stem {j} nounpred" "<br>Specify (e.g. <i>thing, place, time</i>): " "" 30
 
   EndIter stem
 
@@ -2889,8 +2895,6 @@ BeginIter cop{i} "a Copula Type" 1
 
   Label "</div>"
 
-  Check quescop "Interrogative Copula" "<p>" "This is a special copula that is used only in interrogative constructions.</p>"
-
 EndIter cop
 
 Separator
@@ -3045,6 +3049,7 @@ Section morphology "Morphology"
 
 Cache nouns noun[0-9]+$ name
 Cache verbs verb[0-9]+$ name
+Cache qverbs qverb[0-9]+$ name
 Cache auxes aux[0-9]+$ name
 Cache dets q?det[0-9]+$ name
 Cache adjs adj[0-9]+$ name
@@ -3236,12 +3241,14 @@ BeginIter verb-pc{i} "a Position Class" 1
 
   MultiSelect inputs "Verb Position Class {i} Input" "<br/>Possible inputs:" ""
   fillcache c=verbs
+  fillcache c=qverbs
   fillcache c=auxes
   fillregex p=verb-pc[0-9]+(_lrt[0-9]+)?_name
   . verb "Any verb" "any verb"
   . iverb "Any intransitive verb" "any intransitive verb"
   . tverb "Any transitive verb" "any transitive verb"
   . aux "Any auxiliary verb" "any auxiliary verb"
+  . qverb "Any question verb" "any question verb"
 
   Label "<p>Morphotactic Constraints:</p>"
 
@@ -3255,6 +3262,7 @@ BeginIter verb-pc{i} "a Position Class" 1
     . iverb "Any intransitive verb" "any intransitive verb"
     . tverb "Any transitive verb" "any transitive verb"
     . aux "Any auxiliary verb" "any auxiliary verb"
+    . qverb "Any question verb" "any question verb"
 
   EndIter require
 
@@ -3268,6 +3276,7 @@ BeginIter verb-pc{i} "a Position Class" 1
     . iverb "Any intransitive verb" "any intransitive verb"
     . tverb "Any transitive verb" "any transitive verb"
     . aux "Any auxiliary verb" "any auxiliary verb"
+    . qverb "Any question verb" "any question verb"
 
   EndIter forbid
 
@@ -3349,6 +3358,7 @@ inputs are possible, these need to be created as two separate lexical rule types
       . iverb "Any intransitive verb" "any intransitive verb"
       . tverb "Any transitive verb" "any transitive verb"
       . aux "Any auxiliary verb" "any auxiliary verb"
+      . qverb "Any question verb" "any question verb"
 
     EndIter require
 
@@ -3362,6 +3372,7 @@ inputs are possible, these need to be created as two separate lexical rule types
       . iverb "Any intransitive verb" "any intransitive verb"
       . tverb "Any transitive verb" "any transitive verb"
       . aux "Any auxiliary verb" "any auxiliary verb"
+      . qverb "Any question verb" "any question verb"
 
     EndIter forbid
 
