@@ -12,22 +12,22 @@ from gmcs import constants
 
 HEADV_ADJ = '''headv-adj-phrase := head-adj-int-phrase &
  [ HEAD-DTR.SYNSEM [ LOCAL.CAT [ HEAD verb ] ],
-   NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
+   NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD +jrpc, VAL.COMPS < > ] ].
  '''
 
 ADJ_HEADV = '''adj-headv-phrase := adj-head-int-phrase &
  [ HEAD-DTR.SYNSEM [ LOCAL.CAT [ HEAD verb ] ],
-   NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
+   NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD +jrpc, VAL.COMPS < > ] ].
  '''
 
 HEADN_ADJ = '''headn-adj-phrase := head-adj-int-phrase &
  [ HEAD-DTR.SYNSEM [ LOCAL.CAT.HEAD noun, LIGHT + ],
-   NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
+   NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD +njrpc, VAL.COMPS < > ] ].
  '''
 
 ADJ_HEADN = '''adj-headn-phrase := adj-head-int-phrase &
  [ HEAD-DTR.SYNSEM [ LOCAL.CAT.HEAD noun, LIGHT + ],
-   NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
+   NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD +njrpc, VAL.COMPS < > ] ].
  '''
 
 ADJ_HEADADV = '''adj-headadv-phrase := adj-head-int-phrase &
