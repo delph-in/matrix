@@ -135,10 +135,11 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies,roots):
     [ SYNSEM.LOCAL.CAT [ HEAD.INV +,
                          VAL #val,
                          MC + ],
-      HEAD-DTR.SYNSEM.LOCAL.CAT [ MC na,
+      HEAD-DTR.SYNSEM [ LOCAL.CAT [ MC na,
                                   VAL #val &
                                        [SUBJ < >,
-                                       COMPS < >]],
+                                       COMPS < >] ],
+                        NON-LOCAL non-local-none ],
       C-CONT.HOOK.INDEX.SF ques ].'''
         mylang.add(typedef, comment, section='phrases')
 

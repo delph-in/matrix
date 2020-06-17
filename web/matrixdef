@@ -2542,7 +2542,7 @@ Separator
 Label "<h3 style='display:inline'>Question Verb Types</h3>"
 Label "<span>| <a href='javascript:void(0);' onclick=\"draw_hierarchy('verb')\">visualize verb hierarchy</a> (experimental)</span><br />"
 
-BeginIter qverb{i} "a Question Verb Type" 1 2
+BeginIter qverb{i} "a Question Verb Type" 0 0
 
   Label "<b>Question Verb type {i}</b>:"
 
