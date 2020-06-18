@@ -222,7 +222,9 @@ def customize_wh_ques(mylang,ch,rules,roots):
         mylang.add(WH_Q_PHR_SG_OR_OBLIG_FRONT)
         if ch.get('wh-inv-matrix') == 'on':
             if not ch.get('wh-inv-notsubj') == 'on':
-                mylang.add('wh-ques-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD [ AUX + ] ].')
+                mylang.add('wh-ques-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.AUX + ].')
+            else:
+                mylang.add('extracted-subj-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.AUX - ].')
             if not ch.get('wh-inv-embed') == 'on':
                 mylang.add('subj-head-phrase := [ SYNSEM.LOCAL.CAT.MC na-or-+,'
                        'HEAD-DTR.SYNSEM.NON-LOCAL [ QUE.LIST < >, SLASH.LIST < > ] ].')
