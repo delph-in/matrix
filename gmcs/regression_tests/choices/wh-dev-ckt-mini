@@ -1,0 +1,264 @@
+
+version=34
+
+section=general
+language=wh-mini-chukchee
+
+section=word-order
+word-order=free
+has-dets=no
+has-aux=no
+
+section=number
+  number1_name=sg
+  number2_name=pl
+
+section=person
+person=1-2-3
+first-person=none
+
+section=gender
+  gender1_name=masc
+
+section=case
+case-marking=erg-abs
+erg-abs-erg-case-name=ergative
+erg-abs-abs-case-name=absolutive
+
+section=adnom-poss
+  poss-pron1_type=non-affix
+  poss-pron1_agr=non-agree
+  poss-pron1_mod-spec=spec
+  poss-pron1_order=head-final
+    poss-pron1_instance1_name=your
+    poss-pron1_instance1_orth=gənin
+      poss-pron1_instance1_feat1_name=number
+      poss-pron1_instance1_feat1_value=sg
+      poss-pron1_instance1_feat2_name=person
+      poss-pron1_instance1_feat2_value=2nd
+  poss-pron1_possessum-mark=no
+
+section=direct-inverse
+
+section=tense-aspect-mood
+tense-definition=choose
+past=on
+future=on
+nonpast=on
+nonfuture=on
+  aspect1_name=progressive
+    aspect1_supertype1_name=aspect
+  aspect2_name=perfective
+    aspect2_supertype1_name=aspect
+
+section=evidentials
+
+section=other-features
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=wh-q
+wh-q-inter-verbs=on
+
+section=info-str
+
+section=arg-opt
+subj-drop=subj-drop-all
+subj-mark-drop=subj-mark-drop-req
+subj-mark-no-drop=subj-mark-no-drop-opt
+subj-con=subj-con-always
+obj-drop=obj-drop-all
+obj-mark-drop=obj-mark-drop-req
+obj-mark-no-drop=obj-mark-no-drop-opt
+
+section=nominalclause
+
+section=clausal-comp
+
+section=clausalmods
+
+section=lexicon
+  noun1_name=2sg-pron
+  noun1_pron=on
+    noun1_feat1_name=person
+    noun1_feat1_value=2nd
+    noun1_feat2_name=number
+    noun1_feat2_value=sg
+  noun1_det=imp
+    noun1_stem1_orth=ke
+    noun1_stem1_pred=_2sg_n_rel
+    noun1_stem2_orth=nǐ
+    noun1_stem2_pred=_2sg_n_rel
+  noun2_name=who
+  noun2_inter=on
+  noun2_det=imp
+    noun2_stem1_orth=maki
+    noun2_stem1_pred=_person_n_rel
+  noun3_name=cn
+    noun3_feat1_name=case
+    noun3_feat1_value=abs
+  noun3_det=imp
+    noun3_stem1_orth=ekək
+    noun3_stem1_pred=_son_n_rel
+  verb1_name=iv
+  verb1_valence=abs
+    verb1_stem1_orth=jatč
+    verb1_stem1_pred=_come_v_rel
+    verb1_stem2_orth=qit
+    verb1_stem2_pred=_freeze_v_rel
+  verb2_name=tv
+  verb2_valence=erg-abs
+    verb2_stem1_orth=jallaju
+    verb2_stem1_pred=_take_v_rel
+  qverb1_name=be-what
+  qverb1_predtype=ref
+    qverb1_stem1_orth=trò
+    qverb1_stem1_verbpred=be
+    qverb1_stem1_nounpred=thing
+  qverb2_name=do-what
+    qverb2_feat1_name=case
+    qverb2_feat1_value=abs
+    qverb2_feat1_head=subj
+  qverb2_predtype=ref
+    qverb2_stem1_orth=gànmá
+    qverb2_stem1_verbpred=do
+    qverb2_stem1_nounpred=thing
+    qverb2_stem3_orth=req
+    qverb2_stem3_verbpred=do
+    qverb2_stem3_nounpred=thing
+  qverb3_name=be-where
+    qverb3_feat1_name=tense
+    qverb3_feat1_value=nonpast
+    qverb3_feat1_head=verb
+  qverb3_predtype=loc
+    qverb3_stem2_orth=vasia
+    qverb3_stem2_verbpred=be
+    qverb3_stem2_nounpred=place
+  qverb4_name=go-where
+    qverb4_feat1_name=tense
+    qverb4_feat1_value=past
+    qverb4_feat1_head=verb
+  qverb4_predtype=loc
+    qverb4_stem1_orth=čem
+    qverb4_stem1_verbpred=go
+    qverb4_stem1_nounpred=place
+  qverb5_name=qprog
+  qverb5_predtype=ref
+    qverb5_stem1_orth=ʔeʔenət
+    qverb5_stem1_verbpred=say
+    qverb5_stem1_nounpred=thing
+  adv1_name=when
+    adv1_stem1_orth=tite
+    adv1_stem1_pred=_place_a_rel
+  adv1_inter=on
+  adv1_type=loc
+  adv3_name=now
+    adv3_stem1_orth=igirkej
+    adv3_stem1_pred=_right.now_a_rel
+  adv3_type=loc
+
+section=morphology
+  verb-pc1_name=aspect1
+  verb-pc1_order=prefix
+  verb-pc1_inputs=verb-pc5
+    verb-pc1_forbid1_others=verb-pc2
+      verb-pc1_lrt1_feat1_name=aspect
+      verb-pc1_lrt1_feat1_value=progressive
+      verb-pc1_lrt1_feat1_head=verb
+      verb-pc1_lrt1_lri1_inflecting=yes
+      verb-pc1_lrt1_lri1_orth=zà=
+      verb-pc1_lrt1_lri2_inflecting=yes
+      verb-pc1_lrt1_lri2_orth=nǝ-
+  verb-pc2_name=aspect2
+  verb-pc2_order=suffix
+  verb-pc2_inputs=verb-pc4
+    verb-pc2_forbid1_others=verb-pc1
+      verb-pc2_lrt1_feat1_name=aspect
+      verb-pc2_lrt1_feat1_value=progressive
+      verb-pc2_lrt1_feat1_head=verb
+      verb-pc2_lrt1_lri1_inflecting=yes
+      verb-pc2_lrt1_lri1_orth=-ərkənəm
+  verb-pc4_name=pernum
+  verb-pc4_obligatory=on
+  verb-pc4_order=suffix
+  verb-pc4_inputs=verb-pc1
+    verb-pc4_forbid1_others=verb-pc6
+      verb-pc4_lrt1_feat1_name=number
+      verb-pc4_lrt1_feat1_value=sg
+      verb-pc4_lrt1_feat1_head=subj
+      verb-pc4_lrt1_feat2_name=gender
+      verb-pc4_lrt1_feat2_value=masc
+      verb-pc4_lrt1_feat2_head=subj
+      verb-pc4_lrt1_lri1_inflecting=yes
+      verb-pc4_lrt1_lri1_orth=-m
+      verb-pc4_lrt5_feat1_name=number
+      verb-pc4_lrt5_feat1_value=sg
+      verb-pc4_lrt5_feat1_head=subj
+      verb-pc4_lrt5_lri1_inflecting=yes
+      verb-pc4_lrt5_lri1_orth=-čxw
+      verb-pc4_lrt6_feat1_name=person
+      verb-pc4_lrt6_feat1_value=1st
+      verb-pc4_lrt6_feat1_head=subj
+      verb-pc4_lrt6_feat3_name=number
+      verb-pc4_lrt6_feat3_value=sg
+      verb-pc4_lrt6_feat3_head=subj
+      verb-pc4_lrt6_feat4_name=tense
+      verb-pc4_lrt6_feat4_value=nonfuture
+      verb-pc4_lrt6_feat4_head=verb
+      verb-pc4_lrt6_lri1_inflecting=yes
+      verb-pc4_lrt6_lri1_orth=-iγət
+    verb-pc4_lrt7_name=zero
+      verb-pc4_lrt7_feat1_name=number
+      verb-pc4_lrt7_feat1_value=sg
+      verb-pc4_lrt7_feat1_head=subj
+      verb-pc4_lrt7_lri1_inflecting=no
+  verb-pc5_name=cs
+  verb-pc5_order=prefix
+  verb-pc5_inputs=qverb1, qverb2, qverb3, qverb4, qverb5
+      verb-pc5_lrt1_valchg1_operation=obj-add
+      verb-pc5_lrt1_valchg1_inputs=intrans
+      verb-pc5_lrt1_valchg1_predname=applicative
+      verb-pc5_lrt1_valchg1_argpos=pre
+      verb-pc5_lrt1_valchg1_argtype=np
+      verb-pc5_lrt1_lri1_inflecting=yes
+      verb-pc5_lrt1_lri1_orth=n-
+  verb-pc6_name=pernum2
+  verb-pc6_obligatory=on
+  verb-pc6_order=prefix
+  verb-pc6_inputs=verb-pc5
+    verb-pc6_forbid1_others=verb-pc4
+    verb-pc6_lrt1_name=ine
+      verb-pc6_lrt1_feat1_name=number
+      verb-pc6_lrt1_feat1_value=sg
+      verb-pc6_lrt1_feat1_head=subj
+      verb-pc6_lrt1_feat2_name=number
+      verb-pc6_lrt1_feat2_value=sg
+      verb-pc6_lrt1_feat2_head=obj
+      verb-pc6_lrt1_feat3_name=person
+      verb-pc6_lrt1_feat3_value=1st
+      verb-pc6_lrt1_feat3_head=obj
+      verb-pc6_lrt1_feat4_name=person
+      verb-pc6_lrt1_feat4_value=2nd
+      verb-pc6_lrt1_feat4_head=subj
+      verb-pc6_lrt1_lri1_inflecting=yes
+      verb-pc6_lrt1_lri1_orth=ine-
+
+section=toolbox-import
+
+section=test-sentences
+  sentence1_orth=req-ərkənəm igirkej gə-nin ekək
+  sentence2_orth=nǐ zà=gànmá
+  sentence3_orth=ke trò
+  sentence4_orth=vasia-m
+  sentence5_orth=ʔeʔenət-čxw
+  sentence6_orth=čem
+  sentence7_orth=ine-n-req
+  sentence8_orth=nə-req-iγət
+
+section=gen-options
+
+section=ToolboxLexicon
