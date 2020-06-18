@@ -1057,8 +1057,13 @@ def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
                    section='lexrules')
 
     # Add the proper syntactic rules to rules.tdl
-    if adj_rules['head_adj']: rules.add("head-adj-int := head-adj-int-phrase.")
-    if adj_rules['adj_head']: rules.add("adj-head-int := adj-head-int-phrase.")
+    from adverbs_adpositions import HEADJ_ADJ, ADJ_HEADJ
+    if adj_rules['head_adj']:
+        mylang.add(HEADJ_ADJ, section='phrases')
+        rules.add("headj-adj-int := headj-adj-phrase.")
+    if adj_rules['adj_head']:
+        mylang.add(ADJ_HEADJ, section='phrases')
+        rules.add("adj-headj-int := adj-headj-phrase.")
 
     # Add the lexical entries to lexicon.tdl
     lexicon.add_literal(';;; Adjectives')

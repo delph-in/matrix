@@ -10,6 +10,17 @@ from gmcs import constants
 
 # Constants
 
+HEADJ_ADJ = '''headj-adj-phrase := head-adj-int-phrase &
+ [ HEAD-DTR.SYNSEM [ LOCAL.CAT [ HEAD noun ] ],
+   NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD adj, VAL.COMPS < > ] ].
+ '''
+
+ADJ_HEADJ = '''adj-headj-phrase := adj-head-int-phrase &
+ [ HEAD-DTR.SYNSEM [ LOCAL.CAT [ HEAD noun ] ],
+   NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD adj, VAL.COMPS < > ] ].
+ '''
+
+
 HEADV_ADJ = '''headv-adj-phrase := head-adj-int-phrase &
  [ HEAD-DTR.SYNSEM [ LOCAL.CAT [ HEAD verb ] ],
    NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD +rp, VAL.COMPS < > ] ].
