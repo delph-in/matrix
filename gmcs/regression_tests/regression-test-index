@@ -497,3 +497,4 @@ wh16-morph-sep-opt=Optional morphological marking for questions, separate for po
 wh17-morph-sep-oblig=Morphologically marked questions, separate paradigm for polar and wh, obligatory marking.
 wh-dev-ckt-mini=Constituent questions with interrogative verbs (Chukchi)
 wh-eng-dev=Basic English questions, auxiliary inversion, various wh (pied piping, embedded questions)
+wh18-aux-inv-both=Auxiliary inversion with both subject and object questions in both main and embedded clauses

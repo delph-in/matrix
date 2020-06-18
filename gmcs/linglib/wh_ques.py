@@ -188,8 +188,11 @@ def customize_wh_ques(mylang,ch,rules,roots):
         if not ch.get('wh-inv-matrix') == 'on':
             mylang.add('wh-ques-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC na-or-+ ].')
         else:
-            mylang.add(MAIN_WHQ)
-            mylang.add(EMBED_WHQ)
+            if not ch.get('wh-inv-embed') == 'on':
+                mylang.add(MAIN_WHQ)
+                mylang.add(EMBED_WHQ)
+            else:
+                mylang.add('wh-ques-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC na-or-+ ].')
         #if ch.get('form-fin-nf') == 'on':
         #    mylang.add('wh-ques-phrase := [ SYNSEM.LOCAL.CAT.HEAD.FORM finite ].')
         mylang.add_literal('; Complement extraction',section='phrases')
@@ -208,17 +211,23 @@ def customize_wh_ques(mylang,ch,rules,roots):
         if not ch.get('wh-inv-matrix') == 'on':
             rules.add('wh-ques := wh-ques-phrase.')
         else:
-            rules.add('main-whq := main-wh-ques-phrase.')
-            rules.add('embed-whq := embed-wh-ques-phrase.')
+            if not ch.get('wh-inv-embed') == 'on':
+                rules.add('main-whq := main-wh-ques-phrase.')
+                rules.add('embed-whq := embed-wh-ques-phrase.')
+            else:
+                rules.add('wh-ques := wh-ques-phrase.')
         mylang.add('extracted-adv-adp-adj-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < > ].')
         #mylang.add(SG_EX_SUBJ)
         # Pass up QUE from the HEAD-DTR in this case:
         mylang.add(WH_Q_PHR_SG_OR_OBLIG_FRONT)
         if ch.get('wh-inv-matrix') == 'on':
-            mylang.add('subj-head-phrase := [ SYNSEM.LOCAL.CAT.MC na-or-+,'
+            if not ch.get('wh-inv-notsubj') == 'on':
+                mylang.add('wh-ques-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD [ AUX + ] ].')
+            if not ch.get('wh-inv-embed') == 'on':
+                mylang.add('subj-head-phrase := [ SYNSEM.LOCAL.CAT.MC na-or-+,'
                        'HEAD-DTR.SYNSEM.NON-LOCAL [ QUE.LIST < >, SLASH.LIST < > ] ].')
-            mylang.add(NC_SUBJ_HEAD, section='phrases')
-            rules.add('nc-subjh := subj-head-nc-phrase.')
+                mylang.add(NC_SUBJ_HEAD, section='phrases')
+                rules.add('nc-subjh := subj-head-nc-phrase.')
             mylang.add('extracted-adv-adp-adj-phrase := '
                        '[ SYNSEM.NON-LOCAL.SLASH.LIST < [ CAT.HEAD.MOD < [ LOCAL.CAT.HEAD [ INV +, AUX + ] ] > ] >,'
                        'HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].')

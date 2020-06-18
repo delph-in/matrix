@@ -632,6 +632,9 @@ def customize_clausal_verb(clausalverb,mylang,ch,cs,extra):
                                      '                                             CONT.HOOK.INDEX.SF ques ] ]> ].'
                        , merge=True)
 
+    if ch.get('wh-inv-embed') == 'on':
+        mylang.add(clausalverb + ':= [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.AUX + ] > ].', merge=True)
+
     # From the wh-questions library; disallow questions from crossing clause boundary
     #if ch.get('front-across-cl') != 'on' or ch.get(''):
     #    mylang.add(clausalverb + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ NON-LOCAL.QUE.LIST < > ] > ].', merge=True)

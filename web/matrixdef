@@ -1771,8 +1771,10 @@ Radio front-matrix "Fronting" "<p> Question phrases can appear at the left edge 
 
  Label "<p> If you specified Auxiliary-Subject inversion for polar questions, does it also happen in constituent questions?<br><br>"
  Check wh-inv-matrix "Matrix Inversion" "" "yes, in matrix clauses <br>"
- Check wh-inv-embed "Embedded Inversion" "" "also in embedded clauses with constituent questions.</p>"
+ Check wh-inv-embed "Embedded Inversion" "" "also in embedded clauses with constituent questions"
+ Check wh-inv-notsubj "No Inversion with Questions about Subjects" "" "but not in questions about subjects.</p>"
 
+ #Label "<p>(Note: You will get an English-like language which allows non-inverted questions about subjects.)</p>"
 
   #Check wh-q-inter-mood "Iterrogative mood" "<p>" "Interrogative mood (add appropriate entry on the TAM page).</p>"
 
