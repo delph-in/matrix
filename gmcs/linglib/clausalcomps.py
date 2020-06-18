@@ -216,7 +216,8 @@ def add_complementizer_subtype(cs, mylang,ch,extra):
         elif cs[SAME] and not cs[EXTRA]:
             mylang.add(typename + ':= [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.EXTRA - ] > ].',merge=True)
     if cs['ques'] == 'ques': # Should this be disallowed in validation? Or, is this the English "whether"?
-        mylang.add(typename + ':= [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques ].', merge=True)
+        mylang.add(typename + ':= [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.SF ques,'
+                              'CAT.VAL.COMPS.FIRST [ NON-LOCAL.QUE.LIST < > ] ] ].', merge=True)
     elif cs['ques'] == 'prop':
         mylang.add(typename + ':= [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF prop ].', merge=True)
     # OZ 2020-05-09 The below doesn't work because it violates compositionality of semantics. Delete once sure.
@@ -422,9 +423,9 @@ def add_special_complementizer_HCR(additional, cs, general, mylang, rules, wo,is
 def determine_clausal_verb_comp_head(cs):
     head = ''
     if cs[COMP]:
-        if cs[COMP] == 'oblig':
+        if cs[COMP] == 'oblig' and not cs['comp-q'] == 'on':
             head = 'comp'
-        elif cs[COMP] == 'opt':
+        else:
             head = '+vc'
     else:
         head = 'noun' if is_nominalized_complement(cs) else 'verb'

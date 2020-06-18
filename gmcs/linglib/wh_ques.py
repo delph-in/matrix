@@ -215,8 +215,10 @@ def customize_wh_ques(mylang,ch,rules,roots):
         # Pass up QUE from the HEAD-DTR in this case:
         mylang.add(WH_Q_PHR_SG_OR_OBLIG_FRONT)
         if ch.get('wh-inv-matrix') == 'on':
-            mylang.add('subj-head-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL [ QUE.LIST < >, SLASH.LIST < > ] ].')
+            mylang.add('subj-head-phrase := [ SYNSEM.LOCAL.CAT.MC na-or-+,'
+                       'HEAD-DTR.SYNSEM.NON-LOCAL [ QUE.LIST < >, SLASH.LIST < > ] ].')
             mylang.add(NC_SUBJ_HEAD, section='phrases')
+            rules.add('nc-subjh := subj-head-nc-phrase.')
             mylang.add('extracted-adv-adp-adj-phrase := '
                        '[ SYNSEM.NON-LOCAL.SLASH.LIST < [ CAT.HEAD.MOD < [ LOCAL.CAT.HEAD [ INV +, AUX + ] ] > ] >,'
                        'HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].')

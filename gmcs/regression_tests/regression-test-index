@@ -496,3 +496,4 @@ wh-yux-dev=Small grammar of Yukaghir featuring morphological marking of question
 wh16-morph-sep-opt=Optional morphological marking for questions, separate for polar and wh.
 wh17-morph-sep-oblig=Morphologically marked questions, separate paradigm for polar and wh, obligatory marking.
 wh-dev-ckt-mini=Constituent questions with interrogative verbs (Chukchi)
+wh-eng-dev=Basic English questions, auxiliary inversion, various wh (pied piping, embedded questions)

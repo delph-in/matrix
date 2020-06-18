@@ -62,19 +62,21 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies,roots):
 			same-hc-light-lex-rule &
 			same-posthead-lex-rule &
                         constant-lex-rule &
-      [ SYNSEM [ LOCAL.CAT [ HEAD verb & [ INV + ],
+      [ INFLECTED #infl,
+        SYNSEM [ LOCAL.CAT [ HEAD verb & [ INV + ],
                              VAL [ COMPS < #subj . #comps >,
                                      SUBJ < >,
                                      SPR #spr,
                                      SPEC #spec ],
                              MC na ],
                  LKEYS #lkeys ],
-        DTR.SYNSEM [ LOCAL.CAT [ HEAD verb,
+        DTR [ INFLECTED #infl,
+              SYNSEM [ LOCAL.CAT [ HEAD verb,
                                  VAL [ SUBJ < #subj >,
                                        COMPS #comps,
                                        SPR #spr,
                                        SPEC #spec ]],
-                     LKEYS #lkeys ]].'''
+                     LKEYS #lkeys ]]].'''
         mylang.add(typedef, comment, section='lexrules')
 
         lrules.add('inv-lr := subj-v-inv-lrule.')

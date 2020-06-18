@@ -2117,16 +2117,30 @@ BeginIter comps{i} "a Clausal Complement Type" 1
 
   Check clause-pos-same "Clause Same Position" "" "in the same position as regular noun complements <br>"
   Check clause-pos-extra "Clause Extraposed" "" "in the extraposed position at the end of sentence.<br>"
-  
+
+  Label "<p> Please indicate whether this complementation strategy is for embedding questions.
+  Often times it makes sense to create two completely separate strategies for embedding questions
+  and for propositions, and have some clause-embedding verbs (like <i>ask</i>) only be associated
+  with one and for other verbs (like <i>know</i>) to have two lexical entries.<br><br>"
+
+  Radio ques "Embedded Clause Type" " This strategy is for embedding " ""
+  . prop "Embedded Proposition" "" "propositions, "
+  . ques "Embedded Questions" ""  "questions.</p>"
+
+
   Label "<p>The complement clauses are marked by
-  a (semantically empty) complementizer that comes "
+  a complementizer that comes "
 
   Check comp-pos-before "Complementizer Position Before" "" "before"
   Check comp-pos-after "Complementizer Position After" "" "or after the complement clause"<br>
 
   Radio comp "Clausal Complement Type {i} comp" " and is " ""
   . opt "Optional Complementizer" "" "optional or"
-  . oblig "Obligatory Complementizer" ""  "obligatory."
+  . oblig "Obligatory Complementizer" ""  "obligatory.<br>"
+
+  Check comp-q "Question Complementizer" "" "if this strategy is for questions, check if there is there is a
+  <i>whether</i>-like complementizer which turns propositions into questions<br>"
+
 
         BeginIter stem{j} "a Complementizer spelling" 0
 
@@ -2140,16 +2154,6 @@ BeginIter comps{i} "a Clausal Complement Type" 1
 
         Select cformvalue "Clausal Complement Type {i} Complementizer Form {k} Value" "Form Value: " ""
         fillvalues p=form l=1
-
-  Label "<p> Please indicate whether this complementation strategy is for embedding questions.
-  Often times it makes sense to create two completely separate strategies for embedding questions
-  and for propositions, and have some clause-embedding verbs (like <i>ask</i>) only be associated
-  with one and for other verbs (like <i>know</i>) to have two lexical entries.<br><br>"
-
-  Radio ques "Embedded Clause Type" " This strategy is for embedding " ""
-  . prop "Embedded Proposition" "" "propositions, "
-  . ques "Embedded Questions" ""  "questions.</p>"
-
 
 
   Label "<p> The embedded verb
