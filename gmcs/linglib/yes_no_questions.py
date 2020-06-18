@@ -132,9 +132,11 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies,roots):
 
         typedef = '''
     int-cl := interrogative-clause & head-only &
-    [ SYNSEM.LOCAL.CAT [ HEAD.INV +,
+    [ SYNSEM [ MODIFIED hasmod, 
+               LOCAL.CAT [ HEAD.INV +,
                          VAL #val,
                          MC + ],
+               NON-LOCAL non-local-none ],
       HEAD-DTR.SYNSEM [ LOCAL.CAT [ MC na,
                                   VAL #val &
                                        [SUBJ < >,

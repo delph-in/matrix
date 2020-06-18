@@ -24,12 +24,20 @@ WH_Q_PHR = ''' wh-ques-phrase := basic-head-filler-phrase & interrogative-clause
    [ SYNSEM [ LOCAL.CAT [ WH.BOOL +, MC bool,
 			VAL #val,
 			HEAD verb ] ],
-     HEAD-DTR.SYNSEM [ LOCAL.CAT [ MC na-or-+,
-				 VAL #val & [ SUBJ < >,
+     HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL #val & [ SUBJ < >,
 					      COMPS < > ] ] ],
      NON-HEAD-DTR.SYNSEM [ NON-LOCAL.QUE.LIST < ref-ind >,
                            LOCAL.CONT.HOOK.ICONS-KEY focus ] ].'''
 
+
+MAIN_WHQ = '''main-wh-ques-phrase := wh-ques-phrase &
+  [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC na-or-+,
+    SYNSEM.LOCAL.CAT.MC + ].
+'''
+
+EMBED_WHQ = '''embed-wh-ques-phrase := wh-ques-phrase &
+  [ HEAD-DTR.SYNSEM.LOCAL.CAT [ MC -, VAL.SUBJ clist ],
+    SYNSEM.LOCAL.CAT.MC - ].'''
 
 EX_COMP = ''' extracted-comp-phrase := basic-extracted-comp-phrase &
   [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < [], ... >  ].'''
@@ -127,6 +135,13 @@ SEC_FILLER = '''2nd-head-filler-phrase := binary-phrase & phrasal & head-composi
      [ SYNSEM.NON-LOCAL [ SLASH.LIST [ FIRST #firstarg, REST < #local . #otherargs > ],
           REL 0-alist ] ] > ].'''
 
+NC_SUBJ_HEAD = '''
+subj-head-nc-phrase := decl-head-subj-phrase & head-final &
+  [ SYNSEM.LOCAL.CAT.MC -,
+    HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
+
+'''
+
 
 MTX_FRONT = 'front-matrix'
 MTX_FRONT_OPT = 'matrix-front-opt'
@@ -170,6 +185,11 @@ def customize_wh_ques(mylang,ch,rules,roots):
         mylang.add('''basic-head-filler-phrase :+
    [ ARGS < [ SYNSEM.LOCAL.COORD - ], [ SYNSEM.LOCAL.COORD - ] > ].''')
         mylang.add(WH_Q_PHR,section='phrases')
+        if not ch.get('wh-inv-matrix') == 'on':
+            mylang.add('wh-ques-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC na-or-+ ].')
+        else:
+            mylang.add(MAIN_WHQ)
+            mylang.add(EMBED_WHQ)
         #if ch.get('form-fin-nf') == 'on':
         #    mylang.add('wh-ques-phrase := [ SYNSEM.LOCAL.CAT.HEAD.FORM finite ].')
         mylang.add_literal('; Complement extraction',section='phrases')
@@ -185,11 +205,23 @@ def customize_wh_ques(mylang,ch,rules,roots):
         mylang.add_literal('; Subject extraction')
         mylang.add(EX_SUBJ)
         rules.add('ex-subj := extracted-subj-phrase.')
-        rules.add('wh-ques := wh-ques-phrase.')
+        if not ch.get('wh-inv-matrix') == 'on':
+            rules.add('wh-ques := wh-ques-phrase.')
+        else:
+            rules.add('main-whq := main-wh-ques-phrase.')
+            rules.add('embed-whq := embed-wh-ques-phrase.')
         mylang.add('extracted-adv-adp-adj-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < > ].')
         #mylang.add(SG_EX_SUBJ)
         # Pass up QUE from the HEAD-DTR in this case:
         mylang.add(WH_Q_PHR_SG_OR_OBLIG_FRONT)
+        if ch.get('wh-inv-matrix') == 'on':
+            mylang.add('subj-head-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL [ QUE.LIST < >, SLASH.LIST < > ] ].')
+            mylang.add(NC_SUBJ_HEAD, section='phrases')
+            mylang.add('extracted-adv-adp-adj-phrase := '
+                       '[ SYNSEM.NON-LOCAL.SLASH.LIST < [ CAT.HEAD.MOD < [ LOCAL.CAT.HEAD [ INV +, AUX + ] ] > ] >,'
+                       'HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].')
+            mylang.add('extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD [ AUX -, INV -] ].')
+
 
     if ch.get(MTX_FRONT) in [MULTI]:
         mylang.add(EX_SUBJ_MULTI,section='phrases')
@@ -244,7 +276,8 @@ def customize_wh_ques(mylang,ch,rules,roots):
             mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.MC - ].')
         # For non-free word orders, need to rule out structural ambiguity:
         if ch.get('word-order') in ['svo', 'sov'] \
-                and not (ch.get(MTX_FRONT) == 'in-situ' or ch.get('wh-q-infl') == 'on'):
+                and not (ch.get(MTX_FRONT) == 'in-situ'
+                         or ch.get('wh-q-infl') == 'on'):
             mylang.add('subj-head-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
 
     # Obligatory pied piping of both nouns and adpositions is the default.
