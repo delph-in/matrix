@@ -941,6 +941,7 @@ def customize_information_structure_marker(mylang, ch, rules, irules, lexicon, t
                 _light = '-'
             else:
                 _light = '+'
+                mylang.add('bare-np-phrase := [ SYNSEM.LIGHT - ].', section='phrases')
         elif _cat == 'verbs':
             _head = 'verb'
             _light = '+'
