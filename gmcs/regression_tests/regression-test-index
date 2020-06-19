@@ -498,3 +498,5 @@ wh17-morph-sep-oblig=Morphologically marked questions, separate paradigm for pol
 wh-dev-ckt-mini=Constituent questions with interrogative verbs (Chukchi)
 wh-eng-dev=Basic English questions, auxiliary inversion, various wh (pied piping, embedded questions)
 wh18-aux-inv-both=Auxiliary inversion with both subject and object questions in both main and embedded clauses
+wh19-cfocus-marking=Focus marking on question words
+wh20-no-cfocus-marking=No focus marking on question words
