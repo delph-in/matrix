@@ -213,13 +213,13 @@ head-nf-subj-phrase := head-nf-subj-phrase-super & head-initial-head-nexus &
 
 infostr_dislocated_phrase = """
 infostr-dislocated-phrase := narrow-focus &
-  [ SYNSEM.LOCAL.CAT [ MC +, VAL.SUBJ < > ],
+  [ SYNSEM [ LOCAL.CAT [ MC +, VAL.SUBJ < > ], NON-LOCAL.QUE.LIST < > ],
     C-CONT [ RELS 0-alist, 
              HCONS 0-alist,
              ICONS.LIST < info-str & #icons & [ IARG1 #clause, IARG2 #index ] > ],
-    HEAD-DTR.SYNSEM.LOCAL [ CAT [ MC -, HEAD verb ],
+    HEAD-DTR.SYNSEM [ LOCAL [ CAT [ MC -, HEAD verb ],
                             CONT.HOOK [ INDEX #clause,
-                                        CLAUSE-KEY #clause ] ],
+                                        CLAUSE-KEY #clause ] ] ],
     NON-HEAD-DTR.SYNSEM [ LIGHT -,
                           LOCAL [ CAT.HEAD +np,
                                   CONT.HOOK [ INDEX #index,
@@ -937,7 +937,10 @@ def customize_information_structure_marker(mylang, ch, rules, irules, lexicon, t
         _ph = ''
         if _cat == 'nouns':
             _head = 'noun'
-            _light = '-'
+            if not ch.get('focus-marking') == 'on':
+                _light = '-'
+            else:
+                _light = '+'
         elif _cat == 'verbs':
             _head = 'verb'
             _light = '+'
@@ -970,7 +973,7 @@ def customize_information_structure_marker(mylang, ch, rules, irules, lexicon, t
                 mylang.add(modifier_lex + ' := [ SYNSEM.LOCAL.CAT.POSTHEAD ' + _ph + ' ].')
 
             tdl = rule = ''
-            if ch.get('front-matrix') == '': # Constituent questions library will add its own head-adj phrase
+            if ch.get('front-matrix') in ['', 'in-situ']: # Constituent questions library may add its own head-adj phrase
                 if _pos == 'before':
                     rule = 'adj-head-int := adj-head-int-phrase.'
                     rules.add(rule)

@@ -1774,20 +1774,14 @@ Radio front-matrix "Fronting" "<p> Question phrases can appear at the left edge 
  Check wh-inv-embed "Embedded Inversion" "" "also in embedded clauses with constituent questions"
  Check wh-inv-notsubj "No Inversion with Questions about Subjects" "" "but not in questions about subjects.</p>"
 
- #Label "<p>(Note: You will get an English-like language which allows non-inverted questions about subjects.)</p>"
-
-  #Check wh-q-inter-mood "Iterrogative mood" "<p>" "Interrogative mood (add appropriate entry on the TAM page).</p>"
-
  Check wh-q-infl "Inflection" "<p>" "Constituent questions are marked morphologically.
  Checking this box enables a feature called <span class=\"feat\">question</span>
  with possible value <span class=\"tt\">wh</span> for use in defining lexical rules on the morphology page.
 Defining lexical rules that specify [<span class=\"feat\">question</span> <span class=\"tt\">wh</span>]
 will produce lexical rules in the grammar that add the semantics of questions.</p>"
 
- Radio infostr-marking "Information Structure Marking" "Question words may bear an overt focus marking: <br>" ""
-   . infostr-same "same as focus marking" "" "which is the same<br>"
-   . infostr-diff "different from focus marking" ""  "or different from the regular focus marking you defined on the Information
-   Structure page.<br>"
+Check focus-marking "Information Structure Marking" "<p>" "Question words may bear an
+ overt focus marking (specify on Information Structure page).</p>"
 
 Label "<p> Interrogative "
  Check wh-q-inter-verbs "Iterrogative verbs" "" "verbs or "
@@ -2140,8 +2134,8 @@ BeginIter comps{i} "a Clausal Complement Type" 1
   . opt "Optional Complementizer" "" "optional or"
   . oblig "Obligatory Complementizer" ""  "obligatory.<br>"
 
-  Check comp-q "Question Complementizer" "" "if this strategy is for questions, check if there is there is a
-  <i>whether</i>-like complementizer which turns propositions into questions<br>"
+  Check comp-q "Question Complementizer" "" "If this strategy is for questions, check if this is a
+  <i>whether</i>-like complementizer which turns propositions into questions.<br>"
 
 
         BeginIter stem{j} "a Complementizer spelling" 0
