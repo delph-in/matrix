@@ -283,7 +283,9 @@ def customize_wh_ques(mylang,ch,rules,roots):
                 mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.WH.BOOL - ].')
         if ch.get(MTX_FRONT) in [SINGLE,MULTI]:
             mylang.add('insitu-int-cl := [ SYNSEM.L-QUE - ].')
-        if (ch.get(MTX_FRONT) == SINGLE and not ch.get(MTX_FRONT_OPT) == SG_OBLIG):
+        if (ch.get(MTX_FRONT) == SINGLE
+            and not ch.get(MTX_FRONT_OPT) == SG_OBLIG) \
+                and not ch.get('embed-insitu') == 'on':
             mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.MC + ].')
         elif ch.get(MTX_FRONT) == 'multi' and ch.get(MTX_FRONT_OPT) == SG_OBLIG:
             mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.MC - ].')

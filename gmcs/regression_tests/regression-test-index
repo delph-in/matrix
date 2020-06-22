@@ -500,3 +500,4 @@ wh-eng-dev=Basic English questions, auxiliary inversion, various wh (pied piping
 wh18-aux-inv-both=Auxiliary inversion with both subject and object questions in both main and embedded clauses
 wh19-cfocus-marking=Focus marking on question words
 wh20-no-cfocus-marking=No focus marking on question words
+wh21-embed-insitu=Optional single fronting, but embedded in situ questions are possible.
