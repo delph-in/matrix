@@ -142,18 +142,12 @@ subj-head-nc-phrase := decl-head-subj-phrase & head-final &
 
 '''
 
-
-MTX_FRONT = 'front-matrix'
-MTX_FRONT_OPT = 'matrix-front-opt'
-SG_OBLIG = 'single-oblig'
-SINGLE = 'single'
-MULTI = 'multi'
-NO_MULTI = 'no-multi'
-ALL_OBLIG = 'all-oblig'
-
+from gmcs.constants import MTRX_FR_OPT, MTRX_FRONT, NO_MULTI, \
+    SINGLE, MULTI, SG_OBLIG, ALL_OBLIG, EMB_INSITU, ON, WH_INFL, \
+    IN_SITU
 
 def customize_wh_ques(mylang,ch,rules,roots):
-    if (not ch.get(MTX_FRONT)) and ch.get('wh-q-infl') != 'on':
+    if (not ch.get(MTRX_FRONT)) and ch.get(WH_INFL) != 'on':
         # If there are no wh-questions, need to put the default
         # constraints to establish the semantic links between
         # the filler and the gap and the extracted subject and the verb:
@@ -164,37 +158,35 @@ def customize_wh_ques(mylang,ch,rules,roots):
         if ch.get('person') == '1-2-3':
             mylang.add('wh-pronoun-noun-lex := [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 3rd ].')
 
-    if (not ch.get(MTX_FRONT)) or ch.get(MTX_FRONT) == 'single':
+    if (not ch.get(MTRX_FRONT)) or ch.get(MTRX_FRONT) == SINGLE:
         if len(ch.get('adv', [])) > 0 or len(ch.get('normadp', [])) > 0:
-            if ch.get(NO_MULTI) == 'on':
+            if ch.get(NO_MULTI) == ON:
                 mylang.add('''head-adj-int-phrase :+ [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH 0-alist ].''',section='addenda')
             else:
                 mylang.add('''head-adj-int-phrase :+ [ HEAD-DTR.SYNSEM [ L-QUE -,
-                                LOCAL.CAT.VAL [ SPR < >, SUBJ clist, COMPS clist ] ] ].''',section='addenda')
+                                LOCAL.CAT.VAL [ SUBJ clist, COMPS clist ] ] ].''',section='addenda')
             mylang.add('''adj-head-int-phrase :+ [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH 0-alist ].''',section='addenda')
 
-    if (not ch.get(MTX_FRONT) and ch.get('wh-q-infl') != 'on') or ch.get(NO_MULTI) == 'on':
+    if (not ch.get(MTRX_FRONT) and ch.get(WH_INFL) != ON) or ch.get(NO_MULTI) == ON:
         mylang.add('''clause :+ [ SYNSEM.NON-LOCAL.QUE.LIST < > ]. ''')
         if len(ch.get('adv', [])) > 0 or len(ch.get('normadp', [])) > 0:
             mylang.add('''head-adj-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ]. ''',section='addenda')
 
     mylang.add_literal(';;; Wh-question-related phrasal types',section='phrases')
 
-    if ch.get(MTX_FRONT) in [SINGLE, MULTI]:
+    if ch.get(MTRX_FRONT) in [SINGLE, MULTI]:
         mylang.add_literal('''; Do not allow extracting "And Kim"''')
         mylang.add('''basic-head-filler-phrase :+
    [ ARGS < [ SYNSEM.LOCAL.COORD - ], [ SYNSEM.LOCAL.COORD - ] > ].''')
         mylang.add(WH_Q_PHR,section='phrases')
-        if not ch.get('wh-inv-matrix') == 'on':
+        if not ch.get('wh-inv-matrix') == ON:
             mylang.add('wh-ques-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC na-or-+ ].')
         else:
-            if not ch.get('wh-inv-embed') == 'on':
+            if not ch.get('wh-inv-embed') == ON:
                 mylang.add(MAIN_WHQ)
                 mylang.add(EMBED_WHQ)
             else:
                 mylang.add('wh-ques-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC na-or-+ ].')
-        #if ch.get('form-fin-nf') == 'on':
-        #    mylang.add('wh-ques-phrase := [ SYNSEM.LOCAL.CAT.HEAD.FORM finite ].')
         mylang.add_literal('; Complement extraction',section='phrases')
         mylang.add(EX_COMP)
         rules.add('ex-comp := extracted-comp-phrase.')
@@ -202,16 +194,16 @@ def customize_wh_ques(mylang,ch,rules,roots):
         mylang.add(EX_ADJ)
         rules.add('ex-adj := extracted-adv-adp-adj-phrase.')
 
-    if ch.get(MTX_FRONT) in [SINGLE]:
+    if ch.get(MTRX_FRONT) in [SINGLE]:
         # With single fronting, can restrict SLASH to one element at most
         mylang.add(BASIC_FILLER_SG,section='phrases')
         mylang.add_literal('; Subject extraction')
         mylang.add(EX_SUBJ)
         rules.add('ex-subj := extracted-subj-phrase.')
-        if not ch.get('wh-inv-matrix') == 'on':
+        if not ch.get('wh-inv-matrix') == ON:
             rules.add('wh-ques := wh-ques-phrase.')
         else:
-            if not ch.get('wh-inv-embed') == 'on':
+            if not ch.get('wh-inv-embed') == ON:
                 rules.add('main-whq := main-wh-ques-phrase.')
                 rules.add('embed-whq := embed-wh-ques-phrase.')
             else:
@@ -220,12 +212,12 @@ def customize_wh_ques(mylang,ch,rules,roots):
         #mylang.add(SG_EX_SUBJ)
         # Pass up QUE from the HEAD-DTR in this case:
         mylang.add(WH_Q_PHR_SG_OR_OBLIG_FRONT)
-        if ch.get('wh-inv-matrix') == 'on':
-            if not ch.get('wh-inv-notsubj') == 'on':
+        if ch.get('wh-inv-matrix') == ON:
+            if not ch.get('wh-inv-notsubj') == ON:
                 mylang.add('wh-ques-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.AUX + ].')
             else:
                 mylang.add('extracted-subj-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.AUX - ].')
-            if not ch.get('wh-inv-embed') == 'on':
+            if not ch.get('wh-inv-embed') == ON:
                 mylang.add('subj-head-phrase := [ SYNSEM.LOCAL.CAT.MC na-or-+,'
                        'HEAD-DTR.SYNSEM.NON-LOCAL [ QUE.LIST < >, SLASH.LIST < > ] ].')
                 mylang.add(NC_SUBJ_HEAD, section='phrases')
@@ -236,22 +228,17 @@ def customize_wh_ques(mylang,ch,rules,roots):
             mylang.add('extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD [ AUX -, INV -] ].')
 
 
-    if ch.get(MTX_FRONT) in [MULTI]:
+    if ch.get(MTRX_FRONT) in [MULTI]:
         mylang.add(EX_SUBJ_MULTI,section='phrases')
         rules.add('ex-subj := extracted-subj-phrase.')
         mylang.add('wh-ques-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < [], ... > ].')
         mylang.add(FIRST_FILLER)
         # prevent adjunct extraction, as it will be done out of head-subj
-        if ch.get(MTX_FRONT_OPT) == 'none-oblig':
+        if ch.get(MTRX_FR_OPT) == 'none-oblig':
             mylang.add('1st-head-filler-phrase := [ SYNSEM.MODIFIED hasmod ].')
-            #if len(ch.get('adv', [])) > 0 or len(ch.get('normadp', [])) > 0:
-            #    mylang.add('headv-adj-phrase := [ HEAD-DTR.SYNSEM.MODIFIED notmod ].')
-        #mylang.add(SEC_FILLER)
         mylang.add('wh-1st-ques-phrase := 1st-head-filler-phrase & wh-ques-phrase.')
-        #mylang.add('wh-2nd-ques-phrase := 2nd-head-filler-phrase & wh-ques-phrase.')
         rules.add('wh1-ques := wh-1st-ques-phrase.')
-        #rules.add('wh2-ques := wh-2nd-ques-phrase.')
-        if ch.get(MTX_FRONT_OPT) == 'all-oblig':
+        if ch.get(MTRX_FR_OPT) == ALL_OBLIG:
             mylang.add(WH_Q_PHR_NO_OR_SG_OBLIG_MULTI) # Pass up QUE from HEAD-DTR
         # Rule out structural ambiguity for sentences like "Who sleeps where?"
         if ch.get('word-order') in ['svo', 'sov', 'osv' ]:
@@ -268,38 +255,38 @@ def customize_wh_ques(mylang,ch,rules,roots):
 
     # If the fronting isn't obligatory or if only one question phrase
     # is obligatorily fronted, need also in-situ rules:
-    if (ch.get(MTX_FRONT) == SINGLE and not ch.get(MTX_FRONT_OPT) == SG_OBLIG) \
-            or ch.get(MTX_FRONT) == 'in-situ' \
-            or (ch.get(MTX_FRONT) == MULTI and not ch.get(MTX_FRONT_OPT) == ALL_OBLIG) \
-            or ch.get('wh-q-infl') == 'on':
+    if (ch.get(MTRX_FRONT) == SINGLE and not ch.get(MTRX_FR_OPT) == SG_OBLIG) \
+            or ch.get(MTRX_FRONT) == IN_SITU \
+            or (ch.get(MTRX_FRONT) == MULTI and not ch.get(MTRX_FR_OPT) == ALL_OBLIG) \
+            or ch.get(WH_INFL) == ON:
         mylang.add_literal('; In-situ interrogative clause.',section='phrases')
         mylang.add(IN_SITU_PHRASE)
         rules.add('in-situ-ques := insitu-int-cl.')
-        if not ch.get(MTX_FRONT) == 'in-situ':
+        if not ch.get(MTRX_FRONT) == IN_SITU:
             mylang.add('insitu-int-cl := [ SYNSEM.NON-LOCAL.YNQ.LIST < > ].')
-            if ch.get('embed-insitu') == 'on':
+            if ch.get(EMB_INSITU) == ON:
                 mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.WH.BOOL + ].')
             else:
                 mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.WH.BOOL - ].')
-        if ch.get(MTX_FRONT) in [SINGLE,MULTI]:
+        if ch.get(MTRX_FRONT) in [SINGLE,MULTI]:
             mylang.add('insitu-int-cl := [ SYNSEM.L-QUE - ].')
-        if (ch.get(MTX_FRONT) == SINGLE
-            and not ch.get(MTX_FRONT_OPT) == SG_OBLIG) \
-                and not ch.get('embed-insitu') == 'on':
+        if (ch.get(MTRX_FRONT) == SINGLE
+            and not ch.get(MTRX_FR_OPT) == SG_OBLIG) \
+                and not ch.get(EMB_INSITU) == ON:
             mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.MC + ].')
-        elif ch.get(MTX_FRONT) == 'multi' and ch.get(MTX_FRONT_OPT) == SG_OBLIG:
+        elif ch.get(MTRX_FRONT) == 'multi' and ch.get(MTRX_FR_OPT) == SG_OBLIG:
             mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.MC - ].')
         # For non-free word orders, need to rule out structural ambiguity:
         if ch.get('word-order') in ['svo', 'sov'] \
-                and not (ch.get(MTX_FRONT) == 'in-situ'
-                         or ch.get('wh-q-infl') == 'on'):
+                and not (ch.get(MTRX_FRONT) == IN_SITU
+                         or ch.get(WH_INFL) == ON):
             mylang.add('subj-head-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
 
     # Obligatory pied piping of both nouns and adpositions is the default.
     # If there is no pied piping or it is optional, additional extraction rules are needed.
-    if ch.get(MTX_FRONT) in [SINGLE, MULTI] and len(ch.get('det', [])) > 0:
-        if (not ch.get('pied-pip') == 'on' or (ch.get('pied-pip')=='on'
-                                               and not (ch.get('oblig-pied-pip-noun')== 'on'))):
+    if ch.get(MTRX_FRONT) in [SINGLE, MULTI] and len(ch.get('det', [])) > 0:
+        if (not ch.get('pied-pip') == ON or (ch.get('pied-pip')==ON
+                                               and not (ch.get('oblig-pied-pip-noun')== ON))):
             mylang.add_literal('; If there is no obligatory pied-piping, determiners '
                                'can be extracted separately:',section='phrasal')
             mylang.add(EX_DET_PHRASE,section='phrases')
@@ -312,22 +299,22 @@ def customize_wh_ques(mylang,ch,rules,roots):
                 [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png,
                 HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CONT.HOOK.INDEX.PNG #png ].''')
             rules.add('ex-det := extracted-det-phrase.')
-        if ch.get('pied-pip-adp') == 'on' and not ch.get('oblig-pied-pip-adp') == 'on':
+        if ch.get('pied-pip-adp') == 'on' and not ch.get('oblig-pied-pip-adp') == ON:
             mylang.add('extracted-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD +vp ].')
             if ch.get('word-order') in ['vos', 'vso', 'ovs','v-initial']:
                 mylang.add('head-subj-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < > ].')
         else:
             mylang.add('extracted-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD verb ].')
 
-        if ch.get('pied-pip-adp') == 'on' and \
-                ch.get('oblig-pied-pip-noun') != 'on' \
-                and ch.get('oblig-pied-pip-adp') == 'on':
+        if ch.get('pied-pip-adp') == ON and \
+                ch.get('oblig-pied-pip-noun') != ON \
+                and ch.get('oblig-pied-pip-adp') == ON:
             mylang.add('norm-adposition-lex := [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.NON-LOCAL.SLASH.LIST < > ].')
 
-    if ch.get(MTX_FRONT) in [SINGLE, MULTI]:
+    if ch.get(MTRX_FRONT) in [SINGLE, MULTI]:
         # Free probably shouldn't belong here? check
         if ch.get('word-order') in ['vos','svo','sov','free']:
-            if ch.get('pied-pip-adp') != 'on' or ch.get('oblig-pied-pip-adp') == 'on':
+            if ch.get('pied-pip-adp') != 'on' or ch.get('oblig-pied-pip-adp') == ON:
                 mylang.add('extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ cons ].',merge=True)
             mylang.add('extracted-subj-phrase := [ SYNSEM.LOCAL.CAT.VAL.COMPS  < >,'
                                                  ' HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].',merge=True)
@@ -336,8 +323,8 @@ def customize_wh_ques(mylang,ch,rules,roots):
             mylang.add('extracted-subj-phrase := [ SYNSEM.LOCAL.CAT.VAL.COMPS #comps,'
                                                  ' HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS #comps ].',merge=True)
 
-    if ch.get('q-part') == 'on':
-        if ch.get(MTX_FRONT) == 'in-situ':
+    if ch.get('q-part') == ON:
+        if ch.get(MTRX_FRONT) == IN_SITU:
             mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.WH.BOOL + ].')
             # Perhaps this special case below can be dealt with differently?
             # Like with the WH feature?

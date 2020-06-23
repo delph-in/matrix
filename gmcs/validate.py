@@ -1792,8 +1792,8 @@ def validate_adnominal_possession(ch, vr):
 def validate_wh_ques(ch, vr):
     from gmcs.constants import ON,IN_SITU,MTRX_FRONT, WH_QUE_PTCL, \
         WH_QUE_INFL, EMBED_FRONT, MULTI, ALL_OBLIG, NO_MULTI, PIED, \
-        PIED_ADP, EMB_PIP, EMB_PIP_ADP, OBL_PIP_NOUN, OBL_PIP_ADP, \
-        EMB_OBL_PIP_ADP, EMB_OBL_PIP_N, MTRX_FR_OPT, EMB_FR_OPT, X_FR_OPT, SG_OBLIG
+        PIED_ADP, OBL_PIP_NOUN, OBL_PIP_ADP, \
+        MTRX_FR_OPT, SG_OBLIG
     wh_q_strat = None
     if ch.get(MTRX_FRONT):
         wh_q_strat = MTRX_FRONT
@@ -1822,10 +1822,6 @@ def validate_wh_ques(ch, vr):
             (ch.get(MTRX_FRONT)== None or ch.get(MTRX_FRONT)== IN_SITU):
         mess = 'Pied piping only makes sense when fronting is possible; choose a fronting strategy.'
         vr.err(PIED,mess)
-    if (ch.get(EMB_PIP) == ON or ch.get(EMB_PIP_ADP) == ON) and \
-            (ch.get(EMBED_FRONT)== None or ch.get(EMBED_FRONT) == IN_SITU):
-        mess = 'Pied piping only makes sense when fronting is possible; choose a fronting strategy.'
-        vr.err(EMB_PIP,mess)
     # Pied piping obligatoriness only makes sense when there is pied piping
     if ch.get(OBL_PIP_NOUN) == ON and not ch.get(PIED):
         mess = 'You did not check pied piping itself but said it is obligatory'
@@ -1833,17 +1829,9 @@ def validate_wh_ques(ch, vr):
     if ch.get(OBL_PIP_ADP) == ON and not ch.get(PIED_ADP):
         mess = 'You did not check pied piping itself but said it is obligatory'
         vr.err(PIED_ADP, mess)
-    if ch.get(EMB_OBL_PIP_N) == ON and not ch.get(EMB_PIP):
-        mess = 'You did not check pied piping itself but said it is obligatory'
-        vr.err(EMB_PIP, mess)
-    if ch.get(EMB_OBL_PIP_ADP) == ON and not ch.get(EMB_PIP_ADP):
-        mess = 'You did not check pied piping itself but said it is obligatory'
-        vr.err(EMB_PIP_ADP, mess)
     if ch.get(NO_MULTI) == ON:
         if (ch.get(MTRX_FRONT) == MULTI or ch.get(EMBED_FRONT) == MULTI
-            or ch.get(MTRX_FR_OPT == ALL_OBLIG)
-            or ch.get(EMB_FR_OPT == ALL_OBLIG)
-            or ch.get(X_FR_OPT == ALL_OBLIG)):
+            or ch.get(MTRX_FR_OPT == ALL_OBLIG)):
             mess = 'You have made choices regarding multiple question fronting, ' \
                    'so you cannot say multiple questions are not allowed in one clause.'
             vr.err(NO_MULTI,mess)
