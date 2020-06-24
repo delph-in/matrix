@@ -172,6 +172,7 @@ def customize_wh_ques(mylang,ch,rules,roots):
         if len(ch.get('adv', [])) > 0 or len(ch.get('normadp', [])) > 0:
             mylang.add('''head-adj-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ]. ''',section='addenda')
 
+
     mylang.add_literal(';;; Wh-question-related phrasal types',section='phrases')
 
     if ch.get(MTRX_FRONT) in [SINGLE, MULTI]:
@@ -220,6 +221,7 @@ def customize_wh_ques(mylang,ch,rules,roots):
             if not ch.get('wh-inv-embed') == ON:
                 mylang.add('subj-head-phrase := [ SYNSEM.LOCAL.CAT.MC na-or-+,'
                        'HEAD-DTR.SYNSEM.NON-LOCAL [ QUE.LIST < >, SLASH.LIST < > ] ].')
+                mylang.add('adj-head-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL [ QUE.LIST < > ] ].')
                 mylang.add(NC_SUBJ_HEAD, section='phrases')
                 rules.add('nc-subjh := subj-head-nc-phrase.')
             mylang.add('extracted-adv-adp-adj-phrase := '
@@ -245,11 +247,11 @@ def customize_wh_ques(mylang,ch,rules,roots):
             mylang.add('''head-adj-int-phrase :+ [ HEAD-DTR.SYNSEM [ L-QUE -,
              LOCAL.CAT.VAL [ SUBJ clist, COMPS clist ] ] ].''',section='addenda')
         if ch.get('word-order') == 'free':
-            mylang.add('''adj-headv-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ clist ].''', merge=True)
-            mylang.add('''headv-adj-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ clist ].''', merge=True)
+            mylang.add('''adj-head-int-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ clist ].''', merge=True)
+            mylang.add('''head-adj-int-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ clist ].''', merge=True)
         # The below does not make sense?
         if ch.get('word-order') in ['ovs', 'vos', 'vso']:
-            mylang.add('''adj-head-int-phrase := [ HEAD-DTR.SYNSEM.L-QUE - ].''',section='addenda')
+            mylang.add('''adj-head-int-phrase :+ [ HEAD-DTR.SYNSEM.L-QUE - ].''',section='addenda')
 
 
 
