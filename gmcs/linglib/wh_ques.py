@@ -21,7 +21,7 @@ WH_Q_PHR_SG_OR_OBLIG_FRONT = ''' wh-ques-phrase :=
 
 WH_Q_PHR = ''' wh-ques-phrase := basic-head-filler-phrase & interrogative-clause &
 		  head-final &
-   [ SYNSEM [ LOCAL.CAT [ WH.BOOL +, MC bool,
+   [ SYNSEM [ LOCAL.CAT [ WH.LOGICAL-OR.BOOL +, MC bool,
 			VAL #val,
 			HEAD verb ] ],
      HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL #val & [ SUBJ < >,
@@ -176,8 +176,8 @@ def customize_wh_ques(mylang,ch,rules,roots):
         mylang.add('''clause :+ [ SYNSEM.NON-LOCAL.QUE 0-1-alist ]. ''')
         if ch.get(MTRX_FRONT):
             mylang.add('''wh-ques-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.QUE 0-alist ].''')
-            #mylang.add('''head-adj-int-phrase :+ [ SYNSEM [ LOCAL.CAT.WH.LOGICAL-AND.BOOL -,
-            #                                       NON-LOCAL.QUE 0-1-alist ] ]. ''', section='addenda')
+            mylang.add('''head-adj-int-phrase :+ [ SYNSEM [ LOCAL.CAT.WH.LOGICAL-AND.BOOL -,
+                                                   NON-LOCAL.QUE 0-1-alist ] ]. ''', section='addenda')
 
 
     mylang.add_literal(';;; Wh-question-related phrasal types',section='phrases')
@@ -274,9 +274,9 @@ def customize_wh_ques(mylang,ch,rules,roots):
         if not ch.get(MTRX_FRONT) == IN_SITU:
             mylang.add('insitu-int-cl := [ SYNSEM.NON-LOCAL.YNQ.LIST < > ].')
             if ch.get(EMB_INSITU) == ON:
-                mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.WH.BOOL + ].')
+                mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.WH.LOGICAL-OR.BOOL + ].')
             else:
-                mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.WH.BOOL - ].')
+                mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.WH.LOGICAL-OR.BOOL - ].')
         if ch.get(MTRX_FRONT) in [SINGLE,MULTI]:
             mylang.add('insitu-int-cl := [ SYNSEM.L-QUE - ].')
         if (ch.get(MTRX_FRONT) == SINGLE
@@ -334,7 +334,7 @@ def customize_wh_ques(mylang,ch,rules,roots):
 
     if ch.get('q-part') == ON:
         if ch.get(MTRX_FRONT) == IN_SITU:
-            mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.WH.BOOL + ].')
+            mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.WH.LOGICAL-OR.BOOL + ].')
             # Perhaps this special case below can be dealt with differently?
             # Like with the WH feature?
             if len(ch.get('q-particle')) == 1:

@@ -276,6 +276,10 @@ cat-min := avm.
 ; also that it is WH.BOOL +. A constituent question will be WH.BOOL + if the head-complement
 ; rule's mother's WH is the OR of its daughters.
 
+or-and := avm &
+[ LOGICAL-OR logical-or,
+  LOGICAL-AND logical-and ].
+
 cat := cat-min &
   [ HEAD head-min,
     VAL valence-min,
@@ -283,7 +287,7 @@ cat := cat-min &
     MKG mkg,
     HC-LIGHT luk,
     POSTHEAD bool,
-    WH logical-or].
+    WH or-and ].
 
 cat-sat := cat &
  [ VAL [ SPR olist,
@@ -1951,17 +1955,18 @@ nc-head-filler-phrase := nc-filler-phrase & head-compositional.
 basic-head-subj-phrase := head-valence-phrase & head-compositional &
 			  basic-binary-headed-phrase &
   [ SYNSEM phr-synsem &
-           [ LOCAL.CAT [ WH.OR < #wh1, #wh2 >,
+           [ LOCAL.CAT [ WH [ LOGICAL-OR.OR < #or1, #or2 >,
+                              LOGICAL-AND.AND < #and1, #and2 >],
                          HC-LIGHT -,
                          VAL [ SUBJ < >,
                                COMPS #comps,
                                SPR #spr ] ] ],
-    HEAD-DTR.SYNSEM.LOCAL.CAT [ WH #wh1,
+    HEAD-DTR.SYNSEM.LOCAL.CAT [ WH [ LOGICAL-OR #or1, LOGICAL-AND #and1 ],
                                 VAL [ SUBJ < #synsem >,
                                     COMPS #comps,
                                     SPR #spr ] ],
     NON-HEAD-DTR.SYNSEM #synsem & canonical-synsem &
-           [ LOCAL [ CAT [ WH #wh2,
+           [ LOCAL [ CAT [ WH [ LOGICAL-OR #or2, LOGICAL-AND #and2 ],
                            VAL [ SUBJ olist,
                                  COMPS olist,
                                  SPR olist ] ] ],
@@ -2011,7 +2016,7 @@ basic-head-subj-nmc-phrase := head-valence-phrase & basic-binary-headed-phrase &
 basic-head-spec-phrase-super := head-valence-phrase & phrasal &
               binary-headed-phrase &
   [ INFLECTED infl-satisfied,
-    SYNSEM [ LOCAL.CAT [ WH.OR < #wh1, #wh2 >,
+    SYNSEM [ LOCAL.CAT [ WH [ LOGICAL-OR.OR < #or1, #or2 >, LOGICAL-AND.AND < #and1, #and2 > ],
                          VAL [ SUBJ #subj,
                                COMPS #spcomps,
                                SPR #spr,
@@ -2020,7 +2025,7 @@ basic-head-spec-phrase-super := head-valence-phrase & phrasal &
                          HC-LIGHT - ],
               MODIFIED #modif ],
     HEAD-DTR [ INFLECTED infl-satisfied,
-               SYNSEM [ LOCAL [ CAT [ WH #wh1,
+               SYNSEM [ LOCAL [ CAT [ WH [ LOGICAL-OR #or1, LOGICAL-AND #and1 ],
                                       HEAD #head,
                                       VAL [ SUBJ #subj,
                                             COMPS olist & #comps,
@@ -2031,7 +2036,7 @@ basic-head-spec-phrase-super := head-valence-phrase & phrasal &
                                 CONT.HOOK #hdhook ],
                         MODIFIED #hmodif ] ],
     NON-HEAD-DTR.SYNSEM #synsem &
-     [ LOCAL [ CAT [ WH #wh2, VAL [ SPEC < [ LOCAL [ CAT [ HEAD #head,
+     [ LOCAL [ CAT [ WH [ LOGICAL-OR #or2, LOGICAL-AND #and2 ], VAL [ SPEC < [ LOCAL [ CAT [ HEAD #head,
                                                   VAL.COMPS #comps ],
                                             CONT.HOOK #hdhook ],
                                     MODIFIED #hmodif ] >,
@@ -2059,20 +2064,21 @@ basic-head-spec-phrase := basic-head-spec-phrase-super &
 basic-head-comp-phrase := head-valence-phrase & head-compositional &
               binary-headed-phrase &
   [ SYNSEM phr-synsem-min &
-           [ LOCAL.CAT [ WH.OR < #wh1, #wh2 >,
+           [ LOCAL.CAT [ WH [ LOGICAL-OR.OR < #or1, #or2 >,
+                              LOGICAL-AND.AND < #and1, #and2 >],
                          VAL [ SUBJ #subj,
                                SPEC #spec,
                                SPR #spr ],
                          POSTHEAD #ph,
                          HC-LIGHT #light ],
              LIGHT #light ],
-    HEAD-DTR.SYNSEM [ LOCAL.CAT [ WH #wh1,
+    HEAD-DTR.SYNSEM [ LOCAL.CAT [ WH [ LOGICAL-OR #or1, LOGICAL-AND #and1 ],
                                   VAL [ SUBJ #subj,
                                         SPEC #spec,
                                         SPR #spr ],
                                   HC-LIGHT #light,
                                   POSTHEAD #ph ]],
-    NON-HEAD-DTR.SYNSEM canonical-synsem & [ LOCAL.CAT.WH #wh2 ],
+    NON-HEAD-DTR.SYNSEM canonical-synsem & [ LOCAL.CAT.WH [ LOGICAL-OR #or2, LOGICAL-AND #and2 ] ],
     C-CONT [ RELS 0-alist, HCONS 0-alist, ICONS 0-alist ] ].
 
 
@@ -2446,11 +2452,12 @@ extracted-adj-phrase := basic-extracted-adj-phrase &
 ; OZ 2020-01-25 Adding QUE append to support multiple questions.
 
 basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
-  [ SYNSEM [ LOCAL.CAT [ MKG #mkg, WH.OR < #wh1, #wh2 > ],
+  [ SYNSEM [ LOCAL.CAT [ MKG #mkg, WH [ LOGICAL-OR.OR < #or1, #or2 >,
+                                        LOGICAL-AND.AND < #and1, #and2 >] ],
              NON-LOCAL [ SLASH.APPEND < #s1, #s2 >,
                          REL 0-alist, QUE.APPEND < #q1, #q2 > ] ],
     HEAD-DTR.SYNSEM
-           [ LOCAL [ CAT [ WH #wh1,
+           [ LOCAL [ CAT [ WH [ LOGICAL-OR #or1, LOGICAL-AND #and1 ],
                            HEAD #head,
                            VAL #val,
                            POSTHEAD #ph,
@@ -2464,7 +2471,7 @@ basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
              LIGHT #light,
              MODIFIED #modif ],
     NON-HEAD-DTR.SYNSEM
-           [ LOCAL [ CAT [ WH #wh2, HEAD [ MOD < [ LOCAL local &
+           [ LOCAL [ CAT [ WH [ LOGICAL-OR #or2, LOGICAL-AND #and2 ], HEAD [ MOD < [ LOCAL local &
                                               [ CAT [ HEAD #head,
                                                       VAL #val,
                                                       POSTHEAD #ph,
