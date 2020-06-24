@@ -153,7 +153,7 @@ def customize_wh_ques(mylang,ch,rules,roots):
         # the filler and the gap and the extracted subject and the verb:
         mylang.add(BASIC_FILLER_SG,section='phrases')
         mylang.add(EX_SUBJ,section='phrases')
-        mylang.add('''clause :+ [ SYNSEM.NON-LOCAL.QUE.LIST < > ]. ''')
+        mylang.add('''clause :+ [ SYNSEM.NON-LOCAL.QUE 0-alist ]. ''')
     else:
         if ch.get('person') == '1-2-3':
             mylang.add('wh-pronoun-noun-lex := [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 3rd ].')
@@ -167,10 +167,17 @@ def customize_wh_ques(mylang,ch,rules,roots):
                                 LOCAL.CAT.VAL [ SUBJ clist, COMPS clist ] ] ].''',section='addenda')
             mylang.add('''adj-head-int-phrase :+ [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH 0-alist ].''',section='addenda')
 
-    if (not ch.get(MTRX_FRONT) and ch.get(WH_INFL) != ON) or ch.get(NO_MULTI) == ON:
+    if (not ch.get(MTRX_FRONT) and ch.get(WH_INFL) != ON) :
         mylang.add('''clause :+ [ SYNSEM.NON-LOCAL.QUE.LIST < > ]. ''')
         if len(ch.get('adv', [])) > 0 or len(ch.get('normadp', [])) > 0:
             mylang.add('''head-adj-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ]. ''',section='addenda')
+
+    if ch.get(NO_MULTI) == ON:
+        mylang.add('''clause :+ [ SYNSEM.NON-LOCAL.QUE 0-1-alist ]. ''')
+        if ch.get(MTRX_FRONT):
+            mylang.add('''wh-ques-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.QUE 0-alist ].''')
+            #mylang.add('''head-adj-int-phrase :+ [ SYNSEM [ LOCAL.CAT.WH.LOGICAL-AND.BOOL -,
+            #                                       NON-LOCAL.QUE 0-1-alist ] ]. ''', section='addenda')
 
 
     mylang.add_literal(';;; Wh-question-related phrasal types',section='phrases')

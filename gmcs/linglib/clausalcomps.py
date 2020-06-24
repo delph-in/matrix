@@ -628,9 +628,12 @@ def customize_clausal_verb(clausalverb,mylang,ch,cs,extra):
                                      'NON-LOCAL.QUE 0-alist ] ].'
                        , merge=True)
         elif cs['ques'] == 'ques':
-            mylang.add(clausalverb + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL [ CAT.WH.BOOL +, '
-                                     '                                             CONT.HOOK.INDEX.SF ques ] ]> ].'
+            from gmcs.constants import MTRX_FRONT
+            mylang.add(clausalverb + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.SF ques ] > ].'
                        , merge=True)
+            if ch.get(MTRX_FRONT):
+                mylang.add(clausalverb + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.WH.BOOL + ] > ].'
+                           , merge=True)
 
     if ch.get('wh-inv-embed') == 'on':
         mylang.add(clausalverb + ':= [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.AUX + ] > ].', merge=True)

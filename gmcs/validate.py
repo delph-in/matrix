@@ -1791,7 +1791,7 @@ def validate_adnominal_possession(ch, vr):
 
 def validate_wh_ques(ch, vr):
     from gmcs.constants import ON,IN_SITU,MTRX_FRONT, WH_QUE_PTCL, \
-        WH_QUE_INFL, EMBED_FRONT, MULTI, ALL_OBLIG, NO_MULTI, PIED, \
+        WH_INFL, MULTI, ALL_OBLIG, NO_MULTI, PIED, \
         PIED_ADP, OBL_PIP_NOUN, OBL_PIP_ADP, \
         MTRX_FR_OPT, SG_OBLIG
     wh_q_strat = None
@@ -1799,8 +1799,8 @@ def validate_wh_ques(ch, vr):
         wh_q_strat = MTRX_FRONT
     elif ch.get(WH_QUE_PTCL) == ON:
         wh_q_strat = WH_QUE_PTCL
-    elif ch.get(WH_QUE_INFL) == ON:
-        wh_q_strat = WH_QUE_INFL
+    elif ch.get(WH_INFL) == ON:
+        wh_q_strat = WH_INFL
     elif ch.get('wh-q-inter-verbs') == ON:
         wh_q_strat = 'wh-q-inter-verbs'
     found_ques_word = True if ch.get('qverb') else False
@@ -1830,8 +1830,8 @@ def validate_wh_ques(ch, vr):
         mess = 'You did not check pied piping itself but said it is obligatory'
         vr.err(PIED_ADP, mess)
     if ch.get(NO_MULTI) == ON:
-        if (ch.get(MTRX_FRONT) == MULTI or ch.get(EMBED_FRONT) == MULTI
-            or ch.get(MTRX_FR_OPT == ALL_OBLIG)):
+        if (ch.get(MTRX_FRONT) == MULTI
+            or ch.get(MTRX_FR_OPT) == ALL_OBLIG):
             mess = 'You have made choices regarding multiple question fronting, ' \
                    'so you cannot say multiple questions are not allowed in one clause.'
             vr.err(NO_MULTI,mess)
