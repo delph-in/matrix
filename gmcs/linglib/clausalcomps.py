@@ -628,10 +628,10 @@ def customize_clausal_verb(clausalverb,mylang,ch,cs,extra):
                                      'NON-LOCAL.QUE 0-alist ] ].'
                        , merge=True)
         elif cs['ques'] == 'ques':
-            from gmcs.constants import MTRX_FRONT
+            from gmcs.constants import MTRX_FRONT,MTRX_FR_OPT
             mylang.add(clausalverb + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.SF ques ] > ].'
                        , merge=True)
-            if ch.get(MTRX_FRONT):
+            if ch.get(MTRX_FRONT) and not ch.get('embed-insitu') == 'on':
                 mylang.add(clausalverb + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.WH.LOGICAL-OR.BOOL + ] > ].'
                            , merge=True)
 

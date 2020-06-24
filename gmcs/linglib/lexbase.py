@@ -116,7 +116,7 @@ ADV =  '''adverb-lex := adverb-lex-item &
            L-QUE -] ].'''
 
 WH_ADV =  '''wh-adverb-lex := adverb-lex-item & zero-arg-que &
-[ SYNSEM [ LOCAL [ CAT [ WH [ LOGICAL-OR.BOOL +, LOGICAL-AND.BOOL + ], HEAD.MOD < [ LOCAL.CAT.WH.LOGICAL-OR.BOOL - ] > ],
+[ SYNSEM [ LOCAL [ CAT [ WH [ LOGICAL-OR.BOOL +, LOGICAL-AND.BOOL + ] ],
                    CONT [ RELS.LIST < [ ], [ ARG0 #arg0 ], quant-relation & [ PRED "which_q_rel" ] >  ] ],
            NON-LOCAL.QUE.LIST < #arg0 >,
            L-QUE + ] ].'''

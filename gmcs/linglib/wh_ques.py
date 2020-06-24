@@ -162,6 +162,7 @@ def customize_wh_ques(mylang,ch,rules,roots):
         if len(ch.get('adv', [])) > 0 or len(ch.get('normadp', [])) > 0:
             if ch.get(NO_MULTI) == ON:
                 mylang.add('''head-adj-int-phrase :+ [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH 0-alist ].''',section='addenda')
+                mylang.add('''wh-adverb-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.WH.LOGICAL-OR.BOOL - ] > ].''')
             else:
                 mylang.add('''head-adj-int-phrase :+ [ HEAD-DTR.SYNSEM [ L-QUE -,
                                 LOCAL.CAT.VAL [ SUBJ clist, COMPS clist ] ] ].''',section='addenda')
@@ -201,6 +202,13 @@ def customize_wh_ques(mylang,ch,rules,roots):
         mylang.add_literal('; Adjunct extraction',section='phrases')
         mylang.add(EX_ADJ)
         rules.add('ex-adj := extracted-adv-adp-adj-phrase.')
+        # This (below) needs to be conceptualized better.
+        # Why is this? Probably not well-motivated in the end.
+        # This was added to prevent ex-adj from applying below and above ex-subj, in some cases.
+        if ch.get('word-order') != 'free' \
+                and ch.get('wh-inv-matrix') != ON \
+                and ch.get(MTRX_FR_OPT) == 'none-oblig':
+            mylang.add('extracted-adv-adp-adj-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ cons ].')
 
     if ch.get(MTRX_FRONT) in [SINGLE]:
         # With single fronting, can restrict SLASH to one element at most
@@ -260,7 +268,9 @@ def customize_wh_ques(mylang,ch,rules,roots):
         if ch.get('word-order') in ['ovs', 'vos', 'vso']:
             mylang.add('''adj-head-int-phrase :+ [ HEAD-DTR.SYNSEM.L-QUE - ].''',section='addenda')
 
-
+    if (ch.get(MTRX_FRONT) in [SINGLE] and ch.get(MTRX_FR_OPT) == 'none-oblig'):
+        if ch.get('word-order') in ['ovs', 'vos', 'vso']:
+            mylang.add('''adj-head-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.L-QUE - ].''',section='addenda')
 
     # If the fronting isn't obligatory or if only one question phrase
     # is obligatorily fronted, need also in-situ rules:
