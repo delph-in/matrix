@@ -1039,6 +1039,10 @@ def validate_yesno_questions(ch, vr):
                            'or impossible; choose one or the other.'
             vr.err ('q-part-allopt',mess)
 
+    elif ch.get('q-part-all-opt') or len(ch.get('q-particle')) != 0 or qpartorder:
+        mess = 'You did not check the particle checkbox but made other choices about particles.'
+        vr.err('q-part-allopt', mess)
+
     if ch.get('q-inv'):
         #    if qinvverb != 'aux' and qinvverb != 'main' and qinvverb != 'main-aux':
         #      mess = 'There is something wrong with the verb type (main/aux) for inverted questions.  Please contact developers.'
@@ -1813,6 +1817,7 @@ def validate_wh_ques(ch, vr):
     if wh_q_strat and not found_ques_word:
         mess = 'Please specify question words on the Lexicon page'
         vr.err(wh_q_strat,mess)
+
     #Pied piping only makes sense when there are determiners:
     if (ch.get(PIED) == ON or ch.get(PIED_ADP) == ON) and not len(ch.get('det', [])) > 0:
         mess = 'Pied piping only makes sense when there are determiners; specify a wh-determiner on the Lexicon page.'
@@ -1829,15 +1834,46 @@ def validate_wh_ques(ch, vr):
     if ch.get(OBL_PIP_ADP) == ON and not ch.get(PIED_ADP):
         mess = 'You did not check pied piping itself but said it is obligatory'
         vr.err(PIED_ADP, mess)
+
     if ch.get(NO_MULTI) == ON:
         if (ch.get(MTRX_FRONT) == MULTI
             or ch.get(MTRX_FR_OPT) == ALL_OBLIG):
             mess = 'You have made choices regarding multiple question fronting, ' \
                    'so you cannot say multiple questions are not allowed in one clause.'
             vr.err(NO_MULTI,mess)
+
     if ch.get(MTRX_FRONT) == IN_SITU and ch.get(MTRX_FR_OPT) in [ALL_OBLIG,SG_OBLIG]:
         mess = 'In-situ position and obligatory fronting are not compatible choices.'
         vr.err(MTRX_FR_OPT,mess)
+
+    if ch.get(MTRX_FR_OPT) != 'none-oblig' and ch.get('embed-insitu') == ON:
+        mess = 'This choice is only valid if fronting is optional.'
+        vr.err('embed-insitu', mess)
+
+    if ch.get('wh-inv-matrix') == ON and not ch.get('q-inv') == ON:
+        mess = 'You did not check inversion on the Yes/No page.'
+        vr.err('wh-inv-matrix', mess)
+
+    if ch.get('wh-inv-embed') == ON and not ch.get('wh-inv-matrix') == ON:
+        mess = 'To get inversion in embedded clauses, you must also have it in main clauses.'
+        vr.err('wh-inv-embed', mess)
+
+    if ch.get('wh-inv-notsubj') == ON and not ch.get('wh-inv-matrix') == ON:
+        mess = 'This choice is only valid if inversion in matrix clauses is chosen.'
+        vr.err('wh-inv-notsubj', mess)
+
+    if ch.get('focus-marking') == ON and not len(ch.get('c-focus-marker')) > 0:
+        mess = 'You must specify a contrastive focus marker for this choice to work. You do not need' \
+               'any other Information Structure choices.'
+        vr.err('focus-marking', mess)
+
+    if ch.get('wh-q-inter-verbs') == ON and not len(ch.get('qverb')) > 0:
+        mess = 'You must specify at least one lexical type for question verbs on the Lexicon page.'
+        vr.err('wh-q-inter-verbs', mess)
+
+    if ch.get('wh-q-inter-verbs') != ON and len(ch.get('qverb')) > 0:
+        mess = 'You must check this box if you specified any question verbs on the Lexicon page.'
+        vr.err('wh-q-inter-verbs', mess)
 
 
 

@@ -555,6 +555,21 @@ def validate_lexicon(ch, vr):
                 mess = 'You must specify a predicate for each verb you define.'
                 vr.err(bistem.full_key + '_pred', mess)
 
+    for qv in ch.get('qverb'):
+        if not qv['predtype']:
+            mess = 'You must specify what kind of second predicate this verb contributes.'
+            vr.err(qv.full_key+'_predtype',mess)
+        for stem in qv['stem']:
+            if not stem['verbpred']:
+                mess = 'You must specify the event predicate this verb contributes.'
+                vr.err(stem.full_key+'_verbpred',mess)
+            if not stem['nounpred']:
+                mess = 'You must specify the second predicate this verb contributes.'
+                vr.err(stem.full_key+'_nounpred',mess)
+        if len(qv['bistem']) > 0:
+            mess = 'Bipartite stems are not yet supported for question verbs.'
+            vr.err(qv.full_key,mess)
+
     if not (seenTrans and seenIntrans):
         mess = 'You should create intransitive and transitive verb classes.'
         vr.warn('verb1_valence', mess)
@@ -958,7 +973,19 @@ def validate_lexicon(ch, vr):
                    'Please account for these cases: ' + ', '.join(not_covered) + '.'
             vr.err('adp1_opt', mess)
 
+    for adp in ch.get('normadp'):
+        if len(adp['stem']) == 0:
+            mess = 'Please specify the spellings for this adposition type'
+            vr.err(adp.full_key+'_stem1_orth', mess)
+        if not adp['order']:
+            mess = 'Please specify the position for this adposition.'
+            vr.err(adp.full_key+'_order', mess)
 
+    # Adverbs
+    for adv in ch.get('adv'):
+        if not adv['type']:
+            mess = 'Please select the type for this adverb.'
+            vr.err(adv.full_key+'_type',mess)
 
     # Features on all lexical types
     # TJT 2014-09-02: Adding adj and cop

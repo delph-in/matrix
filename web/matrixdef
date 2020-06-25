@@ -2999,7 +2999,7 @@ BeginIter normadp{i} "an Adposition" 0
   . before "Before" "before"
   . both "Before and After" "before and after"
 
-  BeginIter feat{j} "a Feature on Adposition's Complement" 0 1
+  BeginIter feat{j} "a Feature on Adposition's Complement" 0 0
 
     Select name "Adposition {i} feature {j} name" "Name: " " "
     fillnames c=noun
