@@ -280,6 +280,15 @@ or-and := avm &
 [ LOGICAL-OR logical-or,
   LOGICAL-AND logical-and ].
 
+non-wh := or-and &
+[ LOGICAL-OR.BOOL -,
+  LOGICAL-AND.BOOL - ].
+
+wh := or-and &
+[ LOGICAL-OR.BOOL +,
+  LOGICAL-AND.BOOL + ].
+
+
 cat := cat-min &
   [ HEAD head-min,
     VAL valence-min,
