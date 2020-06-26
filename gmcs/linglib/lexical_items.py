@@ -259,8 +259,8 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
         vcluster = False
         mylang.add('verb-lex := basic-verb-lex & non-mod-lex-item.')
 
-    typedef = mainorverbtype + ' :=  \
-       [ SYNSEM.LOCAL [ CAT [ WH non-wh, VAL [ SPR < >, \
+    typedef = mainorverbtype + ' := basic-non-wh-word-lex &  \
+       [ SYNSEM.LOCAL [ CAT [ VAL [ SPR < >, \
                                   SPEC < >, \
                                   SUBJ < #subj > ] ], \
                         CONT.HOOK.XARG #xarg ], \
@@ -483,9 +483,8 @@ def customize_determiners(mylang, ch, lexicon, hierarchies):
 
         # LLD 2016-04-04 changed basic-zero-arg to norm-zero-arg
         typedef = \
-            'determiner-lex := basic-determiner-lex & norm-zero-arg & \
-                [ SYNSEM.LOCAL.CAT [ WH non-wh,' \
-            '                        VAL [ SPR < >, \
+            'determiner-lex := basic-determiner-lex & basic-non-wh-word-lex & norm-zero-arg & \
+                [ SYNSEM.LOCAL.CAT [ VAL [ SPR < >, \
                                          COMPS < >, \
                                          SUBJ < > ]]].'
         mylang.add(typedef)
@@ -566,7 +565,6 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
             seenCount += 1
         if noun.get(INTER):
             USED_TYPES['qpro'] = True
-            mylang.add(lexbase.WH_WORD)
             mylang.add(lexbase.WH_PRONOUN)
     singlentype = (seenCount == 1)
 
@@ -580,13 +578,11 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     # Adding that just in case we add the no-spr-noun-lex type.
 
     typedef = \
-        'noun-lex := basic-noun-lex & basic-one-arg & no-hcons-lex-item & \
-           [ SYNSEM [ LOCAL [ CAT [ WH non-wh,' \
-        '                           VAL [ SPR < #spr & [ LOCAL.CAT.HEAD det ] >, \
+        'noun-lex := basic-noun-lex & basic-non-wh-word-lex & basic-one-arg & no-hcons-lex-item & \
+           [ SYNSEM [ LOCAL [ CAT [ VAL [ SPR < #spr & [ LOCAL.CAT.HEAD det ] >, \
                                       COMPS < >, \
                                       SUBJ < >, \
-                                      SPEC < > ] ] ],' \
-                      'L-QUE - ], \
+                                      SPEC < > ] ] ] ], \
              ARG-ST < #spr > ].'
 
     # EKN 2017-12-18 In some languages, possessor nouns or 

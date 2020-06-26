@@ -164,7 +164,8 @@ def customize_wh_ques(mylang,ch,rules,roots):
                 mylang.add('''head-adj-int-phrase :+ [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH 0-alist ].''',section='addenda')
                 mylang.add('''wh-adverb-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.WH.LOGICAL-OR.BOOL - ] > ].''')
             else:
-                mylang.add('''head-adj-int-phrase :+ [ HEAD-DTR.SYNSEM [ L-QUE -,
+                if not ch.get('wh-q-inter-verbs'):
+                    mylang.add('''head-adj-int-phrase :+ [ HEAD-DTR.SYNSEM [ L-QUE -,
                                 LOCAL.CAT.VAL [ SUBJ clist, COMPS clist ] ] ].''',section='addenda')
             mylang.add('''adj-head-int-phrase :+ [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH 0-alist ].''',section='addenda')
 

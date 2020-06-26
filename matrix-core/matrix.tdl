@@ -280,14 +280,13 @@ or-and := avm &
 [ LOGICAL-OR logical-or,
   LOGICAL-AND logical-and ].
 
-non-wh := or-and &
+or-and-minus := or-and &
 [ LOGICAL-OR.BOOL -,
   LOGICAL-AND.BOOL - ].
 
-wh := or-and &
+or-and-plus := or-and &
 [ LOGICAL-OR.BOOL +,
   LOGICAL-AND.BOOL + ].
-
 
 cat := cat-min &
   [ HEAD head-min,
@@ -3547,10 +3546,14 @@ basic-subord-conjunction-lex := basic-one-arg &
 		     R-HNDL #ltop2 ] ] ].
 
 
+basic-wh-word-lex := word &
+[ SYNSEM [ L-QUE +, LOCAL.CAT.WH or-and-plus ] ].
+
+basic-non-wh-word-lex := word &
+[ SYNSEM [ L-QUE -, LOCAL.CAT.WH or-and-minus ] ].
 
 ; Coming soon:
 ; Lexical type for negative particles like English "not"
-; Lexical type for WH elements <-- look in lexbase.py
 ; Documentation listing the phenomena handled by these lexical types.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
