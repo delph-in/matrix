@@ -10,3 +10,4 @@ __pycache__/
 *~
 py3env
 .idea
+tests/regression/home/current
