@@ -146,7 +146,7 @@ ITRG_VB = '''interrogative-verb-lex := basic-wh-word-lex & basic-verb-lex-super 
     ARG-ST.FIRST #subj &
                  [ LOCAL [ CAT cat-sat &
                                [ VAL [ SPR < >,
-                                       COMPS < > ] ],
+                                       COMPS < >, SUBJ < >, SPEC < > ] ],
                            CONT.HOOK.INDEX #xarg ] ] ].
 '''
 
