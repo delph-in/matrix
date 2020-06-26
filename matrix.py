@@ -130,187 +130,11 @@ def main():
         for mrs_string in gmcs.generate.configure_mrs(c):
             print(mrs_string)
 
-    elif args[0] in ('u', 'unit-test'):
-        run_unit_tests()
-
     elif args[0] in ('hv', 'html-validate'):
         if len(args) > 1:
             validate_html(args[1])
         else:
             validate_html('')
-
-    ####################
-    # REGRESSION TESTS #
-
-    elif args[0] in ('r', 'rs', 'regression-test', 'regression-test-sample'):
-        cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'],
-                           'regression_tests/run_regression_tests.sh')
-        lgnames = []
-        if args[0] in ('rs', 'regression-test-sample'):
-            try:
-                num = int(args[1])
-            except ValueError:
-                sys.stderr.exit(
-                    args[0] + 'command expects an numeric argument\n')
-
-            testlist = get_regression_tests(['*'])
-            try:
-                lgnames = random.sample(testlist, num)
-            except ValueError:
-                sys.exit(
-                    "\nThere are only " + str(len(testlist)) +
-                    " tests available.")
-        else:
-            lgnames = get_regression_tests(args[1:])
-            if lgnames is None:
-                sys.exit('No regression tests found for %s' % str(args[1:]))
-
-        try:
-            p = subprocess.Popen([cmd] + lgnames, env=os.environ)
-            p.wait()
-        except KeyboardInterrupt:
-            print("\nProcess interrupted. Aborting regression tests.\n")
-            import signal
-            os.kill(p.pid, signal.SIGKILL)
-
-    elif args[0] in ('ra', 'regression-test-add'):
-        choices = args[1]
-        txtsuite = args[2]
-        import gmcs.regression_tests.add_regression_test
-        try:
-            lg = gmcs.regression_tests.add_regression_test.add(choices,
-                                                               txtsuite)
-            print('Succeeded copying files for %s.' % lg)
-
-            # TJT 2014-09-14: Fixing this: it was not adding files to svn
-            rpath = os.path.join(os.environ['CUSTOMIZATIONROOT'],
-                                 'regression_tests')
-            """
-            subprocess.call(['svn', '-q', 'add'] +\
-                            [os.path.join(rpath, 'home/gold', lg),
-                             os.path.join(rpath, 'skeletons', lg)])
-            """
-            # os.path.join doesn't want slashes in the list elements
-            # http://stackoverflow.com/questions/1945920/os-path-join-python
-            subprocess.call(['svn', '-q', 'add'] +
-                            [os.path.join(rpath, 'home', 'gold', lg),
-                             os.path.join(rpath, 'skeletons', lg),
-                             os.path.join(rpath, 'choices', lg),
-                             os.path.join(rpath, 'txt-suites', lg)])
-            print('Succeeded adding files to Subversion. Be sure to commit!')
-        except ValueError as er:
-            print("Error adding regression test.")
-            print(er.message)
-        except OSError as er:
-            print("OS Error. Most likely Subversion is not installed.")
-            print(er.message)
-
-    elif args[0] in ('regression-test-update', 'ru'):
-        from gmcs import utils
-        test = args[1]
-        cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'],
-                           'regression_tests/update-gold-standard.sh')
-        print("Updating regression test gold standards assumes you have ")
-        print("manually compared results with TSDB and have determined the ")
-        print("current set is better than the gold standard. Only continue")
-        print("if you have done this!")
-        if utils.verify():
-            subprocess.call([cmd, test], env=os.environ)
-            # TJT 2015-02-06: Add to SVN
-            rpath = os.path.join(os.environ['CUSTOMIZATIONROOT'],
-                                 'regression_tests')
-            subprocess.call(['svn', '-q', 'add'] +
-                            [os.path.join(rpath, 'home', 'gold', test)])
-        else:
-            print("Aborted.")
-        sys.exit(1)
-
-    elif args[0] in ('regression-test-remove', 'rr'):
-        from gmcs import utils
-        test = args[1]
-        rpath = os.path.join(os.environ['CUSTOMIZATIONROOT'],
-                             'regression_tests')
-        test_paths = []
-        for test_path in [os.path.join(rpath, 'home', 'gold', test),
-                          os.path.join(rpath, 'skeletons', test),
-                          os.path.join(rpath, 'choices', test),
-                          os.path.join(rpath, 'txt-suites', test)]:
-            if os.path.exists(test_path):
-                test_paths += [test_path]
-        print("The following paths were found relating to the test:\n")
-        for test_path in test_paths:
-            print("  ", test_path)
-        print()
-        print("Do you want to remove them from subversion? If you choose to ")
-        print("remove them, the test entry in regression-test-index will ")
-        print("also be removed.")
-        if utils.verify():
-            try:
-                # Remove the relevant files from subversion
-                for test_path in test_paths:
-                    subprocess.call(['svn', '-q', '--non-interactive', 'rm',
-                                     test_path])
-                # All done, print a success message and reminder
-                uncommitted_changes_reminder(rpath)
-                # Remove the entry from regression-test-index
-                rti_path = os.path.join(rpath, 'regression-test-index')
-                rti = open(rti_path).readlines()
-                rti_file = open(rti_path, 'w')
-                for l in rti:
-                    if l.split('=')[0] != test:
-                        print(l.strip(), file=rti_file)
-                rti_file.close()
-            except OSError as er:
-                print("OS Error. Most likely Subversion is not installed.")
-                print(er.message)
-        else:
-            print("Aborted.")
-        sys.exit(1)
-
-    elif args[0] in ('regression-test-rename', 'rn'):
-        oldname = args[1]
-        newname = args[2]
-        rpath = os.path.join(os.environ['CUSTOMIZATIONROOT'],
-                             'regression_tests')
-        rti = open(os.path.join(rpath, 'regression-test-index')).readlines()
-        if oldname not in (l.split('=')[0] for l in rti):
-            print('Error: cannot find test', oldname)
-            sys.exit(2)
-        try:
-            subprocess.call(['svn', '-q', '--non-interactive', 'mv',
-                             os.path.join(rpath, 'home', 'gold', oldname),
-                             os.path.join(rpath, 'home', 'gold', newname)])
-            subprocess.call(['svn', '-q', '--non-interactive', 'mv',
-                             os.path.join(rpath, 'skeletons', oldname),
-                             os.path.join(rpath, 'skeletons', newname)])
-            subprocess.call(['svn', '-q', '--non-interactive', 'mv',
-                             os.path.join(rpath, 'choices', oldname),
-                             os.path.join(rpath, 'choices', newname)])
-            subprocess.call(['svn', '-q', '--non-interactive', 'mv',
-                             os.path.join(rpath, 'txt-suites', oldname),
-                             os.path.join(rpath, 'txt-suites', newname)])
-            uncommitted_changes_reminder(rpath)
-            # modify the regression test index after making SVN changes
-            rti_file = open(os.path.join(rpath, 'regression-test-index'), 'w')
-            for l in rti:
-                if l.split('=')[0] == oldname:
-                    print(l.replace(oldname, newname, 1), file=rti_file)
-                else:
-                    print(l, file=rti_file)
-            rti_file.close()
-        except OSError as er:
-            print("OS Error. Most likely Subversion is not installed.")
-            print(er.message)
-
-    elif args[0] in ('regression-test-list', 'rl'):
-        patterns = ['*']
-        if len(args) > 1:
-            patterns = args[1:]
-        tests = get_regression_tests(patterns)
-        if tests is None:
-            return
-        for test in tests:
-            print(test)
 
     #############
     # WEB TESTS #
@@ -363,15 +187,6 @@ def main():
     # USAGE #
     else:
         usage()
-
-
-def uncommitted_changes_reminder(rpath):
-    print("Remember you must commit your changes to subversion. Also,")
-    print("there may still be files not in the repository related to ")
-    print("this test. Look in the following directories:")
-    print(os.path.join(rpath, 'grammars'))
-    print(os.path.join(rpath, 'home', 'current'))
-    print(os.path.join(rpath, 'logs'))
 
 
 def validate_python_version():
@@ -430,24 +245,6 @@ def validate_args(args):
     elif args[0] in ('gm', 'generate-mrs'):
         if len(args) < 2:
             usage(command='generate-mrs')
-    elif args[0] in ('u', 'unit-test'):
-        pass  # no other arguments needed
-    elif args[0] in ('r', 'regression-test'):
-        pass  # other arguments are optional
-    elif args[0] in ('ra', 'regression-test-add'):
-        if len(args) < 3:
-            usage(command='regression-test-add')
-    elif args[0] in ('regression-test-update', 'ru'):
-        if len(args) < 2:
-            usage(command='regression-test-update')
-    elif args[0] in ('regression-test-remove', 'rr'):
-        if len(args) < 2:
-            usage(command='regression-test-remove')
-    elif args[0] in ('regression-test-rename', 'rn'):
-        if len(args) < 3:
-            usage(command='regression-test-rename')
-    elif args[0] in ('w', 'web-test'):
-        pass  # no other arguments needed
     elif args[0] in ('wa', 'web-test-add'):
         if len(args) < 2:
             usage(command='web-test-add')
@@ -548,61 +345,6 @@ def usage(command=None, exitcode=2):
         p("generate-mrs (gm) PATH")
         p("        Create MRS strings from MRS templates using the choices")
         p("        file at PATH")
-    if command in ('regression-test', 'r', 'all'):
-        p("regression-test [-TASK] [TESTS]")
-        p("        Run regression test TASK (or all tasks if unsprecified)")
-        p("        over TEST (or all tests if unspecified). TASKS can be any")
-        p("        of the following and can be combined (e.g. -vc):")
-        p("          [none]       : run all tests")
-        p("          -v : validate and report errors")
-        p("          -c : customize and report errors")
-        p("          -p : customize and parse, report differences with gold")
-        p("        TESTS can be a single test name or a list of names.")
-        examples += ["--customizationroot=gmcs/ regression-test",
-                     "-C gmcs/ r -v",
-                     "-C gmcs/ r -cp vso-aux-before-vp Fore"]
-        something_printed = True
-    if command in ('regression-test-sample', 'rs', 'all'):
-        p("regression-test-random (rs) INT")
-        p("        Run a random sample of regression tests. The size of the")
-        p("        sample is given by the argument which should be a")
-        p("        (positive) integer and must not be greater than the")
-        p("        number of defined tests.")
-        examples += ["--customizationroot=gmcs/ regression-test-sample 50",
-                     "-C gmcs/ rs 100"]
-        something_printed = True
-    if command in ('regression-test-add', 'ra', 'all'):
-        p("regression-test-add (ra) CHOICES TXTSUITE")
-        p("        Add CHOICES (a choices file) and TXTSUITE (a text file")
-        p("        containing test sentences) as a new regression test. Both")
-        p("        CHOICES and TXTSUITE are filenames, not paths, and the")
-        p("        respective files should exist in the scratch directory")
-        p("        (gmcs/regression_tests/scratch/).")
-        examples += ["-C gmcs/ ra Cree_choices Cree_test_suite"]
-        something_printed = True
-    if command in ('regression-test-update', 'ru', 'all'):
-        p("regression-test-update (ru) TEST")
-        p("        Update the gold standard of TEST to use the results of the")
-        p("        current system.")
-        examples += ["-C gmcs/ ru Cree"]
-        something_printed = True
-    if command in ('regression-test-remove', 'rr', 'all'):
-        p("regression-test-remove (rr) TEST")
-        p("        Remove TEST from the regression test suite. This command")
-        p("        removes all files checked into subversion.")
-        examples += ["-C gmcs/ rr tiniest"]
-        something_printed = True
-    if command in ('regression-test-rename', 'rn', 'all'):
-        p("regression-test-rename (rn) OLDTEST NEWTEST")
-        p("        Rename OLDTEST to NEWTEST. This is performed with a call")
-        p("        to 'svn mv' on the files in the repository. Remember to")
-        p("        commit your changes.")
-        examples += ["-C gmcs/ rn sujb-drop subj-drop"]
-        something_printed = True
-    if command in ('unit-test', 'u', 'all'):
-        p("unit-test (u)")
-        p("        Run all unit tests.")
-        something_printed = True
     if command in ('web-test', 'w', 'all'):
         p("web-test (w)")
         p("        Run all web tests.")
@@ -696,55 +438,6 @@ def customize_grammar(
         devnull = open('/dev/null', 'w')
         subprocess.call([cmd, pet_file], cwd=grammar_dir,
                         env=os.environ, stderr=devnull)
-
-
-def run_unit_tests():
-    import unittest
-    import gmcs.tests.testChoices
-    import gmcs.tests.testValidate
-    # import gmcs.linglib.tests.testToolboxImport
-
-    def print_line():
-        print(75 * '=')
-
-    loader = unittest.defaultTestLoader
-    runner = unittest.TextTestRunner(verbosity=1)
-
-    print_line()
-    print('Choices tests:')
-    runner.run(loader.loadTestsFromModule(gmcs.tests.testChoices))
-
-    print_line()
-    print('Validate tests:')
-    runner.run(loader.loadTestsFromModule(gmcs.tests.testValidate))
-
-    # print_line()
-    # print('Toolbox import tests:')
-    # runner.run(
-    #         loader.loadTestsFromModule(gmcs.linglib.tests.testToolboxImport))
-
-    # print_line()
-    # print('Linglib/Morphotactics tests:')
-    # import gmcs.linglib.tests.testMorphotactics
-    # runner.run(loader.loadTestsFromModule(gmcs.linglib.tests.testMorphotactics))
-    print_line()
-
-
-def get_regression_tests(patterns):
-    import fnmatch
-    rpath = os.path.join(os.environ['CUSTOMIZATIONROOT'], 'regression_tests')
-    if isinstance(patterns, str):
-        patterns = [patterns]
-    names = []
-    for line in open(os.path.join(rpath, 'regression-test-index')):
-        if line.strip() == '':
-            continue
-        line = line.split('=')[0]
-        if any(fnmatch.fnmatch(line, p) for p in patterns):
-            names += [line]
-    if len(names) == 0 and patterns != []:
-        return None
-    return names
 
 
 def vivify(force):

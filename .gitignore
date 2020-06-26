@@ -1,6 +1,6 @@
 # Ignore cache, testing, build, and other temporary directories
-gmcs/regression_tests/grammars/
-gmcs/regression_tests/logs/
+tests/regression/grammars/
+tests/regression/logs/
 
 # Ignore the compiled python files
 *.pyc
