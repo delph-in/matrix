@@ -1,6 +1,0 @@
-n cop adj
-cop n adj
-*n adj cop
-*adj n cop
-*adj cop n
-*cop adj n
