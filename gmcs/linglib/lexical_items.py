@@ -260,8 +260,7 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
         mylang.add('verb-lex := basic-verb-lex & non-mod-lex-item.')
 
     typedef = mainorverbtype + ' := basic-non-wh-word-lex &  \
-       [ SYNSEM.LOCAL [ CAT [ VAL [ SPR < >, \
-                                  SPEC < >, \
+       [ SYNSEM.LOCAL [ CAT [ VAL [ SPEC < >, \
                                   SUBJ < #subj > ] ], \
                         CONT.HOOK.XARG #xarg ], \
          ARG-ST < #subj & \

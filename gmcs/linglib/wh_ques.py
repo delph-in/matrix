@@ -40,7 +40,7 @@ EMBED_WHQ = '''embed-wh-ques-phrase := wh-ques-phrase &
     SYNSEM.LOCAL.CAT.MC - ].'''
 
 EX_COMP = ''' extracted-comp-phrase := basic-extracted-comp-phrase &
-  [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < [], ... >  ].'''
+  [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < [], ... > ].'''
 
 EX_SUBJ = ''' extracted-subj-phrase := basic-extracted-subj-phrase &
   [ SYNSEM.LOCAL.CAT.HEAD verb,
@@ -61,7 +61,8 @@ EX_SUBJ_MULTI = '''extracted-subj-phrase := basic-extracted-arg-phrase & head-co
 EX_ADJ = '''extracted-adv-adp-adj-phrase := basic-extracted-adj-phrase &
   [ SYNSEM [ LOCAL.CAT [ WH #wh,
                          POSTHEAD #ph,
-                         MC #mc ],
+                         MC #mc,
+                         VAL.SPEC < > ],
 	     NON-LOCAL [ QUE #que, YNQ #ynq, SLASH append-list &
 		   [ LIST < [ CAT [ HEAD +rp & [ MOD < [ LOCAL intersective-mod &
                                                    [ CAT [ HEAD #head,
@@ -70,14 +71,15 @@ EX_ADJ = '''extracted-adv-adp-adj-phrase := basic-extracted-adj-phrase &
                                                            MC #mc ],
                                                      CONT.HOOK #hook,
                                                      CTXT #ctxt ] ] . #slash > ],
-                              VAL [ SUBJ olist,
+                              VAL [ SPEC < >,
+                                    SUBJ olist,
                                     COMPS olist,
                                     SPR olist ] ] ] > ] ] ],
     HEAD-DTR.SYNSEM canonical-synsem &
 	   [ LOCAL local &
 		   [ CAT [ WH #wh,
 		           HEAD verb & #head,
-                           VAL #val & [ SUBJ < > ],
+                           VAL #val & [ SUBJ < >, SPEC < > ],
 			   POSTHEAD #ph,
                            MC #mc ],
                      CONT.HOOK #hook,
@@ -106,7 +108,7 @@ IN_SITU_PHRASE = '''insitu-int-cl := interrogative-clause & head-only &
           QUE.LIST < ref-ind, ... > ] ] ].'''
 
 EX_DET_PHRASE = '''extracted-det-phrase := basic-extracted-arg-phrase & head-compositional &
-[ SYNSEM [ LOCAL.CAT [ VAL [ SUBJ < >, COMPS < >, SPR < > ] ] ],
+[ SYNSEM [ LOCAL.CAT [ VAL [ SUBJ < >, COMPS < >, SPR < >, SPEC < > ] ] ],
   HEAD-DTR.SYNSEM [ MODIFIED notmod,
                     LOCAL.CAT.VAL.SPR <  gap & [ LOCAL #local & local &
                                                 [ CAT.HEAD det,
@@ -137,8 +139,8 @@ SEC_FILLER = '''2nd-head-filler-phrase := binary-phrase & phrasal & head-composi
 
 NC_SUBJ_HEAD = '''
 subj-head-nc-phrase := decl-head-subj-phrase & head-final &
-  [ SYNSEM.LOCAL.CAT.MC -,
-    HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
+  [ SYNSEM.LOCAL.CAT [ VAL.SPEC #spec, MC - ],
+    HEAD-DTR.SYNSEM.LOCAL.CAT.VAL [ COMPS < >, SPEC #spec ] ].
 
 '''
 

@@ -115,7 +115,7 @@ def customize_adv_neg(mylang, ch, lexicon, rules):
     mylang.add('''neg-adv-lex := basic-scopal-adverb-lex &
                  [ SYNSEM.LOCAL.CAT [ VAL [ SPR < >,
                                             COMPS < >,
-                                            SUBJ < > ],
+                                            SUBJ < >, SPEC < > ],
                                       HEAD.MOD < [ LOCAL.CAT.HEAD verb ] > ]].''',
                'Type for negative adverbs.')
 

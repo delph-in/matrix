@@ -1883,7 +1883,7 @@ imperative-clause := basic-non-rel-clause &
 
 basic-filler-phrase := binary-phrase & phrasal &
   [ SYNSEM [ LOCAL.CAT.VAL [ COMPS < >,
-                             SPR < > ] ],
+                             SPR < >, SPEC < > ] ],
     ARGS < [ SYNSEM [ LOCAL local &
 			    [ CAT.VAL [ SUBJ olist,
 					COMPS olist,
@@ -1966,11 +1966,12 @@ basic-head-subj-phrase := head-valence-phrase & head-compositional &
            [ LOCAL.CAT [ WH [ LOGICAL-OR.OR < #or1, #or2 >,
                               LOGICAL-AND.AND < #and1, #and2 >],
                          HC-LIGHT -,
-                         VAL [ SUBJ < >,
+                         VAL [ SPEC #spec,
+                               SUBJ < >,
                                COMPS #comps,
                                SPR #spr ] ] ],
     HEAD-DTR.SYNSEM.LOCAL.CAT [ WH [ LOGICAL-OR #or1, LOGICAL-AND #and1 ],
-                                VAL [ SUBJ < #synsem >,
+                                VAL [ SPEC #spec, SUBJ < #synsem >,
                                     COMPS #comps,
                                     SPR #spr ] ],
     NON-HEAD-DTR.SYNSEM #synsem & canonical-synsem &
@@ -2330,14 +2331,14 @@ basic-bare-np-phrase := head-only & head-valence-phrase &
   [ SYNSEM.LOCAL.CAT [ WH #wh,
                        VAL [ SPR < >,
                            SUBJ < >,
-                           COMPS < > ] ],
+                           COMPS < >, SPEC #spec ] ],
     HEAD-DTR.SYNSEM.LOCAL [ CAT [ WH #wh,
                                   HEAD noun,
                                   VAL [ SPR < unexpressed &
                                               [ LOCAL.CAT.HEAD +nd,
                                                 OPT + ] >,
                                         SUBJ < >,
-                                        COMPS < > ] ],
+                                        COMPS < >, SPEC #spec ] ],
                             CONT.HOOK [ INDEX #index,
                                         LTOP #larg ] ],
     C-CONT [ RELS.LIST < quant-relation &
@@ -2367,12 +2368,14 @@ basic-extracted-arg-phrase := head-valence-phrase & head-only &
 basic-extracted-comp-phrase := basic-extracted-arg-phrase &
                                head-compositional &
   [ SYNSEM canonical-synsem &
-       [ LOCAL.CAT [ VAL [ SUBJ #subj,
+       [ LOCAL.CAT [ VAL [ SPEC #spec,
+                           SUBJ #subj,
                            SPR #spr,
                            COMPS #comps ],
                      MC #mc ] ],
     HEAD-DTR [ SYNSEM
-               [ LOCAL.CAT [ VAL [ SUBJ #subj,
+               [ LOCAL.CAT [ VAL [ SPEC #spec,
+                                   SUBJ #subj,
                                    SPR #spr,
                                    COMPS < gap . #comps > ],
                              MC #mc ] ] ],
@@ -2413,11 +2416,11 @@ basic-extracted-subj-phrase := basic-extracted-arg-phrase & head-compositional &
 head-mod-phrase := head-nexus-rel-phrase &
   [ SYNSEM [ LOCAL.CAT.VAL [ SUBJ #subj,
                              SPR #spr,
-                             COMPS #comps ],
+                             COMPS #comps, SPEC #spec ],
              MODIFIED hasmod ],
     HEAD-DTR.SYNSEM [ LOCAL.CAT.VAL [ SUBJ #subj,
                                       SPR #spr,
-                                      COMPS #comps ],
+                                      COMPS #comps, SPEC #spec ],
                       NON-LOCAL [ REL 0-alist ] ] ].
 
 basic-extracted-adj-phrase := head-mod-phrase & head-only & phrasal.
@@ -3589,7 +3592,7 @@ basic-conj-lex := norm-zero-arg & no-hcons-lex-item &
 
 conj-lex := basic-conj-lex & single-rel-lex-item &
   [ SYNSEM [ LOCAL [ CAT [ HEAD conj & [ MOD null ],
-                           VAL [ SPR < >,
+                           VAL [ SPR < >, SPEC < >,
                                  COMPS < >,
                                  SUBJ < > ]],
                      CONT [ HOOK [ LTOP #ltop,

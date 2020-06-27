@@ -43,7 +43,7 @@ COMPLEMENTIZER = '''
       complementizer-lex-item := raise-sem-lex-item & basic-one-arg &
          [ SYNSEM [ LOCAL.CAT [ HEAD comp &
                                    [ MOD < > ],
-                              VAL [ SPR < >,
+                              VAL [ SPR < >, SPEC < >,
                                     SUBJ < >,
                                     COMPS < #comp > ] ],
                     L-QUE - ],
