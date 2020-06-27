@@ -34,8 +34,7 @@ def define_arg_str_and_valency(aux, auxcomp, ch, mylang, negaux):
         norder = ch.get('comp-neg-order-head-comp')
     supertypename = set_supertypename(auxcomp)
     basic_typedef = supertypename + ' := aux-lex & \
-                [ SYNSEM.LOCAL.CAT.VAL [ SPR < >, \
-                                         SPEC < > ] ].'
+                [ SYNSEM.LOCAL.CAT.VAL [ SPEC < > ] ].'
     mylang.add(basic_typedef)
 
     # EKN 03-02-2018 Add [ CASE real-case ] to args of auxes iff
