@@ -48,8 +48,7 @@ EX_SUBJ = ''' extracted-subj-phrase := basic-extracted-subj-phrase &
                       NON-LOCAL.SLASH.LIST < #slash, ... > ] ].'''
 
 EX_SUBJ_MULTI = '''extracted-subj-phrase := basic-extracted-arg-phrase & head-compositional &
-  [ SYNSEM [ LOCAL.CAT.VAL [ SUBJ < >,
-                           SPR < > ] ],
+  [ SYNSEM [ LOCAL.CAT.VAL [ SUBJ < > ] ],
     HEAD-DTR.SYNSEM [ L-QUE -,
                       LOCAL.CAT [ VAL [ SUBJ < gap &
                                              [ LOCAL local &

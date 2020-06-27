@@ -1882,8 +1882,7 @@ imperative-clause := basic-non-rel-clause &
 ; to allow multiple wh-questions.
 
 basic-filler-phrase := binary-phrase & phrasal &
-  [ SYNSEM [ LOCAL.CAT.VAL [ COMPS < >,
-                             SPR < >, SPEC < > ] ],
+  [ SYNSEM [ LOCAL.CAT.VAL [ COMPS < >, SPEC < > ] ],
     ARGS < [ SYNSEM [ LOCAL local &
 			    [ CAT.VAL [ SUBJ olist,
 					COMPS olist,

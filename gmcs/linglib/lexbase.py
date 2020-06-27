@@ -57,7 +57,7 @@ ques-clitic-lex := no-hcons-lex-item &
  [ SYNSEM [ LOCAL [ CAT [ VAL [ SPR < >, COMPS < >, SUBJ < >, SPEC < >],
                                         HEAD adv &
                                                 [ MOD < [ LOCAL intersective-mod & 
-                                                          [ CAT [ HEAD +nrpd ] ],
+                                                          [ CAT [ HEAD +nrpd, VAL.SPR < > ] ],
                                                           L-PERIPH +,
                                                           L-QUE - ] > ] ],
                              CONT.RELS.LIST < > ],
@@ -121,7 +121,7 @@ WH_DET = '''wh-determiner-lex := basic-wh-word-lex & basic-determiner-lex & non-
              NON-LOCAL.QUE.LIST < #arg0 > ] ].'''
 
 ADP_LEX = '''norm-adposition-lex := norm-sem-lex-item & no-hcons-lex-item & basic-intersective-mod-lex & basic-one-arg &
-  [ SYNSEM [ LOCAL [ CAT [ HEAD adp,
+  [ SYNSEM [ LOCAL [ CAT [ HEAD adp & [ MOD < [ LOCAL.CAT.VAL.SPR cons ] > ],
                            WH or-and-minus,
                            VAL [ SPR < >,
                                  SPEC < >,

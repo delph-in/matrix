@@ -53,8 +53,7 @@ def define_arg_str_and_valency(aux, auxcomp, ch, mylang, negaux):
                                                      COMPS < #comps > ], \
                               ARG-ST < #comps & \
                                          [ LOCAL.CAT [ VAL [ SUBJ < >, \
-                                                             COMPS < >, \
-                                                             SPR < >, \
+                                                             COMPS < > \
                                                              SPEC < > ], \
                                                        HEAD verb ]] > ].'
             if ch.get('multiple-aux') == 'no':

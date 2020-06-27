@@ -42,24 +42,24 @@ ADJ_HEADV = '''adj-headv-phrase := adj-head-int-phrase &
  '''
 
 HEADN_ADJ = '''headn-adj-phrase := head-adj-int-phrase &
- [ HEAD-DTR.SYNSEM [ LOCAL.CAT [ HEAD noun, VAL.SPR cons ] ],
+ [ HEAD-DTR.SYNSEM [ LOCAL.CAT [ HEAD noun ] ],
    NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD +jrp, VAL.COMPS < > ] ].
  '''
 
 ADJ_HEADN = '''adj-headn-phrase := adj-head-int-phrase &
- [ HEAD-DTR.SYNSEM [ LOCAL.CAT [ HEAD noun, VAL.SPR cons ] ],
+ [ HEAD-DTR.SYNSEM [ LOCAL.CAT [ HEAD noun ] ],
    NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD +jrp, VAL.COMPS < > ] ].
  '''
 
-HEADWH_ADJ = '''headwh-adj-phrase := head-adj-int-phrase &
- [ HEAD-DTR.SYNSEM [ LIGHT +, LOCAL.CAT [ HEAD noun, VAL.SPR < > ] ],
-   NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD adv, VAL.COMPS < > ] ].
- '''
-
-ADJ_HEADWH = '''adj-headwh-phrase := adj-head-int-phrase &
- [ HEAD-DTR.SYNSEM [ LIGHT +, LOCAL.CAT [ HEAD noun, VAL.SPR < > ] ],
-   NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD adv, VAL.COMPS < > ] ].
- '''
+# HEADWH_ADJ = '''headwh-adj-phrase := head-adj-int-phrase &
+#  [ HEAD-DTR.SYNSEM [ LIGHT +, LOCAL.CAT [ HEAD noun, VAL.SPR < > ] ],
+#    NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD adv, VAL.COMPS < > ] ].
+#  '''
+#
+# ADJ_HEADWH = '''adj-headwh-phrase := adj-head-int-phrase &
+#  [ HEAD-DTR.SYNSEM [ LIGHT +, LOCAL.CAT [ HEAD noun, VAL.SPR < > ] ],
+#    NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD adv, VAL.COMPS < > ] ].
+#  '''
 
 
 # ADJ_HEADADV = '''adj-headadv-phrase := adj-head-int-phrase &
@@ -91,6 +91,6 @@ def customize_adv_adp(ch, mylang, rules):
         rules.add('adj-headv := adj-headv-phrase.')
         rules.add('headn-adj := headn-adj-phrase.')
         rules.add('adj-headn := adj-headn-phrase.')
-        if ch.get('q-part') == 'on' and ch.get('q-part-order') == 'second':
-            mylang.add(HEADWH_ADJ, section='phrases')
-            rules.add('headwh-adj := headwh-adj-phrase.')
+        # if ch.get('q-part') == 'on' and ch.get('q-part-order') == 'second':
+        #     mylang.add(HEADWH_ADJ, section='phrases')
+        #     rules.add('headwh-adj := headwh-adj-phrase.')
