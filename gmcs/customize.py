@@ -16,6 +16,8 @@ import sys
 import codecs
 from subprocess import call
 
+from delphin import tsdb
+
 from gmcs.choices import ChoicesFile
 #from gmcs.utils import TDLencode
 #from gmcs.utils import get_name
@@ -208,28 +210,33 @@ def customize_test_sentences(grammar_path):
         pass
 
 def customize_itsdb(grammar_path):
-    from gmcs.lib import itsdb
-    if 'sentence' not in ch: return
+    if 'sentence' not in ch:
+        return
+
+    today = datetime.datetime.today()
+    author = 'Grammar Matrix Customization System'
 
     def get_item(s, i):
-        return dict([('i-id', str(i+1)),
-                     ('i-origin', 'unknown'),
-                     ('i-register', 'unknown'),
-                     ('i-format', 'none'),
-                     ('i-difficulty', '1'),
-                     ('i-category', 'S' if not s.get('star', False) else ''),
-                     ('i-input', s['orth']),
-                     ('i-wf', '0' if s.get('star', False) else '1'),
-                     ('i-length', str(len(s['orth'].split()))),
-                     ('i-author', 'author-name'),
-                     ('i-date', str(datetime.date.today()))])
+        return {'i-id': str(i),
+                'i-origin': 'unknown',
+                'i-register': 'unknown',
+                'i-format': 'none',
+                'i-difficulty': '1',
+                'i-category': 'S' if not s.get('star', False) else '',
+                'i-input': s['orth'],
+                'i-wf': '0' if s.get('star', False) else '1',
+                'i-length': str(len(s['orth'].split())),
+                'i-author': author,
+                'i-date': today}
 
     skeletons = os.path.join(grammar_path, 'tsdb', 'skeletons')
-    relations = os.path.join(skeletons, 'Relations')
     matrix_skeleton = os.path.join(skeletons, 'matrix')
-    items = {'item': (get_item(s, i) for i, s in enumerate(ch['sentence']))}
-    profile = itsdb.TsdbProfile(matrix_skeleton)
-    profile.write_profile(matrix_skeleton, relations, items)
+    schema = tsdb.read_schema(os.path.join(skeletons, 'Relations'))
+    tsdb.initialize_database(matrix_skeleton, schema=schema)
+    records = [tsdb.make_record(get_item(s, i), schema['item'])
+               for i, s in enumerate(ch['sentence'], 1)]
+    tsdb.write(matrix_skeleton, 'item', records, schema['item'])
+
 
 def customize_script(grammar_path):
     try:
