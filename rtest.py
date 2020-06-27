@@ -41,6 +41,13 @@ LOGS_DIR       = RTEST_DIR / 'logs'
 INDEX          = RTEST_DIR / 'regression-test-index'
 DAT_FILENAME   = 'grm.dat'
 
+# The following are mostly empty directories so make sure they exist (in case
+# someone deletes the entire directory to clear temporary files)
+
+GRAMMARS_DIR.mkdir(exist_ok=True)
+CURRENT_DIR.mkdir(exist_ok=True)
+LOGS_DIR.mkdir(exist_ok=True)
+
 
 # REPORT FORMATTING PARAMETERS ################################################
 
