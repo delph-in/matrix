@@ -11,3 +11,13 @@ __pycache__/
 py3env
 .idea
 tests/regression/home/current
+analysis
+fold
+item-phenomenon
+output
+parameter
+phenomenon
+rule
+score
+set
+update
