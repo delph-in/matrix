@@ -60,10 +60,8 @@ sign := basic-sign &
 
 phrase-or-lexrule := sign &
   [ SYNSEM canonical-synsem &
-	   [ LOCAL.CONT.HOOK #hook,
-	     L-QUE #wh ],
-    C-CONT mrs-min & [ HOOK #hook],
-    ARGS.FIRST.SYNSEM.L-QUE #wh ].
+	   [ LOCAL.CONT.HOOK #hook ],
+    C-CONT mrs-min & [ HOOK #hook] ].
 
 word-or-lexrule-min := sign-min.
 

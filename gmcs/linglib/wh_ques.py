@@ -274,6 +274,10 @@ def customize_wh_ques(mylang,ch,rules,roots):
         if ch.get('word-order') in ['ovs', 'vos', 'vso']:
             mylang.add('''adj-head-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.L-QUE - ].''',section='addenda')
 
+    if (ch.get(MTRX_FRONT) == SINGLE) \
+            or (ch.get(MTRX_FRONT) == MULTI and not ch.get(MTRX_FR_OPT) == ALL_OBLIG):
+        mylang.add('phrase-or-lexrule :+ [ SYNSEM.L-QUE #lque, ARGS.FIRST.SYNSEM.L-QUE #lque ].')
+
     # If the fronting isn't obligatory or if only one question phrase
     # is obligatorily fronted, need also in-situ rules:
     if (ch.get(MTRX_FRONT) == SINGLE and not ch.get(MTRX_FR_OPT) == SG_OBLIG) \
