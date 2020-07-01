@@ -57,38 +57,18 @@ EX_SUBJ_MULTI = '''extracted-subj-phrase := basic-extracted-arg-phrase & head-co
              HCONS.LIST < >,
              ICONS.LIST < > ] ].'''
 
-EX_ADJ = '''extracted-adv-adp-adj-phrase := basic-extracted-adj-phrase &
+EX_ADJ = '''extracted-adj-phrase := extracted-adj-phrase-simple &
   [ SYNSEM [ LOCAL.CAT [ WH #wh,
-                         POSTHEAD #ph,
-                         MC #mc,
                          VAL.SPEC < > ],
 	     NON-LOCAL [ QUE #que, YNQ #ynq, SLASH append-list &
-		   [ LIST < [ CAT [ HEAD +rp & [ MOD < [ LOCAL intersective-mod &
-                                                   [ CAT [ HEAD #head,
-                                                           VAL #val,
-                                                           POSTHEAD #ph,
-                                                           MC #mc ],
-                                                     CONT.HOOK #hook,
-                                                     CTXT #ctxt ] ] . #slash > ],
-                              VAL [ SPEC < >,
-                                    SUBJ olist,
-                                    COMPS olist,
-                                    SPR olist ] ] ] > ] ] ],
+		   [ LIST < [ CAT [ HEAD +rp & [ MOD < [ ] . #slash > ],
+                              VAL [ SPEC < > ] ] ] > ] ] ],
     HEAD-DTR.SYNSEM canonical-synsem &
 	   [ LOCAL local &
 		   [ CAT [ WH #wh,
-		           HEAD verb & #head,
-                           VAL #val & [ SUBJ < >, SPEC < > ],
-			   POSTHEAD #ph,
-                           MC #mc ],
-                     CONT.HOOK #hook,
-                     CTXT #ctxt ],
-             NON-LOCAL [ QUE #que, SLASH.LIST #slash, YNQ #ynq ],
-	     MODIFIED notmod ],
-    C-CONT [ HOOK #hook,
-         RELS.LIST < >,
-	     HCONS.LIST < >,
-	     ICONS.LIST < > ] ].'''
+		           HEAD verb, 
+		           VAL [ SUBJ < >, SPEC < > ] ] ],
+             NON-LOCAL [ QUE #que, SLASH.LIST #slash, YNQ #ynq ] ] ].'''
 
 
 IN_SITU_PHRASE = '''insitu-int-cl := interrogative-clause & head-only &
@@ -214,14 +194,14 @@ def customize_wh_ques(mylang,ch,rules,roots):
         rules.add('ex-comp := extracted-comp-phrase.')
         mylang.add_literal('; Adjunct extraction',section='phrases')
         mylang.add(EX_ADJ)
-        rules.add('ex-adj := extracted-adv-adp-adj-phrase.')
+        rules.add('ex-adj := extracted-adj-phrase.')
         # This (below) needs to be conceptualized better.
         # Why is this? Probably not well-motivated in the end.
         # This was added to prevent ex-adj from applying below and above ex-subj, in some cases.
         if ch.get('word-order') != 'free' \
                 and ch.get('wh-inv-matrix') != ON \
                 and ch.get(MTRX_FR_OPT) == 'none-oblig':
-            mylang.add('extracted-adv-adp-adj-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ cons ].')
+            mylang.add('extracted-adj-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ cons ].')
 
     if ch.get(MTRX_FRONT) in [SINGLE]:
         # With single fronting, can restrict SLASH to one element at most
@@ -237,7 +217,7 @@ def customize_wh_ques(mylang,ch,rules,roots):
                 rules.add('embed-whq := embed-wh-ques-phrase.')
             else:
                 rules.add('wh-ques := wh-ques-phrase.')
-        mylang.add('extracted-adv-adp-adj-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < > ].')
+        mylang.add('extracted-adj-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < > ].')
         #mylang.add(SG_EX_SUBJ)
         # Pass up QUE from the HEAD-DTR in this case:
         mylang.add(WH_Q_PHR_SG_OR_OBLIG_FRONT)
@@ -252,7 +232,7 @@ def customize_wh_ques(mylang,ch,rules,roots):
                 mylang.add('adj-head-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL [ QUE.LIST < > ] ].')
                 mylang.add(NC_SUBJ_HEAD, section='phrases')
                 rules.add('nc-subjh := subj-head-nc-phrase.')
-            mylang.add('extracted-adv-adp-adj-phrase := '
+            mylang.add('extracted-adj-phrase := '
                        '[ SYNSEM.NON-LOCAL.SLASH.LIST < [ CAT.HEAD.MOD < [ LOCAL.CAT.HEAD [ INV +, AUX + ] ] > ] >,'
                        'HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].')
             mylang.add('extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD [ AUX -, INV -] ].')
