@@ -147,6 +147,17 @@ from gmcs.constants import MTRX_FR_OPT, MTRX_FRONT, NO_MULTI, \
     SINGLE, MULTI, SG_OBLIG, ALL_OBLIG, EMB_INSITU, ON, WH_INFL, \
     IN_SITU
 
+
+# This function should be finished when WH feature is moved from matrix.tdl to customization
+def customize_wh_feature(mylang,ch):
+    mylang.add('cat :+ [ WH and-or ].')
+    if ch.get(MTRX_FRONT):
+        mylang.add('wh-ques-phrase := [ SYNSEM.LOCAL.CAT.WH.LOGICAL-OR.BOOL + ].')
+        if len(ch.get('adv', [])) > 0 or len(ch.get('normadp', [])) > 0:
+            mylang.add('norm-adposition-lex := [ SYNSEM.LOCAL.CAT.WH or-and-plus ].')
+
+
+
 def customize_wh_ques(mylang,ch,rules,roots):
     if (not ch.get(MTRX_FRONT)) and ch.get(WH_INFL) != 'on':
         # If there are no wh-questions, need to put the default
@@ -274,6 +285,7 @@ def customize_wh_ques(mylang,ch,rules,roots):
         if ch.get('word-order') in ['ovs', 'vos', 'vso']:
             mylang.add('''adj-head-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.L-QUE - ].''',section='addenda')
 
+    # If fronting is optional, need to use the peripheral feature to rule out ambiguity.
     if (ch.get(MTRX_FRONT) == SINGLE) \
             or (ch.get(MTRX_FRONT) == MULTI and not ch.get(MTRX_FR_OPT) == ALL_OBLIG):
         mylang.add('phrase-or-lexrule :+ [ SYNSEM.L-QUE #lque, ARGS.FIRST.SYNSEM.L-QUE #lque ].')
@@ -363,3 +375,4 @@ def customize_wh_ques(mylang,ch,rules,roots):
                            'HEAD-DTR.SYNSEM.NON-LOCAL.YNQ #ynq ].')
             else:
                 mylang.add('insitu-int-cl := [ SYNSEM.NON-LOCAL.YNQ.LIST < > ].')
+

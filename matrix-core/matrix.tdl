@@ -54,10 +54,6 @@ sign := basic-sign &
 ; C-CONT encodes the semantic contribution of the rule (phrasal
 ; or lexical).
 
-; OZ 2020-01-29 Adding a feature L-QUE to mark a wh-word at the left periphery.
-; This is needed to rule out spurious ambiguity in languages which have both
-; extracted and in-situ questions.
-
 phrase-or-lexrule := sign &
   [ SYNSEM canonical-synsem &
 	   [ LOCAL.CONT.HOOK #hook ],
@@ -3612,14 +3608,15 @@ nosem-conj-lex := basic-conj-lex &
 ; Coordination phrases and rules
 coord-phrase := binary-phrase &
   [ SYNSEM [ LOCAL [ COORD-STRAT #cstrat,
-                   CAT [ HEAD.MOD #mod,
+                   CAT [ WH.LOGICAL-OR.OR #wh,
+                         HEAD.MOD #mod,
                          VAL #val ] ],
 	     NON-LOCAL [ SLASH #slash, REL #rel, QUE.APPEND < #que1, #que2 >, YNQ.APPEND < #ynq1, #ynq2 > ] ],
-    LCOORD-DTR #ldtr & sign & [ SYNSEM [ LOCAL [ CAT [ HEAD.MOD #mod,
+    LCOORD-DTR #ldtr & sign & [ SYNSEM [ LOCAL [ CAT [ WH.LOGICAL-OR.OR #wh, HEAD.MOD #mod,
                                                      VAL #val ] ],
 				         NON-LOCAL [ SLASH #slash, REL #rel, QUE #que1, YNQ #ynq1 ] ] ],
     RCOORD-DTR #rdtr & sign & [ SYNSEM [ LOCAL [ COORD-STRAT #cstrat,
-                                               CAT [ HEAD.MOD #mod,
+                                               CAT [ WH.LOGICAL-OR.OR #wh, HEAD.MOD #mod,
                                                      VAL #val ] ],
 					 NON-LOCAL [ SLASH #slash, REL #rel, QUE #que2, YNQ #ynq2 ] ] ],
     ARGS < #ldtr, #rdtr > ].
@@ -3641,9 +3638,9 @@ mid-coord-rule := topormid-coord-phrase &
                    COORD-REL implicit-coord-rel ]].
 
 bottom-coord-phrase := phrase &
-  [ SYNSEM.NON-LOCAL [ SLASH #slash, REL #rel ],
+  [ SYNSEM.NON-LOCAL [ SLASH #slash, REL #rel, QUE append-list, YNQ append-list ],
     CONJ-DTR sign,
-    NONCONJ-DTR sign & [ SYNSEM.NON-LOCAL [ SLASH #slash, REL #rel ] ] ].
+    NONCONJ-DTR sign & [ SYNSEM.NON-LOCAL [ SLASH #slash, REL #rel, QUE append-list, YNQ append-list ] ] ].
 
 unary-bottom-coord-rule := bottom-coord-phrase & unary-phrase &
   [ SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
