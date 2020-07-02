@@ -13,7 +13,7 @@ CONSTANTS
 '''
 
 WH_Q_PHR_NO_OR_SG_OBLIG_MULTI = ''' wh-ques-phrase := 
-   [ SYNSEM.NON-LOCAL.QUE #que,
+   [ SYNSEM.NON-LOCAL.QUE #que & 0-alist,
      HEAD-DTR.SYNSEM.NON-LOCAL.QUE #que ].'''
 
 WH_Q_PHR_SG_OR_OBLIG_FRONT = ''' wh-ques-phrase := 
@@ -36,7 +36,7 @@ MAIN_WHQ = '''main-wh-ques-phrase := wh-ques-phrase &
 '''
 
 EMBED_WHQ = '''embed-wh-ques-phrase := wh-ques-phrase &
-  [ HEAD-DTR.SYNSEM.LOCAL.CAT [ MC -, VAL.SUBJ clist ],
+  [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC -,
     SYNSEM.LOCAL.CAT.MC - ].'''
 
 EX_COMP = ''' extracted-comp-phrase := basic-extracted-comp-phrase &
@@ -150,6 +150,7 @@ def customize_wh_ques(mylang,ch,rules,roots):
         if ch.get('person') == '1-2-3':
             mylang.add('wh-pronoun-noun-lex := [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 3rd ].')
 
+    # Either no fronting at all or single fronting
     if (not ch.get(MTRX_FRONT)) or ch.get(MTRX_FRONT) == SINGLE:
         if len(ch.get('adv', [])) > 0 or len(ch.get('normadp', [])) > 0:
             if ch.get(NO_MULTI) == ON:
@@ -246,8 +247,8 @@ def customize_wh_ques(mylang,ch,rules,roots):
         # prevent adjunct extraction, as it will be done out of head-subj
         if ch.get(MTRX_FR_OPT) == 'none-oblig':
             mylang.add('1st-head-filler-phrase := [ SYNSEM.MODIFIED hasmod ].')
-        mylang.add('wh-1st-ques-phrase := 1st-head-filler-phrase & wh-ques-phrase.')
-        rules.add('wh1-ques := wh-1st-ques-phrase.')
+        mylang.add('wh-ques-phrase := 1st-head-filler-phrase.')
+        rules.add('wh-ques := wh-ques-phrase.')
         if ch.get(MTRX_FR_OPT) == ALL_OBLIG:
             mylang.add(WH_Q_PHR_NO_OR_SG_OBLIG_MULTI) # Pass up QUE from HEAD-DTR
         # Rule out structural ambiguity for sentences like "Who sleeps where?"
