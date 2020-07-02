@@ -3632,10 +3632,10 @@ coord-phrase := binary-phrase &
                    CAT [ WH.LOGICAL-OR.OR #wh,
                          HEAD.MOD #mod,
                          VAL #val ] ],
-	     NON-LOCAL [ SLASH #slash, REL #rel, QUE.APPEND < #que1, #que2 >, YNQ.APPEND < #ynq1, #ynq2 > ] ],
+	     NON-LOCAL [ SLASH #slash, REL #rel, QUE #que2, YNQ.APPEND < #ynq1, #ynq2 > ] ],
     LCOORD-DTR #ldtr & sign & [ SYNSEM [ LOCAL [ CAT [ WH.LOGICAL-OR.OR #wh, HEAD.MOD #mod,
                                                      VAL #val ] ],
-				         NON-LOCAL [ SLASH #slash, REL #rel, QUE #que1, YNQ #ynq1 ] ] ],
+				         NON-LOCAL [ SLASH #slash, REL #rel, QUE append-list, YNQ #ynq1 ] ] ],
     RCOORD-DTR #rdtr & sign & [ SYNSEM [ LOCAL [ COORD-STRAT #cstrat,
                                                CAT [ WH.LOGICAL-OR.OR #wh, HEAD.MOD #mod,
                                                      VAL #val ] ],
@@ -3659,9 +3659,9 @@ mid-coord-rule := topormid-coord-phrase &
                    COORD-REL implicit-coord-rel ]].
 
 bottom-coord-phrase := phrase &
-  [ SYNSEM.NON-LOCAL [ SLASH #slash, REL #rel, QUE append-list, YNQ append-list ],
+  [ SYNSEM.NON-LOCAL [ SLASH #slash, REL #rel, QUE #que, YNQ append-list ],
     CONJ-DTR sign,
-    NONCONJ-DTR sign & [ SYNSEM.NON-LOCAL [ SLASH #slash, REL #rel, QUE append-list, YNQ append-list ] ] ].
+    NONCONJ-DTR sign & [ SYNSEM.NON-LOCAL [ SLASH #slash, REL #rel, QUE #que, YNQ append-list ] ] ].
 
 unary-bottom-coord-rule := bottom-coord-phrase & unary-phrase &
   [ SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
@@ -3967,7 +3967,7 @@ adv-bottom-coord-phrase := bottom-coord-phrase &
 vp-coord-phrase := event-coord-phrase &
   [ SYNSEM.LOCAL.CAT [ HEAD verb,
                        VAL.SUBJ < [ ] > ],
-    LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD verb,
+    LCOORD-DTR.SYNSEM [ LOCAL.CAT.HEAD verb, NON-LOCAL.QUE 0-alist ],
     RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD verb ].
 
 basic-vp-top-coord-rule := vp-coord-phrase &
@@ -3992,7 +3992,7 @@ s-coord-phrase := event-coord-phrase &
   [ SYNSEM [ LOCAL.CAT [ HEAD verb,
                        VAL.SUBJ < > ],
               NON-LOCAL non-local-none ],
-    LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD verb,
+    LCOORD-DTR.SYNSEM [ LOCAL.CAT.HEAD verb, NON-LOCAL.QUE 0-alist ],
     RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD verb ].
 
 basic-s-top-coord-rule := s-coord-phrase &
