@@ -118,8 +118,8 @@ SEC_FILLER = '''2nd-head-filler-phrase := binary-phrase & phrasal & head-composi
 
 NC_SUBJ_HEAD = '''
 subj-head-nc-phrase := decl-head-subj-phrase & head-final &
-  [ SYNSEM.LOCAL.CAT [ VAL.SPEC #spec, MC - ],
-    HEAD-DTR.SYNSEM.LOCAL.CAT.VAL [ COMPS < >, SPEC #spec ] ].
+  [ SYNSEM.LOCAL.CAT [ MC - ],
+    HEAD-DTR.SYNSEM.LOCAL.CAT.VAL [ COMPS < > ] ].
 
 '''
 
@@ -128,7 +128,7 @@ from gmcs.constants import MTRX_FR_OPT, MTRX_FRONT, NO_MULTI, \
     IN_SITU
 
 
-# This function should be finished when WH feature is moved from matrix.tdl to customization
+# This function should be finished when/if WH feature is moved from matrix.tdl to customization
 def customize_wh_feature(mylang,ch):
     mylang.add('cat :+ [ WH and-or ].')
     if ch.get(MTRX_FRONT):
