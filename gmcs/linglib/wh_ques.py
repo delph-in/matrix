@@ -179,8 +179,7 @@ def customize_wh_ques(mylang,ch,rules,roots):
         if ch.get('word-order') in ['vos','svo','sov','free']:
             if ch.get('pied-pip-adp') != 'on' or ch.get('oblig-pied-pip-adp') == ON:
                 mylang.add('extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ cons ].',merge=True)
-            mylang.add('extracted-subj-phrase := [ SYNSEM.LOCAL.CAT.VAL.COMPS  < >,'
-                                                 ' HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].',merge=True)
+            mylang.add('extracted-subj-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].',merge=True)
         elif ch.get('word-order') in ['vso','osv','ovs']:
             mylang.add('extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].',merge=True)
             mylang.add('extracted-subj-phrase := [ SYNSEM.LOCAL.CAT.VAL.COMPS #comps,'

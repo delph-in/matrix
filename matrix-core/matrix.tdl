@@ -2392,7 +2392,8 @@ basic-extracted-subj-phrase := basic-extracted-arg-phrase & head-compositional &
                                                [ CONT.HOOK.INDEX ref-ind ] ] >,
                                         SPR #spr, COMPS #comps,
                                         SPEC #spec],
-                                  MC na ] ],
+                                  MC na ],
+                      NON-LOCAL.SLASH append-list ],
     C-CONT [ RELS 0-alist,
              HCONS 0-alist,
              ICONS 0-alist ] ].
