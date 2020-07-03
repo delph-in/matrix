@@ -1,6 +1,0 @@
-n1 neg1 iv neg2
-*n1 neg1 iv
-*n1 iv neg2
-n1 neg1 tv n2 neg2
-*n1 neg1 tv n2
-*n1 tv n2 neg2
