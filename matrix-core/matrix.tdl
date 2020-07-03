@@ -2380,19 +2380,17 @@ basic-extracted-comp-phrase := basic-extracted-arg-phrase &
 ; to analysis of subject extraction for English.
 ; ASF 2011-10-05 Added supertype 'head-compositional' to basic-extracted-subj-phrase
 ; in order to make sure matrix.tdl provides the right semantics for extracted subjects.
-; OZ 2020-02-20 Removing COMPS constrants from mother and head daughter to accommodate
+; OZ 2020-02-20 Removing COMPS constraints from mother and head daughter to accommodate
 ; extraction from VSO languages (possibly required in other situations, too).
 
 basic-extracted-subj-phrase := basic-extracted-arg-phrase & head-compositional &
   [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >,
-                           SPR < >,
                            COMPS #comps,
-                           SPEC #spec ],
+                           SPEC #spec, SPR #spr ],
     HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL [ SUBJ < gap &
                                              [ LOCAL local &
                                                [ CONT.HOOK.INDEX ref-ind ] ] >,
-                                        SPR < >,
-                                        COMPS #comps,
+                                        SPR #spr, COMPS #comps,
                                         SPEC #spec],
                                   MC na ] ],
     C-CONT [ RELS 0-alist,
@@ -2465,7 +2463,7 @@ extracted-adj-phrase := extracted-adj-phrase-simple &
 		   [ LIST < [ CAT [ HEAD +rp & [ MOD < [ ] . #slash > ] ] ] > ] ] ],
     HEAD-DTR.SYNSEM [ LOCAL.CAT [ WH #wh,
 		                            HEAD verb,
-		                            VAL [ SUBJ < >, SPEC < > ] ],
+		                            VAL [ SPEC < > ] ],
              NON-LOCAL [ QUE #que, SLASH.LIST #slash, YNQ #ynq ] ] ].
 
 ; ERB 2004-05-10 Bug fix: non-head daughter's MOD..LIGHT value should

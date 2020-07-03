@@ -13,17 +13,14 @@ CONSTANTS
 '''
 
 WH_Q_PHR_NO_OR_SG_OBLIG_MULTI = ''' wh-ques-phrase := 
-   [ SYNSEM.NON-LOCAL.QUE #que & 0-alist,
+   [ SYNSEM.NON-LOCAL.QUE #que,
      HEAD-DTR.SYNSEM.NON-LOCAL.QUE #que ].'''
-
-WH_Q_PHR_SG_OR_OBLIG_FRONT = ''' wh-ques-phrase := 
-   [ SYNSEM.NON-LOCAL.QUE.LIST < > ].'''
 
 WH_Q_PHR = ''' wh-ques-phrase := basic-head-filler-phrase & interrogative-clause &
 		  head-final &
    [ SYNSEM [ LOCAL.CAT [ WH.LOGICAL-OR.BOOL +, MC bool,
 			VAL #val,
-			HEAD verb ] ],
+			HEAD verb ], NON-LOCAL.QUE 0-alist ],
      HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL #val & [ SUBJ < >,
 					      COMPS < > ] ] ],
      NON-HEAD-DTR.SYNSEM [ NON-LOCAL.QUE.LIST < ref-ind >,
@@ -39,37 +36,10 @@ EMBED_WHQ = '''embed-wh-ques-phrase := wh-ques-phrase &
   [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC -,
     SYNSEM.LOCAL.CAT.MC - ].'''
 
-EX_COMP = ''' extracted-comp-phrase := basic-extracted-comp-phrase &
-  [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < [], ... > ].'''
+EX_COMP = ''' extracted-comp-phrase := basic-extracted-comp-phrase.'''
 
 EX_SUBJ = ''' extracted-subj-phrase := basic-extracted-subj-phrase &
-  [ SYNSEM.LOCAL.CAT.HEAD verb,
-    HEAD-DTR.SYNSEM [ LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL #slash & local,
-                      NON-LOCAL.SLASH.LIST < #slash, ... > ] ].'''
-
-EX_SUBJ_MULTI = '''extracted-subj-phrase := basic-extracted-arg-phrase & head-compositional &
-  [ SYNSEM [ LOCAL.CAT.VAL [ SUBJ < > ] ],
-    HEAD-DTR.SYNSEM [ L-QUE -,
-                      LOCAL.CAT [ VAL [ SUBJ < gap &
-                                             [ LOCAL local &
-                                               [ CONT.HOOK.INDEX ref-ind ] ] > ], MC na ] ],
-    C-CONT [ RELS.LIST < >,
-             HCONS.LIST < >,
-             ICONS.LIST < > ] ].'''
-
-EX_ADJ = '''extracted-adj-phrase := extracted-adj-phrase-simple &
-  [ SYNSEM [ LOCAL.CAT [ WH #wh,
-                         VAL.SPEC < > ],
-	     NON-LOCAL [ QUE #que, YNQ #ynq, SLASH append-list &
-		   [ LIST < [ CAT [ HEAD +rp & [ MOD < [ ] . #slash > ],
-                              VAL [ SPEC < > ] ] ] > ] ] ],
-    HEAD-DTR.SYNSEM canonical-synsem &
-	   [ LOCAL local &
-		   [ CAT [ WH #wh,
-		           HEAD verb, 
-		           VAL [ SUBJ < >, SPEC < > ] ] ],
-             NON-LOCAL [ QUE #que, SLASH.LIST #slash, YNQ #ynq ] ] ].'''
-
+  [ SYNSEM.LOCAL.CAT.HEAD verb ].'''
 
 IN_SITU_PHRASE = '''insitu-int-cl := interrogative-clause & head-only &
   [ SYNSEM [ MODIFIED hasmod,
@@ -194,7 +164,7 @@ def customize_wh_ques(mylang,ch,rules,roots):
         mylang.add(EX_COMP)
         rules.add('ex-comp := extracted-comp-phrase.')
         mylang.add_literal('; Adjunct extraction',section='phrases')
-        mylang.add(EX_ADJ)
+        #mylang.add(EX_ADJ)
         rules.add('ex-adj := extracted-adj-phrase.')
         # This (below) needs to be conceptualized better.
         # Why is this? Probably not well-motivated in the end.
@@ -202,7 +172,21 @@ def customize_wh_ques(mylang,ch,rules,roots):
         if ch.get('word-order') != 'free' \
                 and ch.get('wh-inv-matrix') != ON \
                 and ch.get(MTRX_FR_OPT) == 'none-oblig':
-            mylang.add('extracted-adj-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ cons ].')
+            mylang.add('extracted-adj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ cons ].')
+        else:
+            mylang.add('extracted-adj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].')
+        # Free probably shouldn't belong here? check
+        if ch.get('word-order') in ['vos','svo','sov','free']:
+            if ch.get('pied-pip-adp') != 'on' or ch.get('oblig-pied-pip-adp') == ON:
+                mylang.add('extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ cons ].',merge=True)
+            mylang.add('extracted-subj-phrase := [ SYNSEM.LOCAL.CAT.VAL.COMPS  < >,'
+                                                 ' HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].',merge=True)
+        elif ch.get('word-order') in ['vso','osv','ovs']:
+            mylang.add('extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].',merge=True)
+            mylang.add('extracted-subj-phrase := [ SYNSEM.LOCAL.CAT.VAL.COMPS #comps,'
+                                                 ' HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS #comps ].',merge=True)
+
+
 
     if ch.get(MTRX_FRONT) in [SINGLE]:
         # With single fronting, can restrict SLASH to one element at most
@@ -218,10 +202,11 @@ def customize_wh_ques(mylang,ch,rules,roots):
                 rules.add('embed-whq := embed-wh-ques-phrase.')
             else:
                 rules.add('wh-ques := wh-ques-phrase.')
-        mylang.add('extracted-adj-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < > ].')
-        #mylang.add(SG_EX_SUBJ)
-        # Pass up QUE from the HEAD-DTR in this case:
-        mylang.add(WH_Q_PHR_SG_OR_OBLIG_FRONT)
+        mylang.add('extracted-adj-phrase :+ [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < > ].')
+
+        if ch.get(MTRX_FR_OPT) == SG_OBLIG:
+            mylang.add('''head-adj-int-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ clist, COMPS clist ] ].''')
+
         if ch.get('wh-inv-matrix') == ON:
             if not ch.get('wh-inv-notsubj') == ON:
                 mylang.add('wh-ques-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.AUX + ].')
@@ -233,14 +218,15 @@ def customize_wh_ques(mylang,ch,rules,roots):
                 mylang.add('adj-head-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL [ QUE.LIST < > ] ].')
                 mylang.add(NC_SUBJ_HEAD, section='phrases')
                 rules.add('nc-subjh := subj-head-nc-phrase.')
-            mylang.add('extracted-adj-phrase := '
-                       '[ SYNSEM.NON-LOCAL.SLASH.LIST < [ CAT.HEAD.MOD < [ LOCAL.CAT.HEAD [ INV +, AUX + ] ] > ] >,'
-                       'HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].')
-            mylang.add('extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD [ AUX -, INV -] ].')
+            mylang.add('extracted-adj-phrase :+ '
+                       '[ SYNSEM.NON-LOCAL.SLASH.LIST < [ CAT.HEAD.MOD < [ LOCAL.CAT.HEAD [ INV + ] ] > ] >, '
+                       '  HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].')
+            mylang.add('extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD [ INV -] ].')
 
 
     if ch.get(MTRX_FRONT) in [MULTI]:
-        mylang.add(EX_SUBJ_MULTI,section='phrases')
+        mylang.add(EX_SUBJ, section='phrases')
+        mylang.add('extracted-subj-phrase := [ HEAD-DTR.SYNSEM.L-QUE - ].')
         rules.add('ex-subj := extracted-subj-phrase.')
         mylang.add('wh-ques-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < [], ... > ].')
         mylang.add(FIRST_FILLER)
@@ -250,7 +236,7 @@ def customize_wh_ques(mylang,ch,rules,roots):
         mylang.add('wh-ques-phrase := 1st-head-filler-phrase.')
         rules.add('wh-ques := wh-ques-phrase.')
         if ch.get(MTRX_FR_OPT) == ALL_OBLIG:
-            mylang.add(WH_Q_PHR_NO_OR_SG_OBLIG_MULTI) # Pass up QUE from HEAD-DTR
+            mylang.add(WH_Q_PHR_NO_OR_SG_OBLIG_MULTI) # QUE is 0-alist
         # Rule out structural ambiguity for sentences like "Who sleeps where?"
         if ch.get('word-order') in ['svo', 'sov', 'osv' ]:
             mylang.add('''head-adj-int-phrase :+ [ HEAD-DTR.SYNSEM [ L-QUE -,
@@ -328,18 +314,6 @@ def customize_wh_ques(mylang,ch,rules,roots):
                 ch.get('oblig-pied-pip-noun') != ON \
                 and ch.get('oblig-pied-pip-adp') == ON:
             mylang.add('norm-adposition-lex := [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.NON-LOCAL.SLASH.LIST < > ].')
-
-    if ch.get(MTRX_FRONT) in [SINGLE, MULTI]:
-        # Free probably shouldn't belong here? check
-        if ch.get('word-order') in ['vos','svo','sov','free']:
-            if ch.get('pied-pip-adp') != 'on' or ch.get('oblig-pied-pip-adp') == ON:
-                mylang.add('extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ cons ].',merge=True)
-            mylang.add('extracted-subj-phrase := [ SYNSEM.LOCAL.CAT.VAL.COMPS  < >,'
-                                                 ' HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].',merge=True)
-        elif ch.get('word-order') in ['vso','osv','ovs']:
-            mylang.add('extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].',merge=True)
-            mylang.add('extracted-subj-phrase := [ SYNSEM.LOCAL.CAT.VAL.COMPS #comps,'
-                                                 ' HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS #comps ].',merge=True)
 
     if ch.get('q-part') == ON:
         if ch.get(MTRX_FRONT) == IN_SITU:

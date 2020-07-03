@@ -472,8 +472,8 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
                 tdl = """extracted-subj-phrase := basic-extracted-subj-phrase &
                  [ C-CONT [ RELS.LIST < >, HCONS.LIST < >, ICONS.LIST < > ],
                    HEAD-DTR.SYNSEM [ L-PERIPH -,
-                                     LOCAL.CAT.VAL.COMPS < >,
-                                     NON-LOCAL.SLASH.LIST < [ CONT.HOOK.ICONS-KEY $ ] > ] ]."""
+                                     LOCAL.CAT.VAL [ SUBJ.FIRST.LOCAL #slash & local, COMPS < > ],
+                                     NON-LOCAL.SLASH.LIST < #slash & [ CONT.HOOK.ICONS-KEY $ ] > ] ]."""
                 ph_types['extracted-subj-phrase'] = tdl.replace('$', infostr_in_flr)
                 ph_rules['extracted-subj-phrase'] = 'extracted-subj'
                 if wo == 'vso':
@@ -489,8 +489,8 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
                 tdl = """extracted-subj-phrase := basic-extracted-subj-phrase &
                  [ C-CONT [ RELS 0-alist, HCONS 0-alist, ICONS 0-alist ],
                    HEAD-DTR.SYNSEM [ L-PERIPH -,
-                                     LOCAL.CAT.VAL.COMPS < >,
-                                     NON-LOCAL.SLASH.LIST < [ CONT.HOOK.ICONS-KEY $ ] > ] ]."""
+                                     LOCAL.CAT.VAL [ SUBJ.FIRST.LOCAL #slash & local, COMPS < > ],
+                                     NON-LOCAL.SLASH.LIST < #slash & [ CONT.HOOK.ICONS-KEY $ ] > ] ]."""
                 ph_types['extracted-subj-phrase'] = tdl.replace('$', infostr_in_flr)
                 ph_rules['extracted-subj-phrase'] = 'extracted-subj'
                 # if infostr_type != 'topic-first':
@@ -517,8 +517,8 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
                 tdl = """extracted-subj-phrase := basic-extracted-subj-phrase &
                  [ C-CONT [ RELS 0-alist, HCONS 0-alist, ICONS 0-alist ],
                    HEAD-DTR.SYNSEM [ R-PERIPH -,
-                                     LOCAL.CAT.VAL.COMPS < >,
-                                     NON-LOCAL.SLASH.LIST < [ CONT.HOOK.ICONS-KEY $ ] > ] ]."""
+                                     LOCAL.CAT.VAL [ SUBJ.FIRST.LOCAL #slash & local, COMPS < > ],
+                                     NON-LOCAL.SLASH.LIST < #slash & [ CONT.HOOK.ICONS-KEY $ ] > ] ]."""
                 ph_types['extracted-subj-phrase'] = tdl.replace('$', infostr_in_flr)
                 ph_rules['extracted-subj-phrase'] = 'extracted-subj'
             elif wo == 'svo':
@@ -532,8 +532,8 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
                 tdl = """extracted-subj-phrase := basic-extracted-subj-phrase &
                  [ C-CONT [ RELS 0-alist, HCONS 0-alist, ICONS 0-alist ],
                    HEAD-DTR.SYNSEM [ R-PERIPH -,
-                                     LOCAL.CAT.VAL.COMPS < >,
-                                     NON-LOCAL.SLASH.LIST < [ CONT.HOOK.ICONS-KEY $ ] > ] ]."""
+                                     LOCAL.CAT.VAL [ SUBJ.FIRST.LOCAL #slash & local, COMPS < > ],
+                                     NON-LOCAL.SLASH.LIST < #slash & [ CONT.HOOK.ICONS-KEY $ ] > ] ]."""
                 ph_types['extracted-subj-phrase'] = tdl.replace('$', infostr_in_flr)
                 ph_rules['extracted-subj-phrase'] = 'extracted-subj'
             elif wo == 'vso':
