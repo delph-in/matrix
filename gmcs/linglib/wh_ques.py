@@ -182,8 +182,6 @@ def customize_wh_ques(mylang,ch,rules,roots):
             mylang.add('extracted-subj-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].',merge=True)
         elif ch.get('word-order') in ['vso','osv','ovs']:
             mylang.add('extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].',merge=True)
-            #mylang.add('extracted-subj-phrase := [ SYNSEM.LOCAL.CAT.VAL.COMPS #comps,'
-            #                                     ' HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS #comps ].',merge=True)
 
 
 
@@ -220,7 +218,7 @@ def customize_wh_ques(mylang,ch,rules,roots):
             mylang.add('extracted-adj-phrase :+ '
                        '[ SYNSEM.NON-LOCAL.SLASH.LIST < [ CAT.HEAD.MOD < [ LOCAL.CAT.HEAD [ INV + ] ] > ] >, '
                        '  HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].')
-            mylang.add('extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD [ INV -] ].')
+            #mylang.add('extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD [ INV -] ].')
 
 
     if ch.get(MTRX_FRONT) in [MULTI]:
@@ -303,11 +301,11 @@ def customize_wh_ques(mylang,ch,rules,roots):
                 HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CONT.HOOK.INDEX.PNG #png ].''')
             rules.add('ex-det := extracted-det-phrase.')
         if ch.get('pied-pip-adp') == 'on' and not ch.get('oblig-pied-pip-adp') == ON:
-            mylang.add('extracted-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD +vp ].')
+            mylang.add('extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +vp ].')
             if ch.get('word-order') in ['vos', 'vso', 'ovs','v-initial']:
                 mylang.add('head-subj-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < > ].')
         else:
-            mylang.add('extracted-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD verb ].')
+            mylang.add('extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD verb ].')
 
         if ch.get('pied-pip-adp') == ON and \
                 ch.get('oblig-pied-pip-noun') != ON \

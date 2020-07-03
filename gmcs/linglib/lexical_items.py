@@ -1143,6 +1143,8 @@ def customize_adpositions(mylang, lexicon, ch,hierarchies):
     mylang.add('decl-head-subj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +nvj ].')
     #mylang.add('head-spec-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD noun ].')
     mylang.add(lexbase.ADP_LEX)
+    if ch.get('has-aux') == 'yes':
+        mylang.add('norm-adposition-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.HEAD.AUX - ] > ].')
     supertype = 'norm-adposition-lex'
     for adp in ch.get('normadp'):
         typename = adp.full_key + '-' + supertype

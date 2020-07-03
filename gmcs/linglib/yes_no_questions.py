@@ -135,7 +135,7 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies,roots):
         typedef = '''
     int-cl := interrogative-clause & head-only &
     [ SYNSEM [ MODIFIED hasmod, 
-               LOCAL.CAT [ HEAD.INV +,
+               LOCAL.CAT [ HEAD [ INV + ],
                          VAL #val,
                          MC + ],
                NON-LOCAL non-local-none ],
@@ -147,7 +147,9 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies,roots):
       C-CONT.HOOK.INDEX.SF ques ].'''
         mylang.add(typedef, comment, section='phrases')
 
-        rules.add('int := int-cl.')
+        if ch.get('has-aux') == 'yes':
+            mylang.add('int-cl := [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].')
+            rules.add('int := int-cl.')
 
     if ch.get('q-part'):
         # Clause-initial and clause-final particles are analyzed as complementizers:
