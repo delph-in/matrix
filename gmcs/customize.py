@@ -572,6 +572,10 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
     #do on the other TDL files.  NOTE: This needs to be called
     #before customize_lexicon() and customize_inflection()
     lexical_items.insert_ids(ch)
+    # Currently, yes-no questions need to go before the lexicon
+    # because the lexicon needs to know whether there are obligatory question particles,
+    # to determine the head on the question-embedding verb.
+    yes_no_questions.customize_yesno_questions(mylang, ch, rules, lrules, hierarchies,roots)
 
     # The following might modify hierarchies in some way, so it's best
     # to customize those components and only have them contribute their
@@ -601,8 +605,6 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
 
     features.process_cfv_list(mylang, ch, hierarchies, to_cfv)
 
-
-
     # Call the other customization functions
     # customize_person_and_number()
     # customize_gender()
@@ -618,7 +620,6 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
     valence_change.customize_valence_change(mylang, ch, lexicon, rules, lrules, hierarchies)
     word_order.customize_word_order(mylang, ch, rules)
     coordination.customize_coordination(mylang, ch, lexicon, rules, irules)
-    yes_no_questions.customize_yesno_questions(mylang, ch, rules, lrules, hierarchies,roots)
     clausalmods.customize_clausalmods(mylang, ch, lexicon, rules, roots, trigger)
     clausalcomps.customize_clausalcomps(mylang,ch,lexicon,rules)
     adverbs_adpositions.customize_adv_adp(ch,mylang,rules)

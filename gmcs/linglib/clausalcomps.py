@@ -218,6 +218,7 @@ def add_complementizer_subtype(cs, mylang,ch,extra):
     if cs['ques'] == 'ques': # Should this be disallowed in validation? Or, is this the English "whether"?
         mylang.add(typename + ':= [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.SF ques,'
                               'CAT.VAL.COMPS.FIRST [ NON-LOCAL.QUE.LIST < > ] ] ].', merge=True)
+
     elif cs['ques'] == 'prop':
         mylang.add(typename + ':= [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF prop ].', merge=True)
     # OZ 2020-05-09 The below doesn't work because it violates compositionality of semantics. Delete once sure.
@@ -421,6 +422,7 @@ def add_special_complementizer_HCR(additional, cs, general, mylang, rules, wo,is
         rules.add(name + ' := ' + name + '-phrase.')
 
 def determine_clausal_verb_comp_head(cs):
+    from gmcs import globals
     head = ''
     if cs[COMP]:
         if cs[COMP] == 'oblig' and not cs['comp-q'] == 'on':
@@ -428,7 +430,12 @@ def determine_clausal_verb_comp_head(cs):
         else:
             head = '+vc'
     else:
-        head = 'noun' if is_nominalized_complement(cs) else 'verb'
+        if is_nominalized_complement(cs):
+            head = 'noun'
+        elif globals.div_particles:
+            head = 'comp'
+        else:
+            head = 'verb'
     return head
 
 
@@ -629,9 +636,11 @@ def customize_clausal_verb(clausalverb,mylang,ch,cs,extra):
                        , merge=True)
         elif cs['ques'] == 'ques':
             from gmcs.constants import MTRX_FRONT
+            from gmcs import globals
             mylang.add(clausalverb + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.SF ques ] > ].'
                        , merge=True)
-            if ch.get(MTRX_FRONT) and not ch.get('embed-insitu') == 'on':
+            from gmcs.constants import SINGLE,MULTI
+            if ch.get(MTRX_FRONT) in [SINGLE, MULTI] and not ch.get('embed-insitu') == 'on':
                 mylang.add(clausalverb + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.WH.LOGICAL-OR.BOOL + ] > ].'
                            , merge=True)
 

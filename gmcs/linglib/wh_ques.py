@@ -45,7 +45,7 @@ IN_SITU_PHRASE = '''insitu-int-cl := interrogative-clause & head-only &
   [ SYNSEM [ MODIFIED hasmod,
              LOCAL.CAT [ VAL #val,
        MC bool ],
-       NON-LOCAL [ SLASH.LIST < >, QUE.LIST < >, REL.LIST < > ] ],
+       NON-LOCAL [ SLASH.LIST < >, QUE.LIST < >, REL.LIST < >, YNQ #ynq ] ],
     C-CONT [ RELS.LIST < >,
        HCONS.LIST < > ],
     HEAD-DTR.SYNSEM [ LOCAL.CAT [ HEAD verb,
@@ -54,7 +54,7 @@ IN_SITU_PHRASE = '''insitu-int-cl := interrogative-clause & head-only &
               COMPS < > ] ],
           NON-LOCAL [ SLASH.LIST < >,
           REL.LIST < >,
-          QUE.LIST < ref-ind, ... > ] ] ].'''
+          QUE.LIST < ref-ind, ... >, YNQ #ynq ] ] ].'''
 
 EX_DET_PHRASE = '''extracted-det-phrase := basic-extracted-arg-phrase & head-compositional &
 [ SYNSEM [ LOCAL.CAT [ VAL [ SUBJ < >, COMPS < >, SPR < >, SPEC < > ] ] ],
@@ -264,7 +264,6 @@ def customize_wh_ques(mylang,ch,rules,roots):
         mylang.add(IN_SITU_PHRASE)
         rules.add('in-situ-ques := insitu-int-cl.')
         if not ch.get(MTRX_FRONT) == IN_SITU:
-            mylang.add('insitu-int-cl := [ SYNSEM.NON-LOCAL.YNQ.LIST < > ].')
             if ch.get(EMB_INSITU) == ON:
                 mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.WH.LOGICAL-OR.BOOL + ].')
             else:
@@ -300,12 +299,13 @@ def customize_wh_ques(mylang,ch,rules,roots):
                 [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png,
                 HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CONT.HOOK.INDEX.PNG #png ].''')
             rules.add('ex-det := extracted-det-phrase.')
-        if ch.get('pied-pip-adp') == 'on' and not ch.get('oblig-pied-pip-adp') == ON:
-            mylang.add('extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +vp ].')
-            if ch.get('word-order') in ['vos', 'vso', 'ovs','v-initial']:
-                mylang.add('head-subj-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < > ].')
-        else:
-            mylang.add('extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD verb ].')
+        # The following would rule out "Which royal house did you see a member of?"
+        #if ch.get('pied-pip-adp') == 'on' and not ch.get('oblig-pied-pip-adp') == ON:
+            #mylang.add('extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +vp ].')
+            #if ch.get('word-order') in ['vos', 'vso', 'ovs','v-initial']:
+            #mylang.add('head-spec-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < > ].')
+        #else:
+        #    mylang.add('extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD verb ].')
 
         if ch.get('pied-pip-adp') == ON and \
                 ch.get('oblig-pied-pip-noun') != ON \
@@ -321,10 +321,3 @@ def customize_wh_ques(mylang,ch,rules,roots):
                qpart = ch.get('q-particle')[1] # This is 1 and not 0 because the Choices len method is overriden; see Choices.py
                if qpart['wh'] == 'oblig':
                    mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.MC - ].')
-
-            if ch.get('q-part-order') == 'second':
-                mylang.add('insitu-int-cl := [ SYNSEM.NON-LOCAL.YNQ #ynq,'
-                           'HEAD-DTR.SYNSEM.NON-LOCAL.YNQ #ynq ].')
-            else:
-                mylang.add('insitu-int-cl := [ SYNSEM.NON-LOCAL.YNQ.LIST < > ].')
-

@@ -10,16 +10,15 @@ from gmcs import constants
 
 # Constants
 
-HEAD_ADJ = '''head-adj-phrase := head-adj-int-phrase &
- [ HEAD-DTR.SYNSEM [ LOCAL.CAT [ HEAD +nvr ] ],
+HEAD_ADJ = '''my-head-adj-phrase := head-adj-int-phrase &
+ [ HEAD-DTR.SYNSEM [ LOCAL.CAT [ HEAD +nvr, VAL [ SUBJ clist, COMPS clist ] ] ],
    NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD +jrp, VAL.COMPS < > ] ].
  '''
 
-ADJ_HEAD = '''adj-head-phrase := adj-head-int-phrase &
+ADJ_HEAD = '''my-adj-head-phrase := adj-head-int-phrase &
  [ HEAD-DTR.SYNSEM [ LOCAL.CAT [ HEAD +nvr ] ],
    NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD +jrp, VAL.COMPS < > ] ].
  '''
-
 
 def customize_adv_adp(ch, mylang, rules):
     if len(ch.get('adv',[])) > 0 or len (ch.get('normadp',[])) > 0: #need to handle also adjectives here
@@ -28,5 +27,5 @@ def customize_adv_adp(ch, mylang, rules):
         mylang.add(HEAD_ADJ,section='phrases')
         mylang.add(ADJ_HEAD,section='phrases')
         mylang.add('bare-np-phrase := [ SYNSEM.LIGHT - ].')
-        rules.add('head-adj := head-adj-phrase.')
-        rules.add('adj-head := adj-head-phrase.')
+        rules.add('head-adj := my-head-adj-phrase.')
+        rules.add('adj-head := my-adj-head-phrase.')

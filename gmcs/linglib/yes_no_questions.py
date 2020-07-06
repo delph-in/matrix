@@ -146,7 +146,7 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies,roots):
                         NON-LOCAL non-local-none ],
       C-CONT.HOOK.INDEX.SF ques ].'''
         mylang.add(typedef, comment, section='phrases')
-
+        #OZ 2020-07-03 This is to suppress ambiguity in "Which house do the cats sleep in?"
         if ch.get('has-aux') == 'yes':
             mylang.add('int-cl := [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].')
             rules.add('int := int-cl.')
