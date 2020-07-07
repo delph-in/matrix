@@ -245,4 +245,7 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies,roots):
                     mylang.add(typename + ':= [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST '
                                           '[ LOCAL.CAT.WH or-and-minus, NON-LOCAL.QUE.LIST < > ] ].')
 
-
+            elif qpart['wh'] == 'oblig':
+                if ch.get('q-part-order') != 'second':
+                    mylang.add(typename + ':= [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST '
+                                          '[ LOCAL.CAT.WH or-and-plus, NON-LOCAL.QUE.LIST < >  ] ].')

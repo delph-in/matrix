@@ -433,7 +433,10 @@ def determine_clausal_verb_comp_head(cs):
         if is_nominalized_complement(cs):
             head = 'noun'
         elif globals.div_particles:
-            head = 'comp'
+            if cs['ques'] == 'ques':
+                head = 'comp'
+            else:
+                head = 'verb'
         else:
             head = 'verb'
     return head

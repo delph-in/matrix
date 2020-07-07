@@ -1,0 +1,134 @@
+
+version=34
+
+section=general
+language=wh24-embed-insitu-verb-subcat
+punctuation-chars=discard-all
+
+section=word-order
+word-order=sov
+has-dets=no
+has-aux=no
+
+section=number
+
+section=person
+person=none
+
+section=gender
+
+section=case
+case-marking=none
+
+section=adnom-poss
+
+section=direct-inverse
+
+section=tense-aspect-mood
+
+section=evidentials
+
+section=other-features
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+q-part=on
+q-part-order=after
+  q-particle1_orth=Q1
+  q-particle1_main=on
+  q-particle1_wh=imp
+  q-particle2_orth=Q2
+  q-particle2_embed=on
+  q-particle2_wh=oblig
+
+section=wh-q
+front-matrix=in-situ
+
+section=info-str
+
+section=arg-opt
+
+section=nominalclause
+
+section=clausal-comp
+  comps1_clause-pos-same=on
+  comps1_ques=ques
+  comps2_clause-pos-same=on
+  comps2_ques=prop
+
+section=clausalmods
+
+section=lexicon
+  noun1_det=imp
+    noun1_stem1_orth=cat
+    noun1_stem1_pred=_cat_n_rel
+  noun2_det=imp
+    noun2_stem1_orth=house
+    noun2_stem1_pred=_house_n_rel
+  noun3_name=wh
+  noun3_inter=on
+  noun3_det=imp
+    noun3_stem1_orth=who
+    noun3_stem1_pred=_person_n_rel
+    noun3_stem2_orth=what
+    noun3_stem2_pred=_thing_n_rel
+  verb1_valence=intrans
+    verb1_stem1_orth=sleeps
+    verb1_stem1_pred=_sleep_v_rel
+  verb2_valence=trans
+    verb2_stem1_orth=sees
+    verb2_stem1_pred=_sees_v_rel
+  verb3_name=wonder
+  verb3_valence=trans,comps1
+    verb3_stem1_orth=asks
+    verb3_stem1_pred=_ask_v_rel
+    verb3_stem2_orth=knows
+    verb3_stem2_pred=_knows_v_rel
+  verb4_name=think
+  verb4_valence=trans,comps2
+    verb4_stem1_orth=thinks
+    verb4_stem1_pred=_think_v_rel
+    verb4_stem2_orth=knows
+    verb4_stem2_pred=_know_v_rel
+  adv1_name=wh-loc
+    adv1_stem1_orth=where
+    adv1_stem1_pred=_place_n_rel
+  adv1_inter=on
+  adv1_type=loc
+    normadp1_stem1_orth=in
+    normadp1_stem1_pred=_in_p_rel
+  normadp1_order=before
+
+section=morphology
+
+section=toolbox-import
+
+section=test-sentences
+  sentence16_orth=cat who sleeps Q2 asks
+  sentence17_orth=cat who what sees Q2 asks
+  sentence18_orth=cat cat what sees Q2 asks
+  sentence20_orth=cat cat house sees thinks
+  sentence21_orth=cat cat house sees knows
+  sentence22_orth=cat cat house sees asks
+  sentence22_star=on
+  sentence23_orth=cat cat house sees Q2 asks
+  sentence23_star=on
+  sentence24_orth=cat cat house sees Q2 knows
+  sentence24_star=on
+  sentence25_orth=cat cat house sees Q2 thinks
+  sentence25_star=on
+  sentence26_orth=cat cat what sees Q2 knows
+  sentence27_orth=cat sleeps Q1
+  sentence28_orth=cat what sees Q1?
+  sentence28_star=on
+  sentence29_orth=cat cat what sees Q1 asks
+  sentence29_star=on
+  sentence30_orth=cat what sees Q2
+  sentence30_star=on
+
+section=gen-options
+
+section=ToolboxLexicon

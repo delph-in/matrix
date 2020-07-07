@@ -318,6 +318,8 @@ def customize_wh_ques(mylang,ch,rules,roots):
             # Perhaps this special case below can be dealt with differently?
             # Like with the WH feature?
             if len(ch.get('q-particle')) == 1:
-               qpart = ch.get('q-particle')[1] # This is 1 and not 0 because the Choices len method is overriden; see Choices.py
-               if qpart['wh'] == 'oblig':
+              qpart = ch.get('q-particle')[1] # This is 1 and not 0 because the Choices len method is overriden; see Choices.py
+              if qpart['wh'] == 'oblig':
                    mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.MC - ].')
+            elif globals.div_particles:
+                mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.MC - ].')
