@@ -2321,10 +2321,10 @@ marker-final-phrase := basic-binary-marker-phrase &
 ; OZ 2020-05-19 Adding WH feature for handling embedded constituent questions.
 
 basic-bare-np-phrase := head-only & head-valence-phrase &
-  [ SYNSEM.LOCAL.CAT [ WH #wh,
+  [ SYNSEM [ LOCAL.CAT [ WH #wh,
                        VAL [ SPR < >,
                            SUBJ < >,
-                           COMPS < >, SPEC #spec ] ],
+                           COMPS < >, SPEC #spec ] ] ],
     HEAD-DTR.SYNSEM.LOCAL [ CAT [ WH #wh,
                                   HEAD noun,
                                   VAL [ SPR < unexpressed &

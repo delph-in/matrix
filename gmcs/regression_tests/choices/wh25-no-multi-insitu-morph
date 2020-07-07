@@ -1,0 +1,122 @@
+
+version=34
+
+section=general
+language=wh25-no-multi-insitu
+
+section=word-order
+word-order=vos
+has-dets=yes
+noun-det-order=det-noun
+has-aux=no
+
+section=number
+
+section=person
+person=none
+
+section=gender
+
+section=case
+case-marking=none
+
+section=adnom-poss
+
+section=direct-inverse
+
+section=tense-aspect-mood
+
+section=evidentials
+
+section=other-features
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=wh-q
+front-matrix=in-situ
+no-multi-ques=on
+wh-q-infl=on
+
+section=info-str
+
+section=arg-opt
+
+section=nominalclause
+
+section=clausal-comp
+  comps1_clause-pos-same=on
+  comps1_ques=ques
+
+section=clausalmods
+
+section=lexicon
+  noun1_det=obl
+    noun1_stem1_orth=n1
+    noun1_stem1_pred=_n1_n_rel
+  noun2_det=obl
+    noun2_stem1_orth=n2
+    noun2_stem1_pred=_n2_n_rel
+  noun3_name=wh
+  noun3_inter=on
+  noun3_det=imp
+    noun3_stem1_orth=who
+    noun3_stem1_pred=_person_n_rel
+    noun3_stem2_orth=what
+    noun3_stem2_pred=_thing_n_rel
+  verb1_valence=intrans
+    verb1_stem1_orth=iv
+    verb1_stem1_pred=_iv_v_rel
+  verb2_valence=trans
+    verb2_stem1_orth=tv
+    verb2_stem1_pred=_tv_v_rel
+  verb3_name=ask
+  verb3_valence=trans,comps1
+    verb3_stem1_orth=ask
+    verb3_stem1_pred=_ask_v_rel
+  det1_name=def
+    det1_stem1_orth=the
+    det1_stem1_pred=_the_q_rel
+  det2_name=which
+  det2_inter=on
+    det2_stem1_orth=which
+    det2_stem1_pred=_which_q_rel
+  adv1_name=wh-loc
+    adv1_stem1_orth=where
+    adv1_stem1_pred=_place_a_rel
+  adv1_inter=on
+  adv1_type=loc
+
+section=morphology
+  verb-pc1_name=itrg
+  verb-pc1_order=suffix
+  verb-pc1_inputs=verb
+    verb-pc1_lrt1_name=ques
+      verb-pc1_lrt1_lri1_inflecting=yes
+      verb-pc1_lrt1_lri1_orth=-Q
+
+section=toolbox-import
+
+section=test-sentences
+  sentence1_orth=tv the n2 the n1
+  sentence2_orth=tv what the n1?
+  sentence3_orth=tv the n2 who?
+  sentence4_orth=who tv the n2?
+  sentence4_star=on
+  sentence5_orth=where iv the n1?
+  sentence6_orth=iv the n1 where?
+  sentence7_orth=iv where the n1?
+  sentence8_orth=who iv?
+  sentence8_star=on
+  sentence9_orth=iv who
+  sentence10_orth=iv who where?
+  sentence10_star=on
+  sentence11_orth=tv what who?
+  sentence11_star=on
+
+section=gen-options
+
+section=ToolboxLexicon

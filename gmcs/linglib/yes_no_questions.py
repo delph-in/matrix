@@ -235,17 +235,15 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies,roots):
             elif qpart['embed'] == 'on' and qpart['main'] != 'on':
                 mylang.add(typename + ' := [ SYNSEM.LOCAL.CAT [ MC #mc '
                                       'VAL.COMPS.FIRST.LOCAL.CAT.MC #mc & -  ] ].')
-            #if globals.div_particles:
             if qpart['wh'] == 'imp':
                 if ch.get('q-part-order') != 'second':
                     mylang.add(typename + ':= [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST '
-                                          '[ LOCAL.CAT.WH or-and-minus,'
-                                          '  NON-LOCAL.QUE.LIST < > ] ].')
+                                          '[ LOCAL.CAT.WH or-and-minus ] ].')
                 else:
                     mylang.add(typename + ':= [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST '
-                                          '[ LOCAL.CAT.WH or-and-minus, NON-LOCAL.QUE.LIST < > ] ].')
+                                          '[ LOCAL.CAT.WH or-and-minus ] ].')
 
             elif qpart['wh'] == 'oblig':
                 if ch.get('q-part-order') != 'second':
                     mylang.add(typename + ':= [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST '
-                                          '[ LOCAL.CAT.WH or-and-plus, NON-LOCAL.QUE.LIST < >  ] ].')
+                                          '[ LOCAL.CAT.WH or-and-plus  ] ].')
