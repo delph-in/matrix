@@ -137,13 +137,7 @@ def customize_wh_ques(mylang,ch,rules,roots):
         mylang.add('''clause :+ [ SYNSEM.NON-LOCAL.QUE 0-1-alist ]. ''')
         if ch.get(MTRX_FRONT) in [SINGLE]:
             mylang.add('''wh-ques-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.QUE 0-alist ].''')
-        #elif ch.get(MTRX_FRONT) == IN_SITU:
-        #    mylang.add('''insitu-int-cl := [ SYNSEM.LOCAL.CAT.WH.LOGICAL-OR.BOOL + ].''')
         if len(ch.get('adv', [])) > 0 or len(ch.get('normadp', [])) > 0:
-            mylang.add('''head-adj-int-phrase :+ [ SYNSEM [ LOCAL.CAT.WH.LOGICAL-AND.BOOL -,
-                                                   NON-LOCAL.QUE 0-1-alist ],
-                                                   HEAD-DTR.SYNSEM.NON-LOCAL.SLASH 0-alist ]. ''',
-                       section='addenda')
             mylang.add('''wh-adverb-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.WH.LOGICAL-OR.BOOL - ] > ].''')
 
     mylang.add_literal(';;; Wh-question-related phrasal types',section='phrases')

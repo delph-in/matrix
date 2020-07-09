@@ -332,26 +332,13 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
             create_interrogative_verb_type(cases,ch,hierarchies,lexicon,mylang,verb)
 
 def create_interrogative_verb_type(cases,ch,hierarchies,lexicon,mylang,verb):
-    stypes = verb.get('supertypes').split(', ')
-    stype_names = [verb_id(ch[st]) for st in stypes if st != '']
     vtype = verb_id(verb)
-    #construct_supertype_names(cases, ch, stype_names, verb)
     # clausal verb's valence and its complement's head constraint:
     vtype,head = clausalcomps.update_verb_lextype(ch,verb,vtype)
-    #mycases = case.get_verb_case(ch)
-
-    #if len(stype_names) == 0:
-    #    mylang.add(vtype + ' := interrogative-verb-lex .')
-
-    #else:
     if verb['predtype'] in ['manner','loc']:
         mylang.add(vtype + lexbase.ITRG_FOUR_REL)
     elif verb['predtype'] == 'ref':
             mylang.add(vtype + lexbase.ITRG_THREE_REL)
-        # mylang.add(vtype + ' := [ ARG-ST.FIRST.LOCAL.CAT.HEAD '
-        #            + mycases['tran']['AH'] + ' ].')
-        # mylang.add(vtype + ' := [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE '
-        #            + mycases['tran']['A'] + ' ] ].')
 
     features.customize_feature_values(mylang, ch, hierarchies, verb, vtype, 'verb', None, cases)
     stems = verb.get('stem', [])
