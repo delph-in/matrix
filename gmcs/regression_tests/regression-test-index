@@ -504,4 +504,5 @@ wh22-no-multi-ques=No multiple wh-questions allowed.
 wh23-quesverbs=A mixture of languages featuring interrogative verbs. No morphology or any other phenomena; the point is just to check the semantics of the verbs/
 wh24-particles-embed=Obligatory question particle and embedded clauses, think vs. wonder
 wh25-no-multi-insitu-morph=In situ wh-questions with optional morphological marking, only one question allowed per clause.
-wh-eng-dev=Updated English test, with more embedded clauses. Tets mainly subj-aux inversion.
+wh-dev-eng=Updated wh-questions for English; tests mostly subject-aux inversion
+wh-eng-dev=Updated English test for wh-questions; mostly tests subj-aux inversion.
