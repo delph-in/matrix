@@ -1,7 +1,7 @@
 # Ignore cache, testing, build, and other temporary directories
 tests/regression/grammars/
 tests/regression/logs/
-tests/regression/home/current
+tests/regression/home/current/
 
 # Ignore the compiled python files
 *.pyc

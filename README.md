@@ -1,9 +1,18 @@
 # The Grammar Matrix
 
-**NOTE:** This repository is currently being ported from Subversion and it is
-not yet the official home of the Matrix nor is it completely ported. The
-current official home of the source code is the Subversion repository at
-svn://lemur.ling.washington.edu/shared/matrix/trunk.
+The Grammar Matrix is a [DELPH-IN](http://www.delph-in.net/) project
+for creating ("customizing") [HPSG] grammars for deep linguistic
+analysis. It has been used to teach university courses in grammar
+engineering as well as to jumpstart development on larger grammars,
+such as [Zhong] (Chinese languages) and [INDRA] (Indonesian).
+
+[HPSG]: https://en.wikipedia.org/wiki/Head-driven_phrase_structure_grammar
+[Zhong]: https://github.com/delph-in/zhong
+[INDRA]: https://github.com/davidmoeljadi/INDRA
+
+> **NOTE:** This repository is currently being ported from Subversion
+> *and* converted from Python 2 to 3, so there may be some portions
+> that do not work as intended.
 
 ## Links and Resources
 
