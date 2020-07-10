@@ -8,8 +8,6 @@ __pycache__/
 
 # Ignore auto-saves
 *~
-py3env
-.idea
 tests/regression/home/current
 analysis
 fold
