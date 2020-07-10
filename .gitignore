@@ -9,6 +9,8 @@ __pycache__/
 
 # Ignore auto-saves
 *~
+
+# Ignore files under home/gold/testname which are not needed
 update
 score
 set
