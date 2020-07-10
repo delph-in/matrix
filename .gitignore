@@ -1,6 +1,7 @@
 # Ignore cache, testing, build, and other temporary directories
 tests/regression/grammars/
 tests/regression/logs/
+tests/regression/home/current
 
 # Ignore the compiled python files
 *.pyc
@@ -8,9 +9,6 @@ __pycache__/
 
 # Ignore auto-saves
 *~
-py3env
-.idea
-tests/regression/home/current
 update
 score
 set
@@ -21,4 +19,3 @@ output
 item-phenomenon
 fold
 analysis
-pydelphin13
