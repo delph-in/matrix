@@ -51,21 +51,6 @@ class ChoiceCategory:
         self.safe_get = True
         return x
 
-    def full_keys(self):
-        full_keys = []
-        if issubclass(self.__class__, ChoiceDict):
-            for key in self:
-                if issubclass(self[key].__class__,ChoiceCategory):
-                    full_keys += self[key].full_keys()
-                else:
-                    if self.full_key:
-                        full_keys += [self.full_key+'_'+key]
-                    else:
-                        full_keys += [key]
-        elif issubclass(self.__class__, ChoiceList):
-            for item in self:
-                full_keys += item.full_keys()
-        return full_keys
 
 class ChoiceDict(ChoiceCategory, dict):
 
@@ -375,22 +360,6 @@ class ChoicesFile:
     def __str__(self):
         return str(self.choices)
 
-    def __eq__(self, object):
-        if not issubclass(object.__class__, ChoicesFile):
-            return False
-        else:
-            if len(self.full_keys()) != len(object.full_keys()):
-                print(self.full_keys())
-                print(str(len(self.full_keys()))+"/"+str(len(object.full_keys())))
-                return False
-            else:
-                for i in self.full_keys():
-                    if object[i] != self[i]:
-                        print(object[i])
-                        print(self[i])
-                        return False
-        return True
-
     ############################################################################
     ### Choices file parsing functions
 
@@ -517,8 +486,8 @@ class ChoicesFile:
     def keys(self):
         return list(self.choices.keys())
 
-    def full_keys(self):
-        return self.choices.full_keys()
+    def clear_cached_values(self):
+        self.cached_values = {}
 
     ############################################################################
     ### Up-revisioning handler
@@ -627,13 +596,6 @@ class ChoicesFile:
         # now reset the full keys in case something was changed
         for top_level_key in self:
             self.__reset_full_keys(top_level_key)
-
-    # Return the keys for the choices dict
-    def keys(self):
-        return list(self.choices.keys())
-
-    def clear_cached_values(self):
-        self.cached_values = {}
 
     ######################################################################
     # Methods for accessing "derived" values -- that is, groups of values

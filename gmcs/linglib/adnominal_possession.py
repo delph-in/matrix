@@ -162,9 +162,8 @@ POSS_UNARY = ' := basic-unary-phrase & \
 def customize_adnominal_possession(mylang,ch,rules,irules,lexicon,hierarchies):
     # Check if any possessive strategies or pronouns are defined.
     # If so, add the POSS head feature.
-    for key in ch.full_keys():
-        if 'poss-strat' in key or 'poss-pron' in key:
-            customize_poss_addenda(mylang,ch)
+    if 'poss-strat' in ch or 'poss-pron' in ch:
+        customize_poss_addenda(mylang, ch)
 
     customize_np_possession(mylang,ch,rules,irules,lexicon,hierarchies)
 
@@ -220,23 +219,23 @@ Calls customize_poss_rules, customize_poss_irules, and customize_poss_lexicon
 to build possessive strategies for cases where the possessor is a full NP
 """
 def customize_np_possession(mylang,ch,rules,irules,lexicon,hierarchies):
-    for strat in ch.get('poss-strat',[]):
+    for strat_num, strat in enumerate(ch.get('poss-strat', []), 1):
+        strat_num = str(strat_num)
 
         # Add subtypes of POSSESSOR and POSSESSUM features for this strategy
-        strat_num=strat.full_keys()[0].split("_")[0][-1]
         customize_poss_hier(mylang,strat_num)
 
         # Add phrase rules:
-        customize_poss_rules(strat,mylang,ch,rules,hierarchies)
+        customize_poss_rules(strat,mylang,ch,rules,hierarchies,strat_num,False)
 
         # Add inflectional rules:
         if strat.get('possessor-type')=='affix' or strat.get('possessum-type')=='affix':
 
-            customize_poss_irules(strat,mylang,ch,irules,hierarchies,rules)
+            customize_poss_irules(strat,mylang,ch,irules,hierarchies,rules,strat_num,False)
 
         # Add lexical items:
         if strat.get('possessor-type')=='non-affix' or strat.get('possessum-type')=='non-affix':
-            customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies)
+            customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies,strat_num,False)
 
 
 """
@@ -245,22 +244,22 @@ to build possessive strategies for cases where the possessor is a pronoun
 """
 def customize_pronominal_possession(mylang,ch,rules,irules,lexicon,hierarchies):
 
-    for pron in ch.get('poss-pron',[]):
+    for pron_num, pron in enumerate(ch.get('poss-pron', []), 1):
+        pron_num = str(pron_num)
 
         # Add possessive features:
-        pron_num=pron.full_keys()[0].split("_")[0][-1]
         customize_poss_hier(mylang,'pron-'+pron_num)
 
         # Add phrase rules:        
-        customize_poss_rules(pron,mylang,ch,rules,hierarchies)
+        customize_poss_rules(pron,mylang,ch,rules,hierarchies,pron_num,True)
 
         # Add inflectional rules:
         if pron.get('type')=='affix':
-            customize_poss_irules(pron,mylang,ch,irules,hierarchies,rules)
+            customize_poss_irules(pron,mylang,ch,irules,hierarchies,rules,pron_num,True)
 
         # Add lexical rules:
         if pron.get('type')=='non-affix':            
-            customize_poss_lexicon(pron,mylang,ch,lexicon,rules,hierarchies)
+            customize_poss_lexicon(pron,mylang,ch,lexicon,rules,hierarchies,pron_num,True)
 
 
 #########################################################################################
@@ -271,7 +270,7 @@ def customize_pronominal_possession(mylang,ch,rules,irules,lexicon,hierarchies):
  Helper function to determine if you'll need to
  manipulate the order of head-comp rules:
 """
-def check_hc_order_manip(ch,strat,hc):
+def check_hc_order_manip(strat,hc):
 
     # Order of major poss phrase
     strat_order=strat.get('order')
@@ -325,11 +324,9 @@ If rule already exists (head-comp case), then make sure its order is correct.
 Also add constraints to non-possessive phrase rules to prevent
 them from allowing possessive words in incorrect places
 """
-def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
+def customize_poss_rules(strat,mylang,ch,rules,hierarchies,strat_num,pron_strat):
 
     # Define vars for all elements of strategy:
-    strat_name=strat.full_keys()[0].split("_")[0]
-    strat_num=strat_name[-1]
     mark_loc=strat.get('mark-loc')
     mod_spec=strat.get('mod-spec')
     pron_allowed=True if strat.get('pronoun-allow')=='yes' else False
@@ -343,15 +340,13 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
     adj_rule=False
     spec_rule=False
     # Set flags for pronouns 
-    if 'poss-pron' in strat_name:
-        pron_strat=True
+    if pron_strat:
         strat_num='pron-'+strat_num
         if strat.get('type')=='affix':
             pron_affix=True
         else:
             pron_affix=False
     else:
-        pron_strat=False
         pron_affix=False
 
     # Add vars to keep track of what rules have been added:
@@ -416,7 +411,7 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
         # if not, add a new rule with correct order. Add the INIT feature so that
         # poss head-comp order can be distinguished from the general order.
         hc=customize_major_constituent_order(ch.get('word-order'),mylang,ch,rules)['hc']
-        order_manip,default_init,head_comp_order=check_hc_order_manip(ch,strat,hc)
+        order_manip,default_init,head_comp_order=check_hc_order_manip(strat,hc)
         if order_manip:
             # In order to play nice with the wo library, you have to 
             # not inherit directly from head-initial and head-final 
@@ -592,21 +587,14 @@ def customize_poss_rules(strat,mylang,ch,rules,hierarchies):
 
 # Adds inflectional rules (or adds constraints to inflectional rules added in
 # morphotactics.py) that create possessive forms
-def customize_poss_irules(strat,mylang,ch,irules,hierarchies,rules):
+def customize_poss_irules(strat,mylang,ch,irules,hierarchies,rules,strat_num,pron_strat):
 
     # Define vars for all elements of strategy:
-    strat_name=strat.full_keys()[0].split("_")[0]
-    strat_num=strat_name[-1]
+    strat_name=('poss-pron' if pron_strat else 'poss-strat') + strat_num
     mark_loc=strat.get('mark-loc')
     mod_spec=strat.get('mod-spec')
     possessor_type=strat.get('possessor-type')
     possessum_type=strat.get('possessum-type')
-
-    # Set flag for pronouns
-    if 'poss-pron' in strat_name:
-        pron_strat=True
-    else:
-        pron_strat=False
 
     # Go through the position class (pc) info till you find the strategy you're actually dealing with
     for pc in all_position_classes(ch):
@@ -633,17 +621,15 @@ def customize_poss_irules(strat,mylang,ch,irules,hierarchies,rules):
                 # Add irules for pronoun strategies:
                 elif pron_strat:
                     
-                    customize_possessor_pron_irules(strat,mylang,ch,strat_name,strat_num,feat,lrt,mod_spec,hierarchies)
+                    customize_possessor_pron_irules(strat,mylang,ch,strat_name,feat,lrt,mod_spec,hierarchies)
 
 def customize_possessor_irules(strat,mylang,rules,ch,strat_num,mod_spec,mark_loc,hierarchies):
-    
-    case = True if ch.get('case-marking')!='none' else False
 
     # Add the basic possessor rule defn:
     possessor_rule_name ='possessor-lex-rule-'+strat_num
 
     # Add case constraints if case exists:
-    if case:
+    if ch.get('case-marking')!='none':
         
         mylang.add('poss-case := case.',section='addenda')
         mylang.add(possessor_rule_name+' := [ SYNSEM.LOCAL.CAT.HEAD.CASE poss-case ].')
@@ -810,7 +796,7 @@ def customize_possessum_irules(strat,mylang,rules,ch,strat_num,mod_spec,mark_loc
             
             # Check if you need to add INIT to the possessum to keep it from going through wrong ordered head-comps
             hc=customize_major_constituent_order(ch.get('word-order'),mylang,ch,rules)['hc']    
-            order_manip,default_init,head_comp_order=check_hc_order_manip(ch,strat,hc)
+            order_manip,default_init,head_comp_order=check_hc_order_manip(strat,hc)
             if order_manip:
                 init='+' if strat.get('order')=='head-initial' else '-'
                 if strat.get('order')!='either':
@@ -864,7 +850,7 @@ def customize_possessum_irules(strat,mylang,rules,ch,strat_num,mod_spec,mark_loc
             [ SYNSEM.LOCAL [ CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.POSSESSOR.POSS-AGR #poss-png,\
                                                           CONT.HOOK.INDEX.PNG #poss-png ] ].')
                             
-def customize_possessor_pron_irules(strat,mylang,ch,strat_name,strat_num,feat,lrt,mod_spec,hierarchies):
+def customize_possessor_pron_irules(strat,mylang,ch,strat_name,feat,lrt,mod_spec,hierarchies):
 
     if strat_name in str(feat['name']) and feat['value']!='minus':
 
@@ -931,21 +917,13 @@ def customize_possessor_pron_irules(strat,mylang,ch,strat_name,strat_num,feat,lr
 
 # Adds lexical items for possession markers and possessor pronouns.
 # All needed phrase rules added in customize_poss_rules() above.
-def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
+def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies,strat_num,pron_strat):
 
     # Define vars for all elements of strategy:
-    strat_name=strat.full_keys()[0].split("_")[0]
-    strat_num=strat_name[-1]
     mark_loc=strat.get('mark-loc')
     mod_spec=strat.get('mod-spec')    
     possessor_type=strat.get('possessor-type')
     possessum_type=strat.get('possessum-type')
-    pron_allowed=True if strat.get('pronoun-allow')=='yes' else False
-
-    if 'poss-pron' in strat_name:
-        pron_strat=True
-    else:
-        pron_strat=False
 
     # Add lexical items other than poss pronouns:
     if not pron_strat:
@@ -953,21 +931,20 @@ def customize_poss_lexicon(strat,mylang,ch,lexicon,rules,hierarchies):
         # Add possessor-marking adpositons:
         if (mark_loc=='possessor' or mark_loc=='both') and possessor_type=='non-affix':
 
-            customize_possessor_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod_spec,mark_loc,pron_allowed,hierarchies,rules)
+            customize_possessor_lexicon(strat,mylang,ch,lexicon,strat_num,mod_spec,mark_loc,hierarchies,rules)
 
         # Add possessum-marking nouns:
         if (mark_loc=='possessum' or mark_loc=='both') and possessum_type=='non-affix':
 
-            customize_possessum_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod_spec,mark_loc,pron_allowed,possessor_type,hierarchies,rules)
+            customize_possessum_lexicon(strat,mylang,ch,lexicon,strat_num,mod_spec,mark_loc,hierarchies,rules)
 
     elif pron_strat:
 
-        customize_possessor_pron_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod_spec,hierarchies,rules)
+        customize_possessor_pron_lexicon(strat,mylang,ch,lexicon,strat_num,mod_spec,hierarchies,rules)
 
 
-def customize_possessor_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod_spec,mark_loc,pron_allowed,hierarchies,rules):
-            
-    case = True if ch.get('case-marking')!='none' else False
+def customize_possessor_lexicon(strat,mylang,ch,lexicon,strat_num,mod_spec,mark_loc,hierarchies,rules):
+    pron_allowed=True if strat.get('pronoun-allow')=='yes' else False
 
     # Add most general defn of possessor-marking adp:
     mylang.set_section('otherlex')
@@ -980,7 +957,7 @@ def customize_possessor_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod
 
     # Check if ordering info needs to be added to adp
     hc=customize_major_constituent_order(ch.get('word-order'),mylang,ch,rules)['hc']    
-    order_manip,default_init,head_comp_order=check_hc_order_manip(ch,strat,hc)
+    order_manip,default_init,head_comp_order=check_hc_order_manip(strat,hc)
     if order_manip:
         marker_order=strat.get('possessor-mark-order')
         init='bool'
@@ -1047,7 +1024,7 @@ def customize_possessor_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod
                                                         POSSESSUM nonpossessive, ]\
                                                   CONT.RELS <! !> ] ] .')
 
-    if case:
+    if ch.get('case-marking')!='none':
         
         mylang.add('+np :+ [ CASE case ].', section='addenda')
         mylang.add('poss-case := case.',section='addenda')
@@ -1111,13 +1088,13 @@ def customize_possessor_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod
         customize_feature_values(mylang,ch,hierarchies,instance_tmp,'possessor-adp-lex-'+strat_num,'poss-adp-comp')
 
 
-def customize_possessum_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod_spec,mark_loc,pron_allowed,possessor_type,hierarchies,rules):
+def customize_possessum_lexicon(strat,mylang,ch,lexicon,strat_num,mod_spec,mark_loc,hierarchies,rules):
     mylang.set_section('nounlex')
 
     # Check if ordering info needs to be added to adp
     init='bool'
     hc=customize_major_constituent_order(ch.get('word-order'),mylang,ch,rules)['hc']    
-    order_manip,default_init,head_comp_order=check_hc_order_manip(ch,strat,hc)
+    order_manip,default_init,head_comp_order=check_hc_order_manip(strat,hc)
     if order_manip:
         marker_order=strat.get('possessum-mark-order')
         if marker_order=='either':
@@ -1278,9 +1255,7 @@ def customize_possessum_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod
                                          [ STEM < "'+orth+'" > ].')
 
 
-def customize_possessor_pron_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod_spec,hierarchies,rules):
-
-    case = True if ch.get('case-marking')!='none' else False
+def customize_possessor_pron_lexicon(strat,mylang,ch,lexicon,strat_num,mod_spec,hierarchies,rules):
 
     # Set vars for pron strat:
     noun_type=noun_id(strat)
@@ -1338,8 +1313,7 @@ def customize_possessor_pron_lexicon(strat,mylang,ch,lexicon,strat_name,strat_nu
             mylang.add(noun_type+' := [ SYNSEM.LOCAL.CAT.HEAD.POSSESSOR.POSS-AGR #png,\
                                               '+agr_prefix+' #png ].')
 
-    if case:
-        
+    if ch.get('case-marking')!='none':
         mylang.add('poss-case := case.',section='addenda')
         mylang.add(noun_type+' := [ SYNSEM.LOCAL.CAT.HEAD.CASE poss-case ].')
 
@@ -1410,7 +1384,7 @@ def customize_possessor_pron_lexicon(strat,mylang,ch,lexicon,strat_name,strat_nu
                 
         if strat.get('possessum-mark-type')=='non-affix':
             
-            customize_possessum_lexicon(strat,mylang,ch,lexicon,strat_name,'pron-'+strat_num,mod_spec,'possessum-with-pron',True,'non-affix',hierarchies,rules)
+            customize_possessum_lexicon(strat,mylang,ch,lexicon,'pron-'+strat_num,mod_spec,'possessum-with-pron',hierarchies,rules)
     else:
         # If the possessor is the only marked constituent in a spec construction, forbid marking on the possessum:
         if mod_spec=='spec':
