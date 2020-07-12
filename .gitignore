@@ -11,13 +11,13 @@ __pycache__/
 *~
 
 # Ignore files under home/gold/testname which are not needed
-update
-score
-set
-rule
-phenomenon
-parameter
-output
-item-phenomenon
-fold
-analysis
+tests/regression/home/gold/*/update
+tests/regression/home/gold/*/score
+tests/regression/home/gold/*/set
+tests/regression/home/gold/*/rule
+tests/regression/home/gold/*/phenomenon
+tests/regression/home/gold/*/parameter
+tests/regression/home/gold/*/output
+tests/regression/home/gold/*/item-phenomenon
+tests/regression/home/gold/*/fold
+tests/regression/home/gold/*/analysis
