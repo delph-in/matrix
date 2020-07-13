@@ -379,6 +379,8 @@ keys := keys_min &
 
 semsort := sort.
 
+; Start transition from diff-lists to append-lists.
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; CONT values
 ;
