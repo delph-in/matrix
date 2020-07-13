@@ -98,7 +98,8 @@ def write_dir_inv_types(choices, mylang, hierarchies):
 
         # rest of the scale
         values = {}
-        for scale in choices.get('scale')[i:]:
+
+        for scale in list(choices.get('scale'))[i:]:
             for feat in scale.get('feat', []):
                 name = feat.get('name','')
                 if name not in values:
