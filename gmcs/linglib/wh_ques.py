@@ -72,7 +72,7 @@ EX_DET_PHRASE = '''extracted-det-phrase := basic-extracted-arg-phrase & head-com
 BASIC_FILLER_SG = '''basic-filler-phrase :+ [ SYNSEM.NON-LOCAL.SLASH.LIST < >,
                                            ARGS < [ SYNSEM [ LOCAL #slash,
                                                              NON-LOCAL.SLASH.LIST < > ] ], 
-                                                    [SYNSEM.NON-LOCAL.SLASH.LIST < #slash >] >]. '''
+                                                    [ SYNSEM.NON-LOCAL.SLASH.LIST < #slash > ] > ]. '''
 
 FIRST_FILLER = '''1st-head-filler-phrase := basic-filler-phrase & head-compositional &
   [  SYNSEM [ NON-LOCAL [ SLASH.LIST #slash, REL #rel, QUE 0-alist, YNQ 0-alist ] ],

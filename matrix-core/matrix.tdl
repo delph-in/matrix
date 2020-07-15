@@ -2398,6 +2398,22 @@ basic-extracted-subj-phrase := basic-extracted-arg-phrase & head-compositional &
              HCONS 0-alist,
              ICONS 0-alist ] ].
 
+;basic-extracted-subj-phrase := head-nexus-phrase & head-compositional & head-only &
+;  [ SYNSEM [ LOCAL.CAT.VAL [ SUBJ < >,
+;                           COMPS #comps,
+;                           SPEC #spec, SPR #spr ],
+;             NON-LOCAL.SLASH.APPEND < #slash, [ LIST < #local > ] > ],
+;    HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL [ SUBJ < [ LOCAL local & #local &
+;                                               [ CONT.HOOK.INDEX ref-ind ] ] >,
+;                                        SPR #spr, COMPS #comps,
+;                                       SPEC #spec],
+;                                  MC na ],
+;                      NON-LOCAL.SLASH append-list & #slash ],
+;    C-CONT [ RELS 0-alist,
+;             HCONS 0-alist,
+;             ICONS 0-alist ] ].
+
+
 ; ERB 2004-05-05 Allow modifiers to attach to things with
 ; non-empty comps lists.  The head-mod-phrase will pass up
 ; the COMPS requirement, whatever it was.
@@ -2422,8 +2438,7 @@ basic-extracted-adj-phrase := head-mod-phrase & head-only & phrasal.
 extracted-adj-phrase-simple := basic-extracted-adj-phrase &
   [ SYNSEM [ LOCAL.CAT [ VAL.SPEC < >, POSTHEAD #ph,
                          MC #mc ],
-	     NON-LOCAL.SLASH append-list & [ LIST
-		   < [ CAT [ HEAD [ MOD < [ LOCAL intersective-mod &
+	     NON-LOCAL.SLASH append-list & [ LIST.FIRST [ CAT [ HEAD [ MOD < [ LOCAL intersective-mod &
                                                    [ CAT [ HEAD #head,
                                                            POSTHEAD #ph,
                                                            VAL #val,
@@ -2433,12 +2448,12 @@ extracted-adj-phrase-simple := basic-extracted-adj-phrase &
                               VAL [ SPEC < >,
                                     SUBJ olist,
                                     COMPS olist,
-                                    SPR olist ] ] ] > ] ],
+                                    SPR olist ] ] ] ] ],
     HEAD-DTR.SYNSEM canonical-synsem &
 	   [ LOCAL local &
 		   [ CAT [ HEAD #head,
+		           VAL #val,
 			       POSTHEAD #ph,
-			       VAL #val,
                    MC #mc ],
                    CONT.HOOK #hook,
                    CTXT #ctxt ],
@@ -2464,7 +2479,7 @@ extracted-adj-last-phrase := extracted-adj-phrase-simple &
 		   [ APPEND < #slash, [ LIST < [ CAT [ HEAD +rp & [ MOD < [ ] > ] ] ] > ] > ] ] ],
     HEAD-DTR.SYNSEM [ LOCAL.CAT [ WH #wh,
 		                            HEAD verb,
-		                            VAL [ SUBJ < >, SPEC < > ] ],
+		                            VAL [ SUBJ <  >, SPEC < > ] ],
              NON-LOCAL [ QUE #que, SLASH #slash, YNQ #ynq ] ] ].
 
 ; OZ 2020-07-01 This requires that any arguments are extracted after the adjunct.
