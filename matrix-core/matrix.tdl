@@ -2425,8 +2425,8 @@ extracted-adj-phrase-simple := basic-extracted-adj-phrase &
 	     NON-LOCAL.SLASH append-list & [ LIST
 		   < [ CAT [ HEAD [ MOD < [ LOCAL intersective-mod &
                                                    [ CAT [ HEAD #head,
-                                                           VAL #val,
                                                            POSTHEAD #ph,
+                                                           VAL #val,
                                                            MC #mc ],
                                                      CONT.HOOK #hook,
                                                      CTXT #ctxt ] ] > ],
@@ -2437,8 +2437,8 @@ extracted-adj-phrase-simple := basic-extracted-adj-phrase &
     HEAD-DTR.SYNSEM canonical-synsem &
 	   [ LOCAL local &
 		   [ CAT [ HEAD #head,
-                   VAL #val,
 			       POSTHEAD #ph,
+			       VAL #val,
                    MC #mc ],
                    CONT.HOOK #hook,
                    CTXT #ctxt ],
@@ -2457,15 +2457,26 @@ english-extracted-adj-phrase := extracted-adj-phrase-simple &
              NON-LOCAL.SLASH 0-alist ] ].
 
 ; OZ 2020-07-01 This extracted adjunct phrase seems more general than the above which I
-; renamed english-specific for now.
-extracted-adj-phrase := extracted-adj-phrase-simple &
+; renamed english-specific for now. This requires that any arguments are extracted prior to the adjunct.
+extracted-adj-last-phrase := extracted-adj-phrase-simple &
   [ SYNSEM [ LOCAL.CAT.WH #wh,
 	         NON-LOCAL [ QUE #que, YNQ #ynq, SLASH append-list &
-		   [ LIST < [ CAT [ HEAD +rp & [ MOD < [ ] . #slash > ] ] ] > ] ] ],
+		   [ APPEND < #slash, [ LIST < [ CAT [ HEAD +rp & [ MOD < [ ] > ] ] ] > ] > ] ] ],
     HEAD-DTR.SYNSEM [ LOCAL.CAT [ WH #wh,
 		                            HEAD verb,
-		                            VAL [ SPEC < > ] ],
-             NON-LOCAL [ QUE #que, SLASH.LIST #slash, YNQ #ynq ] ] ].
+		                            VAL [ SUBJ < >, SPEC < > ] ],
+             NON-LOCAL [ QUE #que, SLASH #slash, YNQ #ynq ] ] ].
+
+; OZ 2020-07-01 This requires that any arguments are extracted after the adjunct.
+extracted-adj-first-phrase := extracted-adj-phrase-simple &
+  [ SYNSEM [ LOCAL.CAT.WH #wh,
+	         NON-LOCAL [ QUE #que, YNQ #ynq, SLASH append-list &
+		   [ APPEND < [ LIST < [ CAT [ HEAD +rp & [ MOD < [ ] > ] ] ] > ], #slash > ] ] ],
+    HEAD-DTR.SYNSEM [ LOCAL.CAT [ WH #wh,
+		                            HEAD verb,
+		                            VAL [ SUBJ < synsem-min >, SPEC < > ] ],
+             NON-LOCAL [ QUE #que, SLASH #slash, YNQ #ynq ] ] ].
+
 
 ; ERB 2004-05-10 Bug fix: non-head daughter's MOD..LIGHT value should
 ; be matched to head-daughters LIGHT value.

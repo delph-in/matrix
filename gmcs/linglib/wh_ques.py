@@ -160,16 +160,18 @@ def customize_wh_ques(mylang,ch,rules,roots):
         rules.add('ex-comp := extracted-comp-phrase.')
         mylang.add_literal('; Adjunct extraction',section='phrases')
         #mylang.add(EX_ADJ)
-        rules.add('ex-adj := extracted-adj-phrase.')
+        if ch.get(MTRX_FRONT) == MULTI and ch.get('word-order') == 'free':
+            rules.add('ex-adj-first := extracted-adj-first-phrase.')
+        rules.add('ex-adj-last := extracted-adj-last-phrase.')
         # This (below) needs to be conceptualized better.
         # Why is this? Probably not well-motivated in the end.
         # This was added to prevent ex-adj from applying below and above ex-subj, in some cases.
-        if ch.get('word-order') != 'free' \
-                and ch.get('wh-inv-matrix') != ON \
-                and ch.get(MTRX_FR_OPT) == 'none-oblig':
-            mylang.add('extracted-adj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ cons ].')
-        else:
-            mylang.add('extracted-adj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].')
+        # if ch.get('word-order') != 'free' \
+        #         and ch.get('wh-inv-matrix') != ON \
+        #         and ch.get(MTRX_FR_OPT) == 'none-oblig':
+        #     mylang.add('extracted-adj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ cons ].')
+        # else:
+        #     mylang.add('extracted-adj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].')
         # Free probably shouldn't belong here? check
         if ch.get('word-order') in ['vos','svo','sov','free']:
             if ch.get('pied-pip-adp') != 'on' or ch.get('oblig-pied-pip-adp') == ON:
@@ -194,7 +196,8 @@ def customize_wh_ques(mylang,ch,rules,roots):
                 rules.add('embed-whq := embed-wh-ques-phrase.')
             else:
                 rules.add('wh-ques := wh-ques-phrase.')
-        mylang.add('extracted-adj-phrase :+ [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < > ].')
+        mylang.add('extracted-adj-first-phrase :+ [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < > ].')
+        mylang.add('extracted-adj-last-phrase :+ [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < > ].')
 
         if ch.get(MTRX_FR_OPT) == SG_OBLIG:
             mylang.add('''head-adj-int-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ clist, COMPS clist ] ].''')
@@ -210,7 +213,7 @@ def customize_wh_ques(mylang,ch,rules,roots):
                 mylang.add('adj-head-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL [ QUE.LIST < > ] ].')
                 mylang.add(NC_SUBJ_HEAD, section='phrases')
                 rules.add('nc-subjh := subj-head-nc-phrase.')
-            mylang.add('extracted-adj-phrase :+ '
+            mylang.add('extracted-adj-last-phrase :+ '
                        '[ SYNSEM.NON-LOCAL.SLASH.LIST < [ CAT.HEAD.MOD < [ LOCAL.CAT.HEAD [ INV + ] ] > ] >, '
                        '  HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].')
             #mylang.add('extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD [ INV -] ].')
