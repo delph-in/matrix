@@ -2423,13 +2423,13 @@ extracted-adj-phrase-simple := basic-extracted-adj-phrase &
   [ SYNSEM [ LOCAL.CAT [ VAL.SPEC < >, POSTHEAD #ph,
                          MC #mc ],
 	     NON-LOCAL.SLASH append-list & [ LIST
-		   < [ CAT [ HEAD [ MOD.FIRST [ LOCAL intersective-mod &
+		   < [ CAT [ HEAD [ MOD < [ LOCAL intersective-mod &
                                                    [ CAT [ HEAD #head,
                                                            VAL #val,
                                                            POSTHEAD #ph,
                                                            MC #mc ],
                                                      CONT.HOOK #hook,
-                                                     CTXT #ctxt ] ] ],
+                                                     CTXT #ctxt ] ] > ],
                               VAL [ SPEC < >,
                                     SUBJ olist,
                                     COMPS olist,
