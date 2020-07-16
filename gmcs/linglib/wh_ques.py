@@ -160,8 +160,8 @@ def customize_wh_ques(mylang,ch,rules,roots):
         rules.add('ex-comp := extracted-comp-phrase.')
         mylang.add_literal('; Adjunct extraction',section='phrases')
         #mylang.add(EX_ADJ)
-        if ch.get(MTRX_FRONT) == MULTI and ch.get('word-order') == 'free':
-            rules.add('ex-adj-first := extracted-adj-first-phrase.')
+        #if ch.get(MTRX_FRONT) == MULTI and ch.get('word-order') == 'free':
+        #    rules.add('ex-adj-first := extracted-adj-first-phrase.')
         rules.add('ex-adj-last := extracted-adj-last-phrase.')
         # This (below) needs to be conceptualized better.
         # Why is this? Probably not well-motivated in the end.
@@ -196,7 +196,7 @@ def customize_wh_ques(mylang,ch,rules,roots):
                 rules.add('embed-whq := embed-wh-ques-phrase.')
             else:
                 rules.add('wh-ques := wh-ques-phrase.')
-        mylang.add('extracted-adj-first-phrase :+ [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < > ].')
+        #mylang.add('extracted-adj-first-phrase :+ [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < > ].')
         mylang.add('extracted-adj-last-phrase :+ [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < > ].')
 
         if ch.get(MTRX_FR_OPT) == SG_OBLIG:

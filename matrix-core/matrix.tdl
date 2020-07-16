@@ -2433,31 +2433,41 @@ head-mod-phrase := head-nexus-rel-phrase &
 
 basic-extracted-adj-phrase := head-mod-phrase & head-only & phrasal.
 
-; OZ 2020-07-01 I took out some constraints
-; (see english-extracted-adj-phrase below) which I think are English-specific.
-extracted-adj-phrase-simple := basic-extracted-adj-phrase &
-  [ SYNSEM [ LOCAL.CAT [ VAL.SPEC < >, POSTHEAD #ph,
+append-list-with-placeholder := append-list &
+  [ PLACEHOLDER.LIST < [ ] > ].
+
+extracted-adj-phrase := basic-extracted-adj-phrase &
+  [ SYNSEM [ LOCAL.CAT [ WH #wh,
+                         VAL.SPEC < >,
+                         POSTHEAD #ph,
                          MC #mc ],
-	     NON-LOCAL.SLASH append-list & [ LIST.FIRST [ CAT [ HEAD [ MOD < [ LOCAL intersective-mod &
-                                                   [ CAT [ HEAD #head,
-                                                           POSTHEAD #ph,
-                                                           VAL #val,
-                                                           MC #mc ],
-                                                     CONT.HOOK #hook,
-                                                     CTXT #ctxt ] ] > ],
-                              VAL [ SPEC < >,
-                                    SUBJ olist,
-                                    COMPS olist,
-                                    SPR olist ] ] ] ] ],
+	     NON-LOCAL [ QUE #que,
+	                 YNQ #ynq,
+	                 SLASH append-list-with-placeholder &
+	                        [ PLACEHOLDER.LIST < [ CAT
+		                                            [ HEAD +rp &
+		                                                 [ MOD < [ LOCAL intersective-mod &
+                                                               [ CAT [ HEAD #head,
+                                                                       POSTHEAD #ph,
+                                                                       VAL #val,
+                                                                       MC #mc ],
+                                                                  CONT.HOOK #hook,
+                                                                  CTXT #ctxt ] ] > ],
+                                                      VAL [ SPEC < >,
+                                                          SUBJ olist,
+                                                          COMPS olist,
+                                                          SPR olist ] ] ] > ] ] ],
     HEAD-DTR.SYNSEM canonical-synsem &
 	   [ LOCAL local &
-		   [ CAT [ HEAD #head,
-		           VAL #val,
+		   [ CAT [ HEAD #head & verb,
+		           WH #wh,
+		           VAL #val & [ SUBJ < synsem-min>, SPEC < > ],
 			       POSTHEAD #ph,
                    MC #mc ],
                    CONT.HOOK #hook,
                    CTXT #ctxt ],
-	     MODIFIED notmod ],
+	     MODIFIED notmod,
+	     NON-LOCAL [ QUE #que, SLASH append-list-with-placeholder, YNQ #ynq ] ],
     C-CONT [ HOOK #hook,
          RELS.LIST < >,
 	     HCONS.LIST < >,
@@ -2465,32 +2475,29 @@ extracted-adj-phrase-simple := basic-extracted-adj-phrase &
 
 ; OZ 2020-07-01 This used to be on the extracted-adj-phrase but I think it is English-specific.
 ; (Perhaps a better name is needed or it can even be removed.)
-english-extracted-adj-phrase := extracted-adj-phrase-simple &
-  [ SYNSEM.NON-LOCAL.SLASH.LIST < [CAT.HEAD.MOD < [] > ] >,
-    HEAD-DTR.SYNSEM canonical-synsem &
-	   [ LOCAL.CAT.VAL.SUBJ < synsem-min & [ NON-LOCAL.SLASH 0-alist ] >,
-             NON-LOCAL.SLASH 0-alist ] ].
+;english-extracted-adj-phrase := extracted-adj-phrase-simple &
+;  [ SYNSEM.NON-LOCAL.SLASH.LIST < [CAT.HEAD.MOD < [] > ] >,
+;    HEAD-DTR.SYNSEM canonical-synsem &
+;	   [ LOCAL.CAT.VAL.SUBJ < synsem-min & [ NON-LOCAL.SLASH 0-alist ] >,
+;             NON-LOCAL.SLASH 0-alist ] ].
 
 ; OZ 2020-07-01 This extracted adjunct phrase seems more general than the above which I
 ; renamed english-specific for now. This requires that any arguments are extracted prior to the adjunct.
-extracted-adj-last-phrase := extracted-adj-phrase-simple &
-  [ SYNSEM [ LOCAL.CAT.WH #wh,
-	         NON-LOCAL [ QUE #que, YNQ #ynq, SLASH append-list &
-		   [ APPEND < #slash, [ LIST < [ CAT [ HEAD +rp & [ MOD < [ ] > ] ] ] > ] > ] ] ],
-    HEAD-DTR.SYNSEM [ LOCAL.CAT [ WH #wh,
-		                            HEAD verb,
-		                            VAL [ SUBJ <  >, SPEC < > ] ],
-             NON-LOCAL [ QUE #que, SLASH #slash, YNQ #ynq ] ] ].
+extracted-adj-last-phrase := extracted-adj-phrase &
+  [ SYNSEM [ NON-LOCAL.SLASH append-list &
+		      [ APPEND < #slash, #placeholder >,
+		      PLACEHOLDER #placeholder ] ],
+    HEAD-DTR.SYNSEM.NON-LOCAL.SLASH #slash ].
 
 ; OZ 2020-07-01 This requires that any arguments are extracted after the adjunct.
-extracted-adj-first-phrase := extracted-adj-phrase-simple &
-  [ SYNSEM [ LOCAL.CAT.WH #wh,
-	         NON-LOCAL [ QUE #que, YNQ #ynq, SLASH append-list &
-		   [ APPEND < [ LIST < [ CAT [ HEAD +rp & [ MOD < [ ] > ] ] ] > ], #slash > ] ] ],
-    HEAD-DTR.SYNSEM [ LOCAL.CAT [ WH #wh,
-		                            HEAD verb,
-		                            VAL [ SUBJ < synsem-min >, SPEC < > ] ],
-             NON-LOCAL [ QUE #que, SLASH #slash, YNQ #ynq ] ] ].
+;extracted-adj-first-phrase := extracted-adj-phrase-simple &
+;  [ SYNSEM [ LOCAL.CAT.WH #wh,
+;	         NON-LOCAL [ QUE #que, YNQ #ynq, SLASH append-list &
+;		   [ APPEND < [ LIST < [ CAT [ HEAD +rp & [ MOD < [ ] > ] ] ] > ], #slash > ] ] ],
+;    HEAD-DTR.SYNSEM [ LOCAL.CAT [ WH #wh,
+;		                            HEAD verb,
+;		                            VAL [ SUBJ < synsem-min >, SPEC < > ] ],
+;             NON-LOCAL [ QUE #que, SLASH #slash, YNQ #ynq ] ] ].
 
 
 ; ERB 2004-05-10 Bug fix: non-head daughter's MOD..LIGHT value should
