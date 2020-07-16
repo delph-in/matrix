@@ -966,6 +966,10 @@ null-copy := list-copy & null &
 1-alist := 0-1-alist &
   [ LIST 1-list ].
 
+append-list-with-placeholder := append-list &
+  [ PLACEHOLDER.LIST < [ ] > ].
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Some useful kinds of lists
 
@@ -2433,8 +2437,6 @@ head-mod-phrase := head-nexus-rel-phrase &
 
 basic-extracted-adj-phrase := head-mod-phrase & head-only & phrasal.
 
-append-list-with-placeholder := append-list &
-  [ PLACEHOLDER.LIST < [ ] > ].
 
 extracted-adj-phrase := basic-extracted-adj-phrase &
   [ SYNSEM [ LOCAL.CAT [ WH #wh,
@@ -2449,7 +2451,6 @@ extracted-adj-phrase := basic-extracted-adj-phrase &
 		                                                 [ MOD < [ LOCAL intersective-mod &
                                                                [ CAT [ HEAD #head,
                                                                        POSTHEAD #ph,
-                                                                       VAL #val,
                                                                        MC #mc ],
                                                                   CONT.HOOK #hook,
                                                                   CTXT #ctxt ] ] > ],
@@ -2461,17 +2462,54 @@ extracted-adj-phrase := basic-extracted-adj-phrase &
 	   [ LOCAL local &
 		   [ CAT [ HEAD #head & verb,
 		           WH #wh,
-		           VAL #val & [ SUBJ < synsem-min>, SPEC < > ],
+		           VAL [ SUBJ < synsem-min >, SPEC < > ],
 			       POSTHEAD #ph,
                    MC #mc ],
                    CONT.HOOK #hook,
                    CTXT #ctxt ],
 	     MODIFIED notmod,
-	     NON-LOCAL [ QUE #que, SLASH append-list-with-placeholder, YNQ #ynq ] ],
+	     NON-LOCAL [ QUE #que, SLASH append-list, YNQ #ynq ] ],
     C-CONT [ HOOK #hook,
          RELS.LIST < >,
 	     HCONS.LIST < >,
 	     ICONS.LIST < > ] ].
+
+extracted-adj-only-phrase := basic-extracted-adj-phrase &
+  [ SYNSEM [ LOCAL.CAT [ WH #wh,
+                         VAL.SPEC < >,
+                         POSTHEAD #ph,
+                         MC #mc ],
+	     NON-LOCAL [ QUE #que,
+	                 YNQ #ynq,
+	                 SLASH append-list &
+	                        [ LIST < [ CAT
+		                                  [ HEAD +rp &
+		                                         [ MOD < [ LOCAL intersective-mod &
+                                                               [ CAT [ HEAD #head,
+                                                                       POSTHEAD #ph,
+                                                                       MC #mc ],
+                                                                  CONT.HOOK #hook,
+                                                                  CTXT #ctxt ] ] > ],
+                                                      VAL [ SPEC < >,
+                                                          SUBJ olist,
+                                                          COMPS olist,
+                                                          SPR olist ] ] ] > ] ] ],
+    HEAD-DTR.SYNSEM canonical-synsem &
+	   [ LOCAL local &
+		   [ CAT [ HEAD #head & verb,
+		           WH #wh,
+		           VAL [ SUBJ < synsem-min >, SPEC < > ],
+			       POSTHEAD #ph,
+                   MC #mc ],
+                   CONT.HOOK #hook,
+                   CTXT #ctxt ],
+	     MODIFIED notmod,
+	     NON-LOCAL [ QUE #que, SLASH 0-alist, YNQ #ynq ] ],
+    C-CONT [ HOOK #hook,
+         RELS.LIST < >,
+	     HCONS.LIST < >,
+	     ICONS.LIST < > ] ].
+
 
 ; OZ 2020-07-01 This used to be on the extracted-adj-phrase but I think it is English-specific.
 ; (Perhaps a better name is needed or it can even be removed.)
@@ -2490,14 +2528,11 @@ extracted-adj-last-phrase := extracted-adj-phrase &
     HEAD-DTR.SYNSEM.NON-LOCAL.SLASH #slash ].
 
 ; OZ 2020-07-01 This requires that any arguments are extracted after the adjunct.
-;extracted-adj-first-phrase := extracted-adj-phrase-simple &
-;  [ SYNSEM [ LOCAL.CAT.WH #wh,
-;	         NON-LOCAL [ QUE #que, YNQ #ynq, SLASH append-list &
-;		   [ APPEND < [ LIST < [ CAT [ HEAD +rp & [ MOD < [ ] > ] ] ] > ], #slash > ] ] ],
-;    HEAD-DTR.SYNSEM [ LOCAL.CAT [ WH #wh,
-;		                            HEAD verb,
-;		                            VAL [ SUBJ < synsem-min >, SPEC < > ] ],
-;             NON-LOCAL [ QUE #que, SLASH #slash, YNQ #ynq ] ] ].
+extracted-adj-first-phrase := extracted-adj-phrase &
+  [ SYNSEM [ NON-LOCAL.SLASH append-list &
+		      [ APPEND < #placeholder, #slash >,
+		      PLACEHOLDER #placeholder ] ],
+    HEAD-DTR.SYNSEM.NON-LOCAL.SLASH #slash ].
 
 
 ; ERB 2004-05-10 Bug fix: non-head daughter's MOD..LIGHT value should

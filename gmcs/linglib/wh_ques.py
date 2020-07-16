@@ -159,10 +159,12 @@ def customize_wh_ques(mylang,ch,rules,roots):
         mylang.add(EX_COMP)
         rules.add('ex-comp := extracted-comp-phrase.')
         mylang.add_literal('; Adjunct extraction',section='phrases')
-        #mylang.add(EX_ADJ)
-        #if ch.get(MTRX_FRONT) == MULTI and ch.get('word-order') == 'free':
-        #    rules.add('ex-adj-first := extracted-adj-first-phrase.')
-        rules.add('ex-adj-last := extracted-adj-last-phrase.')
+        if ch.get(MTRX_FRONT) == MULTI:
+            rules.add('ex-adj-last := extracted-adj-last-phrase.')
+            rules.add('ex-adj-first := extracted-adj-first-phrase.')
+        elif ch.get(MTRX_FRONT) == SINGLE:
+            rules.add('ex-adj-only := extracted-adj-only-phrase.')
+
         # This (below) needs to be conceptualized better.
         # Why is this? Probably not well-motivated in the end.
         # This was added to prevent ex-adj from applying below and above ex-subj, in some cases.
@@ -197,7 +199,7 @@ def customize_wh_ques(mylang,ch,rules,roots):
             else:
                 rules.add('wh-ques := wh-ques-phrase.')
         #mylang.add('extracted-adj-first-phrase :+ [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < > ].')
-        mylang.add('extracted-adj-last-phrase :+ [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < > ].')
+        #mylang.add('extracted-adj-last-phrase :+ [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < > ].')
 
         if ch.get(MTRX_FR_OPT) == SG_OBLIG:
             mylang.add('''head-adj-int-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ clist, COMPS clist ] ].''')
@@ -213,8 +215,8 @@ def customize_wh_ques(mylang,ch,rules,roots):
                 mylang.add('adj-head-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL [ QUE.LIST < > ] ].')
                 mylang.add(NC_SUBJ_HEAD, section='phrases')
                 rules.add('nc-subjh := subj-head-nc-phrase.')
-            mylang.add('extracted-adj-last-phrase :+ '
-                       '[ SYNSEM.NON-LOCAL.SLASH.LIST < [ CAT.HEAD.MOD < [ LOCAL.CAT.HEAD [ INV + ] ] > ] >, '
+            mylang.add('extracted-adj-only-phrase :+ '
+                       '[ SYNSEM.NON-LOCAL.SLASH.LIST < [ CAT.HEAD.MOD < [ LOCAL.CAT.HEAD [ INV - ] ] > ] >, '
                        '  HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].')
             #mylang.add('extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD [ INV -] ].')
 
