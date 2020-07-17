@@ -162,18 +162,8 @@ def customize_wh_ques(mylang,ch,rules,roots):
         if ch.get(MTRX_FRONT) == MULTI:
             rules.add('ex-adj-last := extracted-adj-last-phrase.')
             rules.add('ex-adj-first := extracted-adj-first-phrase.')
-        elif ch.get(MTRX_FRONT) == SINGLE:
-            rules.add('ex-adj-only := extracted-adj-only-phrase.')
-
-        # This (below) needs to be conceptualized better.
-        # Why is this? Probably not well-motivated in the end.
-        # This was added to prevent ex-adj from applying below and above ex-subj, in some cases.
-        # if ch.get('word-order') != 'free' \
-        #         and ch.get('wh-inv-matrix') != ON \
-        #         and ch.get(MTRX_FR_OPT) == 'none-oblig':
-        #     mylang.add('extracted-adj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ cons ].')
-        # else:
-        #     mylang.add('extracted-adj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].')
+        #elif ch.get(MTRX_FRONT) == SINGLE:
+        rules.add('ex-adj-only := extracted-adj-only-phrase.')
         # Free probably shouldn't belong here? check
         if ch.get('word-order') in ['vos','svo','sov','free']:
             if ch.get('pied-pip-adp') != 'on' or ch.get('oblig-pied-pip-adp') == ON:

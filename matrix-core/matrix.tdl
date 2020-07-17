@@ -2462,7 +2462,7 @@ extracted-adj-phrase := basic-extracted-adj-phrase &
 	   [ LOCAL local &
 		   [ CAT [ HEAD #head & verb,
 		           WH #wh,
-		           VAL [ SUBJ < synsem-min >, SPEC < > ],
+		           VAL  [ SUBJ < synsem-min >, COMPS < >, SPEC < > ],
 			       POSTHEAD #ph,
                    MC #mc ],
                    CONT.HOOK #hook,
@@ -2525,14 +2525,14 @@ extracted-adj-last-phrase := extracted-adj-phrase &
   [ SYNSEM [ NON-LOCAL.SLASH append-list &
 		      [ APPEND < #slash, #placeholder >,
 		      PLACEHOLDER #placeholder ] ],
-    HEAD-DTR.SYNSEM.NON-LOCAL.SLASH #slash ].
+    HEAD-DTR.SYNSEM.NON-LOCAL.SLASH #slash & [ LIST cons ] ].
 
 ; OZ 2020-07-01 This requires that any arguments are extracted after the adjunct.
 extracted-adj-first-phrase := extracted-adj-phrase &
   [ SYNSEM [ NON-LOCAL.SLASH append-list &
 		      [ APPEND < #placeholder, #slash >,
 		      PLACEHOLDER #placeholder ] ],
-    HEAD-DTR.SYNSEM.NON-LOCAL.SLASH #slash ].
+    HEAD-DTR.SYNSEM.NON-LOCAL.SLASH #slash & [ LIST cons ] ].
 
 
 ; ERB 2004-05-10 Bug fix: non-head daughter's MOD..LIGHT value should
