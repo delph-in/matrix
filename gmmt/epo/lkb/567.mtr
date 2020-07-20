@@ -1,9 +1,0 @@
-;;; Hey, emacs, this file is -*- Mode: tdl; -*- ... got that?
-
-;non+dem3-transfer-rule := oquantifier_mtr &
-;  [ INPUT.RELS.LIST.FIRST.PRED def_q_rel,
-;    OUTPUT.RELS.LIST.FIRST.PRED non+demonstrative_q_rel ].
-
-;non+dem4-transfer-rule := oquantifier_mtr &
-;  [ INPUT.RELS.LIST.FIRST.PRED indef_q_rel,
-;    OUTPUT.RELS.LIST.FIRST.PRED non+demonstrative_q_rel ].
