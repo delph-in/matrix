@@ -5,6 +5,7 @@
 Grammar Matrix Regression Testing
 """
 
+from pathlib import Path
 import traceback
 import shutil
 import argparse
@@ -13,8 +14,6 @@ import fnmatch
 import subprocess
 import datetime
 import textwrap
-
-from pathlib import Path
 
 from delphin import ace
 from delphin import tsdb
@@ -52,11 +51,13 @@ LOGS_DIR.mkdir(exist_ok=True)
 # REPORT FORMATTING PARAMETERS ################################################
 
 MAX_LINE_WIDTH = 120
-RESULT_WIDTH   = 6  # number of spaces reserved for DONE, PASS, FAIL, ERROR
-DONE           = 'DONE'
-PASS           = 'PASS'
-FAIL           = 'FAIL'
-ERROR          = 'ERROR'
+RESULT_WIDTH = 6  # number of spaces reserved for DONE, PASS, FAIL, ERROR
+PROGRESS_BAR_WIDTH = 20
+STATUS_COLUMN = PROGRESS_BAR_WIDTH + 3 + 1  # len('[' + '] '); 1-based columns
+DONE = 'DONE'
+PASS = 'PASS'
+FAIL = 'FAIL'
+ERROR = 'ERROR'
 
 def linewidth(): return min(MAX_LINE_WIDTH, shutil.get_terminal_size()[0])
 
@@ -120,18 +121,20 @@ def run_tests(args):
     total_passed = 0
     total_error = 0
     total_failed = 0
-    total = 0
 
-    for name, desc, chc, dat, txt, skel, prof, gold in _discover(args):
+    tests = list(_discover(args))
+    total = len(tests)
+
+    for i, (name, desc, chc, dat, txt, skel, prof, gold) in enumerate(tests):
         log = _unique_log_path(name)
-        total += 1
+        print('\r' + _progress_bar(i, total), end='')
         passed = None
 
         with log.open(mode='at') as logf:
             _lognow('== Testing {} at {} ==\n'
                     .format(name, datetime.datetime.now().isoformat()),
                     logf)
-            _progress(name, 'begin', logf)
+            _report_status(name, 'begin', logf)
 
             try:
                 if args.customize:
@@ -158,7 +161,6 @@ def run_tests(args):
                 if passed is None:  # only if _compare() was not run
                     _report(name, DONE, logf)
                 elif passed:
-                    _progress(name, '', logf)  # clear progress only if passed
                     _report(name, PASS, logf)
                     total_passed += 1
                 else:
@@ -429,7 +431,7 @@ def _list_dat_files(dir):
 
 def _customize(name, chc, logf):
     """Customize the test grammar from a choices file."""
-    _progress(name, 'customizing', logf)
+    _report_status(name, 'customizing', logf)
     _lognow('  Choices file: {!s}'.format(chc), logf)
 
     cmd = SCRIPT_DIR / 'matrix.py'
@@ -460,7 +462,7 @@ def _customize(name, chc, logf):
 
 def _compile(name, grm, logf):
     """Compile the test grammar with ACE."""
-    _progress(name, 'compiling', logf)
+    _report_status(name, 'compiling', logf)
     _lognow('  Grammar directory: {!s}'.format(grm), logf)
 
     dat = grm / DAT_FILENAME
@@ -480,7 +482,7 @@ def _compile(name, grm, logf):
 
 def _mkskel(name, txt, logf):
     """Prepare the skeleton from the txt-suite."""
-    _progress(name, 'preparing skeleton', logf)
+    _report_status(name, 'preparing skeleton', logf)
     _lognow('  Txt-suite: {!s}'.format(txt), logf)
 
     dest = SKELETONS_DIR / name
@@ -498,7 +500,7 @@ def _mkskel(name, txt, logf):
 
 def _mkprof(name, skel, logf):
     """Prepare the current profile directory and files."""
-    _progress(name, 'preparing profile', logf)
+    _report_status(name, 'preparing profile', logf)
     _lognow('  Skeleton path: {!s}'.format(skel), logf)
 
     dest = CURRENT_DIR / name
@@ -514,26 +516,26 @@ def _mkprof(name, skel, logf):
 
 def _process(name, dat, prof, logf):
     """Process the input items of the current profile."""
-    _progress(name, 'processing', logf)
+    _report_status(name, 'processing', logf)
     _lognow('  Grammar image: {!s}'.format(dat), logf)
     _lognow('  Profile path: {!s}'.format(prof), logf)
 
     try:
-        process(dat, prof, stderr=logf)
+        process(dat, prof, stderr=logf, report_progress=False)
     except CommandError as exc:
         raise RegressionTestError('Failed to process profile.') from exc
 
 
 def _compare(name, prof, gold, logf):
     """Compare the MRSs of the current profile to the gold ones."""
-    _progress(name, 'comparing to gold', logf)
+    _report_status(name, 'comparing to gold', logf)
     _lognow('  Current profile: {!s}'.format(prof), logf)
     _lognow('  Gold profile: {!s}'.format(gold), logf)
 
     passed = True
     try:
         for result in compare(prof, gold):
-            _progress(name, 'compared i-id={}'.format(result['id']), None)
+            _report_status(name, f'compared i-id={result["id"]}', None)
             _lognow('  {:40} <{},{},{}>'
                     .format(result['id'],
                             result['test'], result['shared'], result['gold']),
@@ -559,7 +561,13 @@ def _unique_log_path(name):
 
 # REPORTING FUNCTIONS #########################################################
 
-def _progress(name, status, logf):
+def _progress_bar(numerator: int, denominator: int) -> str:
+    fillcols = int((numerator / denominator) * PROGRESS_BAR_WIDTH)
+    fill = '#' * fillcols
+    return f'[{fill:<{PROGRESS_BAR_WIDTH}}] '
+
+
+def _report_status(name, status, logf):
     """
     Update the progress line.
 
@@ -567,26 +575,28 @@ def _progress(name, status, logf):
     """
     if status:
         status = '[{}]'.format(status)
-    name_width = linewidth() - RESULT_WIDTH - len(status) - 2
-    if name_width < 10:  # minimum for rewriting progress line
-        print('{} {}'.format(name, status))
-    else:
-        if len(name) > name_width:
-            _name = name[:(name_width - 3)] + '...'
-        else:
-            _name = name.ljust(name_width)
-        print('\r{} {} '.format(_name, status), end='')
-
+    name_width = linewidth() - len(status) - STATUS_COLUMN
+    name = _fill(name, name_width)
+    print(f'\033[{STATUS_COLUMN}G', end='')  # go to column
+    print(f'{name}{status}', end='', flush=True)
     if status and logf:
         _lognow(status, logf)
-        logf.flush()
 
 
 def _report(name, result, logf):
     """Print the final result."""
     colorize = REPORT_COLOR[result]
-    print(colorize(result))
+    name_width = linewidth() - RESULT_WIDTH
+    name = _fill(name, name_width)
+    print('\r\033[K', end='')  # clear line
+    print(f'{name}{colorize(result)}')
     _lognow('Result: ' + result, logf)
+
+
+def _fill(s: str, width: int) -> str:
+    if len(s) > width:
+        s = s[:max(0, width - 3)] + '...'
+    return s.ljust(width)
 
 
 def _lognow(message, logf):
