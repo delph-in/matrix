@@ -30,7 +30,7 @@
 ;        (format
 ;         t
 ;         "~(~a~)_gr := arg0e_gtr &~%~
-;          [ CONTEXT [ RELS <! [ PRED \"non_existing_rel\" ] !> ],~%  ~
+;          [ CONTEXT [ RELS.LIST < [ PRED \"non_existing_rel\" ] > ],~%  ~
 ;            FLAGS.TRIGGER \"~(~a~)\" ].~%~%"
 ;         id id)))
 
@@ -39,7 +39,7 @@
 ;;; stands for the name of each lexical entry).
 
 ; XXX_gr := arg0e_gtr &
-; [ CONTEXT [ RELS <! [ PRED "non_existing_rel" ] !> ],
+; [ CONTEXT [ RELS.LIST < [ PRED "non_existing_rel" ] > ],
 ;   FLAGS.TRIGGER "XXX" ].
 
 ;;; 
