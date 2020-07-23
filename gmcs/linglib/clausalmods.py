@@ -49,7 +49,7 @@ def create_head_subordinator_basic_lex_type(mylang, ch, cms):
             [ SYNSEM.LOCAL.CAT [ MC -,\
                                 HEAD adp & [ MOD < [ LOCAL scopal-mod &\
                                                         [ CAT [ HEAD verb,\
-                                                                VAL [ COMPS < > ]]]]>],\
+                                                                VAL [ COMPS < > ] ] ] ] > ],\
                                 VAL [ SUBJ < >,\
                                         SPR < >,\
                                         COMPS < [ OPT -,\
@@ -61,31 +61,31 @@ def create_head_subordinator_basic_lex_type(mylang, ch, cms):
             mylang.add('subord-with-nominalized-comp-no-rel-lex := adposition-subord-lex-item &\
             [ SYNSEM [ LOCAL [ CAT [ HEAD.MOD < [ LOCAL.CONT.HOOK [ LTOP  #mod,\
                                                 INDEX  #index ]] >,\
-                                    VAL.COMPS < [LOCAL[CAT[HEAD noun &\
+                                    VAL.COMPS < [ LOCAL [ CAT [ HEAD noun &\
                                             			[ NMZ + ],\
                                             			VAL.SPR < > ],\
-                                                        CONT.HOOK.LTOP  #comp ]] > ],\
-                            CONT[HCONS <! qeq &\
+                                                        CONT.HOOK.LTOP  #comp ] ] > ],\
+                            CONT [ HCONS.LIST < qeq &\
                                  [ HARG  #h1,\
                                     LARG  #mod ],\
                                     qeq &\
                                 [ HARG  #h2,\
-                                    LARG  #comp ] !>,\
-                                HOOK.INDEX  #index ]],\
-                        LKEYS.KEYREL[ARG0 event,\
+                                    LARG  #comp ] >,\
+                                HOOK.INDEX  #index ] ],\
+                        LKEYS.KEYREL [ ARG0 event,\
                          ARG1  #h1,\
                          ARG2  #h2 ]]].')
         else:
             mylang.add('subord-with-nominalized-comp-lex := adposition-subord-lex-item &\
-            [ SYNSEM [ LOCAL [ CAT [ HEAD.MOD < [ LOCAL.CONT.HOOK[LTOP  #mod,\
+            [ SYNSEM [ LOCAL [ CAT [ HEAD.MOD < [ LOCAL.CONT.HOOK [ LTOP  #mod,\
                                                                     INDEX  #index ]] >,\
                                    VAL.COMPS < [LOCAL[CAT[HEAD noun &\
                                                                 [ NMZ + ],\
                                                             VAL.SPR < > ],\
                                                     CONT.HOOK.INDEX  #comp ]] > ],\
-                            CONT[HCONS <! qeq &\
+                            CONT [ HCONS.LIST < qeq &\
                                   [HARG  #h1,\
-                                   LARG  #mod ] !>,\
+                                   LARG  #mod ] >,\
                                HOOK.INDEX  #index ]],\
                        LKEYS.KEYREL[ARG0 event,\
                                    ARG1  #h1,\
@@ -98,12 +98,12 @@ def create_head_subordinator_basic_lex_type(mylang, ch, cms):
     	                                    						    INDEX #index ]]] >,\
                         			   VAL.COMPS < [ LOCAL [ CAT [ HEAD verb],\
     						                                CONT.HOOK.LTOP #comps ]] > ],\
-    		                        CONT [ HCONS <! qeq & \
+    		                        CONT [ HCONS.LIST < qeq & \
                                 				 [ HARG #h1,\
                                 				   LARG #mod ],\
                                     				 qeq &\
                                 				 [ HARG #h2,\
-                                				   LARG #comps ] !>,\
+                                				   LARG #comps ] >,\
     			                            HOOK.INDEX #index ]],\
     	                 LKEYS.KEYREL [ ARG1 #h1,\
     			                        ARG2 #h2 ]]].')
@@ -279,7 +279,7 @@ def create_adverb_subordinator_lexical_subtypes(mylang, lexicon, trigger, cms):
             name = TDLencode(adverb.get('name'))
             lexicon.add(name + ' := ' + type + ' & [ STEM < "' + orthstr + '" > ].')
             trigger_rule = TDLencode(orth) +'_gr := arg0e_gtr & \
-                   [ CONTEXT [ RELS <! [ PRED "' + TDLencode(pred) + '" ] !> ], \
+                   [ CONTEXT [ RELS.LIST < [ PRED "' + TDLencode(pred) + '" ] > ], \
                      FLAGS.TRIGGER "' + TDLencode(orth) + '" ].'
             trigger.add(trigger_rule)
 
@@ -366,15 +366,15 @@ def add_non_branching_rules(mylang, rules, cms, ch):
     						  CONT.HOOK [ LTOP #mcl,\
     								INDEX #index ]]] > ]],\
     								COORD - ]],\
-                C-CONT [ RELS <! arg12-ev-relation &\
+                C-CONT [ RELS.LIST < arg12-ev-relation &\
     		   [ ARG1 #mch,\
-    		     ARG2 #sch ] !>,\
-    	        HCONS <! qeq &\
+    		     ARG2 #sch ] >,\
+    	        HCONS.LIST < qeq &\
     		    [ HARG #mch,\
     		      LARG #mcl ],\
                   qeq &\
     		    [ HARG #sch,\
-    		      LARG #scl ] !>,\
+    		      LARG #scl ] >,\
         		HOOK.INDEX #index ],\
                 ARGS < [ SYNSEM [ LOCAL [ CAT [ HEAD verb &\
                                               [ MOD < > ],\
@@ -401,7 +401,7 @@ def add_non_branching_rules(mylang, rules, cms, ch):
         value = shortform_pred(pred)
         type = value + '-modifying-clause-phrase'
         mylang.add(type + ' := adv-marked-subord-clause-phrase &\
-                    [ C-CONT.RELS <! [ PRED "' + pred + '" ] !>,\
+                    [ C-CONT.RELS.LIST < [ PRED "' + pred + '" ] >,\
                         ARGS < [ SYNSEM.SUBORDINATED ' + value + ' ] > ].')
         if pos == 'before':
             mylang.add(type + ' := [ SYNSEM.LOCAL.CAT.POSTHEAD - ].')
@@ -438,9 +438,9 @@ def add_subordinators_matrix_pair_to_lexicon(mylang, lexicon, cms, ch):
                         HEAD.MOD < [ LOCAL scopal-mod & [ CAT [ MC +,\
                                                 HEAD verb ],\
                                             CONT.HOOK.LTOP #mod ]] > ],\
-                      CONT.HCONS <! qeq &\
+                      CONT.HCONS.LIST < qeq &\
                                     [ HARG #h1,\
-                                      LARG #mod ] !> ],\
+                                      LARG #mod ] > ],\
                 LKEYS.KEYREL.ARG1 #h1 ]].')
     #if the subordinated feature is introduced by any of the strategies, we need to set it to none for this type
     for strategy in ch.get('cms'):
@@ -534,14 +534,14 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
         						  CONT.HOOK [ LTOP #mcl,\
         								INDEX #index ]]] > ]],\
         					COORD - ]],\
-            C-CONT [ RELS <! [ ARG1 #mch,\
-        		     ARG2 #sch ] !>,\
-        	     HCONS <! qeq &\
+            C-CONT [ RELS.LIST < [ ARG1 #mch,\
+        		     ARG2 #sch ] >,\
+        	     HCONS.LIST < qeq &\
         		    [ HARG #mch,\
         		      LARG #mcl ],\
                       qeq &\
         		    [ HARG #sch,\
-        		      LARG #scl ] !>,\
+        		      LARG #scl ] >,\
             		HOOK.INDEX #index ],\
             ARGS < [ SYNSEM [ LOCAL [ CAT [ HEAD noun &\
                                                     [ NMZ + ],\
@@ -566,11 +566,11 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
           						  CONT.HOOK [ LTOP #mcl,\
           								INDEX #index ]]] > ]],\
           						COORD - ]],\
-              C-CONT [ RELS <! [ ARG1 #mch,\
-          		     ARG2 #scl ] !>,\
-          	     HCONS <! qeq &\
+              C-CONT [ RELS.LIST < [ ARG1 #mch,\
+          		     ARG2 #scl ] >,\
+          	     HCONS.LIST < qeq &\
           		    [ HARG #mch,\
-          		      LARG #mcl ] !>,\
+          		      LARG #mcl ] >,\
               		HOOK.INDEX #index ],\
               ARGS < [ SYNSEM [ LOCAL [ CONT.HOOK.INDEX #scl,\
                                         CAT [ HEAD noun &\
@@ -594,14 +594,14 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
   						  CONT.HOOK [ LTOP #mcl,\
   								INDEX #index ]]] > ]],\
   						COORD -]],\
-      C-CONT [ RELS <! [ ARG1 #mch,\
-  		     ARG2 #sch ] !>,\
-  	     HCONS <! qeq &\
+      C-CONT [ RELS.LIST < [ ARG1 #mch,\
+  		     ARG2 #sch ] >,\
+  	     HCONS.LIST < qeq &\
   		    [ HARG #mch,\
   		      LARG #mcl ],\
                 qeq &\
   		    [ HARG #sch,\
-  		      LARG #scl ] !>,\
+  		      LARG #scl ] >,\
       		HOOK.INDEX #index ],\
       ARGS < [ SYNSEM [ LOCAL [ CAT [ HEAD verb,\
   				    MC na-or-+,\
@@ -619,7 +619,7 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
     mylang.add(type + ' := ' + supertype + '.')
     while constraints != []:
         mylang.add(type + ' := [ ' + constraints.pop() + ' ].')
-    mylang.add(type + ' := [ C-CONT.RELS <! [ PRED "' + pred + '" ] !> ].')
+    mylang.add(type + ' := [ C-CONT.RELS.LIST < [ PRED "' + pred + '" ] > ].')
     mylang.set_section('addenda')
     mylang.add('basic-head-mod-phrase-simple :+ [ SYNSEM.LOCAL.CAT.MC #mc,\
       HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].')
