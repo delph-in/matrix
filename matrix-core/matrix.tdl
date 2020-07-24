@@ -1751,7 +1751,7 @@ basic-filler-phrase := binary-phrase & phrasal &
 			      CTXT.ACTIVATED + ],
 		      NON-LOCAL.SLASH 0-alist ] ],
 	   [ SYNSEM [ LOCAL.CAT [ VAL.COMPS olist ],
-		      NON-LOCAL [ SLASH 0-1-alist,
+		      NON-LOCAL [ SLASH append-list & [ LIST < #slash > ],
 				  REL 0-alist,
 				  QUE 0-alist ] ] ] > ].
 
