@@ -2394,7 +2394,7 @@ isect-mod-phrase := basic-head-mod-phrase-simple & head-compositional &
 adj-head-scop-phrase := adj-head-phrase & scopal-mod-phrase &
   [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.POSTHEAD - ].
 head-adj-scop-phrase := head-adj-phrase & scopal-mod-phrase &
-  [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.REL 0-dlist ].
+  [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.REL 0-alist ].
 adj-head-int-phrase := adj-head-phrase & isect-mod-phrase &
   [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ POSTHEAD - ] ].
 head-adj-int-phrase := head-adj-phrase & isect-mod-phrase.
