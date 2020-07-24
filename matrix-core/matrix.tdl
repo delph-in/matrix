@@ -2247,8 +2247,8 @@ basic-extracted-adj-phrase := head-mod-phrase & head-only & phrasal.
 extracted-adj-phrase := basic-extracted-adj-phrase &
   [ SYNSEM [ LOCAL.CAT [ POSTHEAD #ph,
                          MC #mc ],
-	     NON-LOCAL.SLASH 1-alist &
-		   <! [ CAT [ HEAD [ MOD < [ LOCAL intersective-mod &
+	     NON-LOCAL.SLASH.LIST
+		   < [ CAT [ HEAD [ MOD < [ LOCAL intersective-mod &
                                                    [ CAT [ HEAD #head,
                                                            VAL #val,
                                                            POSTHEAD #ph,
@@ -2257,7 +2257,7 @@ extracted-adj-phrase := basic-extracted-adj-phrase &
                                                      CTXT #ctxt ] ] > ],
                               VAL [ SUBJ olist,
                                     COMPS olist,
-                                    SPR olist ] ] ] !> ],
+                                    SPR olist ] ] ] > ],
     HEAD-DTR.SYNSEM canonical-synsem &
 	   [ LOCAL local &
 		   [ CAT [ HEAD #head,
