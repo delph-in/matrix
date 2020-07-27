@@ -234,7 +234,7 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
                             [ SYNSEM.LOCAL.CAT.HEAD.AUX - ].'
         mylang.add(typedef)
         typedef = \
-            'aux-lex := verb-lex & \
+            'aux-lex := verb-lex & basic-icons-lex-item &\
                       [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].'
         mylang.add(typedef)
 
