@@ -4,46 +4,40 @@
 ######################################################################
 # imports
 
-import os
-import datetime
-import shutil
-from . import tdl
-#import tarfile
-#import gzip
-#import zipfile
-import sys
-#import re
 import codecs
+import datetime
+import os
+import shutil
+import sys
+
 from subprocess import call
 
 from delphin import tsdb
 
+from gmcs import tdl
+
 from gmcs.choices import ChoicesFile
-#from gmcs.utils import TDLencode
-#from gmcs.utils import get_name
 from gmcs.utils import format_comment_block
 
-#from gmcs.lib import TDLHierarchy
-
-from gmcs.linglib import morphotactics
-from gmcs.linglib import information_structure
-from gmcs.linglib import argument_optionality
-from gmcs.linglib import direct_inverse
-from gmcs.linglib import case
-from gmcs.linglib import word_order
-from gmcs.linglib import features
-from gmcs.linglib import lexical_items
-from gmcs.linglib import agreement_features
 from gmcs.linglib import adnominal_possession
-from gmcs.linglib import verbal_features
-from gmcs.linglib import negation
+from gmcs.linglib import agreement_features
+from gmcs.linglib import argument_optionality
+from gmcs.linglib import case
+from gmcs.linglib import clausalcomps
+from gmcs.linglib import clausalmods
 from gmcs.linglib import coordination
-from gmcs.linglib import yes_no_questions
+from gmcs.linglib import direct_inverse
+from gmcs.linglib import features
+from gmcs.linglib import information_structure
+from gmcs.linglib import lexical_items
+from gmcs.linglib import morphotactics
+from gmcs.linglib import negation
+from gmcs.linglib import nominalized_clauses
 from gmcs.linglib import toolboximport
 from gmcs.linglib import valence_change
-from gmcs.linglib import clausalmods
-from gmcs.linglib import nominalized_clauses
-from gmcs.linglib import clausalcomps
+from gmcs.linglib import verbal_features
+from gmcs.linglib import word_order
+from gmcs.linglib import yes_no_questions
 
 ######################################################################
 # globals
@@ -60,41 +54,6 @@ lexicon = None
 roots = None
 trigger = None
 vpm = None
-
-# ERB 2006-09-16 There are properties which are derived from the
-# choices file as a whole which various modules will want to know about.
-# The first example I have is the presence of auxiliaries.  Both the
-# negation and yes-no questions modules have cases where they need to
-# restrict lexical rules to applying to main verbs only, but only if
-# there is in fact a distinction between main and auxiliary verbs (i.e.,
-# they need to say [ AUX - ], but only if the feature AUX is defined).
-
-# ERB 2006-10-15 I want this function to return true if an auxiliary is
-# defined, even if it's not needed for negation or questions.
-
-
-
-####def irule_name(type_name):
-####  return re.sub('\s+', '_', type_name)
-
-# ERB 2006-09-21 This function assembles an inflectional rule out
-# of the appropriate information and adds it to irules.tdl.
-# Assumes we consistently use either 'prefix' and 'suffix' or 'before'
-# and 'after' as values in the html form.
-# Should this actually be a method on TDLfile?
-### ASF 2011-04-04 removed, since no longer used
-
-####def add_irule(instance_name,type_name,affix_type,affix_form):
-
-#  rule = irule_name(instance_name) + ' :=\n'
-#  if affix_type == 'prefix' or affix_type == 'before':
-#    rule += '%prefix (* ' + affix_form + ')\n'
-#  elif affix_type == 'suffix' or affix_type == 'after':
-#    rule += '%suffix (* ' + affix_form + ')\n'
-
-# TODO: generate error here.
-#  else:
-#    error 'probable script bug'
 
 
 ######################################################################
@@ -152,27 +111,6 @@ def customize_punctuation(grammar_path):
             print(line.rstrip('\n'), file=van_rpp)
         van_rpp.close()
 
-
-#  Need to move pet over to repp
-#  oe says that using repp with pet when not in tsdb mode
-#  is done with a command line option that simply points pet
-#  to the repp file.
-#
-#  # PET's pet.set is a bit easier
-#  line_re = re.compile(r'^punctuation-characters := "(.*)".\s*$')
-#  # need to escape 1 possibility for PET
-#  chars = [{'"':'\\"'}.get(c, c) for c in chars]
-#  punc_re = re.compile(r'(' + r'|'.join(re.escape(c) for c in chars) + r')')
-#  filename = os.path.join(grammar_path, 'pet', 'pet.set')
-#  lines = iter(open(filename, 'r').readlines())
-#  pet_set = open(filename, 'w')
-#  for line in lines:
-#    line = unicode(line, 'utf8')
-#    s = line_re.search(line)
-#    if s:
-#      line = 'punctuation-characters := "%s".' % punc_re.sub('', s.group(1))
-#    print >>pet_set, line.rstrip().encode('utf8')
-#  pet_set.close()
 
 ######################################################################
 # customize_test_sentences(grammar_path)
@@ -305,12 +243,6 @@ def customize_roots():
         'good starting point.  Note that it is legal to have multiple start\n' + \
         'symbols, but they all need to be listed as the value of\n' + \
         '`*start-symbol*\' (see `lkb/user-fns.lsp\').'
-    # ERB 2006-10-05 Removing if statement from within string
-
-    #  verb_addendum = ''
-    #  if has_auxiliaries_p():
-    #    verb_addendum = ' & [ FORM fin ]'
-    #[ HEAD verb' + verb_addendum + ', \
 
     # ERB 2007-01-21 Need to add [MC +] for inversion strategy for
     # questions, but it's hard to see how this could hurt in general,
@@ -552,30 +484,20 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
 
     # Initialize various type hierarchies
     case.init_case_hierarchy(ch, hierarchies)
-    # init_person_hierarchy()
-    # init_number_hierarchy()
-    # init_pernum_hierarchy()
-    # init_gender_hierarchy()
-    # init_other_hierarchies()
     agreement_features.init_agreement_hierarchies(ch, mylang, hierarchies)
-    # init_tense_hierarchy()
-    # init_aspect_hierarchy()
-    # init_situation_hierarchy()
-    # init_mood_hierarchy()
-    # init_form_hierarchy()
     verbal_features.init_verbal_hierarchies(ch, hierarchies)
 
 
-    #Integrate choices related to lexical entries imported from
-    #Toolbox lexicon file(s), if any.  NOTE: This needs to be called
-    #before anything else that looks at the lexicon-related choices,
-    #so before lexical_items.insert_ids().
+    # Integrate choices related to lexical entries imported from
+    # Toolbox lexicon file(s), if any.  NOTE: This needs to be called
+    # before anything else that looks at the lexicon-related choices,
+    # so before lexical_items.insert_ids().
     toolboximport.integrate_imported_entries(ch)
 
-    #Create unique ids for each lexical entry; this allows
-    #us to do the same merging on the lexicon TDL file as we
-    #do on the other TDL files.  NOTE: This needs to be called
-    #before customize_lexicon() and customize_inflection()
+    # Create unique ids for each lexical entry; this allows
+    # us to do the same merging on the lexicon TDL file as we
+    # do on the other TDL files.  NOTE: This needs to be called
+    # before customize_lexicon() and customize_inflection()
     lexical_items.insert_ids(ch)
 
     # The following might modify hierarchies in some way, so it's best
@@ -586,7 +508,7 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
     argument_optionality.customize_arg_op(mylang, ch, rules, hierarchies)
     direct_inverse.customize_direct_inverse(ch, mylang, hierarchies)
     case.customize_case(mylang, ch, hierarchies)
-    #argument_optionality.customize_arg_op(ch, mylang)
+
     # after all structures have been customized, customize inflection,
     # but provide the methods the components above have for their own
     # contributions to the lexical rules
@@ -609,16 +531,8 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
 
 
     # Call the other customization functions
-    # customize_person_and_number()
-    # customize_gender()
-    #  customize_other_features()
     agreement_features.customize_agreement_features(mylang, hierarchies)
     adnominal_possession.customize_adnominal_possession(mylang,ch,rules,irules,lexicon,hierarchies)
-    # customize_form()
-    # customize_tense()
-    # customize_aspect()
-    # customize_situation()
-    # customize_mood()
     verbal_features.customize_verbal_features(mylang, hierarchies)
     valence_change.customize_valence_change(mylang, ch, lexicon, rules, lrules, hierarchies)
     word_order.customize_word_order(mylang, ch, rules)
