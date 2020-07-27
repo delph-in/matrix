@@ -45,7 +45,7 @@ def create_head_subordinator_basic_lex_type(mylang, ch, cms):
     """
     nominalized, nmzRel, nom_strategy = is_nominalized(cms, ch)
     mylang.set_section('subordlex')
-    mylang.add('adposition-subord-lex-item := single-rel-lex-item & norm-ltop-lex-item &\
+    mylang.add('adposition-subord-lex-item := single-rel-lex-item & norm-ltop-lex-item & basic-icons-lex-item &\
             [ SYNSEM.LOCAL.CAT [ MC -,\
                                 HEAD adp & [ MOD < [ LOCAL scopal-mod &\
                                                         [ CAT [ HEAD verb,\
@@ -374,7 +374,8 @@ def add_non_branching_rules(mylang, rules, cms, ch):
     		      LARG #mcl ],\
                   qeq &\
     		    [ HARG #sch,\
-    		      LARG #scl ] >,\
+    		      LARG #scl ] >, '
+               'ICONS 0-alist,\
         		HOOK.INDEX #index ],\
                 ARGS < [ SYNSEM [ LOCAL [ CAT [ HEAD verb &\
                                               [ MOD < > ],\
@@ -541,7 +542,8 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
         		      LARG #mcl ],\
                       qeq &\
         		    [ HARG #sch,\
-        		      LARG #scl ] >,\
+        		      LARG #scl ] >,'
+                'ICONS 0-alist,\
             		HOOK.INDEX #index ],\
             ARGS < [ SYNSEM [ LOCAL [ CAT [ HEAD noun &\
                                                     [ NMZ + ],\
@@ -570,7 +572,7 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
           		     ARG2 #scl ] >,\
           	     HCONS.LIST < qeq &\
           		    [ HARG #mch,\
-          		      LARG #mcl ] >,\
+          		      LARG #mcl ] >, ICONS 0-alist,\
               		HOOK.INDEX #index ],\
               ARGS < [ SYNSEM [ LOCAL [ CONT.HOOK.INDEX #scl,\
                                         CAT [ HEAD noun &\
@@ -601,7 +603,7 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
   		      LARG #mcl ],\
                 qeq &\
   		    [ HARG #sch,\
-  		      LARG #scl ] >,\
+  		      LARG #scl ] >, ICONS 0-alist,\
       		HOOK.INDEX #index ],\
       ARGS < [ SYNSEM [ LOCAL [ CAT [ HEAD verb,\
   				    MC na-or-+,\
