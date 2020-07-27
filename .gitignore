@@ -9,3 +9,15 @@ __pycache__/
 
 # Ignore auto-saves
 *~
+
+# Ignore files under home/gold/testname which are not needed
+tests/regression/home/gold/*/update
+tests/regression/home/gold/*/score
+tests/regression/home/gold/*/set
+tests/regression/home/gold/*/rule
+tests/regression/home/gold/*/phenomenon
+tests/regression/home/gold/*/parameter
+tests/regression/home/gold/*/output
+tests/regression/home/gold/*/item-phenomenon
+tests/regression/home/gold/*/fold
+tests/regression/home/gold/*/analysis
