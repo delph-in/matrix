@@ -4,21 +4,16 @@
 ######################################################################
 # imports
 
-import codecs
 import datetime
 import os
 import shutil
 import sys
-
 from subprocess import call
 
 from delphin import tsdb
 
 from gmcs import tdl
-
 from gmcs.choices import ChoicesFile
-from gmcs.utils import format_comment_block
-
 from gmcs.linglib import adnominal_possession
 from gmcs.linglib import agreement_features
 from gmcs.linglib import argument_optionality
@@ -38,6 +33,7 @@ from gmcs.linglib import valence_change
 from gmcs.linglib import verbal_features
 from gmcs.linglib import word_order
 from gmcs.linglib import yes_no_questions
+from gmcs.utils import format_comment_block
 
 ######################################################################
 # globals
@@ -79,13 +75,13 @@ def customize_punctuation(grammar_path):
         # the repp file
         #
         filename = os.path.join(grammar_path, 'repp', 'vanilla.rpp')
-        lines = codecs.open(filename, 'r', encoding='utf-8').readlines()
-        van_rpp = codecs.open(filename, 'w', encoding='utf-8')
-        for line in lines:
-            if line.startswith(':'):
-                line = ":["+default_splits_str+"]".rstrip()
-            print(line.rstrip('\n'), file=van_rpp)
-        van_rpp.close()
+        with open(filename, 'r', encoding='utf-8') as f:
+            lines = f.readlines()
+        with open(filename, 'w', encoding='utf-8') as van_rpp:
+            for line in lines:
+                if line.startswith(':'):
+                    line = ":["+default_splits_str+"]".rstrip()
+                print(line.rstrip('\n'), file=van_rpp)
     else: #ch.get('punctuation-chars') == 'keep-list':
         # keep list with the hyphen on the keep list is the new default
         # here we split on the default list (like discard-all),
@@ -94,22 +90,22 @@ def customize_punctuation(grammar_path):
         if not chars:
             chars = [ '-','=',':' ]
         filename = os.path.join(grammar_path, 'repp', 'vanilla.rpp')
-        lines = iter(codecs.open(filename, 'r', encoding='utf-8').readlines())
-        van_rpp = codecs.open(filename, 'w', encoding='utf-8')
-        for line in lines:
-            if line.startswith(':'):
-                line = line[2:-2]
-                # NOTE: repp syntax says that the line that starts with ':'
-                # defines a list of chars to split on
-                for c in chars:
-                    # \ char needs some special treatment
-                    # so do the other escaped chars!
-                    if c == '\\':
-                        c = '\\\\'
-                    default_splits_str = default_splits_str.replace(c,'')
-                line= ":["+default_splits_str+"]".rstrip()
-            print(line.rstrip('\n'), file=van_rpp)
-        van_rpp.close()
+        with open(filename, 'r', encoding='utf-8') as f:
+            lines = f.readlines()
+        with open(filename, 'w', encoding='utf-8') as van_rpp:
+            for line in lines:
+                if line.startswith(':'):
+                    line = line[2:-2]
+                    # NOTE: repp syntax says that the line that starts with ':'
+                    # defines a list of chars to split on
+                    for c in chars:
+                        # \ char needs some special treatment
+                        # so do the other escaped chars!
+                        if c == '\\':
+                            c = '\\\\'
+                        default_splits_str = default_splits_str.replace(c,'')
+                    line= ":["+default_splits_str+"]".rstrip()
+                print(line.rstrip('\n'), file=van_rpp)
 
 
 ######################################################################
@@ -118,32 +114,29 @@ def customize_punctuation(grammar_path):
 
 def customize_test_sentences(grammar_path):
     try:
-        b = open(os.path.join(grammar_path, 'lkb/script'), 'r')
-        lines = b.readlines()
-        b.close()
-        s = open(os.path.join(grammar_path, 'lkb/script'), 'w')
-        ts = open(os.path.join(grammar_path, 'test_sentences'), 'w')
-        for l in lines:
-            l = l.strip()
-            if l == ';;; Modules: Default sentences':
-                s.write('(if (eq (length *last-parses*) 1)\n')
-                s.write('   (setf *last-parses* \'(')
-                if 'sentence' not in ch:
-                    s.write('""')
-                for sentence in ch.get('sentence',[]):
-                    s.write('"' + sentence.get('orth','') + '" ')
-                    # 2017-12-13 OZ: Adding two lines below.
-                    # # Shouldn't the start be printed in test_sentences
-                    # if the sentence is ungrammatical? See choices.py uprev convert_23_to_24() though.
-                    if sentence['star'] == 'on':
-                        ts.write('*' + sentence.get('orth','') + '\n')
-                    else:
-                        ts.write(sentence.get('orth','') + '\n')
-                s.write(')))\n')
-            else:
-                s.write(l + '\n')
-        s.close()
-        ts.close()
+        with open(os.path.join(grammar_path, 'lkb/script'), 'r', encoding='utf-8') as b:
+            lines = b.readlines()
+        with open(os.path.join(grammar_path, 'lkb/script'), 'w', encoding='utf-8') as s, \
+             open(os.path.join(grammar_path, 'test_sentences'), 'w', encoding='utf-8') as ts:
+            for l in lines:
+                l = l.strip()
+                if l == ';;; Modules: Default sentences':
+                    s.write('(if (eq (length *last-parses*) 1)\n')
+                    s.write('   (setf *last-parses* \'(')
+                    if 'sentence' not in ch:
+                        s.write('""')
+                    for sentence in ch.get('sentence',[]):
+                        s.write('"' + sentence.get('orth','') + '" ')
+                        # 2017-12-13 OZ: Adding two lines below.
+                        # # Shouldn't the start be printed in test_sentences
+                        # if the sentence is ungrammatical? See choices.py uprev convert_23_to_24() though.
+                        if sentence['star'] == 'on':
+                            ts.write('*' + sentence.get('orth','') + '\n')
+                        else:
+                            ts.write(sentence.get('orth','') + '\n')
+                    s.write(')))\n')
+                else:
+                    s.write(l + '\n')
     except:
         pass
 
@@ -178,18 +171,16 @@ def customize_itsdb(grammar_path):
 
 def customize_script(grammar_path):
     try:
-        b = open(os.path.join(grammar_path, 'lkb/script'), 'r')
-        lines = b.readlines()
-        b.close()
-        s = open(os.path.join(grammar_path, 'lkb/script'), 'w')
-        for l in lines:
-            l = l.strip()
-            if l == ';;; Modules: LOAD my_language.tdl':
-                myl = ch.get('language').lower() + '.tdl'
-                s.write('   (lkb-pathname (parent-directory) "' + myl + '")\n')
-            else:
-                s.write(l + '\n')
-        s.close()
+        with open(os.path.join(grammar_path, 'lkb/script'), 'r', encoding='utf-8') as b:
+            lines = b.readlines()
+        with open(os.path.join(grammar_path, 'lkb/script'), 'w', encoding='utf-8') as s:
+            for l in lines:
+                l = l.strip()
+                if l == ';;; Modules: LOAD my_language.tdl':
+                    myl = ch.get('language').lower() + '.tdl'
+                    s.write('   (lkb-pathname (parent-directory) "' + myl + '")\n')
+                else:
+                    s.write(l + '\n')
     except:
         pass
 
@@ -199,22 +190,19 @@ def customize_script(grammar_path):
 
 def customize_pettdl(grammar_path):
     try:
-        p_in = open(os.path.join(get_matrix_core_path(), 'pet.tdl'), 'r')
-        lines = p_in.readlines()
-        p_in.close()
+        with open(os.path.join(get_matrix_core_path(), 'pet.tdl'), 'r', encoding='utf-8') as p_in:
+            lines = p_in.readlines()
         myl = ch.get('language').lower()
-        p_out = open(os.path.join(grammar_path, myl + '-pet.tdl'), 'w')
-        for l in lines:
-            l = l.strip()
-            p_out.write(l + '\n')
-            if l == ':include "matrix".':
-                p_out.write(':include "' + myl + '".\n')
-        p_out.close()
-        set_out = open(os.path.join(grammar_path, 'pet/' + myl + '-pet.set'), 'w')
-        set_out.write(';;;; settings for CHEAP -*- Mode: TDL; Coding: utf-8 -*-\n')
-        set_out.write('include "flop".\n')
-        set_out.write('include "pet".\n')
-        set_out.close()
+        with open(os.path.join(grammar_path, myl + '-pet.tdl'), 'w', encoding='utf-8') as p_out:
+            for l in lines:
+                l = l.strip()
+                p_out.write(l + '\n')
+                if l == ':include "matrix".':
+                    p_out.write(':include "' + myl + '".\n')
+        with open(os.path.join(grammar_path, 'pet/' + myl + '-pet.set'), 'w', encoding='utf-8') as set_out:
+            set_out.write(';;;; settings for CHEAP -*- Mode: TDL; Coding: utf-8 -*-\n')
+            set_out.write('include "flop".\n')
+            set_out.write('include "pet".\n')
     except:
         pass
 
@@ -226,10 +214,10 @@ def customize_acetdl(grammar_path):
     myl = ch.get('language').lower()
     ace_config = os.path.join(grammar_path, 'ace', 'config.tdl')
     replace_strings = {'mylanguage': os.path.join('..', myl + '-pet.tdl')}
-    lines = open(ace_config, 'r').read()
-    a_out = open(ace_config, 'w')
-    print(lines % replace_strings, file=a_out)
-    a_out.close()
+    with open(ace_config, 'r', encoding='utf-8') as a_in:
+        lines = a_in.read()
+    with open(ace_config, 'w', encoding='utf-8') as a_out:
+        print(lines % replace_strings, file=a_out)
 
 ######################################################################
 # customize_roots()
@@ -347,35 +335,34 @@ COG-ST : COG-ST
 
 def setup_vcs(ch, grammar_path):
     if 'vcs' in ch:
-        IGNORE = open(os.devnull,'w')
-        cwd = os.getcwd()
-        os.chdir(grammar_path)
-        try:
-            if ch['vcs'] == 'git':
-                call(['git', 'init'], stdout=IGNORE, stderr=IGNORE)
-                call(['git', 'add', '.'], stdout=IGNORE, stderr=IGNORE)
-                call(['git', 'commit',
-                      '--author="Grammar Matrix <matrix-dev@u.washington.edu>"',
-                      '-m "Initial commit."'], stdout=IGNORE, stderr=IGNORE)
-            elif ch['vcs'] == 'hg':
-                call(['hg', 'init'], stdout=IGNORE, stderr=IGNORE)
-                call(['hg', 'add'], stdout=IGNORE, stderr=IGNORE)
-                call(['hg', 'commit',
-                      '-u Grammar Matrix <matrix-dev@u.washington.edu>',
-                      '-m "Initial commit."'], stdout=IGNORE, stderr=IGNORE)
-            elif ch['vcs'] == 'bzr':
-                call(['bzr', 'init'], stdout=IGNORE, stderr=IGNORE)
-                call(['bzr', 'add'], stdout=IGNORE, stderr=IGNORE)
-                call(['bzr', 'whoami', '--branch',
-                      'Grammar Matrix Customization System <matrix-dev@uw.edu>'],
-                     stdout=IGNORE, stderr=IGNORE)
-                call(['bzr', 'commit', '-m "Initial commit."'],
-                     stdout=IGNORE, stderr=IGNORE)
-        except OSError as er:
-            print("OS Error. Most likely %s is not installed." % ch['vcs'])
-            print(er.message)
-        os.chdir(cwd)
-        IGNORE.close()
+        with open(os.devnull, 'w') as IGNORE:
+            cwd = os.getcwd()
+            os.chdir(grammar_path)
+            try:
+                if ch['vcs'] == 'git':
+                    call(['git', 'init'], stdout=IGNORE, stderr=IGNORE)
+                    call(['git', 'add', '.'], stdout=IGNORE, stderr=IGNORE)
+                    call(['git', 'commit',
+                          '--author="Grammar Matrix <matrix-dev@u.washington.edu>"',
+                          '-m "Initial commit."'], stdout=IGNORE, stderr=IGNORE)
+                elif ch['vcs'] == 'hg':
+                    call(['hg', 'init'], stdout=IGNORE, stderr=IGNORE)
+                    call(['hg', 'add'], stdout=IGNORE, stderr=IGNORE)
+                    call(['hg', 'commit',
+                          '-u Grammar Matrix <matrix-dev@u.washington.edu>',
+                          '-m "Initial commit."'], stdout=IGNORE, stderr=IGNORE)
+                elif ch['vcs'] == 'bzr':
+                    call(['bzr', 'init'], stdout=IGNORE, stderr=IGNORE)
+                    call(['bzr', 'add'], stdout=IGNORE, stderr=IGNORE)
+                    call(['bzr', 'whoami', '--branch',
+                          'Grammar Matrix Customization System <matrix-dev@uw.edu>'],
+                         stdout=IGNORE, stderr=IGNORE)
+                    call(['bzr', 'commit', '-m "Initial commit."'],
+                         stdout=IGNORE, stderr=IGNORE)
+            except OSError as er:
+                print("OS Error. Most likely %s is not installed." % ch['vcs'])
+                print(er.message)
+            os.chdir(cwd)
 
 ######################################################################
 # customize_matrix(path)
@@ -409,16 +396,15 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
     # Use the following command when python2.6 is available
     #shutil.copytree('matrix-core', grammar_path,
     #                ignore=shutil.ignore_patterns('.svn'))
-    IGNORE = open(os.devnull, 'w')
-    try:
-        call(['rsync', '-a', '--exclude=.svn',
-              get_matrix_core_path() + os.path.sep, grammar_path],
-             stdout=IGNORE, stderr=IGNORE)
-    except OSError as er:
-        print("OS Error. Most likely rsync is not installed.")
-        print(er.message)
-        sys.exit(1)
-    IGNORE.close()
+    with open(os.devnull, 'w') as IGNORE:
+        try:
+            call(['rsync', '-a', '--exclude=.svn',
+                  get_matrix_core_path() + os.path.sep, grammar_path],
+                 stdout=IGNORE, stderr=IGNORE)
+        except OSError as er:
+            print("OS Error. Most likely rsync is not installed.")
+            print(er.message)
+            sys.exit(1)
 
     # include a copy of choices (named 'choices' to avoid collisions)
     shutil.copy(path, os.path.join(grammar_path, 'choices'))
@@ -452,11 +438,10 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
 
     # date/time
     try:
-        f = open('datestamp', 'r')
-        matrix_dt = f.readlines()[0].strip()
-        f.close()
+        with open('datestamp', 'r') as f:
+            matrix_dt = f.readlines()[0].strip()
     except:
-        matrix_dt= 'unknown time'
+        matrix_dt = 'unknown time'
 
     current_dt = datetime.datetime.utcnow()
     tdl_dt = current_dt.strftime('%a %b %d %H:%M:%S UTC %Y')
