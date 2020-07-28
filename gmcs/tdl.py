@@ -753,10 +753,9 @@ def TDLmerge(e1, e2):
                         e0.add(TDLmerge(c0, c))
                         handled = True
                         break
-                    else:
-                        # Sometimes need to merge the end of list with a longer list:
-                        if isinstance(c0, TDLelem_type) and c0.type == 'null' \
-                                and isinstance(c, TDLelem_feat) and c.is_list() and not c.empty_list:
+                    # Sometimes need to merge the end of list with a longer list:
+                    elif (isinstance(c0, TDLelem_type) and c0.type == 'null'
+                          and isinstance(c, TDLelem_feat) and c.is_list() and not c.empty_list):
                             e0.child.remove(c0)
                             e0.add(copy.copy(c))
                             handled = True
