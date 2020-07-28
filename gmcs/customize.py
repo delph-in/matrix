@@ -80,7 +80,7 @@ def customize_punctuation(grammar_path):
         with open(filename, 'w', encoding='utf-8') as van_rpp:
             for line in lines:
                 if line.startswith(':'):
-                    line = ":["+default_splits_str+"]".rstrip()
+                    line = ":["+default_splits_str+"]"
                 print(line.rstrip('\n'), file=van_rpp)
     else: #ch.get('punctuation-chars') == 'keep-list':
         # keep list with the hyphen on the keep list is the new default
@@ -104,7 +104,7 @@ def customize_punctuation(grammar_path):
                         if c == '\\':
                             c = '\\\\'
                         default_splits_str = default_splits_str.replace(c,'')
-                    line= ":["+default_splits_str+"]".rstrip()
+                    line= ":["+default_splits_str+"]"
                 print(line.rstrip('\n'), file=van_rpp)
 
 
