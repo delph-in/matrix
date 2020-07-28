@@ -572,7 +572,8 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
           		     ARG2 #scl ] >,\
           	     HCONS.LIST < qeq &\
           		    [ HARG #mch,\
-          		      LARG #mcl ] >, ICONS 0-alist,\
+          		      LARG #mcl ] >, '
+                 'ICONS 0-alist,\
               		HOOK.INDEX #index ],\
               ARGS < [ SYNSEM [ LOCAL [ CONT.HOOK.INDEX #scl,\
                                         CAT [ HEAD noun &\
