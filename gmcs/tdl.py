@@ -476,30 +476,6 @@ class TDLelem_dlist(TDLelem):
 
 
 ###########################################################################
-# A TDLelem_list corresponds to a normal list (e.g. < [ PRED "_q_rel" ] >)
-
-class TDLelem_list(TDLelem_feat):
-    def __init__(self):
-        self.child = []
-
-    def write(self):
-        if debug_write:
-            TDLwrite('list\n')
-
-        TDLwrite('< ')
-        for ch in self.child[0:1]:
-            ch.write()
-        for ch in self.child[1:]:
-            TDLwrite(', ')
-            ch.write()
-        TDLwrite(' >')
-
-    def ordered(self):
-        return True
-
-
-
-###########################################################################
 # TDL Parsing functions
 # These functions, one for each of the types of TDL element, all consume
 # tokens from the global list "tok".

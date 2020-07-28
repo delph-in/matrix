@@ -1673,7 +1673,8 @@ basic-non-rel-clause := clause & head-compositional &
     HEAD-DTR.SYNSEM [ LOCAL.CONT.HOOK [ INDEX #index,
 					ICONS-KEY.IARG1 #index,
 					CLAUSE-KEY #index ],
-		      NON-LOCAL [ REL 0-alist, QUE 0-alist ] ],
+		      NON-LOCAL [ REL 0-alist,
+		                  QUE 0-alist ] ],
     C-CONT [ RELS.LIST < >,
 	     HCONS.LIST < > ] ].
 
@@ -3267,7 +3268,7 @@ basic-nomod-adposition-lex := basic-adposition-lex & no-mod-lex & norm-hook-lex-
 ; TJT 2014-04-24 Removing raise-index-mod-lex-item from basic-adverb-lex:
 ; replacing with norm-ltop-lex-item. See below for more info.
 
-basic-adverb-lex := single-rel-lex-item & norm-ltop-lex-item & norm-zero-arg &
+basic-adverb-lex := single-rel-lex-item & norm-ltop-lex-item & norm-zero-arg & basic-icons-lex-item &
   [ SYNSEM [ LOCAL.CAT.HEAD adv,
              LKEYS.KEYREL event-relation ] ].
 
