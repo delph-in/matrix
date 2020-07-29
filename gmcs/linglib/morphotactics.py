@@ -165,6 +165,7 @@ def customize_lexical_rules(choices):
     pch = position_class_hierarchy(choices)
     interpret_constraints(choices)
     create_flags()
+    get_infostr_constraints(choices)
     calculate_supertypes(pch)
     return pch
 
@@ -473,7 +474,10 @@ LEX_RULE_SUPERTYPES = ['cat-change-only-lex-rule',
                        'low-nmz-no-subjid-trans-lex-rule',
                        'low-nmz-no-subjid-compsid-lex-rule',
                        'low-nmz-subjid-trans-lex-rule',
-                       'low-nmz-subjid-compsid-lex-rule']
+                       'low-nmz-subjid-compsid-lex-rule',
+                       'add-icons-subj-foc-lex-rule',
+                       'add-icons-obj-foc-lex-rule',
+                       'add_icons_self_foc_lex_rule']
 
 ALL_LEX_RULE_SUPERTYPES = LEX_RULE_SUPERTYPES + ['infl-lex-rule',
                                                  'const-lex-rule',
@@ -496,11 +500,19 @@ def set_lexical_rule_supertypes(lrt, mtx_supertypes):
         else:
             lrt.supertypes.add('const-lex-rule')
 
-            # feature-based supertypes
-            # JDC 04 June 2012 now negation supertypes are set in features.py
-            #  if ('value', 'a') in lrt.features.get('negation',{}).items():
-            #    lrt.supertypes.add('cont-change-only-lex-rule')
-            # add other special cases here
+        # feature-based supertypes
+        # JDC 04 June 2012 now negation supertypes are set in features.py
+        #  if ('value', 'a') in lrt.features.get('negation',{}).items():
+        #    lrt.supertypes.add('cont-change-only-lex-rule')
+        # add other special cases here
+        infostr_features = lrt.features.get('information-structure meaning',{})
+        if len(infostr_features) > 0:
+            if infostr_features['head'] == 'subj' and infostr_features['value'] == 'focus':
+                lrt.supertypes.add('add-icons-subj-foc-lex-rule')
+            elif infostr_features['head'] == 'obj' and infostr_features['value'] == 'focus':
+                lrt.supertypes.add('add-icons-obj-foc-lex-rule')
+            elif infostr_features['head'] == '':
+                lrt.supertypes.add('add-icons-self-foc-lex-rule')
 
 def calculate_supertypes(pch):
     # calculate daughter types first, because we want to percolate them
@@ -535,8 +547,8 @@ def percolate_supertypes(pc):
     def validate_supertypes(x):
         if pc.is_lex_rule:
             if not any(st in LEX_RULE_SUPERTYPES for st in x.supertypes):
-                # if str(pc.identifier()) in _infostr_pc.values():
-                #   x.supertypes.add('add-only-no-rels-hcons-rule')
+                if pc.has_infostr():
+                   x.supertypes.add('add-only-no-rels-hcons-rule')
                 if pc.has_incorporated_stems():
                     # TJT 2014-08-21: Incorporated Adjective lexical rule supertypes
                     x.supertypes.add('add-only-rule')
@@ -556,7 +568,7 @@ def percolate_supertypes(pc):
                 # are handled by write_possessive_behavior(). If any other lrt shares a pc
                 # with a possessive rule, it wil have its specific supertypes added
                 # in write_possessive_behavior() as well.
-                elif not pc.has_possessive():
+                elif not (pc.has_possessive() or pc.has_infostr()):
                     x.supertypes.add('add-only-no-ccont-rule')
 
     for r in pc.roots():

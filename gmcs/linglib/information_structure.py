@@ -360,6 +360,28 @@ nf-subj-head-phrase := head-nf-subj-phrase-super & head-final &
     NON-HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.ICONS-KEY $ ].
 """
 
+add_icons_subj_foc_lex_rule = """
+add-icons-subj-foc-lex-rule := add-only-no-rels-hcons-rule & 
+[ SYNSEM.LOCAL [ CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX #target ] >,
+                 CONT [ HOOK.INDEX #clause,
+                        ICONS <! focus & [ IARG1 #clause, 
+                                           IARG2 #target ] !> ] ] ].
+"""
+
+add_icons_obj_foc_lex_rule = """
+add-icons-obj-foc-lex-rule := add-only-no-rels-hcons-rule & 
+[ SYNSEM.LOCAL [ CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX #target ] >,
+                 CONT [ HOOK.INDEX #clause,
+                        ICONS <! focus & [ IARG1 #clause, 
+                                           IARG2 #target ] !> ] ] ].
+"""
+
+add_icons_self_foc_lex_rule = """
+add-icons-self-foc-lex-rule := add-only-no-rels-hcons-rule & 
+[ SYNSEM.LOCAL [ CONT [ HOOK.INDEX #iarg1,
+                        ICONS <! focus & [ IARG1 #iarg1 ] !> ] ] ].
+"""
+
 
 def add_ph_types(mylang, ph_types):
     for t in g_types:
@@ -445,7 +467,8 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
         if pos == 'clause-initial' or infostr_type == 'topic-first':
             if wo == 'sov':
                 ph_types['comp-head-phrase'] = 'comp-head-phrase := [ SYNSEM.L-PERIPH -, HEAD-DTR.SYNSEM.L-PERIPH - ].'
-                ph_types['subj-head-phrase'] = 'subj-head-phrase := [ SYNSEM [ LOCAL.CAT.MC +, NON-LOCAL.SLASH 0-dlist ], HEAD-DTR.SYNSEM.L-PERIPH - ].'
+                ph_types['subj-head-phrase'] = 'subj-head-phrase := [ SYNSEM [ LOCAL.CAT.MC +, NON-LOCAL.SLASH 0-dlist ], ' \
+                                               '                      HEAD-DTR.SYNSEM.L-PERIPH - ].'
                 ph_types['subj-head-nmc-phrase'] = subj_head_nmc_phrase.replace('$', infostr_in_flr)
                 ph_rules['subj-head-nmc-phrase'] = 'subj-head-nmc'
                 # if infostr_type != 'topic-first':
@@ -458,7 +481,8 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
             elif wo == 'svo':
                 ph_types['basic-head-1st-comp-phrase'] = 'basic-head-1st-comp-phrase :+ [ SYNSEM.L-PERIPH - ].'
                 ph_types['head-comp-phrase'] = 'head-comp-phrase := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].'
-                ph_types['subj-head-phrase'] = 'subj-head-phrase := [ SYNSEM [ LOCAL.CAT.MC +, NON-LOCAL.SLASH 0-dlist ], HEAD-DTR.SYNSEM.L-PERIPH - ].'
+                ph_types['subj-head-phrase'] = 'subj-head-phrase := [ SYNSEM [ LOCAL.CAT.MC +, NON-LOCAL.SLASH 0-dlist ], ' \
+                                               '                      HEAD-DTR.SYNSEM.L-PERIPH - ].'
                 ph_types['subj-head-nmc-phrase'] = subj_head_nmc_phrase.replace('$', infostr_in_flr)
                 ph_rules['subj-head-nmc-phrase'] = 'subj-head-nmc'
                 # if infostr_type != 'topic-first':
@@ -1006,7 +1030,9 @@ def customize_information_structure_marker(mylang, ch, rules, irules, lexicon, t
                 trigger.add(grdef)
 
         else:#affix or adp
-            pass
+            mylang.add(add_icons_subj_foc_lex_rule,section='lexrules')
+            mylang.add(add_icons_obj_foc_lex_rule, section='lexrules')
+            mylang.add(add_icons_self_foc_lex_rule, section='lexrules')
 
 
 def customize_infostr_adpositions(mylang, lexicon, trigger, ch):

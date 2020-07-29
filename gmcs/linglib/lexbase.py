@@ -197,6 +197,13 @@ class PositionClass(MorphotacticNode):
                 return True
         return False
 
+    def has_infostr(self):
+        for lrt in list(self.nodes.values()):
+            for f in lrt.features:
+                if f.startswith('information-structure'):
+                    return True
+        return False
+
     def has_possessive(self):
         for lrt in list(self.nodes.values()):
             poss_pron=False
