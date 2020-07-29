@@ -542,7 +542,7 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
                 #         [ SYNSEM.R-PERIPH +,
                 #           HEAD-DTR.SYNSEM [ R-PERIPH +,
                 #                             LOCAL.CONT.HOOK.ICONS-KEY $,
-                #                             NON-LOCAL.SLASH 0-alist ] ]."""
+                #                             NON-LOCAL.SLASH 0-dlist ] ]."""
                 #ph_types['subj-head-phrase'] = tdl.replace('$', infostr)
                 #ph_rules['subj-head-phrase'] = 'subj-head'
                 ph_types['head-comp-nmc-phrase'] = head_comp_nmc_phrase.replace('$', infostr_in_flr)
@@ -564,7 +564,7 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
                 #         [ SYNSEM.R-PERIPH +,
                 #           HEAD-DTR.SYNSEM [ R-PERIPH +,
                 #                             LOCAL.CONT.HOOK.ICONS-KEY $,
-                #                             NON-LOCAL.SLASH 0-alist ] ]."""
+                #                             NON-LOCAL.SLASH d-alist ] ]."""
                 #ph_types['subj-head-phrase'] = tdl.replace('$', infostr)
                 #ph_rules['subj-head-phrase'] = 'subj-head'
                 ph_types['head-subj-nmc-phrase'] = head_subj_nmc_phrase.replace('$', infostr_in_flr)
