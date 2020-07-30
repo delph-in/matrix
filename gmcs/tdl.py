@@ -706,21 +706,22 @@ def TDLmerge(e1, e2):
                 c0 += '\n\n'
             c0 += c2
         e0.set_comment(c0)
-
         # if the elements are ordered (list or dlist), merge the list
         # items in order.  That is, <a,b,c> + <A,B,C> = <a&A,b&B,c&C>.
+        # or (isinstance(e1,TDLelem_feat) and not e1.empty_list and e1.is_list())
         if e1.ordered():
             for i in range(max(len(e1.child), len(e2.child))):
                 if i < len(e1.child) and i < len(e2.child) and \
-                        TDLmergeable(e1.child[i], e2.child[i]):
+                        TDLmergeable(e1.child[i], e2.child[i]) and len(e2.child) > 0:
                     e0.add(TDLmerge(e1.child[i], e2.child[i]))
                 else:
-                    if i < len(e1.child):
+                    if i < len(e1.child) and len(e1.child) > 0:
                         e0.add(copy.copy(e1.child[i]))
-                    if i < len(e2.child):
+                    if i < len(e2.child) and len(e2.child) > 0:
                         e0.add(copy.copy(e2.child[i]))
         else:
-            for c in e1.child + e2.child:
+            children = e1.child + e2.child
+            for c in children:
                 handled = False
                 for c0 in e0.child:
                     if TDLmergeable(c0, c):
@@ -728,6 +729,13 @@ def TDLmerge(e1, e2):
                         e0.add(TDLmerge(c0, c))
                         handled = True
                         break
+                    # Sometimes need to merge the end of list with a longer list:
+                    elif (isinstance(c0, TDLelem_type) and c0.type == 'null'
+                          and isinstance(c, TDLelem_feat) and c.is_list() and not c.empty_list):
+                            e0.child.remove(c0)
+                            e0.add(copy.copy(c))
+                            handled = True
+                            break
                 if not handled:
                     e0.add(copy.copy(c))
     else:

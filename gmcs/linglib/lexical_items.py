@@ -234,7 +234,7 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
                             [ SYNSEM.LOCAL.CAT.HEAD.AUX - ].'
         mylang.add(typedef)
         typedef = \
-            'aux-lex := verb-lex & \
+            'aux-lex := verb-lex & basic-icons-lex-item &\
                       [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].'
         mylang.add(typedef)
 
@@ -466,7 +466,7 @@ def customize_misc_lex(ch, lexicon, trigger):
                    [ STEM < "' + orthstr + '" > ].'
         lexicon.add(typedef)
         grdef = TDLencode(orth) +'_gr := generator_rule & \
-                   [ CONTEXT [ RELS <! [ ARG0.SF ques ] !> ], \
+                   [ CONTEXT [ RELS.LIST < [ ARG0.SF ques ] > ], \
                      FLAGS.TRIGGER "' + TDLencode(orth) + '" ].'
         trigger.add(grdef)
 
@@ -921,9 +921,9 @@ def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
     # If adjective incorporation, add to mylanguage.tdl
     if ch.get("adj_incorp",False):
         mylang.add('''adj_incorporation-lex-rule := add-only-rule &
-                    [ C-CONT [ RELS <! arg1-ev-relation &
+                    [ C-CONT [ RELS.LIST < arg1-ev-relation &
                                        [ LBL #ltop,
-		                                 ARG1 #index ] !>,
+		                                 ARG1 #index ] >,
 	                           HOOK #hook ],
                       DTR.SYNSEM.LOCAL [ CAT.HEAD noun,
   		                                 CONT.HOOK #hook &

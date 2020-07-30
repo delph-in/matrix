@@ -106,10 +106,10 @@ g_types = [ 'basic-head-1st-comp-phrase',
 narrow_focused_phrase = """
 narrow-focused-phrase := head-only & 
   [ C-CONT [ HOOK #hook,
-             RELS <! !>,
-             HCONS <! !>,
-             ICONS <! focus-or-topic & #icons &
-                      [ IARG2 #target ] !> ],
+             RELS 0-alist,
+             HCONS 0-alist,
+             ICONS.LIST < focus-or-topic & #icons &
+                      [ IARG2 #target ] > ],
     SYNSEM [ LIGHT -,
              INFOSTR-FLAG +,
              LOCAL [ CAT.VAL [ SPR < >, SUBJ < >, COMPS < >, SPEC < > ],
@@ -119,7 +119,7 @@ narrow-focused-phrase := head-only &
                       INFOSTR-FLAG -,
                       LOCAL [ CAT.HEAD noun,
                               CONT [ HOOK #hook,
-                                     ICONS <!  !> ] ] ] ].
+                                     ICONS 0-alist ] ] ] ].
 """
 
 subj_head_nmc_phrase = """
@@ -214,9 +214,9 @@ head-nf-subj-phrase := head-nf-subj-phrase-super & head-initial-head-nexus &
 infostr_dislocated_phrase = """
 infostr-dislocated-phrase := narrow-focus &
   [ SYNSEM.LOCAL.CAT [ MC +, VAL.SUBJ < > ],
-    C-CONT [ RELS <! !>, 
-             HCONS <! !>,
-             ICONS <! info-str & #icons & [ IARG1 #clause, IARG2 #index ] !> ],
+    C-CONT [ RELS 0-alist, 
+             HCONS 0-alist,
+             ICONS.LIST < info-str & #icons & [ IARG1 #clause, IARG2 #index ] > ],
     HEAD-DTR.SYNSEM.LOCAL [ CAT [ MC -, HEAD verb ],
                             CONT.HOOK [ INDEX #clause,
                                         CLAUSE-KEY #clause ] ],
@@ -445,7 +445,7 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
         if pos == 'clause-initial' or infostr_type == 'topic-first':
             if wo == 'sov':
                 ph_types['comp-head-phrase'] = 'comp-head-phrase := [ SYNSEM.L-PERIPH -, HEAD-DTR.SYNSEM.L-PERIPH - ].'
-                ph_types['subj-head-phrase'] = 'subj-head-phrase := [ SYNSEM [ LOCAL.CAT.MC +, NON-LOCAL.SLASH 0-dlist ], HEAD-DTR.SYNSEM.L-PERIPH - ].'
+                ph_types['subj-head-phrase'] = 'subj-head-phrase := [ SYNSEM [ LOCAL.CAT.MC +, NON-LOCAL.SLASH 0-alist ], HEAD-DTR.SYNSEM.L-PERIPH - ].'
                 ph_types['subj-head-nmc-phrase'] = subj_head_nmc_phrase.replace('$', infostr_in_flr)
                 ph_rules['subj-head-nmc-phrase'] = 'subj-head-nmc'
                 # if infostr_type != 'topic-first':
@@ -458,7 +458,7 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
             elif wo == 'svo':
                 ph_types['basic-head-1st-comp-phrase'] = 'basic-head-1st-comp-phrase :+ [ SYNSEM.L-PERIPH - ].'
                 ph_types['head-comp-phrase'] = 'head-comp-phrase := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].'
-                ph_types['subj-head-phrase'] = 'subj-head-phrase := [ SYNSEM [ LOCAL.CAT.MC +, NON-LOCAL.SLASH 0-dlist ], HEAD-DTR.SYNSEM.L-PERIPH - ].'
+                ph_types['subj-head-phrase'] = 'subj-head-phrase := [ SYNSEM [ LOCAL.CAT.MC +, NON-LOCAL.SLASH 0-alist ], HEAD-DTR.SYNSEM.L-PERIPH - ].'
                 ph_types['subj-head-nmc-phrase'] = subj_head_nmc_phrase.replace('$', infostr_in_flr)
                 ph_rules['subj-head-nmc-phrase'] = 'subj-head-nmc'
                 # if infostr_type != 'topic-first':
@@ -470,7 +470,7 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
                 ph_types['head-comp-nmc-phrase'] = head_comp_nmc_phrase.replace('$', infostr_in_flr)
                 ph_rules['head-comp-nmc-phrase'] = 'head-comp-nmc'
                 tdl = """extracted-subj-phrase := basic-extracted-subj-phrase &
-                 [ C-CONT [ RELS <! !>, HCONS <! !>, ICONS <! !> ],
+                 [ C-CONT [ RELS 0-alist, HCONS 0-alist, ICONS 0-alist ],
                    HEAD-DTR.SYNSEM [ L-PERIPH -,
                                      LOCAL.CAT.VAL.COMPS < >,
                                      NON-LOCAL.SLASH.LIST < [ CONT.HOOK.ICONS-KEY $ ] > ] ]."""
@@ -487,7 +487,7 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
                 #   ph_rules['head-subj-phrase'] = 'head-subj'
             elif wo == 'ovs':
                 tdl = """extracted-subj-phrase := basic-extracted-subj-phrase &
-                 [ C-CONT [ RELS <! !>, HCONS <! !>, ICONS <! !> ],
+                 [ C-CONT [ RELS 0-alist, HCONS 0-alist, ICONS 0-alist ],
                    HEAD-DTR.SYNSEM [ L-PERIPH -,
                                      LOCAL.CAT.VAL.COMPS < >,
                                      NON-LOCAL.SLASH.LIST < [ CONT.HOOK.ICONS-KEY $ ] > ] ]."""
@@ -508,14 +508,14 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
         elif pos == 'clause-final':
             if wo == 'sov':
                 ph_types['basic-head-1st-comp-phrase'] = 'basic-head-1st-comp-phrase :+ [ HEAD-DTR.SYNSEM.R-PERIPH - ].'
-                ph_types['comp-head-phrase'] = 'comp-head-phrase := [ SYNSEM [ LOCAL.CAT.HC-LIGHT -, NON-LOCAL.SLASH 0-dlist ] ].'
+                ph_types['comp-head-phrase'] = 'comp-head-phrase := [ SYNSEM [ LOCAL.CAT.HC-LIGHT -, NON-LOCAL.SLASH 0-alist ] ].'
                 ph_types['comp-head-nmc-phrase'] = comp_head_nmc_phrase.replace('$', infostr_in_flr)
                 ph_rules['comp-head-nmc-phrase'] = 'comp-head-nmc'
                 ph_types['subj-head-nmc-phrase'] = subj_head_nmc_phrase.replace('$', infostr_in_flr)
                 ph_rules['subj-head-nmc-phrase'] = 'subj-head-nmc'
-                ph_types['subj-head-phrase'] = 'subj-head-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH 0-dlist ].'
+                ph_types['subj-head-phrase'] = 'subj-head-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH 0-alist ].'
                 tdl = """extracted-subj-phrase := basic-extracted-subj-phrase &
-                 [ C-CONT [ RELS <! !>, HCONS <! !>, ICONS <! !> ],
+                 [ C-CONT [ RELS 0-alist, HCONS 0-alist, ICONS 0-alist ],
                    HEAD-DTR.SYNSEM [ R-PERIPH -,
                                      LOCAL.CAT.VAL.COMPS < >,
                                      NON-LOCAL.SLASH.LIST < [ CONT.HOOK.ICONS-KEY $ ] > ] ]."""
@@ -523,14 +523,14 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
                 ph_rules['extracted-subj-phrase'] = 'extracted-subj'
             elif wo == 'svo':
                 ph_types['basic-head-1st-comp-phrase'] = 'basic-head-1st-comp-phrase :+ [ HEAD-DTR.SYNSEM.R-PERIPH - ].'
-                ph_types['head-comp-phrase'] = 'head-comp-phrase := [ SYNSEM.NON-LOCAL.SLASH 0-dlist, HEAD-DTR.SYNSEM.R-PERIPH - ].'
+                ph_types['head-comp-phrase'] = 'head-comp-phrase := [ SYNSEM.NON-LOCAL.SLASH 0-alist, HEAD-DTR.SYNSEM.R-PERIPH - ].'
                 ph_types['head-comp-nmc-phrase'] = head_comp_nmc_phrase.replace('$', infostr_in_flr)
                 ph_rules['head-comp-nmc-phrase'] = 'head-comp-nmc'
                 #ph_types['comp-head-phrase'] = comp_head_phrase.replace('$', infostr)
                 #ph_rules['comp-head-phrase'] = 'comp-head'
-                ph_types['subj-head-phrase'] = 'subj-head-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH 0-dlist ].'
+                ph_types['subj-head-phrase'] = 'subj-head-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH 0-alist ].'
                 tdl = """extracted-subj-phrase := basic-extracted-subj-phrase &
-                 [ C-CONT [ RELS <! !>, HCONS <! !>, ICONS <! !> ],
+                 [ C-CONT [ RELS 0-alist, HCONS 0-alist, ICONS 0-alist ],
                    HEAD-DTR.SYNSEM [ R-PERIPH -,
                                      LOCAL.CAT.VAL.COMPS < >,
                                      NON-LOCAL.SLASH.LIST < [ CONT.HOOK.ICONS-KEY $ ] > ] ]."""
@@ -551,7 +551,7 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
                 ph_types['basic-head-1st-comp-phrase'] = 'basic-head-1st-comp-phrase :+ [ HEAD-DTR.SYNSEM.R-PERIPH - ].'
                 ph_types['head-subj-nmc-phrase'] = head_subj_nmc_phrase.replace('$', infostr_in_flr)
                 ph_rules['head-subj-nmc-phrase'] = 'head-subj-nmc'
-                ph_types['head-comp-phrase'] = 'head-comp-phrase := [ SYNSEM.NON-LOCAL.SLASH 0-dlist ].'
+                ph_types['head-comp-phrase'] = 'head-comp-phrase := [ SYNSEM.NON-LOCAL.SLASH 0-alist ].'
             elif wo == 'osv':
                 ph_types['basic-head-1st-comp-phrase'] = 'basic-head-1st-comp-phrase :+ [ HEAD-DTR.SYNSEM.R-PERIPH - ].'
                 ph_types['subj-head-nmc-phrase'] = subj_head_nmc_phrase.replace('$', infostr_in_flr)
@@ -564,12 +564,12 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
                 #         [ SYNSEM.R-PERIPH +,
                 #           HEAD-DTR.SYNSEM [ R-PERIPH +,
                 #                             LOCAL.CONT.HOOK.ICONS-KEY $,
-                #                             NON-LOCAL.SLASH 0-dlist ] ]."""
+                #                             NON-LOCAL.SLASH d-alist ] ]."""
                 #ph_types['subj-head-phrase'] = tdl.replace('$', infostr)
                 #ph_rules['subj-head-phrase'] = 'subj-head'
                 ph_types['head-subj-nmc-phrase'] = head_subj_nmc_phrase.replace('$', infostr_in_flr)
                 ph_rules['head-subj-nmc-phrase'] = 'head-subj-nmc'
-                ph_types['comp-head-phrase'] = 'comp-head-phrase := [ SYNSEM [ R-PERIPH -, NON-LOCAL.SLASH 0-dlist ] ].'
+                ph_types['comp-head-phrase'] = 'comp-head-phrase := [ SYNSEM [ R-PERIPH -, NON-LOCAL.SLASH 0-alist ] ].'
 
             else:
                 pass
@@ -950,7 +950,7 @@ def customize_information_structure_marker(mylang, ch, rules, irules, lexicon, t
                                                                    CONT.HOOK [ INDEX #target,
                                                                                ICONS-KEY #icons] ] ] > ],
                                       VAL [ SUBJ < >, COMPS < >, SPR < >, SPEC < > ] ],
-                                CONT.ICONS <! #icons & [ IARG2 #target ] !> ] ]."""
+                                CONT.ICONS.LIST < #icons & [ IARG2 #target ] > ] ]."""
 
             tdl = tdl.replace('$', _light)
             add_lextypes(mylang, tdl)
@@ -986,10 +986,10 @@ def customize_information_structure_marker(mylang, ch, rules, irules, lexicon, t
                 lexicon.add(tdl1)
                 lexicon.add(tdl2)
                 grdef1 = modifier1 +'_gr := arg0e_gtr & \
-                        [ CONTEXT [ RELS <! [ PRED "non_existing_rel" ] !> ], \
+                        [ CONTEXT [ RELS.LIST < [ PRED "non_existing_rel" ] > ], \
                           FLAGS.TRIGGER "' + modifier1 + '" ].'
                 grdef2 = modifier2 +'_gr := arg0e_gtr & \
-                        [ CONTEXT [ RELS <! [ PRED "non_existing_rel" ] !> ], \
+                        [ CONTEXT [ RELS.LIST < [ PRED "non_existing_rel" ] > ], \
                           FLAGS.TRIGGER "' + modifier2 + '" ].'
                 trigger.add(grdef1)
                 trigger.add(grdef2)
@@ -1001,7 +1001,7 @@ def customize_information_structure_marker(mylang, ch, rules, irules, lexicon, t
                 lexicon.add_literal(';;; Modifiers of expressing information structure')
                 lexicon.add(tdl)
                 grdef = modifier +'_gr := arg0e_gtr & \
-                        [ CONTEXT [ RELS <! [ PRED "non_existing_rel" ] !> ], \
+                        [ CONTEXT [ RELS.LIST < [ PRED "non_existing_rel" ] > ], \
                           FLAGS.TRIGGER "' + modifier + '" ].'
                 trigger.add(grdef)
 
@@ -1026,7 +1026,7 @@ def customize_infostr_adpositions(mylang, lexicon, trigger, ch):
                                      COMPS < #comps & [ LOCAL.CONT.HOOK.INDEX #target ] >, \
                                      SPEC < > ] ], \
                          CONT [ HOOK.ICONS-KEY #icons, \
-			        ICONS <! #icons & [ IARG2 #target ] !> ] ],\
+			        ICONS.LIST < #icons & [ IARG2 #target ] > ] ],\
           ARG-ST < #comps & [ LOCAL.CAT [ HEAD noun, \
                                           VAL.SPR < > ] ] > ].'
     mylang.add(typedef)
@@ -1087,13 +1087,13 @@ def customize_infostr_adpositions(mylang, lexicon, trigger, ch):
         lexicon.add(typedef)
 
         grdef1 = adp_type +'_gr_1 := arg0e_gtr & \
-                    [ CONTEXT [ RELS <!  [ ARG1 individual & #i ] !> ], \
+                    [ CONTEXT [ RELS.LIST <  [ ARG1 individual & #i ] > ], \
                       FLAGS [ SUBSUME < #i >, TRIGGER "' + adp_type + '" ] ].'
         grdef2 = adp_type +'_gr_2 := arg0e_gtr & \
-                      [ CONTEXT [ RELS <!  [ ARG2 individual & #i ] !> ], \
+                      [ CONTEXT [ RELS.LIST <  [ ARG2 individual & #i ] > ], \
                         FLAGS [ SUBSUME < #i >, TRIGGER "' + adp_type + '" ] ].'
         grdef3 = adp_type +'_gr_3 := arg0e_gtr & \
-                      [ CONTEXT [ RELS <!  [ ARG3 individual & #i ] !> ], \
+                      [ CONTEXT [ RELS.LIST <  [ ARG3 individual & #i ] > ], \
                         FLAGS [ SUBSUME < #i >, TRIGGER "' + adp_type + '" ] ].'
         trigger.add(grdef1)
         trigger.add(grdef2)

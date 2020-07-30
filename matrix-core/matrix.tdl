@@ -178,15 +178,14 @@ expressed-non-canonical := non-canonical & expressed-synsem.
 
 gap := expressed-non-canonical &
   [ LOCAL #local,
-    NON-LOCAL [ REL 0-dlist,
-		QUE 0-dlist,
-		SLASH 1-dlist &
-		    [ LIST < #local > ] ] ].
+    NON-LOCAL [ REL.LIST < >,
+		        QUE.LIST < >,
+		        SLASH [ LIST < #local > ] ] ].
 
 unexpressed := synsem-min &
-  [ NON-LOCAL [ SLASH 0-dlist,
-		REL 0-dlist,
-		QUE 0-dlist ] ].
+  [ NON-LOCAL [ SLASH.LIST < >,
+		REL.LIST < >,
+		QUE.LIST < > ] ].
 
 unexpressed-reg := unexpressed & non-canonical.
 
@@ -227,14 +226,14 @@ intersective-mod := local.
 non-local-min := avm.
 
 non-local := non-local-min &
-  [ SLASH 0-1-dlist,
-    QUE 0-1-dlist,
-    REL 0-1-dlist ].
+  [ SLASH append-list,
+    QUE append-list,
+    REL append-list ].
 
 non-local-none := non-local &
-  [ SLASH 0-dlist & [ LIST < > ],
-    QUE 0-dlist,
-    REL 0-dlist ].
+  [ SLASH.LIST < >,
+    QUE.LIST < >,
+    REL.LIST < > ].
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;  CAT values
@@ -383,9 +382,9 @@ semsort := sort.
 ; CONT values
 ;
 ;   HOOK                   ; Externally visible attributes of a sign
-;   RELS diff-list         ; List of semantic relations
-;   HCONS diff-list        ; Scope constraints: list of qeq's
-;   ICONS diff-list        ; Individual constraints: list of icons
+;   RELS append-list         ; List of semantic relations
+;   HCONS append-list        ; Scope constraints: list of qeq's
+;   ICONS append-list        ; Individual constraints: list of icons
 
 mrs-min := avm.
 
@@ -396,9 +395,9 @@ mrs-min := avm.
 
 mrs := mrs-min &
   [ HOOK hook,
-    RELS diff-list,
-    HCONS diff-list,
-    ICONS diff-list ].
+    RELS append-list,
+    HCONS append-list,
+    ICONS append-list ].
 
 ; HOOK values include
 ;    GTOP                  ; Global top handle
@@ -453,7 +452,7 @@ ctxt-min := avm.
 
 ctxt := ctxt-min &
   [ ACTIVATED bool,
-    PRESUP diff-list ].
+    PRESUP append-list ].
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -833,9 +832,13 @@ null := 0-1-list.
 1-plus-list := cons &
   [ REST cons ].
 
-diff-list := avm &
-  [ LIST list,
-    LAST list ].
+; supertype for diff-lists and append-lists
+list-wrapper := avm &
+  [ LIST list ].
+
+; diff-lists for backward compatibility
+diff-list := list-wrapper &
+  [ LAST list ].
 
 0-1-dlist := diff-list &
   [ LIST 0-1-list ].
@@ -871,6 +874,77 @@ integer := atom.
 
 string := atom.
 
+; APPEND holds the lists to be appended
+; LIST holds the result of the append
+append-list := list-wrapper &
+  [ LIST #list,
+    APPEND list-of-alists & [ APPEND-RESULT #list ] ].
+
+; OZ 2020-02-18 needed for generation with ACE to work:
+append-diff-list := append-list & diff-list.
+
+; START is the start of the new list (result of append)
+list-of-alists := list &
+  [ APPEND-RESULT list ].
+
+; If there is at least one alist to be appended,
+; we need to create a copy (list-copy),
+; which becomes the beginning of the new list (#start),
+; and continues with the result of appending the rest (#middle).
+cons-of-alists := list-of-alists & cons &
+  [ FIRST append-list & [ LIST list-copy & [ NEW-LIST #start,
+					     END-LIST #middle ] ],
+    REST list-of-alists & [ APPEND-RESULT #middle ],
+    APPEND-RESULT #start ].
+
+; If there are no alists to be appended,
+; the result is an empty list.
+null-of-alists := list-of-alists & null &
+  [ APPEND-RESULT null ].
+
+; Copy a closed list to create an open list.
+; NEW-LIST is the start of the new list (with the same elements).
+; END-LIST is the open end of the new list.
+; This is effectively a diff-list, which can be appended.
+list-copy := list &
+  [ NEW-LIST list,
+    END-LIST list ].
+
+; If there is at least one thing in the old list,
+; create a pointer to the same element (#first),
+; continue the rest of the new list with the rest of the old (#rest),
+; and propagate the end of the list (#end).
+cons-copy := list-copy & cons &
+  [ FIRST #first,
+    REST list-copy & [ NEW-LIST #rest,
+		       END-LIST #end ],
+    NEW-LIST [ FIRST #first,
+	       REST #rest ],
+    END-LIST #end ].
+
+; If there is nothing in the old list,
+; the new list ends immediately.
+null-copy := list-copy & null &
+  [ NEW-LIST #end,
+    END-LIST #end ].
+
+; OZ: The 0-1-alist, 0-alist, and 1-alist types are discouraged.
+; They were created for the symmetry with the diff-list solution,
+; but it is best to not use them as they tend to lead to bugs.
+
+0-1-alist := append-list &
+  [ LIST 0-1-list ].
+
+0-alist := 0-1-alist &
+  [ LIST null ].
+
+1-alist := 0-1-alist &
+  [ LIST 1-list ].
+
+append-list-with-placeholder := append-list &
+  [ PLACEHOLDER.LIST < [ ] > ].
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Some useful kinds of lists
 
@@ -900,28 +974,20 @@ onull := olist & null.
 ; be problematic.
 
 ; SSH 2012-03-03 ICONS is newly added in lex-rule.
+
 lex-rule := phrase-or-lexrule & word-or-lexrule &
   [ NEEDS-AFFIX bool,
-    SYNSEM.LOCAL.CONT [ RELS [ LIST #first,
-			       LAST #last ],
-			HCONS [ LIST #hfirst,
-				LAST #hlast ],
-			ICONS [ LIST #ifirst,
-				LAST #ilast ] ],
+    SYNSEM.LOCAL.CONT [ RELS.APPEND < #r1, #r2 >,
+			HCONS.APPEND < #h1, #h2 >,
+			ICONS.APPEND < #i1, #i2 > ],
     DTR #dtr & word-or-lexrule &
-		[ SYNSEM.LOCAL.CONT [ RELS [ LIST #first,
-					     LAST #middle ],
-				      HCONS [ LIST #hfirst,
-					      LAST #hmiddle ],
-				      ICONS [ LIST #ifirst,
-					      LAST #imiddle ] ],
+		[ SYNSEM.LOCAL.CONT [ RELS #r1,
+				      HCONS #h1,
+				      ICONS #i1 ],
 		  ALTS #alts ],
-    C-CONT [ RELS [ LIST #middle,
-		    LAST #last ],
-	     HCONS [ LIST #hmiddle,
-		     LAST #hlast ],
-	     ICONS [ LIST #imiddle,
-		     LAST #ilast ] ],
+    C-CONT [ RELS #r2,
+	     HCONS #h2,
+	     ICONS #i2 ],
     ALTS #alts,
     ARGS < #dtr > ].
 
@@ -1025,10 +1091,10 @@ same-mc-lex-rule := lex-rule &
 
 ; SSH 2012-03-03
 no-rels-hcons-lex-rule := lex-rule &
-  [ C-CONT [ RELS <! !>, HCONS <! !>  ] ].
+  [ C-CONT [ RELS.LIST < >, HCONS.LIST < >  ] ].
 
 no-ccont-lex-rule := no-rels-hcons-lex-rule &
-  [ C-CONT.ICONS <! !> ].
+  [ C-CONT.ICONS.LIST < > ].
 
 ; ERB 2007-05-16 Realized I haven't been copying up MODIFIED
 ; and LIGHT.  Fixing that.
@@ -1244,7 +1310,7 @@ infl-val-change-only-lex-rule := val-change-only-lex-rule &
 infl-add-only-lex-rule := add-only-rule & infl-lex-rule.
 
 infl-add-only-no-rels-hcons-lex-rule := add-only-rule & infl-lex-rule &
-  [ C-CONT [ RELS <! !>, HCONS <! !> ] ].
+  [ C-CONT [ RELS.LIST < >, HCONS.LIST < > ] ].
 
 infl-add-only-no-ccont-lex-rule := add-only-no-ccont-rule &
                                    infl-lex-rule.
@@ -1281,7 +1347,7 @@ const-val-change-only-lex-rule := val-change-only-lex-rule &
 const-add-only-lex-rule := add-only-rule & const-lex-rule.
 
 const-add-only-no-rels-hcons-lex-rule := add-only-rule & const-lex-rule &
-  [ C-CONT [ RELS <! !>, HCONS <! !> ] ].
+  [ C-CONT [ RELS.LIST < >, HCONS.LIST < > ] ].
 
 const-add-only-no-ccont-lex-rule := add-only-no-ccont-rule & const-lex-rule.
 
@@ -1377,66 +1443,46 @@ head-valence-phrase := head-nexus-phrase &
 ; All phrases are either unary or binary.
 
 ; SSH 2012-02-16 ICONS in basic-unary-phrase and basic-binary-phrase.
+
 basic-unary-phrase := phrase &
   [ STEM #stem,
     SYNSEM [ L-PERIPH #lperiph,
 	     R-PERIPH #rperiph,
 	     LOCAL [ CAT.MKG #mkg,
-		     CONT [ RELS [ LIST #first,
-				   LAST #last ],
-			    HCONS [ LIST #scfirst,
-				    LAST #sclast ],
-			    ICONS [ LIST #icfirst,
-				    LAST #iclast ] ] ] ],
-    C-CONT [ RELS [ LIST #middle,
-		    LAST #last ],
-	     HCONS [ LIST #scmiddle,
-		     LAST #sclast ],
-	     ICONS [ LIST #icmiddle,
-		     LAST #iclast ] ],
+		     CONT [ RELS.APPEND < #r1, #r2 >,
+			    HCONS.APPEND < #h1, #h2 >,
+			    ICONS.APPEND < #i1, #i2 > ] ] ],
+    C-CONT [ RELS #r1,
+	     HCONS #h1,
+	     ICONS #i1 ],
     ARGS < sign & [ STEM #stem,
 		    SYNSEM [ L-PERIPH #lperiph,
 			     R-PERIPH #rperiph,
 			     LOCAL local &
 			      [ CAT.MKG #mkg,
-				CONT [ RELS [ LIST #first,
-					      LAST #middle ],
-				       HCONS [ LIST #scfirst,
-					       LAST #scmiddle ],
-				       ICONS [ LIST #icfirst,
-					       LAST #icmiddle ] ] ] ] ] > ].
+				     CONT [ RELS #r2,
+					    HCONS #h2,
+					    ICONS #i2 ] ] ] ] > ].
 
 unary-phrase := basic-unary-phrase &
   [ INFLECTED infl-satisfied,
     ARGS < [ INFLECTED infl-satisfied ] > ].
 
 basic-binary-phrase := phrase &
-  [ SYNSEM.LOCAL.CONT [ RELS [ LIST #first,
-                               LAST #last ],
-            HCONS [ LIST #scfirst,
-                    LAST #sclast ],
-            ICONS [ LIST #icfirst,
-                    LAST #iclast ] ],
-    C-CONT [ RELS [ LIST #middle2,
-                    LAST #last ],
-         HCONS [ LIST #scmiddle2,
-                 LAST #sclast ],
-         ICONS [ LIST #icmiddle2,
-                 LAST #iclast ] ],
+  [ SYNSEM.LOCAL [ CONT [ RELS.APPEND < #r1, #r2, #r3 >,
+			HCONS.APPEND < #h1, #h2, #h3 >,
+			ICONS.APPEND < #i1, #i2, #i3 > ] ],
+    C-CONT [ RELS #r1,
+	     HCONS #h1,
+	     ICONS #i1 ],
     ARGS < sign & [ SYNSEM.LOCAL local &
-                 [ CONT [ RELS [ LIST #first,
-                                 LAST #middle1 ],
-                      HCONS [ LIST #scfirst,
-                              LAST #scmiddle1 ],
-                      ICONS [ LIST #icfirst,
-                              LAST #icmiddle1 ] ] ] ],
+				 [ CONT [ RELS #r2,
+					  HCONS #h2,
+					  ICONS #i2 ] ] ],
        sign & [ SYNSEM.LOCAL local &
-                 [ CONT [ RELS [ LIST #middle1,
-                                 LAST #middle2 ],
-                      HCONS [ LIST #scmiddle1,
-                              LAST #scmiddle2 ],
-                      ICONS [ LIST #icmiddle1,
-                              LAST #icmiddle2 ] ] ] ] > ].
+				 [ CONT [ RELS #r3,
+					  HCONS #h3,
+					  ICONS #i3 ] ] ] > ].
 
 binary-phrase := basic-binary-phrase &
   [ INFLECTED infl-satisfied,
@@ -1456,40 +1502,24 @@ binary-headed-phrase := basic-binary-headed-phrase & binary-phrase.
 ; to show the duration of the non-manual.)
 
 basic-ternary-phrase := phrase &
-  [ SYNSEM.LOCAL.CONT [ RELS [ LIST #first,
-                               LAST #last ],
-            HCONS [ LIST #scfirst,
-                    LAST #sclast ],
-            ICONS [ LIST #icfirst,
-                    LAST #iclast ] ],
-    C-CONT [ RELS [ LIST #middle3,
-                    LAST #last ],
-         HCONS [ LIST #scmiddle3,
-                 LAST #sclast ],
-         ICONS [ LIST #icmiddle3,
-                 LAST #iclast ] ],
-    ARGS <
+  [ SYNSEM.LOCAL.CONT [ RELS.APPEND < #r1, #r2, #r3, #r4 >,
+			HCONS.APPEND < #h1, #h2, #h3, #h4 >,
+			ICONS.APPEND < #i1, #i2, #i3, #i4 > ],
+    C-CONT [ RELS #r1,
+	     HCONS #h1,
+	     ICONS #i1 ],
+    ARGS < sign & [ SYNSEM.LOCAL local &
+				 [ CONT [ RELS #r2,
+					  HCONS #h2,
+					  ICONS #i2 ] ] ],
         sign & [ SYNSEM.LOCAL local &
-                 [ CONT [ RELS [ LIST #first,
-                                 LAST #middle1 ],
-                      HCONS [ LIST #scfirst,
-                              LAST #scmiddle1 ],
-                      ICONS [ LIST #icfirst,
-                              LAST #icmiddle1 ] ] ] ],
+				 [ CONT [ RELS #r3,
+					  HCONS #h3,
+					  ICONS #i3 ] ] ],
         sign & [ SYNSEM.LOCAL local &
-                 [ CONT [ RELS [ LIST #middle1,
-                                 LAST #middle2 ],
-                      HCONS [ LIST #scmiddle1,
-                              LAST #scmiddle2 ],
-                      ICONS [ LIST #icmiddle1,
-                              LAST #icmiddle2 ] ] ] ],
-        sign & [ SYNSEM.LOCAL local &
-                 [ CONT [ RELS [ LIST #middle2,
-                                 LAST #middle3 ],
-                      HCONS [ LIST #scmiddle2,
-                              LAST #scmiddle3 ],
-                      ICONS [ LIST #icmiddle2,
-                              LAST #icmiddle3 ] ] ] ]> ].
+				 [ CONT [ RELS #r4,
+					  HCONS #h4,
+					  ICONS #i4 ] ] ] > ].
 
 ternary-phrase := basic-ternary-phrase &
   [ INFLECTED infl-satisfied,
@@ -1596,7 +1626,7 @@ head-compositional := headed-phrase &
 ; clauses, under current analysis.
 
 clause := phrasal &
-  [ SYNSEM.NON-LOCAL.QUE 0-dlist ].
+  [ SYNSEM.NON-LOCAL.QUE.LIST < > ].
 
 
 ; The following subtypes of clause will need more constraints,
@@ -1642,14 +1672,14 @@ clause := phrasal &
 ; SSH 2012-05-07 ICONS <! !>
 ; SSH 2014-11-26 CLAUSE -> IARG1
 basic-non-rel-clause := clause & head-compositional &
-  [ SYNSEM.NON-LOCAL.REL 0-dlist,
+  [ SYNSEM.NON-LOCAL.REL.LIST < >,
     HEAD-DTR.SYNSEM [ LOCAL.CONT.HOOK [ INDEX #index,
 					ICONS-KEY.IARG1 #index,
 					CLAUSE-KEY #index ],
-		      NON-LOCAL [ QUE 0-dlist,
-				  REL 0-dlist ] ],
-    C-CONT [ RELS <! !>,
-	     HCONS <! !> ] ].
+		      NON-LOCAL [ REL.LIST < >,
+		                  QUE.LIST < > ] ],
+    C-CONT [ RELS.LIST < >,
+	     HCONS.LIST < > ] ].
 
 ; For non-interrogative non-rel clauses, hook up
 ; MARG to head daughter's LTOP.  Subtypes will need
@@ -1698,7 +1728,7 @@ basic-non-rel-clause := clause & head-compositional &
 
 interrogative-clause := basic-non-rel-clause &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques,
-    C-CONT [ RELS <! !>, HCONS <! !>, ICONS <! !> ] ].
+    C-CONT [ RELS.LIST < >, HCONS.LIST < >, ICONS.LIST < > ] ].
 
 declarative-clause := basic-non-rel-clause &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF prop-or-ques ].
@@ -1717,20 +1747,17 @@ imperative-clause := basic-non-rel-clause &
 basic-filler-phrase := binary-phrase & phrasal &
   [ SYNSEM [ LOCAL.CAT.VAL [ COMPS < >,
                              SPR < > ],
-	     NON-LOCAL.SLASH 0-dlist ],
+	     NON-LOCAL.SLASH.LIST < > ],
     ARGS < [ SYNSEM [ LOCAL #slash & local &
 			    [ CAT.VAL [ SUBJ olist,
 					COMPS olist,
 					SPR olist ],
 			      CTXT.ACTIVATED + ],
-		      NON-LOCAL.SLASH 0-dlist ] ],
+		      NON-LOCAL.SLASH.LIST < > ] ],
 	   [ SYNSEM [ LOCAL.CAT [ VAL.COMPS olist ],
-		      NON-LOCAL [ SLASH 1-dlist &
-					[ LIST [ FIRST #slash,
-						 REST < > & #last ],
-					  LAST #last ],
-				  QUE 0-dlist,
-				  REL 0-dlist ] ] ] > ].
+		      NON-LOCAL [ SLASH [ LIST < #slash > ],
+				  REL.LIST < >,
+				  QUE.LIST < > ] ] ] > ].
 
 ; ASF 2011-10-05 changed supertype 'headed-phrase' to more specific 'head-compostional'
 ; in order to make sure matrix.tdl provides the right semantics.
@@ -1741,20 +1768,17 @@ basic-head-filler-phrase := basic-filler-phrase & head-compositional.
 nc-filler-phrase := binary-phrase & phrasal &
   [ SYNSEM [ LOCAL.CAT.VAL [ COMPS < >,
                              SPR < > ],
-	     NON-LOCAL.SLASH 0-dlist ],
+	     NON-LOCAL.SLASH.LIST < > ],
     ARGS <  [ SYNSEM [ LOCAL.CAT [ VAL.COMPS olist ],
-		       NON-LOCAL [ SLASH 1-dlist &
-					 [ LIST [ FIRST #slash,
-						  REST < > & #last ],
-					   LAST #last ],
-				   QUE 0-dlist,
-				   REL 0-dlist ] ] ],
+		       NON-LOCAL [ SLASH [ LIST < #slash > ],
+				   QUE.LIST < >,
+				   REL.LIST < > ] ] ],
 	    [ SYNSEM [ LOCAL #slash & local &
 			     [ CAT.VAL [ SUBJ olist,
 					 COMPS olist,
 					 SPR olist ],
 			       CTXT.ACTIVATED + ],
-		       NON-LOCAL.SLASH 0-dlist ] ] > ].
+		       NON-LOCAL.SLASH.LIST < > ] ] > ].
 
 nc-head-filler-phrase := nc-filler-phrase & head-compositional.
 
@@ -1809,10 +1833,10 @@ basic-head-subj-phrase := head-valence-phrase & head-compositional &
            [ LOCAL [ CAT [ VAL [ SUBJ olist,
                                  COMPS olist,
                                  SPR olist ] ] ],
-             NON-LOCAL [ SLASH 0-dlist & [ LIST < > ],
-                         REL 0-dlist,
-                         QUE 0-dlist ] ],
-    C-CONT [ RELS <! !>, HCONS <! !>, ICONS <! !> ] ].
+             NON-LOCAL [ SLASH.LIST < >,
+             		 QUE.LIST < >,
+                         REL.LIST < > ] ],
+    C-CONT [ RELS.LIST < >, HCONS.LIST < >, ICONS.LIST < > ] ].
 
 decl-head-subj-phrase := basic-head-subj-phrase & declarative-clause.
 imp-head-subj-phrase := basic-head-subj-phrase & imperative-clause.
@@ -1832,15 +1856,15 @@ basic-head-subj-nmc-phrase := head-valence-phrase & basic-binary-headed-phrase &
        [ LOCAL.CAT.VAL [ SUBJ < #synsem >,
                          COMPS < [ LOCAL #slash ] >,
                          SPR #spr ],
-         NON-LOCAL.SLASH 1-dlist & [ LIST < #slash > ] ],
+         NON-LOCAL.SLASH [ LIST < #slash > ] ],
     NON-HEAD-DTR.SYNSEM #synsem & canonical-synsem &
        [ LOCAL [ CAT [ VAL [ SUBJ olist,
                              COMPS olist,
                              SPR olist ] ] ],
-         NON-LOCAL [ SLASH 0-dlist & [ LIST < > ],
-                     REL 0-dlist,
-                     QUE 0-dlist ] ],
-    C-CONT [ RELS <! !>, HCONS <! !>, ICONS <! !> ] ].
+         NON-LOCAL [ SLASH.LIST < >,
+                     REL.LIST < >,
+                     QUE.LIST < > ] ],
+    C-CONT [ RELS.LIST < >, HCONS.LIST < >, ICONS.LIST < > ] ].
 
 
 ; ERB 2004-08-26 Remove [MC na] on both daughters; probably specific
@@ -1877,7 +1901,7 @@ basic-head-spec-phrase-super := head-valence-phrase & phrasal &
                                     MODIFIED #hmodif ] >,
                            COMPS #spcomps ] ] ],
        MODIFIED #modif ],
-    C-CONT [ RELS <! !>, HCONS <! !>, ICONS <! !> ] ].
+    C-CONT [ RELS.LIST < >, HCONS.LIST < >, ICONS.LIST < > ] ].
 
 basic-head-spec-phrase := basic-head-spec-phrase-super &
   [ NON-HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK #hook,
@@ -1909,7 +1933,7 @@ basic-head-comp-phrase := head-valence-phrase & head-compositional &
                                   HC-LIGHT #light,
                                   POSTHEAD #ph ]],
     NON-HEAD-DTR.SYNSEM canonical-synsem,
-    C-CONT [ RELS <! !>, HCONS <! !>, ICONS <! !> ] ].
+    C-CONT [ RELS.LIST < >, HCONS.LIST < >, ICONS.LIST < > ] ].
 
 
 ; ERB 2004-12-14 This is what used to be called basic-head-comp-phrase.
@@ -1946,9 +1970,9 @@ basic-head-comp-nmc-phrase := head-valence-phrase & head-compositional &
                            SPR #spr ],
                      HC-LIGHT #light,
                      POSTHEAD #ph ],
-         NON-LOCAL.SLASH 1-dlist & [ LIST < #slash > ] ],
+         NON-LOCAL.SLASH [ LIST < #slash > ] ],
     NON-HEAD-DTR.SYNSEM canonical-synsem,
-    C-CONT [ RELS <! !>, HCONS <! !>, ICONS <! !> ] ].
+    C-CONT [ RELS.LIST < >, HCONS.LIST < >, ICONS.LIST < > ] ].
 
 
 ; Skip an optional complement as long as there is still another obligatory
@@ -1996,10 +2020,10 @@ basic-head-opt-comp-phrase := head-valence-phrase & head-only &
 				      POSTHEAD #ph ],
 				CONT.HOOK.INDEX event ],
 			MODIFIED #mod ] ],
-    C-CONT [ RELS <! !>,
-	     HCONS <! !>,
-	     ICONS <! #ikey & non-focus & [ IARG1 #ckey,
-					    IARG2 #index ] !> ] ].
+    C-CONT [ RELS.LIST < >,
+	     HCONS.LIST < >,
+	     ICONS.LIST < #ikey & non-focus & [ IARG1 #ckey,
+					    IARG2 #index ] > ] ].
 
 
 ; ERB 2004-05-10 For languages that allow "pro-drop" of subjects.
@@ -2046,10 +2070,10 @@ basic-head-opt-subj-phrase := head-valence-phrase & head-only &
 				      POSTHEAD #ph ],
 				CONT.HOOK.INDEX event ],
 			MODIFIED #mod ] ],
-    C-CONT [ RELS <! !>,
-	     HCONS <! !>,
-	     ICONS <! #ikey & non-focus & [ IARG1 #ckey,
-					    IARG2 #index ] !> ] ].
+    C-CONT [ RELS.LIST < >,
+	     HCONS.LIST < >,
+	     ICONS.LIST < #ikey & non-focus & [ IARG1 #ckey,
+					    IARG2 #index ] > ] ].
 
 ; ERB 2007-01-21 Subtypes for declaratives and imperatives
 
@@ -2111,9 +2135,9 @@ basic-marker-comp-phrase := basic-binary-marker-phrase &
                                   REL #rel,
                                   QUE #que ] ],
     NON-MARKER-DTR.SYNSEM canonical-synsem & #synsem,
-    C-CONT [ RELS <! !>,
-	     HCONS <! !>,
-	     ICONS <! !> ] ].
+    C-CONT [ RELS.LIST < >,
+	     HCONS.LIST < >,
+	     ICONS.LIST < > ] ].
 
 
 
@@ -2157,13 +2181,13 @@ basic-bare-np-phrase := head-only & head-valence-phrase &
                                         COMPS < > ] ],
                             CONT.HOOK [ INDEX #index,
                                         LTOP #larg ] ],
-    C-CONT [ RELS <! quant-relation &
+    C-CONT [ RELS.LIST < quant-relation &
                      [ ARG0 #index,
-                       RSTR #harg ] !>,
-             HCONS <! qeq &
+                       RSTR #harg ] >,
+             HCONS.LIST < qeq &
                       [ HARG #harg,
-                        LARG #larg ] !>,
-             ICONS <! !>,
+                        LARG #larg ] >,
+             ICONS.LIST < >,
              HOOK [ INDEX #index ] ] ].
 
 ; Unary rules for extraction
@@ -2181,13 +2205,11 @@ basic-extracted-comp-phrase := basic-extracted-arg-phrase &
     HEAD-DTR [ SYNSEM
                [ LOCAL.CAT [ VAL [ SUBJ #subj,
                                    SPR #spr,
-                                   COMPS < gap & [ NON-LOCAL.SLASH #slash ]
-                                          . #comps > ],
-                             MC #mc ],
-                 NON-LOCAL.SLASH #slash ] ],
-    C-CONT [ RELS <! !>,
-             HCONS <! !>,
-             ICONS <! !> ] ].
+                                   COMPS < gap . #comps > ],
+                             MC #mc ] ] ],
+    C-CONT [ RELS.LIST < >,
+             HCONS.LIST < >,
+             ICONS.LIST < > ] ].
 
 ; ERB 2004-08-26 Remove [MC -] on mother; probably specific
 ; to analysis of subject extraction for English.
@@ -2204,9 +2226,10 @@ basic-extracted-subj-phrase := basic-extracted-arg-phrase & head-compositional &
                                         COMPS olist ],
                                   MC na ],
                       NON-LOCAL.SLASH.LIST < #local > ],
-    C-CONT [ RELS <! !>,
-             HCONS <! !>,
-             ICONS <! !> ] ].
+    C-CONT [ RELS.LIST < >,
+             HCONS.LIST < >,
+             ICONS.LIST < > ] ].
+
 
 ; ERB 2004-05-05 Allow modifiers to attach to things with
 ; non-empty comps lists.  The head-mod-phrase will pass up
@@ -2220,15 +2243,15 @@ head-mod-phrase := head-nexus-phrase &
     HEAD-DTR.SYNSEM [ LOCAL.CAT.VAL [ SUBJ #subj,
                                       SPR #spr,
                                       COMPS #comps ],
-                      NON-LOCAL [ REL 0-dlist ] ] ].
+                      NON-LOCAL [ REL.LIST < > ] ] ].
 
 basic-extracted-adj-phrase := head-mod-phrase & head-only & phrasal.
 
 extracted-adj-phrase := basic-extracted-adj-phrase &
   [ SYNSEM [ LOCAL.CAT [ POSTHEAD #ph,
                          MC #mc ],
-	     NON-LOCAL.SLASH 1-dlist &
-		   <! [ CAT [ HEAD [ MOD < [ LOCAL intersective-mod &
+	     NON-LOCAL.SLASH.LIST
+		   < [ CAT [ HEAD [ MOD < [ LOCAL intersective-mod &
                                                    [ CAT [ HEAD #head,
                                                            VAL #val,
                                                            POSTHEAD #ph,
@@ -2237,21 +2260,21 @@ extracted-adj-phrase := basic-extracted-adj-phrase &
                                                      CTXT #ctxt ] ] > ],
                               VAL [ SUBJ olist,
                                     COMPS olist,
-                                    SPR olist ] ] ] !> ],
+                                    SPR olist ] ] ] > ],
     HEAD-DTR.SYNSEM canonical-synsem &
 	   [ LOCAL local &
 		   [ CAT [ HEAD #head,
                            VAL #val & [ SUBJ < synsem-min &
-                                               [ NON-LOCAL.SLASH 0-dlist ] > ],
+                                               [ NON-LOCAL.SLASH.LIST < > ] > ],
 			   POSTHEAD #ph,
                            MC #mc ],
                      CONT.HOOK #hook,
                      CTXT #ctxt ],
-             NON-LOCAL.SLASH 0-dlist,
+             NON-LOCAL.SLASH.LIST < >,
 	     MODIFIED notmod ],
     C-CONT [ HOOK #hook,
-	     HCONS <! !>,
-	     ICONS <! !> ] ].
+	     HCONS.LIST < >,
+	     ICONS.LIST < > ] ].
 
 ; ERB 2004-05-10 Bug fix: non-head daughter's MOD..LIGHT value should
 ; be matched to head-daughters LIGHT value.
@@ -2261,10 +2284,9 @@ extracted-adj-phrase := basic-extracted-adj-phrase &
 ; adjectives out of optional subject constructions
 
 basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
-  [ SYNSEM [ LOCAL.CAT.MKG #mkg,
-             NON-LOCAL [ SLASH [ LIST #first,
-                                 LAST #last ],
-                         REL 0-dlist ] ],
+  [ SYNSEM [ LOCAL.CAT [ MKG #mkg ],
+             NON-LOCAL [ SLASH.APPEND < #s1, #s2 >,
+                         REL.LIST < > ] ],
     HEAD-DTR.SYNSEM
            [ LOCAL [ CAT [ HEAD #head,
                            VAL #val,
@@ -2275,8 +2297,7 @@ basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
                                            CLAUSE-KEY #clause ],
                      AGR #agr ],
              NON-LOCAL #nonloc &
-                   [ SLASH [ LIST #middle,
-                             LAST #last ] ],
+                   [ SLASH #s2 ],
              LIGHT #light,
              MODIFIED #modif ],
     NON-HEAD-DTR.SYNSEM
@@ -2296,10 +2317,8 @@ basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
                            MKG #mkg ],
                      CONT.HOOK [ ICONS-KEY.IARG1 #clause,
                      CLAUSE-KEY #clause ] ],
-             NON-LOCAL [ SLASH [ LIST #first,
-                                 LAST #middle ],
-                         QUE 0-dlist & [ LIST null ] ] ],
-    C-CONT [ RELS <! !>, ICONS <! !> ] ].
+             NON-LOCAL [ SLASH #s1 ] ],
+    C-CONT [ RELS.LIST < >, ICONS.LIST < > ] ].
 
 ;;;2011-11-07 removing head-mod-phrase-simple
 ;;;As pointed out by Bart Cramer, this does not add anything to
@@ -2317,8 +2336,8 @@ adj-head-phrase := basic-head-mod-phrase-simple & head-final &
                       LIGHT #light ],
     NON-HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL [ SPR olist,
     			  	      	    COMPS < > ] ],
-			  NON-LOCAL [ SLASH 0-dlist,
-				      REL 0-dlist ],
+			  NON-LOCAL [ SLASH.LIST < >,
+				      REL.LIST < > ],
                           MODIFIED.PERIPH #periph ] ].
 
 ;;; 2012-26-09 removed this constraint from head-adj-phrase
@@ -2331,7 +2350,7 @@ head-adj-phrase := basic-head-mod-phrase-simple & head-initial & phrasal &
   [ SYNSEM.MODIFIED rmod,
     NON-HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL.SPR olist,
                                       POSTHEAD + ],
-                          NON-LOCAL.QUE 0-dlist ] ].
+                          NON-LOCAL.QUE.LIST < > ] ].
 
 ; We split head-adj-phrase and adj-head-phrase into two each,
 ; one for intersective modifiers and one for scopal modifiers, in order to
@@ -2344,8 +2363,8 @@ scopal-mod-phrase := basic-head-mod-phrase-simple &
                                       HEAD.MOD < [ LOCAL scopal-mod ] > ],
                                 CONT.HOOK #hook ],
     C-CONT [ HOOK #hook,
-             HCONS <! !>,
-             ICONS <! !> ] ].
+             HCONS.LIST < >,
+             ICONS.LIST < > ] ].
 
 ; EKN 2018-02-23 Adding adv-list to use as constraint on SPR
 ; value non-head dtr of isect-mod-phrase, so that the SPR of
@@ -2372,13 +2391,13 @@ isect-mod-phrase := basic-head-mod-phrase-simple & head-compositional &
     NON-HEAD-DTR.SYNSEM.LOCAL [ CAT [ VAL.SPR adv-list,
                                       HEAD.MOD < [ LOCAL intersective-mod & [ CAT.MKG #mkg ] ] > ],
                                 CONT.HOOK.LTOP #hand ],
-    C-CONT [ HCONS <! !>,
-             ICONS <! !> ] ].
+    C-CONT [ HCONS.LIST < >,
+             ICONS.LIST < > ] ].
 
 adj-head-scop-phrase := adj-head-phrase & scopal-mod-phrase &
   [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.POSTHEAD - ].
 head-adj-scop-phrase := head-adj-phrase & scopal-mod-phrase &
-  [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.REL 0-dlist ].
+  [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.REL.LIST < > ].
 adj-head-int-phrase := adj-head-phrase & isect-mod-phrase &
   [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ POSTHEAD - ] ].
 head-adj-int-phrase := head-adj-phrase & isect-mod-phrase.
@@ -2474,30 +2493,30 @@ raise-index-mod-lex-item := norm-ltop-lex-item &
 ; have empty HCONS values.
 
 single-rel-lex-item := lex-item &
-  [ SYNSEM.LOCAL.CONT.RELS <! relation !> ].
+  [ SYNSEM.LOCAL.CONT.RELS.LIST < relation > ].
 
 no-hcons-lex-item := lex-item &
-  [ SYNSEM.LOCAL.CONT.HCONS <! !> ].
+  [ SYNSEM.LOCAL.CONT.HCONS.LIST < > ].
 
 ; SSH 2013-03-27
 no-rels-hcons-lex-item := no-hcons-lex-item &
-  [ SYNSEM.LOCAL.CONT.RELS <! !> ].
+  [ SYNSEM.LOCAL.CONT.RELS.LIST < > ].
 
 ; SSH 2012-03-03
 ; SSH 2012-05-07
 no-icons-lex-item := lex-item &
   [ SYNSEM.LOCAL [ CAT.MKG [ FC na, TP na ],
-	           CONT.ICONS <! !> ] ].
+	           CONT.ICONS.LIST < > ] ].
 
 no-rels-hcons-icons-lex-item := no-hcons-lex-item &
-  [ SYNSEM.LOCAL.CONT [ RELS <! !>, ICONS <! !> ] ].
+  [ SYNSEM.LOCAL.CONT [ RELS.LIST < >, ICONS.LIST < > ] ].
 
 ; SSH 2013-06-05 Now therer are two icons-lex-items (for embedded clauses).
-basic-icons-lex-item := lex-item & [ SYNSEM.LOCAL.CONT.ICONS <! !> ].
+basic-icons-lex-item := lex-item & [ SYNSEM.LOCAL.CONT.ICONS.LIST < > ].
 
-one-icons-lex-item := lex-item & [ SYNSEM.LOCAL.CONT.ICONS <! info-str & [ ] !> ].
+one-icons-lex-item := lex-item & [ SYNSEM.LOCAL.CONT.ICONS.LIST < info-str & [ ] > ].
 
-two-icons-lex-item := lex-item & [ SYNSEM.LOCAL.CONT.ICONS <! info-str & [ ], info-str & [ ] !> ].
+two-icons-lex-item := lex-item & [ SYNSEM.LOCAL.CONT.ICONS.LIST < info-str & [ ], info-str & [ ] > ].
 
 
 ; ERB 2005-05-11 Normal lex items don't introduce messages.
@@ -2526,7 +2545,7 @@ hcons-lex-item := norm-hook-lex-item & single-rel-lex-item.
 ; SSH 2012-03-03
 
 raise-sem-lex-item := no-hcons-lex-item &
-  [ SYNSEM.LOCAL [ CONT [ RELS <! !>,
+  [ SYNSEM.LOCAL [ CONT [ RELS.LIST < >,
 			  HOOK #hook ],
 		   CAT.VAL.COMPS < [ LOCAL.CONT.HOOK #hook ] , ... > ]].
 
@@ -2557,13 +2576,13 @@ basic-zero-arg := lex-item &
   [ ARG-ST < > ].
 
 zero-arg-nonslash := basic-zero-arg &
-  [ SYNSEM.NON-LOCAL.SLASH 0-dlist ].
+  [ SYNSEM.NON-LOCAL.SLASH.LIST < > ].
 
 zero-arg-nonrel := basic-zero-arg &
-  [ SYNSEM.NON-LOCAL.REL 0-dlist ].
+  [ SYNSEM.NON-LOCAL.REL.LIST < > ].
 
 zero-arg-nonque := basic-zero-arg &
-  [ SYNSEM.NON-LOCAL.QUE 0-dlist ].
+  [ SYNSEM.NON-LOCAL.QUE.LIST < > ].
 
 ; Non-argument taking items which introduce no non-local values.
 
@@ -2597,58 +2616,37 @@ zero-arg-slash := zero-arg-nonrel & zero-arg-nonque.
 
 basic-one-arg := lex-item &
   [ ARG-ST < [ NON-LOCAL [ SLASH #slash,
-                           REL #rel,
-                           QUE #que ] ] >,
+			   REL #rel,
+			   QUE #que ] ] >,
     SYNSEM.NON-LOCAL [ SLASH #slash,
-                       REL #rel,
-                       QUE #que ] ].
+		       REL #rel,
+		       QUE #que ] ].
 
 
 basic-two-arg := lex-item &
-  [ ARG-ST < [ NON-LOCAL [ SLASH [ LIST #smiddle,
-                                   LAST #slast ],
-                           REL [ LIST #rmiddle,
-                                 LAST #rlast ],
-                           QUE [ LIST #qmiddle,
-                                 LAST #qlast ] ] ],
-              [ NON-LOCAL [ SLASH [ LIST #sfirst,
-                                    LAST #smiddle ],
-                            REL [ LIST #rfirst,
-                                  LAST #rmiddle ],
-                            QUE [ LIST #qfirst,
-                                  LAST #qmiddle ] ] ] >,
-    SYNSEM.NON-LOCAL [ SLASH [ LIST #sfirst,
-                               LAST #slast ],
-                       REL [ LIST #rfirst,
-                             LAST #rlast ],
-                       QUE [ LIST #qfirst,
-                             LAST #qlast ] ] ].
+  [ ARG-ST < [ NON-LOCAL [ SLASH #s2,
+                           REL #r2,
+                           QUE #q2 ] ],
+	     [ NON-LOCAL [ SLASH #s1,
+			   REL #r1,
+			   QUE #q1 ] ] >,
+    SYNSEM.NON-LOCAL [ SLASH.APPEND < #s1, #s2 >,
+                       REL.APPEND < #r1, #r2 >,
+                       QUE.APPEND < #q1, #q2 > ] ].
 
 basic-three-arg := lex-item &
-  [ ARG-ST < [ NON-LOCAL [ SLASH [ LIST #smiddle2,
-                                   LAST #slast ],
-                           REL [ LIST #rmiddle2,
-                                 LAST #rlast ],
-                           QUE [ LIST #qmiddle2,
-                                 LAST #qlast ] ] ],
-             [ NON-LOCAL [ SLASH [ LIST #sfirst,
-                                   LAST #smiddle1 ],
-                           REL [ LIST #rfirst,
-                                 LAST #rmiddle1 ],
-                           QUE [ LIST #qfirst,
-                                 LAST #qmiddle1 ] ] ],
-             [ NON-LOCAL [ SLASH [ LIST #smiddle1,
-                                   LAST #smiddle2 ],
-                           REL [ LIST #rmiddle1,
-                                 LAST #rmiddle2 ],
-                           QUE [ LIST #qmiddle1,
-                                 LAST #qmiddle2 ] ] ] >,
-    SYNSEM.NON-LOCAL [ SLASH [ LIST #sfirst,
-                               LAST #slast ],
-                       REL [ LIST #rfirst,
-                             LAST #rlast ],
-                       QUE [ LIST #qfirst,
-                             LAST #qlast ] ] ].
+  [ ARG-ST < [ NON-LOCAL [ SLASH #s3,
+                           REL #r3,
+                           QUE #q3 ] ],
+             [ NON-LOCAL [ SLASH #s1,
+                           REL #r1,
+                           QUE #q1 ] ],
+             [ NON-LOCAL [ SLASH #s2,
+                           REL #r2,
+                           QUE #q2 ] ] >,
+    SYNSEM.NON-LOCAL [ SLASH.APPEND < #s1, #s2, #s3 >,
+                       REL.APPEND < #r1, #r2, #r3 >,
+                       QUE.APPEND < #q1, #q2, #q3 > ] ].
 
 ; ERB 2007-01-22  In the message-free universe, many more qeqs are
 ; introduced by lexical items (basically any head that selects a clausal
@@ -2800,9 +2798,9 @@ clausal-arg-intrans-lex-item := basic-one-arg & one-icons-lex-item &
    [ ARG-ST < [ LOCAL.CONT.HOOK [ LTOP #larg,
                                   INDEX #target ] ] >,
      SYNSEM [ LOCAL.CONT [ HOOK.CLAUSE-KEY #clause,
-                           HCONS <! qeq & [ HARG #harg,
-                                            LARG #larg ] !>,
-                           ICONS <! [ IARG1 #clause, IARG2 #target ] !> ],
+                           HCONS.LIST < qeq & [ HARG #harg,
+                                            LARG #larg ] >,
+                           ICONS.LIST < [ IARG1 #clause, IARG2 #target ] > ],
               LKEYS.KEYREL [ ARG1 #harg ] ] ].
 
 ; That Kim sleeps surprises Sandy.
@@ -2819,9 +2817,9 @@ clausal-first-arg-trans-lex-item := basic-two-arg & one-icons-lex-item &
                         CONT.HOOK [ INDEX ref-ind & #ind,
                                     ICONS-KEY.IARG1 #clause ] ] ]>,
      SYNSEM [ LOCAL.CONT [ HOOK.CLAUSE-KEY #clause,
-                           HCONS <! qeq & [ HARG #harg,
-                                            LARG #larg ] !>,
-               ICONS <! [ IARG1 #clause, IARG2 #target ] !> ],
+                           HCONS.LIST < qeq & [ HARG #harg,
+                                            LARG #larg ] >,
+               ICONS.LIST < [ IARG1 #clause, IARG2 #target ] > ],
                LKEYS.KEYREL [ ARG1 #harg,
                               ARG2 #ind ] ] ].
 
@@ -2841,9 +2839,9 @@ clausal-second-arg-trans-lex-item := basic-two-arg & one-icons-lex-item &
               [ LOCAL.CONT.HOOK [ LTOP #larg,
                                   INDEX #target ] ] >,
      SYNSEM [ LOCAL.CONT [ HOOK.CLAUSE-KEY #clause,
-                           HCONS <! qeq & [ HARG #harg,
-                                            LARG #larg ] !>,
-                           ICONS <! [ IARG1 #clause, IARG2 #target ] !> ],
+                           HCONS.LIST < qeq & [ HARG #harg,
+                                            LARG #larg ] >,
+                           ICONS.LIST < [ IARG1 #clause, IARG2 #target ] > ],
               LKEYS.KEYREL [ ARG1 #ind,
                              ARG2 #harg ] ] ].
 
@@ -2865,9 +2863,9 @@ clausal-third-arg-ditrans-lex-item := basic-three-arg & one-icons-lex-item &
               [ LOCAL.CONT.HOOK [ LTOP #larg,
                                   INDEX #target ] ] >,
      SYNSEM [ LOCAL.CONT [ HOOK.CLAUSE-KEY #clause,
-                           HCONS <! qeq & [ HARG #harg,
-                                            LARG #larg ] !>,
-                           ICONS <! [ IARG1 #clause, IARG2 #target ] !> ],
+                           HCONS.LIST < qeq & [ HARG #harg,
+                                            LARG #larg ] >,
+                           ICONS.LIST < [ IARG1 #clause, IARG2 #target ] > ],
                LKEYS.KEYREL [ ARG1 #ind1,
                               ARG2 #ind2,
                               ARG3 #harg ] ] ].
@@ -2889,9 +2887,9 @@ clausal-expl-arg-lex-item := basic-two-arg & one-icons-lex-item &
               [ LOCAL.CONT.HOOK [ LTOP #larg,
                                   INDEX #target ] ] >,
      SYNSEM [ LOCAL.CONT [ HOOK.CLAUSE-KEY #clause,
-                           HCONS <! qeq & [ HARG #harg,
-                                            LARG #larg ] !>,
-              ICONS <! [ IARG1 #clause, IARG2 #target ] !> ],
+                           HCONS.LIST < qeq & [ HARG #harg,
+                                            LARG #larg ] >,
+              ICONS.LIST < [ IARG1 #clause, IARG2 #target ] > ],
               LKEYS.KEYREL [ ARG1 #harg ] ] ].
 
 ; Kim seems to sleep; Kim is sleeping.
@@ -2924,9 +2922,9 @@ trans-first-arg-raising-lex-item-1 := trans-first-arg-raising-lex-item &
 				  ICONS-KEY.IARG1 #clause,
 				  CLAUSE-KEY #clause ] ] >,
      SYNSEM [ LOCAL.CONT [ HOOK.CLAUSE-KEY #clause,
-			   HCONS <! qeq &
+			   HCONS.LIST < qeq &
 				  [ HARG #harg,
-				    LARG #larg ] !> ],
+				    LARG #larg ] > ],
 	      LKEYS.KEYREL event-relation &
 			       [ ARG1 #harg ]]].
 
@@ -2953,8 +2951,8 @@ trans-first-arg-control-lex-item := basic-two-arg & basic-icons-lex-item &
 				  ICONS-KEY.IARG1 #clause,
 				  CLAUSE-KEY #clause ] ] >,
      SYNSEM [ LOCAL.CONT [ HOOK.CLAUSE-KEY #clause,
-			   HCONS <! qeq & [ HARG #harg,
-					    LARG #larg ] !> ],
+			   HCONS.LIST < qeq & [ HARG #harg,
+					    LARG #larg ] > ],
 	      LKEYS.KEYREL [ ARG1 #ind,
 			     ARG2 #harg ] ] ].
 
@@ -2977,8 +2975,8 @@ ditrans-first-arg-raising-lex-item := basic-three-arg & basic-icons-lex-item &
                               ICONS-KEY.IARG1 #clause,
                               CLAUSE-KEY #clause ] ] >,
      SYNSEM [ LOCAL.CONT [ HOOK.CLAUSE-KEY #clause,
-                           HCONS <! qeq & [ HARG #harg,
-                                            LARG #larg ] !> ],
+                           HCONS.LIST < qeq & [ HARG #harg,
+                                            LARG #larg ] > ],
               LKEYS.KEYREL [ ARG1 #ind2,
                              ARG2 #harg ] ] ].
 
@@ -3001,8 +2999,8 @@ ditrans-first-arg-control-lex-item := basic-three-arg & basic-icons-lex-item &
                                 ICONS-KEY.IARG1 #clause,
                                 CLAUSE-KEY #clause ] ] ]>,
      SYNSEM [ LOCAL.CONT [ HOOK.CLAUSE-KEY #clause,
-                           HCONS <! qeq & [ HARG #harg,
-                                            LARG #larg ] !> ],
+                           HCONS.LIST < qeq & [ HARG #harg,
+						LARG #larg ] > ],
               LKEYS.KEYREL [ ARG1 #ind1,
                              ARG2 #ind2,
                              ARG3 #harg ] ] ].
@@ -3026,8 +3024,8 @@ ditrans-second-arg-raising-lex-item := basic-three-arg & basic-icons-lex-item &
                                   ICONS-KEY.IARG1 #clause,
                                   CLAUSE-KEY #clause ] ] >,
      SYNSEM [ LOCAL.CONT [ HOOK.CLAUSE-KEY #clause,
-                           HCONS <! qeq & [ HARG #harg,
-                                            LARG #larg ] !> ],
+                           HCONS.LIST < qeq & [ HARG #harg,
+						LARG #larg ] > ],
               LKEYS.KEYREL [ ARG1 #ind1,
                              ARG2 #harg ] ] ].
 
@@ -3049,8 +3047,8 @@ ditrans-second-arg-control-lex-item := basic-three-arg & basic-icons-lex-item &
                               ICONS-KEY.IARG1 #clause,
                               CLAUSE-KEY #clause ] ] >,
      SYNSEM [ LOCAL.CONT [ HOOK.CLAUSE-KEY #clause,
-                           HCONS <! qeq & [ HARG #harg,
-                                            LARG #larg ] !> ],
+                           HCONS.LIST < qeq & [ HARG #harg,
+						LARG #larg ] > ],
               LKEYS.KEYREL [ ARG1 #ind1,
                              ARG2 #ind2,
                              ARG3 #harg ] ] ].
@@ -3091,9 +3089,9 @@ spr-plus-clausal-arg-lex-item := basic-two-arg & one-icons-lex-item &
 	      [ LOCAL.CONT.HOOK [ LTOP #larg,
 				  INDEX #target ] ] >,
      SYNSEM [ LOCAL.CONT [ HOOK.CLAUSE-KEY #clause,
-			   HCONS <! qeq & [ HARG #harg,
-					    LARG #larg ] !>,
-			   ICONS <! [ IARG1 #clause, IARG2 #target ] !> ],
+			   HCONS.LIST < qeq & [ HARG #harg,
+						LARG #larg ] >,
+			   ICONS.LIST < [ IARG1 #clause, IARG2 #target ] > ],
 	      LKEYS.KEYREL.ARG1 #harg ] ].
 
 ; Whether or not we need more types here is going to largely depend
@@ -3115,8 +3113,8 @@ spr-trans-first-arg-control-lex-item := basic-three-arg & basic-icons-lex-item &
 				  ICONS-KEY.IARG1 #clause,
 				  CLAUSE-KEY #clause ] ] >,
      SYNSEM [ LOCAL.CONT [ HOOK.CLAUSE-KEY #clause,
-			   HCONS <! qeq & [ HARG #harg,
-					    LARG #larg ] !> ],
+			   HCONS.LIST < qeq & [ HARG #harg,
+						LARG #larg ] > ],
 	      LKEYS.KEYREL [ ARG1 #ind,
 			     ARG2 #harg ] ] ].
 
@@ -3168,9 +3166,9 @@ basic-verb-lex := basic-verb-lex-super & norm-sem-lex-item &
 scopal-mod-lex := lex-item &
   [ SYNSEM [ LOCAL [ CAT.HEAD.MOD < [ LOCAL scopal-mod &
 					    [ CONT.HOOK.LTOP #larg ]] >,
-		     CONT.HCONS <! qeq &
+		     CONT.HCONS.LIST < qeq &
 				 [ HARG #harg,
-				   LARG #larg ] !> ],
+				   LARG #larg ] > ],
 	     LKEYS.KEYREL.ARG1 #harg ]].
 
 ; OZ 2019-05-23 The use of "intersective" below is incorrect; it should just be 
@@ -3272,7 +3270,7 @@ basic-nomod-adposition-lex := basic-adposition-lex & no-mod-lex & norm-hook-lex-
 ; TJT 2014-04-24 Removing raise-index-mod-lex-item from basic-adverb-lex:
 ; replacing with norm-ltop-lex-item. See below for more info.
 
-basic-adverb-lex := single-rel-lex-item & norm-ltop-lex-item & norm-zero-arg &
+basic-adverb-lex := single-rel-lex-item & norm-ltop-lex-item & norm-zero-arg & basic-icons-lex-item &
   [ SYNSEM [ LOCAL.CAT.HEAD adv,
              LKEYS.KEYREL event-relation ] ].
 
@@ -3309,10 +3307,10 @@ basic-determiner-lex := no-ltop-lex-item &
   [ SYNSEM [ LOCAL [ CAT [ HEAD det,
 			   VAL.SPEC.FIRST.LOCAL.CONT.HOOK [ INDEX #ind,
 							    LTOP #larg ]],
-		     CONT [ HCONS <! qeq &
-				   [ HARG #harg,
-				     LARG #larg ] !>,
-			    RELS <! relation !> ] ],
+		     CONT [ HCONS.LIST < qeq &
+					 [ HARG #harg,
+					   LARG #larg ] >,
+			    RELS.LIST < relation > ] ],
 	     LKEYS.KEYREL quant-relation &
 		   [ ARG0 #ind,
 		     RSTR #harg ] ] ].
@@ -3321,7 +3319,7 @@ basic-determiner-lex := no-ltop-lex-item &
 infostr-marking-determiner-lex := basic-determiner-lex & one-icons-lex-item &
   [ SYNSEM.LOCAL [ CAT.VAL.SPEC.FIRST.LOCAL.CONT.HOOK [ INDEX #target,
 							ICONS-KEY #icons ],
-		   CONT.ICONS <! info-str & #icons & [ IARG2 #target] !> ] ].
+		   CONT.ICONS.LIST < info-str & #icons & [ IARG2 #target] > ] ].
 
 
 ; Subordinating conjunctions take two clauses, one as an argument
@@ -3363,8 +3361,8 @@ infostr-marking-determiner-lex := basic-determiner-lex & one-icons-lex-item &
 basic-subord-conjunction-lex := basic-one-arg &
   [ ARG-ST < [ LOCAL.CONT.HOOK.LTOP #ltop1 ] >,
     SYNSEM [ LOCAL [ CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.LTOP #ltop2 ] >,
-		     CONT [ HCONS <! !>,
-			    RELS <! relation !>,
+		     CONT [ HCONS.LIST < >,
+			    RELS.LIST < relation >,
 			    HOOK [ LTOP #ltop ] ] ],
 	     LKEYS.KEYREL subord-relation &
 		   [ LBL #ltop,
@@ -3428,7 +3426,7 @@ nosem-conj-lex := basic-conj-lex &
                            VAL [ SPR < >,
                                  COMPS < >,
                                  SUBJ < > ]],
-                     CONT.RELS <! !> ]]].
+                     CONT.RELS.LIST < > ]]].
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Coordination phrases and rules
@@ -3473,8 +3471,8 @@ unary-bottom-coord-rule := bottom-coord-phrase & unary-phrase &
                    COORD +,
                    COORD-REL #crel ],
     C-CONT [ HOOK [ INDEX #rind ],
-	     RELS <! #crel !>,
-	     HCONS <! !> ],
+	     RELS.LIST < #crel >,
+	     HCONS.LIST < > ],
     NONCONJ-DTR #ncdtr,
     ARGS < #ncdtr & [ SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
                                            VAL #val ],
@@ -3487,8 +3485,8 @@ infl-bottom-coord-rule := add-only-rule &
     DTR.INFLECTED inflected,
     SYNSEM.LOCAL [ COORD +,
                    COORD-REL #crel ],
-    C-CONT [ RELS <! #crel !>,
-             HCONS <! !> ]].
+    C-CONT [ RELS.LIST < #crel >,
+             HCONS.LIST < > ]].
 
 binary-bottom-coord-rule := bottom-coord-phrase & binary-phrase &
   [ SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
@@ -3497,8 +3495,8 @@ binary-bottom-coord-rule := bottom-coord-phrase & binary-phrase &
                    COORD-REL #crel,
                    COORD-STRAT #cform ],
     C-CONT [ HOOK [ INDEX #rind ],
-	     RELS <! !>,
-	     HCONS <! !> ],
+	     RELS.LIST < >,
+	     HCONS.LIST < > ],
     CONJ-DTR conj-lex & [ CFORM #cform,
                           SYNSEM.LKEYS.KEYREL #crel ],
     NONCONJ-DTR [ SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
@@ -3580,8 +3578,8 @@ omni-binary-bottom-coord-rule := bottom-coord-phrase & binary-phrase &
                    COORD-REL null-coord-rel,
                    COORD-STRAT #cform ],
     C-CONT [ HOOK [ INDEX #rind ],
-	     RELS <! !>,
-	     HCONS <! !> ],
+	     RELS.LIST < >,
+	     HCONS.LIST < > ],
     CONJ-DTR nosem-conj-lex & [ CFORM #cform ],
     NONCONJ-DTR [ SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
                                        VAL #val ],
@@ -3607,8 +3605,8 @@ omni-binary-left-coord-rule := omni-left-coord-rule & binary-phrase &
                    COORD-REL #crel,
                    COORD-STRAT #cform ],
     C-CONT [ HOOK [ INDEX #rind ],
-	     RELS <! !>,
-	     HCONS <! !> ],
+	     RELS.LIST < >,
+	     HCONS.LIST < > ],
     CONJ-DTR conj-lex & [ CFORM #cform,
                           SYNSEM.LKEYS.KEYREL #crel ],
     NONCONJ-DTR sign & [ SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
@@ -3632,8 +3630,8 @@ infl-left-coord-rule := omni-left-coord-rule &
   [ INFLECTED infl-satisfied,
     DTR.INFLECTED inflected,
     SYNSEM.LOCAL [ COORD-REL #crel ],
-    C-CONT [ RELS <! #crel !>,
-             HCONS <! !> ]].
+    C-CONT [ RELS.LIST < #crel >,
+             HCONS.LIST < > ]].
 
 omni-coord-phrase := coord-phrase &
   [ SYNSEM.LOCAL.COORD-STRAT #cstrat,
@@ -3664,13 +3662,13 @@ n-coord-phrase := coord-phrase &
     RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD noun ].
 
 basic-n-top-coord-rule := n-coord-phrase &
-  [ C-CONT [ RELS <! !>,
-	     HCONS <! !> ]].
+  [ C-CONT [ RELS.LIST < >,
+	     HCONS.LIST < > ]].
 
 basic-n-mid-coord-rule := n-coord-phrase &
   [ SYNSEM.LOCAL.COORD-REL #crel,
-    C-CONT [ RELS <! #crel !>,
-	     HCONS <! !> ]].
+    C-CONT [ RELS.LIST < #crel >,
+	     HCONS.LIST < > ]].
 
 n-bottom-coord-phrase := bottom-coord-phrase &
   [ SYNSEM.LOCAL.CAT [ HEAD noun,
@@ -3690,13 +3688,13 @@ np-coord-phrase := coord-phrase &
 basic-np-top-coord-rule := np-coord-phrase &
   [ C-CONT [ HOOK [ LTOP #ltop,
                     INDEX #ind ],
-             RELS <! [ PRED "exist_q_rel", ARG0 #ind, RSTR #ltop ] !>,
-	     HCONS <! !> ]].
+             RELS.LIST < [ PRED "exist_q_rel", ARG0 #ind, RSTR #ltop ] >,
+	     HCONS.LIST < > ]].
 
 basic-np-mid-coord-rule := np-coord-phrase &
   [ SYNSEM.LOCAL.COORD-REL #crel,
-    C-CONT [ RELS <! [ ARG0 #carg, RSTR #lbl ], #crel !>,
-	     HCONS <! !> ],
+    C-CONT [ RELS.LIST < [ ARG0 #carg, RSTR #lbl ], #crel >,
+	     HCONS.LIST < > ],
     RCOORD-DTR.SYNSEM.LOCAL.COORD-REL [ LBL #lbl,
                                         C-ARG #carg ]].
 
@@ -3729,13 +3727,13 @@ adj-coord-phrase := event-coord-phrase &
                                   HEAD adj ]].
 
 basic-adj-top-coord-rule := adj-coord-phrase &
-  [ C-CONT [ RELS <! !>,
-	     HCONS <! !> ]].
+  [ C-CONT [ RELS.LIST < >,
+	     HCONS.LIST < > ]].
 
 basic-adj-mid-coord-rule := adj-coord-phrase &
   [ SYNSEM.LOCAL.COORD-REL #crel,
-    C-CONT [ RELS <! #crel !>,
-	     HCONS <! !> ]].
+    C-CONT [ RELS.LIST < #crel >,
+	     HCONS.LIST < > ]].
 
 adj-bottom-coord-phrase := bottom-coord-phrase &
   [ SYNSEM.LOCAL.CAT.HEAD adj,
@@ -3753,13 +3751,13 @@ adv-coord-phrase := event-coord-phrase &
                                   HEAD adv ]].
 
 basic-adv-top-coord-rule := adv-coord-phrase &
-  [ C-CONT [ RELS <! !>,
-	     HCONS <! !> ]].
+  [ C-CONT [ RELS.LIST < >,
+	     HCONS.LIST < > ]].
 
 basic-adv-mid-coord-rule := adv-coord-phrase &
   [ SYNSEM.LOCAL.COORD-REL #crel,
-    C-CONT [ RELS <! #crel !>,
-	     HCONS <! !> ]].
+    C-CONT [ RELS.LIST < #crel >,
+	     HCONS.LIST < > ]].
 
 adv-bottom-coord-phrase := bottom-coord-phrase &
   [ SYNSEM.LOCAL.CAT.HEAD adv,
@@ -3775,13 +3773,13 @@ vp-coord-phrase := event-coord-phrase &
     RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD verb ].
 
 basic-vp-top-coord-rule := vp-coord-phrase &
-  [ C-CONT [ RELS <! !>,
-	     HCONS <! !> ]].
+  [ C-CONT [ RELS.LIST < >,
+	     HCONS.LIST < > ]].
 
 basic-vp-mid-coord-rule := vp-coord-phrase &
   [ SYNSEM.LOCAL.COORD-REL #crel,
-    C-CONT [ RELS <! #crel !>,
-	     HCONS <! !> ]].
+    C-CONT [ RELS.LIST < #crel >,
+	     HCONS.LIST < > ]].
 
 vp-bottom-coord-phrase := bottom-coord-phrase &
   [ SYNSEM.LOCAL.CAT [ HEAD verb,
@@ -3799,13 +3797,13 @@ s-coord-phrase := event-coord-phrase &
     RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD verb ].
 
 basic-s-top-coord-rule := s-coord-phrase &
-  [ C-CONT [ RELS <! !>,
-	     HCONS <! !> ]].
+  [ C-CONT [ RELS.LIST < >,
+	     HCONS.LIST < > ]].
 
 basic-s-mid-coord-rule := s-coord-phrase &
   [ SYNSEM.LOCAL.COORD-REL #crel,
-    C-CONT [ RELS <! #crel !>,
-	     HCONS <! !> ]].
+    C-CONT [ RELS.LIST < #crel >,
+	     HCONS.LIST < > ]].
 
 s-bottom-coord-phrase := bottom-coord-phrase &
   [ SYNSEM.LOCAL.CAT [ HEAD verb,
@@ -3876,46 +3874,46 @@ non-frame-setting := topic-comment &
   [ HEAD-DTR.SYNSEM.LOCAL.CAT.MKG non-tp ].
 
 ;;; icons-realted lexrules
-no-icons-lexrule := lex-rule & [ C-CONT.ICONS <! !> ].
+no-icons-lexrule := lex-rule & [ C-CONT.ICONS.LIST < > ].
 
 add-icons-rule := lex-rule &
   [ SYNSEM.LOCAL.CONT.HOOK [ INDEX #index,
                              ICONS-KEY #icons ],
-    C-CONT.ICONS <! info-str & #icons & [ IARG2 #index ] !> ].
+    C-CONT.ICONS.LIST < info-str & #icons & [ IARG2 #index ] > ].
 
 add-icons-subj-rule := lex-rule &
   [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK [ INDEX #index,
                                                       ICONS-KEY #icons ],
-    C-CONT.ICONS <! info-str & #icons & [ IARG2 #index ] !> ].
+    C-CONT.ICONS.LIST < info-str & #icons & [ IARG2 #index ] > ].
 
 add-icons-comp-rule := lex-rule &
   [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK [ INDEX #index,
                                                        ICONS-KEY #icons ],
-    C-CONT.ICONS <! info-str & #icons & [ IARG2 #index ] !> ].
+    C-CONT.ICONS.LIST < info-str & #icons & [ IARG2 #index ] > ].
 
 add-icons-subj-verb-rule := lex-rule &
   [ SYNSEM.LOCAL [ CONT.HOOK [ INDEX #index1,
 			       ICONS-KEY #icons1 ],
 		   CAT.VAL.SUBJ.FIRST.LOCAL.CONT.HOOK [ INDEX #index2,
 							ICONS-KEY #icons2 ] ],
-    C-CONT.ICONS <! info-str & #icons1 & [ IARG2 #index1 ],
-		    info-str & #icons2 & [ IARG2 #index2 ] !> ].
+    C-CONT.ICONS.LIST < info-str & #icons1 & [ IARG2 #index1 ],
+		    info-str & #icons2 & [ IARG2 #index2 ] > ].
 
 add-icons-comp-verb-rule := lex-rule &
   [ SYNSEM.LOCAL [ CONT.HOOK [ INDEX #index1,
 			       ICONS-KEY #icons1 ],
 		   CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK [ INDEX #index2,
 							ICONS-KEY #icons2 ] ],
-    C-CONT.ICONS <! info-str & #icons1 & [ IARG2 #index1 ],
-		    info-str & #icons2 & [ IARG2 #index2 ] !> ].
+    C-CONT.ICONS.LIST < info-str & #icons1 & [ IARG2 #index1 ],
+		    info-str & #icons2 & [ IARG2 #index2 ] > ].
 
 add-icons-subj-comp-rule := lex-rule &
   [ SYNSEM.LOCAL.CAT.VAL [ SUBJ.FIRST.LOCAL.CONT.HOOK [ INDEX #index1,
 				                        ICONS-KEY #icons1 ],
                            COMPS.FIRST.LOCAL.CONT.HOOK [ INDEX #index2,
 							 ICONS-KEY #icons2 ] ],
-    C-CONT.ICONS <! info-str & #icons1 & [ IARG2 #index1 ],
-		    info-str & #icons2 & [ IARG2 #index2 ] !> ].
+    C-CONT.ICONS.LIST < info-str & #icons1 & [ IARG2 #index1 ],
+		    info-str & #icons2 & [ IARG2 #index2 ] > ].
 
 add-icons-subj-comp-verb-rule := lex-rule &
   [ SYNSEM.LOCAL [ CONT.HOOK [ INDEX #index1,
@@ -3924,9 +3922,9 @@ add-icons-subj-comp-verb-rule := lex-rule &
 							  ICONS-KEY #icons2 ],
 			     COMPS.FIRST.LOCAL.CONT.HOOK [ INDEX #index3,
 							   ICONS-KEY #icons3 ] ] ],
-    C-CONT.ICONS <! info-str & #icons1 & [ IARG2 #index1 ],
+    C-CONT.ICONS.LIST < info-str & #icons1 & [ IARG2 #index1 ],
 		    info-str & #icons2 & [ IARG2 #index2 ],
-		    info-str & #icons3 & [ IARG2 #index3 ] !> ].
+		    info-str & #icons3 & [ IARG2 #index3 ] > ].
 
 ; ;;; PHON information
 
