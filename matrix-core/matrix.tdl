@@ -1999,12 +1999,14 @@ basic-head-opt-comp-phrase := head-valence-phrase & head-only &
                               head-compositional &
   [ INFLECTED #infl,
     SYNSEM canonical-synsem &
-	      [ LOCAL.CAT [ VAL [ SUBJ #subj,
+	      [ LOCAL [ CAT [ VAL [ SUBJ #subj,
 				  COMPS #comps,
 				  SPR #spr,
 				  SPEC #spec ],
 			    MC #mc,
 			    POSTHEAD #ph ],
+			     CONT.HOOK [ ICONS-KEY #ikey,
+			                 CLAUSE-KEY #ckey ] ],
 		MODIFIED #mod ],
     HEAD-DTR [ INFLECTED #infl & infl-satisfied,
 	       SYNSEM [ LOCAL [ CAT [ VAL [ SUBJ #subj,
@@ -2051,12 +2053,14 @@ basic-head-opt-comp-phrase := head-valence-phrase & head-only &
 basic-head-opt-subj-phrase := head-valence-phrase & head-only &
   [ INFLECTED #infl,
     SYNSEM canonical-synsem &
-	      [ LOCAL.CAT [ VAL [ SUBJ < >,
+	      [ LOCAL [ CAT [ VAL [ SUBJ < >,
 				  COMPS #comps,
 				  SPR #spr,
 				  SPEC #spec ],
 			    POSTHEAD #ph ],
-		MODIFIED #mod ],
+		             CONT.HOOK [ ICONS-KEY #ikey,
+		                         CLAUSE-KEY #ckey ] ],
+		     MODIFIED #mod ],
     HEAD-DTR [ INFLECTED #infl & infl-satisfied,
 	       SYNSEM [ LOCAL [ CAT [ HEAD.MOD olist,
 	       	      	      	      VAL [ SUBJ < unexpressed-reg &
