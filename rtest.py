@@ -5,13 +5,15 @@
 Grammar Matrix Regression Testing
 """
 
-from pathlib import Path
+from typing import Tuple
 import traceback
 import shutil
 import argparse
 import pathlib
 import fnmatch
 import subprocess
+import multiprocessing
+import functools
 import datetime
 import textwrap
 
@@ -48,18 +50,25 @@ CURRENT_DIR.mkdir(exist_ok=True)
 LOGS_DIR.mkdir(exist_ok=True)
 
 
+# MULTIPROCESSING PARAMETERS ##################################################
+
+PROCESSES = 4  # max parallel processes for testing
+BATCH_SIZE = 1  # number of jobs per process to complete before reporting
+
+
 # REPORT FORMATTING PARAMETERS ################################################
 
 MAX_LINE_WIDTH = 120
 RESULT_WIDTH = 6  # number of spaces reserved for DONE, PASS, FAIL, ERROR
-PROGRESS_BAR_WIDTH = 20
-STATUS_COLUMN = PROGRESS_BAR_WIDTH + 3 + 1  # len('[' + '] '); 1-based columns
+PROGRESS_BAR_WIDTH = MAX_LINE_WIDTH  # including [, ], trailing count, etc.
 DONE = 'DONE'
 PASS = 'PASS'
 FAIL = 'FAIL'
 ERROR = 'ERROR'
 
+
 def linewidth(): return min(MAX_LINE_WIDTH, shutil.get_terminal_size()[0])
+
 
 # ANSI colors; see: https://en.wikipedia.org/wiki/ANSI_escape_code#Colors
 def red(s): return color('\x1b[31m', s)
@@ -68,6 +77,7 @@ def yellow(s): return color('\x1b[33m', s)
 def color(clr, s): return '{}{}\x1b[0m'.format(clr, s)
 def nocolor(clr, s): return s
 def yes_or_no(obj): return red('no') if obj is None else green('yes')
+
 
 REPORT_COLOR = {
     DONE: green,
@@ -118,62 +128,81 @@ def run_tests(args):
     """
     Run regression tests and report the results.
     """
-    total_passed = 0
-    total_error = 0
-    total_failed = 0
+    totals = {
+        PASS: 0,
+        ERROR: 0,
+        FAIL: 0,
+        DONE: 0,
+    }
 
     tests = list(_discover(args))
     total = len(tests)
 
-    for i, (name, desc, chc, dat, txt, skel, prof, gold) in enumerate(tests):
-        log = _unique_log_path(name)
-        print('\r' + _progress_bar(i, total), end='')
-        passed = None
+    run_test = functools.partial(
+        _run_test,
+        customize=args.customize,
+        mkskel=args.mkskel,
+        mkprof=args.mkprof,
+        process=args.process,
+        compare=args.compare,
+    )
 
-        with log.open(mode='at') as logf:
-            _lognow('== Testing {} at {} ==\n'
-                    .format(name, datetime.datetime.now().isoformat()),
-                    logf)
-            _report_status(name, 'begin', logf)
-
-            try:
-                if args.customize:
-                    grm = _customize(name, chc, logf)
-                    dat = _compile(name, grm, logf)
-                # mkskel if requested or if necessary
-                if args.mkskel or (args.mkskel is None and skel is None):
-                    skel = _mkskel(name, txt, logf)
-                if args.mkprof:
-                    prof = _mkprof(name, skel, logf)
-                if args.process:
-                    _process(name, dat, prof, logf)
-                if args.compare:
-                    passed = _compare(name, prof, gold, logf)
-
-            except Exception:
-                _report(name, ERROR, logf)
-                _lognow('\n=====', logf)
-                traceback.print_exc(file=logf)
-                print('  see: {}'.format(str(log)))
-                total_error += 1
-
-            else:
-                if passed is None:  # only if _compare() was not run
-                    _report(name, DONE, logf)
-                elif passed:
-                    _report(name, PASS, logf)
-                    total_passed += 1
-                else:
-                    _report(name, FAIL, logf)
-                    print('  see: {}'.format(str(log)))
-                    total_failed += 1
+    with multiprocessing.Pool(PROCESSES) as pool:
+        process_iterator = pool.imap(run_test, tests, chunksize=BATCH_SIZE)
+        for i, (name, result, logpath) in enumerate(process_iterator, 1):
+            _report(name, result)
+            if result in (ERROR, FAIL):
+                print('  see: {}'.format(str(logpath)))
+            print('\r' + _progress_bar(i, total), end='')
+            totals[result] += 1
 
     if args.compare:
         print('\n******** SUMMARY *************')
         width = len(str(total))  # to align the numbers on /
-        print('Passed {0:{2}}/{1} tests;'.format(total_passed, total, width))
-        print('Failed {0:{2}}/{1} tests;'.format(total_failed, total, width))
-        print('Errors {0:{2}}/{1} tests.'.format(total_error, total, width))
+        print('Passed {0:{2}}/{1} tests;'.format(totals[PASS], total, width))
+        print('Failed {0:{2}}/{1} tests;'.format(totals[FAIL], total, width))
+        print('Errors {0:{2}}/{1} tests.'.format(totals[ERROR], total, width))
+
+
+def _run_test(
+        args,
+        customize=False,
+        mkskel=False,
+        mkprof=False,
+        process=False,
+        compare=False
+) -> Tuple[str, str, pathlib.Path]:
+    name, desc, chc, dat, txt, skel, prof, gold = args
+    log = _unique_log_path(name)
+    result = DONE  # default if no error, failure, or comparison pass
+
+    with log.open(mode='at') as logf:
+        _lognow('== Testing {} at {} =='
+                .format(name, datetime.datetime.now().isoformat()),
+                logf)
+
+        try:
+            if customize:
+                grm = _customize(name, chc, logf)
+                dat = _compile(name, grm, logf)
+            # mkskel if requested or if necessary
+            if mkskel or (mkskel is None and skel is None):
+                skel = _mkskel(name, txt, logf)
+            if mkprof:
+                prof = _mkprof(name, skel, logf)
+            if process:
+                _process(name, dat, prof, logf)
+            if compare:
+                passed = _compare(name, prof, gold, logf)
+                result = PASS if passed else FAIL
+
+        except Exception:
+            _lognow('\n=====', logf)
+            traceback.print_exc(file=logf)
+            result = ERROR
+
+        _lognow('\nResult: ' + result, logf)
+        return name, result, log
 
 
 def list_tests(args, verbose=False):
@@ -431,7 +460,7 @@ def _list_dat_files(dir):
 
 def _customize(name, chc, logf):
     """Customize the test grammar from a choices file."""
-    _report_status(name, 'customizing', logf)
+    _lognow('\n[customizing]', logf)
     _lognow('  Choices file: {!s}'.format(chc), logf)
 
     cmd = SCRIPT_DIR / 'matrix.py'
@@ -462,7 +491,7 @@ def _customize(name, chc, logf):
 
 def _compile(name, grm, logf):
     """Compile the test grammar with ACE."""
-    _report_status(name, 'compiling', logf)
+    _lognow('\n[compiling]', logf)
     _lognow('  Grammar directory: {!s}'.format(grm), logf)
 
     dat = grm / DAT_FILENAME
@@ -482,7 +511,7 @@ def _compile(name, grm, logf):
 
 def _mkskel(name, txt, logf):
     """Prepare the skeleton from the txt-suite."""
-    _report_status(name, 'preparing skeleton', logf)
+    _lognow('\n[preparing skeleton]', logf)
     _lognow('  Txt-suite: {!s}'.format(txt), logf)
 
     dest = SKELETONS_DIR / name
@@ -500,7 +529,7 @@ def _mkskel(name, txt, logf):
 
 def _mkprof(name, skel, logf):
     """Prepare the current profile directory and files."""
-    _report_status(name, 'preparing profile', logf)
+    _lognow('\n[preparing profile]', logf)
     _lognow('  Skeleton path: {!s}'.format(skel), logf)
 
     dest = CURRENT_DIR / name
@@ -516,7 +545,7 @@ def _mkprof(name, skel, logf):
 
 def _process(name, dat, prof, logf):
     """Process the input items of the current profile."""
-    _report_status(name, 'processing', logf)
+    _lognow('\n[processing]', logf)
     _lognow('  Grammar image: {!s}'.format(dat), logf)
     _lognow('  Profile path: {!s}'.format(prof), logf)
 
@@ -528,14 +557,13 @@ def _process(name, dat, prof, logf):
 
 def _compare(name, prof, gold, logf):
     """Compare the MRSs of the current profile to the gold ones."""
-    _report_status(name, 'comparing to gold', logf)
+    _lognow('\n[comparing to gold]', logf)
     _lognow('  Current profile: {!s}'.format(prof), logf)
     _lognow('  Gold profile: {!s}'.format(gold), logf)
 
     passed = True
     try:
         for result in compare(prof, gold):
-            _report_status(name, f'compared i-id={result["id"]}', None)
             _lognow('  {:40} <{},{},{}>'
                     .format(result['id'],
                             result['test'], result['shared'], result['gold']),
@@ -562,35 +590,21 @@ def _unique_log_path(name):
 # REPORTING FUNCTIONS #########################################################
 
 def _progress_bar(numerator: int, denominator: int) -> str:
-    fillcols = int((numerator / denominator) * PROGRESS_BAR_WIDTH)
+    max_width = min(PROGRESS_BAR_WIDTH, linewidth())
+    count_width = len(str(denominator))
+    bar_width = max(10, max_width - (count_width * 2) - len('[] (/)'))
+    fillcols = int((numerator / denominator) * bar_width)
     fill = '#' * fillcols
-    return f'[{fill:<{PROGRESS_BAR_WIDTH}}] '
+    return f'[{fill:<{bar_width}}] ({numerator:>{count_width}}/{denominator})'
 
 
-def _report_status(name, status, logf):
-    """
-    Update the progress line.
-
-    An empty status message can be used to clear the status.
-    """
-    if status:
-        status = '[{}]'.format(status)
-    name_width = linewidth() - len(status) - STATUS_COLUMN
-    name = _fill(name, name_width)
-    print(f'\033[{STATUS_COLUMN}G', end='')  # go to column
-    print(f'{name}{status}', end='', flush=True)
-    if status and logf:
-        _lognow(status, logf)
-
-
-def _report(name, result, logf):
+def _report(name, result):
     """Print the final result."""
     colorize = REPORT_COLOR[result]
     name_width = linewidth() - RESULT_WIDTH
     name = _fill(name, name_width)
     print('\r\033[K', end='')  # clear line
     print(f'{name}{colorize(result)}')
-    _lognow('Result: ' + result, logf)
 
 
 def _fill(s: str, width: int) -> str:
