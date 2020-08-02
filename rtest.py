@@ -592,7 +592,7 @@ def _unique_log_path(name):
 def _progress_bar(numerator: int, denominator: int) -> str:
     max_width = min(PROGRESS_BAR_WIDTH, linewidth())
     count_width = len(str(denominator))
-    bar_width = max(10, max_width - (count_width * 2) - len('[] (/)'))
+    bar_width = max(10, max_width - (count_width * 2) - len('[] (/) '))
     fillcols = int((numerator / denominator) * bar_width)
     fill = '#' * fillcols
     return f'[{fill:<{bar_width}}] ({numerator:>{count_width}}/{denominator})'
