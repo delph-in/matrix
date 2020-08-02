@@ -52,7 +52,7 @@ LOGS_DIR.mkdir(exist_ok=True)
 
 # MULTIPROCESSING PARAMETERS ##################################################
 
-PROCESSES = 4  # max parallel processes for testing
+PROCESSES = None  # max parallel processes for testing; 'None'->os.cpu_count()
 BATCH_SIZE = 1  # number of jobs per process to complete before reporting
 
 
