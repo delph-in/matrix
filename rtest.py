@@ -201,6 +201,10 @@ def _run_test(
             traceback.print_exc(file=logf)
             result = ERROR
 
+        # delete the dat file; it's a big file that's easy to recreate
+        if dat.exists():
+            dat.unlink()
+
         _lognow('\nResult: ' + result, logf)
         return name, result, log
 
