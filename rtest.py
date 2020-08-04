@@ -120,6 +120,8 @@ def main(args):
         add_test(args)
     elif args.remove:
         remove_test(args)
+    elif args.clean:
+        clean_up(args)
     else:
         run_tests(args)
 
@@ -374,6 +376,35 @@ def remove_test(args):
     print('Successfully removed all files and directories associated with '
           '{}, and any corresponding line in the regression-test-index.'
           .format(name))
+
+
+def clean_up(args):
+    '''
+    Delete temporary testing files.
+
+    Temporary testing files include:
+
+    1) customized grammars
+    2) current profiles
+    3) logs
+    '''
+    for name, _, _, _, _, prof, _ in _discover(args):
+        deleted = False
+        grm = GRAMMARS_DIR / name
+        if grm.exists():
+            shutil.rmtree(grm)
+            deleted = True
+        if prof and prof.exists():
+            shutil.rmtree(prof)
+            deleted = True
+        # a test name may be a substring of another test name, so use a
+        # glob pattern that looks like a date to mitigate this
+        date_glob = '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'
+        for log in LOGS_DIR.glob(f'{name}-{date_glob}*'):
+            log.unlink()
+            deleted = True
+        if deleted:
+            print(f'cleaned files for {name}')
 
 
 # HELPER FUNCTIONS ############################################################
@@ -708,6 +739,9 @@ if __name__ == '__main__':
     parser.add_argument('-r', '--remove',
                         action='store_true',
                         help='remove a test from the system')
+    parser.add_argument('--clean',
+                        action='store_true',
+                        help='delete temporary grammars, logs, and profiles')
     parser.add_argument('test',
                         nargs='*')
 
