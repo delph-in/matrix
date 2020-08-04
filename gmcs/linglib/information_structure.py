@@ -382,15 +382,6 @@ add-icons-obj-foc-lex-rule := add-only-no-rels-hcons-rule &
                                            IARG2 #target ] > ] ] ].
 """
 
-# OZ 2020-08-03 This is unfinished work. This rule should be worked
-# on further to add support which tests like infostr-foc-affix-after-noun
-# illustrate.
-add_icons_self_foc_lex_rule = """
-add-icons-self-foc-lex-rule := add-only-no-rels-hcons-rule & 
-[ SYNSEM.LOCAL [ CONT [ HOOK.INDEX #iarg1,
-                        ICONS.LIST < focus & [ IARG1 #iarg1 ] > ] ] ].
-"""
-
 
 def add_ph_types(mylang, ph_types):
     for t in g_types:
@@ -1039,11 +1030,14 @@ def customize_information_structure_marker(mylang, ch, rules, irules, lexicon, t
                 trigger.add(grdef)
 
         else:#affix or adp
+            # OZ 2020-08-03 Unfinished work.
+            # First of all, should probably only add the rule that is needed, not all of them.
+            # These two however are all of the lexical rules that currently exist for infostr.
+            # More rules need to be added for more cases, as documented in
+            # https://github.com/delph-in/matrix/issues/494
+            
             mylang.add(add_icons_subj_foc_lex_rule,section='lexrules')
             mylang.add(add_icons_obj_foc_lex_rule, section='lexrules')
-            # Unfinished work; whoever wants to continue, pick up from here
-            # with the test infostr-foc-affix-after-noun, github branch tag TBD.
-            #mylang.add(add_icons_self_foc_lex_rule, section='lexrules')
 
 
 def customize_infostr_adpositions(mylang, lexicon, trigger, ch):
