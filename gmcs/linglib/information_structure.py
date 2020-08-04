@@ -364,22 +364,22 @@ add_icons_subj_foc_lex_rule = """
 add-icons-subj-foc-lex-rule := add-only-no-rels-hcons-rule & 
 [ SYNSEM.LOCAL [ CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX #target ] >,
                  CONT [ HOOK.INDEX #clause,
-                        ICONS <! focus & [ IARG1 #clause, 
-                                           IARG2 #target ] !> ] ] ].
+                        ICONS.LIST < focus & [ IARG1 #clause, 
+                                           IARG2 #target ] > ] ] ].
 """
 
 add_icons_obj_foc_lex_rule = """
 add-icons-obj-foc-lex-rule := add-only-no-rels-hcons-rule & 
 [ SYNSEM.LOCAL [ CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX #target ] >,
                  CONT [ HOOK.INDEX #clause,
-                        ICONS <! focus & [ IARG1 #clause, 
-                                           IARG2 #target ] !> ] ] ].
+                        ICONS.LIST < focus & [ IARG1 #clause, 
+                                           IARG2 #target ] > ] ] ].
 """
 
 add_icons_self_foc_lex_rule = """
 add-icons-self-foc-lex-rule := add-only-no-rels-hcons-rule & 
 [ SYNSEM.LOCAL [ CONT [ HOOK.INDEX #iarg1,
-                        ICONS <! focus & [ IARG1 #iarg1 ] !> ] ] ].
+                        ICONS.LIST < focus & [ IARG1 #iarg1 ] > ] ] ].
 """
 
 
