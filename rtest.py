@@ -234,7 +234,7 @@ def list_tests(args, verbose=False):
             if idx:
                 desc = idx.get('description')
                 if idx.get('skip'):
-                    skip = green('yes')
+                    skip = f'{yellow("yes")} (disabled in index)'
                 elif _skipped(idx, chc, skel, gold):
                     skip = f'{red("yes")} (missing components)'
                 else:
