@@ -547,8 +547,6 @@ def percolate_supertypes(pc):
     def validate_supertypes(x):
         if pc.is_lex_rule:
             if not any(st in LEX_RULE_SUPERTYPES for st in x.supertypes):
-                if pc.has_infostr():
-                   x.supertypes.add('add-only-no-rels-hcons-rule')
                 if pc.has_incorporated_stems():
                     # TJT 2014-08-21: Incorporated Adjective lexical rule supertypes
                     x.supertypes.add('add-only-rule')
