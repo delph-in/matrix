@@ -130,14 +130,6 @@ def run_tests(args):
     """
     Run regression tests and report the results.
     """
-    totals = {
-        PASS: 0,
-        ERROR: 0,
-        FAIL: 0,
-        DONE: 0,
-        SKIP: 0
-    }
-
     tests = list(_discover(args))
     total = len(tests)
 
@@ -149,15 +141,13 @@ def run_tests(args):
         compare=args.compare,
     )
 
-    with multiprocessing.Pool(PROCESSES) as pool:
-        process_iterator = pool.imap(run_test, tests, chunksize=BATCH_SIZE)
-        for i, (name, result, logpath) in enumerate(process_iterator, 1):
-            _report(name, result)
-            if result in (ERROR, FAIL):
-                print('  see: {}'.format(str(logpath)))
-            print('\r' + _progress_bar(i, total), end='')
-            totals[result] += 1
-    print()  # end progress bar line
+    if args.debug:
+        results = map(run_test, tests)
+        totals = _accumulate(results, total)
+    else:
+        with multiprocessing.Pool(PROCESSES) as pool:
+            results = pool.imap(run_test, tests, chunksize=BATCH_SIZE)
+            totals = _accumulate(results, total)
 
     if args.compare:
         print('\n************* SUMMARY *************')
@@ -211,6 +201,22 @@ def _run_test(
 
         _lognow('\nResult: ' + result, logf)
         return name, result, log
+
+
+def _accumulate(results, total):
+    totals = {
+        PASS: 0,
+        ERROR: 0,
+        FAIL: 0,
+        DONE: 0,
+        SKIP: 0
+    }
+    for i, (name, result, logpath) in enumerate(results, 1):
+        _report(name, result, logpath)
+        print('\r' + _progress_bar(i, total), end='')
+        totals[result] += 1
+    print()  # end progress bar line
+    return totals
 
 
 def list_tests(args, verbose=False):
@@ -651,13 +657,15 @@ def _progress_bar(numerator: int, denominator: int) -> str:
     return f'[{fill:<{bar_width}}] ({numerator:>{count_width}}/{denominator})'
 
 
-def _report(name, result):
+def _report(name, result, logpath):
     """Print the final result."""
     colorize = REPORT_COLOR[result]
     name_width = linewidth() - RESULT_WIDTH
     name = _fill(name, name_width)
     print('\r\033[K', end='')  # clear line
     print(f'{name}{colorize(result)}')
+    if result in (ERROR, FAIL):
+        print('  see: {}'.format(str(logpath)))
 
 
 def _fill(s: str, width: int) -> str:
@@ -747,6 +755,9 @@ if __name__ == '__main__':
     parser.add_argument('--clean',
                         action='store_true',
                         help='delete temporary grammars, logs, and profiles')
+    parser.add_argument('--debug',
+                        action='store_true',
+                        help='disable multiprocessing to help debuggers')
     parser.add_argument('test',
                         nargs='*')
 
