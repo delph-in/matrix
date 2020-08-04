@@ -360,6 +360,28 @@ nf-subj-head-phrase := head-nf-subj-phrase-super & head-final &
     NON-HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.ICONS-KEY $ ].
 """
 
+# OZ 2020-08-03 I added the next two lexical rules
+# to fix two of the eight information structure regression tests
+# which were failing. All of them seem to be unfinished work,
+# requiring completely new lexical rules to be written.
+# I stopped at these two, and will remove the remaining tests for now.
+
+add_icons_subj_foc_lex_rule = """
+add-icons-subj-foc-lex-rule := add-only-no-rels-hcons-rule & 
+[ SYNSEM.LOCAL [ CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX #target ] >,
+                 CONT [ HOOK.INDEX #clause,
+                        ICONS.LIST < focus & [ IARG1 #clause, 
+                                           IARG2 #target ] > ] ] ].
+"""
+
+add_icons_obj_foc_lex_rule = """
+add-icons-obj-foc-lex-rule := add-only-no-rels-hcons-rule & 
+[ SYNSEM.LOCAL [ CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX #target ] >,
+                 CONT [ HOOK.INDEX #clause,
+                        ICONS.LIST < focus & [ IARG1 #clause, 
+                                           IARG2 #target ] > ] ] ].
+"""
+
 
 def add_ph_types(mylang, ph_types):
     for t in g_types:
@@ -445,7 +467,8 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
         if pos == 'clause-initial' or infostr_type == 'topic-first':
             if wo == 'sov':
                 ph_types['comp-head-phrase'] = 'comp-head-phrase := [ SYNSEM.L-PERIPH -, HEAD-DTR.SYNSEM.L-PERIPH - ].'
-                ph_types['subj-head-phrase'] = 'subj-head-phrase := [ SYNSEM [ LOCAL.CAT.MC +, NON-LOCAL.SLASH 0-alist ], HEAD-DTR.SYNSEM.L-PERIPH - ].'
+                ph_types['subj-head-phrase'] = 'subj-head-phrase := [ SYNSEM [ LOCAL.CAT.MC +, NON-LOCAL.SLASH 0-alist ], ' \
+                                               'HEAD-DTR.SYNSEM.L-PERIPH - ].'
                 ph_types['subj-head-nmc-phrase'] = subj_head_nmc_phrase.replace('$', infostr_in_flr)
                 ph_rules['subj-head-nmc-phrase'] = 'subj-head-nmc'
                 # if infostr_type != 'topic-first':
@@ -458,7 +481,8 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
             elif wo == 'svo':
                 ph_types['basic-head-1st-comp-phrase'] = 'basic-head-1st-comp-phrase :+ [ SYNSEM.L-PERIPH - ].'
                 ph_types['head-comp-phrase'] = 'head-comp-phrase := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].'
-                ph_types['subj-head-phrase'] = 'subj-head-phrase := [ SYNSEM [ LOCAL.CAT.MC +, NON-LOCAL.SLASH 0-alist ], HEAD-DTR.SYNSEM.L-PERIPH - ].'
+                ph_types['subj-head-phrase'] = 'subj-head-phrase := [ SYNSEM [ LOCAL.CAT.MC +, ' \
+                                               'NON-LOCAL.SLASH 0-alist ], HEAD-DTR.SYNSEM.L-PERIPH - ].'
                 ph_types['subj-head-nmc-phrase'] = subj_head_nmc_phrase.replace('$', infostr_in_flr)
                 ph_rules['subj-head-nmc-phrase'] = 'subj-head-nmc'
                 # if infostr_type != 'topic-first':
@@ -1006,7 +1030,13 @@ def customize_information_structure_marker(mylang, ch, rules, irules, lexicon, t
                 trigger.add(grdef)
 
         else:#affix or adp
-            pass
+            # OZ 2020-08-03 Unfinished work.
+            # First of all, should probably only add the rule that is needed, not all of them.
+            # These two however are all of the lexical rules that currently exist for infostr.
+            # More rules need to be added for more cases, as documented in
+            # https://github.com/delph-in/matrix/issues/494
+            mylang.add(add_icons_subj_foc_lex_rule,section='lexrules')
+            mylang.add(add_icons_obj_foc_lex_rule, section='lexrules')
 
 
 def customize_infostr_adpositions(mylang, lexicon, trigger, ch):
