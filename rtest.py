@@ -65,6 +65,7 @@ DONE = 'DONE'
 PASS = 'PASS'
 FAIL = 'FAIL'
 ERROR = 'ERROR'
+SKIP = 'SKIP'
 
 
 def linewidth(): return min(MAX_LINE_WIDTH, shutil.get_terminal_size()[0])
@@ -83,6 +84,7 @@ REPORT_COLOR = {
     DONE: green,
     PASS: green,
     FAIL: yellow,
+    SKIP: yellow,
     ERROR: red
 }
 
@@ -133,6 +135,7 @@ def run_tests(args):
         ERROR: 0,
         FAIL: 0,
         DONE: 0,
+        SKIP: 0
     }
 
     tests = list(_discover(args))
@@ -161,7 +164,11 @@ def run_tests(args):
         width = len(str(total))  # to align the numbers on /
         print('Passed {0:{2}}/{1} tests;'.format(totals[PASS], total, width))
         print('Failed {0:{2}}/{1} tests;'.format(totals[FAIL], total, width))
-        print('Errors {0:{2}}/{1} tests.'.format(totals[ERROR], total, width))
+        print('Errors {0:{2}}/{1} tests;'.format(totals[ERROR], total, width))
+        if totals[SKIP]:
+            print('Skipped {0:{2}}/{1} tests.'
+                  ' (run rtest.py --list --skipped --verbose for more info)'
+                  .format(totals[SKIP], total, width))
 
 
 def _run_test(
@@ -170,40 +177,41 @@ def _run_test(
         mkskel=False,
         mkprof=False,
         process=False,
-        compare=False
+        compare=False,
 ) -> Tuple[str, str, pathlib.Path]:
-    name, desc, chc, dat, txt, skel, prof, gold = args
+    name, idx, chc, dat, txt, skel, prof, gold = args
     log = _unique_log_path(name)
-    result = DONE  # default if no error, failure, or comparison pass
+    result = DONE  # default if no skip, error, failure, or comparison pass
 
     with log.open(mode='at') as logf:
         _lognow('== Testing {} at {} =='
                 .format(name, datetime.datetime.now().isoformat()),
                 logf)
 
-        try:
-            if customize:
-                grm = _customize(name, chc, logf)
-                dat = _compile(name, grm, logf)
-            # mkskel if requested or if necessary
-            if mkskel or (mkskel is None and skel is None):
-                skel = _mkskel(name, txt, logf)
-            if mkprof:
-                prof = _mkprof(name, skel, logf)
-            if process:
-                _process(name, dat, prof, logf)
-            if compare:
-                passed = _compare(name, prof, gold, logf)
-                result = PASS if passed else FAIL
-
-        except Exception:
-            _lognow('\n=====', logf)
-            traceback.print_exc(file=logf)
-            result = ERROR
-
-        # delete the dat file; it's a big file that's easy to recreate
-        if dat.exists():
-            dat.unlink()
+        if _skipped(idx, chc, skel, gold):
+            result = SKIP
+        else:
+            try:
+                if customize:
+                    grm = _customize(name, chc, logf)
+                    dat = _compile(name, grm, logf)
+                # mkskel if requested or if necessary
+                if mkskel or (mkskel is None and skel is None):
+                    skel = _mkskel(name, txt, logf)
+                if mkprof:
+                    prof = _mkprof(name, skel, logf)
+                if process:
+                    _process(name, dat, prof, logf)
+                if compare:
+                    passed = _compare(name, prof, gold, logf)
+                    result = PASS if passed else FAIL
+            except Exception:
+                _lognow('\n=====', logf)
+                traceback.print_exc(file=logf)
+                result = ERROR
+            # delete the dat file; it's a big file that's easy to recreate
+            if dat.exists():
+                dat.unlink()
 
         _lognow('\nResult: ' + result, logf)
         return name, result, log
@@ -214,20 +222,33 @@ def list_tests(args, verbose=False):
     Print each test name and exit.
 
     If --verbose is used, also print the description, whether the test
-    appears in the index, and whether it has an associated txt-suite,
-    choices file, skeleton, and gold profile.
+    appears in the index, whether it has an associated txt-suite,
+    choices file, skeleton, and gold profile, and whether it is to be
+    skipped.
     """
-    for name, desc, chc, dat, txt, skel, prof, gold in _discover(args):
+    for name, idx, chc, dat, txt, skel, prof, gold in _discover(args):
 
         print(name)
 
         if verbose or args.verbosity >= 2:
-            print('    Description: ' + desc)
-            print('    Indexed:     ' + yes_or_no(desc))
-            print('    Txt-suite:   ' + yes_or_no(txt))
-            print('    Choices:     ' + yes_or_no(chc))
-            print('    Skeleton:    ' + yes_or_no(skel))
-            print('    Gold:        ' + yes_or_no(gold))
+            if idx:
+                desc = idx.get('description')
+                if idx.get('skip'):
+                    skip = green('yes')
+                elif _skipped(idx, chc, skel, gold):
+                    skip = f'{red("yes")} (missing components)'
+                else:
+                    skip = green('no')
+            else:
+                desc = None
+                skip = f'{red("yes")} (not indexed)'
+            print('    Description:', desc)
+            print('    Indexed:    ', yes_or_no(idx))
+            print('    Txt-suite:  ', yes_or_no(txt))
+            print('    Choices:    ', yes_or_no(chc))
+            print('    Skeleton:   ', yes_or_no(skel))
+            print('    Gold:       ', yes_or_no(gold))
+            print('    Skipped:    ', skip)
             print()
 
 
@@ -238,7 +259,7 @@ def update_test(args):
     tests = list(_discover(args))
     if len(tests) != 1:
         raise RegressionTestError('only 1 test may be updated at a time')
-    name, desc, chc, dat, txt, skel, prof, gold = tests[0]
+    name, idx, chc, dat, txt, skel, prof, gold = tests[0]
 
     try:
         db = tsdb.Database(prof)
@@ -258,20 +279,19 @@ def add_test(args):
     the profile. It is the developer's responsibility to add these
     files to Git afterwards.
     """
-    args.all_tests = True  # necessary for adding new tests
     tests = list(_discover(args))
     if len(tests) == 0 and len(args.test) == 1:
         name = args.test[0]
-        desc, chc, txt = None, None, None
+        idx, chc, txt = None, None, None
     elif len(tests) == 1:
-        name, desc, chc, _, txt, _, _, _ = tests[0]
+        name, idx, chc, _, txt, _, _, _ = tests[0]
     else:
         raise RegressionTestError('only 1 test may be added at a time')
 
     msg = ('File {!s} already exists; if you want to update the test, use '
            'the --update command; if you are sure the file is rogue, delete '
            'it. Otherwise, use a different name for a new test.')
-    if desc is not None:
+    if idx is not None:
         raise RegressionTestError(
             'test already exists in index: {}'.format(name))
     if chc is not None:
@@ -282,7 +302,7 @@ def add_test(args):
 
     desc = input('Test description: ')
     index = _parse_index(args.index)
-    index[name] = desc.strip()
+    index[name] = {'description': desc.strip()}
 
     # Copy files and recreate the index
     shutil.copy(str(chc), str(CHOICES_DIR / name))
@@ -338,11 +358,10 @@ def remove_test(args):
     the developer's responsibility to commit these changes to Git
     afterwards.
     '''
-    args.all_tests = True  # necessary for partial tests
     tests = list(_discover(args))
     if len(tests) > 1:
         raise RegressionTestError('only 1 test may be removed at a time')
-    name, desc, chc, dat, txt, skel, prof, gold = tests[0]
+    name, idx, chc, dat, txt, skel, prof, gold = tests[0]
 
     for obj in (chc, txt, skel, prof, gold):
         if obj is not None:
@@ -377,9 +396,8 @@ def _discover(args):
     directories of [incr tsdb()] skeletons, current profiles, and gold
     profiles, joined by a shared test name. Collect and merge these
     sources of information and yield each as a tuple of (name,
-    description, txt-suite-path, choices-path, skeleton-path,
-    current-path, gold-path). If --all-tests is used, partially
-    described tests not in the index will be yielded, too.
+    index entry, txt-suite-path, choices-path, skeleton-path,
+    current-path, gold-path).
     """
     index     = _parse_index(args.index)
     choices   = _list_files(CHOICES_DIR)
@@ -389,27 +407,36 @@ def _discover(args):
     profiles  = _list_testsuites(CURRENT_DIR)
     gold      = _list_testsuites(GOLD_DIR)
 
-    all_names = (set(index)
-                 .union(choices)
-                 .union(grammars)
-                 .union(txtsuites)
-                 .union(skeletons)
-                 .union(profiles)
-                 .union(gold))
-    if not args.all_tests:
-        all_names = filter(index.__contains__, all_names)
-    all_names = sorted(all_names)
+    all_names = sorted(
+        (set(index)
+         .union(choices)
+         .union(grammars)
+         .union(txtsuites)
+         .union(skeletons)
+         .union(profiles)
+         .union(gold))
+    )
 
     for pattern in args.test:
         for name in fnmatch.filter(all_names, pattern):
+            idx = index.get(name)
+            chc = choices.get(name)
+            skl = skeletons.get(name)
+            gld = gold.get(name)
+            if args.skipped and not _skipped(idx, chc, skl, gld):
+                continue
             yield (name,
-                   index.get(name),
-                   choices.get(name),
+                   idx,
+                   chc,
                    grammars.get(name),
                    txtsuites.get(name),
-                   skeletons.get(name),
+                   skl,
                    profiles.get(name),
-                   gold.get(name))
+                   gld)
+
+
+def _skipped(idx, chc, skel, gold):
+    return None in (idx, chc, skel, gold) or idx.get('skip')
 
 
 def _parse_index(path):
@@ -418,22 +445,28 @@ def _parse_index(path):
     for line in path.open():
         line = line.strip()
         if line:
-            name, description = _split_index_line(line)
-            index[name] = description
+            name, data = _parse_index_line(line)
+            index[name] = data
     return index
 
 
 def _recreate_index(index, path):
     """Overwrite the index with an updated one."""
     with path.open('w') as f:
-        for _name, _desc in index.items():
-            print('{}={}'.format(_name, _desc), file=f)
+        for name, data in index.items():
+            skip = '!' if data.get('skip') else ''
+            print(f'{skip}{name}={data["description"]}', file=f)
 
 
-def _split_index_line(line):
-    """Return the name and description for an index entry."""
+def _parse_index_line(line):
+    """Return the name and associated data for an index entry."""
+    data = {}
+    if line.startswith('!'):
+        data['skip'] = True
+        line = line[1:]
     name, _, description = line.partition('=')
-    return name, description
+    data['description'] = description
+    return name, data
 
 
 def _list_testsuites(dir):
@@ -449,7 +482,7 @@ def _list_files(dir):
     """Map basename to path for files in *dir*."""
     paths = {}
     for path in dir.glob('*'):
-        if path.is_file() and path.name != 'README':
+        if path.is_file() and path.name not in ('README', 'README.md'):
             paths[path.name] = path
     return paths
 
@@ -668,12 +701,12 @@ if __name__ == '__main__':
     parser.add_argument('--index',
                         metavar='PATH',
                         help='path to a test index')
-    parser.add_argument('--all-tests',
-                        action='store_true',
-                        help='don\'t exclude tests not in the index')
     parser.add_argument('-l', '--list',
                         action='store_true',
                         help='list available tests (-v, -vv for more info)')
+    parser.add_argument('--skipped',
+                        action='store_true',
+                        help='find skipped/incomplete tests, ignore others')
     parser.add_argument('-c', '--customize',
                         action='store_true',
                         help='customize and compile test grammars')
