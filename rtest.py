@@ -175,7 +175,7 @@ def _run_test(
         process=False,
         compare=False,
 ) -> Tuple[str, str, pathlib.Path]:
-    name, idx, chc, dat, txt, skel, prof, gold = args
+    name, idx, chc, txt, skel, prof, gold = args
     log = _unique_log_path(name)
     result = DONE  # default if no skip, error, failure, or comparison pass
 
@@ -188,15 +188,16 @@ def _run_test(
             result = SKIP
         else:
             try:
-                if customize:
+                if customize or process:
                     grm = _customize(name, chc, logf)
-                    dat = _compile(name, grm, logf)
                 # mkskel if requested or if necessary
                 if mkskel or (mkskel is None and skel is None):
                     skel = _mkskel(name, txt, logf)
                 if process:
+                    dat = _compile(name, grm, logf)
                     prof = _mkprof(name, skel, logf)
                     _process(name, dat, prof, logf)
+                    dat.unlink()
                 if compare:
                     passed = _compare(name, prof, gold, logf)
                     result = PASS if passed else FAIL
@@ -204,9 +205,6 @@ def _run_test(
                 _lognow('\n=====', logf)
                 traceback.print_exc(file=logf)
                 result = ERROR
-            # delete the dat file; it's a big file that's easy to recreate
-            if dat.exists():
-                dat.unlink()
 
         _lognow('\nResult: ' + result, logf)
         return name, result, log
@@ -221,7 +219,7 @@ def list_tests(args, verbose=False):
     choices file, skeleton, and gold profile, and whether it is to be
     skipped.
     """
-    for name, idx, chc, dat, txt, skel, prof, gold in _discover(args):
+    for name, idx, chc, txt, skel, prof, gold in _discover(args):
 
         print(name)
 
@@ -254,7 +252,7 @@ def update_test(args):
     tests = list(_discover(args))
     if len(tests) != 1:
         raise RegressionTestError('only 1 test may be updated at a time')
-    name, idx, chc, dat, txt, skel, prof, gold = tests[0]
+    name, idx, chc, txt, skel, prof, gold = tests[0]
 
     try:
         db = tsdb.Database(prof)
@@ -354,7 +352,7 @@ def remove_test(args):
     tests = list(_discover(args))
     if len(tests) > 1:
         raise RegressionTestError('only 1 test may be removed at a time')
-    name, idx, chc, dat, txt, skel, prof, gold = tests[0]
+    name, idx, chc, txt, skel, prof, gold = tests[0]
 
     for obj in (chc, txt, skel, prof, gold):
         if obj is not None:
@@ -394,7 +392,6 @@ def _discover(args):
     """
     index     = _parse_index(args.index)
     choices   = _list_files(CHOICES_DIR)
-    grammars  = _list_dat_files(GRAMMARS_DIR)
     txtsuites = _list_files(TXT_SUITE_DIR)
     skeletons = _list_testsuites(SKELETONS_DIR)
     profiles  = _list_testsuites(CURRENT_DIR)
@@ -403,7 +400,6 @@ def _discover(args):
     all_names = sorted(
         (set(index)
          .union(choices)
-         .union(grammars)
          .union(txtsuites)
          .union(skeletons)
          .union(profiles)
@@ -421,7 +417,6 @@ def _discover(args):
             yield (name,
                    idx,
                    chc,
-                   grammars.get(name),
                    txtsuites.get(name),
                    skl,
                    profiles.get(name),
@@ -477,14 +472,6 @@ def _list_files(dir):
     for path in dir.glob('*'):
         if path.is_file() and path.name not in ('README', 'README.md'):
             paths[path.name] = path
-    return paths
-
-
-def _list_dat_files(dir):
-    """Map basename to dat files."""
-    paths = {}
-    for path in dir.rglob(DAT_FILENAME):
-        paths[path.parent.parent.name] = path
     return paths
 
 
@@ -701,7 +688,7 @@ if __name__ == '__main__':
                         help='find skipped/incomplete tests, ignore others')
     parser.add_argument('-c', '--customize',
                         action='store_true',
-                        help='customize and compile test grammars')
+                        help='customize test grammars')
     parser.add_argument('-s', '--mkskel',
                         action='store_true',
                         help='make test skeletons from txt-suites')
