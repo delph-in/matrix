@@ -172,7 +172,7 @@ class PositionClass(MorphotacticNode):
         return self.hierarchy.get_lineage(key=self.key, relation='input')
 
     def valid_inputs(self):
-        all_inps = self.input_span().values()
+        all_inps = list(self.input_span().values())
         # there are two conditions preventing an ancestor from being an input:
         # 1. A node, or all its ancestors, req-fwd an intervening node
         # 2. This pc, or all its followers, req-bkwd an intervening node
