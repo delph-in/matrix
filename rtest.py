@@ -568,7 +568,11 @@ def _mkskel(name, txt, logf):
         raise RegressionTestError(
             f'Did you forget to add the new txt-suite to {TXT_SUITE_DIR!s}?')
     try:
-        mkprof(dest, source=txt, schema=RELATIONS_FILE, quiet=True)
+        mkprof(dest,
+               source=txt,
+               schema=RELATIONS_FILE,
+               skeleton=True,
+               quiet=True)
     except CommandError as exc:
         raise RegressionTestError('Failed to prepare skeleton.') from exc
 
