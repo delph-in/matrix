@@ -157,15 +157,16 @@ def run_tests(args):
                 print('  see: {}'.format(str(logpath)))
             print('\r' + _progress_bar(i, total), end='')
             totals[result] += 1
+    print()  # end progress bar line
 
     if args.compare:
-        print('\n******** SUMMARY *************')
+        print('\n************* SUMMARY *************')
         width = len(str(total))  # to align the numbers on /
-        print('Passed {0:{2}}/{1} tests;'.format(totals[PASS], total, width))
-        print('Failed {0:{2}}/{1} tests;'.format(totals[FAIL], total, width))
-        print('Errors {0:{2}}/{1} tests;'.format(totals[ERROR], total, width))
+        print('Passed  {0:{2}}/{1} tests'.format(totals[PASS], total, width))
+        print('Failed  {0:{2}}/{1} tests'.format(totals[FAIL], total, width))
+        print('Errors  {0:{2}}/{1} tests'.format(totals[ERROR], total, width))
         if totals[SKIP]:
-            print('Skipped {0:{2}}/{1} tests.'
+            print('Skipped {0:{2}}/{1} tests'
                   ' (run rtest.py --list --skipped --verbose for more info)'
                   .format(totals[SKIP], total, width))
 
