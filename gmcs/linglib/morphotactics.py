@@ -476,8 +476,7 @@ LEX_RULE_SUPERTYPES = ['cat-change-only-lex-rule',
                        'low-nmz-subjid-trans-lex-rule',
                        'low-nmz-subjid-compsid-lex-rule',
                        'add-icons-subj-foc-lex-rule',
-                       'add-icons-obj-foc-lex-rule',
-                       'add_icons_self_foc_lex_rule']
+                       'add-icons-obj-foc-lex-rule']
 
 ALL_LEX_RULE_SUPERTYPES = LEX_RULE_SUPERTYPES + ['infl-lex-rule',
                                                  'const-lex-rule',
@@ -511,8 +510,6 @@ def set_lexical_rule_supertypes(lrt, mtx_supertypes):
                 lrt.supertypes.add('add-icons-subj-foc-lex-rule')
             elif infostr_features['head'] == 'obj' and infostr_features['value'] == 'focus':
                 lrt.supertypes.add('add-icons-obj-foc-lex-rule')
-            elif infostr_features['head'] == '':
-                lrt.supertypes.add('add-icons-self-foc-lex-rule')
 
 def calculate_supertypes(pch):
     # calculate daughter types first, because we want to percolate them
