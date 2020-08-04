@@ -830,12 +830,12 @@ def write_evidential_behavior(lrt, mylang, choices, pc_evidential):
     EVIDENTIAL_LEX_RULE = '''evidential-lex-rule := cont-change-only-lex-rule &
   same-spr-lex-rule &
   same-spec-lex-rule &
-[ C-CONT [ RELS <! event-relation &
+[ C-CONT [ RELS.LIST < event-relation &
            [ LBL #ltop,
            ARG0 event,
-           ARG1 #harg ] !>,
-       HCONS <! qeq & [ HARG #harg,
-                LARG #larg ] !>,
+           ARG1 #harg ] >,
+       HCONS.LIST < qeq & [ HARG #harg,
+                LARG #larg ] >,
        HOOK [ LTOP #ltop,
           INDEX #mainev,
           XARG #mainagent ] ],
@@ -849,7 +849,7 @@ def write_evidential_behavior(lrt, mylang, choices, pc_evidential):
         mylang.set_section('lexrules')
         mylang.add(EVIDENTIAL_LEX_RULE)
         infl_evid_def = lrt.evidential + '''-evidential-lex-rule := evidential-lex-rule & 
-        [ C-CONT.RELS <! [ PRED "ev_''' + lrt.evidential + '''_rel" ] !> ].
+        [ C-CONT.RELS.LIST < [ PRED "ev_''' + lrt.evidential + '''_rel" ] > ].
         '''
         mylang.add(infl_evid_def)
         mylang.set_section(prev_section)
@@ -924,12 +924,12 @@ def write_valence_change_behavior(pc, lrt, mylang, choices):
             lrt.supertypes.add(lexrule_name('added-arg-applicative', argnum, numargs))
             lrt.supertypes.add(lexrule_name('added-arg-head-type', argnum, numargs, op['argtype'].lower()))
             predname = op.get('predname','undef_pred')
-            mylang.add(lrt.identifier() + ' := [ C-CONT.RELS <! [ PRED "' + predname +'" ] !> ].')
+            mylang.add(lrt.identifier() + ' := [ C-CONT.RELS.LIST < [ PRED "' + predname +'" ] > ].')
         elif operation == 'subj-add':
             lrt.supertypes.add('same-non-local-lex-rule')
             lrt.supertypes.add(lexrule_name('subj-add', argnum, transitive))
             predname = op.get('predname','causative_rel')
-            mylang.add(lrt.identifier() + ' := [ C-CONT.RELS <! [ PRED "' + predname + '" ] !> ].')
+            mylang.add(lrt.identifier() + ' := [ C-CONT.RELS.LIST < [ PRED "' + predname + '" ] > ].')
 
 
     # final cleanup once all ops are known
