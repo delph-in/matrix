@@ -100,11 +100,9 @@ class RegressionTestError(Exception):
 def main(args):
     # if no steps are specified, do all of them (but this may be
     # avoided by using --list or --update)
-    if not any([args.customize, args.mkskel, args.mkprof,
-                args.process, args.compare]):
+    if not any([args.customize, args.mkskel, args.process, args.compare]):
         args.customize = True
         args.mkskel = None  # `None` here means "only if needed"
-        args.mkprof = True
         args.process = True
         args.compare = True
 
@@ -145,7 +143,6 @@ def run_tests(args):
         _run_test,
         customize=args.customize,
         mkskel=args.mkskel,
-        mkprof=args.mkprof,
         process=args.process,
         compare=args.compare,
     )
@@ -175,7 +172,6 @@ def _run_test(
         args,
         customize=False,
         mkskel=False,
-        mkprof=False,
         process=False,
         compare=False,
 ) -> Tuple[str, str, pathlib.Path]:
@@ -198,9 +194,8 @@ def _run_test(
                 # mkskel if requested or if necessary
                 if mkskel or (mkskel is None and skel is None):
                     skel = _mkskel(name, txt, logf)
-                if mkprof:
-                    prof = _mkprof(name, skel, logf)
                 if process:
+                    prof = _mkprof(name, skel, logf)
                     _process(name, dat, prof, logf)
                 if compare:
                     passed = _compare(name, prof, gold, logf)
@@ -313,7 +308,6 @@ def add_test(args):
     # current profile.
     args.customize = True
     args.mkskel = True
-    args.mkprof = True
     args.process = True
     args.compare = False
     run_tests(args)
@@ -328,7 +322,6 @@ def add_test(args):
     # Test the new test:
     args.customize = False
     args.mkskel = False
-    args.mkprof = False
     args.process = False
     args.compare = True
     run_tests(args)
@@ -665,12 +658,11 @@ if __name__ == '__main__':
         Regression testing involves a pipeline of independent steps.
         If no steps are specified, all test steps below are executed:
 
-        Step         Requires       Result
-        ===========  =============  ============================
-        --customize  choices        dat (compiled grammar image)
-        --mkprof     skeleton       profile (unprocessed)
-        --process    dat, profile   profile (processed)
-        --compare    profile, gold  regression test results
+        Step         Requires           Result
+        ===========  =============      ============================
+        --customize  choices            customized grammar
+        --process    grammar, skeleton  processed profile
+        --compare    profile, gold      regression test results
 
         Also, the following are for constructing and updating tests:
 
@@ -713,9 +705,6 @@ if __name__ == '__main__':
     parser.add_argument('-s', '--mkskel',
                         action='store_true',
                         help='make test skeletons from txt-suites')
-    parser.add_argument('-m', '--mkprof',
-                        action='store_true',
-                        help='make test profiles from skeletons')
     parser.add_argument('-p', '--process',
                         action='store_true',
                         help='process test profiles with compiled grammars')
