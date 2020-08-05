@@ -396,6 +396,7 @@ def clean_up(args):
     2) current profiles
     3) logs
     '''
+    count = 0
     for name, _, _, _, _, prof, _ in _discover(args):
         deleted = False
         grm = GRAMMARS_DIR / name
@@ -412,7 +413,10 @@ def clean_up(args):
             log.unlink()
             deleted = True
         if deleted:
-            print(f'cleaned files for {name}')
+            count += 1
+            if args.verbosity >= 2:
+                print(f'cleaned files for {name}')
+    print(f'Finished cleaning files for {count} tests.')
 
 
 # HELPER FUNCTIONS ############################################################
