@@ -73,6 +73,7 @@ def linewidth(): return min(MAX_LINE_WIDTH, shutil.get_terminal_size()[0])
 
 # ANSI colors; see: https://en.wikipedia.org/wiki/ANSI_escape_code#Colors
 def red(s): return color('\x1b[31m', s)
+def boldred(s): return color('\x1b[31m\x1b[1m', s)
 def green(s): return color('\x1b[32m', s)
 def yellow(s): return color('\x1b[33m', s)
 def color(clr, s): return '{}{}\x1b[0m'.format(clr, s)
@@ -83,9 +84,9 @@ def yes_or_no(obj): return red('no') if obj is None else green('yes')
 REPORT_COLOR = {
     DONE: green,
     PASS: green,
-    FAIL: yellow,
+    FAIL: red,
     SKIP: yellow,
-    ERROR: red
+    ERROR: boldred
 }
 
 
