@@ -115,7 +115,7 @@ def customize_adv_neg(mylang, ch, lexicon, rules):
     mylang.add('''neg-adv-lex := basic-scopal-adverb-lex &
                  [ SYNSEM.LOCAL.CAT [ VAL [ SPR < >,
                                             COMPS < >,
-                                            SUBJ < > ],
+                                            SUBJ < >, SPEC < > ],
                                       HEAD.MOD < [ LOCAL.CAT.HEAD verb ] > ]].''',
                'Type for negative adverbs.')
 
@@ -151,6 +151,9 @@ def customize_adv_neg(mylang, ch, lexicon, rules):
                 [ STEM < \"'+ orthstr +'\" >,\
                   SYNSEM.LKEYS.KEYREL.PRED \"neg_rel\" ].')
 
+    # olzama 2020-04-22 Since this is for sentential negation,
+    # these rules should probably always be constrained to only
+    # take verby head daughters? I did not make any changes though.
     rules.add('adj-head-scop := adj-head-scop-phrase.')
     rules.add('head-adj-scop := head-adj-scop-phrase.',
               'Rule instances for head-modifier structures. Corresponding types\n' +
