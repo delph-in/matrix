@@ -766,7 +766,7 @@ def customize_possessum_irules(strat,mylang,rules,ch,strat_num,mod_spec,mark_loc
             # Add any feature constraints to the possessor (only if the possessor is unmarked)
             instance_tmp={}
             if strat.get('possessor-feat'):
-                for key in strat.keys():
+                for key in list(strat.keys()):
                     new_key=key.replace('feat','skip')
                     new_key=new_key.replace('possessor-skip','feat')
                     instance_tmp[new_key]=strat.get(key)
@@ -820,7 +820,7 @@ def customize_possessum_irules(strat,mylang,rules,ch,strat_num,mod_spec,mark_loc
             # Add any feature constraints to the possessor (only if the possessor is unmarked)
             instance_tmp={}
             if strat.get('possessor-feat'):
-                for key in strat.keys():
+                for key in list(strat.keys()):
                     new_key=key.replace('feat','skip')
                     new_key=new_key.replace('possessor-skip','feat')
                     instance_tmp[new_key]=strat.get(key)
@@ -1105,7 +1105,7 @@ def customize_possessor_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod
     # Add any necessary constraints to the complement of the possessor-marking word:
     instance_tmp={}
     if strat.get('dep-comp-feat'):
-        for key in strat.keys():
+        for key in list(strat.keys()):
             new_key=key.replace('feat','skip')
             new_key=new_key.replace('dep-comp-skip','feat')
             instance_tmp[new_key]=strat.get(key)
@@ -1148,7 +1148,7 @@ def customize_possessum_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod
             if strat.get('possessor-feat'): #TODO change to checking if possessor is marked
                 instance_tmp={}
                 if strat.get('possessor-feat'):
-                    for key in strat.keys():
+                    for key in list(strat.keys()):
                         new_key=key.replace('feat','skip')
                         new_key=new_key.replace('possessor-skip','feat')
                         instance_tmp[new_key]=strat.get(key)
@@ -1225,7 +1225,7 @@ def customize_possessum_lexicon(strat,mylang,ch,lexicon,strat_name,strat_num,mod
         # Add any feature constraints to the possessor (only if the possessor is unmarked)
         instance_tmp={}
         if strat.get('possessor-feat'):
-            for key in strat.keys():
+            for key in list(strat.keys()):
                 new_key=key.replace('feat','skip')
                 new_key=new_key.replace('possessor-skip','feat')
                 instance_tmp[new_key]=strat.get(key)
@@ -1356,7 +1356,7 @@ def customize_possessor_pron_lexicon(strat,mylang,ch,lexicon,strat_name,strat_nu
         # Add agr features where appropriate
         instance_tmp={}                
         # Add PNG agr features:
-        for key in pron_inst.keys():
+        for key in list(pron_inst.keys()):
             # Relabel the inherent features as something else ('skip') 
             # Relabel the agreement features as simply features ('feat')
             # Then call customize_feature_values() with the 'poss-marker' setting
@@ -1373,8 +1373,7 @@ def customize_possessor_pron_lexicon(strat,mylang,ch,lexicon,strat_name,strat_nu
 
         # Add non-PNG features (only enabled for mod-like prons):
         instance_tmp={}
-        for key in pron_inst.keys():
-            
+        for key in list(pron_inst.keys()):            
             new_key=key.replace('feat','skip')
             new_key=new_key.replace('non-png-skip','feat')
             instance_tmp[new_key]=pron_inst.get(key)
