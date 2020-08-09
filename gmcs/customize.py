@@ -15,6 +15,7 @@ from delphin import tsdb
 from gmcs import tdl
 from gmcs.choices import ChoicesFile
 from gmcs.linglib import adnominal_possession
+from gmcs.linglib import adverbs_adpositions
 from gmcs.linglib import agreement_features
 from gmcs.linglib import argument_optionality
 from gmcs.linglib import case
@@ -32,6 +33,7 @@ from gmcs.linglib import toolboximport
 from gmcs.linglib import valence_change
 from gmcs.linglib import verbal_features
 from gmcs.linglib import word_order
+from gmcs.linglib import  wh_ques
 from gmcs.linglib import yes_no_questions
 from gmcs.utils import format_comment_block
 
@@ -484,6 +486,10 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
     # do on the other TDL files.  NOTE: This needs to be called
     # before customize_lexicon() and customize_inflection()
     lexical_items.insert_ids(ch)
+    # Currently, yes-no questions need to go before the lexicon
+    # because the lexicon needs to know whether there are obligatory question particles,
+    # to determine the head on the question-embedding verb.
+    yes_no_questions.customize_yesno_questions(mylang, ch, rules, lrules, hierarchies,roots)
 
     # The following might modify hierarchies in some way, so it's best
     # to customize those components and only have them contribute their
@@ -522,9 +528,12 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
     valence_change.customize_valence_change(mylang, ch, lexicon, rules, lrules, hierarchies)
     word_order.customize_word_order(mylang, ch, rules)
     coordination.customize_coordination(mylang, ch, lexicon, rules, irules)
-    yes_no_questions.customize_yesno_questions(mylang, ch, rules, lrules, hierarchies)
     clausalmods.customize_clausalmods(mylang, ch, lexicon, rules, roots, trigger)
     clausalcomps.customize_clausalcomps(mylang,ch,lexicon,rules)
+    adverbs_adpositions.customize_adv_adp(ch,mylang,rules)
+    wh_ques.customize_wh_ques(mylang,ch,rules,roots)
+
+    # Service customization
     customize_punctuation(grammar_path)
     customize_test_sentences(grammar_path)
     customize_itsdb(grammar_path)
