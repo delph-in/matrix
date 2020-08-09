@@ -11,13 +11,13 @@ Append with new constants, if they are likely to be used across modules.
 '''
 
 
-
 ### Choices for values of checkboxes, radio buttons ###
 
 ON = 'on' # Choice convention for checked box
 YES = 'yes' # Choice convention for selected radio button
 
 ORTH = 'orth' # Choice convention for orthographies associated with stems and affixes.
+
 ### Section names ###
 
 WORD_ORDER = 'word-order' # Choices section associated with word order subpage
@@ -33,3 +33,26 @@ HEAD_COMP = 'head-comp'
 OV_ORDERS = ['sov', 'ovs', 'osv', 'v-final']
 VFINAL = ['sov','osv','v-final']
 VO_ORDERS = ['svo', 'vos', 'vso', 'v-initial']
+
+### WH-QUESTIONS
+
+IN_SITU = 'in-situ' # No question phrase fronting
+EMB_INSITU = 'embed-insitu' # Embedded in situ questions (when fronting is also possible; that's rare)
+MTRX_FRONT = 'front-matrix' # Question phrases fronting in matrix clauses
+WH_QUE_PTCL = 'wh-q-part' # Question particle for constituent questions
+WH_INFL = 'wh-q-infl' # Inflectional paradigm for constituent questions
+MULTI = 'multi' # Multiple (e.g. fronting)
+ALL_OBLIG = 'all-oblig' # All question phrases are fronted obligatorily
+SG_OBLIG = 'single-oblig' # One question phrase is obligatorily fronted
+SINGLE = 'single'
+NO_MULTI = 'no-multi-ques' # No multiple questions in one clause
+PIED = 'pied-pip' # Pied piping
+PIED_ADP = 'pied-pip-adp' # Pied piping of specifically adpositions
+OBL_PIP_NOUN = 'oblig-pied-pip-noun' # Obligatory pied piping of nouns
+OBL_PIP_ADP = 'oblig-pied-pip-adp' # Obligatory pied piping of adpositions
+MTRX_FR_OPT = 'matrix-front-opt' # Optionality of fronting in matrix clauses
+
+
+### LEXICAL TYPE NAMES (SOME); see lexbase.py
+WH_PRO = 'wh-pronoun-noun-lex'
+INTER = 'inter' # Interrogative words flag
