@@ -148,8 +148,12 @@ lex-or-phrase-synsem := synsem-min &
 ; SSH (2013-03-05) L/R-PERIPH are newly added in order to constrain
 ; clause-initial/final focus.
 
+; OZ 2020-01-28 Adding L-QUE feature to mark whether or not there
+; is a wh-word at the left periphery.
+
 synsem := synsem-min &
-  [ L-PERIPH luk,
+  [ L-QUE bool,
+    L-PERIPH luk,
     R-PERIPH luk ].
 
 expressed-synsem := synsem.
@@ -228,12 +232,14 @@ non-local-min := avm.
 non-local := non-local-min &
   [ SLASH append-list,
     QUE append-list,
-    REL append-list ].
+    REL append-list,
+    YNQ append-list ].
 
 non-local-none := non-local &
   [ SLASH.LIST < >,
     QUE.LIST < >,
-    REL.LIST < > ].
+    REL.LIST < >,
+    YNQ.LIST < > ].
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;  CAT values
@@ -254,13 +260,35 @@ cat-min := avm.
 ; SSH 2012-02-16 MKG stands for "MarKinG" which represents lexical
 ; markings for information structure.
 
+; OZ 2020-03-30 Adding WH feature to model embedded questions, including embedding by
+; Mandarin-like languages where a particle
+; occurs with polar but not with constituent questions.
+; The logical-or value of the feature come into play when we want to rule out
+; sentences like "I ask Kim arrived." "Ask" should insist not only that its complement
+; is SF ques (this alone won't work as by default clauses are prop-or-ques), but
+; also that it is WH.BOOL +. A constituent question will be WH.BOOL + if the head-complement
+; rule's mother's WH is the OR of its daughters.
+
+or-and := avm &
+[ LOGICAL-OR logical-or,
+  LOGICAL-AND logical-and ].
+
+or-and-minus := or-and &
+[ LOGICAL-OR.BOOL -,
+  LOGICAL-AND.BOOL - ].
+
+or-and-plus := or-and &
+[ LOGICAL-OR.BOOL +,
+  LOGICAL-AND.BOOL + ].
+
 cat := cat-min &
   [ HEAD head-min,
     VAL valence-min,
     MC luk,
     MKG mkg,
     HC-LIGHT luk,
-    POSTHEAD bool ].
+    POSTHEAD bool,
+    WH or-and ].
 
 cat-sat := cat &
  [ VAL [ SPR olist,
@@ -958,9 +986,111 @@ ocons := olist & cons &
 
 onull := olist & null.
 
+; A list that is either empty or contains canonical-sysnems,
+; so, no gaps. This is to rule out ambiguity when a head-adjunct
+; phrase would attach both before and after complement/subject extraction.
+
+clist := list.
+
+oclist := clist & olist.
+
+ccons := clist & cons &
+  [ FIRST canonical-synsem,
+    REST  clist ].
+
+; OZ 2020-01-30 The below type isn't possible
+; but possibly isn't needed either.
+
+;occons := ccons & ocons.
+
+cnull := clist & null.
+
+ocnull := cnull & onull.
+
 ; The LinGO grammar also makes use of a prolist -- or list
 ; of synsems of type pro-ss.
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Logical operations
+
+bool-wrapper := avm &
+  [ BOOL bool ].
+
+logical-and := bool-wrapper &
+  [ BOOL #result,
+    AND list-of-bools-with-and & [ AND-RESULT #result ] ].
+
+logical-or := bool-wrapper &
+  [ BOOL #result,
+    OR list-of-bools-with-or & [ OR-RESULT #result ] ].
+
+logical-not := bool-wrapper &
+  [ BOOL #result,
+    NOT bool-wrapper & [ BOOL bool-with-not & [ RESULT-BOOL #result ] ] ].
+
+list-of-bools-with-and := list &
+  [ AND-RESULT bool ].
+
+cons-of-bools-with-and := list-of-bools-with-and & cons &
+  [ FIRST.BOOL bool-with-and & [ OTHER-BOOL #other,
+         RESULT-BOOL #result ],
+    REST list-of-bools-with-and & [ AND-RESULT #other ],
+    AND-RESULT #result ].
+
+null-of-bools-with-and := list-of-bools-with-and & null &
+  [ AND-RESULT + ].
+
+list-of-bools-with-or := list &
+  [ OR-RESULT bool ].
+
+cons-of-bools-with-or := list-of-bools-with-or & cons &
+  [ FIRST.BOOL bool-with-or & [ OTHER-BOOL #other,
+        RESULT-BOOL #result ],
+    REST list-of-bools-with-or & [ OR-RESULT #other ],
+    OR-RESULT #result ].
+
+null-of-bools-with-or := list-of-bools-with-or & null &
+  [ OR-RESULT - ].
+
+bool-with-operation := bool &
+  [ RESULT-BOOL bool ].
+
+bool-with-not := bool-with-operation.
+
++-with-not := bool-with-not & + &
+  [ RESULT-BOOL - ].
+
+--with-not := bool-with-not & - &
+  [ RESULT-BOOL + ].
+
+bool-with-binary-operation := bool-with-operation &
+  [ OTHER-BOOL bool ].
+
+bool-with-and := bool-with-binary-operation.
+
++-with-and := bool-with-and & + &
+  [ OTHER-BOOL #result,
+    RESULT-BOOL #result ].
+
+--with-and := bool-with-and & - &
+  [ RESULT-BOOL - ].
+
+bool-with-or := bool-with-binary-operation.
+
++-with-or := bool-with-or & + &
+  [ RESULT-BOOL + ].
+
+--with-or := bool-with-or & - &
+  [ OTHER-BOOL #result,
+    RESULT-BOOL #result ].
+
+my-and := *top* &
+  [ TEST1 [ AND < [ BOOL + ], [ BOOL + ], [ BOOL + ], [ BOOL + ] > ],
+    TEST2 [ AND < [ BOOL + ], [ BOOL - ] > ],
+    TEST3 [ OR < [ BOOL + ], [ BOOL - ] > ],
+    TEST4 [ OR < [ BOOL - ], [ BOOL - ] > ],
+    TEST5 [ NOT [ BOOL - ] ],
+    TEST6 [ OR < [ BOOL - ], [ NOT [ BOOL - ] ] > ] ].
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Lexical rules
@@ -975,15 +1105,18 @@ onull := olist & null.
 
 ; SSH 2012-03-03 ICONS is newly added in lex-rule.
 
+; OZ 2020-05-19 Adding WH feature for handling embedded constituent questions.
 lex-rule := phrase-or-lexrule & word-or-lexrule &
   [ NEEDS-AFFIX bool,
-    SYNSEM.LOCAL.CONT [ RELS.APPEND < #r1, #r2 >,
+    SYNSEM.LOCAL [ CAT.WH #wh,
+                   CONT [ RELS.APPEND < #r1, #r2 >,
 			HCONS.APPEND < #h1, #h2 >,
-			ICONS.APPEND < #i1, #i2 > ],
+			ICONS.APPEND < #i1, #i2 > ] ],
     DTR #dtr & word-or-lexrule &
-		[ SYNSEM.LOCAL.CONT [ RELS #r1,
+		[ SYNSEM.LOCAL [ CAT.WH #wh,
+		               CONT [ RELS #r1,
 				      HCONS #h1,
-				      ICONS #i1 ],
+				      ICONS #i1 ] ],
 		  ALTS #alts ],
     C-CONT [ RELS #r2,
 	     HCONS #h2,
@@ -1625,8 +1758,10 @@ head-compositional := headed-phrase &
 ; ERB 2007-01-21 COMPS olist is no longer a fair constraint on
 ; clauses, under current analysis.
 
-clause := phrasal &
-  [ SYNSEM.NON-LOCAL.QUE.LIST < > ].
+; OZ 2020-01-25 Removing the QUE constraint to allow in-situ questions.
+
+clause := phrasal. ; &
+;  [ SYNSEM.NON-LOCAL.QUE.LIST < > ].
 
 
 ; The following subtypes of clause will need more constraints,
@@ -1671,13 +1806,13 @@ clause := phrasal &
 
 ; SSH 2012-05-07 ICONS <! !>
 ; SSH 2014-11-26 CLAUSE -> IARG1
+; OZ 2019-06-13 Removing QUE constraint to allow multiple wh-questions.
 basic-non-rel-clause := clause & head-compositional &
   [ SYNSEM.NON-LOCAL.REL.LIST < >,
     HEAD-DTR.SYNSEM [ LOCAL.CONT.HOOK [ INDEX #index,
 					ICONS-KEY.IARG1 #index,
 					CLAUSE-KEY #index ],
-		      NON-LOCAL [ REL.LIST < >,
-		                  QUE.LIST < > ] ],
+		      NON-LOCAL.REL.LIST < > ],
     C-CONT [ RELS.LIST < >,
 	     HCONS.LIST < > ] ].
 
@@ -1744,20 +1879,21 @@ imperative-clause := basic-non-rel-clause &
 ; Thus basic-filler-phrase does not inherit form headed-phrase.
 ; We provide a subtype, basic-head-filler-phrase, below, which does.
 
+; OZ 2020-01-25 Relaxing QUE constraint
+; to allow multiple wh-questions.
+
 basic-filler-phrase := binary-phrase & phrasal &
-  [ SYNSEM [ LOCAL.CAT.VAL [ COMPS < >,
-                             SPR < > ],
-	     NON-LOCAL.SLASH.LIST < > ],
-    ARGS < [ SYNSEM [ LOCAL #slash & local &
+  [ SYNSEM [ LOCAL.CAT.VAL [ COMPS < >, SPEC < > ] ],
+    ARGS < [ SYNSEM [ LOCAL local &
 			    [ CAT.VAL [ SUBJ olist,
 					COMPS olist,
 					SPR olist ],
 			      CTXT.ACTIVATED + ],
-		      NON-LOCAL.SLASH.LIST < > ] ],
+		      NON-LOCAL [ SLASH append-list, QUE append-list, REL.LIST < >, YNQ append-list ] ] ],
 	   [ SYNSEM [ LOCAL.CAT [ VAL.COMPS olist ],
-		      NON-LOCAL [ SLASH [ LIST < #slash > ],
+		      NON-LOCAL [ SLASH append-list,
 				  REL.LIST < >,
-				  QUE.LIST < > ] ] ] > ].
+				  QUE append-list, YNQ append-list ] ] ] > ].
 
 ; ASF 2011-10-05 changed supertype 'headed-phrase' to more specific 'head-compostional'
 ; in order to make sure matrix.tdl provides the right semantics.
@@ -1770,7 +1906,8 @@ nc-filler-phrase := binary-phrase & phrasal &
                              SPR < > ],
 	     NON-LOCAL.SLASH.LIST < > ],
     ARGS <  [ SYNSEM [ LOCAL.CAT [ VAL.COMPS olist ],
-		       NON-LOCAL [ SLASH [ LIST < #slash > ],
+		       NON-LOCAL [ SLASH append-list &
+					 [ LIST < #slash > ],
 				   QUE.LIST < >,
 				   REL.LIST < > ] ] ],
 	    [ SYNSEM [ LOCAL #slash & local &
@@ -1819,22 +1956,30 @@ nc-head-filler-phrase := nc-filler-phrase & head-compositional.
 ; JDC 2012-06-02 adding [HC-LIGHT -] to basic-head-* phrases
 ; (with the exception of except head-comps)
 
+; OZ 2020-01-25 removing [ QUE 0-alist ] from the non-head daughter to allow in-situ questions.
+
+; OZ 2020-05-19 Adding WH feature for handling embedded constituent questions.
+
 basic-head-subj-phrase := head-valence-phrase & head-compositional &
 			  basic-binary-headed-phrase &
   [ SYNSEM phr-synsem &
-           [ LOCAL.CAT [ HC-LIGHT -,
-                         VAL [ SUBJ < >,
+           [ LOCAL.CAT [ WH [ LOGICAL-OR.OR < #or1, #or2 >,
+                              LOGICAL-AND.AND < #and1, #and2 >],
+                         HC-LIGHT -,
+                         VAL [ SPEC #spec,
+                               SUBJ < >,
                                COMPS #comps,
                                SPR #spr ] ] ],
-    HEAD-DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ < #synsem >,
+    HEAD-DTR.SYNSEM.LOCAL.CAT [ WH [ LOGICAL-OR #or1, LOGICAL-AND #and1 ],
+                                VAL [ SPEC #spec, SUBJ < #synsem >,
                                     COMPS #comps,
-                                    SPR #spr ],
+                                    SPR #spr ] ],
     NON-HEAD-DTR.SYNSEM #synsem & canonical-synsem &
-           [ LOCAL [ CAT [ VAL [ SUBJ olist,
+           [ LOCAL [ CAT [ WH [ LOGICAL-OR #or2, LOGICAL-AND #and2 ],
+                           VAL [ SUBJ olist,
                                  COMPS olist,
                                  SPR olist ] ] ],
-             NON-LOCAL [ SLASH.LIST < >,
-             		 QUE.LIST < >,
+             NON-LOCAL [ SLASH append-list,
                          REL.LIST < > ] ],
     C-CONT [ RELS.LIST < >, HCONS.LIST < >, ICONS.LIST < > ] ].
 
@@ -1874,10 +2019,13 @@ basic-head-subj-nmc-phrase := head-valence-phrase & basic-binary-headed-phrase &
 ; ERB 2007-01-21 Removing non-clause, which doesn't seem to be doing
 ; any work any more.
 
+; OZ 2020-05-19 Adding WH feature for handling embedded constituent questions.
+
 basic-head-spec-phrase-super := head-valence-phrase & phrasal &
               binary-headed-phrase &
   [ INFLECTED infl-satisfied,
-    SYNSEM [ LOCAL.CAT [ VAL [ SUBJ #subj,
+    SYNSEM [ LOCAL.CAT [ WH [ LOGICAL-OR.OR < #or1, #or2 >, LOGICAL-AND.AND < #and1, #and2 > ],
+                         VAL [ SUBJ #subj,
                                COMPS #spcomps,
                                SPR #spr,
                                SPEC #spec ],
@@ -1885,7 +2033,8 @@ basic-head-spec-phrase-super := head-valence-phrase & phrasal &
                          HC-LIGHT - ],
               MODIFIED #modif ],
     HEAD-DTR [ INFLECTED infl-satisfied,
-               SYNSEM [ LOCAL [ CAT [ HEAD #head,
+               SYNSEM [ LOCAL [ CAT [ WH [ LOGICAL-OR #or1, LOGICAL-AND #and1 ],
+                                      HEAD #head,
                                       VAL [ SUBJ #subj,
                                             COMPS olist & #comps,
                                             SPR < #synsem &
@@ -1895,7 +2044,7 @@ basic-head-spec-phrase-super := head-valence-phrase & phrasal &
                                 CONT.HOOK #hdhook ],
                         MODIFIED #hmodif ] ],
     NON-HEAD-DTR.SYNSEM #synsem &
-     [ LOCAL [ CAT [ VAL [ SPEC < [ LOCAL [ CAT [ HEAD #head,
+     [ LOCAL [ CAT [ WH [ LOGICAL-OR #or2, LOGICAL-AND #and2 ], VAL [ SPEC < [ LOCAL [ CAT [ HEAD #head,
                                                   VAL.COMPS #comps ],
                                             CONT.HOOK #hdhook ],
                                     MODIFIED #hmodif ] >,
@@ -1918,21 +2067,26 @@ basic-head-spec-phrase := basic-head-spec-phrase-super &
 ; that does not pass up the MC feature..token id between mother and head
 ; daughter removed
 
+; OZ 2020-05-19 Adding WH feature for handling embedded constituent questions.
+
 basic-head-comp-phrase := head-valence-phrase & head-compositional &
               binary-headed-phrase &
   [ SYNSEM phr-synsem-min &
-           [ LOCAL.CAT [ VAL [ SUBJ #subj,
+           [ LOCAL.CAT [ WH [ LOGICAL-OR.OR < #or1, #or2 >,
+                              LOGICAL-AND.AND < #and1, #and2 >],
+                         VAL [ SUBJ #subj,
                                SPEC #spec,
                                SPR #spr ],
                          POSTHEAD #ph,
                          HC-LIGHT #light ],
              LIGHT #light ],
-    HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL [ SUBJ #subj,
+    HEAD-DTR.SYNSEM [ LOCAL.CAT [ WH [ LOGICAL-OR #or1, LOGICAL-AND #and1 ],
+                                  VAL [ SUBJ #subj,
                                         SPEC #spec,
                                         SPR #spr ],
                                   HC-LIGHT #light,
                                   POSTHEAD #ph ]],
-    NON-HEAD-DTR.SYNSEM canonical-synsem,
+    NON-HEAD-DTR.SYNSEM canonical-synsem & [ LOCAL.CAT.WH [ LOGICAL-OR #or2, LOGICAL-AND #and2 ] ],
     C-CONT [ RELS.LIST < >, HCONS.LIST < >, ICONS.LIST < > ] ].
 
 
@@ -1952,7 +2106,9 @@ basic-head-2nd-comp-phrase := basic-head-comp-phrase &
                                           REST < #synsem . #othercomps > ],
     NON-HEAD-DTR.SYNSEM #synsem ].
 
-
+; OZ 2019-10-03 This looks awfully like the subject extraction rule,
+; which by the way used to have an MC - constraint. Could they be
+; merged? Or a supertype created at least?
 ; SSH 2013-04-08 non-canonical and non-matrix clausal head-comp-phrase
 ; This type cannot be a root node by itself ([MC -]).
 ; This typed phrase is supposed to be combined with a filler-phrase.
@@ -2167,18 +2323,21 @@ marker-final-phrase := basic-binary-marker-phrase &
 ; SSH 2012-03-03 ICONS
 ; SSH 2013-02-19 deleting ICONS ?
 
-
 ; EKN 2018-01-30
+; OZ 2020-05-19 Adding WH feature for handling embedded constituent questions.
+
 basic-bare-np-phrase := head-only & head-valence-phrase &
-  [ SYNSEM.LOCAL.CAT.VAL [ SPR < >,
+  [ SYNSEM [ LOCAL.CAT [ WH #wh,
+                       VAL [ SPR < >,
                            SUBJ < >,
-                           COMPS < > ],
-    HEAD-DTR.SYNSEM.LOCAL [ CAT [ HEAD noun,
+                           COMPS < >, SPEC #spec ] ] ],
+    HEAD-DTR.SYNSEM.LOCAL [ CAT [ WH #wh,
+                                  HEAD noun,
                                   VAL [ SPR < unexpressed &
                                               [ LOCAL.CAT.HEAD +nd,
                                                 OPT + ] >,
                                         SUBJ < >,
-                                        COMPS < > ] ],
+                                        COMPS < >, SPEC #spec ] ],
                             CONT.HOOK [ INDEX #index,
                                         LTOP #larg ] ],
     C-CONT [ RELS.LIST < quant-relation &
@@ -2192,18 +2351,30 @@ basic-bare-np-phrase := head-only & head-valence-phrase &
 
 ; Unary rules for extraction
 
+; OZ 2020-05-19 These unary rules should normally copy up their
+; WH value, like the bare NP rule.
+; This rules out sentences like "Who did you ask arrived?",
+; which is probably  for the better. With underspecified WH here,
+; such sentences will be admitted resulting in an MRS where the main verb
+; is questioned, which is probably wrong semantics. In languages
+; where such sentences are possible, perhaps some other mechanism
+; is at place, not LDD/filler-gap.
+
 basic-extracted-arg-phrase := head-valence-phrase & head-only &
-  [ SYNSEM.LIGHT - ].
+  [ SYNSEM [ LIGHT -, LOCAL.CAT.WH #wh ],
+   HEAD-DTR.SYNSEM.LOCAL.CAT.WH #wh ].
 
 basic-extracted-comp-phrase := basic-extracted-arg-phrase &
                                head-compositional &
   [ SYNSEM canonical-synsem &
-       [ LOCAL.CAT [ VAL [ SUBJ #subj,
+       [ LOCAL.CAT [ VAL [ SPEC #spec,
+                           SUBJ #subj,
                            SPR #spr,
                            COMPS #comps ],
                      MC #mc ] ],
     HEAD-DTR [ SYNSEM
-               [ LOCAL.CAT [ VAL [ SUBJ #subj,
+               [ LOCAL.CAT [ VAL [ SPEC #spec,
+                                   SUBJ #subj,
                                    SPR #spr,
                                    COMPS < gap . #comps > ],
                              MC #mc ] ] ],
@@ -2215,17 +2386,20 @@ basic-extracted-comp-phrase := basic-extracted-arg-phrase &
 ; to analysis of subject extraction for English.
 ; ASF 2011-10-05 Added supertype 'head-compositional' to basic-extracted-subj-phrase
 ; in order to make sure matrix.tdl provides the right semantics for extracted subjects.
+; OZ 2020-02-20 Removing COMPS constraints from mother and head daughter to accommodate
+; extraction from VSO languages (possibly required in other situations, too).
 
 basic-extracted-subj-phrase := basic-extracted-arg-phrase & head-compositional &
   [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >,
-                           SPR < >,
-                           COMPS < > ],
+                           COMPS #comps,
+                           SPEC #spec, SPR #spr ],
     HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL [ SUBJ < gap &
-                                             [ LOCAL #local & local &
+                                             [ LOCAL local &
                                                [ CONT.HOOK.INDEX ref-ind ] ] >,
-                                        COMPS olist ],
+                                        SPR #spr, COMPS #comps,
+                                        SPEC #spec],
                                   MC na ],
-                      NON-LOCAL.SLASH.LIST < #local > ],
+                      NON-LOCAL.SLASH append-list ],
     C-CONT [ RELS.LIST < >,
              HCONS.LIST < >,
              ICONS.LIST < > ] ].
@@ -2235,46 +2409,104 @@ basic-extracted-subj-phrase := basic-extracted-arg-phrase & head-compositional &
 ; non-empty comps lists.  The head-mod-phrase will pass up
 ; the COMPS requirement, whatever it was.
 
-head-mod-phrase := head-nexus-phrase &
+; OZ 2020-01-25 Changing the parent from head-nexus-phrase to head-nexus-rel
+; phrase, to allow appending QUE values, for multiple questions.
+
+head-mod-phrase := head-nexus-rel-phrase &
   [ SYNSEM [ LOCAL.CAT.VAL [ SUBJ #subj,
                              SPR #spr,
-                             COMPS #comps ],
+                             COMPS #comps, SPEC #spec ],
              MODIFIED hasmod ],
     HEAD-DTR.SYNSEM [ LOCAL.CAT.VAL [ SUBJ #subj,
                                       SPR #spr,
-                                      COMPS #comps ],
+                                      COMPS #comps, SPEC #spec ],
                       NON-LOCAL [ REL.LIST < > ] ] ].
 
 basic-extracted-adj-phrase := head-mod-phrase & head-only & phrasal.
 
-extracted-adj-phrase := basic-extracted-adj-phrase &
-  [ SYNSEM [ LOCAL.CAT [ POSTHEAD #ph,
+extracted-adj-phrase-simple := basic-extracted-adj-phrase &
+  [ SYNSEM [ LOCAL.CAT [ WH #wh,
+                         VAL.SPEC < >,
+                         POSTHEAD #ph,
                          MC #mc ],
-	     NON-LOCAL.SLASH.LIST
-		   < [ CAT [ HEAD [ MOD < [ LOCAL intersective-mod &
-                                                   [ CAT [ HEAD #head,
-                                                           VAL #val,
-                                                           POSTHEAD #ph,
-                                                           MC #mc ],
-                                                     CONT.HOOK #hook,
-                                                     CTXT #ctxt ] ] > ],
-                              VAL [ SUBJ olist,
-                                    COMPS olist,
-                                    SPR olist ] ] ] > ],
+	     NON-LOCAL [ QUE #que,
+	                 YNQ #ynq ] ],
+    HEAD-DTR.SYNSEM canonical-synsem &
+	   [ LOCAL local &
+		   [ CAT [ HEAD verb,
+		           WH #wh,
+		           VAL  [ SUBJ < synsem-min >, SPEC < > ],
+			       POSTHEAD #ph,
+                   MC #mc ],
+                   CONT.HOOK #hook ],
+	     MODIFIED notmod,
+	     NON-LOCAL [ QUE #que, SLASH append-list, YNQ #ynq ] ],
+    C-CONT [ HOOK #hook,
+         RELS.LIST < >,
+	     HCONS.LIST < >,
+	     ICONS.LIST < > ] ].
+
+extracted-adj-phrase := extracted-adj-phrase-simple &
+  [ SYNSEM [ NON-LOCAL [ SLASH append-list-with-placeholder &
+	                        [ PLACEHOLDER.LIST < [ CAT
+		                                            [ HEAD +rp &
+		                                                 [ MOD < [ LOCAL intersective-mod &
+                                                               [ CAT [ HEAD #head,
+                                                                       POSTHEAD #ph,
+                                                                       MC #mc ],
+                                                                  CONT.HOOK #hook,
+                                                                  CTXT #ctxt ] ] > ],
+                                                      VAL [ SPEC < >,
+                                                          SUBJ olist,
+                                                          COMPS olist,
+                                                          SPR olist ] ] ] > ] ] ],
     HEAD-DTR.SYNSEM canonical-synsem &
 	   [ LOCAL local &
 		   [ CAT [ HEAD #head,
-                           VAL #val & [ SUBJ < synsem-min &
-                                               [ NON-LOCAL.SLASH.LIST < > ] > ],
-			   POSTHEAD #ph,
-                           MC #mc ],
-                     CONT.HOOK #hook,
-                     CTXT #ctxt ],
-             NON-LOCAL.SLASH.LIST < >,
-	     MODIFIED notmod ],
-    C-CONT [ HOOK #hook,
-	     HCONS.LIST < >,
-	     ICONS.LIST < > ] ].
+		           POSTHEAD #ph,
+                   MC #mc ],
+                   CONT.HOOK #hook,
+                   CTXT #ctxt ],
+	     MODIFIED notmod ] ].
+
+extracted-adj-only-phrase := extracted-adj-phrase-simple &
+  [ SYNSEM [ NON-LOCAL [ SLASH append-list &
+	                        [ LIST < [ CAT
+		                                  [ HEAD +rp &
+		                                         [ MOD < [ LOCAL intersective-mod &
+                                                               [ CAT [ HEAD #head,
+                                                                       POSTHEAD #ph,
+                                                                       MC #mc ],
+                                                                  CONT.HOOK #hook,
+                                                                  CTXT #ctxt ] ] > ],
+                                                      VAL [ SPEC < >,
+                                                          SUBJ olist,
+                                                          COMPS olist,
+                                                          SPR olist ] ] ] > ] ] ],
+    HEAD-DTR.SYNSEM canonical-synsem &
+	   [ LOCAL local &
+		   [ CAT [ HEAD #head,
+		           POSTHEAD #ph,
+                   MC #mc ],
+                   CONT.HOOK #hook,
+                   CTXT #ctxt ],
+	     MODIFIED notmod,
+	     NON-LOCAL.SLASH 0-alist ] ].
+
+; OZ 2020-07-01 This requires that any arguments are extracted prior to the adjunct.
+extracted-adj-last-phrase := extracted-adj-phrase &
+  [ SYNSEM [ NON-LOCAL.SLASH append-list &
+		      [ APPEND < #slash, #placeholder >,
+		      PLACEHOLDER #placeholder ] ],
+    HEAD-DTR.SYNSEM.NON-LOCAL.SLASH #slash & [ LIST cons ] ].
+
+; OZ 2020-07-01 This requires that any arguments are extracted after the adjunct.
+extracted-adj-first-phrase := extracted-adj-phrase &
+  [ SYNSEM [ NON-LOCAL.SLASH append-list &
+		      [ APPEND < #placeholder, #slash >,
+		      PLACEHOLDER #placeholder ] ],
+    HEAD-DTR.SYNSEM.NON-LOCAL.SLASH #slash ].
+
 
 ; ERB 2004-05-10 Bug fix: non-head daughter's MOD..LIGHT value should
 ; be matched to head-daughters LIGHT value.
@@ -2282,13 +2514,16 @@ extracted-adj-phrase := basic-extracted-adj-phrase &
 ; mother and non-head-daughter, token-identity removed
 ; TJT 2015-01-31 Adding [MOD.OPT -] to NON-HEAD-DTR to keep predicative
 ; adjectives out of optional subject constructions
+; OZ 2020-01-25 Adding QUE append to support multiple questions.
 
 basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
-  [ SYNSEM [ LOCAL.CAT [ MKG #mkg ],
+  [ SYNSEM [ LOCAL.CAT [ MKG #mkg, WH [ LOGICAL-OR.OR < #or1, #or2 >,
+                                        LOGICAL-AND.AND < #and1, #and2 >] ],
              NON-LOCAL [ SLASH.APPEND < #s1, #s2 >,
-                         REL.LIST < > ] ],
+                         REL 0-alist, QUE.APPEND < #q1, #q2 > ] ],
     HEAD-DTR.SYNSEM
-           [ LOCAL [ CAT [ HEAD #head,
+           [ LOCAL [ CAT [ WH [ LOGICAL-OR #or1, LOGICAL-AND #and1 ],
+                           HEAD #head,
                            VAL #val,
                            POSTHEAD #ph,
                            MC #hmc,
@@ -2297,11 +2532,11 @@ basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
                                            CLAUSE-KEY #clause ],
                      AGR #agr ],
              NON-LOCAL #nonloc &
-                   [ SLASH #s2 ],
+                   [ SLASH #s2, QUE #q2 ],
              LIGHT #light,
              MODIFIED #modif ],
     NON-HEAD-DTR.SYNSEM
-           [ LOCAL [ CAT [ HEAD [ MOD < [ LOCAL local &
+           [ LOCAL [ CAT [ WH [ LOGICAL-OR #or2, LOGICAL-AND #and2 ], HEAD [ MOD < [ LOCAL local &
                                               [ CAT [ HEAD #head,
                                                       VAL #val,
                                                       POSTHEAD #ph,
@@ -2317,7 +2552,7 @@ basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
                            MKG #mkg ],
                      CONT.HOOK [ ICONS-KEY.IARG1 #clause,
                      CLAUSE-KEY #clause ] ],
-             NON-LOCAL [ SLASH #s1 ] ],
+             NON-LOCAL [ SLASH #s1, QUE #q1 ] ],
     C-CONT [ RELS.LIST < >, ICONS.LIST < > ] ].
 
 ;;;2011-11-07 removing head-mod-phrase-simple
@@ -2349,8 +2584,7 @@ adj-head-phrase := basic-head-mod-phrase-simple & head-final &
 head-adj-phrase := basic-head-mod-phrase-simple & head-initial & phrasal &
   [ SYNSEM.MODIFIED rmod,
     NON-HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL.SPR olist,
-                                      POSTHEAD + ],
-                          NON-LOCAL.QUE.LIST < > ] ].
+                                      POSTHEAD + ] ] ].
 
 ; We split head-adj-phrase and adj-head-phrase into two each,
 ; one for intersective modifiers and one for scopal modifiers, in order to
@@ -2387,9 +2621,9 @@ adv-null := adv-list & onull.
 ; rules?
 
 isect-mod-phrase := basic-head-mod-phrase-simple & head-compositional &
-  [ HEAD-DTR.SYNSEM.LOCAL [ CAT.MKG #mkg, CONT [ HOOK.LTOP #hand ] ],
+  [ HEAD-DTR.SYNSEM.LOCAL [ CAT [ MKG #mkg, WH #wh ], CONT [ HOOK.LTOP #hand ] ],
     NON-HEAD-DTR.SYNSEM.LOCAL [ CAT [ VAL.SPR adv-list,
-                                      HEAD.MOD < [ LOCAL intersective-mod & [ CAT.MKG #mkg ] ] > ],
+                                      HEAD.MOD < [ LOCAL intersective-mod & [ CAT [ MKG #mkg, WH #wh ] ] ] > ],
                                 CONT.HOOK.LTOP #hand ],
     C-CONT [ HCONS.LIST < >,
              ICONS.LIST < > ] ].
@@ -3253,6 +3487,7 @@ basic-scopal-mod-adj-lex := basic-adjective-lex & scopal-mod-lex.
 
 ;;; Adpositions
 
+; Information structure-marking adpositions:
 
 basic-adposition-lex := single-rel-lex-item & basic-icons-lex-item &
   [ SYNSEM [ LOCAL [ CAT [ HEAD adp,
@@ -3370,10 +3605,14 @@ basic-subord-conjunction-lex := basic-one-arg &
 		     R-HNDL #ltop2 ] ] ].
 
 
+basic-wh-word-lex := word &
+[ SYNSEM [ L-QUE +, LOCAL.CAT.WH or-and-plus ] ].
+
+basic-non-wh-word-lex := word &
+[ SYNSEM [ L-QUE -, LOCAL.CAT.WH or-and-minus ] ].
 
 ; Coming soon:
 ; Lexical type for negative particles like English "not"
-; Lexical type for WH elements
 ; Documentation listing the phenomena handled by these lexical types.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -3409,7 +3648,7 @@ basic-conj-lex := norm-zero-arg & no-hcons-lex-item &
 
 conj-lex := basic-conj-lex & single-rel-lex-item &
   [ SYNSEM [ LOCAL [ CAT [ HEAD conj & [ MOD null ],
-                           VAL [ SPR < >,
+                           VAL [ SPR < >, SPEC < >,
                                  COMPS < >,
                                  SUBJ < > ]],
                      CONT [ HOOK [ LTOP #ltop,
@@ -3432,16 +3671,17 @@ nosem-conj-lex := basic-conj-lex &
 ; Coordination phrases and rules
 coord-phrase := binary-phrase &
   [ SYNSEM [ LOCAL [ COORD-STRAT #cstrat,
-                   CAT [ HEAD.MOD #mod,
+                   CAT [ WH.LOGICAL-OR.OR #wh,
+                         HEAD.MOD #mod,
                          VAL #val ] ],
-	     NON-LOCAL #nl ],
-    LCOORD-DTR #ldtr & sign & [ SYNSEM [ LOCAL [ CAT [ HEAD.MOD #mod,
+	     NON-LOCAL [ SLASH #slash, REL #rel, QUE #que2, YNQ.APPEND < #ynq1, #ynq2 > ] ],
+    LCOORD-DTR #ldtr & sign & [ SYNSEM [ LOCAL [ CAT [ WH.LOGICAL-OR.OR #wh, HEAD.MOD #mod,
                                                      VAL #val ] ],
-				         NON-LOCAL #nl ] ],
+				         NON-LOCAL [ SLASH #slash, REL #rel, QUE append-list, YNQ #ynq1 ] ] ],
     RCOORD-DTR #rdtr & sign & [ SYNSEM [ LOCAL [ COORD-STRAT #cstrat,
-                                               CAT [ HEAD.MOD #mod,
+                                               CAT [ WH.LOGICAL-OR.OR #wh, HEAD.MOD #mod,
                                                      VAL #val ] ],
-					 NON-LOCAL #nl ] ],
+					 NON-LOCAL [ SLASH #slash, REL #rel, QUE #que2, YNQ #ynq2 ] ] ],
     ARGS < #ldtr, #rdtr > ].
 
 topormid-coord-phrase := coord-phrase &
@@ -3461,9 +3701,9 @@ mid-coord-rule := topormid-coord-phrase &
                    COORD-REL implicit-coord-rel ]].
 
 bottom-coord-phrase := phrase &
-  [ SYNSEM.NON-LOCAL #nl,
+  [ SYNSEM.NON-LOCAL [ SLASH #slash, REL #rel, QUE #que, YNQ append-list ],
     CONJ-DTR sign,
-    NONCONJ-DTR sign & [ SYNSEM.NON-LOCAL #nl ] ].
+    NONCONJ-DTR sign & [ SYNSEM.NON-LOCAL [ SLASH #slash, REL #rel, QUE #que, YNQ append-list ] ] ].
 
 unary-bottom-coord-rule := bottom-coord-phrase & unary-phrase &
   [ SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,
@@ -3708,11 +3948,11 @@ np-bottom-coord-phrase := bottom-coord-phrase &
 ; Event Coordination rules (for verbs and adjectives)
 
 event-coord-phrase := coord-phrase &
-  [ SYNSEM.LOCAL.CONT.HOOK.INDEX [ E #tam ],
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX [ E #tam, SF #sf ],
     LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.LTOP #lhndl,
     RCOORD-DTR.SYNSEM.LOCAL [ COORD-REL [ L-HNDL #lhndl,
                                           R-HNDL #rhndl,
-                                          R-INDEX.E #tam ],
+                                          R-INDEX [ E #tam, SF #sf ] ],
                               CONT.HOOK.LTOP #rhndl ]].
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -3769,7 +4009,7 @@ adv-bottom-coord-phrase := bottom-coord-phrase &
 vp-coord-phrase := event-coord-phrase &
   [ SYNSEM.LOCAL.CAT [ HEAD verb,
                        VAL.SUBJ < [ ] > ],
-    LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD verb,
+    LCOORD-DTR.SYNSEM [ LOCAL.CAT.HEAD verb, NON-LOCAL.QUE.LIST < > ],
     RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD verb ].
 
 basic-vp-top-coord-rule := vp-coord-phrase &
@@ -3791,9 +4031,10 @@ vp-bottom-coord-phrase := bottom-coord-phrase &
 ; S Coordination rules
 
 s-coord-phrase := event-coord-phrase &
-  [ SYNSEM.LOCAL.CAT [ HEAD verb,
+  [ SYNSEM [ LOCAL.CAT [ HEAD verb,
                        VAL.SUBJ < > ],
-    LCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD verb,
+              NON-LOCAL non-local-none ],
+    LCOORD-DTR.SYNSEM [ LOCAL.CAT.HEAD verb, NON-LOCAL.QUE.LIST < > ],
     RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD verb ].
 
 basic-s-top-coord-rule := s-coord-phrase &
@@ -3806,10 +4047,12 @@ basic-s-mid-coord-rule := s-coord-phrase &
 	     HCONS.LIST < > ]].
 
 s-bottom-coord-phrase := bottom-coord-phrase &
-  [ SYNSEM.LOCAL.CAT [ HEAD verb,
+  [ SYNSEM [ LOCAL.CAT [ HEAD verb,
                        VAL.SUBJ < > ],
-    NONCONJ-DTR.SYNSEM.LOCAL.CAT [ HEAD verb,
-                                   VAL.SUBJ < > ]].
+             NON-LOCAL non-local-none ],
+    NONCONJ-DTR.SYNSEM [ LOCAL.CAT [ HEAD verb,
+                                   VAL.SUBJ < > ],
+                         NON-LOCAL non-local-none ]].
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
