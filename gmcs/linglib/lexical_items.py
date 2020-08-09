@@ -6,7 +6,6 @@ from gmcs.utils import get_name
 from gmcs.utils import TDLencode
 from gmcs.utils import orth_encode
 
-from gmcs.linglib import adverbs_adpositions
 from gmcs.linglib import lexbase
 from gmcs.linglib import case
 from gmcs.linglib import features
@@ -1045,7 +1044,7 @@ def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
                    section='lexrules')
 
     # Add the proper syntactic rules to rules.tdl
-    from adverbs_adpositions import HEAD_ADJ, ADJ_HEAD
+    from gmcs.linglib.adverbs_adpositions import HEAD_ADJ, ADJ_HEAD
     if adj_rules['head_adj']:
         mylang.add(HEAD_ADJ, section='phrases')
         rules.add("head-adj := my-head-adj-phrase.")
