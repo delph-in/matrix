@@ -65,6 +65,7 @@ DONE = 'DONE'
 PASS = 'PASS'
 FAIL = 'FAIL'
 ERROR = 'ERROR'
+SKIP = 'SKIP'
 
 
 def linewidth(): return min(MAX_LINE_WIDTH, shutil.get_terminal_size()[0])
@@ -72,6 +73,7 @@ def linewidth(): return min(MAX_LINE_WIDTH, shutil.get_terminal_size()[0])
 
 # ANSI colors; see: https://en.wikipedia.org/wiki/ANSI_escape_code#Colors
 def red(s): return color('\x1b[31m', s)
+def boldred(s): return color('\x1b[31m\x1b[1m', s)
 def green(s): return color('\x1b[32m', s)
 def yellow(s): return color('\x1b[33m', s)
 def color(clr, s): return '{}{}\x1b[0m'.format(clr, s)
@@ -82,8 +84,9 @@ def yes_or_no(obj): return red('no') if obj is None else green('yes')
 REPORT_COLOR = {
     DONE: green,
     PASS: green,
-    FAIL: yellow,
-    ERROR: red
+    FAIL: red,
+    SKIP: yellow,
+    ERROR: boldred
 }
 
 
@@ -98,11 +101,9 @@ class RegressionTestError(Exception):
 def main(args):
     # if no steps are specified, do all of them (but this may be
     # avoided by using --list or --update)
-    if not any([args.customize, args.mkskel, args.mkprof,
-                args.process, args.compare]):
+    if not any([args.customize, args.mkskel, args.process, args.compare]):
         args.customize = True
         args.mkskel = None  # `None` here means "only if needed"
-        args.mkprof = True
         args.process = True
         args.compare = True
 
@@ -120,6 +121,8 @@ def main(args):
         add_test(args)
     elif args.remove:
         remove_test(args)
+    elif args.clean:
+        clean_up(args)
     else:
         run_tests(args)
 
@@ -128,13 +131,6 @@ def run_tests(args):
     """
     Run regression tests and report the results.
     """
-    totals = {
-        PASS: 0,
-        ERROR: 0,
-        FAIL: 0,
-        DONE: 0,
-    }
-
     tests = list(_discover(args))
     total = len(tests)
 
@@ -142,71 +138,86 @@ def run_tests(args):
         _run_test,
         customize=args.customize,
         mkskel=args.mkskel,
-        mkprof=args.mkprof,
         process=args.process,
         compare=args.compare,
     )
 
-    with multiprocessing.Pool(PROCESSES) as pool:
-        process_iterator = pool.imap(run_test, tests, chunksize=BATCH_SIZE)
-        for i, (name, result, logpath) in enumerate(process_iterator, 1):
-            _report(name, result)
-            if result in (ERROR, FAIL):
-                print('  see: {}'.format(str(logpath)))
-            print('\r' + _progress_bar(i, total), end='')
-            totals[result] += 1
+    if args.debug:
+        results = map(run_test, tests)
+        totals = _accumulate(results, total)
+    else:
+        with multiprocessing.Pool(PROCESSES) as pool:
+            results = pool.imap(run_test, tests, chunksize=BATCH_SIZE)
+            totals = _accumulate(results, total)
 
     if args.compare:
-        print('\n******** SUMMARY *************')
+        print('\n************* SUMMARY *************')
         width = len(str(total))  # to align the numbers on /
-        print('Passed {0:{2}}/{1} tests;'.format(totals[PASS], total, width))
-        print('Failed {0:{2}}/{1} tests;'.format(totals[FAIL], total, width))
-        print('Errors {0:{2}}/{1} tests.'.format(totals[ERROR], total, width))
+        print('Passed  {0:{2}}/{1} tests'.format(totals[PASS], total, width))
+        print('Failed  {0:{2}}/{1} tests'.format(totals[FAIL], total, width))
+        print('Errors  {0:{2}}/{1} tests'.format(totals[ERROR], total, width))
+        if totals[SKIP]:
+            print('Skipped {0:{2}}/{1} tests'
+                  ' (run rtest.py --list --skipped --verbose for more info)'
+                  .format(totals[SKIP], total, width))
 
 
 def _run_test(
         args,
         customize=False,
         mkskel=False,
-        mkprof=False,
         process=False,
-        compare=False
+        compare=False,
 ) -> Tuple[str, str, pathlib.Path]:
-    name, desc, chc, dat, txt, skel, prof, gold = args
+    name, idx, chc, txt, skel, prof, gold = args
     log = _unique_log_path(name)
-    result = DONE  # default if no error, failure, or comparison pass
+    result = DONE  # default if no skip, error, failure, or comparison pass
 
     with log.open(mode='at') as logf:
         _lognow('== Testing {} at {} =='
                 .format(name, datetime.datetime.now().isoformat()),
                 logf)
 
-        try:
-            if customize:
-                grm = _customize(name, chc, logf)
-                dat = _compile(name, grm, logf)
-            # mkskel if requested or if necessary
-            if mkskel or (mkskel is None and skel is None):
-                skel = _mkskel(name, txt, logf)
-            if mkprof:
-                prof = _mkprof(name, skel, logf)
-            if process:
-                _process(name, dat, prof, logf)
-            if compare:
-                passed = _compare(name, prof, gold, logf)
-                result = PASS if passed else FAIL
-
-        except Exception:
-            _lognow('\n=====', logf)
-            traceback.print_exc(file=logf)
-            result = ERROR
-
-        # delete the dat file; it's a big file that's easy to recreate
-        if dat.exists():
-            dat.unlink()
+        if _skipped(idx, chc, skel, gold):
+            result = SKIP
+        else:
+            try:
+                if customize or process:
+                    grm = _customize(name, chc, logf)
+                # mkskel if requested or if necessary
+                if mkskel or (mkskel is None and skel is None):
+                    skel = _mkskel(name, txt, logf)
+                if process:
+                    dat = _compile(name, grm, logf)
+                    prof = _mkprof(name, skel, logf)
+                    _process(name, dat, prof, logf)
+                    dat.unlink()
+                if compare:
+                    passed = _compare(name, prof, gold, logf)
+                    result = PASS if passed else FAIL
+            except Exception:
+                _lognow('\n=====', logf)
+                traceback.print_exc(file=logf)
+                result = ERROR
 
         _lognow('\nResult: ' + result, logf)
         return name, result, log
+
+
+def _accumulate(results, total):
+    totals = {
+        PASS: 0,
+        ERROR: 0,
+        FAIL: 0,
+        DONE: 0,
+        SKIP: 0
+    }
+    for i, (name, result, logpath) in enumerate(results, 1):
+        _report(name, result, logpath)
+        print('\r' + _progress_bar(i, total), end='')
+        totals[result] += 1
+    print()  # end progress bar line
+    return totals
 
 
 def list_tests(args, verbose=False):
@@ -214,20 +225,33 @@ def list_tests(args, verbose=False):
     Print each test name and exit.
 
     If --verbose is used, also print the description, whether the test
-    appears in the index, and whether it has an associated txt-suite,
-    choices file, skeleton, and gold profile.
+    appears in the index, whether it has an associated txt-suite,
+    choices file, skeleton, and gold profile, and whether it is to be
+    skipped.
     """
-    for name, desc, chc, dat, txt, skel, prof, gold in _discover(args):
+    for name, idx, chc, txt, skel, prof, gold in _discover(args):
 
         print(name)
 
         if verbose or args.verbosity >= 2:
-            print('    Description: ' + desc)
-            print('    Indexed:     ' + yes_or_no(desc))
-            print('    Txt-suite:   ' + yes_or_no(txt))
-            print('    Choices:     ' + yes_or_no(chc))
-            print('    Skeleton:    ' + yes_or_no(skel))
-            print('    Gold:        ' + yes_or_no(gold))
+            if idx:
+                desc = idx.get('description')
+                if idx.get('skip'):
+                    skip = f'{yellow("yes")} (disabled in index)'
+                elif _skipped(idx, chc, skel, gold):
+                    skip = f'{red("yes")} (missing components)'
+                else:
+                    skip = green('no')
+            else:
+                desc = None
+                skip = f'{red("yes")} (not indexed)'
+            print('    Description:', desc)
+            print('    Indexed:    ', yes_or_no(idx))
+            print('    Txt-suite:  ', yes_or_no(txt))
+            print('    Choices:    ', yes_or_no(chc))
+            print('    Skeleton:   ', yes_or_no(skel))
+            print('    Gold:       ', yes_or_no(gold))
+            print('    Skipped:    ', skip)
             print()
 
 
@@ -238,7 +262,7 @@ def update_test(args):
     tests = list(_discover(args))
     if len(tests) != 1:
         raise RegressionTestError('only 1 test may be updated at a time')
-    name, desc, chc, dat, txt, skel, prof, gold = tests[0]
+    name, idx, chc, txt, skel, prof, gold = tests[0]
 
     try:
         db = tsdb.Database(prof)
@@ -258,20 +282,19 @@ def add_test(args):
     the profile. It is the developer's responsibility to add these
     files to Git afterwards.
     """
-    args.all_tests = True  # necessary for adding new tests
     tests = list(_discover(args))
     if len(tests) == 0 and len(args.test) == 1:
         name = args.test[0]
-        desc, chc, txt = None, None, None
+        idx, chc, txt = None, None, None
     elif len(tests) == 1:
-        name, desc, chc, _, txt, _, _, _ = tests[0]
+        name, idx, chc, _, txt, _, _, _ = tests[0]
     else:
         raise RegressionTestError('only 1 test may be added at a time')
 
     msg = ('File {!s} already exists; if you want to update the test, use '
            'the --update command; if you are sure the file is rogue, delete '
            'it. Otherwise, use a different name for a new test.')
-    if desc is not None:
+    if idx is not None:
         raise RegressionTestError(
             'test already exists in index: {}'.format(name))
     if chc is not None:
@@ -282,7 +305,7 @@ def add_test(args):
 
     desc = input('Test description: ')
     index = _parse_index(args.index)
-    index[name] = desc.strip()
+    index[name] = {'description': desc.strip()}
 
     # Copy files and recreate the index
     shutil.copy(str(chc), str(CHOICES_DIR / name))
@@ -293,7 +316,6 @@ def add_test(args):
     # current profile.
     args.customize = True
     args.mkskel = True
-    args.mkprof = True
     args.process = True
     args.compare = False
     run_tests(args)
@@ -308,7 +330,6 @@ def add_test(args):
     # Test the new test:
     args.customize = False
     args.mkskel = False
-    args.mkprof = False
     args.process = False
     args.compare = True
     run_tests(args)
@@ -338,11 +359,10 @@ def remove_test(args):
     the developer's responsibility to commit these changes to Git
     afterwards.
     '''
-    args.all_tests = True  # necessary for partial tests
     tests = list(_discover(args))
     if len(tests) > 1:
         raise RegressionTestError('only 1 test may be removed at a time')
-    name, desc, chc, dat, txt, skel, prof, gold = tests[0]
+    name, idx, chc, txt, skel, prof, gold = tests[0]
 
     for obj in (chc, txt, skel, prof, gold):
         if obj is not None:
@@ -366,6 +386,39 @@ def remove_test(args):
           .format(name))
 
 
+def clean_up(args):
+    '''
+    Delete temporary testing files.
+
+    Temporary testing files include:
+
+    1) customized grammars
+    2) current profiles
+    3) logs
+    '''
+    count = 0
+    for name, _, _, _, _, prof, _ in _discover(args):
+        deleted = False
+        grm = GRAMMARS_DIR / name
+        if grm.exists():
+            shutil.rmtree(grm)
+            deleted = True
+        if prof and prof.exists():
+            shutil.rmtree(prof)
+            deleted = True
+        # a test name may be a substring of another test name, so use a
+        # glob pattern that looks like a date to mitigate this
+        date_glob = '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'
+        for log in LOGS_DIR.glob(f'{name}-{date_glob}*'):
+            log.unlink()
+            deleted = True
+        if deleted:
+            count += 1
+            if args.verbosity >= 2:
+                print(f'cleaned files for {name}')
+    print(f'Finished cleaning files for {count} tests.')
+
+
 # HELPER FUNCTIONS ############################################################
 
 def _discover(args):
@@ -377,39 +430,44 @@ def _discover(args):
     directories of [incr tsdb()] skeletons, current profiles, and gold
     profiles, joined by a shared test name. Collect and merge these
     sources of information and yield each as a tuple of (name,
-    description, txt-suite-path, choices-path, skeleton-path,
-    current-path, gold-path). If --all-tests is used, partially
-    described tests not in the index will be yielded, too.
+    index entry, txt-suite-path, choices-path, skeleton-path,
+    current-path, gold-path).
     """
     index     = _parse_index(args.index)
     choices   = _list_files(CHOICES_DIR)
-    grammars  = _list_dat_files(GRAMMARS_DIR)
     txtsuites = _list_files(TXT_SUITE_DIR)
     skeletons = _list_testsuites(SKELETONS_DIR)
     profiles  = _list_testsuites(CURRENT_DIR)
     gold      = _list_testsuites(GOLD_DIR)
 
-    all_names = (set(index)
-                 .union(choices)
-                 .union(grammars)
-                 .union(txtsuites)
-                 .union(skeletons)
-                 .union(profiles)
-                 .union(gold))
-    if not args.all_tests:
-        all_names = filter(index.__contains__, all_names)
-    all_names = sorted(all_names)
+    all_names = sorted(
+        (set(index)
+         .union(choices)
+         .union(txtsuites)
+         .union(skeletons)
+         .union(profiles)
+         .union(gold))
+    )
 
     for pattern in args.test:
         for name in fnmatch.filter(all_names, pattern):
+            idx = index.get(name)
+            chc = choices.get(name)
+            skl = skeletons.get(name)
+            gld = gold.get(name)
+            if args.skipped and not _skipped(idx, chc, skl, gld):
+                continue
             yield (name,
-                   index.get(name),
-                   choices.get(name),
-                   grammars.get(name),
+                   idx,
+                   chc,
                    txtsuites.get(name),
-                   skeletons.get(name),
+                   skl,
                    profiles.get(name),
-                   gold.get(name))
+                   gld)
+
+
+def _skipped(idx, chc, skel, gold):
+    return None in (idx, chc, skel, gold) or idx.get('skip')
 
 
 def _parse_index(path):
@@ -418,22 +476,28 @@ def _parse_index(path):
     for line in path.open():
         line = line.strip()
         if line:
-            name, description = _split_index_line(line)
-            index[name] = description
+            name, data = _parse_index_line(line)
+            index[name] = data
     return index
 
 
 def _recreate_index(index, path):
     """Overwrite the index with an updated one."""
     with path.open('w') as f:
-        for _name, _desc in index.items():
-            print('{}={}'.format(_name, _desc), file=f)
+        for name, data in index.items():
+            skip = '!' if data.get('skip') else ''
+            print(f'{skip}{name}={data["description"]}', file=f)
 
 
-def _split_index_line(line):
-    """Return the name and description for an index entry."""
+def _parse_index_line(line):
+    """Return the name and associated data for an index entry."""
+    data = {}
+    if line.startswith('!'):
+        data['skip'] = True
+        line = line[1:]
     name, _, description = line.partition('=')
-    return name, description
+    data['description'] = description
+    return name, data
 
 
 def _list_testsuites(dir):
@@ -449,16 +513,8 @@ def _list_files(dir):
     """Map basename to path for files in *dir*."""
     paths = {}
     for path in dir.glob('*'):
-        if path.is_file() and path.name != 'README':
+        if path.is_file() and path.name not in ('README', 'README.md'):
             paths[path.name] = path
-    return paths
-
-
-def _list_dat_files(dir):
-    """Map basename to dat files."""
-    paths = {}
-    for path in dir.rglob(DAT_FILENAME):
-        paths[path.parent.parent.name] = path
     return paths
 
 
@@ -524,7 +580,11 @@ def _mkskel(name, txt, logf):
         raise RegressionTestError(
             f'Did you forget to add the new txt-suite to {TXT_SUITE_DIR!s}?')
     try:
-        mkprof(dest, source=txt, schema=RELATIONS_FILE, quiet=True)
+        mkprof(dest,
+               source=txt,
+               schema=RELATIONS_FILE,
+               skeleton=True,
+               quiet=True)
     except CommandError as exc:
         raise RegressionTestError('Failed to prepare skeleton.') from exc
 
@@ -602,13 +662,15 @@ def _progress_bar(numerator: int, denominator: int) -> str:
     return f'[{fill:<{bar_width}}] ({numerator:>{count_width}}/{denominator})'
 
 
-def _report(name, result):
+def _report(name, result, logpath):
     """Print the final result."""
     colorize = REPORT_COLOR[result]
     name_width = linewidth() - RESULT_WIDTH
     name = _fill(name, name_width)
     print('\r\033[K', end='')  # clear line
     print(f'{name}{colorize(result)}')
+    if result in (ERROR, FAIL):
+        print('  see: {}'.format(str(logpath)))
 
 
 def _fill(s: str, width: int) -> str:
@@ -632,12 +694,11 @@ if __name__ == '__main__':
         Regression testing involves a pipeline of independent steps.
         If no steps are specified, all test steps below are executed:
 
-        Step         Requires       Result
-        ===========  =============  ============================
-        --customize  choices        dat (compiled grammar image)
-        --mkprof     skeleton       profile (unprocessed)
-        --process    dat, profile   profile (processed)
-        --compare    profile, gold  regression test results
+        Step         Requires           Result
+        ===========  =============      ============================
+        --customize  choices            customized grammar
+        --process    grammar, skeleton  processed profile
+        --compare    profile, gold      regression test results
 
         Also, the following are for constructing and updating tests:
 
@@ -668,21 +729,18 @@ if __name__ == '__main__':
     parser.add_argument('--index',
                         metavar='PATH',
                         help='path to a test index')
-    parser.add_argument('--all-tests',
-                        action='store_true',
-                        help='don\'t exclude tests not in the index')
     parser.add_argument('-l', '--list',
                         action='store_true',
                         help='list available tests (-v, -vv for more info)')
+    parser.add_argument('--skipped',
+                        action='store_true',
+                        help='find skipped/incomplete tests, ignore others')
     parser.add_argument('-c', '--customize',
                         action='store_true',
-                        help='customize and compile test grammars')
+                        help='customize test grammars')
     parser.add_argument('-s', '--mkskel',
                         action='store_true',
                         help='make test skeletons from txt-suites')
-    parser.add_argument('-m', '--mkprof',
-                        action='store_true',
-                        help='make test profiles from skeletons')
     parser.add_argument('-p', '--process',
                         action='store_true',
                         help='process test profiles with compiled grammars')
@@ -699,6 +757,12 @@ if __name__ == '__main__':
     parser.add_argument('-r', '--remove',
                         action='store_true',
                         help='remove a test from the system')
+    parser.add_argument('--clean',
+                        action='store_true',
+                        help='delete temporary grammars, logs, and profiles')
+    parser.add_argument('--debug',
+                        action='store_true',
+                        help='disable multiprocessing to help debuggers')
     parser.add_argument('test',
                         nargs='*')
 
