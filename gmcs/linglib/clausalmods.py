@@ -45,7 +45,7 @@ def create_head_subordinator_basic_lex_type(mylang, ch, cms):
     """
     nominalized, nmzRel, nom_strategy = is_nominalized(cms, ch)
     mylang.set_section('subordlex')
-    mylang.add('adposition-subord-lex-item := single-rel-lex-item & norm-ltop-lex-item & basic-icons-lex-item &\
+    mylang.add('adposition-subord-lex-item := single-rel-lex-item & norm-ltop-lex-item &\
             [ SYNSEM.LOCAL.CAT [ MC -,\
                                 HEAD adp & [ MOD < [ LOCAL scopal-mod &\
                                                         [ CAT [ HEAD verb,\
