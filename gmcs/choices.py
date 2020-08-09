@@ -616,6 +616,11 @@ class ChoicesFile:
             self.convert_30_to_31()
         if self.version < 32:
             self.convert_31_to_32()
+        if self.version < 33:
+            self.convert_32_to_33()
+        if self.version < 34:
+            self.convert_33_to_34()
+
 
 
 
@@ -718,6 +723,29 @@ class ChoicesFile:
         return False
 
 
+    def has_det_case(self, case = '', check_opt = False):
+        """
+        Returns True iff the target language has inflecting determiners
+        which agree with nouns in CASE.
+        """
+
+        for det in self.get('det'):
+            opt = det.get('opt')
+            if opt or not check_opt:
+                for feat in det.get('feat', []):
+                    if self.has_case(feat, case):
+                        return True
+
+        for det_pc in self.get('det-pc'):
+            for lrt in det_pc['lrt']:
+                for feat in lrt.get('feat', []):
+                    if feat['name'] == 'case':
+                        return True
+
+        return False
+
+
+
     def has_optadp_case(self, case = ''):
         """
         Returns True iff the target language has optional case-marking
@@ -766,6 +794,13 @@ class ChoicesFile:
         """
         return 'scale' in self.choices
 
+
+    def has_gender(self):
+        return 'gender' in self.choices
+
+    def has_png(self):
+        return ('pernum' in self.choices
+                or 'number' in self.choices or 'gender' in self.choices)
 
     def has_SCARGS(self):
         """
@@ -1214,9 +1249,10 @@ class ChoicesFile:
 
 
         # Questions
-        if 'q-infl' in self.choices:
-            features += [ ['question', 'plus|plus', '', 'verb', 'y'] ]
-
+        if 'q-infl' in self.choices and not 'wh-q-infl' in self.choices:
+            features += [ ['question', 'polar|polar', '', 'verb', 'y'] ]
+        elif 'q-infl' in self.choices and 'wh-q-infl' in self.choices:
+            features += [ ['question', 'polar|polar;wh|wh;both|both;no|no', '', 'verb', 'y'] ]
         # Information Structure
         infostr_values = 'focus|focus;topic|topic;contrast|contrast;semantic-focus|non-contrastive-focus;contrast-focus|contrastive-focus;aboutness-topic|non-contrastive-topic;contrast-topic|contrastive-topic;focus-or-topic|focus-or-topic;contrast-or-focus|contrast-or-focus;contrast-or-topic|contrast-or-topic;non-topic|non-topic;non-focus|non-focus;bg|background'
         #mkg_values = 'fc|focus;tp|topic;fc-only|focus-only;tp-only|topic-only;fc-+-tp|focus-and-topic;non-tp|non-topic;non-fc|non-focus;unmkg|unmarking'
@@ -1326,7 +1362,7 @@ class ChoicesFile:
     # convert_value(), followed by a sequence of calls to convert_key().
     # That way the calls always contain an old name and a new name.
     def current_version(self):
-        return 32
+        return 34
 
     def convert_value(self, key, old, new, partial=False):
         if key in self:
@@ -2292,6 +2328,31 @@ class ChoicesFile:
             if strat.get('possessum-type')=='non-affix':
                 if not strat.get('possessum-mark-order'):
                     strat['possessum-mark-order'] = hc
+
+    def convert_32_to_33(self):
+        pass
+        if self.get('q-part') == 'on':
+            orth = self.get('q-part-orth')
+            self.delete('q-part-orth')
+            self['q-particle'] = ChoiceList(full_key='q-particle')
+            cdict = ChoiceDict(full_key = 'q-particle1')
+            cdict['orth'] = orth
+            self['q-particle'].append(cdict)
+
+
+    def convert_33_to_34(self):
+        """
+        The feature question's value "plus" was renamed "polar".
+        """
+        if self.get('q-infl') == 'on':
+            for cat in ['verb-pc']:
+                for pc in self.get(cat):
+                    for lrt in pc['lrt']:
+                        for feat in lrt['feat']:
+                            if feat['name'] == 'question' and feat['value'] == 'plus':
+                                feat['value'] = 'polar'
+
+
 ########################################################################
 # FormData Class
 # This Class acts like form data which would normally
