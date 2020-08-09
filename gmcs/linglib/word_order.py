@@ -75,7 +75,7 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
     # head - comp and not from mod to mother, putting it back for other wo options
 
     # KPH 2017-12-14 Removed mc identity between non head daughter and mother in
-    # basic-head-mod. This is not the case for clausal modifiers (in whcih the modifer
+    # basic-head-mod. This is not the case for clausal modifiers (in which the modifer
     # is MC -).
 
     if not wo == 'v2':
@@ -138,8 +138,12 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
 
     if wo in ['vso', 'osv']:
         mylang.add('basic-head-opt-comp-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].', section='addenda')
+        if ch.get('q-part-order') == 'second':
+            mylang.add('basic-head-opt-comp-phrase :+ same-periph-unary-phrase & same-ynq-unary-phrase & mc-na-headed-phrase.')
     else:
         mylang.add('basic-head-opt-subj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].', section='addenda')
+        if ch.get('q-part-order') == 'second':
+            mylang.add('basic-head-opt-subj-phrase :+ same-periph-unary-phrase & same-ynq-unary-phrase & mc-na-headed-phrase.')
 
     # ERB 2006-09-14 Free word order is a big fat special case:
 
@@ -805,6 +809,14 @@ def determine_consistent_order(wo,hc,ch):
         adp_order = adp.get('order')
         if not adp_order in adporders:
             adporders.append(adp_order)
+
+    # OZ: The above is for info-str marking and case marking adpositions.
+    # The below is for "normal" adpositions (which have content relations).
+    for adp in ch.get('normadp',[]):
+        adp_order = adp.get('order')
+        if not adp_order in adporders:
+            adporders.append(adp_order)
+
 
     # ERB 2006-10-05 Fixing bug in free word order case.
     adporder = ''
