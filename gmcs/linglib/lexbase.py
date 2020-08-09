@@ -13,15 +13,15 @@ from functools import reduce
 # OZ 2018-01-25 comps is not really a lexical type;
 # it is a complementation strategy that is defined by a complementizer type.
 # Ideally we would have complementizers as actual lexical items some day.
-ALL_LEX_TYPES = ('noun', 'verb', 'det', 'aux', 'adj', 'cop', 'comps')
+ALL_LEX_TYPES = ('noun', 'verb', 'det', 'aux', 'adj', 'cop', 'comps', 'adv', 'normadp', 'qverb')
 
 # types used for lexical rules (verb and aux are merged)
 # TJT 2014-08-15: adding "cop"
 # TJT 2014-08-15: changing to tuple for speed
-LEXICAL_CATEGORIES = ('noun', 'verb', 'det', 'adj', 'cop')
+LEXICAL_CATEGORIES = ('noun', 'verb', 'det', 'adj', 'cop', 'adv', 'qverb')
 
 # TJT 2014-09-03: Types not automatically added to mylanguage.tdl
-NON_ESSENTIAL_LEX_CATEGORIES = ('det', 'adj', 'cop', 'comps')
+NON_ESSENTIAL_LEX_CATEGORIES = ('det', 'adj', 'cop', 'comps', 'normadp', 'adv', 'qverb')
 
 # lexical_supertypes is a dictionary mapping the choices file
 # encodings to the actual lex-type identifiers of the supertypes.
@@ -34,21 +34,152 @@ LEXICAL_SUPERTYPES = {'noun':'noun-lex',
                       'det':'determiner-lex',
                       'aux':'aux-lex',
                       'adj':'adj-lex',
-                      'comp':'comp-lex'}
-
+                      'comp':'comp-lex',
+                      'adv': 'adverb-lex',
+                      'normadp': 'norm-adposition-lex',
+                      'qverb': 'interrogative-verb-lex'}
 
 # TYPE DEFINITIONS (that can be shared with other libraries)
 COMPLEMENTIZER = '''
       complementizer-lex-item := raise-sem-lex-item & basic-one-arg &
-         [ SYNSEM.LOCAL.CAT [ HEAD comp &
+         [ SYNSEM [ LOCAL.CAT [ HEAD comp &
                                    [ MOD < > ],
-                              VAL [ SPR < >,
+                              VAL [ SPR < >, SPEC < >,
                                     SUBJ < >,
-                                    COMPS < #comp > ]],
+                                    COMPS < #comp > ] ],
+                    L-QUE - ],
            ARG-ST < #comp & [ LOCAL.CAT [ HEAD verb,
                                           VAL [ SUBJ < >,
-                                                COMPS < > ]]] > ].'''
+                                                COMPS < > ] ] ] > ].'''
 
+
+QUES_CLITIC = '''
+ques-clitic-lex := no-hcons-lex-item &
+ [ SYNSEM [ LOCAL [ CAT [ VAL [ SPR < >, COMPS < >, SUBJ < >, SPEC < >],
+                                        HEAD adv &
+                                                [ MOD < [ LIGHT +,
+                                                          LOCAL intersective-mod & 
+                                                          [ CAT [ HEAD +nvrpd ] ],
+                                                          L-PERIPH +,
+                                                          L-QUE - ] > ] ],
+                             CONT.RELS.LIST < > ],
+            NON-LOCAL [ SLASH.LIST < >,
+                        REL.LIST < >,
+                        QUE.LIST <  >,
+                        YNQ.LIST < *top* > ] ] ].
+'''
+
+WH_PRONOUN = '''wh-pronoun-noun-lex := basic-wh-word-lex & norm-hook-lex-item & basic-icons-lex-item & non-mod-lex-item & zero-arg-que &
+  [ SYNSEM [ LOCAL [ CAT [ HEAD noun,
+                           VAL [ SPR < >,
+				 SUBJ < >,
+				 COMPS < >,
+				 SPEC < > ] ],
+		     CONT [ RELS.LIST < [ LBL #larg,
+				       ARG0 ref-ind & #arg0 ],
+				  quant-relation & [ PRED "which_q_rel",
+				    ARG0 #arg0,
+				    RSTR #harg ] >,
+			    HCONS.LIST < [ HARG #harg,
+				        LARG #larg ] > ] ],
+	     NON-LOCAL.QUE.LIST < #arg0 > ] ].'''
+
+ADV_ITEM = '''adverb-lex-item := intersective-adverb-lex &
+  [ SYNSEM [ LOCAL [ CAT [ VAL [ SUBJ < >, SPEC < >,
+                             SPR < >,
+                             COMPS < > ],
+                       HEAD adv &
+                            [ MOD < [ LOCAL [ CAT.HEAD verb,
+                                              CONT.HOOK [ CLAUSE-KEY #clause, LTOP #ltop ] ] ] > ] ],
+                   CONT [ RELS.LIST < [ LBL #ltop, ARG0 event,
+                                    ARG1 #clause, ARG2 #ind ],
+                                  [ PRED #pred, ARG0 #ind, LBL #larg ],[ ARG0 #ind, RSTR #harg ] >,
+                          HOOK.LTOP #ltop,
+                          HCONS.LIST < qeq & [ HARG #harg,
+                                            LARG #larg ] > ] ],
+              LKEYS.KEYREL [ PRED #pred, ARG0 ref-ind & #ind, LBL #ltop ] ] ].'''
+
+
+LOC_ADV_ITEM = '''loc-adverb-lex-item := adverb-lex-item &
+  [ SYNSEM.LOCAL.CONT.RELS.LIST.FIRST.PRED "loc_nonsp_rel" ].'''
+
+MANNER_ADV_ITEM = '''manner-adverb-lex-item := adverb-lex-item &
+  [ SYNSEM.LOCAL.CONT.RELS.LIST.FIRST.PRED "manner_nonsp_rel" ].'''
+
+ADV =  '''adverb-lex := basic-non-wh-word-lex & adverb-lex-item &
+[ SYNSEM [ LOCAL.CONT.RELS.LIST < [ ], [ ], [ PRED "exist_q_rel" ] >,
+           NON-LOCAL [ QUE 0-alist, YNQ 0-alist ] ] ].'''
+
+WH_ADV =  '''wh-adverb-lex := basic-wh-word-lex & adverb-lex-item & zero-arg-que &
+[ SYNSEM [ LOCAL.CONT.RELS.LIST < [ ], [ ARG0 #arg0 ], quant-relation & [ PRED "which_q_rel" ] >,
+           NON-LOCAL.QUE.LIST < #arg0 > ] ].'''
+
+
+WH_DET = '''wh-determiner-lex := basic-wh-word-lex & basic-determiner-lex & non-mod-lex-item  & zero-arg-nonslash &
+  [ SYNSEM [ LOCAL [ CAT [ VAL [ SPR < >,
+                           SPEC.FIRST.LOCAL [ CONT.HOOK.INDEX #arg0 ],
+                           COMPS < >,
+                           SUBJ < > ] ] ],
+             NON-LOCAL.QUE.LIST < #arg0 > ] ].'''
+
+ADP_LEX = '''norm-adposition-lex := norm-sem-lex-item & no-hcons-lex-item & basic-intersective-mod-lex & basic-one-arg &
+  [ SYNSEM [ LOCAL [ CAT [ HEAD adp & [ MOD < [ LOCAL.CAT [ VAL.SPR cons, 
+                                                            WH.LOGICAL-OR.BOOL - ] ] > ],
+                           WH or-and-minus,
+                           VAL [ SPR < >,
+                                 SPEC < >,
+                                 SUBJ < >,
+                                 COMPS < #comp & [ L-QUE #lque,
+                                                 LOCAL [ CAT [ HEAD noun, VAL.SPR < > ],
+                                                 CONT.HOOK.INDEX #ind ],
+                                         NON-LOCAL #nonloc ] > ] ],
+                     CONT.RELS.LIST < [ PRED #pred, ARG0 event, ARG1 event-or-ref-index ] > ],
+             LKEYS.KEYREL arg12-ev-relation & [ PRED #pred, ARG2 #ind ],
+             NON-LOCAL #nonloc,
+             L-QUE #lque ],
+    ARG-ST < #comp > ].'''
+
+
+ITRG_VB = '''interrogative-verb-lex := basic-wh-word-lex & basic-verb-lex-super & non-mod-lex-item &
+[ SYNSEM [ LOCAL [ CONT.HOOK [ INDEX.SF ques, XARG #xarg ],
+                   CAT [ VAL [ SPR < >,
+                               SPEC < >,
+                               COMPS < >,
+                               SUBJ < #subj > ] ] ] ],
+    ARG-ST.FIRST #subj &
+                 [ LOCAL [ CAT cat-sat &
+                               [ VAL [ SPR < >,
+                                       COMPS < >, SUBJ < >, SPEC < > ] ],
+                           CONT.HOOK.INDEX #xarg ] ] ].
+'''
+
+ITRG_THREE_REL = ''' := interrogative-verb-lex & basic-icons-lex-item & norm-hook-lex-item & 
+[ ARG-ST < [ LOCAL [ CAT cat-sat & [ HEAD noun ],
+                      CONT.HOOK [ INDEX  ref-ind & #ind,
+                      ICONS-KEY.IARG1 #clause ] ] ] >,
+ SYNSEM [ LKEYS.KEYREL event-relation & [ ARG1 #ind, ARG2 ref-ind & #ind2],
+             LOCAL.CONT [ HOOK.CLAUSE-KEY #clause,
+                          RELS.LIST < [ ARG2 #ind2 ], 
+                                      quant-relation & [ PRED "which_q_rel",
+                                                        ARG0 #ind2,
+                                                        RSTR #harg ], 
+                                       noun-relation & [ LBL #larg,
+                                                         ARG0 #ind2 ] >,
+               HCONS.LIST < [ HARG #harg,
+                LARG #larg ] > ] ] ].'''
+
+ITRG_FOUR_REL = ''' := interrogative-verb-lex & basic-icons-lex-item & norm-hook-lex-item & 
+[ ARG-ST < [ LOCAL [ CAT cat-sat & [ HEAD noun ],
+                      CONT.HOOK [ INDEX  ref-ind & #ind,
+                      ICONS-KEY.IARG1 #clause ] ] ] >,
+ SYNSEM [ LKEYS.KEYREL event-relation & [ ARG1 #ind ],
+             LOCAL.CONT [ HOOK.CLAUSE-KEY #clause,
+                          RELS.LIST < [ LBL #ltop, ARG0 #clause ], 
+                                      [ LBL #ltop, ARG0 event,
+                                    ARG1 #clause, ARG2 #ind2 ],
+                                  [ ARG0 #ind2, LBL #larg ],[ PRED "which_q_rel", ARG0 #ind2, RSTR #harg ] >,
+               HCONS.LIST < [ HARG #harg,
+                LARG #larg ] > ] ] ].'''
 
 ###############
 ### CLASSES ###
