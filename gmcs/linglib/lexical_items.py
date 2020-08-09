@@ -6,6 +6,7 @@ from gmcs.utils import get_name
 from gmcs.utils import TDLencode
 from gmcs.utils import orth_encode
 
+from gmcs.linglib import adverbs_adpositions
 from gmcs.linglib import lexbase
 from gmcs.linglib import case
 from gmcs.linglib import features
