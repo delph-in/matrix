@@ -1,15 +1,42 @@
 from gmcs.linglib import lexbase
+from gmcs import globals
 
 ######################################################################
 # customize_yesno_questions()
 #   Create the type definitions associated with the user's choices
 #   about matrix yes/no questions.
 
-def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies):
+
+INT_CL = '''int-cl := head-only & interrogative-clause &
+  [ SYNSEM [ LOCAL.CAT [ HEAD +vc, VAL #val,
+                                         MC bool ],
+                    NON-LOCAL non-local-none ],
+    HEAD-DTR.SYNSEM [ LOCAL.CAT [ MC na-or--,
+                                  VAL #val & [ SUBJ < >, COMPS < >, SPR < >, SPEC < > ] ],
+                                  NON-LOCAL [ YNQ.LIST < *top* >, SLASH.LIST < >, QUE.LIST < > ] ] ].'''
+
+DECL_CL = '''decl-cl := head-only & declarative-clause & same-ynq-unary-phrase &
+  [ SYNSEM.LOCAL.CAT [ VAL #val,
+                                         MC bool ],
+    HEAD-DTR.SYNSEM [ LOCAL.CAT [ MC na,
+                                                           VAL #val ],
+                                      NON-LOCAL.YNQ.LIST < > ]].'''
+
+MC_NA = '''mc-na-headed-phrase := headed-phrase &
+  [ SYNSEM.LOCAL.CAT.MC na,
+    HEAD-DTR.SYNSEM.LOCAL.CAT.MC na ].'''
+
+SAME_PERIPH = '''same-periph-unary-phrase :=
+                       unary-phrase & [ SYNSEM [ L-PERIPH #periph ],
+                       ARGS < [ SYNSEM [ L-PERIPH #periph ] ] > ].'''
+
+SAME_YNQ = '''same-ynq-unary-phrase :=
+                       unary-phrase & [ SYNSEM [ NON-LOCAL.YNQ #ynq ],
+                       ARGS < [ SYNSEM [ NON-LOCAL.YNQ #ynq ] ] > ].'''
+
+def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies,roots):
 
     qinvverb = ch.get('q-inv-verb')
-    qpartposthead = ch.get('q-part-order')
-    qpartform = ch.get('q-part-orth')
 
     if ch.get('q-inv'):
         comment = \
@@ -37,19 +64,21 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies):
 			same-hc-light-lex-rule &
 			same-posthead-lex-rule &
                         constant-lex-rule &
-      [ SYNSEM [ LOCAL.CAT [ HEAD verb & [ INV + ],
+      [ INFLECTED #infl,
+        SYNSEM [ LOCAL.CAT [ HEAD verb & [ INV + ],
                              VAL [ COMPS < #subj . #comps >,
                                      SUBJ < >,
                                      SPR #spr,
                                      SPEC #spec ],
                              MC na ],
                  LKEYS #lkeys ],
-        DTR.SYNSEM [ LOCAL.CAT [ HEAD verb,
+        DTR [ INFLECTED #infl,
+              SYNSEM [ LOCAL.CAT [ HEAD verb,
                                  VAL [ SUBJ < #subj >,
                                        COMPS #comps,
                                        SPR #spr,
                                        SPEC #spec ]],
-                     LKEYS #lkeys ]].'''
+                     LKEYS #lkeys ]]].'''
         mylang.add(typedef, comment, section='lexrules')
 
         lrules.add('inv-lr := subj-v-inv-lrule.')
@@ -88,7 +117,7 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies):
         # ERB 2010-04-15 If we have a finite/non-finite disctintion,
         # the FORM value needs to be copied up.  FIXME: More generally,
         # any verby head features should be copied by this rule.
-        # See notes on FORM and qpart below.
+        # See notes on FORM and q-part below.
 
         if 'form' in hierarchies:
             mylang.add('''
@@ -107,49 +136,116 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies):
 
         typedef = '''
     int-cl := interrogative-clause & head-only &
-    [ SYNSEM.LOCAL.CAT [ HEAD.INV +,
+    [ SYNSEM [ MODIFIED hasmod, 
+               LOCAL.CAT [ HEAD [ INV + ],
                          VAL #val,
                          MC + ],
-      HEAD-DTR.SYNSEM.LOCAL.CAT [ MC na,
+               NON-LOCAL non-local-none ],
+      HEAD-DTR.SYNSEM [ LOCAL.CAT [ MC na,
                                   VAL #val &
                                        [SUBJ < >,
-                                       COMPS < >]],
+                                       COMPS < >] ],
+                        NON-LOCAL non-local-none ],
       C-CONT.HOOK.INDEX.SF ques ].'''
         mylang.add(typedef, comment, section='phrases')
-
-        rules.add('int := int-cl.')
-
-    # ERB 2006-10-05 Moving away from the modifier analysis of question particles
-    # which I think doesn't handle the facts well.  These look more like complementizers
-    # to me.
+        #OZ 2020-07-03 This is to suppress ambiguity in "Which house do the cats sleep in?"
+        if ch.get('has-aux') == 'yes':
+            mylang.add('int-cl := [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].')
+            rules.add('int := int-cl.')
 
     if ch.get('q-part'):
-        comment = \
-            'We treat question particles as complementizers.\n' + \
-            'Here is the lexical type for complementizers.'
-        typedef = lexbase.COMPLEMENTIZER
-        mylang.add(typedef, comment, section='complex')
+        # Clause-initial and clause-final particles are analyzed as complementizers:
+        if not ch.get('q-part-order') == 'second':
+            comment = \
+                'We treat question particles as complementizers.\n' + \
+                'Here is the lexical type for complementizers.'
+            typedef = lexbase.COMPLEMENTIZER
+            mylang.add(typedef, comment, section='complex')
 
-        comment = 'Subtype for question particles. Constrains SF to ques.'
-        typedef = '''
-      qpart-lex-item := complementizer-lex-item &
-         [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.SF ques,
-                          CAT.VAL.COMPS.FIRST.LOCAL.CAT.MC + ] ].'''
-        mylang.add(typedef, comment, section='complex')
+            comment = 'Subtype for question particles. Constrains SF to ques.'
+            typedef = '''
+            qpart-lex-item := complementizer-lex-item &
+             [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.SF ques ] ].'''
+            mylang.add(typedef, comment, section='complex')
+            supertype = 'qpart-lex-item'
 
-        # ERB 2010-04-15 If we have a finite/non-finite distinction in the
-        # language, the qpart should insist on attaching to finite clauses
-        # only.  An alternative would be to have it raise the FORM value, but
-        # I don't see any evidence for that just now. Using presence of 'form'
-        # in hierarchies to detect this situation. This could break if someone
-        # named their own feature "form", but the name-space validation should
-        # catch that.  This works because customize_form() is called before
-        # customize_yesno_questions. This is an example of cross-library
-        # interaction.
+            # ERB 2010-04-15 If we have a finite/non-finite distinction in the
+            # language, the qpart should insist on attaching to finite clauses
+            # only.  An alternative would be to have it raise the FORM value, but
+            # I don't see any evidence for that just now. Using presence of 'form'
+            # in hierarchies to detect this situation. This could break if someone
+            # named their own feature "form", but the name-space validation should
+            # catch that.  This works because customize_form() is called before
+            # customize_yesno_questions. This is an example of cross-library
+            # interaction.
+            if 'form' in hierarchies:
+                mylang.add('qpart-lex-item := [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM finite ].')
 
-        if 'form' in hierarchies:
-            mylang.add('qpart-lex-item := [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM finite ].')
+        # OZ: Second position  clitics are treated as modifiers:
+        elif ch.get('q-part-order') == 'second':
+            mylang.add('''basic-binary-phrase :+ [ SYNSEM [ L-PERIPH #periph,
+                                  NON-LOCAL.YNQ.APPEND < #ynq1,
+                                    #ynq2 > ],
+             ARGS < [ SYNSEM [ L-PERIPH #periph,
+                               NON-LOCAL.YNQ #ynq1 ] ],
+                    [ SYNSEM [ L-PERIPH -,
+                               NON-LOCAL.YNQ #ynq2 ] ] > ].''',section='addenda')
+            mylang.add('basic-head-mod-phrase-simple :+ '
+                       '[ HEAD-DTR.SYNSEM.L-PERIPH #periph, '
+                       'NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.MOD < [ L-PERIPH #periph ] > ].',section='addenda')
+            mylang.add(SAME_PERIPH,section='phrases')
+            mylang.add(SAME_YNQ,section='phrases')
+            mylang.add('bare-np-phrase := same-periph-unary-phrase & same-ynq-unary-phrase & [ SYNSEM.LIGHT - ].')
+            comment = 'Second position question particles are treated as modifiers.'
+            typedef = lexbase.QUES_CLITIC
+            mylang.add(typedef, comment, section='complex')
+            supertype = 'ques-clitic-lex'
+            # Constrain all other words to be YNQ-empty:
+            mylang.add('non-ynq-word := word-or-lexrule & [ SYNSEM.NON-LOCAL.YNQ.LIST < > ].')
+            mylang.add('basic-zero-arg :+ non-ynq-word.',section='addenda')
+            mylang.add('basic-one-arg :+ non-ynq-word.',section='addenda')
+            mylang.add('basic-two-arg :+ non-ynq-word.',section='addenda')
+            mylang.add('basic-three-arg :+ non-ynq-word.',section='addenda')
+            mylang.add('intersective-mod-lex :+ non-ynq-word.',section='addenda')
+            roots.add('root := [ SYNSEM.NON-LOCAL.YNQ.LIST < > ].')
+            mylang.add(INT_CL,section='phrases')
+            mylang.add(DECL_CL,section='phrases')
+            rules.add('int-cl := int-cl.')
+            #rules.add('decl-cl := decl-cl.')
+            mylang.add(MC_NA,section='phrases')
+            #mylang.add('binary-headed-phrase :+ mc-na-headed-phrase.',section='addenda')
 
+        # Add subtypes for each question particle.
+        # First figure out if there are diverse particles:
+        oblig = 0
+        imp = 0
+        for qpart in ch.get('q-particle'):
+            if qpart['wh'] == 'oblig':
+                oblig += 1
+            elif qpart['wh'] == 'imp':
+                imp += 1
+        if oblig > 0 and imp > 0:
+            globals.div_particles = True
+        # Now add particles:
+        for qpart in ch.get('q-particle'):
+            typename = qpart.full_key + '-lex'
+            typedef = typename + ' := ' + supertype + '.'
+            mylang.add(typedef,section='complex')
+            if qpart['main'] == 'on' and qpart['embed'] != 'on':
+                mylang.add(typename + ' := [ SYNSEM.LOCAL.CAT [ MC #mc,'
+                                      'VAL.COMPS.FIRST.LOCAL.CAT.MC #mc & + ] ].')
+            elif qpart['embed'] == 'on' and qpart['main'] != 'on':
+                mylang.add(typename + ' := [ SYNSEM.LOCAL.CAT [ MC #mc '
+                                      'VAL.COMPS.FIRST.LOCAL.CAT.MC #mc & -  ] ].')
+            if qpart['wh'] == 'imp':
+                if ch.get('q-part-order') != 'second':
+                    mylang.add(typename + ':= [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST '
+                                          '[ LOCAL.CAT.WH or-and-minus ] ].')
+                else:
+                    mylang.add(typename + ':= [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST '
+                                          '[ LOCAL.CAT.WH or-and-minus ] ].')
 
-
-
+            elif qpart['wh'] == 'oblig':
+                if ch.get('q-part-order') != 'second':
+                    mylang.add(typename + ':= [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST '
+                                          '[ LOCAL.CAT.WH or-and-plus  ] ].')
