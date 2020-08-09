@@ -9,6 +9,7 @@ import re
 import os
 
 from gmcs import tdl
+from gmcs import constants
 from gmcs.choices import ChoicesFile
 from gmcs.utils import get_name
 
@@ -147,6 +148,7 @@ cust_types = (
     'basic-copula-verb-lex',
     'adj-comp-copula-verb-lex',
     'adj_incorporation-lex-rule',
+    'wh-determiner-lex',
 )
 
 # regex patterns for sets of names that are not available for
@@ -1001,20 +1003,33 @@ def validate_coordination(ch, vr):
 def validate_yesno_questions(ch, vr):
     qinvverb = ch.get('q-inv-verb')
     qpartorder = ch.get('q-part-order')
-    qpartorth = ch.get('q-part-orth')
-    qinfltype = ch.get('q-infl-type')
+    #qpartorth = ch.get('q-part-orth')
+    #qinfltype = ch.get('q-infl-type')
 
     if ch.get('q-part'):
+        optionality_validation = False
         if not qpartorder:
             mess = 'If you chose the question particle strategy ' + \
                    'for yes-no questions, you must specify ' + \
                    'where the question particle appears.'
             vr.err('q-part-order', mess)
-        if not qpartorth:
-            mess = 'If you chose the question particle strategy ' + \
-                   'for yes-no questions, you must specify ' + \
-                   'the form of the question particle.'
-            vr.err('q-part-orth', mess)
+        for qpart in ch.get('q-particle'):
+            if not qpart['orth']:
+                mess = 'If you chose the question particle strategy ' + \
+                       'for yes-no questions, you must specify ' + \
+                       'the form of the question particle.'
+                vr.err('q-particle', mess)
+            if ch.get('q-part-allopt') == 'on':
+                if qpart['wh'] == 'imp' or qpart['wh'] == 'oblig':
+                    optionality_validation = True
+        if optionality_validation:
+            mess = 'Either all particles are optional or each particle can be obligatory ' \
+                           'or impossible; choose one or the other.'
+            vr.err ('q-part-allopt',mess)
+
+    elif ch.get('q-part-all-opt') or len(ch.get('q-particle')) != 0 or qpartorder:
+        mess = 'You did not check the particle checkbox but made other choices about particles.'
+        vr.err('q-part-allopt', mess)
 
     if ch.get('q-inv'):
         #    if qinvverb != 'aux' and qinvverb != 'main' and qinvverb != 'main-aux':
@@ -1468,7 +1483,7 @@ def validate_clausalmods(ch, vr):
                 mess = 'You must select a position for the subordinator.'
                 vr.err(cms.full_key + '_subposition', mess)
             if not cms.get('subordinator-type'):
-                mess = 'You must makes a selection for whether the subordinator is an adverb or head.'
+                mess = 'You must make a selection for whether the subordinator is an adverb or head.'
                 vr.err(cms.full_key + '_subordinator-type', mess)
             if cms.get('subordinator-type') == 'adverb':
                 if not cms.get('adverb-attach'):
@@ -1517,11 +1532,11 @@ def validate_clausalmods(ch, vr):
         if nominalized == True:
             mess = 'If multiple nominalization strategies are allowed in the grammar,' +\
                    ' and clausal modifiers require nominalization, the produced grammar' +\
-                   ' will allow any nominalinalization strategy for the clausal modifier strategy.'
+                   ' will allow any nominalization strategy for the clausal modifier strategy.'
             vr.warn(feat.full_key + '_name', mess)
-            if cms.get('subordinaotor-type') == 'adverb':
-                mess = 'Nominalization is not supported of the adverb analysis.'
-                vr.err(cms.full_key + '_subordinator-type', mess)
+            if cms.get('subordinator-type') == 'adverb':
+                mess = 'Nominalization is not supported for the adverb analysis.'
+                vr.err(feat.full_key + '_name', mess)
             for feat in cms.get('feat'):
                 if feat.get('name') == 'mood' or feat.get('name') == 'aspect':
                     mess = 'Aspect and mood are not present on nominal projections,' +\
@@ -1762,6 +1777,93 @@ def validate_adnominal_possession(ch, vr):
 #                         'and the possessor is not supported.'
 #                    vr.err(pron.full_key+'_possessum-agr',mess)
             
+#############################################################
+########### Constituent questions validation ################
+#############################################################
+
+def validate_wh_ques(ch, vr):
+    from gmcs.constants import ON,IN_SITU,MTRX_FRONT, WH_QUE_PTCL, \
+        WH_INFL, MULTI, ALL_OBLIG, NO_MULTI, PIED, \
+        PIED_ADP, OBL_PIP_NOUN, OBL_PIP_ADP, \
+        MTRX_FR_OPT, SG_OBLIG
+    wh_q_strat = None
+    if ch.get(MTRX_FRONT):
+        wh_q_strat = MTRX_FRONT
+    elif ch.get(WH_QUE_PTCL) == ON:
+        wh_q_strat = WH_QUE_PTCL
+    elif ch.get(WH_INFL) == ON:
+        wh_q_strat = WH_INFL
+    elif ch.get('wh-q-inter-verbs') == ON:
+        wh_q_strat = 'wh-q-inter-verbs'
+    found_ques_word = True if ch.get('qverb') else False
+    if not found_ques_word:
+        for pos in ['noun','det','verb','adv']:
+            for type in ch.get(pos):
+                if type.get('inter') == ON:
+                    found_ques_word = True
+                    break
+    if wh_q_strat and not found_ques_word:
+        mess = 'Please specify question words on the Lexicon page'
+        vr.err(wh_q_strat,mess)
+
+    #Pied piping only makes sense when there are determiners:
+    if (ch.get(PIED) == ON or ch.get(PIED_ADP) == ON) and not len(ch.get('det', [])) > 0:
+        mess = 'Pied piping only makes sense when there are determiners; specify a wh-determiner on the Lexicon page.'
+        vr.err(PIED, mess)
+    # Pied piping only makes sense when some fronting options were chosen
+    if (ch.get(PIED) == ON or ch.get(PIED_ADP) == ON) and \
+            (ch.get(MTRX_FRONT)== None or ch.get(MTRX_FRONT)== IN_SITU):
+        mess = 'Pied piping only makes sense when fronting is possible; choose a fronting strategy.'
+        vr.err(PIED,mess)
+    # Pied piping obligatoriness only makes sense when there is pied piping
+    if ch.get(OBL_PIP_NOUN) == ON and not ch.get(PIED):
+        mess = 'You did not check pied piping itself but said it is obligatory'
+        vr.err(PIED, mess)
+    if ch.get(OBL_PIP_ADP) == ON and not ch.get(PIED_ADP):
+        mess = 'You did not check pied piping itself but said it is obligatory'
+        vr.err(PIED_ADP, mess)
+
+    if ch.get(NO_MULTI) == ON:
+        if (ch.get(MTRX_FRONT) == MULTI
+            or ch.get(MTRX_FR_OPT) == ALL_OBLIG):
+            mess = 'You have made choices regarding multiple question fronting, ' \
+                   'so you cannot say multiple questions are not allowed in one clause.'
+            vr.err(NO_MULTI,mess)
+
+    if ch.get(MTRX_FRONT) == IN_SITU and ch.get(MTRX_FR_OPT) in [ALL_OBLIG,SG_OBLIG]:
+        mess = 'In-situ position and obligatory fronting are not compatible choices.'
+        vr.err(MTRX_FR_OPT,mess)
+
+    if ch.get(MTRX_FR_OPT) != 'none-oblig' and ch.get('embed-insitu') == ON:
+        mess = 'This choice is only valid if fronting is optional.'
+        vr.err('embed-insitu', mess)
+
+    if ch.get('wh-inv-matrix') == ON and not ch.get('q-inv') == ON:
+        mess = 'You did not check inversion on the Yes/No page.'
+        vr.err('wh-inv-matrix', mess)
+
+    if ch.get('wh-inv-embed') == ON and not ch.get('wh-inv-matrix') == ON:
+        mess = 'To get inversion in embedded clauses, you must also have it in main clauses.'
+        vr.err('wh-inv-embed', mess)
+
+    if ch.get('wh-inv-notsubj') == ON and not ch.get('wh-inv-matrix') == ON:
+        mess = 'This choice is only valid if inversion in matrix clauses is chosen.'
+        vr.err('wh-inv-notsubj', mess)
+
+    if ch.get('focus-marking') == ON and not len(ch.get('c-focus-marker')) > 0:
+        mess = 'You must specify a contrastive focus marker for this choice to work. You do not need' \
+               'any other Information Structure choices.'
+        vr.err('focus-marking', mess)
+
+    if ch.get('wh-q-inter-verbs') == ON and not len(ch.get('qverb')) > 0:
+        mess = 'You must specify at least one lexical type for question verbs on the Lexicon page.'
+        vr.err('wh-q-inter-verbs', mess)
+
+    if ch.get('wh-q-inter-verbs') != ON and len(ch.get('qverb')) > 0:
+        mess = 'You must check this box if you specified any question verbs on the Lexicon page.'
+        vr.err('wh-q-inter-verbs', mess)
+
+
         
 def validate(ch, extra = False):
     """
@@ -1794,6 +1896,7 @@ def validate(ch, extra = False):
     validate_features(ch, vr)
     validate_hierarchy(ch, vr)
     validate_arg_opt(ch, vr)
+    validate_wh_ques(ch,vr)
 
     if extra:
         validate_extra_constraints(ch, vr)
