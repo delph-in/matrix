@@ -278,7 +278,7 @@ def add_test(args):
         name = args.test[0]
         idx, chc, txt = None, None, None
     elif len(tests) == 1:
-        name, idx, chc, _, txt, _, _, _ = tests[0]
+        name, idx, chc, txt, _, _, _ = tests[0]
     else:
         raise RegressionTestError('only 1 test may be added at a time')
 
