@@ -113,18 +113,9 @@ def main(args):
         args.index = pathlib.Path(args.index).expanduser()
     else:
         args.index = INDEX
-    if args.list:
-        list_tests(args)
-    elif args.update:
-        update_test(args)
-    elif args.add:
-        add_test(args)
-    elif args.remove:
-        remove_test(args)
-    elif args.clean:
-        clean_up(args)
-    else:
-        run_tests(args)
+    if args.add:
+        args.function = add_test
+    return args.function(args)
 
 
 def run_tests(args):
@@ -730,7 +721,9 @@ if __name__ == '__main__':
                         metavar='PATH',
                         help='path to a test index')
     parser.add_argument('-l', '--list',
-                        action='store_true',
+                        const=list_tests,
+                        dest='function',
+                        action='store_const',
                         help='list available tests (-v, -vv for more info)')
     parser.add_argument('--skipped',
                         action='store_true',
@@ -748,23 +741,31 @@ if __name__ == '__main__':
                         action='store_true',
                         help='compare test profile to gold')
     parser.add_argument('-u', '--update',
-                        action='store_true',
+                        const=update_test,
+                        dest='function',
+                        action='store_const',
                         help='copy the current profile to gold')
     parser.add_argument('-a', '--add',
                         nargs=2,
                         metavar=('CHOICES', 'TXTSUITE'),
                         help='add a new test to the system')
     parser.add_argument('-r', '--remove',
-                        action='store_true',
+                        const=remove_test,
+                        dest='function',
+                        action='store_const',
                         help='remove a test from the system')
     parser.add_argument('--clean',
-                        action='store_true',
+                        const=clean_up,
+                        dest='function',
+                        action='store_const',
                         help='delete temporary grammars, logs, and profiles')
     parser.add_argument('--debug',
                         action='store_true',
                         help='disable multiprocessing to help debuggers')
     parser.add_argument('test',
                         nargs='*')
+
+    parser.set_defaults(function=run_tests)
 
     args = parser.parse_args()
 
