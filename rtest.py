@@ -131,6 +131,7 @@ def run_tests(args):
         mkskel=args.mkskel,
         process=args.process,
         compare=args.compare,
+        force=args.force or args.skipped,
     )
 
     if args.debug:
@@ -159,6 +160,7 @@ def _run_test(
         mkskel=False,
         process=False,
         compare=False,
+        force=False,
 ) -> Tuple[str, str, pathlib.Path]:
     name, idx, chc, txt, skel, prof, gold = args
     log = _unique_log_path(name)
@@ -169,7 +171,7 @@ def _run_test(
                 .format(name, datetime.datetime.now().isoformat()),
                 logf)
 
-        if _skipped(idx, chc, skel, gold):
+        if not force and _skipped(idx, chc, skel, gold):
             result = SKIP
         else:
             try:
@@ -309,6 +311,7 @@ def add_test(args):
     args.mkskel = True
     args.process = True
     args.compare = False
+    args.force = True  # it would skip otherwise because GOLD is not there
     run_tests(args)
     try:
         # Need to copy current profile to gold, as at this stage the
@@ -323,6 +326,7 @@ def add_test(args):
     args.mkskel = False
     args.process = False
     args.compare = True
+    args.force = False  # should work now
     run_tests(args)
 
     # list the current state
