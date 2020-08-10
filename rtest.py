@@ -6,6 +6,7 @@ Grammar Matrix Regression Testing
 """
 
 from typing import Tuple
+import sys
 import traceback
 import shutil
 import argparse
@@ -113,18 +114,9 @@ def main(args):
         args.index = pathlib.Path(args.index).expanduser()
     else:
         args.index = INDEX
-    if args.list:
-        list_tests(args)
-    elif args.update:
-        update_test(args)
-    elif args.add:
-        add_test(args)
-    elif args.remove:
-        remove_test(args)
-    elif args.clean:
-        clean_up(args)
-    else:
-        run_tests(args)
+    if args.add:
+        args.function = add_test
+    return args.function(args)
 
 
 def run_tests(args):
@@ -140,6 +132,7 @@ def run_tests(args):
         mkskel=args.mkskel,
         process=args.process,
         compare=args.compare,
+        force=args.force or args.skipped,
     )
 
     if args.debug:
@@ -161,6 +154,9 @@ def run_tests(args):
                   ' (run rtest.py --list --skipped --verbose for more info)'
                   .format(totals[SKIP], total, width))
 
+    success = totals[ERROR] + totals[FAIL] == 0
+    return 0 if success else 1
+
 
 def _run_test(
         args,
@@ -168,6 +164,7 @@ def _run_test(
         mkskel=False,
         process=False,
         compare=False,
+        force=False,
 ) -> Tuple[str, str, pathlib.Path]:
     name, idx, chc, txt, skel, prof, gold = args
     log = _unique_log_path(name)
@@ -178,7 +175,7 @@ def _run_test(
                 .format(name, datetime.datetime.now().isoformat()),
                 logf)
 
-        if _skipped(idx, chc, skel, gold):
+        if not force and _skipped(idx, chc, skel, gold):
             result = SKIP
         else:
             try:
@@ -287,7 +284,7 @@ def add_test(args):
         name = args.test[0]
         idx, chc, txt = None, None, None
     elif len(tests) == 1:
-        name, idx, chc, _, txt, _, _, _ = tests[0]
+        name, idx, chc, txt, _, _, _ = tests[0]
     else:
         raise RegressionTestError('only 1 test may be added at a time')
 
@@ -318,6 +315,7 @@ def add_test(args):
     args.mkskel = True
     args.process = True
     args.compare = False
+    args.force = True  # it would skip otherwise because GOLD is not there
     run_tests(args)
     try:
         # Need to copy current profile to gold, as at this stage the
@@ -332,6 +330,7 @@ def add_test(args):
     args.mkskel = False
     args.process = False
     args.compare = True
+    args.force = False  # should work now
     run_tests(args)
 
     # list the current state
@@ -730,7 +729,9 @@ if __name__ == '__main__':
                         metavar='PATH',
                         help='path to a test index')
     parser.add_argument('-l', '--list',
-                        action='store_true',
+                        const=list_tests,
+                        dest='function',
+                        action='store_const',
                         help='list available tests (-v, -vv for more info)')
     parser.add_argument('--skipped',
                         action='store_true',
@@ -748,17 +749,23 @@ if __name__ == '__main__':
                         action='store_true',
                         help='compare test profile to gold')
     parser.add_argument('-u', '--update',
-                        action='store_true',
+                        const=update_test,
+                        dest='function',
+                        action='store_const',
                         help='copy the current profile to gold')
     parser.add_argument('-a', '--add',
                         nargs=2,
                         metavar=('CHOICES', 'TXTSUITE'),
                         help='add a new test to the system')
     parser.add_argument('-r', '--remove',
-                        action='store_true',
+                        const=remove_test,
+                        dest='function',
+                        action='store_const',
                         help='remove a test from the system')
     parser.add_argument('--clean',
-                        action='store_true',
+                        const=clean_up,
+                        dest='function',
+                        action='store_const',
                         help='delete temporary grammars, logs, and profiles')
     parser.add_argument('--debug',
                         action='store_true',
@@ -766,6 +773,9 @@ if __name__ == '__main__':
     parser.add_argument('test',
                         nargs='*')
 
+    parser.set_defaults(function=run_tests)
+
     args = parser.parse_args()
 
-    main(args)
+    exit_status = main(args)
+    sys.exit(exit_status)
