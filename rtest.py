@@ -6,6 +6,7 @@ Grammar Matrix Regression Testing
 """
 
 from typing import Tuple
+import sys
 import traceback
 import shutil
 import argparse
@@ -152,6 +153,9 @@ def run_tests(args):
             print('Skipped {0:{2}}/{1} tests'
                   ' (run rtest.py --list --skipped --verbose for more info)'
                   .format(totals[SKIP], total, width))
+
+    success = totals[ERROR] + totals[FAIL] == 0
+    return 0 if success else 1
 
 
 def _run_test(
@@ -773,4 +777,5 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    main(args)
+    exit_status = main(args)
+    sys.exit(exit_status)
