@@ -175,7 +175,10 @@ def _run_test(
                 .format(name, datetime.datetime.now().isoformat()),
                 logf)
 
-        if not force and _skipped(idx, chc, skel, gold):
+        if idx is None:
+            _lognow(f'Unknown test (not indexed): {name}\n', logf)
+            result = ERROR
+        elif not force and idx.get('skip'):
             result = SKIP
         else:
             try:
@@ -231,24 +234,18 @@ def list_tests(args, verbose=False):
         print(name)
 
         if verbose or args.verbosity >= 2:
+            desc = None
+            skip = ''
             if idx:
                 desc = idx.get('description')
                 if idx.get('skip'):
-                    skip = f'{yellow("yes")} (disabled in index)'
-                elif _skipped(idx, chc, skel, gold):
-                    skip = f'{red("yes")} (missing components)'
-                else:
-                    skip = green('no')
-            else:
-                desc = None
-                skip = f'{red("yes")} (not indexed)'
+                    skip = f'({yellow("skipped")})'
             print('    Description:', desc)
-            print('    Indexed:    ', yes_or_no(idx))
+            print('    Indexed:    ', yes_or_no(idx), skip)
             print('    Txt-suite:  ', yes_or_no(txt))
             print('    Choices:    ', yes_or_no(chc))
             print('    Skeleton:   ', yes_or_no(skel))
             print('    Gold:       ', yes_or_no(gold))
-            print('    Skipped:    ', skip)
             print()
 
 
@@ -454,7 +451,7 @@ def _discover(args):
             chc = choices.get(name)
             skl = skeletons.get(name)
             gld = gold.get(name)
-            if args.skipped and not _skipped(idx, chc, skl, gld):
+            if args.skipped and (idx is None or not idx.get('skip')):
                 continue
             yield (name,
                    idx,
@@ -463,10 +460,6 @@ def _discover(args):
                    skl,
                    profiles.get(name),
                    gld)
-
-
-def _skipped(idx, chc, skel, gold):
-    return None in (idx, chc, skel, gold) or idx.get('skip')
 
 
 def _parse_index(path):
