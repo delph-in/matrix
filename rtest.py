@@ -773,7 +773,8 @@ if __name__ == '__main__':
     parser.add_argument('test',
                         nargs='*')
 
-    parser.set_defaults(function=run_tests)
+    parser.set_defaults(force=False,
+                        function=run_tests)
 
     args = parser.parse_args()
 
