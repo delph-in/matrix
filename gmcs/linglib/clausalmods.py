@@ -117,6 +117,7 @@ def create_adverb_subordinator_basic_lex_type(mylang):
     mylang.add('adverb-subord-lex-item := no-rels-hcons-lex-item &\
       [ SYNSEM [ LOCAL [ CAT [ VAL [ SUBJ < >,\
                                     SPR < >,\
+                                    SPEC < >,\
                                     COMPS < > ],\
                                 HEAD adv & [ MOD < [ SUBORDINATED none,\
 						LOCAL intersective-mod &\
