@@ -359,7 +359,7 @@ def add_non_branching_rules(mylang, rules, cms, ch):
                 [ SYNSEM [ LOCAL [ CAT [ MC -,\
                               VAL [ SPR < >,\
                               COMPS < >,\
-				SPEC < >,\
+				              SPEC < >,\
                                     SUBJ #subj ],\
                               HEAD adp & [ MOD < [ LOCAL scopal-mod &\
     						[ CAT [ HEAD verb,\
@@ -437,6 +437,7 @@ def add_subordinators_matrix_pair_to_lexicon(mylang, lexicon, cms, ch):
     mylang.add('subord-pair-matrix-lex-item := basic-adverb-lex &\
     [ SYNSEM [ LOCAL [ CAT [ VAL [ SUBJ < >,\
                               SPR < >,\
+                              SPEC < >,\
                               COMPS < > ],\
                         HEAD.MOD < [ LOCAL scopal-mod & [ CAT [ MC +,\
                                                 HEAD verb ],\
@@ -591,6 +592,7 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
     [ SYNSEM [ LOCAL [ CAT [ MC -,\
                             VAL [ SUBJ #subj,\
                                   SPR < >,\
+                                   SPEC < >,\
                                   COMPS < > ],\
                             HEAD adp & [ MOD < [ LOCAL scopal-mod &\
   						[ CAT [ HEAD verb,\
