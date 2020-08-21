@@ -151,7 +151,7 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies,roots):
         #OZ 2020-07-03 This is to suppress ambiguity in "Which house do the cats sleep in?"
         if ch.get('has-aux') == 'yes':
             mylang.add('int-cl := [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].')
-            rules.add('int := int-cl.')
+        rules.add('int := int-cl.')
 
     if ch.get('q-part'):
         # Clause-initial and clause-final particles are analyzed as complementizers:
