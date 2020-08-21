@@ -41,7 +41,7 @@ LEXICAL_SUPERTYPES = {'noun':'noun-lex',
 
 # TYPE DEFINITIONS (that can be shared with other libraries)
 COMPLEMENTIZER = '''
-      complementizer-lex-item := raise-sem-lex-item & basic-one-arg &
+      complementizer-lex-item := raise-sem-lex-item & basic-one-arg & basic-icons-lex-item & 
          [ SYNSEM [ LOCAL.CAT [ HEAD comp &
                                    [ MOD < > ],
                               VAL [ SPR < >, SPEC < >,
