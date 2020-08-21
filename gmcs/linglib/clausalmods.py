@@ -52,6 +52,7 @@ def create_head_subordinator_basic_lex_type(mylang, ch, cms):
                                                                 VAL [ COMPS < > ] ] ] ] > ],\
                                 VAL [ SUBJ < >,\
                                         SPR < >,\
+                                        SPEC < >,\
                                         COMPS < [ OPT -,\
                                                   LOCAL.CAT [ MC -,\
                                                             VAL.COMPS < >]] > ]]].')
