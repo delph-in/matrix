@@ -3066,18 +3066,33 @@ clausal-first-arg-trans-lex-item := basic-two-arg & one-icons-lex-item &
 
 ; changing: added cat-sat (PASSES all reg tests)
 
-clausal-second-arg-trans-lex-item := basic-two-arg & one-icons-lex-item &
+; OZ 2020-08-25 It is unclear at the moment why this had ICONS.
+; It was causing a meaningless (underspecified) ICONS link between the clause-embedding
+; verb and the embedded event. If later on this becomes clearer, the below
+; commented out type can be brought back.
+clausal-second-arg-trans-lex-item := basic-two-arg & basic-icons-lex-item &
    [ ARG-ST < [ LOCAL [ CAT cat-sat,
-                        CONT.HOOK [ INDEX ref-ind & #ind,
-                                    ICONS-KEY.IARG1 #clause ] ] ],
-              [ LOCAL.CONT.HOOK [ LTOP #larg,
-                                  INDEX #target ] ] >,
-     SYNSEM [ LOCAL.CONT [ HOOK.CLAUSE-KEY #clause,
-                           HCONS.LIST < qeq & [ HARG #harg,
-                                            LARG #larg ] >,
-                           ICONS.LIST < [ IARG1 #clause, IARG2 #target ] > ],
+                        CONT.HOOK [ INDEX ref-ind & #ind ] ] ],
+              [ LOCAL.CONT.HOOK.LTOP #larg ] >,
+     SYNSEM [ LOCAL.CONT [ HCONS.LIST < qeq & [ HARG #harg,
+                                            LARG #larg ] > ],
               LKEYS.KEYREL [ ARG1 #ind,
                              ARG2 #harg ] ] ].
+
+; OZ 2020-08-25 See comment above.
+;clausal-second-arg-trans-lex-item := basic-two-arg & one-icons-lex-item &
+;   [ ARG-ST < [ LOCAL [ CAT cat-sat,
+;                        CONT.HOOK [ INDEX ref-ind & #ind,
+;                                    ICONS-KEY.IARG1 #clause ] ] ],
+;              [ LOCAL.CONT.HOOK [ LTOP #larg,
+;                                  INDEX #target ] ] >,
+;     SYNSEM [ LOCAL.CONT [ HOOK.CLAUSE-KEY #clause,
+;                           HCONS.LIST < qeq & [ HARG #harg,
+;                                            LARG #larg ] >,
+;                          ICONS.LIST < [ IARG1 #clause, IARG2 #target ] > ],
+;              LKEYS.KEYREL [ ARG1 #ind,
+;                             ARG2 #harg ] ] ].
+
 
 ; Kim told Sandy that Pat slept.
 ; Kim ga Sandy ni Pat ga neta to itta.
