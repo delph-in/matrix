@@ -45,7 +45,7 @@ def create_head_subordinator_basic_lex_type(mylang, ch, cms):
     """
     nominalized, nmzRel, nom_strategy = is_nominalized(cms, ch)
     mylang.set_section('subordlex')
-    mylang.add('adposition-subord-lex-item := single-rel-lex-item & norm-ltop-lex-item &\
+    mylang.add('adposition-subord-lex-item := single-rel-lex-item & norm-ltop-lex-item & basic-icons-lex-item &\
             [ SYNSEM.LOCAL.CAT [ MC -,\
                                 HEAD adp & [ MOD < [ LOCAL scopal-mod &\
                                                         [ CAT [ HEAD verb,\
@@ -114,7 +114,7 @@ def create_adverb_subordinator_basic_lex_type(mylang):
     Create the basic subordinator lexical type if the subordinator is an adverb
     """
     mylang.set_section('subordlex')
-    mylang.add('adverb-subord-lex-item := no-rels-hcons-lex-item &\
+    mylang.add('adverb-subord-lex-item := no-rels-hcons-lex-item & basic-icons-lex-item &\
       [ SYNSEM [ LOCAL [ CAT [ VAL [ SUBJ < >,\
                                     SPR < >,\
                                     SPEC < >,\
@@ -434,7 +434,7 @@ def add_subordinators_matrix_pair_to_lexicon(mylang, lexicon, cms, ch):
     attachment (before/after a vp/s). Add each to lexicon.
     """
     mylang.set_section('subordlex')
-    mylang.add('subord-pair-matrix-lex-item := basic-adverb-lex &\
+    mylang.add('subord-pair-matrix-lex-item := basic-adverb-lex & basic-icons-lex-item &\
     [ SYNSEM [ LOCAL [ CAT [ VAL [ SUBJ < >,\
                               SPR < >,\
                               SPEC < >,\
