@@ -978,12 +978,13 @@ def customize_information_structure_marker(mylang, ch, rules, irules, lexicon, t
 
         if _type == 'modifier':
             tdl = """infostr-marking-mod-lex := no-rels-hcons-lex-item & one-icons-lex-item &
-               [ SYNSEM.LOCAL [ CAT [ HEAD adv & [ MOD < [ LIGHT $
+               [ SYNSEM [ LOCAL [ CAT [ HEAD adv & [ MOD < [ LIGHT $
                                                            LOCAL [ CAT.MKG [ FC na-or--, TP na-or-- ],
                                                                    CONT.HOOK [ INDEX #target,
                                                                                ICONS-KEY #icons] ] ] > ],
                                       VAL [ SUBJ < >, COMPS < >, SPR < >, SPEC < > ] ],
-                                CONT.ICONS.LIST < #icons & [ IARG2 #target ] > ] ]."""
+                                CONT.ICONS.LIST < #icons & [ IARG2 #target ] > ],
+                          NON-LOCAL non-local-none ] ]."""
 
             tdl = tdl.replace('$', _light)
             add_lextypes(mylang, tdl)
