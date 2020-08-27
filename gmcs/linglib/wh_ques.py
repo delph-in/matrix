@@ -18,13 +18,18 @@ WH_Q_PHR_NO_OR_SG_OBLIG_MULTI = ''' wh-ques-phrase :=
 
 WH_Q_PHR = ''' wh-ques-phrase := basic-head-filler-phrase & interrogative-clause &
 		  head-final &
-   [ SYNSEM [ LOCAL.CAT [ WH.LOGICAL-OR.BOOL +, MC bool,
-			VAL #val,
-			HEAD verb ], NON-LOCAL.QUE 0-alist ],
+   [ SYNSEM [ LOCAL [ CAT [ WH.LOGICAL-OR.BOOL +, MC bool,
+			                VAL #val,
+			                HEAD verb ],
+			          CONT.HOOK [ ICONS-KEY #ikey,
+                                  CLAUSE-KEY #ckey ] ], 
+              NON-LOCAL.QUE 0-alist ],
      HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL #val & [ SUBJ < >,
-					      COMPS < > ] ] ],
+					                            COMPS < > ] ] ],
      NON-HEAD-DTR.SYNSEM [ NON-LOCAL.QUE.LIST < ref-ind >,
-                           LOCAL.CONT.HOOK.ICONS-KEY focus ] ].'''
+                           LOCAL.CONT.HOOK [ INDEX #target & [ COG-ST in-foc ] ] ],
+    C-CONT.ICONS.LIST < #ikey & non-focus & [ IARG1 #ckey,
+                                              IARG2 #target ] > ].'''
 
 
 MAIN_WHQ = '''main-wh-ques-phrase := wh-ques-phrase &

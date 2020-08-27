@@ -146,7 +146,8 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies,roots):
                                        [SUBJ < >,
                                        COMPS < >] ],
                         NON-LOCAL non-local-none ],
-      C-CONT.HOOK.INDEX.SF ques ].'''
+      C-CONT [ HOOK.INDEX.SF ques,
+               ICONS.LIST < > ] ].'''
         mylang.add(typedef, comment, section='phrases')
         #OZ 2020-07-03 This is to suppress ambiguity in "Which house do the cats sleep in?"
         if ch.get('has-aux') == 'yes':

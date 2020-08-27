@@ -1863,7 +1863,7 @@ basic-non-rel-clause := clause & head-compositional &
 
 interrogative-clause := basic-non-rel-clause &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques,
-    C-CONT [ RELS.LIST < >, HCONS.LIST < >, ICONS.LIST < > ] ].
+    C-CONT [ RELS.LIST < >, HCONS.LIST < > ] ].
 
 declarative-clause := basic-non-rel-clause &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF prop-or-ques ].
