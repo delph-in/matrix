@@ -11,12 +11,11 @@ CONSTANTS
 '''
 
 WH_Q_PHR_NO_OR_SG_OBLIG_MULTI = ''' wh-ques-phrase := 
-   [ SYNSEM.NON-LOCAL.QUE #que,
+[ SYNSEM.NON-LOCAL.QUE #que,
      HEAD-DTR.SYNSEM.NON-LOCAL.QUE #que ].'''
 
-WH_Q_PHR = ''' wh-ques-phrase := basic-head-filler-phrase & interrogative-clause &
-		  head-final &
-   [ SYNSEM [ LOCAL.CAT [ WH.LOGICAL-OR.BOOL +, MC bool,
+WH_Q_PHR = ''' wh-ques-phrase := basic-head-filler-phrase & interrogative-clause & head-final &
+[ SYNSEM [ LOCAL.CAT [ WH.LOGICAL-OR.BOOL +, MC bool,
 			VAL #val,
 			HEAD verb ], NON-LOCAL.QUE 0-alist ],
      HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL #val & [ SUBJ < >,
@@ -26,21 +25,21 @@ WH_Q_PHR = ''' wh-ques-phrase := basic-head-filler-phrase & interrogative-clause
 
 
 MAIN_WHQ = '''main-wh-ques-phrase := wh-ques-phrase &
-  [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC na-or-+,
+[ HEAD-DTR.SYNSEM.LOCAL.CAT.MC na-or-+,
     SYNSEM.LOCAL.CAT.MC + ].
 '''
 
 EMBED_WHQ = '''embed-wh-ques-phrase := wh-ques-phrase &
-  [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC -,
+[ HEAD-DTR.SYNSEM.LOCAL.CAT.MC -,
     SYNSEM.LOCAL.CAT.MC - ].'''
 
 EX_COMP = ''' extracted-comp-phrase := basic-extracted-comp-phrase.'''
 
 EX_SUBJ = ''' extracted-subj-phrase := basic-extracted-subj-phrase &
-  [ SYNSEM.LOCAL.CAT.HEAD verb ].'''
+[ SYNSEM.LOCAL.CAT.HEAD verb ].'''
 
 IN_SITU_PHRASE = '''insitu-int-cl := interrogative-clause & head-only &
-  [ SYNSEM [ MODIFIED hasmod,
+[ SYNSEM [ MODIFIED hasmod,
              LOCAL.CAT [ VAL #val,
        MC bool ],
        NON-LOCAL [ SLASH.LIST < >, QUE.LIST < >, REL.LIST < >, YNQ #ynq ] ],
@@ -73,20 +72,20 @@ BASIC_FILLER_SG = '''basic-filler-phrase :+ [ SYNSEM.NON-LOCAL.SLASH.LIST < >,
                                                     [ SYNSEM.NON-LOCAL.SLASH.LIST < #slash > ] > ]. '''
 
 FIRST_FILLER = '''1st-head-filler-phrase := basic-filler-phrase & head-compositional &
-  [  SYNSEM [ NON-LOCAL [ SLASH.LIST #slash, REL #rel, QUE 0-alist, YNQ 0-alist ] ],
+[  SYNSEM [ NON-LOCAL [ SLASH.LIST #slash, REL #rel, QUE 0-alist, YNQ 0-alist ] ],
      ARGS < [ SYNSEM.LOCAL #local & [ CAT.HEAD +nrpd ] ],
 	   [ SYNSEM.NON-LOCAL [ SLASH.LIST < #local . #slash >,
 				                  REL #rel & 0-alist ] ] > ].'''
 
 SEC_FILLER = '''2nd-head-filler-phrase := binary-phrase & phrasal & head-compositional &
-  [ SYNSEM.NON-LOCAL.SLASH.LIST < #firstarg . #otherargs >,
+[ SYNSEM.NON-LOCAL.SLASH.LIST < #firstarg . #otherargs >,
     ARGS < [ SYNSEM.LOCAL #local ],
      [ SYNSEM.NON-LOCAL [ SLASH.LIST [ FIRST #firstarg, REST < #local . #otherargs > ],
           REL 0-alist ] ] > ].'''
 
 NC_SUBJ_HEAD = '''
 subj-head-nc-phrase := decl-head-subj-phrase & head-final &
-  [ SYNSEM.LOCAL.CAT [ MC - ],
+[ SYNSEM.LOCAL.CAT [ MC - ],
     HEAD-DTR.SYNSEM.LOCAL.CAT.VAL [ COMPS < > ] ].
 
 '''
