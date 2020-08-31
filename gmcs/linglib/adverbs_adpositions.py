@@ -21,7 +21,7 @@ ADJ_HEAD = '''my-adj-head-phrase := adj-head-int-phrase &
  '''
 
 def customize_adv_adp(ch, mylang, rules):
-    if len(ch.get('adv',[])) > 0 or len (ch.get('normadp',[])) > 0: #need to handle also adjectives here
+    if len(ch.get('adv',[])) > 0 or len(ch.get('normadp',[])) > 0: #need to handle also adjectives here
         mylang.add_literal(';;; Head Adjunct rules',section='phrases')
         mylang.add_literal('; For intersective adjuncts with underspecified attachment locations:',section='phrases')
         mylang.add(HEAD_ADJ,section='phrases')

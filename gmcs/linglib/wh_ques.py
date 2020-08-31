@@ -5,8 +5,6 @@ email olzama@uw.edu with both constituent and polar questions about the library.
 
 from gmcs.utils import get_name,TDLencode, orth_encode
 
-from gmcs import globals
-
 
 '''
 CONSTANTS
@@ -308,5 +306,5 @@ def customize_wh_ques(mylang,ch,rules,roots):
               qpart = ch.get('q-particle')[1] # This is 1 and not 0 because the Choices len method is overriden; see Choices.py
               if qpart['wh'] == 'oblig':
                    mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.MC - ].')
-            elif globals.div_particles:
+            elif ch.has_diverse_ques_particles():
                 mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.MC - ].')

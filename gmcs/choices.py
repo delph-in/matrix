@@ -821,6 +821,19 @@ class ChoicesFile:
 
         return result
 
+    def has_diverse_ques_particles(self):
+        # First figure out if there are diverse particles:
+        oblig = 0
+        imp = 0
+        for qpart in self.get('q-particle'):
+            if qpart['wh'] == 'oblig':
+                oblig += 1
+            elif qpart['wh'] == 'imp':
+                imp += 1
+        return (oblig > 0 and imp > 0)
+
+
+
 
     # patterns()
     #   Create and return a list containing information about the

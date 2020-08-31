@@ -1,5 +1,4 @@
 from gmcs.linglib import lexbase
-from gmcs import globals
 
 ######################################################################
 # customize_yesno_questions()
@@ -216,17 +215,6 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies,roots):
             #mylang.add('binary-headed-phrase :+ mc-na-headed-phrase.',section='addenda')
 
         # Add subtypes for each question particle.
-        # First figure out if there are diverse particles:
-        oblig = 0
-        imp = 0
-        for qpart in ch.get('q-particle'):
-            if qpart['wh'] == 'oblig':
-                oblig += 1
-            elif qpart['wh'] == 'imp':
-                imp += 1
-        if oblig > 0 and imp > 0:
-            globals.div_particles = True
-        # Now add particles:
         for qpart in ch.get('q-particle'):
             typename = qpart.full_key + '-lex'
             typedef = typename + ' := ' + supertype + '.'
