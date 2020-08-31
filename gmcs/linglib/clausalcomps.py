@@ -13,7 +13,8 @@ from gmcs.linglib import lexbase
 
 # Constants (specific to this module)
 #TODO: It should probably all live in constants.py
-from gmcs.constants import MTRX_FRONT
+from gmcs.constants import MTRX_FRONT, SINGLE, MULTI
+
 COMPS = 'comps' # choice name for clausal complement strategies
 COMP = 'comp' # reserved head name for complementizers; should be a constant on some other page?
               # Also, the name for the choice for complementizer of a clausal complement strategy.
@@ -639,7 +640,6 @@ def customize_clausal_verb(clausalverb,mylang,ch,cs,extra):
         elif cs['ques'] == 'ques':
             mylang.add(clausalverb + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.SF ques ] > ].'
                        , merge=True)
-            from gmcs.constants import SINGLE,MULTI
             if ch.get(MTRX_FRONT) in [SINGLE, MULTI] and not ch.get('embed-insitu') == 'on':
                 mylang.add(clausalverb + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.WH.LOGICAL-OR.BOOL + ] > ].'
                            , merge=True)
