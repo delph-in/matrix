@@ -48,7 +48,7 @@ def adp_id(item):
     return get_name(item) + '-adp-lex'
 
 def qpart_id(item):
-    """Return the identifier for a determiner lexical item."""
+    """Return the identifier for a question particle lexical item."""
     return get_name(item) + '-lex'
 
 ##########################################################
