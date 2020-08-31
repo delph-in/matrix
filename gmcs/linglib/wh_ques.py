@@ -223,7 +223,8 @@ def customize_wh_ques(mylang,ch,rules,roots):
         if ch.get('word-order') == 'free':
             mylang.add('''adj-head-int-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ clist ].''', merge=True)
             mylang.add('''head-adj-int-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ clist ].''', merge=True)
-        # The below does not make sense?
+        # The below does not make sense? Why is it that I want to constrain these orders in this way?
+        # Needs better conceptualization, or even more likely, will go away as part of an improved analysis of wh.
         if ch.get('word-order') in ['ovs', 'vos', 'vso']:
             mylang.add('''adj-head-int-phrase :+ [ HEAD-DTR.SYNSEM.L-QUE - ].''',section='addenda')
 
