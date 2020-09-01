@@ -37,7 +37,7 @@ VO_ORDERS = ['svo', 'vos', 'vso', 'v-initial']
 ### WH-QUESTIONS
 
 IN_SITU = 'in-situ' # No question phrase fronting
-EMB_INSITU = 'embed-insitu' # Embedded in situ questions (when fronting is also possible; that's rare)
+EMBED_INSITU = 'embed-insitu' # Embedded in situ questions (when fronting is also possible; that's rare)
 MTRX_FRONT = 'front-matrix' # Question phrases fronting in matrix clauses
 WH_QUE_PTCL = 'wh-q-part' # Question particle for constituent questions
 WH_INFL = 'wh-q-infl' # Inflectional paradigm for constituent questions

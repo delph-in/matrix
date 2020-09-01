@@ -3,6 +3,7 @@ from gmcs.utils import get_name,TDLencode, orth_encode
 from gmcs import constants, feature_type_use
 from gmcs.linglib import lexbase
 
+
 ######################################################################
 # Clausal Complements
 #   Create the type definitions associated with the user's choices
@@ -11,6 +12,9 @@ from gmcs.linglib import lexbase
 ######################################################################
 
 # Constants (specific to this module)
+#TODO: It should probably all live in constants.py
+from gmcs.constants import MTRX_FRONT, SINGLE, MULTI
+
 COMPS = 'comps' # choice name for clausal complement strategies
 COMP = 'comp' # reserved head name for complementizers; should be a constant on some other page?
               # Also, the name for the choice for complementizer of a clausal complement strategy.
@@ -418,8 +422,7 @@ def add_special_complementizer_HCR(additional, cs, general, mylang, rules, wo,is
                        merge=True)
         rules.add(name + ' := ' + name + '-phrase.')
 
-def determine_clausal_verb_comp_head(cs):
-    from gmcs import globals
+def determine_clausal_verb_comp_head(cs,ch):
     head = ''
     if cs[COMP]:
         if cs[COMP] == 'oblig' and not cs['comp-q'] == 'on':
@@ -429,7 +432,7 @@ def determine_clausal_verb_comp_head(cs):
     else:
         if is_nominalized_complement(cs):
             head = 'noun'
-        elif globals.div_particles:
+        elif ch.has_diverse_ques_particles():
             if cs['ques'] == 'ques':
                 head = 'comp'
             else:
@@ -635,11 +638,8 @@ def customize_clausal_verb(clausalverb,mylang,ch,cs,extra):
                                      'NON-LOCAL.QUE 0-alist ] ].'
                        , merge=True)
         elif cs['ques'] == 'ques':
-            from gmcs.constants import MTRX_FRONT
-            from gmcs import globals
             mylang.add(clausalverb + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.SF ques ] > ].'
                        , merge=True)
-            from gmcs.constants import SINGLE,MULTI
             if ch.get(MTRX_FRONT) in [SINGLE, MULTI] and not ch.get('embed-insitu') == 'on':
                 mylang.add(clausalverb + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.WH.LOGICAL-OR.BOOL + ] > ].'
                            , merge=True)
@@ -678,7 +678,7 @@ def update_verb_lextype(ch,verb, vtype):
     for ccs in ch.get(COMPS):
         if val.endswith(ccs.full_key):
             suffix = val
-            head = determine_clausal_verb_comp_head(ccs)
+            head = determine_clausal_verb_comp_head(ccs,ch)
     if suffix:
         name = vtype[0:vtype.find('verb-lex')-1]
         #rest = 'clausal-verb-lex'

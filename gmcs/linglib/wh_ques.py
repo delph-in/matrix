@@ -5,49 +5,41 @@ email olzama@uw.edu with both constituent and polar questions about the library.
 
 from gmcs.utils import get_name,TDLencode, orth_encode
 
-from gmcs import globals
-
 
 '''
 CONSTANTS
 '''
 
-WH_Q_PHR_NO_OR_SG_OBLIG_MULTI = ''' wh-ques-phrase := 
-   [ SYNSEM.NON-LOCAL.QUE #que,
+WH_Q_PHR_NO_OR_SG_OBLIG_MULTI = '''wh-ques-phrase := 
+[ SYNSEM.NON-LOCAL.QUE #que,
      HEAD-DTR.SYNSEM.NON-LOCAL.QUE #que ].'''
 
-WH_Q_PHR = ''' wh-ques-phrase := basic-head-filler-phrase & interrogative-clause &
-		  head-final &
-   [ SYNSEM [ LOCAL [ CAT [ WH.LOGICAL-OR.BOOL +, MC bool,
-			                VAL #val,
-			                HEAD verb ],
-			          CONT.HOOK [ ICONS-KEY #ikey,
-                                  CLAUSE-KEY #ckey ] ], 
-              NON-LOCAL.QUE 0-alist ],
+WH_Q_PHR = ''' wh-ques-phrase := basic-head-filler-phrase & interrogative-clause & head-final &
+[ SYNSEM [ LOCAL.CAT [ WH.LOGICAL-OR.BOOL +, MC bool,
+			VAL #val,
+			HEAD verb ], NON-LOCAL.QUE 0-alist ],
      HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL #val & [ SUBJ < >,
-					                            COMPS < > ] ] ],
+					      COMPS < > ] ] ],
      NON-HEAD-DTR.SYNSEM [ NON-LOCAL.QUE.LIST < ref-ind >,
-                           LOCAL.CONT.HOOK [ INDEX #target & [ COG-ST in-foc ] ] ],
-    C-CONT.ICONS.LIST < #ikey & non-focus & [ IARG1 #ckey,
-                                              IARG2 #target ] > ].'''
+                           LOCAL.CONT.HOOK.ICONS-KEY focus ] ].'''
 
 
 MAIN_WHQ = '''main-wh-ques-phrase := wh-ques-phrase &
-  [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC na-or-+,
+[ HEAD-DTR.SYNSEM.LOCAL.CAT.MC na-or-+,
     SYNSEM.LOCAL.CAT.MC + ].
 '''
 
 EMBED_WHQ = '''embed-wh-ques-phrase := wh-ques-phrase &
-  [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC -,
+[ HEAD-DTR.SYNSEM.LOCAL.CAT.MC -,
     SYNSEM.LOCAL.CAT.MC - ].'''
 
-EX_COMP = ''' extracted-comp-phrase := basic-extracted-comp-phrase.'''
+EX_COMP = '''extracted-comp-phrase := basic-extracted-comp-phrase.'''
 
-EX_SUBJ = ''' extracted-subj-phrase := basic-extracted-subj-phrase &
-  [ SYNSEM.LOCAL.CAT.HEAD verb ].'''
+EX_SUBJ = '''extracted-subj-phrase := basic-extracted-subj-phrase &
+[ SYNSEM.LOCAL.CAT.HEAD verb ].'''
 
 IN_SITU_PHRASE = '''insitu-int-cl := interrogative-clause & head-only &
-  [ SYNSEM [ MODIFIED hasmod,
+[ SYNSEM [ MODIFIED hasmod,
              LOCAL.CAT [ VAL #val,
        MC bool ],
        NON-LOCAL [ SLASH.LIST < >, QUE.LIST < >, REL.LIST < >, YNQ #ynq ] ],
@@ -80,26 +72,25 @@ BASIC_FILLER_SG = '''basic-filler-phrase :+ [ SYNSEM.NON-LOCAL.SLASH.LIST < >,
                                                     [ SYNSEM.NON-LOCAL.SLASH.LIST < #slash > ] > ]. '''
 
 FIRST_FILLER = '''1st-head-filler-phrase := basic-filler-phrase & head-compositional &
-  [  SYNSEM [ NON-LOCAL [ SLASH.LIST #slash, REL #rel, QUE 0-alist, YNQ 0-alist ] ],
+[  SYNSEM [ NON-LOCAL [ SLASH.LIST #slash, REL #rel, QUE 0-alist, YNQ 0-alist ] ],
      ARGS < [ SYNSEM.LOCAL #local & [ CAT.HEAD +nrpd ] ],
 	   [ SYNSEM.NON-LOCAL [ SLASH.LIST < #local . #slash >,
 				                  REL #rel & 0-alist ] ] > ].'''
 
 SEC_FILLER = '''2nd-head-filler-phrase := binary-phrase & phrasal & head-compositional &
-  [ SYNSEM.NON-LOCAL.SLASH.LIST < #firstarg . #otherargs >,
+[ SYNSEM.NON-LOCAL.SLASH.LIST < #firstarg . #otherargs >,
     ARGS < [ SYNSEM.LOCAL #local ],
      [ SYNSEM.NON-LOCAL [ SLASH.LIST [ FIRST #firstarg, REST < #local . #otherargs > ],
           REL 0-alist ] ] > ].'''
 
-NC_SUBJ_HEAD = '''
-subj-head-nc-phrase := decl-head-subj-phrase & head-final &
-  [ SYNSEM.LOCAL.CAT [ MC - ],
+NC_SUBJ_HEAD = '''subj-head-nc-phrase := decl-head-subj-phrase & head-final &
+[ SYNSEM.LOCAL.CAT [ MC - ],
     HEAD-DTR.SYNSEM.LOCAL.CAT.VAL [ COMPS < > ] ].
 
 '''
 
 from gmcs.constants import MTRX_FR_OPT, MTRX_FRONT, NO_MULTI, \
-    SINGLE, MULTI, SG_OBLIG, ALL_OBLIG, EMB_INSITU, ON, WH_INFL, \
+    SINGLE, MULTI, SG_OBLIG, ALL_OBLIG, EMBED_INSITU, ON, WH_INFL, \
     IN_SITU
 
 
@@ -231,7 +222,8 @@ def customize_wh_ques(mylang,ch,rules,roots):
         if ch.get('word-order') == 'free':
             mylang.add('''adj-head-int-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ clist ].''', merge=True)
             mylang.add('''head-adj-int-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ clist ].''', merge=True)
-        # The below does not make sense?
+        # The below does not make sense? Why is it that I want to constrain these orders in this way?
+        # Needs better conceptualization, or even more likely, will go away as part of an improved analysis of wh.
         if ch.get('word-order') in ['ovs', 'vos', 'vso']:
             mylang.add('''adj-head-int-phrase :+ [ HEAD-DTR.SYNSEM.L-QUE - ].''',section='addenda')
 
@@ -254,7 +246,7 @@ def customize_wh_ques(mylang,ch,rules,roots):
         mylang.add(IN_SITU_PHRASE)
         rules.add('in-situ-ques := insitu-int-cl.')
         if not ch.get(MTRX_FRONT) == IN_SITU:
-            if ch.get(EMB_INSITU) == ON:
+            if ch.get(EMBED_INSITU) == ON:
                 mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.WH.LOGICAL-OR.BOOL + ].')
             else:
                 mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.WH.LOGICAL-OR.BOOL - ].')
@@ -264,7 +256,7 @@ def customize_wh_ques(mylang,ch,rules,roots):
             mylang.add('insitu-int-cl := [ SYNSEM.L-QUE - ].')
         if (ch.get(MTRX_FRONT) == SINGLE
             and not ch.get(MTRX_FR_OPT) == SG_OBLIG) \
-                and not ch.get(EMB_INSITU) == ON:
+                and not ch.get(EMBED_INSITU) == ON:
             mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.MC + ].')
         elif ch.get(MTRX_FRONT) == 'multi' and ch.get(MTRX_FR_OPT) == SG_OBLIG:
             mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.MC - ].')
@@ -313,5 +305,5 @@ def customize_wh_ques(mylang,ch,rules,roots):
               qpart = ch.get('q-particle')[1] # This is 1 and not 0 because the Choices len method is overriden; see Choices.py
               if qpart['wh'] == 'oblig':
                    mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.MC - ].')
-            elif globals.div_particles:
+            elif ch.has_diverse_ques_particles():
                 mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.MC - ].')
