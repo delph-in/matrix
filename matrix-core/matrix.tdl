@@ -1084,13 +1084,15 @@ bool-with-or := bool-with-binary-operation.
   [ OTHER-BOOL #result,
     RESULT-BOOL #result ].
 
-my-and := *top* &
-  [ TEST1 [ AND < [ BOOL + ], [ BOOL + ], [ BOOL + ], [ BOOL + ] > ],
-    TEST2 [ AND < [ BOOL + ], [ BOOL - ] > ],
-    TEST3 [ OR < [ BOOL + ], [ BOOL - ] > ],
-    TEST4 [ OR < [ BOOL - ], [ BOOL - ] > ],
-    TEST5 [ NOT [ BOOL - ] ],
-    TEST6 [ OR < [ BOOL - ], [ NOT [ BOOL - ] ] > ] ].
+; Sample usage, written by Guy Emerson:
+
+;my-and := *top* &
+;  [ TEST1 [ AND < [ BOOL + ], [ BOOL + ], [ BOOL + ], [ BOOL + ] > ],
+;    TEST2 [ AND < [ BOOL + ], [ BOOL - ] > ],
+;    TEST3 [ OR < [ BOOL + ], [ BOOL - ] > ],
+;    TEST4 [ OR < [ BOOL - ], [ BOOL - ] > ],
+;    TEST5 [ NOT [ BOOL - ] ],
+;    TEST6 [ OR < [ BOOL - ], [ NOT [ BOOL - ] ] > ] ].
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Lexical rules
