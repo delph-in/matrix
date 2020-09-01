@@ -91,7 +91,7 @@ subj-head-nc-phrase := decl-head-subj-phrase & head-final &
 '''
 
 from gmcs.constants import MTRX_FR_OPT, MTRX_FRONT, NO_MULTI, \
-    SINGLE, MULTI, SG_OBLIG, ALL_OBLIG, EMB_INSITU, ON, WH_INFL, \
+    SINGLE, MULTI, SG_OBLIG, ALL_OBLIG, EMBED_INSITU, ON, WH_INFL, \
     IN_SITU
 
 
@@ -247,7 +247,7 @@ def customize_wh_ques(mylang,ch,rules,roots):
         mylang.add(IN_SITU_PHRASE)
         rules.add('in-situ-ques := insitu-int-cl.')
         if not ch.get(MTRX_FRONT) == IN_SITU:
-            if ch.get(EMB_INSITU) == ON:
+            if ch.get(EMBED_INSITU) == ON:
                 mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.WH.LOGICAL-OR.BOOL + ].')
             else:
                 mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.WH.LOGICAL-OR.BOOL - ].')
@@ -257,7 +257,7 @@ def customize_wh_ques(mylang,ch,rules,roots):
             mylang.add('insitu-int-cl := [ SYNSEM.L-QUE - ].')
         if (ch.get(MTRX_FRONT) == SINGLE
             and not ch.get(MTRX_FR_OPT) == SG_OBLIG) \
-                and not ch.get(EMB_INSITU) == ON:
+                and not ch.get(EMBED_INSITU) == ON:
             mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.MC + ].')
         elif ch.get(MTRX_FRONT) == 'multi' and ch.get(MTRX_FR_OPT) == SG_OBLIG:
             mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.MC - ].')

@@ -519,8 +519,6 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
 
     features.process_cfv_list(mylang, ch, hierarchies, to_cfv)
 
-
-
     # Call the other customization functions
     agreement_features.customize_agreement_features(mylang, hierarchies)
     adnominal_possession.customize_adnominal_possession(mylang,ch,rules,irules,lexicon,hierarchies)
@@ -533,7 +531,8 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
     adverbs_adpositions.customize_adv_adp(ch,mylang,rules)
     wh_ques.customize_wh_ques(mylang,ch,rules,roots)
 
-    # Service customization
+    # Customization having to do with punctuation, [incr tsdb()],
+    # parsers, roots, and vpm.
     customize_punctuation(grammar_path)
     customize_test_sentences(grammar_path)
     customize_itsdb(grammar_path)
