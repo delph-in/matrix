@@ -209,7 +209,7 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies,roots):
             roots.add('root := [ SYNSEM.NON-LOCAL.YNQ.LIST < > ].')
             mylang.add(INT_CL,section='phrases')
             mylang.add(DECL_CL,section='phrases')
-            rules.add('int-cl := int-cl.')
+            rules.add('intrg-phrase := int-cl.')
             #rules.add('decl-cl := decl-cl.')
             mylang.add(MC_NA,section='phrases')
             #mylang.add('binary-headed-phrase :+ mc-na-headed-phrase.',section='addenda')

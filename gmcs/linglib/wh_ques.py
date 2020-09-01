@@ -10,7 +10,7 @@ from gmcs.utils import get_name,TDLencode, orth_encode
 CONSTANTS
 '''
 
-WH_Q_PHR_NO_OR_SG_OBLIG_MULTI = ''' wh-ques-phrase := 
+WH_Q_PHR_NO_OR_SG_OBLIG_MULTI = '''wh-ques-phrase := 
 [ SYNSEM.NON-LOCAL.QUE #que,
      HEAD-DTR.SYNSEM.NON-LOCAL.QUE #que ].'''
 
@@ -33,9 +33,9 @@ EMBED_WHQ = '''embed-wh-ques-phrase := wh-ques-phrase &
 [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC -,
     SYNSEM.LOCAL.CAT.MC - ].'''
 
-EX_COMP = ''' extracted-comp-phrase := basic-extracted-comp-phrase.'''
+EX_COMP = '''extracted-comp-phrase := basic-extracted-comp-phrase.'''
 
-EX_SUBJ = ''' extracted-subj-phrase := basic-extracted-subj-phrase &
+EX_SUBJ = '''extracted-subj-phrase := basic-extracted-subj-phrase &
 [ SYNSEM.LOCAL.CAT.HEAD verb ].'''
 
 IN_SITU_PHRASE = '''insitu-int-cl := interrogative-clause & head-only &
@@ -83,8 +83,7 @@ SEC_FILLER = '''2nd-head-filler-phrase := binary-phrase & phrasal & head-composi
      [ SYNSEM.NON-LOCAL [ SLASH.LIST [ FIRST #firstarg, REST < #local . #otherargs > ],
           REL 0-alist ] ] > ].'''
 
-NC_SUBJ_HEAD = '''
-subj-head-nc-phrase := decl-head-subj-phrase & head-final &
+NC_SUBJ_HEAD = '''subj-head-nc-phrase := decl-head-subj-phrase & head-final &
 [ SYNSEM.LOCAL.CAT [ MC - ],
     HEAD-DTR.SYNSEM.LOCAL.CAT.VAL [ COMPS < > ] ].
 
