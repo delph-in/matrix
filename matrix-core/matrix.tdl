@@ -3077,6 +3077,8 @@ clausal-first-arg-trans-lex-item := basic-two-arg & one-icons-lex-item &
 ; It was causing a meaningless (underspecified) ICONS link between the clause-embedding
 ; verb and the embedded event. If later on this becomes clearer, the below
 ; commented out type can be brought back.
+; Note that there are more types which have the same property.
+
 clausal-second-arg-trans-lex-item := basic-two-arg & basic-icons-lex-item &
    [ ARG-ST < [ LOCAL [ CAT cat-sat,
                         CONT.HOOK [ INDEX ref-ind & #ind ] ] ],
