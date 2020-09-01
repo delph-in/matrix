@@ -237,3 +237,4 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies,roots):
                 if ch.get('q-part-order') != 'second':
                     mylang.add(typename + ':= [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST '
                                           '[ LOCAL.CAT.WH.BOOL +  ] ].')
+                    
