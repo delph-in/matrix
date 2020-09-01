@@ -303,7 +303,7 @@ def customize_case_adpositions(mylang, lexicon, trigger, ch, case_pos):
                     adp_type + ' := [ SYNSEM.LOCAL.CONT [ \
                                         HOOK [ ICONS-KEY.IARG1 #clause, \
                                                CLAUSE-KEY #clause ], \
-                                        ICONS 0-alist ] ].'
+                                        ICONS.LIST < > ] ].'
                 lexicon.add(typedef)
 
             if cn.strip() != '':

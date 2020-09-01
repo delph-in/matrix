@@ -451,8 +451,8 @@ def customize_head_comp_neg(mylang,ch,lexicon, hierarchies):
                  [ SYNSEM.LOCAL [ CAT [ HEAD adv & [ NEGATED + ],
                                         VAL [ SUBJ < >,
                                               COMPS < > ] ],
-                                  CONT [ RELS 0-alist,
-                                         HCONS 0-alist ]]].''',
+                                  CONT [ RELS.LIST < >,
+                                         HCONS.LIST < > ] ] ].''',
                '''Type for negative selected comps.
                   This type uses the MOD list to get scopal semantics.
                   Constrain head-modifier rules to be [NEGATED -] if you don't
@@ -501,8 +501,8 @@ def customize_head_mod_neg(mylang, ch, lexicon,rules):
                                             SUBJ < > ],
                                       HEAD adv & [ MOD < [ LOCAL.CAT.HEAD verb ] >,
                                              NEGATED + ] ],
-                                  CONT [ RELS 0-alist,
-                                         HCONS 0-alist ] ] ].''',
+                                  CONT [ RELS.LIST < >,
+                                         HCONS.LIST < > ] ] ].''',
                'Type for negative adverbs.')
 
     mylang.add_comment('neg-adv-lex',
@@ -601,8 +601,8 @@ def customize_comp_comp_neg(mylang,ch,lexicon):
                                             SUBJ < > ],
                                       HEAD [ NEGATED +, 
                                              MOD < [ LOCAL.CAT.HEAD verb ] > ] ],
-                                  CONT [ HCONS 0-alist,
-                                         RELS 0-alist ]  ] ].''',
+                                  CONT [ HCONS.LIST < >,
+                                         RELS.LIST < > ]  ] ].''',
                '''Type for negative selected comps.
                   This type uses the MOD list to get scopal semantics.
                   Constrain head-modifier rules to be [NEGATED -] if you don't
@@ -722,8 +722,8 @@ def customize_comp_mod_neg(mylang,ch,lexicon,rules):
                                             SUBJ < > ],
                                       HEAD adv & [ MOD < [ LOCAL.CAT.HEAD verb ] >,
                                              NEGATED + ] ],
-                                  CONT [ RELS 0-alist,
-                                         HCONS 0-alist ] ] ].''',
+                                  CONT [ RELS.LIST < >,
+                                         HCONS.LIST < > ] ] ].''',
                'Type for negative adverbs.')
 
     mylang.add_comment('neg-adv-lex',
@@ -834,8 +834,8 @@ def customize_mod_mod_neg(mylang,ch,lexicon,rules):
                                              SUBJ < > ],
                                        HEAD adv & [ NEGATED +,
                                                     MOD < [ LOCAL.CAT.HEAD verb ] > ] ],
-                                 CONT [ RELS 0-alist,
-                                        HCONS 0-alist ] ] ].''')
+                                 CONT [ RELS.LIST < >,
+                                        HCONS.LIST < > ] ] ].''')
 
     # create lexical instance for neg1
     if(ch.get('neg1-mod-orth')):

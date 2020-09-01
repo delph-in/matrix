@@ -108,7 +108,7 @@ MANNER_ADV_ITEM = '''manner-adverb-lex-item := adverb-lex-item &
 
 ADV =  '''adverb-lex := basic-non-wh-word-lex & adverb-lex-item &
 [ SYNSEM [ LOCAL.CONT.RELS.LIST < [ ], [ ], [ PRED "exist_q_rel" ] >,
-           NON-LOCAL [ QUE 0-alist, YNQ 0-alist ] ] ].'''
+           NON-LOCAL [ QUE.LIST < >, YNQ.LIST < > ] ] ].'''
 
 WH_ADV =  '''wh-adverb-lex := basic-wh-word-lex & adverb-lex-item & zero-arg-que &
 [ SYNSEM [ LOCAL.CONT.RELS.LIST < [ ], [ ARG0 #arg0 ], quant-relation & [ PRED "which_q_rel" ] >,

@@ -377,7 +377,7 @@ def add_non_branching_rules(mylang, rules, cms, ch):
                   qeq &\
     		    [ HARG #sch,\
     		      LARG #scl ] >, '
-               'ICONS 0-alist,\
+               'ICONS.LIST < >,\
         		HOOK.INDEX #index ],\
                 ARGS < [ SYNSEM [ LOCAL [ CAT [ HEAD verb &\
                                               [ MOD < > ],\
@@ -546,7 +546,7 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
                       qeq &\
         		    [ HARG #sch,\
         		      LARG #scl ] >,'
-                'ICONS 0-alist,\
+                'ICONS.LIST < >,\
             		HOOK.INDEX #index ],\
             ARGS < [ SYNSEM [ LOCAL [ CAT [ HEAD noun &\
                                                     [ NMZ + ],\
@@ -576,7 +576,7 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
           	     HCONS.LIST < qeq &\
           		    [ HARG #mch,\
           		      LARG #mcl ] >, '
-                 'ICONS 0-alist,\
+                 'ICONS.LIST < >,\
               		HOOK.INDEX #index ],\
               ARGS < [ SYNSEM [ LOCAL [ CONT.HOOK.INDEX #scl,\
                                         CAT [ HEAD noun &\
@@ -608,7 +608,7 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
   		      LARG #mcl ],\
                 qeq &\
   		    [ HARG #sch,\
-  		      LARG #scl ] >, ICONS 0-alist,\
+  		      LARG #scl ] >, ICONS.LIST < >,\
       		HOOK.INDEX #index ],\
       ARGS < [ SYNSEM [ LOCAL [ CAT [ HEAD verb,\
   				    MC na-or-+,\

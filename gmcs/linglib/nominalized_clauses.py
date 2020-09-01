@@ -12,8 +12,8 @@ LOW_SUBJ_COMPS = 'low-nmz-subjid-compsid-lex-rule'
 
 NHS_SUPERTYPE = 'basic-head-subj-phrase'
 NHS_DEF = '[ HEAD-DTR.SYNSEM [ LOCAL [ CONT.HOOK.INDEX ref-ind ],\
-                               NON-LOCAL [ QUE 0-alist,\
-                                           REL 0-alist ]]\
+                               NON-LOCAL [ QUE.LIST < >,\
+                                           REL.LIST < > ]]\
             NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPR < > ].'
 
 # A rule that does not allow case change on subject or object.
@@ -40,7 +40,7 @@ HIGH_OR_MID_LEXRULE_SUBJ_ID = HIGH_OR_MID + ' := cat-change-with-ccont-lex-rule 
                            MKG #mkg,\
                            HC-LIGHT #hc-light,\
                            POSTHEAD #posthead ]],\
-   C-CONT [ RELS 0-alist, HCONS 0-alist ] ].'
+   C-CONT [ RELS.LIST < >, HCONS.LIST < > ] ].'
 
 # A rule that allows case change on the subject but not the object.
 # Only good for mid nominalization.
@@ -67,7 +67,7 @@ MID_LEXRULE_NO_SUBJ_ID = MID + ' := cat-change-with-ccont-lex-rule & same-cont-l
                            MKG #mkg,\
                            HC-LIGHT #hc-light,\
                            POSTHEAD #posthead ]],\
-   C-CONT [ RELS 0-alist, HCONS 0-alist ] ].'
+   C-CONT [ RELS.LIST < >, HCONS.LIST < > ] ].'
 
 # A rule that says nothing about the subject or object. Should only ever be used as a supertype.
 LOW_NMZ = 'low-nominalization-lex-rule := cat-change-with-ccont-lex-rule &\
@@ -176,8 +176,8 @@ NO_REL_NLZ_CLAUSE = '-no-rel-nominalized-clause-phrase := unary-phrase &\
                                         SPR < >,\
                                         SPEC < > ]],\
                 COORD - ]],\
-    C-CONT [ RELS 0-alist,\
-	     HCONS 0-alist,\
+    C-CONT [ RELS.LIST < >,\
+	     HCONS.LIST < >,\
 	     HOOK [ XARG #xarg,\
 	            LTOP #ltop ] ],\
     ARGS < [ SYNSEM [ NON-LOCAL #nl,\
