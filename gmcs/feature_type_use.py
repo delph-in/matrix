@@ -1,4 +1,5 @@
 # OZ 2020-09-01
+# See https://github.com/delph-in/matrix/issues/508
 # This module is a stub (and could be removed, along with a couple references which
 # aren't doing anything useful right now).
 # The reason I am leaving this in is to mark something I started,
