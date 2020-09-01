@@ -502,10 +502,13 @@ def add_determiner(ch, det, stype, hierarchies, lexicon, mylang):
             mylang.add(dtype + ' := infostr-marking-determiner-lex.')
             break
     if not has_inforstr_feat:
-        if stype == 'determiner-lex':
-            mylang.add(dtype + ' := no-icons-lex-item.')
-        elif stype == 'wh-determiner-lex':
-            mylang.add(dtype + ' := one-icons-lex-item.')
+        mylang.add(dtype + ' := basic-icons-lex-item.')
+    #else:
+    #    mylang.add(dtype + ' := one-icons-lex-item.')
+        # if stype == 'determiner-lex':
+        #     mylang.add(dtype + ' := basic-icons-lex-item.')
+        # elif stype == 'wh-determiner-lex':
+        #     mylang.add(dtype + ' := one-icons-lex-item.')
 
     features.customize_feature_values(mylang, ch, hierarchies, det, dtype, 'det')
 

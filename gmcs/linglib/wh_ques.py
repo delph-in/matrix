@@ -19,15 +19,14 @@ WH_Q_PHR = ''' wh-ques-phrase := basic-head-filler-phrase & interrogative-clause
                        MC bool,
 			           VAL #val,
 			           HEAD verb ],
-			        CONT.HOOK [ INDEX #clause,
-			                    ICONS-KEY #icons & focus ] ], 
+			        CONT.HOOK [ INDEX #clause ] ], 
 			NON-LOCAL.QUE.LIST < > ],
      HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL #val & [ SUBJ < >,
-					      COMPS < > ] ] ],
+					                            COMPS < > ] ] ],
      NON-HEAD-DTR.SYNSEM [ NON-LOCAL.QUE.LIST < ref-ind >,
                            LOCAL.CONT.HOOK.INDEX #target ],
-  C-CONT.ICONS.LIST  < #icons & [ IARG1 #clause, 
-                                 IARG2 #target ] > ] .'''
+  C-CONT.ICONS.LIST < focus & [ IARG1 #clause, 
+                                IARG2 #target ] > ] .'''
 
 
 MAIN_WHQ = '''main-wh-ques-phrase := wh-ques-phrase &
