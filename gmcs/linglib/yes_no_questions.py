@@ -228,12 +228,12 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies,roots):
             if qpart['wh'] == 'imp':
                 if ch.get('q-part-order') != 'second':
                     mylang.add(typename + ':= [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST '
-                                          '[ LOCAL.CAT.WH or-and-minus ] ].')
+                                          '[ LOCAL.CAT.WH.BOOL - ] ].')
                 else:
                     mylang.add(typename + ':= [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST '
-                                          '[ LOCAL.CAT.WH or-and-minus ] ].')
+                                          '[ LOCAL.CAT.WH.BOOL - ] ].')
 
             elif qpart['wh'] == 'oblig':
                 if ch.get('q-part-order') != 'second':
                     mylang.add(typename + ':= [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST '
-                                          '[ LOCAL.CAT.WH or-and-plus  ] ].')
+                                          '[ LOCAL.CAT.WH.BOOL +  ] ].')
