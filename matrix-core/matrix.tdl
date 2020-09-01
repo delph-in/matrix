@@ -229,6 +229,11 @@ intersective-mod := local.
 
 non-local-min := avm.
 
+; OZ 2020-09-01 Adding YNQ feature, for polar questions formed with second position clitics.
+; Ivan li idet?
+; Ivan Q  arrive
+; "Is it Ivan that is arriving?" [rus]
+; This feature might actually better be moved to the customization system in the future.
 non-local := non-local-min &
   [ SLASH append-list,
     QUE append-list,
