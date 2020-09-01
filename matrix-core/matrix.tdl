@@ -961,18 +961,6 @@ null-copy := list-copy & null &
   [ NEW-LIST #end,
     END-LIST #end ].
 
-; OZ: The 0-1-alist, 0-alist, and 1-alist types are discouraged.
-; They were created for the symmetry with the diff-list solution,
-; but it is best to not use them as they tend to lead to bugs.
-
-0-1-alist := append-list &
-  [ LIST 0-1-list ].
-
-0-alist := 0-1-alist &
-  [ LIST null ].
-
-1-alist := 0-1-alist &
-  [ LIST 1-list ].
 
 append-list-with-placeholder := append-list &
   [ PLACEHOLDER.LIST < [ ] > ].
@@ -1963,7 +1951,7 @@ nc-head-filler-phrase := nc-filler-phrase & head-compositional.
 ; JDC 2012-06-02 adding [HC-LIGHT -] to basic-head-* phrases
 ; (with the exception of except head-comps)
 
-; OZ 2020-01-25 removing [ QUE 0-alist ] from the non-head daughter to allow in-situ questions.
+; OZ 2020-01-25 removing empty QUE constraint from the non-head daughter to allow in-situ questions.
 
 ; OZ 2020-05-19 Adding WH feature for handling embedded constituent questions.
 
@@ -2498,7 +2486,7 @@ extracted-adj-only-phrase := extracted-adj-phrase-simple &
                    CONT.HOOK #hook,
                    CTXT #ctxt ],
 	     MODIFIED notmod,
-	     NON-LOCAL.SLASH 0-alist ] ].
+	     NON-LOCAL.SLASH.LIST < > ] ].
 
 ; OZ 2020-07-01 This requires that any arguments are extracted prior to the adjunct.
 extracted-adj-last-phrase := extracted-adj-phrase &
@@ -2527,7 +2515,7 @@ basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
   [ SYNSEM [ LOCAL.CAT [ MKG #mkg, WH [ LOGICAL-OR.OR < #or1, #or2 >,
                                         LOGICAL-AND.AND < #and1, #and2 >] ],
              NON-LOCAL [ SLASH.APPEND < #s1, #s2 >,
-                         REL 0-alist, QUE.APPEND < #q1, #q2 > ] ],
+                         REL.LIST < >, QUE.APPEND < #q1, #q2 > ] ],
     HEAD-DTR.SYNSEM
            [ LOCAL [ CAT [ WH [ LOGICAL-OR #or1, LOGICAL-AND #and1 ],
                            HEAD #head,

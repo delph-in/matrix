@@ -129,7 +129,7 @@ def customize_wh_ques(mylang,ch,rules,roots):
             mylang.add('''head-adj-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ]. ''',section='addenda')
 
     if ch.get(NO_MULTI) == ON:
-        mylang.add('''clause :+ [ SYNSEM.NON-LOCAL.QUE 0-1-alist ]. ''')
+        mylang.add('''clause :+ [ SYNSEM.NON-LOCAL.QUE.LIST 0-1-list ]. ''')
         if ch.get(MTRX_FRONT) in [SINGLE]:
             mylang.add('''wh-ques-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].''')
         if len(ch.get('adv', [])) > 0 or len(ch.get('normadp', [])) > 0:
