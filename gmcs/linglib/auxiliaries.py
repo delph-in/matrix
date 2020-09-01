@@ -34,8 +34,7 @@ def define_arg_str_and_valency(aux, auxcomp, ch, mylang, negaux):
         norder = ch.get('comp-neg-order-head-comp')
     supertypename = set_supertypename(auxcomp)
     basic_typedef = supertypename + ' := aux-lex & \
-                [ SYNSEM.LOCAL.CAT.VAL [ SPR < >, \
-                                         SPEC < > ] ].'
+                [ SYNSEM.LOCAL.CAT.VAL [ SPEC < > ] ].'
     mylang.add(basic_typedef)
 
     # EKN 03-02-2018 Add [ CASE real-case ] to args of auxes iff
@@ -54,8 +53,7 @@ def define_arg_str_and_valency(aux, auxcomp, ch, mylang, negaux):
                                                      COMPS < #comps > ], \
                               ARG-ST < #comps & \
                                          [ LOCAL.CAT [ VAL [ SUBJ < >, \
-                                                             COMPS < >, \
-                                                             SPR < >, \
+                                                             COMPS < > \
                                                              SPEC < > ], \
                                                        HEAD verb ]] > ].'
             if ch.get('multiple-aux') == 'no':
@@ -350,7 +348,7 @@ def get_users_type_name(aux):
     userstypename = name + '-aux-lex'
     return userstypename
 
-def add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon, trigger, hierarchies):
+def add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon, trigger):
     for stem in aux.get('stem',[]):
         orth = orth_encode(stem.get('orth'))
         id = stem.get('name')
@@ -374,16 +372,16 @@ def add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon, trigger, hierar
             lexicon.add(typedef, merge=True)
         else:
             tense = aspect = mood = evidential = ''
+
             for feat in aux.get('feat',[]):
-                value = hierarchies[feat.get('name')].get_type_covering(feat.get('value').split(', '))
                 if feat.get('name') == 'tense':
-                    tense = value
+                    tense = feat.get('value')
                 if feat.get('name') == 'aspect':
-                    aspect = value
+                    aspect = feat.get('value')
                 if feat.get('name') == 'mood':
-                    mood = value
+                    mood = feat.get('value')
                 if feat.get('name') == 'evidential':
-                    evidential = value
+                    evidential = feat.get('value')
 
             grdef = TDLencode(id) +'_gr := arg0e_gtr & \
                     [ CONTEXT [ RELS.LIST < [ '
@@ -426,7 +424,7 @@ def customize_auxiliaries(mylang, ch, lexicon, trigger, hierarchies):
 
         define_arg_str_and_valency(aux, auxcomp, ch, mylang, negaux)
         create_semantics(sem, aux, auxcomp, mylang, ch, hierarchies, negaux)
-        add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon, trigger, hierarchies)
+        add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon, trigger)
 
 
 

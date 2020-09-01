@@ -1,0 +1,32 @@
+1@@@@1@@the cat sleeps@@@@1@3@@@
+2@@@@1@@the cat sees the house@@@@1@5@@@
+3@@@@1@@who sleeps?@@@@1@2@@@
+4@@@@1@@what the cat sees?@@@@1@4@@@
+5@@@@1@@sleeps the cat@@@@1@3@@@
+6@@@@1@@sees the cat the house@@@@1@5@@@
+7@@@@1@@the house sees the cat@@@@1@5@@@
+8@@@@1@@the house the cat sees@@@@1@5@@@
+9@@@@1@@sleeps who?@@@@0@2@@@
+10@@@@1@@sees what cat?@@@@0@3@@@
+11@@@@1@@sees who house?@@@@0@3@@@
+12@@@@1@@cat sleeps@@@@0@2@@@
+13@@@@1@@cat the sleeps@@@@0@3@@@
+14@@@@1@@cat sleeps the@@@@0@3@@@
+15@@@@1@@cat sees house@@@@0@3@@@
+16@@@@1@@cat the sees the house@@@@0@5@@@
+17@@@@1@@cat the sees house the@@@@0@5@@@
+18@@@@1@@the cat sees house the@@@@0@5@@@
+19@@@@1@@what cat the sees?@@@@0@4@@@
+20@@@@1@@sleeps cat the@@@@0@3@@@
+21@@@@1@@sees cat the house the@@@@0@5@@@
+22@@@@1@@house the cat sees@@@@0@4@@@
+23@@@@1@@house the cat the sees@@@@0@5@@@
+24@@@@1@@which cat sleeps?@@@@1@3@@@
+25@@@@1@@cat which sleeps?@@@@0@3@@@
+26@@@@1@@sleeps which cat?@@@@0@3@@@
+27@@@@1@@sleeps cat which?@@@@0@3@@@
+28@@@@1@@which house the cat sees?@@@@1@5@@@
+29@@@@1@@the house which cat sees?@@@@0@5@@@
+30@@@@1@@sees the cat which house?@@@@0@5@@@
+31@@@@1@@which which cat sleeps?@@@@0@4@@@
+32@@@@1@@which the cat sleeps?@@@@0@4@@@

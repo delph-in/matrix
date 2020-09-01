@@ -1,0 +1,132 @@
+
+version=34
+
+section=general
+language=wh22-no-multi-que
+
+section=word-order
+word-order=vso
+has-dets=yes
+noun-det-order=det-noun
+has-aux=no
+
+section=number
+
+section=person
+person=none
+
+section=gender
+
+section=case
+case-marking=none
+
+section=adnom-poss
+
+section=direct-inverse
+
+section=tense-aspect-mood
+
+section=evidentials
+
+section=other-features
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=wh-q
+front-matrix=single
+matrix-front-opt=none-oblig
+embed-insitu=on
+no-multi-ques=on
+
+section=info-str
+
+section=arg-opt
+
+section=nominalclause
+
+section=clausal-comp
+  comps1_clause-pos-same=on
+  comps1_ques=ques
+
+section=clausalmods
+
+section=lexicon
+  noun1_det=obl
+    noun1_stem1_orth=n1
+    noun1_stem1_pred=_n1_n_rel
+  noun2_det=obl
+    noun2_stem1_orth=n2
+    noun2_stem1_pred=_n2_n_rel
+  noun3_name=wh
+  noun3_inter=on
+  noun3_det=imp
+    noun3_stem1_orth=who
+    noun3_stem1_pred=_person_n_rel
+    noun3_stem2_orth=what
+    noun3_stem2_pred=_thing_n_rel
+  verb1_valence=intrans
+    verb1_stem1_orth=iv
+    verb1_stem1_pred=_iv_v_rel
+  verb2_valence=trans
+    verb2_stem1_orth=tv
+    verb2_stem1_pred=_tv_v_rel
+  verb3_name=ask
+  verb3_valence=trans,comps1
+    verb3_stem1_orth=ask
+    verb3_stem1_pred=_ask_v_rel
+  det1_name=def
+    det1_stem1_orth=the
+    det1_stem1_pred=_the_q_rel
+  det2_name=which
+  det2_inter=on
+    det2_stem1_orth=which
+    det2_stem1_pred=_which_q_rel
+  adv1_name=wh-loc
+    adv1_stem1_orth=where
+    adv1_stem1_pred=_place_a_rel
+  adv1_inter=on
+  adv1_type=loc
+
+section=morphology
+
+section=toolbox-import
+
+section=test-sentences
+  sentence1_orth=tv the n1 the n2
+  sentence2_orth=who tv the n2?
+  sentence3_orth=tv who the n2?
+  sentence4_orth=tv the n1 what?
+  sentence5_orth=what tv the n1?
+  sentence6_orth=tv who what?
+  sentence6_star=on
+  sentence7_orth=who tv what?
+  sentence7_star=on
+  sentence8_orth=what tv who?
+  sentence8_star=on
+  sentence9_orth=where tv the n1 the n2?
+  sentence10_orth=tv the n1 the n2 where?
+  sentence11_orth=who tv the n2 where?
+  sentence11_star=on
+  sentence12_orth=which n1 tv the n2?
+  sentence13_orth=which n1 tv what?
+  sentence13_star=on
+  sentence14_orth=ask the n1 who iv
+  sentence15_orth=ask the n1 iv who
+  sentence16_orth=ask  the n1 who tv the n2
+  sentence17_orth=ask the n1 who tv what
+  sentence17_star=on
+  sentence18_orth=ask the n1 who tv the n2 where
+  sentence18_star=on
+  sentence19_orth=ask the n1 where iv the n2
+  sentence20_orth=who ask the n1 iv
+  sentence21_orth=who ask the n1 tv what
+  sentence21_star=on
+  sentence22_orth=who ask  the n1 tv the n2
+
+section=gen-options
+
+section=ToolboxLexicon

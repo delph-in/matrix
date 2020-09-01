@@ -31,6 +31,9 @@ def lexical_type_hierarchy(choices, lexical_supertype):
         st = get_lexical_supertype('tverb', choices)
         lth.add_node(LexicalType('tverb', get_lt_name('tverb', choices),
                                  parents={st:lth.nodes[st]}))
+
+    if lexical_supertype == 'qverb':
+        st = get_lexical_supertype('qverb',choices)
     for lst in lts_to_add:
         for lt in choices[lst]:
             st = get_lexical_supertype(lt.full_key, choices)
@@ -39,7 +42,7 @@ def lexical_type_hierarchy(choices, lexical_supertype):
             # If we're dealing with a verb add nodes for all lexical entries
             # because bistems can give rise to flags that need to appear on
             # all verbs.
-            if lexical_supertype == 'verb':
+            if lexical_supertype in ['verb', 'qverb']:
                 bistems = choices[lt.full_key]['bistem'] or []
                 stems = choices[lt.full_key]['stem'] or []
                 stems.extend(bistems)
@@ -57,7 +60,7 @@ def get_lexical_supertype(lt_key, choices):
         return 'verb'
     elif lexical_category == 'verb':
         return case.interpret_verb_valence(choices[lt_key]['valence'])
-    elif lexical_category in ('noun', 'det', 'adj', 'cop'): # TJT Added adj, cop, removed aux
+    elif lexical_category in ('noun', 'det', 'adv', 'adj', 'cop','qverb'): # TJT Added adj, cop, removed aux
         return lexical_category
     return None
 
@@ -552,6 +555,21 @@ def validate_lexicon(ch, vr):
                 mess = 'You must specify a predicate for each verb you define.'
                 vr.err(bistem.full_key + '_pred', mess)
 
+    for qv in ch.get('qverb'):
+        if not qv['predtype']:
+            mess = 'You must specify what kind of second predicate this verb contributes.'
+            vr.err(qv.full_key+'_predtype',mess)
+        for stem in qv['stem']:
+            if not stem['verbpred']:
+                mess = 'You must specify the event predicate this verb contributes.'
+                vr.err(stem.full_key+'_verbpred',mess)
+            if not stem['nounpred']:
+                mess = 'You must specify the second predicate this verb contributes.'
+                vr.err(stem.full_key+'_nounpred',mess)
+        if len(qv['bistem']) > 0:
+            mess = 'Bipartite stems are not yet supported for question verbs.'
+            vr.err(qv.full_key,mess)
+
     if not (seenTrans and seenIntrans):
         mess = 'You should create intransitive and transitive verb classes.'
         vr.warn('verb1_valence', mess)
@@ -821,7 +839,8 @@ def validate_lexicon(ch, vr):
                 mess = 'You must specify a value for this feature.'
                 vr.err(cf.full_key + '_value', mess)
             if name == 'evidential':
-                vr.err(cf.full_key + '_name', 'Evidentials should be specified as an auxiliary feature, not a complement feature.')
+                vr.err(cf.full_key + '_name', 'Evidentials should be specified as an auxiliary feature, '
+                                              'not a complement feature.')
 
         if not compform == 'yes':
             mess = 'You must specify the form of the verb in the complement, ' + \
@@ -954,7 +973,19 @@ def validate_lexicon(ch, vr):
                    'Please account for these cases: ' + ', '.join(not_covered) + '.'
             vr.err('adp1_opt', mess)
 
+    for adp in ch.get('normadp'):
+        if len(adp['stem']) == 0:
+            mess = 'Please specify the spellings for this adposition type'
+            vr.err(adp.full_key+'_stem1_orth', mess)
+        if not adp['order']:
+            mess = 'Please specify the position for this adposition.'
+            vr.err(adp.full_key+'_order', mess)
 
+    # Adverbs
+    for adv in ch.get('adv'):
+        if not adv['type']:
+            mess = 'Please select the type for this adverb.'
+            vr.err(adv.full_key+'_type',mess)
 
     # Features on all lexical types
     # TJT 2014-09-02: Adding adj and cop

@@ -565,6 +565,8 @@ def percolate_supertypes(pc):
                 # in write_possessive_behavior() as well.
                 elif not (pc.has_possessive() or pc.has_infostr()):
                     x.supertypes.add('add-only-no-ccont-rule')
+                elif pc.has_infostr():
+                    x.supertypes.add('add-only-no-rels-hcons-rule')
 
     for r in pc.roots():
         r.percolate_down(items=lambda x: x.supertypes,

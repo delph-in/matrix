@@ -1,0 +1,20 @@
+n1 iv
+*iv n1
+n1 Q iv
+*n1 iv Q
+*Q n1 iv
+n1 n2 tv
+*n1 tv n2
+*tv n1 n2
+n1 Q n2 tv
+*Q n1 n2 tv
+*n1 n2 Q tv
+*n1 n2 tv Q
+who Q iv
+*who iv
+who Q what tv
+*who what Q tv
+*Q who iv
+*Q who what tv
+*who what tv Q
+where Q n1 iv

@@ -1,0 +1,174 @@
+
+version=33
+
+section=general
+language=wh-japanese
+
+section=word-order
+word-order=sov
+has-dets=yes
+noun-det-order=noun-det
+has-aux=no
+
+section=number
+
+section=person
+person=1-2-3
+first-person=none
+
+section=gender
+  gender1_name=masc
+
+section=case
+case-marking=nom-acc
+nom-acc-nom-case-name=nom
+nom-acc-acc-case-name=acc
+
+section=adnom-poss
+  poss-strat1_order=head-final
+  poss-strat1_mod-spec=spec
+  poss-strat1_mark-loc=neither
+  poss-strat1_pronoun-allow=yes
+  poss-pron1_type=non-affix
+  poss-pron1_agr=non-agree
+  poss-pron1_mod-spec=spec
+  poss-pron1_order=head-final
+    poss-pron1_instance1_name=his
+    poss-pron1_instance1_orth=kareno
+      poss-pron1_instance1_feat1_name=gender
+      poss-pron1_instance1_feat1_value=masc
+  poss-pron1_possessum-mark=no
+
+section=direct-inverse
+
+section=tense-aspect-mood
+
+section=evidentials
+
+section=other-features
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+q-part=on
+q-part-order=after
+q-part-allopt=on
+  q-particle1_orth=no
+  q-particle1_main=on
+  q-particle1_embed=on
+  q-particle2_orth=ka
+  q-particle2_embed=on
+
+section=wh-q
+front-matrix=in-situ
+
+section=info-str
+
+section=arg-opt
+
+section=nominalclause
+
+section=clausal-comp
+  comps1_clause-pos-same=on
+  comps1_comp-pos-after=on
+  comps1_comp=opt
+    comps1_stem1_orth=to
+
+section=clausalmods
+
+section=lexicon
+  noun1_name=cpn
+    noun1_feat1_name=person
+    noun1_feat1_value=3rd
+  noun1_det=opt
+    noun1_stem1_orth=Kim
+    noun1_stem1_pred=_Mary_n_rel
+    noun1_stem2_orth=Sandy
+    noun1_stem2_pred=_Sandy_n_rel
+    noun1_stem3_orth=haha
+    noun1_stem3_pred=_mother_n_rel
+    noun1_stem4_orth=hito
+    noun1_stem4_pred=_man_n_rel
+  noun2_name=ques
+  noun2_inter=on
+    noun2_feat1_name=person
+    noun2_feat1_value=3rd
+  noun2_det=imp
+    noun2_stem1_orth=nani
+    noun2_stem1_pred=_thing_n_rel
+    noun2_stem2_orth=dare
+    noun2_stem2_pred=_person_n_rel
+  noun3_name=1sg
+  noun3_pron=on
+    noun3_feat1_name=case
+    noun3_feat1_value=nom
+    noun3_feat2_name=person
+    noun3_feat2_value=1st
+  noun3_det=imp
+    noun3_stem1_orth=boku
+    noun3_stem1_pred=_boku_n_rel
+  verb1_name=iv
+  verb1_valence=nom
+    verb1_stem1_orth=kuru
+    verb1_stem1_pred=_come_v_rel
+  verb2_name=tv
+  verb2_valence=nom-acc
+    verb2_stem1_orth=yonda
+    verb2_stem1_pred=_read_rel
+    verb2_stem2_orth=katta
+    verb2_stem2_pred=_buy_v_rel
+    verb2_stem3_orth=semeta
+    verb2_stem3_pred=_criticize_v_rel
+  verb3_name=embed
+  verb3_valence=trans,comps1
+    verb3_stem1_orth=itta
+    verb3_stem1_pred=_said_v_rel
+    verb3_stem2_orth=sitteiru
+    verb3_stem2_pred=_know_v_rel
+  det1_name=ques
+  det1_inter=on
+    det1_stem1_orth=dono
+    det1_stem1_pred=_which_q_rel
+
+section=morphology
+  noun-pc1_name=case
+  noun-pc1_obligatory=on
+  noun-pc1_order=suffix
+  noun-pc1_inputs=noun1, noun2
+    noun-pc1_lrt1_name=nom
+      noun-pc1_lrt1_feat1_name=case
+      noun-pc1_lrt1_feat1_value=nom
+      noun-pc1_lrt1_feat1_head=itself
+      noun-pc1_lrt1_lri1_inflecting=yes
+      noun-pc1_lrt1_lri1_orth=-wa
+      noun-pc1_lrt1_lri2_inflecting=yes
+      noun-pc1_lrt1_lri2_orth=-ga
+    noun-pc1_lrt2_name=acc
+      noun-pc1_lrt2_feat1_name=case
+      noun-pc1_lrt2_feat1_value=acc
+      noun-pc1_lrt2_feat1_head=itself
+      noun-pc1_lrt2_lri1_inflecting=yes
+      noun-pc1_lrt2_lri1_orth=-o
+
+section=toolbox-import
+
+section=test-sentences
+  sentence1_orth=Kim-wa nani-o yonda no
+  sentence2_orth=Kim-wa nani-o yonda
+  sentence3_orth=Sandy-wa Kim-ga nani-o yonda ka sitteiru
+  sentence4_orth=dare-ga kuru
+  sentence5_orth=dare-ga kuru no
+  sentence7_orth=dare-ga kuru ka
+  sentence7_star=on
+  sentence8_orth=Sandy-wa Kim-ga nani-o yonda no sitteiru
+  sentence9_orth=Sandy-wa Kim-ga nani-o yonda sitteiru
+  sentence10_orth=no dare-ga kuru
+  sentence10_star=on
+  sentence11_orth=ka dare-ga kuru
+  sentence11_star=on
+
+section=gen-options
+
+section=ToolboxLexicon

@@ -1,7 +1,8 @@
 from gmcs.utils import get_name,TDLencode, orth_encode
 
-from gmcs import constants
+from gmcs import constants, feature_type_use
 from gmcs.linglib import lexbase
+
 
 ######################################################################
 # Clausal Complements
@@ -11,6 +12,9 @@ from gmcs.linglib import lexbase
 ######################################################################
 
 # Constants (specific to this module)
+#TODO: It should probably all live in constants.py
+from gmcs.constants import MTRX_FRONT, SINGLE, MULTI
+
 COMPS = 'comps' # choice name for clausal complement strategies
 COMP = 'comp' # reserved head name for complementizers; should be a constant on some other page?
               # Also, the name for the choice for complementizer of a clausal complement strategy.
@@ -81,7 +85,7 @@ def add_complementizers_to_lexicon(lexicon,ch):
 def add_types_to_grammar(mylang,ch,rules,have_complementizer):
     if have_complementizer:
         mylang.set_section(COMPLEX)
-        add_complementizer_supertype(mylang)
+        add_complementizer_supertype(mylang,ch)
     wo = ch.get(constants.WORD_ORDER)
     init = use_init(ch, mylang, wo)
     extra = extra_needed(ch,mylang)
@@ -90,7 +94,7 @@ def add_types_to_grammar(mylang,ch,rules,have_complementizer):
         customize_clausal_verb(clausalverb,mylang,ch,cs,extra)
         typename = add_complementizer_subtype(cs, mylang,ch,extra) if cs[COMP] else None
         if not additional_hcr_needed(cs,wo):
-            constrain_wrt_quest_part(cs,wo,ch,mylang,typename)
+            constrain_wrt_comp(cs,wo,ch,mylang)
         if wo in OV or wo in VO:
             general, additional = determine_head_comp_rule_type(ch.get(constants.WORD_ORDER),cs)
             customize_order(ch, cs, mylang, rules, typename, init,general,additional)
@@ -99,35 +103,28 @@ def add_types_to_grammar(mylang,ch,rules,have_complementizer):
             if extra:
                 constrain_for_extra(wo,general, additional, cs, mylang)
         elif wo == 'free':
-            constrain_complementizer(wo,cs,mylang,typename)
-
+            constrain_wrt_comp(cs,wo,ch,mylang)
 
 def constrain_for_extra(wo,general, additional, cs, mylang):
     if cs[EXTRA] and additional_hcr_needed(cs, wo):
         mylang.add(additional + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.EXTRA + ].', merge=True)
         mylang.add(general + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.EXTRA - ].', merge=True)
 
-def constrain_wrt_quest_part(cs,wo,ch,mylang,typename):
+
+# TODO: This should be handled in word order, and there is already relevant code, though it is mostly
+# about adpositions and auxiliaries. But it should be able to incorporate this there.
+def constrain_wrt_comp(cs,wo,ch,mylang):
     additional = has_additional(ch,cs,wo)
     if additional:
-        mylang.add('head :+ [ INIT bool ].', section='addenda')
-        my_phrase = 'head-comp' if additional == 'comp-head' else 'comp-head'
-        path = 'SYNSEM.LOCAL.CAT.HEAD'
-        init_val = '+' if additional == 'head-comp' else '-'
-        default_init_val = '+' if init_val ==  '-' else '-'
-        constrain_lexitem_for_feature(typename,path,'INIT',default_init_val,mylang)
-        mylang.add(my_phrase + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT ' + default_init_val + ' ].',
+        mylang.add(additional + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +nv ].',
                    merge=True,section='phrases')
-        mylang.add(additional + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT ' + init_val + ' ].',
-                   merge=True,section='phrases')
-        #quest_part_name = TDLencode(ch.get('q-part-orth'))
-        constrain_lexitem_for_feature('qpart-lex-item',path,'INIT',init_val,mylang)
 
-'''
-Did the word order library added a HCR constrained for HEAD comp on the HEAD-DTR? (For question particles).
-If so, constrain complementizers and HCR accordingly.
-'''
 def has_additional(ch,cs,wo):
+    if wo == 'free':
+        if cs[AFT]:
+            return 'head-comp'
+        if cs[BEF]:
+            return 'comp-head'
     if wo in OV:
         if not cs[COMP] == 'before' and ch['q-part-order'] == 'before':
             return 'head-comp'
@@ -194,7 +191,7 @@ def constrain_complementizer(wo,cs,mylang,typename):
 
 def use_init(ch, mylang, wo):
     init = False
-    if wo in OV or wo in VO or wo == 'free':
+    if wo in OV or wo in VO:
         for cs in ch.get(COMPS):
             is_flex = is_more_flexible_order(wo,cs)
             init = init_needed(wo, cs, mylang, is_flex)
@@ -202,14 +199,15 @@ def use_init(ch, mylang, wo):
                 break
     return init
 
-def add_complementizer_supertype(mylang):
+def add_complementizer_supertype(mylang,ch):
     mylang.add(lexbase.COMPLEMENTIZER, section=COMPLEX,merge=True)
 
 def add_complementizer_subtype(cs, mylang,ch,extra):
     id = cs.full_key
     typename = id + '-' + COMP_LEX_ITEM
     mylang.add(typename + ' := ' + COMP_LEX_ITEM + '.', section=COMPLEX)
-    mylang.add(typename + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.MC - ].',merge=True)
+    mylang.add(typename + ' := [ SYNSEM.LOCAL.CAT [ VAL.COMPS.FIRST.LOCAL.CAT.MC -,'
+                                                    'MC na-or-- ] ].',merge=True)
     constrain_for_features(typename,cs,mylang,'SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.',ch,is_nominalized_complement(cs))
     if cs['cformvalue']:
         constrain_lexitem_for_feature(typename,'SYNSEM.LOCAL.CAT.HEAD','FORM',cs['cformvalue'],mylang)
@@ -218,6 +216,18 @@ def add_complementizer_subtype(cs, mylang,ch,extra):
             mylang.add(typename + ':= [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.EXTRA + ] > ].',merge=True)
         elif cs[SAME] and not cs[EXTRA]:
             mylang.add(typename + ':= [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.EXTRA - ] > ].',merge=True)
+    if cs['ques'] == 'ques': # Should this be disallowed in validation? Or, is this the English "whether"?
+        mylang.add(typename + ':= [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.SF ques,'
+                              'CAT.VAL.COMPS.FIRST [ NON-LOCAL.QUE.LIST < > ] ] ].', merge=True)
+
+    elif cs['ques'] == 'prop':
+        mylang.add(typename + ':= [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF prop ].', merge=True)
+    # OZ 2020-05-09 The below doesn't work because it violates compositionality of semantics. Delete once sure.
+#    else:
+#        mylang.add(typename + ':= [ SYNSEM [ LOCAL [ CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.SF #sf ] >,'
+#                              'CONT.HOOK.INDEX.SF #sf ] ] ].', merge=True)
+
+
     return typename
 
 '''
@@ -412,15 +422,23 @@ def add_special_complementizer_HCR(additional, cs, general, mylang, rules, wo,is
                        merge=True)
         rules.add(name + ' := ' + name + '-phrase.')
 
-def determine_clausal_verb_comp_head(cs):
+def determine_clausal_verb_comp_head(cs,ch):
     head = ''
     if cs[COMP]:
-        if cs[COMP] == 'oblig':
+        if cs[COMP] == 'oblig' and not cs['comp-q'] == 'on':
             head = 'comp'
-        elif cs[COMP] == 'opt':
+        else:
             head = '+vc'
     else:
-        head = 'noun' if is_nominalized_complement(cs) else 'verb'
+        if is_nominalized_complement(cs):
+            head = 'noun'
+        elif ch.has_diverse_ques_particles():
+            if cs['ques'] == 'ques':
+                head = 'comp'
+            else:
+                head = 'verb'
+        else:
+            head = 'verb'
     return head
 
 
@@ -586,7 +604,7 @@ def add_clausalcomp_verb_supertype(ch, mainorverbtype,mylang):
       [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >,\
         ARG-ST < [ LOCAL.CAT.HEAD ' + head + ' ],\
                  #comps &\
-                 [ LOCAL.CAT.VAL [ SPR < >, COMPS < >, SUBJ < > ] ] > ].'
+                 [ LOCAL.CAT [ MC na-or--, VAL [ SPR < >, COMPS < >, SUBJ < > ] ] ] > ].'
     mylang.add(typedef,section='verblex')
 
 
@@ -613,6 +631,25 @@ def customize_clausal_verb(clausalverb,mylang,ch,cs,extra):
             mylang.add(clausalverb + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.EXTRA '+ val + ' ] > ].'
                        , merge=True)
 
+    if not is_nominalized_complement(cs):
+        if cs['ques'] == 'prop':
+            mylang.add(clausalverb + ' := [ SYNSEM [ LOCAL.CAT.VAL.COMPS < [ LOCAL [ CAT.WH.LOGICAL-OR.BOOL -, '
+                                     '                                               CONT.HOOK.INDEX.SF prop ] ] >,'
+                                     'NON-LOCAL.QUE 0-alist ] ].'
+                       , merge=True)
+        elif cs['ques'] == 'ques':
+            mylang.add(clausalverb + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.SF ques ] > ].'
+                       , merge=True)
+            if ch.get(MTRX_FRONT) in [SINGLE, MULTI] and not ch.get('embed-insitu') == 'on':
+                mylang.add(clausalverb + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.WH.LOGICAL-OR.BOOL + ] > ].'
+                           , merge=True)
+
+    if ch.get('wh-inv-embed') == 'on':
+        mylang.add(clausalverb + ':= [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.AUX + ] > ].', merge=True)
+
+    # From the wh-questions library; disallow questions from crossing clause boundary
+    #if ch.get('front-across-cl') != 'on' or ch.get(''):
+    #    mylang.add(clausalverb + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ NON-LOCAL.QUE.LIST < > ] > ].', merge=True)
 
 '''
 Semantically non-empty nominalization requires that
@@ -641,7 +678,7 @@ def update_verb_lextype(ch,verb, vtype):
     for ccs in ch.get(COMPS):
         if val.endswith(ccs.full_key):
             suffix = val
-            head = determine_clausal_verb_comp_head(ccs)
+            head = determine_clausal_verb_comp_head(ccs,ch)
     if suffix:
         name = vtype[0:vtype.find('verb-lex')-1]
         #rest = 'clausal-verb-lex'

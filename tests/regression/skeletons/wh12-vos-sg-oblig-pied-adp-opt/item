@@ -1,0 +1,12 @@
+1@@@@1@@which cat sleeps?@@@@1@3@@@
+2@@@@1@@cat which sleeps?@@@@0@3@@@
+3@@@@1@@sleeps which cat?@@@@0@3@@@
+4@@@@1@@sleeps cat which?@@@@0@3@@@
+5@@@@1@@which house sees the cat?@@@@1@5@@@
+6@@@@1@@the house which cat sees?@@@@0@5@@@
+7@@@@1@@sees the cat which house?@@@@0@5@@@
+8@@@@1@@which sees the cat house?@@@@0@5@@@
+9@@@@1@@in which house sleeps the cat?@@@@1@6@@@
+10@@@@1@@which house sleeps the cat in?@@@@1@6@@@
+11@@@@1@@which in house sleeps the cat?@@@@0@6@@@
+12@@@@1@@which house in sleeps the cat?@@@@0@6@@@

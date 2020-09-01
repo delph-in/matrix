@@ -11,6 +11,10 @@ def process_cfv_list(mylang, ch, hierarchies, to_cfv, tdlfile=None):
         customize_feature_values(mylang, ch, hierarchies, ch[ch_key], type_id, pos,
                                  tdlfile=tdlfile or mylang)
 
+# olzama 2020-04-09 The below function has the benefit of serving many POS at once
+# however it is very difficult to follow and debug.
+# Consider improving it and perhaps even have several separate functions?
+
 def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, features=None, cases=None, tdlfile=None):
 
     if not features:
@@ -23,7 +27,9 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
 
     # TJT 2014-11-05: moving this up to get the proper geometry for case
     # get the feature geometry of CASE
-    if cases:
+    # OZ 2020-01-28 The above only works for case-marking adpositions
+    # but not for normal adpositions, for which CASE goes on the complement.
+    if cases and not pos == 'normadp':
         for f in features:
             if f[0] == 'case':
                 case_geom = f[2]
@@ -40,7 +46,9 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                    'possessum-mod-mark': 'SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.',
                    'possessum-mod-mark2': 'SYNSEM.LOCAL.CAT.VAL.COMPS.REST.FIRST.',
                    'poss-pron-mod': 'SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.',
-                   'poss-pron-spec': 'SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.'   }
+                   'poss-pron-spec': 'SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.',
+                   'nounadp': 'SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.',
+                   'normadp': 'SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.'}
     pos_geom_prefix = prefix_map[pos] if pos in prefix_map else 'SYNSEM.'
 
     iter_feat = 'feat' if pos != 'auxcomplement' else 'compfeature'
@@ -74,6 +82,9 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
         'xarg': 'LOCAL.CONT.HOOK.XARG.',  # XARG for adjectives
         'mod': 'LOCAL.CAT.HEAD.MOD.FIRST.',  # MOD for adjectives
         'comp': 'LOCAL.CAT.VAL.COMPS.FIRST.', # COMP for copulas
+        #'noun': 'LOCAL.CAT.VAL.SPEC.FIRST.', # olzama 2020-04-08 I think this was a bug.
+        # There was interference between this line for determiner inflection and prefix_map
+        # for full-form determiners.
     }
 
     for feat in ch_dict.get(iter_feat,[]):
@@ -386,7 +397,22 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
             if ch.get('neg-head-feature') == 'on':
                 tdlfile.add(type_name + ':= [ ARGS.FIRST.SYNSEM.LOCAL.CAT.HEAD.NEGATED - ].',merge=True)
 
-        elif (n == 'question' and v[0] == 'plus'):
+        elif (n == 'question' and v[0] == 'no'):
+            tdlfile.add(type_name + ':= \
+                     [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF prop ].',
+                        merge=True)
+
+        elif (n == 'question' and v[0] == 'polar'):
+            tdlfile.add(type_name + ':= \
+                     [ SYNSEM [ LOCAL.CONT.HOOK.INDEX.SF ques,'
+                                    'NON-LOCAL.QUE.LIST < > ] ].',
+                        merge=True)
+        elif (n == 'question' and v[0] == 'wh'):
+            tdlfile.add(type_name + ':= \
+                     [ SYNSEM [ LOCAL.CONT.HOOK.INDEX.SF ques,'
+                                    'NON-LOCAL.QUE.LIST cons ] ].',
+                        merge=True)
+        elif (n == 'question' and v[0] == 'both'):
             # ERB 2009-07-01 Adding in semantics for question affixes
             tdlfile.add(type_name + ':= \
                      [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques ].',
