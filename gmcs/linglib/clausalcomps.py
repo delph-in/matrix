@@ -633,7 +633,7 @@ def customize_clausal_verb(clausalverb,mylang,ch,cs,extra):
 
     if not is_nominalized_complement(cs):
         if cs['ques'] == 'prop':
-            mylang.add(clausalverb + ' := [ SYNSEM [ LOCAL.CAT.VAL.COMPS < [ LOCAL [ CAT.WH.LOGICAL-OR.BOOL -, '
+            mylang.add(clausalverb + ' := [ SYNSEM [ LOCAL.CAT.VAL.COMPS < [ LOCAL [ CAT.WH.BOOL -, '
                                      '                                               CONT.HOOK.INDEX.SF prop ] ] >,'
                                      'NON-LOCAL.QUE.LIST < > ] ].'
                        , merge=True)
@@ -641,7 +641,7 @@ def customize_clausal_verb(clausalverb,mylang,ch,cs,extra):
             mylang.add(clausalverb + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.SF ques ] > ].'
                        , merge=True)
             if ch.get(MTRX_FRONT) in [SINGLE, MULTI] and not ch.get('embed-insitu') == 'on':
-                mylang.add(clausalverb + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.WH.LOGICAL-OR.BOOL + ] > ].'
+                mylang.add(clausalverb + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.WH.BOOL + ] > ].'
                            , merge=True)
 
     if ch.get('wh-inv-embed') == 'on':
