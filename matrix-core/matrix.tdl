@@ -2374,13 +2374,13 @@ basic-extracted-subj-phrase := basic-extracted-arg-phrase & head-compositional &
   [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >,
                            COMPS #comps,
                            SPEC #spec, SPR #spr ],
-    HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL [ SUBJ < gap &
-                                             [ LOCAL local &
+    HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL [ SUBJ < expressed-non-canonical &
+                                             [ LOCAL local & #local &
                                                [ CONT.HOOK.INDEX ref-ind ] ] >,
                                         SPR #spr, COMPS #comps,
                                         SPEC #spec],
                                   MC na ],
-                      NON-LOCAL.SLASH append-list ],
+                      NON-LOCAL.SLASH.LIST < #local > ],
     C-CONT [ RELS.LIST < >,
              HCONS.LIST < >,
              ICONS.LIST < > ] ].
