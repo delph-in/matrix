@@ -15,11 +15,13 @@ WH_Q_PHR_NO_OR_SG_OBLIG_MULTI = '''wh-ques-phrase :=
      HEAD-DTR.SYNSEM.NON-LOCAL.QUE #que ].'''
 
 WH_Q_PHR = ''' wh-ques-phrase := basic-head-filler-phrase & interrogative-clause & head-final &
-[ SYNSEM [ LOCAL.CAT [ WH.LOGICAL-OR.BOOL +, MC bool,
-			VAL #val,
-			HEAD verb ], NON-LOCAL.QUE 0-alist ],
+[ SYNSEM [ LOCAL [ CAT [ WH.BOOL +, 
+                       MC bool,
+			           VAL #val,
+			           HEAD verb ] ], 
+			NON-LOCAL.QUE.LIST < > ],
      HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL #val & [ SUBJ < >,
-					      COMPS < > ] ] ],
+					                            COMPS < > ] ] ],
      NON-HEAD-DTR.SYNSEM [ NON-LOCAL.QUE.LIST < ref-ind >,
                            LOCAL.CONT.HOOK.ICONS-KEY focus ] ].'''
 
@@ -98,9 +100,9 @@ from gmcs.constants import MTRX_FR_OPT, MTRX_FRONT, NO_MULTI, \
 def customize_wh_feature(mylang,ch):
     mylang.add('cat :+ [ WH and-or ].')
     if ch.get(MTRX_FRONT):
-        mylang.add('wh-ques-phrase := [ SYNSEM.LOCAL.CAT.WH.LOGICAL-OR.BOOL + ].')
+        mylang.add('wh-ques-phrase := [ SYNSEM.LOCAL.CAT.WH.BOOL + ].')
         if len(ch.get('adv', [])) > 0 or len(ch.get('normadp', [])) > 0:
-            mylang.add('norm-adposition-lex := [ SYNSEM.LOCAL.CAT.WH or-and-plus ].')
+            mylang.add('norm-adposition-lex := [ SYNSEM.LOCAL.CAT.WH.BOOL + ].')
 
 
 
@@ -134,7 +136,7 @@ def customize_wh_ques(mylang,ch,rules,roots):
         if ch.get(MTRX_FRONT) in [SINGLE]:
             mylang.add('''wh-ques-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.QUE 0-alist ].''')
         if len(ch.get('adv', [])) > 0 or len(ch.get('normadp', [])) > 0:
-            mylang.add('''wh-adverb-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.WH.LOGICAL-OR.BOOL - ] > ].''')
+            mylang.add('''wh-adverb-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.WH.BOOL - ] > ].''')
 
     mylang.add_literal(';;; Wh-question-related phrasal types',section='phrases')
 
@@ -247,11 +249,11 @@ def customize_wh_ques(mylang,ch,rules,roots):
         rules.add('in-situ-ques := insitu-int-cl.')
         if not ch.get(MTRX_FRONT) == IN_SITU:
             if ch.get(EMBED_INSITU) == ON:
-                mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.WH.LOGICAL-OR.BOOL + ].')
+                mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.WH.BOOL + ].')
             else:
-                mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.WH.LOGICAL-OR.BOOL - ].')
+                mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.WH.BOOL - ].')
         else:
-            mylang.add('''insitu-int-cl := [ SYNSEM.LOCAL.CAT.WH.LOGICAL-OR.BOOL + ].''')
+            mylang.add('''insitu-int-cl := [ SYNSEM.LOCAL.CAT.WH.BOOL + ].''')
         if ch.get(MTRX_FRONT) in [SINGLE,MULTI]:
             mylang.add('insitu-int-cl := [ SYNSEM.L-QUE - ].')
         if (ch.get(MTRX_FRONT) == SINGLE
@@ -298,7 +300,7 @@ def customize_wh_ques(mylang,ch,rules,roots):
 
     if ch.get('q-part') == ON:
         if ch.get(MTRX_FRONT) == IN_SITU:
-            mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.WH.LOGICAL-OR.BOOL + ].')
+            mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.WH.BOOL + ].')
             # Perhaps this special case below can be dealt with differently?
             # Like with the WH feature?
             if len(ch.get('q-particle')) == 1:
