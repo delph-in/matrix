@@ -364,7 +364,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                              COMPS < canonical-synsem &
                                      [ LOCAL [ CAT.HEAD [ NEGATED +,
                                                         MOD < [ LOCAL.CONT.HOOK #hook ] > ],
-                                                CONT.RELS 0-alist ] ] . #oldcomps > ],
+                                                CONT.RELS.LIST < > ] ] . #oldcomps > ],
                        HEAD verb & [ NEGATED +,
                               AUX - ] ],
     DTR verb-lex &

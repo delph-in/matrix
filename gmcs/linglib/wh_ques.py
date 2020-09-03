@@ -15,13 +15,13 @@ WH_Q_PHR_NO_OR_SG_OBLIG_MULTI = '''wh-ques-phrase :=
      HEAD-DTR.SYNSEM.NON-LOCAL.QUE #que ].'''
 
 WH_Q_PHR = ''' wh-ques-phrase := basic-head-filler-phrase & interrogative-clause & head-final &
-[ SYNSEM [ LOCAL [ CAT [ WH.BOOL +, 
+[ SYNSEM [ LOCAL.CAT [ WH.BOOL +, 
                        MC bool,
 			           VAL #val,
-			           HEAD verb ] ], 
+			           HEAD verb ], 
 			NON-LOCAL.QUE.LIST < > ],
-     HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL #val & [ SUBJ < >,
-					                            COMPS < > ] ] ],
+     HEAD-DTR.SYNSEM.LOCAL.CAT.VAL #val & [ SUBJ < >,
+					                        COMPS < > ],
      NON-HEAD-DTR.SYNSEM [ NON-LOCAL.QUE.LIST < ref-ind >,
                            LOCAL.CONT.HOOK.ICONS-KEY focus ] ].'''
 
@@ -74,16 +74,15 @@ BASIC_FILLER_SG = '''basic-filler-phrase :+ [ SYNSEM.NON-LOCAL.SLASH.LIST < >,
                                                     [ SYNSEM.NON-LOCAL.SLASH.LIST < #slash > ] > ]. '''
 
 FIRST_FILLER = '''1st-head-filler-phrase := basic-filler-phrase & head-compositional &
-[  SYNSEM [ NON-LOCAL [ SLASH.LIST #slash, REL #rel, QUE 0-alist, YNQ 0-alist ] ],
+[  SYNSEM [ NON-LOCAL [ SLASH.LIST #slash, REL.LIST < >, QUE.LIST < >, YNQ.LIST < > ] ],
      ARGS < [ SYNSEM.LOCAL #local & [ CAT.HEAD +nrpd ] ],
-	   [ SYNSEM.NON-LOCAL [ SLASH.LIST < #local . #slash >,
-				                  REL #rel & 0-alist ] ] > ].'''
+	   [ SYNSEM.NON-LOCAL [ SLASH.LIST < #local . #slash > ] ] > ].'''
 
 SEC_FILLER = '''2nd-head-filler-phrase := binary-phrase & phrasal & head-compositional &
 [ SYNSEM.NON-LOCAL.SLASH.LIST < #firstarg . #otherargs >,
     ARGS < [ SYNSEM.LOCAL #local ],
      [ SYNSEM.NON-LOCAL [ SLASH.LIST [ FIRST #firstarg, REST < #local . #otherargs > ],
-          REL 0-alist ] ] > ].'''
+          REL.LIST < > ] ] > ].'''
 
 NC_SUBJ_HEAD = '''subj-head-nc-phrase := decl-head-subj-phrase & head-final &
 [ SYNSEM.LOCAL.CAT [ MC - ],
@@ -113,7 +112,7 @@ def customize_wh_ques(mylang,ch,rules,roots):
         # the filler and the gap and the extracted subject and the verb:
         mylang.add(BASIC_FILLER_SG,section='phrases')
         mylang.add(EX_SUBJ,section='phrases')
-        mylang.add('''clause :+ [ SYNSEM.NON-LOCAL.QUE 0-alist ]. ''')
+        mylang.add('''clause :+ [ SYNSEM.NON-LOCAL.QUE.LIST < > ]. ''')
     else:
         if ch.get('person') == '1-2-3':
             mylang.add('wh-pronoun-noun-lex := [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 3rd ].')
@@ -124,7 +123,7 @@ def customize_wh_ques(mylang,ch,rules,roots):
             if ch.get(NO_MULTI) != ON and not ch.get('wh-q-inter-verbs'):
                 mylang.add('''head-adj-int-phrase :+ [ HEAD-DTR.SYNSEM [ L-QUE -,
                                 LOCAL.CAT.VAL [ SUBJ clist, COMPS clist ] ] ].''',section='addenda')
-            mylang.add('''adj-head-int-phrase :+ [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH 0-alist ].''',section='addenda')
+            mylang.add('''adj-head-int-phrase :+ [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < > ].''',section='addenda')
 
     if (not ch.get(MTRX_FRONT) and ch.get(WH_INFL) != ON) :
         mylang.add('''clause :+ [ SYNSEM.NON-LOCAL.QUE.LIST < > ]. ''')
@@ -132,9 +131,9 @@ def customize_wh_ques(mylang,ch,rules,roots):
             mylang.add('''head-adj-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ]. ''',section='addenda')
 
     if ch.get(NO_MULTI) == ON:
-        mylang.add('''clause :+ [ SYNSEM.NON-LOCAL.QUE 0-1-alist ]. ''')
+        mylang.add('''clause :+ [ SYNSEM.NON-LOCAL.QUE.LIST 0-1-list ]. ''')
         if ch.get(MTRX_FRONT) in [SINGLE]:
-            mylang.add('''wh-ques-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.QUE 0-alist ].''')
+            mylang.add('''wh-ques-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].''')
         if len(ch.get('adv', [])) > 0 or len(ch.get('normadp', [])) > 0:
             mylang.add('''wh-adverb-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.WH.BOOL - ] > ].''')
 

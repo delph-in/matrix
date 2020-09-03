@@ -635,7 +635,7 @@ def customize_clausal_verb(clausalverb,mylang,ch,cs,extra):
         if cs['ques'] == 'prop':
             mylang.add(clausalverb + ' := [ SYNSEM [ LOCAL.CAT.VAL.COMPS < [ LOCAL [ CAT.WH.BOOL -, '
                                      '                                               CONT.HOOK.INDEX.SF prop ] ] >,'
-                                     'NON-LOCAL.QUE 0-alist ] ].'
+                                     'NON-LOCAL.QUE.LIST < > ] ].'
                        , merge=True)
         elif cs['ques'] == 'ques':
             mylang.add(clausalverb + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.SF ques ] > ].'

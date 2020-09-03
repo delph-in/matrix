@@ -234,7 +234,7 @@ def basic_applicative_lex_rule():
     return  '''{rulename} := comps-change-only-lex-rule &
   [ C-CONT [ RELS.LIST < event-relation &
                    [ ARG1 #evt ] >,
-             HCONS 0-alist ],
+             HCONS.LIST < > ],
     DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX #evt ].'''.format(rulename=lexrule_name('basic-applicative'))
 
 
