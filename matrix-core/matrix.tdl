@@ -2798,30 +2798,23 @@ zero-arg-nonrel := basic-zero-arg &
 zero-arg-nonque := basic-zero-arg &
   [ SYNSEM.NON-LOCAL.QUE.LIST < > ].
 
-zero-arg-nonynq := basic-zero-arg &
-  [ SYNSEM.NON-LOCAL.YNQ.LIST < > ].
-
 ; Non-argument taking items which introduce no non-local values.
 
-norm-zero-arg := zero-arg-nonslash & zero-arg-nonrel & zero-arg-nonque & zero-arg-nonynq.
+norm-zero-arg := zero-arg-nonslash & zero-arg-nonrel & zero-arg-nonque.
 
 ; Items introducing a rel value.
 
-zero-arg-rel := zero-arg-nonslash & zero-arg-nonque & zero-arg-nonynq.
+zero-arg-rel := zero-arg-nonslash & zero-arg-nonque.
 
 ; Items introducing a que value.
 ; ERB 2004-05-24 Bug fix: This was inheriting from zero-arg-nonque
 ; instead of zero-arg-nonrel.
 
-zero-arg-que := zero-arg-nonslash & zero-arg-nonrel & zero-arg-nonynq.
+zero-arg-que := zero-arg-nonslash & zero-arg-nonrel.
 
 ; Items introducing a slash value, e.g., resumptive pronouns in French.
 
-zero-arg-slash := zero-arg-nonrel & zero-arg-nonque & zero-arg-nonynq.
-
-; Items introducing a ynq value, e.g., second position question clitics.
-
-zero-arg-ynq := zero-arg-nonrel & zero-arg-nonque & zero-arg-nonslash.
+zero-arg-slash := zero-arg-nonrel & zero-arg-nonque.
 
 ; These non-zero argument types only amalgamate the non-local
 ; feature values of their complements.  They do not introduce any
