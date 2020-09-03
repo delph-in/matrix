@@ -66,7 +66,8 @@ ques-clitic-lex := no-hcons-lex-item &
             NON-LOCAL [ SLASH.LIST < >,
                         REL.LIST < >,
                         QUE.LIST <  >,
-                        YNQ.LIST < *top* > ] ] ].
+                        YNQ.LIST < *top* > ] ],
+    ARG-ST < > ].
 '''
 
 WH_PRONOUN = '''wh-pronoun-noun-lex := basic-wh-word-lex & norm-hook-lex-item & basic-icons-lex-item & non-mod-lex-item & zero-arg-que &
