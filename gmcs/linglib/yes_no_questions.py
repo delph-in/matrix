@@ -182,6 +182,18 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies,roots):
 
         # OZ: Second position  clitics are treated as modifiers:
         elif ch.get('q-part-order') == 'second':
+            # Matrix addenda:
+            mylang.add('''non-local :+ [ YNQ append-list ].''', section='addenda')
+            mylang.add('''non-local-none :+ [ YNQ.LIST < > ].''', section='addenda')
+            mylang.add('''basic-filler-phrase :+ [ SYNSEM.NON-LOCAL.YNQ.LIST < > ].''', section='addenda')
+            mylang.add('''extracted-adj-phrase-simple :+ 
+            [ SYNSEM.NON-LOCAL.YNQ #ynq,
+              HEAD-DTR.SYNSEM.NON-LOCAL.YNQ #ynq ].''',section='addenda')
+
+            mylang.add('''coord-phrase :+ 
+            [ SYNSEM.NON-LOCAL.YNQ.APPEND < #ynq1, #ynq2 >,
+              LCOORD-DTR.SYNSEM.NON-LOCAL.YNQ #ynq1,
+              RCOORD-DTR.SYNSEM.NON-LOCAL.YNQ #ynq2 ].''',section='addenda')
             mylang.add('''basic-binary-phrase :+ [ SYNSEM [ L-PERIPH #periph,
                                   NON-LOCAL.YNQ.APPEND < #ynq1,
                                     #ynq2 > ],
@@ -191,7 +203,7 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies,roots):
                                NON-LOCAL.YNQ #ynq2 ] ] > ].''',section='addenda')
             mylang.add('basic-head-mod-phrase-simple :+ '
                        '[ HEAD-DTR.SYNSEM.L-PERIPH #periph, '
-                       'NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.MOD < [ L-PERIPH #periph ] > ].',section='addenda')
+                       'NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.MOD < [ L-PERIPH #periph ] > ].', section='addenda')
             mylang.add(SAME_PERIPH,section='phrases')
             mylang.add(SAME_YNQ,section='phrases')
             mylang.add('bare-np-phrase := same-periph-unary-phrase & same-ynq-unary-phrase & [ SYNSEM.LIGHT - ].')
@@ -200,8 +212,14 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies,roots):
             mylang.add(typedef, comment, section='complex')
             supertype = 'ques-clitic-lex'
             # Constrain all other words to be YNQ-empty:
+            mylang.add('''zero-arg-nonynq := basic-zero-arg & [ SYNSEM.NON-LOCAL.YNQ.LIST < > ].''', section='complex')
+            mylang.add('''zero-arg-ynq := zero-arg-nonrel & zero-arg-nonque & zero-arg-nonslash.''', section='complex')
+            mylang.add('''norm-zero-arg :+ zero-arg-nonynq.''', section='addenda')
+            mylang.add('''zero-arg-rel :+ zero-arg-nonynq.''', section='addenda')
+            mylang.add('''zero-arg-que :+ zero-arg-nonynq.''', section='addenda')
+            mylang.add('''zero-arg-slash :+ zero-arg-nonynq.''', section='addenda')
             mylang.add('non-ynq-word := word-or-lexrule & [ SYNSEM.NON-LOCAL.YNQ.LIST < > ].')
-            mylang.add('basic-zero-arg :+ non-ynq-word.',section='addenda')
+            #mylang.add('basic-zero-arg :+ non-ynq-word.',section='addenda')
             mylang.add('basic-one-arg :+ non-ynq-word.',section='addenda')
             mylang.add('basic-two-arg :+ non-ynq-word.',section='addenda')
             mylang.add('basic-three-arg :+ non-ynq-word.',section='addenda')

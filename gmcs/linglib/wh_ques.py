@@ -44,7 +44,7 @@ IN_SITU_PHRASE = '''insitu-int-cl := interrogative-clause & head-only &
 [ SYNSEM [ MODIFIED hasmod,
              LOCAL.CAT [ VAL #val,
        MC bool ],
-       NON-LOCAL [ SLASH.LIST < >, QUE.LIST < >, REL.LIST < >, YNQ #ynq ] ],
+       NON-LOCAL [ SLASH.LIST < >, QUE.LIST < >, REL.LIST < > ] ],
     C-CONT [ RELS.LIST < >,
        HCONS.LIST < > ],
     HEAD-DTR.SYNSEM [ LOCAL.CAT [ HEAD verb,
@@ -53,7 +53,7 @@ IN_SITU_PHRASE = '''insitu-int-cl := interrogative-clause & head-only &
               COMPS < > ] ],
           NON-LOCAL [ SLASH.LIST < >,
           REL.LIST < >,
-          QUE.LIST < ref-ind, ... >, YNQ #ynq ] ] ].'''
+          QUE.LIST < ref-ind, ... > ] ] ].'''
 
 EX_DET_PHRASE = '''extracted-det-phrase := basic-extracted-arg-phrase & head-compositional &
 [ SYNSEM [ LOCAL.CAT [ VAL [ SUBJ < >, COMPS < >, SPR < >, SPEC < > ] ] ],
@@ -74,7 +74,7 @@ BASIC_FILLER_SG = '''basic-filler-phrase :+ [ SYNSEM.NON-LOCAL.SLASH.LIST < >,
                                                     [ SYNSEM.NON-LOCAL.SLASH.LIST < #slash > ] > ]. '''
 
 FIRST_FILLER = '''1st-head-filler-phrase := basic-filler-phrase & head-compositional &
-[  SYNSEM [ NON-LOCAL [ SLASH.LIST #slash, REL.LIST < >, QUE.LIST < >, YNQ.LIST < > ] ],
+[  SYNSEM [ NON-LOCAL [ SLASH.LIST #slash, REL.LIST < >, QUE.LIST < > ] ],
      ARGS < [ SYNSEM.LOCAL #local & [ CAT.HEAD +nrpd ] ],
 	   [ SYNSEM.NON-LOCAL [ SLASH.LIST < #local . #slash > ] ] > ].'''
 
@@ -243,9 +243,14 @@ def customize_wh_ques(mylang,ch,rules,roots):
             or ch.get(MTRX_FRONT) == IN_SITU \
             or (ch.get(MTRX_FRONT) == MULTI and not ch.get(MTRX_FR_OPT) == ALL_OBLIG) \
             or ch.get(WH_INFL) == ON:
-        mylang.add_literal('; In-situ interrogative clause.',section='phrases')
+        mylang.add_literal('; In-situ interrogative clause.', section='phrases')
         mylang.add(IN_SITU_PHRASE)
         rules.add('in-situ-ques := insitu-int-cl.')
+        if ch.get('q-part-order') == 'second':
+            mylang.add('''insitu-int-cl := 
+            [ SYNSEM.NON-LOCAL.YNQ #ynq, 
+              HEAD-DTR.SYNSEM.NON-LOCAL.YNQ #ynq ].''')
+
         if not ch.get(MTRX_FRONT) == IN_SITU:
             if ch.get(EMBED_INSITU) == ON:
                 mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.WH.BOOL + ].')
@@ -253,14 +258,17 @@ def customize_wh_ques(mylang,ch,rules,roots):
                 mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.WH.BOOL - ].')
         else:
             mylang.add('''insitu-int-cl := [ SYNSEM.LOCAL.CAT.WH.BOOL + ].''')
+
         if ch.get(MTRX_FRONT) in [SINGLE,MULTI]:
             mylang.add('insitu-int-cl := [ SYNSEM.L-QUE - ].')
+
         if (ch.get(MTRX_FRONT) == SINGLE
             and not ch.get(MTRX_FR_OPT) == SG_OBLIG) \
                 and not ch.get(EMBED_INSITU) == ON:
             mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.MC + ].')
         elif ch.get(MTRX_FRONT) == 'multi' and ch.get(MTRX_FR_OPT) == SG_OBLIG:
             mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.MC - ].')
+
         # For non-free word orders, need to rule out structural ambiguity:
         if ch.get('word-order') in ['svo', 'sov'] \
                 and not (ch.get(MTRX_FRONT) == IN_SITU

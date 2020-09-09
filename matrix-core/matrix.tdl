@@ -229,7 +229,8 @@ intersective-mod := local.
 
 non-local-min := avm.
 
-; OZ 2020-09-01 Adding YNQ feature, for polar questions formed with second position clitics.
+; OZ 2020-09-01 A YNQ feature may be added via the customization,
+; for polar questions formed with second position clitics.
 ; Ivan li idet?
 ; Ivan Q  arrive
 ; "Is it Ivan that is arriving?" [rus]
@@ -237,14 +238,12 @@ non-local-min := avm.
 non-local := non-local-min &
   [ SLASH append-list,
     QUE append-list,
-    REL append-list,
-    YNQ append-list ].
+    REL append-list ].
 
 non-local-none := non-local &
   [ SLASH.LIST < >,
     QUE.LIST < >,
-    REL.LIST < >,
-    YNQ.LIST < > ].
+    REL.LIST < > ].
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;  CAT values
@@ -1872,11 +1871,9 @@ basic-filler-phrase := binary-phrase & phrasal &
 					COMPS olist,
 					SPR olist ],
 			      CTXT.ACTIVATED + ],
-		      NON-LOCAL [ SLASH append-list, QUE append-list, REL.LIST < >, YNQ append-list ] ] ],
+		      NON-LOCAL [ REL.LIST < > ] ] ],
 	   [ SYNSEM [ LOCAL.CAT [ VAL.COMPS olist ],
-		      NON-LOCAL [ SLASH append-list,
-				  REL.LIST < >,
-				  QUE append-list, YNQ append-list ] ] ] > ].
+		      NON-LOCAL [ REL.LIST < > ] ] ] > ].
 
 ; ASF 2011-10-05 changed supertype 'headed-phrase' to more specific 'head-compostional'
 ; in order to make sure matrix.tdl provides the right semantics.
@@ -2410,8 +2407,7 @@ extracted-adj-phrase-simple := basic-extracted-adj-phrase &
                          VAL.SPEC < >,
                          POSTHEAD #ph,
                          MC #mc ],
-	     NON-LOCAL [ QUE #que,
-	                 YNQ #ynq ] ],
+	     NON-LOCAL [ QUE #que ] ],
     HEAD-DTR.SYNSEM canonical-synsem &
 	   [ LOCAL local &
 		   [ CAT [ HEAD verb,
@@ -2421,7 +2417,7 @@ extracted-adj-phrase-simple := basic-extracted-adj-phrase &
                    MC #mc ],
                    CONT.HOOK #hook ],
 	     MODIFIED notmod,
-	     NON-LOCAL [ QUE #que, SLASH append-list, YNQ #ynq ] ],
+	     NON-LOCAL [ QUE #que ] ],
     C-CONT [ HOOK #hook,
          RELS.LIST < >,
 	     HCONS.LIST < >,
@@ -3669,14 +3665,14 @@ coord-phrase := binary-phrase &
                    CAT [ WH.OR #wh,
                          HEAD.MOD #mod,
                          VAL #val ] ],
-	     NON-LOCAL [ SLASH #slash, REL #rel, QUE #que2, YNQ.APPEND < #ynq1, #ynq2 > ] ],
+	     NON-LOCAL [ SLASH #slash, REL #rel, QUE #que2 ] ],
     LCOORD-DTR #ldtr & sign & [ SYNSEM [ LOCAL [ CAT [ WH.OR #wh, HEAD.MOD #mod,
                                                      VAL #val ] ],
-				         NON-LOCAL [ SLASH #slash, REL #rel, QUE append-list, YNQ #ynq1 ] ] ],
+				         NON-LOCAL [ SLASH #slash, REL #rel, QUE append-list ] ] ],
     RCOORD-DTR #rdtr & sign & [ SYNSEM [ LOCAL [ COORD-STRAT #cstrat,
                                                CAT [ WH.OR #wh, HEAD.MOD #mod,
                                                      VAL #val ] ],
-					 NON-LOCAL [ SLASH #slash, REL #rel, QUE #que2, YNQ #ynq2 ] ] ],
+					 NON-LOCAL [ SLASH #slash, REL #rel, QUE #que2 ] ] ],
     ARGS < #ldtr, #rdtr > ].
 
 topormid-coord-phrase := coord-phrase &
@@ -3696,9 +3692,9 @@ mid-coord-rule := topormid-coord-phrase &
                    COORD-REL implicit-coord-rel ]].
 
 bottom-coord-phrase := phrase &
-  [ SYNSEM.NON-LOCAL [ SLASH #slash, REL #rel, QUE #que, YNQ append-list ],
+  [ SYNSEM.NON-LOCAL [ SLASH #slash, REL #rel, QUE #que ],
     CONJ-DTR sign,
-    NONCONJ-DTR sign & [ SYNSEM.NON-LOCAL [ SLASH #slash, REL #rel, QUE #que, YNQ append-list ] ] ].
+    NONCONJ-DTR sign & [ SYNSEM.NON-LOCAL [ SLASH #slash, REL #rel, QUE #que ] ] ].
 
 unary-bottom-coord-rule := bottom-coord-phrase & unary-phrase &
   [ SYNSEM.LOCAL [ CAT [ HEAD.MOD #mod,

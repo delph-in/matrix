@@ -54,7 +54,7 @@ COMPLEMENTIZER = '''
 
 
 QUES_CLITIC = '''
-ques-clitic-lex := no-hcons-lex-item &
+ques-clitic-lex := no-hcons-lex-item & zero-arg-ynq &
  [ SYNSEM [ LOCAL [ CAT [ VAL [ SPR < >, COMPS < >, SUBJ < >, SPEC < >],
                                         HEAD adv &
                                                 [ MOD < [ LIGHT +,
@@ -63,10 +63,7 @@ ques-clitic-lex := no-hcons-lex-item &
                                                           L-PERIPH +,
                                                           L-QUE - ] > ] ],
                              CONT.RELS.LIST < > ],
-            NON-LOCAL [ SLASH.LIST < >,
-                        REL.LIST < >,
-                        QUE.LIST <  >,
-                        YNQ.LIST < *top* > ] ] ].
+            NON-LOCAL [  YNQ.LIST < *top* > ] ] ].
 '''
 
 WH_PRONOUN = '''wh-pronoun-noun-lex := basic-wh-word-lex & norm-hook-lex-item & basic-icons-lex-item & non-mod-lex-item & zero-arg-que &
@@ -84,7 +81,7 @@ WH_PRONOUN = '''wh-pronoun-noun-lex := basic-wh-word-lex & norm-hook-lex-item & 
 				        LARG #larg ] > ] ],
 	     NON-LOCAL.QUE.LIST < #arg0 > ] ].'''
 
-ADV_ITEM = '''adverb-lex-item := intersective-adverb-lex &
+ADV_ITEM = '''adverb-lex-item := intersective-adverb-lex & 
   [ SYNSEM [ LOCAL [ CAT [ VAL [ SUBJ < >, SPEC < >,
                              SPR < >,
                              COMPS < > ],
@@ -100,15 +97,14 @@ ADV_ITEM = '''adverb-lex-item := intersective-adverb-lex &
               LKEYS.KEYREL [ PRED #pred, ARG0 ref-ind & #ind, LBL #ltop ] ] ].'''
 
 
-LOC_ADV_ITEM = '''loc-adverb-lex-item := adverb-lex-item &
+LOC_ADV_ITEM = '''loc-adverb-lex-item := adverb-lex-item & 
   [ SYNSEM.LOCAL.CONT.RELS.LIST.FIRST.PRED "loc_nonsp_rel" ].'''
 
-MANNER_ADV_ITEM = '''manner-adverb-lex-item := adverb-lex-item &
+MANNER_ADV_ITEM = '''manner-adverb-lex-item := adverb-lex-item & 
   [ SYNSEM.LOCAL.CONT.RELS.LIST.FIRST.PRED "manner_nonsp_rel" ].'''
 
-ADV =  '''adverb-lex := basic-non-wh-word-lex & adverb-lex-item &
-[ SYNSEM [ LOCAL.CONT.RELS.LIST < [ ], [ ], [ PRED "exist_q_rel" ] >,
-           NON-LOCAL [ QUE.LIST < >, YNQ.LIST < > ] ] ].'''
+ADV =  '''adverb-lex := basic-non-wh-word-lex & adverb-lex-item & norm-zero-arg & 
+[ SYNSEM.LOCAL.CONT.RELS.LIST < [ ], [ ], [ PRED "exist_q_rel" ] > ].'''
 
 WH_ADV =  '''wh-adverb-lex := basic-wh-word-lex & adverb-lex-item & zero-arg-que &
 [ SYNSEM [ LOCAL.CONT.RELS.LIST < [ ], [ ARG0 #arg0 ], quant-relation & [ PRED "which_q_rel" ] >,
