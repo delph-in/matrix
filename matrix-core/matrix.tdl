@@ -1722,21 +1722,6 @@ head-compositional := headed-phrase &
 ; ERB 2004-08-26 Remove [MC na], which is probably specific
 ; to some analysis for English.
 
-; ERB 2005-05-11 I'm not sure what use non-clause is in the current
-; system, and the constraint MSG no-msg is a little suspicious.
-; It seems to only be used for head-spec phrases right now, though,
-; so leave it for now.
-
-; ERB 2007-01-21 I'm not sure there's really any use for non-clause
-; in the message-free universe.
-
-;non-clause := head-nexus-phrase &
-;  [ SYNSEM.LOCAL [ CONT.MSG no-msg ] ].
-
-;clause := phrasal &
-;  [ SYNSEM [ LOCAL.CAT.VAL.COMPS olist,
-;	     NON-LOCAL.QUE 0-dlist ] ].
-
 ; ERB 2007-01-21 COMPS olist is no longer a fair constraint on
 ; clauses, under current analysis.
 
