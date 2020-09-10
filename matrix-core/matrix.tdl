@@ -1585,6 +1585,12 @@ unary-nonloc-phrase := basic-unary-phrase &
 [ SYNSEM.NON-LOCAL #nonloc,
  ARGS < [ SYNSEM.NON-LOCAL #nonloc ] > ].
 
+unary-slash-phrase := basic-unary-phrase &
+[ SYNSEM.NON-LOCAL [ QUE #que,
+                     REL #rel ],
+  ARGS < [ SYNSEM.NON-LOCAL [ QUE #que,
+                              REL #rel ] ] > ].
+
 unary-phrase := basic-unary-phrase &
   [ INFLECTED infl-satisfied,
     ARGS < [ INFLECTED infl-satisfied ] > ].
