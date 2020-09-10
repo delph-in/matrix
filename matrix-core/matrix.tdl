@@ -1670,19 +1670,9 @@ binary-rule-left-to-right := basic-binary-phrase &
 binary-rule-right-to-left := basic-binary-phrase &
   [ ARGS < [ KEY-ARG bool ], [ KEY-ARG + ] > ].
 
-; ERB 2005-05-04 If messages are introduced by unary rules at the
-; top of each clause, most phrase types should say [MSG no-msg]
-; on the mother.  The exceptions to this are the clauses themselves
-; and coordination constructions.  Basic-head-only is for
-; the clauses.
-
-; ERB 2007-01-21 Removing no-msg-phrase.
-
 head-only := unary-phrase & headed-phrase &
   [ HEAD-DTR #head,
     ARGS < #head > ].
-
-;head-only := basic-head-only & no-msg-phrase.
 
 head-initial := binary-headed-phrase &
   [ HEAD-DTR #head,
@@ -1727,8 +1717,7 @@ head-compositional := headed-phrase &
 
 ; OZ 2020-01-25 Removing the QUE constraint to allow in-situ questions.
 
-clause := phrasal. ; &
-;  [ SYNSEM.NON-LOCAL.QUE.LIST < > ].
+clause := phrasal.
 
 
 ; The following subtypes of clause will need more constraints,
