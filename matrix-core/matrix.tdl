@@ -2347,13 +2347,15 @@ basic-extracted-comp-phrase := basic-extracted-arg-phrase &
                            SUBJ #subj,
                            SPR #spr,
                            COMPS #comps ],
-                     MC #mc ] ],
+                     MC #mc ],
+         NON-LOCAL.SLASH.APPEND < #slash, [ LIST < #local > ] >],
     HEAD-DTR [ SYNSEM
                [ LOCAL.CAT [ VAL [ SPEC #spec,
                                    SUBJ #subj,
                                    SPR #spr,
-                                   COMPS < gap . #comps > ],
-                             MC #mc ] ] ],
+                                   COMPS < gap & [ LOCAL local & #local ] . #comps > ],
+                             MC #mc ],
+                 NON-LOCAL.SLASH #slash ] ],
     C-CONT [ RELS.LIST < >,
              HCONS.LIST < >,
              ICONS.LIST < > ] ].
