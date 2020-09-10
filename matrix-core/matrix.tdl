@@ -2335,7 +2335,7 @@ basic-bare-np-phrase := head-only & unary-nonloc-phrase &
 ; where such sentences are possible, perhaps some other mechanism
 ; is at place, not LDD/filler-gap.
 
-basic-extracted-arg-phrase := unary-nonloc-phrase & head-only &
+basic-extracted-arg-phrase := unary-slash-phrase & head-only &
   [ SYNSEM [ LIGHT -, LOCAL.CAT.WH #wh ],
    HEAD-DTR.SYNSEM.LOCAL.CAT.WH #wh ].
 
@@ -2365,16 +2365,16 @@ basic-extracted-comp-phrase := basic-extracted-arg-phrase &
 ; extraction from VSO languages (possibly required in other situations, too).
 
 basic-extracted-subj-phrase := basic-extracted-arg-phrase & head-compositional &
-  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >,
+  [ SYNSEM [ LOCAL.CAT.VAL [ SUBJ < >,
                            COMPS #comps,
                            SPEC #spec, SPR #spr ],
-    HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL [ SUBJ < gap &
-                                             [ LOCAL local &
+             NON-LOCAL.SLASH.APPEND < [ LIST < #local > ] > ],
+    HEAD-DTR.SYNSEM.LOCAL.CAT [ VAL [ SUBJ < gap &
+                                             [ LOCAL local & #local &
                                                [ CONT.HOOK.INDEX ref-ind ] ] >,
                                         SPR #spr, COMPS #comps,
                                         SPEC #spec],
                                   MC na ],
-                      NON-LOCAL.SLASH append-list ],
     C-CONT [ RELS.LIST < >,
              HCONS.LIST < >,
              ICONS.LIST < > ] ].
