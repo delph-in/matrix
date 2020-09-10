@@ -2531,6 +2531,14 @@ basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
              NON-LOCAL [ SLASH #s1, QUE #q1 ] ],
     C-CONT [ RELS.LIST < >, ICONS.LIST < > ] ].
 
+;;;2011-11-07 removing head-mod-phrase-simple
+;;;As pointed out by Bart Cramer, this does not add anything to
+;;;basic-head-mod-phrase-simple, where the HOOK is already shared between
+;;;HEAD-DTR and NON-HEAD-DTR
+; head-mod-phrase-simple := basic-head-mod-phrase-simple &
+;  [ HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.LTOP #htop,
+;    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.LTOP #htop ] >].
+
 adj-head-phrase := basic-head-mod-phrase-simple & head-final &
   [ SYNSEM [ LOCAL.CAT.POSTHEAD #ph,
 	     MODIFIED lmod & [ PERIPH #periph ],
