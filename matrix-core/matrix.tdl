@@ -1528,13 +1528,15 @@ phrasal := phrase &
 ; (which has amalgamated the REL and QUE values of its arguments as in
 ; Sag 1997) to the mother.
 
-head-nexus-rel-phrase := headed-phrase &
-  [ SYNSEM.NON-LOCAL.REL #rel,
-    HEAD-DTR.SYNSEM.NON-LOCAL.REL #rel ].
+; OZ 2020-09-10: Taking out lexical threading.
 
-head-nexus-que-phrase := headed-phrase &
-  [ SYNSEM.NON-LOCAL.QUE #que,
-    HEAD-DTR.SYNSEM.NON-LOCAL.QUE #que ].
+;head-nexus-rel-phrase := headed-phrase &
+;  [ SYNSEM.NON-LOCAL.REL #rel,
+;    HEAD-DTR.SYNSEM.NON-LOCAL.REL #rel ].
+
+;head-nexus-que-phrase := headed-phrase &
+;  [ SYNSEM.NON-LOCAL.QUE #que,
+;    HEAD-DTR.SYNSEM.NON-LOCAL.QUE #que ].
 
 ; ERB 2005-05-04 If messages are introduced by unary rules at the
 ; top of each clause, most phrase types should say [MSG no-msg]
@@ -1543,7 +1545,7 @@ head-nexus-que-phrase := headed-phrase &
 
 ; ERB 2007-01-21 Removed supertype no-msg-phrase.
 
-head-nexus-phrase := head-nexus-rel-phrase & head-nexus-que-phrase.
+;head-nexus-phrase := head-nexus-rel-phrase & head-nexus-que-phrase.
 
 
 ; In a head/local dependent phrase, the SLASH feature of the mother is
@@ -1551,9 +1553,9 @@ head-nexus-phrase := head-nexus-rel-phrase & head-nexus-que-phrase.
 ; the SLASH values of its arguments.  See discussion of head-nexus-phrase for
 ; treatment of REL and QUE.
 
-head-valence-phrase := head-nexus-phrase &
-  [ SYNSEM.NON-LOCAL.SLASH #slash,
-    HEAD-DTR.SYNSEM.NON-LOCAL.SLASH #slash ].
+;head-valence-phrase := head-nexus-phrase &
+;  [ SYNSEM.NON-LOCAL.SLASH #slash,
+;    HEAD-DTR.SYNSEM.NON-LOCAL.SLASH #slash ].
 
 ; All phrases are either unary or binary.
 
@@ -1719,23 +1721,6 @@ head-compositional := headed-phrase &
 ; with the clause types to give e.g., decl-head-subj from decl-clause
 ; and head-subj-phrase.
 
-; ERB 2004-08-26 Remove [MC na], which is probably specific
-; to some analysis for English.
-
-; ERB 2005-05-11 I'm not sure what use non-clause is in the current
-; system, and the constraint MSG no-msg is a little suspicious.
-; It seems to only be used for head-spec phrases right now, though,
-; so leave it for now.
-
-; ERB 2007-01-21 I'm not sure there's really any use for non-clause
-; in the message-free universe.
-
-;non-clause := head-nexus-phrase &
-;  [ SYNSEM.LOCAL [ CONT.MSG no-msg ] ].
-
-;clause := phrasal &
-;  [ SYNSEM [ LOCAL.CAT.VAL.COMPS olist,
-;	     NON-LOCAL.QUE 0-dlist ] ].
 
 ; ERB 2007-01-21 COMPS olist is no longer a fair constraint on
 ; clauses, under current analysis.
@@ -2824,25 +2809,38 @@ zero-arg-slash := zero-arg-nonrel & zero-arg-nonque.
 ; more arguments will require appropriate new types as well, which
 ; amalgamate everything but add a value in addition.
 
-basic-one-arg := lex-item &
-  [ ARG-ST < [ NON-LOCAL [ SLASH #slash,
-			   REL #rel,
-			   QUE #que ] ] >,
-    SYNSEM.NON-LOCAL [ SLASH #slash,
-		       REL #rel,
-		       QUE #que ] ].
+; OZ 2020-09-10: These lexical threading types won't be needed
+; once we get rid of lexical threading. Instead, most words
+; have empty nonlocal features.
 
+;basic-one-arg := lex-item &
+;  [ ARG-ST < [ NON-LOCAL [ SLASH #slash,
+;			   REL #rel,
+;			   QUE #que ] ] >,
+;    SYNSEM.NON-LOCAL [ SLASH #slash,
+;		       REL #rel,
+;		       QUE #que ] ].
+
+basic-one-arg := lex-item &
+  [ ARG-ST < [ ] >,
+    SYNSEM.NON-LOCAL non-local-none ].
+
+
+;basic-two-arg := lex-item &
+;  [ ARG-ST < [ NON-LOCAL [ SLASH #s2,
+;                           REL #r2,
+;                           QUE #q2 ] ],
+;	     [ NON-LOCAL [ SLASH #s1,
+;			   REL #r1,
+;			   QUE #q1 ] ] >,
+;    SYNSEM.NON-LOCAL [ SLASH.APPEND < #s1, #s2 >,
+;                       REL.APPEND < #r1, #r2 >,
+;                       QUE.APPEND < #q1, #q2 > ] ].
 
 basic-two-arg := lex-item &
-  [ ARG-ST < [ NON-LOCAL [ SLASH #s2,
-                           REL #r2,
-                           QUE #q2 ] ],
-	     [ NON-LOCAL [ SLASH #s1,
-			   REL #r1,
-			   QUE #q1 ] ] >,
-    SYNSEM.NON-LOCAL [ SLASH.APPEND < #s1, #s2 >,
-                       REL.APPEND < #r1, #r2 >,
-                       QUE.APPEND < #q1, #q2 > ] ].
+  [ ARG-ST < [ ], [ ] >,
+    SYNSEM.NON-LOCAL non-local-none ].
+
 
 basic-three-arg := lex-item &
   [ ARG-ST < [ NON-LOCAL [ SLASH #s3,
