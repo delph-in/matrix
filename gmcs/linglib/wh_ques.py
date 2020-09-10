@@ -56,13 +56,14 @@ IN_SITU_PHRASE = '''insitu-int-cl := interrogative-clause & head-only &
           QUE.LIST < ref-ind, ... > ] ] ].'''
 
 EX_DET_PHRASE = '''extracted-det-phrase := basic-extracted-arg-phrase & head-compositional &
-[ SYNSEM [ LOCAL.CAT [ VAL [ SUBJ < >, COMPS < >, SPR < >, SPEC < > ] ] ],
+[ SYNSEM [ LOCAL.CAT [ VAL [ SUBJ < >, COMPS < >, SPR < >, SPEC < > ] ],
+           NON-LOCAL.SLASH.APPEND < #slash, [ LIST < #local > ] > ],
   HEAD-DTR.SYNSEM [ MODIFIED notmod,
                     LOCAL.CAT.VAL.SPR <  gap & [ LOCAL #local & local &
                                                 [ CAT.HEAD det,
                                                   CONT.HOOK #hook ] ] >,
                    L-PERIPH -,
-                   NON-LOCAL.SLASH.LIST < #local > ],
+                   NON-LOCAL.SLASH #slash ],
     C-CONT [ RELS.LIST < >,
              HCONS.LIST < >,
              ICONS.LIST < >,
