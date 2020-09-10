@@ -1628,12 +1628,13 @@ binary-headed-phrase := basic-binary-headed-phrase & binary-phrase.
 
 binary-nonloc-phrase := basic-binary-headed-phrase &
 [ SYNSEM.NON-LOCAL [ SLASH.APPEND < #slash1, #slash2 >,
-                     QUE #que,
+                     QUE.APPEND < #que1, #que2 >,
                      REL #rel ],
   HEAD-DTR.SYNSEM.NON-LOCAL [ SLASH #slash1,
-                              QUE #que,
+                              QUE #que1,
                               REL #rel ],
-  NON-HEAD-DTR.SYNSEM.NON-LOCAL.SLASH #slash2 ].
+  NON-HEAD-DTR.SYNSEM.NON-LOCAL [ SLASH #slash2,
+                                  QUE #que2 ] ].
 
 ; ERB (2007-02-13) Adding these for handling constructions where a marker
 ; shows up simultaneously on both ends of the phrase, such as negation
