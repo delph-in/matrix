@@ -1736,11 +1736,13 @@ head-compositional := headed-phrase &
 ; with the clause types to give e.g., decl-head-subj from decl-clause
 ; and head-subj-phrase.
 
+; ERB 2004-08-26 Remove [MC na], which is probably specific
+; to some analysis for English.
 
 ; ERB 2007-01-21 COMPS olist is no longer a fair constraint on
 ; clauses, under current analysis.
 
-; OZ 2020-01-25 Removing the QUE constraint to allow in-situ questions.
+; OZ 2020-01-25 Removing the QUE.LIST < > constraint to allow in-situ questions.
 
 clause := phrasal.
 
@@ -2529,14 +2531,6 @@ basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
                      CLAUSE-KEY #clause ] ],
              NON-LOCAL [ SLASH #s1, QUE #q1 ] ],
     C-CONT [ RELS.LIST < >, ICONS.LIST < > ] ].
-
-;;;2011-11-07 removing head-mod-phrase-simple
-;;;As pointed out by Bart Cramer, this does not add anything to
-;;;basic-head-mod-phrase-simple, where the HOOK is already shared between
-;;;HEAD-DTR and NON-HEAD-DTR
-; head-mod-phrase-simple := basic-head-mod-phrase-simple &
-;  [ HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.LTOP #htop,
-;    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.LTOP #htop ] >].
 
 adj-head-phrase := basic-head-mod-phrase-simple & head-final &
   [ SYNSEM [ LOCAL.CAT.POSTHEAD #ph,
