@@ -1715,7 +1715,7 @@ head-compositional := headed-phrase &
 ; ERB 2007-01-21 COMPS olist is no longer a fair constraint on
 ; clauses, under current analysis.
 
-; OZ 2020-01-25 Removing the QUE constraint to allow in-situ questions.
+; OZ 2020-01-25 Removing the QUE.LIST < > constraint to allow in-situ questions.
 
 clause := phrasal.
 
