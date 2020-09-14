@@ -92,8 +92,8 @@ NC_SUBJ_HEAD = '''subj-head-nc-phrase := decl-head-subj-phrase & head-final &
 '''
 
 from gmcs.constants import MTRX_FR_OPT, MTRX_FRONT, NO_MULTI, \
-    SINGLE, MULTI, SG_OBLIG, ALL_OBLIG, EMBED_INSITU, ON, WH_INFL, \
-    IN_SITU
+    SINGLE, MULTI, SG_OBLIG, ALL_OBLIG, NONE_OBLIG, \
+    EMBED_INSITU, ON, WH_INFL, IN_SITU
 
 
 # This function should be finished when/if WH feature is moved from matrix.tdl to customization
@@ -132,9 +132,12 @@ def customize_wh_ques(mylang,ch,rules,roots):
             mylang.add('''head-adj-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ]. ''',section='addenda')
 
     if ch.get(NO_MULTI) == ON:
-        mylang.add('''clause :+ [ SYNSEM.NON-LOCAL.QUE.LIST 0-1-list ]. ''')
-        if ch.get(MTRX_FRONT) in [SINGLE]:
+        #mylang.add('''clause :+ [ SYNSEM.NON-LOCAL.QUE.LIST 0-1-list ]. ''')
+        if ch.get(MTRX_FRONT) == SINGLE:
             mylang.add('''wh-ques-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].''')
+        if ch.get(MTRX_FRONT) == IN_SITU or \
+                (ch.get(MTRX_FRONT) == SINGLE and ch.get(MTRX_FR_OPT) == NONE_OBLIG):
+            mylang.add('''insitu-int-cl := [ HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < [ ] > ].''')
         if len(ch.get('adv', [])) > 0 or len(ch.get('normadp', [])) > 0:
             mylang.add('''wh-adverb-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.WH.BOOL - ] > ].''')
 
