@@ -1736,22 +1736,6 @@ Radio front-matrix "Fronting" "<p> Question phrases can appear at the left edge 
    but there is currently no distinction between echo and canonical qiestions
    in the semantic representation that you obtain from this library.</p>"
 
-#  . nondlinked-oblig "Obligatory Multiple Fronting" ""  "of all question pronouns and adverbs
-#  (but not phrases with determiners)<br><br>"
-
-#Label "<p>Note: If a <i>wh</i>-adverb intervenes between the subject and the verb, such adverb
-#is analyzed as <i>in situ</i> and will be ruled out by the obligatory multiple fronting option.</p>"
-
-    #Label "<p><b>Pied-piping:</b>
-    #In many languages, not only the question word but an entire question phrase
-    #can or must be fronted. Languages place different constraints on how this works. In English, for example:</p>"
-
-    #Label "<p><i>Which book did you read?</i><br>
-    #          <i>*Which did you read book</i><br>
-    #          <i>With whom did you speak?</i><br>
-    #          <i>Who did you speak with?</i>
-    #</p>"
-
     Label "<p>There is pied piping of:<br><br>"
 
     Check pied-pip "Pied-Piping" "" "noun phrases (<i>Which book did you read?</i> is possible), "
@@ -1766,8 +1750,6 @@ Radio front-matrix "Fronting" "<p> Question phrases can appear at the left edge 
  Label "<h3>Other choices</h3>"
 
  Check no-multi-ques "No Multiple Questions" "<p>" "Only one question phrase is allowed per sentence.</p>"
-
- #Label "<p>If you filled out the Information Structure questionnaire:</p>"
 
  Label "<p> If you specified Auxiliary-Subject inversion for polar questions, does it also happen in constituent questions?<br><br>"
  Check wh-inv-matrix "Matrix Inversion" "" "yes, in matrix clauses <br>"
