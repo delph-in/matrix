@@ -1740,8 +1740,6 @@ Radio front-matrix "Fronting" "<p> Question phrases can appear at the left edge 
 
     Check pied-pip "Pied-Piping" "" "noun phrases (<i>Which book did you read?</i> is possible), "
     Check oblig-pied-pip-noun "Obligatory Pied Piping Of Nouns" "" "and it is obligatory (<i>*Which did you read book?</i> is impossible in your language);<br>"
-    #Check pied-pip-adv "Pied-Piping of Adverbs" "" "adverbs, "
-    #Check oblig-pied-pip-adv "Obligatory Pied Piping Of Adverbs" "" "and it is obligatory;<br>"
     Check pied-pip-adp "Pied-Piping Of Adpositions" "" "adpositional phrases (<i>To whom did you speak?</i> is possible), "
     Check oblig-pied-pip-adp "Obligatory Pied Piping Of Adpositions" "" "and it is obligatory (<i>*Who did you speak to?</i> is impossible in your language).</p>"
 
@@ -2555,9 +2553,6 @@ BeginIter qverb{i} "a Question Verb Type" 0 0
   . loc "Location" "" " location in time/space (<i>when, where</i>)<br>"
   . manner "Manner" "" " manner (<i>how</i>)<br>"
 
-  #Select bipartitepc "Question Verb {i} bipartite stems position class" "If this verb class includes bipartite stems, select the position class for the affix portion of the stems: " "<br />"
-  #fillcache c=verbpcs
-
   Label "Stems:"
   BeginIter stem{j} "a simple Stem" 0 0
 
@@ -3025,7 +3020,6 @@ Cache nouns noun[0-9]+$ name
 Cache verbs verb[0-9]+$ name
 Cache qverbs qverb[0-9]+$ name
 Cache auxes aux[0-9]+$ name
-Cache dets q?det[0-9]+$ name
 Cache adjs adj[0-9]+$ name
 Cache cops cop[0-9]+$ name
 
