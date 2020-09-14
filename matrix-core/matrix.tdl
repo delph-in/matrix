@@ -2817,9 +2817,17 @@ zero-arg-slash := zero-arg-nonrel & zero-arg-nonque.
 ; more arguments will require appropriate new types as well, which
 ; amalgamate everything but add a value in addition.
 
-; OZ 2020-09-10: These lexical threading types won't be needed
-; once we get rid of lexical threading. Instead, most words
+; OZ 2020-09-14: Without lexical threading, most words
 ; have empty nonlocal features.
+
+non-local-none-lex-item := lex-item &
+[ SYNSEM.NON-LOCAL non-local-none ].
+
+; OZ 2020-09-14: The below types need to be eliminated
+; and replaced with non-local-none-lex-item.
+; This is assuming all lexical items explicitly
+; say something about their ARG-ST length.
+
 
 ;basic-one-arg := lex-item &
 ;  [ ARG-ST < [ NON-LOCAL [ SLASH #slash,
