@@ -2544,8 +2544,6 @@ BeginIter qverb{i} "a Question Verb Type" 0 0
   EndIter feat
 
   Label "<p>There is no predefined case frame for question verbs. Please specify the case for the subject above.</p>"
-  #Select valence "Question Verb {i} case frame" "<br /><br />Case frame: " " (only S/A case will be used)<br />"
-  #fillverbpat
 
   Radio predtype "Question Verb {i} stem {j} second predicate type" "<p>The second
   predicate that this verb contributes is <br>" "</p>"
