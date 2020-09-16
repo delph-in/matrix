@@ -13,7 +13,7 @@ def determine_vcluster(auxcomp, auxorder, wo, ch):
         if wo == 'sov' or wo == 'ovs':
             if auxorder == 'before':
                 vcluster = True
-            elif wo == 'sov' or wo == 'ovs': #brauche ich das? Ausprobieren!
+            elif wo == 'sov' or wo == 'ovs':  # brauche ich das? Ausprobieren!
                 vcluster = False
         if wo == 'vos' or wo == 'svo':
             if auxorder == 'after':

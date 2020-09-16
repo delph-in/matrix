@@ -9,6 +9,7 @@ from gmcs.linglib.clausalcomps import extraposed_comps
 #   about basic word order, including information about adpositions
 #   and auxiliaries.
 
+
 def customize_word_order(mylang, ch, rules):
 
     wo = ch.get('word-order')
@@ -20,10 +21,10 @@ def customize_word_order(mylang, ch, rules):
     # Handle major constituent order first.  This function returns the hs and hc
     # values that other parts of this code will want.
 
-    linear_precedence = customize_major_constituent_order(wo, mylang, ch, rules)
+    linear_precedence = customize_major_constituent_order(
+        wo, mylang, ch, rules)
     hs = linear_precedence['hs']
     hc = linear_precedence['hc']
-
 
     # Head specifier rules
 
@@ -32,14 +33,13 @@ def customize_word_order(mylang, ch, rules):
     # ERB 2006-09-14 Then add information as necessary to handle adpositions,
     # free auxiliaries, etc.
 
-    #In general, we might also find word order sensitive to
-    #clause type (matrix v. subordinate) and dependent type.
+    # In general, we might also find word order sensitive to
+    # clause type (matrix v. subordinate) and dependent type.
 
-    orders = determine_consistent_order(wo,hc,ch)
-    specialize_word_order(hc,orders,mylang,ch,rules)
+    orders = determine_consistent_order(wo, hc, ch)
+    specialize_word_order(hc, orders, mylang, ch, rules)
 
-    customize_subord_word_order(mylang,ch,wo,rules)
-
+    customize_subord_word_order(mylang, ch, wo, rules)
 
 
 def customize_major_constituent_order(wo, mylang, ch, rules):
@@ -90,7 +90,6 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
         #           NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].',
         #            section='addenda')
 
-
     # Head-comp order
 
     if wo in ['sov', 'osv', 'ovs', 'v-final']:
@@ -111,12 +110,12 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
         hs = 'head-subj'
         mylang.add(hs + '-phrase := decl-head-subj-phrase & head-initial.')
 
-
     # Complements attach before subjects
     if wo in ['ovs', 'vos', 'sov', 'svo']:
         # If the language is OVS and extraposes clausal complements, we need subjects to attach low:
         if not ((wo == 'ovs' or wo == 'vos') and 'comps' in ch and extraposed_comps(ch)):
-            mylang.add(hs + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].')
+            mylang.add(
+                hs + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].')
 
     # Subjects attach before complements
     # ASF 2008-11-20 in order to allow for aux with vp-comp for VSO and OSV
@@ -129,7 +128,8 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
         if ch.get('has-aux') == 'yes' and auxcomp == 'vp':
             mylang.add(hs + '-phrase := [ HEAD-DTR.SYNSEM.LIGHT + ].')
         else:
-            mylang.add(hc + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].')
+            mylang.add(
+                hc + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].')
 
         # LLD 2016-03-24 to allow argument optionality with VSO and OSV languages,
         # we have to move COMPS < > from basic-head-opt-subj-phrase in matrix.tdl and
@@ -137,13 +137,17 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
         # ambiguity, we add SUBJ < > to head-opt-comp in these languages instead.
 
     if wo in ['vso', 'osv']:
-        mylang.add('basic-head-opt-comp-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].', section='addenda')
+        mylang.add(
+            'basic-head-opt-comp-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].', section='addenda')
         if ch.get('q-part-order') == 'second':
-            mylang.add('basic-head-opt-comp-phrase :+ same-periph-unary-phrase & same-ynq-unary-phrase & mc-na-headed-phrase.')
+            mylang.add(
+                'basic-head-opt-comp-phrase :+ same-periph-unary-phrase & same-ynq-unary-phrase & mc-na-headed-phrase.')
     else:
-        mylang.add('basic-head-opt-subj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].', section='addenda')
+        mylang.add(
+            'basic-head-opt-subj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].', section='addenda')
         if ch.get('q-part-order') == 'second':
-            mylang.add('basic-head-opt-subj-phrase :+ same-periph-unary-phrase & same-ynq-unary-phrase & mc-na-headed-phrase.')
+            mylang.add(
+                'basic-head-opt-subj-phrase :+ same-periph-unary-phrase & same-ynq-unary-phrase & mc-na-headed-phrase.')
 
     # ERB 2006-09-14 Free word order is a big fat special case:
 
@@ -179,7 +183,6 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
     # ERB 2006-09-14 This looks like a case for :+, even in this code,
     # since we're adding to something defined in matrix.tdl.
 
-
     if wo == 'free':
         mylang.add('synsem :+ [ ATTACH xmod ].',
                    'We can\'t just use the V-final and V-initial word\n' +
@@ -205,7 +208,7 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
         # ASF 2008-11-18, if free wo lgge has aux and aux precedes verb,
         # the enforced attachment must apply in the other direction.
 
-        if ch.get('has-aux') == 'yes' and  ch.get('aux-comp-order') == 'before':
+        if ch.get('has-aux') == 'yes' and ch.get('aux-comp-order') == 'before':
             mylang.add('head-final-head-nexus := head-final & \
                 [ SYNSEM.ATTACH lmod,\
                   HEAD-DTR.SYNSEM.ATTACH notmod-or-lmod ].')
@@ -227,7 +230,6 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
     if we do this.  Just for illustration, I\'m putting it\n\
     in for head-adjunct phrases here:',
                    section='addenda')
-
 
     # ASF (2008-11-03) Another big special case: v2
     #
@@ -261,17 +263,21 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
             [ SYNSEM.LOCAL.CAT.MC +, \
               HEAD-DTR.SYNSEM.LOCAL.CAT.MC na ].')
 
-
-        #rules shared among free and v2
+        # rules shared among free and v2
 
     if wo in ['free', 'v2']:
-        mylang.add('head-subj-phrase := decl-head-subj-phrase & head-initial-head-nexus.')
-        mylang.add('subj-head-phrase := decl-head-subj-phrase & head-final-head-nexus.')
-        mylang.add('head-comp-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus.')
-        mylang.add('comp-head-phrase := basic-head-1st-comp-phrase & head-final-head-nexus.')
-        mylang.add('head-comp-phrase-2 := basic-head-2nd-comp-phrase & head-initial-head-nexus.')
-        mylang.add('comp-head-phrase-2 := basic-head-2nd-comp-phrase & head-final-head-nexus.')
-
+        mylang.add(
+            'head-subj-phrase := decl-head-subj-phrase & head-initial-head-nexus.')
+        mylang.add(
+            'subj-head-phrase := decl-head-subj-phrase & head-final-head-nexus.')
+        mylang.add(
+            'head-comp-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus.')
+        mylang.add(
+            'comp-head-phrase := basic-head-1st-comp-phrase & head-final-head-nexus.')
+        mylang.add(
+            'head-comp-phrase-2 := basic-head-2nd-comp-phrase & head-initial-head-nexus.')
+        mylang.add(
+            'comp-head-phrase-2 := basic-head-2nd-comp-phrase & head-final-head-nexus.')
 
     # Add rule definitions for major constituent order.
 
@@ -290,7 +296,6 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
         rules.add(hs + ' :=  ' + hs + '-phrase.')
 
     return {'hs': hs, 'hc': hc}
-
 
 
 # ERB 2006-09-15 Subroutine for emitting additional information about
@@ -357,12 +362,11 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
 # easier to keep my undestanding of it if I break it out like this.
 
 
-
-def specialize_word_order(hc,orders, mylang, ch, rules):
+def specialize_word_order(hc, orders, mylang, ch, rules):
 
     adp = orders['adp']
     aux = orders['aux']
-    qpart_order = orders['qpart_order'] #TODO: verify _-delimited key
+    qpart_order = orders['qpart_order']  # TODO: verify _-delimited key
     auxcomp = ch.get('aux-comp')
     wo = ch.get('word-order')
     auxorder = ch.get('aux-comp-order')
@@ -393,8 +397,8 @@ def specialize_word_order(hc,orders, mylang, ch, rules):
     # adp or auxv or qpart, so far
 
     if hc == 'comp-head' and (adp == 'ov-prep' or adp == 'ov-both' or aux == 'ov-auxv' or qpart_order == 'ov-qs'):
-        mylang.add('head-comp-phrase := basic-head-1st-comp-phrase & head-initial.')
-
+        mylang.add(
+            'head-comp-phrase := basic-head-1st-comp-phrase & head-initial.')
 
     if hc == 'head-comp' and (adp == 'vo-post' or adp == 'ov-both' or aux == 'vo-vaux' or qpart_order == 'vo-sq'):
         mylang.add('comp-head-phrase := basic-head-1st-comp-phrase & head-final.')
@@ -404,9 +408,12 @@ def specialize_word_order(hc,orders, mylang, ch, rules):
     # OZ 2018-02-02 looks like there was already a HEADFINAL feature used similarly to INIT (see clausalcomps).
     # They should probably be harmonized.
     if 'both' in adp:
-        mylang.add('head-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEADFINAL - ].')
-        mylang.add('comp-head-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEADFINAL + ].')
-        mylang.add('cat :+ [ HEADFINAL  bool].', comment='HEADFINAL registers whether a word precedes or follows its complement',section='features')
+        mylang.add(
+            'head-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEADFINAL - ].')
+        mylang.add(
+            'comp-head-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEADFINAL + ].')
+        mylang.add('cat :+ [ HEADFINAL  bool].',
+                   comment='HEADFINAL registers whether a word precedes or follows its complement', section='features')
 
     # ASF 2008-11-18, special auxiliary rule that allows for auxiliaries
     # to combine with v's when aux-comp order is not harmonic
@@ -437,13 +444,17 @@ def specialize_word_order(hc,orders, mylang, ch, rules):
 
     if vcluster:
         if wo == 'vso' or wo == 'free' or wo == 'v-initial':
-            mylang.add('head-subj-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].')
+            mylang.add(
+                'head-subj-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].')
         if wo == 'osv' or wo == 'free' or wo == 'v-final':
-            mylang.add('subj-head-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].')
-        if (aux == 'vini-vc' and aux == 'vo-auxv' ) or wo == 'free':
-            mylang.add('head-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].')
+            mylang.add(
+                'subj-head-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].')
+        if (aux == 'vini-vc' and aux == 'vo-auxv') or wo == 'free':
+            mylang.add(
+                'head-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].')
         if (aux == 'vfin-vc' and aux == 'ov-vaux') or wo == 'free':
-            mylang.add('comp-head-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].')
+            mylang.add(
+                'comp-head-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].')
         if wo == 'free' or wo == 'vso' or wo == 'osv':
             if auxorder == 'before' and aux != 'ov-auxv':
                 mylang.add('aux-comp-phrase := basic-head-1st-comp-phrase & head-initial & \
@@ -456,8 +467,10 @@ def specialize_word_order(hc,orders, mylang, ch, rules):
                       NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD verb ].')
                 aux = 'caux'
             if wo == 'free':
-                mylang.add('head-comp-phrase-2 := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].')
-                mylang.add('comp-head-phrase-2 := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].')
+                mylang.add(
+                    'head-comp-phrase-2 := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].')
+                mylang.add(
+                    'comp-head-phrase-2 := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].')
 
     # Add rules to rules.tdl when necessary
 
@@ -482,7 +495,6 @@ def specialize_word_order(hc,orders, mylang, ch, rules):
     # We only need to do this is if the word order is not free, and we only
     # need to do it for one of head-comp or comp-head, depending on the order
     # of o and v.
-
 
     head_comp_is = []
     comp_head_is = []
@@ -509,7 +521,6 @@ def specialize_word_order(hc,orders, mylang, ch, rules):
     # to be done for both head-comp and comp-head in a free word order language
     # with inconsistent constraints on comp, adp, and aux.
 
-
     head_comp_is_not = []
     comp_head_is_not = []
 
@@ -528,9 +539,8 @@ def specialize_word_order(hc,orders, mylang, ch, rules):
         head_comp_is_not.append('adp')
     if (qpart_order == 'free-qs' or qpart_order == 'ov-qs') and not ('vo-vc' in compl_order or 'ov-vc' in compl_order):
         comp_head_is_not.append('comp')
-    if (qpart_order == 'free-sq'or qpart_order == 'vo-sq') and not ('ov-cv' in compl_order or 'vo-cv' in compl_order):
+    if (qpart_order == 'free-sq' or qpart_order == 'vo-sq') and not ('ov-cv' in compl_order or 'vo-cv' in compl_order):
         head_comp_is_not.append('comp')
-
 
     # ERB 2006-10-05 Add constraints to head-comp/comp-head.
 
@@ -549,14 +559,14 @@ def specialize_word_order(hc,orders, mylang, ch, rules):
     # ASF 2009-04-21: should also be restricted to being a verb, if only one
     # non-standard order is present.
 
-
     if len(head_comp_is) == 1:
         head = head_comp_is[0]
         if head == 'aux':
             mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD verb & [ AUX + ] ].',
                        'head-comp-phrase requires auxiliary heads.')
             if wo == 'v-final' and auxcomp == 'vp':
-                mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ ] > ].')
+                mylang.add(
+                    'head-comp-phrase := [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ ] > ].')
         else:
             mylang.add('head-comp-phrase := [ SYNSEM.LOCAL.CAT.HEAD ' + head + ' ].',
                        'head-comp-phrase requires things that are [ HEAD ' + head + ' ].')
@@ -567,7 +577,8 @@ def specialize_word_order(hc,orders, mylang, ch, rules):
             mylang.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.HEAD verb & [ AUX + ] ].',
                        'comp-head-phrase requires auxiliary heads.')
             if wo == 'v-initial' and auxcomp == 'vp':
-                mylang.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ ] > ].')
+                mylang.add(
+                    'comp-head-phrase := [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ ] > ].')
         else:
             mylang.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.HEAD ' + head + ' ].',
                        'comp-head-phrase requires things that are [ HEAD ' + head + ' ].')
@@ -580,7 +591,6 @@ def specialize_word_order(hc,orders, mylang, ch, rules):
 
     # +nvjrcdmo.
     # +nvjrpdmo.
-
 
     if len(head_comp_is) > 1:
         head = '+'
@@ -713,7 +723,6 @@ def specialize_word_order(hc,orders, mylang, ch, rules):
 #                'comp-head-phrase is only for auxiliaries.')
 
 
-
 # ERB 2006-09-15 Subroutine for handling NP rules.
 
 def customize_np_word_order(mylang, ch, rules):
@@ -731,16 +740,15 @@ def customize_np_word_order(mylang, ch, rules):
 
         rules.add('head-spec := head-spec-phrase.')
 
-
     # ERB 2006-09-14 I think that all languages have some form of
     # the Bare NP phrase.  Eventually there will be some choices about
     # this (given an appropriate module).  For now, use this stand in.
 
     mylang.add('bare-np-phrase := basic-bare-np-phrase &\
                  [ C-CONT.RELS.LIST < [ PRED \"exist_q_rel\" ] > ].',
-                    'Bare NP phrase.  Consider modifying the PRED value '
-                    'of the quantifier relation\nintroduced to match '
-                    'the semantic effect of bare NPs in your language.')
+               'Bare NP phrase.  Consider modifying the PRED value '
+               'of the quantifier relation\nintroduced to match '
+               'the semantic effect of bare NPs in your language.')
     rules.add('bare-np := bare-np-phrase.')
 
 # OZ 2017-11-13 A subroutine to create appropriate phrase structure rules
@@ -748,14 +756,17 @@ def customize_np_word_order(mylang, ch, rules):
 # with V-final subordinate order. If the subordinate word order is the same
 # as in the matrix clause, no work needs to be done here.
 
-def customize_subord_word_order(mylang,ch,wo,rules):
+
+def customize_subord_word_order(mylang, ch, wo, rules):
     if 'subord-word-order' in ch:
         if ch.get('subord-word-order') == 'vfinal' and wo == 'v2':
             mylang.add('subord-phrase := head-final &\n'
                        ' [ SYNSEM.LOCAL.CAT.MC #mc & - ,\n  HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].',
                        'Phrase structure rules for subordinate clauses')
-            mylang.add('subord-comp-head-phrase := subord-phrase & basic-head-1st-comp-phrase.')
-            mylang.add('subord-subj-head-phrase := subord-phrase & decl-head-subj-phrase.')
+            mylang.add(
+                'subord-comp-head-phrase := subord-phrase & basic-head-1st-comp-phrase.')
+            mylang.add(
+                'subord-subj-head-phrase := subord-phrase & decl-head-subj-phrase.')
 
             rules.add('subord-comp-head := subord-comp-head-phrase.')
             rules.add('subord-subj-head := subord-subj-head-phrase.')
@@ -775,9 +786,9 @@ def customize_subord_word_order(mylang,ch,wo,rules):
                 mylang.add('verb-cluster-phrase := head-final & '
                            '[ SYNSEM.LOCAL.CAT [ VC +, MC #mc & - ], '
                            'HEAD-DTR.SYNSEM.LOCAL.CAT [ VC +, MC #mc], '
-                           'NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].',merge=True,section='phrases')
+                           'NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].', merge=True, section='phrases')
                 mylang.add('vc-comp-head-phrase := verb-cluster-phrase & basic-head-1st-comp-phrase.',
-                           merge=True,section='phrases')
+                           merge=True, section='phrases')
                 rules.add('vc-comp-head := vc-comp-head-phrase.')
                 if ch['has-dets'] == 'yes':
                     mylang.add('basic-head-spec-phrase :+ [ SYNSEM.LOCAL.CAT.VC #vc,'
@@ -789,8 +800,7 @@ def customize_subord_word_order(mylang,ch,wo,rules):
 # the course of creating the basic word order rules.
 
 
-
-def determine_consistent_order(wo,hc,ch):
+def determine_consistent_order(wo, hc, ch):
 
     adp = 'easy'
     aux = 'easy'
@@ -801,22 +811,20 @@ def determine_consistent_order(wo,hc,ch):
     # Assuming that adpositions are consistent within a language (i.e., you won't
     # find subject postpositions and object prepositions).
 
-
     # ASF: bug fix, adporder is whatever adporder was defined last
     # which excludes the possibility to have both prepositions and adpositions
     adporders = []
-    for adp in ch.get('adp',[]):
+    for adp in ch.get('adp', []):
         adp_order = adp.get('order')
         if not adp_order in adporders:
             adporders.append(adp_order)
 
     # OZ: The above is for info-str marking and case marking adpositions.
     # The below is for "normal" adpositions (which have content relations).
-    for adp in ch.get('normadp',[]):
+    for adp in ch.get('normadp', []):
         adp_order = adp.get('order')
         if not adp_order in adporders:
             adporders.append(adp_order)
-
 
     # ERB 2006-10-05 Fixing bug in free word order case.
     adporder = ''
@@ -897,6 +905,5 @@ def determine_consistent_order(wo,hc,ch):
                     compl_order.append('vo-cv')
             # return what we learned
 
-    return {'adp': adp, 'aux': aux, 'qpart_order': qpart_order, 'compl_order':compl_order} #TODO: verify key
-
-
+    # TODO: verify key
+    return {'adp': adp, 'aux': aux, 'qpart_order': qpart_order, 'compl_order': compl_order}

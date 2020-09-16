@@ -30,18 +30,18 @@ from delphin.commands import (
 
 # COMMON FILES AND DIRECTORIES ################################################
 
-SCRIPT_DIR     = pathlib.Path(__file__).parent.resolve()
-RTEST_DIR      = SCRIPT_DIR / 'tests' / 'regression'
-CHOICES_DIR    = RTEST_DIR / 'choices'
-GRAMMARS_DIR   = RTEST_DIR / 'grammars'
-SKELETONS_DIR  = RTEST_DIR / 'skeletons'
+SCRIPT_DIR = pathlib.Path(__file__).parent.resolve()
+RTEST_DIR = SCRIPT_DIR / 'tests' / 'regression'
+CHOICES_DIR = RTEST_DIR / 'choices'
+GRAMMARS_DIR = RTEST_DIR / 'grammars'
+SKELETONS_DIR = RTEST_DIR / 'skeletons'
 RELATIONS_FILE = SKELETONS_DIR / 'Relations'
-CURRENT_DIR    = RTEST_DIR / 'home' / 'current'
-GOLD_DIR       = RTEST_DIR / 'home' / 'gold'
-TXT_SUITE_DIR  = RTEST_DIR / 'txt-suites'
-LOGS_DIR       = RTEST_DIR / 'logs'
-INDEX          = RTEST_DIR / 'regression-test-index'
-DAT_FILENAME   = 'grm.dat'
+CURRENT_DIR = RTEST_DIR / 'home' / 'current'
+GOLD_DIR = RTEST_DIR / 'home' / 'gold'
+TXT_SUITE_DIR = RTEST_DIR / 'txt-suites'
+LOGS_DIR = RTEST_DIR / 'logs'
+INDEX = RTEST_DIR / 'regression-test-index'
+DAT_FILENAME = 'grm.dat'
 
 # The following are mostly empty directories so make sure they exist (in case
 # someone deletes the entire directory to clear temporary files)
@@ -429,12 +429,12 @@ def _discover(args):
     index entry, txt-suite-path, choices-path, skeleton-path,
     current-path, gold-path).
     """
-    index     = _parse_index(args.index)
-    choices   = _list_files(CHOICES_DIR)
+    index = _parse_index(args.index)
+    choices = _list_files(CHOICES_DIR)
     txtsuites = _list_files(TXT_SUITE_DIR)
     skeletons = _list_testsuites(SKELETONS_DIR)
-    profiles  = _list_testsuites(CURRENT_DIR)
-    gold      = _list_testsuites(GOLD_DIR)
+    profiles = _list_testsuites(CURRENT_DIR)
+    gold = _list_testsuites(GOLD_DIR)
 
     all_names = sorted(
         (set(index)

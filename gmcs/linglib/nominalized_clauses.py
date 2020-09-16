@@ -134,7 +134,7 @@ LOW_LEXRULE_SUBJ_ID_COMPS_ID = 'low-nmz-subjid-compsid-lex-rule := low-nominaliz
                   DTR.SYNSEM.LOCAL.CAT.VAL [ COMPS #comps,\
                                                 SUBJ #subj ] ].'
 
-#A non-branching rule for nominalized clauses to form a NP, with nominalized_rel for the MRS.
+# A non-branching rule for nominalized clauses to form a NP, with nominalized_rel for the MRS.
 # For high nominalization.
 NMZ_CLAUSE = '-nominalized-clause-phrase := unary-phrase &\
                                     [ SYNSEM [ LOCAL [ CAT [ HEAD noun &\
@@ -166,7 +166,7 @@ NMZ_CLAUSE = '-nominalized-clause-phrase := unary-phrase &\
             			                LTOP #larg ],\
             			                COORD - ]]] > ].'
 
-#A non-branching rule for nominalized clauses to form a NP, semantically emtpy.
+# A non-branching rule for nominalized clauses to form a NP, semantically emtpy.
 NO_REL_NLZ_CLAUSE = '-no-rel-nominalized-clause-phrase := unary-phrase &\
   [ SYNSEM [ NON-LOCAL #nl,\
 		LOCAL [ CAT [ HEAD noun &\
@@ -191,7 +191,7 @@ NO_REL_NLZ_CLAUSE = '-no-rel-nominalized-clause-phrase := unary-phrase &\
 		            LTOP #ltop ],\
 		COORD - ] ] ] > ].'
 
-#A non-branching rule for nominalized clauses to form a NP, with nominalized_rel for the MRS.
+# A non-branching rule for nominalized clauses to form a NP, with nominalized_rel for the MRS.
 # For middle nominalization.
 SUBJ_NMZ_CLAUSE = '-nominalized-clause-phrase := unary-phrase &\
                           [ SYNSEM [ LOCAL [ CAT [ HEAD noun &\
@@ -223,6 +223,7 @@ SUBJ_NMZ_CLAUSE = '-nominalized-clause-phrase := unary-phrase &\
 			                LTOP #larg ],\
 			        COORD - ]]] > ].'
 
+
 def customize_nmcs(mylang, ch, rules, roots):
     """
     the main nominalized clause customization routine
@@ -247,15 +248,18 @@ def add_nmz_clause_phrases(level, mylang, nmzrel, rules):
     if level == 'mid':
         mylang.set_section('phrases')
         mylang.add(level + NMZ_CLAUSE)
-        rules.add(level + '-nominalized-clause := ' + level + '-nominalized-clause-phrase.')
+        rules.add(level + '-nominalized-clause := ' +
+                  level + '-nominalized-clause-phrase.')
     if level == 'high':
         mylang.set_section('phrases')
         if nmzrel == 'no':
             mylang.add(level + NO_REL_NLZ_CLAUSE)
-            rules.add(level + '-no-rel-nominalized-clause := ' + level + '-no-rel-nominalized-clause-phrase.')
+            rules.add(level + '-no-rel-nominalized-clause := ' +
+                      level + '-no-rel-nominalized-clause-phrase.')
         elif nmzrel == 'yes':
             mylang.add(level + SUBJ_NMZ_CLAUSE)
-            rules.add(level + '-nominalized-clause := ' + level + '-nominalized-clause-phrase.')
+            rules.add(level + '-nominalized-clause := ' +
+                      level + '-nominalized-clause-phrase.')
 
 
 def add_nmz_lexrules(ch, level, mylang):
@@ -296,8 +300,10 @@ def add_nonevent_subj_rules(ch, level, mylang, rules):
             typename2 = 'non-event-head-subj'
             rules.add(typename1 + ' := ' + typename1 + '-phrase.')
             rules.add(typename2 + ' := ' + typename2 + '-phrase.')
-            mylang.add(typename1 + '-phrase := head-final-head-nexus &' + NHS_SUPERTYPE + '&' + NHS_DEF)
-            mylang.add(typename2 + '-phrase := head-initial-head-nexus &' + NHS_SUPERTYPE + '&' + NHS_DEF)
+            mylang.add(typename1 + '-phrase := head-final-head-nexus &' +
+                       NHS_SUPERTYPE + '&' + NHS_DEF)
+            mylang.add(typename2 + '-phrase := head-initial-head-nexus &' +
+                       NHS_SUPERTYPE + '&' + NHS_DEF)
         else:
             if wo == 'osv' or wo == 'sov' or wo == 'svo' or wo == 'v-final':
                 typename = 'non-event-subj-head'
@@ -308,11 +314,14 @@ def add_nonevent_subj_rules(ch, level, mylang, rules):
                 rules.add(typename + ' := ' + typename + '-phrase.')
                 super = 'head-initial'
             if not typename:
-                raise Exception('Invalid combination of word order and nominalization choices.')
-            mylang.add(typename + '-phrase := ' + NHS_SUPERTYPE + '&' + super + '&' + NHS_DEF)
+                raise Exception(
+                    'Invalid combination of word order and nominalization choices.')
+            mylang.add(typename + '-phrase := ' + NHS_SUPERTYPE +
+                       '&' + super + '&' + NHS_DEF)
             if wo in ['svo', 'vos', 'sov'] \
                     or (wo == 'ovs' and len([cs for cs in ch.get('comps') if cs['clause-pos-extra']]) == 0):
-                mylang.add(typename + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].', merge=True)
+                mylang.add(
+                    typename + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].', merge=True)
 
 
 def case_change(arg, ch):
@@ -335,10 +344,12 @@ def case_change(arg, ch):
                 if f['name'] == 'case' and f['head'] == arg:
                     case_change = True
                     if has_nmz and case_change:
-                         return True
+                        return True
     return has_nmz and case_change
 
 # This assumes that the lrt is associated with nominalization.
+
+
 def case_change_lrt(arg, lrt):
     """
     @param arg: obj or subj
@@ -349,6 +360,7 @@ def case_change_lrt(arg, lrt):
         if f['name'] == 'case' and f['head'] == arg:
             return True
     return False
+
 
 def get_head_type(arg, lrt, ch):
     """
@@ -364,6 +376,7 @@ def get_head_type(arg, lrt, ch):
             head_type = ch.case_head(f['value'])
     return head_type
 
+
 def get_nmz_lexrules(ch):
     """
     Collect all lexical rule types from verbal
@@ -376,8 +389,9 @@ def get_nmz_lexrules(ch):
         for lrt in vpc['lrt']:
             for f in lrt['feat']:
                 if 'nominalization' in f['name']:
-                    rules.append((lrt,f['value']))
+                    rules.append((lrt, f['value']))
     return rules
+
 
 def update_lexical_rules(mylang, ch):
     """
@@ -386,42 +400,54 @@ def update_lexical_rules(mylang, ch):
     """
     path_subj = 'SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CAT.HEAD'
     path_comps = 'SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD'
-    for lrt,val in get_nmz_lexrules(ch):
+    for lrt, val in get_nmz_lexrules(ch):
         for ns in ch.get('ns'):
             if ns.get('name') == val:
                 level = ns.get('level')
                 if level == 'high':
-                    lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') + \
-                        [HIGH_OR_MID])
+                    lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') +
+                                                  [HIGH_OR_MID])
                 if level == 'mid':
                     if case_change_lrt('subj', lrt):
-                        lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') + [MID])
+                        lrt['supertypes'] = ', '.join(
+                            lrt['supertypes'].split(', ') + [MID])
                         mylang.set_section('lexrules')
                         subj_head_type = get_head_type('subj', lrt, ch)
-                        mylang.add(MID + ' := [ ' + path_subj + ' ' + subj_head_type + '] > ].')
+                        mylang.add(
+                            MID + ' := [ ' + path_subj + ' ' + subj_head_type + '] > ].')
                     else:
-                        lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') + [HIGH_OR_MID])
+                        lrt['supertypes'] = ', '.join(
+                            lrt['supertypes'].split(', ') + [HIGH_OR_MID])
                 if level == 'low':
                     if case_change_lrt('subj', lrt):
                         if case_change_lrt('obj', lrt):
-                            lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') + [LOW_NO_SUBJ_NO_COMPS])
+                            lrt['supertypes'] = ', '.join(
+                                lrt['supertypes'].split(', ') + [LOW_NO_SUBJ_NO_COMPS])
                             mylang.set_section('lexrules')
                             subj_head_type = get_head_type('subj', lrt, ch)
-                            mylang.add(LOW_NO_SUBJ_NO_COMPS + ' := [ ' + path_subj + ' ' + subj_head_type + '] > ].')
+                            mylang.add(
+                                LOW_NO_SUBJ_NO_COMPS + ' := [ ' + path_subj + ' ' + subj_head_type + '] > ].')
                             obj_head_type = get_head_type('obj', lrt, ch)
-                            mylang.add(LOW_NO_SUBJ_NO_COMPS + ' := [ ' + path_comps + ' ' + obj_head_type + '] > ].')
+                            mylang.add(
+                                LOW_NO_SUBJ_NO_COMPS + ' := [ ' + path_comps + ' ' + obj_head_type + '] > ].')
                         else:
-                            lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') + [LOW_NO_SUBJ_COMPS])
+                            lrt['supertypes'] = ', '.join(
+                                lrt['supertypes'].split(', ') + [LOW_NO_SUBJ_COMPS])
                             mylang.set_section('lexrules')
                             subj_head_type = get_head_type('subj', lrt, ch)
-                            mylang.add(LOW_NO_SUBJ_COMPS + ' := [ ' + path_subj + ' ' + subj_head_type + '] > ].')
+                            mylang.add(
+                                LOW_NO_SUBJ_COMPS + ' := [ ' + path_subj + ' ' + subj_head_type + '] > ].')
                     else:
                         if case_change_lrt('obj', lrt):
-                            lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') + [LOW_SUBJ_NO_COMPS])
+                            lrt['supertypes'] = ', '.join(
+                                lrt['supertypes'].split(', ') + [LOW_SUBJ_NO_COMPS])
                             obj_head_type = get_head_type('obj', lrt, ch)
-                            mylang.add(LOW_SUBJ_NO_COMPS + ' := [ ' + path_comps + ' ' + obj_head_type + '] > ].')
+                            mylang.add(
+                                LOW_SUBJ_NO_COMPS + ' := [ ' + path_comps + ' ' + obj_head_type + '] > ].')
                         else:
-                            lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') + [LOW_SUBJ_COMPS])
+                            lrt['supertypes'] = ', '.join(
+                                lrt['supertypes'].split(', ') + [LOW_SUBJ_COMPS])
+
 
 def add_nmz_feature(mylang, ch, roots):
     """
@@ -441,4 +467,3 @@ def add_nmz_feature(mylang, ch, roots):
     			    RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD.NMZ #nmz ].')
         mylang.add('unary-bottom-coord-rule :+ [ SYNSEM.LOCAL.CAT.HEAD.NMZ #nmz,\
            				    ARGS < [ SYNSEM.LOCAL.CAT.HEAD.NMZ #nmz ] > ].')
-
