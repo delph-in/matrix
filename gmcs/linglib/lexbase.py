@@ -13,7 +13,8 @@ from functools import reduce
 # OZ 2018-01-25 comps is not really a lexical type;
 # it is a complementation strategy that is defined by a complementizer type.
 # Ideally we would have complementizers as actual lexical items some day.
-ALL_LEX_TYPES = ('noun', 'verb', 'det', 'aux', 'adj', 'cop', 'comps', 'adv', 'normadp', 'qverb')
+ALL_LEX_TYPES = ('noun', 'verb', 'det', 'aux', 'adj',
+                 'cop', 'comps', 'adv', 'normadp', 'qverb')
 
 # types used for lexical rules (verb and aux are merged)
 # TJT 2014-08-15: adding "cop"
@@ -21,20 +22,21 @@ ALL_LEX_TYPES = ('noun', 'verb', 'det', 'aux', 'adj', 'cop', 'comps', 'adv', 'no
 LEXICAL_CATEGORIES = ('noun', 'verb', 'det', 'adj', 'cop', 'adv', 'qverb')
 
 # TJT 2014-09-03: Types not automatically added to mylanguage.tdl
-NON_ESSENTIAL_LEX_CATEGORIES = ('det', 'adj', 'cop', 'comps', 'normadp', 'adv', 'qverb')
+NON_ESSENTIAL_LEX_CATEGORIES = (
+    'det', 'adj', 'cop', 'comps', 'normadp', 'adv', 'qverb')
 
 # lexical_supertypes is a dictionary mapping the choices file
 # encodings to the actual lex-type identifiers of the supertypes.
-LEXICAL_SUPERTYPES = {'noun':'noun-lex',
-                      'verb':'verb-lex',
-                      'iverb':'intransitive-verb-lex',
-                      'tverb':'transitive-verb-lex',
-                      'mverb':'main-verb-lex',
-                      'cop':'cop-lex',
-                      'det':'determiner-lex',
-                      'aux':'aux-lex',
-                      'adj':'adj-lex',
-                      'comp':'comp-lex',
+LEXICAL_SUPERTYPES = {'noun': 'noun-lex',
+                      'verb': 'verb-lex',
+                      'iverb': 'intransitive-verb-lex',
+                      'tverb': 'transitive-verb-lex',
+                      'mverb': 'main-verb-lex',
+                      'cop': 'cop-lex',
+                      'det': 'determiner-lex',
+                      'aux': 'aux-lex',
+                      'adj': 'adj-lex',
+                      'comp': 'comp-lex',
                       'adv': 'adverb-lex',
                       'normadp': 'norm-adposition-lex',
                       'qverb': 'interrogative-verb-lex'}
@@ -103,10 +105,10 @@ LOC_ADV_ITEM = '''loc-adverb-lex-item := adverb-lex-item &
 MANNER_ADV_ITEM = '''manner-adverb-lex-item := adverb-lex-item & 
   [ SYNSEM.LOCAL.CONT.RELS.LIST.FIRST.PRED "manner_nonsp_rel" ].'''
 
-ADV =  '''adverb-lex := basic-non-wh-word-lex & adverb-lex-item & norm-zero-arg & 
+ADV = '''adverb-lex := basic-non-wh-word-lex & adverb-lex-item & norm-zero-arg & 
 [ SYNSEM.LOCAL.CONT.RELS.LIST < [ ], [ ], [ PRED "exist_q_rel" ] > ].'''
 
-WH_ADV =  '''wh-adverb-lex := basic-wh-word-lex & adverb-lex-item & zero-arg-que &
+WH_ADV = '''wh-adverb-lex := basic-wh-word-lex & adverb-lex-item & zero-arg-que &
 [ SYNSEM [ LOCAL.CONT.RELS.LIST < [ ], [ ARG0 #arg0 ], quant-relation & [ PRED "which_q_rel" ] >,
            NON-LOCAL.QUE.LIST < #arg0 > ] ].'''
 
@@ -179,15 +181,16 @@ ITRG_FOUR_REL = ''' := interrogative-verb-lex & basic-icons-lex-item & norm-hook
 ### CLASSES ###
 ###############
 
+
 class MorphotacticNode(HierarchyNode):
     def __init__(self, key, name=None, pc=None, parents=None, supertypes=None,
                  instance=False):
         HierarchyNode.__init__(self, key, parents=parents)
         self.name = name or ''
         self.pc = pc
-        self.constraints = {'req-fwd':{}, 'req-bkwd':{}, 'forbid':{}}
+        self.constraints = {'req-fwd': {}, 'req-bkwd': {}, 'forbid': {}}
         self.disjunctive_flag_sets = {}
-        self.flags = {'in':{},'out':{}}
+        self.flags = {'in': {}, 'out': {}}
         self.supertypes = supertypes or set()
         self.identifier_suffix = ''
         # tdl order is used for sorting the rules as the occur in the tdl
@@ -256,14 +259,16 @@ class MorphotacticNode(HierarchyNode):
                 redundancies[c].update(common_items)
         return common_items
 
+
 class PositionClass(MorphotacticNode):
     """
     """
+
     def __init__(self, key, name, parents=None, order=None,
                  identifier_suffix=None, lex_rule=True):
         MorphotacticNode.__init__(self, key, name, parents=parents)
         self.l_hierarchy = Hierarchy()
-        self.nodes = self.l_hierarchy.nodes # for convenience
+        self.nodes = self.l_hierarchy.nodes  # for convenience
         self.order = order
         self.pc = self
         self.identifier_suffix = identifier_suffix or 'lex-rule-super'
@@ -331,10 +336,10 @@ class PositionClass(MorphotacticNode):
 
     def has_possessive(self):
         for lrt in self.nodes.values():
-            poss_pron=False
+            poss_pron = False
             for feature in lrt.features:
                 if 'poss-pron' in feature:
-                    poss_pron=True
+                    poss_pron = True
             if lrt.possessive != None or poss_pron:
                 return True
         return False
@@ -342,14 +347,15 @@ class PositionClass(MorphotacticNode):
     def has_incorporated_stems(self):
         # 2014-08-21 TJT: Keep track of whether a PositionClass has
         # Incorporated Stem Lexical Rule Instances
-        if self._has_is == None: # Only do this once
+        if self._has_is == None:  # Only do this once
             for lrt in self.nodes.values():
                 for lri in lrt.lris:
                     if lri.pred:
-                        self._has_is = True # Keep track of result
+                        self._has_is = True  # Keep track of result
                         return self._has_is
             self._has_is = False
         return self._has_is
+
 
 class LexicalType(MorphotacticNode):
     def __init__(self, key, name, parents=None, entry=False):
@@ -364,10 +370,12 @@ class LexicalType(MorphotacticNode):
     def __repr__(self):
         return 'LexicalType(' + self.key + ')'
 
+
 class LexicalRuleType(MorphotacticNode):
     """
     A simple class for managing the properties of lexical rule types.
     """
+
     def __init__(self, key, name, pc=None, parents=None, supertypes=None):
         MorphotacticNode.__init__(self, key, name, pc, parents, supertypes)
         self.supertypes = supertypes or set()
@@ -380,7 +388,6 @@ class LexicalRuleType(MorphotacticNode):
         # EKN 2017-12-15 Possessor rule pseudofeatures are properties of LRT
         self.possessive = None
         self.poss_strat_num = None
-
 
     def __repr__(self):
         return 'LexicalRuleType(' + self.key + ')'
@@ -403,6 +410,8 @@ class LexicalRuleType(MorphotacticNode):
 
 # TJT 2014-08-21: Class for keeping Lexical Rule Instances and their
 # predicates together
+
+
 class LexicalRuleInstance:
     """
     Store LRI name and pred together

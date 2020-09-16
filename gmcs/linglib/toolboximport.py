@@ -28,7 +28,8 @@ from gmcs.deffile import MatrixDefFile
 # imported to each lexical class and the number of entries
 # that matched no lexical classes.
 
-def make_pred(tbentry,stemtag,glosstag,predchoice,lextype):
+
+def make_pred(tbentry, stemtag, glosstag, predchoice, lextype):
     '''
     Construct pred value from toolbox entry according
     to the predchoice specified.
@@ -61,8 +62,8 @@ def make_pred(tbentry,stemtag,glosstag,predchoice,lextype):
     return pred
 
 
-def process_tb_entry(tbentry,lexclasses,stemtag,
-                     bistemtag,glosstag,predchoice,choices,affixes,
+def process_tb_entry(tbentry, lexclasses, stemtag,
+                     bistemtag, glosstag, predchoice, choices, affixes,
                      formdata, n):
     '''
     Figure out which lexclass this entry should belong
@@ -86,7 +87,7 @@ def process_tb_entry(tbentry,lexclasses,stemtag,
             #            else:
             #                n = 1
             prefix = 'imported-entry' + str(n)
-            pred = make_pred(tbentry,stemtag,glosstag,predchoice,lextype)
+            pred = make_pred(tbentry, stemtag, glosstag, predchoice, lextype)
             if stemtag in list(tbentry.keys()):
                 #                choices[prefix + '_orth'] = tbentry[stemtag]
                 formdata[prefix + '_orth'].value = tbentry[stemtag]
@@ -105,15 +106,15 @@ def process_tb_entry(tbentry,lexclasses,stemtag,
     return affixes
 
 
-def get_affix_from_entry(tbentry,idtag,stemtag,affixes,affix_strings):
+def get_affix_from_entry(tbentry, idtag, stemtag, affixes, affix_strings):
     ''' 
     Given a toolbox entry see if it is an entry for a bistem
     affix, If so, find the orthography of the affix and store it in
     the affix_strings dictionary.
     '''
     if idtag not in list(tbentry.keys()):
-        #print tbentry
-        #print "Error: tbentry without tbid"
+        # print tbentry
+        # print "Error: tbentry without tbid"
         tbid = 0
     else:
         tbid = tbentry[idtag]
@@ -124,17 +125,20 @@ def get_affix_from_entry(tbentry,idtag,stemtag,affixes,affix_strings):
             break
     return [affixes, affix_strings]
 
+
 def insert_affixes(form_data, affix_strings, number):
     '''
     Given a dictionary mapping affix ids to affix forms,
     update the imported-entry choices to replace the orthography
     of bistem affixes.
     '''
-    for entry in range(1,number):
+    for entry in range(1, number):
         affix_id = form_data['imported-entry'+str(entry)+'_aff'].value
         #        full_key = entry.full_key
         if affix_id in list(affix_strings.keys()):
-            form_data['imported-entry'+str(entry)+'_aff'].value = affix_strings[affix_id]
+            form_data['imported-entry' +
+                      str(entry)+'_aff'].value = affix_strings[affix_id]
+
 
 def import_toolbox_lexicon(choicesfile):
     '''
@@ -152,9 +156,9 @@ def import_toolbox_lexicon(choicesfile):
     choices = ChoicesFile(choicesfile)
     # Counters
     tbentries = 0
-    form_data_entries = 1;
+    form_data_entries = 1
 
-    form_data = FormData();
+    form_data = FormData()
     form_data['section'].value = 'ToolboxLexicon'
 
     for config in choices['toolboximportconfig']:
@@ -165,23 +169,23 @@ def import_toolbox_lexicon(choicesfile):
         predchoice = config.get('tbpredvalues')
         lexclasses = config.get('importclass')
         starttag = config.get('starttag')
-        #FIXME: Surely need a path here.  Also, the current
-        #questionnaire allows multiple Toolbox files, need
-        #to iterate trhough them.
+        # FIXME: Surely need a path here.  Also, the current
+        # questionnaire allows multiple Toolbox files, need
+        # to iterate trhough them.
 
         for tbfile in config.get('toolboxfile'):
             if not tbfile.get('tbfilename'):
                 continue
             tb_lines = None
-            tblex = open(tbfile.get('tbfilename'),'r')
+            tblex = open(tbfile.get('tbfilename'), 'r')
             tbentry = {}
             # List of values of the bistemtag field.
             affixes = []
 
-            #Go through lexicon file only once, as it could
-            #be quite large.  For each entry in the lexicon,
-            #iterate through the lexclasses to see if it matches
-            #any of them, and if so, import.
+            # Go through lexicon file only once, as it could
+            # be quite large.  For each entry in the lexicon,
+            # iterate through the lexclasses to see if it matches
+            # any of them, and if so, import.
 
             for line in tblex.readlines():
                 # Assume that the Toolbox tags may occur in any order
@@ -192,7 +196,8 @@ def import_toolbox_lexicon(choicesfile):
                 words = line.split()
                 if words:
                     if words[0] == starttag:
-                        affixes = process_tb_entry(tbentry,lexclasses,stemtag,bistemtag,glosstag,predchoice,choices,affixes,form_data,form_data_entries)
+                        affixes = process_tb_entry(
+                            tbentry, lexclasses, stemtag, bistemtag, glosstag, predchoice, choices, affixes, form_data, form_data_entries)
                         if 'imported-entry'+str(form_data_entries)+'_orth' in form_data:
                             form_data_entries += 1
                         tbentry = {}
@@ -209,24 +214,24 @@ def import_toolbox_lexicon(choicesfile):
             affixids = True
             if affixes:
                 for affix in affixes:
-                    if not re.search(r'^[0-9]+$',affix):
+                    if not re.search(r'^[0-9]+$', affix):
                         affixids = False
 
             if affixids and affixes:
-                tblex = open(tbfile.get('tbfilename'),'r')
+                tblex = open(tbfile.get('tbfilename'), 'r')
                 affix_strings = {}
                 for line in tblex.readlines():
                     words = line.rstrip().split()
                     if words:
                         if words[0] == starttag and affixes:
-                            [affixes, affix_strings] = get_affix_from_entry(tbentry,idtag,stemtag,affixes,affix_strings)
+                            [affixes, affix_strings] = get_affix_from_entry(
+                                tbentry, idtag, stemtag, affixes, affix_strings)
                             tbentry = {}
                         tbentry[words[0]] = ' '.join(words[1:])
                 insert_affixes(form_data, affix_strings, form_data_entries)
-                # FIXME:  Put a break statement here so that we 
+                # FIXME:  Put a break statement here so that we
                 # don't keep reading the file if we've found all the
                 # affixes (i.e., if affixes == []).
-
 
     # Print new choices file by concatenating input choices
     # with output choices.  FIXME: What about section=?
@@ -237,6 +242,7 @@ def import_toolbox_lexicon(choicesfile):
 #    fout.write(str(choices))
 #    fout.write('Toolbox entries processed: ' + str(tbentries))
 #    fout.write('Total entries imported: ' + str(choices['imported-entry'].next_iter_num() - 1))
+
 
 def integrate_imported_entries(choices):
     '''
@@ -277,4 +283,3 @@ def integrate_imported_entries(choices):
     # and then come back some time later).  Also, the printed version
     # should probably include the section = lines, right?
     choices.delete('imported-entry')
-
