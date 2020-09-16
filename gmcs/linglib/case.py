@@ -416,7 +416,7 @@ def customize_verb_case(mylang, ch):
                 if a_case and o_case:
                     if not clausal:
                         t_type = dir_inv + a_case + '-' + \
-                                   o_case + '-transitive-verb-lex'
+                            o_case + '-transitive-verb-lex'
                     else:
                         t_type = clausal + a_case + '-' + o_case + '-verb-lex'
                 else:
@@ -519,14 +519,17 @@ def customize_verb_case(mylang, ch):
           [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CAT.HEAD.CASE-MARKED + ] > ].'
                     mylang.add(typedef)
 
+
 '''
 OZ 2020-06-09
 This is a reduced duplicate of the customize_verb_case() function; I did 
 not want to make it any more long or complex.
 '''
+
+
 def get_verb_case(ch):
     cases = case_names(ch)
-    mycases = {'tran':None,'intran':None}
+    mycases = {'tran': None, 'intran': None}
     for p in ch.patterns():
         if not ('(case unspecified)' in p[1]):
             rule_pattern = p[2]
@@ -544,7 +547,8 @@ def get_verb_case(ch):
                         o_case = canon_to_abbr(c[1], cases)
                         a_head = ch.case_head(c[0])
                         o_head = ch.case_head(c[1])
-                    mycases['tran']={'A':a_case,'AH':a_head,'O':o_case,'OH':o_head}
+                    mycases['tran'] = {'A': a_case,
+                                       'AH': a_head, 'O': o_case, 'OH': o_head}
 
                 else:  # intransitive
                     if c[0] == 'intrans':
@@ -553,12 +557,13 @@ def get_verb_case(ch):
                     else:
                         s_case = canon_to_abbr(c[0], cases)
                         s_head = ch.case_head(c[0])
-                    mycases['intran'] = {'S':s_case,'SH':s_head}
+                    mycases['intran'] = {'S': s_case, 'SH': s_head}
     return mycases
 
 ##############
 # VALIDATION #
 ##############
+
 
 def validate(choices, vr):
     cm = choices.get('case-marking')

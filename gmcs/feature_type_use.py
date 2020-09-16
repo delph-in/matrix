@@ -16,5 +16,5 @@ feature_stats = {}
 
 # The below is just something I started, but it is conflated with just feature use
 # (whether something was used or not) which is not likely to be necessary?
-USED_FEATURES = {'INIT':False}
-USED_TYPES = {'qdet':False,'qpro':False,'qadv':False,'qverb':False}
+USED_FEATURES = {'INIT': False}
+USED_TYPES = {'qdet': False, 'qpro': False, 'qadv': False, 'qverb': False}

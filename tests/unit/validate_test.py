@@ -4,10 +4,11 @@ import unittest
 from gmcs.choices import ChoicesFile
 from gmcs.validate import validate
 
+
 class TestValidate(unittest.TestCase):
 
-    ## Methods for asserting the presence of errors and warnings when
-    ## a ChoicesFile is put through validation
+    # Methods for asserting the presence of errors and warnings when
+    # a ChoicesFile is put through validation
 
     def assertErrorsOrWarnings(self, c, variables, errors):
         vr = validate(c)
@@ -17,24 +18,19 @@ class TestValidate(unittest.TestCase):
             else:
                 self.assertTrue(v in vr.warnings)
 
-
     def assertWarning(self, c, warning):
         self.assertErrorsOrWarnings(c, [warning], False)
-
 
     def assertWarnings(self, c, warnings):
         self.assertErrorsOrWarnings(c, warnings, False)
 
-
     def assertError(self, c, error):
         self.assertErrorsOrWarnings(c, [error], True)
-
 
     def assertErrors(self, c, errors):
         self.assertErrorsOrWarnings(c, errors, True)
 
-
-    ## Tests
+    # Tests
 
     def test_names(self):
         # Pairs of [variable prefix, value suffix].  Appending 'name' to the
@@ -73,11 +69,10 @@ class TestValidate(unittest.TestCase):
                 c = ChoicesFile()
                 c[name] = 'head-comp-phrase'
                 self.assertError(c, name)
-                
 
             # next try colliding pairs of names
             for v2 in [x for x in variables if x[0] != v1[0]]:
-                if v1[1] == v2[1]: # won't collide with different suffixes
+                if v1[1] == v2[1]:  # won't collide with different suffixes
                     name1 = v1[0] + 'name'
                     name2 = v2[0] + 'name'
 
@@ -91,7 +86,6 @@ class TestValidate(unittest.TestCase):
                     c[name1] = value.lower()
                     c[name2] = value.upper()
                     self.assertErrors(c, [name1, name2])
-
 
     def test_general(self):
         c = ChoicesFile()
@@ -118,7 +112,6 @@ class TestValidate(unittest.TestCase):
             c['language'] = 'x' + bad_ch + 'x'
             self.assertError(c, 'language')
 
-
     def test_case(self):
         c = ChoicesFile()
 
@@ -128,11 +121,13 @@ class TestValidate(unittest.TestCase):
         # for each case pattern, make sure case names are required
         for cm in ['nom-acc', 'split-n', 'split-v']:
             c['case-marking'] = cm
-            self.assertErrors(c, [cm + '-nom-case-name', cm + '-acc-case-name'])
+            self.assertErrors(
+                c, [cm + '-nom-case-name', cm + '-acc-case-name'])
 
         for cm in ['erg-abs', 'split-n', 'split-v']:
             c['case-marking'] = cm
-            self.assertErrors(c, [cm + '-erg-case-name', cm + '-abs-case-name'])
+            self.assertErrors(
+                c, [cm + '-erg-case-name', cm + '-abs-case-name'])
 
         for cm in ['tripartite', 'split-s', 'fluid-s', 'focus']:
             c['case-marking'] = cm
@@ -155,7 +150,6 @@ class TestValidate(unittest.TestCase):
         c['scale1_feat1_name'] = 'dummy'
         self.assertError(c, 'scale-equal')
 
-
     def test_person(self):
         c = ChoicesFile()
 
@@ -173,7 +167,6 @@ class TestValidate(unittest.TestCase):
             c['person'] = person
             self.assertError(c, 'first-person')
 
-
     def test_number(self):
         c = ChoicesFile()
 
@@ -181,14 +174,12 @@ class TestValidate(unittest.TestCase):
         c['number1_supertype1_name'] = 'dummy'
         self.assertError(c, 'number1_name')
 
-
     def test_gender(self):
         c = ChoicesFile()
 
         # a gender defined without a name
         c['gender1_supertype1_name'] = 'dummy'
         self.assertError(c, 'gender1_name')
-
 
     def test_other_features(self):
         # a feature without a name, a type, or a name for its value
@@ -203,9 +194,8 @@ class TestValidate(unittest.TestCase):
         self.assertErrors(c, ['feature1_name', 'feature1_type',
                               'feature1_value1_supertype1_name'])
 
-
     def test_word_order(self):
-        ## Determiners
+        # Determiners
         # no answer for word order or determiners
         c = ChoicesFile()
         self.assertErrors(c, ['word-order', 'has-dets'])
@@ -224,7 +214,7 @@ class TestValidate(unittest.TestCase):
         c['det1_name'] = 'dummy'
         self.assertError(c, 'has-dets')
 
-        ## Auxiliaries
+        # Auxiliaries
         # no answer
         c = ChoicesFile()
         self.assertError(c, 'has-aux')
@@ -246,7 +236,7 @@ class TestValidate(unittest.TestCase):
         c['word-order'] = 'free'
         self.assertError(c, 'multiple-aux')
 
-        ## Word Order
+        # Word Order
         c = ChoicesFile()
         c['word-order'] = 'vso'
         c['aux-comp'] = 'vp'
@@ -258,7 +248,6 @@ class TestValidate(unittest.TestCase):
         c['aux-comp'] = 'vp'
         c['aux-comp-order'] = 'before'
         self.assertError(c, 'aux-comp')
-
 
     def test_sentential_negation(self):
         c = ChoicesFile()
@@ -274,7 +263,6 @@ class TestValidate(unittest.TestCase):
         c['comp-neg'] = 'on'
         c['comp-neg-head'] = 'aux'
         self.assertError(c, 'comp-neg-head')
-
 
     def test_coordination(self):
         # missing answers
@@ -298,7 +286,6 @@ class TestValidate(unittest.TestCase):
             c['cs1_' + phrase] = 'on'
             self.assertError(c, 'cs1_mark')
 
-
     def test_yesno_questions(self):
         # missing answers about particles
         c = ChoicesFile()
@@ -319,10 +306,9 @@ class TestValidate(unittest.TestCase):
         c['q-infl'] = 'on'
         self.assertError(c, 'q-infl')
 
-
     def test_tanda(self):
         tenses = ['past', 'present', 'future', 'nonpast', 'nonfuture']
-        ## Tense
+        # Tense
         # subtypes defined for incorrect supertype
         for st in tenses:
             for t in [x for x in tenses if x != st]:
@@ -344,17 +330,17 @@ class TestValidate(unittest.TestCase):
         c['tense1_dummy'] = 'dummy'
         self.assertErrors(c, ['tense1_name', 'tense1_supertype1_name'])
 
-        ## Aspect
+        # Aspect
         c = ChoicesFile()
         c['aspect1_dummy'] = 'dummy'
         self.assertErrors(c, ['aspect1_name', 'aspect1_supertype1_name'])
 
-        ## Situation
+        # Situation
         c = ChoicesFile()
         c['situation1_dummy'] = 'dummy'
         self.assertErrors(c, ['situation1_name', 'situation1_supertype1_name'])
 
-        ## Form
+        # Form
         c = ChoicesFile()
         c['has-aux'] = 'yes'
         c['form-fin-nf'] = ''
@@ -365,7 +351,6 @@ class TestValidate(unittest.TestCase):
         c['form-subtype1_name'] = 'finite'
         self.assertError(c, 'form-subtype')
 
-
     def test_lexicon(self):
         # not enough nouns and verbs
         c = ChoicesFile()
@@ -373,7 +358,7 @@ class TestValidate(unittest.TestCase):
                                 'verb1_valence',
                                 'verb2_valence'])
 
-        ## Nouns
+        # Nouns
         # noun with no answer about determiners, and a stem with no orth or pred
         c['noun1_dummy'] = 'dummy'
         c['noun1_stem1_dummy'] = 'dummy'
@@ -386,7 +371,7 @@ class TestValidate(unittest.TestCase):
         c['has-dets'] = 'no'
         self.assertErrors(c, ['has-dets', 'noun1_det'])
 
-        ## Verbs
+        # Verbs
         c = ChoicesFile()
         c['verb1_dummy'] = 'dummy'
         c['verb1_stem1_dummy'] = 'dummy'
@@ -394,7 +379,7 @@ class TestValidate(unittest.TestCase):
                               'verb1_stem1_orth',
                               'verb1_stem1_pred'])
 
-        ## Auxiliaries
+        # Auxiliaries
         c = ChoicesFile()
         c['has-aux'] = 'yes'
         self.assertError(c, 'auxlabel')
@@ -416,17 +401,17 @@ class TestValidate(unittest.TestCase):
         c['aux1_stem1_pred'] = 'dummy'
         self.assertError(c, 'aux1_sem')
 
-        ## Adpositions
+        # Adpositions
         c = ChoicesFile()
         c['adp1_dummy'] = 'dummy'
         self.assertWarning(c, 'adp1_feat1_name')
 
-        ## Adpositions
+        # Adpositions
         c = ChoicesFile()
         c['adp1_dummy'] = 'dummy'
         self.assertWarning(c, 'adp1_feat1_name')
 
-        ## Features
+        # Features
         for lt in ['noun', 'verb', 'aux', 'det', 'adp']:
             c = ChoicesFile()
             c[lt + '1_feat1_dummy'] = 'dummy'
@@ -444,8 +429,8 @@ class TestValidate(unittest.TestCase):
                 self.assertError(c, lt + '1_feat1_head')
 
                 # perhaps this should be refactored for morphotactics
-                ### Inflectional Slots
-                #for pcprefix in ['noun', 'verb', 'det']:
+                # Inflectional Slots
+                # for pcprefix in ['noun', 'verb', 'det']:
                 #  c = ChoicesFile()
                 #  c[pcprefix + '-pc1_dummy'] = 'dummy'
                 #  self.assertErrors(c, [pcprefix + '-pc1_order',
@@ -460,7 +445,6 @@ class TestValidate(unittest.TestCase):
                 #  if pcprefix == 'verb':
                 #    self.assertError(c, pcprefix + '-pc1_lrt1_feat1_head')
 
-
     def test_features(self):
         # try a bad feature and value everywhere
         for p in ['scale',
@@ -471,7 +455,6 @@ class TestValidate(unittest.TestCase):
             c[p + '1_feat1_name'] = 'dummy'
             c[p + '1_feat1_value'] = 'dummy'
             self.assertErrors(c, [p + '1_feat1_name', p + '1_feat1_value'])
-
 
     def test_argopt(self):
         c = ChoicesFile()

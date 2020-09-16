@@ -5,6 +5,7 @@ from gmcs.lib import TDLHierarchy
 #   Create the type definitions associated with the user's choices
 #   about person and number.
 
+
 def init_person_hierarchy(ch, hierarchies):
     hier = TDLHierarchy('person')
 
@@ -37,6 +38,7 @@ def init_pernum_hierarchy(ch, hierarchies):
     if not hier.is_empty():
         hierarchies[hier.name] = hier
 
+
 def customize_person_and_number(mylang, hierarchies):
     if 'pernum' in hierarchies:
         mylang.add('png :+ [ PERNUM pernum ].', section='addenda')
@@ -48,7 +50,6 @@ def customize_person_and_number(mylang, hierarchies):
         if 'number' in hierarchies:
             mylang.add('png :+ [ NUM number ].', section='addenda')
             hierarchies['number'].save(mylang)
-
 
 
 ######################################################################
@@ -79,9 +80,9 @@ def customize_gender(mylang, hierarchies):
 #   about other features.
 
 def init_other_hierarchies(ch, mylang, hierarchies):
-    for feature in ch.get('feature',[]):
-        feat = feature.get('name','')
-        type = feature.get('type','')
+    for feature in ch.get('feature', []):
+        feat = feature.get('name', '')
+        type = feature.get('type', '')
         hier = TDLHierarchy(feat, type)
 
         if feature.get('new', '') == 'yes':
@@ -100,6 +101,7 @@ def init_other_hierarchies(ch, mylang, hierarchies):
 
         if not hier.is_empty():
             hierarchies[hier.name] = hier
+
 
 def customize_other_features(mylang, hierarchies):
     for name in hierarchies:
@@ -135,12 +137,15 @@ def customize_agreement_features(mylang, hierarchies):
     customize_gender(mylang, hierarchies)
     customize_other_features(mylang, hierarchies)
 
+
 def make_vpm_order(name, h, o):
-    if name not in list(h.keys()): return []
+    if name not in list(h.keys()):
+        return []
     for n in h[name]:
         make_vpm_order(n, h, o)
     o.append(name)
     return o
+
 
 def create_vpm_person(ch, vpm):
     literal = ''
@@ -157,6 +162,7 @@ def create_vpm_person(ch, vpm):
         #vpm.add_literal('PNG.PER : PNG.PER\n' + literal + '  * <> !')
     else:
         vpm.add_literal('PNG.PER : PNG.PER\n  * <> *')
+
 
 def create_vpm_number(ch, vpm):
     literal = ''
@@ -191,7 +197,8 @@ def create_vpm_pernum(ch, vpm):
 
     pernum_key = []
     for pn in ch.pernums():
-        if pn[0] not in pernum_key: pernum_key.append(pn[0])
+        if pn[0] not in pernum_key:
+            pernum_key.append(pn[0])
     pernum_key.reverse()
 
     for pn in pernum_key:
@@ -214,6 +221,7 @@ def create_vpm_pernum(ch, vpm):
         vpm.add_literal('PNG.PERNUM : PNG.PERNUM\n  * <> *')
         #vpm.add_literal('PNG.PERNUM : PNG.PER PNG.NUM\n  * <> * *')
 
+
 def create_vpm_gender(ch, vpm):
     literal = ''
     gender = []
@@ -230,15 +238,17 @@ def create_vpm_gender(ch, vpm):
     else:
         vpm.add_literal('PNG.GEND : PNG.GEND\n  * <> *')
 
+
 def create_vpm_others(ch, vpm):
 
-    for feature in ch.get('feature',[]):
-        type = feature.get('type','')
-        if type != 'index': continue
+    for feature in ch.get('feature', []):
+        type = feature.get('type', '')
+        if type != 'index':
+            continue
         literal = ''
         _hier = {}
 
-        name = feature.get('name','').upper()
+        name = feature.get('name', '').upper()
         for value in feature.get('value', []):
             val = value.get('name')
             if val not in list(_hier.keys()):
@@ -252,12 +262,15 @@ def create_vpm_others(ch, vpm):
 
         order = make_vpm_order(name.lower(), _hier, [])
         for val in order:
-            if val == name.lower(): continue
+            if val == name.lower():
+                continue
             literal += '  ' + val + ' <> ' + val + '\n'
 
         if literal != '':
-            vpm.add_literal('PNG.' + name + ' : ' + 'PNG.' + name + '\n' + literal + '  * <> *')
+            vpm.add_literal('PNG.' + name + ' : ' + 'PNG.' +
+                            name + '\n' + literal + '  * <> *')
             #vpm.add_literal(name + ' : ' + name + '\n' + literal + '  * <> !')
+
 
 def create_vpm_blocks(ch, vpm, hierarchies):
     create_vpm_others(ch, vpm)
@@ -270,4 +283,3 @@ def create_vpm_blocks(ch, vpm, hierarchies):
             create_vpm_person(ch, vpm)
             create_vpm_number(ch, vpm)
         create_vpm_gender(ch, vpm)
-
