@@ -403,27 +403,6 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                 tdlfile.add(
                     type_name + ':= [ ARGS.FIRST.SYNSEM.LOCAL.CAT.HEAD.NEGATED - ].', merge=True)
 
-        elif (n == 'question' and v[0] == 'no'):
-            tdlfile.add(type_name + ':= \
-                     [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF prop ].',
-                        merge=True)
-
-        elif (n == 'question' and v[0] == 'polar'):
-            tdlfile.add(type_name + ':= \
-                     [ SYNSEM [ LOCAL.CONT.HOOK.INDEX.SF ques,'
-                                    'NON-LOCAL.QUE.LIST < > ] ].',
-                        merge=True)
-        elif (n == 'question' and v[0] == 'wh'):
-            tdlfile.add(type_name + ':= \
-                     [ SYNSEM [ LOCAL.CONT.HOOK.INDEX.SF ques,'
-                                    'NON-LOCAL.QUE.LIST cons ] ].',
-                        merge=True)
-        elif (n == 'question' and v[0] == 'both'):
-            # ERB 2009-07-01 Adding in semantics for question affixes
-            tdlfile.add(type_name + ':= \
-                     [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques ].',
-                        merge=True)
-
         # Specifiying OPT- on each user defined type instead of creating a supertype because
         # It the supertype would need to inherit from transitive-verb-lex and the code already puts
         # transitive-verb-lex as a supertype of user-defined typ thus causing an inheritance issue.
