@@ -12,14 +12,14 @@ def init_tense_hierarchy(ch, hierarchies):
     if tdefn:
         if tdefn == 'choose':
             ppflist = []
-            for ten in ('nonfuture', 'nonpast', 'past', 'present', 'future' ):
+            for ten in ('nonfuture', 'nonpast', 'past', 'present', 'future'):
 
                 if ten in ch:
                     if ten not in ppflist:
                         hier.add(ten, 'tense')
 
-                    for subtype in ch.get(ten + '-subtype',[]):
-                        st = subtype.get('name','')
+                    for subtype in ch.get(ten + '-subtype', []):
+                        st = subtype.get('name', '')
                         hier.add(st, ten)
 
                     if ten == 'nonfuture':
@@ -36,10 +36,10 @@ def init_tense_hierarchy(ch, hierarchies):
 
         elif tdefn == 'build':
 
-            for tense in ch.get('tense',[]):
+            for tense in ch.get('tense', []):
                 name = tense.get('name')
 
-                for supertype in tense.get('supertype',[]):
+                for supertype in tense.get('supertype', []):
                     supername = supertype.get('name')
                     hier.add(name, supername)
 
@@ -59,7 +59,7 @@ def customize_tense(mylang, hierarchies):
 def init_aspect_hierarchy(ch, hierarchies):
     hier = TDLHierarchy('aspect')
 
-    for aspect in ch.get('aspect',[]):
+    for aspect in ch.get('aspect', []):
         name = aspect.get('name')
         for supertype in aspect.get('supertype', []):
             supername = supertype.get('name')
@@ -74,6 +74,7 @@ def init_aspect_hierarchy(ch, hierarchies):
             hier.add(name, supername)
             hierarchies[hier.name] = hier
 
+
 def customize_aspect(mylang, hierarchies):
     if 'aspect' in hierarchies:
         hierarchies['aspect'].save(mylang, False)
@@ -81,17 +82,19 @@ def customize_aspect(mylang, hierarchies):
 # customize_situation()
 # Create situation aspect feature value definitions per the user's choices
 
+
 def init_situation_hierarchy(ch, hierarchies):
     hier = TDLHierarchy('situation')
 
-    for situation in ch.get('situation',[]):
+    for situation in ch.get('situation', []):
         name = situation.get('name')
-        for supertype in situation.get('supertype',[]):
+        for supertype in situation.get('supertype', []):
             supername = supertype.get('name')
             hier.add(name, supername)
 
     if not hier.is_empty():
         hierarchies[hier.name] = hier
+
 
 def customize_situation(mylang, hierarchies):
     if 'situation' in hierarchies:
@@ -104,12 +107,13 @@ def customize_situation(mylang, hierarchies):
 # customize_mood()
 # Create mood feature value definitions per the user's choices
 
+
 def init_mood_hierarchy(ch, hierarchies):
     hier = TDLHierarchy('mood')
 
-    for mood in ch.get('mood',[]):
+    for mood in ch.get('mood', []):
         name = mood.get('name')
-        for supertype in mood.get('supertype',[]):
+        for supertype in mood.get('supertype', []):
             supername = supertype.get('name')
             hier.add(name, supername)
 
@@ -121,6 +125,7 @@ def init_mood_hierarchy(ch, hierarchies):
             supername = 'mood'
             hier.add(name, supername)
             hierarchies[hier.name] = hier
+
 
 def customize_mood(mylang, hierarchies):
     if 'mood' in hierarchies:
@@ -139,7 +144,7 @@ def init_form_hierarchy(ch, hierarchies):
     if ('form-fin-nf' in ch):
         hier.add('nonfinite', 'form')
         hier.add('finite', 'form')
-        for subform in ch.get('form-subtype',[]):
+        for subform in ch.get('form-subtype', []):
             hier.add(subform.get('name'), subform.get('supertype'))
     if not hier.is_empty():
         hierarchies[hier.name] = hier
@@ -150,12 +155,14 @@ def customize_form(mylang, hierarchies):
         mylang.add('head :+ [FORM form].', section='addenda')
         hierarchies['form'].save(mylang)
 
+
 def init_verbal_hierarchies(ch, hierarchies):
     init_tense_hierarchy(ch, hierarchies)
     init_aspect_hierarchy(ch, hierarchies)
     init_situation_hierarchy(ch, hierarchies)
     init_mood_hierarchy(ch, hierarchies)
     init_form_hierarchy(ch, hierarchies)
+
 
 def customize_verbal_features(mylang, hierarchies):
     customize_form(mylang, hierarchies)
@@ -164,12 +171,15 @@ def customize_verbal_features(mylang, hierarchies):
     customize_situation(mylang, hierarchies)
     customize_mood(mylang, hierarchies)
 
+
 def make_vpm_order(name, h, o):
-    if name not in list(h.keys()): return []
+    if name not in list(h.keys()):
+        return []
     for n in h[name]:
         make_vpm_order(n, h, o)
     o.append(name)
     return o
+
 
 def create_vpm_tense(ch, vpm):
     literal = ''
@@ -180,15 +190,15 @@ def create_vpm_tense(ch, vpm):
     if tdefn:
 
         if tdefn == 'choose':
-            for ten in ('present', 'nonpast', 'past', 'nonfuture', 'future' ):
+            for ten in ('present', 'nonpast', 'past', 'nonfuture', 'future'):
                 if ten in ch:
                     literal += '  ' + ten + ' <> ' + ten + '\n'
-                    #if default_tense == '':
+                    # if default_tense == '':
                     #  default_tense += '  ' + ten + ' << *\n'
                     #  default_tense += '  ' + ten + ' << [e]'
 
         elif tdefn == 'build':
-            tenses = ch.get('tense',[])
+            tenses = ch.get('tense', [])
             for tense in tenses:
                 name = tense.get('name')
                 if name not in list(_hier.keys()):
@@ -202,9 +212,10 @@ def create_vpm_tense(ch, vpm):
 
             order = make_vpm_order('tense', _hier, [])
             for name in order:
-                if name == 'tense': continue
+                if name == 'tense':
+                    continue
                 literal += '  ' + name + ' <> ' + name + '\n'
-                #if default_tense == '':
+                # if default_tense == '':
                 #  default_tense += '  ' + name + ' << *\n'
                 #  default_tense += '  ' + name + ' << [e]'
 
@@ -219,7 +230,7 @@ def create_vpm_tense(ch, vpm):
 def create_vpm_aspect(ch, vpm):
     literal = ''
     _hier = {}
-    for aspect in ch.get('aspect',[]):
+    for aspect in ch.get('aspect', []):
         name = aspect.get('name')
         if name not in list(_hier.keys()):
             _hier[name] = []
@@ -232,7 +243,8 @@ def create_vpm_aspect(ch, vpm):
 
     order = make_vpm_order('aspect', _hier, [])
     for name in order:
-        if name == 'aspect': continue
+        if name == 'aspect':
+            continue
         literal += '  ' + name + ' <> ' + name + '\n'
 
     if literal != '':
@@ -241,11 +253,12 @@ def create_vpm_aspect(ch, vpm):
     else:
         vpm.add_literal('E.ASPECT : E.ASPECT\n  * <> *')
 
+
 def create_vpm_mood(ch, vpm):
     literal = ''
     _hier = {}
 
-    for mood in ch.get('mood',[]):
+    for mood in ch.get('mood', []):
         name = mood.get('name')
         if name not in list(_hier.keys()):
             _hier[name] = []
@@ -258,7 +271,8 @@ def create_vpm_mood(ch, vpm):
 
     order = make_vpm_order('mood', _hier, [])
     for name in order:
-        if name == 'mood': continue
+        if name == 'mood':
+            continue
         literal += '  ' + name + ' <> ' + name + '\n'
 
     if literal != '':
@@ -267,11 +281,12 @@ def create_vpm_mood(ch, vpm):
     else:
         vpm.add_literal('E.MOOD : E.MOOD\n  * <> *')
 
+
 def create_vpm_situation(ch, vpm):
     literal = ''
     _hier = {}
 
-    for situation in ch.get('situation',[]):
+    for situation in ch.get('situation', []):
         name = situation.get('name')
         if name not in list(_hier.keys()):
             _hier[name] = []
@@ -284,7 +299,8 @@ def create_vpm_situation(ch, vpm):
 
     order = make_vpm_order('situation', _hier, [])
     for name in order:
-        if name == 'situation': continue
+        if name == 'situation':
+            continue
         literal += '  ' + name + ' <> ' + name + '\n'
 
     if literal != '':

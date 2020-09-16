@@ -33,7 +33,8 @@ SAME_YNQ = '''same-ynq-unary-phrase :=
                        unary-phrase & [ SYNSEM [ NON-LOCAL.YNQ #ynq ],
                        ARGS < [ SYNSEM [ NON-LOCAL.YNQ #ynq ] ] > ].'''
 
-def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies,roots):
+
+def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies, roots):
 
     qinvverb = ch.get('q-inv-verb')
 
@@ -48,7 +49,6 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies,roots):
                    comment, section='verblex')
         if any(ch.get('cop')):
             mylang.add('cop-lex := [ SYNSEM.LOCAL.CAT.HEAD.INV - ].', comment)
-
 
         comment = \
             'Rule for inverted subject verb order in questions.\n' + \
@@ -94,12 +94,12 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies,roots):
                       DTR.SYNSEM.LOCAL.CAT.HEAD.FORM #form ].''')
 
             if qinvverb == 'aux':
-                mylang.add('subj-v-inv-lrule := [ DTR.SYNSEM.LOCAL.CAT.HEAD.AUX + ].')
+                mylang.add(
+                    'subj-v-inv-lrule := [ DTR.SYNSEM.LOCAL.CAT.HEAD.AUX + ].')
 
             if qinvverb == 'main':
-                mylang.add('subj-v-inv-lrule := [ DTR.SYNSEM.LOCAL.CAT.HEAD.AUX - ].')
-
-
+                mylang.add(
+                    'subj-v-inv-lrule := [ DTR.SYNSEM.LOCAL.CAT.HEAD.AUX - ].')
 
         # ERB 2010-04-15 If object drop is enabled (i.e., if the
         # head-opt-comp rule is instantiated) then we need to prevent
@@ -110,8 +110,8 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies,roots):
         # subj-v inversion but allows subject drop.
 
         if ch.get('obj-drop'):
-            mylang.add('subj-v-inv-lrule := [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT - ].')
-
+            mylang.add(
+                'subj-v-inv-lrule := [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT - ].')
 
         # ERB 2010-04-15 If we have a finite/non-finite disctintion,
         # the FORM value needs to be copied up.  FIXME: More generally,
@@ -123,8 +123,6 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies,roots):
                  subj-v-inv-lrule :=
                     [ SYNSEM.LOCAL.CAT.HEAD.FORM #form,
                       DTR.SYNSEM.LOCAL.CAT.HEAD.FORM #form ].''')
-
-
 
         # ERB 2007-01-21 Then we need the non-branching construction which
         # corrects to MC + and adds SF ques.
@@ -147,7 +145,7 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies,roots):
                         NON-LOCAL non-local-none ],
       C-CONT.HOOK.INDEX.SF ques ].'''
         mylang.add(typedef, comment, section='phrases')
-        #OZ 2020-07-03 This is to suppress ambiguity in "Which house do the cats sleep in?"
+        # OZ 2020-07-03 This is to suppress ambiguity in "Which house do the cats sleep in?"
         if ch.get('has-aux') == 'yes':
             mylang.add('int-cl := [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].')
         rules.add('int := int-cl.')
@@ -178,65 +176,78 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies,roots):
             # customize_yesno_questions. This is an example of cross-library
             # interaction.
             if 'form' in hierarchies:
-                mylang.add('qpart-lex-item := [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM finite ].')
+                mylang.add(
+                    'qpart-lex-item := [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM finite ].')
 
         # OZ: Second position  clitics are treated as modifiers:
         elif ch.get('q-part-order') == 'second':
             # Matrix addenda:
-            mylang.add('''non-local :+ [ YNQ append-list ].''', section='addenda')
-            mylang.add('''non-local-none :+ [ YNQ.LIST < > ].''', section='addenda')
-            mylang.add('''basic-filler-phrase :+ [ SYNSEM.NON-LOCAL.YNQ.LIST < > ].''', section='addenda')
+            mylang.add(
+                '''non-local :+ [ YNQ append-list ].''', section='addenda')
+            mylang.add(
+                '''non-local-none :+ [ YNQ.LIST < > ].''', section='addenda')
+            mylang.add(
+                '''basic-filler-phrase :+ [ SYNSEM.NON-LOCAL.YNQ.LIST < > ].''', section='addenda')
             mylang.add('''extracted-adj-phrase-simple :+ 
             [ SYNSEM.NON-LOCAL.YNQ #ynq,
-              HEAD-DTR.SYNSEM.NON-LOCAL.YNQ #ynq ].''',section='addenda')
+              HEAD-DTR.SYNSEM.NON-LOCAL.YNQ #ynq ].''', section='addenda')
 
             mylang.add('''coord-phrase :+ 
             [ SYNSEM.NON-LOCAL.YNQ.APPEND < #ynq1, #ynq2 >,
               LCOORD-DTR.SYNSEM.NON-LOCAL.YNQ #ynq1,
-              RCOORD-DTR.SYNSEM.NON-LOCAL.YNQ #ynq2 ].''',section='addenda')
+              RCOORD-DTR.SYNSEM.NON-LOCAL.YNQ #ynq2 ].''', section='addenda')
             mylang.add('''basic-binary-phrase :+ [ SYNSEM [ L-PERIPH #periph,
                                   NON-LOCAL.YNQ.APPEND < #ynq1,
                                     #ynq2 > ],
              ARGS < [ SYNSEM [ L-PERIPH #periph,
                                NON-LOCAL.YNQ #ynq1 ] ],
                     [ SYNSEM [ L-PERIPH -,
-                               NON-LOCAL.YNQ #ynq2 ] ] > ].''',section='addenda')
+                               NON-LOCAL.YNQ #ynq2 ] ] > ].''', section='addenda')
             mylang.add('basic-head-mod-phrase-simple :+ '
                        '[ HEAD-DTR.SYNSEM.L-PERIPH #periph, '
                        'NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.MOD < [ L-PERIPH #periph ] > ].', section='addenda')
-            mylang.add(SAME_PERIPH,section='phrases')
-            mylang.add(SAME_YNQ,section='phrases')
-            mylang.add('bare-np-phrase := same-periph-unary-phrase & same-ynq-unary-phrase & [ SYNSEM.LIGHT - ].')
+            mylang.add(SAME_PERIPH, section='phrases')
+            mylang.add(SAME_YNQ, section='phrases')
+            mylang.add(
+                'bare-np-phrase := same-periph-unary-phrase & same-ynq-unary-phrase & [ SYNSEM.LIGHT - ].')
             comment = 'Second position question particles are treated as modifiers.'
             typedef = lexbase.QUES_CLITIC
             mylang.add(typedef, comment, section='complex')
             supertype = 'ques-clitic-lex'
             # Constrain all other words to be YNQ-empty:
-            mylang.add('''zero-arg-nonynq := basic-zero-arg & [ SYNSEM.NON-LOCAL.YNQ.LIST < > ].''', section='complex')
-            mylang.add('''zero-arg-ynq := zero-arg-nonrel & zero-arg-nonque & zero-arg-nonslash.''', section='complex')
-            mylang.add('''norm-zero-arg :+ zero-arg-nonynq.''', section='addenda')
-            mylang.add('''zero-arg-rel :+ zero-arg-nonynq.''', section='addenda')
-            mylang.add('''zero-arg-que :+ zero-arg-nonynq.''', section='addenda')
-            mylang.add('''zero-arg-slash :+ zero-arg-nonynq.''', section='addenda')
-            mylang.add('non-ynq-word := word-or-lexrule & [ SYNSEM.NON-LOCAL.YNQ.LIST < > ].')
+            mylang.add(
+                '''zero-arg-nonynq := basic-zero-arg & [ SYNSEM.NON-LOCAL.YNQ.LIST < > ].''', section='complex')
+            mylang.add(
+                '''zero-arg-ynq := zero-arg-nonrel & zero-arg-nonque & zero-arg-nonslash.''', section='complex')
+            mylang.add('''norm-zero-arg :+ zero-arg-nonynq.''',
+                       section='addenda')
+            mylang.add('''zero-arg-rel :+ zero-arg-nonynq.''',
+                       section='addenda')
+            mylang.add('''zero-arg-que :+ zero-arg-nonynq.''',
+                       section='addenda')
+            mylang.add('''zero-arg-slash :+ zero-arg-nonynq.''',
+                       section='addenda')
+            mylang.add(
+                'non-ynq-word := word-or-lexrule & [ SYNSEM.NON-LOCAL.YNQ.LIST < > ].')
             #mylang.add('basic-zero-arg :+ non-ynq-word.',section='addenda')
-            mylang.add('basic-one-arg :+ non-ynq-word.',section='addenda')
-            mylang.add('basic-two-arg :+ non-ynq-word.',section='addenda')
-            mylang.add('basic-three-arg :+ non-ynq-word.',section='addenda')
-            mylang.add('intersective-mod-lex :+ non-ynq-word.',section='addenda')
+            mylang.add('basic-one-arg :+ non-ynq-word.', section='addenda')
+            mylang.add('basic-two-arg :+ non-ynq-word.', section='addenda')
+            mylang.add('basic-three-arg :+ non-ynq-word.', section='addenda')
+            mylang.add('intersective-mod-lex :+ non-ynq-word.',
+                       section='addenda')
             roots.add('root := [ SYNSEM.NON-LOCAL.YNQ.LIST < > ].')
-            mylang.add(INT_CL,section='phrases')
-            mylang.add(DECL_CL,section='phrases')
+            mylang.add(INT_CL, section='phrases')
+            mylang.add(DECL_CL, section='phrases')
             rules.add('intrg-phrase := int-cl.')
             #rules.add('decl-cl := decl-cl.')
-            mylang.add(MC_NA,section='phrases')
+            mylang.add(MC_NA, section='phrases')
             #mylang.add('binary-headed-phrase :+ mc-na-headed-phrase.',section='addenda')
 
         # Add subtypes for each question particle.
         for qpart in ch.get('q-particle'):
             typename = qpart.full_key + '-lex'
             typedef = typename + ' := ' + supertype + '.'
-            mylang.add(typedef,section='complex')
+            mylang.add(typedef, section='complex')
             if qpart['main'] == 'on' and qpart['embed'] != 'on':
                 mylang.add(typename + ' := [ SYNSEM.LOCAL.CAT [ MC #mc,'
                                       'VAL.COMPS.FIRST.LOCAL.CAT.MC #mc & + ] ].')
@@ -255,4 +266,3 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies,roots):
                 if ch.get('q-part-order') != 'second':
                     mylang.add(typename + ':= [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST '
                                           '[ LOCAL.CAT.WH.BOOL +  ] ].')
-                    

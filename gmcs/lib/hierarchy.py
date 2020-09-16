@@ -29,6 +29,7 @@ class HierarchyNode(object):
             return None
         return self.hierarchy.get_descendants(node=self)
 
+
 class Hierarchy(object):
     def __init__(self):
         self.nodes = {}
@@ -62,7 +63,7 @@ class Hierarchy(object):
         return self.find_lineage(node, relation)
 
     def find_lineage(self, node, relation):
-        if relation in self.__cache.get(node.key,{}):
+        if relation in self.__cache.get(node.key, {}):
             return self.__cache[node.key][relation]
         self.__cache.setdefault(node.key, {})
         self.__cache[node.key][relation] = node.relatives(relation)
@@ -84,7 +85,7 @@ class Hierarchy(object):
 # these functions should eventually be folded into a revamped
 # Hierarchy class, using hierarchies instead of dictionaries
 
-#def subsumes(subsumers, subsumees, hierarchy,
+# def subsumes(subsumers, subsumees, hierarchy,
 #             partial=True, allow_outliers=False):
 #  if len(subsumees) == 0 or len(subsumers) == 0:
 #    return False
@@ -96,15 +97,15 @@ class Hierarchy(object):
 #  return
 #
 #
-#def supersumes(supersumers, supersumees, hierarchy,
+# def supersumes(supersumers, supersumees, hierarchy,
 #               partial=True, allow_outliers=False):
 #  pass
 #
-#def subsumed(subsumers, hierarchy):
+# def subsumed(subsumers, hierarchy):
 #  all_subsumed = set()
 #  for x in subsumers:
 #    all_subsumed.update(hierarchy[x])
 #  return all_subsumed
 #
-#def supersumed(supersumer, hierarchy):
+# def supersumed(supersumer, hierarchy):
 #  pass

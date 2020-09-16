@@ -1,5 +1,5 @@
 ### encoding: utf8
-### $Id: validate.py,v 1.44 2008-09-30 23:50:02 lpoulson Exp $
+# $Id: validate.py,v 1.44 2008-09-30 23:50:02 lpoulson Exp $
 
 ######################################################################
 # imports
@@ -60,7 +60,8 @@ class ValidationResult:
         if key in self.warnings and concat:
             self.warnings[key].add_message(message)
         else:
-            self.warnings[key] = ValidationMessage(key+"_warning", message, anchor)
+            self.warnings[key] = ValidationMessage(
+                key+"_warning", message, anchor)
 
     def info(self, key, message, anchor=None, concat=True):
         """
@@ -73,7 +74,9 @@ class ValidationResult:
         else:
             self.infos[key] = ValidationMessage(key+"_info", message, anchor)
 
-#NTS: we only need to define an anchor for the main page versionsx
+# NTS: we only need to define an anchor for the main page versionsx
+
+
 class ValidationMessage:
     def __init__(self, key, text, anchor):
         self.name = key
@@ -92,6 +95,7 @@ class ValidationMessage:
 #   collide with existing types in the system (either types
 #   in matrix.tdl or head-types.tdl, or types that the customization
 #   system typically uses in grammars).
+
 
 # type names reserved for the customization system
 # TJT 2014-08-25: Making into tuple for speed
@@ -161,11 +165,12 @@ forbidden_type_patterns = [
     '[a-z]+[0-9]+-bottom-coord-rule',
     '[a-z]+[0-9]+-left-coord-rule',
 
-    #type names that collide with the type names used by mtr.tdl
+    # type names that collide with the type names used by mtr.tdl
     '[aeihpuxAEIHPUX]',
 
     'context[0-9]+-decl-head-opt-subj-phrase'
 ]
+
 
 def validate_names(ch, vr):
     # reserved_types contains type names that are not available
@@ -390,12 +395,13 @@ def validate_names(ch, vr):
         invalids = [t for t in user_types[i][0] if not tdl.isid(t)]
         if len(invalids) > 0:
             vr.err(user_types[i][1],
-                   '"' + user_types[i][0] + '" contains invalid characters: ' + \
+                   '"' + user_types[i][0] + '" contains invalid characters: ' +
                    ''.join(invalids))
 
 ######################################################################
 # validate_general(ch, vr)
 #   Validate the user's choices about general information
+
 
 def validate_general(ch, vr):
     lang = ch.get('language')
@@ -424,7 +430,8 @@ def validate_general(ch, vr):
             for l in lines:
                 toks = l.split('\t')
                 if iso in toks[0]:
-                    vr.info('iso-code', 'ISO 693-3 suggests the reference name for your language is: '+toks[6], anchor=url)
+                    vr.info(
+                        'iso-code', 'ISO 693-3 suggests the reference name for your language is: '+toks[6], anchor=url)
                     valid = True
             f.close()
             if not valid:
@@ -443,16 +450,16 @@ your installation root directory as iso.tab to enable iso validation:
 
     if not ch.get('punctuation-chars'):
         vr.warn('punctuation-chars',
-                'Please provide an answer about tokenization and punctuation ' + \
+                'Please provide an answer about tokenization and punctuation ' +
                 'characters.')
-    chars = ch.get('punctuation-chars-list','')
+    chars = ch.get('punctuation-chars-list', '')
     if chars:
         if ' ' in chars:
             vr.err('punctuation-chars',
                    'Spaces are not allowed as parsable punctuation.')
         if chars.count(',') > 1:
             vr.warn('punctuation-chars',
-                    'No delimiters are necessary for the punctuation string.' + \
+                    'No delimiters are necessary for the punctuation string.' +
                     'If a comma appears in the string, it will become parsable.')
 
     # check punctuation chars in all orth fields.
@@ -465,12 +472,13 @@ your installation root directory as iso.tab to enable iso validation:
     for (key, val) in ch.walk():
         if key.endswith('orth') and not key.startswith('sentence'):
             if char_re.search(val):
-                vr.warn(key, 'String contains an unparsable punctuation character.' + \
+                vr.warn(key, 'String contains an unparsable punctuation character.' +
                         ' Please see the General subpage.')
 
 ######################################################################
 # validate_person(ch, vr)
 #   Validate the user's choices about person
+
 
 def validate_person(ch, vr):
     person = ch.get('person')
@@ -557,7 +565,6 @@ def validate_other_features(ch, vr):
                        'You must specify a supertype for each value you define.')
 
 
-
 ######################################################################
 # validate_information_structure_msg(ch, vr, marker, _type, msg)
 #   Leave an error msg for information structural affixes
@@ -569,6 +576,8 @@ def validate_information_structure_msg(ch, vr, marker, _type, msg):
 ######################################################################
 # validate_information_structure_affix(ch, marker, values)
 #   Validate the user's choices about information structure for each value
+
+
 def validate_information_structure_affix(ch, marker, values):
     for cat in ['noun-pc', 'verb-pc']:
         for pc in ch.get(cat):
@@ -581,6 +590,8 @@ def validate_information_structure_affix(ch, marker, values):
 ######################################################################
 # validate_information_structure_adp(ch, marker, values)
 #   Validate the user's choices about information structure for each value
+
+
 def validate_information_structure_adp(ch, marker, values):
     for adp in ch.get('adp'):
         for feat in adp.get('feat', []):
@@ -592,12 +603,13 @@ def validate_information_structure_adp(ch, marker, values):
 # validate_information_structure(ch, vr)
 #   Validate the user's choices about information structure
 
+
 def validate_information_structure(ch, vr):
     infostr_values = {
-        'focus-marker' : ['focus', 'semantic-focus', 'contrast-focus', 'focus-or-topic', 'contrast-or-focus', 'non-topic'],
-        'topic-marker' : ['topic', 'aboutness-topic', 'contrast-topic', 'frame-setting-topic', 'focus-or-topic', 'contrast-or-topic', 'non-focus'],
-        'c-focus-marker' : ['contrast', 'contrast-focus', 'contrast-or-focus'],
-        'c-topic-marker' : ['contrast', 'contrast-topic', 'contrast-or-topic']
+        'focus-marker': ['focus', 'semantic-focus', 'contrast-focus', 'focus-or-topic', 'contrast-or-focus', 'non-topic'],
+        'topic-marker': ['topic', 'aboutness-topic', 'contrast-topic', 'frame-setting-topic', 'focus-or-topic', 'contrast-or-topic', 'non-focus'],
+        'c-focus-marker': ['contrast', 'contrast-focus', 'contrast-or-focus'],
+        'c-topic-marker': ['contrast', 'contrast-topic', 'contrast-or-topic']
     }
 
     infostr_markers = []
@@ -608,7 +620,8 @@ def validate_information_structure(ch, vr):
                 break
     for m in infostr_markers:
         if not validate_information_structure_affix(ch, m, infostr_values[m]):
-            validate_information_structure_msg(ch, vr, m, 'affix', 'You must create at least one affix involving this feature on Morphology.')
+            validate_information_structure_msg(
+                ch, vr, m, 'affix', 'You must create at least one affix involving this feature on Morphology.')
 
     infostr_markers = []
     for marker in list(infostr_values.keys()):
@@ -618,16 +631,15 @@ def validate_information_structure(ch, vr):
                 break
     for m in infostr_markers:
         if not validate_information_structure_adp(ch, m, infostr_values[m]):
-            validate_information_structure_msg(ch, vr, m, 'adp', 'You must create at least one adposition involving this feature on Lexicon.')
-
-
+            validate_information_structure_msg(
+                ch, vr, m, 'adp', 'You must create at least one adposition involving this feature on Lexicon.')
 
     for marker in list(infostr_values.keys()):
         for m in ch.get(marker):
             if m['type'].strip() in ['affix', 'adp']:
                 if m['pos'].strip() != '' or m['cat'].strip() != '' or m['orth'].strip() != '':
-                    vr.err(m.full_key + '_type', 'You must either check a modifier or delete the choices following a modifier.')
-
+                    vr.err(
+                        m.full_key + '_type', 'You must either check a modifier or delete the choices following a modifier.')
 
     if ch.get('word-order') == 'free':
         warning_msg = 'Information structural modules for free word order languages are under development. If positions are multiply checked, your grammar may have some overgeneration.'
@@ -643,7 +655,6 @@ def validate_information_structure(ch, vr):
             if ch.get('c-focus-pos') != 'clause-initial':
                 vr.warn('topic-first', warning_msg)
 
-
     if ch.get('topic-first') != '' and ch.get('topic-marker') != '':
         vr.warn('topic-first', 'You may need some additional constraint(s) on sentence positioning of topic-marked constituents.')
 
@@ -651,7 +662,6 @@ def validate_information_structure(ch, vr):
         vr.err('c-focus', 'You must check a specific position for focus above.')
     if ch.get('c-focus') != '' and ch.get('c-focus-pos') != '':
         vr.err('c-focus', 'Your description is inconsistent. You must either check this or choose a specific position below.')
-
 
 
 ######################################################################
@@ -698,8 +708,7 @@ def validate_word_order(ch, vr):
     #         'You specified that your language has determiners, ' +
     #         'you must define them on the lexicon page.')
 
-
-    #Things to do with auxiliaries
+    # Things to do with auxiliaries
     if (not ch.get('has-aux')):
         vr.err('has-aux',
                'You must specify whether your language has auxiliary verbs.')
@@ -725,8 +734,8 @@ def validate_word_order(ch, vr):
 
     # Added check on whether question on more than one auxiliary is answered.
     # mwg: Antske says this check should only happen if wo is free
-    if (wo == 'free' and (ch.get('has-aux') == 'yes') \
-                and (not ch.get('multiple-aux'))):
+    if (wo == 'free' and (ch.get('has-aux') == 'yes')
+            and (not ch.get('multiple-aux'))):
         vr.err('multiple-aux',
                'If your language has free word order and auxiliaries, you must ' +
                'specify whether a clause may contain more than one of them.')
@@ -739,7 +748,7 @@ def validate_word_order(ch, vr):
                'The general word order and aux-comp order ' +
                'are not compatible with vp complements.')
 
-    #OZ 2017-11-13 Validate subordinate clauses word order.
+    # OZ 2017-11-13 Validate subordinate clauses word order.
 
     if (ch.get('subord-word-order')):
         if not (wo == 'v2' or ch.get('subord-word-order') == 'same'):
@@ -748,7 +757,7 @@ def validate_word_order(ch, vr):
                    'only supported with V2 matrix order.')
         elif wo == 'v2' and ch.get('subord-word-order') == 'vfinal' \
                 and ch.get('has-aux') == 'yes' and ch.get('aux-comp') != 'v':
-            vr.err('aux-comp','The only supported choice for auxiliary complement '
+            vr.err('aux-comp', 'The only supported choice for auxiliary complement '
                    'type for v2/vfinal word order combination is V.')
 
 
@@ -757,18 +766,18 @@ def validate_word_order(ch, vr):
 #   Validate the user's choices about coordination.
 
 def validate_coordination(ch, vr):
-    used_patterns = set() # used later to check which aps were used in a cs
+    used_patterns = set()  # used later to check which aps were used in a cs
     for cs in ch.get('cs'):
         csnum = str(cs.iter_num())
 
-        cs_n =     cs.get('n')
-        cs_np =    cs.get('np')
-        cs_vp =    cs.get('vp')
-        cs_s =     cs.get('s')
-        cs_pat =   cs.get('pat')
-        cs_mark =  cs.get('mark')
+        cs_n = cs.get('n')
+        cs_np = cs.get('np')
+        cs_vp = cs.get('vp')
+        cs_s = cs.get('s')
+        cs_pat = cs.get('pat')
+        cs_mark = cs.get('mark')
         cs_order = cs.get('order')
-        cs_orth =  cs.get('orth')
+        cs_orth = cs.get('orth')
 
         if not (cs_n or cs_np or cs_vp or cs_s):
             mess = 'You must specify a phrase type for coordination strategy ' + csnum
@@ -835,15 +844,14 @@ def validate_coordination(ch, vr):
                    'subject and feature resolution for the object. \'All arguments\' should be the default in most other cases.'
             vr.warn(csap.full_key+'_target', mess)
 
-
-
         # setup for tracking whether subjects or objects have been accounted for too often
         subj = False
         obj = False
         valid = True
 
         for csap in cs.get('csap'):
-            used_patterns.add(csap.get('pat')) # used to check for unused aps later
+            # used to check for unused aps later
+            used_patterns.add(csap.get('pat'))
 
             # ap named in a cs must exist
             if not ch.get(csap.get('pat')):
@@ -890,7 +898,7 @@ def validate_coordination(ch, vr):
         if fr.full_key not in used_patterns:
             mess = "You defined an agreement pattern but didn't attach it to a coordination strategy. You must attach it to a" \
                    " coordination strategy before the rules will apply to coordinated N/NPs."
-            vr.warn(fr.full_key+ '_name', mess)
+            vr.warn(fr.full_key + '_name', mess)
 
         # have to have features defined
         # TODO not sure whether this actually needs to be an error instead of a warning (does it crash?)
@@ -974,7 +982,6 @@ def validate_coordination(ch, vr):
                                'and will add to the complexity of your grammar. You should remove it.'
                         vr.warn(rule.full_key + "_left", mess)
 
-
                         # TODO make sure they split up PERNUM into person and number
 
                         # TODO add validation for "nonmatching" but not a list on the left
@@ -993,7 +1000,6 @@ def validate_coordination(ch, vr):
             mess = "You defined an agreement pattern but didn't attach it to a coordination strategy. You must attach it to a" \
                    " coordination strategy before the rules will apply to coordinated N/NPs."
             vr.warn(dconj.full_key + "_name", mess)
-
 
 
 ######################################################################
@@ -1024,8 +1030,8 @@ def validate_yesno_questions(ch, vr):
                     optionality_validation = True
         if optionality_validation:
             mess = 'Either all particles are optional or each particle can be obligatory ' \
-                           'or impossible; choose one or the other.'
-            vr.err ('q-part-allopt',mess)
+                'or impossible; choose one or the other.'
+            vr.err('q-part-allopt', mess)
 
     elif ch.get('q-part-all-opt') or len(ch.get('q-particle')) != 0 or qpartorder:
         mess = 'You did not check the particle checkbox but made other choices about particles.'
@@ -1041,26 +1047,26 @@ def validate_yesno_questions(ch, vr):
                    'which types of verbs invert.'
             vr.err('q-inv-verb', mess)
         if ch.get('word-order') == 'v-final' or \
-                        ch.get('word-order') == 'v-initial' or \
-                        ch.get('word-order') == 'free':
+                ch.get('word-order') == 'v-initial' or \
+                ch.get('word-order') == 'free':
             mess = 'Subject-verb inversion strategy for yes-no questions ' + \
                    'is not supported for V-final, V-initial, or ' + \
                    'free word order languages.  If you believe you have ' + \
                    'a counterexample to this, please contact us.'
             vr.err('q-inv', mess)
         if ((qinvverb == 'aux' or qinvverb == 'aux-main') and
-                    ch.get('has-aux') != 'yes'):
+                ch.get('has-aux') != 'yes'):
             mess = 'You have not indicated on the word order page ' + \
                    'that your language has auxiliaries.'
             vr.err('q-inv-verb', mess)
 
     if ch.get('q-infl'):
         # need to search inflectional rules for one that specifies 'question'
-        ques_aff = any([feat.get('name','') == 'question'
+        ques_aff = any([feat.get('name', '') == 'question'
                         for pcprefix in ('noun', 'verb', 'det', 'aux')
                         for pc in ch[pcprefix + '-pc']
-                        for lrt in pc.get('lrt',[])
-                        for feat in lrt.get('feat',[])])
+                        for lrt in pc.get('lrt', [])
+                        for feat in lrt.get('feat', [])])
         if not ques_aff:
             mess = 'If matrix yes-no questions are expressed through affixation, ' + \
                    'you must specify a lexical rule with the "question" feature ' + \
@@ -1094,12 +1100,13 @@ def validate_yesno_questions(ch, vr):
 #   Validate the user's choices about tense, aspect (viewpoint and
 #   situation) and form features
 
+
 def validate_tanda(ch, vr):
     """
     Validate the user's choices about tense, aspect (viewpoint and situation), mood and form features
     """
 
-    ## validate tense
+    # validate tense
     chosen = False
     ten = ('past', 'present', 'future', 'nonpast', 'nonfuture')
     for t in ten:
@@ -1130,7 +1137,7 @@ def validate_tanda(ch, vr):
                 vr.err(tense.full_key + '_supertype1_name',
                        'You must specify a supertype for each tense subtype you define.')
 
-    ## validate aspect
+    # validate aspect
     for aspect in ch.get('aspect'):
         if 'name' not in aspect:
             vr.err(aspect.full_key + '_name',
@@ -1141,7 +1148,7 @@ def validate_tanda(ch, vr):
                    'You must specify at least one supertype for each ' +
                    'viewpoint aspect subtype you define.')
 
-    ## validate situation
+    # validate situation
     for situation in ch.get('situation'):
         if 'name' not in situation:
             vr.err(situation.full_key + '_name',
@@ -1152,7 +1159,7 @@ def validate_tanda(ch, vr):
                    'You must specify at least one supertype for each ' +
                    'situation aspect subtype you define.')
 
-    ## validate mood
+    # validate mood
     for mood in ch.get('mood'):
         if 'name' not in mood:
             vr.err(mood.full_key + '_name',
@@ -1163,7 +1170,7 @@ def validate_tanda(ch, vr):
                    'You must specify at least one supertype for each ' +
                    'mood subtype you define.')
 
-    ## validate form
+    # validate form
     if ch.get('has-aux') == 'yes' and not ch.get('form-fin-nf') == 'on':
         mess = 'You have indicated on the word order page that ' + \
                'your language has auxiliaries or picked a sentential negation strategy ' \
@@ -1179,6 +1186,7 @@ def validate_tanda(ch, vr):
 # validate_test_sentences(ch, vr)
 #   Validate the user's choices about test sentences.
 
+
 def validate_test_sentences(ch, vr):
     pass
 
@@ -1186,6 +1194,7 @@ def validate_test_sentences(ch, vr):
 # validate_extra_constraints()
 #   Some extra constraints we want to put on the random grammars
 #   for the regression/other testing
+
 
 def validate_extra_constraints(ch, vr):
 
@@ -1250,40 +1259,44 @@ def validate_features(ch, vr):
     for scale in ch.get('scale'):
         for feat in scale.get('feat', []):
             name_list += \
-                [[ feat.full_key + '_name', feat.get('name') ]]
+                [[feat.full_key + '_name', feat.get('name')]]
             value_list += \
-                [[ feat.full_key + '_value', feat.get('name'), feat.get('value') ]]
+                [[feat.full_key + '_value',
+                    feat.get('name'), feat.get('value')]]
 
     for lexprefix in ('noun', 'verb', 'det', 'aux', 'adj'):
         for lex in ch.get(lexprefix):
             for feat in lex.get('feat', []):
                 name_list += \
-                    [[ feat.full_key + '_name', feat.get('name') ]]
+                    [[feat.full_key + '_name', feat.get('name')]]
                 value_list += \
-                    [[ feat.full_key + '_value', feat.get('name'), feat.get('value') ]]
+                    [[feat.full_key + '_value',
+                        feat.get('name'), feat.get('value')]]
 
     for pcprefix in ('noun', 'verb', 'det', 'aux', 'adj'):
         for pc in ch.get(pcprefix + '-pc'):
             for lrt in pc.get('lrt', []):
                 for feat in lrt.get('feat', []):
                     name_list += \
-                        [[ feat.full_key + '_name', feat.get('name') ]]
+                        [[feat.full_key + '_name', feat.get('name')]]
                     value_list += \
-                        [[ feat.full_key + '_value', feat.get('name'), feat.get('value') ]]
+                        [[feat.full_key + '_value',
+                            feat.get('name'), feat.get('value')]]
 
-
-    for context in ch.get('context',[]):
-        for feat in context.get('feat',[]):
+    for context in ch.get('context', []):
+        for feat in context.get('feat', []):
             name_list += \
-                [[ feat.full_key + '_name', feat.get('name') ]]
+                [[feat.full_key + '_name', feat.get('name')]]
             value_list += \
-                [[ feat.full_key + '_value', feat.get('name'), feat.get('value') ]]
+                [[feat.full_key + '_value',
+                    feat.get('name'), feat.get('value')]]
 
-    ## LLD 12-29-2015 Check that argument structure choices are currently defined
+    # LLD 12-29-2015 Check that argument structure choices are currently defined
     for lex in ch.get('verb'):
         if lex.get('valence', []):
             value_list += \
-                [[ lex.full_key + '_valence', 'argument structure', lex.get('valence') ]]
+                [[lex.full_key + '_valence',
+                    'argument structure', lex.get('valence')]]
 
     # Check the name list to ensure they're all valid features
     features = ch.features()
@@ -1333,7 +1346,8 @@ def validate_hierarchy(ch, vr):
         for feat in ch.get(section, []):
             for st in feat.get('supertype', []):
                 if st.get('name') not in valid_types:
-                    vr.err(st.full_key + '_name', 'You have specified an invalid supertype.')
+                    vr.err(st.full_key + '_name',
+                           'You have specified an invalid supertype.')
 
     for section in ['feature']:
         valid_types = []
@@ -1345,7 +1359,8 @@ def validate_hierarchy(ch, vr):
             for value in feat.get('value', []):
                 for st in value.get('supertype', []):
                     if st.get('name') not in valid_types:
-                        vr.err(st.full_key + '_name', 'You have specified an invalid supertype.')
+                        vr.err(st.full_key + '_name',
+                               'You have specified an invalid supertype.')
 
     # Adjectives have a similar check already in place.
     for lexprefix in ['verb', 'noun']:
@@ -1355,8 +1370,8 @@ def validate_hierarchy(ch, vr):
         for lex in ch.get(lexprefix, []):
             for st in lex.get('supertypes', '').split(", "):
                 if st not in valid_types:
-                    vr.err(lex.full_key + '_supertypes', 'You have specified an invalid supertype.')
-
+                    vr.err(lex.full_key + '_supertypes',
+                           'You have specified an invalid supertype.')
 
     # LLD 1-3-2016 Check for cycles and vacuous inheritance. The lexicon section has its own
     # version of this code, so I left those alone for now.
@@ -1364,19 +1379,20 @@ def validate_hierarchy(ch, vr):
     # xsts is a dictionary that contains some item x's supertypes.
     xsts = {}
     for type in ['number', 'gender']:
-        xsts[type] = [] # 'number' and 'gender' can be supertypes, so they need a dict entry.
+        # 'number' and 'gender' can be supertypes, so they need a dict entry.
+        xsts[type] = []
         for x in ch.get(type, []):
             sts = []
-            for st in x.get('supertype',''):
+            for st in x.get('supertype', ''):
                 sts.append(st.get('name'))
 
             xsts[x.get('name')] = sts
 
         for x in ch.get(type, []):
-            st_anc = [] #used to check for vacuous inheritance
+            st_anc = []  # used to check for vacuous inheritance
             seen = []
             paths = []
-            xkey = x.get('name','')
+            xkey = x.get('name', '')
 
             for st in xsts[xkey]:
                 paths.append([xkey, st])
@@ -1388,16 +1404,16 @@ def validate_hierarchy(ch, vr):
                         # add sts to the next generation
                         to_be_seen = []
                         for r in paths:
-                            if r[-1] == p: #this is the path to extend
+                            if r[-1] == p:  # this is the path to extend
                                 paths.remove(r)
                                 if p in xsts:
                                     for q in xsts[p]:
                                         if q not in st_anc:
                                             st_anc.append(q)
                                         if q in r:
-                                            vr.err(x.full_key + '_name', "This hierarchy "+
-                                                   "contains a cycle. The type "+q+" was found "+
-                                                   "at multiple points in the inheritance path: "+
+                                            vr.err(x.full_key + '_name', "This hierarchy " +
+                                                   "contains a cycle. The type "+q+" was found " +
+                                                   "at multiple points in the inheritance path: " +
                                                    str(r+[q]), concat=False)
                                         else:
                                             new_path = r + [q]
@@ -1417,10 +1433,11 @@ def validate_hierarchy(ch, vr):
             # and the supertypes's ancestors
             for t in xsts[xkey]:
                 if t in st_anc:
-                    vr.err(x.full_key + '_name', "This hierarchy contains a "+
-                           "redundant link that will result in an LKB error. The type '"+t+
-                           "' is an immediate supertype of '"+x.get('name','')+"' and also "+
+                    vr.err(x.full_key + '_name', "This hierarchy contains a " +
+                           "redundant link that will result in an LKB error. The type '"+t +
+                           "' is an immediate supertype of '"+x.get('name', '')+"' and also " +
                            "an ancestor of another supertype.")
+
 
 def validate_arg_opt(ch, vr):
     """Check to see if the user completed the necessary portions of the arg
@@ -1446,22 +1463,24 @@ def validate_arg_opt(ch, vr):
                'You must select whether a object marker is ' +
                'required, optional, or not permitted with an overt object.')
 
-    for context in ch.get('context',[]):
-        for feat in context.get('feat',[]):
+    for context in ch.get('context', []):
+        for feat in context.get('feat', []):
             if not feat.get('head'):
                 mess = 'You must choose where the feature is specified.'
-                vr.err(feat.full_key+'_head',mess)
+                vr.err(feat.full_key+'_head', mess)
 
-    verbslist =  ch.get('verb')
+    verbslist = ch.get('verb')
     for v in verbslist:
         for feat in v['feat']:
-            if feat.get('name') == 'OPT' and not feat.get('head') in ['subj','obj']:
+            if feat.get('name') == 'OPT' and not feat.get('head') in ['subj', 'obj']:
                 mess = "The OPT feature on verbs should be specified " + \
                        "on the subject NP or the object NP."
-                vr.err(feat.full_key+'_head',mess)
+                vr.err(feat.full_key+'_head', mess)
 
 ######################################################################
 # Validation of clausal modifiers
+
+
 def validate_clausalmods(ch, vr):
     """Check to see if the user completed the necessary portions of the
        Clausal Modifiers page and check for unsupported combinations of choices"""
@@ -1490,15 +1509,14 @@ def validate_clausalmods(ch, vr):
                     mess = 'You must makes a selection for whether the subordinator attaches to a VP or S.'
                     vr.err(cms.full_key + '_adverb-attach', mess)
             if cms.get('subordinator-type') == 'head' and cms.get('subposition') == 'either':
-                    mess = 'Only adverb subordinators can attach either before or after the clause.'
-                    vr.err(cms.full_key + '_subposition', mess)
+                mess = 'Only adverb subordinators can attach either before or after the clause.'
+                vr.err(cms.full_key + '_subposition', mess)
 
         # Check the choices required for free subordinators only
         if cms.get('subordinator') == 'free':
             if not cms.get('freemorph'):
                 mess = 'You must add at least one free subordinator morpheme.'
                 vr.err(cms.full_key + '_freemorph', mess)
-
 
         # Check the choices required for pair subordinators only
         if cms.get('subordinator') == 'pair':
@@ -1512,7 +1530,6 @@ def validate_clausalmods(ch, vr):
             if not cms.get('morphpair'):
                 mess = 'You must add at least one free subordinator morpheme pair.'
                 vr.err(cms.full_key + '_morphpair', mess)
-
 
         # Warnings for no subordinator morpheme
         if cms.get('subordinator') == 'none':
@@ -1566,10 +1583,12 @@ def validate_nominalized_clauses(ch, vr):
             mess = 'You must enter a name for the nominalization strategy.'
             vr.err(ns.full_key + '_name', mess)
         level = ns.get('level')
-        if level in ['mid','low'] and not ns['nmzRel'] == 'yes':
-            vr.err(ns.full_key + '_level','Mid and low nominalization must be specified as having semantics.')
+        if level in ['mid', 'low'] and not ns['nmzRel'] == 'yes':
+            vr.err(ns.full_key + '_level',
+                   'Mid and low nominalization must be specified as having semantics.')
         if not ns['nmzRel'] == 'yes' and not ns['nmzRel'] == 'no':
-            vr.err(ns.full_key + '_nmzRel','Please choose whether nominalization contributes to the semantics.')
+            vr.err(ns.full_key + '_nmzRel',
+                   'Please choose whether nominalization contributes to the semantics.')
         if ns.get('level') == 'mid':
             if ch.get('word-order') == 'vso' or ch.get('word-order') == 'osv':
                 mess = 'The analysis for your word order does not include a' + \
@@ -1577,114 +1596,113 @@ def validate_nominalized_clauses(ch, vr):
                 vr.err(ns.full_key + '_level', mess)
 
 
-
 ######################################################################
 # validate_adnominal_possession(ch, vr)
 #   Validate the user's choices about adnominal possession
 def validate_adnominal_possession(ch, vr):
-    png_feats=set(['person','number','gender','pernum'])
+    png_feats = set(['person', 'number', 'gender', 'pernum'])
     for feat in ch.get('feature'):
-        if feat.get('type')!='type':
+        if feat.get('type') != 'type':
             png_feats.add(feat.get('name'))
     # Add any user-defined non-syntactic feats:
     for feat in ch.get('feature'):
-        if feat.get('type','')!='head':
-            png_feats.add(feat.get('name',''))
+        if feat.get('type', '') != 'head':
+            png_feats.add(feat.get('name', ''))
     for strat in ch.get('poss-strat'):
         # CHECK THAT ALL THE CHOICES ARE CHOSEN
         # Require basic input for all possessive strategies:
         if not strat.get('order'):
-            mess='You must choose a possessive phrase order.'
-            vr.err(strat.full_key+'_order',mess)
+            mess = 'You must choose a possessive phrase order.'
+            vr.err(strat.full_key+'_order', mess)
         if not strat.get('mod-spec'):
-            mess='You must choose either modifier-like or specifier-like.'
-            vr.err(strat.full_key+'_mod-spec',mess)
+            mess = 'You must choose either modifier-like or specifier-like.'
+            vr.err(strat.full_key+'_mod-spec', mess)
         if not strat.get('mark-loc'):
-            mess='You must indicate where possessive markings appear.'
-            vr.err(strat.full_key+'_mark-loc',mess)
-        # Require input for possessor-marking 
-        if strat.get('mark-loc')=='possessor' or strat.get('mark-loc')=='both':
+            mess = 'You must indicate where possessive markings appear.'
+            vr.err(strat.full_key+'_mark-loc', mess)
+        # Require input for possessor-marking
+        if strat.get('mark-loc') == 'possessor' or strat.get('mark-loc') == 'both':
             if not strat.get('possessor-type'):
-                mess='You must indicate what form the possessor marking takes.'
-                vr.err(strat.full_key+'_possessor-type',mess)
+                mess = 'You must indicate what form the possessor marking takes.'
+                vr.err(strat.full_key+'_possessor-type', mess)
             # Require input for affix possessor-marking
-            elif strat.get('possessor-type')=='affix':
+            elif strat.get('possessor-type') == 'affix':
                 if not strat.get('possessor-affix-agr'):
-                    mess='You must indicate whether the possessor affix agrees with the possessum.'
-                    vr.err(strat.full_key+'_possessor-agr',mess)
+                    mess = 'You must indicate whether the possessor affix agrees with the possessum.'
+                    vr.err(strat.full_key+'_possessor-agr', mess)
             # Require input for non-affix possessor-marking
-            elif strat.get('possessor-type')=='non-affix':
+            elif strat.get('possessor-type') == 'non-affix':
                 if not strat.get('possessor-mark-order'):
-                    mess='You must indicate the word order of the possessor marking word.'
-                    vr.err(strat.full_key+'_possessor-marker-order',mess)
+                    mess = 'You must indicate the word order of the possessor marking word.'
+                    vr.err(strat.full_key+'_possessor-marker-order', mess)
                 if not strat.get('possessor-agr'):
-                    mess='You must indicate whether the possessor affix agrees with the possessum.'
-                    vr.err(strat.full_key+'_possessor-agr',mess)
+                    mess = 'You must indicate whether the possessor affix agrees with the possessum.'
+                    vr.err(strat.full_key+'_possessor-agr', mess)
                 # Require input for the case when the possessor-marking word doesn't do agreement
-                elif strat.get('possessor-agr')=='non-agree':
+                elif strat.get('possessor-agr') == 'non-agree':
                     if not strat.get('possessor-orth'):
-                        mess='You must give the possessor marker\'s orthographic form.'
-                        vr.err(strat.full_key+'_possessor-orth',mess)
+                        mess = 'You must give the possessor marker\'s orthographic form.'
+                        vr.err(strat.full_key+'_possessor-orth', mess)
                 # Require input for the case when the possessor-marking word does do agreement
-                elif strat.get('possessor-agr')=='agree':
+                elif strat.get('possessor-agr') == 'agree':
                     for form in strat.get('possessor-form'):
                         if not form.get('name'):
-                           mess='You must give a name for this form.'
-                           vr.err(form.full_key+'_name',mess)
+                            mess = 'You must give a name for this form.'
+                            vr.err(form.full_key+'_name', mess)
                         if not form.get('agr-orth'):
-                           mess='You must give the spelling for this form.'
-                           vr.err(form.full_key+'_agr-orth',mess)
+                            mess = 'You must give the spelling for this form.'
+                            vr.err(form.full_key+'_agr-orth', mess)
                         for feat in form.get('feat'):
-                           if not feat.get('name'):
-                              mess='You must give the name of this feature.'   
-                              vr.err(feat.full_key+'_name',mess)
-                           # Limit agr features to PNG
-                           elif feat.get('name') not in png_feats:
-                               mess='Agreement between elements of the possessive phrase ' +\
-                                   'is only supported for person, number, and gender.'
-                               vr.err(feat.full_key+'_name',mess)
-                           if not feat.get('value'):
-                              mess='You must give the value of this feature.'   
-                              vr.err(feat.full_key+'_value',mess)
+                            if not feat.get('name'):
+                                mess = 'You must give the name of this feature.'
+                                vr.err(feat.full_key+'_name', mess)
+                            # Limit agr features to PNG
+                            elif feat.get('name') not in png_feats:
+                                mess = 'Agreement between elements of the possessive phrase ' +\
+                                    'is only supported for person, number, and gender.'
+                                vr.err(feat.full_key+'_name', mess)
+                            if not feat.get('value'):
+                                mess = 'You must give the value of this feature.'
+                                vr.err(feat.full_key+'_value', mess)
 
-        # Require input for possessum-marking 
-        if strat.get('mark-loc')=='possessum' or strat.get('mark-loc')=='both':
+        # Require input for possessum-marking
+        if strat.get('mark-loc') == 'possessum' or strat.get('mark-loc') == 'both':
             if not strat.get('possessum-type'):
-                mess='You must indicate what form the possessum marking takes.'
-                vr.err(strat.full_key+'_possessum-type',mess)
+                mess = 'You must indicate what form the possessum marking takes.'
+                vr.err(strat.full_key+'_possessum-type', mess)
             # Require input for affix possessum-marking
-            elif strat.get('possessum-type')=='affix':
+            elif strat.get('possessum-type') == 'affix':
                 if not strat.get('possessum-affix-agr'):
-                    mess='You must indicate whether the possessum affix agrees with the possessor.'
-                    vr.err(strat.full_key+'_possessum-agr',mess)
+                    mess = 'You must indicate whether the possessum affix agrees with the possessor.'
+                    vr.err(strat.full_key+'_possessum-agr', mess)
             # Require input for non-affix possessum-marking
-            elif strat.get('possessum-type')=='non-affix':
+            elif strat.get('possessum-type') == 'non-affix':
                 # Rule out the scenario: mod-like attachment + non-affixal possessum mark
-                if strat.get('mod-spec')=='mod':
+                if strat.get('mod-spec') == 'mod':
                     if strat.get('possessum-mark-order'):
-                        if strat.get('possessum-mark-order')!=strat.get('order'):
-                            mess='The possessum-marking word must attach to the possessum from '+ \
+                        if strat.get('possessum-mark-order') != strat.get('order'):
+                            mess = 'The possessum-marking word must attach to the possessum from ' + \
                                 'the same side as the possessor in the modifier-like scenario. ' + \
                                 'Please select a specifier-like analysis if possible.'
-                            vr.err(strat.full_key+'_mod-spec',mess)
+                            vr.err(strat.full_key+'_mod-spec', mess)
                 if not strat.get('possessum-mark-order'):
-                    mess='You must indicate the word order of the possessum-marking word.'
-                    vr.err(strat.full_key+'_possessum-marker-order',mess)
+                    mess = 'You must indicate the word order of the possessum-marking word.'
+                    vr.err(strat.full_key+'_possessum-marker-order', mess)
                 if not strat.get('possessum-agr'):
-                    mess='You must indicate whether the possessum affix agrees with the possessor.'
-                    vr.err(strat.full_key+'_possessum-agr',mess)
+                    mess = 'You must indicate whether the possessum affix agrees with the possessor.'
+                    vr.err(strat.full_key+'_possessum-agr', mess)
                 # Require input for the case when the possessum-marking word doesn't do agreement
-                elif strat.get('possessum-agr')=='non-agree':
+                elif strat.get('possessum-agr') == 'non-agree':
                     if not strat.get('possessum-orth'):
-                        mess='You must give the possessum marker\'s orthographic form.'
-                        vr.err(strat.full_key+'_possessum-orth',mess)
+                        mess = 'You must give the possessum marker\'s orthographic form.'
+                        vr.err(strat.full_key+'_possessum-orth', mess)
                 # Require input for the case when the possessum-marking word does do agreement
 #                elif strat.get('possessum-agr')=='agree':
 #                    mess='Agreement between a possessum-marking word or clitic '+\
 #                         'and the possessor is not supported.'
 #                    vr.err(strat.full_key+'_possessum-agr',mess)
 
-                    
+
 #                    for form in strat.get('possessum-form'):
 #                        if not form.get('name'):
 #                           mess='You must give a name for this form.'
@@ -1694,7 +1712,7 @@ def validate_adnominal_possession(ch, vr):
 #                           vr.err(form.full_key+'_agr-orth',mess)
 #                        for feat in form.get('feat'):
 #                           if not feat.get('name'):
-#                              mess='You must give the name of this feature.'   
+#                              mess='You must give the name of this feature.'
 #                              vr.err(feat.full_key+'_name',mess)
 #                           # Limit agr features to PNG
 #                           elif feat.get('name') not in png_feats:
@@ -1702,65 +1720,65 @@ def validate_adnominal_possession(ch, vr):
 #                                   'is only supported for person, number, and gender.'
 #                               vr.err(feat.full_key+'_name',mess)
 #                           if not feat.get('value'):
-#                              mess='You must give the value of this feature.'   
+#                              mess='You must give the value of this feature.'
 #                              vr.err(feat.full_key+'_value',mess)
     for pron in ch.get('poss-pron'):
         # Require basic input for all possessive pronouns
         if not pron.get('type'):
-            mess='You must specify the type of this possessive pronoun.'
-            vr.err(pron.full_key+'_type',mess)
-        elif pron.get('type')=='affix':
+            mess = 'You must specify the type of this possessive pronoun.'
+            vr.err(pron.full_key+'_type', mess)
+        elif pron.get('type') == 'affix':
             if not pron.get('agr'):
-                mess='You must specify the whether this pronoun affix agrees with the possessum.'
-                vr.err(pron.full_key+'_agr',mess)
+                mess = 'You must specify the whether this pronoun affix agrees with the possessum.'
+                vr.err(pron.full_key+'_agr', mess)
             if not pron.get('mod-spec'):
-                mess='You must specify the whether this pronoun affix appears with determiners or not.'
-                vr.err(pron.full_key+'_mod-spec',mess)
-        elif pron.get('type')=='non-affix':
-#            if pron.get('possessum-mark')=='yes':
-#                if pron.get('possessum-mark-type')=='non-affix':
-#                    if pron.get('mod-spec')=='mod':
-#                        mess='This option is not supported when the possessum is marked by a '+\
-#                             'separate word or clitic. Please select specifier-like possessor '+\
-#                             'pronouns. If you have evidence of a language that requires this '+\
-#                             'analysis, please contact the developers of the Matrix.'
-#                        vr.err(pron.full_key+'_mod-spec',mess)
+                mess = 'You must specify the whether this pronoun affix appears with determiners or not.'
+                vr.err(pron.full_key+'_mod-spec', mess)
+        elif pron.get('type') == 'non-affix':
+            #            if pron.get('possessum-mark')=='yes':
+            #                if pron.get('possessum-mark-type')=='non-affix':
+            #                    if pron.get('mod-spec')=='mod':
+            #                        mess='This option is not supported when the possessum is marked by a '+\
+            #                             'separate word or clitic. Please select specifier-like possessor '+\
+            #                             'pronouns. If you have evidence of a language that requires this '+\
+            #                             'analysis, please contact the developers of the Matrix.'
+            #                        vr.err(pron.full_key+'_mod-spec',mess)
             if not pron.get('order'):
-                mess='You must specify the order this pronoun appears in.'
-                vr.err(pron.full_key+'_order',mess)
+                mess = 'You must specify the order this pronoun appears in.'
+                vr.err(pron.full_key+'_order', mess)
             if not pron.get('mod-spec'):
-                mess='You must specify the whether this pronoun appears with determiners or not.'
-                vr.err(pron.full_key+'_mod-spec',mess)
+                mess = 'You must specify the whether this pronoun appears with determiners or not.'
+                vr.err(pron.full_key+'_mod-spec', mess)
             if not pron.get('agr'):
-                mess='You must specify the whether this pronoun affix agrees with the possessum.'
-                vr.err(pron.full_key+'_agr',mess)
+                mess = 'You must specify the whether this pronoun affix agrees with the possessum.'
+                vr.err(pron.full_key+'_agr', mess)
             for inst in pron.get('instance'):
                 if not inst.get('name'):
-                    mess='You must give a name for this pronoun.'
-                    vr.err(inst.full_key+'_name',mess)
+                    mess = 'You must give a name for this pronoun.'
+                    vr.err(inst.full_key+'_name', mess)
                 if not inst.get('orth'):
-                    mess='You must give the spelling for this pronoun.'
-                    vr.err(inst.full_key+'_orth',mess)
+                    mess = 'You must give the spelling for this pronoun.'
+                    vr.err(inst.full_key+'_orth', mess)
                 for feat in inst.get('feat'):
                     if not feat.get('name'):
-                        mess='You must give a name for this feature.'
-                        vr.err(feat.full_key+'_name',mess)
+                        mess = 'You must give a name for this feature.'
+                        vr.err(feat.full_key+'_name', mess)
                     if not feat.get('value'):
-                        mess='You must give a value for this feature.'
-                        vr.err(feat.full_key+'_value',mess)
+                        mess = 'You must give a value for this feature.'
+                        vr.err(feat.full_key+'_value', mess)
                 for feat in inst.get('agr-feat'):
                     if not feat.get('name'):
-                        mess='You must give a name for this feature.'
-                        vr.err(feat.full_key+'_name',mess)
+                        mess = 'You must give a name for this feature.'
+                        vr.err(feat.full_key+'_name', mess)
                     if not feat.get('value'):
-                        mess='You must give a value for this feature.'
-                        vr.err(feat.full_key+'_value',mess)
+                        mess = 'You must give a value for this feature.'
+                        vr.err(feat.full_key+'_value', mess)
                 for feat in inst.get('non-png-feat'):
-                    if pron.get('mod-spec')=='spec':
-                        mess='Agreement for features other than person, number, and gender '+\
-                            'is not currently supported for specifier-like pronouns. '+\
+                    if pron.get('mod-spec') == 'spec':
+                        mess = 'Agreement for features other than person, number, and gender ' +\
+                            'is not currently supported for specifier-like pronouns. ' +\
                             'Modifier-like pronouns are supported.'
-                        vr.err(feat.full_key+'_name',mess)
+                        vr.err(feat.full_key+'_name', mess)
 #        if not pron.get('possessum-mark'):
 #            mess='You must specify the whether this pronoun affix appears with possessum marking or not.'
 #            vr.err(pron.full_key+'_possessum-mark',mess)
@@ -1776,13 +1794,14 @@ def validate_adnominal_possession(ch, vr):
 #                    mess='Agreement between a possessum-marking word or clitic '+\
 #                         'and the possessor is not supported.'
 #                    vr.err(pron.full_key+'_possessum-agr',mess)
-            
+
 #############################################################
 ########### Constituent questions validation ################
 #############################################################
 
+
 def validate_wh_ques(ch, vr):
-    from gmcs.constants import ON,IN_SITU,MTRX_FRONT, WH_QUE_PTCL, \
+    from gmcs.constants import ON, IN_SITU, MTRX_FRONT, WH_QUE_PTCL, \
         WH_INFL, MULTI, ALL_OBLIG, NO_MULTI, PIED, \
         PIED_ADP, OBL_PIP_NOUN, OBL_PIP_ADP, \
         MTRX_FR_OPT, SG_OBLIG
@@ -1797,24 +1816,24 @@ def validate_wh_ques(ch, vr):
         wh_q_strat = 'wh-q-inter-verbs'
     found_ques_word = True if ch.get('qverb') else False
     if not found_ques_word:
-        for pos in ['noun','det','verb','adv']:
+        for pos in ['noun', 'det', 'verb', 'adv']:
             for type in ch.get(pos):
                 if type.get('inter') == ON:
                     found_ques_word = True
                     break
     if wh_q_strat and not found_ques_word:
         mess = 'Please specify question words on the Lexicon page'
-        vr.err(wh_q_strat,mess)
+        vr.err(wh_q_strat, mess)
 
-    #Pied piping only makes sense when there are determiners:
+    # Pied piping only makes sense when there are determiners:
     if (ch.get(PIED) == ON or ch.get(PIED_ADP) == ON) and not len(ch.get('det', [])) > 0:
         mess = 'Pied piping only makes sense when there are determiners; specify a wh-determiner on the Lexicon page.'
         vr.err(PIED, mess)
     # Pied piping only makes sense when some fronting options were chosen
     if (ch.get(PIED) == ON or ch.get(PIED_ADP) == ON) and \
-            (ch.get(MTRX_FRONT)== None or ch.get(MTRX_FRONT)== IN_SITU):
+            (ch.get(MTRX_FRONT) == None or ch.get(MTRX_FRONT) == IN_SITU):
         mess = 'Pied piping only makes sense when fronting is possible; choose a fronting strategy.'
-        vr.err(PIED,mess)
+        vr.err(PIED, mess)
     # Pied piping obligatoriness only makes sense when there is pied piping
     if ch.get(OBL_PIP_NOUN) == ON and not ch.get(PIED):
         mess = 'You did not check pied piping itself but said it is obligatory'
@@ -1825,14 +1844,14 @@ def validate_wh_ques(ch, vr):
 
     if ch.get(NO_MULTI) == ON:
         if (ch.get(MTRX_FRONT) == MULTI
-            or ch.get(MTRX_FR_OPT) == ALL_OBLIG):
+                or ch.get(MTRX_FR_OPT) == ALL_OBLIG):
             mess = 'You have made choices regarding multiple question fronting, ' \
                    'so you cannot say multiple questions are not allowed in one clause.'
-            vr.err(NO_MULTI,mess)
+            vr.err(NO_MULTI, mess)
 
-    if ch.get(MTRX_FRONT) == IN_SITU and ch.get(MTRX_FR_OPT) in [ALL_OBLIG,SG_OBLIG]:
+    if ch.get(MTRX_FRONT) == IN_SITU and ch.get(MTRX_FR_OPT) in [ALL_OBLIG, SG_OBLIG]:
         mess = 'In-situ position and obligatory fronting are not compatible choices.'
-        vr.err(MTRX_FR_OPT,mess)
+        vr.err(MTRX_FR_OPT, mess)
 
     if ch.get(MTRX_FR_OPT) != 'none-oblig' and ch.get('embed-insitu') == ON:
         mess = 'This choice is only valid if fronting is optional.'
@@ -1864,8 +1883,7 @@ def validate_wh_ques(ch, vr):
         vr.err('wh-q-inter-verbs', mess)
 
 
-        
-def validate(ch, extra = False):
+def validate(ch, extra=False):
     """
     Validate the ChoicesFile ch.  Return a ValidationResult that
     contains any errors and warnings.
@@ -1896,14 +1914,15 @@ def validate(ch, extra = False):
     validate_features(ch, vr)
     validate_hierarchy(ch, vr)
     validate_arg_opt(ch, vr)
-    validate_wh_ques(ch,vr)
+    validate_wh_ques(ch, vr)
 
     if extra:
         validate_extra_constraints(ch, vr)
 
     return vr
 
-def validate_choices(choices_file, extra = False):
+
+def validate_choices(choices_file, extra=False):
     """
     Validate the choices file found in choices_file.  Return a
     ValidationResult that contains any errors and warnings.
@@ -1936,5 +1955,3 @@ if __name__ == "__main__":
                 column += len(w) + 1
         print()
     print()
-
-
