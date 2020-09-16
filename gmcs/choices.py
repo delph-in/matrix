@@ -1,4 +1,4 @@
- ### $Id: choices.py,v 1.24 2008-09-30 23:50:02 lpoulson Exp $
+# $Id: choices.py,v 1.24 2008-09-30 23:50:02 lpoulson Exp $
 
 ######################################################################
 # imports
@@ -13,9 +13,11 @@ from gmcs.linglib import case, clausalcomps
 ######################################################################
 # Errors
 
+
 class ChoicesFileParseError(Exception):
     def __init__(self, msg=''):
         self.msg = msg
+
     def __str__(self):
         return repr(self.msg)
 
@@ -25,6 +27,7 @@ class ChoicesFileParseError(Exception):
 # ChoiceCategory, and ChoiceDict and ChoiceList should most likely
 # just be empty classes inheriting from ChoiceCategory and their
 # namesake datatype.
+
 
 class ChoiceCategory:
     def __init__(self, full_key=None):
@@ -55,7 +58,7 @@ class ChoiceCategory:
         full_keys = []
         if issubclass(self.__class__, ChoiceDict):
             for key in self:
-                if issubclass(self[key].__class__,ChoiceCategory):
+                if issubclass(self[key].__class__, ChoiceCategory):
                     full_keys += self[key].full_keys()
                 else:
                     if self.full_key:
@@ -66,6 +69,7 @@ class ChoiceCategory:
             for item in self:
                 full_keys += item.full_keys()
         return full_keys
+
 
 class ChoiceDict(ChoiceCategory, dict):
 
@@ -103,7 +107,6 @@ class ChoiceDict(ChoiceCategory, dict):
     #             new_key = key_so_far + '_' + k + str(i+1)
     #             self.dict2ChoiceDict_helper(ll, new_key, choicedict)
 
-
     def __getitem__(self, key):
         cur, remaining = get_next_key(key)
         try:
@@ -134,8 +137,9 @@ class ChoiceDict(ChoiceCategory, dict):
     def __delitem__(self, key):
         cur, remaining = get_next_key(key)
         if remaining:
-            #del self[cur][cur+remaining] # TJT 2014-09-02: This isn't working for some reason
-            del self[cur][remaining] # TJT 2014-09-02: This isn't working for some reason
+            # del self[cur][cur+remaining] # TJT 2014-09-02: This isn't working for some reason
+            # TJT 2014-09-02: This isn't working for some reason
+            del self[cur][remaining]
         elif cur in self:
             dict.__delitem__(self, cur)
 
@@ -165,17 +169,17 @@ class ChoiceDict(ChoiceCategory, dict):
     def __str__(self):
         return '\n'.join(
             '='.join(['_'.join([self.full_key, key]) if self.full_key else key,
-                      self[key]]) \
-                if not isinstance(self[key], ChoiceList) \
-                else str(self[key])
+                      self[key]])
+            if not isinstance(self[key], ChoiceList)
+            else str(self[key])
             for key in self)
 
     def __repr__(self):
         return '\n'.join(
             '='.join(['_'.join([self.full_key, key]) if self.full_key else key,
-                      self[key]]) \
-                if not isinstance(self[key], ChoiceList) \
-                else str(self[key])
+                      self[key]])
+            if not isinstance(self[key], ChoiceList)
+            else str(self[key])
             for key in self)
 
 
@@ -187,7 +191,8 @@ class ChoiceList(ChoiceCategory, list):
         # TJT 2014-11-18: this errors if get_next_key returns a string...
         # not sure why a string is ever returned. Need to investigate.
         if not isinstance(index, int):
-            raise KeyError('Something went wrong with the backend system. Please contact the developers at matrix-dev@u.washington.edu')
+            raise KeyError(
+                'Something went wrong with the backend system. Please contact the developers at matrix-dev@u.washington.edu')
         try:
             # subtract 1 for 1-based indices
             retval = list.__getitem__(self, index - 1)
@@ -210,8 +215,8 @@ class ChoiceList(ChoiceCategory, list):
             list.__setitem__(self, index - 1, value)
         else:
             if self[index] == None:
-                list.__setitem__(self, index - 1, ChoiceDict(full_key=self.full_key + \
-                                                                      str(index)))
+                list.__setitem__(self, index - 1, ChoiceDict(full_key=self.full_key +
+                                                             str(index)))
             list.__getitem__(self, index - 1)[remaining_keys] = value
 
     def __delitem__(self, key):
@@ -273,7 +278,8 @@ class ChoiceList(ChoiceCategory, list):
         return None
 
     def next_iter_num(self):
-        if len(self) == 0: return 1
+        if len(self) == 0:
+            return 1
         return (self.get_last().iter_num() or 0) + 1
 
     def __str__(self):
@@ -306,6 +312,7 @@ def get_choice(choice, choices):
             return val
     return None
 
+
 # use the following re if keys like abc_def should be split:
 #var_delim_re = re.compile(r'(\d+)?(?:_|$)')
 # use the following re if final digits should be split
@@ -313,14 +320,18 @@ var_delim_re = re.compile(r'(\d+)(?:_|$)')
 # use the following re if we only split when a digit precedes _
 #var_delim_re = re.compile(r'(\d+)(?:_)')
 
+
 def split_variable_key(key):
     """
     Split a compound variable key into a list of its component parts.
     """
-    if key == '': return []
+    if key == '':
+        return []
     return [k for k in var_delim_re.split(key) if k]
 
+
 next_key_cache = {}
+
 
 def get_next_key(complex_key):
     """
@@ -341,7 +352,7 @@ def get_next_key(complex_key):
         if subkeys[-1] == '':
             subkeys.pop()
     next_key = subkeys[0]
-    rest = complex_key.replace(next_key,'',1).lstrip('_')
+    rest = complex_key.replace(next_key, '', 1).lstrip('_')
     if len(subkeys) > 1:
         next_key_cache[rest] = subkeys[1:]
     return safe_int(next_key), rest
@@ -350,6 +361,7 @@ def get_next_key(complex_key):
 # ChoicesFile is a class that wraps the choices file, a list of
 # variables and values, and provides methods for loading, accessing,
 # and saving them.
+
 
 class ChoicesFile:
 
@@ -370,7 +382,7 @@ class ChoicesFile:
                 if type(choices_file) == str:
                     f.close()
             except IOError:
-                pass # TODO: we should really be logging these
+                pass  # TODO: we should really be logging these
 
     def __str__(self):
         return str(self.choices)
@@ -381,7 +393,8 @@ class ChoicesFile:
         else:
             if len(self.full_keys()) != len(object.full_keys()):
                 print(self.full_keys())
-                print(str(len(self.full_keys()))+"/"+str(len(object.full_keys())))
+                print(str(len(self.full_keys())) +
+                      "/"+str(len(object.full_keys())))
                 return False
             else:
                 for i in self.full_keys():
@@ -392,7 +405,7 @@ class ChoicesFile:
         return True
 
     ############################################################################
-    ### Choices file parsing functions
+    # Choices file parsing functions
 
     def load_choices(self, choice_lines):
         """
@@ -418,20 +431,20 @@ class ChoicesFile:
         choices = ChoiceDict()
         for line in [l.strip() for l in choice_lines if l.strip() != '']:
             try:
-                (key, value) = line.split('=',1)
+                (key, value) = line.split('=', 1)
                 if key.strip() in ('section', 'version'):
                     continue
                 choices[key.strip()] = value
             except ValueError:
-                pass # TODO: log this!
+                pass  # TODO: log this!
             except AttributeError:
-                pass # TODO: log this!
+                pass  # TODO: log this!
             except ChoicesFileParseError:
-                pass # TODO: log this!
+                pass  # TODO: log this!
         return choices
 
     ############################################################################
-    ### Choices access functions
+    # Choices access functions
 
     def get(self, key, default=None):
         return self.choices.get(key, default)
@@ -521,7 +534,7 @@ class ChoicesFile:
         return self.choices.full_keys()
 
     ############################################################################
-    ### Up-revisioning handler
+    # Up-revisioning handler
 
     def preparse_uprev(self, choice_lines):
         """
@@ -534,7 +547,7 @@ class ChoicesFile:
         new_lines = []
         for line in choice_lines:
             try:
-                (key, value) = line.split('=',1)
+                (key, value) = line.split('=', 1)
                 if key in ('section', 'version'):
                     continue
                 # currently the only problem is lines ending with numerals.
@@ -545,9 +558,10 @@ class ChoicesFile:
                 if key is not None:
                     new_lines += ['='.join([key, value])]
             except ValueError:
-                pass # TODO: log this!
+                pass  # TODO: log this!
             except ChoicesFileParseError:
-                raise ChoicesFileParseError('Variable is multiply defined: %s' % key)
+                raise ChoicesFileParseError(
+                    'Variable is multiply defined: %s' % key)
 
         return new_lines
 
@@ -621,9 +635,6 @@ class ChoicesFile:
         if self.version < 34:
             self.convert_33_to_34()
 
-
-
-
         # As we get more versions, add more version-conversion methods, and:
         # if self.version < N:
         #   self.convert_N-1_to_N
@@ -651,10 +662,10 @@ class ChoicesFile:
         """
         Return true if the feature has matching case or if case is empty.
         """
-        return feat['name'] == 'case' and (feat['value'] == case or case == '' \
+        return feat['name'] == 'case' and (feat['value'] == case or case == ''
                                            or any(case == value for value in feat['value'].split(', ')))
 
-    def has_noun_case(self, case = ''):
+    def has_noun_case(self, case=''):
         """
         Returns True iff the target language has either morphologically or
         lexically marked case (restricting the calculation to the
@@ -669,20 +680,19 @@ class ChoicesFile:
 
         # check lexical types
         for noun in self.get('noun'):
-            for feat in noun.get('feat',[]):
+            for feat in noun.get('feat', []):
                 result = result or self.has_case(feat, case)
 
         # check morphemes
         for pcprefix in ('noun', 'verb', 'det', 'adj'):
             for pc in self.get(pcprefix + '-pc'):
-                for lrt in pc.get('lrt',[]):
-                    for feat in lrt.get('feat',[]):
+                for lrt in pc.get('lrt', []):
+                    for feat in lrt.get('feat', []):
                         result = result or self.has_case(feat, case)
 
         self.cached_values[k] = result
 
         return result
-
 
     def has_adp_only_infostr(self):
         """
@@ -702,8 +712,7 @@ class ChoicesFile:
 
         return False
 
-
-    def has_adp_case(self, case = '', check_opt = False):
+    def has_adp_case(self, case='', check_opt=False):
         """
         Returns True iff the target language has case-marking adpositions
         (restricting the calculation to the passed-in case if it's
@@ -722,8 +731,7 @@ class ChoicesFile:
 
         return False
 
-
-    def has_det_case(self, case = '', check_opt = False):
+    def has_det_case(self, case='', check_opt=False):
         """
         Returns True iff the target language has inflecting determiners
         which agree with nouns in CASE.
@@ -744,9 +752,7 @@ class ChoicesFile:
 
         return False
 
-
-
-    def has_optadp_case(self, case = ''):
+    def has_optadp_case(self, case=''):
         """
         Returns True iff the target language has optional case-marking
         adpositions (restricting the calculation to the passed-in case if
@@ -755,8 +761,7 @@ class ChoicesFile:
 
         return self.has_adp_case(case, True)
 
-
-    def has_mixed_case(self, case = ''):
+    def has_mixed_case(self, case=''):
         """
         Returns True iff the target language has both case-marking
         adpositions and case on nouns (restricting the calculation to the
@@ -765,9 +770,9 @@ class ChoicesFile:
 
         return self.has_noun_case(case) and self.has_adp_case(case)
 
-
     # case_head()
-    def case_head(self, case = ''):
+
+    def case_head(self, case=''):
         """
         Returns the appropriate head type for case-marked arguments in the
         target language (restricting the calculation to the passed-in case
@@ -787,13 +792,11 @@ class ChoicesFile:
         else:
             return 'noun'
 
-
     def has_dirinv(self):
         """
         Returns True iff the target language has a direct-inverse scale.
         """
         return 'scale' in self.choices
-
 
     def has_gender(self):
         return 'gender' in self.choices
@@ -815,8 +818,8 @@ class ChoicesFile:
                 result = result or feat['head'] in ('higher', 'lower')
 
         for verb_pc in self.get('verb-pc'):
-            for lrt in verb_pc.get('lrt',[]):
-                for feat in lrt.get('feat',[]):
+            for lrt in verb_pc.get('lrt', []):
+                for feat in lrt.get('feat', []):
                     result = result or feat['head'] in ('higher', 'lower')
 
         return result
@@ -831,9 +834,6 @@ class ChoicesFile:
             elif qpart['wh'] == 'imp':
                 imp += 1
         return (oblig > 0 and imp > 0)
-
-
-
 
     # patterns()
     #   Create and return a list containing information about the
@@ -853,6 +853,7 @@ class ChoicesFile:
     #   should be used on lexical types (subtypes of verb-lex).  The
     #   fourth argument is true if the verb follows a direct-inverse
     #   marking pattern.
+
     def patterns(self):
         cm = self.get('case-marking')
         cases = case.case_names(self)
@@ -861,39 +862,39 @@ class ChoicesFile:
 
         # Fill in the canonical names based on the case-marking.
         if cm == 'nom-acc':
-            patterns += [ ['nom', '', False] ]
-            patterns += [ ['nom-acc', '', False] ]
+            patterns += [['nom', '', False]]
+            patterns += [['nom-acc', '', False]]
         elif cm == 'erg-abs':
-            patterns += [ ['abs', '', False] ]
-            patterns += [ ['erg-abs', '', False] ]
+            patterns += [['abs', '', False]]
+            patterns += [['erg-abs', '', False]]
         elif cm == 'tripartite':
-            patterns += [ ['s_case', '', False] ]
-            patterns += [ ['a_case-o_case', '', False] ]
+            patterns += [['s_case', '', False]]
+            patterns += [['a_case-o_case', '', False]]
         elif cm == 'split-s':
-            patterns += [ ['a_case', '', False] ]
-            patterns += [ ['o_case', '', False] ]
-            patterns += [ ['a_case-o_case', '', False] ]
+            patterns += [['a_case', '', False]]
+            patterns += [['o_case', '', False]]
+            patterns += [['a_case-o_case', '', False]]
         elif cm == 'fluid-s':
-            patterns += [ ['a_case', '', False] ]
-            patterns += [ ['o_case', '', False] ]
-            patterns += [ ['a_case+o_case', '', False] ]
-            patterns += [ ['a_case-o_case', '', False] ]
+            patterns += [['a_case', '', False]]
+            patterns += [['o_case', '', False]]
+            patterns += [['a_case+o_case', '', False]]
+            patterns += [['a_case-o_case', '', False]]
         elif cm == 'split-n':
-            patterns += [ ['s_case', '', False] ]
-            patterns += [ ['a_case-o_case', '', False] ]
+            patterns += [['s_case', '', False]]
+            patterns += [['a_case-o_case', '', False]]
         elif cm == 'split-v':
-            patterns += [ ['nom', '', True] ]
-            patterns += [ ['abs', '', True] ]
-            patterns += [ ['nom-acc', '', True] ]
-            patterns += [ ['erg-abs', '', True] ]
+            patterns += [['nom', '', True]]
+            patterns += [['abs', '', True]]
+            patterns += [['nom-acc', '', True]]
+            patterns += [['erg-abs', '', True]]
         elif cm == 'focus':
-            patterns += [ ['focus', '', True] ]
-            patterns += [ ['focus-o_case', '', True] ]
-            patterns += [ ['a_case-focus', '', True] ]
+            patterns += [['focus', '', True]]
+            patterns += [['focus-o_case', '', True]]
+            patterns += [['a_case-focus', '', True]]
 
         # Add intransitive and transitive, which are always available.
-        patterns += [ ['intrans', '', False] ]
-        patterns += [ ['trans', '', False] ]
+        patterns += [['intrans', '', False]]
+        patterns += [['trans', '', False]]
 
         # Fill in the friendly names based on the canonical names
         w = None
@@ -917,32 +918,36 @@ class ChoicesFile:
         if self.has_dirinv():
             for i in range(0, len(patterns)):
                 if patterns[i][0] == 'trans' or patterns[i][0].find('-') != -1:
-                    patterns += [ [ patterns[i][0] + ',dirinv',
-                                    patterns[i][1] + ', direct-inverse',
-                                    patterns[i][2] ] ]
+                    patterns += [[patterns[i][0] + ',dirinv',
+                                  patterns[i][1] + ', direct-inverse',
+                                  patterns[i][2]]]
 
         # Extend the patterns to include clausal complement strategies
         for ccs in self['comps']:
-            patterns += [ [ 'trans,%s'%(ccs.full_key), 'transitive-clausal-%s (case unspecified)' % (ccs.full_key), False] ]
+            patterns += [['trans,%s' %
+                          (ccs.full_key), 'transitive-clausal-%s (case unspecified)' % (ccs.full_key), False]]
             if w and w[0] and w[1]:
                 if clausalcomps.is_nominalized_complement(ccs):
-                    patterns += [ [ '%s-%s,%s'% (w[0],w[1],ccs.full_key), 'transitive-clausal-%s (%s-%s)' % (ccs.full_key,w[0],w[1]), False] ]
+                    patterns += [['%s-%s,%s' % (w[0], w[1], ccs.full_key),
+                                  'transitive-clausal-%s (%s-%s)' % (ccs.full_key, w[0], w[1]), False]]
             if w and w[0] and not cm == 'focus':
-                patterns += [ [ '%s,%s'%(w[0],ccs.full_key), 'transitive-clausal-%s (%s-unspecified)' % (ccs.full_key,w[0]), False] ]
+                patterns += [['%s,%s' % (w[0], ccs.full_key),
+                              'transitive-clausal-%s (%s-unspecified)' % (ccs.full_key, w[0]), False]]
         return patterns
-
 
     # numbers()
     #   Create and return a list containing information about the values
     #   of the number feature implied by the current choices.
     #   This list consists of tuples:
     #     [name, supertype;supertype;...]
+
     def numbers(self):
         numbers = []
 
         for n in self.get('number'):
             name = n['name']
-            stype = ';'.join([s['name'] for s in n.get('supertype',[])]) or 'number'
+            stype = ';'.join([s['name']
+                              for s in n.get('supertype', [])]) or 'number'
             numbers += [[name, stype]]
 
         return numbers
@@ -977,7 +982,6 @@ class ChoicesFile:
 
         return persons
 
-
     # pernums()
     #   Create and return a list containing information about the values
     #   of the pernum feature implied by the current choices.  A pernum
@@ -985,6 +989,7 @@ class ChoicesFile:
     #   first-person plural has sub-types.
     #   This list consists of tuples:
     #     [name, supertype;supertype;...]
+
     def pernums(self):
         pernums = []
 
@@ -1034,18 +1039,19 @@ class ChoicesFile:
 
         return pernums
 
-
     # genders()
     #   Create and return a list containing information about the
     #   genders implied by the current choices.
     #   This list consists of tuples:
     #     [name, supertype;supertype;...]
+
     def genders(self):
         genders = []
 
         for g in self.get('gender'):
             name = g['name']
-            stype = ';'.join([s['name'] for s in g.get('supertype',[])]) or 'gender'
+            stype = ';'.join([s['name']
+                              for s in g.get('supertype', [])]) or 'gender'
             genders += [[name, stype]]
 
         return genders
@@ -1058,7 +1064,8 @@ class ChoicesFile:
     #     [name, supertype]
     def forms(self):
         if 'form-fin-nf' in self and self['form-fin-nf'] == 'on':
-            forms = [['form','form'],['finite','form'],['nonfinite','form']]
+            forms = [['form', 'form'], [
+                'finite', 'form'], ['nonfinite', 'form']]
             for f in self.get('form-subtype'):
                 name = f['name']
                 stype = f.get('supertype') if f.get('supertype') else 'form'
@@ -1081,10 +1088,10 @@ class ChoicesFile:
                 if ten in self.choices:
                     tenses += [[ten]]
                     for t_st in self.get(ten + '-subtype'):
-                        tenses += [ [t_st['name']] ]
+                        tenses += [[t_st['name']]]
         elif tdefn == 'build':
             for ten in self.get('tense'):
-                tenses += [ [ten['name']] ]
+                tenses += [[ten['name']]]
 
         return tenses
 
@@ -1141,7 +1148,7 @@ class ChoicesFile:
                     evidentials += [[evid]]
         elif evidential_definition == 'build':
             for evid in self.get('evidential'):
-                evidentials += [ [evid['name']] ]
+                evidentials += [[evid['name']]]
 
         return evidentials
 
@@ -1162,15 +1169,15 @@ class ChoicesFile:
         """
         values = ';'.join([x[i1] + '|' + x[i2] for x in feat_list])
         if values:
-            return [ [label, values, tdl, cat, customized] ]
+            return [[label, values, tdl, cat, customized]]
         return []
 
     def index_features(self):
         """
         Return the list of features that are marked on INDEX.
         """
-        return ['person','number','gender'] \
-               + [f['name'] for f in self['feature'] if f['type'] == 'index']
+        return ['person', 'number', 'gender'] \
+            + [f['name'] for f in self['feature'] if f['type'] == 'index']
 
     # features()
     #   Create and return a list containing information about the
@@ -1226,10 +1233,10 @@ class ChoicesFile:
         features += self.__get_features(self.aspects(), 0, 0, 'aspect',
                                         'LOCAL.CONT.HOOK.INDEX.E.ASPECT', 'verb', 'y')
 
-        #Situation Aspect
+        # Situation Aspect
         features += self.__get_features(self.situations(), 0, 0, 'situation',
                                         'LOCAL.CONT.HOOK.INDEX.E.SITUATION', 'verb', 'y')
-        #Mood
+        # Mood
         features += self.__get_features(self.moods(), 0, 0, 'mood',
                                         'LOCAL.CONT.HOOK.INDEX.E.MOOD', 'verb', 'y')
         # Evidentials
@@ -1237,40 +1244,44 @@ class ChoicesFile:
                                         '', 'verb', 'y')
         # Direction
         if self.has_dirinv():
-            features += [ ['direction', 'dir|direct;inv|inverse', '', 'verb', 'y'] ]
+            features += [['direction',
+                          'dir|direct;inv|inverse', '', 'verb', 'y']]
 
         # Negation
-        if  'infl-neg' in self.choices or 'neg-aux' in self.choices:
-            features += [ ['negation', 'plus|plus;minus|minus', '', 'verb', 'y'] ]
+        if 'infl-neg' in self.choices or 'neg-aux' in self.choices:
+            features += [['negation', 'plus|plus;minus|minus', '', 'verb', 'y']]
         # if 'neg1b-neg2b' in self.choices:
         #  features += [ ['neg2', 'plus|plus', '', 'verb' ] ]
 
         # Possessives EKN 2017-01-13
         for strat in self.get('poss-strat'):
-            if strat.get('possessor-type')=='affix' or strat.get('possessum-type')=='affix':
-                strat_name=strat.full_key
-                features += [ [ strat_name, 'possessor|possessor;possessum|possessum;nonpossessive|nonpossessive', '', 'noun', 'y'] ]
+            if strat.get('possessor-type') == 'affix' or strat.get('possessum-type') == 'affix':
+                strat_name = strat.full_key
+                features += [[strat_name, 'possessor|possessor;possessum|possessum;nonpossessive|nonpossessive', '', 'noun', 'y']]
         for pron in self.get('poss-pron'):
-            if pron.get('type')=='affix':
-                pron_name=pron.full_key
-                features += [ [ pron_name,'plus|plus;minus|minus', '', 'noun', 'y' ] ]
-            if pron.get('type')=='non-affix':
-                if pron.get('possessum-mark')=='yes':
-                    if pron.get('possessum-mark-type')=='affix':
-                        pron_name=pron.full_key
-                        features += [ [ pron_name+'_possessum','plus|plus;minus|minus', '', 'noun', 'y' ] ]
-
+            if pron.get('type') == 'affix':
+                pron_name = pron.full_key
+                features += [[pron_name,
+                              'plus|plus;minus|minus', '', 'noun', 'y']]
+            if pron.get('type') == 'non-affix':
+                if pron.get('possessum-mark') == 'yes':
+                    if pron.get('possessum-mark-type') == 'affix':
+                        pron_name = pron.full_key
+                        features += [[pron_name+'_possessum',
+                                      'plus|plus;minus|minus', '', 'noun', 'y']]
 
         # Questions
         if 'q-infl' in self.choices and not 'wh-q-infl' in self.choices:
-            features += [ ['question', 'polar|polar', '', 'verb', 'y'] ]
+            features += [['question', 'polar|polar', '', 'verb', 'y']]
         elif 'q-infl' in self.choices and 'wh-q-infl' in self.choices:
-            features += [ ['question', 'polar|polar;wh|wh;both|both;no|no', '', 'verb', 'y'] ]
+            features += [['question',
+                          'polar|polar;wh|wh;both|both;no|no', '', 'verb', 'y']]
         # Information Structure
         infostr_values = 'focus|focus;topic|topic;contrast|contrast;semantic-focus|non-contrastive-focus;contrast-focus|contrastive-focus;aboutness-topic|non-contrastive-topic;contrast-topic|contrastive-topic;focus-or-topic|focus-or-topic;contrast-or-focus|contrast-or-focus;contrast-or-topic|contrast-or-topic;non-topic|non-topic;non-focus|non-focus;bg|background'
         #mkg_values = 'fc|focus;tp|topic;fc-only|focus-only;tp-only|topic-only;fc-+-tp|focus-and-topic;non-tp|non-topic;non-fc|non-focus;unmkg|unmarking'
         #features += [ ['information-structure marking', mkg_values, 'LOCAL.CAT.MKG', 'both', 'n'] ]
-        features += [ ['information-structure meaning', infostr_values, 'LOCAL.CONT.HOOK.ICONS-KEY', 'both', 'n'] ]
+        features += [['information-structure meaning',
+                      infostr_values, 'LOCAL.CONT.HOOK.ICONS-KEY', 'both', 'n']]
 
         # Nominalization
         if 'ns' in self.choices:
@@ -1280,61 +1291,60 @@ class ChoicesFile:
                     nom_types += (ns.get('name') + '|' + ns.get('name'))
                 else:
                     nom_types += (';' + ns.get('name') + '|' + ns.get('name'))
-            features += [ ['nominalization', nom_types, '', 'verb', 'y'] ]
-
+            features += [['nominalization', nom_types, '', 'verb', 'y']]
 
         # Argument Optionality
         if 'subj-drop' in self.choices or 'obj-drop' in self.choices:
-            features +=[['OPT', 'plus|plus;minus|minus', '', 'verb', 'y']]
+            features += [['OPT', 'plus|plus;minus|minus', '', 'verb', 'y']]
 
         perm_notperm_string = 'permitted|permitted;not-permitted|not-permitted'
         # Overt Argument
         if self.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt' and \
-                        self.get('obj-mark-drop') == 'obj-mark-drop-req':
+                self.get('obj-mark-drop') == 'obj-mark-drop-req':
             features += [['overt-arg', perm_notperm_string, '', '', '']]
         elif self.get('obj-mark-no-drop') == 'obj-mark-no-drop-not' and \
-                        self.get('obj-mark-drop') == 'obj-mark-drop-req':
+                self.get('obj-mark-drop') == 'obj-mark-drop-req':
             features += [['overt-arg', perm_notperm_string, '', '', '']]
         elif self.get('subj-mark-no-drop') == 'subj-mark-no-drop-not' and \
-                        self.get('subj-mark-drop') == 'subj-mark-drop-req':
+                self.get('subj-mark-drop') == 'subj-mark-drop-req':
             features += [['overt-arg', perm_notperm_string, '', '', '']]
         elif self.get('obj-mark-no-drop') == 'obj-mark-no-drop-not' and \
-                        self.get('obj-mark-drop') == 'obj-mark-drop-opt' :
+                self.get('obj-mark-drop') == 'obj-mark-drop-opt':
             features += [['overt-arg', perm_notperm_string, '', '', '']]
         elif self.get('subj-mark-no-drop') == 'subj-mark-no-drop-not' and \
-                        self.get('subj-mark-drop') == 'subj-mark-drop-opt' :
+                self.get('subj-mark-drop') == 'subj-mark-drop-opt':
             features += [['overt-arg', perm_notperm_string, '', '', '']]
         elif self.get('subj-mark-no-drop') == 'subj-mark-no-drop-opt' and \
-                        self.get('subj-mark-drop') == 'subj-mark-drop-req':
+                self.get('subj-mark-drop') == 'subj-mark-drop-req':
             features += [['overt-arg', perm_notperm_string, '', '', '']]
 
         # Dropped Argument
-        #if self.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt' and \
+        # if self.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt' and \
         #   self.get('obj-mark-drop') == 'obj-mark-drop-req':
         #  features += [['dropped-arg', perm_notperm_string, '']]
-        #if self.get('subj-mark-no-drop') == 'subj-mark-no-drop-opt' and \
+        # if self.get('subj-mark-no-drop') == 'subj-mark-no-drop-opt' and \
         #     self.get('subj-mark-drop') == 'subj-mark-drop-req':
         #  features += [['dropped-arg', perm_notperm_string, '']]
         if self.get('obj-mark-drop') == 'obj-mark-drop-not' and \
-                        self.get('obj-mark-no-drop') == 'obj-mark-no-drop-req':
-            features += [['dropped-arg', perm_notperm_string,'', '', '']]
+                self.get('obj-mark-no-drop') == 'obj-mark-no-drop-req':
+            features += [['dropped-arg', perm_notperm_string, '', '', '']]
         elif self.get('obj-mark-drop') == 'obj-mark-drop-not' and \
-                        self.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt':
-            features += [['dropped-arg', perm_notperm_string,'', '', '']]
+                self.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt':
+            features += [['dropped-arg', perm_notperm_string, '', '', '']]
         elif self.get('obj-mark-drop') == 'obj-mark-drop-opt' and \
-                        self.get('obj-mark-no-drop') == 'obj-mark-no-drop-req':
+                self.get('obj-mark-no-drop') == 'obj-mark-no-drop-req':
             features += [['dropped-arg', perm_notperm_string, '', '', '']]
         elif self.get('subj-mark-drop') == 'subj-mark-drop-not' and \
-                        self.get('subj-mark-no-drop') == 'subj-mark-no-drop-req':
-            features += [['dropped-arg', perm_notperm_string,'', '', '']]
+                self.get('subj-mark-no-drop') == 'subj-mark-no-drop-req':
+            features += [['dropped-arg', perm_notperm_string, '', '', '']]
         elif self.get('subj-mark-drop') == 'subj-mark-drop-not' and \
-                        self.get('subj-mark-no-drop') == 'subj-mark-no-drop-opt':
-            features += [['dropped-arg', perm_notperm_string,'', '', '']]
+                self.get('subj-mark-no-drop') == 'subj-mark-no-drop-opt':
+            features += [['dropped-arg', perm_notperm_string, '', '', '']]
         elif self.get('subj-mark-drop') == 'subj-mark-drop-opt' and \
-                        self.get('subj-mark-no-drop') == 'subj-mark-no-drop-req':
-            features += [['dropped-arg', perm_notperm_string,'', '', '']]
+                self.get('subj-mark-no-drop') == 'subj-mark-no-drop-req':
+            features += [['dropped-arg', perm_notperm_string, '', '', '']]
 
-            #elif self.get('subj-mark-drop') == 'subj-mark-drop-opt') and self.get('subj-mark-no-drop') == 'subj-mark-no-drop-req': features += [['dropped-arg', perm_notperm_string, '']]
+            # elif self.get('subj-mark-drop') == 'subj-mark-drop-opt') and self.get('subj-mark-no-drop') == 'subj-mark-no-drop-req': features += [['dropped-arg', perm_notperm_string, '']]
 
         for feature in self.get('feature'):
             feat_name = feature['name']
@@ -1358,10 +1368,9 @@ class ChoicesFile:
                 geom = 'LOCAL.CONT.HOOK.INDEX.PNG.' + feat_name.upper()
 
             if len(values) > 0:
-                features += [ [feat_name, values, geom, feat_cat, 'y'] ]
+                features += [[feat_name, values, geom, feat_cat, 'y']]
 
         return features
-
 
     ######################################################################
     # Conversion methods: each of these functions assumes the choices
@@ -1374,6 +1383,7 @@ class ChoicesFile:
     # The mehods should consist of a sequence of calls to
     # convert_value(), followed by a sequence of calls to convert_key().
     # That way the calls always contain an old name and a new name.
+
     def current_version(self):
         return 34
 
@@ -1539,7 +1549,6 @@ class ChoicesFile:
         self.convert_key('objAdp', 'obj-adp-order')
 
         self.convert_key('negadvform', 'neg-adv-orth')
-
 
     def convert_1_to_2(self):
         # The old 'ques' radio button has been converted into a series of
@@ -1803,23 +1812,25 @@ class ChoicesFile:
         # use the name of the feature.
         for feature in self['feature']:
             fname = feature['name']
-            for value in feature.get('value',[]):
-                for st in value.get('supertype',[]):
+            for value in feature.get('value', []):
+                for st in value.get('supertype', []):
                     self.convert_value(st.full_key + '_name', 'root', fname)
 
     def convert_8_to_9(self):
         # finite and nonfinite feature value name changes
         # in aux complement form values
         for aux in self['aux']:
-            self.convert_value(aux.full_key + '_compform','fin','finite')
+            self.convert_value(aux.full_key + '_compform', 'fin', 'finite')
             self.convert_value(aux.full_key + '_compform', 'nf', 'nonfinite')
         # in slot feature values
-        for lextype in ['aux','det','verb','noun']:
+        for lextype in ['aux', 'det', 'verb', 'noun']:
             for slot in self[lextype + '-slot']:
-                for morph in slot.get('morph',[]):
-                    for feat in morph.get('feat',[]):
-                        self.convert_value(feat.full_key + '_value','fin','finite')
-                        self.convert_value(feat.full_key + '_value','nf','nonfinite')
+                for morph in slot.get('morph', []):
+                    for feat in morph.get('feat', []):
+                        self.convert_value(
+                            feat.full_key + '_value', 'fin', 'finite')
+                        self.convert_value(
+                            feat.full_key + '_value', 'nf', 'nonfinite')
 
     def convert_9_to_10(self):
         """
@@ -1873,12 +1884,13 @@ class ChoicesFile:
         ERB: stupidly used "+" as a feature value.  Updating this
         to "plus".  Feature name was "negation".
         """
-        for lextype in ['aux','det','verb','noun']:
+        for lextype in ['aux', 'det', 'verb', 'noun']:
             for lt in self[lextype + '-slot']:
-                for morph in lt.get('morph',[]):
-                    for feat in morph.get('feat',[]):
+                for morph in lt.get('morph', []):
+                    for feat in morph.get('feat', []):
                         if feat['name'] == 'negation':
-                            self.convert_value(feat.full_key + '_value','+','plus')
+                            self.convert_value(
+                                feat.full_key + '_value', '+', 'plus')
 
     def convert_13_to_14(self):
         """
@@ -1919,12 +1931,12 @@ class ChoicesFile:
         """
 
         for slotprefix in ('noun', 'verb', 'det', 'aux'):
-            for slot in self.get(slotprefix + '-slot',[]):
+            for slot in self.get(slotprefix + '-slot', []):
                 constraints = []
 
                 for contype in ('forces', 'req', 'disreq'):
                     for ct in slot.get(contype, []):
-                        constraints += [ [ contype, ct.get('type') ] ]
+                        constraints += [[contype, ct.get('type')]]
                     if contype in slot:
                         del slot[contype]
 
@@ -1947,7 +1959,7 @@ class ChoicesFile:
 
         if len(mvalues) == 0:
             return
-        next_feat_index = len(self.get('feature',[])) + 1
+        next_feat_index = len(self.get('feature', [])) + 1
         feat_key = 'feature%d' % (next_feat_index)
 
         self[feat_key + '_name'] = 'mark'
@@ -1966,7 +1978,7 @@ class ChoicesFile:
         """
         for aux in self['aux']:
             complementform = aux.get('compform')
-            for cf in aux.get('compfeature',[]):
+            for cf in aux.get('compfeature', []):
                 self.convert_key('compvalue', 'value', key_prefix=cf.full_key)
             index = str(len(aux.get('compfeature', [])) + 1)
             new_key = aux.full_key + '_compfeature' + index
@@ -2026,13 +2038,13 @@ class ChoicesFile:
             wo = self.get('word-order')
             if self.get('aux-comp') == 'v':
                 if wo == 'free':
-                    self.convert_key('v-cluster','multiple-aux')
+                    self.convert_key('v-cluster', 'multiple-aux')
                 elif wo == 'vso' or wo == 'osv':
                     if self.get('v-cluster') == 'no':
-                        self.convert_value('aux-comp','v','vp')
+                        self.convert_value('aux-comp', 'v', 'vp')
         else:
             pass
-        #if v-comp if free word order if v-cluster more than one aux, if no cluster 1max
+        # if v-comp if free word order if v-cluster more than one aux, if no cluster 1max
         # if svo,ovs do nothing, else v-comp is vp-comp
 
     def convert_20_to_21(self):
@@ -2050,10 +2062,13 @@ class ChoicesFile:
         """
         for slotprefix in ('noun', 'verb', 'det', 'aux', 'adj'):
             for slot in self.get(slotprefix + '-slot'):
-                for const in slot.get('constraint',[]):
-                    self.convert_value(const.full_key + '_type', 'forces', 'require')
-                    self.convert_value(const.full_key + '_type', 'req', 'require')
-                    self.convert_value(const.full_key + '_type', 'disreq', 'forbid')
+                for const in slot.get('constraint', []):
+                    self.convert_value(
+                        const.full_key + '_type', 'forces', 'require')
+                    self.convert_value(
+                        const.full_key + '_type', 'req', 'require')
+                    self.convert_value(
+                        const.full_key + '_type', 'disreq', 'forbid')
                 if 'opt' in slot:
                     del slot['opt']
                 else:
@@ -2068,18 +2083,21 @@ class ChoicesFile:
             for x_type in ('', '-slot'):
                 for slot in self.get(x + x_type):
                     constraints = {'require': [], 'forbid': []}
-                    if 'constraint' not in slot: continue
-                    for const in slot.get('constraint',[]):
+                    if 'constraint' not in slot:
+                        continue
+                    for const in slot.get('constraint', []):
                         if const['type'] == 'require':
                             constraints['require'] += [const['other-slot']]
                         elif const['type'] == 'forbid':
                             constraints['forbid'] += [const['other-slot']]
                     del slot['constraint']
                     for i, req in enumerate(constraints['require']):
-                        key = slot.full_key + '_require' + str(i + 1) + '_other-slot'
+                        key = slot.full_key + '_require' + \
+                            str(i + 1) + '_other-slot'
                         self[key] = req
                     for i, fbd in enumerate(constraints['forbid']):
-                        key = slot.full_key + '_forbid' + str(i + 1) + '_other-slot'
+                        key = slot.full_key + '_forbid' + \
+                            str(i + 1) + '_other-slot'
                         self[key] = fbd
 
     def convert_22_to_23(self):
@@ -2094,7 +2112,7 @@ class ChoicesFile:
             """
             Nested function to help with converting constraints.
             """
-            for c in lex.get(constraint,[]):
+            for c in lex.get(constraint, []):
                 self.convert_value(c.full_key + '_other-slot',
                                    '-slot', '-pc', partial=True)
                 self.convert_key('other-slot', 'others', key_prefix=c.full_key)
@@ -2109,21 +2127,25 @@ class ChoicesFile:
                 convert_constraint(slot, 'require')
                 convert_constraint(slot, 'forbid')
                 # normalize order values
-                self.convert_value(slot.full_key + '_order', 'before', 'prefix')
+                self.convert_value(slot.full_key + '_order',
+                                   'before', 'prefix')
                 self.convert_value(slot.full_key + '_order', 'after', 'suffix')
                 # inputs
                 all_inps = ', '.join([inp['type'] for inp in slot['input']])
                 del self[slot.full_key + '_input']
-                self[slot.full_key + '_inputs'] = all_inps.replace('-slot', '-pc')
+                self[slot.full_key +
+                     '_inputs'] = all_inps.replace('-slot', '-pc')
                 # morphs and orths
                 for morph in slot['morph']:
                     if 'orth' in morph:
                         morph['lri1_inflecting'] = 'yes'
-                        self.convert_key('orth', 'lri1_orth', key_prefix=morph.full_key)
+                        self.convert_key('orth', 'lri1_orth',
+                                         key_prefix=morph.full_key)
                     else:
                         morph['lri1_inflecting'] = 'no'
                         morph['lri1_orth'] = ''
-                self.convert_key(slot.full_key + '_morph', slot.full_key + '_lrt')
+                self.convert_key(slot.full_key + '_morph',
+                                 slot.full_key + '_lrt')
             # finally, change -slot keys to -pc
             self.convert_key(lex_cat + '-slot', lex_cat + '-pc')
 
@@ -2134,7 +2156,7 @@ class ChoicesFile:
         (if the user adds it as a parsable punctuation in the general page).
         """
         for sentence in self['sentence']:
-            if sentence.get('orth','').startswith('*'):
+            if sentence.get('orth', '').startswith('*'):
                 sentence['star'] = 'on'
                 sentence['orth'] = sentence['orth'].lstrip('*')
 
@@ -2163,23 +2185,24 @@ class ChoicesFile:
         with the new negation library.
         """
         if (self.get('infl-neg')) and (not self.get('neg-exp')):
-            self['neg-exp']='1'
+            self['neg-exp'] = '1'
 
-        mtr = [ 'e', 'i', 'h', 'p', 'u', 'x', 'E', 'I', 'H', 'P', 'U', 'X' ]
+        mtr = ['e', 'i', 'h', 'p', 'u', 'x', 'E', 'I', 'H', 'P', 'U', 'X']
         for g in self.get('gender'):
             name = g['name']
             if name in mtr:
                 self.convert_value(g.full_key + '_name', name, '_'+name)
 
-        inproper_case_names = [ 'a', 'o', 's', 'A', 'O', 'S' ]
+        inproper_case_names = ['a', 'o', 's', 'A', 'O', 'S']
 
         cm = self.get('case-marking')
         for name in inproper_case_names:
             case_name = self.get(cm + '-' + name + '-case-name')
             if case_name == name:
-                self.convert_value(cm + '-' + name + '-case-name', case_name, case_name + '_case')
+                self.convert_value(cm + '-' + name + '-case-name',
+                                   case_name, case_name + '_case')
 
-        for lex_cat in ['aux','det','verb','noun', 'adp']:
+        for lex_cat in ['aux', 'det', 'verb', 'noun', 'adp']:
             for lex_type in self[lex_cat]:
                 for feat in lex_type['feat']:
                     name = feat['name']
@@ -2214,7 +2237,6 @@ class ChoicesFile:
                         tmp += delimiter
                 lex_type['valence'] = tmp
 
-
             for pc in self[lex_cat + '-pc']:
                 for lrt in pc['lrt']:
                     for feat in lrt['feat']:
@@ -2230,7 +2252,8 @@ class ChoicesFile:
                                     tmp += vs[i]
                                 if i < (len(vs) - 1):
                                     tmp += ', '
-                            self.convert_value(feat.full_key + '_value', value, tmp)
+                            self.convert_value(
+                                feat.full_key + '_value', value, tmp)
                         if name == 'argument structure':
                             argst = value.split('-')
                             tmp = ''
@@ -2241,8 +2264,8 @@ class ChoicesFile:
                                     tmp += argst[i]
                                 if i < (len(argst) - 1):
                                     tmp += '-'
-                            self.convert_value(feat.full_key + '_value', value, tmp)
-
+                            self.convert_value(
+                                feat.full_key + '_value', value, tmp)
 
         for feature in self.get('feature'):
             if 'new' not in feature:
@@ -2254,41 +2277,48 @@ class ChoicesFile:
         This uprev converts the names involving topicality in other features.
         """
         for feature in self.get('feature'):
-            self.convert_value(feature.full_key + '_name', 'topicality', '_topicality')
+            self.convert_value(feature.full_key + '_name',
+                               'topicality', '_topicality')
             for value in feature['value']:
                 self.convert_value(value.full_key + '_name', 'topic', '_topic')
-                self.convert_value(value.full_key + '_name', 'non-topic', '_non-topic')
+                self.convert_value(value.full_key + '_name',
+                                   'non-topic', '_non-topic')
                 for supertype in value['supertype']:
-                    self.convert_value(supertype.full_key + '_name', 'topicality', '_topicality')
+                    self.convert_value(supertype.full_key +
+                                       '_name', 'topicality', '_topicality')
 
         for scale in self.get('scale'):
             for feat in scale['feat']:
-                self.convert_value(feat.full_key + '_name', 'topicality', '_topicality')
+                self.convert_value(feat.full_key + '_name',
+                                   'topicality', '_topicality')
                 self.convert_value(feat.full_key + '_value', 'topic', '_topic')
-                self.convert_value(feat.full_key + '_value', 'non-topic', '_non-topic')
+                self.convert_value(feat.full_key + '_value',
+                                   'non-topic', '_non-topic')
 
         for cat in ['noun-pc', 'verb-pc']:
             for pc in self.get(cat):
                 self.convert_value(pc.full_key + '_name', 'topic', '_topic')
                 for lrt in pc['lrt']:
                     for feat in lrt['feat']:
-                        self.convert_value(feat.full_key + '_name', 'topicality', '_topicality')
-                        self.convert_value(feat.full_key + '_value', 'topic', '_topic')
-                        self.convert_value(feat.full_key + '_value', 'non-topic', '_non-topic')
+                        self.convert_value(
+                            feat.full_key + '_name', 'topicality', '_topicality')
+                        self.convert_value(
+                            feat.full_key + '_value', 'topic', '_topic')
+                        self.convert_value(
+                            feat.full_key + '_value', 'non-topic', '_non-topic')
 
     def convert_27_to_28(self):
         """
         This uprev converts uppercase affixes into lowercase ones, because
         ACE does not handle uppercase suffixes.
         """
-        for lex_cat in ['det','verb','noun',]:
+        for lex_cat in ['det', 'verb', 'noun', ]:
             for pc in self[lex_cat + '-pc']:
                 for lrt in pc['lrt']:
                     for lri in lrt['lri']:
                         orth = lri['orth']
-                        self.convert_value(lri.full_key + '_orth', orth, orth.lower())
-
-
+                        self.convert_value(
+                            lri.full_key + '_orth', orth, orth.lower())
 
     def convert_28_to_29(self):
         """
@@ -2308,7 +2338,7 @@ class ChoicesFile:
         for subtype in self.get('fin-subform'):
             subtype['supertype'] = 'finite'
         if 'nf-subform' in self and 'fin-subform' in self:
-            self.combine_keys('form-subtype','nf-subform','fin-subform')
+            self.combine_keys('form-subtype', 'nf-subform', 'fin-subform')
         elif 'nf-subform' in self:
             self.convert_key('nf-subform', 'form-subtype')
         elif 'fin-subform' in self:
@@ -2324,7 +2354,7 @@ class ChoicesFile:
 
     def convert_30_to_31(self):
         for cs in self.get('comps'):
-            self.convert_key('complementizer','stem',cs.full_key)
+            self.convert_key('complementizer', 'stem', cs.full_key)
 
     def convert_31_to_32(self):
         wo = self.get('word-order')
@@ -2335,10 +2365,10 @@ class ChoicesFile:
         else:
             hc = 'either'
         for strat in self.get('poss-strat'):
-            if strat.get('possessor-type')=='non-affix':
+            if strat.get('possessor-type') == 'non-affix':
                 if not strat.get('possessor-mark-order'):
                     strat['possessor-mark-order'] = hc
-            if strat.get('possessum-type')=='non-affix':
+            if strat.get('possessum-type') == 'non-affix':
                 if not strat.get('possessum-mark-order'):
                     strat['possessum-mark-order'] = hc
 
@@ -2347,10 +2377,9 @@ class ChoicesFile:
             orth = self.get('q-part-orth')
             self.delete('q-part-orth')
             self['q-particle'] = ChoiceList(full_key='q-particle')
-            cdict = ChoiceDict(full_key = 'q-particle1')
+            cdict = ChoiceDict(full_key='q-particle1')
             cdict['orth'] = orth
             self['q-particle'].append(cdict)
-
 
     def convert_33_to_34(self):
         """
@@ -2389,6 +2418,7 @@ class FormData:
 
     def keys(self):
         return list(self.data.keys())
+
 
 class FormInfo:
     def __init__(self, key, value):

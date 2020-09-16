@@ -1,4 +1,4 @@
-### $Id: utils.py,v 1.8 2008-05-28 21:08:12 sfd Exp $
+# $Id: utils.py,v 1.8 2008-05-28 21:08:12 sfd Exp $
 
 def tokenize_def(str):
     """
@@ -42,6 +42,7 @@ def TDLencode(string):
 
     return val
 
+
 def orth_encode(orthin):
     """
     prepare an orth string in a way that
@@ -59,6 +60,7 @@ def orth_encode(orthin):
 def get_name(item):
     return item.get('name', None) or item.full_key
 
+
 def format_comment_block(comment_string, max_chars=70, prefix=';;;'):
     lines = []
     comment_lines = comment_string.split('\\n')
@@ -72,8 +74,10 @@ def format_comment_block(comment_string, max_chars=70, prefix=';;;'):
                 lines[-1] += ' ' + tok
     return '\n'.join(lines)
 
+
 def verify():
-    return input("  Do you want to continue? (y/n): ").lower() in ('y','yes')
+    return input("  Do you want to continue? (y/n): ").lower() in ('y', 'yes')
+
 
 '''
 2017-12-08 OZ: An attempt to start modularizing the customization code better.
@@ -91,11 +95,14 @@ The idea is that this and similar functions can be used throughout,
 though like I said above I am not sure this is actually better.
 
 '''
+
+
 def merge_constraints(choicedict, mylang, typename, path, key1, key2, val):
     for ch in choicedict[key1]:
         if ch[key2] == val:
             mylang.add(typename + ' := [ ' + path + ' ' + ch['value'] + ' ].',
                        merge=True)
+
 
 def nonempty_ccomp_nmz(ch):
     for cs in ch['comps']:
@@ -106,6 +113,7 @@ def nonempty_ccomp_nmz(ch):
                         if ns['nmzRel'] == 'yes':
                             return True
     return False
+
 
 def has_nmz_ccomp(ch):
     for cs in ch['comps']:

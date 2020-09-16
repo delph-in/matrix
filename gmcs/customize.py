@@ -33,7 +33,7 @@ from gmcs.linglib import toolboximport
 from gmcs.linglib import valence_change
 from gmcs.linglib import verbal_features
 from gmcs.linglib import word_order
-from gmcs.linglib import  wh_ques
+from gmcs.linglib import wh_ques
 from gmcs.linglib import yes_no_questions
 from gmcs.utils import format_comment_block
 
@@ -84,13 +84,13 @@ def customize_punctuation(grammar_path):
                 if line.startswith(':'):
                     line = ":["+default_splits_str+"]"
                 print(line.rstrip('\n'), file=van_rpp)
-    else: #ch.get('punctuation-chars') == 'keep-list':
+    else:  # ch.get('punctuation-chars') == 'keep-list':
         # keep list with the hyphen on the keep list is the new default
         # here we split on the default list (like discard-all),
         # but *minus* whatevers on the keep list
         chars = list(ch['punctuation-chars-list'])
         if not chars:
-            chars = [ '-','=',':' ]
+            chars = ['-', '=', ':']
         filename = os.path.join(grammar_path, 'repp', 'vanilla.rpp')
         with open(filename, 'r', encoding='utf-8') as f:
             lines = f.readlines()
@@ -105,8 +105,8 @@ def customize_punctuation(grammar_path):
                         # so do the other escaped chars!
                         if c == '\\':
                             c = '\\\\'
-                        default_splits_str = default_splits_str.replace(c,'')
-                    line= ":["+default_splits_str+"]"
+                        default_splits_str = default_splits_str.replace(c, '')
+                    line = ":["+default_splits_str+"]"
                 print(line.rstrip('\n'), file=van_rpp)
 
 
@@ -119,7 +119,7 @@ def customize_test_sentences(grammar_path):
         with open(os.path.join(grammar_path, 'lkb/script'), 'r', encoding='utf-8') as b:
             lines = b.readlines()
         with open(os.path.join(grammar_path, 'lkb/script'), 'w', encoding='utf-8') as s, \
-             open(os.path.join(grammar_path, 'test_sentences'), 'w', encoding='utf-8') as ts:
+                open(os.path.join(grammar_path, 'test_sentences'), 'w', encoding='utf-8') as ts:
             for l in lines:
                 l = l.strip()
                 if l == ';;; Modules: Default sentences':
@@ -127,20 +127,21 @@ def customize_test_sentences(grammar_path):
                     s.write('   (setf *last-parses* \'(')
                     if 'sentence' not in ch:
                         s.write('""')
-                    for sentence in ch.get('sentence',[]):
-                        s.write('"' + sentence.get('orth','') + '" ')
+                    for sentence in ch.get('sentence', []):
+                        s.write('"' + sentence.get('orth', '') + '" ')
                         # 2017-12-13 OZ: Adding two lines below.
                         # # Shouldn't the start be printed in test_sentences
                         # if the sentence is ungrammatical? See choices.py uprev convert_23_to_24() though.
                         if sentence['star'] == 'on':
-                            ts.write('*' + sentence.get('orth','') + '\n')
+                            ts.write('*' + sentence.get('orth', '') + '\n')
                         else:
-                            ts.write(sentence.get('orth','') + '\n')
+                            ts.write(sentence.get('orth', '') + '\n')
                     s.write(')))\n')
                 else:
                     s.write(l + '\n')
     except:
         pass
+
 
 def customize_itsdb(grammar_path):
     if 'sentence' not in ch:
@@ -190,6 +191,7 @@ def customize_script(grammar_path):
 # customize_pettdl()
 #
 
+
 def customize_pettdl(grammar_path):
     try:
         with open(os.path.join(get_matrix_core_path(), 'pet.tdl'), 'r', encoding='utf-8') as p_in:
@@ -202,7 +204,8 @@ def customize_pettdl(grammar_path):
                 if l == ':include "matrix".':
                     p_out.write(':include "' + myl + '".\n')
         with open(os.path.join(grammar_path, 'pet/' + myl + '-pet.set'), 'w', encoding='utf-8') as set_out:
-            set_out.write(';;;; settings for CHEAP -*- Mode: TDL; Coding: utf-8 -*-\n')
+            set_out.write(
+                ';;;; settings for CHEAP -*- Mode: TDL; Coding: utf-8 -*-\n')
             set_out.write('include "flop".\n')
             set_out.write('include "pet".\n')
     except:
@@ -211,6 +214,7 @@ def customize_pettdl(grammar_path):
 ######################################################################
 # customize_acetdl()
 #
+
 
 def customize_acetdl(grammar_path):
     myl = ch.get('language').lower()
@@ -224,6 +228,7 @@ def customize_acetdl(grammar_path):
 ######################################################################
 # customize_roots()
 #   Create the file roots.tdl
+
 
 def customize_roots():
     comment = \
@@ -288,7 +293,7 @@ def customize_roots():
 # Automatically create semi.vpm blocks.
 
 def customize_vpm(ch, vpm, hierarchies):
-    #Add default values to the file semi.vpm
+    # Add default values to the file semi.vpm
     vpm.add_literal("""; A basic VPM for Matrix grammars.
 event          <> e
 ref-ind        <> x
@@ -335,6 +340,7 @@ COG-ST : COG-ST
 #   Use shell commands to setup Mercurial or Bazaar, if the user
 #   has specified that they want one or the other.
 
+
 def setup_vcs(ch, grammar_path):
     if 'vcs' in ch:
         with open(os.devnull, 'w') as IGNORE:
@@ -372,6 +378,7 @@ def setup_vcs(ch, grammar_path):
 #   the choices file in the directory 'path'.  This function
 #   assumes that validation of the choices has already occurred.
 
+
 def customize_matrix(path, arch_type, destination=None, force_dest=False):
     if os.path.isdir(path):
         path = os.path.join(path, 'choices')
@@ -396,7 +403,7 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
     os.makedirs(grammar_path)
 
     # Use the following command when python2.6 is available
-    #shutil.copytree('matrix-core', grammar_path,
+    # shutil.copytree('matrix-core', grammar_path,
     #                ignore=shutil.ignore_patterns('.svn'))
     with open(os.devnull, 'w') as IGNORE:
         try:
@@ -429,11 +436,11 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
                             ['lexrules', 'Lexical Rules', True, False],
                             ['phrases', 'Phrasal Types', True, False],
                             ['coord', 'Coordination', True, False]])
-    rules =   tdl.TDLfile(os.path.join(grammar_path, 'rules.tdl'))
-    irules =  tdl.TDLfile(os.path.join(grammar_path, 'irules.tdl'))
-    lrules =  tdl.TDLfile(os.path.join(grammar_path, 'lrules.tdl'))
+    rules = tdl.TDLfile(os.path.join(grammar_path, 'rules.tdl'))
+    irules = tdl.TDLfile(os.path.join(grammar_path, 'irules.tdl'))
+    lrules = tdl.TDLfile(os.path.join(grammar_path, 'lrules.tdl'))
     lexicon = tdl.TDLfile(os.path.join(grammar_path, 'lexicon.tdl'))
-    roots =   tdl.TDLfile(os.path.join(grammar_path, 'roots.tdl'))
+    roots = tdl.TDLfile(os.path.join(grammar_path, 'roots.tdl'))
     trigger = tdl.TDLfile(os.path.join(grammar_path, 'trigger.mtr'))
     trigger.add_literal(';;; Semantically Empty Lexical Entries')
     vpm = tdl.TDLfile(os.path.join(grammar_path, 'semi.vpm'))
@@ -474,7 +481,6 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
     agreement_features.init_agreement_hierarchies(ch, mylang, hierarchies)
     verbal_features.init_verbal_hierarchies(ch, hierarchies)
 
-
     # Integrate choices related to lexical entries imported from
     # Toolbox lexicon file(s), if any.  NOTE: This needs to be called
     # before anything else that looks at the lexicon-related choices,
@@ -489,13 +495,16 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
     # Currently, yes-no questions need to go before the lexicon
     # because the lexicon needs to know whether there are obligatory question particles,
     # to determine the head on the question-embedding verb.
-    yes_no_questions.customize_yesno_questions(mylang, ch, rules, lrules, hierarchies,roots)
+    yes_no_questions.customize_yesno_questions(
+        mylang, ch, rules, lrules, hierarchies, roots)
 
     # The following might modify hierarchies in some way, so it's best
     # to customize those components and only have them contribute their
     # information to lexical rules when we customize inflection.
-    lexical_items.customize_lexicon(mylang, ch, lexicon, trigger, hierarchies, rules)
-    information_structure.customize_information_structure(mylang, ch, rules, irules, lexicon, trigger, hierarchies)
+    lexical_items.customize_lexicon(
+        mylang, ch, lexicon, trigger, hierarchies, rules)
+    information_structure.customize_information_structure(
+        mylang, ch, rules, irules, lexicon, trigger, hierarchies)
     argument_optionality.customize_arg_op(mylang, ch, rules, hierarchies)
     direct_inverse.customize_direct_inverse(ch, mylang, hierarchies)
     case.customize_case(mylang, ch, hierarchies)
@@ -505,7 +514,8 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
     # contributions to the lexical rules
 
     nominalized_clauses.customize_nmcs(mylang, ch, rules, roots)
-    negation.customize_sentential_negation(mylang, ch, lexicon, rules, lrules, hierarchies)
+    negation.customize_sentential_negation(
+        mylang, ch, lexicon, rules, lrules, hierarchies)
 
     add_lexrules_methods = [case.add_lexrules,
                             argument_optionality.add_lexrules,
@@ -521,15 +531,18 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
 
     # Call the other customization functions
     agreement_features.customize_agreement_features(mylang, hierarchies)
-    adnominal_possession.customize_adnominal_possession(mylang,ch,rules,irules,lexicon,hierarchies)
+    adnominal_possession.customize_adnominal_possession(
+        mylang, ch, rules, irules, lexicon, hierarchies)
     verbal_features.customize_verbal_features(mylang, hierarchies)
-    valence_change.customize_valence_change(mylang, ch, lexicon, rules, lrules, hierarchies)
+    valence_change.customize_valence_change(
+        mylang, ch, lexicon, rules, lrules, hierarchies)
     word_order.customize_word_order(mylang, ch, rules)
     coordination.customize_coordination(mylang, ch, lexicon, rules, irules)
-    clausalmods.customize_clausalmods(mylang, ch, lexicon, rules, roots, trigger)
-    clausalcomps.customize_clausalcomps(mylang,ch,lexicon,rules)
-    adverbs_adpositions.customize_adv_adp(ch,mylang,rules)
-    wh_ques.customize_wh_ques(mylang,ch,rules,roots)
+    clausalmods.customize_clausalmods(
+        mylang, ch, lexicon, rules, roots, trigger)
+    clausalcomps.customize_clausalcomps(mylang, ch, lexicon, rules)
+    adverbs_adpositions.customize_adv_adp(ch, mylang, rules)
+    wh_ques.customize_wh_ques(mylang, ch, rules, roots)
 
     # Customization having to do with punctuation, [incr tsdb()],
     # parsers, roots, and vpm.
@@ -558,11 +571,13 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
 
     return grammar_path
 
+
 def get_matrix_core_path():
     # customizationroot is only set for local use. The installation for
     # the questionnaire does not use it.
-    cr = os.environ.get('CUSTOMIZATIONROOT','')
-    if cr: cr = os.path.join(cr, '..')
+    cr = os.environ.get('CUSTOMIZATIONROOT', '')
+    if cr:
+        cr = os.path.join(cr, '..')
     return os.path.join(cr, 'matrix-core')
 
 
@@ -573,7 +588,8 @@ def get_grammar_path(isocode, language, destination):
     '''
     # three possibilities for dir names. If all are taken, raise an exception
     for dir_name in [isocode, language, isocode + '_grammar']:
-        if dir_name == '': continue
+        if dir_name == '':
+            continue
         grammar_path = os.path.join(destination, dir_name.replace(' ', '_'))
         # if grammar_path already exists as a file, it is likely the choices file
         if not (os.path.exists(grammar_path) and os.path.isfile(grammar_path)):
@@ -583,6 +599,7 @@ def get_grammar_path(isocode, language, destination):
 ###############################################################
 # Allow customize_matrix() to be called directly from the
 # command line or shell scripts.
+
 
 if __name__ == "__main__":
     customize_matrix(sys.argv[1], 'tgz')

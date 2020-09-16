@@ -6,6 +6,7 @@ from gmcs.linglib import case
 #   iterator and specify the feature/value pairs found to the
 #   passed-in type.
 
+
 def process_cfv_list(mylang, ch, hierarchies, to_cfv, tdlfile=None):
     for (ch_key, type_id, pos) in to_cfv:
         customize_feature_values(mylang, ch, hierarchies, ch[ch_key], type_id, pos,
@@ -14,6 +15,7 @@ def process_cfv_list(mylang, ch, hierarchies, to_cfv, tdlfile=None):
 # olzama 2020-04-09 The below function has the benefit of serving many POS at once
 # however it is very difficult to follow and debug.
 # Consider improving it and perhaps even have several separate functions?
+
 
 def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, features=None, cases=None, tdlfile=None):
 
@@ -24,7 +26,6 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     if not tdlfile:
         tdlfile = mylang
 
-
     # TJT 2014-11-05: moving this up to get the proper geometry for case
     # get the feature geometry of CASE
     # OZ 2020-01-28 The above only works for case-marking adpositions
@@ -33,22 +34,22 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
         for f in features:
             if f[0] == 'case':
                 case_geom = f[2]
-                break # Stop looking! TJT 2014-08-27
+                break  # Stop looking! TJT 2014-08-27
 
     # TJT 2014-08-15: changing this to a map for readability/speed
-    prefix_map = { 'det': 'SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.',
-                   'con': 'HEAD-DTR.SYNSEM.',
-                   'poss-juxt-rule': 'NON-HEAD-DTR.SYNSEM.',
-                   'possessor-marker':'SYNSEM.LOCAL.CAT.HEAD.POSSESSOR.POSS-AGR.',
-                   'possessum-marker':'SYNSEM.LOCAL.CAT.POSSESSUM.POSS-AGR.',
-                   'poss-adp-comp': 'SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.',
-                   'possessum-spec-mark': 'ARGS < [ SYNSEM.',
-                   'possessum-mod-mark': 'SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.',
-                   'possessum-mod-mark2': 'SYNSEM.LOCAL.CAT.VAL.COMPS.REST.FIRST.',
-                   'poss-pron-mod': 'SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.',
-                   'poss-pron-spec': 'SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.',
-                   'nounadp': 'SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.',
-                   'normadp': 'SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.'}
+    prefix_map = {'det': 'SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.',
+                  'con': 'HEAD-DTR.SYNSEM.',
+                  'poss-juxt-rule': 'NON-HEAD-DTR.SYNSEM.',
+                  'possessor-marker': 'SYNSEM.LOCAL.CAT.HEAD.POSSESSOR.POSS-AGR.',
+                  'possessum-marker': 'SYNSEM.LOCAL.CAT.POSSESSUM.POSS-AGR.',
+                  'poss-adp-comp': 'SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.',
+                  'possessum-spec-mark': 'ARGS < [ SYNSEM.',
+                  'possessum-mod-mark': 'SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.',
+                  'possessum-mod-mark2': 'SYNSEM.LOCAL.CAT.VAL.COMPS.REST.FIRST.',
+                  'poss-pron-mod': 'SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.',
+                  'poss-pron-spec': 'SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.',
+                  'nounadp': 'SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.',
+                  'normadp': 'SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.'}
     pos_geom_prefix = prefix_map[pos] if pos in prefix_map else 'SYNSEM.'
 
     iter_feat = 'feat' if pos != 'auxcomplement' else 'compfeature'
@@ -81,15 +82,15 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
         'lower': 'SC-ARGS.REST.FIRST.',
         'xarg': 'LOCAL.CONT.HOOK.XARG.',  # XARG for adjectives
         'mod': 'LOCAL.CAT.HEAD.MOD.FIRST.',  # MOD for adjectives
-        'comp': 'LOCAL.CAT.VAL.COMPS.FIRST.', # COMP for copulas
-        #'noun': 'LOCAL.CAT.VAL.SPEC.FIRST.', # olzama 2020-04-08 I think this was a bug.
+        'comp': 'LOCAL.CAT.VAL.COMPS.FIRST.',  # COMP for copulas
+        # 'noun': 'LOCAL.CAT.VAL.SPEC.FIRST.', # olzama 2020-04-08 I think this was a bug.
         # There was interference between this line for determiner inflection and prefix_map
         # for full-form determiners.
     }
 
-    for feat in ch_dict.get(iter_feat,[]):
-        n = feat.get('name','')
-        v = feat.get('value','').split(', ')
+    for feat in ch_dict.get(iter_feat, []):
+        n = feat.get('name', '')
+        v = feat.get('value', '').split(', ')
 
         if n == 'case':
             v = [case.canon_to_abbr(c, cases) for c in v]
@@ -109,44 +110,45 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
         # it sets a boolean flag (poss_lrt or poss_pron_lrt),
         # which is subsequently used to correctly adjust the
         # feature geometry.
-    
-        # Bool to id possessive affix lrts when this fn called by 
+
+        # Bool to id possessive affix lrts when this fn called by
         # process_cfv_list(), which is called in customize.py
         # and not in adnominal_possession.py
-        poss_lrt=False 
+        poss_lrt = False
         # Bool to id poss-pron affix lrts
-        poss_pron_lrt=False
-        possessum_pron_aff=False
-        agreeing_element=''
-        for feature in ch_dict.get('feat'): # EKN TODO: choose a better var name than 'feature'
-            feat_name=feature.get('name')
+        poss_pron_lrt = False
+        possessum_pron_aff = False
+        agreeing_element = ''
+        # EKN TODO: choose a better var name than 'feature'
+        for feature in ch_dict.get('feat'):
+            feat_name = feature.get('name')
             if 'poss-strat' in feat_name:
-                poss_lrt=True
-                agreeing_element=feature.get('value')
+                poss_lrt = True
+                agreeing_element = feature.get('value')
             elif 'poss-pron' in feat_name:
                 # Possessum affix with possessor pronoun
                 # should behave like other possessive lrts:
                 if '_possessum' in feat_name:
-#                    poss_lrt=True
-                    possessum_pron_aff=True
-                    agreeing_element='possessum'
+                    #                    poss_lrt=True
+                    possessum_pron_aff = True
+                    agreeing_element = 'possessum'
                 # Actual pronoun affixes should behave differently:
                 else:
-                    poss_pron_lrt=True
-                    agreeing_element='possessor'
+                    poss_pron_lrt = True
+                    agreeing_element = 'possessor'
             elif 'possessum' in feature.full_key:
-                agreeing_element='possessum'
+                agreeing_element = 'possessum'
             elif 'possessor' in feature.full_key:
-                agreeing_element='possessor'
+                agreeing_element = 'possessor'
             elif 'poss-pron' in feature.full_key:
-                agreeing_element='possessor'
-        if (poss_lrt and feat.get('head')!='itself') or possessum_pron_aff:
-            if agreeing_element=='possessor':
+                agreeing_element = 'possessor'
+        if (poss_lrt and feat.get('head') != 'itself') or possessum_pron_aff:
+            if agreeing_element == 'possessor':
                 geom_prefix = 'SYNSEM.LOCAL.CAT.HEAD.POSSESSOR.POSS-AGR.'
-            elif agreeing_element=='possessum':
+            elif agreeing_element == 'possessum':
                 geom_prefix = 'SYNSEM.LOCAL.CAT.POSSESSUM.POSS-AGR.'
         if poss_pron_lrt:
-            if feat.get('head')=='possessum':
+            if feat.get('head') == 'possessum':
                 geom_prefix = 'DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG'
             else:
                 geom_prefix = 'C-CONT.RELS.LIST < [ ARG0.PNG'
@@ -161,10 +163,11 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
         # a noun's inherent features from features that agree with
         # another nominal element in a possessive phrase; however,
         # the head feature for possessive phrases is dealt with above
-        head = feat.get('head','')
-        if head in head_map: # TJT 2014-08-15: changing this to map for speed/easy reading
+        head = feat.get('head', '')
+        if head in head_map:  # TJT 2014-08-15: changing this to map for speed/easy reading
             if head in ('higher', 'lower'):
-                geom_prefix = head_map[head] # TJT 2014-09-09: Higher/lower replace prefix
+                # TJT 2014-09-09: Higher/lower replace prefix
+                geom_prefix = head_map[head]
             else:
                 geom_prefix += head_map[head]
         # TJT 2014-09-16: DTR is for incorporated adjectives
@@ -189,20 +192,20 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                         value = value[len("LOCAL.CONT.HOOK.INDEX."):]
                     # TJT 2014-11-05: case on adjectives only works for attributive
                     # constructions and has a different geometry
-                    if head in ('xarg','mod') and n == 'case':
+                    if head in ('xarg', 'mod') and n == 'case':
                         geom_prefix = 'SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.HEAD.CASE'
                     # EKN 2018-1-6: when adding a possessive rule, the standard feature path
                     # won't work. This removes all but the feature name and value from the
                     # variable value.
-                    if (pos=='possessor-marker' or pos=='possessum-marker') or (poss_lrt and feat.get('head')!='itself') or possessum_pron_aff:
-                        value=value.replace('LOCAL.CONT.HOOK.INDEX.PNG.','')
+                    if (pos == 'possessor-marker' or pos == 'possessum-marker') or (poss_lrt and feat.get('head') != 'itself') or possessum_pron_aff:
+                        value = value.replace('LOCAL.CONT.HOOK.INDEX.PNG.', '')
                     if poss_pron_lrt:
-                        value=value.replace('LOCAL.CONT.HOOK.INDEX.PNG','')
+                        value = value.replace('LOCAL.CONT.HOOK.INDEX.PNG', '')
                     geom = geom_prefix + value
 
 #           if head == 'mod':
 #               geom += "] >"  # TJT 2014-05-27: close MOD
-                break # TJT 2014-05-08 stop looking!
+                break  # TJT 2014-05-08 stop looking!
 
         # If the feature has a geometry, just specify its value;
         # otherwise, handle it specially.
@@ -212,26 +215,26 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                 # EKN 2018-01-19: Add the closing brackets for the possessive
                 # pronoun's feature path
                 if poss_pron_lrt:
-                    value=value+'] >'
-                if pos=='possessum-spec-mark':
-                    value=value+'] >'                    
+                    value = value+'] >'
+                if pos == 'possessum-spec-mark':
+                    value = value+'] >'
                 tdlfile.add(type_name +
-                    ' := [ ' + geom + ' ' + value + ' ].',
-                    merge=True)
+                            ' := [ ' + geom + ' ' + value + ' ].',
+                            merge=True)
                 if n == 'case' and ch.has_mixed_case():
                     val = '-' if '-synth-' + value in type_name else '+'
                     tdlfile.add(type_name +
-                      ' := [ ' + geom + '-MARKED ' + val + ' ].',
-                      merge=True)
+                                ' := [ ' + geom + '-MARKED ' + val + ' ].',
+                                merge=True)
             else:
                 for value in v:
                     tdlfile.add(type_name +
-                      ' := [ ' + geom + ' ' + value + ' ].',
-                      merge=True)
+                                ' := [ ' + geom + ' ' + value + ' ].',
+                                merge=True)
         elif n == 'argument structure':
             # constrain the ARG-ST to be passed up
             tdlfile.add(type_name + ' := [ ARG-ST #arg-st, DTR.ARG-ST #arg-st ].',
-                  merge=True)
+                        merge=True)
 
             for argst in v:
                 # specify the subj/comps CASE values
@@ -241,17 +244,19 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                     a_case = o_case = ''
                     # otherwise use the geometry and case name
                     if len(c) > 1:
-                        a_case = case_geom + ' ' + case.canon_to_abbr(c[0], cases)
-                        o_case = case_geom + ' ' + case.canon_to_abbr(c[1], cases)
-                    tdlfile.add(type_name + \
-                                ' := [ ARG-ST < [ ' + a_case + '], ' + \
+                        a_case = case_geom + ' ' + \
+                            case.canon_to_abbr(c[0], cases)
+                        o_case = case_geom + ' ' + \
+                            case.canon_to_abbr(c[1], cases)
+                    tdlfile.add(type_name +
+                                ' := [ ARG-ST < [ ' + a_case + '], ' +
                                 '[ ' + o_case + '] > ].',
                                 merge=True)
                 else:
                     c = c[0]
                     s_case = '' if c == 'intrans' \
                         else (case_geom + ' ' + case.canon_to_abbr(c, cases))
-                    tdlfile.add(type_name + \
+                    tdlfile.add(type_name +
                                 ' := [ ARG-ST < [ ' + s_case + '] > ].',
                                 merge=True)
 
@@ -270,7 +275,8 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
             # negated +.
             # and ensure that verbs start out negated -
             if ch.get('neg-head-feature') == 'on':
-                tdlfile.add(type_name + ':= [ SYNSEM.LOCAL.CAT.HEAD.NEGATED + ].',merge=True)
+                tdlfile.add(
+                    type_name + ':= [ SYNSEM.LOCAL.CAT.HEAD.NEGATED + ].', merge=True)
 
         elif (n == 'negation' and v[0] == 'b'):
             # this is a negation lex rule that also requires negform on its
@@ -287,7 +293,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                                               SPEC #spec ],
                        DTR.SYNSEM.LOCAL.CAT.VAL [ SPR #spr,
                                                   SUBJ #subj,
-                                                  SPEC #spec ] ].''',section='addenda')
+                                                  SPEC #spec ] ].''', section='addenda')
 
             tdlfile.add(type_name + basic_infl_neg_def, merge=True)
             # because this is a val changing rule, we need the complement verbs VAL
@@ -302,14 +308,13 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
             tdlfile.add(type_name + ':= [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].',
                         merge=True)
 
-
         #    elif (n == 'negation' and v[0] == 'c'):
         #   'c'  is deprecated!
         elif (n == 'negation' and v[0] == 'd'):
             # this is a comps changing lex rule which adds a negadv to the
             # comps list
 
-            ## shouldn't have to apply to AUXes
+            # shouldn't have to apply to AUXes
             #  tdlfile.add(type_name + ':= [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].',
             #              merge=True)
             tdlfile.add(type_name + ''':= [
@@ -358,7 +363,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
             # only apply to lexical verbs
 
             # also, flip negated + value
-            tdlfile.add(type_name +''':= [ SYNSEM.LOCAL.CAT [ VAL [ SPR #spr,
+            tdlfile.add(type_name + ''':= [ SYNSEM.LOCAL.CAT [ VAL [ SPR #spr,
                              SPEC #spec,
                              SUBJ #subj,
                              COMPS < canonical-synsem &
@@ -395,7 +400,8 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
             # JDC 2011-01-11 Users specify negation minus to indicate that a
             # lexical type is not compatible with negation
             if ch.get('neg-head-feature') == 'on':
-                tdlfile.add(type_name + ':= [ ARGS.FIRST.SYNSEM.LOCAL.CAT.HEAD.NEGATED - ].',merge=True)
+                tdlfile.add(
+                    type_name + ':= [ ARGS.FIRST.SYNSEM.LOCAL.CAT.HEAD.NEGATED - ].', merge=True)
 
         elif (n == 'question' and v[0] == 'no'):
             tdlfile.add(type_name + ':= \
@@ -418,14 +424,14 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                      [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques ].',
                         merge=True)
 
-        ## Specifiying OPT- on each user defined type instead of creating a supertype because
-        #It the supertype would need to inherit from transitive-verb-lex and the code already puts
-        #transitive-verb-lex as a supertype of user-defined typ thus causing an inheritance issue.
-        #elif(n=='OPT' and v[0] == 'plus'):
+        # Specifiying OPT- on each user defined type instead of creating a supertype because
+        # It the supertype would need to inherit from transitive-verb-lex and the code already puts
+        # transitive-verb-lex as a supertype of user-defined typ thus causing an inheritance issue.
+        # elif(n=='OPT' and v[0] == 'plus'):
         # SS 2009-05-26 argument optionality is added to user defined types here
-        #if h == 'subj':
+        # if h == 'subj':
         #  tdlfile.add(type_name + ':= subj-drop-verb-lex.', merge = True)
-        #if h == 'obj':
+        # if h == 'obj':
         #  tdlfile.add(type_name + ':= obj-drop-verb-lex.', merge = True)
 
         elif n == 'OPT':
@@ -433,7 +439,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
             if head in geom_map:
                 bool_val = {'plus': '+', 'minus': '-'}[v[0].lower()]
                 val_geom = geom_map[head.lower()]
-                tdlfile.add('%(id)s := [SYNSEM.LOCAL.CAT.VAL.%(vg)s.FIRST.OPT %(bv)s].' \
+                tdlfile.add('%(id)s := [SYNSEM.LOCAL.CAT.VAL.%(vg)s.FIRST.OPT %(bv)s].'
                             % {'id': type_name, 'vg': val_geom, 'bv': bool_val},
                             merge=True)
 
@@ -445,9 +451,11 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
         elif n == 'dirinv-type':
             d = v[0]
             if head == 'subj':
-                tdlfile.add(type_name + ' := [SYNSEM.LOCAL.CAT.VAL.SUBJ < '+d+' > ].')
+                tdlfile.add(
+                    type_name + ' := [SYNSEM.LOCAL.CAT.VAL.SUBJ < '+d+' > ].')
             elif head == 'obj':
-                tdlfile.add(type_name + ' := [SYNSEM.LOCAL.CAT.VAL.COMPS < '+d+' > ].')
+                tdlfile.add(
+                    type_name + ' := [SYNSEM.LOCAL.CAT.VAL.COMPS < '+d+' > ].')
 
 # Note: customize case code is now in gmcs/linglib/case.py
 
