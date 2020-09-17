@@ -387,6 +387,7 @@ class LexicalRuleType(MorphotacticNode):
         self.evidential = None
         # EKN 2017-12-15 Possessor rule pseudofeatures are properties of LRT
         self.possessive = None
+        self.interrogative = None
         self.poss_strat_num = None
 
     def __repr__(self):
