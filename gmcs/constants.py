@@ -46,6 +46,7 @@ WH_INFL = 'wh-q-infl'  # Inflectional paradigm for constituent questions
 MULTI = 'multi'  # Multiple (e.g. fronting)
 ALL_OBLIG = 'all-oblig'  # All question phrases are fronted obligatorily
 SG_OBLIG = 'single-oblig'  # One question phrase is obligatorily fronted
+NONE_OBLIG = 'none-oblig'  # None of the question phrases are obligatorily fronted
 SINGLE = 'single'
 NO_MULTI = 'no-multi-ques'  # No multiple questions in one clause
 PIED = 'pied-pip'  # Pied piping

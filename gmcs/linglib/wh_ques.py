@@ -5,7 +5,7 @@ email olzama@uw.edu with both constituent and polar questions about the library.
 
 from gmcs.constants import MTRX_FR_OPT, MTRX_FRONT, NO_MULTI, \
     SINGLE, MULTI, SG_OBLIG, ALL_OBLIG, EMBED_INSITU, ON, WH_INFL, \
-    IN_SITU
+    IN_SITU, NONE_OBLIG
 from gmcs.utils import get_name, TDLencode, orth_encode
 
 
@@ -133,10 +133,13 @@ def customize_wh_ques(mylang, ch, rules, roots):
                 '''head-adj-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ]. ''', section='addenda')
 
     if ch.get(NO_MULTI) == ON:
-        mylang.add('''clause :+ [ SYNSEM.NON-LOCAL.QUE.LIST 0-1-list ]. ''')
-        if ch.get(MTRX_FRONT) in [SINGLE]:
+        if ch.get(MTRX_FRONT) == SINGLE:
             mylang.add(
                 '''wh-ques-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].''')
+        if ch.get(MTRX_FRONT) == IN_SITU or \
+                (ch.get(MTRX_FRONT) == SINGLE and ch.get(MTRX_FR_OPT) == NONE_OBLIG):
+            mylang.add(
+                '''insitu-int-cl := [ HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < [ ] > ].''')
         if len(ch.get('adv', [])) > 0 or len(ch.get('normadp', [])) > 0:
             mylang.add(
                 '''wh-adverb-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.WH.BOOL - ] > ].''')
