@@ -1668,15 +1668,37 @@ Label "<p>Please indicate which strategy your language uses to form
 matrix yes-no questions.  You may leave this section blank, in which
 case your grammar will not include a question-forming strategy.</p>"
 
-Check q-part "Yes/No question particle" "" "A separate question particle: "
+Check q-part "" "" "One or more separate question particles:<br>"
 
-Radio q-part-order "Question particle order" "" ""
-. before "Before" "" "sentence initial "
-. after "After" "" "sentence final<br>"
+Radio q-part-order "Question Particle Position" "which occur: " "<br>"
+. before "Before" "" "clause initially "
+. after "After" "" "clause finally"
+. second "Second Position" "" "second position"
 
-Text q-part-orth "Question particle spelling" "&nbsp;&nbsp;&nbsp;&nbsp;Spelling of question particle: " "<br>" 40
+ Check q-part-allopt "<p>" "" "Check if all particles are optional in constituent questions.</p>"
 
-Check q-infl "Inflection" "<p>" "Verbal inflection: Checking this box enables a feature called <span class=\"feat\">question</span> with possible value <span class=\"tt\">plus</span> for use in defining lexical rules on the morphology page.  Defining lexical rules that specify [<span class=\"feat\">question</span> <span class=\"tt\">plus</span>] will produce lexical rules in the grammar that add the semantics of questions.</p>"
+Label "<p>Note: If you mark more than one particle as obligatory below,
+only one particle will be licensed per clause; the particles won't iterate.</p>"
+
+BeginIter q-particle{i} "a Question Particle" 1
+
+Text orth "Question particle {i} spelling" "Spelling of question particle: " "<br>" 40
+
+Label "<p>This particle occurs in"
+
+ Check main "Wh-questions in Main Clauses" "" "main"
+ Check embed "Wh-questions in Embedded Clauses" "and" "embedded clauses</p>"
+
+ Label "<p>In constituent questions, this particle is:<br>"
+
+ Radio wh "Question particle in Constituent Questions" "" ""
+ . oblig "Obligatory" "" "obligatory"
+ . imp "Impossible" "" "impossible"
+
+EndIter q-particle
+
+Check q-infl "Inflection" "<p>" "Verbal inflection: Checking this box enables a feature called <span class=\"feat\">question</span> with possible value <span class=\"tt\">polar</span> for use in defining lexical rules on the morphology page.
+Defining lexical rules that specify [<span class=\"feat\">question</span> <span class=\"tt\">polar</span>] will produce lexical rules in the grammar that add the semantics of questions.</p>"
 
 Check q-inv "Subject-verb inversion" "" "Subject-verb inversion: "
 
@@ -1686,7 +1708,60 @@ Radio q-inv-verb "Inverted verb in questions" "" ""
 . main-aux "Main and auxiliary" "" "any verb<br>"
 
 
+Section wh-q "Constituent (wh-) Questions"
 
+Label "<p>Please indicate which strategy your language uses to form
+constituent (aka wh-) questions.  You may leave this section blank, in which
+case your grammar will not include a wh-question-forming strategy.</p>"
+
+Label "<p>If you fill out this page, you must also fill out the Question Words section on the Lexicon page.</p>"
+
+Label "<h3>Choices regarding the position of question phrases</h3>"
+
+Separator
+
+Radio front-matrix "Fronting" "<p> Question phrases can appear at the left edge of the sentence regardless of the position the questioned constituent would appear in (<i>Who did you see? I know who you saw</i> etc. ):<br><br>" ""
+  . single "Single Fronting" "" "Only one question phrase can be fronted<br>"
+  . multi "Multiple Fronting" "" "All question phrases can be fronted<br>"
+  . in-situ "In Situ" "" "Question phrases cannot be fronted (stay <i>in situ</i>)<br><br>"
+
+  Radio matrix-front-opt "Fronting optionality" " There is <span class=\"dfn\">obligatory</span> fronting: <br>" ""
+  . single-oblig "Obligatory Single Fronting" "" "of at least one question phrase<br>"
+  . all-oblig "Obligatory Multiple Fronting" ""  "of all question phrases <br>"
+  . none-oblig "No Obligatory Fronting" ""  "fronting is optional <br><br>"
+
+  Check embed-insitu "In Situ Embedded Questions" "" "If fronting is optional, it is possible to have embedded in situ questions."
+
+  Label"<p>NB: You may use the optional multiple fronting option to model the syntax of echo questions
+   but there is currently no distinction between echo and canonical qiestions
+   in the semantic representation that you obtain from this library.</p>"
+
+    Label "<p>There is pied piping of:<br><br>"
+
+    Check pied-pip "Pied-Piping" "" "noun phrases (<i>Which book did you read?</i> is possible), "
+    Check oblig-pied-pip-noun "Obligatory Pied Piping Of Nouns" "" "and it is obligatory (<i>*Which did you read book?</i> is impossible in your language);<br>"
+    Check pied-pip-adp "Pied-Piping Of Adpositions" "" "adpositional phrases (<i>To whom did you speak?</i> is possible), "
+    Check oblig-pied-pip-adp "Obligatory Pied Piping Of Adpositions" "" "and it is obligatory (<i>*Who did you speak to?</i> is impossible in your language).</p>"
+
+  Separator
+
+ Label "<h3>Other choices</h3>"
+
+ Check no-multi-ques "No Multiple Questions" "<p>" "Only one question phrase is allowed per sentence.</p>"
+
+ Label "<p> If you specified Auxiliary-Subject inversion for polar questions, does it also happen in constituent questions?<br><br>"
+ Check wh-inv-matrix "Matrix Inversion" "" "yes, in matrix clauses <br>"
+ Check wh-inv-embed "Embedded Inversion" "" "also in embedded clauses with constituent questions<br>"
+ Check wh-inv-notsubj "No Inversion with Questions about Subjects" "" "but not in questions about subjects.</p>"
+
+ Check wh-q-infl "Inflection" "<p>" "Constituent questions are marked morphologically
+ (specify lexical rules on the Morphology page).</p>"
+
+Check focus-marking "Information Structure Marking" "<p>" "Question words may bear an
+ overt focus marking (specify on Information Structure page).</p>"
+
+Label "<p> "
+ Check wh-q-inter-verbs "Iterrogative verbs" "" "Interrogative verbs (add appropriate entries on the Lexicon page).</p>"
 
 Section info-str "Information Structure"
 
@@ -2009,16 +2084,30 @@ BeginIter comps{i} "a Clausal Complement Type" 1
 
   Check clause-pos-same "Clause Same Position" "" "in the same position as regular noun complements <br>"
   Check clause-pos-extra "Clause Extraposed" "" "in the extraposed position at the end of sentence.<br>"
-  
+
+  Label "<p> Please indicate whether this complementation strategy is for embedding questions.
+  Often times it makes sense to create two completely separate strategies for embedding questions
+  and for propositions, and have some clause-embedding verbs (like <i>ask</i>) only be associated
+  with one and for other verbs (like <i>know</i>) to have two lexical entries.<br><br>"
+
+  Radio ques "Embedded Clause Type" " This strategy is for embedding " ""
+  . prop "Embedded Proposition" "" "propositions, "
+  . ques "Embedded Questions" ""  "questions.</p>"
+
+
   Label "<p>The complement clauses are marked by
-  a (semantically empty) complementizer that comes "
+  a complementizer that comes "
 
   Check comp-pos-before "Complementizer Position Before" "" "before"
   Check comp-pos-after "Complementizer Position After" "" "or after the complement clause"<br>
 
   Radio comp "Clausal Complement Type {i} comp" " and is " ""
   . opt "Optional Complementizer" "" "optional or"
-  . oblig "Obligatory Complementizer" ""  "obligatory."
+  . oblig "Obligatory Complementizer" ""  "obligatory.<br>"
+
+  Check comp-q "Question Complementizer" "" "If this strategy is for questions, check if this is a
+  <i>whether</i>-like complementizer which turns propositions into questions.<br>"
+
 
         BeginIter stem{j} "a Complementizer spelling" 0
 
@@ -2032,6 +2121,7 @@ BeginIter comps{i} "a Clausal Complement Type" 1
 
         Select cformvalue "Clausal Complement Type {i} Complementizer Form {k} Value" "Form Value: " ""
         fillvalues p=form l=1
+
 
   Label "<p> The embedded verb
   has the following features
@@ -2248,6 +2338,7 @@ Cache verbpcs verb-pc[0-9]+$ name
 Cache verblrs verb-pc[0-9]+(_lrt[0-9]+)?$ name
 Cache adjlrs adj-pc[0-9]+(_lrt[0-9]+)?$ name
 Cache detlrs det-pc[0-9]+(_lrt[0-9]+)?$ name
+Cache qverblrs qverb-pc[0-9]+(_lrt[0-9]+)?$ name
 
 Label "<p>On this page you will define <span class=\"dfn\">lexical
 types</span> and <span class=\"dfn\">lexical items</span> within those
@@ -2285,7 +2376,8 @@ BeginIter noun{i} "a Noun Type" 1 1
   MultiSelect supertypes "Noun type {i}" "Supertypes: " "<br />"
   fillregex p=noun(?!{i}_)[0-9]+_name
 
-  Check pron "Pronoun" "<br>" "This is a pronoun type<br><br>" 
+  Check pron "Pronoun" "<br>" "This is a personal pronoun type<br>"
+  Check inter "Question Pronoun" "<br>" "This is a question pronoun (like <i>who/what</i>)<br><br>"
 
   Label "Features:"
 
@@ -2350,6 +2442,8 @@ BeginIter verb{i} "a Verb Type" 1 2
   MultiSelect supertypes "Verb type {i}" "Supertypes: " "<br /><br />"
   fillregex p=verb(?!{i}_)[0-9]+_name
 
+  Check inter "Interrogative Verb" "<br>" "This is a question verb (like <i>do.what</i>) <br><br>"
+
   Label "Features:"
 
   BeginIter feat{j} "a Feature"
@@ -2413,6 +2507,90 @@ BeginIter verb{i} "a Verb Type" 1 2
   Label "</div>"
 
 EndIter verb
+
+Separator
+
+Label "<h3 style='display:inline'>Question Verb Types</h3>"
+Label "<span>| <a href='javascript:void(0);' onclick=\"draw_hierarchy('verb')\">visualize verb hierarchy</a> (experimental)</span><br />"
+
+BeginIter qverb{i} "a Question Verb Type" 0 0
+
+  Label "<b>Question Verb type {i}</b>:"
+
+  Label "<div style=\"padding-left: 16px\">"
+
+  Text name "Question Verb {i} name" "Type name: " "<br /><br />" 20
+
+  MultiSelect supertypes "Question Verb type {i}" "Supertypes: " "<br /><br />"
+  fillregex p=qverb(?!{i}_)[0-9]+_name
+
+  Label "Features:"
+
+  BeginIter feat{j} "a Feature"
+
+    Select name "Question Verb {i} feature {j} name" "Name: " " "
+    fillnames c=both
+
+    MultiSelect value "Question Verb {i} feature {j} value" "Value: " ""
+    fillvalues p=qverb{i}_feat{j}_name
+
+    Select head "Question Verb {i} feature {j} head" "Specified on: " ""
+    . verb "The verb" "the verb"
+    . subj "The subject" "the subject NP"
+    . obj "The object" "the object NP"
+    . higher "Higher-ranked" "the higher-ranked NP"
+    . lower "Lower-ranked" "the lower-ranked NP"
+
+  EndIter feat
+
+  Label "<p>There is no predefined case frame for question verbs. Please specify the case for the subject above.</p>"
+
+  Radio predtype "Question Verb {i} stem {j} second predicate type" "<p>The second
+  predicate that this verb contributes is <br>" "</p>"
+  . ref "Referential" "" " referential (<i>thing, person</i>) <br>"
+  . loc "Location" "" " location in time/space (<i>when, where</i>)<br>"
+  . manner "Manner" "" " manner (<i>how</i>)<br>"
+
+  Label "Stems:"
+  BeginIter stem{j} "a simple Stem" 0 0
+
+    Text orth "Question Verb {i} stem {j} spelling" "Spelling: " "" 30
+
+    Text verbpred "Question Verb {i} stem {j} verbpred" " Event predicate (e.g. <i>do</i>): " "" 30
+
+    Text nounpred "Question Verb {i} stem {j} nounpred" "<br>Specify (e.g. <i>thing, place, time</i>): " "" 30
+
+  EndIter stem
+
+  BeginIter bistem{j} "a bipartite Stem"
+
+    Text orth "Question Verb {i} bipartite stem {j} spelling" "Root spelling: " "" 30 "fill_pred('qverb{i}_bistem{j}', 'v')"
+
+    Text aff "Question Verb {i} bipartite stem {j} affix" "Affix spelling: " "" 30
+
+    Text pred "Question Verb {i} bipartite stem {j} predicate" " Predicate: " "" 30
+
+  EndIter bistem
+
+  Label "<p>Morphotactic Constraints:</p>"
+
+  BeginIter require{j} "a Require constraint"
+
+    MultiSelect others "Question Verb {i} requires" "Verb {i} requires one of the following position classes: " ""
+    fillcache c=verblrs
+
+  EndIter require
+
+  BeginIter forbid{j} "a Forbid constraint"
+
+    Select others "Question Verb {i} forbids" "Verb {i} forbids the following position class: " ""
+    fillcache c=verblrs
+
+  EndIter forbid
+
+  Label "</div>"
+
+EndIter qverb
 
 Separator
 
@@ -2698,6 +2876,8 @@ BeginIter det{i} "a Determiner" 1
 
   Text name "Determiner {i} name" "Type name: " "<br>" 20
 
+  Check inter "Interrogative Determiner" "<br>" "This is a question determiner (like <i>which</i>) <br><br>"
+
   BeginIter stem{j} "a Stem" 0 1
 
     Text orth "Determiner {i} spelling" "Spelling: " "" 30 "fill_pred('det{i}_stem{j}', 'q')"
@@ -2740,9 +2920,75 @@ EndIter det
 
 Separator
 
-Label "<h3>Case-marking and/or Information Structural Adpositions</h3>"
+Label "<h3>Adverbs</h3>"
 
-BeginIter adp{i} "an Adposition" 1
+
+BeginIter adv{i} "an Adverb" 1
+
+  Label "<b>Adverb type {i}</b>:"
+
+  Label "<div style=\"padding-left: 16px\">"
+
+  Text name "Adverb {i} name" "Type name: " "<br>" 20
+
+  BeginIter stem{j} "a Stem" 0 1
+
+    Text orth "Adverb {i} spelling" "Spelling: " "" 30 "fill_pred('adv{i}_stem{j}', 'a')"
+
+    Text pred "Adverb {i} predicate" " Predicate: " "<br>" 30
+
+  EndIter stem
+
+  Check inter "Interrogative Adverb" "<br>" "This is a question adverb (like <i>where/when</i>) <br><br>"
+
+      Radio type "Adverb {i} Type" "This is a " " adverb."
+      . loc "Location in Time or Space" "" "location in time/place space"
+      . manner "Manner" "" "manner"
+
+  Label "</div>"
+
+EndIter adv
+
+Label "<p>Note that the adverbs are not yet fully supported and will be underspecified as to where they attach.</p>"
+
+
+Separator
+
+Label "<h3>Adpositions</h3>"
+
+BeginIter normadp{i} "an Adposition" 0
+
+    BeginIter stem{j} "a Stem" 0 1
+
+      Text orth "Adposition {i} spelling" "Spelling: " "" 30 "fill_pred('normadp{i}_stem{j}', 'p')"
+
+      Text pred "Adposition {i} predicate" " Predicate: " "<br>" 30
+
+      Select form "Adposition {i} Form {k} Value" "Form Value: " ""
+        fillvalues p=form l=1
+
+    EndIter stem
+
+  Select order "Adposition {i} order" " <br><br> The adposition appears " " a noun phrase<br><br>Features:<br>"
+  . after "After" "after"
+  . before "Before" "before"
+  . both "Before and After" "before and after"
+
+  BeginIter feat{j} "a Feature on Adposition's Complement" 0 0
+
+    Select name "Adposition {i} feature {j} name" "Name: " " "
+    fillnames c=noun
+
+    MultiSelect value "Adposition's Complement {i} feature {j} value" "Value: " ""
+    fillvalues p=normadp{i}_feat{j}_name
+
+  EndIter feat
+
+
+EndIter normadp
+
+
+BeginIter adp{i} "a Case-marking and/or Information Structural Adposition" 1
 
   Text orth "Adposition {i} spelling" "Spelling: " "" 20
 
@@ -2764,12 +3010,15 @@ BeginIter adp{i} "an Adposition" 1
 
 EndIter adp
 
+
+
 Section morphology "Morphology"
 
 Cache nouns noun[0-9]+$ name
 Cache verbs verb[0-9]+$ name
+Cache qverbs qverb[0-9]+$ name
 Cache auxes aux[0-9]+$ name
-Cache dets det[0-9]+$ name
+Cache dets q?det[0-9]+$ name
 Cache adjs adj[0-9]+$ name
 Cache cops cop[0-9]+$ name
 
@@ -2959,12 +3208,14 @@ BeginIter verb-pc{i} "a Position Class" 1
 
   MultiSelect inputs "Verb Position Class {i} Input" "<br/>Possible inputs:" ""
   fillcache c=verbs
+  fillcache c=qverbs
   fillcache c=auxes
   fillregex p=verb-pc[0-9]+(_lrt[0-9]+)?_name
   . verb "Any verb" "any verb"
   . iverb "Any intransitive verb" "any intransitive verb"
   . tverb "Any transitive verb" "any transitive verb"
   . aux "Any auxiliary verb" "any auxiliary verb"
+  . qverb "Any question verb" "any question verb"
 
   Label "<p>Morphotactic Constraints:</p>"
 
@@ -2978,6 +3229,7 @@ BeginIter verb-pc{i} "a Position Class" 1
     . iverb "Any intransitive verb" "any intransitive verb"
     . tverb "Any transitive verb" "any transitive verb"
     . aux "Any auxiliary verb" "any auxiliary verb"
+    . qverb "Any question verb" "any question verb"
 
   EndIter require
 
@@ -2991,6 +3243,7 @@ BeginIter verb-pc{i} "a Position Class" 1
     . iverb "Any intransitive verb" "any intransitive verb"
     . tverb "Any transitive verb" "any transitive verb"
     . aux "Any auxiliary verb" "any auxiliary verb"
+    . qverb "Any question verb" "any question verb"
 
   EndIter forbid
 
@@ -3072,6 +3325,7 @@ inputs are possible, these need to be created as two separate lexical rule types
       . iverb "Any intransitive verb" "any intransitive verb"
       . tverb "Any transitive verb" "any transitive verb"
       . aux "Any auxiliary verb" "any auxiliary verb"
+      . qverb "Any question verb" "any question verb"
 
     EndIter require
 
@@ -3085,6 +3339,7 @@ inputs are possible, these need to be created as two separate lexical rule types
       . iverb "Any intransitive verb" "any intransitive verb"
       . tverb "Any transitive verb" "any transitive verb"
       . aux "Any auxiliary verb" "any auxiliary verb"
+      . qverb "Any question verb" "any question verb"
 
     EndIter forbid
 
@@ -3382,6 +3637,9 @@ BeginIter det-pc{i} "a Position Class" 1
       MultiSelect value "Determiner Position Class {i} Lexical Rule Type {j} Feature {k} Value" "Value: " ""
       fillvalues p=det-pc{i}_lrt{j}_feat{k}_name
 
+      Select head "Determiner Position Class {i} Lexical Rule Type {j} Feature {k} Head" "Specified on: " "" "" "toggle_element.call(this, 'adj-pc{i}_lrt{j}_adj_pc_note', 'on', ['subj', 'mod'])"
+      . noun "The noun" "the noun"
+
     EndIter feat
 
     Label "<p>Morphotactic Constraints:</p>"
@@ -3419,6 +3677,8 @@ BeginIter det-pc{i} "a Position Class" 1
   EndIter lrt
 
 EndIter det-pc
+
+Separator
 
 Section toolbox-import "Import Toolbox Lexicon"
 
