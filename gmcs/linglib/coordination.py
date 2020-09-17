@@ -10,6 +10,7 @@ from gmcs.lib import TDLHierarchy
 ######################################################################
 # define_coord_strat: a utility function, defines a strategy
 
+
 def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, mylang,
                        rules, irules, resrules, mixed_strat=False):
     mylang.add_literal(';;; Coordination Strategy ' + num)
@@ -20,7 +21,7 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, mylang,
     else:
         headtype = 'verb'
 
-    passup = ' pass-up-png-coord-rule &' if resrules != [('','')] else ''
+    passup = ' pass-up-png-coord-rule &' if resrules != [('', '')] else ''
 
     # First define the rules in mylang.  Every strategy has a
     # top rule and a bottom rule, but only some have a mid rule, so if
@@ -30,13 +31,13 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, mylang,
         mylang.add(pn + nm + '-top-coord-rule :=\
                  basic-' + pos + '-top-coord-rule &\
                  ' + top + 'top-coord-rule &\
-                 ' + st + \
+                 ' + st +
                    coord_strat_features(num, nm, mixed_strat))
         if mid:
             mylang.add(pn + nm + '-mid-coord-rule :=\
                    basic-' + pos + '-mid-coord-rule &\
                    ' + mid + 'mid-coord-rule &\
-                   ' + st + \
+                   ' + st +
                        coord_strat_features(num, nm, mixed_strat))
 
     if pre or suf:
@@ -93,7 +94,8 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, mylang,
     for nm, st in resrules:
         rules.add(pn + nm + '-top-coord := ' + pn + nm + '-top-coord-rule.')
         if mid:
-            rules.add(pn + nm + '-mid-coord := ' + pn + nm + '-mid-coord-rule.')
+            rules.add(pn + nm + '-mid-coord := ' +
+                      pn + nm + '-mid-coord-rule.')
     rules.add(pn + '-bottom-coord := ' + pn + '-bottom-coord-rule.')
     if left:
         rules.add(pn + '-left-coord := ' + pn + '-left-coord-rule.')
@@ -107,6 +109,7 @@ def coord_strat_features(num, nm, mixed_strat):
                'COORD-STRAT "' + num + '" ] ].'
     else:
         return '[ SYNSEM.LOCAL.COORD-STRAT "' + num + '" ].'
+
 
 def customize_feature_resolution(mylang, ch, ap):
     mylang.add_literal(';;; Feature Resolution Rules')
@@ -123,11 +126,13 @@ def customize_feature_resolution(mylang, ch, ap):
                 else 'CASE' if v == 'case' \
                 else v.upper()
 
-            path = 'SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.'  # this is default path, but it might change for custom features, also for case
+            # this is default path, but it might change for custom features, also for case
+            path = 'SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.'
 
             # if this is a custom feature, check whether it is semantic or syntactic
-            if v.upper() == featname and (v != 'case' and v!= 'pernum'):
-                for feature in ch.get('feature', []):  # find the right custom feature in the list...
+            if v.upper() == featname and (v != 'case' and v != 'pernum'):
+                # find the right custom feature in the list...
+                for feature in ch.get('feature', []):
                     feat = feature.get('name', '')
                     type = feature.get('type', '')  # ...and check the type
                     if feat == v:
@@ -135,7 +140,7 @@ def customize_feature_resolution(mylang, ch, ap):
                             path = 'SYNSEM.LOCAL.CAT.HEAD.'
 
             if v == 'case':
-                path = 'SYNSEM.LOCAL.CAT.HEAD.' # special path for case
+                path = 'SYNSEM.LOCAL.CAT.HEAD.'  # special path for case
                 mylang.add('bare-np-phrase := [ SYNSEM.LOCAL.CAT.HEAD.CASE #case,'  # TODO is there any reason I can't use this for fr as well?
                            'HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case ].')
                 mylang.add('pass-up-png-coord-rule := bottom-coord-phrase & \
@@ -146,7 +151,8 @@ def customize_feature_resolution(mylang, ch, ap):
             for rule in feat.get('rule'):
                 ch1 = rule.get('left') if rule.get('left') else 'any'
                 ch2 = rule.get('right') if rule.get('right') else 'any'
-                par = rule.get('par') if rule.get('par') else 'any' # the rule should always have a parent, but just in case
+                # the rule should always have a parent, but just in case
+                par = rule.get('par') if rule.get('par') else 'any'
 
                 if "," in ch1:
                     ch1_list = ch1.split(", ")
@@ -154,26 +160,30 @@ def customize_feature_resolution(mylang, ch, ap):
                         for ch1 in ch1_list:
                             for ch2 in ch1_list:
                                 if ch1 != ch2:
-                                    write_coord_rule(ch1, ch2, par, path, featname, mylang)
-                    else: # ch1 is a list but ch2 is some more normal value
+                                    write_coord_rule(
+                                        ch1, ch2, par, path, featname, mylang)
+                    else:  # ch1 is a list but ch2 is some more normal value
                         for ch1 in ch1_list:
-                            write_coord_rule(ch1, ch2, par, path, featname, mylang)
-                else: # ch1 is not a list
+                            write_coord_rule(
+                                ch1, ch2, par, path, featname, mylang)
+                else:  # ch1 is not a list
                     write_coord_rule(ch1, ch2, par, path, featname, mylang)
-
 
 
 def write_coord_rule(ch1, ch2, par, path, featname, mylang):
     # now, write the phrase rule that corresponds to the ch1, ch2, par given in the choices file.
 
-    tn = ch1 + '-' + ch2 + '-' + par + '-' + featname.lower() + '-coord-rule:= coord-phrase &'
+    tn = ch1 + '-' + ch2 + '-' + par + '-' + \
+        featname.lower() + '-coord-rule:= coord-phrase &'
 
     # the "same" value means we should identify whichever values are indicated to be "the same".
-    par = "#" + featname.lower() if par == "same" else par  # TODO I don't like how clumsy this is
+    # TODO I don't like how clumsy this is
+    par = "#" + featname.lower() if par == "same" else par
     ch1 = "#" + featname.lower() if ch1 == "same" else ch1
     ch2 = "#" + featname.lower() if ch2 == "same" else ch2
 
-    if (ch1 == 'any' and ch2 == 'any' and par != 'any'):  # if both children are 'any', we just constrain the parent.
+    # if both children are 'any', we just constrain the parent.
+    if (ch1 == 'any' and ch2 == 'any' and par != 'any'):
         tn += ' [ ' + path + featname + ' ' + par + '].'
     elif par == 'any':
         tn += ' [ '
@@ -230,8 +240,6 @@ def get_feature_resolution_names(ap):
                     st = ch1 + '-' + ch2 + '-' + par + '-' + featname + '-coord-rule & '
                     templist += [(nm, st)]
 
-
-
             # add the rules to resrules
             newlist = []
             if resrules:  # if we have rules already, iterate through them and combine with all the new ones
@@ -246,8 +254,10 @@ def get_feature_resolution_names(ap):
 
 def customize_conj_wo(mylang, ch, agr, csap):
     # get some values for the pattern we're modeling
-    subj_on = True if (csap.get('target') == 'all' or csap.get('target') == 'subj') else False
-    obj_on = True if (csap.get('target') == 'all' or csap.get('target') == 'obj') else False
+    subj_on = True if (csap.get('target') == 'all' or csap.get(
+        'target') == 'subj') else False
+    obj_on = True if (csap.get('target') == 'all' or csap.get(
+        'target') == 'obj') else False
 
     # if we ever want to handle multiple types (first conjunct, closest conjunct) of distinguished conjunct in a subject
     # or object, "before" and "after" should be sets, and you might need to use subtypes of phrase rules that inherit
@@ -273,11 +283,14 @@ def customize_conj_wo(mylang, ch, agr, csap):
 
     if ch.get('has-dets') == 'yes':
         if ch.get('noun-det-order') == 'noun-det':
-            mylang.add('head-spec-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR ' + after + '].')
+            mylang.add(
+                'head-spec-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR ' + after + '].')
         if ch.get('noun-det-order') == 'det-noun':
-            mylang.add('head-spec-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR ' + before + '].')
+            mylang.add(
+                'head-spec-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR ' + before + '].')
 
     customize_coordagr_word_order(ch, mylang, before, after, subj_on, obj_on)
+
 
 def customize_coordagr_word_order(ch, mylang, before, after, subj_on, obj_on):
     # now, figure out which word order phrase rules we're modifying.
@@ -290,32 +303,43 @@ def customize_coordagr_word_order(ch, mylang, before, after, subj_on, obj_on):
     if obj_on == True:
         if wo == 'sov' or wo == 'osv' or wo == 'ovs' or wo == 'v-final':
             hc = 'comp-head'
-            mylang.add(hc + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR '+ before + '].')
+            mylang.add(
+                hc + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR ' + before + '].')
 
         if wo == 'svo' or wo == 'vos' or wo == 'vso' or wo == 'v-initial':
             hc = 'head-comp'
-            mylang.add(hc + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR '+ after + '].')
+            mylang.add(
+                hc + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR ' + after + '].')
 
     # Head-subj order
 
     if subj_on == True:
         if wo == 'osv' or wo == 'sov' or wo == 'svo' or wo == 'v-final':
             hs = 'subj-head'
-            mylang.add(hs + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR '+ before + '].')
+            mylang.add(
+                hs + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR ' + before + '].')
 
         if wo == 'ovs' or wo == 'vos' or wo == 'vso' or wo == 'v-initial':
             hs = 'head-subj'
-            mylang.add(hs + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR '+ after + '].')
+            mylang.add(
+                hs + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR ' + after + '].')
 
     if wo == 'free' or wo == 'v2':
         if subj_on == True:
-            mylang.add('head-subj-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR '+ after + '].')
-            mylang.add('subj-head-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR '+ before + '].')
+            mylang.add(
+                'head-subj-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR ' + after + '].')
+            mylang.add(
+                'subj-head-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR ' + before + '].')
         if obj_on == True:
-            mylang.add('head-comp-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR '+ after + '].')
-            mylang.add('comp-head-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR '+ before + '].')
-            mylang.add('head-comp-phrase-2 := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR '+ after + '].')
-            mylang.add('comp-head-phrase-2 := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR '+ before + '].')
+            mylang.add(
+                'head-comp-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR ' + after + '].')
+            mylang.add(
+                'comp-head-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR ' + before + '].')
+            mylang.add(
+                'head-comp-phrase-2 := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR ' + after + '].')
+            mylang.add(
+                'comp-head-phrase-2 := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR ' + before + '].')
+
 
 def customize_mixed_strat_resolution(ch, mylang, target):
     subj_on = True if target == 'subj' else False
@@ -327,6 +351,7 @@ def customize_mixed_strat_resolution(ch, mylang, target):
     after = 'res'
 
     customize_coordagr_word_order(ch, mylang, before, after, subj_on, obj_on)
+
 
 def customize_conjunct_agreement(mylang, ch, agr, csap, cs):
     """add everything to the grammar that's needed for distinguished conjunct agreement"""
@@ -355,7 +380,6 @@ def customize_conjunct_agreement(mylang, ch, agr, csap, cs):
     mylang.add('pass-up-png-coord-rule := [ SYNSEM.LOCAL.COORDAGR #cagr,'
                'NONCONJ-DTR.SYNSEM.LOCAL.COORDAGR #cagr ].')
 
-
     # the coordination section rules
     mylang.set_section('coord')
     mylang.add_literal(';;; Distinguished Conjunct Rules')
@@ -368,7 +392,8 @@ def customize_conjunct_agreement(mylang, ch, agr, csap, cs):
                   LCOORD-DTR.SYNSEM.LOCAL.COORDAGR #cagr ].')
 
     if agr.get('order') == 'closest' or 'last':
-        top_and_mid_rules += [('-right-conjunct', 'right-conjunct-coord-rule &')]
+        top_and_mid_rules += [('-right-conjunct',
+                               'right-conjunct-coord-rule &')]
         mylang.add('right-conjunct-coord-rule := same-coordagr-rule &\
                   [ SYNSEM.LOCAL [ COORDAGR r,\
                                    CONT.HOOK.INDEX.PNG #png ],\
@@ -381,14 +406,16 @@ def customize_conjunct_agreement(mylang, ch, agr, csap, cs):
                                    CONT.HOOK.INDEX.PNG #png ],\
                     LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png ].')
 
-    #now the word order stuff
+    # now the word order stuff
     customize_conj_wo(mylang, ch, agr, csap)
     return top_and_mid_rules
+
 
 def customize_agreement_pattern(mylang, ch, csap, cs):
     rules = [('', '')]
 
-    agr = ch.get(csap.get('pat'))  # agr has "name," "order," "full_key" for dconj, or has feature rules for resolution
+    # agr has "name," "order," "full_key" for dconj, or has feature rules for resolution
+    agr = ch.get(csap.get('pat'))
 
     # for feature resolution, we create the parent rules and then create a list of rule names.
     if agr.full_key.startswith('fr'):
@@ -411,18 +438,19 @@ def customize_poss_feats(mylang, rule):
     """
     Identify POSSESSOR and POSSESSUM across conjuncts
     """
-    if rule=='top' or rule=='mid':
+    if rule == 'top' or rule == 'mid':
         mylang.add(rule+'-coord-rule :+ [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #possessor,\
                                                              POSSESSUM #possessum ],\
                                           RCOORD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #possessor,\
                                                                         POSSESSUM #possessum ],\
                                           LCOORD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #possessor,\
-                                                                        POSSESSUM #possessum ] ].',section='addenda')
-    elif rule=='bottom':
+                                                                        POSSESSUM #possessum ] ].', section='addenda')
+    elif rule == 'bottom':
         mylang.add('bottom-coord-phrase :+ [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #possessor,\
                                                                 POSSESSUM #possessum ],\
                                              NONCONJ-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #possessor,\
-                                                                         POSSESSUM #possessum ] ].',section='addenda')
+                                                                         POSSESSUM #possessum ] ].', section='addenda')
+
 
 def customize_coordination(mylang, ch, lexicon, rules, irules):
     """
@@ -447,12 +475,12 @@ def customize_coordination(mylang, ch, lexicon, rules, irules):
             tn += csnum
 
         if mark == 'word':
-            lexicon.add( tn + ' := conj-lex &\
+            lexicon.add(tn + ' := conj-lex &\
                   [ STEM < "' + orthstr + '" >,\
                     SYNSEM.LKEYS.KEYREL.PRED "_and_coord_rel",\
                     CFORM "' + csnum + '" ].')
             if pat == 'omni':
-                lexicon.add( tn + '_nosem := nosem-conj-lex &\
+                lexicon.add(tn + '_nosem := nosem-conj-lex &\
                       [ STEM < "' + orthstr + '" >,\
                         CFORM "' + csnum + '" ].')
 
@@ -499,14 +527,17 @@ def customize_coordination(mylang, ch, lexicon, rules, irules):
         poss = True if (ch.get('poss-strat') or ch.get('poss-pron'))\
             else False
         if poss:
-            if top: customize_poss_feats(mylang, 'top')
-            if mid: customize_poss_feats(mylang, 'mid')
-            if bot: customize_poss_feats(mylang, 'bottom')
+            if top:
+                customize_poss_feats(mylang, 'top')
+            if mid:
+                customize_poss_feats(mylang, 'mid')
+            if bot:
+                customize_poss_feats(mylang, 'bottom')
 
         # If this CS uses feature resolution, we will set up closest conjunct as a mixed strategy
         # (with additional rules and specifications).
         mixed_strategy = True if any([csap.get('pat').startswith('fr') for csap in cs.get('csap')]) \
-                                 and any([csap.get('pat').startswith('dconj') for csap in cs.get('csap')]) \
+            and any([csap.get('pat').startswith('dconj') for csap in cs.get('csap')]) \
             else False
 
         # make a list of the agreement rules for this coord strat
