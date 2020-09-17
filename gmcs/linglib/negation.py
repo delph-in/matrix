@@ -6,6 +6,7 @@ from gmcs.utils import orth_encode
 #   Create the type definitions associated with the user's choices
 #   about sentential negation.
 
+
 def customize_sentential_negation(mylang, ch, lexicon, rules, lrules, hierarchies):
     # JDC 2012-06-01 Nowadays this function is something like
     # the entry point for the sentential negation library.
@@ -34,7 +35,7 @@ def customize_sentential_negation(mylang, ch, lexicon, rules, lrules, hierarchie
     #         this should only appear on auxiliaries
 
     ############################
-    #'c' is deprecated, it can be defined on the morphotactics
+    # 'c' is deprecated, it can be defined on the morphotactics
     # page without further help from us
     #   'c' = form changing lex rule,
     #         changes form to negform and
@@ -51,13 +52,13 @@ def customize_sentential_negation(mylang, ch, lexicon, rules, lrules, hierarchie
     #         rules should be exclusive)
     #   'h' = comps adding neg rule which also sets NEG-SAT -
 
-
     if ch.get('neg-head-feature') == 'on':
         mylang.add('head :+ [ NEGATED luk ].', section='addenda')
 
-    exp = ch.get('neg-exp') # exponence of sentential negation: simple, bipartite
+    # exponence of sentential negation: simple, bipartite
+    exp = ch.get('neg-exp')
 
-    if exp in [ '1', '0' ]:
+    if exp in ['1', '0']:
         # we have a simple negation strategy
         if ch.get('infl-neg') == 'on':
             # two things to do:
@@ -66,8 +67,8 @@ def customize_sentential_negation(mylang, ch, lexicon, rules, lrules, hierarchie
             for vpc in ch['verb-pc']:
                 for lrt in vpc['lrt']:
                     for f in lrt['feat']:
-                        if 'negation' in f['name'] and f['value']=='plus':
-                            lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') + \
+                        if 'negation' in f['name'] and f['value'] == 'plus':
+                            lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') +
                                                           ['cont-change-only-lex-rule'])
                             f['value'] = 'a'
         elif ch.get('neg-aux') == 'on':
@@ -88,26 +89,27 @@ def customize_sentential_negation(mylang, ch, lexicon, rules, lrules, hierarchie
         elif bnegtype == 'infl-head':
             customize_infl_head_neg()
         elif bnegtype == 'infl-comp':
-            customize_infl_comp_neg(mylang,ch,lexicon)
+            customize_infl_comp_neg(mylang, ch, lexicon)
         elif bnegtype == 'infl-mod':
-            customize_infl_mod_neg(mylang,ch,lexicon,rules)
+            customize_infl_mod_neg(mylang, ch, lexicon, rules)
         elif bnegtype == 'head-head':
             customize_head_head_neg()
         elif bnegtype == 'head-comp':
-            customize_head_comp_neg(mylang,ch,lexicon,hierarchies)
+            customize_head_comp_neg(mylang, ch, lexicon, hierarchies)
         elif bnegtype == 'head-mod':
-            customize_head_mod_neg(mylang,ch,lexicon,rules)
+            customize_head_mod_neg(mylang, ch, lexicon, rules)
         elif bnegtype == 'comp-comp':
-            customize_comp_comp_neg(mylang,ch,lexicon)
+            customize_comp_comp_neg(mylang, ch, lexicon)
         elif bnegtype == 'comp-mod':
-            customize_comp_mod_neg(mylang,ch,lexicon,rules)
+            customize_comp_mod_neg(mylang, ch, lexicon, rules)
         elif bnegtype == 'mod-mod':
-            customize_mod_mod_neg(mylang,ch,lexicon,rules)
+            customize_mod_mod_neg(mylang, ch, lexicon, rules)
 #  if ch.get('neg-exp') == '2':
 #    # see if we need to make any neg advs
 #    if ch.get('neg1-type')[0] == 'f' or \
 #      ch.get('neg2-type')[0] == 'f':
 #      create_neg_adv_lex_item(mylang, ch, lexicon, rules, 2)
+
 
 def customize_adv_neg(mylang, ch, lexicon, rules):
     # first add lexical type for negative adverb
@@ -138,9 +140,10 @@ def customize_adv_neg(mylang, ch, lexicon, rules):
         mylang.add('''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ cons,
                                                                                    COMPS null ]].''')
     elif ch.get('neg-mod') == 'v':
-        mylang.add('''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LIGHT + ].''')
+        mylang.add(
+            '''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LIGHT + ].''')
 
-    mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].','''verb-lex is HC-LIGHT - to allow us to pick out\n
+    mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].', '''verb-lex is HC-LIGHT - to allow us to pick out\n
   lexical Vs for V-level attachment of negative adverbs.''')
 
     # add spelling for neg-adverb
@@ -148,7 +151,7 @@ def customize_adv_neg(mylang, ch, lexicon, rules):
         orth = ch.get('neg-adv-orth')
         orthstr = orth_encode(orth)
         lexicon.add(TDLencode(orth) + ' := neg-adv-lex &\
-                [ STEM < \"'+ orthstr +'\" >,\
+                [ STEM < \"' + orthstr + '\" >,\
                   SYNSEM.LKEYS.KEYREL.PRED \"neg_rel\" ].')
 
     # olzama 2020-04-22 Since this is for sentential negation,
@@ -162,7 +165,7 @@ def customize_adv_neg(mylang, ch, lexicon, rules):
               'appear in ' + ch.get('language').lower() + '.tdl')
     # KPH 2-1-18 The following appears to be an artifact from before no-mod-lex was
     # added as a supertype to the basic lecical types for noun verb, etc, so I have
-    # commented it out from now. 
+    # commented it out from now.
     # mylang.add('+nvcdmo :+ [ MOD < > ].',
     #           'This grammar includes head-modifier rules.  To keep\n' +
     #           'out extraneous parses, constrain the value of MOD on\n' +
@@ -172,10 +175,11 @@ def customize_adv_neg(mylang, ch, lexicon, rules):
     #           section='addenda')
     # that's all folks!
 
+
 def customize_comp_neg(mylang, ch, lexicon, rules, lrules):
     # the neg-comp analyses require the neg-head-feature choice
     # simulate it here if it's not on
-    if(ch.get('neg-head-feature')!='on'):
+    if(ch.get('neg-head-feature') != 'on'):
         mylang.add('head :+ [ NEGATED luk ].', section='addenda')
 
     # first add lexical type
@@ -196,7 +200,7 @@ def customize_comp_neg(mylang, ch, lexicon, rules, lrules):
         orth = ch.get('comp-neg-orth')
         orthstr = orth_encode(orth)
         lexicon.add(TDLencode(orth) + ' := neg-adv-lex &\
-                [ STEM < \"'+ orthstr +'\" >,\
+                [ STEM < \"' + orthstr + '\" >,\
                   SYNSEM.LKEYS.KEYREL.PRED \"neg_rel\" ].')
 
     # we need the lexical rule that adds these types to the comps lists
@@ -226,14 +230,13 @@ def customize_comp_neg(mylang, ch, lexicon, rules, lrules):
 
     lrules.add('neg-lex-rule := neg-comp-add-lex-rule.')
     # deal with type of selecting verb: auxiliary verb or any finite verb
-    if(ch.get('comp-neg-head')=='aux'):
+    if(ch.get('comp-neg-head') == 'aux'):
         mylang.add('neg-comp-add-lex-rule := [ DTR aux-lex ].')
-    elif(ch.get('comp-neg-head')=='v'):
+    elif(ch.get('comp-neg-head') == 'v'):
         mylang.add('''neg-comp-add-lex-rule := [ DTR verb-lex &
                 [ SYNSEM.LOCAL.CAT.HEAD.FORM finite ] ].''')
 
         # all done!
-
 
 
 # bipartite negation types
@@ -247,11 +250,11 @@ def customize_infl_infl_neg(ch):
     for vpc in ch['verb-pc']:
         for lrt in vpc['lrt']:
             for f in lrt['feat']:
-                if 'negation' in f['name'] and f['value']=='plus':
+                if 'negation' in f['name'] and f['value'] == 'plus':
                     #          lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') +\
                     #                                        ['add-only-rule'])
-                    lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') + \
-                                                  [#'same-agr-lex-rule',
+                    lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') +
+                                                  [  # 'same-agr-lex-rule',
                                                       #                                         'same-ctxt-lex-rule',
                                                       'val-and-cont-change-lex-rule',
                                                       #                                         'same-head-lex-rule',
@@ -259,15 +262,17 @@ def customize_infl_infl_neg(ch):
                                                       #                                         'same-hc-light-lex-rule',
                                                       #                                         'same-posthead-lex-rule',
                                                       #                                         'same-mc-lex-rule'
-                                                  ])
+                    ])
                     f['value'] = 'b'
 # TODO: set up validation to require that the user has properly
-#       defined a neg2 
+#       defined a neg2
 #        if 'neg2' in f['name'] and f['value']=='plus':
 #          lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') +\
-#                                        ['head-change-only-rule']) 
+#                                        ['head-change-only-rule'])
 #          f['name'] = 'negation'
 #          f['value'] = 'c'
+
+
 def customize_infl_head_neg():
     pass
     # completely handled by customization system and
@@ -280,15 +285,15 @@ def customize_infl_head_neg():
     #   and makes the position class required to enforce
     #   complementary distribution of FORM
 
-def customize_infl_comp_neg(mylang,ch,lexicon):
+
+def customize_infl_comp_neg(mylang, ch, lexicon):
     # neg affix on verb requires neg-adv with neg semantics
     # neg-adv is a selected complement
 
     # this analysis requires the neg-head-feature, if it's not on
     # simulate it here
-    if(ch.get('neg-head-feature')!='on'):
+    if(ch.get('neg-head-feature') != 'on'):
         mylang.add('head :+ [ NEGATED luk ].', section='addenda')
-
 
     # add type for neg-adv
     mylang.set_section('otherlex')
@@ -309,25 +314,26 @@ def customize_infl_comp_neg(mylang,ch,lexicon):
         orth = ch.get('comp-neg-orth')
         orthstr = orth_encode(orth)
         lexicon.add(TDLencode(orth) + ' := neg-comp-lex &\
-                [ STEM < \"'+ orthstr +'\" >,\
+                [ STEM < \"' + orthstr + '\" >,\
                   SYNSEM.LKEYS.KEYREL.PRED \"neg_rel\" ].')
 
     # inflecting lexical rule must add neg-adv to comps list,
     for vpc in ch['verb-pc']:
         for lrt in vpc['lrt']:
             for f in lrt['feat']:
-                if 'negation' in f['name'] and f['value']=='plus':
-                    lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') + \
+                if 'negation' in f['name'] and f['value'] == 'plus':
+                    lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') +
                                                   ['val-change-only-lex-rule'])
-                    f['value']='d'
+                    f['value'] = 'd'
 
-def customize_infl_mod_neg(mylang,ch,lexicon,rules):
+
+def customize_infl_mod_neg(mylang, ch, lexicon, rules):
     # neg affix on verb requires neg-adv with neg semantics
     # neg-adv is a modifier
 
     # this analysis requires the neg-head-feature, if it's not on
     # simulate it here
-    if(ch.get('neg-head-feature')!='on'):
+    if(ch.get('neg-head-feature') != 'on'):
         mylang.add('head :+ [ NEGATED luk ].', section='addenda')
 
     # add neg-sat to SYNSEM
@@ -350,8 +356,8 @@ def customize_infl_mod_neg(mylang,ch,lexicon,rules):
     for vpc in ch['verb-pc']:
         for lrt in vpc['lrt']:
             for f in lrt['feat']:
-                if 'negation' in f['name'] and f['value']=='plus':
-                    f['value']='e'
+                if 'negation' in f['name'] and f['value'] == 'plus':
+                    f['value'] = 'e'
 
     # add type for neg-adv
     mylang.set_section('otherlex')
@@ -395,7 +401,6 @@ def customize_infl_mod_neg(mylang,ch,lexicon,rules):
                  NON-HEAD-DTR neg-adv-lex ].''')
         rules.add('neg-head-adj-scop := neg-head-adj-scop-phrase.')
 
-
     # constrain type of constituent modified by neg-adv
     if ch.get('neg-mod-infl-mod-neg') == 's':
         mylang.add('''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ null,
@@ -404,9 +409,10 @@ def customize_infl_mod_neg(mylang,ch,lexicon,rules):
         mylang.add('''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ cons,
                                                                                    COMPS null ]].''')
     elif ch.get('neg-mod-infl-mod-neg') == 'v':
-        mylang.add('''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LIGHT + ].''')
+        mylang.add(
+            '''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LIGHT + ].''')
 
-    mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].','''verb-lex is HC-LIGHT - to allow us to pick out\n
+    mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].', '''verb-lex is HC-LIGHT - to allow us to pick out\n
   lexical Vs for V-level attachment of negative adverbs.''')
 
     # add spelling for neg-adverb
@@ -414,9 +420,8 @@ def customize_infl_mod_neg(mylang,ch,lexicon,rules):
         orth = ch.get('neg-mod-orth')
         orthstr = orth_encode(orth)
         lexicon.add(TDLencode(orth) + ' := neg-adv-lex &\
-                [ STEM < \"'+ orthstr +'\" >,\
+                [ STEM < \"' + orthstr + '\" >,\
                   SYNSEM.LKEYS.KEYREL.PRED \"neg_rel\" ].')
-
 
     mylang.add('+vcdmo :+ [ MOD < > ].',
                'This grammar includes head-modifier rules.  To keep\n' +
@@ -427,23 +432,23 @@ def customize_infl_mod_neg(mylang,ch,lexicon,rules):
                section='addenda')
 
 
-
 def customize_head_head_neg():
     pass
 
-def customize_head_comp_neg(mylang,ch,lexicon, hierarchies):
+
+def customize_head_comp_neg(mylang, ch, lexicon, hierarchies):
     # bipartite neg with negauxiliary which has a 'dummy' negcomp
     # add type for neg-adv
 
     # this analysis requires the neg-head-feature, if it's not on
     # simulate it here
-    if(ch.get('neg-head-feature')!='on'):
+    if(ch.get('neg-head-feature') != 'on'):
         mylang.add('head :+ [ NEGATED luk ].', section='addenda')
 
     # negauxes with modified comps lists are
     # generated by auxiliaries.py
 
-    #TODO deal with v head
+    # TODO deal with v head
 
     # need to add type and instance for semantically empty neg-comp
     mylang.set_section('otherlex')
@@ -463,15 +468,14 @@ def customize_head_comp_neg(mylang,ch,lexicon, hierarchies):
         orth = ch.get('comp-neg-orth')
         orthstr = orth_encode(orth)
         lexicon.add(TDLencode(orth) + ' := neg-comp-lex &\
-                [ STEM < \"'+ orthstr +'\" > ].')
+                [ STEM < \"' + orthstr + '\" > ].')
 
 
-
-def customize_head_mod_neg(mylang, ch, lexicon,rules):
+def customize_head_mod_neg(mylang, ch, lexicon, rules):
     # basically just need to add NEG-SAT feature dependencies
 
     # this analysis uses the neg-head-feature
-    if(ch.get('neg-head-feature')!='on'):
+    if(ch.get('neg-head-feature') != 'on'):
         mylang.add('head :+ [ NEGATED luk ].', section='addenda')
 
     # add neg-sat to SYNSEM
@@ -537,7 +541,6 @@ def customize_head_mod_neg(mylang, ch, lexicon,rules):
                  NON-HEAD-DTR neg-adv-lex ].''')
         rules.add('neg-head-adj-scop := neg-head-adj-scop-phrase.')
 
-
     # constrain type of constituent modified by neg-adv
     if ch.get('neg-mod-head-mod-neg') == 's':
         mylang.add('''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ null,
@@ -546,9 +549,10 @@ def customize_head_mod_neg(mylang, ch, lexicon,rules):
         mylang.add('''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ cons,
                                                                                    COMPS null ]].''')
     elif ch.get('neg-mod-head-mod-neg') == 'v':
-        mylang.add('''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LIGHT + ].''')
+        mylang.add(
+            '''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LIGHT + ].''')
 
-    mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].','''verb-lex is HC-LIGHT - to allow us to pick out\n
+    mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].', '''verb-lex is HC-LIGHT - to allow us to pick out\n
   lexical Vs for V-level attachment of negative adverbs.''')
 
     # add spelling for neg-adverb
@@ -556,8 +560,7 @@ def customize_head_mod_neg(mylang, ch, lexicon,rules):
         orth = ch.get('neg-mod-orth')
         orthstr = orth_encode(orth)
         lexicon.add(TDLencode(orth) + ' := neg-adv-lex &\
-                [ STEM < \"'+ orthstr +'\" > ].')
-
+                [ STEM < \"' + orthstr + '\" > ].')
 
     mylang.add('+vcdmo :+ [ MOD < > ].',
                'This grammar includes head-modifier rules.  To keep\n' +
@@ -567,13 +570,14 @@ def customize_head_mod_neg(mylang, ch, lexicon,rules):
                'and adpositions can be modifiers.',
                section='addenda')
 
-def customize_comp_comp_neg(mylang,ch,lexicon):
+
+def customize_comp_comp_neg(mylang, ch, lexicon):
     # bipartite negation type with two negative complements,
     # presumably one is selected by an aux, the other by a v
     #
 
     # this analysis uses the neg-head-feature
-    if(ch.get('neg-head-feature')!='on'):
+    if(ch.get('neg-head-feature') != 'on'):
         mylang.add('head :+ [ NEGATED luk ].', section='addenda')
 
     # verbs need to be NEGATED - 'underlyingly'
@@ -613,14 +617,14 @@ def customize_comp_comp_neg(mylang,ch,lexicon):
         orth = ch.get('comp-neg1-orth')
         orthstr = orth_encode(orth)
         lexicon.add(TDLencode(orth) + ' := neg1-comp-lex &\
-                [ STEM < \"'+ orthstr +'\" >,\
+                [ STEM < \"' + orthstr + '\" >,\
                   SYNSEM.LKEYS.KEYREL.PRED \"neg_rel\" ].')
 
     if(ch.get('comp-neg2-orth')):
         orth = ch.get('comp-neg2-orth')
         orthstr = orth_encode(orth)
         lexicon.add(TDLencode(orth) + ' := neg2-comp-lex &\
-                [ STEM < \"'+ orthstr +'\" > ].')
+                [ STEM < \"' + orthstr + '\" > ].')
 
     # non-inflecting lexical rule must add neg-adv to comps list,
     next_n = ch['verb-pc'].next_iter_num() if 'verb-pc' in ch else 1
@@ -645,14 +649,16 @@ def customize_comp_comp_neg(mylang,ch,lexicon):
     nvpc['lrt1_supertypes'] = 'cat-change-only-lex-rule, same-hc-light-lex-rule, same-posthead-lex-rule, same-mc-lex-rule'
 
     # also need auxes to underlyingly select for [ NEGATED - ] types
-    mylang.add('''aux-lex := [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.NEGATED na-or-- ].''')
+    mylang.add(
+        '''aux-lex := [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.NEGATED na-or-- ].''')
 
-def customize_comp_mod_neg(mylang,ch,lexicon,rules):
+
+def customize_comp_mod_neg(mylang, ch, lexicon, rules):
     # here we create a negation strategy with one selected complement,
     # which presumably carries the negative force
 
     # this analysis uses the neg-head-feature
-    if(ch.get('neg-head-feature')!='on'):
+    if(ch.get('neg-head-feature') != 'on'):
         mylang.add('head :+ [ NEGATED luk ].', section='addenda')
 
     # add neg-sat to SYNSEM
@@ -671,16 +677,16 @@ def customize_comp_mod_neg(mylang,ch,lexicon,rules):
     # ammend root condition
     mylang.add('''clause :+ [ SYNSEM.NEG-SAT na-or-+ ].''')
 
-
     # first introduce the lexical rule that introduces the negative complement
     # also needs to set NEG-SAT - on its target
 
-    #TODO: parameterize this rule according to neg-comp before/after
+    # TODO: parameterize this rule according to neg-comp before/after
     #      current system only supports before and ignores the choice!
-    attach=''
+    attach = ''
     if ch.get('comp-neg-head-comp-mod') == 'v':
-        attach='verb'
-    else: attach='aux'
+        attach = 'verb'
+    else:
+        attach = 'aux'
 
     next_n = ch['verb-pc'].next_iter_num() if 'verb-pc' in ch else 1
     ch['verb-pc%d_name' % next_n] = 'neg1'
@@ -711,7 +717,7 @@ def customize_comp_mod_neg(mylang,ch,lexicon,rules):
         orth = ch.get('comp-neg-orth')
         orthstr = orth_encode(orth)
         lexicon.add(TDLencode(orth) + ' := neg1-comp-lex &\
-                [ STEM < \"'+ orthstr +'\" >,\
+                [ STEM < \"' + orthstr + '\" >,\
                   SYNSEM.LKEYS.KEYREL.PRED \"neg_rel\" ].')
 
     # add lexical type for negadv "neg2"
@@ -758,7 +764,6 @@ def customize_comp_mod_neg(mylang,ch,lexicon,rules):
                  NON-HEAD-DTR neg-adv-lex ].''')
         rules.add('neg-head-adj-scop := neg-head-adj-scop-phrase.')
 
-
     # constrain type of constituent modified by neg-adv
     if ch.get('neg-mod-comp-mod-neg') == 's':
         mylang.add('''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ null,
@@ -767,9 +772,10 @@ def customize_comp_mod_neg(mylang,ch,lexicon,rules):
         mylang.add('''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ cons,
                                                                                    COMPS null ]].''')
     elif ch.get('neg-mod-comp-mod-neg') == 'v':
-        mylang.add('''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LIGHT + ].''')
+        mylang.add(
+            '''neg-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LIGHT + ].''')
 
-    mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].','''verb-lex is HC-LIGHT - to allow us to pick out\n
+    mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].', '''verb-lex is HC-LIGHT - to allow us to pick out\n
   lexical Vs for V-level attachment of negative adverbs.''')
 
     # add spelling for neg-adverb
@@ -777,8 +783,7 @@ def customize_comp_mod_neg(mylang,ch,lexicon,rules):
         orth = ch.get('neg-mod-orth')
         orthstr = orth_encode(orth)
         lexicon.add(TDLencode(orth) + ' := neg-adv-lex &\
-                [ STEM < \"'+ orthstr +'\" > ].')
-
+                [ STEM < \"' + orthstr + '\" > ].')
 
     mylang.add('+vcdmo :+ [ MOD < > ].',
                'This grammar includes head-modifier rules.  To keep\n' +
@@ -788,13 +793,14 @@ def customize_comp_mod_neg(mylang,ch,lexicon,rules):
                'and adpositions can be modifiers.',
                section='addenda')
 
-def customize_mod_mod_neg(mylang,ch,lexicon,rules):
+
+def customize_mod_mod_neg(mylang, ch, lexicon, rules):
     # need to create two modifiers, one sets neg-sat to minus, the other to
     # back to plus.
 
     # add neg-sat and decorate psrs
     # this analysis uses the neg-head-feature
-    if(ch.get('neg-head-feature')!='on'):
+    if(ch.get('neg-head-feature') != 'on'):
         mylang.add('head :+ [ NEGATED luk ].', section='addenda')
 
     # add neg-sat to SYNSEM
@@ -842,7 +848,7 @@ def customize_mod_mod_neg(mylang,ch,lexicon,rules):
         orth = ch.get('neg1-mod-orth')
         orthstr = orth_encode(orth)
         lexicon.add(TDLencode(orth) + ' := neg1-adv-lex &\
-                [ STEM < \"'+ orthstr +'\" >,\
+                [ STEM < \"' + orthstr + '\" >,\
                   SYNSEM.LKEYS.KEYREL.PRED \"neg_rel\" ].')
 
     # create lexical instance for neg2
@@ -850,7 +856,7 @@ def customize_mod_mod_neg(mylang,ch,lexicon,rules):
         orth = ch.get('neg2-mod-orth')
         orthstr = orth_encode(orth)
         lexicon.add(TDLencode(orth) + ' := neg2-adv-lex &\
-                [ STEM < \"'+ orthstr +'\" > ].')
+                [ STEM < \"' + orthstr + '\" > ].')
 
     # now parameterize as pre/posthead, no value here means both orders
     # should work, also add specialized modifier rules
@@ -880,7 +886,6 @@ def customize_mod_mod_neg(mylang,ch,lexicon,rules):
                  NON-HEAD-DTR neg1-adv-lex ].''')
         rules.add('neg1-head-adj-scop := neg1-head-adj-scop-phrase.')
 
-
     # constrain type of constituent modified by neg-adv
     if ch.get('neg1-mod') == 's':
         mylang.add('''neg1-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ null,
@@ -889,9 +894,10 @@ def customize_mod_mod_neg(mylang,ch,lexicon,rules):
         mylang.add('''neg1-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ cons,
                                                                                    COMPS null ]].''')
     elif ch.get('neg1-mod') == 'v':
-        mylang.add('''neg1-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LIGHT + ].''')
+        mylang.add(
+            '''neg1-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LIGHT + ].''')
 
-        mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].','''verb-lex is HC-LIGHT - to allow us to pick out\n
+        mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].', '''verb-lex is HC-LIGHT - to allow us to pick out\n
   lexical Vs for V-level attachment of negative adverbs.''')
 
     # now parameterize as pre/posthead, no value here means both orders
@@ -922,7 +928,6 @@ def customize_mod_mod_neg(mylang,ch,lexicon,rules):
                  NON-HEAD-DTR neg2-adv-lex ].''')
         rules.add('neg2-head-adj-scop := neg2-head-adj-scop-phrase.')
 
-
     # constrain type of constituent modified by neg-adv
     if ch.get('neg2-mod') == 's':
         mylang.add('''neg2-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ null,
@@ -931,11 +936,11 @@ def customize_mod_mod_neg(mylang,ch,lexicon,rules):
         mylang.add('''neg2-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.VAL [ SUBJ cons,
                                                                                    COMPS null ]].''')
     elif ch.get('neg2-mod') == 'v':
-        mylang.add('''neg2-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LIGHT + ].''')
+        mylang.add(
+            '''neg2-adv-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LIGHT + ].''')
 
-        mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].','''verb-lex is HC-LIGHT - to allow us to pick out\n
+        mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].', '''verb-lex is HC-LIGHT - to allow us to pick out\n
   lexical Vs for V-level attachment of negative adverbs.''')
-
 
 
 ##################
@@ -956,16 +961,16 @@ def validate(ch, vr):
                            '[negation +] should only be found on bound morphemes.'
                     vr.err(f.full_key + '_name', mess)
         if ch.get('neg-exp') == "1":
-            found=False
+            found = False
             for vpc in ch.get('verb-pc'):
                 for lrt in vpc.get('lrt'):
                     for f in lrt.get('feat', []):
                         if f.get('name') == 'negation':
-                            found=True
+                            found = True
             if not found:
                 mess = 'You have selected an inflectional negation strategy,' + \
                        'but no lexical rules are marked with [negation plus]'
-                vr.warn('verb-pc' , mess)
+                vr.warn('verb-pc', mess)
         for verb in ch.get('verb', []):
             for cf in verb.get('compfeature', []):
                 if cf.get('name') == 'negation':
@@ -989,7 +994,7 @@ def validate(ch, vr):
                 break
         if has_neg_aux == False:
             vr.warn('neg-aux',
-                    'You\'ve selected neg-aux but there is no corresponding ' + \
+                    'You\'ve selected neg-aux but there is no corresponding ' +
                     'type in the lexicon.')
             # ERB 2009-01-23 Commenting out the following because infl-neg is
             # now handled with customize_inflection.  We should eventually give
@@ -1044,39 +1049,39 @@ def validate(ch, vr):
     if ch.get('neg-exp') == '2':
         if ch.get('bineg-type') == 'infl-infl' and ch.get('neg1b-neg2b') == 'on':
             # loose check that both lexical rules are present
-            found1=False
-            found2=False
+            found1 = False
+            found2 = False
             for vpc in ch.get('verb-pc'):
                 for lrt in vpc.get('lrt'):
                     for f in lrt.get('feat', []):
                         if f.get('name') == 'negation':
-                            found1=True
+                            found1 = True
                         elif f.get('name') == 'form':
-                            found2=True
+                            found2 = True
             if not found1:
                 mess = 'You have indicated that your language marks negation ' + \
-                       'with two bound morphs.  The one which carries '  + \
+                       'with two bound morphs.  The one which carries ' + \
                        'semantics should be marked [negation plus] (none ' + \
                        'were found.)'
-                vr.warn('verb-pc',mess)
+                vr.warn('verb-pc', mess)
             if not found2:
                 mess = 'You have indicated that your language marks negation ' + \
                        'with two bound morphs.  The semantically empty one should ' + \
                        'specify a FORM (no such rules were found).'
-                vr.warn('verb-pc',mess)
+                vr.warn('verb-pc', mess)
         if ch.get('bineg-type') == 'infl-head':
-            found=False
+            found = False
             for vpc in ch.get('verb-pc'):
                 for lrt in vpc.get('lrt'):
                     for f in lrt.get('feat', []):
-                        if f.get('name') == 'form' and f.get('value')=='negform':
-                            found=True
+                        if f.get('name') == 'form' and f.get('value') == 'negform':
+                            found = True
             if not found:
                 mess = 'You have indicated that your language marks negation ' + \
                        'with a negative auxiliary and an inflectional marker. ' + \
                        'At least one inflectional rule type should be specified ' + \
                        'for FORM negform.'
-                vr.warn('verb-pc',mess)
+                vr.warn('verb-pc', mess)
 
                 # If aux is selected then has-aux = 'yes' must be chosen in word
                 # order section
