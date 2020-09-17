@@ -749,19 +749,34 @@ def get_section_from_pc(pc):
 
 def write_supertypes(mylang, identifier, supertypes=None, interrogative=None):
     if supertypes is not None and len(supertypes) > 0:
-        if interrogative and interrogative == 'wh':
-            id_subj = 'subj-' + identifier
-            id_obj = 'obj-' + identifier
-            subj_supertypes = set(supertypes)
-            subj_supertypes.add('wh-subj-lex-rule')
-            obj_supertypes = set(supertypes)
-            obj_supertypes.add('wh-obj-lex-rule')
-            mylang.add_literal(
-                ''';;; The following two types names were created automatically instead of one user-specified type ''' + identifier)
-            mylang.add('''%(id)s := %(sts)s.''' %
-                       {'id': id_subj, 'sts': ' & '.join(sorted([st for st in subj_supertypes if st != identifier]))})
-            mylang.add('''%(id)s := %(sts)s.''' %
-                       {'id': id_obj, 'sts': ' & '.join(sorted([st for st in obj_supertypes if st != identifier]))})
+        if interrogative and not interrogative == 'no':
+            if interrogative == 'polar':
+                id1 = 'polar-lex-rule1'
+                id2 = 'polar-lex-rule2'
+                supertypes1 = set(supertypes)
+                supertypes2 = set(supertypes)
+                supertypes1.add('intran-polar-lex-rule')
+                supertypes2.add('tran-polar-lex-rule')
+                mylang.add_literal(
+                    ''';;; The following two type names were created automatically instead of one user-specified type ''' + identifier)
+                mylang.add('''%(id)s := %(sts)s.''' %
+                           {'id': id1, 'sts': ' & '.join(sorted([st for st in supertypes1 if st != identifier]))})
+                mylang.add('''%(id)s := %(sts)s.''' %
+                           {'id': id2, 'sts': ' & '.join(sorted([st for st in supertypes2 if st != identifier]))})
+
+            elif interrogative == 'wh':
+                id_subj = 'subj-' + identifier
+                id_obj = 'obj-' + identifier
+                subj_supertypes = set(supertypes)
+                subj_supertypes.add('wh-subj-lex-rule')
+                obj_supertypes = set(supertypes)
+                obj_supertypes.add('wh-obj-lex-rule')
+                mylang.add_literal(
+                    ''';;; The following two type names were created automatically instead of one user-specified type ''' + identifier)
+                mylang.add('''%(id)s := %(sts)s.''' %
+                           {'id': id_subj, 'sts': ' & '.join(sorted([st for st in subj_supertypes if st != identifier]))})
+                mylang.add('''%(id)s := %(sts)s.''' %
+                           {'id': id_obj, 'sts': ' & '.join(sorted([st for st in obj_supertypes if st != identifier]))})
         else:
             # CMC 2017-04-07 Handling for merged LRT/PCs: omit (same) identifier from list of supertypes written
             mylang.add('''%(id)s := %(sts)s.''' %
@@ -892,21 +907,38 @@ def write_i_or_l_rules(irules, lrules, lrt, order):
             else:
                 pred = ''
                 section = "regular"
-            if lrt.interrogative and lrt.interrogative == 'wh':
-                lrt_subj_name = 'subj-' + lrt.name + '-' + lrt.identifier_suffix
-                lrt_obj_name = 'obj-' + lrt.name + '-' + lrt.identifier_suffix
-                rule = '\n'.join(['-'.join([lrt_subj_name, order + str(num[i])]) + ' :=',
-                                  r'%' + order + ' (* ' + lri.name + ')',
-                                  lrt_subj_name + pred]) + '.'
-                rule_obj = '\n'.join(['-'.join([lrt_obj_name, order + str(num[i])]) + ' :=',
-                                      r'%' + order + ' (* ' + lri.name + ')',
-                                      lrt_obj_name + pred]) + '.'
-                irules.add_literal(rule_obj, section=section)
+            if lrt.interrogative and not lrt.interrogative == 'no':
+                if lrt.interrogative == 'wh':
+                    lrt_subj_name = 'subj-' + lrt.name + '-' + lrt.identifier_suffix
+                    lrt_obj_name = 'obj-' + lrt.name + '-' + lrt.identifier_suffix
+                    rule_subj = '\n'.join(['-'.join([lrt_subj_name, order + str(num[i])]) + ' :=',
+                                           r'%' + order +
+                                           ' (* ' + lri.name + ')',
+                                           lrt_subj_name + pred]) + '.'
+                    rule_obj = '\n'.join(['-'.join([lrt_obj_name, order + str(num[i])]) + ' :=',
+                                          r'%' + order +
+                                          ' (* ' + lri.name + ')',
+                                          lrt_obj_name + pred]) + '.'
+                    irules.add_literal(rule_obj, section=section)
+                    irules.add_literal(rule_subj, section=section)
+                elif lrt.interrogative == 'polar':
+                    lrt1_name = 'intran-' + lrt.name + '-' + lrt.identifier_suffix
+                    lrt2_name = 'tran-' + lrt.name + '-' + lrt.identifier_suffix
+                    rule_intran = '\n'.join(['-'.join([lrt1_name, order + str(num[i])]) + ' :=',
+                                             r'%' + order +
+                                             ' (* ' + lri.name + ')',
+                                             'polar-lex-rule1' + pred]) + '.'
+                    rule_tran = '\n'.join(['-'.join([lrt2_name, order + str(num[i])]) + ' :=',
+                                           r'%' + order +
+                                           ' (* ' + lri.name + ')',
+                                           'polar-lex-rule2' + pred]) + '.'
+                    irules.add_literal(rule_tran, section=section)
+                    irules.add_literal(rule_intran, section=section)
             else:
                 rule = '\n'.join(['-'.join([lrt.name, order + str(num[i])]) + ' :=',
                                   r'%' + order + ' (* ' + lri.name + ')',
                                   lrt.identifier() + pred]) + '.'
-            irules.add_literal(rule, section=section)
+                irules.add_literal(rule, section=section)
     else:
         lrt_id = lrt.identifier()
         lrules.add(lrt_id.rsplit('-rule', 1)[0] + ' := ' + lrt_id + '.')
@@ -922,7 +954,9 @@ def write_interrogative_rules(lrt, mylang, choices, pc):
     WH_OBJ_LEX_RULE = '''wh-obj-lex-rule := itrg-lex-rule &
                 [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < [ NON-LOCAL.QUE.LIST < > ] >,
                 COMPS < [ NON-LOCAL.QUE.LIST cons ] > ] ].'''
-    POLAR_LEX_RULE = ''' polar-lex-rule := itrg-lex-rule & 
+    POLAR_LEX_RULE_INTR = ''' intran-polar-lex-rule := itrg-lex-rule & 
+    [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < [ NON-LOCAL.QUE.LIST < > ] >, COMPS < > ] ].'''
+    POLAR_LEX_RULE_TR = ''' tran-polar-lex-rule := itrg-lex-rule & 
     [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < [ NON-LOCAL.QUE.LIST < > ] >, 
                                  COMPS < [ NON-LOCAL.QUE.LIST < > ] > ] ].'''
     mylang.set_section('lexrules')
@@ -931,8 +965,8 @@ def write_interrogative_rules(lrt, mylang, choices, pc):
         mylang.add(ITRG_LEX_RULE)
         mylang.add(PROP_LEX_RULE)
         if lrt.interrogative == 'polar':
-            mylang.add(POLAR_LEX_RULE)
-            lrt.supertypes.add('polar-lex-rule')
+            mylang.add(POLAR_LEX_RULE_INTR)
+            mylang.add(POLAR_LEX_RULE_TR)
         elif lrt.interrogative == 'wh':
             mylang.add(WH_SUBJ_LEX_RULE)
             mylang.add(WH_OBJ_LEX_RULE)
