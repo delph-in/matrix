@@ -1,4 +1,4 @@
-### $Id: tdl.py,v 1.17 2008-07-24 11:16:41 sfd Exp $
+# $Id: tdl.py,v 1.17 2008-07-24 11:16:41 sfd Exp $
 
 ######################################################################
 # imports
@@ -17,6 +17,7 @@ import copy
 #  convert s list of TDL tokens and return that list
 ###########################################################################
 
+
 def isid(s):
     if s == '...':
         return True
@@ -24,6 +25,7 @@ def isid(s):
         if not (c.isalnum() or ord(c) > 127 or c in ['-', '+', '_', '*', '%']):
             return False
     return True
+
 
 def TDLtokenize(s):
     tok = ""
@@ -42,7 +44,7 @@ def TDLtokenize(s):
             while i < len(s) and s[i] != '"':
                 i += 1
             i += 1
-            val.append(s[0:i]) # include the quotes
+            val.append(s[0:i])  # include the quotes
             s = s[i:]
         elif s[0] == '<':
             if s[1:2] == '!':
@@ -69,8 +71,8 @@ def TDLtokenize(s):
             val.append(s[0:3])
             s = s[3:]
         elif s[0] == '[' or s[0] == ']' or \
-                        s[0] == '&' or s[0] == ',' or \
-                        s[0] == '.' or s[0] == '>':
+                s[0] == '&' or s[0] == ',' or \
+                s[0] == '.' or s[0] == '>':
             val.append(s[0])
             s = s[1:]
         else:
@@ -92,17 +94,21 @@ debug_write = False
 tdl_file = sys.stdout
 tdl_indent = 0
 
+
 def TDLset_file(f):
     global tdl_file
     tdl_file = f
+
 
 def TDLget_indent():
     global tdl_indent
     return tdl_indent
 
+
 def TDLset_indent(indent):
     global tdl_indent
     tdl_indent = indent
+
 
 def TDLwrite(s):
     global tdl_indent
@@ -296,14 +302,15 @@ class TDLelem_conj(TDLelem):
         for ch in self.child[0:1]:
             if ch:
                 ch.write()
-                last_was_feat = (isinstance(ch, TDLelem_feat));
+                last_was_feat = (isinstance(ch, TDLelem_feat))
         for ch in self.child[1:]:
             # TJT 2014-05-07 Changed to check for Nones; probably not the best
             # This might be the cause of a regression
             if ch:
-                cur_is_feat = (isinstance(ch, TDLelem_feat));
+                cur_is_feat = (isinstance(ch, TDLelem_feat))
                 # don't print empty AVMs ([]) unless it's the only thing
-                if cur_is_feat and len(ch.child) == 0: continue
+                if cur_is_feat and len(ch.child) == 0:
+                    continue
                 if cur_is_feat or last_was_feat:
                     TDLwrite(' &\n')
                     for i in range(old_i):
@@ -334,10 +341,10 @@ class TDLelem_feat(TDLelem):
             c0 = self.child[0]
             c1 = self.child[1]
         return c0 and c1 and \
-               isinstance(c0, TDLelem_av) and \
-               isinstance(c1, TDLelem_av) and \
-               ((c0.attr == 'FIRST' and c1.attr == 'REST') or \
-                (c0.attr == 'REST' and c1.attr == 'FIRST'))
+            isinstance(c0, TDLelem_av) and \
+            isinstance(c1, TDLelem_av) and \
+            ((c0.attr == 'FIRST' and c1.attr == 'REST') or
+             (c0.attr == 'REST' and c1.attr == 'FIRST'))
 
     # Does self contain only a FIRST and a REST, and is the value of REST
     # either the type 'null' or also a list?  If so, self can be printed
@@ -354,7 +361,7 @@ class TDLelem_feat(TDLelem):
 
             if r and \
                     isinstance(r, TDLelem_conj) and \
-                            len(r.child) == 1:
+                len(r.child) == 1:
                 c = r.child[0]
                 return (isinstance(c, TDLelem_type) and c.type == 'null') or \
                        (isinstance(c, TDLelem_feat) and c.is_list())
@@ -365,7 +372,7 @@ class TDLelem_feat(TDLelem):
         if self.empty_list:
             TDLwrite('< >')
             return
-        islist = self.is_list() # just call once and store the result
+        islist = self.is_list()  # just call once and store the result
         cur = self
         first_elem = True
         while cur:
@@ -386,7 +393,7 @@ class TDLelem_feat(TDLelem):
                 f = cur.child[0].child[0]
                 r = cur.child[1].child[0].child[0]
 
-            f.write() # write value of FIRST
+            f.write()  # write value of FIRST
 
             if islist and isinstance(r, TDLelem_type) and r.type == 'null':
                 break
@@ -482,20 +489,23 @@ class TDLelem_dlist(TDLelem):
 
 tok = []
 
+
 def TDLparse_type():
     global tok
     return TDLelem_type(tok.pop(0))
 
+
 def TDLparse_coref():
     global tok
     return TDLelem_coref(tok.pop(0))
+
 
 def TDLparse_av():
     global tok
     attr = tok.pop(0)
     elem = TDLelem_av(attr)
     if tok[0] == '.':
-        tok.pop(0) # '.'
+        tok.pop(0)  # '.'
         cur = elem
         temp = TDLelem_conj()
         cur.add(temp)
@@ -508,20 +518,22 @@ def TDLparse_av():
         elem.add(TDLparse_conj())
     return elem
 
+
 def TDLparse_feat():
     global tok
-    tok.pop(0) # '['
+    tok.pop(0)  # '['
     elem = TDLelem_feat()
     while tok[0] != ']':
         elem.add(TDLparse_av())
         if tok[0] == ',':
             tok.pop(0)
-    tok.pop(0) # ']'
+    tok.pop(0)  # ']'
     return elem
+
 
 def TDLparse_list():
     global tok
-    tok.pop(0) # '<'
+    tok.pop(0)  # '<'
 
     term = True       # is the list terminated (i.e. doesn't end in ...)?
     seen_dot = False  # were the items separated by a .?
@@ -535,7 +547,7 @@ def TDLparse_list():
         elif tok[0] == '.':
             seen_dot = True
             tok.pop(0)
-    tok.pop(0) # '>'
+    tok.pop(0)  # '>'
 
     # We've got the list elements, and the variable seen_dot tells us
     # if it ends with a null (False) or not (True).  Loop through them
@@ -573,7 +585,7 @@ def TDLparse_list():
             # ...set up for the next iteration (or the finish)
             temp = TDLelem_av('REST')
             cur.add(temp)
-            cur = temp # leave cur pointing to an av
+            cur = temp  # leave cur pointing to an av
 
     # Unless the list is unterminated...
     if term:
@@ -607,16 +619,18 @@ def TDLparse_list():
 
     return elem
 
+
 def TDLparse_dlist():
     global tok
-    tok.pop(0) # '<!'
+    tok.pop(0)  # '<!'
     elem = TDLelem_dlist()
     while tok[0] != '!>':
         elem.add(TDLparse_conj())
         if tok[0] == ',':
             tok.pop(0)
-    tok.pop(0) # '!>'
+    tok.pop(0)  # '!>'
     return elem
+
 
 def TDLparse_term():
     global tok
@@ -631,6 +645,7 @@ def TDLparse_term():
     elif tok[0] == '<!':
         return TDLparse_dlist()
 
+
 def TDLparse_conj():
     global tok
     elem = TDLelem_conj()
@@ -640,21 +655,23 @@ def TDLparse_conj():
         elem.add(TDLparse_term())
     return elem
 
+
 def TDLparse_typedef():
     global tok
-    type = tok.pop(0) # the type name
+    type = tok.pop(0)  # the type name
     try:
-        op = tok.pop(0) # the operator
+        op = tok.pop(0)  # the operator
         while not op in (':=', ':<', ':+'):
             type += '_' + op  # turn spaces in the type name to _'s
             op = tok.pop(0)
     except IndexError:
-        raise IndexError("Pop from empty list: the TDL defined probably " + \
+        raise IndexError("Pop from empty list: the TDL defined probably " +
                          "is missing the operator (:= or :+)")
     elem = TDLelem_typedef(type, op)
     elem.add(TDLparse_conj())
-    tok.pop(0) # '.'
+    tok.pop(0)  # '.'
     return elem
+
 
 def TDLparse(s):
     global tok
@@ -683,9 +700,9 @@ def TDLmergeable(e1, e2):
         return e1.coref == e2.coref
     if isinstance(e1, TDLelem_av):
         return e1.attr == e2.attr
-    if (isinstance(e1, TDLelem_conj) or \
-                isinstance(e1, TDLelem_feat) or \
-                isinstance(e1, TDLelem_dlist)):
+    if (isinstance(e1, TDLelem_conj) or
+        isinstance(e1, TDLelem_feat) or
+            isinstance(e1, TDLelem_dlist)):
         return True
 
 
@@ -732,10 +749,10 @@ def TDLmerge(e1, e2):
                     # Sometimes need to merge the end of list with a longer list:
                     elif (isinstance(c0, TDLelem_type) and c0.type == 'null'
                           and isinstance(c, TDLelem_feat) and c.is_list() and not c.empty_list):
-                            e0.child.remove(c0)
-                            e0.add(copy.copy(c))
-                            handled = True
-                            break
+                        e0.child.remove(c0)
+                        e0.add(copy.copy(c))
+                        handled = True
+                        break
                 if not handled:
                     e0.add(copy.copy(c))
     else:
@@ -754,6 +771,8 @@ def TDLmerge(e1, e2):
 #   major (Boolean; True iff this is a major section
 #   force (Boolean; True iff the comment should appear even if the section
 #          is empty)
+
+
 class TDLsection(object):
     name = ''
     comment = ''
@@ -798,7 +817,6 @@ class TDLfile(object):
             newsec.force = s[3]
             self.sections += [newsec]
 
-
     def set_section(self, section):
         """
         Set the current section.  All subsequent typedefs or literals
@@ -806,7 +824,6 @@ class TDLfile(object):
         override the section) until the next call to set_section().
         """
         self.section = section
-
 
     def write_comment(self, comment, major):
         """
@@ -818,7 +835,6 @@ class TDLfile(object):
         TDLwrite(';;; ' + comment + '\n')
         if major:
             TDLwrite((len(comment) + 6) * ';' + '\n')
-
 
     def save(self):
         self.disambiguate_types()
@@ -860,7 +876,8 @@ class TDLfile(object):
                     if first_typedef:
                         first_typedef = False
                     elif not (last_was_one_line and t.one_line):
-                        TDLwrite('\n') # double-space unless two one-lines in a row
+                        # double-space unless two one-lines in a row
+                        TDLwrite('\n')
 
                     if not comment_written and s.comment:
                         self.write_comment(s.comment, s.major)
@@ -872,7 +889,6 @@ class TDLfile(object):
                     last_was_one_line = t.one_line
 
         f.close()
-
 
     def disambiguate_types(self):
         """
@@ -898,15 +914,13 @@ class TDLfile(object):
                 self.typedefs[i].set_type(new_type)
                 type_count[new_type] = 1
 
-
     def dump(self):
         TDLset_file(sys.stdout)
         for t in self.typedefs:
             t.write()
 
-
     def add(self, tdl_type,
-            comment = '', one_line = False, merge = False, section = ''):
+            comment='', one_line=False, merge=False, section=''):
         """
         Add a type definition to this file, merging with an existing
         definition if possible.
@@ -928,16 +942,14 @@ class TDLfile(object):
         if not handled:
             self.typedefs.append(typedef)
 
-
     def add_comment(self, tdl_type, comment):
         """
         Add a comment to an existing type in this file
         """
         self.add(tdl_type + ':= [].', comment)
 
-
     def add_literal(self, literal,
-                    comment = '', section = ''):
+                    comment='', section=''):
         """
         Add a literal string (which will never merge) to this file
         """

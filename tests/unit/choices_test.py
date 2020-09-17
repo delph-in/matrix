@@ -7,6 +7,7 @@ from gmcs.choices import ChoiceList
 from gmcs.choices import split_variable_key
 from gmcs.choices import get_next_key
 
+
 class TestChoiceCategoryClasses(unittest.TestCase):
     def test_choicecategory(self):
         c = ChoiceCategory()
@@ -71,9 +72,10 @@ class TestChoiceCategoryClasses(unittest.TestCase):
         self.assertEqual(xs[0]['attr'], 'val2')
         self.assertEqual(xs[1]['attr'], 'val3')
 
+
 class TestChoicesFileParsingFunctions(unittest.TestCase):
     def test_get(self):
-        c = ChoicesFile() # no file loaded
+        c = ChoicesFile()  # no file loaded
         c.load_choices(simple_choices_file)
         self.assertEqual(c.get('NO_SUCH'), '')
         self.assertEqual(c.get(''), c.choices)
@@ -86,54 +88,57 @@ class TestChoicesFileParsingFunctions(unittest.TestCase):
         self.assertEqual(c.get('verb2_stem1_orth'), 'test')
         self.assertEqual(c.get('verb2_stem1_pred'), 'test_v_2_rel')
         self.assertEqual(c.get('verb2'),
-                {'name':'testverb2', 'valence':'trans',
-                    'stem':[{'orth':'test','pred':'test_v_2_rel'}]})
+                         {'name': 'testverb2', 'valence': 'trans',
+                          'stem': [{'orth': 'test', 'pred': 'test_v_2_rel'}]})
         self.assertEqual(c.get('verb3'), {})
         # now we get an index error before the keyerror, so the following
         # doesn't work
         #self.assertEqual(c.get('verb3_NOSUCH'), '')
 
     def test_set(self):
-        c = ChoicesFile() # no file loaded
+        c = ChoicesFile()  # no file loaded
         self.assertEqual(c.choices, {})
         c['abc'] = 5
-        self.assertEqual(c.choices, {'abc':5})
+        self.assertEqual(c.choices, {'abc': 5})
         c['def2_ghi'] = 2
-        self.assertEqual(c.choices, {'abc':5, 'def':[None, {'ghi':2}]})
+        self.assertEqual(c.choices, {'abc': 5, 'def': [None, {'ghi': 2}]})
         c['def1_ghi'] = 1
-        self.assertEqual(c.choices, {'abc':5, 'def':[{'ghi':1}, {'ghi':2}]})
-        c = ChoicesFile() # no file loaded
+        self.assertEqual(
+            c.choices, {'abc': 5, 'def': [{'ghi': 1}, {'ghi': 2}]})
+        c = ChoicesFile()  # no file loaded
         c['rst_uvw'] = 2
         self.assertEqual(c.choices, {'rst_uvw': 2})
 
     def test_del(self):
-        c = ChoicesFile() # no file loaded
+        c = ChoicesFile()  # no file loaded
         c['abc'] = 5
-        self.assertEqual(c.choices, {'abc':5})
+        self.assertEqual(c.choices, {'abc': 5})
         del c['abc']
         self.assertEqual(c.choices, {})
         c['abc1_def'] = 1
         c['abc2_def'] = 2
         c['abc2_ghi'] = 3
-        self.assertEqual(c.choices, {'abc':[{'def':1},{'def':2,'ghi':3}]})
+        self.assertEqual(
+            c.choices, {'abc': [{'def': 1}, {'def': 2, 'ghi': 3}]})
         del c['abc2_def']
-        self.assertEqual(c.choices, {'abc':[{'def':1},{'ghi':3}]})
+        self.assertEqual(c.choices, {'abc': [{'def': 1}, {'ghi': 3}]})
         del c['abc2']
-        self.assertEqual(c.choices, {'abc':[{'def':1},None]})
+        self.assertEqual(c.choices, {'abc': [{'def': 1}, None]})
         c['abc2_def'] = 2
         c['abc3_def'] = 3
-        self.assertEqual(c.choices, {'abc':[{'def':1},{'def':2},{'def':3}]})
+        self.assertEqual(
+            c.choices, {'abc': [{'def': 1}, {'def': 2}, {'def': 3}]})
         del c['abc2']
-        self.assertEqual(c.choices, {'abc':[{'def':1},None,{'def':3}]})
+        self.assertEqual(c.choices, {'abc': [{'def': 1}, None, {'def': 3}]})
         del c['abc']
         self.assertEqual(c.choices, {})
 
     def test_delete(self):
-        c = ChoicesFile() # no file loaded
+        c = ChoicesFile()  # no file loaded
         c['abc1_def'] = 5
-        self.assertEqual(c.choices, {'abc':[{'def':5}]})
+        self.assertEqual(c.choices, {'abc': [{'def': 5}]})
         c.delete('abc1_def', prune=False)
-        self.assertEqual(c.choices, {'abc':[{}]})
+        self.assertEqual(c.choices, {'abc': [{}]})
         # currently not using pruning
         #c['abc1_def'] = 5
         #c.delete('abc1_def', prune=True)
@@ -146,7 +151,7 @@ class TestChoicesFileParsingFunctions(unittest.TestCase):
         c['abc1_ghi'] = 6
         c['abc2_ghi'] = 7
         c.delete('abc1', prune=False)
-        self.assertEqual(c.choices, {'abc':[None,{'ghi':7}]})
+        self.assertEqual(c.choices, {'abc': [None, {'ghi': 7}]})
         #c['abc1_def'] = 5
         #c['abc1_ghi'] = 6
         #c['abc2_ghi'] = 7
@@ -184,21 +189,22 @@ class TestChoicesFileParsingFunctions(unittest.TestCase):
         self.assertEqual(get_next_key('ab-c_d3ef'), ('ab-c_d3ef', ''))
         self.assertEqual(get_next_key('abc_def1_ghi'), ('abc_def', '1_ghi'))
         self.assertEqual(get_next_key('abc_def1'), ('abc_def', '1'))
-        self.assertEqual(get_next_key('abc32_def1_ghi'), ('abc','32_def1_ghi'))
+        self.assertEqual(get_next_key('abc32_def1_ghi'),
+                         ('abc', '32_def1_ghi'))
 
     def test_parse_choices(self):
-        c = ChoicesFile() # no file loaded
+        c = ChoicesFile()  # no file loaded
         self.assertEqual(c.parse_choices([]), {})
         self.assertEqual(c.parse_choices(['abc=ABC', 'def=DEF']),
                          {'abc': 'ABC', 'def': 'DEF'})
         self.assertEqual(c.parse_choices(['abc1_def=DEF', 'abc1_ghi=GHI']),
                          {'abc': [{'def': 'DEF', 'ghi': 'GHI'}]})
         self.assertEqual(c.parse_choices(['abc1_def=DEF1', 'abc2_def=DEF2']),
-                         {'abc': [{'def':'DEF1'}, {'def':'DEF2'}]})
+                         {'abc': [{'def': 'DEF1'}, {'def': 'DEF2'}]})
         self.assertEqual(c.parse_choices(['abc2_def=DEF2', 'abc1_def=DEF1']),
-                         {'abc': [{'def':'DEF1'}, {'def':'DEF2'}]})
+                         {'abc': [{'def': 'DEF1'}, {'def': 'DEF2'}]})
         # not currently throwing this error, but it should be logged.
-        #self.assertRaises(ChoicesFileParseError,
+        # self.assertRaises(ChoicesFileParseError,
         #                  c.parse_choices, ['abc2_def=DEF2', 'abc2_def=DEF1'])
 
     def test_full_key(self):
@@ -211,7 +217,7 @@ class TestChoicesFileParsingFunctions(unittest.TestCase):
             self.assertEqual(key.full_key, 'abc' + str(i+1))
 
     # no longer using prune
-    #def test_reset_full_keys(self):
+    # def test_reset_full_keys(self):
     #    c = ChoicesFile()
     #    c['abc1_def'] = 1
     #    c['abc2_def'] = 2
@@ -250,7 +256,7 @@ class TestChoicesFileParsingFunctions(unittest.TestCase):
     # with resetting values that prevent its feasibility at this time, such
     # as "what if they named their language 'abc2'?".
     #
-    #def test_reset_full_keys_and_values(self):
+    # def test_reset_full_keys_and_values(self):
     #    c = ChoicesFile()
     #    c['abc1_def'] = 1
     #    c['abc2_def'] = 2
@@ -271,32 +277,41 @@ class TestChoicesFileParsingFunctions(unittest.TestCase):
     #    self.assertEqual(c['abc3_def'], 'abc1')
     #    self.assertEqual(c['ghi'], 'abc1')
 
+
 class TestChoicesDerivedValueFunctions(unittest.TestCase):
     def setUp(self):
         self.c = ChoicesFile()
 
     def test_has_case(self):
-        feat = {'name':'case', 'value':'abc'}
+        feat = {'name': 'case', 'value': 'abc'}
         self.assertTrue(self.c.has_case(feat, 'abc'))
         self.assertTrue(self.c.has_case(feat, ''))
         self.assertFalse(self.c.has_case(feat, 'def'))
 
     def test_has_noun_case(self):
         pass
+
     def test_has_adp_case(self):
         pass
+
     def test_has_optadp_case(self):
         pass
+
     def test_has_mixed_case(self):
         pass
+
     def test_case_head(self):
         pass
+
     def test_has_dirinv(self):
         pass
+
     def test_has_SCARGS(self):
         pass
+
     def test_cases(self):
         pass
+
     def test_patterns(self):
         pass
 
@@ -310,41 +325,51 @@ class TestChoicesDerivedValueFunctions(unittest.TestCase):
         self.assertEqual(c.numbers(), [])
         # simple number system
         c.load_choices(mini_english_choices_file)
-        self.assertEqual(c.numbers(), [['sg','number'],['pl','number']])
+        self.assertEqual(c.numbers(), [['sg', 'number'], ['pl', 'number']])
         # delete one
         c.delete('number1')
-        self.assertEqual(c.numbers(), [['pl','number']])
+        self.assertEqual(c.numbers(), [['pl', 'number']])
         # number hierarchy
         c.load_choices(modified_english_choices_file)
-        self.assertEqual(c.numbers(), [['sg','number'],['pl','number'],
-                                       ['du','sg;pl']])
+        self.assertEqual(c.numbers(), [['sg', 'number'], ['pl', 'number'],
+                                       ['du', 'sg;pl']])
 
     def test_persons(self):
         pass
+
     def test_pernums(self):
         pass
+
     def test_genders(self):
         pass
+
     def test_forms(self):
         pass
+
     def test_tenses(self):
         pass
+
     def test_aspects(self):
         pass
+
     def test_situations(self):
         pass
+
     def test_types(self):
         pass
+
     def test_features(self):
         pass
 
+
 class TestExampleChoicesFiles(unittest.TestCase):
     def setUp(self):
-#        self.ch = ChoicesFile()
+        #        self.ch = ChoicesFile()
         pass
 
 ##############################################################################
-#### Choices File Strings
+# Choices File Strings
+
 
 empty_choices_file = ['']
 
