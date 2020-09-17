@@ -3018,6 +3018,7 @@ Cache nouns noun[0-9]+$ name
 Cache verbs verb[0-9]+$ name
 Cache qverbs qverb[0-9]+$ name
 Cache auxes aux[0-9]+$ name
+Cache dets q?det[0-9]+$ name
 Cache adjs adj[0-9]+$ name
 Cache cops cop[0-9]+$ name
 
