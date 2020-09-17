@@ -751,12 +751,12 @@ def write_supertypes(mylang, identifier, supertypes=None, interrogative=None):
     if supertypes is not None and len(supertypes) > 0:
         if interrogative and not interrogative == 'no':
             if interrogative == 'polar':
-                id1 = 'polar-lex-rule1'
-                id2 = 'polar-lex-rule2'
+                id1 = 'intran-' + identifier
+                id2 = 'tran-' + identifier
                 supertypes1 = set(supertypes)
                 supertypes2 = set(supertypes)
-                supertypes1.add('intran-polar-lex-rule')
-                supertypes2.add('tran-polar-lex-rule')
+                supertypes1.add('intran-polar-lex-rule-super')
+                supertypes2.add('tran-polar-lex-rule-super')
                 mylang.add_literal(
                     ''';;; The following two type names were created automatically instead of one user-specified type ''' + identifier)
                 mylang.add('''%(id)s := %(sts)s.''' %
@@ -909,29 +909,23 @@ def write_i_or_l_rules(irules, lrules, lrt, order):
                 section = "regular"
             if lrt.interrogative and not lrt.interrogative == 'no':
                 if lrt.interrogative == 'wh':
-                    lrt_subj_name = 'subj-' + lrt.name + '-' + lrt.identifier_suffix
-                    lrt_obj_name = 'obj-' + lrt.name + '-' + lrt.identifier_suffix
-                    rule_subj = '\n'.join(['-'.join([lrt_subj_name, order + str(num[i])]) + ' :=',
-                                           r'%' + order +
-                                           ' (* ' + lri.name + ')',
-                                           lrt_subj_name + pred]) + '.'
-                    rule_obj = '\n'.join(['-'.join([lrt_obj_name, order + str(num[i])]) + ' :=',
-                                          r'%' + order +
-                                          ' (* ' + lri.name + ')',
-                                          lrt_obj_name + pred]) + '.'
+                    rule_obj, rule_subj = build_wh_lex_rules(
+                        lrt, order, num, i, lri, pred, 'subj-', 'obj-')
                     irules.add_literal(rule_obj, section=section)
                     irules.add_literal(rule_subj, section=section)
                 elif lrt.interrogative == 'polar':
-                    lrt1_name = 'intran-' + lrt.name + '-' + lrt.identifier_suffix
-                    lrt2_name = 'tran-' + lrt.name + '-' + lrt.identifier_suffix
-                    rule_intran = '\n'.join(['-'.join([lrt1_name, order + str(num[i])]) + ' :=',
-                                             r'%' + order +
-                                             ' (* ' + lri.name + ')',
-                                             'polar-lex-rule1' + pred]) + '.'
-                    rule_tran = '\n'.join(['-'.join([lrt2_name, order + str(num[i])]) + ' :=',
-                                           r'%' + order +
-                                           ' (* ' + lri.name + ')',
-                                           'polar-lex-rule2' + pred]) + '.'
+                    rule_intran, rule_tran = build_wh_lex_rules(
+                        lrt, order, num, i, lri, pred, 'intran-', 'tran-')
+                    # lrt1_name = 'intran-' + lrt.name + '-' + lrt.identifier_suffix
+                    # lrt2_name = 'tran-' + lrt.name + '-' + lrt.identifier_suffix
+                    # rule_intran = '\n'.join(['-'.join([lrt1_name, order + str(num[i])]) + ' :=',
+                    #                          r'%' + order +
+                    #                          ' (* ' + lri.name + ')',
+                    #                          'polar-lex-rule1' + pred]) + '.'
+                    # rule_tran = '\n'.join(['-'.join([lrt2_name, order + str(num[i])]) + ' :=',
+                    #                        r'%' + order +
+                    #                        ' (* ' + lri.name + ')',
+                    #                        'polar-lex-rule2' + pred]) + '.'
                     irules.add_literal(rule_tran, section=section)
                     irules.add_literal(rule_intran, section=section)
             else:
@@ -944,19 +938,42 @@ def write_i_or_l_rules(irules, lrules, lrt, order):
         lrules.add(lrt_id.rsplit('-rule', 1)[0] + ' := ' + lrt_id + '.')
 
 
+'''
+The wh-inflection requires two separate lexical rules,
+even though this is not exposed to the user via the questionnaire;
+the user specifies just one rule, but the system needs to
+not add that rule directly and instead to add two homophonous rules,
+one for a wh-subject and another for a wh-object.
+'''
+
+
+def build_wh_lex_rules(lrt, order, num, i, lri, pred, pref1, pref2):
+    lrt_subj_name = pref1 + lrt.name + '-' + lrt.identifier_suffix
+    lrt_obj_name = pref2 + lrt.name + '-' + lrt.identifier_suffix
+    rule_subj = '\n'.join(['-'.join([lrt_subj_name, order + str(num[i])]) + ' :=',
+                           r'%' + order +
+                           ' (* ' + lri.name + ')',
+                           lrt_subj_name + pred]) + '.'
+    rule_obj = '\n'.join(['-'.join([lrt_obj_name, order + str(num[i])]) + ' :=',
+                          r'%' + order +
+                          ' (* ' + lri.name + ')',
+                          lrt_obj_name + pred]) + '.'
+    return rule_obj, rule_subj
+
+
 def write_interrogative_rules(lrt, mylang, choices, pc):
     ITRG_LEX_RULE = '''itrg-lex-rule := add-only-no-ccont-rule & 
     [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques ].'''
-    PROP_LEX_RULE = ''' prop-lex-rule := add-only-no-ccont-rule & 
+    PROP_LEX_RULE = '''prop-lex-rule := add-only-no-ccont-rule & 
     [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF prop ].'''
     WH_SUBJ_LEX_RULE = '''wh-subj-lex-rule := itrg-lex-rule &
                 [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ NON-LOCAL.QUE.LIST cons ] > ].'''
     WH_OBJ_LEX_RULE = '''wh-obj-lex-rule := itrg-lex-rule &
                 [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < [ NON-LOCAL.QUE.LIST < > ] >,
                 COMPS < [ NON-LOCAL.QUE.LIST cons ] > ] ].'''
-    POLAR_LEX_RULE_INTR = ''' intran-polar-lex-rule := itrg-lex-rule & 
+    POLAR_LEX_RULE_INTR = '''intran-polar-lex-rule-super := itrg-lex-rule & 
     [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < [ NON-LOCAL.QUE.LIST < > ] >, COMPS < > ] ].'''
-    POLAR_LEX_RULE_TR = ''' tran-polar-lex-rule := itrg-lex-rule & 
+    POLAR_LEX_RULE_TR = '''tran-polar-lex-rule-super := itrg-lex-rule & 
     [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < [ NON-LOCAL.QUE.LIST < > ] >, 
                                  COMPS < [ NON-LOCAL.QUE.LIST < > ] > ] ].'''
     mylang.set_section('lexrules')
@@ -1250,7 +1267,7 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
         # TJT 2014-08-22: check head for adjectives and incorporated stems
         if lrt.full_key.startswith('verb-pc') or \
                 lrt.full_key.startswith('adj-pc') or \
-        'is-lrt' in lrt.full_key:
+            'is-lrt' in lrt.full_key:
             if 'head' not in feat:
                 vr.err(feat.full_key + '_head',
                        'You must choose where the feature is specified.')
