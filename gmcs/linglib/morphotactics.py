@@ -2,7 +2,7 @@ from collections import defaultdict
 
 from gmcs.linglib import lexicon
 from gmcs.linglib.lexbase import (PositionClass, LexicalRuleType,
-    #MorphotacticNode, LexicalType,
+                                  #MorphotacticNode, LexicalType,
                                   LexicalRuleInstance,
                                   ALL_LEX_TYPES,
                                   LEXICAL_CATEGORIES,
@@ -14,13 +14,13 @@ from gmcs.utils import get_name
 from functools import reduce
 #from gmcs.utils import TDLencode
 
-### Contents
+# Contents
 # 1. Module Variables
 # 2. Helper functions
 # 3. Main logic functions
 # 4. Output functions
 
-## NOTES ON ABBREVIATIONS
+# NOTES ON ABBREVIATIONS
 # pc : position class
 # lr : lexical rule
 # lrt : lexical rule type
@@ -46,13 +46,15 @@ _supertypes = {}
 ### HELPER FUNCTIONS ###
 ########################
 
+
 def all_position_classes(choices):
     """ Yield each position class defined in the choices file. """
     for lt in ALL_LEX_TYPES:
         for pc in choices[lt + '-pc']:
             yield pc
 
-def defined_lexrule_sts(lrt,pc):
+
+def defined_lexrule_sts(lrt, pc):
     """
     Return the list of lexical rule supertypes, filtering out ones
     not defined in the pc (likely Matrix types)
@@ -65,8 +67,9 @@ def defined_lexrule_sts(lrt,pc):
     return to_return
 #  for st in lrt.split_value('supertypes'):
 #    print st in [[l.full_key] for l in pc['lrt']]
-#return [st for st in lrt.split_value('supertypes') if st in [[l.full_key] for l in pc['lrt']]]
-#return [st for st in lrt.split_value('supertypes') if st in pc['lrt']]
+# return [st for st in lrt.split_value('supertypes') if st in [[l.full_key] for l in pc['lrt']]]
+# return [st for st in lrt.split_value('supertypes') if st in pc['lrt']]
+
 
 def disjunctive_typename(mns):
     """
@@ -75,17 +78,20 @@ def disjunctive_typename(mns):
     """
     return '-or-'.join(sorted([mn.name for mn in mns]))
 
+
 def flag_name(flag_tuple):
     """
     Return the flag name for rule types in flag_tuple.
     """
     return disjunctive_typename(flag_tuple).upper() + '-FLAG'
 
+
 def sequential(mn1, mn2):
     """
     Return True if the one of the MNs appears on the other's input.
     """
     return (mn1.precedes(mn2) or mn2.precedes(mn1))
+
 
 def ordered_constraints(mn, constraint_type):
     """
@@ -103,6 +109,7 @@ def ordered_constraints(mn, constraint_type):
         ordered.insert(loc, c)
     return ordered
 
+
 def get_input_map(pch):
     """
     For the given position class hierarchy, return a map with the sets
@@ -115,6 +122,7 @@ def get_input_map(pch):
         if len(i_s) > 0:
             inp_map[i_s] += [pc]
     return inp_map
+
 
 def get_vtype(stem, choices):
     """
@@ -148,6 +156,7 @@ def customize_inflection(choices, add_methods, mylang, irules, lrules, lextdl):
     # customization. Hopefully we can find a better solution
     return write_rules(pch, mylang, irules, lrules, lextdl, choices)
 
+
 def customize_lexical_rules(choices):
     """
     Interpret the PCs in a Choices file into a set of lexical rules.
@@ -170,6 +179,7 @@ def customize_lexical_rules(choices):
     return pch
 
 ### POSITION CLASSES AND LEXICAL RULE TYPES ###
+
 
 def position_class_hierarchy(choices):
     """
@@ -206,13 +216,16 @@ def position_class_hierarchy(choices):
             _mns[pc].relate(_mns[inp], 'parent')
     return pch
 
+
 def add_lexical_type_hierarchy(pch, choices):
     for lex_cat in LEXICAL_CATEGORIES:
-        if lex_cat not in choices: continue
+        if lex_cat not in choices:
+            continue
         lth = lexicon.lexical_type_hierarchy(choices, lex_cat)
         _mns[lth.key] = lth
         _mns.update(lth.nodes)
         pch.add_node(lth)
+
 
 def pc_lrt_mergeable(pc):
     """
@@ -221,27 +234,30 @@ def pc_lrt_mergeable(pc):
     """
     return len([l for l in pc['lrt'] if not defined_lexrule_sts(l, pc)]) == 1
 
+
 def pc_lrt_merge(cur_pc, pc):
     lrt = pc['lrt'].get_first()
-    if pc.get('name','') == '' or lrt.get('name','') == '':
+    if pc.get('name', '') == '' or lrt.get('name', '') == '':
         name = pc.get('name') or lrt.get('name') or pc.full_key
         lrt['name'] = cur_pc.name = name
         cur_pc.identifier_suffix = 'lex-rule'
 
+
 def create_lexical_rule_types(cur_pc, pc):
     lrt_parents = {}
     # TJT 2014-08-21 Check incorporated stems too
-    all_lrts = (pc.get('lrt',[]), pc.get('is-lrt',[]))
+    all_lrts = (pc.get('lrt', []), pc.get('is-lrt', []))
     for lrts in all_lrts:
         for j, lrt in enumerate(lrts):
             mtx_supertypes = set()
             if 'supertypes' in lrt:
-                lrt_parents[lrt.full_key] = set(defined_lexrule_sts(lrt,pc))
+                lrt_parents[lrt.full_key] = set(defined_lexrule_sts(lrt, pc))
                 mtx_supertypes = set(lrt.split_value('supertypes')).difference(
-                    lrt_parents.get(lrt.full_key,set()))
+                    lrt_parents.get(lrt.full_key, set()))
             # default name uses name of PC with _lrtX
             if 'name' not in lrt:
-                lrt['name'] = cur_pc.name + lrt.full_key.replace(cur_pc.key, '', 1)
+                lrt['name'] = cur_pc.name + \
+                    lrt.full_key.replace(cur_pc.key, '', 1)
             cur_lrt = create_lexical_rule_type(lrt, mtx_supertypes, cur_pc)
             # the ordering should only mess up if there are 100+ lrts
             cur_lrt.tdl_order = cur_pc.tdl_order + (0.01 * j)
@@ -250,6 +266,7 @@ def create_lexical_rule_types(cur_pc, pc):
         for parent in lrt_parents[child]:
             cur_pc.relate_parent_child(_mns[parent], _mns[child])
 
+
 def create_lexical_rule_type(lrt, mtx_supertypes, cur_pc):
     new_lrt = LexicalRuleType(lrt.full_key, get_name(lrt))
     _id_key_tbl[new_lrt.identifier()] = lrt.full_key
@@ -257,53 +274,53 @@ def create_lexical_rule_type(lrt, mtx_supertypes, cur_pc):
         if feat['name'] == 'evidential':
             new_lrt.evidential = feat['value']
         # EKN 2018-02-17 Add info about possessive lrts:
-        elif feat['value']=='possessor' or\
-             feat['value']=='possessum' or\
-             feat['value']=='nonpossessive':
-            new_lrt.possessive=feat['value']
+        elif feat['value'] == 'possessor' or\
+                feat['value'] == 'possessum' or\
+                feat['value'] == 'nonpossessive':
+            new_lrt.possessive = feat['value']
             new_lrt.poss_strat_num = feat['name'][-1]
         elif 'poss-pron' in feat['name'] and\
              'possessum' not in feat['name']:
-            if feat['value']=='minus':
-                new_lrt.possessive='nonpossessive'
+            if feat['value'] == 'minus':
+                new_lrt.possessive = 'nonpossessive'
                 new_lrt.poss_strat_num = feat['name'][-1]
             # This'll mark the lrt as a possessive type of
-            # some kind, though it won't actually be used 
+            # some kind, though it won't actually be used
             # to add any tdl here. It'll just prevent this
             # lrt from getting a default supertype added.
-            elif feat['value']=='plus':
-                new_lrt.possessive='pron'
-        # EKN 2018-02-17 Add info about lrts for possessum marking 
+            elif feat['value'] == 'plus':
+                new_lrt.possessive = 'pron'
+        # EKN 2018-02-17 Add info about lrts for possessum marking
         # that accompanies pronoun possessors:
-        elif '_possessum' in feat['name']: #TODO: improve feature name and retrieval
+        # TODO: improve feature name and retrieval
+        elif '_possessum' in feat['name']:
             num = feat['name'].split('_')[0][-1]
-            if feat['value']=='plus':
-                new_lrt.possessive='possessum'
+            if feat['value'] == 'plus':
+                new_lrt.possessive = 'possessum'
                 new_lrt.poss_strat_num = 'pron-'+num
             else:
-                new_lrt.possessive='nonpossessive'
+                new_lrt.possessive = 'nonpossessive'
                 new_lrt.poss_strat_num = 'pron-'+num
         else:
             new_lrt.features[feat['name']] = {'value': feat['value'],
                                               'head': feat['head']}
 
-
     # CMC 2017-03-24 Populate valence change operations
-    new_lrt.valchgops = lrt.get('valchg',[])
+    new_lrt.valchgops = lrt.get('valchg', [])
 
     # TJT 2014-08-27: For adjective position classes,
     # check for additional choices to copy to features
     # TJT 2014-11-06: Simplifying... just copy all choices
     if 'adj-pc' in lrt.full_key:
-        for choice in ('modpos','predcop','mod'):
-            lrt_choice = lrt.get(choice,False)
+        for choice in ('modpos', 'predcop', 'mod'):
+            lrt_choice = lrt.get(choice, False)
             if lrt_choice:
                 new_lrt.features[choice] = lrt_choice
     # TJT 2014-08-21: Keep track of preds for adjective incorporation
     # using new LexicalRuleInstance class
-    new_lrt.lris = [LexicalRuleInstance(lri['orth'], lri['pred']) \
-                        if lri['inflecting'] == 'yes' else LexicalRuleInstance('')
-                    for lri in lrt.get('lri',[])]
+    new_lrt.lris = [LexicalRuleInstance(lri['orth'], lri['pred'])
+                    if lri['inflecting'] == 'yes' else LexicalRuleInstance('')
+                    for lri in lrt.get('lri', [])]
     # Fill out the obvious supertypes (later we'll finish)
     set_lexical_rule_supertypes(new_lrt, mtx_supertypes)
     _mns[new_lrt.key] = new_lrt
@@ -311,12 +328,14 @@ def create_lexical_rule_type(lrt, mtx_supertypes, cur_pc):
 
 ### CONSTRAINTS ###
 
+
 def interpret_constraints(choices):
     convert_obligatoriness_to_req(choices)
     for mn in list(_mns.values()):
         # don't bother if the morphotactic node is not defined in choices
         if mn.key not in choices \
-                or not isinstance(choices[mn.key], dict): continue
+                or not isinstance(choices[mn.key], dict):
+            continue
 
         for req in choices[mn.key].get('require', []):
             others = dict([(o, _mns[o]) for o in req['others'].split(', ')])
@@ -329,7 +348,7 @@ def interpret_constraints(choices):
                 # and after the current pc.
                 # the case where it is neither followed by or follows other
                 # should be covered in a validation test
-        for fbd in choices[mn.key].get('forbid',[]):
+        for fbd in choices[mn.key].get('forbid', []):
             other = _mns[fbd['others']]
             # only forbid backwards. convert forwards forbids to backwards
             if other.precedes(mn):
@@ -337,13 +356,14 @@ def interpret_constraints(choices):
             elif mn.precedes(other):
                 other.constraints['forbid'][mn.key] = mn
 
+
 def convert_obligatoriness_to_req(choices):
     """
     For all PCs marked as obligatory, add a "require" constraint for
     that PC on each of its basetypes.
     """
     for pc in all_position_classes(choices):
-        if pc.get('obligatory','') == 'on':
+        if pc.get('obligatory', '') == 'on':
             basetypes = [i for i in list(_mns[pc.full_key].input_span().values())
                          if len(i.inputs()) == 0]
             for bt in basetypes:
@@ -351,20 +371,23 @@ def convert_obligatoriness_to_req(choices):
 
 ### FLAGS ###
 
+
 def create_flags():
     # these are values to be placed on flags:
     # tuple is ((SELF.MOTHER, SELF.DTR), (OTHER.MOTHER, OTHER.DTR))
-    reqfwd  = (('-', None), ('+', None))
+    reqfwd = (('-', None), ('+', None))
     reqbkwd = ((None, '+'), ('+', None))
-    forbid  = ((None, 'na'), ('+', None))
+    forbid = ((None, 'na'), ('+', None))
     for mn in list(_mns.values()):
         assign_flags(mn, reqfwd, minimal_flag_set(mn, 'req-fwd'))
         assign_flags(mn, reqbkwd, minimal_flag_set(mn, 'req-bkwd'))
         assign_flags(mn, forbid, minimal_flag_set(mn, 'forbid'))
 
+
 def assign_flags(mn, flag_values, flag_groups):
     for flag_group in flag_groups:
-        flag_tuple = tuple(sorted(list(flag_group.values()), key=lambda x: x.tdl_order))
+        flag_tuple = tuple(
+            sorted(list(flag_group.values()), key=lambda x: x.tdl_order))
         # first apply the value to the LR making the constraint
         if flag_values[0][1] is not None:
             mn.flags['in'][flag_tuple] = flag_values[0][1]
@@ -378,9 +401,11 @@ def assign_flags(mn, flag_values, flag_groups):
                 other.flags['out'][flag_tuple] = flag_values[1][0]
         # also set initial flag values for req-bkwd constraints
         if flag_values[0][1] == '+':
-            basetypes = [i for i in list(mn.input_span().values()) if len(i.inputs()) == 0]
+            basetypes = [i for i in list(
+                mn.input_span().values()) if len(i.inputs()) == 0]
             for bt in basetypes:
                 set_req_bkwd_initial_flags(bt.pc, flag_tuple)
+
 
 def minimal_flag_set(mn, constraint_type):
     """
@@ -392,7 +417,8 @@ def minimal_flag_set(mn, constraint_type):
     accounted_for = dict([(c.key, False) for c in cs])
     for c in cs:
         # a flag may have been accounted for by a disjunctive set. If so, skip.
-        if accounted_for[c.key]: continue
+        if accounted_for[c.key]:
+            continue
         flag_group = {}
         # first add disjunctive sets
         for ds in list(mn.disjunctive_flag_sets.values()):
@@ -416,11 +442,13 @@ def minimal_flag_set(mn, constraint_type):
                 accounted_for[x.key] = True
     return all_flag_groups
 
+
 def get_all_flags(out_or_in):
     flags = set()
     for mn in list(_mns.values()):
         flags.update(set(mn.flags[out_or_in].keys()))
     return flags
+
 
 def set_req_bkwd_initial_flags(lex_pc, flag_tuple):
     """
@@ -435,11 +463,12 @@ def set_req_bkwd_initial_flags(lex_pc, flag_tuple):
         if x.flags['out'].get(flag_tuple) != '+':
             x.flags['out'][flag_tuple] = 'na-or--'
     for root in lex_pc.roots():
-        root.percolate_down(items=lambda x:x.flags['out'],
+        root.percolate_down(items=lambda x: x.flags['out'],
                             validate=lambda x: validate_flag(x))
     to_remove = defaultdict(set)
     for root in lex_pc.roots():
-        root.percolate_up(items=lambda x: x.flags['out'], redundancies=to_remove)
+        root.percolate_up(
+            items=lambda x: x.flags['out'], redundancies=to_remove)
     # don't forget to remove redundant items
     for child in list(to_remove.keys()):
         for item in to_remove[child]:
@@ -447,6 +476,7 @@ def set_req_bkwd_initial_flags(lex_pc, flag_tuple):
             del child.flags['out'][item[0]]
 
 ### SUPERTYPES ###
+
 
 # add possible supertypes here
 # CMC 2017-05-16: Simplifying and clarifying these lists.
@@ -486,6 +516,7 @@ ALL_LEX_RULE_SUPERTYPES = LEX_RULE_SUPERTYPES + ['infl-lex-rule',
 ALL_LEX_RULE_SUPERTYPES = set(ALL_LEX_RULE_SUPERTYPES)
 LEX_RULE_SUPERTYPES = set(LEX_RULE_SUPERTYPES)
 
+
 def set_lexical_rule_supertypes(lrt, mtx_supertypes):
     """
     Assign initial supertypes to lexical rule types. These can be inferred
@@ -504,12 +535,14 @@ def set_lexical_rule_supertypes(lrt, mtx_supertypes):
         #  if ('value', 'a') in lrt.features.get('negation',{}).items():
         #    lrt.supertypes.add('cont-change-only-lex-rule')
         # add other special cases here
-        infostr_features = lrt.features.get('information-structure meaning',{})
+        infostr_features = lrt.features.get(
+            'information-structure meaning', {})
         if len(infostr_features) > 0:
             if infostr_features['head'] == 'subj' and infostr_features['value'] == 'focus':
                 lrt.supertypes.add('add-icons-subj-foc-lex-rule')
             elif infostr_features['head'] == 'obj' and infostr_features['value'] == 'focus':
                 lrt.supertypes.add('add-icons-obj-foc-lex-rule')
+
 
 def calculate_supertypes(pch):
     # calculate daughter types first, because we want to percolate them
@@ -519,6 +552,7 @@ def calculate_supertypes(pch):
         # in the case a lex-rule PC has no supertypes, give it a generic one
         if not any(st in ALL_LEX_RULE_SUPERTYPES for st in pc.supertypes):
             pc.supertypes.add('lex-rule')
+
 
 def calculate_daughter_types(pch):
     inp_map = get_input_map(pch)
@@ -536,6 +570,7 @@ def calculate_daughter_types(pch):
             _dtrs.add(dtr_name)
         for pc in pcs:
             pc.daughter_type = dtr_name
+
 
 def percolate_supertypes(pc):
     # First percolate supertypes down to leaves. Before percolating them
@@ -557,7 +592,7 @@ def percolate_supertypes(pc):
                     # evidential semantics must be able to add a predicate
                     # in CCONT
                     x.supertypes.add('cont-change-only-lex-rule')
-                # EKN 2017-12-18 Possessive lexical rules have too much variation to 
+                # EKN 2017-12-18 Possessive lexical rules have too much variation to
                 # add any supertype but lex-rule, but adding this causes inheritance issues.
                 # So no supertypes for possessive rules are added here; instead, supertypes
                 # are handled by write_possessive_behavior(). If any other lrt shares a pc
@@ -580,7 +615,8 @@ def percolate_supertypes(pc):
         child.supertypes.difference_update(to_remove[child])
     # since we don't use the pc node of lexical types, only do the
     # following if it is a lex rule
-    if not pc.is_lex_rule: return
+    if not pc.is_lex_rule:
+        return
     # If there are supertypes common to all roots, then copy it up to
     # the PC. If not, we probably need to give the PC a generic type.
     # Also, the backup value for root_sts is to avoid a TypeError caused
@@ -599,13 +635,17 @@ def percolate_supertypes(pc):
 ### OUTPUT METHODS ###
 ######################
 
+
 def get_infostr_constraint(k, cur):
-    if k not in _supertypes: return
+    if k not in _supertypes:
+        return
     for st in _supertypes[k]:
         if cur in _infostr_head and st in _infostr_head:
             for h in _infostr_head[st]:
-                if h not in _infostr_head[cur]: _infostr_head[cur].append(h)
+                if h not in _infostr_head[cur]:
+                    _infostr_head[cur].append(h)
                 get_infostr_constraint(st, k)
+
 
 def get_infostr_constraints(choices):
     for i, pc in enumerate(all_position_classes(choices)):
@@ -629,8 +669,8 @@ def get_infostr_constraints(choices):
 
 def write_rules(pch, mylang, irules, lrules, lextdl, choices):
     # Set up irules.tdl
-    irules.define_sections([['regular','Inflecting Lexical Rule Instances',False,False],
-                            ['incorp','Incorporated Stem Lexical Rule Instances',False,False]])
+    irules.define_sections([['regular', 'Inflecting Lexical Rule Instances', False, False],
+                            ['incorp', 'Incorporated Stem Lexical Rule Instances', False, False]])
     # Set up inflectional flags
     get_infostr_constraints(choices)
     all_flags = get_all_flags('out').union(get_all_flags('in'))
@@ -658,9 +698,10 @@ def write_rules(pch, mylang, irules, lrules, lextdl, choices):
             # CMC 2017-03-28 Write valence change operations rules
             write_valence_change_behavior(pc, lrt, mylang, choices)
             # MTH 2017-10-16 Write evidential behavior
-            write_evidential_behavior(lrt, mylang, choices, pc.has_evidential())
+            write_evidential_behavior(
+                lrt, mylang, choices, pc.has_evidential())
             # EKN 2017-12-13 Write possessive behavior
-            write_possessive_behavior(pc,lrt,mylang,choices)
+            write_possessive_behavior(pc, lrt, mylang, choices)
             # CMC 2017-04-07 moved merged LRT/PCs handling to write_supertypes
             write_supertypes(mylang, lrt.identifier(), lrt.all_supertypes())
         write_daughter_types(mylang, pc)
@@ -669,11 +710,14 @@ def write_rules(pch, mylang, irules, lrules, lextdl, choices):
             for mn in list(_mns.values())
             if isinstance(mn, LexicalRuleType) and len(mn.features) > 0]
 
+
 def write_intermediate_types(mylang):
     if _dtrs:
         mylang.add_literal(';;; Intermediate rule types')
         for dtr in _dtrs:
-            mylang.add('''%(dtr)s := word-or-lexrule.''' % {'dtr': dtr}, one_line=True)
+            mylang.add('''%(dtr)s := word-or-lexrule.''' %
+                       {'dtr': dtr}, one_line=True)
+
 
 def get_section_from_pc(pc):
     """
@@ -697,11 +741,13 @@ def get_section_from_pc(pc):
         else:
             return 'lexrules'
 
+
 def write_supertypes(mylang, identifier, supertypes=None):
     if supertypes is not None and len(supertypes) > 0:
         # CMC 2017-04-07 Handling for merged LRT/PCs: omit (same) identifier from list of supertypes written
-        mylang.add('''%(id)s := %(sts)s.''' % \
+        mylang.add('''%(id)s := %(sts)s.''' %
                    {'id': identifier, 'sts': ' & '.join(sorted([st for st in supertypes if st != identifier]))})
+
 
 def write_daughter_types(mylang, pc):
     """
@@ -709,15 +755,18 @@ def write_daughter_types(mylang, pc):
     intermediate rule types when necessary.
     """
     if pc.is_lex_rule:
-        mylang.add('''%(id)s := [ DTR %(dtr)s ].''' % \
-                   {'id':pc.identifier(), 'dtr': pc.daughter_type})
+        mylang.add('''%(id)s := [ DTR %(dtr)s ].''' %
+                   {'id': pc.identifier(), 'dtr': pc.daughter_type})
+
 
 def write_inflected_avms(mylang, all_flags):
     mylang.set_section('addenda')
     for f in all_flags:
         flag = flag_name(f)
         mylang.add('''inflected :+ [%(flag)s luk].''' % {'flag': flag})
-        mylang.add('''infl-satisfied :+ [%(flag)s na-or-+].''' % {'flag': flag})
+        mylang.add(
+            '''infl-satisfied :+ [%(flag)s na-or-+].''' % {'flag': flag})
+
 
 def write_pc_flags(mylang, lextdl, pc, all_flags, choices):
     """
@@ -725,7 +774,8 @@ def write_pc_flags(mylang, lextdl, pc, all_flags, choices):
     output flags have been written, copy up all flags. Otherwise, copy
     up the flags that don't occur as output flags.
     """
-    if len(all_flags) == 0: return
+    if len(all_flags) == 0:
+        return
     write_flags(mylang, pc)
     out_flags = set(pc.flags['out'].keys())
     to_copy = {}
@@ -740,6 +790,7 @@ def write_pc_flags(mylang, lextdl, pc, all_flags, choices):
         to_copy = {pc.key: all_flags.difference(out_flags.union(copied_flags))}
         write_copy_up_flags(mylang, to_copy, all_flags, force_write=True)
 
+
 def write_mn_flags(mylang, lextdl, mn, output_flags, all_flags, choices):
     if mn.instance:
         write_flags(lextdl, mn)
@@ -753,28 +804,32 @@ def write_mn_flags(mylang, lextdl, mn, output_flags, all_flags, choices):
     copied_flags = write_copy_up_flags(mylang, to_copy, all_flags)
     return all_flags.difference(cur_output_flags).difference(copied_flags)
 
+
 def write_flags(tdlfile, mn):
     if len(mn.flags['in']) + len(mn.flags['out']) == 0:
         return
     flag_strs = []
     if len(mn.flags['in']) > 0:
-        flag_strs += ['DTR.INFLECTED [ ' + \
+        flag_strs += ['DTR.INFLECTED [ ' +
                       ', '.join(flag_name(flag) + ' ' + mn.flags['in'][flag]
                                 for flag in mn.flags['in']) + ' ]']
     if len(mn.flags['out']) > 0:
-        flag_strs += ['INFLECTED [ ' + \
+        flag_strs += ['INFLECTED [ ' +
                       ', '.join(flag_name(flag) + ' ' + mn.flags['out'][flag]
                                 for flag in mn.flags['out']) + ' ]']
     tdl_str = mn.identifier() + ' := [ ' + ', '.join(flag_strs) + ' ].'
     tdlfile.add(tdl_str)
 
+
 def write_copy_up_flags(mylang, to_copy, all_flags, force_write=False):
     copied_flags = set()
-    if len(to_copy) == 0: return copied_flags
+    if len(to_copy) == 0:
+        return copied_flags
     common_flags = reduce(set.intersection, list(to_copy.values()))
     for mn_key in to_copy:
         mn = _mns[mn_key]
-        if mn.identifier_suffix in ('lex-super', 'lex', ''): continue
+        if mn.identifier_suffix in ('lex-super', 'lex', ''):
+            continue
         # if all flags are common, none are copied here, and if the
         # difference contains all flags, just copy up the whole AVM.
         mn_copy_flags = to_copy[mn_key]
@@ -787,18 +842,20 @@ def write_copy_up_flags(mylang, to_copy, all_flags, force_write=False):
             flag_tags = [(flag_name(flag), disjunctive_typename(flag).lower())
                          for flag in mn_copy_flags]
             tdl_str = mn.identifier() + ' := [ ' + \
-                      'INFLECTED [ ' + \
-                      ', '.join(['%(flag)s #%(tag)s' % {'flag':ft[0], 'tag':ft[1]}
-                                 for ft in flag_tags]) + ' ], ' + \
-                      'DTR.INFLECTED [ ' + \
-                      ', '.join(['%(flag)s #%(tag)s' % {'flag':ft[0], 'tag':ft[1]}
-                                 for ft in flag_tags]) + ' ] ].'
+                'INFLECTED [ ' + \
+                ', '.join(['%(flag)s #%(tag)s' % {'flag': ft[0], 'tag':ft[1]}
+                           for ft in flag_tags]) + ' ], ' + \
+                'DTR.INFLECTED [ ' + \
+                ', '.join(['%(flag)s #%(tag)s' % {'flag': ft[0], 'tag':ft[1]}
+                           for ft in flag_tags]) + ' ] ].'
             mylang.add(tdl_str)
         copied_flags.update(mn_copy_flags)
     return copied_flags
 
+
 def write_i_or_l_rules(irules, lrules, lrt, order):
-    if len(lrt.lris) == 0: return
+    if len(lrt.lris) == 0:
+        return
     if any(len(lri) > 0 for lri in lrt.lris):
         # inflectional rules
         if order.lower() in ('prefix', 'before'):
@@ -823,7 +880,8 @@ def write_i_or_l_rules(irules, lrules, lrt, order):
     else:
         # lexical rules # TJT 2014-12-21: cleaning this up
         lrt_id = lrt.identifier()
-        lrules.add(lrt_id.rsplit('-rule',1)[0] + ' := ' + lrt_id + '.')
+        lrules.add(lrt_id.rsplit('-rule', 1)[0] + ' := ' + lrt_id + '.')
+
 
 def write_evidential_behavior(lrt, mylang, choices, pc_evidential):
     EVIDENTIAL_LEX_RULE = '''evidential-lex-rule := cont-change-only-lex-rule &
@@ -856,7 +914,7 @@ def write_evidential_behavior(lrt, mylang, choices, pc_evidential):
         lrt.supertypes.add("add-only-no-ccont-rule")
 
 
-def write_possessive_behavior(pc,lrt,mylang,choices):
+def write_possessive_behavior(pc, lrt, mylang, choices):
     ##############################################
     # FULL NP POSSESSIVE PHRASES:              ###
     ##############################################
@@ -867,23 +925,27 @@ def write_possessive_behavior(pc,lrt,mylang,choices):
     NON_POSS_LEX_RULE_DEFN = ''' := add-only-no-ccont-rule &
              [ SYNSEM.LOCAL.CAT [ HEAD noun & [ POSSESSOR nonpossessive ],\
                                   POSSESSUM nonpossessive ] ].'''
-    if lrt.possessive=='possessor':
-        possessor_rule_name='possessor-lex-rule-'+lrt.poss_strat_num
+    if lrt.possessive == 'possessor':
+        possessor_rule_name = 'possessor-lex-rule-'+lrt.poss_strat_num
         lrt.supertypes.add(possessor_rule_name)
-        mylang.add(possessor_rule_name+POSSESSOR_LEX_RULE_DEFN,section='lexrules')
-    if lrt.possessive=='possessum':
-        possessum_rule_name='possessum-lex-rule-'+lrt.poss_strat_num
-        mylang.add(possessum_rule_name+POSSESSUM_LEX_RULE_DEFN,section='lexrules')
+        mylang.add(possessor_rule_name +
+                   POSSESSOR_LEX_RULE_DEFN, section='lexrules')
+    if lrt.possessive == 'possessum':
+        possessum_rule_name = 'possessum-lex-rule-'+lrt.poss_strat_num
+        mylang.add(possessum_rule_name +
+                   POSSESSUM_LEX_RULE_DEFN, section='lexrules')
         lrt.supertypes.add(possessum_rule_name)
-    if lrt.possessive=='nonpossessive':
-        nonpossessive_rule_name='nonpossessive-lex-rule-'+lrt.poss_strat_num
-        mylang.add(nonpossessive_rule_name+NON_POSS_LEX_RULE_DEFN,section='lexrules')
+    if lrt.possessive == 'nonpossessive':
+        nonpossessive_rule_name = 'nonpossessive-lex-rule-'+lrt.poss_strat_num
+        mylang.add(nonpossessive_rule_name +
+                   NON_POSS_LEX_RULE_DEFN, section='lexrules')
         lrt.supertypes.add(nonpossessive_rule_name)
-    # If a non-possessive rule is in the same pc as a possessive rule, make 
+    # If a non-possessive rule is in the same pc as a possessive rule, make
     # sure it isn't missing supertypes. Note: to keep this simple, validating
     # against all but 'generic' lrts:
-    elif lrt.possessive==None and pc.has_possessive():
+    elif lrt.possessive == None and pc.has_possessive():
         lrt.supertypes.add('add-only-no-ccont-rule')
+
 
 def write_valence_change_behavior(pc, lrt, mylang, choices):
     from gmcs.linglib.valence_change import lexrule_name, added_argnum_for_vchop
@@ -897,43 +959,54 @@ def write_valence_change_behavior(pc, lrt, mylang, choices):
 
     lrt_ops = set()
     for op in lrt.valchgops:
-        operation = op.get('operation','').lower()
+        operation = op.get('operation', '').lower()
         lrt_ops.add(operation)
-        transitive = 'trans' in op.get('inputs','').split(',')
+        transitive = 'trans' in op.get('inputs', '').split(',')
         argnum, numargs = added_argnum_for_vchop(op)
 
         if operation == 'subj-rem':
-            lrt.supertypes.add('local-change-only-lex-rule') # includes no-ccont
-            lrt.supertypes.add('xarg-change-only-ccont-lex-rule' if transitive else 'same-cont-lex-rule')
-            mylang.add(lrt.identifier() + ' := ' + lexrule_name('subj-rem-op', transitive) + '.')
+            # includes no-ccont
+            lrt.supertypes.add('local-change-only-lex-rule')
+            lrt.supertypes.add(
+                'xarg-change-only-ccont-lex-rule' if transitive else 'same-cont-lex-rule')
+            mylang.add(lrt.identifier() + ' := ' +
+                       lexrule_name('subj-rem-op', transitive) + '.')
         elif operation == 'subj-dem':
             lrt.supertypes.add('local-change-only-lex-rule')
             lrt.supertypes.add('same-cont-lex-rule')
-            mylang.add(lrt.identifier() + ' := ' + lexrule_name('subj-dem-op', argnum, numargs) + '.', merge=True)
+            mylang.add(lrt.identifier() + ' := ' +
+                       lexrule_name('subj-dem-op', argnum, numargs) + '.', merge=True)
         elif operation == 'obj-prom':
             lrt.supertypes.add('local-change-only-lex-rule')
             lrt.supertypes.add('xarg-change-only-ccont-lex-rule')
-            mylang.add(lrt.identifier() + ' := ' + lexrule_name('obj-prom-op', argnum, numargs) + '.', merge=True)
+            mylang.add(lrt.identifier() + ' := ' +
+                       lexrule_name('obj-prom-op', argnum, numargs) + '.', merge=True)
         elif operation == 'obj-rem':
-            lrt.supertypes.add('local-change-only-lex-rule') # includes no-ccont
+            # includes no-ccont
+            lrt.supertypes.add('local-change-only-lex-rule')
             lrt.supertypes.add('same-cont-lex-rule')
-            mylang.add(lrt.identifier() + ' := ' + lexrule_name('obj-rem-op') + '.')
+            mylang.add(lrt.identifier() + ' := ' +
+                       lexrule_name('obj-rem-op') + '.')
         elif operation == 'obj-add':
             lrt.supertypes.add('same-cont-lex-rule')
-            lrt.supertypes.add(lexrule_name('added-arg-applicative', argnum, numargs))
-            lrt.supertypes.add(lexrule_name('added-arg-head-type', argnum, numargs, op['argtype'].lower()))
-            predname = op.get('predname','undef_pred')
-            mylang.add(lrt.identifier() + ' := [ C-CONT.RELS.LIST < [ PRED "' + predname +'" ] > ].')
+            lrt.supertypes.add(lexrule_name(
+                'added-arg-applicative', argnum, numargs))
+            lrt.supertypes.add(lexrule_name(
+                'added-arg-head-type', argnum, numargs, op['argtype'].lower()))
+            predname = op.get('predname', 'undef_pred')
+            mylang.add(
+                lrt.identifier() + ' := [ C-CONT.RELS.LIST < [ PRED "' + predname + '" ] > ].')
         elif operation == 'subj-add':
             lrt.supertypes.add('same-non-local-lex-rule')
             lrt.supertypes.add(lexrule_name('subj-add', argnum, transitive))
-            predname = op.get('predname','causative_rel')
-            mylang.add(lrt.identifier() + ' := [ C-CONT.RELS.LIST < [ PRED "' + predname + '" ] > ].')
-
+            predname = op.get('predname', 'causative_rel')
+            mylang.add(
+                lrt.identifier() + ' := [ C-CONT.RELS.LIST < [ PRED "' + predname + '" ] > ].')
 
     # final cleanup once all ops are known
     if 'subj-dem' in lrt_ops and 'obj-prom' not in lrt_ops:
         lrt.supertypes.add('same-cont-lex-rule')
+
 
 def write_pc_adj_syntactic_behavior(lrt, mylang, choices):
     # TODO: Don't do this if a supertype is specified
@@ -947,17 +1020,19 @@ def write_pc_adj_syntactic_behavior(lrt, mylang, choices):
                      [ SYNSEM.LOCAL.CAT [ VAL.SUBJ < >,
                                           HEAD.PRD - ] ].''')
             # Modification direction
-            modpos = choices.get(lrt.key+'_modpos','')
+            modpos = choices.get(lrt.key+'_modpos', '')
             # Options are adjective modifying nouns "before the adjective",
             # "after the adjective", or "either position"
-            if modpos in ('before','after'):
-                posthead = {'before':'+', 'after':'-'}[modpos]
-                mylang.add(lrt.identifier() + (' := [ SYNSEM.LOCAL.CAT.POSTHEAD %s ].' % posthead))
+            if modpos in ('before', 'after'):
+                posthead = {'before': '+', 'after': '-'}[modpos]
+                mylang.add(lrt.identifier() +
+                           (' := [ SYNSEM.LOCAL.CAT.POSTHEAD %s ].' % posthead))
         if lrt.features['mod'] in ('both', 'pred'):
             if lrt.features['mod'] == "pred":
                 # Predicative only
-                mylang.add(lrt.identifier() + " := [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].")
-                #elif lrt.features['mod'] == "both":
+                mylang.add(lrt.identifier() +
+                           " := [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].")
+                # elif lrt.features['mod'] == "both":
                 # Do nothing... gets PRD or stative predicate from below
             # TJT 2014-08-27: Making 'predcop' dependent on 'mod: pred or both'
             if 'predcop' in lrt.features:
@@ -969,11 +1044,13 @@ def write_pc_adj_syntactic_behavior(lrt, mylang, choices):
                 # This only fires if "mod" is ("both" or "pred") and "pred" not checked
                 lrt.supertypes.add('stative-pred-lex-rule')
                 # TJT: 2014-09-24: Stative predicate lexical rule is PRD -
-                mylang.add(lrt.identifier() + ''' := [ SYNSEM.LOCAL.CAT.HEAD.PRD - ].''')
+                mylang.add(lrt.identifier() +
+                           ''' := [ SYNSEM.LOCAL.CAT.HEAD.PRD - ].''')
 
 ##################
 ### VALIDATION ###
 ##################
+
 
 def validate(choices, vr):
     index_feats = choices.index_features()
@@ -985,59 +1062,62 @@ def validate(choices, vr):
         cooccurrence_validation(pc, choices, vr)
         hierarchy_validation(choices, pc, vr)
         # TJT 2014-09-04: Calculate switching inputs
-        switching = pc.get('switching',False)
+        switching = pc.get('switching', False)
         pc_switching_inputs = set()
-        if pc.get('switching',''):
-            inputs = pc.get('inputs',[]).split(', ')
+        if pc.get('switching', ''):
+            inputs = pc.get('inputs', []).split(', ')
             if isinstance(inputs, str):
                 pc_switching_inputs.add(inputs)
-            else: # assume list
+            else:  # assume list
                 pc_switching_inputs.update(inputs)
         for lrt in pc.get('lrt', []):
-            lrt_validation(lrt, vr, index_feats, choices, inputs=pc_switching_inputs, switching=switching)
+            lrt_validation(lrt, vr, index_feats, choices,
+                           inputs=pc_switching_inputs, switching=switching)
         # TJT 2014-08-21: Validate incorporated stems
         for lrt in pc.get('is-lrt', []):
-            lrt_validation(lrt, vr, index_feats, choices, incorp=True, inputs=pc_switching_inputs, switching=switching)
+            lrt_validation(lrt, vr, index_feats, choices, incorp=True,
+                           inputs=pc_switching_inputs, switching=switching)
     cycle_validation(choices, vr)
+
 
 def basic_pc_validation(choices, pc, vr):
     # Lexical rule types need order and inputs specified
     if not 'order' in pc:
         vr.err(pc.full_key + '_order',
                'You must specify an order for every position class you define.')
-    if not pc.get('inputs',''):
+    if not pc.get('inputs', ''):
         # TJT 2014-09-01: Changing this to an error as the system crashes without an input
         vr.err(pc.full_key + '_inputs',
-               #'A position class without any inputs is unusable unless you ' +\
-               #'define inputs during hand-development of the grammar.')
+               # 'A position class without any inputs is unusable unless you ' +\
+               # 'define inputs during hand-development of the grammar.')
                'Each position class must have at least one input defined.')
     else:
         # All user-defined inputs must be defined
         if any(inp not in choices and inp not in LEXICAL_SUPERTYPES
-               for inp in pc.get('inputs','').split(', ')):
+               for inp in pc.get('inputs', '').split(', ')):
             vr.err(pc.full_key + '_inputs',
-                   'Every lexical type, lexical rule type, or position class ' + \
-                   'that serves as the input to a position class must be ' + \
+                   'Every lexical type, lexical rule type, or position class ' +
+                   'that serves as the input to a position class must be ' +
                    'defined somewhere in the questionnaire.')
     # ALL inputs must be defined: if input is set to "Any X", and a POS type
     # of that X is not defined, the system fails but there is no validation
 
     # LLD 2015-12-09: modified to check for ALL_LEX_TYPES, so we check that verb,
     # aux, noun, etc. are defined if needed (not just det, adj, cop).
-    #if any(inp in NON_ESSENTIAL_LEX_CATEGORIES  and inp not in choices
+    # if any(inp in NON_ESSENTIAL_LEX_CATEGORIES  and inp not in choices
     #        for inp in pc.get('inputs','').split(', ')):
     if any(inp in ALL_LEX_TYPES and inp not in choices
-           for inp in pc.get('inputs','').split(', ')):
+           for inp in pc.get('inputs', '').split(', ')):
         vr.err(pc.full_key + '_inputs',
-               'You have specified morphology for a part of speech ' + \
-               'that does not have any lexical types defined. You ' + \
+               'You have specified morphology for a part of speech ' +
+               'that does not have any lexical types defined. You ' +
                'can define lexical types on the Lexicon page.')
     # Check for 0 or 1 LRTs, and warn appropriately
     # TJT 2014-08-20: At least one LRT of IS-LRT type is required
-    if ('lrt' not in pc or len(pc.get('lrt',[])) == 0) and \
-            ('is-lrt' not in pc or len(pc.get('is-lrt',[])) == 0):
-        vr.warn(pc.full_key + '_lrt', 'A position class without any defined ' + \
-                'lexical rule types is unusable, though it can be later ' + \
+    if ('lrt' not in pc or len(pc.get('lrt', [])) == 0) and \
+            ('is-lrt' not in pc or len(pc.get('is-lrt', [])) == 0):
+        vr.warn(pc.full_key + '_lrt', 'A position class without any defined ' +
+                'lexical rule types is unusable, though it can be later ' +
                 'defined by hand.')
     elif len(pc.get('lrt', [])) == 1:
         lrt = pc['lrt'].get_first()
@@ -1045,23 +1125,25 @@ def basic_pc_validation(choices, pc, vr):
             # if the lrt has no name, it will be merged with its position class.
             # make sure it has no constraints
             for c in lrt.get('require', []) + lrt.get('forbid', []):
-                vr.err(c.full_key + '_others', 'Solitary lexical rule types with ' + \
-                       'no name will be merged with their position class, and ' + \
-                       'therefore cannot themselves take constraints. Apply the ' + \
+                vr.err(c.full_key + '_others', 'Solitary lexical rule types with ' +
+                       'no name will be merged with their position class, and ' +
+                       'therefore cannot themselves take constraints. Apply the ' +
                        'constraints to the position class, instead.')
     # TJT 2014-09-18: PCs should be either incorporated stems or inflection...
     # this seems true from adjective typology survey, but might not be right
     # for future incorporated stems
     if 'is-lrt' in pc and 'lrt' in pc:
-        vr.err(pc.full_key+'_lrt', 'Each position class should either have ' + \
-               'incorporated stems or regular lexical rule types. If your ' + \
-               'language has incorporated stems and lexical rules types ' + \
+        vr.err(pc.full_key+'_lrt', 'Each position class should either have ' +
+               'incorporated stems or regular lexical rule types. If your ' +
+               'language has incorporated stems and lexical rules types ' +
                'in a minimal pair, let the developers know!')
 
 # TJT 2014-08-21: incorp argument for incorporated stem lexical rule validation
+
+
 def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), switching=False):
     # No supertype means it's a root type within a PC class (no longer an error)
-    #if 'supertypes' not in lrt:
+    # if 'supertypes' not in lrt:
     #  vr.err(lrt.full_key + '_supertypes',
     #         'You must select a supertype for every lexical rule type.')
     # any features on an LR need a name and value (and head for verbs)
@@ -1075,16 +1157,16 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
         # TJT 2014-08-22: check head for adjectives and incorporated stems
         if lrt.full_key.startswith('verb-pc') or \
                 lrt.full_key.startswith('adj-pc') or \
-                        'is-lrt' in lrt.full_key:
+        'is-lrt' in lrt.full_key:
             if 'head' not in feat:
                 vr.err(feat.full_key + '_head',
                        'You must choose where the feature is specified.')
             elif feat['head'] in ['higher', 'lower'] and not choices.get('scale'):
                 vr.err(feat.full_key + '_head',
                        'To use higher/lower ranked NP, please define a scale on the direct-inverse page.')
-            elif feat['head'] == 'verb' and feat.get('name','') in index_feats:
+            elif feat['head'] == 'verb' and feat.get('name', '') in index_feats:
                 vr.err(feat.full_key + '_head',
-                       'This feature is associated with nouns, ' + \
+                       'This feature is associated with nouns, ' +
                        'please select one of the NP options.')
 
         # MTH 2017-11-27: check to make sure that only one evidential value is selected
@@ -1093,21 +1175,22 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
                    'Choose only one evidential term.')
 
     # TJT 2015-02-02: Any given LRT should be either inflecting or non-inflecting
-    inflecting_count = len([_f for _f in [lri.get('inflecting')=="yes" for lri in lrt.get('lri',[])] if _f])
-    if inflecting_count not in (0, len(lrt.get('lri',[]))):
+    inflecting_count = len([_f for _f in [lri.get(
+        'inflecting') == "yes" for lri in lrt.get('lri', [])] if _f])
+    if inflecting_count not in (0, len(lrt.get('lri', []))):
         vr.err(lrt.full_key + '_name',
-               'Any given Lexical Rule Type should contain either inflecting Lexical Rule Instances ' + \
+               'Any given Lexical Rule Type should contain either inflecting Lexical Rule Instances ' +
                'or non-inflecting Lexical Rule Instances.')
     orths = set()
     for lri in lrt.get('lri', []):
         orth = lri.get('orth', '')
         if lri['inflecting'] == 'yes' and orth == '':
             vr.err(lri.full_key + '_orth',
-                   "If an instance's spelling is not selected as None, " + \
+                   "If an instance's spelling is not selected as None, " +
                    "it cannot be blank.")
         elif lri['inflecting'] == 'no' and len(orth) > 0:
             vr.warn(lri.full_key + '_orth',
-                    "If an instance's spelling is selected as None, " + \
+                    "If an instance's spelling is selected as None, " +
                     "any defined spelling will not be used.")
         if orth in orths:
             vr.err(lri.full_key + '_orth',
@@ -1115,81 +1198,85 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
         orths.add(orth)
 
     # CMC 2017-04-07: Valence-changing operations validation
-    for vchop in lrt.get('valchg',[]):
-        optype = vchop.get('operation','')
+    for vchop in lrt.get('valchg', []):
+        optype = vchop.get('operation', '')
         if not optype:
-            vr.err(vchop.full_key+'_operation','A valence-changing lexical rule must specify an operation.')
+            vr.err(vchop.full_key+'_operation',
+                   'A valence-changing lexical rule must specify an operation.')
         elif optype == 'obj-add':
-            if vchop.get('argpos') not in ['pre','post']:
-                vr.err(vchop.full_key+'_argpos','An argument can only be added at the front ' + \
+            if vchop.get('argpos') not in ['pre', 'post']:
+                vr.err(vchop.full_key+'_argpos', 'An argument can only be added at the front ' +
                        'or end of the complements list.')
-            if vchop.get('argtype') not in ['np','pp']:
-                vr.warn(vchop.full_key+'_argtype','The type of the added argument ({0}) is unconstrained.'.format(vchop.get('argtype','')))
+            if vchop.get('argtype') not in ['np', 'pp']:
+                vr.warn(vchop.full_key+'_argtype',
+                        'The type of the added argument ({0}) is unconstrained.'.format(vchop.get('argtype', '')))
             if not vchop.get('predname'):
-                vr.warn(vchop.full_key+'_predname','The added predicate should have a name specified.')
+                vr.warn(vchop.full_key+'_predname',
+                        'The added predicate should have a name specified.')
 
-    # EKN 2018-01-09: Check that only one possessive strategy or 
+    # EKN 2018-01-09: Check that only one possessive strategy or
     # possessive pronoun is selected per LRT
-    poss_strats={}
-    poss_prons={}
-    other_feats={}
+    poss_strats = {}
+    poss_prons = {}
+    other_feats = {}
     for feat in lrt.get('feat'):
         if 'poss-strat' in feat.get('name'):
-            poss_strats[feat.full_key]=feat.get('name')
+            poss_strats[feat.full_key] = feat.get('name')
         elif 'poss-pron' in feat.get('name'):
-            poss_prons[feat.full_key]=feat.get('name')
+            poss_prons[feat.full_key] = feat.get('name')
         else:
-            other_feats[feat.full_key]=(feat.get('name'),feat.get('value'),feat.get('head'))
+            other_feats[feat.full_key] = (
+                feat.get('name'), feat.get('value'), feat.get('head'))
     if len(poss_strats) > 1:
         for feat_key in poss_strats:
             vr.err(feat_key+'_name',
-               'A given rule can only be marked for one possessive behavior.')
+                   'A given rule can only be marked for one possessive behavior.')
     if len(poss_prons) > 1:
         for feat_key in poss_prons:
             vr.err(feat_key+'_name',
-               'A given rule can only be marked for one possessive behavior.')
+                   'A given rule can only be marked for one possessive behavior.')
     if poss_strats and poss_prons:
         for feat_key in poss_prons:
             vr.err(feat_key+'_name',
-               'A given rule can only be marked for one possessive behavior.')
+                   'A given rule can only be marked for one possessive behavior.')
         for feat_key in poss_strats:
             vr.err(feat_key+'_name',
-               'A given rule can only be marked for one possessive behavior.')
-    # EKN 2018-01-09: Check that only PNG features are 
+                   'A given rule can only be marked for one possessive behavior.')
+    # EKN 2018-01-09: Check that only PNG features are
     # added as agreement features to possessive strategies
-    png_feats=set(['person','number','gender','pernum'])
+    png_feats = set(['person', 'number', 'gender', 'pernum'])
     for feat in choices.get('feature'):
-        if feat.get('type')!='type':
+        if feat.get('type') != 'type':
             png_feats.add(feat.get('name'))
     for feat_key in other_feats:
-        if (poss_strats or poss_prons) and other_feats[feat_key][0] not in png_feats and other_feats[feat_key][2]!='itself':
+        if (poss_strats or poss_prons) and other_feats[feat_key][0] not in png_feats and other_feats[feat_key][2] != 'itself':
             vr.err(feat_key+'_name',
-                   'Only person, number, and gender features are supported for agreement ' +\
+                   'Only person, number, and gender features are supported for agreement ' +
                    'between possessor and possessum.')
     if poss_strats or poss_prons:
         # Possessive pc's should be obligatory
-        pc_id=lrt.full_key.split('_')[0]
-        pc=choices.get(pc_id)
-        if pc.get('obligatory')!='on':
-            mess= 'Possessive position ' +\
-                     'classes should be obligatory; ' +\
-                     'please mark as obligatory and then include a ' +\
-                     'nonpossessive lexical rule type.'
+        pc_id = lrt.full_key.split('_')[0]
+        pc = choices.get(pc_id)
+        if pc.get('obligatory') != 'on':
+            mess = 'Possessive position ' +\
+                'classes should be obligatory; ' +\
+                'please mark as obligatory and then include a ' +\
+                'nonpossessive lexical rule type.'
             vr.warn(pc_id+'_obligatory', mess)
         # The head of poss-stratN or poss-pronN features should be 'itself'
         for feat in lrt.get('feat'):
-            if 'poss-' in feat.get('name'): 
-                if feat.get('head')=='possessor' or feat.get('head')=='possessum':
-                    mess='A feature should only be marked as specified on the possessor '+\
-                         'or the possessum if it is an agreement feature. '+feat.get('name')+\
-                         ' is not an agreement feature.'
-                    vr.err(feat.full_key+'_head',mess)
+            if 'poss-' in feat.get('name'):
+                if feat.get('head') == 'possessor' or feat.get('head') == 'possessum':
+                    mess = 'A feature should only be marked as specified on the possessor ' +\
+                        'or the possessum if it is an agreement feature. '+feat.get('name') +\
+                        ' is not an agreement feature.'
+                    vr.err(feat.full_key+'_head', mess)
     else:
         for feat in lrt.get('feat'):
             # The head of noun features should be 'itself' unless it's a possessive form
             if 'noun' in lrt.full_key.split('_')[0]:
-                if feat.get('head')=='possessor' or feat.get('head')=='possessum':
-                    mess='Only possessive rules should have features specified on ' +\
+                if feat.get('head') == 'possessor' or feat.get('head') == 'possessum':
+                    mess = 'Only possessive rules should have features specified on ' +\
                         'anything other than \'itself.\''
                     vr.err(feat.full_key+'_head', mess)
 
@@ -1199,72 +1286,74 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
             pred = lri.get('pred', '')
             if not pred:
                 vr.err(lri.full_key+'_pred',
-                       "Each Incorporated Stem instance must have a pred " + \
-                       "value associated with it. If you do not require a " + \
+                       "Each Incorporated Stem instance must have a pred " +
+                       "value associated with it. If you do not require a " +
                        "pred value, use a regular lexical rule type + instances.")
             if pred[-len("_a_rel"):] != "_a_rel":
                 vr.warn(lri.full_key+'_pred',
-                        "The Customization System currently only supports " + \
-                        "adjectival incorporated stems. Note that this pred " + \
+                        "The Customization System currently only supports " +
+                        "adjectival incorporated stems. Note that this pred " +
                         "value (%s) has not been defined as a \"_a_rel\" stem." % pred)
 
     # TJT 2014-09-04: Swithing position class validation
     if switching:
-        mode = lrt.get('mod','')
-        modpos = lrt.get('modpos','')
-        predcop = lrt.get('predcop','off')
+        mode = lrt.get('mod', '')
+        modpos = lrt.get('modpos', '')
+        predcop = lrt.get('predcop', 'off')
 
         # Mode or some input must have mode defined
         if not mode:
             if not inputs:
                 vr.err(lrt.full_key+'_mod',
-                       'Every adjective position class or one of its inputs must ' + \
+                       'Every adjective position class or one of its inputs must ' +
                        'define a syntactic behavoir.')
 
         # Mode must not clash with any of its inputs
         for key in inputs:
-            input_def = choices.get(key,False)
+            input_def = choices.get(key, False)
             if input_def:
                 # Check mode
                 if mode != 'both':
-                    input_mode = input_def.get('mod','')
+                    input_mode = input_def.get('mod', '')
                     # Only pred and attr conflict with each other
                     if input_mode in ("pred", "attr") and mode != input_mode:
                         vr.err(lrt.full_key+'_mod',
-                               'This behavior conflicts with this lexical rule type\'s ' + \
-                               'input %s on the input\'s behavoir' % (input_def.get('name','')))
+                               'This behavior conflicts with this lexical rule type\'s ' +
+                               'input %s on the input\'s behavoir' % (input_def.get('name', '')))
                 # Check modpos
                 if mode in ('attr', 'both'):
                     if modpos and modpos != 'either':
-                        input_modpos = input_def.get('modpos',False)
+                        input_modpos = input_def.get('modpos', False)
                         if input_modpos:
                             if modpos != input_modpos:
                                 vr.err(lrt.full_key+'_modpos',
-                                       'This modification direction conflicts with this ' + \
-                                       'lexical rule type\'s input %s' % (input_def.get('name','')))
+                                       'This modification direction conflicts with this ' +
+                                       'lexical rule type\'s input %s' % (input_def.get('name', '')))
                 # Check predcop
                 if mode in ('pred', 'both'):
-                    if input_def.get('mod','') in ('pred', 'both'):
-                        predcop_map = {'on':'obl', 'off':'imp'} # Converge type names
-                        input_predcop = input_def.get('predcop','off')
+                    if input_def.get('mod', '') in ('pred', 'both'):
+                        # Converge type names
+                        predcop_map = {'on': 'obl', 'off': 'imp'}
+                        input_predcop = input_def.get('predcop', 'off')
                         input_predcop = predcop_map[input_predcop] if input_predcop in predcop_map else input_predcop
                         if input_predcop and input_predcop != 'opt':
                             type_predcop = predcop_map[predcop] if predcop in predcop_map else predcop
                             if type_predcop != input_predcop:
                                 vr.err(lrt.full_key+'_predcop',
-                                       'This copula complementation choice conflicts with this ' + \
-                                       'lexical rule type\'s input %s' % (input_def.get('name','')))
+                                       'This copula complementation choice conflicts with this ' +
+                                       'lexical rule type\'s input %s' % (input_def.get('name', '')))
 
         # Applicable choices for each mode must be made
         if mode in ('attr', 'both'):
             if not modpos:
                 vr.err(lrt.full_key+'_modpos',
-                       'Every position class able to be attributive must have a ' + \
+                       'Every position class able to be attributive must have a ' +
                        'modification direction defined.')
 
         # Mode specific adjective choices are disregarded without the proper mode
         if mode in ('pred', 'attr'):
-            inverse_mode_name = {'pred':'attributively', 'attr':'predicatively'}[mode]
+            inverse_mode_name = {'pred': 'attributively',
+                                 'attr': 'predicatively'}[mode]
             message = 'This choice is only applicable to adjectives behaving ' + \
                       ('%s. This choice will be ignored, or you ' % inverse_mode_name) + \
                       'can change the adjective\'s behavoir to enable this choice above.'
@@ -1278,20 +1367,21 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
         # Adjectives defined as a copula complement are unusuable without a copula defined
         if mode in ('pred', 'both'):
             if predcop == "on":
-                if not choices.get('cop',False):
+                if not choices.get('cop', False):
                     vr.warn(lrt.full_key+'_predcop',
-                            'An adjective defined as a copula complement is ' + \
+                            'An adjective defined as a copula complement is ' +
                             'unusable without a copula defined on the Lexicon page.')
 
-    #KPH Validation for case change on nominalization rules
+    # KPH Validation for case change on nominalization rules
     if lrt.full_key.startswith('verb-pc'):
         for feat in lrt.get('feat'):
             if feat.get('name') == 'case':
-                vr.warn(feat.full_key + '_name', 'If case change is specified on the object ' + \
-                       'in a nominalization rule, the resulting lexical rule will only be ' + \
-                        'compatible with transitive verbs. If this lexical rule should also ' + \
-                        'be possible for intransitive verbs, create another lexical rule that ' + \
+                vr.warn(feat.full_key + '_name', 'If case change is specified on the object ' +
+                        'in a nominalization rule, the resulting lexical rule will only be ' +
+                        'compatible with transitive verbs. If this lexical rule should also ' +
+                        'be possible for intransitive verbs, create another lexical rule that ' +
                         'requires intransitives verbs as the input.')
+
 
 def hierarchy_validation(choices, pc, vr):
     # LLD 2015-11-22 Supertype LRTs should not have non-affixing LRIs if subtype
@@ -1317,15 +1407,17 @@ def hierarchy_validation(choices, pc, vr):
     for lrt, sts in list(sts_dict.items()):
         for st in sts:
             if st in has_no_affix_lri:
-                has_no_affix_lri.remove(st)  # because we won't need to warn about this LRT again
+                # because we won't need to warn about this LRT again
+                has_no_affix_lri.remove(st)
                 vr.err(st + '_lri1_inflecting',
-                       "A lexical rule type should not contain a 'no affix' lexical rule instance if it " + \
+                       "A lexical rule type should not contain a 'no affix' lexical rule instance if it " +
                        "is a supertype to a lexical rule type that applies an affix.")
             if st in has_affix_lri:
-                has_affix_lri.remove(st)  # because we won't need to warn about this LRT again
+                # because we won't need to warn about this LRT again
+                has_affix_lri.remove(st)
                 vr.warn(st + '_lri1_inflecting',
-                        "This lexical rule type has both instances and subtypes, which will lead to " + \
-                        "greater ambiguity in realization (generation). If that was not your intention, " + \
+                        "This lexical rule type has both instances and subtypes, which will lead to " +
+                        "greater ambiguity in realization (generation). If that was not your intention, " +
                         "consider moving the affixing lexical rule instance to a subtype LRT.")
 
     # LLD 2015-12-09 Building hierarchy validation similar to what is in lexicon.py
@@ -1339,11 +1431,12 @@ def hierarchy_validation(choices, pc, vr):
             lrtsts[lrt.full_key] = sts
         feats[lrt.full_key] = {}
         for f in lrt.get('feat'):
-            feats[lrt.full_key][f.get('head') + " " + f.get('name')] = f.get('value')
+            feats[lrt.full_key][f.get('head') + " " +
+                                f.get('name')] = f.get('value')
 
     # now to figure out inherited features, check for cycles, check for hierarchy issues
     for lrt in pc.get('lrt', []):
-        st_anc = [] #used to check for subsumption errors
+        st_anc = []  # used to check for subsumption errors
         seen = []
         paths = []
         for st in lrtsts[lrt.full_key]:
@@ -1355,43 +1448,45 @@ def hierarchy_validation(choices, pc, vr):
             for p in parents:
                 if p:
                     ptype = choices.get(p)
-                    if not ptype: continue
+                    if not ptype:
+                        continue
                     for f in feats[p]:
                         # see if this feature conflicts with what we know
                         if f in feats[lrt.full_key] and feats[p][f] != feats[lrt.full_key][f]:
                             # inherited feature conflicts with self defined feature
-                            vr.warn(lrt.full_key + '_feat', "The feature defined here, \'"+f+"="+ \
-                                    str(feats[lrt.full_key][f])+"\', may confict with the value"+ \
-                                    " defined on the supertype "+ptype.get('name')+" ("+p+"). "+ \
+                            vr.warn(lrt.full_key + '_feat', "The feature defined here, \'"+f+"=" +
+                                    str(feats[lrt.full_key][f])+"\', may confict with the value" +
+                                    " defined on the supertype "+ptype.get('name')+" ("+p+"). " +
                                     "It is up to you to make sure that these values are compatible.",
                                     concat=False)
                         elif f in inherited_feats[lrt.full_key] and \
-                                        feats[p][f] != inherited_feats[lrt.full_key][f]:
+                                feats[p][f] != inherited_feats[lrt.full_key][f]:
                             vr.warn(lrt.full_key + '_supertypes',
-                                    "This inherited feature value, \'" +f+"="+ \
-                                    str(inherited_feats[lrt.full_key][f])+ \
-                                    "\', may conflict with the value defined on the supertype "+ \
-                                    ptype.get('name')+" ("+p+"). "+ \
+                                    "This inherited feature value, \'" + f+"=" +
+                                    str(inherited_feats[lrt.full_key][f]) +
+                                    "\', may conflict with the value defined on the supertype " +
+                                    ptype.get('name')+" ("+p+"). " +
                                     "It is up to you to make sure that these values are compatible.",
                                     concat=False)
-                            inherited_feats[lrt.full_key][f] = "! "+ \
-                                                               inherited_feats[lrt.full_key][f]+" && "+feats[p][f]
+                            inherited_feats[lrt.full_key][f] = "! " + \
+                                                               inherited_feats[lrt.full_key][f] + \
+                                " && "+feats[p][f]
                         else:
                             inherited_feats[lrt.full_key][f] = feats[p][f]
 
                     # add sts to the next generation
                     to_be_seen = []
                     for r in paths:
-                        if r[-1] == p: #this is the path to extend,
+                        if r[-1] == p:  # this is the path to extend,
                             paths.remove(r)
-                            for q in lrtsts[p]: #go through all sts
+                            for q in lrtsts[p]:  # go through all sts
                                 # q is a st_anc of the lrt
                                 if q not in st_anc:
                                     st_anc.append(q)
                                 if q in r:
-                                    vr.err(lrt.full_key + '_supertypes', "This hierarchy "+
-                                           "contains a cycle. The type "+q+" was found "+
-                                           "at multiple points in the inheritance path: "+
+                                    vr.err(lrt.full_key + '_supertypes', "This hierarchy " +
+                                           "contains a cycle. The type "+q+" was found " +
+                                           "at multiple points in the inheritance path: " +
                                            str(r+[q]))
                                 else:
                                     new_path = r + [q]
@@ -1413,22 +1508,24 @@ def hierarchy_validation(choices, pc, vr):
         #  method: find the intersection of supertypes and supertypes's ancestors
         for t in lrtsts[lrt.full_key]:
             if t in st_anc:
-                vr.err(lrt.full_key + '_supertypes', "This LRT hierarchy contains a "+
-                       "redundant link that will result in an LKB error.  "+t+
-                       " is both an immediate supertype of "+lrt.full_key+" and also "+
+                vr.err(lrt.full_key + '_supertypes', "This LRT hierarchy contains a " +
+                       "redundant link that will result in an LKB error.  "+t +
+                       " is both an immediate supertype of "+lrt.full_key+" and also " +
                        "an ancestor of another supertype.")
 
 # check for a cycle in the inputs
+
+
 def cycle_validation(choices, vr):
     try:
         pch = position_class_hierarchy(choices)
     except KeyError:
-        return # there is probably another error that validation will pick up
+        return  # there is probably another error that validation will pick up
     for pc in list(pch.nodes.values()):
         cyclic_inps = set([i.key for i in list(pc.input_span().values())
                            if pc.precedes(i) and i.precedes(pc)])
         if len(cyclic_inps) > 0:
-            vr.err(pc.key + '_inputs', 'The inputs of this position class might ' + \
+            vr.err(pc.key + '_inputs', 'The inputs of this position class might ' +
                    'cause a cycle. Please review: ' + ', '.join(cyclic_inps))
 
 
@@ -1444,18 +1541,20 @@ def cooccurrence_validation(lrt, choices, vr):
 
 # TJT 2014-08-26: Warn about merging obligatory position classes
 # with same inputs and positions
+
+
 def warn_merged_pcs(all_pcs, vr):
     input_map = defaultdict(lambda: defaultdict(set))
     # Gather map of inputs to position classes
     for pc in all_pcs:
         pc_name = pc.full_key
-        order = pc.get('order','') # prefix or suffix
-        inputs = pc.get('inputs',[])
+        order = pc.get('order', '')  # prefix or suffix
+        inputs = pc.get('inputs', [])
         # Not sure why inputs is a string instead of a list...
         if isinstance(inputs, str):
             input_map[inputs][order].add(pc_name)
         else:
-            for inp in pc.get('inputs',[]):
+            for inp in pc.get('inputs', []):
                 input_map[inp][order].add(pc_name)
                 # Warn for each obligatory position class with equal inputs and orders
                 #   pcs_to_be_merged = {pc for inp in input_map
@@ -1475,9 +1574,10 @@ def warn_merged_pcs(all_pcs, vr):
         difference.remove(pc)
         if len(difference) == 1:
             warningString = "another position class"
-        else: warningString = "other position classes"
+        else:
+            warningString = "other position classes"
         differenceString = ", ".join(difference)
-        vr.warn(pc+'_inputs', # putting this on inputs...
+        vr.warn(pc+'_inputs',  # putting this on inputs...
                 "This position class has the same inputs and order " + \
                 "as %s (%s). " % (warningString, differenceString) + \
                 "Therefore, they will be merged in the output grammar.")
