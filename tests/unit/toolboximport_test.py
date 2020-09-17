@@ -7,16 +7,17 @@ from gmcs.choices import FormInfo
 from gmcs.linglib import toolboximport
 from gmcs.deffile import MatrixDefFile
 
+
 class TestToolboxImport(unittest.TestCase):
     def setUp(self):
         try:
-            #try to close open toolbox temp file handles
+            # try to close open toolbox temp file handles
             for toolbox in self.toolbox_files:
                 toolbox.close()
         except AttributeError:
-            #If we don't have any toolbox_files then just continue
+            # If we don't have any toolbox_files then just continue
             pass
-        self.toolbox_files = [];
+        self.toolbox_files = []
         self.c = ChoicesFile()
         self.gold = ChoicesFile()
         self.matrixdef = MatrixDefFile('web/matrixdef')
@@ -42,8 +43,9 @@ class TestToolboxImport(unittest.TestCase):
             for j in range(len(tb_strings[i])):
                 fout = tempfile.NamedTemporaryFile(mode='w+')
                 fout.write(str(tb_strings[i][j]))
-                self.toolbox_files.append(fout);
-                choices["toolboximportconfig"+str(i+1)+"_toolboxfile"+str(j+1)+"_tbfilename"] = fout.name
+                self.toolbox_files.append(fout)
+                choices["toolboximportconfig" +
+                        str(i+1)+"_toolboxfile"+str(j+1)+"_tbfilename"] = fout.name
         return self.save_choices(choices)
 
     def test_empty(self):
@@ -80,7 +82,7 @@ class TestToolboxImport(unittest.TestCase):
 
 
 ##############################################################################
-#### Toolbox File Strings
+# Toolbox File Strings
 
 empty_toolbox_file = ''
 
@@ -12075,7 +12077,7 @@ test_toolbox_file = '''
 '''
 
 ##############################################################################
-#### Choices File Strings
+# Choices File Strings
 
 empty_choices_file = ''
 

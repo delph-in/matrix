@@ -456,7 +456,7 @@ def run_web_tests():
         imp.find_module('selenium')
     except (ImportError):
         sys.stderr.write(
-                "Seleinum not installed: run \"pip install -U selenium\"\n")
+            "Seleinum not installed: run \"pip install -U selenium\"\n")
         sys.exit(1)
     cmd = os.path.join(os.environ['CUSTOMIZATIONROOT'], '../install')
     user_name = input("Patas user name:")
@@ -525,7 +525,7 @@ def validate_html(arg):
     # takes name of a subpage, or 'main' or no argument = all
     import time
     errors = 0
-    print("Checking html validation for " + \
+    print("Checking html validation for " +
           (arg if arg != '' else 'all'))
 
     # to check any subpages, we'll need a cookie
@@ -612,8 +612,12 @@ def validate_html(arg):
 
 
 def send_page(page):
-    import urllib.request, urllib.parse, urllib.error
-    import urllib.request, urllib.error, urllib.parse
+    import urllib.request
+    import urllib.parse
+    import urllib.error
+    import urllib.request
+    import urllib.error
+    import urllib.parse
     from xml.dom.minidom import parseString
     values = {'uploaded_file': page, 'output': 'soap12'}
     data = urllib.parse.urlencode(values)
@@ -628,8 +632,8 @@ def send_page(page):
     except:
         pass
     if ecount > 0:
-        print("  The W3C validator found " + str(ecount) +\
-                  " error(s) in the document submitted.")
+        print("  The W3C validator found " + str(ecount) +
+              " error(s) in the document submitted.")
         errors = dom.getElementsByTagName('m:error')
         for e in errors:
             l = e.getElementsByTagName('m:line')[0].firstChild.data
@@ -637,7 +641,7 @@ def send_page(page):
             m = e.getElementsByTagName('m:message')[0].firstChild.data
             print("  error at line "+l+":")
             s = s.replace(
-                    '<strong title="Position where error was detected.">', '')
+                '<strong title="Position where error was detected.">', '')
             s = s.replace('</strong>', '')
             print("    source: \"" + unescape(s) + "\"")
             print("    message:\"" + unescape(m) + "\"")

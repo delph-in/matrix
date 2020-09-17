@@ -2,7 +2,6 @@ from collections import defaultdict
 
 from gmcs.linglib import lexicon
 from gmcs.linglib.lexbase import (PositionClass, LexicalRuleType,
-                                  # MorphotacticNode, LexicalType,
                                   LexicalRuleInstance,
                                   ALL_LEX_TYPES,
                                   LEXICAL_CATEGORIES,
@@ -1266,8 +1265,7 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
                    'You must choose a value for each feature you specify.')
         # TJT 2014-08-22: check head for adjectives and incorporated stems
         if lrt.full_key.startswith('verb-pc') or \
-                lrt.full_key.startswith('adj-pc') or \
-            'is-lrt' in lrt.full_key:
+                lrt.full_key.startswith('adj-pc') or 'is-lrt' in lrt.full_key:
             if 'head' not in feat:
                 vr.err(feat.full_key + '_head',
                        'You must choose where the feature is specified.')

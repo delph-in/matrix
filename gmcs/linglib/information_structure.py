@@ -6,102 +6,102 @@ from gmcs.utils import orth_encode
 g_tdls = []
 
 
-#focus-pos;topic-fisrt;c-focus;c-focus-pos : '1st;2nd;3rd'
+# focus-pos;topic-fisrt;c-focus;c-focus-pos : '1st;2nd;3rd'
 g_pos_types = {
-    ';;;clause-initial' : ['c-focus-pos|contrast-focus', '', '', ''],
-    ';;;clause-final' : ['c-focus-pos|contrast-focus', '', '', ''],
-    ';;;preverbal' : ['c-focus-pos|contrast-focus', '', '', ''],
-    ';;;postverbal' : ['c-focus-pos|contrast-focus', '', '', ''],
-    ';on;;' : ['topic-first|topic', '', '', ''],
-    ';on;;clause-initial' : ['topic-first|topic;c-focus-pos|contrast-focus', '', '', ''],
-    ';on;;clause-final' : ['topic-first|topic;c-focus-pos|contrast-focus', '', '', ''],
-    ';on;;preverbal' : ['topic-first|topic;c-focus-pos|contrast-focus', '', '', ''],
-    ';on;;postverbal' : ['topic-first|topic;c-focus-pos|contrast-focus', '', '', ''],
-    'clause-initial;;;' : ['focus-pos|semantic-focus', '', '', ''],
-    'clause-initial;;;clause-initial' : ['focus-pos|focus', '', '', ''],
-    'clause-initial;;;clause-final' : ['focus-pos|semantic-focus;c-focus-pos|contrast-focus', '', '', ''],
-    'clause-initial;;;preverbal' : ['focus-pos|semantic-focus;c-focus-pos|contrast-focus', '', '', ''],
-    'clause-initial;;;postverbal' : ['focus-pos|semantic-focus;c-focus-pos|contrast-focus', '', '', ''],
-    'clause-initial;;on;' : ['focus-pos|focus', '', '', ''],
-    'clause-initial;on;;' : ['focus-pos|focus-or-topic', '', '', ''],
-    'clause-initial;on;;clause-initial' : ['focus-pos|focus-or-topic', '', '', ''],
-    'clause-initial;on;;clause-final' : ['focus-pos|focus-or-topic;c-focus-pos|contrast-focus', '', '', ''],
-    'clause-initial;on;;preverbal' : ['focus-pos|focus-or-topic;c-focus-pos|contrast-focus', '', '', ''],
-    'clause-initial;on;;postverbal' : ['focus-pos|focus-or-topic;c-focus-pos|contrast-focus', '', '', ''],
-    'clause-initial;on;on;' : ['focus-pos|focus-or-topic', '', '', ''],
-    'clause-final;;;' : ['focus-pos|semantic-focus', '', '', ''],
-    'clause-final;;;clause-initial' : ['focus-pos|semantic-focus;c-focus-pos|contrast-focus', '', '', ''],
-    'clause-final;;;clause-final' : ['focus-pos|focus', '', '', ''],
-    'clause-final;;;preverbal' : ['focus-pos|semantic-focus;c-focus-pos|contrast-focus', '', '', ''],
-    'clause-final;;;postverbal' : ['focus-pos|semantic-focus;c-focus-pos|contrast-focus', '', '', ''],
-    'clause-final;;on;' : ['focus-pos|focus', '', '', ''],
-    'clause-final;on;;' : ['focus-pos|semantic-focus;topic-first|topic', 'non-topic', 'non-focus', ''],
-    'clause-final;on;;clause-initial' : ['focus-pos|semantic-focus;topic-first|topic;c-focus-pos|contrast-focus', '', '', ''],
-    'clause-final;on;;clause-final' : ['focus-pos|focus;topic-first|topic', 'non-topic', 'non-focus', ''],
-    'clause-final;on;;preverbal' : ['focus-pos|semantic-focus;topic-first|topic;c-focus-pos|contrast-focus', 'non-topic', 'non-focus',  ''],
-    'clause-final;on;;postverbal' : ['focus-pos|semantic-focus;topic-first|topic;c-focus-pos|contrast-focus', 'non-topic', 'non-focus',  ''],
-    'clause-final;on;on;' : ['focus-pos|focus;topic-first|topic', 'non-topic', 'non-focus', ''],
-    'preverbal;;;' : ['focus-pos|semantic-focus', '', '', ''],
-    'preverbal;;;clause-initial' : ['focus-pos|semantic-focus;c-focus-pos|contrast-focus', '', '', ''],
-    'preverbal;;;clause-final' : ['focus-pos|semantic-focus;c-focus-pos|contrast-focus', '', '', ''],
-    'preverbal;;;preverbal' : ['focus-pos|focus', '', '', ''],
-    'preverbal;;;postverbal' : ['focus-pos|semantic-focus;c-focus-pos|contrast-focus', '', '', ''],
-    'preverbal;;on;' : ['focus-pos|focus', '', '', ''],
-    'preverbal;on;;' : ['focus-pos|semantic-focus;topic-first|topic', '', 'non-focus', ''],
-    'preverbal;on;;clause-initial' : ['focus-pos|semantic-focus;topic-first|topic;c-focus-pos|contrast-focus', '', 'non-focus', ''],
-    'preverbal;on;;clause-final' : ['focus-pos|semantic-focus;topic-first|topic;c-focus-pos|contrast-focus', '', 'non-focus', 'non-topic'],
-    'preverbal;on;;preverbal' : ['focus-pos|focus;topic-first|topic', '', 'non-focus', ''],
-    'preverbal;on;;postverbal' : ['focus-pos|semantic-focus;topic-first|topic;c-focus-pos|contrast-focus', '', 'non-focus', ''],
-    'preverbal;on;on;' : ['focus-pos|focus;topic-first|topic', '', 'non-focus', ''],
-    'postverbal;;;' : ['focus-pos|semantic-focus', '', '', ''],
-    'postverbal;;;clause-initial' : ['focus-pos|semantic-focus;c-focus-pos|contrast-focus', '', '', ''],
-    'postverbal;;;clause-final' : ['focus-pos|semantic-focus;c-focus-pos|contrast-focus', '', '', ''],
-    'postverbal;;;preverbal' : ['focus-pos|semantic-focus;c-focus-pos|contrast-focus', '', '', ''],
-    'postverbal;;;postverbal' : ['focus-pos|focus', '', '', ''],
-    'postverbal;;on;' : ['focus-pos|focus', '', '', ''],
-    'postverbal;on;;' : ['focus-pos|semantic-focus;topic-first|topic', '', 'non-focus', ''],
-    'postverbal;on;;clause-initial' : ['focus-pos|semantic-focus;topic-first|topic;c-focus-pos|contrast-focus', '', 'non-focus', ''],
-    'postverbal;on;;clause-final' : ['focus-pos|semantic-focus;topic-first|topic;c-focus-pos|contrast-focus', '', 'non-focus', ''],
-    'postverbal;on;;preverbal' : ['focus-pos|semantic-focus;topic-first|topic;c-focus-pos|contrast-focus', '', 'non-focus', ''],
-    'postverbal;on;;postverbal' : ['focus-pos|focus;topic-first|topic', '', 'non-focus', ''],
-    'postverbal;on;on;' : ['focus-pos|focus;topic-first|topic', '', 'non-focus', '']
+    ';;;clause-initial': ['c-focus-pos|contrast-focus', '', '', ''],
+    ';;;clause-final': ['c-focus-pos|contrast-focus', '', '', ''],
+    ';;;preverbal': ['c-focus-pos|contrast-focus', '', '', ''],
+    ';;;postverbal': ['c-focus-pos|contrast-focus', '', '', ''],
+    ';on;;': ['topic-first|topic', '', '', ''],
+    ';on;;clause-initial': ['topic-first|topic;c-focus-pos|contrast-focus', '', '', ''],
+    ';on;;clause-final': ['topic-first|topic;c-focus-pos|contrast-focus', '', '', ''],
+    ';on;;preverbal': ['topic-first|topic;c-focus-pos|contrast-focus', '', '', ''],
+    ';on;;postverbal': ['topic-first|topic;c-focus-pos|contrast-focus', '', '', ''],
+    'clause-initial;;;': ['focus-pos|semantic-focus', '', '', ''],
+    'clause-initial;;;clause-initial': ['focus-pos|focus', '', '', ''],
+    'clause-initial;;;clause-final': ['focus-pos|semantic-focus;c-focus-pos|contrast-focus', '', '', ''],
+    'clause-initial;;;preverbal': ['focus-pos|semantic-focus;c-focus-pos|contrast-focus', '', '', ''],
+    'clause-initial;;;postverbal': ['focus-pos|semantic-focus;c-focus-pos|contrast-focus', '', '', ''],
+    'clause-initial;;on;': ['focus-pos|focus', '', '', ''],
+    'clause-initial;on;;': ['focus-pos|focus-or-topic', '', '', ''],
+    'clause-initial;on;;clause-initial': ['focus-pos|focus-or-topic', '', '', ''],
+    'clause-initial;on;;clause-final': ['focus-pos|focus-or-topic;c-focus-pos|contrast-focus', '', '', ''],
+    'clause-initial;on;;preverbal': ['focus-pos|focus-or-topic;c-focus-pos|contrast-focus', '', '', ''],
+    'clause-initial;on;;postverbal': ['focus-pos|focus-or-topic;c-focus-pos|contrast-focus', '', '', ''],
+    'clause-initial;on;on;': ['focus-pos|focus-or-topic', '', '', ''],
+    'clause-final;;;': ['focus-pos|semantic-focus', '', '', ''],
+    'clause-final;;;clause-initial': ['focus-pos|semantic-focus;c-focus-pos|contrast-focus', '', '', ''],
+    'clause-final;;;clause-final': ['focus-pos|focus', '', '', ''],
+    'clause-final;;;preverbal': ['focus-pos|semantic-focus;c-focus-pos|contrast-focus', '', '', ''],
+    'clause-final;;;postverbal': ['focus-pos|semantic-focus;c-focus-pos|contrast-focus', '', '', ''],
+    'clause-final;;on;': ['focus-pos|focus', '', '', ''],
+    'clause-final;on;;': ['focus-pos|semantic-focus;topic-first|topic', 'non-topic', 'non-focus', ''],
+    'clause-final;on;;clause-initial': ['focus-pos|semantic-focus;topic-first|topic;c-focus-pos|contrast-focus', '', '', ''],
+    'clause-final;on;;clause-final': ['focus-pos|focus;topic-first|topic', 'non-topic', 'non-focus', ''],
+    'clause-final;on;;preverbal': ['focus-pos|semantic-focus;topic-first|topic;c-focus-pos|contrast-focus', 'non-topic', 'non-focus',  ''],
+    'clause-final;on;;postverbal': ['focus-pos|semantic-focus;topic-first|topic;c-focus-pos|contrast-focus', 'non-topic', 'non-focus',  ''],
+    'clause-final;on;on;': ['focus-pos|focus;topic-first|topic', 'non-topic', 'non-focus', ''],
+    'preverbal;;;': ['focus-pos|semantic-focus', '', '', ''],
+    'preverbal;;;clause-initial': ['focus-pos|semantic-focus;c-focus-pos|contrast-focus', '', '', ''],
+    'preverbal;;;clause-final': ['focus-pos|semantic-focus;c-focus-pos|contrast-focus', '', '', ''],
+    'preverbal;;;preverbal': ['focus-pos|focus', '', '', ''],
+    'preverbal;;;postverbal': ['focus-pos|semantic-focus;c-focus-pos|contrast-focus', '', '', ''],
+    'preverbal;;on;': ['focus-pos|focus', '', '', ''],
+    'preverbal;on;;': ['focus-pos|semantic-focus;topic-first|topic', '', 'non-focus', ''],
+    'preverbal;on;;clause-initial': ['focus-pos|semantic-focus;topic-first|topic;c-focus-pos|contrast-focus', '', 'non-focus', ''],
+    'preverbal;on;;clause-final': ['focus-pos|semantic-focus;topic-first|topic;c-focus-pos|contrast-focus', '', 'non-focus', 'non-topic'],
+    'preverbal;on;;preverbal': ['focus-pos|focus;topic-first|topic', '', 'non-focus', ''],
+    'preverbal;on;;postverbal': ['focus-pos|semantic-focus;topic-first|topic;c-focus-pos|contrast-focus', '', 'non-focus', ''],
+    'preverbal;on;on;': ['focus-pos|focus;topic-first|topic', '', 'non-focus', ''],
+    'postverbal;;;': ['focus-pos|semantic-focus', '', '', ''],
+    'postverbal;;;clause-initial': ['focus-pos|semantic-focus;c-focus-pos|contrast-focus', '', '', ''],
+    'postverbal;;;clause-final': ['focus-pos|semantic-focus;c-focus-pos|contrast-focus', '', '', ''],
+    'postverbal;;;preverbal': ['focus-pos|semantic-focus;c-focus-pos|contrast-focus', '', '', ''],
+    'postverbal;;;postverbal': ['focus-pos|focus', '', '', ''],
+    'postverbal;;on;': ['focus-pos|focus', '', '', ''],
+    'postverbal;on;;': ['focus-pos|semantic-focus;topic-first|topic', '', 'non-focus', ''],
+    'postverbal;on;;clause-initial': ['focus-pos|semantic-focus;topic-first|topic;c-focus-pos|contrast-focus', '', 'non-focus', ''],
+    'postverbal;on;;clause-final': ['focus-pos|semantic-focus;topic-first|topic;c-focus-pos|contrast-focus', '', 'non-focus', ''],
+    'postverbal;on;;preverbal': ['focus-pos|semantic-focus;topic-first|topic;c-focus-pos|contrast-focus', '', 'non-focus', ''],
+    'postverbal;on;;postverbal': ['focus-pos|focus;topic-first|topic', '', 'non-focus', ''],
+    'postverbal;on;on;': ['focus-pos|focus;topic-first|topic', '', 'non-focus', '']
 }
 
-g_types = [ 'basic-head-1st-comp-phrase',
-            'head-comp-phrase',
-            'head-comp-nmc-phrase',
-            'head-nf-comp-phrase',
-            'nf-comp-head-phrase',
-            'comp-head-phrase',
-            'comp-head-nmc-phrase',
+g_types = ['basic-head-1st-comp-phrase',
+           'head-comp-phrase',
+           'head-comp-nmc-phrase',
+           'head-nf-comp-phrase',
+           'nf-comp-head-phrase',
+           'comp-head-phrase',
+           'comp-head-nmc-phrase',
 
-            'decl-head-subj-phrase',
-            'subj-head-phrase',
-            'subj-head-nmc-phrase',
-            'head-subj-phrase',
-            'head-subj-nmc-phrase',
-            'head-nf-subj-phrase',
-            'nf-subj-head-phrase',
+           'decl-head-subj-phrase',
+           'subj-head-phrase',
+           'subj-head-nmc-phrase',
+           'head-subj-phrase',
+           'head-subj-nmc-phrase',
+           'head-nf-subj-phrase',
+           'nf-subj-head-phrase',
 
-            'extracted-subj-phrase',
+           'extracted-subj-phrase',
 
-            'head-periph-subj-phrase',
-            'periph-subj-head-phrase',
-            'head-periph-comp-phrase',
-            'periph-comp-head-phrase',
+           'head-periph-subj-phrase',
+           'periph-subj-head-phrase',
+           'head-periph-comp-phrase',
+           'periph-comp-head-phrase',
 
-            'infostr-dislocated-phrase',
-            'infostr-filler-head-phrase',
-            'infostr-head-filler-phrase',
+           'infostr-dislocated-phrase',
+           'infostr-filler-head-phrase',
+           'infostr-head-filler-phrase',
 
-            'head-nf-subj-phrase-super',
-            'head-nf-comp-phrase-super',
-            'narrow-focused-phrase',
-            'head-subj-phrase-2',
-            'head-comp-phrase-2',
-            'head-comp-phrase-3',
-            'comp-head-phrase'
-            '']
+           'head-nf-subj-phrase-super',
+           'head-nf-comp-phrase-super',
+           'narrow-focused-phrase',
+           'head-subj-phrase-2',
+           'head-comp-phrase-2',
+           'head-comp-phrase-3',
+           'comp-head-phrase'
+           '']
 
 narrow_focused_phrase = """
 narrow-focused-phrase := head-only & 
@@ -421,12 +421,12 @@ def get_irule(irule_name, affix_type, orth, type_name, affix_cnt):
 
 def add_lextypes(mylang, tdl):
     if tdl not in g_tdls:
-        mylang.add(tdl, merge = True, section='otherlex')
+        mylang.add(tdl, merge=True, section='otherlex')
         g_tdls.append(tdl)
 
 
 def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, infostr, flr):
-    if ch.get(infostr_type) == '': #focus-pos, topic-first, ...
+    if ch.get(infostr_type) == '':  # focus-pos, topic-first, ...
         return
 
     #   nf_comp_head_phrase = nf_comp_head_phrase_aux
@@ -446,16 +446,25 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
     wo = ch.get('word-order')
     pos = ch.get(infostr_type)
 
-    if pos in [ 'preverbal', 'postverbal' ] or wo == 'v2':
-        mylang.add_literal('lex-or-phrase-synsem :+ [ INFOSTR-FLAG luk ].', '', section='addenda')
-        mylang.add_literal('decl-head-subj-phrase :+ [ SYNSEM.INFOSTR-FLAG -, NON-HEAD-DTR.SYNSEM.INFOSTR-FLAG - ].', '', section='addenda')
-        mylang.add_literal('basic-head-1st-comp-phrase :+ [ SYNSEM.INFOSTR-FLAG -, NON-HEAD-DTR.SYNSEM.INFOSTR-FLAG - ].', '', section='addenda')
-        mylang.add_literal('basic-head-2nd-comp-phrase :+ [ SYNSEM.INFOSTR-FLAG -, NON-HEAD-DTR.SYNSEM.INFOSTR-FLAG - ].', '', section='addenda')
-        mylang.add_literal('basic-head-opt-subj-phrase :+ [ SYNSEM.INFOSTR-FLAG - ].', '', section='addenda')
-        mylang.add_literal('basic-head-opt-comp-phrase :+ [ SYNSEM.INFOSTR-FLAG - ].', '', section='addenda')
-        mylang.add_literal('basic-head-mod-phrase-simple :+ [ SYNSEM.INFOSTR-FLAG - ].', '', section='addenda')
-        mylang.add_literal('basic-head-spec-phrase :+ [ SYNSEM.INFOSTR-FLAG - ].', '', section='addenda')
-        mylang.add_literal('basic-bare-np-phrase :+ [ SYNSEM.INFOSTR-FLAG -, HEAD-DTR.SYNSEM.INFOSTR-FLAG - ].', '', section='addenda')
+    if pos in ['preverbal', 'postverbal'] or wo == 'v2':
+        mylang.add_literal(
+            'lex-or-phrase-synsem :+ [ INFOSTR-FLAG luk ].', '', section='addenda')
+        mylang.add_literal(
+            'decl-head-subj-phrase :+ [ SYNSEM.INFOSTR-FLAG -, NON-HEAD-DTR.SYNSEM.INFOSTR-FLAG - ].', '', section='addenda')
+        mylang.add_literal(
+            'basic-head-1st-comp-phrase :+ [ SYNSEM.INFOSTR-FLAG -, NON-HEAD-DTR.SYNSEM.INFOSTR-FLAG - ].', '', section='addenda')
+        mylang.add_literal(
+            'basic-head-2nd-comp-phrase :+ [ SYNSEM.INFOSTR-FLAG -, NON-HEAD-DTR.SYNSEM.INFOSTR-FLAG - ].', '', section='addenda')
+        mylang.add_literal(
+            'basic-head-opt-subj-phrase :+ [ SYNSEM.INFOSTR-FLAG - ].', '', section='addenda')
+        mylang.add_literal(
+            'basic-head-opt-comp-phrase :+ [ SYNSEM.INFOSTR-FLAG - ].', '', section='addenda')
+        mylang.add_literal(
+            'basic-head-mod-phrase-simple :+ [ SYNSEM.INFOSTR-FLAG - ].', '', section='addenda')
+        mylang.add_literal(
+            'basic-head-spec-phrase :+ [ SYNSEM.INFOSTR-FLAG - ].', '', section='addenda')
+        mylang.add_literal(
+            'basic-bare-np-phrase :+ [ SYNSEM.INFOSTR-FLAG -, HEAD-DTR.SYNSEM.INFOSTR-FLAG - ].', '', section='addenda')
         #mylang.add_literal('basic-binary-headed-phrase :+ [ SYNSEM.INFOSTR-FLAG - ].', '', section='addenda')
         if pos != 'clause-initial':
             ph_types['head-nf-subj-phrase-super'] = head_nf_subj_phrase_super
@@ -469,7 +478,8 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
                 ph_types['comp-head-phrase'] = 'comp-head-phrase := [ SYNSEM.L-PERIPH -, HEAD-DTR.SYNSEM.L-PERIPH - ].'
                 ph_types['subj-head-phrase'] = 'subj-head-phrase := [ SYNSEM [ LOCAL.CAT.MC +, NON-LOCAL.SLASH.LIST < > ], ' \
                                                'HEAD-DTR.SYNSEM.L-PERIPH - ].'
-                ph_types['subj-head-nmc-phrase'] = subj_head_nmc_phrase.replace('$', infostr_in_flr)
+                ph_types['subj-head-nmc-phrase'] = subj_head_nmc_phrase.replace(
+                    '$', infostr_in_flr)
                 ph_rules['subj-head-nmc-phrase'] = 'subj-head-nmc'
                 # if infostr_type != 'topic-first':
                 #   ph_types['head-subj-phrase'] = head_subj_phrase_initial.replace('$', infostr)
@@ -483,7 +493,8 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
                 ph_types['head-comp-phrase'] = 'head-comp-phrase := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].'
                 ph_types['subj-head-phrase'] = 'subj-head-phrase := [ SYNSEM [ LOCAL.CAT.MC +, ' \
                                                'NON-LOCAL.SLASH.LIST < > ], HEAD-DTR.SYNSEM.L-PERIPH - ].'
-                ph_types['subj-head-nmc-phrase'] = subj_head_nmc_phrase.replace('$', infostr_in_flr)
+                ph_types['subj-head-nmc-phrase'] = subj_head_nmc_phrase.replace(
+                    '$', infostr_in_flr)
                 ph_rules['subj-head-nmc-phrase'] = 'subj-head-nmc'
                 # if infostr_type != 'topic-first':
                 #   ph_types['head-subj-phrase'] = head_subj_phrase_initial.replace('$', infostr)
@@ -491,20 +502,24 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
             elif wo in ['vso', 'vos']:
                 ph_types['head-comp-phrase'] = 'head-comp-phrase := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].'
                 ph_types['head-subj-phrase'] = 'head-subj-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC - ].'
-                ph_types['head-comp-nmc-phrase'] = head_comp_nmc_phrase.replace('$', infostr_in_flr)
+                ph_types['head-comp-nmc-phrase'] = head_comp_nmc_phrase.replace(
+                    '$', infostr_in_flr)
                 ph_rules['head-comp-nmc-phrase'] = 'head-comp-nmc'
                 tdl = """extracted-subj-phrase := basic-extracted-subj-phrase &
                  [ C-CONT [ RELS.LIST < >, HCONS.LIST < >, ICONS.LIST < > ],
                    HEAD-DTR.SYNSEM [ L-PERIPH -,
                                      LOCAL.CAT.VAL [ SUBJ.FIRST.LOCAL #slash & local, COMPS < > ],
                                      NON-LOCAL.SLASH.LIST < #slash & [ CONT.HOOK.ICONS-KEY $ ] > ] ]."""
-                ph_types['extracted-subj-phrase'] = tdl.replace('$', infostr_in_flr)
+                ph_types['extracted-subj-phrase'] = tdl.replace(
+                    '$', infostr_in_flr)
                 ph_rules['extracted-subj-phrase'] = 'extracted-subj'
                 if wo == 'vso':
-                    ph_types['head-subj-nmc-phrase'] = head_subj_nmc_phrase.replace('$', infostr_in_flr)
+                    ph_types['head-subj-nmc-phrase'] = head_subj_nmc_phrase.replace(
+                        '$', infostr_in_flr)
                     ph_rules['head-subj-nmc-phrase'] = 'head-subj-nmc'
             elif wo == 'osv':
-                ph_types['comp-head-nmc-phrase'] = comp_head_nmc_phrase.replace('$', infostr_in_flr)
+                ph_types['comp-head-nmc-phrase'] = comp_head_nmc_phrase.replace(
+                    '$', infostr_in_flr)
                 ph_rules['comp-head-nmc-phrase'] = 'comp-head-nmc'
                 # if infostr_type != 'topic-first':
                 #   ph_types['head-subj-phrase'] = head_subj_phrase_initial_wo_comps.replace('$', infostr)
@@ -515,7 +530,8 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
                    HEAD-DTR.SYNSEM [ L-PERIPH -,
                                      LOCAL.CAT.VAL [ SUBJ.FIRST.LOCAL #slash & local, COMPS < > ],
                                      NON-LOCAL.SLASH.LIST < #slash & [ CONT.HOOK.ICONS-KEY $ ] > ] ]."""
-                ph_types['extracted-subj-phrase'] = tdl.replace('$', infostr_in_flr)
+                ph_types['extracted-subj-phrase'] = tdl.replace(
+                    '$', infostr_in_flr)
                 ph_rules['extracted-subj-phrase'] = 'extracted-subj'
                 # if infostr_type != 'topic-first':
                 #   ph_types['head-comp-phrase'] = """head-comp-phrase := basic-head-1st-comp-phrase & head-initial &
@@ -526,16 +542,19 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
                 pass
 
             ph_types['infostr-dislocated-phrase'] = infostr_dislocated_phrase
-            ph_types['infostr-filler-head-phrase'] = infostr_filler_head_phrase.replace('$', infostr)
+            ph_types['infostr-filler-head-phrase'] = infostr_filler_head_phrase.replace(
+                '$', infostr)
             ph_rules['infostr-filler-head-phrase'] = 'flr-head'
 
         elif pos == 'clause-final':
             if wo == 'sov':
                 ph_types['basic-head-1st-comp-phrase'] = 'basic-head-1st-comp-phrase :+ [ HEAD-DTR.SYNSEM.R-PERIPH - ].'
                 ph_types['comp-head-phrase'] = 'comp-head-phrase := [ SYNSEM [ LOCAL.CAT.HC-LIGHT -, NON-LOCAL.SLASH.LIST < > ] ].'
-                ph_types['comp-head-nmc-phrase'] = comp_head_nmc_phrase.replace('$', infostr_in_flr)
+                ph_types['comp-head-nmc-phrase'] = comp_head_nmc_phrase.replace(
+                    '$', infostr_in_flr)
                 ph_rules['comp-head-nmc-phrase'] = 'comp-head-nmc'
-                ph_types['subj-head-nmc-phrase'] = subj_head_nmc_phrase.replace('$', infostr_in_flr)
+                ph_types['subj-head-nmc-phrase'] = subj_head_nmc_phrase.replace(
+                    '$', infostr_in_flr)
                 ph_rules['subj-head-nmc-phrase'] = 'subj-head-nmc'
                 ph_types['subj-head-phrase'] = 'subj-head-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < > ].'
                 tdl = """extracted-subj-phrase := basic-extracted-subj-phrase &
@@ -543,12 +562,14 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
                    HEAD-DTR.SYNSEM [ R-PERIPH -,
                                      LOCAL.CAT.VAL [ SUBJ.FIRST.LOCAL #slash & local, COMPS < > ],
                                      NON-LOCAL.SLASH.LIST < #slash & [ CONT.HOOK.ICONS-KEY $ ] > ] ]."""
-                ph_types['extracted-subj-phrase'] = tdl.replace('$', infostr_in_flr)
+                ph_types['extracted-subj-phrase'] = tdl.replace(
+                    '$', infostr_in_flr)
                 ph_rules['extracted-subj-phrase'] = 'extracted-subj'
             elif wo == 'svo':
                 ph_types['basic-head-1st-comp-phrase'] = 'basic-head-1st-comp-phrase :+ [ HEAD-DTR.SYNSEM.R-PERIPH - ].'
                 ph_types['head-comp-phrase'] = 'head-comp-phrase := [ SYNSEM.NON-LOCAL.SLASH.LIST < >, HEAD-DTR.SYNSEM.R-PERIPH - ].'
-                ph_types['head-comp-nmc-phrase'] = head_comp_nmc_phrase.replace('$', infostr_in_flr)
+                ph_types['head-comp-nmc-phrase'] = head_comp_nmc_phrase.replace(
+                    '$', infostr_in_flr)
                 ph_rules['head-comp-nmc-phrase'] = 'head-comp-nmc'
                 #ph_types['comp-head-phrase'] = comp_head_phrase.replace('$', infostr)
                 #ph_rules['comp-head-phrase'] = 'comp-head'
@@ -558,40 +579,46 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
                    HEAD-DTR.SYNSEM [ R-PERIPH -,
                                      LOCAL.CAT.VAL [ SUBJ.FIRST.LOCAL #slash & local, COMPS < > ],
                                      NON-LOCAL.SLASH.LIST < #slash & [ CONT.HOOK.ICONS-KEY $ ] > ] ]."""
-                ph_types['extracted-subj-phrase'] = tdl.replace('$', infostr_in_flr)
+                ph_types['extracted-subj-phrase'] = tdl.replace(
+                    '$', infostr_in_flr)
                 ph_rules['extracted-subj-phrase'] = 'extracted-subj'
             elif wo == 'vso':
                 ph_types['basic-head-1st-comp-phrase'] = 'basic-head-1st-comp-phrase :+ [ HEAD-DTR.SYNSEM.R-PERIPH - ].'
-                #tdl = """subj-head-phrase := decl-head-subj-phrase & head-final & narrow-focus &
+                # tdl = """subj-head-phrase := decl-head-subj-phrase & head-final & narrow-focus &
                 #         [ SYNSEM.R-PERIPH +,
                 #           HEAD-DTR.SYNSEM [ R-PERIPH +,
                 #                             LOCAL.CONT.HOOK.ICONS-KEY $,
                 #                             NON-LOCAL.SLASH 0-dlist ] ]."""
                 #ph_types['subj-head-phrase'] = tdl.replace('$', infostr)
                 #ph_rules['subj-head-phrase'] = 'subj-head'
-                ph_types['head-comp-nmc-phrase'] = head_comp_nmc_phrase.replace('$', infostr_in_flr)
+                ph_types['head-comp-nmc-phrase'] = head_comp_nmc_phrase.replace(
+                    '$', infostr_in_flr)
                 ph_rules['head-comp-nmc-phrase'] = 'head-comp-nmc'
             elif wo == 'vos':
                 ph_types['basic-head-1st-comp-phrase'] = 'basic-head-1st-comp-phrase :+ [ HEAD-DTR.SYNSEM.R-PERIPH - ].'
-                ph_types['head-subj-nmc-phrase'] = head_subj_nmc_phrase.replace('$', infostr_in_flr)
+                ph_types['head-subj-nmc-phrase'] = head_subj_nmc_phrase.replace(
+                    '$', infostr_in_flr)
                 ph_rules['head-subj-nmc-phrase'] = 'head-subj-nmc'
                 ph_types['head-comp-phrase'] = 'head-comp-phrase := [ SYNSEM.NON-LOCAL.SLASH.LIST < > ].'
             elif wo == 'osv':
                 ph_types['basic-head-1st-comp-phrase'] = 'basic-head-1st-comp-phrase :+ [ HEAD-DTR.SYNSEM.R-PERIPH - ].'
-                ph_types['subj-head-nmc-phrase'] = subj_head_nmc_phrase.replace('$', infostr_in_flr)
+                ph_types['subj-head-nmc-phrase'] = subj_head_nmc_phrase.replace(
+                    '$', infostr_in_flr)
                 ph_rules['subj-head-nmc-phrase'] = 'subj-head-nmc'
-                ph_types['comp-head-nmc-phrase'] = comp_head_nmc_phrase.replace('$', infostr_in_flr)
+                ph_types['comp-head-nmc-phrase'] = comp_head_nmc_phrase.replace(
+                    '$', infostr_in_flr)
                 ph_rules['comp-head-nmc-phrase'] = 'comp-head-nmc'
                 #ph_types['head-comp-phrase'] = 'head-comp-phrase := [ SYNSEM.NON-LOCAL.SLASH 0-dlist ].'
             elif wo == 'ovs':
-                #tdl = """subj-head-phrase := decl-head-subj-phrase & head-final & narrow-focus &
+                # tdl = """subj-head-phrase := decl-head-subj-phrase & head-final & narrow-focus &
                 #         [ SYNSEM.R-PERIPH +,
                 #           HEAD-DTR.SYNSEM [ R-PERIPH +,
                 #                             LOCAL.CONT.HOOK.ICONS-KEY $,
                 #                             NON-LOCAL.SLASH 0-dlist ] ]."""
                 #ph_types['subj-head-phrase'] = tdl.replace('$', infostr)
                 #ph_rules['subj-head-phrase'] = 'subj-head'
-                ph_types['head-subj-nmc-phrase'] = head_subj_nmc_phrase.replace('$', infostr_in_flr)
+                ph_types['head-subj-nmc-phrase'] = head_subj_nmc_phrase.replace(
+                    '$', infostr_in_flr)
                 ph_rules['head-subj-nmc-phrase'] = 'head-subj-nmc'
                 ph_types['comp-head-phrase'] = 'comp-head-phrase := [ SYNSEM [ R-PERIPH -, NON-LOCAL.SLASH.LIST < > ] ].'
 
@@ -599,29 +626,36 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
                 pass
 
             ph_types['infostr-dislocated-phrase'] = infostr_dislocated_phrase
-            ph_types['infostr-head-filler-phrase'] = infostr_head_filler_phrase.replace('$', infostr)
+            ph_types['infostr-head-filler-phrase'] = infostr_head_filler_phrase.replace(
+                '$', infostr)
             ph_rules['infostr-head-filler-phrase'] = 'head-flr'
 
         elif pos == 'preverbal':
             if wo == 'sov':
-                ph_types['nf-subj-head-phrase'] = nf_subj_head_phrase.replace('$', infostr)
+                ph_types['nf-subj-head-phrase'] = nf_subj_head_phrase.replace(
+                    '$', infostr)
                 ph_rules['nf-subj-head-phrase'] = 'nf-subj-head'
                 ph_types['comp-head-phrase'] = 'comp-head-phrase := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].'
             elif wo == 'svo':
-                ph_types['nf-comp-head-phrase'] = nf_comp_head_phrase.replace('$', infostr)
+                ph_types['nf-comp-head-phrase'] = nf_comp_head_phrase.replace(
+                    '$', infostr)
                 ph_rules['nf-comp-head-phrase'] = 'nf-comp-head'
             elif wo in ['vso', 'vos']:
-                ph_types['nf-subj-head-phrase'] = nf_subj_head_phrase_simple.replace('$', infostr)
+                ph_types['nf-subj-head-phrase'] = nf_subj_head_phrase_simple.replace(
+                    '$', infostr)
                 ph_rules['nf-subj-head-phrase'] = 'nf-subj-head'
-                ph_types['nf-comp-head-phrase'] = nf_comp_head_phrase.replace('$', infostr)
+                ph_types['nf-comp-head-phrase'] = nf_comp_head_phrase.replace(
+                    '$', infostr)
                 ph_rules['nf-comp-head-phrase'] = 'nf-comp-head'
                 if wo == 'vos':
                     ph_types['head-comp-phrase'] = 'head-comp-phrase := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].'
             elif wo == 'osv':
-                ph_types['nf-comp-head-phrase'] = nf_comp_head_phrase.replace('$', infostr)
+                ph_types['nf-comp-head-phrase'] = nf_comp_head_phrase.replace(
+                    '$', infostr)
                 ph_rules['nf-comp-head-phrase'] = 'nf-comp-head'
             elif wo == 'ovs':
-                ph_types['nf-subj-head-phrase'] = nf_subj_head_phrase_simple.replace('$', infostr)
+                ph_types['nf-subj-head-phrase'] = nf_subj_head_phrase_simple.replace(
+                    '$', infostr)
                 ph_rules['nf-subj-head-phrase'] = 'nf-subj-head'
                 ph_types['comp-head-phrase'] = 'comp-head-phrase := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].'
             else:
@@ -630,50 +664,66 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
         elif pos == 'postverbal':
             if wo == 'sov':
                 if ch.get('has-aux').strip() == 'yes':
-                    ph_types['head-nf-subj-phrase'] = head_nf_subj_phrase_aux.replace('$', infostr)
-                    ph_types['head-nf-comp-phrase'] = head_nf_comp_phrase_aux.replace('$', infostr)
+                    ph_types['head-nf-subj-phrase'] = head_nf_subj_phrase_aux.replace(
+                        '$', infostr)
+                    ph_types['head-nf-comp-phrase'] = head_nf_comp_phrase_aux.replace(
+                        '$', infostr)
                 else:
-                    ph_types['head-nf-subj-phrase'] = head_nf_subj_phrase.replace('$', infostr)
-                    ph_types['head-nf-comp-phrase'] = head_nf_comp_phrase.replace('$', infostr)
+                    ph_types['head-nf-subj-phrase'] = head_nf_subj_phrase.replace(
+                        '$', infostr)
+                    ph_types['head-nf-comp-phrase'] = head_nf_comp_phrase.replace(
+                        '$', infostr)
                 ph_rules['head-nf-subj-phrase'] = 'head-nf-subj'
                 ph_types['comp-head-phrase'] = 'comp-head-phrase := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].'
                 ph_rules['head-nf-comp-phrase'] = 'head-nf-comp'
             elif wo == 'svo':
                 if ch.get('has-aux').strip() == 'yes':
-                    ph_types['head-nf-subj-phrase'] = head_nf_subj_phrase_aux.replace('$', infostr)
+                    ph_types['head-nf-subj-phrase'] = head_nf_subj_phrase_aux.replace(
+                        '$', infostr)
                 else:
-                    ph_types['head-nf-subj-phrase'] = head_nf_subj_phrase.replace('$', infostr)
+                    ph_types['head-nf-subj-phrase'] = head_nf_subj_phrase.replace(
+                        '$', infostr)
                 ph_rules['head-nf-subj-phrase'] = 'head-nf-subj'
                 ph_types['head-comp-phrase'] = 'head-comp-phrase := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].'
             elif wo == 'vso':
                 if ch.get('has-aux').strip() == 'yes':
-                    ph_types['head-nf-comp-phrase'] = head_nf_comp_phrase_aux.replace('$', infostr)
+                    ph_types['head-nf-comp-phrase'] = head_nf_comp_phrase_aux.replace(
+                        '$', infostr)
                 else:
-                    ph_types['head-nf-comp-phrase'] = head_nf_comp_phrase.replace('$', infostr)
+                    ph_types['head-nf-comp-phrase'] = head_nf_comp_phrase.replace(
+                        '$', infostr)
                 ph_rules['head-nf-comp-phrase'] = 'head-nf-comp'
             elif wo == 'vos':
                 if ch.get('has-aux').strip() == 'yes':
-                    ph_types['head-nf-subj-phrase'] = head_nf_subj_phrase_w_comps_aux.replace('$', infostr)
+                    ph_types['head-nf-subj-phrase'] = head_nf_subj_phrase_w_comps_aux.replace(
+                        '$', infostr)
                 else:
-                    ph_types['head-nf-subj-phrase'] = head_nf_subj_phrase_w_comps.replace('$', infostr)
+                    ph_types['head-nf-subj-phrase'] = head_nf_subj_phrase_w_comps.replace(
+                        '$', infostr)
                 ph_rules['head-nf-subj-phrase'] = 'head-nf-subj'
                 ph_types['head-comp-phrase'] = 'head-comp-phrase := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].'
             elif wo == 'osv':
-                #need to use both? check them
+                # need to use both? check them
                 if ch.get('has-aux').strip() == 'yes':
-                    ph_types['head-nf-subj-phrase'] = head_nf_subj_phrase_aux.replace('$', infostr)
-                    ph_types['head-nf-comp-phrase'] = head_nf_comp_phrase_aux.replace('$', infostr)
+                    ph_types['head-nf-subj-phrase'] = head_nf_subj_phrase_aux.replace(
+                        '$', infostr)
+                    ph_types['head-nf-comp-phrase'] = head_nf_comp_phrase_aux.replace(
+                        '$', infostr)
                 else:
-                    ph_types['head-nf-subj-phrase'] = head_nf_subj_phrase.replace('$', infostr)
-                    ph_types['head-nf-comp-phrase'] = head_nf_comp_phrase.replace('$', infostr)
+                    ph_types['head-nf-subj-phrase'] = head_nf_subj_phrase.replace(
+                        '$', infostr)
+                    ph_types['head-nf-comp-phrase'] = head_nf_comp_phrase.replace(
+                        '$', infostr)
                 ph_rules['head-nf-subj-phrase'] = 'head-nf-subj'
 
                 ph_rules['head-nf-comp-phrase'] = 'head-nf-comp'
             elif wo == 'ovs':
                 if ch.get('has-aux').strip() == 'yes':
-                    ph_types['head-nf-comp-phrase'] = head_nf_comp_phrase_aux.replace('$', infostr)
+                    ph_types['head-nf-comp-phrase'] = head_nf_comp_phrase_aux.replace(
+                        '$', infostr)
                 else:
-                    ph_types['head-nf-comp-phrase'] = head_nf_comp_phrase.replace('$', infostr)
+                    ph_types['head-nf-comp-phrase'] = head_nf_comp_phrase.replace(
+                        '$', infostr)
                 ph_rules['head-nf-comp-phrase'] = 'head-nf-comp'
             else:
                 pass
@@ -706,8 +756,8 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
             # ph_types['comp-head-phrase'] = 'comp-head-phrase := [ SYNSEM.R-PERIPH na, HEAD-DTR.SYNSEM.R-PERIPH na-or-- ].'
             pass
         elif pos == 'preverbal':
-            #Todo THIS
-            #There is no constraint for this type. (i.e. in the basic word order: S[O]V / O[S]V )
+            # Todo THIS
+            # There is no constraint for this type. (i.e. in the basic word order: S[O]V / O[S]V )
             pass
         elif pos == 'postverbal':
             # ph_types['head-nf-comp-phrase'] = head_nf_comp_phrase.replace('$', infostr)
@@ -762,8 +812,8 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
             # ph_types['head-comp-phrase'] = 'head-comp-phrase := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].'
             pass
         elif pos == 'postverbal':
-            #Todo THIS
-            #There is no constraint for this type. (i.e. in the basic word order: S[O]V / O[S]V )
+            # Todo THIS
+            # There is no constraint for this type. (i.e. in the basic word order: S[O]V / O[S]V )
             pass
         else:
             pass
@@ -802,7 +852,7 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
         #         [ SYNSEM.L-PERIPH +,
         #           HEAD-DTR.SYNSEM [ L-PERIPH +,
         #                             LOCAL [ CAT.VAL.SUBJ.FIRST [ ],
-			# 	            CONT.HOOK.ICONS-KEY $ ] ] ]."""
+        # 	            CONT.HOOK.ICONS-KEY $ ] ] ]."""
         #     ph_types['head-periph-comp-phrase'] = tdl.replace('$', infostr)
         #     ph_rules['head-periph-comp-phrase'] = 'head-periph-comp'
         #
@@ -815,7 +865,7 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
         #           HEAD-DTR.SYNSEM [ L-PERIPH -,
         #                             LOCAL.CAT.VAL.SUBJ < > ],
         #           NON-HEAD-DTR.SYNSEM [ L-PERIPH +,
-			# 		LOCAL.CONT.HOOK.ICONS-KEY $ ] ]."""
+        # 		LOCAL.CONT.HOOK.ICONS-KEY $ ] ]."""
         #     ph_types['periph-comp-head-phrase'] = tdl.replace('$', infostr)
         #     ph_rules['periph-comp-head-phrase'] = 'periph-comp-head'
         #
@@ -823,7 +873,7 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
         #     ph_types['head-subj-phrase'] = """head-subj-phrase :=
         #                                  [ SYNSEM.R-PERIPH -,
         #                                    HEAD-DTR.SYNSEM [ R-PERIPH na-or--,
-			# 		                     LOCAL.CAT.VAL.COMPS.FIRST [ ] ] ]."""
+        # 		                     LOCAL.CAT.VAL.COMPS.FIRST [ ] ] ]."""
         #     tdl = """head-periph-subj-phrase := decl-head-subj-phrase & head-initial-head-nexus &
         #         [ SYNSEM.R-PERIPH +,
         #           HEAD-DTR.SYNSEM.R-PERIPH -,
@@ -839,7 +889,7 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
         #     tdl = """periph-subj-head-phrase := decl-head-subj-phrase & head-final-head-nexus &
         #        [ SYNSEM.R-PERIPH +,
         #          HEAD-DTR.SYNSEM [ R-PERIPH +,
-	     #                       LOCAL [ CAT.VAL.COMPS < [], ... >,
+        #                       LOCAL [ CAT.VAL.COMPS < [], ... >,
         #                                    CONT.HOOK.ICONS-KEY $ ] ] ]."""
         #     ph_types['periph-subj-head-phrase'] = tdl.replace('$', infostr)
         #     ph_rules['periph-subj-head-phrase'] = 'periph-subj-head'
@@ -847,7 +897,7 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
         #     ph_types['head-comp-phrase'] = """head-comp-phrase :=
         #                                 [ SYNSEM.R-PERIPH -,
         #                                   HEAD-DTR.SYNSEM [ R-PERIPH na-or--,
-			# 		                    LOCAL.CAT.VAL.SUBJ.FIRST [ ] ] ]."""
+        # 		                    LOCAL.CAT.VAL.SUBJ.FIRST [ ] ] ]."""
         #     tdl = """head-periph-comp-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus &
         #          [ SYNSEM.R-PERIPH +,
         #            HEAD-DTR.SYNSEM.R-PERIPH -,
@@ -887,10 +937,12 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
         #     pass
     elif wo == 'v2':
         if pos == 'clause-initial' or pos == 'preverbal' or infostr_type == 'topic-first':
-            ph_types['nf-comp-head-phrase'] = nf_comp_head_phrase_v2.replace('$', infostr)
+            ph_types['nf-comp-head-phrase'] = nf_comp_head_phrase_v2.replace(
+                '$', infostr)
             ph_rules['nf-comp-head-phrase'] = 'nf-comp-head'
             ph_types['head-nf-subj-phrase-super'] = head_nf_subj_phrase_super
-            ph_types['nf-subj-head-phrase'] = nf_subj_head_phrase_v2.replace('$', infostr)
+            ph_types['nf-subj-head-phrase'] = nf_subj_head_phrase_v2.replace(
+                '$', infostr)
             ph_rules['nf-subj-head-phrase'] = 'nf-subj-head'
             tdl = """head-subj-phrase-2 := basic-head-subj-phrase & declarative-clause & head-initial &
                [ HEAD-DTR.SYNSEM [ INFOSTR-FLAG +,
@@ -909,12 +961,14 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
             ph_types['head-comp-phrase'] = "head-comp-phrase := [ SYNSEM.LIGHT - ]."
             ph_types['head-comp-phrase-2'] = "head-comp-phrase-2 := [ SYNSEM.LIGHT - ]."
         elif pos == 'clause-final':
-            #there is no this type of language!
+            # there is no this type of language!
             pass
         elif pos == 'postverbal':
-            ph_types['head-nf-subj-phrase'] = head_nf_subj_phrase_v2.replace('$', infostr)
+            ph_types['head-nf-subj-phrase'] = head_nf_subj_phrase_v2.replace(
+                '$', infostr)
             ph_rules['head-nf-subj-phrase'] = 'head-nf-subj'
-            ph_types['head-nf-comp-phrase'] = head_nf_comp_phrase_v2.replace('$', infostr)
+            ph_types['head-nf-comp-phrase'] = head_nf_comp_phrase_v2.replace(
+                '$', infostr)
             ph_rules['head-nf-comp-phrase'] = 'head-nf-comp'
             ph_types['comp-head-phrase'] = "comp-head-phrase := [ SYNSEM.LIGHT - ]."
             ph_types['comp-head-phrase-2'] = "comp-head-phrase := [ SYNSEM.LIGHT - ]."
@@ -928,14 +982,16 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
 
 
 def customize_information_structure_pos(mylang, ch, rules):
-    pos_type = ch.get('focus-pos').strip() + ';' + ch.get('topic-first').strip()  + ';'
+    pos_type = ch.get('focus-pos').strip() + ';' + \
+        ch.get('topic-first').strip() + ';'
     pos_type += ch.get('c-focus').strip() + ';' + ch.get('c-focus-pos').strip()
     if pos_type in list(g_pos_types.keys()):
         pos = g_pos_types[pos_type][0].strip().split(';')
-        for i in range(0,len(pos)):
+        for i in range(0, len(pos)):
             infostr = pos[i].strip().split('|')
             if len(infostr) == 2:
-                customize_information_structure_pos_once(mylang, ch, rules, infostr[0].strip(), infostr[1].strip(), g_pos_types[pos_type][i+1])
+                customize_information_structure_pos_once(mylang, ch, rules, infostr[0].strip(
+                ), infostr[1].strip(), g_pos_types[pos_type][i+1])
 
 
 def customize_information_structure_marker(mylang, ch, rules, irules, lexicon, trigger, marker, infostr):
@@ -965,11 +1021,12 @@ def customize_information_structure_marker(mylang, ch, rules, irules, lexicon, t
                 _light = '-'
             else:
                 _light = '+'
-                mylang.add('bare-np-phrase := [ SYNSEM.LIGHT - ].', section='phrases')
+                mylang.add(
+                    'bare-np-phrase := [ SYNSEM.LIGHT - ].', section='phrases')
         elif _cat == 'verbs':
             _head = 'verb'
             _light = '+'
-        else: #both
+        else:  # both
             _head = '+nv'
         if _pos == 'before':
             _ph = '-'
@@ -995,17 +1052,19 @@ def customize_information_structure_marker(mylang, ch, rules, irules, lexicon, t
                                                                          CONT.HOOK.ICONS-KEY ' + infostr + ' ] ] > ] ].'
             add_lextypes(mylang, tdl)
             if _ph:
-                mylang.add(modifier_lex + ' := [ SYNSEM.LOCAL.CAT.POSTHEAD ' + _ph + ' ].')
+                mylang.add(modifier_lex +
+                           ' := [ SYNSEM.LOCAL.CAT.POSTHEAD ' + _ph + ' ].')
 
             tdl = rule = ''
-            if ch.get('front-matrix') in ['', 'in-situ']: # Constituent questions library may add its own head-adj phrase
+            # Constituent questions library may add its own head-adj phrase
+            if ch.get('front-matrix') in ['', 'in-situ']:
                 if _pos == 'before':
                     rule = 'adj-head-int := adj-head-int-phrase.'
                     rules.add(rule)
                 elif _pos == 'after':
                     rule = 'head-adj-int := head-adj-int-phrase.'
                     rules.add(rule)
-                else: #both
+                else:  # both
                     rule = 'adj-head-int := adj-head-int-phrase.'
                     rules.add(rule)
                     rule = 'head-adj-int := head-adj-int-phrase.'
@@ -1013,20 +1072,22 @@ def customize_information_structure_marker(mylang, ch, rules, irules, lexicon, t
 
             orth = orth_encode(_orth)
             if _head == '+nv':
-                mylang.add('bare-np-phrase := [ SYNSEM.LIGHT - ].',section='phrases')
+                mylang.add(
+                    'bare-np-phrase := [ SYNSEM.LIGHT - ].', section='phrases')
                 modifier1 = TDLencode(_orth + '-marker-n')
                 modifier2 = TDLencode(_orth + '-marker-v')
                 tdl1 = modifier1 + ' := ' + modifier_lex + ' & \
                         [ STEM < "' + orth + '" >, SYNSEM.LOCAL.CAT.HEAD.MOD < [ LIGHT +, LOCAL.CAT.HEAD noun ] > ].'
                 tdl2 = modifier2 + ' := ' + modifier_lex + ' & \
                         [ STEM < "' + orth + '" >, SYNSEM.LOCAL.CAT.HEAD.MOD < [ LIGHT +, LOCAL.CAT.HEAD verb ] > ].'
-                lexicon.add_literal(';;; Modifiers of expressing information structure')
+                lexicon.add_literal(
+                    ';;; Modifiers of expressing information structure')
                 lexicon.add(tdl1)
                 lexicon.add(tdl2)
-                grdef1 = modifier1 +'_gr := arg0e_gtr & \
+                grdef1 = modifier1 + '_gr := arg0e_gtr & \
                         [ CONTEXT [ RELS.LIST < [ PRED "non_existing_rel" ] > ], \
                           FLAGS.TRIGGER "' + modifier1 + '" ].'
-                grdef2 = modifier2 +'_gr := arg0e_gtr & \
+                grdef2 = modifier2 + '_gr := arg0e_gtr & \
                         [ CONTEXT [ RELS.LIST < [ PRED "non_existing_rel" ] > ], \
                           FLAGS.TRIGGER "' + modifier2 + '" ].'
                 trigger.add(grdef1)
@@ -1036,20 +1097,21 @@ def customize_information_structure_marker(mylang, ch, rules, irules, lexicon, t
                 tdl = modifier
                 tdl += ' := ' + modifier_lex + ' & \
                         [ STEM < "' + orth + '" > ].'
-                lexicon.add_literal(';;; Modifiers of expressing information structure')
+                lexicon.add_literal(
+                    ';;; Modifiers of expressing information structure')
                 lexicon.add(tdl)
-                grdef = modifier +'_gr := arg0e_gtr & \
+                grdef = modifier + '_gr := arg0e_gtr & \
                         [ CONTEXT [ RELS.LIST < [ PRED "non_existing_rel" ] > ], \
                           FLAGS.TRIGGER "' + modifier + '" ].'
                 trigger.add(grdef)
 
-        else:#affix or adp
+        else:  # affix or adp
             # OZ 2020-08-03 Unfinished work.
             # First of all, should probably only add the rule that is needed, not all of them.
             # These two however are all of the lexical rules that currently exist for infostr.
             # More rules need to be added for more cases, as documented in
             # https://github.com/delph-in/matrix/issues/494
-            mylang.add(add_icons_subj_foc_lex_rule,section='lexrules')
+            mylang.add(add_icons_subj_foc_lex_rule, section='lexrules')
             mylang.add(add_icons_obj_foc_lex_rule, section='lexrules')
 
 
@@ -1084,7 +1146,7 @@ def customize_infostr_adpositions(mylang, lexicon, trigger, ch):
     no_case_adp = True
     adporders = []
 
-    for adp in ch.get('adp',[]):
+    for adp in ch.get('adp', []):
         for feat in adp.get('feat', []):
             if feat['name'] == 'case' and (feat['value'] == case or case == ''):
                 no_case_adp = False
@@ -1104,7 +1166,7 @@ def customize_infostr_adpositions(mylang, lexicon, trigger, ch):
 
     # Lexical entries
     lexicon.add_literal(';;; Information structural adpositions')
-    for adp in ch.get('adp',[]):
+    for adp in ch.get('adp', []):
         infostr_marking = False
         no_case_adp = True
         for feat in adp.get('feat', []):
@@ -1130,13 +1192,13 @@ def customize_infostr_adpositions(mylang, lexicon, trigger, ch):
                         [ STEM < "' + orth + '" > ].'
         lexicon.add(typedef)
 
-        grdef1 = adp_type +'_gr_1 := arg0e_gtr & \
+        grdef1 = adp_type + '_gr_1 := arg0e_gtr & \
                     [ CONTEXT [ RELS.LIST <  [ ARG1 individual & #i ] > ], \
                       FLAGS [ SUBSUME < #i >, TRIGGER "' + adp_type + '" ] ].'
-        grdef2 = adp_type +'_gr_2 := arg0e_gtr & \
+        grdef2 = adp_type + '_gr_2 := arg0e_gtr & \
                       [ CONTEXT [ RELS.LIST <  [ ARG2 individual & #i ] > ], \
                         FLAGS [ SUBSUME < #i >, TRIGGER "' + adp_type + '" ] ].'
-        grdef3 = adp_type +'_gr_3 := arg0e_gtr & \
+        grdef3 = adp_type + '_gr_3 := arg0e_gtr & \
                       [ CONTEXT [ RELS.LIST <  [ ARG3 individual & #i ] > ], \
                         FLAGS [ SUBSUME < #i >, TRIGGER "' + adp_type + '" ] ].'
         trigger.add(grdef1)
@@ -1147,14 +1209,19 @@ def customize_infostr_adpositions(mylang, lexicon, trigger, ch):
 
     return to_cfv
 
+
 def customize_information_structure(mylang, ch, rules, irules, lexicon, trigger, hierarchies):
-    #if topic is always initial:
+    # if topic is always initial:
     if ch.get('topic-first').strip() != '':
-        mylang.add_literal('topic-comment :+ [ SYNSEM.L-PERIPH +, NON-HEAD-DTR.SYNSEM.L-PERIPH + ].', '', section='addenda')
+        mylang.add_literal(
+            'topic-comment :+ [ SYNSEM.L-PERIPH +, NON-HEAD-DTR.SYNSEM.L-PERIPH + ].', '', section='addenda')
 
     customize_information_structure_pos(mylang, ch, rules)
-    customize_information_structure_marker(mylang, ch, rules, irules, lexicon, trigger, 'focus-marker', 'focus')
-    customize_information_structure_marker(mylang, ch, rules, irules, lexicon, trigger, 'topic-marker', 'topic')
-    customize_information_structure_marker(mylang, ch, rules, irules, lexicon, trigger, 'c-focus-marker', 'contrast-focus')
-    customize_information_structure_marker(mylang, ch, rules, irules, lexicon, trigger, 'c-topic-marker', 'contrast-topic')
-
+    customize_information_structure_marker(
+        mylang, ch, rules, irules, lexicon, trigger, 'focus-marker', 'focus')
+    customize_information_structure_marker(
+        mylang, ch, rules, irules, lexicon, trigger, 'topic-marker', 'topic')
+    customize_information_structure_marker(
+        mylang, ch, rules, irules, lexicon, trigger, 'c-focus-marker', 'contrast-focus')
+    customize_information_structure_marker(
+        mylang, ch, rules, irules, lexicon, trigger, 'c-topic-marker', 'contrast-topic')
