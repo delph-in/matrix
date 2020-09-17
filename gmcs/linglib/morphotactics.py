@@ -908,23 +908,13 @@ def write_i_or_l_rules(irules, lrules, lrt, order):
                 section = "regular"
             if lrt.interrogative and not lrt.interrogative == 'no':
                 if lrt.interrogative == 'wh':
-                    rule_obj, rule_subj = build_wh_lex_rules(
+                    rule_obj, rule_subj = build_ques_lex_rules(
                         lrt, order, num, i, lri, pred, 'subj-', 'obj-')
                     irules.add_literal(rule_obj, section=section)
                     irules.add_literal(rule_subj, section=section)
                 elif lrt.interrogative == 'polar':
-                    rule_intran, rule_tran = build_wh_lex_rules(
+                    rule_intran, rule_tran = build_ques_lex_rules(
                         lrt, order, num, i, lri, pred, 'intran-', 'tran-')
-                    # lrt1_name = 'intran-' + lrt.name + '-' + lrt.identifier_suffix
-                    # lrt2_name = 'tran-' + lrt.name + '-' + lrt.identifier_suffix
-                    # rule_intran = '\n'.join(['-'.join([lrt1_name, order + str(num[i])]) + ' :=',
-                    #                          r'%' + order +
-                    #                          ' (* ' + lri.name + ')',
-                    #                          'polar-lex-rule1' + pred]) + '.'
-                    # rule_tran = '\n'.join(['-'.join([lrt2_name, order + str(num[i])]) + ' :=',
-                    #                        r'%' + order +
-                    #                        ' (* ' + lri.name + ')',
-                    #                        'polar-lex-rule2' + pred]) + '.'
                     irules.add_literal(rule_tran, section=section)
                     irules.add_literal(rule_intran, section=section)
             else:
@@ -938,7 +928,7 @@ def write_i_or_l_rules(irules, lrules, lrt, order):
 
 
 '''
-The wh-inflection requires two separate lexical rules,
+The interrogative inflection requires two separate lexical rules,
 even though this is not exposed to the user via the questionnaire;
 the user specifies just one rule, but the system needs to
 not add that rule directly and instead to add two homophonous rules,
@@ -946,7 +936,7 @@ one for a wh-subject and another for a wh-object.
 '''
 
 
-def build_wh_lex_rules(lrt, order, num, i, lri, pred, pref1, pref2):
+def build_ques_lex_rules(lrt, order, num, i, lri, pred, pref1, pref2):
     lrt_subj_name = pref1 + lrt.name + '-' + lrt.identifier_suffix
     lrt_obj_name = pref2 + lrt.name + '-' + lrt.identifier_suffix
     rule_subj = '\n'.join(['-'.join([lrt_subj_name, order + str(num[i])]) + ' :=',
