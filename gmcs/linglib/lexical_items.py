@@ -20,6 +20,8 @@ from gmcs.linglib.clausalmods import add_subord_name
 from gmcs.feature_type_use import USED_TYPES
 
 # helper functions
+
+
 def verb_id(item):
     """Return the identifier for a verb lexical item."""
     if not item.full_key.startswith('qverb'):
@@ -27,25 +29,31 @@ def verb_id(item):
     else:
         return get_name(item) + '-interrogative-verb-lex'
 
+
 def noun_id(item):
     """Return the identifier for a noun lexical item."""
     return get_name(item) + '-noun-lex'
+
 
 def adj_id(item):
     """Return the identifier for an adjective lexical item."""
     return get_name(item) + '-adj-lex'
 
+
 def cop_id(item):
     """Return the identifier for an copula lexical item."""
     return get_name(item) + '-cop-lex'
+
 
 def det_id(item):
     """Return the identifier for a determiner lexical item."""
     return get_name(item) + '-determiner-lex'
 
+
 def adp_id(item):
     """Return the identifier for an adposition lexical item."""
     return get_name(item) + '-adp-lex'
+
 
 def qpart_id(item):
     """Return the identifier for a question particle lexical item."""
@@ -53,6 +61,7 @@ def qpart_id(item):
 
 ##########################################################
 # insert_ids()
+
 
 def insert_ids(ch):
     """
@@ -105,7 +114,8 @@ def insert_ids(ch):
                     ch[stem.full_key + '_name'] = orth + '_1'
                 else:
                     stemidcounters[orth] += 1
-                    ch[stem.full_key + '_name'] = orth + '_' + str(stemidcounters[orth])
+                    ch[stem.full_key + '_name'] = orth + \
+                        '_' + str(stemidcounters[orth])
             for bistem in pos.get('bistem'):
                 orth = bistem.get('orth') + '+' + bistem.get('aff')
                 if stemids[orth] == 1:
@@ -115,8 +125,9 @@ def insert_ids(ch):
                     ch[bistem.full_key + '_name'] = orth + '_1'
                 else:
                     stemidcounters[orth] += 1
-                    ch[bistem.full_key + '_name'] = orth + '_' + str(stemidcounters[orth])
-    ## KPH Do the same for subordinators and complementizers
+                    ch[bistem.full_key + '_name'] = orth + \
+                        '_' + str(stemidcounters[orth])
+    # KPH Do the same for subordinators and complementizers
     add_subord_name(ch, stemids, stemidcounters)
 
 
@@ -180,6 +191,7 @@ def customize_bipartite_stems(ch):
                 for stemid in avpairs[aff]:
                     ch[stemid + '_require1_others'] = next_lrt_str
 
+
 def customize_verbs(mylang, ch, lexicon, hierarchies):
     negmod = ch.get('neg-mod')
     negadv = ch.get('neg-adv')
@@ -191,7 +203,8 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
     hclightallverbs = False
 
     if ch.get('has-aux') == 'yes':
-        vc = determine_vcluster(auxcomp, auxorder, wo, ch) #TODO: OZ 11-30-2017 Reconcile this with my VC stuff in word_order.py
+        # TODO: OZ 11-30-2017 Reconcile this with my VC stuff in word_order.py
+        vc = determine_vcluster(auxcomp, auxorder, wo, ch)
         if wo == 'vso' or wo == 'osv':
             wo = 'req-hcl-vp'
         if auxcomp == 'v' and hclight != True:
@@ -306,12 +319,12 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
 
     case.customize_verb_case(mylang, ch)
 
-    # EKN 03-02-2018 Add [ CASE real-case ] to all args of verbs iff 
+    # EKN 03-02-2018 Add [ CASE real-case ] to all args of verbs iff
     # the language has case and possessives:
     poss = True if ch.get('poss-strat') or ch.get('poss-pron') else False
-    case_on = True if ch.get('case-marking')!='none' else False
+    case_on = True if ch.get('case-marking') != 'none' else False
     if poss and case_on:
-        real_case='[ LOCAL.CAT.HEAD.CASE real-case ]'
+        real_case = '[ LOCAL.CAT.HEAD.CASE real-case ]'
         mylang.add('intransitive-verb-lex := [ ARG-ST < '+real_case+' > ].')
         mylang.add('transitive-verb-lex := [ ARG-ST < '+real_case+',\
                                                       '+real_case+' > ].')
@@ -324,27 +337,31 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
 
     # Now create the lexical entries for all the defined verb types
     cases = case.case_names(ch)
-    for verb in ch.get('verb',[]):
+    for verb in ch.get('verb', []):
         create_verb_lex_type(cases, ch, hierarchies, lexicon, mylang, verb)
     if ch.get('wh-q-inter-verbs') == 'on':
         mylang.add(lexbase.ITRG_VB)
-        for verb in ch.get('qverb',[]):
-            create_interrogative_verb_type(cases,ch,hierarchies,lexicon,mylang,verb)
+        for verb in ch.get('qverb', []):
+            create_interrogative_verb_type(
+                cases, ch, hierarchies, lexicon, mylang, verb)
 
-def create_interrogative_verb_type(cases,ch,hierarchies,lexicon,mylang,verb):
+
+def create_interrogative_verb_type(cases, ch, hierarchies, lexicon, mylang, verb):
     vtype = verb_id(verb)
     # clause-embedding verb's valence and its complement's head constraint:
-    vtype,head = clausalcomps.update_verb_lextype(ch,verb,vtype)
-    if verb['predtype'] in ['manner','loc']:
+    vtype, head = clausalcomps.update_verb_lextype(ch, verb, vtype)
+    if verb['predtype'] in ['manner', 'loc']:
         mylang.add(vtype + lexbase.ITRG_FOUR_REL)
     elif verb['predtype'] == 'ref':
         mylang.add(vtype + lexbase.ITRG_THREE_REL)
 
-    features.customize_feature_values(mylang, ch, hierarchies, verb, vtype, 'verb', None, cases)
+    features.customize_feature_values(
+        mylang, ch, hierarchies, verb, vtype, 'verb', None, cases)
     stems = verb.get('stem', [])
     stems.extend(verb.get('bistem', []))
     for stem in stems:
         add_itg_stem_to_lexicon(lexicon, stem, vtype, verb['predtype'])
+
 
 def add_itg_stem_to_lexicon(lexicon, stem, stype, predtype):
     orthstr = orth_encode(stem.get('orth'))
@@ -358,18 +375,18 @@ def add_itg_stem_to_lexicon(lexicon, stem, stype, predtype):
     npred = stem.get('nounpred')
     if predtype == 'ref':
         typedef = \
-            TDLencode(name) + ' := [ SYNSEM.LOCAL.CONT.RELS.LIST < [], [], [ PRED "_' + npred + '_n_rel" ] > ] ].'
-        lexicon.add(typedef,merge=True)
-    elif predtype in ['manner','loc']:
+            TDLencode(
+                name) + ' := [ SYNSEM.LOCAL.CONT.RELS.LIST < [], [], [ PRED "_' + npred + '_n_rel" ] > ] ].'
+        lexicon.add(typedef, merge=True)
+    elif predtype in ['manner', 'loc']:
         if predtype == 'manner':
             pred = 'manner_nonsp_rel'
         elif predtype == 'loc':
             pred = 'loc_nonsp_rel'
         typedef = \
             TDLencode(name) + ' := [ SYNSEM.LOCAL.CONT.RELS.LIST < [], [PRED "_' + pred + '"], ' \
-                                                            '[ PRED "_' + npred + '_n_rel" ], [] > ] ].'
-        lexicon.add(typedef,merge=True)
-
+            '[ PRED "_' + npred + '_n_rel" ], [] > ] ].'
+        lexicon.add(typedef, merge=True)
 
 
 def create_verb_lex_type(cases, ch, hierarchies, lexicon, mylang, verb):
@@ -378,15 +395,16 @@ def create_verb_lex_type(cases, ch, hierarchies, lexicon, mylang, verb):
     vtype = verb_id(verb)
     construct_supertype_names(cases, ch, stype_names, verb)
     # clausal verb's valence and its complement's head constraint:
-    vtype,head = clausalcomps.update_verb_lextype(ch,verb,vtype)
+    vtype, head = clausalcomps.update_verb_lextype(ch, verb, vtype)
     if len(stype_names) == 0:
         mylang.add(vtype + ' := verb-lex .')
     else:
         mylang.add(vtype + ' := ' + ' & '.join(stype_names) + '.')
     if head:
-        mylang.add(vtype + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD ' + head + ' ] > ].'
-                   , merge=True)
-    features.customize_feature_values(mylang, ch, hierarchies, verb, vtype, 'verb', None, cases)
+        mylang.add(
+            vtype + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD ' + head + ' ] > ].', merge=True)
+    features.customize_feature_values(
+        mylang, ch, hierarchies, verb, vtype, 'verb', None, cases)
 
     stems = verb.get('stem', [])
     stems.extend(verb.get('bistem', []))
@@ -438,9 +456,9 @@ def construct_supertype_names(cases, ch, stype_names, verb):
                 tivity += s_case
                 tivity += '-intrans'
             else:
-                #OZ 2018-01-03: This is awkward, has to do with the current format of the choices file...
-                #We should not ideally end up here at all if we are not an intransitive verb...
-                #The reason we end up here is some clause-embedding verbs will only have subject case specified.
+                # OZ 2018-01-03: This is awkward, has to do with the current format of the choices file...
+                # We should not ideally end up here at all if we are not an intransitive verb...
+                # The reason we end up here is some clause-embedding verbs will only have subject case specified.
                 if not s_case == 'trans':
                     tivity += s_case
                     tivity += '-'
@@ -481,14 +499,17 @@ def customize_determiners(mylang, ch, lexicon, hierarchies):
     if 'det' in ch:
         lexicon.add_literal(';;; Determiners')
 
-    for det in ch.get('det',[]):
+    for det in ch.get('det', []):
         if det[INTER] == ON:
             mylang.add(lexbase.WH_DET)
             if ch.get('q-part-order') == 'second':
                 mylang.add('''wh-determiner-lex := non-ynq-word.''')
-            add_determiner(ch, det, 'wh-determiner-lex', hierarchies, lexicon, mylang)
+            add_determiner(ch, det, 'wh-determiner-lex',
+                           hierarchies, lexicon, mylang)
         else:
-            add_determiner(ch, det, 'determiner-lex',hierarchies, lexicon, mylang)
+            add_determiner(ch, det, 'determiner-lex',
+                           hierarchies, lexicon, mylang)
+
 
 def add_determiner(ch, det, stype, hierarchies, lexicon, mylang):
     dtype = det_id(det)
@@ -507,7 +528,8 @@ def add_determiner(ch, det, stype, hierarchies, lexicon, mylang):
         elif stype == 'wh-determiner-lex':
             mylang.add(dtype + ' := one-icons-lex-item.')
 
-    features.customize_feature_values(mylang, ch, hierarchies, det, dtype, 'det')
+    features.customize_feature_values(
+        mylang, ch, hierarchies, det, dtype, 'det')
 
     for stem in det.get('stem', []):
         orthstr = orth_encode(stem.get('orth'))
@@ -532,7 +554,7 @@ def customize_misc_lex(ch, lexicon, trigger):
                 TDLencode(orth) + ' := ' + parent + ' & \
                        [ STEM < "' + orthstr + '" > ].'
             lexicon.add(typedef)
-            grdef = TDLencode(orth) +'_gr := generator_rule & \
+            grdef = TDLencode(orth) + '_gr := generator_rule & \
                        [ CONTEXT [ RELS.LIST < [ ARG0.SF ques ] > ], \
                          FLAGS.TRIGGER "' + TDLencode(orth) + '" ].'
             trigger.add(grdef)
@@ -542,13 +564,13 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     from gmcs.constants import INTER, ON, WH_PRO
 
     # EKN 2018-01-26 Adding a PRON feature to mark all pronouns:
-    mylang.add('head :+ [ PRON bool ].',section='addenda')
+    mylang.add('head :+ [ PRON bool ].', section='addenda')
 
     # Figure out which kinds of determiner-marking are in the language
-    seen = {'obl':False, 'opt':False, 'imp':False}
+    seen = {'obl': False, 'opt': False, 'imp': False}
     seenCount = 0
 
-    for noun in ch.get('noun',[]):
+    for noun in ch.get('noun', []):
         det = noun.get('det')
         if not det == '' and not seen[det]:
             seen[det] = True
@@ -575,11 +597,11 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
                                       SPEC < > ] ] ] ], \
              ARG-ST < #spr > ].'
 
-    # EKN 2017-12-18 In some languages, possessor nouns or 
-    # possessor-marking adpositions act as specifiers to nouns. 
+    # EKN 2017-12-18 In some languages, possessor nouns or
+    # possessor-marking adpositions act as specifiers to nouns.
     # This checks to see which kinds of possessive strategies
     # have been defined, and makes the head type of the noun-lex's
-    # SPR conditional on that. It also checks for cases where only 
+    # SPR conditional on that. It also checks for cases where only
     # the possessum is marked, since in these cases, the possessor
     # noun must have a non-empty SPEC list even though it has gone
     # through no lexical rules.
@@ -610,12 +632,12 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
                    [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT + ] > ].'
             mylang.add(typedef)
     # EKN 2018-02-02 Possessor pronouns are a type which cannot
-    # take dets, but won't trigger 'imp' below. Adding a check 
+    # take dets, but won't trigger 'imp' below. Adding a check
     # for them specifically:
-    poss_prons=False
-    for pron in ch.get('poss-pron',[]):
-        if pron.get('type')!='affix':
-            poss_prons=True
+    poss_prons = False
+    for pron in ch.get('poss-pron', []):
+        if pron.get('type') != 'affix':
+            poss_prons = True
     if (seen['imp'] or poss_prons) and ch.get('has-dets') == 'yes':
         mylang.add(
             'head-spec-phrase := [ NON-HEAD-DTR.SYNSEM.OPT - ].',
@@ -633,27 +655,27 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     # make a hash of nountypes --> lists of children so that we
     # can stopdet on children
     children = defaultdict(dict)
-    for noun in ch.get('noun',[]):
+    for noun in ch.get('noun', []):
         for p in noun.get('supertypes').split(', '):
             children[p][noun.full_key] = 1
 
     # make and populate a dictionary of stopdets, to avoid vacuous det supertypes
     # have to follow inheritance paths downwards from any nonempty det values
-    stopdets={}
-    for noun in ch.get('noun',[]):
+    stopdets = {}
+    for noun in ch.get('noun', []):
         # if det is nonempty, child nouns shouldn't inherit det
         det = noun.get('det')
         if det != '':
             if noun.full_key in children:
                 # there are children to stopdet on
                 # recursively look for children
-                parents = [ noun.full_key ]
+                parents = [noun.full_key]
                 while (True):
                     next_parents = []
                     for p in parents:
                         if p in children:
                             for c in list(children[p].keys()):
-                                stopdets[c]=True
+                                stopdets[c] = True
                                 if not c in next_parents:
                                     next_parents.append(c)
                     if len(next_parents) == 0:
@@ -661,8 +683,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
                     else:
                         parents = next_parents
 
-
-    for noun in ch.get('noun',[]):
+    for noun in ch.get('noun', []):
         ntype = noun_id(noun)
         det = noun.get('det')
         pron = noun.get('pron') == ON
@@ -673,7 +694,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
         stypes = noun.get('supertypes').split(', ')
         stype_names = [noun_id(ch[st]) for st in stypes if st != '']
 
-        #if singlentype or det == 'opt':
+        # if singlentype or det == 'opt':
         #  stype = 'noun-lex'
         if not singlentype and not qpron:
             if det == 'obl':
@@ -689,7 +710,8 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
         # EKN 2018-01-31 Adding PRON feature to individual types:
         if pron:
             mylang.add(ntype + ' := [ SYNSEM.LOCAL.CAT.HEAD.PRON + ].')
-        features.customize_feature_values(mylang, ch, hierarchies, noun, ntype, 'noun')
+        features.customize_feature_values(
+            mylang, ch, hierarchies, noun, ntype, 'noun')
         for stem in noun.get('stem', []):
             # consider instead using (should be the same effect):
             # add_stem_to_lexicon(lexicon, stem, ntype)
@@ -701,7 +723,8 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
                     SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
             lexicon.add(typedef)
 
-def customize_adverbs(mylang,ch,lexicon):
+
+def customize_adverbs(mylang, ch, lexicon):
     mylang.set_section('otherlex')
     mylang.add_literal(';;; Adverbs')
     lexicon.add_literal(';;; Adverbs')
@@ -732,15 +755,17 @@ def customize_adverbs(mylang,ch,lexicon):
         typedef = TDLencode(typename) + ' := ' + supertypes + '.'
         mylang.add(typedef)
         for stem in adv['stem']:
-            add_stem_to_lexicon(lexicon,stem,typename)
+            add_stem_to_lexicon(lexicon, stem, typename)
 
 # TJT 2014-05-05
+
+
 def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
 
     # Add basic adjective definition
     # OZ 2020-02-18 In fact, all adjectives must also inherit from either zero-norm-arg
     # or from basic-one-arg. Otherwise the nonlocal values are underspecified.
-    if ch.get('adj',[]):
+    if ch.get('adj', []):
         mylang.add("adj-lex := basic-intersective-adjective-lex.")
 
     # Check which rules need to be added to rules.tdl
@@ -759,31 +784,31 @@ def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
     lst_map = {"both": "attr-adj-lex",
                "attr": "attr-only-adj-lex",
                "pred": "pred-only-adj-lex",
-               "none": "adj-lex" }
+               "none": "adj-lex"}
 
     # Go through adjective position classes...
-    for adj_pc in ch.get('adj-pc',[]):
+    for adj_pc in ch.get('adj-pc', []):
         # check if any have "any adj" as input
-        if not adj_types['any_adj'] and 'adj' in adj_pc.get('inputs',[]).split(', '):
+        if not adj_types['any_adj'] and 'adj' in adj_pc.get('inputs', []).split(', '):
             adj_types['any_adj'] = True
         # Additional checks for switching adjectives
-        switching = adj_pc.get('switching',False)
+        switching = adj_pc.get('switching', False)
         if switching:
             # For each switching adjective...
-            for lrt in adj_pc.get('lrt',[]):
+            for lrt in adj_pc.get('lrt', []):
                 # Check its mode to get lexical types to add
                 if not (adj_types['pred_lex'] and adj_types['attr_lex']):
-                    adj_pc_mod = lrt.get('mod','')
+                    adj_pc_mod = lrt.get('mod', '')
                     if adj_pc_mod:
                         # TJT 12-05-14: "both" lexical rule types are predicative, too!
-                        if adj_pc_mod in ('pred','both'):
+                        if adj_pc_mod in ('pred', 'both'):
                             adj_types['pred_lex'] = True
                         # TJT 11-06-14: "both" lexical rule types are attributive
-                        elif adj_pc_mod in ('attr','both'):
+                        elif adj_pc_mod in ('attr', 'both'):
                             adj_types['attr_lex'] = True
                 # Check modification direction to get rules to add
                 if not (adj_rules['head_adj'] and adj_rules['adj_head']):
-                    lrt_modpos = lrt.get('modpos',False)
+                    lrt_modpos = lrt.get('modpos', False)
                     if lrt_modpos:
                         if lrt_modpos == 'before':
                             adj_rules['head_adj'] = True
@@ -795,11 +820,11 @@ def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
                 # Check predicative behavoir to get rules to add
                 if not adj_types['stative_lex']:
                     # If not a copula complement
-                    if not lrt.get('predcop',False):
+                    if not lrt.get('predcop', False):
                         adj_types['stative_lex'] = True
 
     # Add the lextypes to mylanguage.tdl
-    for adj in ch.get('adj',[]):
+    for adj in ch.get('adj', []):
         # Reset values
         lst, posthead, subj, pred, adj_constraints, modunique = '', '', '', '', '', ''
         root = False
@@ -807,23 +832,23 @@ def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
         # Get all supertypes to check for redundant specifications
         all_supertypes, pathToRoot = get_all_supertypes(adj, ch)
         if not pathToRoot:
-            raise ValueError("No path to the root was found for type %s." % adj.get('name','') + \
+            raise ValueError("No path to the root was found for type %s." % adj.get('name', '') +
                              "Please try validating your choices and compiling again.")
         # Keep track of redundancies
         supertype_redundancies = defaultdict(lambda: False)
 
-        ## Check pivots
+        # Check pivots
         # Pivot on type of adjective
-        mode = adj.get('mod',False)
+        mode = adj.get('mod', False)
         # TJT 2014-09-04: Commenting this out because one should be able
         # to define subtypes for purely morphological use
-        #if not mode: continue
+        # if not mode: continue
         # Pivot on modification direction
-        modpos = adj.get('modpos',False)
+        modpos = adj.get('modpos', False)
         # Pivot on copula complementation
-        predcop = adj.get('predcop',False)
+        predcop = adj.get('predcop', False)
         # Pivot on unique modification
-        modunique = adj.get('modunique',False)
+        modunique = adj.get('modunique', False)
 
         # Optionally copula complement and adjectives that only agree
         # in only position must be unspecified at the lexical level
@@ -836,44 +861,47 @@ def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
                             Supertype: %s; Supertype Choice: %s
                             Type: %s; Type choice: %s'''.split()).strip()
         for supertype in all_supertypes:
-            supertype_choice = ch.get(supertype,False)
+            supertype_choice = ch.get(supertype, False)
             if supertype_choice:
                 # Check mode
                 if mode:
-                    supertype_mode = supertype_choice.get('mode',False)
+                    supertype_mode = supertype_choice.get('mode', False)
                     if supertype_mode:
                         if supertype_mode == "both" and mode in ('attr', 'pred'):
-                            pass # attr and pred unify with both
+                            pass  # attr and pred unify with both
                         elif mode != supertype_mode:
-                            raise ValueError(def_error % (supertype, supertype_mode, adj.get('name',''), mode))
+                            raise ValueError(def_error % (
+                                supertype, supertype_mode, adj.get('name', ''), mode))
                 # Check modpos
                 if modpos:
-                    supertype_modpos = supertype_choice.get('modpos',False)
+                    supertype_modpos = supertype_choice.get('modpos', False)
                     if supertype_modpos:
                         if modpos == supertype_modpos:
                             supertype_redundancies['modpos'] = True
                         elif supertype_modpos == 'either' and modpos in ('before', 'after'):
-                            pass # before and after unify with either
+                            pass  # before and after unify with either
                         else:
-                            raise ValueError(def_error % (supertype, supertype_modpos, adj.get('name',''), modpos))
+                            raise ValueError(def_error % (
+                                supertype, supertype_modpos, adj.get('name', ''), modpos))
                 # Check modunique
-                if modunique and supertype_choice.get('modunique',False):
+                if modunique and supertype_choice.get('modunique', False):
                     supertype_redundancies['modunique'] = True
                 # Check predcop
                 if predcop:
-                    supertype_predcop = supertype_choice.get('predcop',False)
+                    supertype_predcop = supertype_choice.get('predcop', False)
                     if supertype_predcop:
                         if predcop == supertype_predcop:
                             supertype_redundancies['predcop'] = True
                         elif supertype_predcop == 'opt' and predcop in ('opt', 'obl'):
                             pass
                         else:
-                            raise ValueError(def_error % (supertype, supertype_predcop, adj.get('name',''), predcop))
+                            raise ValueError(def_error % (
+                                supertype, supertype_predcop, adj.get('name', ''), predcop))
 
-        ## Calculate supertypes
+        # Calculate supertypes
         stypes = adj.get('supertypes').split(', ')
         stype_names = []
-        if '' in stypes: # Found root
+        if '' in stypes:  # Found root
             root = True
         # Set up root supertypes
         if root:
@@ -888,10 +916,12 @@ def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
                 stype_names.append("attr-only-adj-lex")
         # Format supertypes
         stype_def = " & ".join(stype_names) or ""
-        if stype_def: stype_def += " & "
+        if stype_def:
+            stype_def += " & "
         # Add pred-only and attr-only types if applicable
-        if mode in ('attr','pred'):
-            adj_types["%s_only" % mode] = True # Add proper type to mylanguage.tdl
+        if mode in ('attr', 'pred'):
+            # Add proper type to mylanguage.tdl
+            adj_types["%s_only" % mode] = True
 
         # For attributive adjectives...
         if mode in ("both", "attr"):
@@ -912,7 +942,8 @@ def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
             if modunique:
                 if not supertype_redundancies['modunique']:
                     modunique = 'MOD < [ MODIFIED notmod ] >'
-                else: modunique = ''
+                else:
+                    modunique = ''
 
         if not supertype_redundancies['predcop']:
             # For predicative adjectives...
@@ -923,7 +954,8 @@ def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
                     # Adjective only appears as copula complement
                     pred = '+'
                     subj = 'VAL.SUBJ < >'
-                    if mode == 'pred': adj_types['pred_word'] = True
+                    if mode == 'pred':
+                        adj_types['pred_word'] = True
                 elif predcop == 'opt':
                     # Switching between copula complement and inflection
                     # See deffile.py for zero affixes added here
@@ -935,7 +967,8 @@ def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
                     adj_types['stative_word'] = True
                     adj_types['pred_word'] = True
                     # Add additional supertype
-                    if root: stype_def += 'stative-pred-adj-lex & '
+                    if root:
+                        stype_def += 'stative-pred-adj-lex & '
 
         # Calculate HEAD value
         head = ''
@@ -948,14 +981,15 @@ def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
 
         # Only output constraints if defined
         if posthead or pred or subj or modunique:
-            adj_constraints = "\n  [ SYNSEM.LOCAL.CAT [" + "\n".join([posthead, subj, head]).strip(",\n") + '] ]'
+            adj_constraints = "\n  [ SYNSEM.LOCAL.CAT [" + \
+                "\n".join([posthead, subj, head]).strip(",\n") + '] ]'
 
         # Add lexical types to mylanguage.tdl
         atype = adj_id(adj)
         mylang.add(atype + ' := ' + lst + stype_def + adj_constraints + '.')
 
-    ### Add the proper lexical types to mylanguage.tdl
-    ## Add attributive adjective types
+    # Add the proper lexical types to mylanguage.tdl
+    # Add attributive adjective types
     if adj_types['attr_word']:
         mylang.add('''attr-adj-lex := adj-lex & intersective-mod-lex &
                     [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT [ HEAD noun,
@@ -971,42 +1005,43 @@ def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
                    comment='Basic attributive adjective lexical rule definition',
                    section='lexrules')
 
-    ## Add attributive-only adjective types
+    # Add attributive-only adjective types
     if adj_types['attr_only']:
         attr_only_map = {'attr_word':
-                             {'type_name':'attr-only-adj-lex := attr-adj-lex & ',
-                              'section':''},
+                         {'type_name': 'attr-only-adj-lex := attr-adj-lex & ',
+                          'section': ''},
                          'attr_lex':
-                             {'type_name':'attr-only-adj-lex-rule := attr-adj-lex-rule & ',
-                              'section':'lexrules'} }
+                             {'type_name': 'attr-only-adj-lex-rule := attr-adj-lex-rule & ',
+                              'section': 'lexrules'}}
         for sort in ('attr_word', 'attr_lex'):
             if adj_types[sort]:
                 mylang.add('''%s [ SYNSEM.LOCAL.CAT [ HEAD.PRD -,
-                                              VAL.SUBJ < > ] ].''' % \
+                                              VAL.SUBJ < > ] ].''' %
                            attr_only_map[sort]['type_name'],
                            section=attr_only_map[sort]['section'])
 
-    ## Add predicative-only adjective types
+    # Add predicative-only adjective types
     if adj_types['pred_only']:
         if adj_types['pred_word']:
             mylang.add('''pred-only-adj-lex := adj-lex & no-mod-lex.''')
         if adj_types['pred_lex']:
-            mylang.add('''pred-only-adj-lex-rule := add-only-no-ccont-rule & no-mod-lex.''')
+            mylang.add(
+                '''pred-only-adj-lex-rule := add-only-no-ccont-rule & no-mod-lex.''')
 
-    ## Add additional types
+    # Add additional types
     # If there are stative predicates, add the proper rule and supertype
     pred_adj_map = {'stative_word':
-                        {'supertype':'stative-pred-adj-lex := adj-lex &',
-                         'comment':'Stative predicate adjective definition',
-                         'section':''},
+                    {'supertype': 'stative-pred-adj-lex := adj-lex &',
+                     'comment': 'Stative predicate adjective definition',
+                     'section': ''},
                     'stative_lex':
-                        {'supertype':'stative-pred-lex-rule := add-only-no-ccont-rule & ',
-                         'comment':'Stative predicate adjective lexical rule definition',
-                         'section':'lexrules'}}
-    # EKN 03-02-2018 Add [ CASE real-case ] to SUBJ of adj iff 
+                        {'supertype': 'stative-pred-lex-rule := add-only-no-ccont-rule & ',
+                         'comment': 'Stative predicate adjective lexical rule definition',
+                         'section': 'lexrules'}}
+    # EKN 03-02-2018 Add [ CASE real-case ] to SUBJ of adj iff
     # the language has case and possessives:
     poss = True if ch.get('poss-strat') or ch.get('poss-pron') else False
-    case_on = True if ch.get('case-marking')!='none' else False
+    case_on = True if ch.get('case-marking') != 'none' else False
     if poss and case_on:
         pred_adj_definition = '''%s
           [ SYNSEM.LOCAL [ CAT.VAL.SUBJ < [ LOCAL [ CAT.HEAD.CASE real-case,
@@ -1030,7 +1065,7 @@ def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
                        section=pred_adj_map[form]['section'])
 
     # If adjective incorporation, add to mylanguage.tdl
-    if ch.get("adj_incorp",False):
+    if ch.get("adj_incorp", False):
         mylang.add('''adj_incorporation-lex-rule := add-only-rule &
                     [ C-CONT [ RELS.LIST < arg1-ev-relation &
                                        [ LBL #ltop,
@@ -1056,11 +1091,12 @@ def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
     # Add the lexical entries to lexicon.tdl
     lexicon.add_literal(';;; Adjectives')
 
-    for adj in ch.get('adj',[]):
+    for adj in ch.get('adj', []):
         atype = adj_id(adj)
 
         # Automatically generate feature values based on choices
-        features.customize_feature_values(mylang, ch, hierarchies, adj, atype, 'adj')
+        features.customize_feature_values(
+            mylang, ch, hierarchies, adj, atype, 'adj')
 
         for stem in adj.get('stem', []):
             typedef = TDLencode(stem.get('name')) + ' := ' + atype + ' & \n \
@@ -1069,9 +1105,11 @@ def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
             lexicon.add(typedef)
 
 # TJT 2014-05-05
+
+
 def customize_cops(mylang, ch, lexicon, hierarchies, trigger):
 
-    if ch.get('cop',False):
+    if ch.get('cop', False):
         # Add PRD
         mylang.add('head :+ [ PRD bool ].', section='addenda')
 
@@ -1090,12 +1128,13 @@ def customize_cops(mylang, ch, lexicon, hierarchies, trigger):
                                      SPEC < > ],
                            CONT.HOOK.XARG #xarg ] ].''' % LEXICAL_SUPERTYPES['cop'])
 
-        # EKN 03-02-2018 Add [ CASE real-case ] to all subj of copula iff 
+        # EKN 03-02-2018 Add [ CASE real-case ] to all subj of copula iff
         # the language has case and possessives:
         poss = True if ch.get('poss-strat') or ch.get('poss-pron') else False
-        case_on = True if ch.get('case-marking')!='none' else False
+        case_on = True if ch.get('case-marking') != 'none' else False
         if poss and case_on:
-            mylang.add('''%s := [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CAT.HEAD.CASE real-case ]  > ].''' % LEXICAL_SUPERTYPES['cop'])
+            mylang.add(
+                '''%s := [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CAT.HEAD.CASE real-case ]  > ].''' % LEXICAL_SUPERTYPES['cop'])
 
         # only works for adj right now, change in future
         comment = '''Copula type taking adjectival complements.\nNeed to define more for additional complement types.'''
@@ -1106,17 +1145,20 @@ def customize_cops(mylang, ch, lexicon, hierarchies, trigger):
         for cop in ch.get('cop', []):
             ctype = cop_id(cop)
 
-            ## Calculate supertypes
+            # Calculate supertypes
             stypes = cop.get('supertypes').split(', ')
             stype_def = ''
-            if '' in stypes: # Found root
-                stype_def = 'adj-comp-copula-verb-lex & ' # Change for new complement types
+            if '' in stypes:  # Found root
+                stype_def = 'adj-comp-copula-verb-lex & '  # Change for new complement types
             else:
-                stype_names = [cop_id(ch[st]) for st in [_f for _f in stypes if _f]]
+                stype_names = [cop_id(ch[st])
+                               for st in [_f for _f in stypes if _f]]
                 stype_def = " & ".join(stype_names) or ""
-                if stype_def: stype_def += " & "
+                if stype_def:
+                    stype_def += " & "
 
-            features.customize_feature_values(mylang, ch, hierarchies, cop, ctype, 'cop')
+            features.customize_feature_values(
+                mylang, ch, hierarchies, cop, ctype, 'cop')
 
             # Add the lexical types
             mylang.add(ctype + ' := ' + stype_def + '.')
@@ -1130,28 +1172,33 @@ def customize_cops(mylang, ch, lexicon, hierarchies, trigger):
 
                 # TODO: Add copula types to trigger.mtr
 
-def customize_adpositions(mylang, lexicon, ch,hierarchies):
-    #If not constrained as below, prepositions will go as head daughters in head-subject rules
-    mylang.add('decl-head-subj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +nvj ].')
+
+def customize_adpositions(mylang, lexicon, ch, hierarchies):
+    # If not constrained as below, prepositions will go as head daughters in head-subject rules
+    mylang.add(
+        'decl-head-subj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +nvj ].')
     #mylang.add('head-spec-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD noun ].')
     mylang.add(lexbase.ADP_LEX)
     if ch.get('has-aux') == 'yes':
-        mylang.add('norm-adposition-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.HEAD.AUX - ] > ].')
+        mylang.add(
+            'norm-adposition-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.HEAD.AUX - ] > ].')
     supertype = 'norm-adposition-lex'
     for adp in ch.get('normadp'):
         typename = adp.full_key + '-' + supertype
         mylang.add(typename + ' := ' + supertype + '.')
         for stem in adp['stem']:
-            add_stem_to_lexicon(lexicon,stem,typename)
-        features.customize_feature_values(mylang,ch,hierarchies,adp,typename,'normadp')
+            add_stem_to_lexicon(lexicon, stem, typename)
+        features.customize_feature_values(
+            mylang, ch, hierarchies, adp, typename, 'normadp')
         if not feature_type_use.USED_FEATURES['INIT']:
             feature_type_use.USED_FEATURES['INIT'] = True
             mylang.add('head :+ [ INIT bool ].', section='addenda')
         if adp['order'] == 'before':
-            mylang.add(typename + ' := ' + supertype + '& [ SYNSEM.LOCAL.CAT.HEAD.INIT + ].')
+            mylang.add(typename + ' := ' + supertype +
+                       '& [ SYNSEM.LOCAL.CAT.HEAD.INIT + ].')
         else:
-            mylang.add(typename + ' := ' + supertype + '& [ SYNSEM.LOCAL.CAT.HEAD.INIT - ].')
-
+            mylang.add(typename + ' := ' + supertype +
+                       '& [ SYNSEM.LOCAL.CAT.HEAD.INIT - ].')
 
 
 ######################################################################
@@ -1163,7 +1210,7 @@ def customize_lexicon(mylang, ch, lexicon, trigger, hierarchies, rules):
 
     comment = '''Type assigning empty mod list. Added to basic types for nouns, verbs and determiners.'''
     mylang.add('non-mod-lex-item := lex-item & \
-               [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].',comment)
+               [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].', comment)
 
     mylang.set_section('nounlex')
     customize_nouns(mylang, ch, lexicon, hierarchies)
@@ -1174,7 +1221,8 @@ def customize_lexicon(mylang, ch, lexicon, trigger, hierarchies, rules):
     mylang.set_section('otherlex')
     # Need to pick up other POS which inflect for case.
     case_pos = set()
-    to_cfv = case.customize_case_adpositions(mylang, lexicon, trigger, ch, case_pos)
+    to_cfv = case.customize_case_adpositions(
+        mylang, lexicon, trigger, ch, case_pos)
 
     features.process_cfv_list(mylang, ch, hierarchies, to_cfv, tdlfile=lexicon)
 
@@ -1188,43 +1236,52 @@ def customize_lexicon(mylang, ch, lexicon, trigger, hierarchies, rules):
     elif len(case_pos) == 1 and 'adp' in case_pos:
         mylang.add('+np :+ [ CASE case ].', section='addenda')
 
-
     if ch.has_adp_only_infostr():
-        to_cfv = information_structure.customize_infostr_adpositions(mylang, lexicon, trigger, ch)
-        features.process_cfv_list(mylang, ch, hierarchies, to_cfv, tdlfile=lexicon)
+        to_cfv = information_structure.customize_infostr_adpositions(
+            mylang, lexicon, trigger, ch)
+        features.process_cfv_list(
+            mylang, ch, hierarchies, to_cfv, tdlfile=lexicon)
 
     if ch.get('normadp'):
-        customize_adpositions(mylang, lexicon,ch,hierarchies)
+        customize_adpositions(mylang, lexicon, ch, hierarchies)
 
     mylang.set_section('verblex')
     customize_verbs(mylang, ch, lexicon, hierarchies)
 
     if ch.get('has-aux') == 'yes':
         mylang.set_section('auxlex')
-        auxiliaries.customize_auxiliaries(mylang, ch, lexicon, trigger, hierarchies)
+        auxiliaries.customize_auxiliaries(
+            mylang, ch, lexicon, trigger, hierarchies)
 
     mylang.set_section('coplex')
     customize_cops(mylang, ch, lexicon, hierarchies, trigger)
 
     mylang.set_section('otherlex')
     customize_determiners(mylang, ch, lexicon, hierarchies)
-    customize_adverbs(mylang,ch,lexicon)
+    customize_adverbs(mylang, ch, lexicon)
     customize_misc_lex(ch, lexicon, trigger)
 
 # Used by the word order library, for different matrix-subordinate word order
 # E.g. German: verbs in subordinate clauses cluster at the end of the clause.
+
+
 def update_lex_items_vcluster(ch, mylang):
     mylang.add('cat :+ [ VC bool ].', merge=True, section='addenda')
-    mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT.VC - ].', merge=True, section='nounlex')
-    mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.VC + ].', merge=True, section='verblex')
+    mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT.VC - ].',
+               merge=True, section='nounlex')
+    mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.VC + ].',
+               merge=True, section='verblex')
     if 'cms' in ch:
         for cms in ch.get('cms'):
             if cms.get('subordinator-type') == 'adverb':
-                mylang.add('adverb-subord-lex-item := [ SYNSEM.LOCAL.CAT.VC - ].', merge=True, section='subordlex')
+                mylang.add(
+                    'adverb-subord-lex-item := [ SYNSEM.LOCAL.CAT.VC - ].', merge=True, section='subordlex')
             if cms.get('subordinator-type') == 'head':
-                mylang.add('adposition-subord-lex-item := [ SYNSEM.LOCAL.CAT.VC - ].', merge=True, section='subordlex')
+                mylang.add(
+                    'adposition-subord-lex-item := [ SYNSEM.LOCAL.CAT.VC - ].', merge=True, section='subordlex')
     if 'comps' in ch:
-        mylang.add('complementizer-lex-item := [ SYNSEM.LOCAL.CAT.VC - ].', merge=True, section='complex')
+        mylang.add(
+            'complementizer-lex-item := [ SYNSEM.LOCAL.CAT.VC - ].', merge=True, section='complex')
     if 'has-adj' in ch:
-        mylang.add('adj-lex := [ SYNSEM.LOCAL.CAT.VC - ].', merge=True, section='adjlex')
-
+        mylang.add('adj-lex := [ SYNSEM.LOCAL.CAT.VC - ].',
+                   merge=True, section='adjlex')
