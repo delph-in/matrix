@@ -393,7 +393,7 @@ class LexicalRuleType(MorphotacticNode):
         # e.g. to accommodate interrogative morphology where the user just says an affix marks
         # interrogative "mood" but the system must create separate rules to constrain subjects and objects
         # of different kinds of verbs.
-        self.new_names = set()
+        # self.new_names = set() # I really hope I don't need this. To delete (hopefully).
 
     def __repr__(self):
         return 'LexicalRuleType(' + self.key + ')'

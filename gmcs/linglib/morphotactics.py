@@ -709,17 +709,17 @@ def write_rules(pch, mylang, irules, lrules, lextdl, choices):
             # CMC 2017-04-07 moved merged LRT/PCs handling to write_supertypes
             write_supertypes(mylang, lrt.identifier(),
                              lrt.all_supertypes(), lrt.interrogative, lrt)
-            # Now need to clean up the lrt in case the interrogative ones got replaced
-            # with new ones and the user-specified one needs to be deleted:
-            if lrt.new_names:
-                for nn in lrt.new_names:
-                    new_lrt = copy.deepcopy(lrt)
-                    new_lrt.name = nn
-                    new_lrt.new_names = set()
-                    new_identifier = pc.key + '_lrt' + str(len(pc.nodes) + 2) # OZ: this is hardly robust!?
-                    new_lrt.key = new_identifier
-                    pc.nodes[new_identifier] = new_lrt
-                del pc.nodes[lrt.key]
+            # # Now need to clean up the lrt in case the interrogative ones got replaced
+            # # with new ones and the user-specified one needs to be deleted:
+            # if lrt.new_names:
+            #     for nn in lrt.new_names:
+            #         new_lrt = copy.deepcopy(lrt)
+            #         new_lrt.name = nn
+            #         new_lrt.new_names = set()
+            #         new_identifier = pc.key + '_lrt' + str(len(pc.nodes) + 2) # OZ: this is hardly robust!?
+            #         new_lrt.key = new_identifier
+            #         pc.nodes[new_identifier] = new_lrt
+            #     del pc.nodes[lrt.key]
         write_daughter_types(mylang, pc)
 
     # features need to be written later
