@@ -2431,7 +2431,7 @@ extracted-adj-phrase-simple := basic-extracted-adj-phrase &
 	   [ LOCAL local &
 		   [ CAT [ HEAD verb,
 		           WH #wh,
-		           VAL  [ SUBJ < synsem-min >, SPEC < > ],
+		           VAL  [ SPEC < > ],
 			       POSTHEAD #ph,
                    MC #mc ],
                    CONT.HOOK #hook ],
@@ -2481,6 +2481,7 @@ extracted-adj-first-phrase := extracted-adj-phrase-simple &
     HEAD-DTR.SYNSEM canonical-synsem &
 	   [ LOCAL local &
 		   [ CAT [ HEAD #head,
+               VAL.SUBJ cons,
 		           POSTHEAD #ph,
                    MC #mc ],
                    CONT.HOOK #hook,
