@@ -341,3 +341,6 @@ def customize_wh_ques(mylang, ch, rules, roots):
                     mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.MC - ].')
             elif ch.has_diverse_ques_particles():
                 mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.MC - ].')
+
+    # if ch.get(WH_INFL) == ON:
+    #     mylang.add('non-wh-list := list',section='addenda')
