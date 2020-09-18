@@ -2505,6 +2505,7 @@ extracted-adj-last-phrase := extracted-adj-phrase-simple &
     HEAD-DTR.SYNSEM canonical-synsem &
 	   [ LOCAL local &
 		   [ CAT [ HEAD #head,
+               VAL [ SUBJ < >, COMPS < > ],
 		           POSTHEAD #ph,
                    MC #mc ],
                    CONT.HOOK #hook,
