@@ -389,6 +389,11 @@ class LexicalRuleType(MorphotacticNode):
         self.possessive = None
         self.interrogative = None
         self.poss_strat_num = None
+        # OZ 2020-09-17 Sometimes the LRT specified by the user will be replaced by multiple rules,
+        # e.g. to accommodate interrogative morphology where the user just says an affix marks
+        # interrogative "mood" but the system must create separate rules to constrain subjects and objects
+        # of different kinds of verbs.
+        self.new_names = set()
 
     def __repr__(self):
         return 'LexicalRuleType(' + self.key + ')'

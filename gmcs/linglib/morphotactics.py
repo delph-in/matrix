@@ -1,4 +1,5 @@
 from collections import defaultdict
+import copy
 
 from gmcs.linglib import lexicon
 from gmcs.linglib.lexbase import (PositionClass, LexicalRuleType,
@@ -707,8 +708,20 @@ def write_rules(pch, mylang, irules, lrules, lextdl, choices):
             write_interrogative_rules(lrt, mylang, choices, pc)
             # CMC 2017-04-07 moved merged LRT/PCs handling to write_supertypes
             write_supertypes(mylang, lrt.identifier(),
-                             lrt.all_supertypes(), lrt.interrogative)
+                             lrt.all_supertypes(), lrt.interrogative, lrt)
+            # Now need to clean up the lrt in case the interrogative ones got replaced
+            # with new ones and the user-specified one needs to be deleted:
+            if lrt.new_names:
+                for nn in lrt.new_names:
+                    new_lrt = copy.deepcopy(lrt)
+                    new_lrt.name = nn
+                    new_lrt.new_names = set()
+                    new_identifier = pc.key + '_lrt' + str(len(pc.nodes) + 2) # OZ: this is hardly robust!?
+                    new_lrt.key = new_identifier
+                    pc.nodes[new_identifier] = new_lrt
+                del pc.nodes[lrt.key]
         write_daughter_types(mylang, pc)
+
     # features need to be written later
     return [(mn.key, mn.identifier(), mn.key.split('-')[0])
             for mn in list(_mns.values())
@@ -746,12 +759,13 @@ def get_section_from_pc(pc):
             return 'lexrules'
 
 
-def write_supertypes(mylang, identifier, supertypes=None, interrogative=None):
+def write_supertypes(mylang, identifier, supertypes=None, interrogative=None, lrt=None):
     if supertypes is not None and len(supertypes) > 0:
-        if interrogative and not interrogative == 'no':
+        if interrogative and not interrogative in ['no', 'both']:
             if interrogative == 'polar':
                 id1 = 'intran-' + identifier
                 id2 = 'tran-' + identifier
+                lrt.new_names = {id1, id2}
                 supertypes1 = set(supertypes)
                 supertypes2 = set(supertypes)
                 supertypes1.add('intran-polar-lex-rule-super')
