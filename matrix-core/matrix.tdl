@@ -1966,11 +1966,13 @@ basic-head-subj-phrase := binary-nonloc-phrase & head-compositional &
                          VAL [ SPEC #spec,
                                SUBJ < >,
                                COMPS #comps,
-                               SPR #spr ] ] ],
-    HEAD-DTR.SYNSEM.LOCAL.CAT [ WH  #or1,
+                               SPR #spr ] ],
+             MODIFIED #mod ],
+    HEAD-DTR.SYNSEM [ LOCAL.CAT [ WH  #or1,
                                 VAL [ SPEC #spec, SUBJ < #synsem >,
                                     COMPS #comps,
                                     SPR #spr ] ],
+                      MODIFIED #mod ],
     NON-HEAD-DTR.SYNSEM #synsem & canonical-synsem &
            [ LOCAL [ CAT [ WH #or2,
                            VAL [ SUBJ olist,
@@ -2075,13 +2077,15 @@ basic-head-comp-phrase := binary-nonloc-phrase & head-compositional &
                                SPR #spr ],
                          POSTHEAD #ph,
                          HC-LIGHT #light ],
-             LIGHT #light ],
+             LIGHT #light, 
+             MODIFIED #mod ],
     HEAD-DTR.SYNSEM [ LOCAL.CAT [ WH #or1,
                                   VAL [ SUBJ #subj,
                                         SPEC #spec,
                                         SPR #spr ],
                                   HC-LIGHT #light,
-                                  POSTHEAD #ph ]],
+                                  POSTHEAD #ph ], 
+                      MODIFIED #mod ],
     NON-HEAD-DTR.SYNSEM canonical-synsem & [ LOCAL.CAT.WH #or2 ],
     C-CONT [ RELS.LIST < >, HCONS.LIST < >, ICONS.LIST < > ] ].
 
@@ -2487,7 +2491,7 @@ extracted-adj-first-phrase := extracted-adj-phrase-simple &
                    CONT.HOOK #hook,
                    CTXT #ctxt ],
 	     MODIFIED notmod,
-       NON-LOCAL.SLASH #slash ] ].
+       NON-LOCAL.SLASH #slash & [ LIST < > ] ] ].
 
 extracted-adj-last-phrase := extracted-adj-phrase-simple &
   [ SYNSEM [ NON-LOCAL [ SLASH.APPEND < #slash, [ LIST < [ CAT
