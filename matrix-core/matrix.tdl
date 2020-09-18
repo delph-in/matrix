@@ -2509,7 +2509,7 @@ extracted-adj-last-phrase := extracted-adj-phrase-simple &
                    CONT.HOOK #hook,
                    CTXT #ctxt ],
 	     MODIFIED notmod,
-       NON-LOCAL.SLASH #slash ] ].
+       NON-LOCAL.SLASH #slash & [ LIST cons ] ] ].
 
 extracted-adj-only-phrase := extracted-adj-phrase-simple &
   [ SYNSEM [ NON-LOCAL [ SLASH append-list &
