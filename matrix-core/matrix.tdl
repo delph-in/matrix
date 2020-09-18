@@ -949,8 +949,8 @@ null-copy := list-copy & null &
     END-LIST #end ].
 
 
-append-list-with-placeholder := append-list &
-  [ PLACEHOLDER.LIST < [ ] > ].
+;append-list-with-placeholder := append-list &
+;  [ PLACEHOLDER.LIST < [ ] > ].
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2442,9 +2442,31 @@ extracted-adj-phrase-simple := basic-extracted-adj-phrase &
 	     HCONS.LIST < >,
 	     ICONS.LIST < > ] ].
 
-extracted-adj-phrase := extracted-adj-phrase-simple &
-  [ SYNSEM [ NON-LOCAL [ SLASH append-list-with-placeholder &
-	                        [ PLACEHOLDER.LIST < [ CAT
+;extracted-adj-phrase := extracted-adj-phrase-simple &
+;  [ SYNSEM [ NON-LOCAL [ SLASH append-list-with-placeholder &
+;	                        [ PLACEHOLDER.LIST < [ CAT
+;		                                            [ HEAD +rp &
+;		                                                 [ MOD < [ LOCAL intersective-mod &
+;                                                               [ CAT [ HEAD #head,
+;                                                                       POSTHEAD #ph,
+;                                                                       MC #mc ],
+;                                                                  CONT.HOOK #hook,
+;                                                                  CTXT #ctxt ] ] > ],
+;                                                      VAL [ SPEC < >,
+;                                                          SUBJ olist,
+;                                                          COMPS olist,
+;                                                          SPR olist ] ] ] > ] ] ],
+;    HEAD-DTR.SYNSEM canonical-synsem &
+;	   [ LOCAL local &
+;		   [ CAT [ HEAD #head,
+;		           POSTHEAD #ph,
+;                   MC #mc ],
+;                   CONT.HOOK #hook,
+;                   CTXT #ctxt ],
+;	     MODIFIED notmod ] ].
+
+extracted-adj-first-phrase := extracted-adj-phrase-simple &
+  [ SYNSEM [ NON-LOCAL [ SLASH.APPEND < [ LIST < [ CAT
 		                                            [ HEAD +rp &
 		                                                 [ MOD < [ LOCAL intersective-mod &
                                                                [ CAT [ HEAD #head,
@@ -2455,7 +2477,7 @@ extracted-adj-phrase := extracted-adj-phrase-simple &
                                                       VAL [ SPEC < >,
                                                           SUBJ olist,
                                                           COMPS olist,
-                                                          SPR olist ] ] ] > ] ] ],
+                                                          SPR olist ] ] ] > ], #slash > ] ],
     HEAD-DTR.SYNSEM canonical-synsem &
 	   [ LOCAL local &
 		   [ CAT [ HEAD #head,
@@ -2463,7 +2485,31 @@ extracted-adj-phrase := extracted-adj-phrase-simple &
                    MC #mc ],
                    CONT.HOOK #hook,
                    CTXT #ctxt ],
-	     MODIFIED notmod ] ].
+	     MODIFIED notmod,
+       NON-LOCAL.SLASH #slash ] ].
+
+extracted-adj-last-phrase := extracted-adj-phrase-simple &
+  [ SYNSEM [ NON-LOCAL [ SLASH.APPEND < #slash, [ LIST < [ CAT
+		                                            [ HEAD +rp &
+		                                                 [ MOD < [ LOCAL intersective-mod &
+                                                               [ CAT [ HEAD #head,
+                                                                       POSTHEAD #ph,
+                                                                       MC #mc ],
+                                                                  CONT.HOOK #hook,
+                                                                  CTXT #ctxt ] ] > ],
+                                                      VAL [ SPEC < >,
+                                                          SUBJ olist,
+                                                          COMPS olist,
+                                                          SPR olist ] ] ] > ] > ] ],
+    HEAD-DTR.SYNSEM canonical-synsem &
+	   [ LOCAL local &
+		   [ CAT [ HEAD #head,
+		           POSTHEAD #ph,
+                   MC #mc ],
+                   CONT.HOOK #hook,
+                   CTXT #ctxt ],
+	     MODIFIED notmod,
+       NON-LOCAL.SLASH #slash ] ].
 
 extracted-adj-only-phrase := extracted-adj-phrase-simple &
   [ SYNSEM [ NON-LOCAL [ SLASH append-list &
@@ -2490,18 +2536,18 @@ extracted-adj-only-phrase := extracted-adj-phrase-simple &
 	     NON-LOCAL.SLASH.LIST < > ] ].
 
 ; OZ 2020-07-01 This requires that any arguments are extracted prior to the adjunct.
-extracted-adj-last-phrase := extracted-adj-phrase &
-  [ SYNSEM [ NON-LOCAL.SLASH append-list &
-		      [ APPEND < #slash, #placeholder >,
-		      PLACEHOLDER #placeholder ] ],
-    HEAD-DTR.SYNSEM.NON-LOCAL.SLASH #slash & [ LIST cons ] ].
+;extracted-adj-last-phrase := extracted-adj-phrase &
+;  [ SYNSEM [ NON-LOCAL.SLASH append-list &
+;		      [ APPEND < #slash, #placeholder >,
+;		      PLACEHOLDER #placeholder ] ],
+;    HEAD-DTR.SYNSEM.NON-LOCAL.SLASH #slash & [ LIST cons ] ].
 
 ; OZ 2020-07-01 This requires that any arguments are extracted after the adjunct.
-extracted-adj-first-phrase := extracted-adj-phrase &
-  [ SYNSEM [ NON-LOCAL.SLASH append-list &
-		      [ APPEND < #placeholder, #slash >,
-		      PLACEHOLDER #placeholder ] ],
-    HEAD-DTR.SYNSEM.NON-LOCAL.SLASH #slash ].
+;extracted-adj-first-phrase := extracted-adj-phrase &
+;  [ SYNSEM [ NON-LOCAL.SLASH append-list &
+;		      [ APPEND < #placeholder, #slash >,
+;		      PLACEHOLDER #placeholder ] ],
+;    HEAD-DTR.SYNSEM.NON-LOCAL.SLASH #slash ].
 
 
 ; ERB 2004-05-10 Bug fix: non-head daughter's MOD..LIGHT value should
