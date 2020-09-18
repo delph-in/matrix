@@ -1105,14 +1105,14 @@ def customize_information_structure_marker(mylang, ch, rules, irules, lexicon, t
                           FLAGS.TRIGGER "' + modifier + '" ].'
                 trigger.add(grdef)
 
-        else:  # affix or adp
+        # else:  # affix or adp
             # OZ 2020-08-03 Unfinished work.
             # First of all, should probably only add the rule that is needed, not all of them.
             # These two however are all of the lexical rules that currently exist for infostr.
             # More rules need to be added for more cases, as documented in
             # https://github.com/delph-in/matrix/issues/494
-            mylang.add(add_icons_subj_foc_lex_rule, section='lexrules')
-            mylang.add(add_icons_obj_foc_lex_rule, section='lexrules')
+        #    mylang.add(add_icons_subj_foc_lex_rule, section='lexrules')
+        #    mylang.add(add_icons_obj_foc_lex_rule, section='lexrules')
 
 
 def customize_infostr_adpositions(mylang, lexicon, trigger, ch):

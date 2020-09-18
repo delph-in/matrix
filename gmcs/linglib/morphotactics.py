@@ -538,13 +538,13 @@ def set_lexical_rule_supertypes(lrt, mtx_supertypes):
         #  if ('value', 'a') in lrt.features.get('negation',{}).items():
         #    lrt.supertypes.add('cont-change-only-lex-rule')
         # add other special cases here
-        infostr_features = lrt.features.get(
-            'information-structure meaning', {})
-        if len(infostr_features) > 0:
-            if infostr_features['head'] == 'subj' and infostr_features['value'] == 'focus':
-                lrt.supertypes.add('add-icons-subj-foc-lex-rule')
-            elif infostr_features['head'] == 'obj' and infostr_features['value'] == 'focus':
-                lrt.supertypes.add('add-icons-obj-foc-lex-rule')
+        # infostr_features = lrt.features.get(
+        #     'information-structure meaning', {})
+        # if len(infostr_features) > 0:
+        #     if infostr_features['head'] == 'subj' and infostr_features['value'] == 'focus':
+        #         lrt.supertypes.add('add-icons-subj-foc-lex-rule')
+        #     elif infostr_features['head'] == 'obj' and infostr_features['value'] == 'focus':
+        #         lrt.supertypes.add('add-icons-obj-foc-lex-rule')
 
 
 def calculate_supertypes(pch):
