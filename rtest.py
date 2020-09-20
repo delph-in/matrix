@@ -50,6 +50,14 @@ GRAMMARS_DIR.mkdir(exist_ok=True)
 CURRENT_DIR.mkdir(exist_ok=True)
 LOGS_DIR.mkdir(exist_ok=True)
 
+# These are patterns that rtest should ignore when discovering tests
+
+IGNORE_FILES = {
+    'README',
+    'README.md',
+    '.DS_Store',
+}
+
 
 # MULTIPROCESSING PARAMETERS ##################################################
 
@@ -505,7 +513,7 @@ def _list_files(dir):
     """Map basename to path for files in *dir*."""
     paths = {}
     for path in dir.glob('*'):
-        if path.is_file() and path.name not in ('README', 'README.md'):
+        if path.is_file() and path.name not in IGNORE_FILES:
             paths[path.name] = path
     return paths
 
