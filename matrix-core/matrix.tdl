@@ -996,7 +996,7 @@ ocnull := cnull & onull.
 non-wh-list := list.
 
 non-wh-cons := non-wh-list & cons & 
-[ FIRST canonical-synsem & [ NON-LOCAL.QUE.LIST < > ],
+[ FIRST synsem & [ NON-LOCAL.QUE.LIST < > ],
   REST non-wh-list ].
 
 non-wh-null := non-wh-list & null.
@@ -1004,6 +1004,8 @@ non-wh-null := non-wh-list & null.
 non-wh-olist := non-wh-list & olist.
 
 non-wh-onull := non-wh-null & onull.
+
+non-wh-ocons := non-wh-cons & ocons.
 
 ; The LinGO grammar also makes use of a prolist -- or list
 ; of synsems of type pro-ss.
