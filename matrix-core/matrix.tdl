@@ -2279,32 +2279,35 @@ marker-phrase := binary-phrase &
 basic-binary-marker-phrase := marker-phrase &
  [ NON-MARKER-DTR sign & [ SYNSEM.LOCAL.COORD - ] ].
 
+; OZ 2020-09-21 Now that the basic-head-comp phrase appends its 
+; nonlocal features, marker phrases should, too.
+
 basic-marker-comp-phrase := basic-binary-marker-phrase &
   [ SYNSEM phr-synsem-min &
-	   [ LOCAL.CAT [ MC #mc,
-			 VAL [ SUBJ #subj,
-			       SPR #spr,
+     [ LOCAL.CAT [ MC #mc,
+       VAL [ SUBJ #subj,
+             SPR #spr,
                                COMPS #comps ],
-			 POSTHEAD #ph,
-			 HC-LIGHT #light ],
-             NON-LOCAL [ SLASH #slash,
+       POSTHEAD #ph,
+       HC-LIGHT #light ],
+             NON-LOCAL [ SLASH.APPEND < #slash1, #slash2 >,
                          REL #rel,
-                         QUE #que ],
+                         QUE.APPEND < #que1, #que2 > ],
              LIGHT #light ],
     MARKER-DTR.SYNSEM [ LOCAL.CAT [ MC #mc,
                                   VAL [ SUBJ #subj,
                                         SPR #spr,
                                         COMPS < #synsem . #comps > ],
-				  HC-LIGHT #light,
+          HC-LIGHT #light,
                                   POSTHEAD #ph ],
-                      NON-LOCAL [ SLASH #slash,
+                      NON-LOCAL [ SLASH #slash1,
                                   REL #rel,
-                                  QUE #que ] ],
-    NON-MARKER-DTR.SYNSEM canonical-synsem & #synsem,
+                                  QUE #que1 ] ],
+    NON-MARKER-DTR.SYNSEM canonical-synsem & #synsem & 
+    [ NON-LOCAL [ SLASH #slash2, QUE #que2 ] ],
     C-CONT [ RELS.LIST < >,
-	     HCONS.LIST < >,
-	     ICONS.LIST < > ] ].
-
+       HCONS.LIST < >,
+       ICONS.LIST < > ] ].
 
 
 marker-initial-phrase := basic-binary-marker-phrase &
