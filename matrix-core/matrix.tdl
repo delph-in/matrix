@@ -987,11 +987,15 @@ cnull := clist & null.
 
 ocnull := cnull & onull.
 
+; OZ 2020-09-21:
 ; A special list for non-wh-elements, to deal with question morphology.
 ; In languages where questions are marked morphologically,
 ; it can make sense to say that a lexical rule for polar questions
 ; has a QUE.LIST < > subject and a COMPS list which can be either empty
 ; or consist of strictly non-wh (QUE.LIST < >) elements.
+; This helps avoid complications which would otherwise arise
+; for rules which supposed to work with verbs with different argument
+; structures.
 
 non-wh-list := list.
 
