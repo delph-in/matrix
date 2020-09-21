@@ -2126,13 +2126,13 @@ basic-head-comp-nmc-phrase := binary-nonloc-phrase & head-compositional &
                            SPR #spr ],
                      POSTHEAD #ph,
                      HC-LIGHT #light ],
-         LIGHT #light ],
+         LIGHT #light,
+         NON-LOCAL.SLASH [ LIST < #slash > ] ],
     HEAD-DTR.SYNSEM
        [ LOCAL.CAT [ VAL [ SUBJ < [ LOCAL #slash ] >,
                            SPR #spr ],
                      HC-LIGHT #light,
-                     POSTHEAD #ph ],
-         NON-LOCAL.SLASH [ LIST < #slash > ] ],
+                     POSTHEAD #ph ] ],
     NON-HEAD-DTR.SYNSEM canonical-synsem,
     C-CONT [ RELS.LIST < >, HCONS.LIST < >, ICONS.LIST < > ] ].
 
