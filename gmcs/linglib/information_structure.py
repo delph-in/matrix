@@ -505,15 +505,15 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
                 ph_types['head-comp-nmc-phrase'] = head_comp_nmc_phrase.replace(
                     '$', infostr_in_flr)
                 ph_rules['head-comp-nmc-phrase'] = 'head-comp-nmc'
-                tdl = """extracted-subj-phrase := basic-extracted-subj-phrase &
-                 [ C-CONT [ RELS.LIST < >, HCONS.LIST < >, ICONS.LIST < > ],
-                   HEAD-DTR.SYNSEM [ L-PERIPH -,
-                                     LOCAL.CAT.VAL [ SUBJ.FIRST.LOCAL local & 
-                                     [ CONT.HOOK.ICONS-KEY $ ], COMPS < > ],
-                                     NON-LOCAL.SLASH.LIST < > ] ]."""
-                ph_types['extracted-subj-phrase'] = tdl.replace(
-                    '$', infostr_in_flr)
-                ph_rules['extracted-subj-phrase'] = 'extracted-subj'
+                # tdl = """extracted-subj-phrase := basic-extracted-subj-phrase &
+                #  [ C-CONT [ RELS.LIST < >, HCONS.LIST < >, ICONS.LIST < > ],
+                #    HEAD-DTR.SYNSEM [ L-PERIPH -,
+                #                      LOCAL.CAT.VAL [ SUBJ.FIRST.LOCAL local &
+                #                      [ CONT.HOOK.ICONS-KEY $ ], COMPS < > ],
+                #                      NON-LOCAL.SLASH.LIST < > ] ]."""
+                # ph_types['extracted-subj-phrase'] = tdl.replace(
+                #     '$', infostr_in_flr)
+                # ph_rules['extracted-subj-phrase'] = 'extracted-subj'
                 if wo == 'vso':
                     ph_types['head-subj-nmc-phrase'] = head_subj_nmc_phrase.replace(
                         '$', infostr_in_flr)
@@ -574,18 +574,19 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
                 ph_types['head-comp-nmc-phrase'] = head_comp_nmc_phrase.replace(
                     '$', infostr_in_flr)
                 ph_rules['head-comp-nmc-phrase'] = 'head-comp-nmc'
-                #ph_types['comp-head-phrase'] = comp_head_phrase.replace('$', infostr)
-                #ph_rules['comp-head-phrase'] = 'comp-head'
+                ph_types['comp-head-phrase'] = comp_head_phrase.replace(
+                    '$', infostr)
+                ph_rules['comp-head-phrase'] = 'comp-head'
                 ph_types['subj-head-phrase'] = 'subj-head-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < > ].'
-                tdl = """extracted-subj-phrase := basic-extracted-subj-phrase &
-                 [ C-CONT [ RELS.LIST < >, HCONS.LIST < >, ICONS.LIST < > ],
-                   HEAD-DTR.SYNSEM [ R-PERIPH -,
-                                     LOCAL.CAT.VAL [ SUBJ.FIRST.LOCAL local 
-                                     & [ CONT.HOOK.ICONS-KEY $ ], COMPS < > ],
-                                     NON-LOCAL.SLASH.LIST < > ] ]."""
-                ph_types['extracted-subj-phrase'] = tdl.replace(
-                    '$', infostr_in_flr)
-                ph_rules['extracted-subj-phrase'] = 'extracted-subj'
+                # tdl = """extracted-subj-phrase := basic-extracted-subj-phrase &
+                #  [ C-CONT [ RELS.LIST < >, HCONS.LIST < >, ICONS.LIST < > ],
+                #    HEAD-DTR.SYNSEM [ R-PERIPH -,
+                #                      LOCAL.CAT.VAL [ SUBJ.FIRST.LOCAL local
+                #                      & [ CONT.HOOK.ICONS-KEY $ ], COMPS < > ],
+                #                      NON-LOCAL.SLASH.LIST < > ] ]."""
+                # ph_types['extracted-subj-phrase'] = tdl.replace(
+                #     '$', infostr_in_flr)
+                # ph_rules['extracted-subj-phrase'] = 'extracted-subj'
             elif wo == 'vso':
                 ph_types['basic-head-1st-comp-phrase'] = 'basic-head-1st-comp-phrase :+ [ HEAD-DTR.SYNSEM.R-PERIPH - ].'
                 # tdl = """subj-head-phrase := decl-head-subj-phrase & head-final & narrow-focus &
