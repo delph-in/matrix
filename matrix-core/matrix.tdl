@@ -2000,7 +2000,7 @@ imp-head-subj-phrase := basic-head-subj-phrase & imperative-clause.
 ; however then some of the gold parses are lost. Maybe they aren't 
 ; actually gold? Someone who understands this better should check.
 
-basic-head-subj-nmc-phrase := declarative-clause &
+basic-head-subj-nmc-phrase := declarative-clause & basic-binary-headed-phrase &
   [ SYNSEM phr-synsem &
            [ LOCAL.CAT [ MC -,
                          HC-LIGHT -,
