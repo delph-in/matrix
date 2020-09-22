@@ -161,9 +161,9 @@ head-subj-phrase := decl-head-subj-phrase & head-initial & narrow-focus &
 head_comp_nmc_phrase = """
 head-comp-nmc-phrase := basic-head-comp-nmc-phrase & head-initial & 
   [ SYNSEM [ R-PERIPH -
-             LOCAL.CAT.VAL.COMPS #comps ],
-    HEAD-DTR.SYNSEM [ LOCAL.CAT.VAL.COMPS < #synsem . #comps >,
-		      NON-LOCAL.SLASH [ LIST < [ CONT.HOOK.ICONS-KEY $ ] > ] ], 
+             LOCAL.CAT.VAL.COMPS #comps,
+		     NON-LOCAL.SLASH [ LIST < [ CONT.HOOK.ICONS-KEY $ ] > ] ],
+    HEAD-DTR.SYNSEM [ LOCAL.CAT.VAL.COMPS < #synsem . #comps > ], 
     NON-HEAD-DTR.SYNSEM #synsem ].
 """
 
