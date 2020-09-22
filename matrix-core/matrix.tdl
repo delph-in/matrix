@@ -1994,19 +1994,24 @@ imp-head-subj-phrase := basic-head-subj-phrase & imperative-clause.
 ; SSH 2013-04-08 non-canonical and non-matrix clausal head-subj-phrase
 ; This type cannot be a root node by itself ([MC -]).
 ; This typed phrase is supposed to be combined with a filler-phrase.
-basic-head-subj-nmc-phrase := binary-nonloc-phrase &
-                              declarative-clause &
+; OZ 2020-09-22 This can no longer inherit from head-valence phrase,
+; because that is for lexical threading. Without lexical threading,
+; I would think this should inherit from binary-nonloc-phrase,
+; however then some of the gold parses are lost. Maybe they aren't 
+; actually gold? Someone who understands this better should check.
+
+basic-head-subj-nmc-phrase := declarative-clause &
   [ SYNSEM phr-synsem &
            [ LOCAL.CAT [ MC -,
                          HC-LIGHT -,
                          VAL [ SUBJ < >,
                                COMPS < >,
-                       SPR #spr ] ] ],
+                       SPR #spr ] ],
+             NON-LOCAL.SLASH [ LIST < #slash > ] ],
     HEAD-DTR.SYNSEM
        [ LOCAL.CAT.VAL [ SUBJ < #synsem >,
                          COMPS < [ LOCAL #slash ] >,
-                         SPR #spr ],
-         NON-LOCAL.SLASH [ LIST < #slash > ] ],
+                         SPR #spr ] ],
     NON-HEAD-DTR.SYNSEM #synsem & canonical-synsem &
        [ LOCAL [ CAT [ VAL [ SUBJ olist,
                              COMPS olist,
@@ -2118,7 +2123,13 @@ basic-head-2nd-comp-phrase := basic-head-comp-phrase &
 ; SSH 2013-04-08 non-canonical and non-matrix clausal head-comp-phrase
 ; This type cannot be a root node by itself ([MC -]).
 ; This typed phrase is supposed to be combined with a filler-phrase.
-basic-head-comp-nmc-phrase := binary-nonloc-phrase & head-compositional &
+; OZ 2020-09-22 This can no longer inherit from head-valence phrase,
+; because that is for lexical threading. Without lexical threading,
+; I would think this should inherit from binary-nonloc-phrase,
+; however then some of the gold parses are lost. Maybe they aren't 
+; actually gold? Someone who understands this better should check.
+
+basic-head-comp-nmc-phrase := head-compositional &
                               binary-headed-phrase &
   [ SYNSEM phr-synsem &
        [ LOCAL.CAT [ MC -,
