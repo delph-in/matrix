@@ -124,13 +124,13 @@ narrow-focused-phrase := head-only &
 
 subj_head_nmc_phrase = """
 subj-head-nmc-phrase := basic-head-subj-nmc-phrase & head-final & 
- [ SYNSEM.LOCAL.CAT.MC -,
-   HEAD-DTR.SYNSEM.NON-LOCAL.SLASH [ LIST < [ CONT.HOOK.ICONS-KEY $ ] > ] ].
+ [ SYNSEM [ LOCAL.CAT.MC -, 
+            NON-LOCAL.SLASH [ LIST < [ CONT.HOOK.ICONS-KEY $ ] > ] ] ].
 """
 head_subj_nmc_phrase = """
 head-subj-nmc-phrase := basic-head-subj-nmc-phrase & head-initial &
- [ SYNSEM.LOCAL.CAT.MC -,
-   HEAD-DTR.SYNSEM.NON-LOCAL.SLASH [ LIST < [ CONT.HOOK.ICONS-KEY $ ] > ] ].
+ [ SYNSEM [ LOCAL.CAT.MC -, 
+            NON-LOCAL.SLASH [ LIST < [ CONT.HOOK.ICONS-KEY $ ] > ] ] ].
 """
 
 head_subj_phrase_initial = """
