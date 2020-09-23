@@ -2129,7 +2129,7 @@ basic-head-2nd-comp-phrase := basic-head-comp-phrase &
 ; however then some of the gold parses are lost. Maybe they aren't 
 ; actually gold? Someone who understands this better should check.
 
-basic-head-comp-nmc-phrase := head-compositional &
+basic-head-comp-nmc-phrase := binary-nonloc-phrase & head-compositional &
                               binary-headed-phrase &
   [ SYNSEM phr-synsem &
        [ LOCAL.CAT [ MC -,
