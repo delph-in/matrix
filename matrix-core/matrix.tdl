@@ -2952,19 +2952,23 @@ basic-two-arg := lex-item &
     SYNSEM.NON-LOCAL non-local-none ].
 
 
-basic-three-arg := lex-item &
-  [ ARG-ST < [ NON-LOCAL [ SLASH #s3,
-                           REL #r3,
-                           QUE #q3 ] ],
-             [ NON-LOCAL [ SLASH #s1,
-                           REL #r1,
-                           QUE #q1 ] ],
-             [ NON-LOCAL [ SLASH #s2,
-                           REL #r2,
-                           QUE #q2 ] ] >,
-    SYNSEM.NON-LOCAL [ SLASH.APPEND < #s1, #s2, #s3 >,
-                       REL.APPEND < #r1, #r2, #r3 >,
-                       QUE.APPEND < #q1, #q2, #q3 > ] ].
+basic-three-arg := lex-item & 
+  [ ARG-ST < [ ], [ ], [ ] >,
+    SYNSEM.NON-LOCAL non-local-none ].
+
+;basic-three-arg := lex-item &
+;  [ ARG-ST < [ NON-LOCAL [ SLASH #s3,
+;                           REL #r3,
+;                           QUE #q3 ] ],
+;             [ NON-LOCAL [ SLASH #s1,
+;                           REL #r1,
+;                           QUE #q1 ] ],
+;             [ NON-LOCAL [ SLASH #s2,
+;                           REL #r2,
+;                           QUE #q2 ] ] >,
+;    SYNSEM.NON-LOCAL [ SLASH.APPEND < #s1, #s2, #s3 >,
+;                       REL.APPEND < #r1, #r2, #r3 >,
+;                       QUE.APPEND < #q1, #q2, #q3 > ] ].
 
 ; ERB 2007-01-22  In the message-free universe, many more qeqs are
 ; introduced by lexical items (basically any head that selects a clausal
