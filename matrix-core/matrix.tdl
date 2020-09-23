@@ -1660,6 +1660,13 @@ binary-nonloc-phrase := basic-binary-headed-phrase &
   NON-HEAD-DTR.SYNSEM.NON-LOCAL [ SLASH #slash2,
                                   QUE #que2 ] ].
 
+binary-nonloc-slash := basic-binary-headed-phrase &
+[ SYNSEM.NON-LOCAL [ QUE.APPEND < #que1, #que2 >,
+                     REL #rel ],
+  HEAD-DTR.SYNSEM.NON-LOCAL [ QUE #que1,
+                              REL #rel ],
+  NON-HEAD-DTR.SYNSEM.NON-LOCAL [ QUE #que2 ] ].                                  
+
 ; ERB (2007-02-13) Adding these for handling constructions where a marker
 ; shows up simultaneously on both ends of the phrase, such as negation
 ; in Hausa and question marking in ASL.  (For the latter case, what's
@@ -2000,7 +2007,8 @@ imp-head-subj-phrase := basic-head-subj-phrase & imperative-clause.
 ; however then some of the gold parses are lost. Maybe they aren't 
 ; actually gold? Someone who understands this better should check.
 
-basic-head-subj-nmc-phrase := declarative-clause & binary-nonloc-phrase &
+basic-head-subj-nmc-phrase := declarative-clause & binary-nonloc-slash &
+                              binary-headed-phrase &
   [ SYNSEM phr-synsem &
            [ LOCAL.CAT [ MC -,
                          HC-LIGHT -,
@@ -2138,7 +2146,7 @@ basic-head-comp-nmc-phrase := binary-nonloc-phrase & head-compositional &
                      POSTHEAD #ph,
                      HC-LIGHT #light ],
          LIGHT #light,
-         NON-LOCAL.SLASH [ LIST < #slash > ] ],
+         NON-LOCAL.SLASH.LIST < #slash > ],
     HEAD-DTR.SYNSEM
        [ LOCAL.CAT [ VAL [ SUBJ < [ LOCAL #slash ] >,
                            SPR #spr ],
