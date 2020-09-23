@@ -571,9 +571,9 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
             elif wo == 'svo':
                 ph_types['basic-head-1st-comp-phrase'] = 'basic-head-1st-comp-phrase :+ [ HEAD-DTR.SYNSEM.R-PERIPH - ].'
                 ph_types['head-comp-phrase'] = 'head-comp-phrase := [ SYNSEM.NON-LOCAL.SLASH.LIST < >, HEAD-DTR.SYNSEM.R-PERIPH - ].'
-                # ph_types['head-comp-nmc-phrase'] = head_comp_nmc_phrase.replace(
-                #    '$', infostr_in_flr)
-                #ph_rules['head-comp-nmc-phrase'] = 'head-comp-nmc'
+                ph_types['head-comp-nmc-phrase'] = head_comp_nmc_phrase.replace(
+                    '$', infostr_in_flr)
+                ph_rules['head-comp-nmc-phrase'] = 'head-comp-nmc'
                 ph_types['comp-head-phrase'] = comp_head_phrase.replace(
                     '$', infostr)
                 ph_rules['comp-head-phrase'] = 'comp-head'
