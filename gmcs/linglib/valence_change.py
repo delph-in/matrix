@@ -222,22 +222,28 @@ def added_arg_non_local_lex_rule(added_arg, total_args):
         # added subject; existing rules should apply
         rule = rulename + ' := same-non-local-lex-rule.'
     else:
-        compslist = []
-        for i in range(2, total_args+1):
-            if i == added_arg:
-                compslist.append(NEW_NON_LOCAL_FRAGMENT)
-            else:
-                compslist.append('[ ]')
-        rulevars['rulename'] = rulename
-        rulevars['comps'] = ', '.join(compslist)
-        rule = '''{rulename} := lex-rule &
-  [ SYNSEM [ LOCAL.CAT.VAL.COMPS < {comps} >,
-             NON-LOCAL [ SLASH.APPEND < #s1, #s2 >,
-		         REL.APPEND < #r1, #r2 >,
-		         QUE.APPEND < #q1, #q2 > ] ],
-    DTR.SYNSEM.NON-LOCAL [ SLASH #s1,
-			   REL #r1,
-			   QUE #q1 ] ].'''.format(**rulevars)
+        # OZ 2020-09-23 The below commented out code
+        # is needed with lexical threading.
+        # Without lexical threading, I *it looks like* stuff is getting
+        # properly appened by the basic head-complement rule.
+
+        rule = rulename + ' := lex-rule.'
+#         compslist = []
+#         for i in range(2, total_args+1):
+#             if i == added_arg:
+#                 compslist.append(NEW_NON_LOCAL_FRAGMENT)
+#             else:
+#                 compslist.append('[ ]')
+#         rulevars['rulename'] = rulename
+#         rulevars['comps'] = ', '.join(compslist)
+#         rule = '''{rulename} := lex-rule &
+#   [ SYNSEM [ LOCAL.CAT.VAL.COMPS < {comps} >,
+#              NON-LOCAL [ SLASH.APPEND < #s1, #s2 >,
+# 		         REL.APPEND < #r1, #r2 >,
+# 		         QUE.APPEND < #q1, #q2 > ] ],
+#     DTR.SYNSEM.NON-LOCAL [ SLASH #s1,
+# 			   REL #r1,
+# 			   QUE #q1 ] ].'''.format(**rulevars)
     return rule
 
 
