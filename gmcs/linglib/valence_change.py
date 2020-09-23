@@ -224,8 +224,8 @@ def added_arg_non_local_lex_rule(added_arg, total_args):
     else:
         # OZ 2020-09-23 The below commented out code
         # is needed with lexical threading.
-        # Without lexical threading, I *it looks like* stuff is getting
-        # properly appened by the basic head-complement rule.
+        # Without lexical threading, *it looks like* stuff is getting
+        # properly appended by the basic head-complement rule.
 
         rule = rulename + ' := lex-rule.'
 #         compslist = []
