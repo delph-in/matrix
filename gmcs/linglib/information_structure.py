@@ -104,19 +104,17 @@ g_types = ['basic-head-1st-comp-phrase',
            '']
 
 narrow_focused_phrase = """
-narrow-focused-phrase := head-only & 
+narrow-focused-phrase := head-only & unary-nonloc-phrase & 
   [ C-CONT [ HOOK #hook,
              RELS.LIST < >,
              HCONS.LIST < >,
              ICONS.LIST < focus-or-topic & #icons &
                       [ IARG2 #target ] > ],
     SYNSEM [ LIGHT -,
-             INFOSTR-FLAG +,
              LOCAL [ CAT.VAL [ SPR < >, SUBJ < >, COMPS < >, SPEC < > ],
 		     CONT.HOOK [ INDEX #target,
                                  ICONS-KEY #icons ] ] ],
     HEAD-DTR.SYNSEM [ LIGHT -,
-                      INFOSTR-FLAG -,
                       LOCAL [ CAT.HEAD noun,
                               CONT [ HOOK #hook,
                                      ICONS.LIST < > ] ] ] ].
@@ -569,11 +567,11 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
                     '$', infostr_in_flr)
                 ph_rules['extracted-subj-phrase'] = 'extracted-subj'
             elif wo == 'svo':
-                ph_types['basic-head-1st-comp-phrase'] = 'basic-head-1st-comp-phrase :+ [ HEAD-DTR.SYNSEM.R-PERIPH - ].'
-                ph_types['head-comp-phrase'] = 'head-comp-phrase := [ SYNSEM.NON-LOCAL.SLASH.LIST < >, HEAD-DTR.SYNSEM.R-PERIPH - ].'
-                ph_types['head-comp-nmc-phrase'] = head_comp_nmc_phrase.replace(
-                    '$', infostr_in_flr)
-                ph_rules['head-comp-nmc-phrase'] = 'head-comp-nmc'
+                #ph_types['basic-head-1st-comp-phrase'] = 'basic-head-1st-comp-phrase :+ [ HEAD-DTR.SYNSEM.R-PERIPH - ].'
+                #ph_types['head-comp-phrase'] = 'head-comp-phrase := [ SYNSEM.NON-LOCAL.SLASH.LIST < >, HEAD-DTR.SYNSEM.R-PERIPH - ].'
+                # ph_types['head-comp-nmc-phrase'] = head_comp_nmc_phrase.replace(
+                #    '$', infostr_in_flr)
+                #ph_rules['head-comp-nmc-phrase'] = 'head-comp-nmc'
                 # ph_types['comp-head-phrase'] = comp_head_phrase.replace(
                 #     '$', infostr)
                 # ph_rules['comp-head-phrase'] = 'comp-head'
