@@ -1111,8 +1111,10 @@ def customize_information_structure_marker(mylang, ch, rules, irules, lexicon, t
             # These two however are all of the lexical rules that currently exist for infostr.
             # More rules need to be added for more cases, as documented in
             # https://github.com/delph-in/matrix/issues/494
-            mylang.add(add_icons_subj_foc_lex_rule, section='lexrules')
-            mylang.add(add_icons_obj_foc_lex_rule, section='lexrules')
+            # OZ 2020-09-24 This no longer works without lexical threading.
+            #mylang.add(add_icons_subj_foc_lex_rule, section='lexrules')
+            #mylang.add(add_icons_obj_foc_lex_rule, section='lexrules')
+            pass
 
 
 def customize_infostr_adpositions(mylang, lexicon, trigger, ch):
