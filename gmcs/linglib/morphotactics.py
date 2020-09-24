@@ -711,7 +711,7 @@ def write_rules(pch, mylang, irules, lrules, lextdl, choices):
             write_interrogative_rules(lrt, mylang)
             # CMC 2017-04-07 moved merged LRT/PCs handling to write_supertypes
             write_supertypes(mylang, lrt.identifier(),
-                             lrt.all_supertypes(), lrt.interrogative, lrt)
+                             lrt.all_supertypes(), lrt.interrogative)
         write_daughter_types(mylang, pc)
     # features need to be written later
     return [(mn.key, mn.identifier(), mn.key.split('-')[0])
@@ -750,25 +750,37 @@ def get_section_from_pc(pc):
             return 'lexrules'
 
 
-def write_supertypes(mylang, identifier, supertypes=None, interrogative=None, lrt=None):
+def write_supertypes(mylang, identifier, supertypes=None, interrogative=None):
     if supertypes is not None and len(supertypes) > 0:
         if interrogative == 'wh':
-            id_subj = 'subj-' + identifier
-            id_obj = 'obj-' + identifier
-            subj_supertypes = set(supertypes)
-            subj_supertypes.add('wh-subj-lex-rule')
-            obj_supertypes = set(supertypes)
-            obj_supertypes.add('wh-obj-lex-rule')
-            mylang.add_literal(
-                ''';;; The following two type names were created automatically instead of one user-specified type ''' + identifier)
-            mylang.add('''%(id)s := %(sts)s.''' %
-                       {'id': id_subj, 'sts': ' & '.join(sorted([st for st in subj_supertypes if st != identifier]))})
-            mylang.add('''%(id)s := %(sts)s.''' %
-                       {'id': id_obj, 'sts': ' & '.join(sorted([st for st in obj_supertypes if st != identifier]))})
+            add_wh_supertypes(identifier, supertypes, mylang)
         else:
             # CMC 2017-04-07 Handling for merged LRT/PCs: omit (same) identifier from list of supertypes written
             mylang.add('''%(id)s := %(sts)s.''' %
                        {'id': identifier, 'sts': ' & '.join(sorted([st for st in supertypes if st != identifier]))})
+
+
+'''OZ 2020-09-24 I really doubt this will work properly long term?..
+If there are other position classes depending on the user-specified one,
+is there a chance that this would work? But it works with
+the existing tests, and I could not figure out what else to do here.
+Perhaps separate morphology for wh and polar questions is rare, anyway.
+Level of confusion while making these changes: 9/10'''
+
+
+def add_wh_supertypes(identifier, supertypes, mylang):
+    id_subj = 'subj-' + identifier
+    id_obj = 'obj-' + identifier
+    subj_supertypes = set(supertypes)
+    subj_supertypes.add('wh-subj-lex-rule')
+    obj_supertypes = set(supertypes)
+    obj_supertypes.add('wh-obj-lex-rule')
+    mylang.add_literal(
+        ''';;; The following two type names were created automatically instead of one user-specified type ''' + identifier)
+    mylang.add('''%(id)s := %(sts)s.''' %
+               {'id': id_subj, 'sts': ' & '.join(sorted([st for st in subj_supertypes if st != identifier]))})
+    mylang.add('''%(id)s := %(sts)s.''' %
+               {'id': id_obj, 'sts': ' & '.join(sorted([st for st in obj_supertypes if st != identifier]))})
 
 
 def write_daughter_types(mylang, pc):
