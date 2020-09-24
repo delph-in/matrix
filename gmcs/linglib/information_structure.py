@@ -502,9 +502,9 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
             elif wo in ['vso', 'vos']:
                 ph_types['head-comp-phrase'] = 'head-comp-phrase := [ SYNSEM.LOCAL.CAT.HC-LIGHT - ].'
                 ph_types['head-subj-phrase'] = 'head-subj-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC - ].'
-                # ph_types['head-comp-nmc-phrase'] = head_comp_nmc_phrase.replace(
-                #    '$', infostr_in_flr)
-                #ph_rules['head-comp-nmc-phrase'] = 'head-comp-nmc'
+                ph_types['head-comp-nmc-phrase'] = head_comp_nmc_phrase.replace(
+                    '$', infostr_in_flr)
+                ph_rules['head-comp-nmc-phrase'] = 'head-comp-nmc'
                 tdl = """extracted-subj-phrase := basic-extracted-subj-phrase &
                  [ C-CONT [ RELS.LIST < >, HCONS.LIST < >, ICONS.LIST < > ],
                    HEAD-DTR.SYNSEM [ L-PERIPH -,
