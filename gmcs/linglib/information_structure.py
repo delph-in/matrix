@@ -446,13 +446,15 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
     wo = ch.get('word-order')
     pos = ch.get(infostr_type)
 
-    if pos in ['preverbal', 'postverbal'] or wo == 'v2':
+    if pos == 'preverbal' or pos == 'postverbal' or wo == 'v2':
+        print(pos)
         mylang.add_literal(
             'lex-or-phrase-synsem :+ [ INFOSTR-FLAG luk ].', '', section='addenda')
         mylang.add_literal(
             'decl-head-subj-phrase :+ [ SYNSEM.INFOSTR-FLAG -, NON-HEAD-DTR.SYNSEM.INFOSTR-FLAG - ].', '', section='addenda')
-        # mylang.add_literal(
-        #    'basic-head-1st-comp-phrase :+ [ SYNSEM.INFOSTR-FLAG -, NON-HEAD-DTR.SYNSEM.INFOSTR-FLAG - ].', '', section='addenda')
+        if not infostr_type == 'c-focus-pos':
+            mylang.add_literal(
+                'basic-head-1st-comp-phrase :+ [ SYNSEM.INFOSTR-FLAG -, NON-HEAD-DTR.SYNSEM.INFOSTR-FLAG - ].', '', section='addenda')
         mylang.add_literal(
             'basic-head-2nd-comp-phrase :+ [ SYNSEM.INFOSTR-FLAG -, NON-HEAD-DTR.SYNSEM.INFOSTR-FLAG - ].', '', section='addenda')
         mylang.add_literal(
@@ -550,11 +552,11 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
 
         elif pos == 'clause-final':
             if wo == 'sov':
-                ph_types['basic-head-1st-comp-phrase'] = 'basic-head-1st-comp-phrase :+ [ HEAD-DTR.SYNSEM.R-PERIPH - ].'
-                ph_types['comp-head-phrase'] = 'comp-head-phrase := [ SYNSEM [ LOCAL.CAT.HC-LIGHT -, NON-LOCAL.SLASH.LIST < > ] ].'
-                ph_types['comp-head-nmc-phrase'] = comp_head_nmc_phrase.replace(
-                    '$', infostr_in_flr)
-                ph_rules['comp-head-nmc-phrase'] = 'comp-head-nmc'
+                #ph_types['basic-head-1st-comp-phrase'] = 'basic-head-1st-comp-phrase :+ [ HEAD-DTR.SYNSEM.R-PERIPH - ].'
+                #ph_types['comp-head-phrase'] = 'comp-head-phrase := [ SYNSEM [ LOCAL.CAT.HC-LIGHT -, NON-LOCAL.SLASH.LIST < > ] ].'
+                # ph_types['comp-head-nmc-phrase'] = comp_head_nmc_phrase.replace(
+                #    '$', infostr_in_flr)
+                #ph_rules['comp-head-nmc-phrase'] = 'comp-head-nmc'
                 ph_types['subj-head-nmc-phrase'] = subj_head_nmc_phrase.replace(
                     '$', infostr_in_flr)
                 ph_rules['subj-head-nmc-phrase'] = 'subj-head-nmc'
