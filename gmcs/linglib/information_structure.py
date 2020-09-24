@@ -446,12 +446,13 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
     wo = ch.get('word-order')
     pos = ch.get(infostr_type)
 
-    if pos == 'preverbal' or pos == 'postverbal' or wo == 'v2':
-        print(pos)
+    if pos in ['preverbal', 'postverbal'] or wo == 'v2':
         mylang.add_literal(
             'lex-or-phrase-synsem :+ [ INFOSTR-FLAG luk ].', '', section='addenda')
         mylang.add_literal(
             'decl-head-subj-phrase :+ [ SYNSEM.INFOSTR-FLAG -, NON-HEAD-DTR.SYNSEM.INFOSTR-FLAG - ].', '', section='addenda')
+        # OZ 2020-09-24: The below condition is to support the same tests without lexical threading.
+        # I do not actually understand it or have reasons to think it is a good change.
         if not infostr_type == 'c-focus-pos':
             mylang.add_literal(
                 'basic-head-1st-comp-phrase :+ [ SYNSEM.INFOSTR-FLAG -, NON-HEAD-DTR.SYNSEM.INFOSTR-FLAG - ].', '', section='addenda')
