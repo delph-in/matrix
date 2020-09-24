@@ -752,35 +752,9 @@ def get_section_from_pc(pc):
 
 def write_supertypes(mylang, identifier, supertypes=None, interrogative=None):
     if supertypes is not None and len(supertypes) > 0:
-        if interrogative == 'wh':
-            add_wh_supertypes(identifier, supertypes, mylang)
-        else:
-            # CMC 2017-04-07 Handling for merged LRT/PCs: omit (same) identifier from list of supertypes written
-            mylang.add('''%(id)s := %(sts)s.''' %
-                       {'id': identifier, 'sts': ' & '.join(sorted([st for st in supertypes if st != identifier]))})
-
-
-'''OZ 2020-09-24 I really doubt this will work properly long term?..
-If there are other position classes depending on the user-specified one,
-is there a chance that this would work? But it works with
-the existing tests, and I could not figure out what else to do here.
-Perhaps separate morphology for wh and polar questions is rare, anyway.
-Level of confusion while making these changes: 9/10'''
-
-
-def add_wh_supertypes(identifier, supertypes, mylang):
-    id_subj = 'subj-' + identifier
-    id_obj = 'obj-' + identifier
-    subj_supertypes = set(supertypes)
-    subj_supertypes.add('wh-subj-lex-rule')
-    obj_supertypes = set(supertypes)
-    obj_supertypes.add('wh-obj-lex-rule')
-    mylang.add_literal(
-        ''';;; The following two type names were created automatically instead of one user-specified type ''' + identifier)
-    mylang.add('''%(id)s := %(sts)s.''' %
-               {'id': id_subj, 'sts': ' & '.join(sorted([st for st in subj_supertypes if st != identifier]))})
-    mylang.add('''%(id)s := %(sts)s.''' %
-               {'id': id_obj, 'sts': ' & '.join(sorted([st for st in obj_supertypes if st != identifier]))})
+        # CMC 2017-04-07 Handling for merged LRT/PCs: omit (same) identifier from list of supertypes written
+        mylang.add('''%(id)s := %(sts)s.''' %
+                   {'id': identifier, 'sts': ' & '.join(sorted([st for st in supertypes if st != identifier]))})
 
 
 def write_daughter_types(mylang, pc):
@@ -907,16 +881,10 @@ def write_i_or_l_rules(irules, lrules, lrt, order):
             else:
                 pred = ''
                 section = "regular"
-            if lrt.interrogative and lrt.interrogative == 'wh':
-                rule_obj, rule_subj = build_ques_lex_rules(
-                    lrt, order, num, i, lri, pred, 'subj-', 'obj-')
-                irules.add_literal(rule_obj, section=section)
-                irules.add_literal(rule_subj, section=section)
-            else:
-                rule = '\n'.join(['-'.join([lrt.name, order + str(num[i])]) + ' :=',
-                                  r'%' + order + ' (* ' + lri.name + ')',
-                                  lrt.identifier() + pred]) + '.'
-                irules.add_literal(rule, section=section)
+            rule = '\n'.join(['-'.join([lrt.name, order + str(num[i])]) + ' :=',
+                              r'%' + order + ' (* ' + lri.name + ')',
+                              lrt.identifier() + pred]) + '.'
+            irules.add_literal(rule, section=section)
     else:
         lrt_id = lrt.identifier()
         lrules.add(lrt_id.rsplit('-rule', 1)[0] + ' := ' + lrt_id + '.')
@@ -1104,11 +1072,6 @@ def write_interrogative_rules(lrt, mylang):
     [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques ].'''
     PROP_LEX_RULE = '''prop-lex-rule := add-only-no-ccont-rule & 
     [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF prop ].'''
-    WH_SUBJ_LEX_RULE = '''wh-subj-lex-rule := itrg-lex-rule &
-                [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ NON-LOCAL.QUE.LIST cons ] > ].'''
-    WH_OBJ_LEX_RULE = '''wh-obj-lex-rule := itrg-lex-rule &
-                [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < [ NON-LOCAL.QUE.LIST < > ] >,
-                COMPS < [ NON-LOCAL.QUE.LIST cons ] > ] ].'''
     POLAR_LEX_RULE = '''polar-lex-rule := itrg-lex-rule & 
     [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < [ NON-LOCAL.QUE.LIST < > ] >, COMPS non-wh-list ] ].'''
     mylang.set_section('lexrules')
@@ -1119,27 +1082,11 @@ def write_interrogative_rules(lrt, mylang):
         if lrt.interrogative == 'polar':
             mylang.add(POLAR_LEX_RULE)
             lrt.supertypes.add('polar-lex-rule')
-        elif lrt.interrogative == 'wh':
-            mylang.add(WH_SUBJ_LEX_RULE)
-            mylang.add(WH_OBJ_LEX_RULE)
         elif lrt.interrogative == 'no':
             lrt.supertypes.add('prop-lex-rule')
         elif lrt.interrogative == 'both':
             lrt.supertypes.add('itrg-lex-rule')
 
-
-def build_ques_lex_rules(lrt, order, num, i, lri, pred, pref1, pref2):
-    lrt_subj_name = pref1 + lrt.name + '-' + lrt.identifier_suffix
-    lrt_obj_name = pref2 + lrt.name + '-' + lrt.identifier_suffix
-    rule_subj = '\n'.join(['-'.join([lrt_subj_name, order + str(num[i])]) + ' :=',
-                           r'%' + order +
-                           ' (* ' + lri.name + ')',
-                           lrt_subj_name + pred]) + '.'
-    rule_obj = '\n'.join(['-'.join([lrt_obj_name, order + str(num[i])]) + ' :=',
-                          r'%' + order +
-                          ' (* ' + lri.name + ')',
-                          lrt_obj_name + pred]) + '.'
-    return rule_obj, rule_subj
 
 ##################
 ### VALIDATION ###
@@ -1251,7 +1198,7 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
         # TJT 2014-08-22: check head for adjectives and incorporated stems
         if lrt.full_key.startswith('verb-pc') or \
                 lrt.full_key.startswith('adj-pc') or \
-        'is-lrt' in lrt.full_key:
+            'is-lrt' in lrt.full_key:
             if 'head' not in feat:
                 vr.err(feat.full_key + '_head',
                        'You must choose where the feature is specified.')
