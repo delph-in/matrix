@@ -111,10 +111,12 @@ narrow-focused-phrase := head-only & unary-nonloc-phrase &
              ICONS.LIST < focus-or-topic & #icons &
                       [ IARG2 #target ] > ],
     SYNSEM [ LIGHT -,
+             INFOSTR-FLAG +,
              LOCAL [ CAT.VAL [ SPR < >, SUBJ < >, COMPS < >, SPEC < > ],
 		     CONT.HOOK [ INDEX #target,
                                  ICONS-KEY #icons ] ] ],
     HEAD-DTR.SYNSEM [ LIGHT -,
+                      INFOSTR-FLAG -,
                       LOCAL [ CAT.HEAD noun,
                               CONT [ HOOK #hook,
                                      ICONS.LIST < > ] ] ] ].
@@ -449,8 +451,8 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
             'lex-or-phrase-synsem :+ [ INFOSTR-FLAG luk ].', '', section='addenda')
         mylang.add_literal(
             'decl-head-subj-phrase :+ [ SYNSEM.INFOSTR-FLAG -, NON-HEAD-DTR.SYNSEM.INFOSTR-FLAG - ].', '', section='addenda')
-        mylang.add_literal(
-            'basic-head-1st-comp-phrase :+ [ SYNSEM.INFOSTR-FLAG -, NON-HEAD-DTR.SYNSEM.INFOSTR-FLAG - ].', '', section='addenda')
+        # mylang.add_literal(
+        #    'basic-head-1st-comp-phrase :+ [ SYNSEM.INFOSTR-FLAG -, NON-HEAD-DTR.SYNSEM.INFOSTR-FLAG - ].', '', section='addenda')
         mylang.add_literal(
             'basic-head-2nd-comp-phrase :+ [ SYNSEM.INFOSTR-FLAG -, NON-HEAD-DTR.SYNSEM.INFOSTR-FLAG - ].', '', section='addenda')
         mylang.add_literal(
