@@ -2374,7 +2374,11 @@ head-mod-phrase := head-nexus-rel-phrase &
                                       COMPS #comps, SPEC #spec ],
                       NON-LOCAL [ REL.LIST < > ] ] ].
 
-;basic-extracted-adj-phrase := head-mod-phrase & head-only & phrasal.
+; OZ 2020-09-25 Adjunct extraction hierarchy consists of
+; a basic phrase which links the element on the SLASH|MOD list to the head daughter,
+; and the same CAT values are shared by the mother itself.
+; The PLACEHOLDER feature makes it easier to then write rules for
+; flexible word order (and not repeat the MOD constraints).
 
 basic-extracted-adj-phrase := head-mod-phrase & head-only & phrasal &
   [ SYNSEM [ LOCAL.CAT [ WH #wh,
@@ -2412,30 +2416,9 @@ basic-extracted-adj-phrase := head-mod-phrase & head-only & phrasal &
 	     HCONS.LIST < >,
 	     ICONS.LIST < > ] ].
 
-;extracted-adj-phrase := extracted-adj-phrase-simple &
-;  [ SYNSEM [ NON-LOCAL [ SLASH append-list-with-placeholder &
-;	                        [ PLACEHOLDER.LIST < [ CAT
-;		                                            [ HEAD +rp &
-;		                                                 [ MOD < [ LOCAL intersective-mod &
-;                                                               [ CAT [ HEAD #head,
-;                                                                       POSTHEAD #ph,
-;                                                                       MC #mc ],
-;                                                                  CONT.HOOK #hook,
-;                                                                  CTXT #ctxt ] ] > ],
-;                                                      VAL [ SPEC < >,
-;                                                          SUBJ olist,
-;                                                          COMPS olist,
-;                                                          SPR olist ] ] ] > ] ] ],
-;    HEAD-DTR.SYNSEM canonical-synsem &
-;	   [ LOCAL local &
-;		   [ CAT [ HEAD #head,
-;		           POSTHEAD #ph,
-;                   MC #mc ],
-;                   CONT.HOOK #hook,
-;                   CTXT #ctxt ],
-;	     MODIFIED notmod ] ].
 
 ; OZ 2020-07-01 This requires that any arguments are extracted prior to the adjunct.
+; Russian "Kogda kto prishel?" (When did which person came?)
 extracted-adj-last-phrase := basic-extracted-adj-phrase &
   [ SYNSEM [ NON-LOCAL.SLASH 
 		      [ APPEND < #slash, #placeholder >,
@@ -2443,12 +2426,15 @@ extracted-adj-last-phrase := basic-extracted-adj-phrase &
     HEAD-DTR.SYNSEM.NON-LOCAL.SLASH #slash & [ LIST cons ] ].
 
 ; OZ 2020-07-01 This requires that any arguments are extracted after the adjunct.
+; Russian "Kto kogda prishel?" (Which person came when?)
 extracted-adj-first-phrase := basic-extracted-adj-phrase &
   [ SYNSEM [ NON-LOCAL.SLASH 
          [ APPEND < #placeholder, #slash >,
 		      PLACEHOLDER #placeholder ] ],
     HEAD-DTR.SYNSEM.NON-LOCAL.SLASH #slash ].
 
+; OZ 2020-09-25 If there is only one wh-word that can be
+; extracted, this version of the rule should be used.
 extracted-adj-only-phrase := extracted-adj-first-phrase &
   [ SYNSEM.NON-LOCAL.SLASH.LIST < [ ] >,
     HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < > ].
