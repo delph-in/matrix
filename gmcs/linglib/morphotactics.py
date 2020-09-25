@@ -710,8 +710,7 @@ def write_rules(pch, mylang, irules, lrules, lextdl, choices):
             write_possessive_behavior(pc, lrt, mylang, choices)
             write_interrogative_rules(lrt, mylang)
             # CMC 2017-04-07 moved merged LRT/PCs handling to write_supertypes
-            write_supertypes(mylang, lrt.identifier(),
-                             lrt.all_supertypes(), lrt.interrogative)
+            write_supertypes(mylang, lrt.identifier(), lrt.all_supertypes())
         write_daughter_types(mylang, pc)
     # features need to be written later
     return [(mn.key, mn.identifier(), mn.key.split('-')[0])
@@ -750,7 +749,7 @@ def get_section_from_pc(pc):
             return 'lexrules'
 
 
-def write_supertypes(mylang, identifier, supertypes=None, interrogative=None):
+def write_supertypes(mylang, identifier, supertypes=None):
     if supertypes is not None and len(supertypes) > 0:
         # CMC 2017-04-07 Handling for merged LRT/PCs: omit (same) identifier from list of supertypes written
         mylang.add('''%(id)s := %(sts)s.''' %
