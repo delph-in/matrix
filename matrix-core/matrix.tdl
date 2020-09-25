@@ -2447,10 +2447,11 @@ extracted-adj-first-phrase := basic-extracted-adj-phrase &
   [ SYNSEM [ NON-LOCAL.SLASH 
          [ APPEND < #placeholder, #slash >,
 		      PLACEHOLDER #placeholder ] ],
-    HEAD-DTR.SYNSEM.NON-LOCAL.SLASH #slash & LIST < > ].
+    HEAD-DTR.SYNSEM.NON-LOCAL.SLASH #slash ].
 
 extracted-adj-only-phrase := extracted-adj-first-phrase &
-  [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < > ].
+  [ SYNSEM.NON-LOCAL.SLASH.LIST < [ ] >,
+    HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < > ].
 
 ; ERB 2004-05-10 Bug fix: non-head daughter's MOD..LIGHT value should
 ; be matched to head-daughters LIGHT value.
