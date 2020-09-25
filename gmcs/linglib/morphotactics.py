@@ -1057,12 +1057,20 @@ def write_pc_adj_syntactic_behavior(lrt, mylang, choices):
 '''
 OZ-2020-09-24
 The interrogative inflection without lexical threading
-requires three separate lexical rules,
-even though this is not exposed to the user via the questionnaire.
-The user specifies just one rule, but the system needs to
-not add that rule directly and instead to add two homophonous rules,
-one for a wh-subject and another for a wh-object.
-Furthermore, a polar lexical rule is also needed separately from that.
+requires an interrogative supertype (which will work for
+grammars where the same morphology is used for polar and wh-questions),
+ and a further subtype which can be added if this morphology
+ is used only for polar questions. Note that ambiguity is possible
+ if both rules are added to the same PC with the same orthography,
+ but that is unlikely.
+ An alternative would be to add something like this INSTEAD of the user-specified rule:
+wh-subj-lex-rule := itrg-lex-rule &
+                [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ NON-LOCAL.QUE.LIST cons ] > ].
+wh-obj-lex-rule := itrg-lex-rule &
+                [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < [ NON-LOCAL.QUE.LIST < > ] >,
+                COMPS < [ NON-LOCAL.QUE.LIST cons ] > ] ].
+-- but it is not clear to me how to properly incorporate this into the hierarchy,
+and at what stage.
 '''
 
 
