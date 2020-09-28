@@ -949,8 +949,8 @@ null-copy := list-copy & null &
     END-LIST #end ].
 
 
-;append-list-with-placeholder := append-list &
-;  [ PLACEHOLDER.LIST < [ ] > ].
+append-list-with-placeholder := append-list &
+  [ PLACEHOLDER.LIST < [ ] > ].
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
