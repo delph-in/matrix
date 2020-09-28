@@ -2374,32 +2374,18 @@ head-mod-phrase := head-nexus-rel-phrase &
                                       COMPS #comps, SPEC #spec ],
                       NON-LOCAL [ REL.LIST < > ] ] ].
 
-basic-extracted-adj-phrase := head-mod-phrase & head-only & phrasal.
+; OZ 2020-09-25 Adjunct extraction hierarchy consists of
+; a basic phrase which links the element on the SLASH|MOD list to the head daughter,
+; and the same CAT values are shared by the mother itself.
+; The PLACEHOLDER feature makes it easier to then write rules for
+; flexible word order (and not repeat the MOD constraints).
 
-extracted-adj-phrase-simple := basic-extracted-adj-phrase &
+basic-extracted-adj-phrase := head-mod-phrase & head-only & phrasal &
   [ SYNSEM [ LOCAL.CAT [ WH #wh,
                          VAL.SPEC < >,
                          POSTHEAD #ph,
                          MC #mc ],
-	     NON-LOCAL [ QUE #que ] ],
-    HEAD-DTR.SYNSEM canonical-synsem &
-	   [ LOCAL local &
-		   [ CAT [ HEAD verb,
-		           WH #wh,
-		           VAL  [ SUBJ < synsem-min >, SPEC < > ],
-			       POSTHEAD #ph,
-                   MC #mc ],
-                   CONT.HOOK #hook ],
-	     MODIFIED notmod,
-	     NON-LOCAL [ QUE #que ] ],
-    C-CONT [ HOOK #hook,
-         RELS.LIST < >,
-	     HCONS.LIST < >,
-	     ICONS.LIST < > ] ].
-
-extracted-adj-phrase := extracted-adj-phrase-simple &
-  [ SYNSEM [ NON-LOCAL [ SLASH append-list-with-placeholder &
-	                        [ PLACEHOLDER.LIST < [ CAT
+	     NON-LOCAL [ SLASH.PLACEHOLDER.LIST < [ CAT
 		                                            [ HEAD +rp &
 		                                                 [ MOD < [ LOCAL intersective-mod &
                                                                [ CAT [ HEAD #head,
@@ -2410,54 +2396,48 @@ extracted-adj-phrase := extracted-adj-phrase-simple &
                                                       VAL [ SPEC < >,
                                                           SUBJ olist,
                                                           COMPS olist,
-                                                          SPR olist ] ] ] > ] ] ],
+                                                          SPR olist ] ] ] >,
+                    QUE #que,
+                    REL #rel ] ],
     HEAD-DTR.SYNSEM canonical-synsem &
 	   [ LOCAL local &
-		   [ CAT [ HEAD #head,
-		           POSTHEAD #ph,
+		   [ CAT [ HEAD verb,
+		           WH #wh,
+		           VAL  [ SUBJ < synsem-min >, 
+                      SPEC < > ],
+			       POSTHEAD #ph,
                    MC #mc ],
-                   CONT.HOOK #hook,
-                   CTXT #ctxt ],
-	     MODIFIED notmod ] ].
-
-extracted-adj-only-phrase := extracted-adj-phrase-simple &
-  [ SYNSEM [ NON-LOCAL [ SLASH append-list &
-	                        [ LIST < [ CAT
-		                                  [ HEAD +rp &
-		                                         [ MOD < [ LOCAL intersective-mod &
-                                                               [ CAT [ HEAD #head,
-                                                                       POSTHEAD #ph,
-                                                                       MC #mc ],
-                                                                  CONT.HOOK #hook,
-                                                                  CTXT #ctxt ] ] > ],
-                                                      VAL [ SPEC < >,
-                                                          SUBJ olist,
-                                                          COMPS olist,
-                                                          SPR olist ] ] ] > ] ] ],
-    HEAD-DTR.SYNSEM canonical-synsem &
-	   [ LOCAL local &
-		   [ CAT [ HEAD #head,
-		           POSTHEAD #ph,
-                   MC #mc ],
-                   CONT.HOOK #hook,
-                   CTXT #ctxt ],
+                   CONT.HOOK #hook ],
 	     MODIFIED notmod,
-	     NON-LOCAL.SLASH.LIST < > ] ].
+	     NON-LOCAL [ QUE #que, 
+                   REL #rel ] ],
+    C-CONT [ HOOK #hook,
+         RELS.LIST < >,
+	     HCONS.LIST < >,
+	     ICONS.LIST < > ] ].
+
 
 ; OZ 2020-07-01 This requires that any arguments are extracted prior to the adjunct.
-extracted-adj-last-phrase := extracted-adj-phrase &
-  [ SYNSEM [ NON-LOCAL.SLASH append-list &
+; Russian "Kogda kto prishel?" (When did which person came?)
+extracted-adj-last-phrase := basic-extracted-adj-phrase &
+  [ SYNSEM [ NON-LOCAL.SLASH 
 		      [ APPEND < #slash, #placeholder >,
 		      PLACEHOLDER #placeholder ] ],
     HEAD-DTR.SYNSEM.NON-LOCAL.SLASH #slash & [ LIST cons ] ].
 
 ; OZ 2020-07-01 This requires that any arguments are extracted after the adjunct.
-extracted-adj-first-phrase := extracted-adj-phrase &
-  [ SYNSEM [ NON-LOCAL.SLASH append-list &
-		      [ APPEND < #placeholder, #slash >,
+; Russian "Kto kogda prishel?" (Which person came when?)
+extracted-adj-first-phrase := basic-extracted-adj-phrase &
+  [ SYNSEM [ NON-LOCAL.SLASH 
+         [ APPEND < #placeholder, #slash >,
 		      PLACEHOLDER #placeholder ] ],
     HEAD-DTR.SYNSEM.NON-LOCAL.SLASH #slash ].
 
+; OZ 2020-09-25 If there is only one wh-word that can be
+; extracted, this version of the rule should be used.
+extracted-adj-only-phrase := extracted-adj-first-phrase &
+  [ SYNSEM.NON-LOCAL.SLASH.LIST < [ ] >,
+    HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < > ].
 
 ; ERB 2004-05-10 Bug fix: non-head daughter's MOD..LIGHT value should
 ; be matched to head-daughters LIGHT value.
