@@ -48,8 +48,7 @@ COMPLEMENTIZER = '''
                                    [ MOD < > ],
                               VAL [ SPR < >, SPEC < >,
                                     SUBJ < >,
-                                    COMPS < #comp > ] ],
-                    L-QUE - ],
+                                    COMPS < #comp > ] ] ],
            ARG-ST < #comp & [ LOCAL.CAT [ HEAD verb,
                                           VAL [ SUBJ < >,
                                                 COMPS < > ] ] ] > ].'''
