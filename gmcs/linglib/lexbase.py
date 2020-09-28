@@ -389,6 +389,9 @@ class LexicalRuleType(MorphotacticNode):
         # EKN 2017-12-15 Possessor rule pseudofeatures are properties of LRT
         self.possessive = None
         self.poss_strat_num = None
+        # OZ 2020-09-24 The question pseudofeature is interpreted at the level
+        # of LRT to create appropriate interrogative rules.
+        self.interrogative = None
 
     def __repr__(self):
         return 'LexicalRuleType(' + self.key + ')'

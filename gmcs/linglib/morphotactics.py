@@ -268,6 +268,7 @@ def create_lexical_rule_types(cur_pc, pc):
 
 
 def create_lexical_rule_type(lrt, mtx_supertypes, cur_pc):
+    from gmcs.constants import QUES
     new_lrt = LexicalRuleType(lrt.full_key, get_name(lrt))
     _id_key_tbl[new_lrt.identifier()] = lrt.full_key
     for feat in lrt.get('feat'):
@@ -301,6 +302,8 @@ def create_lexical_rule_type(lrt, mtx_supertypes, cur_pc):
             else:
                 new_lrt.possessive = 'nonpossessive'
                 new_lrt.poss_strat_num = 'pron-'+num
+        elif feat['name'] == QUES:
+            new_lrt.interrogative = feat['value']
         else:
             new_lrt.features[feat['name']] = {'value': feat['value'],
                                               'head': feat['head']}
@@ -535,13 +538,16 @@ def set_lexical_rule_supertypes(lrt, mtx_supertypes):
         #  if ('value', 'a') in lrt.features.get('negation',{}).items():
         #    lrt.supertypes.add('cont-change-only-lex-rule')
         # add other special cases here
-        infostr_features = lrt.features.get(
-            'information-structure meaning', {})
-        if len(infostr_features) > 0:
-            if infostr_features['head'] == 'subj' and infostr_features['value'] == 'focus':
-                lrt.supertypes.add('add-icons-subj-foc-lex-rule')
-            elif infostr_features['head'] == 'obj' and infostr_features['value'] == 'focus':
-                lrt.supertypes.add('add-icons-obj-foc-lex-rule')
+        # OZ 2020-09-24: The below was experimental and worked with lexical threading
+        # but no longer works without. Maybe it can be revived later, but
+        # getting rid of lexical threading is of higher priority.
+        # infostr_features = lrt.features.get(
+        #     'information-structure meaning', {})
+        # if len(infostr_features) > 0:
+        #     if infostr_features['head'] == 'subj' and infostr_features['value'] == 'focus':
+        #         lrt.supertypes.add('add-icons-subj-foc-lex-rule')
+        #     elif infostr_features['head'] == 'obj' and infostr_features['value'] == 'focus':
+        #         lrt.supertypes.add('add-icons-obj-foc-lex-rule')
 
 
 def calculate_supertypes(pch):
@@ -702,6 +708,7 @@ def write_rules(pch, mylang, irules, lrules, lextdl, choices):
                 lrt, mylang, choices, pc.has_evidential())
             # EKN 2017-12-13 Write possessive behavior
             write_possessive_behavior(pc, lrt, mylang, choices)
+            write_interrogative_rules(lrt, mylang)
             # CMC 2017-04-07 moved merged LRT/PCs handling to write_supertypes
             write_supertypes(mylang, lrt.identifier(), lrt.all_supertypes())
         write_daughter_types(mylang, pc)
@@ -878,7 +885,6 @@ def write_i_or_l_rules(irules, lrules, lrt, order):
                               lrt.identifier() + pred]) + '.'
             irules.add_literal(rule, section=section)
     else:
-        # lexical rules # TJT 2014-12-21: cleaning this up
         lrt_id = lrt.identifier()
         lrules.add(lrt_id.rsplit('-rule', 1)[0] + ' := ' + lrt_id + '.')
 
@@ -1047,6 +1053,48 @@ def write_pc_adj_syntactic_behavior(lrt, mylang, choices):
                 mylang.add(lrt.identifier() +
                            ''' := [ SYNSEM.LOCAL.CAT.HEAD.PRD - ].''')
 
+
+'''
+OZ-2020-09-24
+The interrogative inflection without lexical threading
+requires an interrogative supertype (which will work for
+grammars where the same morphology is used for polar and wh-questions),
+ and a further subtype which can be added if this morphology
+ is used only for polar questions. Note that ambiguity is possible
+ if both rules are added to the same PC with the same orthography,
+ but that is unlikely.
+ An alternative would be to add something like this INSTEAD of the user-specified rule:
+wh-subj-lex-rule := itrg-lex-rule &
+                [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ NON-LOCAL.QUE.LIST cons ] > ].
+wh-obj-lex-rule := itrg-lex-rule &
+                [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < [ NON-LOCAL.QUE.LIST < > ] >,
+                COMPS < [ NON-LOCAL.QUE.LIST cons ] > ] ].
+-- but it is not clear to me how to properly incorporate this into the hierarchy,
+and at what stage.
+'''
+
+
+def write_interrogative_rules(lrt, mylang):
+    ITRG_LEX_RULE = '''itrg-lex-rule := add-only-no-ccont-rule & 
+    [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques ].'''
+    PROP_LEX_RULE = '''prop-lex-rule := add-only-no-ccont-rule & 
+    [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF prop ].'''
+    POLAR_LEX_RULE = '''polar-lex-rule := itrg-lex-rule & 
+    [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < [ NON-LOCAL.QUE.LIST < > ] >, COMPS non-wh-list ] ].'''
+    mylang.set_section('lexrules')
+
+    if lrt.interrogative:
+        mylang.add(ITRG_LEX_RULE)
+        mylang.add(PROP_LEX_RULE)
+        if lrt.interrogative == 'polar':
+            mylang.add(POLAR_LEX_RULE)
+            lrt.supertypes.add('polar-lex-rule')
+        elif lrt.interrogative == 'no':
+            lrt.supertypes.add('prop-lex-rule')
+        elif lrt.interrogative == 'both':
+            lrt.supertypes.add('itrg-lex-rule')
+
+
 ##################
 ### VALIDATION ###
 ##################
@@ -1157,7 +1205,7 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
         # TJT 2014-08-22: check head for adjectives and incorporated stems
         if lrt.full_key.startswith('verb-pc') or \
                 lrt.full_key.startswith('adj-pc') or \
-        'is-lrt' in lrt.full_key:
+            'is-lrt' in lrt.full_key:
             if 'head' not in feat:
                 vr.err(feat.full_key + '_head',
                        'You must choose where the feature is specified.')
