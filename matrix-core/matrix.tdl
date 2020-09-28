@@ -2482,13 +2482,14 @@ basic-extracted-adj-phrase := head-mod-phrase & head-only & phrasal &
                     REL #rel ] ],
     HEAD-DTR.SYNSEM canonical-synsem &
 	   [ LOCAL local &
-		   [ CAT [ HEAD verb,
+		   [ CAT [ HEAD #head & verb,
 		           WH #wh,
 		           VAL  [ SUBJ < synsem-min >, 
                       SPEC < > ],
 			       POSTHEAD #ph,
                    MC #mc ],
-                   CONT.HOOK #hook ],
+                   CONT.HOOK #hook,
+                   CTXT #ctxt, ],
 	     MODIFIED notmod,
 	     NON-LOCAL [ QUE #que, 
                    REL #rel ] ],
@@ -2858,57 +2859,22 @@ non-local-none-lex-item := lex-item &
 [ SYNSEM.NON-LOCAL non-local-none ].
 
 ; OZ 2020-09-14: The below types need to be eliminated
-; and replaced with non-local-none-lex-item.
+; and replaced with e.g. non-local-none-lex-item.
 ; This is assuming all lexical items explicitly
 ; say something about their ARG-ST length.
 
-
-;basic-one-arg := lex-item &
-;  [ ARG-ST < [ NON-LOCAL [ SLASH #slash,
-;			   REL #rel,
-;			   QUE #que ] ] >,
-;    SYNSEM.NON-LOCAL [ SLASH #slash,
-;		       REL #rel,
-;		       QUE #que ] ].
 
 basic-one-arg := lex-item &
   [ ARG-ST < [ ] >,
     SYNSEM.NON-LOCAL non-local-none ].
 
-
-;basic-two-arg := lex-item &
-;  [ ARG-ST < [ NON-LOCAL [ SLASH #s2,
-;                           REL #r2,
-;                           QUE #q2 ] ],
-;	     [ NON-LOCAL [ SLASH #s1,
-;			   REL #r1,
-;			   QUE #q1 ] ] >,
-;    SYNSEM.NON-LOCAL [ SLASH.APPEND < #s1, #s2 >,
-;                       REL.APPEND < #r1, #r2 >,
-;                       QUE.APPEND < #q1, #q2 > ] ].
-
 basic-two-arg := lex-item &
   [ ARG-ST < [ ], [ ] >,
     SYNSEM.NON-LOCAL non-local-none ].
 
-
 basic-three-arg := lex-item & 
   [ ARG-ST < [ ], [ ], [ ] >,
     SYNSEM.NON-LOCAL non-local-none ].
-
-;basic-three-arg := lex-item &
-;  [ ARG-ST < [ NON-LOCAL [ SLASH #s3,
-;                           REL #r3,
-;                           QUE #q3 ] ],
-;             [ NON-LOCAL [ SLASH #s1,
-;                           REL #r1,
-;                           QUE #q1 ] ],
-;             [ NON-LOCAL [ SLASH #s2,
-;                           REL #r2,
-;                           QUE #q2 ] ] >,
-;    SYNSEM.NON-LOCAL [ SLASH.APPEND < #s1, #s2, #s3 >,
-;                       REL.APPEND < #r1, #r2, #r3 >,
-;                       QUE.APPEND < #q1, #q2, #q3 > ] ].
 
 ; ERB 2007-01-22  In the message-free universe, many more qeqs are
 ; introduced by lexical items (basically any head that selects a clausal
