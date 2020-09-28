@@ -2434,13 +2434,14 @@ basic-extracted-adj-phrase := head-mod-phrase & head-only & phrasal &
                     REL #rel ] ],
     HEAD-DTR.SYNSEM canonical-synsem &
 	   [ LOCAL local &
-		   [ CAT [ HEAD verb,
+		   [ CAT [ HEAD #head,
 		           WH #wh,
 		           VAL  [ SUBJ < synsem-min >, 
                       SPEC < > ],
 			       POSTHEAD #ph,
                    MC #mc ],
-                   CONT.HOOK #hook ],
+                   CONT.HOOK #hook,
+                   CTXT #ctxt ],
 	     MODIFIED notmod,
 	     NON-LOCAL [ QUE #que, 
                    REL #rel ] ],
