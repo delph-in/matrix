@@ -35,8 +35,10 @@ OV_ORDERS = ['sov', 'ovs', 'osv', 'v-final']
 VFINAL = ['sov', 'osv', 'v-final']
 VO_ORDERS = ['svo', 'vos', 'vso', 'v-initial']
 
+
 # Linguistic terms
 QUES = 'question'
+
 
 # WH-QUESTIONS
 

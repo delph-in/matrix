@@ -128,9 +128,11 @@ ADP_LEX = '''norm-adposition-lex := norm-sem-lex-item & no-hcons-lex-item & basi
                                  SUBJ < >,
                                  COMPS < #comp & [ L-QUE #lque,
                                                  LOCAL [ CAT [ HEAD noun, VAL.SPR < > ],
-                                                 CONT.HOOK.INDEX #ind ] ] > ] ],
+                                                 CONT.HOOK.INDEX #ind ],
+                                         NON-LOCAL #nonloc ] > ] ],
                      CONT.RELS.LIST < [ PRED #pred, ARG0 event, ARG1 event-or-ref-index ] > ],
              LKEYS.KEYREL arg12-ev-relation & [ PRED #pred, ARG2 #ind ],
+             NON-LOCAL #nonloc,
              L-QUE #lque ],
     ARG-ST < #comp > ].'''
 
@@ -386,13 +388,10 @@ class LexicalRuleType(MorphotacticNode):
         self.evidential = None
         # EKN 2017-12-15 Possessor rule pseudofeatures are properties of LRT
         self.possessive = None
-        self.interrogative = None
         self.poss_strat_num = None
-        # OZ 2020-09-17 Sometimes the LRT specified by the user will be replaced by multiple rules,
-        # e.g. to accommodate interrogative morphology where the user just says an affix marks
-        # interrogative "mood" but the system must create separate rules to constrain subjects and objects
-        # of different kinds of verbs.
-        # self.new_names = set() # I really hope I don't need this. To delete (hopefully).
+        # OZ 2020-09-24 The question pseudofeature is interpreted at the level
+        # of LRT to create appropriate interrogative rules.
+        self.interrogative = None
 
     def __repr__(self):
         return 'LexicalRuleType(' + self.key + ')'
