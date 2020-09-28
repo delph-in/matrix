@@ -1059,16 +1059,18 @@ OZ-2020-09-24
 The interrogative inflection without lexical threading
 requires an interrogative supertype (which will work for
 grammars where the same morphology is used for polar and wh-questions),
- and a further subtype which can be added if this morphology
- is used only for polar questions. Note that ambiguity is possible
- if both rules are added to the same PC with the same orthography,
- but that is unlikely.
- An alternative would be to add something like this INSTEAD of the user-specified rule:
+and a further subtype which can be added if this morphology
+is used only for polar questions. Note that ambiguity is possible
+if both rules are added to the same PC with the same orthography,
+but that is unlikely.
+An alternative would be to add something like this INSTEAD of the user-specified rule:
+
 wh-subj-lex-rule := itrg-lex-rule &
                 [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ NON-LOCAL.QUE.LIST cons ] > ].
 wh-obj-lex-rule := itrg-lex-rule &
                 [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < [ NON-LOCAL.QUE.LIST < > ] >,
                 COMPS < [ NON-LOCAL.QUE.LIST cons ] > ] ].
+
 -- but it is not clear to me how to properly incorporate this into the hierarchy,
 and at what stage.
 '''
