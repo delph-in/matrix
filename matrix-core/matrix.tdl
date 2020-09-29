@@ -2467,12 +2467,6 @@ extracted-adj-first-phrase := basic-extracted-adj-phrase &
 		      PLACEHOLDER #placeholder ] ],
     HEAD-DTR.SYNSEM.NON-LOCAL.SLASH #slash ].
 
-; OZ 2020-09-25 If there is only one wh-word that can be
-; extracted, this version of the rule should be used.
-extracted-adj-only-phrase := extracted-adj-first-phrase &
-  [ SYNSEM.NON-LOCAL.SLASH.LIST < [ ] >,
-    HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < > ].
-
 ; ERB 2004-05-10 Bug fix: non-head daughter's MOD..LIGHT value should
 ; be matched to head-daughters LIGHT value.
 ; ASF (2008-11-03) for the v2 analysis, the MC feature cannot be shared between
