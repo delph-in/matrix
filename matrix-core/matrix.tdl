@@ -2345,7 +2345,7 @@ basic-bare-np-phrase := head-only & head-valence-phrase &
 ; where such sentences are possible, perhaps some other mechanism
 ; is at place, not LDD/filler-gap.
 
-basic-extracted-arg-phrase := head-valence-phrase & head-only &
+basic-extracted-arg-phrase := unary-slash-phrase & head-only &
   [ SYNSEM [ LIGHT -, LOCAL.CAT.WH #wh ],
    HEAD-DTR.SYNSEM.LOCAL.CAT.WH #wh ].
 
