@@ -1654,19 +1654,21 @@ binary-headed-phrase := basic-binary-headed-phrase & binary-phrase.
 binary-nonloc-phrase := basic-binary-headed-phrase &
 [ SYNSEM.NON-LOCAL [ SLASH.APPEND < #slash1, #slash2 >,
                      QUE.APPEND < #que1, #que2 >,
-                     REL #rel ],
+                     REL.APPEND < #rel1, #rel2 > ],
   HEAD-DTR.SYNSEM.NON-LOCAL [ SLASH #slash1,
                               QUE #que1,
-                              REL #rel ],
+                              REL #rel1 ],
   NON-HEAD-DTR.SYNSEM.NON-LOCAL [ SLASH #slash2,
-                                  QUE #que2 ] ].
+                                  QUE #que2,
+                                  REL #rel2 ] ].
 
-binary-nonloc-slash := basic-binary-headed-phrase &
+binary-nonloc-que-rel := basic-binary-headed-phrase &
 [ SYNSEM.NON-LOCAL [ QUE.APPEND < #que1, #que2 >,
-                     REL #rel ],
+                     REL.APPEND < #rel1, #rel2 > ],
   HEAD-DTR.SYNSEM.NON-LOCAL [ QUE #que1,
-                              REL #rel ],
-  NON-HEAD-DTR.SYNSEM.NON-LOCAL [ QUE #que2 ] ].                                  
+                              REL #rel1 ],
+  NON-HEAD-DTR.SYNSEM.NON-LOCAL [ QUE #que2,
+                                  REL #rel2 ] ].  
 
 ; ERB (2007-02-13) Adding these for handling constructions where a marker
 ; shows up simultaneously on both ends of the phrase, such as negation
@@ -2005,7 +2007,7 @@ imp-head-subj-phrase := basic-head-subj-phrase & imperative-clause.
 ; OZ 2020-09-22 This can no longer inherit from head-valence phrase,
 ; because that is lexical threading which we are now taking out. 
 
-basic-head-subj-nmc-phrase := declarative-clause & binary-nonloc-slash &
+basic-head-subj-nmc-phrase := declarative-clause & binary-nonloc-que-rel &
                               binary-headed-phrase &
   [ SYNSEM phr-synsem &
            [ LOCAL.CAT [ MC -,
@@ -2132,7 +2134,7 @@ basic-head-2nd-comp-phrase := basic-head-comp-phrase &
 ; OZ 2020-09-22 This can no longer inherit from head-valence phrase,
 ; because that is for lexical threading, which we are now taking out. 
 
-basic-head-comp-nmc-phrase := binary-nonloc-slash & head-compositional &
+basic-head-comp-nmc-phrase := binary-nonloc-que-rel & head-compositional &
                               binary-headed-phrase &
   [ SYNSEM phr-synsem &
        [ LOCAL.CAT [ MC -,
@@ -2301,11 +2303,11 @@ basic-marker-comp-phrase := basic-binary-marker-phrase &
      [ LOCAL.CAT [ MC #mc,
        VAL [ SUBJ #subj,
              SPR #spr,
-                               COMPS #comps ],
+             COMPS #comps ],
        POSTHEAD #ph,
        HC-LIGHT #light ],
              NON-LOCAL [ SLASH.APPEND < #slash1, #slash2 >,
-                         REL #rel,
+                         REL.APPEND < #rel1, #rel2 >,
                          QUE.APPEND < #que1, #que2 > ],
              LIGHT #light ],
     MARKER-DTR.SYNSEM [ LOCAL.CAT [ MC #mc,
@@ -2315,10 +2317,10 @@ basic-marker-comp-phrase := basic-binary-marker-phrase &
           HC-LIGHT #light,
                                   POSTHEAD #ph ],
                       NON-LOCAL [ SLASH #slash1,
-                                  REL #rel,
+                                  REL #rel1,
                                   QUE #que1 ] ],
     NON-MARKER-DTR.SYNSEM canonical-synsem & #synsem & 
-    [ NON-LOCAL [ SLASH #slash2, QUE #que2 ] ],
+    [ NON-LOCAL [ SLASH #slash2, QUE #que2, REL #rel2 ] ],
     C-CONT [ RELS.LIST < >,
        HCONS.LIST < >,
        ICONS.LIST < > ] ].
@@ -2439,7 +2441,7 @@ basic-extracted-subj-phrase := basic-extracted-arg-phrase & head-compositional &
 ; non-empty comps lists.  The head-mod-phrase will pass up
 ; the COMPS requirement, whatever it was.
 
-head-mod-phrase := headed-phrase &
+head-mod-phrase := headed-phrase & 
   [ SYNSEM [ LOCAL.CAT.VAL [ SUBJ #subj,
                              SPR #spr,
                              COMPS #comps, SPEC #spec ],
