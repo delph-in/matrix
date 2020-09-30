@@ -167,7 +167,7 @@ def customize_wh_ques(mylang, ch, rules, roots):
         mylang.add(EX_COMP)
         rules.add('ex-comp := extracted-comp-phrase.')
         mylang.add_literal('; Adjunct extraction', section='phrases')
-        rules.add('ex-adj := extracted-adj-phrase.')
+        rules.add('ex-adj := basic-extracted-adj-phrase.')
         # Free probably shouldn't belong here? check
         if ch.get('word-order') in ['vos', 'svo', 'sov', 'free']:
             if ch.get('pied-pip-adp') != 'on' or ch.get('oblig-pied-pip-adp') == ON:
@@ -182,7 +182,7 @@ def customize_wh_ques(mylang, ch, rules, roots):
     if ch.get(MTRX_FRONT) == SINGLE:
         # With single fronting, can restrict SLASH to one element at most
         mylang.add(BASIC_FILLER_SG, section='phrases')
-        mylang.add('extracted-adj-phrase :+ '
+        mylang.add('basic-extracted-adj-phrase :+ '
                    '[ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ cons ].')
         mylang.add_literal('; Subject extraction')
         mylang.add(EX_SUBJ)
@@ -214,7 +214,7 @@ def customize_wh_ques(mylang, ch, rules, roots):
                     'adj-head-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL [ QUE.LIST < > ] ].')
                 mylang.add(NC_SUBJ_HEAD, section='phrases')
                 rules.add('nc-subjh := subj-head-nc-phrase.')
-            mylang.add('extracted-adj-phrase :+ '
+            mylang.add('basic-extracted-adj-phrase :+ '
                        '[ SYNSEM.NON-LOCAL.SLASH.LIST < [ CAT.HEAD.MOD < [ LOCAL.CAT.HEAD [ INV - ] ] > ] >, '
                        '  HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].')
 
