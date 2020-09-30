@@ -2405,7 +2405,7 @@ basic-extracted-comp-phrase := basic-extracted-arg-phrase &
                            SPR #spr,
                            COMPS #comps ],
                      MC #mc ],
-         NON-LOCAL.SLASH.APPEND < [ LIST < #local > ], #slash >],
+         NON-LOCAL.SLASH.APPEND < #slash, [ LIST < #local > ]  >],
     HEAD-DTR [ SYNSEM
                [ LOCAL.CAT [ VAL [ SPEC #spec,
                                    SUBJ #subj,
@@ -2428,7 +2428,7 @@ basic-extracted-subj-phrase := basic-extracted-arg-phrase & head-compositional &
   [ SYNSEM [ LOCAL.CAT.VAL [ SUBJ < >,
                            COMPS #comps,
                            SPEC #spec, SPR #spr ],
-             NON-LOCAL.SLASH.APPEND < [ LIST < #local > ], #slash > ],
+             NON-LOCAL.SLASH.APPEND < #slash, [ LIST < #local > ] > ],
     HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL [ SUBJ < gap &
                                              [ LOCAL local & #local &
                                                [ CONT.HOOK.INDEX ref-ind ] ] >,
@@ -2467,7 +2467,7 @@ basic-extracted-adj-phrase := head-mod-phrase & head-only & phrasal &
                          VAL.SPEC < >,
                          POSTHEAD #ph,
                          MC #mc ],
-	     NON-LOCAL [ SLASH.APPEND < [ LIST < [ CAT
+	     NON-LOCAL [ SLASH.APPEND < #slash, [ LIST < [ CAT
 		                                            [ HEAD +rp &
 		                                                 [ MOD < [ LOCAL intersective-mod &
                                                                [ CAT [ HEAD #head,
@@ -2478,7 +2478,7 @@ basic-extracted-adj-phrase := head-mod-phrase & head-only & phrasal &
                                                       VAL [ SPEC < >,
                                                           SUBJ olist,
                                                           COMPS olist,
-                                                          SPR olist ] ] ] > ], #slash >,
+                                                          SPR olist ] ] ] > ] >,
                     QUE #que,
                     REL #rel ] ],
     HEAD-DTR.SYNSEM canonical-synsem &
