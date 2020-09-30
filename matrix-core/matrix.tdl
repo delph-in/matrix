@@ -2003,10 +2003,7 @@ imp-head-subj-phrase := basic-head-subj-phrase & imperative-clause.
 ; This type cannot be a root node by itself ([MC -]).
 ; This typed phrase is supposed to be combined with a filler-phrase.
 ; OZ 2020-09-22 This can no longer inherit from head-valence phrase,
-; because that is for lexical threading. Without lexical threading,
-; I would think this should inherit from binary-nonloc-phrase,
-; however then some of the gold parses are lost. Maybe they aren't 
-; actually gold? Someone who understands this better should check.
+; because that is lexical threading which we are now taking out. 
 
 basic-head-subj-nmc-phrase := declarative-clause & binary-nonloc-slash &
                               binary-headed-phrase &
