@@ -188,7 +188,7 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies, roots):
                 '''non-local-none :+ [ YNQ.LIST < > ].''', section='addenda')
             mylang.add(
                 '''basic-filler-phrase :+ [ SYNSEM.NON-LOCAL.YNQ.LIST < > ].''', section='addenda')
-            mylang.add('''basic-extracted-adj-phrase :+ 
+            mylang.add('''extracted-adj-phrase :+ 
             [ SYNSEM.NON-LOCAL.YNQ #ynq,
               HEAD-DTR.SYNSEM.NON-LOCAL.YNQ #ynq ].''', section='addenda')
 
