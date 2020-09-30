@@ -2394,8 +2394,8 @@ basic-bare-np-phrase := head-only & unary-nonloc-phrase &
 ; is at place, not LDD/filler-gap.
 
 basic-extracted-arg-phrase := unary-slash-phrase & head-only &
-  [ SYNSEM [ LIGHT -, LOCAL.CAT.WH #wh ],
-   HEAD-DTR.SYNSEM.LOCAL.CAT.WH #wh ].
+  [ SYNSEM [ LIGHT #light, LOCAL.CAT.WH #wh ],
+   HEAD-DTR.SYNSEM [ LIGHT #light, LOCAL.CAT.WH #wh ] ].
 
 basic-extracted-comp-phrase := basic-extracted-arg-phrase &
                                head-compositional &
@@ -2491,6 +2491,7 @@ basic-extracted-adj-phrase := head-mod-phrase & head-only & phrasal &
                    CONT.HOOK #hook,
                    CTXT #ctxt ],
 	     MODIFIED notmod,
+       LIGHT +,
 	     NON-LOCAL [ QUE #que, 
                    REL #rel ] ],
     C-CONT [ HOOK #hook,
