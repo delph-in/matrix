@@ -506,4 +506,4 @@ wh24-particles-embed=Obligatory question particle and embedded clauses, think vs
 wh25-no-multi-insitu-morph=In situ wh-questions with optional morphological marking, only one question allowed per clause.
 wh-eng-dev=English wh-questions; mainly subj-aux inversion.
 !valchg-jpn-rom=A valence change test which has no gold MRS.
-wh-rus-dev=Updated wh test for Russian: English comment sentences removed, and one inflectional position class fixed.
+wh-dev-rus=Multiple fronting, optional. Large test.
