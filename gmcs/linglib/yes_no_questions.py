@@ -38,6 +38,12 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies, roots):
 
     qinvverb = ch.get('q-inv-verb')
 
+    if ch.get('q-inv') or (ch.get('q-part') and ch.get('q-part-order') != 'second'):
+        mylang.add(
+            'basic-head-comp-phrase :+ [ SYNSEM [ LOCAL.CAT.HC-LIGHT #light, LIGHT #light ] ].')
+    else:
+        mylang.add('basic-head-comp-phrase :+ [ SYNSEM.LIGHT - ].')
+
     if ch.get('q-inv'):
         comment = \
             'For the analysis of inverted yes-no questions, we add the feature INV.'
