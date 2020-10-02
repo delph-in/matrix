@@ -2096,7 +2096,6 @@ basic-head-comp-phrase := binary-nonloc-phrase & head-compositional &
                                SPR #spr ],
                          POSTHEAD #ph,
                          HC-LIGHT #light ],
-             LIGHT #light,
              MODIFIED #modified ],
     HEAD-DTR.SYNSEM [ LOCAL.CAT [ WH #or1,
                                   VAL [ SUBJ #subj,
