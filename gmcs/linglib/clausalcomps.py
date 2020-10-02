@@ -673,7 +673,7 @@ Add clausal verb supertype to the grammar.
 
 def add_clausalcomp_verb_supertype(ch, mainorverbtype, mylang):
     head = ch.case_head()
-    typedef = CLAUSALCOMP + '-verb-lex := ' + mainorverbtype + '&\
+    typedef = CLAUSALCOMP + '-verb-lex := ' + mainorverbtype + ' & basic-non-wh-word-lex &\
       [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >,\
         ARG-ST < [ LOCAL.CAT.HEAD ' + head + ' ],\
                  #comps &\
@@ -719,10 +719,6 @@ def customize_clausal_verb(clausalverb, mylang, ch, cs, extra):
     if ch.get('wh-inv-embed') == 'on':
         mylang.add(
             clausalverb + ':= [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.AUX + ] > ].', merge=True)
-
-    # From the wh-questions library; disallow questions from crossing clause boundary
-    # if ch.get('front-across-cl') != 'on' or ch.get(''):
-    #    mylang.add(clausalverb + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ NON-LOCAL.QUE.LIST < > ] > ].', merge=True)
 
 
 '''
