@@ -1651,24 +1651,24 @@ binary-headed-phrase := basic-binary-headed-phrase & binary-phrase.
 ; Most phrases will inherit from binary-nonloc-phrase
 ; (or unary-nonloc-phrase), except filler-gap and similar.
 
-binary-nonloc-phrase := basic-binary-headed-phrase &
-[ SYNSEM.NON-LOCAL [ SLASH.APPEND < #slash1, #slash2 >,
-                     QUE.APPEND < #que1, #que2 >,
-                     REL.APPEND < #rel1, #rel2 > ],
-  HEAD-DTR.SYNSEM.NON-LOCAL [ SLASH #slash1,
+binary-nonloc-phrase := basic-binary-phrase &
+[ SYNSEM.NON-LOCAL [ SLASH.APPEND < #slash2, #slash1 >,
+                     QUE.APPEND < #que2, #que1 >,
+                     REL.APPEND < #rel2, #rel1 > ],
+  ARGS < [ SYNSEM.NON-LOCAL [ SLASH #slash1,
                               QUE #que1,
-                              REL #rel1 ],
-  NON-HEAD-DTR.SYNSEM.NON-LOCAL [ SLASH #slash2,
-                                  QUE #que2,
-                                  REL #rel2 ] ].
+                              REL #rel1 ] ],
+  [ SYNSEM.NON-LOCAL [ SLASH #slash2,
+                       QUE #que2,
+                       REL #rel2 ] ] > ].
 
-binary-nonloc-que-rel := basic-binary-headed-phrase &
-[ SYNSEM.NON-LOCAL [ QUE.APPEND < #que1, #que2 >,
-                     REL.APPEND < #rel1, #rel2 > ],
-  HEAD-DTR.SYNSEM.NON-LOCAL [ QUE #que1,
-                              REL #rel1 ],
-  NON-HEAD-DTR.SYNSEM.NON-LOCAL [ QUE #que2,
-                                  REL #rel2 ] ].  
+binary-nonloc-que-rel := basic-binary-phrase &
+[ SYNSEM.NON-LOCAL [ QUE.APPEND < #que2, #que1 >,
+                     REL.APPEND < #rel2, #rel1 > ],
+  ARGS < [ SYNSEM.NON-LOCAL [ QUE #que1,
+                              REL #rel1 ] ],
+  [ SYNSEM.NON-LOCAL [ QUE #que2,
+                       REL #rel2 ] ] > ].  
 
 ; ERB (2007-02-13) Adding these for handling constructions where a marker
 ; shows up simultaneously on both ends of the phrase, such as negation
@@ -1975,7 +1975,7 @@ nc-head-filler-phrase := nc-filler-phrase & head-compositional.
 
 ; OZ 2020-05-19 Adding WH feature for handling embedded constituent questions.
 
-basic-head-subj-phrase := binary-nonloc-phrase & head-compositional &
+basic-head-subj-phrase := binary-nonloc-phrase & binary-headed-phrase & head-compositional &
  [ SYNSEM phr-synsem &
            [ LOCAL.CAT [ WH [ OR < #or1, #or2 > ],
                          HC-LIGHT -,
