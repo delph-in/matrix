@@ -79,7 +79,7 @@ POSSESSOR_ADP_LEX = ':= two-rel-adposition-lex &\
                                                                               OPT - ] ] ],\
                                                   CONT.ICONS.LIST < > ] ].'
 
-POSSESSUM_NOUN_LEX = ':= basic-one-arg &\
+POSSESSUM_NOUN_LEX = ':= non-local-none-lex-item &\
                                    [ SYNSEM.LOCAL [ CAT [ HEAD #head & noun ,\
                                                           VAL [ SUBJ < >,\
                                                                 SPR < [ LOCAL.CAT.HEAD det ] >,\
@@ -94,7 +94,7 @@ POSSESSUM_NOUN_LEX = ':= basic-one-arg &\
                                                            ICONS.LIST < > ] ],\
                                      ARG-ST < #comps > ].'
 
-POSSESSUM_NOUN_LEX_W_PRON = ':= basic-two-arg &\
+POSSESSUM_NOUN_LEX_W_PRON = ':= non-local-none-lex-item &\
                                    [ SYNSEM.LOCAL [ CAT [ HEAD #head & noun ,\
                                                           VAL [ SUBJ < >,\
                                                                 SPR < #spr & [ LOCAL [ CAT [ VAL.SPR < > ] ] ] >,\
@@ -108,7 +108,7 @@ POSSESSUM_NOUN_LEX_W_PRON = ':= basic-two-arg &\
                                      ARG-ST < #spr, #comps > ].'
 
 # TODO: change one-arg to being added by the logic section, since the modifier-version is zero-arg.
-POSSESSOR_PRON_LEX = ' := basic-one-arg &\
+POSSESSOR_PRON_LEX = ' := non-local-none-lex-item &\
                         [ SYNSEM [ LOCAL [ CONT.HOOK [ INDEX #possessor,\
                                                        LTOP #ltop ],\
                                            CAT [ VAL [ SPR < [ LOCAL.CAT.HEAD det,\
@@ -1245,7 +1245,7 @@ def customize_possessum_lexicon(strat, mylang, ch, lexicon, strat_name, strat_nu
 
         if mark_loc != 'possessum-with-pron':
 
-            mylang.add('possessum-noun-lex-'+strat_num+' := basic-two-arg &\
+            mylang.add('possessum-noun-lex-'+strat_num+' := non-local-none-lex-item &\
                           [ SYNSEM.LOCAL [ CAT [ POSSESSUM possessum-'+strat_num+',\
                                                  HEAD noun & [ POSSESSOR nonpossessive,\
                                                                INIT '+init+' ],\
@@ -1270,7 +1270,7 @@ def customize_possessum_lexicon(strat, mylang, ch, lexicon, strat_name, strat_nu
         else:
 
             # When the possessum is marked and the possessor = pron, then the pron is the modifier of the possessum:
-            mylang.add('possessum-noun-lex-'+strat_num+' := basic-one-arg &\
+            mylang.add('possessum-noun-lex-'+strat_num+' := non-local-none-lex-item &\
                           [ SYNSEM.LOCAL [ CAT [ POSSESSUM possessum-'+strat_num+',\
                                                  HEAD noun & [ POSSESSOR nonpossessive,\
                                                               INIT '+init+' ],\

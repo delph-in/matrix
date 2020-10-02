@@ -217,7 +217,7 @@ def customize_case_adpositions(mylang, lexicon, trigger, ch, case_pos):
         poss = True if ch.get('poss-strat') or ch.get('poss-pron') else False
 
         typedef = \
-            'case-marking-adp-lex := basic-one-arg & raise-sem-lex-item & \
+            'case-marking-adp-lex := non-local-none-lex-item & raise-sem-lex-item & \
                 [ SYNSEM.LOCAL.CAT [ HEAD adp & [ CASE #case, MOD < > ], \
                                      VAL [ SPR < >, \
                                            SUBJ < >, \

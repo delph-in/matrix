@@ -2835,69 +2835,15 @@ zero-arg-slash := zero-arg-nonrel & zero-arg-nonque.
 non-local-none-lex-item := lex-item &
 [ SYNSEM.NON-LOCAL non-local-none ].
 
-; OZ 2020-09-14: The below types need to be eliminated
-; and replaced with non-local-none-lex-item.
-; This is assuming all lexical items explicitly
-; say something about their ARG-ST length.
-
-
-;basic-one-arg := lex-item &
-;  [ ARG-ST < [ NON-LOCAL [ SLASH #slash,
-;			   REL #rel,
-;			   QUE #que ] ] >,
-;    SYNSEM.NON-LOCAL [ SLASH #slash,
-;		       REL #rel,
-;		       QUE #que ] ].
-
-basic-one-arg := lex-item &
-  [ ARG-ST < [ ] >,
-    SYNSEM.NON-LOCAL non-local-none ].
-
-
-;basic-two-arg := lex-item &
-;  [ ARG-ST < [ NON-LOCAL [ SLASH #s2,
-;                           REL #r2,
-;                           QUE #q2 ] ],
-;	     [ NON-LOCAL [ SLASH #s1,
-;			   REL #r1,
-;			   QUE #q1 ] ] >,
-;    SYNSEM.NON-LOCAL [ SLASH.APPEND < #s1, #s2 >,
-;                       REL.APPEND < #r1, #r2 >,
-;                       QUE.APPEND < #q1, #q2 > ] ].
-
-basic-two-arg := lex-item &
-  [ ARG-ST < [ ], [ ] >,
-    SYNSEM.NON-LOCAL non-local-none ].
-
-
-basic-three-arg := lex-item & 
-  [ ARG-ST < [ ], [ ], [ ] >,
-    SYNSEM.NON-LOCAL non-local-none ].
-
-;basic-three-arg := lex-item &
-;  [ ARG-ST < [ NON-LOCAL [ SLASH #s3,
-;                           REL #r3,
-;                           QUE #q3 ] ],
-;             [ NON-LOCAL [ SLASH #s1,
-;                           REL #r1,
-;                           QUE #q1 ] ],
-;             [ NON-LOCAL [ SLASH #s2,
-;                           REL #r2,
-;                           QUE #q2 ] ] >,
-;    SYNSEM.NON-LOCAL [ SLASH.APPEND < #s1, #s2, #s3 >,
-;                       REL.APPEND < #r1, #r2, #r3 >,
-;                       QUE.APPEND < #q1, #q2, #q3 > ] ].
-
 ; ERB 2007-01-22  In the message-free universe, many more qeqs are
 ; introduced by lexical items (basically any head that selects a clausal
 ; complement).  To facilitate this, I'm going to move the no-hcons
 ; distinction to the linking types part of the hierarchy (and out of
 ; the pos part of the hierarchy).  In this connection, it's useful
-; to have subtypes of basic-n-arg which inherit from no-hcons-lex-item.
+; OZ 2020-10-02 (updated for no lexical threading):
+; to have a subtype of non-local-none-lex-item which inherits from no-hcons-lex-item.
 
-basic-one-arg-no-hcons := basic-one-arg & no-hcons-lex-item.
-basic-two-arg-no-hcons := basic-two-arg & no-hcons-lex-item.
-basic-three-arg-no-hcons := basic-three-arg & no-hcons-lex-item.
+non-local-none-no-hcons := non-local-none-lex-item & no-hcons-lex-item.
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2968,7 +2914,7 @@ basic-three-arg-no-hcons := basic-three-arg & no-hcons-lex-item.
 
 ; CHANGING: add cat-sat to args here (PASSES all reg tests)
 
-intransitive-lex-item := basic-one-arg-no-hcons & basic-icons-lex-item &
+intransitive-lex-item := non-local-none-no-hcons & basic-icons-lex-item &
   [ ARG-ST < [ LOCAL [ CAT cat-sat,
                        CONT.HOOK [ INDEX ref-ind & #ind,
                ICONS-KEY.IARG1 #clause ] ] ] >,
@@ -2980,7 +2926,7 @@ intransitive-lex-item := basic-one-arg-no-hcons & basic-icons-lex-item &
 
 ; SSH 2013-12-11 Expletives cannot be topic or focus.
 
-expl-arg-only-lex-item := basic-one-arg-no-hcons & basic-icons-lex-item &
+expl-arg-only-lex-item := non-local-none-no-hcons & basic-icons-lex-item &
    [ ARG-ST < [ LOCAL [ CONT.HOOK.INDEX expl-ind,
                         CAT cat-sat ] ] > ].
 
@@ -2990,7 +2936,7 @@ expl-arg-only-lex-item := basic-one-arg-no-hcons & basic-icons-lex-item &
 
 ; CHANGING: add cat-sat to args here (PASSES all reg tests)
 
-transitive-lex-item := basic-two-arg-no-hcons & basic-icons-lex-item &
+transitive-lex-item := non-local-none-no-hcons & basic-icons-lex-item &
    [ ARG-ST < [ LOCAL [ CAT cat-sat,
                         CONT.HOOK [ INDEX ref-ind & #ind1,
                                     ICONS-KEY.IARG1 #clause ] ] ],
@@ -3007,7 +2953,7 @@ transitive-lex-item := basic-two-arg-no-hcons & basic-icons-lex-item &
 
 ; CHANGING: add cat-sat to args here  (PASSES all reg tests)
 
-ditransitive-lex-item := basic-three-arg-no-hcons & basic-icons-lex-item &
+ditransitive-lex-item := non-local-none-no-hcons & basic-icons-lex-item &
    [ ARG-ST < [ LOCAL [ CAT cat-sat,
                         CONT.HOOK [ INDEX ref-ind & #ind1,
                                     ICONS-KEY.IARG1 #clause ] ] ],
@@ -3034,7 +2980,7 @@ ditransitive-lex-item := basic-three-arg-no-hcons & basic-icons-lex-item &
 
 ; Changing: planning on adding cat-sat to all arguments that have ref-ind indexes from here on.
 
-clausal-arg-intrans-lex-item := basic-one-arg & one-icons-lex-item &
+clausal-arg-intrans-lex-item := non-local-none-lex-item & one-icons-lex-item &
    [ ARG-ST < [ LOCAL.CONT.HOOK [ LTOP #larg,
                                   INDEX #target ] ] >,
      SYNSEM [ LOCAL.CONT [ HOOK.CLAUSE-KEY #clause,
@@ -3050,7 +2996,7 @@ clausal-arg-intrans-lex-item := basic-one-arg & one-icons-lex-item &
 
 ; changing: added cat-sat (PASSES all reg tests)
 
-clausal-first-arg-trans-lex-item := basic-two-arg & one-icons-lex-item &
+clausal-first-arg-trans-lex-item := non-local-none-lex-item & one-icons-lex-item &
    [ ARG-ST < [ LOCAL.CONT.HOOK [ LTOP #larg,
                                   INDEX #target ] ],
               [ LOCAL [ CAT cat-sat,
@@ -3076,7 +3022,7 @@ clausal-first-arg-trans-lex-item := basic-two-arg & one-icons-lex-item &
 ; It was causing a meaningless (underspecified) ICONS link between the clause-embedding
 ; verb and the embedded event. If later on this becomes clearer, the below
 ; commented out type can be brought back.
-clausal-second-arg-trans-lex-item := basic-two-arg & basic-icons-lex-item &
+clausal-second-arg-trans-lex-item := non-local-none-lex-item & basic-icons-lex-item &
    [ ARG-ST < [ LOCAL [ CAT cat-sat,
                         CONT.HOOK [ INDEX ref-ind & #ind ] ] ],
               [ LOCAL.CONT.HOOK.LTOP #larg ] >,
@@ -3086,7 +3032,7 @@ clausal-second-arg-trans-lex-item := basic-two-arg & basic-icons-lex-item &
                              ARG2 #harg ] ] ].
 
 ; OZ 2020-08-25 See comment above.
-;clausal-second-arg-trans-lex-item := basic-two-arg & one-icons-lex-item &
+;clausal-second-arg-trans-lex-item := non-local-none-lex-item & one-icons-lex-item &
 ;   [ ARG-ST < [ LOCAL [ CAT cat-sat,
 ;                        CONT.HOOK [ INDEX ref-ind & #ind,
 ;                                    ICONS-KEY.IARG1 #clause ] ] ],
@@ -3108,7 +3054,7 @@ clausal-second-arg-trans-lex-item := basic-two-arg & basic-icons-lex-item &
 ; intervening.
 
 
-clausal-third-arg-ditrans-lex-item := basic-three-arg & one-icons-lex-item &
+clausal-third-arg-ditrans-lex-item := non-local-none-lex-item & one-icons-lex-item &
    [ ARG-ST < [ LOCAL [ CAT cat-sat,
                         CONT.HOOK [ INDEX ref-ind & #ind1,
                                     ICONS-KEY.IARG1 #clause ] ] ],
@@ -3136,7 +3082,7 @@ clausal-third-arg-ditrans-lex-item := basic-three-arg & one-icons-lex-item &
 ; intervening.
 
 
-clausal-expl-arg-lex-item := basic-two-arg & one-icons-lex-item &
+clausal-expl-arg-lex-item := non-local-none-lex-item & one-icons-lex-item &
    [ ARG-ST < [ LOCAL [ CAT cat-sat,
                         CONT.HOOK.INDEX expl-ind ] ],
               [ LOCAL.CONT.HOOK [ LTOP #larg,
@@ -3150,7 +3096,7 @@ clausal-expl-arg-lex-item := basic-two-arg & one-icons-lex-item &
 ; Kim seems to sleep; Kim is sleeping.
 
 
-trans-first-arg-raising-lex-item := basic-two-arg &
+trans-first-arg-raising-lex-item := non-local-none-lex-item &
    [ ARG-ST < [ LOCAL [ CAT cat-sat,
                         CONT.HOOK.INDEX #ind ] ],
           [ LOCAL [ CAT cat-sat,
@@ -3196,7 +3142,7 @@ trans-first-arg-raising-lex-item-2 := trans-first-arg-raising-lex-item &
 
 ; ERB 2007-01-22 Adding in qeq here.
 
-trans-first-arg-control-lex-item := basic-two-arg & basic-icons-lex-item &
+trans-first-arg-control-lex-item := non-local-none-lex-item & basic-icons-lex-item &
    [ ARG-ST < [ LOCAL [ CAT cat-sat,
      	      	      	CONT.HOOK [ INDEX ref-ind & #ind,
 				  ICONS-KEY.IARG1 #clause,
@@ -3217,7 +3163,7 @@ trans-first-arg-control-lex-item := basic-two-arg & basic-icons-lex-item &
 ; ERB 2007-01-22 Adding in qeq here.
 
 
-ditrans-first-arg-raising-lex-item := basic-three-arg & basic-icons-lex-item &
+ditrans-first-arg-raising-lex-item := non-local-none-lex-item & basic-icons-lex-item &
    [ ARG-ST < [ LOCAL.CONT.HOOK [ INDEX #ind1,
                                   ICONS-KEY.IARG1 #clause,
                                   CLAUSE-KEY #clause ] ],
@@ -3240,7 +3186,7 @@ ditrans-first-arg-raising-lex-item := basic-three-arg & basic-icons-lex-item &
 ; ERB 2007-01-22 Adding in qeq here.
 
 
-ditrans-first-arg-control-lex-item := basic-three-arg & basic-icons-lex-item &
+ditrans-first-arg-control-lex-item := non-local-none-lex-item & basic-icons-lex-item &
    [ ARG-ST < [ LOCAL [ CAT cat-sat,
                         CONT.HOOK [ INDEX ref-ind & #ind1,
                                     ICONS-KEY.IARG1 #clause,
@@ -3266,7 +3212,7 @@ ditrans-first-arg-control-lex-item := basic-three-arg & basic-icons-lex-item &
 ; ERB 2007-01-22 Adding in qeq here.
 
 
-ditrans-second-arg-raising-lex-item := basic-three-arg & basic-icons-lex-item &
+ditrans-second-arg-raising-lex-item := non-local-none-lex-item & basic-icons-lex-item &
    [ ARG-ST < [ LOCAL [ CAT cat-sat,
                         CONT.HOOK [ INDEX ref-ind & #ind1,
                                     ICONS-KEY.IARG1 #clause,
@@ -3288,7 +3234,7 @@ ditrans-second-arg-raising-lex-item := basic-three-arg & basic-icons-lex-item &
 
 ; ERB 2007-01-22 Adding in qeq here.
 
-ditrans-second-arg-control-lex-item := basic-three-arg & basic-icons-lex-item &
+ditrans-second-arg-control-lex-item := non-local-none-lex-item & basic-icons-lex-item &
    [ ARG-ST < [ LOCAL [ CAT cat-sat,
                         CONT.HOOK [ INDEX ref-ind & #ind1,
                                     ICONS-KEY.IARG1 #clause,
@@ -3321,7 +3267,7 @@ ditrans-second-arg-control-lex-item := basic-three-arg & basic-icons-lex-item &
 
 ; The specifier does not play a semantic role in the 'dog' relation,
 ; so there is nothing more to say: these can just inherit from
-; basic-one-arg and no-hcons-lex-item, and not link in that one
+; non-local-none-lex-item and no-hcons-lex-item, and not link in that one
 ; argument.  The head-spec rule identifies the head's HOOK with the
 ; SPEC..HOOK of the specifier, which gives the specifier access to the
 ; noun's index for linking purposes.
@@ -3329,7 +3275,7 @@ ditrans-second-arg-control-lex-item := basic-three-arg & basic-icons-lex-item &
 ; a book about dogs
 ; very fond of apples
 
-spr-plus-one-arg-lex-item := basic-two-arg-no-hcons & basic-icons-lex-item &
+spr-plus-one-arg-lex-item := non-local-none-no-hcons & basic-icons-lex-item &
    [ ARG-ST < synsem,
 	      [ LOCAL.CONT.HOOK.INDEX ref-ind & #ind ] >,
      SYNSEM.LKEYS.KEYREL.ARG1 #ind ].
@@ -3339,7 +3285,7 @@ spr-plus-one-arg-lex-item := basic-two-arg-no-hcons & basic-icons-lex-item &
 
 ; ERB 2007-01-22 Adding qeq in here.
 
-spr-plus-clausal-arg-lex-item := basic-two-arg & one-icons-lex-item &
+spr-plus-clausal-arg-lex-item := non-local-none-lex-item & one-icons-lex-item &
    [ ARG-ST < synsem,
 	      [ LOCAL.CONT.HOOK [ LTOP #larg,
 				  INDEX #target ] ] >,
@@ -3358,7 +3304,7 @@ spr-plus-clausal-arg-lex-item := basic-two-arg & one-icons-lex-item &
 
 ; ERB 2007-01-22 Adding qeq in here.
 
-spr-trans-first-arg-control-lex-item := basic-three-arg & basic-icons-lex-item &
+spr-trans-first-arg-control-lex-item := non-local-none-lex-item & basic-icons-lex-item &
    [ ARG-ST < synsem,
 	      [ LOCAL.CONT.HOOK [ INDEX ref-ind & #ind,
 				  ICONS-KEY.IARG1 #clause,
@@ -3596,25 +3542,8 @@ infostr-marking-determiner-lex := basic-determiner-lex & one-icons-lex-item &
 ; messages.  Isn't enough for the quantifiers to be able to out-scope
 ; the subord-relation?
 
-; basic-subord-conjunction-lex := basic-one-arg &
-;   [ ARG-ST < [ LOCAL.CONT.HOOK.LTOP #ltop1 ] >,
-;     SYNSEM [ LOCAL [ CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.LTOP #ltop2 ] >,
-; 		     CONT [ HCONS <! qeq &
-; 				   [ HARG #harg,
-; 				     LARG #larg ] !>,
-; 			    RELS <! relation,
-; 				  message &
-; 				  [ LBL #msg,
-; 				    PRED proposition_m_rel,
-; 				    MARG #harg ] !>,
-; 			    HOOK [ LTOP #msg ] ] ],
-; 	     LKEYS.KEYREL subord-relation &
-; 		   [ LBL #larg,
-; 		     L-HNDL #ltop1,
-; 		     R-HNDL #ltop2 ] ] ].
 
-
-basic-subord-conjunction-lex := basic-one-arg &
+basic-subord-conjunction-lex := non-local-none-lex-item &
   [ ARG-ST < [ LOCAL.CONT.HOOK.LTOP #ltop1 ] >,
     SYNSEM [ LOCAL [ CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.LTOP #ltop2 ] >,
 		     CONT [ HCONS.LIST < >,
