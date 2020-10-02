@@ -2457,7 +2457,7 @@ head-mod-phrase := headed-phrase &
 ; The PLACEHOLDER feature makes it easier to then write rules for
 ; flexible word order (and not repeat the MOD constraints).
 
-basic-extracted-adj-phrase := head-mod-phrase & head-only & phrasal &
+basic-extracted-adj-phrase := head-mod-phrase & head-only &
   [ SYNSEM [ LOCAL.CAT [ WH #wh,
                          VAL.SPEC < >,
                          POSTHEAD #ph,
