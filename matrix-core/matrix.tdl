@@ -2058,7 +2058,6 @@ basic-head-comp-phrase := head-valence-phrase & head-compositional &
                                SPR #spr ],
                          POSTHEAD #ph,
                          HC-LIGHT #light ],
-             LIGHT #light,
              MODIFIED #modified ],
     HEAD-DTR.SYNSEM [ LOCAL.CAT [ WH #or1,
                                   VAL [ SUBJ #subj,
