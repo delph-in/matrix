@@ -211,19 +211,24 @@ head-nf-subj-phrase := head-nf-subj-phrase-super & head-initial-head-nexus &
 		               CONT.HOOK.ICONS-KEY $ ] ]. 
 """
 
-infostr_dislocated_phrase = """
-infostr-dislocated-phrase := narrow-focus &
-  [ SYNSEM [ LOCAL.CAT [ MC +, VAL.SUBJ < > ], NON-LOCAL.QUE.LIST < > ],
-    C-CONT [ RELS.LIST < >, 
+basic_infostr_dislocated_phrase = """
+basic-infostr-dislocated-phrase := basic-binary-headed-phrase &
+  [ C-CONT [ RELS.LIST < >, 
              HCONS.LIST < >,
              ICONS.LIST < info-str & #icons & [ IARG1 #clause, IARG2 #index ] > ],
-    HEAD-DTR.SYNSEM.LOCAL [ CAT [ MC -, HEAD verb ],
+    HEAD-DTR.SYNSEM.LOCAL [ CAT [ HEAD verb ],
                             CONT.HOOK [ INDEX #clause,
                                         CLAUSE-KEY #clause ] ],
-    NON-HEAD-DTR.SYNSEM [ LIGHT -,
-                          LOCAL [ CAT.HEAD +np,
-                                  CONT.HOOK [ INDEX #index,
+    NON-HEAD-DTR.SYNSEM [ LOCAL [ CONT.HOOK [ INDEX #index,
                                               ICONS-KEY #icons ] ] ] ].
+"""
+
+infostr_dislocated_phrase = """
+infostr-dislocated-phrase := narrow-focus & basic-infostr-dislocated-phrase &
+  [ SYNSEM [ LOCAL.CAT [ MC +, VAL.SUBJ < > ], NON-LOCAL.QUE.LIST < > ],
+    HEAD-DTR.SYNSEM.LOCAL [ CAT [ MC - ],
+    NON-HEAD-DTR.SYNSEM [ LIGHT -,
+                          LOCAL [ CAT.HEAD +np ] ] ].
 """
 
 infostr_filler_head_phrase = """

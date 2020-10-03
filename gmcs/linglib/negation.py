@@ -114,7 +114,7 @@ def customize_sentential_negation(mylang, ch, lexicon, rules, lrules, hierarchie
 def customize_adv_neg(mylang, ch, lexicon, rules):
     # first add lexical type for negative adverb
     mylang.set_section('otherlex')
-    mylang.add('''neg-adv-lex := basic-scopal-adverb-lex &
+    mylang.add('''neg-adv-lex := basic-scopal-adverb-lex & basic-non-wh-word-lex & 
                  [ SYNSEM.LOCAL.CAT [ VAL [ SPR < >,
                                             COMPS < >,
                                             SUBJ < >, SPEC < > ],

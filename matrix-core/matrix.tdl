@@ -1994,8 +1994,8 @@ basic-head-subj-phrase := binary-nonloc-phrase & binary-headed-phrase & head-com
                            VAL [ SUBJ olist,
                                  COMPS olist,
                                  SPR olist ] ] ],
-             NON-LOCAL [ SLASH append-list,
-                         REL.LIST < > ] ],
+             NON-LOCAL [ REL.LIST < >, 
+                         QUE.LIST < > ] ],
     C-CONT [ RELS.LIST < >, HCONS.LIST < >, ICONS.LIST < > ] ].
 
 decl-head-subj-phrase := basic-head-subj-phrase & declarative-clause.
@@ -2550,9 +2550,8 @@ adj-head-phrase := basic-head-mod-phrase-simple & head-final &
     HEAD-DTR.SYNSEM [ LOCAL.CAT.POSTHEAD #ph,
                       LIGHT #light ],
     NON-HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL [ SPR olist,
-    			  	      	    COMPS < > ] ],
-			  NON-LOCAL [ SLASH.LIST < >,
-				      REL.LIST < > ],
+    			  	      	                      COMPS < > ] ],
+			                    NON-LOCAL non-local-none,
                           MODIFIED.PERIPH #periph ] ].
 
 ;;; 2012-26-09 removed this constraint from head-adj-phrase
@@ -2564,7 +2563,8 @@ adj-head-phrase := basic-head-mod-phrase-simple & head-final &
 head-adj-phrase := basic-head-mod-phrase-simple & head-initial & phrasal &
   [ SYNSEM.MODIFIED rmod,
     NON-HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL.SPR olist,
-                                      POSTHEAD + ] ] ].
+                                      POSTHEAD + ],
+                          NON-LOCAL.QUE.LIST < > ] ].
 
 ; We split head-adj-phrase and adj-head-phrase into two each,
 ; one for intersective modifiers and one for scopal modifiers, in order to

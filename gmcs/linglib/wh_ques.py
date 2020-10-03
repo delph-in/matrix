@@ -7,7 +7,7 @@ from gmcs.constants import MTRX_FR_OPT, MTRX_FRONT, NO_MULTI, \
     SINGLE, MULTI, SG_OBLIG, ALL_OBLIG, EMBED_INSITU, ON, WH_INFL, \
     IN_SITU, NONE_OBLIG
 from gmcs.utils import get_name, TDLencode, orth_encode
-
+from gmcs.linglib.information_structure import basic_infostr_dislocated_phrase
 
 '''
 CONSTANTS
@@ -19,7 +19,7 @@ WH_Q_PHR_NO_OR_SG_OBLIG_MULTI = '''wh-ques-phrase :=
 
 WH_Q_PHR = ''' wh-ques-phrase := basic-head-filler-phrase & interrogative-clause & head-final &
 [ SYNSEM [ LOCAL.CAT [ WH.BOOL +, 
-                       MC bool,
+                       MC +-or--,
 			           VAL #val,
 			           HEAD verb ], 
 			NON-LOCAL.QUE.LIST < > ],
@@ -93,6 +93,25 @@ NC_SUBJ_HEAD = '''subj-head-nc-phrase := decl-head-subj-phrase & head-final &
     HEAD-DTR.SYNSEM.LOCAL.CAT.VAL [ COMPS < > ] ].
 
 '''
+
+'''
+The below contrast_or_topic_phrase may belong better to the information structure library?
+But let it be here just for now while I am figuring this out...
+'''
+contrast_or_topic_phrase = """
+contrast-or-topic-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase & declarative-clause & head-final & 1st-head-filler-phrase &
+  [ SYNSEM [ LOCAL [ CAT [ MKG.TP +, 
+                         WH #wh,
+                         VAL #val,
+                         HEAD verb ], COORD - ] ],
+    NON-HEAD-DTR.SYNSEM [ NON-LOCAL non-local-none,
+                          LOCAL.CONT.HOOK.ICONS-KEY contrast-or-topic ],
+    HEAD-DTR.SYNSEM [ LOCAL.CAT [ WH #wh, MKG.TP na-or--, VAL #val &
+                                      [ SUBJ < >,
+                                        COMPS < > ],
+                                  MC + ],
+                      NON-LOCAL.SLASH.LIST.FIRST [ ] ] ].
+"""
 
 
 # This function should be finished when/if WH feature is moved from matrix.tdl to customization
@@ -168,8 +187,7 @@ def customize_wh_ques(mylang, ch, rules, roots):
         rules.add('ex-comp := extracted-comp-phrase.')
         mylang.add_literal('; Adjunct extraction', section='phrases')
         rules.add('ex-adj := basic-extracted-adj-phrase.')
-        # Free probably shouldn't belong here? check
-        if ch.get('word-order') in ['vos', 'svo', 'sov', 'free']:
+        if ch.get('word-order') in ['vos', 'svo', 'sov']:
             if ch.get('pied-pip-adp') != 'on' or ch.get('oblig-pied-pip-adp') == ON:
                 mylang.add(
                     'extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ cons ].', merge=True)
@@ -178,6 +196,27 @@ def customize_wh_ques(mylang, ch, rules, roots):
         elif ch.get('word-order') in ['vso', 'osv', 'ovs']:
             mylang.add(
                 'extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].', merge=True)
+        elif (ch.get('word-order') == 'free'
+              and ch.get(MTRX_FRONT) == MULTI
+              and ch.get(MTRX_FR_OPT) == 'none-oblig'):
+            mylang.add(
+                'extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LIGHT + ].', merge=True)
+            mylang.add(
+                'extracted-subj-phrase := [ HEAD-DTR.SYNSEM.LIGHT + ].', merge=True)
+            mylang.add(
+                'head-comp-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
+            mylang.add(
+                'comp-head-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
+            mylang.add('''head-comp-wh-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus 
+[ NON-HEAD-DTR.SYNSEM [ NON-LOCAL.QUE.LIST cons, LIGHT - ] ].''')
+            mylang.add('''head-comp-wh2-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus 
+[ NON-HEAD-DTR.SYNSEM [ NON-LOCAL.QUE.LIST cons ],
+  HEAD-DTR.SYNSEM [ LOCAL.CAT.MC +, NON-LOCAL.SLASH.LIST cons ] ].''')
+            rules.add('head-comp-wh := head-comp-wh-phrase.')
+            rules.add('head-comp-wh2 := head-comp-wh2-phrase.')
+            mylang.add(contrast_or_topic_phrase)
+            mylang.add(basic_infostr_dislocated_phrase)
+            rules.add('cftopic := contrast-or-topic-phrase.')
 
     if ch.get(MTRX_FRONT) == SINGLE:
         # With single fronting, can restrict SLASH to one element at most
@@ -261,9 +300,8 @@ def customize_wh_ques(mylang, ch, rules, roots):
     # If the fronting isn't obligatory or if only one question phrase
     # is obligatorily fronted, need also in-situ rules:
     if (ch.get(MTRX_FRONT) == SINGLE and not ch.get(MTRX_FR_OPT) == SG_OBLIG) \
-            or ch.get(MTRX_FRONT) == IN_SITU \
-            or (ch.get(MTRX_FRONT) == MULTI and not ch.get(MTRX_FR_OPT) == ALL_OBLIG) \
-            or ch.get(WH_INFL) == ON:
+            or ch.get(MTRX_FRONT) == IN_SITU or ch.get(WH_INFL) == ON:
+        # or (ch.get(MTRX_FRONT) == MULTI and not ch.get(MTRX_FR_OPT) == ALL_OBLIG) \
         mylang.add_literal(
             '; In-situ interrogative clause.', section='phrases')
         mylang.add(IN_SITU_PHRASE)
@@ -274,15 +312,13 @@ def customize_wh_ques(mylang, ch, rules, roots):
               HEAD-DTR.SYNSEM.NON-LOCAL.YNQ #ynq ].''')
 
         if not ch.get(MTRX_FRONT) == IN_SITU:
+            mylang.add('insitu-int-cl := [ SYNSEM.L-QUE - ].')
             if ch.get(EMBED_INSITU) == ON:
                 mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.WH.BOOL + ].')
             else:
                 mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.WH.BOOL - ].')
         else:
             mylang.add('''insitu-int-cl := [ SYNSEM.LOCAL.CAT.WH.BOOL + ].''')
-
-        if ch.get(MTRX_FRONT) in [SINGLE, MULTI]:
-            mylang.add('insitu-int-cl := [ SYNSEM.L-QUE - ].')
 
         if (ch.get(MTRX_FRONT) == SINGLE
             and not ch.get(MTRX_FR_OPT) == SG_OBLIG) \

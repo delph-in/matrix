@@ -673,7 +673,7 @@ Add clausal verb supertype to the grammar.
 
 def add_clausalcomp_verb_supertype(ch, mainorverbtype, mylang):
     head = ch.case_head()
-    typedef = CLAUSALCOMP + '-verb-lex := ' + mainorverbtype + ' & basic-non-wh-word-lex &\
+    typedef = CLAUSALCOMP + '-verb-lex := ' + mainorverbtype + ' &\
       [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >,\
         ARG-ST < [ LOCAL.CAT.HEAD ' + head + ' ],\
                  #comps &\
