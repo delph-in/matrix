@@ -207,9 +207,9 @@ def customize_wh_ques(mylang, ch, rules, roots):
                 'head-comp-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
             mylang.add(
                 'comp-head-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
-            mylang.add('''head-comp-wh-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus 
+            mylang.add('''head-comp-wh-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus &
 [ NON-HEAD-DTR.SYNSEM [ NON-LOCAL.QUE.LIST cons, LIGHT - ] ].''')
-            mylang.add('''head-comp-wh2-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus 
+            mylang.add('''head-comp-wh2-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus &
 [ NON-HEAD-DTR.SYNSEM [ NON-LOCAL.QUE.LIST cons ],
   HEAD-DTR.SYNSEM [ LOCAL.CAT.MC +, NON-LOCAL.SLASH.LIST cons ] ].''')
             rules.add('head-comp-wh := head-comp-wh-phrase.')
@@ -217,6 +217,7 @@ def customize_wh_ques(mylang, ch, rules, roots):
             mylang.add(contrast_or_topic_phrase)
             mylang.add(basic_infostr_dislocated_phrase)
             rules.add('cftopic := contrast-or-topic-phrase.')
+            mylang.add('scopal-mod-phrase :+ [ SYNSEM.LIGHT - ].')
 
     if ch.get(MTRX_FRONT) == SINGLE:
         # With single fronting, can restrict SLASH to one element at most

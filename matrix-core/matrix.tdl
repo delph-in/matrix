@@ -2545,10 +2545,8 @@ basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
 
 adj-head-phrase := basic-head-mod-phrase-simple & head-final &
   [ SYNSEM [ LOCAL.CAT.POSTHEAD #ph,
-	     MODIFIED lmod & [ PERIPH #periph ],
-             LIGHT #light ],
-    HEAD-DTR.SYNSEM [ LOCAL.CAT.POSTHEAD #ph,
-                      LIGHT #light ],
+	     MODIFIED lmod & [ PERIPH #periph ] ],
+    HEAD-DTR.SYNSEM [ LOCAL.CAT.POSTHEAD #ph ],
     NON-HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL [ SPR olist,
     			  	      	                      COMPS < > ] ],
 			                    NON-LOCAL non-local-none,
@@ -2573,8 +2571,7 @@ head-adj-phrase := basic-head-mod-phrase-simple & head-initial & phrasal &
 ; we delay construction of intersective modification, but not scopal.
 
 scopal-mod-phrase := basic-head-mod-phrase-simple &
-  [ SYNSEM.LIGHT -,
-    NON-HEAD-DTR.SYNSEM.LOCAL [ CAT [ VAL.SPR olist,
+  [ NON-HEAD-DTR.SYNSEM.LOCAL [ CAT [ VAL.SPR olist,
                                       HEAD.MOD < [ LOCAL scopal-mod ] > ],
                                 CONT.HOOK #hook ],
     C-CONT [ HOOK #hook,
