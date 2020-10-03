@@ -2573,7 +2573,8 @@ head-adj-phrase := basic-head-mod-phrase-simple & head-initial & phrasal &
 ; we delay construction of intersective modification, but not scopal.
 
 scopal-mod-phrase := basic-head-mod-phrase-simple &
-  [ NON-HEAD-DTR.SYNSEM.LOCAL [ CAT [ VAL.SPR olist,
+  [ SYNSEM.LIGHT -,
+    NON-HEAD-DTR.SYNSEM.LOCAL [ CAT [ VAL.SPR olist,
                                       HEAD.MOD < [ LOCAL scopal-mod ] > ],
                                 CONT.HOOK #hook ],
     C-CONT [ HOOK #hook,
