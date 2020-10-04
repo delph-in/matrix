@@ -5,11 +5,11 @@ cat house sees
 who sleeps?
 *sleeps who?
 what cat sees?
-*cat sees what?
-cat what sees?
+cat what sees ?
+*sees cat what?
 cat sleeps in house
 where cat sleeps?
-cat sleeps where?
+*cat sleeps where?
 cat where sleeps?
 *who sees what?
 who what sees?

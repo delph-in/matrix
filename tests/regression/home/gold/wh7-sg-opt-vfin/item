@@ -5,11 +5,11 @@
 5@@@@1@@who sleeps?@@@@1@2@@@
 6@@@@1@@sleeps who?@@@@0@2@@@
 7@@@@1@@what cat sees?@@@@1@3@@@
-8@@@@1@@cat sees what?@@@@0@3@@@
-9@@@@1@@cat what sees?@@@@1@3@@@
+8@@@@1@@cat what sees ?@@@@1@4@@@
+9@@@@1@@sees cat what?@@@@0@3@@@
 10@@@@1@@cat sleeps in house@@@@1@4@@@
 11@@@@1@@where cat sleeps?@@@@1@3@@@
-12@@@@1@@cat sleeps where?@@@@1@3@@@
+12@@@@1@@cat sleeps where?@@@@0@3@@@
 13@@@@1@@cat where sleeps?@@@@1@3@@@
 14@@@@1@@who sees what?@@@@0@3@@@
 15@@@@1@@who what sees?@@@@1@3@@@

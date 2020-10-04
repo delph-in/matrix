@@ -1,12 +1,12 @@
 
-version=32
+version=34
 
 section=general
-language=wh7-sov-sg-opt
+language=wh7-v-fin-sg-opt
 punctuation-chars=discard-all
 
 section=word-order
-word-order=sov
+word-order=v-final
 has-dets=no
 has-aux=no
 
@@ -38,6 +38,7 @@ section=matrix-yes-no
 
 section=wh-q
 front-matrix=single
+matrix-front-opt=none-oblig
 
 section=info-str
 
@@ -70,10 +71,10 @@ section=lexicon
     verb2_stem1_orth=sees
     verb2_stem1_pred=_sees_v_rel
   adv1_name=wh-loc
-    adv1_type=loc
     adv1_stem1_orth=where
     adv1_stem1_pred=_place_n_rel
   adv1_inter=on
+  adv1_type=loc
     normadp1_stem1_orth=in
     normadp1_stem1_pred=_in_p_rel
   normadp1_order=before
@@ -93,12 +94,13 @@ section=test-sentences
   sentence6_orth=sleeps who?
   sentence6_star=on
   sentence7_orth=what cat sees?
-  sentence8_orth=cat sees what?
-  sentence8_star=on
-  sentence9_orth=cat what sees?
+  sentence8_orth=cat what sees ?
+  sentence9_orth=sees cat what?
+  sentence9_star=on
   sentence10_orth=cat sleeps in house
   sentence11_orth=where cat sleeps?
   sentence12_orth=cat sleeps where?
+  sentence12_star=on
   sentence13_orth=cat where sleeps?
   sentence14_orth=who sees what?
   sentence14_star=on
