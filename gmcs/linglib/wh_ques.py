@@ -156,8 +156,7 @@ def customize_wh_ques(mylang, ch, rules, roots):
         if ch.get(MTRX_FRONT) == SINGLE:
             mylang.add(
                 '''wh-ques-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].''')
-        if ch.get(MTRX_FRONT) == IN_SITU or \
-                (ch.get(MTRX_FRONT) == SINGLE and ch.get(MTRX_FR_OPT) == NONE_OBLIG):
+        if ch.get(MTRX_FRONT) == IN_SITU:
             mylang.add(
                 '''insitu-int-cl := [ HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < [ ] > ].''')
         if len(ch.get('adv', [])) > 0 or len(ch.get('normadp', [])) > 0:
@@ -177,6 +176,12 @@ def customize_wh_ques(mylang, ch, rules, roots):
             'decl-head-subj-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
         mylang.add(
             'adj-head-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
+        if ch.get('word-order') in ['sov', 'ovs', 'osv', 'free', 'v-final']:
+            mylang.add(
+                'comp-head-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
+        if ch.get('word-order') in ['svo', 'vso', 'vos', 'free', 'v-initial']:
+            mylang.add(
+                'head-comp-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
         if not ch.get('wh-inv-matrix') == ON:
             mylang.add(
                 'wh-ques-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC na-or-+ ].')
@@ -226,10 +231,6 @@ def customize_wh_ques(mylang, ch, rules, roots):
             mylang.add('scopal-mod-phrase :+ [ SYNSEM.LIGHT - ].')
 
     if ch.get(MTRX_FRONT) == SINGLE:
-        # With single fronting, can restrict SLASH to one element at most
-        #mylang.add(BASIC_FILLER_SG, section='phrases')
-        mylang.add(
-            'wh-ques-phrase := [ HEAD-DTR.SYNSEM.L-QUE - ].')
         mylang.add(
             'basic-extracted-adj-phrase :+ [ HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
         mylang.add('basic-extracted-adj-phrase :+ '
