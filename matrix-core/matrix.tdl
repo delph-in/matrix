@@ -2000,6 +2000,20 @@ basic-head-subj-phrase := binary-nonloc-phrase & binary-headed-phrase & head-com
 decl-head-subj-phrase := basic-head-subj-phrase & declarative-clause.
 imp-head-subj-phrase := basic-head-subj-phrase & imperative-clause.
 
+; OZ 2020-10-03 A phrase useful for both information structure and
+; wh-questions library.
+
+basic-infostr-dislocated-phrase := basic-binary-headed-phrase &
+  [ C-CONT [ RELS.LIST < >, 
+             HCONS.LIST < >,
+             ICONS.LIST < info-str & #icons & [ IARG1 #clause, IARG2 #index ] > ],
+    HEAD-DTR.SYNSEM.LOCAL [ CAT [ HEAD verb ],
+                            CONT.HOOK [ INDEX #clause,
+                                        CLAUSE-KEY #clause ] ],
+    NON-HEAD-DTR.SYNSEM [ LOCAL [ CONT.HOOK [ INDEX #index,
+                                              ICONS-KEY #icons ] ] ] ].
+
+
 ; SSH 2013-04-08 non-canonical and non-matrix clausal head-subj-phrase
 ; This type cannot be a root node by itself ([MC -]).
 ; This typed phrase is supposed to be combined with a filler-phrase.

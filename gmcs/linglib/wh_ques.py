@@ -7,7 +7,6 @@ from gmcs.constants import MTRX_FR_OPT, MTRX_FRONT, NO_MULTI, \
     SINGLE, MULTI, SG_OBLIG, ALL_OBLIG, EMBED_INSITU, ON, WH_INFL, \
     IN_SITU, NONE_OBLIG
 from gmcs.utils import get_name, TDLencode, orth_encode
-from gmcs.linglib.information_structure import basic_infostr_dislocated_phrase
 
 '''
 CONSTANTS
@@ -217,7 +216,6 @@ def customize_wh_ques(mylang, ch, rules, roots):
                 mylang.add(
                     'adj-head-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
                 mylang.add(contrast_or_topic_phrase)
-                mylang.add(basic_infostr_dislocated_phrase)
                 rules.add('cftopic := contrast-or-topic-phrase.')
                 mylang.add('scopal-mod-phrase :+ [ SYNSEM.LIGHT - ].')
 
