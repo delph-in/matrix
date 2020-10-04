@@ -173,10 +173,6 @@ def customize_wh_ques(mylang, ch, rules, roots):
         mylang.add('''basic-head-filler-phrase :+
    [ ARGS < [ SYNSEM.LOCAL.COORD - ], [ SYNSEM.LOCAL.COORD - ] > ].''')
         mylang.add(WH_Q_PHR, section='phrases')
-        mylang.add(
-            'decl-head-subj-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
-        mylang.add(
-            'adj-head-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
         if not ch.get('wh-inv-matrix') == ON:
             mylang.add(
                 'wh-ques-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC na-or-+ ].')
@@ -214,16 +210,16 @@ def customize_wh_ques(mylang, ch, rules, roots):
   HEAD-DTR.SYNSEM [ LOCAL.CAT.MC +, NON-LOCAL.SLASH.LIST cons ] ].''')
             rules.add('head-comp-wh := head-comp-wh-phrase.')
             rules.add('head-comp-wh2 := head-comp-wh2-phrase.')
-
-        if ch.get(MTRX_FR_OPT) == NONE_OBLIG:
             mylang.add(
-                'extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LIGHT + ].', merge=True)
+                'decl-head-subj-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
             mylang.add(
-                'extracted-subj-phrase := [ HEAD-DTR.SYNSEM.LIGHT + ].', merge=True)
+                'adj-head-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
             mylang.add(contrast_or_topic_phrase)
             mylang.add(basic_infostr_dislocated_phrase)
             rules.add('cftopic := contrast-or-topic-phrase.')
             mylang.add('scopal-mod-phrase :+ [ SYNSEM.LIGHT - ].')
+            mylang.add('extracted-subj-phrase := [ HEAD-DTR.SYNSEM.LIGHT + ].')
+            mylang.add('extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LIGHT + ].')
 
     if ch.get(MTRX_FRONT) == SINGLE:
         # With single fronting, can restrict SLASH to one element at most
@@ -307,7 +303,10 @@ def customize_wh_ques(mylang, ch, rules, roots):
         mylang.add(
             'phrase-or-lexrule :+ [ SYNSEM.L-QUE #lque, ARGS.FIRST.SYNSEM.L-QUE #lque ].')
 
-    if ch.get(MTRX_FRONT) == IN_SITU or ch.get(WH_INFL) == ON:
+    if (ch.get(MTRX_FRONT) == SINGLE and not ch.get(MTRX_FR_OPT) == SG_OBLIG) \
+            or ch.get(MTRX_FRONT) == IN_SITU \
+            or (ch.get(MTRX_FRONT) == MULTI and ch.get(MTRX_FR_OPT) == SG_OBLIG) \
+            or ch.get(WH_INFL) == ON:
         mylang.add_literal(
             '; In-situ interrogative clause.', section='phrases')
         mylang.add(IN_SITU_PHRASE)
