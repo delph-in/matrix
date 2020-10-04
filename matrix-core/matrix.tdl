@@ -1994,8 +1994,7 @@ basic-head-subj-phrase := binary-nonloc-phrase & binary-headed-phrase & head-com
                            VAL [ SUBJ olist,
                                  COMPS olist,
                                  SPR olist ] ] ],
-             NON-LOCAL [ REL.LIST < >, 
-                         QUE.LIST < > ] ],
+             NON-LOCAL [ REL.LIST < > ] ],
     C-CONT [ RELS.LIST < >, HCONS.LIST < >, ICONS.LIST < > ] ].
 
 decl-head-subj-phrase := basic-head-subj-phrase & declarative-clause.
@@ -2549,7 +2548,8 @@ adj-head-phrase := basic-head-mod-phrase-simple & head-final &
     HEAD-DTR.SYNSEM [ LOCAL.CAT.POSTHEAD #ph ],
     NON-HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL [ SPR olist,
     			  	      	                      COMPS < > ] ],
-			                    NON-LOCAL non-local-none,
+			                    NON-LOCAL [ SLASH.LIST < >,
+                                      REL.LIST < > ],
                           MODIFIED.PERIPH #periph ] ].
 
 ;;; 2012-26-09 removed this constraint from head-adj-phrase
@@ -2561,8 +2561,7 @@ adj-head-phrase := basic-head-mod-phrase-simple & head-final &
 head-adj-phrase := basic-head-mod-phrase-simple & head-initial & phrasal &
   [ SYNSEM.MODIFIED rmod,
     NON-HEAD-DTR.SYNSEM [ LOCAL.CAT [ VAL.SPR olist,
-                                      POSTHEAD + ],
-                          NON-LOCAL.QUE.LIST < > ] ].
+                                      POSTHEAD + ] ] ].
 
 ; We split head-adj-phrase and adj-head-phrase into two each,
 ; one for intersective modifiers and one for scopal modifiers, in order to
@@ -3541,7 +3540,7 @@ infostr-marking-determiner-lex := basic-determiner-lex & one-icons-lex-item &
 
 
 basic-subord-conjunction-lex := non-local-none-lex-item &
-  [ ARG-ST < [ LOCAL.CONT.HOOK.LTOP #ltop1 ] >,
+ [ ARG-ST < [ LOCAL.CONT.HOOK.LTOP #ltop1 ] >,
     SYNSEM [ LOCAL [ CAT.HEAD.MOD < [ LOCAL.CONT.HOOK.LTOP #ltop2 ] >,
 		     CONT [ HCONS.LIST < >,
 			    RELS.LIST < relation >,

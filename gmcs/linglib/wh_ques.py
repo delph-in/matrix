@@ -17,14 +17,14 @@ WH_Q_PHR_NO_OR_SG_OBLIG_MULTI = '''wh-ques-phrase :=
 [ SYNSEM.NON-LOCAL.QUE #que,
      HEAD-DTR.SYNSEM.NON-LOCAL.QUE #que ].'''
 
-WH_Q_PHR = ''' wh-ques-phrase := basic-head-filler-phrase & interrogative-clause & head-final &
+WH_Q_PHR = ''' wh-ques-phrase := basic-head-filler-phrase & 1st-head-filler-phrase & interrogative-clause & head-final &
 [ SYNSEM [ LOCAL.CAT [ WH.BOOL +, 
                        MC +-or--,
 			           VAL #val,
 			           HEAD verb ], 
 			NON-LOCAL.QUE.LIST < > ],
-     HEAD-DTR.SYNSEM.LOCAL.CAT.VAL #val & [ SUBJ < >,
-					                        COMPS < > ],
+     HEAD-DTR.SYNSEM [ LOCAL.CAT.VAL #val & [ SUBJ < >,
+					                          COMPS < > ] ],
      NON-HEAD-DTR.SYNSEM [ NON-LOCAL.QUE.LIST < ref-ind >,
                            LOCAL.CONT.HOOK.ICONS-KEY focus ] ].'''
 
@@ -168,10 +168,15 @@ def customize_wh_ques(mylang, ch, rules, roots):
         ';;; Wh-question-related phrasal types', section='phrases')
 
     if ch.get(MTRX_FRONT) in [SINGLE, MULTI]:
+        mylang.add(FIRST_FILLER)
         mylang.add_literal('''; Do not allow extracting "And Kim"''')
         mylang.add('''basic-head-filler-phrase :+
    [ ARGS < [ SYNSEM.LOCAL.COORD - ], [ SYNSEM.LOCAL.COORD - ] > ].''')
         mylang.add(WH_Q_PHR, section='phrases')
+        mylang.add(
+            'decl-head-subj-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
+        mylang.add(
+            'adj-head-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
         if not ch.get('wh-inv-matrix') == ON:
             mylang.add(
                 'wh-ques-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC na-or-+ ].')
@@ -197,12 +202,7 @@ def customize_wh_ques(mylang, ch, rules, roots):
             mylang.add(
                 'extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].', merge=True)
         elif (ch.get('word-order') == 'free'
-              and ch.get(MTRX_FRONT) == MULTI
-              and ch.get(MTRX_FR_OPT) == 'none-oblig'):
-            mylang.add(
-                'extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LIGHT + ].', merge=True)
-            mylang.add(
-                'extracted-subj-phrase := [ HEAD-DTR.SYNSEM.LIGHT + ].', merge=True)
+              and ch.get(MTRX_FR_OPT) == NONE_OBLIG):
             mylang.add(
                 'head-comp-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
             mylang.add(
@@ -214,6 +214,12 @@ def customize_wh_ques(mylang, ch, rules, roots):
   HEAD-DTR.SYNSEM [ LOCAL.CAT.MC +, NON-LOCAL.SLASH.LIST cons ] ].''')
             rules.add('head-comp-wh := head-comp-wh-phrase.')
             rules.add('head-comp-wh2 := head-comp-wh2-phrase.')
+
+        if ch.get(MTRX_FR_OPT) == NONE_OBLIG:
+            mylang.add(
+                'extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LIGHT + ].', merge=True)
+            mylang.add(
+                'extracted-subj-phrase := [ HEAD-DTR.SYNSEM.LIGHT + ].', merge=True)
             mylang.add(contrast_or_topic_phrase)
             mylang.add(basic_infostr_dislocated_phrase)
             rules.add('cftopic := contrast-or-topic-phrase.')
@@ -221,7 +227,11 @@ def customize_wh_ques(mylang, ch, rules, roots):
 
     if ch.get(MTRX_FRONT) == SINGLE:
         # With single fronting, can restrict SLASH to one element at most
-        mylang.add(BASIC_FILLER_SG, section='phrases')
+        #mylang.add(BASIC_FILLER_SG, section='phrases')
+        mylang.add(
+            'wh-ques-phrase := [ HEAD-DTR.SYNSEM.L-QUE - ].')
+        mylang.add(
+            'basic-extracted-adj-phrase :+ [ HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
         mylang.add('basic-extracted-adj-phrase :+ '
                    '[ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ cons ].')
         mylang.add_literal('; Subject extraction')
@@ -264,7 +274,6 @@ def customize_wh_ques(mylang, ch, rules, roots):
         rules.add('ex-subj := extracted-subj-phrase.')
         mylang.add(
             'wh-ques-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < [], ... > ].')
-        mylang.add(FIRST_FILLER)
         # prevent adjunct extraction, as it will be done out of head-subj
         if ch.get(MTRX_FR_OPT) == 'none-oblig':
             mylang.add('1st-head-filler-phrase := [ SYNSEM.MODIFIED hasmod ].')
@@ -298,11 +307,7 @@ def customize_wh_ques(mylang, ch, rules, roots):
         mylang.add(
             'phrase-or-lexrule :+ [ SYNSEM.L-QUE #lque, ARGS.FIRST.SYNSEM.L-QUE #lque ].')
 
-    # If the fronting isn't obligatory or if only one question phrase
-    # is obligatorily fronted, need also in-situ rules:
-    if (ch.get(MTRX_FRONT) == SINGLE and not ch.get(MTRX_FR_OPT) == SG_OBLIG) \
-            or ch.get(MTRX_FRONT) == IN_SITU or ch.get(WH_INFL) == ON:
-        # or (ch.get(MTRX_FRONT) == MULTI and not ch.get(MTRX_FR_OPT) == ALL_OBLIG) \
+    if ch.get(MTRX_FRONT) == IN_SITU or ch.get(WH_INFL) == ON:
         mylang.add_literal(
             '; In-situ interrogative clause.', section='phrases')
         mylang.add(IN_SITU_PHRASE)
