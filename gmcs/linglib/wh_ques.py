@@ -13,15 +13,15 @@ from gmcs.linglib.information_structure import basic_infostr_dislocated_phrase
 CONSTANTS
 '''
 
-WH_Q_PHR_NO_OR_SG_OBLIG_MULTI = '''wh-ques-phrase := 
+WH_Q_PHR_NO_OR_SG_OBLIG_MULTI = '''wh-ques-phrase :=
 [ SYNSEM.NON-LOCAL.QUE #que,
      HEAD-DTR.SYNSEM.NON-LOCAL.QUE #que ].'''
 
 WH_Q_PHR = ''' wh-ques-phrase := basic-head-filler-phrase & 1st-head-filler-phrase & interrogative-clause & head-final &
-[ SYNSEM [ LOCAL.CAT [ WH.BOOL +, 
+[ SYNSEM [ LOCAL.CAT [ WH.BOOL +,
                        MC +-or--,
 			           VAL #val,
-			           HEAD verb ], 
+			           HEAD verb ],
 			NON-LOCAL.QUE.LIST < > ],
      HEAD-DTR.SYNSEM [ LOCAL.CAT.VAL #val & [ SUBJ < >,
 					                          COMPS < > ] ],
@@ -51,7 +51,7 @@ IN_SITU_PHRASE = '''insitu-int-cl := interrogative-clause & head-only &
     C-CONT [ RELS.LIST < >,
        HCONS.LIST < > ],
     HEAD-DTR.SYNSEM [ LOCAL.CAT [ HEAD verb,
-          VAL #val & 
+          VAL #val &
             [ SUBJ < >,
               COMPS < > ] ],
           NON-LOCAL [ SLASH.LIST < >,
@@ -74,7 +74,7 @@ EX_DET_PHRASE = '''extracted-det-phrase := basic-extracted-arg-phrase & head-com
 
 BASIC_FILLER_SG = '''basic-filler-phrase :+ [ SYNSEM.NON-LOCAL.SLASH.LIST < >,
                                            ARGS < [ SYNSEM [ LOCAL #slash,
-                                                             NON-LOCAL.SLASH.LIST < > ] ], 
+                                                             NON-LOCAL.SLASH.LIST < > ] ],
                                                     [ SYNSEM.NON-LOCAL.SLASH.LIST < #slash > ] > ]. '''
 
 FIRST_FILLER = '''1st-head-filler-phrase := basic-filler-phrase & head-compositional &
@@ -100,7 +100,7 @@ But let it be here just for now while I am figuring this out...
 '''
 contrast_or_topic_phrase = """
 contrast-or-topic-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase & declarative-clause & head-final & 1st-head-filler-phrase &
-  [ SYNSEM [ LOCAL [ CAT [ MKG.TP +, 
+  [ SYNSEM [ LOCAL [ CAT [ MKG.TP +,
                          WH #wh,
                          VAL #val,
                          HEAD verb ], COORD - ] ],
@@ -197,33 +197,33 @@ def customize_wh_ques(mylang, ch, rules, roots):
         elif ch.get('word-order') in ['vso', 'osv', 'ovs']:
             mylang.add(
                 'extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].', merge=True)
-        elif (ch.get('word-order') == 'free'
-              and ch.get(MTRX_FR_OPT) == NONE_OBLIG):
-            mylang.add(
-                'head-comp-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
-            mylang.add(
-                'comp-head-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
-            mylang.add('''head-comp-wh-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus &
-[ NON-HEAD-DTR.SYNSEM [ NON-LOCAL.QUE.LIST cons, LIGHT - ] ].''')
-            mylang.add('''head-comp-wh2-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus &
-[ NON-HEAD-DTR.SYNSEM [ NON-LOCAL.QUE.LIST cons ],
-  HEAD-DTR.SYNSEM [ LOCAL.CAT.MC +, NON-LOCAL.SLASH.LIST cons ] ].''')
-            rules.add('head-comp-wh := head-comp-wh-phrase.')
-            rules.add('head-comp-wh2 := head-comp-wh2-phrase.')
-            mylang.add(
-                'decl-head-subj-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
-            mylang.add(
-                'adj-head-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
-            mylang.add(contrast_or_topic_phrase)
-            mylang.add(basic_infostr_dislocated_phrase)
-            rules.add('cftopic := contrast-or-topic-phrase.')
-            mylang.add('scopal-mod-phrase :+ [ SYNSEM.LIGHT - ].')
+        elif ch.get('word-order') == 'free':
             mylang.add('extracted-subj-phrase := [ HEAD-DTR.SYNSEM.LIGHT + ].')
             mylang.add('extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LIGHT + ].')
+            if ch.get(MTRX_FR_OPT) == NONE_OBLIG:
+                mylang.add(
+                    'head-comp-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
+                mylang.add(
+                    'comp-head-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
+                mylang.add('''head-comp-wh-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus &
+    [ NON-HEAD-DTR.SYNSEM [ NON-LOCAL.QUE.LIST cons, LIGHT - ] ].''')
+                mylang.add('''head-comp-wh2-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus &
+    [ NON-HEAD-DTR.SYNSEM [ NON-LOCAL.QUE.LIST cons ],
+    HEAD-DTR.SYNSEM [ LOCAL.CAT.MC +, NON-LOCAL.SLASH.LIST cons ] ].''')
+                rules.add('head-comp-wh := head-comp-wh-phrase.')
+                rules.add('head-comp-wh2 := head-comp-wh2-phrase.')
+                mylang.add(
+                    'decl-head-subj-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
+                mylang.add(
+                    'adj-head-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
+                mylang.add(contrast_or_topic_phrase)
+                mylang.add(basic_infostr_dislocated_phrase)
+                rules.add('cftopic := contrast-or-topic-phrase.')
+                mylang.add('scopal-mod-phrase :+ [ SYNSEM.LIGHT - ].')
 
     if ch.get(MTRX_FRONT) == SINGLE:
         # With single fronting, can restrict SLASH to one element at most
-        #mylang.add(BASIC_FILLER_SG, section='phrases')
+        # mylang.add(BASIC_FILLER_SG, section='phrases')
         mylang.add(
             'wh-ques-phrase := [ HEAD-DTR.SYNSEM.L-QUE - ].')
         mylang.add(
@@ -312,8 +312,8 @@ def customize_wh_ques(mylang, ch, rules, roots):
         mylang.add(IN_SITU_PHRASE)
         rules.add('in-situ-ques := insitu-int-cl.')
         if ch.get('q-part-order') == 'second':
-            mylang.add('''insitu-int-cl := 
-            [ SYNSEM.NON-LOCAL.YNQ #ynq, 
+            mylang.add('''insitu-int-cl :=
+            [ SYNSEM.NON-LOCAL.YNQ #ynq,
               HEAD-DTR.SYNSEM.NON-LOCAL.YNQ #ynq ].''')
 
         if not ch.get(MTRX_FRONT) == IN_SITU:
@@ -358,9 +358,9 @@ def customize_wh_ques(mylang, ch, rules, roots):
             rules.add('ex-det := extracted-det-phrase.')
         # The following would rule out "Which royal house did you see a member of?"
         # if ch.get('pied-pip-adp') == 'on' and not ch.get('oblig-pied-pip-adp') == ON:
-            #mylang.add('extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +vp ].')
+            # mylang.add('extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +vp ].')
             # if ch.get('word-order') in ['vos', 'vso', 'ovs','v-initial']:
-            #mylang.add('head-spec-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < > ].')
+            # mylang.add('head-spec-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < > ].')
         # else:
         #    mylang.add('extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD verb ].')
 
