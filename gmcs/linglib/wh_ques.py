@@ -129,7 +129,6 @@ def customize_wh_ques(mylang, ch, rules):
         # constraints to establish the semantic links between
         # the filler and the gap and the extracted subject and the verb:
         mylang.add(BASIC_FILLER_SG, section='phrases')
-        #mylang.add(EX_SUBJ, section='phrases')
         mylang.add('''clause :+ [ SYNSEM.NON-LOCAL.QUE.LIST < > ]. ''')
     else:
         if ch.get('person') == '1-2-3':
@@ -201,7 +200,7 @@ def customize_wh_ques(mylang, ch, rules):
             mylang.add('extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LIGHT + ].')
             if ch.get(MTRX_FR_OPT) == NONE_OBLIG:
                 mylang.add(
-                    'head-adj-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
+                    'head-adj-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
                 mylang.add(
                     'head-comp-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
                 mylang.add(
