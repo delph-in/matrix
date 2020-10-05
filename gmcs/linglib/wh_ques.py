@@ -130,6 +130,10 @@ def customize_wh_ques(mylang, ch, rules):
         # the filler and the gap and the extracted subject and the verb:
         mylang.add(BASIC_FILLER_SG, section='phrases')
         mylang.add('''clause :+ [ SYNSEM.NON-LOCAL.QUE.LIST < > ]. ''')
+        if len(ch.get('adv', [])) > 0 or len(ch.get('normadp', [])) > 0:
+            mylang.add(
+                '''head-adj-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ]. ''', section='addenda')
+
     else:
         if ch.get('person') == '1-2-3':
             mylang.add(
@@ -143,12 +147,6 @@ def customize_wh_ques(mylang, ch, rules):
                                 LOCAL.CAT.VAL [ SUBJ clist, COMPS clist ] ] ].''', section='addenda')
             mylang.add(
                 '''adj-head-int-phrase :+ [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < > ].''', section='addenda')
-
-    if (not ch.get(MTRX_FRONT) and ch.get(WH_INFL) != ON):
-        mylang.add('''clause :+ [ SYNSEM.NON-LOCAL.QUE.LIST < > ]. ''')
-        if len(ch.get('adv', [])) > 0 or len(ch.get('normadp', [])) > 0:
-            mylang.add(
-                '''head-adj-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ]. ''', section='addenda')
 
     if ch.get(NO_MULTI) == ON:
         if ch.get(MTRX_FRONT) == SINGLE:
@@ -169,23 +167,32 @@ def customize_wh_ques(mylang, ch, rules):
         mylang.add(FIRST_FILLER)
         mylang.add_literal('''; Do not allow extracting "And Kim"''')
         mylang.add('''basic-head-filler-phrase :+
-   [ ARGS < [ SYNSEM.LOCAL.COORD - ], [ SYNSEM.LOCAL.COORD - ] > ].''')
+   [ ARGS < [ SYNSEM.LOCAL.COORD - ], [ SYNSEM.LOCAL.COORD - ] > ].''', section="addenda")
         mylang.add(WH_Q_PHR, section='phrases')
         if not ch.get('wh-inv-matrix') == ON:
             mylang.add(
                 'wh-ques-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC na-or-+ ].')
+            rules.add('wh-ques := wh-ques-phrase.')
         else:
             if not ch.get('wh-inv-embed') == ON:
                 mylang.add(MAIN_WHQ)
                 mylang.add(EMBED_WHQ)
+                rules.add('main-whq := main-wh-ques-phrase.')
+                rules.add('embed-whq := embed-wh-ques-phrase.')
             else:
                 mylang.add(
                     'wh-ques-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC na-or-+ ].')
+                rules.add('wh-ques := wh-ques-phrase.')
+
+        mylang.add_literal('; Subject extraction', section='phrases')
+        mylang.add(EX_SUBJ)
+        rules.add('ex-subj := extracted-subj-phrase.')
         mylang.add_literal('; Complement extraction', section='phrases')
         mylang.add(EX_COMP)
         rules.add('ex-comp := extracted-comp-phrase.')
         mylang.add_literal('; Adjunct extraction', section='phrases')
         rules.add('ex-adj := basic-extracted-adj-phrase.')
+
         if ch.get('word-order') in ['vos', 'svo', 'sov']:
             if ch.get('pied-pip-adp') != 'on' or ch.get('oblig-pied-pip-adp') == ON:
                 mylang.add(
@@ -224,20 +231,8 @@ def customize_wh_ques(mylang, ch, rules):
         mylang.add(
             'wh-ques-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < [ ] > ].')
         mylang.add(
-            'basic-extracted-adj-phrase :+ [ HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
-        mylang.add('basic-extracted-adj-phrase :+ '
-                   '[ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ cons ].')
-        mylang.add_literal('; Subject extraction')
-        mylang.add(EX_SUBJ)
-        rules.add('ex-subj := extracted-subj-phrase.')
-        if not ch.get('wh-inv-matrix') == ON:
-            rules.add('wh-ques := wh-ques-phrase.')
-        else:
-            if not ch.get('wh-inv-embed') == ON:
-                rules.add('main-whq := main-wh-ques-phrase.')
-                rules.add('embed-whq := embed-wh-ques-phrase.')
-            else:
-                rules.add('wh-ques := wh-ques-phrase.')
+            '''basic-extracted-adj-phrase :+ [ HEAD-DTR.SYNSEM [ LOCAL.CAT.VAL.SUBJ cons,
+                                                               NON-LOCAL.QUE.LIST < > ] ].''')
 
         if ch.get(MTRX_FR_OPT) == SG_OBLIG:
             mylang.add(
@@ -262,13 +257,11 @@ def customize_wh_ques(mylang, ch, rules):
                        '  HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].')
 
     if ch.get(MTRX_FRONT) in [MULTI]:
-        mylang.add(EX_SUBJ, section='phrases')
         mylang.add('extracted-subj-phrase := [ HEAD-DTR.SYNSEM.L-QUE - ].')
-        rules.add('ex-subj := extracted-subj-phrase.')
         mylang.add(
             'wh-ques-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < [], ... > ].')
         # prevent adjunct extraction, as it will be done out of head-subj
-        if ch.get(MTRX_FR_OPT) == 'none-oblig':
+        if ch.get(MTRX_FR_OPT) == NONE_OBLIG:
             mylang.add('1st-head-filler-phrase := [ SYNSEM.MODIFIED hasmod ].')
         mylang.add('wh-ques-phrase := 1st-head-filler-phrase.')
         rules.add('wh-ques := wh-ques-phrase.')
