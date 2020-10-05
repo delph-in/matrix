@@ -169,16 +169,35 @@ def customize_wh_ques(mylang, ch, rules):
         mylang.add('''basic-head-filler-phrase :+
    [ ARGS < [ SYNSEM.LOCAL.COORD - ], [ SYNSEM.LOCAL.COORD - ] > ].''', section="addenda")
         mylang.add(WH_Q_PHR, section='phrases')
+
+        # Subject-auxiliary inversion
+        # First, the typical case (no inversion)
         if not ch.get('wh-inv-matrix') == ON:
             mylang.add(
                 'wh-ques-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC na-or-+ ].')
             rules.add('wh-ques := wh-ques-phrase.')
+        # Now inversion:
         else:
+            mylang.add('basic-extracted-adj-phrase :+ '
+                       '[ SYNSEM.NON-LOCAL.SLASH.LIST < [ CAT.HEAD.MOD < [ LOCAL.CAT.HEAD [ INV - ] ] > ] >, '
+                       '  HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].')
+            if not ch.get('wh-inv-notsubj') == ON:
+                mylang.add(
+                    'wh-ques-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.AUX + ].')
+            else:
+                mylang.add(
+                    'extracted-subj-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.AUX - ].')
             if not ch.get('wh-inv-embed') == ON:
                 mylang.add(MAIN_WHQ)
                 mylang.add(EMBED_WHQ)
                 rules.add('main-whq := main-wh-ques-phrase.')
                 rules.add('embed-whq := embed-wh-ques-phrase.')
+                mylang.add('subj-head-phrase := [ SYNSEM.LOCAL.CAT.MC na-or-+,'
+                           'HEAD-DTR.SYNSEM.NON-LOCAL [ QUE.LIST < >, SLASH.LIST < > ] ].')
+                mylang.add(
+                    'adj-head-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL [ QUE.LIST < > ] ].')
+                mylang.add(NC_SUBJ_HEAD, section='phrases')
+                rules.add('nc-subjh := subj-head-nc-phrase.')
             else:
                 mylang.add(
                     'wh-ques-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC na-or-+ ].')
@@ -233,28 +252,9 @@ def customize_wh_ques(mylang, ch, rules):
         mylang.add(
             '''basic-extracted-adj-phrase :+ [ HEAD-DTR.SYNSEM [ LOCAL.CAT.VAL.SUBJ cons,
                                                                NON-LOCAL.QUE.LIST < > ] ].''')
-
         if ch.get(MTRX_FR_OPT) == SG_OBLIG:
             mylang.add(
                 '''head-adj-int-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ clist, COMPS clist ] ].''')
-
-        if ch.get('wh-inv-matrix') == ON:
-            if not ch.get('wh-inv-notsubj') == ON:
-                mylang.add(
-                    'wh-ques-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.AUX + ].')
-            else:
-                mylang.add(
-                    'extracted-subj-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.AUX - ].')
-            if not ch.get('wh-inv-embed') == ON:
-                mylang.add('subj-head-phrase := [ SYNSEM.LOCAL.CAT.MC na-or-+,'
-                           'HEAD-DTR.SYNSEM.NON-LOCAL [ QUE.LIST < >, SLASH.LIST < > ] ].')
-                mylang.add(
-                    'adj-head-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL [ QUE.LIST < > ] ].')
-                mylang.add(NC_SUBJ_HEAD, section='phrases')
-                rules.add('nc-subjh := subj-head-nc-phrase.')
-            mylang.add('basic-extracted-adj-phrase :+ '
-                       '[ SYNSEM.NON-LOCAL.SLASH.LIST < [ CAT.HEAD.MOD < [ LOCAL.CAT.HEAD [ INV - ] ] > ] >, '
-                       '  HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].')
 
     if ch.get(MTRX_FRONT) in [MULTI]:
         mylang.add('extracted-subj-phrase := [ HEAD-DTR.SYNSEM.L-QUE - ].')
@@ -263,8 +263,6 @@ def customize_wh_ques(mylang, ch, rules):
         # prevent adjunct extraction, as it will be done out of head-subj
         if ch.get(MTRX_FR_OPT) == NONE_OBLIG:
             mylang.add('1st-head-filler-phrase := [ SYNSEM.MODIFIED hasmod ].')
-        mylang.add('wh-ques-phrase := 1st-head-filler-phrase.')
-        rules.add('wh-ques := wh-ques-phrase.')
         if ch.get(MTRX_FR_OPT) == ALL_OBLIG:
             mylang.add(WH_Q_PHR_NO_OR_SG_OBLIG_MULTI)  # QUE.LIST is empty
         # Rule out structural ambiguity for sentences like "Who sleeps where?"
