@@ -123,13 +123,13 @@ def customize_wh_feature(mylang, ch):
                 'norm-adposition-lex := [ SYNSEM.LOCAL.CAT.WH.BOOL + ].')
 
 
-def customize_wh_ques(mylang, ch, rules, roots):
+def customize_wh_ques(mylang, ch, rules):
     if (not ch.get(MTRX_FRONT)) and ch.get(WH_INFL) != 'on':
         # If there are no wh-questions, need to put the default
         # constraints to establish the semantic links between
         # the filler and the gap and the extracted subject and the verb:
         mylang.add(BASIC_FILLER_SG, section='phrases')
-        mylang.add(EX_SUBJ, section='phrases')
+        #mylang.add(EX_SUBJ, section='phrases')
         mylang.add('''clause :+ [ SYNSEM.NON-LOCAL.QUE.LIST < > ]. ''')
     else:
         if ch.get('person') == '1-2-3':
@@ -200,6 +200,8 @@ def customize_wh_ques(mylang, ch, rules, roots):
             mylang.add('extracted-subj-phrase := [ HEAD-DTR.SYNSEM.LIGHT + ].')
             mylang.add('extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LIGHT + ].')
             if ch.get(MTRX_FR_OPT) == NONE_OBLIG:
+                mylang.add(
+                    'head-adj-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
                 mylang.add(
                     'head-comp-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
                 mylang.add(

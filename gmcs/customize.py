@@ -542,7 +542,7 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
         mylang, ch, lexicon, rules, roots, trigger)
     clausalcomps.customize_clausalcomps(mylang, ch, lexicon, rules)
     adverbs_adpositions.customize_adv_adp(ch, mylang, rules)
-    wh_ques.customize_wh_ques(mylang, ch, rules, roots)
+    wh_ques.customize_wh_ques(mylang, ch, rules)
 
     # Customization having to do with punctuation, [incr tsdb()],
     # parsers, roots, and vpm.
