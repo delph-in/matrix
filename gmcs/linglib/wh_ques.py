@@ -221,10 +221,8 @@ def customize_wh_ques(mylang, ch, rules):
                 mylang.add('scopal-mod-phrase :+ [ SYNSEM.LIGHT - ].')
 
     if ch.get(MTRX_FRONT) == SINGLE:
-        # With single fronting, can restrict SLASH to one element at most
-        # mylang.add(BASIC_FILLER_SG, section='phrases')
         mylang.add(
-            'wh-ques-phrase := [ HEAD-DTR.SYNSEM.L-QUE - ].')
+            'wh-ques-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < [ ] > ].')
         mylang.add(
             'basic-extracted-adj-phrase :+ [ HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
         mylang.add('basic-extracted-adj-phrase :+ '
