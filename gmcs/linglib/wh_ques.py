@@ -105,7 +105,7 @@ contrast-or-topic-phrase := basic-head-filler-phrase & basic-infostr-dislocated-
                          HEAD verb ], COORD - ] ],
     NON-HEAD-DTR.SYNSEM [ NON-LOCAL non-local-none,
                           LOCAL.CONT.HOOK.ICONS-KEY contrast-or-topic ],
-    HEAD-DTR.SYNSEM [ LOCAL.CAT [ WH #wh, MKG.TP na-or--, VAL #val &
+    HEAD-DTR.SYNSEM [ LOCAL.CAT [ WH #wh, MKG.TP +-or--, VAL #val &
                                       [ SUBJ < >,
                                         COMPS < > ],
                                   MC + ],
@@ -132,7 +132,7 @@ def customize_wh_ques(mylang, ch, rules):
         mylang.add('''clause :+ [ SYNSEM.NON-LOCAL.QUE.LIST < > ]. ''')
         if len(ch.get('adv', [])) > 0 or len(ch.get('normadp', [])) > 0:
             mylang.add(
-                '''head-adj-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ]. ''', section='addenda')
+                '''my-head-adj-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ]. ''', section='addenda')
 
     else:
         if ch.get('person') == '1-2-3':
@@ -233,10 +233,16 @@ def customize_wh_ques(mylang, ch, rules):
                     'comp-head-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
                 mylang.add('''head-comp-wh-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus &
     [ NON-HEAD-DTR.SYNSEM [ NON-LOCAL.QUE.LIST cons, LIGHT - ] ].''')
+                mylang.add('''head-subj-wh-phrase := basic-head-subj-phrase & head-final-head-nexus &
+    [ NON-HEAD-DTR.SYNSEM [ NON-LOCAL.QUE.LIST cons, LIGHT - ] ].''')
                 mylang.add('''head-comp-wh2-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus &
-    [ NON-HEAD-DTR.SYNSEM [ NON-LOCAL.QUE.LIST cons ],
+    [ NON-HEAD-DTR.SYNSEM [ NON-LOCAL.QUE.LIST cons, LIGHT + ],
+    HEAD-DTR.SYNSEM [ LOCAL.CAT.MC +, NON-LOCAL.SLASH.LIST cons ] ].''')
+                mylang.add('''head-adj-wh-phrase := head-adj-int-phrase & 
+    [ NON-HEAD-DTR.SYNSEM [ NON-LOCAL.QUE.LIST cons, LIGHT + ],
     HEAD-DTR.SYNSEM [ LOCAL.CAT.MC +, NON-LOCAL.SLASH.LIST cons ] ].''')
                 rules.add('head-comp-wh := head-comp-wh-phrase.')
+                rules.add('head-subj-wh := head-subj-wh-phrase.')
                 rules.add('head-comp-wh2 := head-comp-wh2-phrase.')
                 mylang.add(
                     'decl-head-subj-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
