@@ -268,7 +268,12 @@ def customize_wh_ques(mylang, ch, rules):
                 mylang.add(
                     'my-head-adj-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
                 mylang.add(
-                    'head-comp-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
+                    '''head-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +nv,
+                           NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].''')
+                mylang.add(
+                    '''adp-comp-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus &
+                    [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD adp,
+                        NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST cons ].''')
                 mylang.add(
                     'comp-head-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
                 mylang.add(
@@ -281,6 +286,7 @@ def customize_wh_ques(mylang, ch, rules):
                 rules.add('top-head := topic-head-phrase.')
                 rules.add('contrast-head := contrast-head-phrase.')
                 rules.add('head-foc := head-focus-phrase.')
+                rules.add('adp-comp := adp-comp-phrase.')
                 mylang.add('scopal-mod-phrase :+ [ SYNSEM.LIGHT - ].')
                 mylang.add('''basic-head-subj-phrase :+ same-mkg-phrase.''')
                 mylang.add(
