@@ -241,7 +241,7 @@ def customize_wh_ques(mylang, ch, rules):
             mylang.add('extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LIGHT + ].')
             if ch.get(MTRX_FR_OPT) == NONE_OBLIG:
                 mylang.add(
-                    'head-adj-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
+                    'my-head-adj-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
                 mylang.add(
                     'head-comp-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
                 mylang.add(
