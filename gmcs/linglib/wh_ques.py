@@ -157,10 +157,10 @@ def customize_wh_ques(mylang, ch, rules):
         # constraints to establish the semantic links between
         # the filler and the gap and the extracted subject and the verb:
         mylang.add(BASIC_FILLER_SG, section='phrases')
-        mylang.add('''clause :+ [SYNSEM.NON-LOCAL.QUE.LIST < >]. ''')
+        mylang.add('''clause :+ [ SYNSEM.NON-LOCAL.QUE.LIST < > ]. ''')
         if len(ch.get('adv', [])) > 0 or len(ch.get('normadp', [])) > 0:
             mylang.add(
-                '''my-head-adj-phrase := [NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ]. ''', merge=True)
+                '''my-head-adj-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ]. ''', merge=True)
 
     else:
         if ch.get('person') == '1-2-3':
@@ -177,16 +177,17 @@ def customize_wh_ques(mylang, ch, rules):
                 '''adj-head-int-phrase :+ [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < > ].''', section='addenda')
 
     if ch.get(NO_MULTI) == ON:
+        mylang.add('''clause :+ [ SYNSEM.NON-LOCAL.QUE.LIST 0-1-list ].''')
         if ch.get(MTRX_FRONT) == SINGLE:
             mylang.add(
-                '''wh-ques-phrase := [HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < >].''')
+                '''wh-ques-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].''')
         if ch.get(MTRX_FRONT) == IN_SITU or \
                 (ch.get(MTRX_FRONT) == SINGLE and ch.get(MTRX_FR_OPT) == NONE_OBLIG):
             mylang.add(
-                '''insitu-int-cl := [HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < [] >].''')
+                '''insitu-int-cl := [ HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < [] > ].''')
         if len(ch.get('adv', [])) > 0 or len(ch.get('normadp', [])) > 0:
             mylang.add(
-                '''wh-adverb-lex := [SYNSEM.LOCAL.CAT.HEAD.MOD < [LOCAL.CAT.WH.BOOL -] > ].''')
+                '''wh-adverb-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.WH.BOOL - ] > ].''')
 
     mylang.add_literal(
         ';;; Wh-question-related phrasal types', section='phrases')

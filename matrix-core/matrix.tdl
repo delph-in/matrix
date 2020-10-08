@@ -942,6 +942,11 @@ cons-copy := list-copy & cons &
 	       REST #rest ],
     END-LIST #end ].
 
+; OZ 2020-10-08 Minimal fix to allow the use of 0-1-list
+; in nonlocal features.
+; https://delphinqa.ling.washington.edu/t/properly-constrain-the-length-of-the-append-list/567/3
+1-list-copy := 1-list & cons-copy.
+
 ; If there is nothing in the old list,
 ; the new list ends immediately.
 null-copy := list-copy & null &
@@ -2540,6 +2545,7 @@ basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
            [ LOCAL [ CAT [ WH #or2, HEAD [ MOD < [ LOCAL local &
                                               [ CAT [ HEAD #head,
                                                       VAL #val,
+                                                      WH #or1,
                                                       POSTHEAD #ph,
                                                       MC #hmc ],
                                                 AGR #agr,
