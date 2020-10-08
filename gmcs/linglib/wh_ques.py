@@ -174,19 +174,19 @@ def customize_wh_ques(mylang, ch, rules):
                 mylang.add('''head-adj-int-phrase :+ [ HEAD-DTR.SYNSEM [ L-QUE - ,
                                 LOCAL.CAT.VAL[ SUBJ clist, COMPS clist ] ] ].''', section='addenda')
             mylang.add(
-                '''adj-head-int-phrase :+ [HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < >].''', section='addenda')
+                '''adj-head-int-phrase :+ [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < > ].''', section='addenda')
 
     if ch.get(NO_MULTI) == ON:
         if ch.get(MTRX_FRONT) == SINGLE:
             mylang.add(
-                '''wh-ques-phrase: = [HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < >].''')
+                '''wh-ques-phrase := [HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < >].''')
         if ch.get(MTRX_FRONT) == IN_SITU or \
                 (ch.get(MTRX_FRONT) == SINGLE and ch.get(MTRX_FR_OPT) == NONE_OBLIG):
             mylang.add(
-                '''insitu-int-cl: = [HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < [] >].''')
+                '''insitu-int-cl := [HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < [] >].''')
         if len(ch.get('adv', [])) > 0 or len(ch.get('normadp', [])) > 0:
             mylang.add(
-                '''wh-adverb-lex: = [SYNSEM.LOCAL.CAT.HEAD.MOD < [LOCAL.CAT.WH.BOOL -] > ].''')
+                '''wh-adverb-lex := [SYNSEM.LOCAL.CAT.HEAD.MOD < [LOCAL.CAT.WH.BOOL -] > ].''')
 
     mylang.add_literal(
         ';;; Wh-question-related phrasal types', section='phrases')
@@ -223,7 +223,7 @@ def customize_wh_ques(mylang, ch, rules):
                 mylang.add('subj-head-phrase := [ SYNSEM.LOCAL.CAT.MC na-or-+,'
                            'HEAD-DTR.SYNSEM.NON-LOCAL [ QUE.LIST < >, SLASH.LIST < > ] ].')
                 mylang.add(
-                    'adj-head-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL [ QUE.LIST < > ] ].')
+                    'my-adj-head-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
                 mylang.add(NC_SUBJ_HEAD, section='phrases')
                 rules.add('nc-subjh := subj-head-nc-phrase.')
             else:
