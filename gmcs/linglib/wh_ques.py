@@ -259,6 +259,7 @@ def customize_wh_ques(mylang, ch, rules):
         elif ch.get('word-order') in ['vso', 'osv', 'ovs']:
             mylang.add(
                 'extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].', merge=True)
+        
         elif ch.get('word-order') == 'free':
             mylang.add('extracted-subj-phrase := [ HEAD-DTR.SYNSEM.LIGHT + ].')
             mylang.add('extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LIGHT + ].')
@@ -266,20 +267,24 @@ def customize_wh_ques(mylang, ch, rules):
             if ch.get(MTRX_FR_OPT) == NONE_OBLIG:
                 mylang.add(HEAD_FILLER)
                 mylang.add(
-                    'my-head-adj-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
+                    '''my-head-adj-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < >,
+                    HEAD-DTR.SYNSEM.LOCAL.CAT.MKG [ FC na, TP na ] ].''')
                 mylang.add(
-                    '''head-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +nv,
-                           NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].''')
+                    '''my-adj-head-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ],
+                    HEAD-DTR.SYNSEM.LOCAL.CAT.MKG [ FC na, TP na ] ].''')
+
+                mylang.add(
+                    '''head-comp-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].''')
                 mylang.add(
                     '''adp-comp-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus &
                     [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD adp,
                         NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST cons ].''')
                 mylang.add(
                     'comp-head-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
+
                 mylang.add(
                     'decl-head-subj-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
-                mylang.add(
-                    'adj-head-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
+
                 mylang.add(contrast_head)
                 mylang.add(topic_head)
                 mylang.add(head_focus)
