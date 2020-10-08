@@ -81,6 +81,10 @@ FIRST_FILLER = '''1st-head-filler-phrase := basic-filler-phrase & head-compositi
      ARGS < [ SYNSEM.LOCAL #local & [ CAT.HEAD +nrpd ] ],
 	   [ SYNSEM.NON-LOCAL [ SLASH.LIST < #local . #slash > ] ] > ].'''
 
+HEAD_FILLER = '''head-filler-phrase := basic-filler-phrase & head-compositional & head-initial &
+[  SYNSEM [ NON-LOCAL [ SLASH.LIST #slash, REL.LIST < >, QUE.LIST < > ] ],
+     ARGS < [ SYNSEM.NON-LOCAL [ SLASH.LIST < #local . #slash > ] ], [ SYNSEM.LOCAL #local & [ CAT.HEAD +nrpd ] ] > ].'''
+
 SEC_FILLER = '''2nd-head-filler-phrase := binary-phrase & phrasal & head-compositional &
 [ SYNSEM.NON-LOCAL.SLASH.LIST < #firstarg . #otherargs >,
     ARGS < [ SYNSEM.LOCAL #local ],
@@ -113,7 +117,7 @@ contrast-head-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phra
 """
 
 head_focus = """
-head-focus-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase  & head-initial & 1st-head-filler-phrase &
+head-focus-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase  & head-filler-phrase &
   [ SYNSEM [ LOCAL [ CAT [ MKG [ TP #tp & +, FC + ],
                          WH #wh,
                          VAL #val,
@@ -196,7 +200,7 @@ def customize_wh_ques(mylang, ch, rules):
     if ch.get(MTRX_FRONT) in [SINGLE, MULTI]:
         mylang.add(FIRST_FILLER)
         mylang.add_literal('''; Do not allow extracting "And Kim"''')
-        mylang.add('''basic-head-filler-phrase: +
+        mylang.add('''basic-head-filler-phrase :+
    [ARGS < [SYNSEM.LOCAL.COORD - ], [SYNSEM.LOCAL.COORD - ] > ].''', section="addenda")
         mylang.add(WH_Q_PHR, section='phrases')
 
@@ -254,7 +258,9 @@ def customize_wh_ques(mylang, ch, rules):
         elif ch.get('word-order') == 'free':
             mylang.add('extracted-subj-phrase := [ HEAD-DTR.SYNSEM.LIGHT + ].')
             mylang.add('extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LIGHT + ].')
+
             if ch.get(MTRX_FR_OPT) == NONE_OBLIG:
+                mylang.add(HEAD_FILLER)
                 mylang.add(
                     'my-head-adj-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
                 mylang.add(
@@ -270,7 +276,7 @@ def customize_wh_ques(mylang, ch, rules):
                 mylang.add(head_focus)
                 rules.add('top-head := topic-head-phrase.')
                 rules.add('contrast-head := contrast-head-phrase.')
-                rules.add('foc-head := head-focus-phrase.')
+                rules.add('head-foc := head-focus-phrase.')
                 mylang.add('scopal-mod-phrase :+ [ SYNSEM.LIGHT - ].')
 
     if ch.get(MTRX_FRONT) == SINGLE:
