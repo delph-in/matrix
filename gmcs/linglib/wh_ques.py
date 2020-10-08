@@ -40,7 +40,7 @@ EMBED_WHQ = '''embed-wh-ques-phrase := wh-ques-phrase &
 EX_COMP = '''extracted-comp-phrase := basic-extracted-comp-phrase.'''
 
 EX_SUBJ = '''extracted-subj-phrase := basic-extracted-subj-phrase &
-[ SYNSEM.LOCAL.CAT.HEAD verb ].'''
+[ SYNSEM.LOCAL.CAT [ HEAD verb, MKG [ TP -, FC -] ] ].'''
 
 IN_SITU_PHRASE = '''insitu-int-cl := interrogative-clause & head-only &
 [ SYNSEM [ MODIFIED hasmod,
@@ -112,6 +112,21 @@ contrast-head-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phra
                       NON-LOCAL.SLASH.LIST.FIRST [ ] ] ].
 """
 
+head_focus = """
+head-focus-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase  & head-initial & 1st-head-filler-phrase &
+  [ SYNSEM [ LOCAL [ CAT [ MKG [ TP #tp & +, FC + ],
+                         WH #wh,
+                         VAL #val,
+                         HEAD verb ], COORD - ] ],
+    NON-HEAD-DTR.SYNSEM [ NON-LOCAL [ QUE.LIST cons, SLASH.LIST < >, REL.LIST < > ],
+                          LOCAL.CONT.HOOK.ICONS-KEY semantic-focus ],
+    HEAD-DTR.SYNSEM [ LOCAL.CAT [ WH #wh & [ BOOL + ], MKG [ TP #tp, FC - ], VAL #val &
+                                      [ SUBJ < >,
+                                        COMPS < > ] ],
+                      NON-LOCAL.SLASH.LIST.FIRST [ ] ] ].
+"""
+
+
 topic_head = """
 topic-head-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase & declarative-clause & head-final & 1st-head-filler-phrase &
   [ SYNSEM [ LOCAL [ CAT [ MKG [ TP +, FC #fc ],
@@ -144,10 +159,10 @@ def customize_wh_ques(mylang, ch, rules):
         # constraints to establish the semantic links between
         # the filler and the gap and the extracted subject and the verb:
         mylang.add(BASIC_FILLER_SG, section='phrases')
-        mylang.add('''clause :+ [ SYNSEM.NON-LOCAL.QUE.LIST < > ]. ''')
+        mylang.add('''clause: + [SYNSEM.NON-LOCAL.QUE.LIST < >]. ''')
         if len(ch.get('adv', [])) > 0 or len(ch.get('normadp', [])) > 0:
             mylang.add(
-                '''my-head-adj-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ]. ''', section='addenda')
+                '''my-head-adj-phrase: + [NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < >]. ''', section='addenda')
 
     else:
         if ch.get('person') == '1-2-3':
@@ -158,22 +173,22 @@ def customize_wh_ques(mylang, ch, rules):
     if (not ch.get(MTRX_FRONT)) or ch.get(MTRX_FRONT) == SINGLE:
         if len(ch.get('adv', [])) > 0 or len(ch.get('normadp', [])) > 0:
             if ch.get(NO_MULTI) != ON and not ch.get('wh-q-inter-verbs'):
-                mylang.add('''head-adj-int-phrase :+ [ HEAD-DTR.SYNSEM [ L-QUE -,
-                                LOCAL.CAT.VAL [ SUBJ clist, COMPS clist ] ] ].''', section='addenda')
+                mylang.add('''head-adj-int-phrase: + [HEAD-DTR.SYNSEM [L-QUE - ,
+                                LOCAL.CAT.VAL[SUBJ clist, COMPS clist]]].''', section='addenda')
             mylang.add(
-                '''adj-head-int-phrase :+ [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < > ].''', section='addenda')
+                '''adj-head-int-phrase: + [HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < >].''', section='addenda')
 
     if ch.get(NO_MULTI) == ON:
         if ch.get(MTRX_FRONT) == SINGLE:
             mylang.add(
-                '''wh-ques-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].''')
+                '''wh-ques-phrase: = [HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < >].''')
         if ch.get(MTRX_FRONT) == IN_SITU or \
                 (ch.get(MTRX_FRONT) == SINGLE and ch.get(MTRX_FR_OPT) == NONE_OBLIG):
             mylang.add(
-                '''insitu-int-cl := [ HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < [ ] > ].''')
+                '''insitu-int-cl: = [HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < [] >].''')
         if len(ch.get('adv', [])) > 0 or len(ch.get('normadp', [])) > 0:
             mylang.add(
-                '''wh-adverb-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.WH.BOOL - ] > ].''')
+                '''wh-adverb-lex: = [SYNSEM.LOCAL.CAT.HEAD.MOD < [LOCAL.CAT.WH.BOOL -] > ].''')
 
     mylang.add_literal(
         ';;; Wh-question-related phrasal types', section='phrases')
@@ -181,8 +196,8 @@ def customize_wh_ques(mylang, ch, rules):
     if ch.get(MTRX_FRONT) in [SINGLE, MULTI]:
         mylang.add(FIRST_FILLER)
         mylang.add_literal('''; Do not allow extracting "And Kim"''')
-        mylang.add('''basic-head-filler-phrase :+
-   [ ARGS < [ SYNSEM.LOCAL.COORD - ], [ SYNSEM.LOCAL.COORD - ] > ].''', section="addenda")
+        mylang.add('''basic-head-filler-phrase: +
+   [ARGS < [SYNSEM.LOCAL.COORD - ], [SYNSEM.LOCAL.COORD - ] > ].''', section="addenda")
         mylang.add(WH_Q_PHR, section='phrases')
 
         # Subject-auxiliary inversion
@@ -246,29 +261,16 @@ def customize_wh_ques(mylang, ch, rules):
                     'head-comp-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
                 mylang.add(
                     'comp-head-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
-                mylang.add('''head-comp-wh-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus &
-    [ NON-HEAD-DTR.SYNSEM [ NON-LOCAL.QUE.LIST cons, LIGHT - ] ].''')
-                mylang.add('''head-subj-wh-phrase := basic-head-subj-phrase & head-final-head-nexus &
-    [ NON-HEAD-DTR.SYNSEM [ NON-LOCAL.QUE.LIST cons, LIGHT - ],
-      HEAD-DTR.SYNSEM.LOCAL.CAT.WH.BOOL + ].''')
-                mylang.add('''head-comp-wh2-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus &
-    [ NON-HEAD-DTR.SYNSEM [ NON-LOCAL.QUE.LIST cons, LIGHT + ],
-    HEAD-DTR.SYNSEM [ LOCAL.CAT [ MC +, WH.BOOL + ], NON-LOCAL.SLASH.LIST cons ] ].''')
-                mylang.add('''head-adj-wh-phrase := head-adj-int-phrase & 
-    [ NON-HEAD-DTR.SYNSEM [ NON-LOCAL.QUE.LIST cons, LIGHT + ],
-    HEAD-DTR.SYNSEM [ LOCAL.CAT[ MC +, VAL.COMPS < > ], NON-LOCAL.SLASH.LIST cons ] ].''')
-                rules.add('head-comp-wh := head-comp-wh-phrase.')
-                rules.add('head-subj-wh := head-subj-wh-phrase.')
-                rules.add('head-comp-wh2 := head-comp-wh2-phrase.')
-                rules.add('head-adj-wh := head-adj-wh-phrase.')
                 mylang.add(
                     'decl-head-subj-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
                 mylang.add(
                     'adj-head-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
                 mylang.add(contrast_head)
                 mylang.add(topic_head)
+                mylang.add(head_focus)
                 rules.add('top-head := topic-head-phrase.')
                 rules.add('contrast-head := contrast-head-phrase.')
+                rules.add('foc-head := head-focus-phrase.')
                 mylang.add('scopal-mod-phrase :+ [ SYNSEM.LIGHT - ].')
 
     if ch.get(MTRX_FRONT) == SINGLE:
