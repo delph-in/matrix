@@ -160,7 +160,7 @@ def customize_wh_ques(mylang, ch, rules):
         mylang.add('''clause :+ [SYNSEM.NON-LOCAL.QUE.LIST < >]. ''')
         if len(ch.get('adv', [])) > 0 or len(ch.get('normadp', [])) > 0:
             mylang.add(
-                '''my-head-adj-phrase: + [NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < >]. ''', section='addenda')
+                '''my-head-adj-phrase := [NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ]. ''', merge=True)
 
     else:
         if ch.get('person') == '1-2-3':
@@ -171,10 +171,10 @@ def customize_wh_ques(mylang, ch, rules):
     if (not ch.get(MTRX_FRONT)) or ch.get(MTRX_FRONT) == SINGLE:
         if len(ch.get('adv', [])) > 0 or len(ch.get('normadp', [])) > 0:
             if ch.get(NO_MULTI) != ON and not ch.get('wh-q-inter-verbs'):
-                mylang.add('''head-adj-int-phrase: + [HEAD-DTR.SYNSEM [L-QUE - ,
-                                LOCAL.CAT.VAL[SUBJ clist, COMPS clist]]].''', section='addenda')
+                mylang.add('''head-adj-int-phrase :+ [ HEAD-DTR.SYNSEM [ L-QUE - ,
+                                LOCAL.CAT.VAL[ SUBJ clist, COMPS clist ] ] ].''', section='addenda')
             mylang.add(
-                '''adj-head-int-phrase: + [HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < >].''', section='addenda')
+                '''adj-head-int-phrase :+ [HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < >].''', section='addenda')
 
     if ch.get(NO_MULTI) == ON:
         if ch.get(MTRX_FRONT) == SINGLE:
@@ -258,7 +258,7 @@ def customize_wh_ques(mylang, ch, rules):
                 mylang.add(HEAD_FILLER)
                 mylang.add(
                     '''my-head-adj-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < >,
-                    HEAD-DTR.SYNSEM.LOCAL.CAT.MKG [ FC na, TP na ] ].''')
+                    HEAD-DTR.SYNSEM.LOCAL.CAT.MKG [ FC na, TP na ] ].''', merge=True)
                 mylang.add(
                     '''my-adj-head-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ],
                     HEAD-DTR.SYNSEM.LOCAL.CAT.MKG [ FC na, TP na ] ].''')
