@@ -259,7 +259,7 @@ def customize_wh_ques(mylang, ch, rules):
         elif ch.get('word-order') in ['vso', 'osv', 'ovs']:
             mylang.add(
                 'extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].', merge=True)
-        
+
         elif ch.get('word-order') == 'free':
             mylang.add('extracted-subj-phrase := [ HEAD-DTR.SYNSEM.LIGHT + ].')
             mylang.add('extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LIGHT + ].')
@@ -270,7 +270,7 @@ def customize_wh_ques(mylang, ch, rules):
                     '''my-head-adj-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < >,
                     HEAD-DTR.SYNSEM.LOCAL.CAT.MKG [ FC na, TP na ] ].''')
                 mylang.add(
-                    '''my-adj-head-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ],
+                    '''my-adj-head-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ],
                     HEAD-DTR.SYNSEM.LOCAL.CAT.MKG [ FC na, TP na ] ].''')
 
                 mylang.add(
