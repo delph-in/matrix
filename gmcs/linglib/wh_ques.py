@@ -177,7 +177,12 @@ def customize_wh_ques(mylang, ch, rules):
                 '''adj-head-int-phrase :+ [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < > ].''', section='addenda')
 
     if ch.get(NO_MULTI) == ON:
-        mylang.add('''clause :+ [ SYNSEM.NON-LOCAL.QUE.LIST 0-1-list ].''')
+        mylang.add_literal('''; OZ 2020-10-08 Minimal fix to allow the use of 0-1-list
+; in nonlocal features.
+; https://delphinqa.ling.washington.edu/t/properly-constrain-the-length-of-the-append-list/567/3''', section='addenda')
+        mylang.add('1-list-copy := 1-list & cons-copy.', section='addenda')
+        mylang.add(
+            '''clause :+ [ SYNSEM.NON-LOCAL.QUE.LIST 0-1-list ].''', section='addenda')
         if ch.get(MTRX_FRONT) == SINGLE:
             mylang.add(
                 '''wh-ques-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].''')

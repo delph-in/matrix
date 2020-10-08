@@ -942,10 +942,6 @@ cons-copy := list-copy & cons &
 	       REST #rest ],
     END-LIST #end ].
 
-; OZ 2020-10-08 Minimal fix to allow the use of 0-1-list
-; in nonlocal features.
-; https://delphinqa.ling.washington.edu/t/properly-constrain-the-length-of-the-append-list/567/3
-1-list-copy := 1-list & cons-copy.
 
 ; If there is nothing in the old list,
 ; the new list ends immediately.
@@ -2485,7 +2481,8 @@ basic-extracted-adj-phrase := head-mod-phrase & head-only &
 		                                                 [ MOD < [ LOCAL intersective-mod &
                                                                [ CAT [ HEAD #head,
                                                                        POSTHEAD #ph,
-                                                                       MC #mc ],
+                                                                       MC #mc,
+                                                                       WH #wh ],
                                                                   CONT.HOOK #hook,
                                                                   CTXT #ctxt ] ] > ],
                                                       VAL [ SPEC < >,
