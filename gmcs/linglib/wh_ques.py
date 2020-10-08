@@ -38,7 +38,7 @@ EMBED_WHQ = '''embed-wh-ques-phrase := wh-ques-phrase &
     SYNSEM.LOCAL.CAT.MC - ].'''
 
 EX_COMP = '''extracted-comp-phrase := basic-extracted-comp-phrase & 
-[ SYNSEM.LOCAL.CAT [ HEAD verb, MKG [ TP -, FC - ] ] ].'''
+[ SYNSEM.LOCAL.CAT [ HEAD +vp, MKG [ TP -, FC - ] ] ].'''
 
 EX_SUBJ = '''extracted-subj-phrase := basic-extracted-subj-phrase &
 [ SYNSEM.LOCAL.CAT [ HEAD verb, MKG [ TP -, FC - ] ] ].'''
