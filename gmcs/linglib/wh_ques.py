@@ -249,10 +249,11 @@ def customize_wh_ques(mylang, ch, rules):
                 mylang.add('''head-comp-wh-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus &
     [ NON-HEAD-DTR.SYNSEM [ NON-LOCAL.QUE.LIST cons, LIGHT - ] ].''')
                 mylang.add('''head-subj-wh-phrase := basic-head-subj-phrase & head-final-head-nexus &
-    [ NON-HEAD-DTR.SYNSEM [ NON-LOCAL.QUE.LIST cons, LIGHT - ] ].''')
+    [ NON-HEAD-DTR.SYNSEM [ NON-LOCAL.QUE.LIST cons, LIGHT - ],
+      HEAD-DTR.SYNSEM.LOCAL.CAT.WH.BOOL + ].''')
                 mylang.add('''head-comp-wh2-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus &
     [ NON-HEAD-DTR.SYNSEM [ NON-LOCAL.QUE.LIST cons, LIGHT + ],
-    HEAD-DTR.SYNSEM [ LOCAL.CAT.MC +, NON-LOCAL.SLASH.LIST cons ] ].''')
+    HEAD-DTR.SYNSEM [ LOCAL.CAT [ MC +, WH.BOOL + ], NON-LOCAL.SLASH.LIST cons ] ].''')
                 mylang.add('''head-adj-wh-phrase := head-adj-int-phrase & 
     [ NON-HEAD-DTR.SYNSEM [ NON-LOCAL.QUE.LIST cons, LIGHT + ],
     HEAD-DTR.SYNSEM [ LOCAL.CAT[ MC +, VAL.COMPS < > ], NON-LOCAL.SLASH.LIST cons ] ].''')
