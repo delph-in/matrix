@@ -823,16 +823,6 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
     elif wo == 'free':
         # future research
         pass
-        # Russian-type language
-        # if (pos == 'clause-final'
-        # and infostr_type == 'topic-first'
-        # and ch.get('c-focus-pos=clause-initial') == 'clause-initial'):
-        #ph_types['extracted-subj-phrase'] = '''extracted-subj-phrase := basic-extracted-subj-phrase & [ SYNSEM.LOCAL.CAT.HEAD verb ].'''
-        # ph_types['extracted-comp-phrase'] = '''extracted-comp-phrase := basic-extracted-comp-phrase.''')
-        #from gmcs.linglib.wh_ques import contrast_or_topic_phrase
-        #ph_types['contrast-or-topic-phrase'] = contrast_or_topic_phrase
-        # ph_types['head-subj-phrase'] = '''head-subj-phrase := decl-head-subj-phrase & head-initial-head-nexus &
-        # [ NON-HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.ICONS-KEY non-topic ].'''
         # if pos == 'clause-initial' or infostr_type == 'topic-first':
         #     ph_types['head-subj-phrase'] = """head-subj-phrase :=
         #                                 [ SYNSEM.L-PERIPH #periph,

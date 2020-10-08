@@ -97,15 +97,30 @@ NC_SUBJ_HEAD = '''subj-head-nc-phrase := decl-head-subj-phrase & head-final &
 The below contrast_or_topic_phrase may belong better to the information structure library?
 But let it be here just for now while I am figuring this out...
 '''
-contrast_or_topic_phrase = """
-contrast-or-topic-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase & declarative-clause & head-final & 1st-head-filler-phrase &
-  [ SYNSEM [ LOCAL [ CAT [ MKG.TP +,
+contrast_head = """
+contrast-head-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase & declarative-clause & head-final & 1st-head-filler-phrase &
+  [ SYNSEM [ LOCAL [ CAT [ MKG [ TP #tp, FC + ],
                          WH #wh,
                          VAL #val,
                          HEAD verb ], COORD - ] ],
     NON-HEAD-DTR.SYNSEM [ NON-LOCAL non-local-none,
-                          LOCAL.CONT.HOOK.ICONS-KEY contrast-or-topic ],
-    HEAD-DTR.SYNSEM [ LOCAL.CAT [ WH #wh, MKG.TP +-or--, VAL #val &
+                          LOCAL.CONT.HOOK.ICONS-KEY contrast ],
+    HEAD-DTR.SYNSEM [ LOCAL.CAT [ WH #wh, MKG [ TP #tp, FC - ], VAL #val &
+                                      [ SUBJ < >,
+                                        COMPS < > ],
+                                  MC + ],
+                      NON-LOCAL.SLASH.LIST.FIRST [ ] ] ].
+"""
+
+topic_head = """
+topic-head-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase & declarative-clause & head-final & 1st-head-filler-phrase &
+  [ SYNSEM [ LOCAL [ CAT [ MKG [ TP +, FC #fc ],
+                         WH #wh,
+                         VAL #val,
+                         HEAD verb ], COORD - ] ],
+    NON-HEAD-DTR.SYNSEM [ NON-LOCAL non-local-none,
+                          LOCAL.CONT.HOOK.ICONS-KEY topic ],
+    HEAD-DTR.SYNSEM [ LOCAL.CAT [ WH #wh, MKG [ TP -, FC #fc & + ], VAL #val &
                                       [ SUBJ < >,
                                         COMPS < > ],
                                   MC + ],
@@ -244,12 +259,15 @@ def customize_wh_ques(mylang, ch, rules):
                 rules.add('head-comp-wh := head-comp-wh-phrase.')
                 rules.add('head-subj-wh := head-subj-wh-phrase.')
                 rules.add('head-comp-wh2 := head-comp-wh2-phrase.')
+                rules.add('head-adj-wh := head-adj-wh-phrase.')
                 mylang.add(
                     'decl-head-subj-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
                 mylang.add(
                     'adj-head-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
-                mylang.add(contrast_or_topic_phrase)
-                rules.add('cftopic := contrast-or-topic-phrase.')
+                mylang.add(contrast_head)
+                mylang.add(topic_head)
+                rules.add('top-head := topic-head-phrase.')
+                rules.add('contrast-head := contrast-head-phrase.')
                 mylang.add('scopal-mod-phrase :+ [ SYNSEM.LIGHT - ].')
 
     if ch.get(MTRX_FRONT) == SINGLE:
