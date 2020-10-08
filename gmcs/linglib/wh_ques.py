@@ -37,10 +37,11 @@ EMBED_WHQ = '''embed-wh-ques-phrase := wh-ques-phrase &
 [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC -,
     SYNSEM.LOCAL.CAT.MC - ].'''
 
-EX_COMP = '''extracted-comp-phrase := basic-extracted-comp-phrase.'''
+EX_COMP = '''extracted-comp-phrase := basic-extracted-comp-phrase & 
+[ SYNSEM.LOCAL.CAT [ HEAD verb, MKG [ TP -, FC - ] ] ].'''
 
 EX_SUBJ = '''extracted-subj-phrase := basic-extracted-subj-phrase &
-[ SYNSEM.LOCAL.CAT [ HEAD verb, MKG [ TP -, FC -] ] ].'''
+[ SYNSEM.LOCAL.CAT [ HEAD verb, MKG [ TP -, FC - ] ] ].'''
 
 IN_SITU_PHRASE = '''insitu-int-cl := interrogative-clause & head-only &
 [ SYNSEM [ MODIFIED hasmod,
@@ -58,7 +59,8 @@ IN_SITU_PHRASE = '''insitu-int-cl := interrogative-clause & head-only &
           QUE.LIST < ref-ind, ... > ] ] ].'''
 
 EX_DET_PHRASE = '''extracted-det-phrase := basic-extracted-arg-phrase & head-compositional &
-[ SYNSEM [ LOCAL.CAT [ VAL [ SUBJ < >, COMPS < >, SPR < >, SPEC < > ] ],
+[ SYNSEM [ LOCAL.CAT [ VAL [ SUBJ < >, COMPS < >, SPR < >, SPEC < > ],
+                       MKG [ TP -, FC - ] ],
            NON-LOCAL.SLASH.APPEND < #slash, [ LIST < #local > ] > ],
   HEAD-DTR.SYNSEM [ MODIFIED notmod,
                     LOCAL.CAT.VAL.SPR <  gap & [ LOCAL #local & local &
@@ -85,11 +87,11 @@ HEAD_FILLER = '''head-filler-phrase := basic-filler-phrase & head-compositional 
 [  SYNSEM [ NON-LOCAL [ SLASH.LIST #slash, REL.LIST < >, QUE.LIST < > ] ],
      ARGS < [ SYNSEM.NON-LOCAL [ SLASH.LIST < #local . #slash > ] ], [ SYNSEM.LOCAL #local & [ CAT.HEAD +nrpd ] ] > ].'''
 
-SEC_FILLER = '''2nd-head-filler-phrase := binary-phrase & phrasal & head-compositional &
-[ SYNSEM.NON-LOCAL.SLASH.LIST < #firstarg . #otherargs >,
-    ARGS < [ SYNSEM.LOCAL #local ],
-     [ SYNSEM.NON-LOCAL [ SLASH.LIST [ FIRST #firstarg, REST < #local . #otherargs > ],
-          REL.LIST < > ] ] > ].'''
+# SEC_FILLER = '''2nd-head-filler-phrase := binary-phrase & phrasal & head-compositional &
+# [ SYNSEM.NON-LOCAL.SLASH.LIST < #firstarg . #otherargs >,
+#     ARGS < [ SYNSEM.LOCAL #local ],
+#      [ SYNSEM.NON-LOCAL [ SLASH.LIST [ FIRST #firstarg, REST < #local . #otherargs > ],
+#           REL.LIST < > ] ] > ].'''
 
 NC_SUBJ_HEAD = '''subj-head-nc-phrase := decl-head-subj-phrase & head-final &
 [ SYNSEM.LOCAL.CAT [ MC - ],
