@@ -151,16 +151,6 @@ topic-head-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase 
 """
 
 
-# This function should be finished when/if WH feature is moved from matrix.tdl to customization
-def customize_wh_feature(mylang, ch):
-    mylang.add('cat :+ [ WH and-or ].')
-    if ch.get(MTRX_FRONT):
-        mylang.add('wh-ques-phrase := [ SYNSEM.LOCAL.CAT.WH.BOOL + ].')
-        if len(ch.get('adv', [])) > 0 or len(ch.get('normadp', [])) > 0:
-            mylang.add(
-                'norm-adposition-lex := [ SYNSEM.LOCAL.CAT.WH.BOOL + ].')
-
-
 def customize_wh_ques(mylang, ch, rules):
     if (not ch.get(MTRX_FRONT)) and ch.get(WH_INFL) != 'on':
         # If there are no wh-questions, need to put the default

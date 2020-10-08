@@ -2612,9 +2612,9 @@ adv-null := adv-list & onull.
 ; rules?
 
 isect-mod-phrase := basic-head-mod-phrase-simple & head-compositional &
-  [ HEAD-DTR.SYNSEM.LOCAL [ CAT [ MKG #mkg, WH #wh ], CONT [ HOOK.LTOP #hand ] ],
+  [ HEAD-DTR.SYNSEM.LOCAL [ CAT [ MKG #mkg ], CONT [ HOOK.LTOP #hand ] ],
     NON-HEAD-DTR.SYNSEM.LOCAL [ CAT [ VAL.SPR adv-list,
-                                      HEAD.MOD < [ LOCAL intersective-mod & [ CAT [ MKG #mkg, WH #wh ] ] ] > ],
+                                      HEAD.MOD < [ LOCAL intersective-mod & [ CAT [ MKG #mkg ] ] ] > ],
                                 CONT.HOOK.LTOP #hand ],
     C-CONT [ HCONS.LIST < >,
              ICONS.LIST < > ] ].
