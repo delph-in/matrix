@@ -157,7 +157,7 @@ def customize_wh_ques(mylang, ch, rules):
         # constraints to establish the semantic links between
         # the filler and the gap and the extracted subject and the verb:
         mylang.add(BASIC_FILLER_SG, section='phrases')
-        mylang.add('''clause: + [SYNSEM.NON-LOCAL.QUE.LIST < >]. ''')
+        mylang.add('''clause :+ [SYNSEM.NON-LOCAL.QUE.LIST < >]. ''')
         if len(ch.get('adv', [])) > 0 or len(ch.get('normadp', [])) > 0:
             mylang.add(
                 '''my-head-adj-phrase: + [NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < >]. ''', section='addenda')
