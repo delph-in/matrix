@@ -255,7 +255,7 @@ def customize_wh_ques(mylang, ch, rules):
     HEAD-DTR.SYNSEM [ LOCAL.CAT.MC +, NON-LOCAL.SLASH.LIST cons ] ].''')
                 mylang.add('''head-adj-wh-phrase := head-adj-int-phrase & 
     [ NON-HEAD-DTR.SYNSEM [ NON-LOCAL.QUE.LIST cons, LIGHT + ],
-    HEAD-DTR.SYNSEM [ LOCAL.CAT.MC +, NON-LOCAL.SLASH.LIST cons ] ].''')
+    HEAD-DTR.SYNSEM [ LOCAL.CAT[ MC +, VAL.COMPS < > ], NON-LOCAL.SLASH.LIST cons ] ].''')
                 rules.add('head-comp-wh := head-comp-wh-phrase.')
                 rules.add('head-subj-wh := head-subj-wh-phrase.')
                 rules.add('head-comp-wh2 := head-comp-wh2-phrase.')
