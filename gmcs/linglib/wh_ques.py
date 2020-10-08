@@ -141,7 +141,9 @@ topic-head-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase 
                          HEAD verb ], COORD - ] ],
     NON-HEAD-DTR.SYNSEM [ NON-LOCAL non-local-none,
                           LOCAL.CONT.HOOK.ICONS-KEY topic ],
-    HEAD-DTR.SYNSEM [ LOCAL.CAT [ WH #wh, MKG [ TP -, FC #fc & + ], VAL #val &
+    HEAD-DTR.SYNSEM [ LOCAL.CAT [ WH #wh & [BOOL + ], 
+                                  MKG [ TP -, FC #fc & - ], 
+                                VAL #val &
                                       [ SUBJ < >,
                                         COMPS < > ],
                                   MC + ],
@@ -280,6 +282,9 @@ def customize_wh_ques(mylang, ch, rules):
                 rules.add('contrast-head := contrast-head-phrase.')
                 rules.add('head-foc := head-focus-phrase.')
                 mylang.add('scopal-mod-phrase :+ [ SYNSEM.LIGHT - ].')
+                mylang.add('''basic-head-subj-phrase :+ same-mkg-phrase.''')
+                mylang.add(
+                    '''basic-head-1st-comp-phrase :+ same-mkg-phrase.''')
 
     if ch.get(MTRX_FRONT) == SINGLE:
         mylang.add(
