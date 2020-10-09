@@ -263,6 +263,10 @@ def customize_wh_ques(mylang, ch, rules):
             if ch.get(MTRX_FR_OPT) == NONE_OBLIG:
                 mylang.add(HEAD_FILLER)
                 mylang.add(
+                    '''basic-head-subj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.MKG [ TP na-or-- ] ].''')
+                mylang.add(
+                    '''basic-head-1st-comp-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.MKG [ TP na-or-- ] ].''')
+                mylang.add(
                     '''my-head-adj-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < >,
                     HEAD-DTR.SYNSEM.LOCAL.CAT.MKG [ FC na-or--, TP na-or-- ] ].''', merge=True)
                 mylang.add(
