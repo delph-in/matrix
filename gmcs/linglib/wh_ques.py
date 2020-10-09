@@ -264,10 +264,10 @@ def customize_wh_ques(mylang, ch, rules):
                 mylang.add(HEAD_FILLER)
                 mylang.add(
                     '''my-head-adj-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < >,
-                    HEAD-DTR.SYNSEM.LOCAL.CAT.MKG [ FC na, TP na ] ].''', merge=True)
+                    HEAD-DTR.SYNSEM.LOCAL.CAT.MKG [ FC na-or--, TP na-or-- ] ].''', merge=True)
                 mylang.add(
                     '''my-adj-head-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ],
-                    HEAD-DTR.SYNSEM.LOCAL.CAT.MKG [ FC na, TP na ] ].''')
+                    HEAD-DTR.SYNSEM.LOCAL.CAT.MKG [ FC na-or--, TP na-or-- ] ].''')
 
                 mylang.add(
                     '''head-comp-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].''')
