@@ -133,6 +133,21 @@ head-focus-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase 
                       NON-LOCAL.SLASH.LIST < [ ] > ] ].
 """
 
+head_topic = """
+head-topic-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase  & head-filler-phrase &
+  [ SYNSEM [ LOCAL [ CAT [ MKG [ TP +, FC -, CF #cf ],
+                         WH #wh,
+                         VAL #val,
+                         HEAD verb ], COORD - ] ],
+    NON-HEAD-DTR.SYNSEM [ NON-LOCAL non-local-none,
+                          LOCAL.CONT.HOOK.ICONS-KEY topic ],
+    HEAD-DTR.SYNSEM [ LOCAL.CAT [ WH #wh, MKG [ TP -, FC -, CF #cf ], VAL #val &
+                                      [ SUBJ < >,
+                                        COMPS < > ] ],
+                      NON-LOCAL.SLASH.LIST < [ ], [ ] > ] ].
+"""
+
+
 head_focus_wh = """
 head-focus-wh-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase  & head-filler-phrase &
   [ SYNSEM [ LOCAL [ CAT [ MKG [ TP #tp, FC +, CF #cf ],
@@ -316,10 +331,12 @@ def customize_wh_ques(mylang, ch, rules):
                 mylang.add(topic_head)
                 mylang.add(head_focus)
                 mylang.add(head_focus_wh)
+                mylang.add(head_topic)
                 rules.add('top-head := topic-head-phrase.')
                 rules.add('contrast-head := contrast-head-phrase.')
                 rules.add('head-foc := head-focus-phrase.')
                 rules.add('head-foc-wh := head-focus-wh-phrase.')
+                rules.add('head-top := head-topic-phrase.')
                 rules.add('adp-comp := adp-comp-phrase.')
                 mylang.add('scopal-mod-phrase :+ [ SYNSEM.LIGHT - ].')
                 #mylang.add('''basic-head-subj-phrase :+ same-mkg-phrase.''')
