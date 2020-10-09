@@ -265,7 +265,7 @@ def customize_wh_ques(mylang, ch, rules):
                 mylang.add(
                     '''basic-head-subj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.MKG [ TP na, FC na, CF na ] ].''')
                 mylang.add(
-                    '''basic-head-1st-comp-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.MKG [ TP na, FC na, CF na ] ].''')
+                    '''basic-head-1st-comp-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.MKG [ TP na-or--, FC na-or--, CF na-or-- ] ].''')
                 mylang.add(
                     '''my-head-adj-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < >,
                     HEAD-DTR.SYNSEM.LOCAL.CAT.MKG [ FC na, TP na, CF na ] ].''', merge=True)
