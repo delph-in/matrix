@@ -284,12 +284,12 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
     if wo in ['free', 'v2']:
         from gmcs.linglib.wh_ques import MTRX_FR_OPT, NONE_OBLIG
         rules.add('head-comp := head-comp-phrase.')
-        rules.add('head-subj := head-subj-phrase.')
         if not ch.get(MTRX_FR_OPT) == NONE_OBLIG:
+            rules.add('head-subj := head-subj-phrase.')
             rules.add('comp-head := comp-head-phrase.')
             rules.add('subj-head := subj-head-phrase.')
-        rules.add('head-comp-2 := head-comp-phrase-2.')
-        rules.add('comp-head-2 := comp-head-phrase-2.')
+            rules.add('head-comp-2 := head-comp-phrase-2.')
+            rules.add('comp-head-2 := comp-head-phrase-2.')
     # Assume at this point that there's a good value of wo.
     # Rule names are stored in hs and hc, since they're the same as type names
     # without the -phrase suffix.
