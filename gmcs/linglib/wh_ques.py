@@ -59,13 +59,14 @@ IN_SITU_PHRASE = '''insitu-int-cl := interrogative-clause & head-only &
           QUE.LIST < ref-ind, ... > ] ] ].'''
 
 EX_DET_PHRASE = '''extracted-det-phrase := basic-extracted-arg-phrase & head-compositional &
-[ SYNSEM [ LOCAL.CAT [ VAL [ SUBJ < >, COMPS < >, SPR < >, SPEC < > ] ] ],
+[ SYNSEM [ LOCAL.CAT [ VAL [ SUBJ < >, COMPS < >, SPR < >, SPEC < > ] ],
+           NON-LOCAL.SLASH.APPEND < #slash, [ LIST < #local > ] > ],
   HEAD-DTR.SYNSEM [ MODIFIED notmod,
                     LOCAL.CAT.VAL.SPR <  gap & [ LOCAL #local & local &
                                                 [ CAT.HEAD det,
                                                   CONT.HOOK #hook ] ] >,
                    L-PERIPH -,
-                   NON-LOCAL.SLASH.LIST < #local > ],
+                   NON-LOCAL.SLASH #slash ],
     C-CONT [ RELS.LIST < >,
              HCONS.LIST < >,
              ICONS.LIST < >,
@@ -166,9 +167,7 @@ def customize_wh_ques(mylang, ch, rules, roots):
         mylang.add(EX_COMP)
         rules.add('ex-comp := extracted-comp-phrase.')
         mylang.add_literal('; Adjunct extraction', section='phrases')
-        if ch.get(MTRX_FRONT) == MULTI:
-            rules.add('ex-adj-last := extracted-adj-last-phrase.')
-        rules.add('ex-adj-first := extracted-adj-first-phrase.')
+        rules.add('ex-adj := basic-extracted-adj-phrase.')
         # Free probably shouldn't belong here? check
         if ch.get('word-order') in ['vos', 'svo', 'sov', 'free']:
             if ch.get('pied-pip-adp') != 'on' or ch.get('oblig-pied-pip-adp') == ON:
@@ -180,9 +179,11 @@ def customize_wh_ques(mylang, ch, rules, roots):
             mylang.add(
                 'extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].', merge=True)
 
-    if ch.get(MTRX_FRONT) in [SINGLE]:
+    if ch.get(MTRX_FRONT) == SINGLE:
         # With single fronting, can restrict SLASH to one element at most
         mylang.add(BASIC_FILLER_SG, section='phrases')
+        mylang.add('basic-extracted-adj-phrase :+ '
+                   '[ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ cons ].')
         mylang.add_literal('; Subject extraction')
         mylang.add(EX_SUBJ)
         rules.add('ex-subj := extracted-subj-phrase.')
@@ -213,7 +214,7 @@ def customize_wh_ques(mylang, ch, rules, roots):
                     'adj-head-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL [ QUE.LIST < > ] ].')
                 mylang.add(NC_SUBJ_HEAD, section='phrases')
                 rules.add('nc-subjh := subj-head-nc-phrase.')
-            mylang.add('extracted-adj-first-phrase :+ '
+            mylang.add('basic-extracted-adj-phrase :+ '
                        '[ SYNSEM.NON-LOCAL.SLASH.LIST < [ CAT.HEAD.MOD < [ LOCAL.CAT.HEAD [ INV - ] ] > ] >, '
                        '  HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].')
 

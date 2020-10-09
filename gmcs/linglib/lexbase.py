@@ -43,7 +43,7 @@ LEXICAL_SUPERTYPES = {'noun': 'noun-lex',
 
 # TYPE DEFINITIONS (that can be shared with other libraries)
 COMPLEMENTIZER = '''
-      complementizer-lex-item := raise-sem-lex-item & basic-one-arg & basic-icons-lex-item & 
+      complementizer-lex-item := raise-sem-lex-item & non-local-none-lex-item & basic-icons-lex-item & 
          [ SYNSEM [ LOCAL.CAT [ HEAD comp &
                                    [ MOD < > ],
                               VAL [ SPR < >, SPEC < >,
@@ -119,7 +119,7 @@ WH_DET = '''wh-determiner-lex := basic-wh-word-lex & basic-determiner-lex & non-
                            SUBJ < > ] ] ],
              NON-LOCAL.QUE.LIST < #arg0 > ] ].'''
 
-ADP_LEX = '''norm-adposition-lex := norm-sem-lex-item & no-hcons-lex-item & basic-intersective-mod-lex & basic-one-arg &
+ADP_LEX = '''norm-adposition-lex := norm-sem-lex-item & no-hcons-lex-item & basic-intersective-mod-lex & non-local-none-lex-item &
   [ SYNSEM [ LOCAL [ CAT [ HEAD adp & [ MOD < [ LOCAL.CAT [ VAL.SPR cons, 
                                                             WH.BOOL - ] ] > ],
                            WH.BOOL -,
@@ -128,11 +128,9 @@ ADP_LEX = '''norm-adposition-lex := norm-sem-lex-item & no-hcons-lex-item & basi
                                  SUBJ < >,
                                  COMPS < #comp & [ L-QUE #lque,
                                                  LOCAL [ CAT [ HEAD noun, VAL.SPR < > ],
-                                                 CONT.HOOK.INDEX #ind ],
-                                         NON-LOCAL #nonloc ] > ] ],
+                                                 CONT.HOOK.INDEX #ind ] ] > ] ],
                      CONT.RELS.LIST < [ PRED #pred, ARG0 event, ARG1 event-or-ref-index ] > ],
              LKEYS.KEYREL arg12-ev-relation & [ PRED #pred, ARG2 #ind ],
-             NON-LOCAL #nonloc,
              L-QUE #lque ],
     ARG-ST < #comp > ].'''
 
