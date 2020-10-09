@@ -309,18 +309,15 @@ def customize_wh_ques(mylang, ch, rules):
                                                                              MKG [ TP #tp, FC #fc, CF #cf ] ],
                                                        SYNSEM.LOCAL.CAT.MKG [ CF #cf, FC #fc, TP #tp ] ].''')
                 mylang.add(
-                    '''my-head-adj-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < >,
-                    HEAD-DTR.SYNSEM.LOCAL.CAT.MKG [ FC na, TP na, CF na ] ].''', merge=True)
+                    '''my-head-adj-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].''', merge=True)
                 mylang.add(
-                    '''my-adj-head-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ],
-                    HEAD-DTR.SYNSEM.LOCAL.CAT.MKG [ FC na, TP na, CF na ] ].''')
+                    '''my-adj-head-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ] ].''')
 
                 mylang.add(
                     '''head-comp-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].''')
                 mylang.add(
                     '''adp-comp-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus &
-                    [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD adp,
-                        NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST cons ].''')
+                    [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD adp ].''')
                 mylang.add(
                     'comp-head-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
 
