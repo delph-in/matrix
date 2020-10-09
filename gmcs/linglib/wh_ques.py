@@ -141,8 +141,8 @@ topic-head-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase 
                          HEAD verb ], COORD - ] ],
     NON-HEAD-DTR.SYNSEM [ NON-LOCAL non-local-none,
                           LOCAL.CONT.HOOK.ICONS-KEY topic ],
-    HEAD-DTR.SYNSEM [ LOCAL.CAT [ WH #wh & [BOOL + ], 
-                                  MKG [ TP -, FC #fc & - ], 
+    HEAD-DTR.SYNSEM [ L-QUE +, LOCAL.CAT [ WH #wh, 
+                                           MKG [ TP -, FC #fc & - ], 
                                 VAL #val &
                                       [ SUBJ < >,
                                         COMPS < > ],
