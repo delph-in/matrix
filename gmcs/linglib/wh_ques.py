@@ -143,7 +143,7 @@ topic-head-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase 
     NON-HEAD-DTR.SYNSEM [ NON-LOCAL non-local-none,
                           LOCAL.CONT.HOOK.ICONS-KEY topic ],
     HEAD-DTR.SYNSEM [ LOCAL.CAT [ WH #wh, 
-                                  MKG [ TP -, FC #fc & + & +-or--, CF #cf & +-or-- ], 
+                                  MKG [ TP -, FC #fc & +, CF #cf & +-or-- ], 
                                 VAL #val &
                                       [ SUBJ < >,
                                         COMPS < > ],
@@ -264,7 +264,8 @@ def customize_wh_ques(mylang, ch, rules):
             if ch.get(MTRX_FR_OPT) == NONE_OBLIG:
                 mylang.add(HEAD_FILLER)
                 mylang.add(
-                    '''basic-head-subj-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MKG [ TP #tp, FC #fc, CF #cf ],
+                    '''basic-head-subj-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MKG [ TP #tp & +, FC -, CF - ],
+                                                   HEAD-DTR.SYNSEM.LOCAL.CAT.MKG [ TP -, FC #fc, CF #cf ],
                                                    SYNSEM.LOCAL.CAT.MKG [ CF #cf, FC #fc, TP #tp ] ].''')
                 mylang.add(
                     '''basic-head-1st-comp-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MKG [ TP #tp, FC #fc, CF #cf ],
