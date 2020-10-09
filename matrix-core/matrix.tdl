@@ -4025,7 +4025,8 @@ s-bottom-coord-phrase := bottom-coord-phrase &
 
 
 ;;; lexical marking (a value of cat)
-mkg := avm & [ FC luk, TP luk ].
+; OZ 2020-10-09 Adding contrastive focus marking
+mkg := avm & [ FC luk, TP luk, CF luk ].
 fc := mkg & [ FC + ].
 non-tp := mkg & [ TP - ].
 tp := mkg & [ TP + ].

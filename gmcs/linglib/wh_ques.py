@@ -38,10 +38,10 @@ EMBED_WHQ = '''embed-wh-ques-phrase := wh-ques-phrase &
     SYNSEM.LOCAL.CAT.MC - ].'''
 
 EX_COMP = '''extracted-comp-phrase := basic-extracted-comp-phrase & 
-[ SYNSEM.LOCAL.CAT [ HEAD +vp, MKG [ TP -, FC - ] ] ].'''
+[ SYNSEM.LOCAL.CAT [ HEAD +vp, MKG [ TP -, FC -, CF - ] ] ].'''
 
 EX_SUBJ = '''extracted-subj-phrase := basic-extracted-subj-phrase &
-[ SYNSEM.LOCAL.CAT [ HEAD verb, MKG [ TP -, FC - ] ] ].'''
+[ SYNSEM.LOCAL.CAT [ HEAD verb, MKG [ TP -, FC -, CF - ] ] ].'''
 
 IN_SITU_PHRASE = '''insitu-int-cl := interrogative-clause & head-only &
 [ SYNSEM [ MODIFIED hasmod,
@@ -60,7 +60,7 @@ IN_SITU_PHRASE = '''insitu-int-cl := interrogative-clause & head-only &
 
 EX_DET_PHRASE = '''extracted-det-phrase := basic-extracted-arg-phrase & head-compositional &
 [ SYNSEM [ LOCAL.CAT [ VAL [ SUBJ < >, COMPS < >, SPR < >, SPEC < > ],
-                       MKG [ TP -, FC - ] ],
+                       MKG [ TP -, FC -, CF - ] ],
            NON-LOCAL.SLASH.APPEND < #slash, [ LIST < #local > ] > ],
   HEAD-DTR.SYNSEM [ MODIFIED notmod,
                     LOCAL.CAT.VAL.SPR <  gap & [ LOCAL #local & local &
@@ -105,13 +105,13 @@ But let it be here just for now while I am figuring this out...
 '''
 contrast_head = """
 contrast-head-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase & declarative-clause & head-final & 1st-head-filler-phrase &
-  [ SYNSEM [ LOCAL [ CAT [ MKG [ TP #tp, FC + ],
+  [ SYNSEM [ LOCAL [ CAT [ MKG [ TP #tp, FC #fc, CF + ],
                          WH #wh,
                          VAL #val,
                          HEAD verb ], COORD - ] ],
     NON-HEAD-DTR.SYNSEM [ NON-LOCAL non-local-none,
                           LOCAL.CONT.HOOK.ICONS-KEY contrast ],
-    HEAD-DTR.SYNSEM [ LOCAL.CAT [ WH #wh, MKG [ TP #tp, FC - ], VAL #val &
+    HEAD-DTR.SYNSEM [ LOCAL.CAT [ WH #wh, MKG [ TP #tp & +-or--, FC #fc & +-or--, CF - ], VAL #val &
                                       [ SUBJ < >,
                                         COMPS < > ],
                                   MC + ],
@@ -120,13 +120,13 @@ contrast-head-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phra
 
 head_focus = """
 head-focus-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase  & head-filler-phrase &
-  [ SYNSEM [ LOCAL [ CAT [ MKG [ TP #tp & +, FC + ],
+  [ SYNSEM [ LOCAL [ CAT [ MKG [ TP #tp, FC +, CF #cf ],
                          WH #wh,
                          VAL #val,
                          HEAD verb ], COORD - ] ],
     NON-HEAD-DTR.SYNSEM [ NON-LOCAL [ QUE.LIST cons, SLASH.LIST < >, REL.LIST < > ],
                           LOCAL.CONT.HOOK.ICONS-KEY semantic-focus ],
-    HEAD-DTR.SYNSEM [ LOCAL.CAT [ WH #wh & [ BOOL + ], MKG [ TP #tp, FC - ], VAL #val &
+    HEAD-DTR.SYNSEM [ LOCAL.CAT [ WH #wh, MKG [ TP #tp & +-or--, FC -, CF #cf & + ], VAL #val &
                                       [ SUBJ < >,
                                         COMPS < > ] ],
                       NON-LOCAL.SLASH.LIST.FIRST [ ] ] ].
@@ -135,14 +135,14 @@ head-focus-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase 
 
 topic_head = """
 topic-head-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase & declarative-clause & head-final & 1st-head-filler-phrase &
-  [ SYNSEM [ LOCAL [ CAT [ MKG [ TP +, FC #fc ],
+  [ SYNSEM [ LOCAL [ CAT [ MKG [ TP +, FC #fc, CF #cf ],
                          WH #wh,
                          VAL #val,
                          HEAD verb ], COORD - ] ],
     NON-HEAD-DTR.SYNSEM [ NON-LOCAL non-local-none,
                           LOCAL.CONT.HOOK.ICONS-KEY topic ],
-    HEAD-DTR.SYNSEM [ L-QUE +, LOCAL.CAT [ WH #wh, 
-                                           MKG [ TP -, FC #fc & - ], 
+    HEAD-DTR.SYNSEM [ LOCAL.CAT [ WH #wh, 
+                                           MKG [ TP -, FC #fc & +-or--, CF #cf & +-or-- ], 
                                 VAL #val &
                                       [ SUBJ < >,
                                         COMPS < > ],
@@ -263,15 +263,15 @@ def customize_wh_ques(mylang, ch, rules):
             if ch.get(MTRX_FR_OPT) == NONE_OBLIG:
                 mylang.add(HEAD_FILLER)
                 mylang.add(
-                    '''basic-head-subj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.MKG [ TP na-or-- ] ].''')
+                    '''basic-head-subj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.MKG [ TP na, FC na, CF na ] ].''')
                 mylang.add(
-                    '''basic-head-1st-comp-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.MKG [ TP na-or-- ] ].''')
+                    '''basic-head-1st-comp-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.MKG [ TP na, FC na, CF na ] ].''')
                 mylang.add(
                     '''my-head-adj-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < >,
-                    HEAD-DTR.SYNSEM.LOCAL.CAT.MKG [ FC na-or--, TP na-or-- ] ].''', merge=True)
+                    HEAD-DTR.SYNSEM.LOCAL.CAT.MKG [ FC na, TP na, CF na ] ].''', merge=True)
                 mylang.add(
                     '''my-adj-head-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ],
-                    HEAD-DTR.SYNSEM.LOCAL.CAT.MKG [ FC na-or--, TP na-or-- ] ].''')
+                    HEAD-DTR.SYNSEM.LOCAL.CAT.MKG [ FC na, TP na, CF na ] ].''')
 
                 mylang.add(
                     '''head-comp-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].''')
