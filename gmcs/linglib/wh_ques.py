@@ -19,6 +19,7 @@ WH_Q_PHR_NO_OR_SG_OBLIG_MULTI = '''wh-ques-phrase :=
 WH_Q_PHR = ''' wh-ques-phrase := basic-head-filler-phrase & 1st-head-filler-phrase & interrogative-clause & head-final &
 [ SYNSEM [ LOCAL.CAT [ WH.BOOL +,
                        MC +-or--,
+                       MKG.FC +,
 			           VAL #val,
 			           HEAD verb ],
 			NON-LOCAL.QUE.LIST < > ],
@@ -142,7 +143,7 @@ topic-head-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase 
     NON-HEAD-DTR.SYNSEM [ NON-LOCAL non-local-none,
                           LOCAL.CONT.HOOK.ICONS-KEY topic ],
     HEAD-DTR.SYNSEM [ LOCAL.CAT [ WH #wh, 
-                                           MKG [ TP -, FC #fc & +-or--, CF #cf & +-or-- ], 
+                                  MKG [ TP -, FC #fc & + & +-or--, CF #cf & +-or-- ], 
                                 VAL #val &
                                       [ SUBJ < >,
                                         COMPS < > ],
@@ -263,9 +264,11 @@ def customize_wh_ques(mylang, ch, rules):
             if ch.get(MTRX_FR_OPT) == NONE_OBLIG:
                 mylang.add(HEAD_FILLER)
                 mylang.add(
-                    '''basic-head-subj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.MKG [ TP na, FC na, CF na ] ].''')
+                    '''basic-head-subj-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MKG [ TP #tp, FC #fc, CF #cf ],
+                                                   SYNSEM.LOCAL.CAT.MKG [ CF #cf, FC #fc, TP #tp ] ].''')
                 mylang.add(
-                    '''basic-head-1st-comp-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.MKG [ TP na-or--, FC na-or--, CF na-or-- ] ].''')
+                    '''basic-head-1st-comp-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MKG [ TP #tp, FC #fc, CF #cf ],
+                                                       SYNSEM.LOCAL.CAT.MKG [ CF #cf, FC #fc, TP #tp ] ].''')
                 mylang.add(
                     '''my-head-adj-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < >,
                     HEAD-DTR.SYNSEM.LOCAL.CAT.MKG [ FC na, TP na, CF na ] ].''', merge=True)
@@ -293,9 +296,9 @@ def customize_wh_ques(mylang, ch, rules):
                 rules.add('head-foc := head-focus-phrase.')
                 rules.add('adp-comp := adp-comp-phrase.')
                 mylang.add('scopal-mod-phrase :+ [ SYNSEM.LIGHT - ].')
-                mylang.add('''basic-head-subj-phrase :+ same-mkg-phrase.''')
-                mylang.add(
-                    '''basic-head-1st-comp-phrase :+ same-mkg-phrase.''')
+                #mylang.add('''basic-head-subj-phrase :+ same-mkg-phrase.''')
+                # mylang.add(
+                #    '''basic-head-1st-comp-phrase :+ same-mkg-phrase.''')
 
     if ch.get(MTRX_FRONT) == SINGLE:
         mylang.add(
