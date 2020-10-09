@@ -238,7 +238,7 @@ def add_complementizer_subtype(cs, mylang, ch, extra):
             mylang.add(
                 typename + ':= [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.EXTRA - ] > ].', merge=True)
     if cs['ques'] == 'ques':  # Should this be disallowed in validation? Or, is this the English "whether"?
-        mylang.add(typename + ':=  basic-wh-word-lex & [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.SF ques,'
+        mylang.add(typename + ':= basic-wh-word-lex & [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.SF ques,'
                               'CAT.VAL.COMPS.FIRST [ NON-LOCAL.QUE.LIST < > ] ] ].', merge=True)
 
     elif cs['ques'] == 'prop':

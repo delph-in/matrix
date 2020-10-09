@@ -229,10 +229,8 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies, roots):
                        section='addenda')
             mylang.add(
                 'non-ynq-word := word-or-lexrule & [ SYNSEM.NON-LOCAL.YNQ.LIST < > ].')
-            #mylang.add('basic-zero-arg :+ non-ynq-word.',section='addenda')
-            mylang.add('basic-one-arg :+ non-ynq-word.', section='addenda')
-            mylang.add('basic-two-arg :+ non-ynq-word.', section='addenda')
-            mylang.add('basic-three-arg :+ non-ynq-word.', section='addenda')
+            mylang.add('non-local-none-lex-item :+ non-ynq-word.',
+                       section='addenda')
             mylang.add('intersective-mod-lex :+ non-ynq-word.',
                        section='addenda')
             roots.add('root := [ SYNSEM.NON-LOCAL.YNQ.LIST < > ].')
