@@ -127,7 +127,7 @@ head-focus-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase 
                          HEAD verb ], COORD - ] ],
     NON-HEAD-DTR.SYNSEM [ NON-LOCAL [ QUE.LIST cons, SLASH.LIST < >, REL.LIST < > ],
                           LOCAL.CONT.HOOK.ICONS-KEY semantic-focus ],
-    HEAD-DTR.SYNSEM [ LOCAL.CAT [ WH #wh, MKG [ TP #tp & +-or--, FC -, CF #cf & + ], VAL #val &
+    HEAD-DTR.SYNSEM [ LOCAL.CAT [ WH #wh, MKG [ TP #tp & +-or--, CF #cf & + ], VAL #val &
                                       [ SUBJ < >,
                                         COMPS < > ] ],
                       NON-LOCAL.SLASH.LIST.FIRST [ ] ] ].
@@ -264,11 +264,15 @@ def customize_wh_ques(mylang, ch, rules):
             if ch.get(MTRX_FR_OPT) == NONE_OBLIG:
                 mylang.add(HEAD_FILLER)
                 mylang.add(
-                    '''basic-head-subj-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MKG [ TP #tp & +, FC -, CF - ],
+                    '''subj-head-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MKG [ TP #tp & +, FC -, CF - ],
                                                    HEAD-DTR.SYNSEM.LOCAL.CAT.MKG [ TP -, FC #fc, CF #cf ],
                                                    SYNSEM.LOCAL.CAT.MKG [ CF #cf, FC #fc, TP #tp ] ].''')
                 mylang.add(
-                    '''basic-head-1st-comp-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MKG [ TP #tp, FC #fc, CF #cf ],
+                    '''head-subj-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MKG [ TP -, FC #fc & +, CF - ],
+                                                   HEAD-DTR.SYNSEM.LOCAL.CAT.MKG [ TP #tp, FC -, CF #cf ],
+                                                   SYNSEM.LOCAL.CAT.MKG [ CF #cf, FC #fc, TP #tp ] ].''')
+                mylang.add(
+                    '''basic-head-comp-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.MKG [ TP #tp, FC #fc, CF #cf ],
                                                        SYNSEM.LOCAL.CAT.MKG [ CF #cf, FC #fc, TP #tp ] ].''')
                 mylang.add(
                     '''my-head-adj-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < >,
