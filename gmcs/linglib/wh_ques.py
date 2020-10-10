@@ -321,7 +321,7 @@ def customize_wh_ques(mylang, ch, rules):
                 #                                    HEAD-DTR.SYNSEM.LOCAL.CAT.MKG [ TP -, FC #fc, CF #cf ],
                 #                                    SYNSEM.LOCAL.CAT.MKG [ CF #cf, FC #fc, TP + ] ].''')
                 mylang.add(
-                    '''head-comp-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD verb,
+                    '''head-comp-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD +vc,
                                                                              MKG [ TP #tp, FC #fc, CF #cf ] ],
                                                        SYNSEM.LOCAL.CAT.MKG [ CF #cf, FC #fc, TP #tp ] ].''')
                 mylang.add(
