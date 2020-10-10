@@ -113,7 +113,7 @@ contrast-head-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phra
                          HEAD verb ], COORD - ] ],
     NON-HEAD-DTR.SYNSEM [ NON-LOCAL non-local-none,
                           LOCAL [ CONT.HOOK.ICONS-KEY contrast,
-                                   CAT.MKG [ CF -, FC -, TP - ] ] ],
+                                   CAT [ HEAD +nvc, MKG [ CF -, FC -, TP - ] ] ] ],
     HEAD-DTR.SYNSEM [ LOCAL.CAT [ WH #wh, MKG [ TP #tp, FC #fc, CF - ], VAL #val &
                                       [ SUBJ < >,
                                         COMPS < > ],
@@ -128,7 +128,7 @@ head-focus-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase 
                          VAL #val,
                          HEAD verb ], COORD - ] ],
     NON-HEAD-DTR.SYNSEM [ NON-LOCAL [ QUE.LIST < >, SLASH.LIST < >, REL.LIST < > ],
-                          LOCAL [ CAT.MKG [ TP -, FC -, CF - ],
+                          LOCAL [ CAT [ HEAD +nvc, MKG [ TP -, FC -, CF - ] ],
                                   CONT.HOOK.ICONS-KEY semantic-focus ] ],
     HEAD-DTR.SYNSEM [ LOCAL.CAT [ WH #wh, MKG [ TP #tp, CF #cf ], VAL #val &
                                       [ SUBJ < >,
@@ -144,7 +144,7 @@ head-focus-nopp-phrase := basic-head-filler-phrase & basic-infostr-dislocated-ph
                          HEAD verb ], COORD - ] ],
     NON-HEAD-DTR.SYNSEM [ NON-LOCAL [ QUE.LIST < >, SLASH.LIST < [ CAT.HEAD det ] >, REL.LIST < > ],
                           LOCAL [ CONT.HOOK.ICONS-KEY semantic-focus,
-                                  CAT.MKG [ TP -, CF - ] ] ],
+                                  CAT [ HEAD +nvc, MKG [ TP -, CF - ] ] ] ],
     HEAD-DTR.SYNSEM [ LOCAL.CAT [ WH #wh, MKG [ TP #tp, CF #cf ], VAL #val &
                                       [ SUBJ < >,
                                         COMPS < > ] ],
@@ -160,7 +160,8 @@ head-topic-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase 
                          HEAD verb ], COORD - ] ],
     NON-HEAD-DTR.SYNSEM [ NON-LOCAL non-local-none,
                           LOCAL [ CONT.HOOK.ICONS-KEY topic,
-                                  CAT.MKG [ TP -, FC -, CF - ] ] ],
+                                  CAT [ HEAD +nvc,
+                                        MKG [ TP -, FC -, CF - ] ] ] ],
     HEAD-DTR.SYNSEM [ LOCAL.CAT [ WH #wh, MKG [ TP -, FC -, CF #cf ], VAL #val &
                                       [ SUBJ < >,
                                         COMPS < > ] ],
@@ -192,7 +193,7 @@ topic-head-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase 
                          HEAD verb ], COORD - ] ],
     NON-HEAD-DTR.SYNSEM [ NON-LOCAL non-local-none,
                           LOCAL [ CONT.HOOK.ICONS-KEY topic,
-                                   CAT.MKG [ TP -, FC -, CF - ] ] ],
+                                   CAT [ HEAD +nvc, MKG [ TP -, FC -, CF - ] ] ] ],
     HEAD-DTR.SYNSEM [ LOCAL.CAT [ WH #wh, 
                                   MKG [ FC #fc, CF #cf ], 
                                 VAL #val &
@@ -331,11 +332,9 @@ def customize_wh_ques(mylang, ch, rules):
                       SYNSEM.LOCAL.CAT.MKG [ CF #cf, FC #fc, TP #tp ] ].''')
 
                 mylang.add(
-                    '''my-head-adj-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD noun,
-                                               NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].''', merge=True)
+                    '''my-head-adj-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].''', merge=True)
                 mylang.add(
-                    '''my-adj-head-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD noun,
-                                               NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ] ].''')
+                    '''my-adj-head-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ] ].''')
 
                 mylang.add(
                     'decl-head-subj-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
