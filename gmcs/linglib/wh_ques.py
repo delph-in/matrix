@@ -107,14 +107,15 @@ But let it be here just for now while I am figuring this out...
 '''
 contrast_head = """
 contrast-head-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase & declarative-clause & head-final & 1st-head-filler-phrase &
-  [ SYNSEM [ LOCAL [ CAT [ MKG [ TP #tp, FC #fc, CF + ],
+  [ SYNSEM [ LOCAL [ CAT [ HC-LIGHT #hc-light, MKG [ TP #tp, FC #fc, CF + ],
                          WH #wh,
                          VAL #val,
                          HEAD verb ], COORD - ] ],
     NON-HEAD-DTR.SYNSEM [ NON-LOCAL non-local-none,
                           LOCAL [ CONT.HOOK.ICONS-KEY contrast,
                                    CAT [ HEAD +nvc, MKG [ CF -, FC -, TP - ] ] ] ],
-    HEAD-DTR.SYNSEM [ LOCAL.CAT [ WH #wh, MKG [ TP #tp, FC #fc, CF - ], VAL #val &
+    HEAD-DTR.SYNSEM [ LOCAL.CAT [ HC-LIGHT #hc-light, 
+                                  WH #wh, MKG [ TP #tp, FC #fc, CF - ], VAL #val &
                                       [ SUBJ < >,
                                         COMPS < > ],
                                   MC + ],
@@ -123,14 +124,14 @@ contrast-head-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phra
 
 head_focus = """
 head-focus-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase  & head-filler-phrase &
-  [ SYNSEM [ LOCAL [ CAT [ MKG [ TP #tp, FC +, CF #cf ],
+  [ SYNSEM [ LOCAL [ CAT [ HC-LIGHT #hc-light, MKG [ TP #tp, FC +, CF #cf ],
                          WH #wh,
                          VAL #val,
                          HEAD verb ], COORD - ] ],
     NON-HEAD-DTR.SYNSEM [ NON-LOCAL [ QUE.LIST < >, SLASH.LIST < >, REL.LIST < > ],
                           LOCAL [ CAT [ HEAD +nvc, MKG [ TP -, FC -, CF - ] ],
                                   CONT.HOOK.ICONS-KEY semantic-focus ] ],
-    HEAD-DTR.SYNSEM [ LOCAL.CAT [ WH #wh, MKG [ TP #tp, CF #cf ], VAL #val &
+    HEAD-DTR.SYNSEM [ LOCAL.CAT [ HC-LIGHT #hc-light & -, WH #wh, MKG [ TP #tp, CF #cf ], VAL #val &
                                       [ SUBJ < >,
                                         COMPS < > ] ],
                       NON-LOCAL.SLASH.LIST < [] > ] ].
@@ -138,14 +139,14 @@ head-focus-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase 
 
 head_focus_nopp = """
 head-focus-nopp-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase  & head-filler-phrase &
-  [ SYNSEM [ LOCAL [ CAT [ MKG [ TP #tp, FC +, CF #cf ],
+  [ SYNSEM [ LOCAL [ CAT [ HC-LIGHT #hc-light, MKG [ TP #tp, FC +, CF #cf ],
                          WH #wh,
                          VAL #val,
                          HEAD verb ], COORD - ] ],
     NON-HEAD-DTR.SYNSEM [ NON-LOCAL [ QUE.LIST < >, SLASH.LIST < [ CAT.HEAD det ] >, REL.LIST < > ],
                           LOCAL [ CONT.HOOK.ICONS-KEY semantic-focus,
                                   CAT [ HEAD +nvc, MKG [ TP -, CF - ] ] ] ],
-    HEAD-DTR.SYNSEM [ LOCAL.CAT [ WH #wh, MKG [ TP #tp, CF #cf ], VAL #val &
+    HEAD-DTR.SYNSEM [ LOCAL.CAT [ HC-LIGHT #hc-light, WH #wh, MKG [ TP #tp, CF #cf ], VAL #val &
                                       [ SUBJ < >,
                                         COMPS < > ] ],
                       NON-LOCAL.SLASH.LIST < [ ] > ] ].
@@ -154,7 +155,7 @@ head-focus-nopp-phrase := basic-head-filler-phrase & basic-infostr-dislocated-ph
 
 head_topic = """
 head-topic-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase  & head-filler-phrase &
-  [ SYNSEM [ LOCAL [ CAT [ MKG [ TP +, FC -, CF #cf ],
+  [ SYNSEM [ LOCAL [ CAT [ HC-LIGHT #hc-light, MKG [ TP +, FC -, CF #cf ],
                          WH #wh,
                          VAL #val,
                          HEAD verb ], COORD - ] ],
@@ -162,7 +163,7 @@ head-topic-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase 
                           LOCAL [ CONT.HOOK.ICONS-KEY topic,
                                   CAT [ HEAD +nvc,
                                         MKG [ TP -, FC -, CF - ] ] ] ],
-    HEAD-DTR.SYNSEM [ LOCAL.CAT [ WH #wh, MKG [ TP -, FC -, CF #cf ], VAL #val &
+    HEAD-DTR.SYNSEM [ LOCAL.CAT [ HC-LIGHT #hc-light & -, WH #wh, MKG [ TP -, FC -, CF #cf ], VAL #val &
                                       [ SUBJ < >,
                                         COMPS < > ] ],
                       NON-LOCAL.SLASH.LIST.REST < [] > ] ].
@@ -171,14 +172,14 @@ head-topic-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase 
 
 head_focus_wh = """
 head-focus-wh-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase  & head-filler-phrase &
-  [ SYNSEM [ LOCAL [ CAT [ MKG [ TP #tp, FC +, CF #cf ],
+  [ SYNSEM [ LOCAL [ CAT [ HC-LIGHT #hc-light, MKG [ TP #tp, FC +, CF #cf ],
                          WH #wh,
                          VAL #val,
                          HEAD verb ], COORD - ] ],
     NON-HEAD-DTR.SYNSEM [ NON-LOCAL [ QUE.LIST cons, SLASH.LIST < >, REL.LIST < > ],
                           LOCAL [ CONT.HOOK.ICONS-KEY semantic-focus,
                                   CAT.MKG [ TP -, FC -, CF - ] ] ],
-    HEAD-DTR.SYNSEM [ LOCAL.CAT [ WH #wh, MKG [ TP #tp, CF #cf ], VAL #val &
+    HEAD-DTR.SYNSEM [ LOCAL.CAT [ HC-LIGHT #hc-light, WH #wh, MKG [ TP #tp, CF #cf ], VAL #val &
                                       [ SUBJ < >,
                                         COMPS < > ] ],
                       NON-LOCAL.SLASH.LIST < [ ] > ] ].
@@ -187,14 +188,14 @@ head-focus-wh-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phra
 
 topic_head = """
 topic-head-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase & declarative-clause & head-final & 1st-head-filler-phrase &
-  [ SYNSEM [ LOCAL [ CAT [ MKG [ TP +, FC #fc, CF #cf ],
+  [ SYNSEM [ LOCAL [ CAT [ HC-LIGHT #hc-light, MKG [ TP +, FC #fc, CF #cf ],
                          WH #wh,
                          VAL #val,
                          HEAD verb ], COORD - ] ],
     NON-HEAD-DTR.SYNSEM [ NON-LOCAL non-local-none,
                           LOCAL [ CONT.HOOK.ICONS-KEY topic,
                                    CAT [ HEAD +nvc, MKG [ TP -, FC -, CF - ] ] ] ],
-    HEAD-DTR.SYNSEM [ LOCAL.CAT [ WH #wh, 
+    HEAD-DTR.SYNSEM [ LOCAL.CAT [ HC-LIGHT #hc-light, WH #wh, 
                                   MKG [ FC #fc, CF #cf ], 
                                 VAL #val &
                                       [ SUBJ < >,
@@ -322,7 +323,7 @@ def customize_wh_ques(mylang, ch, rules):
                     '''head-comp-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus & 
                     [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD +vc,
                                                       MKG [ CF #cf, FC #fc, TP #tp ] ],
-                      SYNSEM.LOCAL.CAT.MKG [ CF #cf, FC #fc, TP #tp ] ].''')
+                      SYNSEM.LOCAL.CAT [ HC-LIGHT +, MKG [ CF #cf, FC #fc, TP #tp ] ] ].''')
                 mylang.add(
                     '''adp-comp-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus & 
                     [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD adp,
