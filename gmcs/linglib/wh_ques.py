@@ -131,7 +131,7 @@ head-focus-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase 
     NON-HEAD-DTR.SYNSEM [ NON-LOCAL [ QUE.LIST < >, SLASH.LIST < >, REL.LIST < > ],
                           LOCAL [ CAT [ HEAD +nvc, MKG [ TP -, FC -, CF - ] ],
                                   CONT.HOOK.ICONS-KEY semantic-focus ] ],
-    HEAD-DTR.SYNSEM [ LOCAL.CAT [ HC-LIGHT #hc-light & -, WH #wh, MKG [ TP #tp, CF #cf ], VAL #val &
+    HEAD-DTR.SYNSEM [ LOCAL.CAT [ HC-LIGHT #hc-light & +, WH #wh, MKG [ TP #tp, CF #cf ], VAL #val &
                                       [ SUBJ < >,
                                         COMPS < > ] ],
                       NON-LOCAL.SLASH.LIST < [] > ] ].
@@ -161,8 +161,23 @@ head-topic-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase 
                          HEAD verb ], COORD - ] ],
     NON-HEAD-DTR.SYNSEM [ NON-LOCAL non-local-none,
                           LOCAL [ CONT.HOOK.ICONS-KEY topic,
-                                  CAT [ HEAD +nvc,
+                                  CAT [ HEAD noun,
                                         MKG [ TP -, FC -, CF - ] ] ] ],
+    HEAD-DTR.SYNSEM [ LOCAL.CAT [ HC-LIGHT #hc-light & +, WH #wh, MKG [ TP -, FC -, CF #cf ], VAL #val &
+                                      [ SUBJ < >,
+                                        COMPS < > ] ],
+                      NON-LOCAL.SLASH.LIST.REST < [] > ] ].
+"""
+
+head_embed_topic = """
+head-embedded-topic-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase  & head-filler-phrase &
+  [ SYNSEM [ LOCAL [ CAT [ HC-LIGHT #hc-light, MKG [ TP +, FC -, CF #cf ],
+                         WH #wh,
+                         VAL #val,
+                         HEAD verb ], COORD - ] ],
+    NON-HEAD-DTR.SYNSEM [ NON-LOCAL non-local-none,
+                          LOCAL [ CONT.HOOK.ICONS-KEY topic,
+                                  CAT [ HEAD +vc ] ] ],
     HEAD-DTR.SYNSEM [ LOCAL.CAT [ HC-LIGHT #hc-light & -, WH #wh, MKG [ TP -, FC -, CF #cf ], VAL #val &
                                       [ SUBJ < >,
                                         COMPS < > ] ],
@@ -321,9 +336,10 @@ def customize_wh_ques(mylang, ch, rules):
                 #                     LOCAL [ CAT [ VAL.COMPS < > ] ] ] ]. ''')
                 mylang.add(
                     '''head-comp-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus & 
-                    [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD +vc,
+                    [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD comp,
+                      NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD verb,
                                                       MKG [ CF #cf, FC #fc, TP #tp ] ],
-                      SYNSEM.LOCAL.CAT [ HC-LIGHT +, MKG [ CF #cf, FC #fc, TP #tp ] ] ].''')
+                      SYNSEM.LOCAL.CAT [ MKG [ CF #cf, FC #fc, TP #tp ] ] ].''')
                 mylang.add(
                     '''adp-comp-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus & 
                     [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD adp,
@@ -345,12 +361,14 @@ def customize_wh_ques(mylang, ch, rules):
                 mylang.add(head_focus_wh)
                 mylang.add(head_focus_nopp)
                 mylang.add(head_topic)
+                mylang.add(head_embed_topic)
                 #rules.add('subj-head := subj-head-phrase.')
                 rules.add('top-head := topic-head-phrase.')
                 rules.add('contrast-head := contrast-head-phrase.')
                 rules.add('head-foc := head-focus-phrase.')
                 rules.add('head-foc-wh := head-focus-wh-phrase.')
                 rules.add('head-top := head-topic-phrase.')
+                rules.add('head-embed-top := head-embedded-topic-phrase.')
                 rules.add('head-comp := head-comp-phrase.')
                 rules.add('adp-comp := adp-comp-phrase.')
                 rules.add('hf-edet := head-focus-nopp-phrase.')
