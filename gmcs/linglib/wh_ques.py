@@ -331,9 +331,11 @@ def customize_wh_ques(mylang, ch, rules):
                       SYNSEM.LOCAL.CAT.MKG [ CF #cf, FC #fc, TP #tp ] ].''')
 
                 mylang.add(
-                    '''my-head-adj-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].''', merge=True)
+                    '''my-head-adj-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD noun,
+                                               NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].''', merge=True)
                 mylang.add(
-                    '''my-adj-head-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ] ].''')
+                    '''my-adj-head-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD noun,
+                                               NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ] ].''')
 
                 mylang.add(
                     'decl-head-subj-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
