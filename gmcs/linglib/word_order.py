@@ -266,10 +266,12 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
         # rules shared among free and v2
 
     if wo in ['free', 'v2']:
+        from gmcs.linglib.wh_ques import MTRX_FR_OPT, NONE_OBLIG
         mylang.add(
             'head-subj-phrase := decl-head-subj-phrase & head-initial-head-nexus.')
-        mylang.add(
-            'subj-head-phrase := decl-head-subj-phrase & head-final-head-nexus.')
+        if not ch.get(MTRX_FR_OPT) == NONE_OBLIG:
+            mylang.add(
+                'subj-head-phrase := decl-head-subj-phrase & head-final-head-nexus.')
         mylang.add(
             'head-comp-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus.')
         mylang.add(
