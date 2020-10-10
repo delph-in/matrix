@@ -79,12 +79,12 @@ BASIC_FILLER_SG = '''basic-filler-phrase :+ [ SYNSEM.NON-LOCAL.SLASH.LIST < >,
                                                              NON-LOCAL.SLASH.LIST < > ] ],
                                                     [ SYNSEM.NON-LOCAL.SLASH.LIST < #slash > ] > ]. '''
 
-FIRST_FILLER = '''1st-head-filler-phrase := basic-filler-phrase & head-compositional &
+FIRST_FILLER = '''1st-head-filler-phrase := basic-filler-phrase &
 [  SYNSEM [ NON-LOCAL [ SLASH.APPEND < #slash2, [ LIST #slash1 ] >, REL.LIST < >, QUE.LIST < > ] ],
      ARGS < [ SYNSEM [ LOCAL #local, NON-LOCAL.SLASH #slash2 ] ],
 	   [ SYNSEM.NON-LOCAL [ SLASH.LIST < #local . #slash1 > ] ] > ].'''
 
-HEAD_FILLER = '''head-filler-phrase := basic-filler-phrase & head-compositional & head-initial &
+HEAD_FILLER = '''head-filler-phrase := basic-filler-phrase & 
 [  SYNSEM [ NON-LOCAL [ SLASH.APPEND < [ LIST #slash1 ], #slash2 >, REL.LIST < >, QUE.LIST < > ] ],
      ARGS < [ SYNSEM.NON-LOCAL [ SLASH.LIST < #local . #slash1 > ] ], [ SYNSEM [ LOCAL #local,
                                                                                  NON-LOCAL.SLASH #slash2 ] ] > ].'''
@@ -106,7 +106,7 @@ The below contrast_or_topic_phrase may belong better to the information structur
 But let it be here just for now while I am figuring this out...
 '''
 contrast_head = """
-contrast-head-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase & declarative-clause & head-final & 1st-head-filler-phrase &
+contrast-head-phrase := basic-head-filler-phrase &  basic-infostr-dislocated-phrase & declarative-clause & head-final & 1st-head-filler-phrase &
   [ SYNSEM [ LOCAL [ CAT [ HC-LIGHT #hc-light, MKG [ TP #tp, FC #fc, CF + ],
                          WH #wh,
                          VAL #val,
@@ -123,7 +123,7 @@ contrast-head-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phra
 """
 
 head_focus = """
-head-focus-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase  & head-filler-phrase &
+head-focus-phrase := basic-head-filler-phrase &  basic-infostr-dislocated-phrase  & head-filler-phrase & head-initial &
   [ SYNSEM [ LOCAL [ CAT [ HC-LIGHT #hc-light, MKG [ TP #tp, FC +, CF #cf ],
                          WH #wh,
                          VAL #val,
@@ -138,7 +138,7 @@ head-focus-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase 
 """
 
 head_focus_nopp = """
-head-focus-nopp-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase  & head-filler-phrase &
+head-focus-nopp-phrase := basic-head-filler-phrase &  basic-infostr-dislocated-phrase  & head-filler-phrase & head-initial &
   [ SYNSEM [ LOCAL [ CAT [ HC-LIGHT #hc-light, MKG [ TP #tp, FC +, CF #cf ],
                          WH #wh,
                          VAL #val,
@@ -154,7 +154,7 @@ head-focus-nopp-phrase := basic-head-filler-phrase & basic-infostr-dislocated-ph
 
 
 head_topic = """
-head-topic-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase  & head-filler-phrase &
+head-topic-phrase := basic-head-filler-phrase &  basic-infostr-dislocated-phrase  & head-filler-phrase & head-initial &
   [ SYNSEM [ LOCAL [ CAT [ HC-LIGHT #hc-light, MKG [ TP +, FC -, CF #cf ],
                          WH #wh,
                          VAL #val,
@@ -170,7 +170,7 @@ head-topic-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase 
 """
 
 head_embed_topic = """
-head-embedded-topic-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase  & head-filler-phrase & 
+head-embedded-topic-phrase := basic-infostr-dislocated-phrase  & head-filler-phrase & head-initial & 
   [ SYNSEM [ LOCAL [ CAT [ HC-LIGHT #hc-light, MKG [ TP +, FC -, CF #cf ],
                          WH #wh,
                          VAL #val,
@@ -185,7 +185,7 @@ head-embedded-topic-phrase := basic-head-filler-phrase & basic-infostr-dislocate
 
 
 head_focus_wh = """
-head-focus-wh-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase  & head-filler-phrase &
+head-focus-wh-phrase := basic-head-filler-phrase &  basic-infostr-dislocated-phrase  & head-filler-phrase & head-initial &
   [ SYNSEM [ LOCAL [ CAT [ HC-LIGHT #hc-light, MKG [ TP #tp, FC +, CF #cf ],
                          WH #wh,
                          VAL #val,
