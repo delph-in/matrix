@@ -141,7 +141,7 @@ head-focus-nopp-phrase := basic-head-filler-phrase & basic-infostr-dislocated-ph
                          WH #wh,
                          VAL #val,
                          HEAD verb ], COORD - ] ],
-    NON-HEAD-DTR.SYNSEM [ NON-LOCAL [ QUE.LIST < >, SLASH.LIST < [ ] >, REL.LIST < > ],
+    NON-HEAD-DTR.SYNSEM [ NON-LOCAL [ QUE.LIST < >, SLASH.LIST < [ CAT.HEAD det ] >, REL.LIST < > ],
                           LOCAL.CONT.HOOK.ICONS-KEY semantic-focus ],
     HEAD-DTR.SYNSEM [ LOCAL.CAT [ WH #wh, MKG [ TP #tp & +-or--, CF #cf ], VAL #val &
                                       [ SUBJ < >,
@@ -194,7 +194,7 @@ topic-head-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase 
                                       [ SUBJ < >,
                                         COMPS < > ],
                                   MC + ],
-                      NON-LOCAL.SLASH.LIST < [], [] > ] ].
+                      NON-LOCAL.SLASH.LIST cons ] ].
 """
 
 
@@ -311,7 +311,8 @@ def customize_wh_ques(mylang, ch, rules):
                 mylang.add(HEAD_FILLER)
                 mylang.add(
                     '''head-comp-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus & 
-                    [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD +vc,
+                    [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < >,
+                      NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD +vc,
                                                       MKG [ TP #tp, FC #fc, CF #cf ] ],
                       SYNSEM.LOCAL.CAT.MKG [ CF #cf, FC #fc, TP #tp ] ].''')
                 mylang.add(
