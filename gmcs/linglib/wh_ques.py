@@ -81,12 +81,12 @@ BASIC_FILLER_SG = '''basic-filler-phrase :+ [ SYNSEM.NON-LOCAL.SLASH.LIST < >,
 
 FIRST_FILLER = '''1st-head-filler-phrase := basic-filler-phrase & head-compositional &
 [  SYNSEM [ NON-LOCAL [ SLASH.APPEND < #slash2, [ LIST #slash1 ] >, REL.LIST < >, QUE.LIST < > ] ],
-     ARGS < [ SYNSEM [ LOCAL #local & [ CAT.HEAD +nrpd ], NON-LOCAL.SLASH #slash2 ] ],
+     ARGS < [ SYNSEM [ LOCAL #local, NON-LOCAL.SLASH #slash2 ] ],
 	   [ SYNSEM.NON-LOCAL [ SLASH.LIST < #local . #slash1 > ] ] > ].'''
 
 HEAD_FILLER = '''head-filler-phrase := basic-filler-phrase & head-compositional & head-initial &
 [  SYNSEM [ NON-LOCAL [ SLASH.APPEND < [ LIST #slash1 ], #slash2 >, REL.LIST < >, QUE.LIST < > ] ],
-     ARGS < [ SYNSEM.NON-LOCAL [ SLASH.LIST < #local . #slash1 > ] ], [ SYNSEM [ LOCAL #local & [ CAT.HEAD +nrpd ],
+     ARGS < [ SYNSEM.NON-LOCAL [ SLASH.LIST < #local . #slash1 > ] ], [ SYNSEM [ LOCAL #local,
                                                                                  NON-LOCAL.SLASH #slash2 ] ] > ].'''
 
 # SEC_FILLER = '''2nd-head-filler-phrase := binary-phrase & phrasal & head-compositional &
