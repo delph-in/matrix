@@ -170,18 +170,17 @@ head-topic-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase 
 """
 
 head_embed_topic = """
-head-embedded-topic-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase  & head-filler-phrase &
+head-embedded-topic-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase  & head-filler-phrase & 
   [ SYNSEM [ LOCAL [ CAT [ HC-LIGHT #hc-light, MKG [ TP +, FC -, CF #cf ],
                          WH #wh,
                          VAL #val,
                          HEAD verb ], COORD - ] ],
-    NON-HEAD-DTR.SYNSEM [ NON-LOCAL [ QUE.LIST < >, REL.LIST < > ],
+    NON-HEAD-DTR.SYNSEM [ NON-LOCAL [ REL.LIST < > ],
                           LOCAL [ CONT.HOOK.ICONS-KEY topic,
                                   CAT [ HEAD +vc ] ] ],
     HEAD-DTR.SYNSEM [ LOCAL.CAT [ HC-LIGHT #hc-light & -, WH #wh, MKG [ TP -, FC -, CF #cf ], VAL #val &
                                       [ SUBJ < >,
-                                        COMPS < > ] ],
-                      NON-LOCAL.SLASH.LIST.REST < [] > ] ].
+                                        COMPS < > ] ] ] ].
 """
 
 
