@@ -311,9 +311,16 @@ def customize_wh_ques(mylang, ch, rules):
                 mylang.add(HEAD_FILLER)
                 mylang.add(
                     '''head-comp-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus & 
-                    [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD +vpc,
+                    [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD +vc,
                                                       MKG [ TP #tp, FC #fc, CF #cf ] ],
                       SYNSEM.LOCAL.CAT.MKG [ CF #cf, FC #fc, TP #tp ] ].''')
+                mylang.add(
+                    '''adp-comp-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus & 
+                    [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD adp,
+                        NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD noun,
+                                                      MKG [ TP #tp, FC #fc, CF #cf ] ],
+                      SYNSEM.LOCAL.CAT.MKG [ CF #cf, FC #fc, TP #tp ] ].''')
+
                 mylang.add(
                     '''my-head-adj-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].''', merge=True)
                 mylang.add(
@@ -334,6 +341,7 @@ def customize_wh_ques(mylang, ch, rules):
                 rules.add('head-foc-wh := head-focus-wh-phrase.')
                 rules.add('head-top := head-topic-phrase.')
                 rules.add('head-comp := head-comp-phrase.')
+                rules.add('adp-comp := adp-comp-phrase.')
                 rules.add('hf-edet := head-focus-nopp-phrase.')
                 mylang.add('scopal-mod-phrase :+ [ SYNSEM.LIGHT - ].')
                 #mylang.add('''basic-head-subj-phrase :+ same-mkg-phrase.''')

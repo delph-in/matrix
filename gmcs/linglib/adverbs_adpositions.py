@@ -30,5 +30,7 @@ def customize_adv_adp(ch, mylang, rules):
         mylang.add(HEAD_ADJ, section='phrases')
         mylang.add(ADJ_HEAD, section='phrases')
         mylang.add('bare-np-phrase := [ SYNSEM.LIGHT - ].')
-        rules.add('head-adj := my-head-adj-phrase.')
-        rules.add('adj-head := my-adj-head-phrase.')
+        from gmcs.linglib.wh_ques import MTRX_FR_OPT, NONE_OBLIG
+        if not ch.get(MTRX_FR_OPT) == NONE_OBLIG and not ch.get('word-order') == 'free':
+            rules.add('head-adj := my-head-adj-phrase.')
+            rules.add('adj-head := my-adj-head-phrase.')
