@@ -107,14 +107,14 @@ But let it be here just for now while I am figuring this out...
 '''
 contrast_head = """
 contrast-head-phrase := basic-head-filler-phrase &  basic-infostr-dislocated-phrase & declarative-clause & head-final & 1st-head-filler-phrase &
-  [ SYNSEM [ LOCAL [ CAT [ HC-LIGHT #hc-light, MKG [ TP #tp, FC #fc, CF + ],
+  [ SYNSEM [ LOCAL [ CAT [ MKG [ TP #tp, FC #fc, CF + ],
                          WH #wh,
                          VAL #val,
                          HEAD verb ], COORD - ] ],
     NON-HEAD-DTR.SYNSEM [ NON-LOCAL non-local-none,
                           LOCAL [ CONT.HOOK.ICONS-KEY contrast,
                                    CAT [ HEAD +nvc, MKG [ CF -, FC -, TP - ] ] ] ],
-    HEAD-DTR.SYNSEM [ LOCAL.CAT [ HC-LIGHT #hc-light, 
+    HEAD-DTR.SYNSEM [ LOCAL.CAT [ HC-LIGHT +, 
                                   WH #wh, MKG [ TP #tp, FC #fc, CF - ], VAL #val &
                                       [ SUBJ < >,
                                         COMPS < > ],
