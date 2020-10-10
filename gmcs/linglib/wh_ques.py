@@ -175,7 +175,7 @@ head-embedded-topic-phrase := basic-head-filler-phrase & basic-infostr-dislocate
                          WH #wh,
                          VAL #val,
                          HEAD verb ], COORD - ] ],
-    NON-HEAD-DTR.SYNSEM [ NON-LOCAL non-local-none,
+    NON-HEAD-DTR.SYNSEM [ NON-LOCAL [ QUE.LIST < >, REL.LIST < > ],
                           LOCAL [ CONT.HOOK.ICONS-KEY topic,
                                   CAT [ HEAD +vc ] ] ],
     HEAD-DTR.SYNSEM [ LOCAL.CAT [ HC-LIGHT #hc-light & -, WH #wh, MKG [ TP -, FC -, CF #cf ], VAL #val &
