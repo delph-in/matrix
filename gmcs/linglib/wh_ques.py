@@ -200,7 +200,7 @@ topic-head-phrase := basic-head-filler-phrase & basic-infostr-dislocated-phrase 
                                       [ SUBJ < >,
                                         COMPS < > ],
                                   MC + ],
-                      NON-LOCAL.SLASH.LIST.REST < [ ] > ] ].
+                      NON-LOCAL.SLASH.LIST cons ] ].
 """
 
 
@@ -315,13 +315,12 @@ def customize_wh_ques(mylang, ch, rules):
 
             if ch.get(MTRX_FR_OPT) == NONE_OBLIG:
                 mylang.add(HEAD_FILLER)
-                mylang.add('''subj-head-phrase := decl-head-subj-phrase & head-final-head-nexus & 
-                [ HEAD-DTR.SYNSEM [ NON-LOCAL non-local-none,
-                                    LOCAL [ CAT [ VAL.COMPS < > ] ] ] ]. ''')
+                # mylang.add('''subj-head-phrase := decl-head-subj-phrase & head-final-head-nexus &
+                # [ HEAD-DTR.SYNSEM [ NON-LOCAL non-local-none,
+                #                     LOCAL [ CAT [ VAL.COMPS < > ] ] ] ]. ''')
                 mylang.add(
                     '''head-comp-phrase := basic-head-1st-comp-phrase & head-initial-head-nexus & 
-                    [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < >,
-                      NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD +vc,
+                    [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD +vc,
                                                       MKG [ CF #cf, FC #fc, TP #tp ] ],
                       SYNSEM.LOCAL.CAT.MKG [ CF #cf, FC #fc, TP #tp ] ].''')
                 mylang.add(
@@ -345,7 +344,7 @@ def customize_wh_ques(mylang, ch, rules):
                 mylang.add(head_focus_wh)
                 mylang.add(head_focus_nopp)
                 mylang.add(head_topic)
-                rules.add('subj-head := subj-head-phrase.')
+                #rules.add('subj-head := subj-head-phrase.')
                 rules.add('top-head := topic-head-phrase.')
                 rules.add('contrast-head := contrast-head-phrase.')
                 rules.add('head-foc := head-focus-phrase.')
