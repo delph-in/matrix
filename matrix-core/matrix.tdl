@@ -1837,7 +1837,6 @@ basic-non-rel-clause := clause & head-compositional &
 basic-experimental-non-rel-clause := clause & headed-phrase & 
   [ SYNSEM.NON-LOCAL.REL.LIST < >,
     HEAD-DTR.SYNSEM [ LOCAL.CONT.HOOK [ INDEX #index,
-					ICONS-KEY.IARG1 #index,
 					CLAUSE-KEY #index ],
 		      NON-LOCAL.REL.LIST < > ],
     C-CONT [ RELS.LIST < >,
@@ -1898,6 +1897,10 @@ declarative-clause := basic-non-rel-clause &
 
 experimental-declarative-clause := basic-experimental-non-rel-clause &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF prop-or-ques ].
+
+experimental-interrogative-clause := basic-experimental-non-rel-clause & 
+[ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques,
+    C-CONT [ RELS.LIST < >, HCONS.LIST < >, ICONS.LIST < > ] ].
 
 imperative-clause := basic-non-rel-clause &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF comm ].

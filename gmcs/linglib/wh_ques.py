@@ -16,11 +16,9 @@ WH_Q_PHR_NO_OR_SG_OBLIG_MULTI = '''wh-ques-phrase :=
 [ SYNSEM.NON-LOCAL.QUE #que,
      HEAD-DTR.SYNSEM.NON-LOCAL.QUE #que ].'''
 
-WH_Q_PHR = ''' wh-ques-phrase := basic-head-filler-phrase & 1st-head-filler-phrase & interrogative-clause & head-final &
+WH_Q_PHR = ''' wh-ques-phrase := 1st-head-filler-phrase & experimental-interrogative-clause & head-final &
 [ SYNSEM [ LOCAL.CAT [ HC-LIGHT #hc-light, 
                        WH.BOOL +,
-                       MC +-or--,
-                       MKG.FC +,
 			           VAL #val,
 			           HEAD verb ],
 			NON-LOCAL.QUE.LIST < > ],
@@ -119,8 +117,7 @@ contrast-head-phrase := basic-infostr-dislocated-phrase & experimental-declarati
     HEAD-DTR.SYNSEM [ LOCAL.CAT [ HC-LIGHT +, 
                                   WH #wh, MKG [ TP #tp, FC #fc, CF - ], VAL #val &
                                       [ SUBJ < >,
-                                        COMPS < > ],
-                                  MC + ],
+                                        COMPS < > ] ],
                       NON-LOCAL.SLASH.LIST  cons ] ].
 """
 
@@ -174,15 +171,15 @@ head-topic-phrase := basic-infostr-dislocated-phrase & experimental-declarative-
 head_embed_topic = """
 head-embedded-topic-phrase := basic-infostr-dislocated-phrase  & head-filler-phrase & head-initial & 
   [ SYNSEM [ LOCAL [ CAT [ HC-LIGHT -, MKG [ TP +, FC -, CF #cf ],
-                         WH #wh,
                          VAL #val,
                          HEAD verb ], COORD - ] ],
     NON-HEAD-DTR.SYNSEM [ NON-LOCAL [ REL.LIST < > ],
                           LOCAL [ CONT.HOOK.ICONS-KEY topic,
                                   CAT [ HEAD +vc ] ] ],
-    HEAD-DTR.SYNSEM [ LOCAL.CAT [ HC-LIGHT +, WH #wh, MKG [ TP -, FC -, CF #cf ], VAL #val &
+    HEAD-DTR.SYNSEM [ LOCAL.CAT [ HC-LIGHT +, MKG [ TP -, FC -, CF #cf ], VAL #val &
                                       [ SUBJ < >,
-                                        COMPS < > ] ] ] ].
+                                        COMPS < > ] ],
+                      NON-LOCAL.SLASH.LIST cons ] ].
 """
 
 
