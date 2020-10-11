@@ -1834,6 +1834,16 @@ basic-non-rel-clause := clause & head-compositional &
     C-CONT [ RELS.LIST < >,
 	     HCONS.LIST < > ] ].
 
+basic-experimental-non-rel-clause := clause & headed-phrase & 
+  [ SYNSEM.NON-LOCAL.REL.LIST < >,
+    HEAD-DTR.SYNSEM [ LOCAL.CONT.HOOK [ INDEX #index,
+					ICONS-KEY.IARG1 #index,
+					CLAUSE-KEY #index ],
+		      NON-LOCAL.REL.LIST < > ],
+    C-CONT [ RELS.LIST < >,
+	     HCONS.LIST < > ] ].
+
+
 ; For non-interrogative non-rel clauses, hook up
 ; MARG to head daughter's LTOP.  Subtypes will need
 ; to constrain length of HCONS and RELS.
@@ -1884,6 +1894,9 @@ interrogative-clause := basic-non-rel-clause &
     C-CONT [ RELS.LIST < >, HCONS.LIST < >, ICONS.LIST < > ] ].
 
 declarative-clause := basic-non-rel-clause &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF prop-or-ques ].
+
+experimental-declarative-clause := basic-experimental-non-rel-clause &
   [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF prop-or-ques ].
 
 imperative-clause := basic-non-rel-clause &
