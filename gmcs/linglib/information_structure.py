@@ -1135,7 +1135,7 @@ def customize_infostr_adpositions(mylang, lexicon, trigger, ch):
     mylang.add_literal(comment)
 
     typedef = \
-        'infostr-marking-adp-lex := basic-one-arg & raise-sem-lex-item & one-icons-lex-item & \
+        'infostr-marking-adp-lex := non-local-none-lex-item & raise-sem-lex-item & one-icons-lex-item & \
         [ SYNSEM.LOCAL [ CAT [ HEAD adp & [ MOD < > ], \
                                VAL [ SPR < >, \
                                      SUBJ < >, \

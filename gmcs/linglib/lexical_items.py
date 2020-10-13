@@ -590,7 +590,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     # Adding that just in case we add the no-spr-noun-lex type.
 
     typedef = \
-        'noun-lex := basic-noun-lex & basic-non-wh-word-lex & basic-one-arg & no-hcons-lex-item & \
+        'noun-lex := basic-noun-lex & basic-non-wh-word-lex & non-local-none-lex-item & no-hcons-lex-item & \
            [ SYNSEM [ LOCAL [ CAT [ VAL [ SPR < #spr & [ LOCAL.CAT.HEAD det ] >, \
                                       COMPS < >, \
                                       SUBJ < >, \
@@ -764,7 +764,7 @@ def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
 
     # Add basic adjective definition
     # OZ 2020-02-18 In fact, all adjectives must also inherit from either zero-norm-arg
-    # or from basic-one-arg. Otherwise the nonlocal values are underspecified.
+    # or from non-local-none-lex-item. Otherwise the nonlocal values are underspecified.
     if ch.get('adj', []):
         mylang.add("adj-lex := basic-intersective-adjective-lex.")
 

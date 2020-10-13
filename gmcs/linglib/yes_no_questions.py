@@ -38,6 +38,12 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies, roots):
 
     qinvverb = ch.get('q-inv-verb')
 
+    if ch.get('q-inv') or (ch.get('q-part') and ch.get('q-part-order') != 'second'):
+        mylang.add(
+            'basic-head-comp-phrase :+ [ SYNSEM [ LOCAL.CAT.HC-LIGHT #light, LIGHT #light ] ].')
+    else:
+        mylang.add('basic-head-comp-phrase :+ [ SYNSEM.LIGHT - ].')
+
     if ch.get('q-inv'):
         comment = \
             'For the analysis of inverted yes-no questions, we add the feature INV.'
@@ -229,10 +235,8 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies, roots):
                        section='addenda')
             mylang.add(
                 'non-ynq-word := word-or-lexrule & [ SYNSEM.NON-LOCAL.YNQ.LIST < > ].')
-            #mylang.add('basic-zero-arg :+ non-ynq-word.',section='addenda')
-            mylang.add('basic-one-arg :+ non-ynq-word.', section='addenda')
-            mylang.add('basic-two-arg :+ non-ynq-word.', section='addenda')
-            mylang.add('basic-three-arg :+ non-ynq-word.', section='addenda')
+            mylang.add('non-local-none-lex-item :+ non-ynq-word.',
+                       section='addenda')
             mylang.add('intersective-mod-lex :+ non-ynq-word.',
                        section='addenda')
             roots.add('root := [ SYNSEM.NON-LOCAL.YNQ.LIST < > ].')
