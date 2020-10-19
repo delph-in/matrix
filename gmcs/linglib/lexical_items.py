@@ -1174,10 +1174,6 @@ def customize_cops(mylang, ch, lexicon, hierarchies, trigger):
 
 
 def customize_adpositions(mylang, lexicon, ch, hierarchies):
-    # If not constrained as below, prepositions will go as head daughters in head-subject rules
-    mylang.add(
-        'decl-head-subj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +nvj ].')
-    #mylang.add('head-spec-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD noun ].')
     mylang.add(lexbase.ADP_LEX)
     if ch.get('has-aux') == 'yes':
         mylang.add(
