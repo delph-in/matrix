@@ -3395,7 +3395,8 @@ basic-intersective-mod-lex := lex-item &
 
 intersective-mod-lex := basic-intersective-mod-lex & no-hcons-lex-item.
 
-intersective-adverb-lex := basic-intersective-mod-lex.
+; OZ 2020-10-19 For adverbs like where/here, when/then, (how/thus?)
+nonscop-adverb-lex := basic-intersective-mod-lex.
 
 no-mod-lex := no-hcons-lex-item &
   [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].
