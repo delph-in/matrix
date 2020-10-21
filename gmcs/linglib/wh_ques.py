@@ -65,7 +65,6 @@ EX_DET_PHRASE = '''extracted-det-phrase := basic-extracted-arg-phrase & head-com
                     LOCAL.CAT.VAL.SPR <  gap & [ LOCAL #local & local &
                                                 [ CAT.HEAD det,
                                                   CONT.HOOK #hook ] ] >,
-                   L-PERIPH -,
                    NON-LOCAL.SLASH #slash ],
     C-CONT [ RELS.LIST < >,
              HCONS.LIST < >,
