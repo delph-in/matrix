@@ -180,8 +180,6 @@ def customize_wh_ques(mylang, ch, rules, roots):
     if ch.get(MTRX_FRONT) == SINGLE:
         # With single fronting, can restrict SLASH to one element at most
         mylang.add(BASIC_FILLER_SG, section='phrases')
-        mylang.add('basic-extracted-adj-phrase :+ '
-                   '[ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ cons ].')
         mylang.add_literal('; Subject extraction')
         mylang.add(EX_SUBJ)
         rules.add('ex-subj := extracted-subj-phrase.')
