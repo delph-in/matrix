@@ -119,9 +119,6 @@ def customize_wh_ques(mylang, ch, rules, roots):
     # Either no fronting at all or single fronting
     if (not ch.get(MTRX_FRONT)) or ch.get(MTRX_FRONT) == SINGLE:
         if len(ch.get('adv', [])) > 0 or len(ch.get('normadp', [])) > 0:
-            if ch.get(NO_MULTI) != ON and not ch.get('wh-q-inter-verbs'):
-                mylang.add('''head-adj-int-phrase :+ [ HEAD-DTR.SYNSEM [ L-QUE -,
-                                LOCAL.CAT.VAL [ SUBJ clist, COMPS clist ] ] ].''', section='addenda')
             mylang.add(
                 '''adj-head-int-phrase :+ [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < > ].''', section='addenda')
 
@@ -230,18 +227,13 @@ def customize_wh_ques(mylang, ch, rules, roots):
             mylang.add(WH_Q_PHR_NO_OR_SG_OBLIG_MULTI)  # QUE.LIST is empty
         # Rule out structural ambiguity for sentences like "Who sleeps where?"
         if ch.get('word-order') in ['svo', 'sov', 'osv']:
-            mylang.add('''head-adj-int-phrase :+ [ HEAD-DTR.SYNSEM [ L-QUE -,
+            mylang.add('''head-adj-int-phrase :+ [ 
              LOCAL.CAT.VAL [ SUBJ clist, COMPS clist ] ] ].''', section='addenda')
         if ch.get('word-order') == 'free':
             mylang.add(
                 '''adj-head-int-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ clist ].''', merge=True)
             mylang.add(
                 '''head-adj-int-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ clist ].''', merge=True)
-        # The below does not make sense? Why is it that I want to constrain these orders in this way?
-        # Needs better conceptualization, or even more likely, will go away as part of an improved analysis of wh.
-        if ch.get('word-order') in ['ovs', 'vos', 'vso']:
-            mylang.add(
-                '''adj-head-int-phrase :+ [ HEAD-DTR.SYNSEM.L-QUE - ].''', section='addenda')
 
     if (ch.get(MTRX_FRONT) in [SINGLE] and ch.get(MTRX_FR_OPT) == 'none-oblig'):
         if ch.get('word-order') in ['ovs', 'vos', 'vso']:
@@ -280,7 +272,7 @@ def customize_wh_ques(mylang, ch, rules, roots):
         if ch.get(MTRX_FRONT) in [SINGLE, MULTI]:
             mylang.add('insitu-int-cl := [ SYNSEM.L-QUE - ].')
 
-        if (ch.get(MTRX_FRONT) == SINGLE\
+        if (ch.get(MTRX_FRONT) == SINGLE
                 and not ch.get(EMBED_INSITU) == ON):
             mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.MC + ].')
         elif ch.get(MTRX_FRONT) == 'multi' and ch.get(MTRX_FR_OPT) == SG_OBLIG:
