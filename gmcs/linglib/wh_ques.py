@@ -238,7 +238,7 @@ def customize_wh_ques(mylang, ch, rules, roots):
     if (ch.get(MTRX_FRONT) in [SINGLE] and ch.get(MTRX_FR_OPT) == 'none-oblig'):
         if ch.get('word-order') in ['ovs', 'vos', 'vso']:
             mylang.add(
-                '''adj-head-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.L-QUE - ].''', section='addenda')
+                '''adj-head-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].''', section='addenda')
 
     # If fronting is optional, need to use the peripheral feature to rule out ambiguity.
     if (ch.get(MTRX_FRONT) == SINGLE) \
@@ -270,7 +270,7 @@ def customize_wh_ques(mylang, ch, rules, roots):
             mylang.add('''insitu-int-cl := [ SYNSEM.LOCAL.CAT.WH.BOOL + ].''')
 
         if ch.get(MTRX_FRONT) in [SINGLE, MULTI]:
-            mylang.add('insitu-int-cl := [ SYNSEM.L-QUE - ].')
+            mylang.add('insitu-int-cl := [ HEAD-DTR.SYNSEM.L-QUE - ].')
 
         if (ch.get(MTRX_FRONT) == SINGLE
                 and not ch.get(EMBED_INSITU) == ON):
