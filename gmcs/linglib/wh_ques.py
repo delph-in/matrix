@@ -272,9 +272,6 @@ def customize_wh_ques(mylang, ch, rules, roots):
         if ch.get(MTRX_FRONT) in [SINGLE, MULTI]:
             mylang.add('insitu-int-cl := [ HEAD-DTR.SYNSEM.L-QUE - ].')
 
-        if ch.get(MTRX_FRONT) == 'multi' and ch.get(MTRX_FR_OPT) == SG_OBLIG:
-            mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.MC - ].')
-
         # For non-free word orders, need to rule out structural ambiguity:
         if ch.get('word-order') in ['svo', 'sov'] \
                 and not (ch.get(MTRX_FRONT) == IN_SITU
