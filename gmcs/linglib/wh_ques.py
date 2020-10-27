@@ -310,9 +310,7 @@ def customize_wh_ques(mylang, ch, rules, roots):
         # else:
         #    mylang.add('extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD verb ].')
 
-        if ch.get('pied-pip-adp') == ON and \
-                ch.get('oblig-pied-pip-noun') != ON \
-                and ch.get('oblig-pied-pip-adp') == ON:
+        if ch.get('oblig-pied-pip-adp') == ON:
             mylang.add(
                 'norm-adposition-lex := [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.NON-LOCAL.SLASH.LIST < > ].')
 
