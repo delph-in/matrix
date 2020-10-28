@@ -311,8 +311,6 @@ def customize_wh_ques(mylang, ch, rules, roots):
     if ch.get('q-part') == ON:
         if ch.get(MTRX_FRONT) == IN_SITU:
             mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.WH.BOOL + ].')
-            # Perhaps this special case below can be dealt with differently?
-            # Like with the WH feature?
             if len(ch.get('q-particle')) == 1:
                 # This is 1 and not 0 because the Choices len method is overriden; see Choices.py
                 qpart = ch.get('q-particle')[1]

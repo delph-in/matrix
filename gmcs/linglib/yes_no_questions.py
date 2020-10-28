@@ -266,7 +266,14 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies, roots):
                     mylang.add(typename + ':= [ SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST '
                                           '[ LOCAL.CAT.WH.BOOL - ] ].')
 
-            elif qpart['wh'] == 'oblig':
-                if ch.get('q-part-order') != 'second':
-                    mylang.add(typename + ':= [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST '
-                                          '[ LOCAL.CAT.WH.BOOL +  ] ].')
+            # This constraint is weird because what it does is make
+            # the particle impossible in polar questions, not obligatory
+            # in consituent questions. It should either be removed or put back
+            # if such a choice ("impossible in polar questions") is added to the
+            # questionnaire.
+            # Removing it currently breaks test wh24:
+            # https://github.com/delph-in/matrix/issues/541
+            # elif qpart['wh'] == 'oblig':
+            #     if ch.get('q-part-order') != 'second':
+            #         mylang.add(typename + ':= [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST '
+            #                               '[ LOCAL.CAT.WH.BOOL +  ] ].')
