@@ -1082,7 +1082,13 @@ def write_interrogative_rules(lrt, mylang):
     PROP_LEX_RULE = '''prop-lex-rule := add-only-no-ccont-rule & 
     [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF prop ].'''
     POLAR_LEX_RULE = '''polar-lex-rule := itrg-lex-rule & 
-    [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < [ NON-LOCAL.QUE.LIST < > ] >, COMPS non-wh-list ] ].'''
+    [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < [ NON-LOCAL.QUE.LIST < > ] >, 
+                             COMPS non-wh-list ] ].'''
+    WH_SUBJ = ''' wh-subj-lex-rule := itrg-lex-rule & 
+    [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < [ NON-LOCAL.QUE.LIST cons ] > ] ].'''
+    WH_OBJ = ''' wh-obj-lex-rule := itrg-lex-rule & 
+[ SYNSEM.LOCAL.CAT.VAL [ SUBJ non-wh-list,
+                         COMPS < [ NON-LOCAL.QUE.LIST cons ] > ] ].'''
     mylang.set_section('lexrules')
 
     if lrt.interrogative:
@@ -1095,6 +1101,12 @@ def write_interrogative_rules(lrt, mylang):
             lrt.supertypes.add('prop-lex-rule')
         elif lrt.interrogative == 'both':
             lrt.supertypes.add('itrg-lex-rule')
+        elif lrt.interrogative == 'wh-subj':
+            mylang.add(WH_SUBJ)
+            lrt.supertypes.add('wh-subj-lex-rule')
+        elif lrt.interrogative == 'wh-obj':
+            mylang.add(WH_OBJ)
+            lrt.supertypes.add('wh-obj-lex-rule')
 
 
 ##################
@@ -1207,7 +1219,7 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
         # TJT 2014-08-22: check head for adjectives and incorporated stems
         if lrt.full_key.startswith('verb-pc') or \
                 lrt.full_key.startswith('adj-pc') or \
-            'is-lrt' in lrt.full_key:
+        'is-lrt' in lrt.full_key:
             if 'head' not in feat:
                 vr.err(feat.full_key + '_head',
                        'You must choose where the feature is specified.')
