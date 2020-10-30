@@ -1105,6 +1105,8 @@ def write_interrogative_rules(lrt, mylang):
             mylang.add(WH_SUBJ)
             lrt.supertypes.add('wh-subj-lex-rule')
         elif lrt.interrogative == 'wh-pseudo':
+            mylang.add_literal(
+                ''';;;The below rule is added as a copy of another wh-rule. The user did not specify it.''')
             mylang.add(WH_OBJ)
             lrt.supertypes.add('wh-obj-lex-rule')
 
@@ -1219,7 +1221,7 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
         # TJT 2014-08-22: check head for adjectives and incorporated stems
         if lrt.full_key.startswith('verb-pc') or \
                 lrt.full_key.startswith('adj-pc') or \
-        'is-lrt' in lrt.full_key:
+            'is-lrt' in lrt.full_key:
             if 'head' not in feat:
                 vr.err(feat.full_key + '_head',
                        'You must choose where the feature is specified.')

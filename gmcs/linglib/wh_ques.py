@@ -331,7 +331,7 @@ def add_lexrules(choices):
             for feat in lrt['feat']:
                 if feat['name'] == 'question' and feat['value'] == 'wh':
                     key = pc_key + '_lrt' + str(idx)
-                    name = get_name(pc) + '_pseudo'
+                    name = 'wh-pseudo'
                     choices[key + '_name'] = name
                     choices[key + '_feat1_name'] = 'question'
                     choices[key + '_feat1_value'] = 'wh-pseudo'
