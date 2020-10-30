@@ -1738,18 +1738,6 @@ class MatrixDefFile:
                             if not any(pc.get('name', '') == pc_name for pc in old_choices['adj-pc']):
                                 feats_to_add[apc].append(feat)
 
-            # OZ 2020-10-29 Need to add a copy of a lexical rule,
-            # if the user specified wh-marking ONLY for wh-questions
-            # (but not polar). See Zamaraeva's dissertation customization section
-            # "Morphological marking".
-            from collections import copy
-            verb_pcs = copy.deep_copy(new_choices.get('verb-pc', []))
-            for verb_pc in verb_pcs:
-                for lrt in verb_pc.get('lrt', []):
-                    for feat in lrt.get('feat', []):
-                        if feat['name'] == 'question' and feat['value'] == 'wh':
-                            new_choices['verb-pc'][lrt].add()
-
         if section in ('lexicon', 'morphology'):
             # With features collected, add them to choices dict
             target_page_choices = old_choices if section == "lexicon" else new_choices
