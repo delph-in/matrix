@@ -1101,10 +1101,10 @@ def write_interrogative_rules(lrt, mylang):
             lrt.supertypes.add('prop-lex-rule')
         elif lrt.interrogative == 'both':
             lrt.supertypes.add('itrg-lex-rule')
-        elif lrt.interrogative == 'wh-subj':
+        elif lrt.interrogative == 'wh':
             mylang.add(WH_SUBJ)
             lrt.supertypes.add('wh-subj-lex-rule')
-        elif lrt.interrogative == 'wh-obj':
+        elif lrt.interrogative == 'wh-pseudo':
             mylang.add(WH_OBJ)
             lrt.supertypes.add('wh-obj-lex-rule')
 

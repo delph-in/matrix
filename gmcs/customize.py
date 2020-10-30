@@ -520,7 +520,8 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
     add_lexrules_methods = [case.add_lexrules,
                             argument_optionality.add_lexrules,
                             valence_change.add_lexrules,
-                            direct_inverse.add_lexrules]
+                            direct_inverse.add_lexrules,
+                            wh_ques.add_lexrules]
     to_cfv = morphotactics.customize_inflection(ch, add_lexrules_methods,
                                                 mylang, irules, lrules, lexicon)
 

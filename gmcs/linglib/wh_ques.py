@@ -318,3 +318,30 @@ def customize_wh_ques(mylang, ch, rules, roots):
                     mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.MC - ].')
             elif ch.has_diverse_ques_particles():
                 mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.MC - ].')
+
+
+def add_lexrules(choices):
+    from gmcs.linglib.morphotactics import all_position_classes
+    '''
+    '''
+    for pc in all_position_classes(choices):
+        pc_key = pc.full_key
+        idx = pc['lrt'].next_iter_num() if 'lrt' in pc else 1
+        for lrt in pc.get('lrt', []):
+            for feat in lrt['feat']:
+                if feat['name'] == 'question' and feat['value'] == 'wh':
+                    key = pc_key + '_lrt' + str(idx)
+                    name = get_name(pc) + '_pseudo'
+                    choices[key + '_name'] = name
+                    choices[key + '_feat1_name'] = 'question'
+                    choices[key + '_feat1_value'] = 'wh-pseudo'
+                    choices[key + '_feat1_head'] = 'verb'
+                    lris = lrt.get('lri', [])
+                    i = 1
+                    for lri in lris:
+                        choices[key + '_lri' +
+                                str(i) + '_orth'] = lri['orth']
+                        choices[key + '_lri' +
+                                str(i) + '_inflecting'] = lri['inflecting']
+                        i += 1
+                    break
