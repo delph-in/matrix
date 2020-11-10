@@ -2505,7 +2505,7 @@ basic-extracted-adj-phrase := head-mod-phrase & head-only & phrasal &
 ; adjectives out of optional subject constructions
 ; OZ 2020-01-25 Adding QUE append to support multiple questions.
 
-basic-head-mod-phrase-simple := head-mod-phrase & binary-nonloc-phrase & 
+basic-head-mod-phrase-simple := head-mod-phrase & binary-nonloc-phrase & binary-headed-phrase & 
   [ SYNSEM [ LOCAL.CAT [ MKG #mkg, WH [ OR < #or1, #or2 > ] ] ],
     HEAD-DTR.SYNSEM
            [ LOCAL [ CAT [ WH #or1,
