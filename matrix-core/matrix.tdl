@@ -2505,10 +2505,8 @@ basic-extracted-adj-phrase := head-mod-phrase & head-only & phrasal &
 ; adjectives out of optional subject constructions
 ; OZ 2020-01-25 Adding QUE append to support multiple questions.
 
-basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
-  [ SYNSEM [ LOCAL.CAT [ MKG #mkg, WH [ OR < #or1, #or2 > ] ],
-             NON-LOCAL [ SLASH.APPEND < #s1, #s2 >,
-                         REL.LIST < >, QUE.APPEND < #q1, #q2 > ] ],
+basic-head-mod-phrase-simple := head-mod-phrase & binary-nonloc-phrase & headed-phrase &
+  [ SYNSEM [ LOCAL.CAT [ MKG #mkg, WH [ OR < #or1, #or2 > ] ] ],
     HEAD-DTR.SYNSEM
            [ LOCAL [ CAT [ WH #or1,
                            HEAD #head,
@@ -2519,8 +2517,7 @@ basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
                      CONT.HOOK #hdhook & [ ICONS-KEY.IARG1 #clause,
                                            CLAUSE-KEY #clause ],
                      AGR #agr ],
-             NON-LOCAL #nonloc &
-                   [ SLASH #s2, QUE #q2 ],
+             NON-LOCAL #nonloc,
              LIGHT #light,
              MODIFIED #modif ],
     NON-HEAD-DTR.SYNSEM
@@ -2539,8 +2536,7 @@ basic-head-mod-phrase-simple := head-mod-phrase & binary-headed-phrase &
                                  SPR olist ],
                            MKG #mkg ],
                      CONT.HOOK [ ICONS-KEY.IARG1 #clause,
-                     CLAUSE-KEY #clause ] ],
-             NON-LOCAL [ SLASH #s1, QUE #q1 ] ],
+                     CLAUSE-KEY #clause ] ] ],
     C-CONT [ RELS.LIST < >, ICONS.LIST < > ] ].
 
 adj-head-phrase := basic-head-mod-phrase-simple & head-final &
