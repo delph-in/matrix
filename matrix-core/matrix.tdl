@@ -3978,8 +3978,8 @@ s-coord-phrase := event-coord-phrase &
   [ SYNSEM [ LOCAL.CAT [ HEAD verb,
                        VAL.SUBJ < > ],
               NON-LOCAL non-local-none ],
-    LCOORD-DTR.SYNSEM [ LOCAL.CAT.HEAD verb, NON-LOCAL.QUE.LIST < > ],
-    RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD verb ].
+    LCOORD-DTR.SYNSEM [ LOCAL.CAT.HEAD verb, NON-LOCAL non-local-none ],
+    RCOORD-DTR.SYNSEM [ LOCAL.CAT.HEAD verb, NON-LOCAL non-local-none ] ].
 
 basic-s-top-coord-rule := s-coord-phrase &
   [ C-CONT [ RELS.LIST < >,
