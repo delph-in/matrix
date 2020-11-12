@@ -3897,7 +3897,7 @@ event-coord-phrase := coord-phrase &
     RCOORD-DTR.SYNSEM.LOCAL [ COORD-REL [ L-HNDL #lhndl,
                                           R-HNDL #rhndl,
                                           R-INDEX [ E #tam, SF #sf ] ],
-                              CONT.HOOK.LTOP #rhndl ]].
+                              CONT.HOOK.LTOP #rhndl ] ].
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; ADJ Coordination rules
@@ -3951,10 +3951,11 @@ adv-bottom-coord-phrase := bottom-coord-phrase &
 ; VP Coordination rules
 
 vp-coord-phrase := event-coord-phrase &
-  [ SYNSEM.LOCAL.CAT [ HEAD verb,
+  [ SYNSEM [ LOCAL.CAT [ HEAD verb,
                        VAL.SUBJ < [ ] > ],
-    LCOORD-DTR.SYNSEM [ LOCAL.CAT.HEAD verb, NON-LOCAL.QUE.LIST < > ],
-    RCOORD-DTR.SYNSEM.LOCAL.CAT.HEAD verb ].
+              NON-LOCAL [ SLASH #slash, QUE #que, REL #rel ] ],
+    LCOORD-DTR.SYNSEM [ LOCAL.CAT.HEAD verb, NON-LOCAL [ SLASH #slash, QUE #que, REL #rel ] ],
+    RCOORD-DTR.SYNSEM [ LOCAL.CAT.HEAD verb, NON-LOCAL [ SLASH #slash, QUE #que, REL #rel ] ] ].
 
 basic-vp-top-coord-rule := vp-coord-phrase &
   [ C-CONT [ RELS.LIST < >,
