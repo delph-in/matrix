@@ -62,7 +62,7 @@ JUXTAPOSITION_RULE = ' := [ SYNSEM.LOCAL [ CAT [ HEAD #head,\
                                                        CONT.HOOK.INDEX #possessor ] ].'
 
 
-TWO_REL_ADP = 'two-rel-adposition-lex := basic-icons-lex-item &\
+TWO_REL_ADP = 'two-rel-adposition-lex := basic-icons-lex-item & non-local-none-lex-item &\
   [ SYNSEM [ LOCAL [ CAT [ HEAD adp,\
                            VAL.COMPS < [ LOCAL [ CAT cat-sat,\
                                                  CONT.HOOK #hook & [ INDEX #ind,\
@@ -151,7 +151,7 @@ POSS_UNARY = ' := basic-unary-phrase & \
                                                     SPEC < > ],\
       	   		      	              HEAD +np ],\
   			                CONT.HOOK.INDEX #possessor ], \
-                                  NON-LOCAL #nonloc ] ] > ].'
+                                  NON-LOCAL #nonloc & [ SLASH.LIST < > ] ] ] > ].'
 
 
 ##################################################################
