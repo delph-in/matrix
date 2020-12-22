@@ -598,7 +598,7 @@ class MatrixDefFile:
 
     def __init__(self, def_file):
         self.def_file = def_file
-        f = open(self.def_file)
+        f = open(self.def_file, encoding='utf-8')
         self.def_lines = merge_quoted_strings(f.readlines())
         f.close()
         self.make_name_map()
@@ -852,7 +852,7 @@ class MatrixDefFile:
                     lang = '(minimal grammar)'
                 linklist[lang] = f
 
-            for k in sorted(list(linklist.keys()), lambda x, y: cmp(x.lower(), y.lower())):
+            for k in sorted(list(linklist.keys()), key=str.lower):
                 print('<a href="matrix.cgi?choices=' + linklist[k] + '">' +
                       k + '</a><br>\n')
 
