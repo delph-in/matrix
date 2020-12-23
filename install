@@ -25,7 +25,7 @@
 #           ./install -r matrix/customize
 #      To prepare the LKB files in an install to delph-in.net/matrix
 #           ./install -r -lkb matrix/customize
-
+remote_py_path="#!\/usr\/local\/python-virt\/matrix\/bin\/python3"
 lkb_url="http://lingo.ling.washington.edu/latest/lkb_linux.x86." #32|64.tgz
 delphin_dir="${CUSTOMIZATIONROOT}/../delphin"
 
@@ -85,6 +85,7 @@ dest="${dest_prefix}$1"
 # create temporary staging directory
 tempdir=/tmp/matrix.$$
 
+
 # the following will create the tempdir directory and fill it with
 # with everything in the directories besides what's excluded.
 rsync -a -o --exclude={CVS/,.svn/,delphin/,regression_tests/,tests/,sql_profiles/,gmmt/,lisp/,*.pyc,.*,*.tmp~,local_testing,Version.lsp,install,matrix.py,def_check.py,profiles.py,randgram.py,tdltest.py,pydelphin*} ${CUSTOMIZATIONROOT}/../ $tempdir
@@ -118,6 +119,9 @@ then
     echo ""
     wget http://www.sil.org/iso639-3/iso-639-3_20120206.tab -O "$tempdir/iso.tab"
 fi
+
+# Set remote Pythondir
+sed -i "1 s/^.*$/$remote_py_path/" $tempdir/matrix.cgi
 
 if [ $enable_captcha ]
 then
