@@ -207,4 +207,6 @@ class TDLHierarchy:
         for s in subs:
             self.hierarchy += [[s, new_type, '']]
 
+        # update coverage
+        self.__calc_coverage()
         return new_type

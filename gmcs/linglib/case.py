@@ -258,6 +258,7 @@ def customize_case_adpositions(mylang, lexicon, trigger, ch, case_pos):
         # Lexical entries
         lexicon.add_literal(';;; Case-marking adpositions')
 
+        adp_type_names = []
         for adp in ch.get('adp', []):
             orth = orth_encode(adp.get('orth'))
             infix_tname = 'ad'
@@ -279,6 +280,14 @@ def customize_case_adpositions(mylang, lexicon, trigger, ch, case_pos):
             abbr = name_to_abbr(cn, cases)
 
             adp_type = TDLencode(abbr + '-marker')
+            if adp_type in adp_type_names:
+                adp_type = adp_type + '_2'
+                while True:
+                    if adp_type not in adp_type_names:
+                        break
+                    adp_type = adp_type[:-1] + str(int(adp_type[-1])+1)
+            adp_type_names.append(adp_type)
+
             typedef = \
                 adp_type + ' := ' + super_type + ' & \
                         [ STEM < "' + orth + '" > ].'
@@ -325,6 +334,20 @@ def customize_case(mylang, ch, hierarchies):
             convert_mixed_case(pc, hierarchies, cases)
             for lrt in pc['lrt']:
                 convert_mixed_case(lrt, hierarchies, cases)
+
+    # if there are case marking adpositions and the language has mixed case,
+    # a case supertype needs to be created for each case an adposotion can assign
+    # this is because there needs to be a non-inflecting lexical rule that can assign a noun
+    # to be underspecified for case between the possible adpositions
+    if ch.has_mixed_case():
+        adp_cases = []
+        cases = case_names(ch)
+        for c in cases:
+            if ch.has_adp_case(c[0]):
+                adp_cases.append(canon_to_abbr(c[0], cases))
+        adp_cases.sort()
+        hierarchies['case'].get_type_covering(adp_cases)
+
     # now output the case hierarchies
     customize_case_type(mylang, hierarchies)
 
@@ -347,15 +370,34 @@ def add_lexrules(ch):
             for feat in lrt['feat']:
                 feature_names.add(feat['name'])
         if 'case' in feature_names:
-            for c in case_names(ch):
+            # create a set of cases that can be optionally marked adpositionally
+            # create a new type in the case hierarchy that is a supertype of all these types
+            # make one non inflecting synth rule that sets case to be this new supertype
+            adp_cases = set()
+            cases = case_names(ch)
+            for c in cases:
                 if ch.has_adp_case(c[0]):
-                    idx = ch[pc.full_key + '_lrt'].next_iter_num()
-                    lrt_key = pc.full_key + '_lrt' + str(idx)
-                    ch[lrt_key + '_name'] = get_name(pc) + '-synth-' + c[0]
-                    ch[lrt_key + '_feat1_name'] = 'case'
-                    ch[lrt_key + '_feat1_value'] = c[0]
-                    ch[lrt_key + '_lri1_inflecting'] = 'no'
-                    ch[lrt_key + '_lri1_orth'] = ''
+                    adp_cases.add(canon_to_abbr(c[0], cases))
+
+            # if there were adpositional cases, add the appropriate non-inflecting rule
+            if len(adp_cases) > 0:
+                # find the supertype that covers all the adposition cases
+                if len(adp_cases) == 1:
+                    adp_case_name = list(adp_cases)[0]
+                else:
+                    for case_supertype in ch['hierarchies']['case'].coverage:
+                        if ch['hierarchies']['case'].coverage[case_supertype] == adp_cases:
+                            adp_case_name = case_supertype
+
+                idx = ch[pc.full_key + '_lrt'].next_iter_num()
+                lrt_key = pc.full_key + '_lrt' + str(idx)
+                ch[lrt_key + '_name'] = get_name(pc) + '-synth-adp'
+                ch[lrt_key + '_feat1_name'] = 'case'
+                ch[lrt_key + '_feat1_value'] = adp_case_name
+                ch[lrt_key + '_lri1_inflecting'] = 'no'
+                ch[lrt_key + '_lri1_orth'] = ''
+
+
 
 
 def interpret_verb_valence(valence):

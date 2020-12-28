@@ -222,7 +222,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                             ' := [ ' + geom + ' ' + value + ' ].',
                             merge=True)
                 if n == 'case' and ch.has_mixed_case():
-                    val = '-' if '-synth-' + value in type_name else '+'
+                    val = '-' if '-synth-' in type_name else '+'
                     tdlfile.add(type_name +
                                 ' := [ ' + geom + '-MARKED ' + val + ' ].',
                                 merge=True)
