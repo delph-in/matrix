@@ -279,13 +279,10 @@ def customize_case_adpositions(mylang, lexicon, trigger, ch, case_pos):
 
             abbr = name_to_abbr(cn, cases)
 
-            adp_type = TDLencode(abbr + '-marker')
-            if adp_type in adp_type_names:
-                adp_type = adp_type + '_2'
-                while True:
-                    if adp_type not in adp_type_names:
-                        break
-                    adp_type = adp_type[:-1] + str(int(adp_type[-1])+1)
+            # the type name for the adp marker includes the orthography of the marker at the end
+            # this serves to ensure each marker has its own lexical entry
+            # and prevents them from being "merged" due to having identical names
+            adp_type = TDLencode(abbr + '-marker_' + orth)
             adp_type_names.append(adp_type)
 
             typedef = \
