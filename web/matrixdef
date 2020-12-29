@@ -1720,7 +1720,7 @@ Label "<h3>Choices regarding the position of question phrases</h3>"
 
 Separator
 
-Radio front-matrix "Fronting" "<p> Question phrases can appear at the left edge of the sentence regardless of the position the questioned constituent would appear in (<i>Who did you see? I know who you saw</i> etc. ):<br><br>" ""
+Radio front-matrix "Fronting" "<p> Question phrases can appear at the left edge of the sentence regardless of the position the questioned constituent would appear in (<i>Who did you see? I know who you saw</i> etc. ):<br>" ""
   . single "Single Fronting" "" "Only one question phrase can be fronted<br>"
   . multi "Multiple Fronting" "" "All question phrases can be fronted<br>"
   . in-situ "In Situ" "" "Question phrases cannot be fronted (stay <i>in situ</i>)<br><br>"
@@ -1728,15 +1728,15 @@ Radio front-matrix "Fronting" "<p> Question phrases can appear at the left edge 
   Radio matrix-front-opt "Fronting optionality" " There is <span class=\"dfn\">obligatory</span> fronting: <br>" ""
   . single-oblig "Obligatory Single Fronting" "" "of at least one question phrase<br>"
   . all-oblig "Obligatory Multiple Fronting" ""  "of all question phrases <br>"
-  . none-oblig "No Obligatory Fronting" ""  "fronting is optional <br><br>"
+  . none-oblig "No Obligatory Fronting" ""  "fronting is optional <br>"
 
-  Check embed-insitu "In Situ Embedded Questions" "" "If fronting is optional, it is possible to have embedded in situ questions."
+  #Check embed-insitu "In Situ Embedded Questions" "" "If fronting is optional, it is possible to have embedded in situ questions."
 
   Label"<p>NB: You may use the optional multiple fronting option to model the syntax of echo questions
    but there is currently no distinction between echo and canonical qiestions
    in the semantic representation that you obtain from this library.</p>"
 
-    Label "<p>There is pied piping of:<br><br>"
+    Label "<p>There is pied piping of:<br>"
 
     Check pied-pip "Pied-Piping" "" "noun phrases (<i>Which book did you read?</i> is possible), "
     Check oblig-pied-pip-noun "Obligatory Pied Piping Of Nouns" "" "and it is obligatory (<i>*Which did you read book?</i> is impossible in your language);<br>"
@@ -1748,12 +1748,6 @@ Radio front-matrix "Fronting" "<p> Question phrases can appear at the left edge 
  Label "<h3>Other choices</h3>"
 
  Check no-multi-ques "No Multiple Questions" "<p>" "Only one question phrase is allowed per sentence.</p>"
-
- Label "<p> If you specified Auxiliary-Subject inversion for polar questions, does it also happen in constituent questions?<br><br>"
- Check wh-inv-matrix "Matrix Inversion" "" "yes, in matrix clauses <br>"
- Check wh-inv-embed "Embedded Inversion" "" "also in embedded clauses with constituent questions<br>"
- Check wh-inv-notsubj "No Inversion with Questions about Subjects" "" "but not in questions about subjects.</p>"
-
  Check wh-q-infl "Inflection" "<p>" "Constituent questions are marked morphologically
  (specify lexical rules on the Morphology page).</p>"
 
@@ -1762,6 +1756,12 @@ Check focus-marking "Information Structure Marking" "<p>" "Question words may be
 
 Label "<p> "
  Check wh-q-inter-verbs "Iterrogative verbs" "" "Interrogative verbs (add appropriate entries on the Lexicon page).</p>"
+
+ Label "<p> If you specified Auxiliary-Subject inversion for polar questions, does it also happen in constituent questions?<br>"
+ Check wh-inv-matrix "Matrix Inversion" "" "yes, in matrix clauses <br>"
+ Check wh-inv-embed "Embedded Inversion" "" "also in embedded clauses with constituent questions<br>"
+ Check wh-inv-notsubj "No Inversion with Questions about Subjects" "" "but not in questions about subjects.</p>"
+
 
 Section info-str "Information Structure"
 
@@ -3637,7 +3637,7 @@ BeginIter det-pc{i} "a Position Class" 1
       MultiSelect value "Determiner Position Class {i} Lexical Rule Type {j} Feature {k} Value" "Value: " ""
       fillvalues p=det-pc{i}_lrt{j}_feat{k}_name
 
-      Select head "Determiner Position Class {i} Lexical Rule Type {j} Feature {k} Head" "Specified on: " "" "" "toggle_element.call(this, 'adj-pc{i}_lrt{j}_adj_pc_note', 'on', ['subj', 'mod'])"
+      Select head "Determiner Position Class {i} Lexical Rule Type {j} Feature {k} Head" "Specified on " ""
       . noun "The noun" "the noun"
 
     EndIter feat
