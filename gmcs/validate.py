@@ -180,11 +180,11 @@ def validate_names(ch, vr):
     # read matrix types and head types from file
     try:
         filename = 'matrix-types'
-        f = open(filename, 'r')
-        for t in f.readlines():
+        with open(filename, 'r', encoding='utf-8') as f:
+            lines = f.readlines()
+        for t in lines:
             type_name = t.strip()
             reserved_types[type_name] = True
-        f.close()
     except IOError:
         pass
 
@@ -425,15 +425,14 @@ def validate_general(ch, vr):
         url = "http://www.ethnologue.com/show_language.asp?code="+iso
         try:
             valid = False
-            f = open('iso.tab')
-            lines = f.readlines()
+            with open('iso.tab', 'r', encoding='utf-8') as f:
+                lines = f.readlines()
             for l in lines:
                 toks = l.split('\t')
                 if iso in toks[0]:
                     vr.info(
                         'iso-code', 'ISO 693-3 suggests the reference name for your language is: '+toks[6], anchor=url)
                     valid = True
-            f.close()
             if not valid:
                 vr.warn('iso-code',
                         'The three-letter code you provided is not in ISO-639-3.')
