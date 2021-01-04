@@ -2373,6 +2373,8 @@ class ChoicesFile:
                     strat['possessum-mark-order'] = hc
 
     def convert_32_to_33(self):
+        if self.get('q-part-order') and not self.get('q-part'):
+            self['q-part'] = 'on'
         if self.get('q-part') == 'on':
             orth = self.get('q-part-orth')
             self.delete('q-part-orth')
