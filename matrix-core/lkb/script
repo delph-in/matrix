@@ -108,6 +108,11 @@
   "Generation trigger rules"
   :filter nil :task :trigger :recurse nil :edges 200 :subsume nil)
 
+
+;;; Added Jan 2021 for compatibility with LKB-FOS
+
+(setq mrs::*normalize-predicates-p* nil)
+
 ;;;
 ;;; Matrix-derived grammars often have stable enough semantic
 ;;; representations that the grammar can usefully be tested
