@@ -59,12 +59,19 @@ IN_SITU_PHRASE = '''insitu-int-cl := interrogative-clause & head-only &
           QUE.LIST < ref-ind, ... > ] ] ].'''
 
 EX_DET_PHRASE = '''extracted-det-phrase := basic-extracted-arg-phrase & head-compositional &
-[ SYNSEM [ LOCAL.CAT [ VAL [ SUBJ < >, COMPS < >, SPR < >, SPEC < > ] ],
-           NON-LOCAL.SLASH.APPEND < #slash, [ LIST < #local > ] > ],
-  HEAD-DTR.SYNSEM [ LOCAL.CAT.VAL.SPR <  gap & [ LOCAL #local & local &
-                                                [ CAT.HEAD det,
-                                                  CONT.HOOK #hook ] ] >,
-                   NON-LOCAL.SLASH #slash ],
+  [ SYNSEM [ LOCAL #specloc & local &
+                   [ CAT.VAL [ SUBJ < >,
+                               COMPS < >,
+                               SPR < >,
+                               SPEC < > ] ],
+             NON-LOCAL.SLASH.APPEND < #slash,
+                                      [ LIST < #local > ] > ],
+    HEAD-DTR.SYNSEM [ LOCAL [ CAT.VAL.SPR < gap &
+                                          [ LOCAL #local & local &
+                                                  [ CAT [ HEAD det,
+                                                          VAL.SPEC.FIRST.LOCAL #specloc ],
+                                                    CONT.HOOK #hook ] ] > ],
+                            NON-LOCAL.SLASH #slash ],
     C-CONT [ RELS.LIST < >,
              HCONS.LIST < >,
              ICONS.LIST < >,
@@ -287,14 +294,6 @@ def customize_wh_ques(mylang, ch, rules, roots):
             mylang.add_literal('; If there is no obligatory pied-piping, determiners '
                                'can be extracted separately:', section='phrasal')
             mylang.add(EX_DET_PHRASE, section='phrases')
-            if ch.get('case'):
-                mylang.add('''extracted-det-phrase :=
-                [ SYNSEM.LOCAL.CAT.HEAD.CASE #case,
-                HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CAT.HEAD.CASE #case ].''')
-            if ch.has_png():
-                mylang.add('''extracted-det-phrase :=
-                [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png,
-                HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CONT.HOOK.INDEX.PNG #png ].''')
             rules.add('ex-det := extracted-det-phrase.')
         # The following would rule out "Which royal house did you see a member of?"
         # if ch.get('pied-pip-adp') == 'on' and not ch.get('oblig-pied-pip-adp') == ON:
