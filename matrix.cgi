@@ -24,6 +24,13 @@ from gmcs.choices import ChoicesFile
 from gmcs.linglib.toolboximport import import_toolbox_lexicon
 
 
+# Sometimes UTF-8 files have a (gratuitous) BOM. The utf-8-sig
+# encoding will strip the BOM, but we want to always write files
+# without it, so use regular utf-8 on write.
+READ_ENCODING = 'utf-8-sig'
+WRITE_ENCODING = 'utf-8'
+
+
 cgitb.enable()
 
 # Production Check
@@ -106,23 +113,30 @@ for s in sessions:
 # figure out the path to the current session's directory, creating it
 # if necessary
 session_path = 'sessions/' + cookie
+choices_path = os.path.join(session_path, 'choices')
+
 if cookie and not os.path.exists(session_path):
     os.mkdir(session_path)
     # create a blank choices file
-    open(os.path.join(session_path, 'choices'), 'w').close()
+    with open(choices_path, 'w', encoding=WRITE_ENCODING):
+        pass
 
 # if the 'choices' field is defined, we have either the contents of an
 # uploaded choices file or the name of a sample choices file (which
 # will begin with 'sample-choices/') to replace the current choices.
 # TJT 2014-09-18: Get choices files from Language CoLLAGE links
 if 'choices' in form_data:
-    choices = form_data['choices'].value
+    choices_item = form_data['choices']
+    if choices_item.file:
+        # TODO: handle encoding problems
+        choices = choices_item.value.decode(READ_ENCODING)
+    else:
+        choices = choices_item.value
     if choices:
         data = ''
         if choices.startswith('web/sample-choices/'):
-            f = open(choices, 'r')
-            data = f.read()
-            f.close()
+            with open(choices, 'r', encoding=READ_ENCODING) as f:
+                data = f.read()
         elif choices.startswith('collage/'):
             # Get choices files from CoLLAGE
             # should be 3 or 7 letter keys... doesn't work for other length keys
@@ -150,13 +164,12 @@ if 'choices' in form_data:
         else:  # Uploaded choices data
             data = choices
         if data or choices.endswith('/empty'):
-            f = open(os.path.join(session_path, 'choices'), 'w')
-            f.write(data)
-            f.close()
+            with open(choices_path, 'w', encoding=WRITE_ENCODING) as f:
+                f.write(data)
 
 # if the 'section' field is defined, we have submitted values to save
 if 'section' in form_data:
-    matrixdef.save_choices(form_data, os.path.join(session_path, 'choices'))
+    matrixdef.save_choices(form_data, choices_path)
 
 # if we have recieved toolbox files, then we want to add these lexical items after saving the toolbox configuration (done above).
 if 'import_toolbox' in form_data:
@@ -167,8 +180,8 @@ if 'import_toolbox' in form_data:
             fout.write(form_data[key].value)
             toolbox_files.append(fout)
             form_data[key].value = fout.name
-    matrixdef.save_choices(form_data, os.path.join(session_path, 'choices'))
-    import_toolbox_lexicon(os.path.join(session_path, 'choices'))
+    matrixdef.save_choices(form_data, choices_path)
+    import_toolbox_lexicon(choices_path)
     for tbfile in toolbox_files:
         tbfile.close()
 
@@ -184,10 +197,10 @@ if 'verbpred' in form_data:
 # no longer true, there can now be validation info messages.
 # nothing seems to depend on the list being empty #14 feb 2012
 try:
-    vr = validate_choices(os.path.join(session_path, 'choices'))
+    vr = validate_choices(choices_path)
 except:
     exc = sys.exc_info()
-    matrixdef.choices_error_page(os.path.join(session_path, 'choices'), exc)
+    matrixdef.choices_error_page(choices_path, exc)
     sys.exit()
 
 # modified to support captcha
@@ -208,7 +221,7 @@ elif 'customize' in form_data:
         matrixdef.error_page(vr)
     else:
         # If the user said it's OK, archive the choices file
-        choices = ChoicesFile(os.path.join(session_path, 'choices'))
+        choices = ChoicesFile(choices_path)
         if choices.get('archive') == 'yes':
             # create the saved-choices directory
             if not os.path.exists('saved-choices'):
@@ -224,7 +237,7 @@ elif 'customize' in form_data:
                     num = f[i + 1:]
                     if num.isdigit():
                         serial = max(serial, int(num) + 1)
-            shutil.copy(os.path.join(session_path, 'choices'),
+            shutil.copy(choices_path,
                         'saved-choices/choices.' + str(serial))
 
         # Create the customized grammar
@@ -232,7 +245,7 @@ elif 'customize' in form_data:
             grammar_dir = customize_matrix(session_path, arch_type)
         except:
             exc = sys.exc_info()
-            matrixdef.customize_error_page(os.path.join(session_path, 'choices'),
+            matrixdef.customize_error_page(choices_path,
                                            exc)
             sys.exit()
 
