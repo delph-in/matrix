@@ -144,7 +144,7 @@ def init_form_hierarchy(ch, hierarchies):
     if ('form-fin-nf' in ch):
         hier.add('nonfinite', 'form')
         hier.add('finite', 'form')
-        for subform in ch.get('form-subtype', []):
+        for subform in ch.get('lingform', []):
             hier.add(subform.get('name'), subform.get('supertype'))
     if not hier.is_empty():
         hierarchies[hier.name] = hier

@@ -1107,14 +1107,14 @@ class=\"feat\">form</span> values in your grammar by providing
 subtypes of <span class=\"tt\">finite</span> and <span class=\"tt\">nonfinite</span>:</p>"
 
 
-BeginIter form-subtype{i} "a Subtype for FORM"
+BeginIter lingform{i} "a Subtype for FORM"
 
   Text name "Feature FORM Subtype {i} name" "Name: " "" 20
 
   MultiSelect supertype "FORM Subtype {i} supertype" " Supertype: " ""
   fillforms
 
-EndIter form-subtype
+EndIter lingform
 
 Label "<p>(Hint: Click Save and Stay to see the supertypes.)</p>"
 

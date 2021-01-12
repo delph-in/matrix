@@ -634,6 +634,8 @@ class ChoicesFile:
             self.convert_32_to_33()
         if self.version < 34:
             self.convert_33_to_34()
+        if self.version < 35:
+            self.convert_34_to_35()
 
         # As we get more versions, add more version-conversion methods, and:
         # if self.version < N:
@@ -1056,21 +1058,21 @@ class ChoicesFile:
 
         return genders
 
-    # forms()
+    # lingforms()
     #   Create and return a list containing the values of the FORM
     #   feature that constrains the form of verbs as
     #   defined in the current choices.
     #   This list consists of tuples:
     #     [name, supertype]
-    def forms(self):
+    def lingforms(self):
         if 'form-fin-nf' in self and self['form-fin-nf'] == 'on':
-            forms = [['form', 'form'], [
+            lingforms = [['form', 'form'], [
                 'finite', 'form'], ['nonfinite', 'form']]
-            for f in self.get('form-subtype'):
+            for f in self.get('lingform'):
                 name = f['name']
                 stype = f.get('supertype') if f.get('supertype') else 'form'
-                forms += [[name, stype]]
-            return forms
+                lingforms += [[name, stype]]
+            return lingforms
         return []
 
     # tenses()
@@ -1222,7 +1224,7 @@ class ChoicesFile:
                                         'argument structure', '', 'verb', 'n')
 
         # Form
-        features += self.__get_features(self.forms(), 0, 0, 'form',
+        features += self.__get_features(self.lingforms(), 0, 0, 'form',
                                         'LOCAL.CAT.HEAD.FORM', 'verb', 'y')
 
         # Tense
@@ -1385,7 +1387,7 @@ class ChoicesFile:
     # That way the calls always contain an old name and a new name.
 
     def current_version(self):
-        return 34
+        return 35
 
     def convert_value(self, key, old, new, partial=False):
         if key in self:
@@ -2394,6 +2396,10 @@ class ChoicesFile:
                         for feat in lrt['feat']:
                             if feat['name'] == 'question' and feat['value'] == 'plus':
                                 feat['value'] = 'polar'
+
+    def convert_34_to_35(self):
+        if 'form-subtype' in self:
+            self.convert_key('form-subtype', 'lingform')
 
 
 ########################################################################

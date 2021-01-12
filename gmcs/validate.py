@@ -233,7 +233,7 @@ def validate_names(ch, vr):
     if ch.moods():
         reserved_types['mood'] = True
 
-    if ch.forms():
+    if ch.lingforms():
         reserved_types['form'] = True
         reserved_types['finite'] = True
         reserved_types['nonfinite'] = True
@@ -307,7 +307,7 @@ def validate_names(ch, vr):
     for mood in ch.get('mood', []):
         user_types += [[mood.get('name'), mood.full_key + '_name']]
 
-    for sf in ch.get('form-subtype', []):
+    for sf in ch.get('lingform', []):
         user_types += [[sf.get('name'), sf.full_key + '_name']]
 
     for noun in ch.get('noun', []):
@@ -1176,10 +1176,10 @@ def validate_tanda(ch, vr):
                'that assumes auxiliaries, but have not initialized a FORM hierarchy.'
         vr.err('form-fin-nf', mess)
 
-    if not (ch.get('form-fin-nf') == 'on') and ch.get('form-subtype'):
+    if not (ch.get('form-fin-nf') == 'on') and ch.get('lingform'):
         mess = 'You have not initialized a FORM hierarchy ' \
                'but you have entered a form subtype.'
-        vr.err('form-subtype', mess)
+        vr.err('lingform', mess)
 
 ######################################################################
 # validate_test_sentences(ch, vr)

@@ -61,7 +61,7 @@ var numbers = [
 %s
 ];
 
-var forms = [
+var lingforms = [
 %s
 ];
 
@@ -1318,7 +1318,7 @@ class MatrixDefFile:
                   (js_array4(choices.features()),
                    js_array([c for c in choices.patterns() if not c[2]]),
                    js_array([n for n in choices.numbers()]),
-                   js_array([n for n in choices.forms()])))
+                   js_array([n for n in choices.lingforms()])))
 
             if section == 'sentential-negation':
                 print(HTML_prebody_sn)
@@ -1823,19 +1823,19 @@ class MatrixDefFile:
                     ('neg1-type' in keys and 'neg2-type' in keys and form_data['neg1-type'].value == 'fh' and form_data['neg2-type'].value == 'b') or \
                     ('neg1-type' in keys and 'neg2-type' in keys and form_data['neg2-type'].value == 'fh' and form_data['neg1-type'].value == 'b'):
                 try:
-                    next_n = old_choices['form-subtype'].next_iter_num(
-                    ) if 'form-subtype' in old_choices else 1
+                    next_n = old_choices['lingform'].next_iter_num(
+                    ) if 'lingform' in old_choices else 1
                     found_negform = False
                     if next_n > 1:
-                        nfss = old_choices.get('form-subtype')
+                        nfss = old_choices.get('lingform')
                         for nfs in nfss:
                             if nfs['name'] == 'negform':
                                 found_negform = True
                     if not found_negform:
-                        # TODO update this to new form: form-subtype name=negform with supertype nonfinite
-                        old_choices['form-subtype%d_name' % next_n] = 'negform'
+                        # TODO update this to new form: lingform name=negform with supertype nonfinite
+                        old_choices['lingform%d_name' % next_n] = 'negform'
                         # OZ 2017-12-09 I have not tested this line and don't know if it works
-                        old_choices['form-subtype%d_supertype' %
+                        old_choices['lingform%d_supertype' %
                                     next_n] = 'nonfinite'
                 except:
                     print('Go look in deffile.py save_choices; probably nf-subform needs to be updated to form-subtype; see choices.py up-rev 28-29 function.')

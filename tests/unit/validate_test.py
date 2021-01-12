@@ -46,7 +46,7 @@ class TestValidate(unittest.TestCase):
                      ['tense1_', ''],
                      ['aspect1_', ''],
                      ['situation1_', ''],
-                     ['form-subtype1_', ''],
+                     ['lingform_', ''],
                      ['noun1_', '-noun-lex'],
                      ['noun2_', '-noun-lex'],
                      ['det1_', '-determiner-lex'],
@@ -348,8 +348,8 @@ class TestValidate(unittest.TestCase):
 
         c['has-aux'] = 'no'
         c['form-fin-nf'] = 'off'
-        c['form-subtype1_name'] = 'finite'
-        self.assertError(c, 'form-subtype')
+        c['lingform_name'] = 'finite'
+        self.assertError(c, 'lingform')
 
     def test_lexicon(self):
         # not enough nouns and verbs
