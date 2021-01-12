@@ -40,9 +40,10 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies, roots):
 
     if ch.get('q-inv') or (ch.get('q-part') and ch.get('q-part-order') != 'second'):
         mylang.add(
-            'basic-head-comp-phrase :+ [ SYNSEM [ LOCAL.CAT.HC-LIGHT #light, LIGHT #light ] ].')
+            'basic-head-comp-phrase :+ [ SYNSEM [ LOCAL.CAT.HC-LIGHT #light, LIGHT #light ] ].', section='addenda')
     else:
-        mylang.add('basic-head-comp-phrase :+ [ SYNSEM.LIGHT - ].')
+        mylang.add(
+            'basic-head-comp-phrase :+ [ SYNSEM.LIGHT - ].', section='addenda')
 
     if ch.get('q-inv'):
         comment = \
