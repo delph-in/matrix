@@ -61,7 +61,7 @@ var numbers = [
 %s
 ];
 
-var forms = [
+var lingforms = [
 %s
 ];
 
