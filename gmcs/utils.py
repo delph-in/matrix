@@ -36,7 +36,7 @@ def TDLencode(string):
     val = ''
     for c in string:
         if not (c.isalnum() or ord(c) > 127 or c in ['_', '-', '+', '*']):
-            val += '%' + '%2X' % (ord(c))
+            val += '_' + '%2X' % (ord(c))
         else:
             val += c
 
