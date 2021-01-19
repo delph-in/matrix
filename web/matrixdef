@@ -1689,7 +1689,7 @@ Label "<p>This particle occurs in"
  Check main "Wh-questions in Main Clauses" "" "main"
  Check embed "Wh-questions in Embedded Clauses" "and" "embedded clauses</p>"
 
- Label "<p>In constituent questions, this particle is:<br>"
+ Label "<p>If the particle is not optional:<br> In constituent questions, this particle is:<br>"
 
  Radio wh "Question particle in Constituent Questions" "" ""
  . oblig "Obligatory" "" "obligatory"
