@@ -1023,10 +1023,12 @@ def customize_information_structure_marker(mylang, ch, rules, irules, lexicon, t
         _head = ''
         _light = 'luk'
         _ph = ''
+        _wh = 'bool'
         if _cat == 'nouns':
             _head = 'noun'
             if not ch.get('focus-marking') == 'on':
                 _light = '-'
+                _wh = '-'
             else:
                 _light = '+'
                 mylang.add(
@@ -1053,6 +1055,8 @@ def customize_information_structure_marker(mylang, ch, rules, irules, lexicon, t
 
             tdl = tdl.replace('$', _light)
             add_lextypes(mylang, tdl)
+            mylang.add(
+                'infostr-marking-mod-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.WH.BOOL ' + _wh + ' ] > ].')
             modifier_lex = infostr + '-marking-mod-lex'
             tdl = modifier_lex + ' := infostr-marking-mod-lex & '
             tdl += '[ SYNSEM.LOCAL.CAT [ MKG ' + mkg + ', HEAD.MOD < [ L-PERIPH ' + l_periph + ', \
