@@ -103,17 +103,6 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, mylang,
         else:
             rules.add(pn + '-left-coord := ' + pn + '-left-coord-rule.')
 
-    # Now define the rule instances into rules.tdl.  As above, the mid
-    # or left rule may not be necessary.
-    # for nm, st in resrules:
-        # rules.add(pn + nm + '-top-coord := ' + pn + nm + '-top-coord-rule.')
-        # if mid:
-            rules.add(pn + nm + '-mid-coord := ' +
-                      pn + nm + '-mid-coord-rule.')
-    # rules.add(pn + '-bottom-coord := ' + pn + '-bottom-coord-rule.')
-    # if left:
-    #     rules.add(pn + '-left-coord := ' + pn + '-left-coord-rule.')
-
 
 def coord_strat_features(num, nm, mixed_strat):
     """Gets either just the COORD-STRAT number, or also the COORDAGR value,
