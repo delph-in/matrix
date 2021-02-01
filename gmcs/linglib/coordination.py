@@ -101,6 +101,7 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, mylang,
             rule += '  ' + pn + '-left-coord-rule.'
             irules.add_literal(rule)
         else:
+            # because it's not an inflecting rule, add to rules.tdl 
             rules.add(pn + '-left-coord := ' + pn + '-left-coord-rule.')
 
 
