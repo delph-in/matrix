@@ -2442,8 +2442,6 @@ BeginIter verb{i} "a Verb Type" 1 2
   MultiSelect supertypes "Verb type {i}" "Supertypes: " "<br /><br />"
   fillregex p=verb(?!{i}_)[0-9]+_name
 
-  Check inter "Interrogative Verb" "<br>" "This is a question verb (like <i>do.what</i>) <br><br>"
-
   Label "Features:"
 
   BeginIter feat{j} "a Feature"
