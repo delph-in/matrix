@@ -2940,7 +2940,7 @@ BeginIter adv{i} "an Adverb" 1
   Check inter "Interrogative Adverb" "<br>" "This is a question adverb (like <i>where/when</i>) <br><br>"
 
       Radio type "Adverb {i} Type" "This is a " " adverb."
-      . loc "Location in Time or Space" "" "location in time/place space"
+      . loc "Location in Time or Space" "" "location in time/space"
       . manner "Manner" "" "manner"
 
   Label "</div>"
