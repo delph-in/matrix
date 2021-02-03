@@ -1751,7 +1751,7 @@ Radio front-matrix "Fronting" "<p> Question phrases can appear at the left edge 
  Check wh-q-infl "Inflection" "<p>" "Constituent questions are marked morphologically
  (specify lexical rules on the Morphology page).</p>"
 
-Check focus-marking "Information Structure Marking" "<p>" "Question words may bear an
+Check focus-marking "Information Structure Marking" "<p>" "Question words may bear
  overt focus marking (specify on Information Structure page).</p>"
 
 Label "<p> "
