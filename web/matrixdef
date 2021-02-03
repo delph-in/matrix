@@ -2722,7 +2722,7 @@ BeginIter aux{i} "an Auxiliary Type" 1
   BeginIter feat{j} "an auxiliary feature"
 
      Select name "Aux {i} feature {j} name" "Name: " ""
-     fillnames c=verb
+     fillnames c=both
 
      MultiSelect value "Aux {i} feature {j} value" "Value: " ""
      fillvalues p=aux{i}_feat{j}_name
