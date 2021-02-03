@@ -2722,7 +2722,7 @@ BeginIter aux{i} "an Auxiliary Type" 1
   BeginIter feat{j} "an auxiliary feature"
 
      Select name "Aux {i} feature {j} name" "Name: " ""
-     fillnames c=verb
+     fillnames c=both
 
      MultiSelect value "Aux {i} feature {j} value" "Value: " ""
      fillvalues p=aux{i}_feat{j}_name
@@ -2730,9 +2730,6 @@ BeginIter aux{i} "an Auxiliary Type" 1
      Select head "Aux {i} feature {j} head" "Specified on: " ""
      . verb "The auxiliary" "the auxiliary"
      . subj "The subject" "the subject NP"
-     . obj  "The object"  "the object NP"
-     . higher "Higher-ranked"  "the higher-ranked NP"
-     . lower "Lower-ranked" "the lower-ranked NP"
 
   EndIter feat
 
