@@ -118,10 +118,6 @@ def customize_wh_ques(mylang, ch, rules, roots):
         mylang.add(BASIC_FILLER_SG, section='phrases')
         mylang.add(EX_SUBJ, section='phrases')
         mylang.add('''clause :+ [ SYNSEM.NON-LOCAL.QUE.LIST < > ]. ''')
-    else:
-        if ch.get('person') == '1-2-3':
-            mylang.add(
-                'wh-pronoun-noun-lex := [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 3rd ].')
 
     # Either no fronting at all or single fronting
     if (not ch.get(MTRX_FRONT)) or ch.get(MTRX_FRONT) == SINGLE:
