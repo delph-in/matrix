@@ -33,12 +33,21 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, mylang,
                  ' + top + 'top-coord-rule &\
                  ' + st +
                    coord_strat_features(num, nm, mixed_strat))
+
+        # add to rules.tdl
+        rules.add(pn + nm + '-top-coord := ' + pn + nm + '-top-coord-rule.')
+
         if mid:
             mylang.add(pn + nm + '-mid-coord-rule :=\
                    basic-' + pos + '-mid-coord-rule &\
                    ' + mid + 'mid-coord-rule &\
                    ' + st +
                        coord_strat_features(num, nm, mixed_strat))
+
+            # add to rules.tdl
+            rules.add(pn + nm + '-mid-coord := ' + pn + nm + '-mid-coord-rule.')
+
+
 
     if pre or suf:
         # first the rule in mylang
@@ -67,6 +76,9 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, mylang,
              [ SYNSEM.LOCAL.COORD-REL.PRED "_and_coord_rel" ].'
             mylang.add(rule)
 
+        # because it's not an inflecting rule, add to rules.tdl
+        rules.add(pn + '-bottom-coord := ' + pn + '-bottom-coord-rule.')
+
     if left:
         # first the rule in mylang
         rule = pn + '-left-coord-rule :=\
@@ -88,17 +100,9 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, mylang,
                 rule += '  %suffix (* ' + suf + ')\n'
             rule += '  ' + pn + '-left-coord-rule.'
             irules.add_literal(rule)
-
-    # Now define the rule instances into rules.tdl.  As above, the mid
-    # or left rule may not be necessary.
-    for nm, st in resrules:
-        rules.add(pn + nm + '-top-coord := ' + pn + nm + '-top-coord-rule.')
-        if mid:
-            rules.add(pn + nm + '-mid-coord := ' +
-                      pn + nm + '-mid-coord-rule.')
-    rules.add(pn + '-bottom-coord := ' + pn + '-bottom-coord-rule.')
-    if left:
-        rules.add(pn + '-left-coord := ' + pn + '-left-coord-rule.')
+        else:
+            # because it's not an inflecting rule, add to rules.tdl 
+            rules.add(pn + '-left-coord := ' + pn + '-left-coord-rule.')
 
 
 def coord_strat_features(num, nm, mixed_strat):
