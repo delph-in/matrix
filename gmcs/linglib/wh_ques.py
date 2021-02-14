@@ -25,7 +25,9 @@ WH_Q_PHR = ''' wh-ques-phrase := basic-head-filler-phrase & interrogative-clause
 			NON-LOCAL.QUE.LIST < > ],
      HEAD-DTR.SYNSEM.LOCAL.CAT.VAL #val & [ SUBJ < >,
 					                        COMPS < > ],
-     NON-HEAD-DTR.SYNSEM [ NON-LOCAL.QUE.LIST < ref-ind >,
+     NON-HEAD-DTR.SYNSEM [ NON-LOCAL [ QUE.LIST < ref-ind >,
+                                       SLASH.LIST < >,
+                                       REL.LIST < > ],
                            LOCAL.CONT.HOOK.ICONS-KEY focus ] ].'''
 
 
