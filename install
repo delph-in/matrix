@@ -145,9 +145,9 @@ rsync -Kvzrlt $tempdir/ $dest --omit-dir-times
 #rsync -az --delete $tempdir/ $dest
 
 # fix permissions:
-echo "Fixing permissions (you will be prompted for your password once more)."
+#echo "Fixing permissions (you will be prompted for your password once more)."
 
-ssh $username@patas.ling.washington.edu 'sudo /home/www-matrix/fixperm.sh'
+#ssh $username@patas.ling.washington.edu 'sudo /home/www-matrix/fixperm.sh'
 
 # and clean up
 rm -rf $tempdir

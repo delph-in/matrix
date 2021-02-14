@@ -66,11 +66,12 @@ EX_DET_PHRASE = '''extracted-det-phrase := basic-extracted-arg-phrase & head-com
                                SPEC < > ] ],
              NON-LOCAL.SLASH.APPEND < #slash,
                                       [ LIST < #local > ] > ],
-    HEAD-DTR.SYNSEM [ LOCAL [ CAT.VAL.SPR < gap &
+    HEAD-DTR.SYNSEM [ LOCAL [ CAT [ HEAD noun,
+                                    VAL.SPR < gap &
                                           [ LOCAL #local & local &
                                                   [ CAT [ HEAD det,
                                                           VAL.SPEC.FIRST.LOCAL #specloc ],
-                                                    CONT.HOOK #hook ] ] > ],
+                                                    CONT.HOOK #hook ] ] > ] ],
                             NON-LOCAL.SLASH #slash ],
     C-CONT [ RELS.LIST < >,
              HCONS.LIST < >,
@@ -118,10 +119,6 @@ def customize_wh_ques(mylang, ch, rules, roots):
         mylang.add(BASIC_FILLER_SG, section='phrases')
         mylang.add(EX_SUBJ, section='phrases')
         mylang.add('''clause :+ [ SYNSEM.NON-LOCAL.QUE.LIST < > ]. ''')
-    else:
-        if ch.get('person') == '1-2-3':
-            mylang.add(
-                'wh-pronoun-noun-lex := [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 3rd ].')
 
     # Either no fronting at all or single fronting
     if (not ch.get(MTRX_FRONT)) or ch.get(MTRX_FRONT) == SINGLE:
