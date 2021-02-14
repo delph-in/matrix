@@ -66,11 +66,12 @@ EX_DET_PHRASE = '''extracted-det-phrase := basic-extracted-arg-phrase & head-com
                                SPEC < > ] ],
              NON-LOCAL.SLASH.APPEND < #slash,
                                       [ LIST < #local > ] > ],
-    HEAD-DTR.SYNSEM [ LOCAL [ CAT.VAL.SPR < gap &
+    HEAD-DTR.SYNSEM [ LOCAL [ CAT [ HEAD noun,
+                                    VAL.SPR < gap &
                                           [ LOCAL #local & local &
                                                   [ CAT [ HEAD det,
                                                           VAL.SPEC.FIRST.LOCAL #specloc ],
-                                                    CONT.HOOK #hook ] ] > ],
+                                                    CONT.HOOK #hook ] ] > ] ],
                             NON-LOCAL.SLASH #slash ],
     C-CONT [ RELS.LIST < >,
              HCONS.LIST < >,
