@@ -127,8 +127,9 @@ def constrain_for_extra(wo, general, additional, cs, mylang):
 def constrain_wrt_comp(cs, wo, ch, mylang):
     additional = has_additional(ch, cs, wo)
     if additional:
-        mylang.add(additional + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +nv ].',
-                   merge=True, section='phrases')
+        if not ch.get('q-particle') or ch.get('q-part-order') == 'second':
+            mylang.add(additional + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +nv ].',
+                       merge=True, section='phrases')
 
 
 def has_additional(ch, cs, wo):
