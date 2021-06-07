@@ -1,0 +1,297 @@
+
+version=34
+
+section=general
+language=Makah
+iso-code=myh
+punctuation-chars=keep-all
+archive=yes
+email=olzama@uw.edu
+affiliation=University of Washington
+motivation=Testing of constituent questions Matrix library
+
+section=word-order
+word-order=free
+has-dets=no
+has-aux=no
+
+section=number
+  number1_name=sg
+  number2_name=pl
+
+section=person
+person=1-2-3
+first-person=none
+
+section=gender
+
+section=case
+case-marking=none
+
+section=adnom-poss
+
+section=direct-inverse
+
+section=tense-aspect-mood
+tense-definition=choose
+past=on
+nonpast=on
+perimper=on
+
+section=evidentials
+
+section=other-features
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+q-infl=on
+
+section=wh-q
+front-matrix=in-situ
+wh-q-infl=on
+wh-q-inter-verbs=on
+
+section=info-str
+
+section=arg-opt
+subj-drop=subj-drop-all
+subj-mark-drop=subj-mark-drop-req
+subj-mark-no-drop=subj-mark-no-drop-req
+subj-con=subj-con-always
+obj-drop=obj-drop-all
+obj-mark-drop=obj-mark-drop-opt
+obj-mark-no-drop=obj-mark-no-drop-opt
+
+section=nominalclause
+
+section=clausal-comp
+  comps1_clause-pos-same=on
+  comps1_ques=prop
+  comps1_comp-pos-before=on
+  comps1_comp=oblig
+    comps1_stem1_orth=ʔiyax̩a=qaː
+
+section=clausalmods
+
+section=lexicon
+adj_incorp=on
+  noun1_name=wh
+  noun1_inter=on
+  noun1_det=imp
+    noun1_stem1_orth=ʔačaq=qaːɬ
+    noun1_stem1_pred=_person_n_rel
+    noun1_stem2_orth=ʔačaq-aˈy
+    noun1_stem2_pred=_thing_n_rel
+    noun1_stem3_orth=baqi
+    noun1_stem3_pred=_thing_n_rel
+  noun2_name=dem
+  noun2_det=imp
+    noun2_stem1_orth=tiˈ
+    noun2_stem1_pred=_this_n_rel
+  noun3_name=cn
+    noun3_feat1_name=number
+    noun3_feat1_value=sg
+    noun3_feat2_name=person
+    noun3_feat2_value=3rd
+  noun3_det=imp
+    noun3_stem1_orth=ĉ́at-aˈ-yakʷ
+    noun3_stem1_pred=_pencil_n_rel
+  verb1_name=iv
+  verb1_valence=intrans
+    verb1_stem1_orth=duduˈk
+    verb1_stem1_pred=_sing_v_rel
+    verb1_stem2_orth='atx̩
+    verb1_stem2_pred=_reside_v_rel
+    verb1_stem3_orth=ƛuɬ-uˈ
+    verb1_stem3_pred=_be.good_v_rel
+    verb1_stem4_orth=wikwiˈyaːkʷ=bit
+    verb1_stem4_pred=_be.a.boy_v_rel
+    verb1_stem5_orth=x̩uˈ=cuˈwit
+    verb1_stem5_pred=_there.be.salmon_v_rel
+  verb2_name=tv
+  verb2_valence=trans
+    verb2_stem1_orth=ćak-'eːʔis
+    verb2_stem1_pred=_intend.to.cook_v_rel
+    verb2_stem2_orth=quqɬa
+    verb2_stem2_pred=_have.as.name_v_rel
+    verb2_stem3_orth=katat
+    verb2_stem3_pred=_know_v_rel
+    verb2_stem5_orth='iˈx̩a
+    verb2_stem5_pred=_die.from_v_rel
+  verb3_name=know
+  verb3_valence=trans,comps1
+    verb3_stem1_orth=kabat
+    verb3_stem1_pred=_know_v_rel
+  qverb1_name=qiv-loc-1pl
+    qverb1_feat1_name=person
+    qverb1_feat1_value=1st
+    qverb1_feat1_head=subj
+    qverb1_feat2_name=number
+    qverb1_feat2_value=pl
+    qverb1_feat2_head=subj
+  qverb1_predtype=loc
+    qverb1_stem1_orth=waˈsa=qik=duː
+    qverb1_stem1_verbpred=be
+    qverb1_stem1_nounpred=place
+  qverb2_name=qiv-be
+  qverb2_predtype=ref
+    qverb2_stem1_orth=baqiq=qaːɬ
+    qverb2_stem1_verbpred=be
+    qverb2_stem1_nounpred=thing
+    qverb2_stem2_orth=waˈscuˈwat=uk=qiːk
+    qverb2_stem2_verbpred=be
+    qverb2_stem2_nounpred=your.thing
+  qverb3_name=qiv-3sg
+    qverb3_feat1_name=number
+    qverb3_feat1_value=sg
+    qverb3_feat1_head=subj
+    qverb3_feat2_name=person
+    qverb3_feat2_value=3rd
+    qverb3_feat2_head=subj
+  qverb3_predtype=loc
+    qverb3_stem1_orth=waˈsa-'atx̩=qaːɬ
+    qverb3_stem1_verbpred=reside
+    qverb3_stem1_nounpred=place
+  adv1_name=really
+    adv1_stem1_orth=ʔaˈdi=qaːk
+    adv1_stem1_pred=_really_a_rel
+  adv1_type=manner
+  adv2_name=how
+    adv2_stem1_orth=baˈqiˈdax̩i='aƛ='uk
+    adv2_stem1_pred=_manner_n_rel
+  adv2_inter=on
+  adv2_type=manner
+
+section=morphology
+  verb-pc1_name=vmood
+  verb-pc1_order=suffix
+  verb-pc1_inputs=verb, verb-pc2
+    verb-pc1_lrt1_name=polar2
+      verb-pc1_lrt1_feat1_name=question
+      verb-pc1_lrt1_feat1_value=polar
+      verb-pc1_lrt1_feat1_head=verb
+      verb-pc1_lrt1_feat2_name=person
+      verb-pc1_lrt1_feat2_value=2nd
+      verb-pc1_lrt1_feat2_head=subj
+      verb-pc1_lrt1_lri1_inflecting=yes
+      verb-pc1_lrt1_lri1_orth==qaː
+      verb-pc1_lrt1_lri2_inflecting=yes
+      verb-pc1_lrt1_lri2_orth==qaːk
+    verb-pc1_lrt2_name=wh1pl
+      verb-pc1_lrt2_feat1_name=question
+      verb-pc1_lrt2_feat1_value=wh
+      verb-pc1_lrt2_feat1_head=verb
+      verb-pc1_lrt2_feat2_name=number
+      verb-pc1_lrt2_feat2_value=pl
+      verb-pc1_lrt2_feat2_head=subj
+      verb-pc1_lrt2_feat3_name=person
+      verb-pc1_lrt2_feat3_value=1st
+      verb-pc1_lrt2_feat3_head=subj
+      verb-pc1_lrt2_lri1_inflecting=yes
+      verb-pc1_lrt2_lri1_orth==qiːk
+    verb-pc1_lrt3_name=polar1sg
+      verb-pc1_lrt3_feat1_name=question
+      verb-pc1_lrt3_feat1_value=polar
+      verb-pc1_lrt3_feat1_head=verb
+      verb-pc1_lrt3_feat2_name=person
+      verb-pc1_lrt3_feat2_value=1st
+      verb-pc1_lrt3_feat2_head=subj
+      verb-pc1_lrt3_feat3_name=number
+      verb-pc1_lrt3_feat3_value=sg
+      verb-pc1_lrt3_feat3_head=subj
+      verb-pc1_lrt3_lri1_inflecting=yes
+      verb-pc1_lrt3_lri1_orth==qaːk=s
+    verb-pc1_lrt5_name=polar3pl
+      verb-pc1_lrt5_feat1_name=question
+      verb-pc1_lrt5_feat1_value=polar
+      verb-pc1_lrt5_feat1_head=verb
+      verb-pc1_lrt5_feat2_name=number
+      verb-pc1_lrt5_feat2_value=pl
+      verb-pc1_lrt5_feat2_head=subj
+      verb-pc1_lrt5_feat3_name=person
+      verb-pc1_lrt5_feat3_value=3rd
+      verb-pc1_lrt5_feat3_head=subj
+      verb-pc1_lrt5_lri1_inflecting=yes
+      verb-pc1_lrt5_lri1_orth==qaː=iɬ
+    verb-pc1_lrt6_name=ind
+      verb-pc1_lrt6_feat1_name=question
+      verb-pc1_lrt6_feat1_value=no
+      verb-pc1_lrt6_feat1_head=verb
+      verb-pc1_lrt6_feat2_name=number
+      verb-pc1_lrt6_feat2_value=sg
+      verb-pc1_lrt6_feat2_head=subj
+      verb-pc1_lrt6_feat3_name=person
+      verb-pc1_lrt6_feat3_value=3rd
+      verb-pc1_lrt6_feat3_head=subj
+      verb-pc1_lrt6_feat4_name=tense
+      verb-pc1_lrt6_feat4_value=past
+      verb-pc1_lrt6_feat4_head=verb
+      verb-pc1_lrt6_lri1_inflecting=yes
+      verb-pc1_lrt6_lri1_orth==bu=i
+    verb-pc1_lrt7_name=wh3sg
+      verb-pc1_lrt7_feat1_name=question
+      verb-pc1_lrt7_feat1_value=wh
+      verb-pc1_lrt7_feat1_head=verb
+      verb-pc1_lrt7_feat2_name=number
+      verb-pc1_lrt7_feat2_value=sg
+      verb-pc1_lrt7_feat2_head=subj
+      verb-pc1_lrt7_feat3_name=person
+      verb-pc1_lrt7_feat3_value=3rd
+      verb-pc1_lrt7_feat3_head=subj
+      verb-pc1_lrt7_lri1_inflecting=yes
+      verb-pc1_lrt7_lri1_orth==qaːɬ
+    verb-pc1_lrt8_name=perf
+      verb-pc1_lrt8_feat1_name=aspect
+      verb-pc1_lrt8_feat1_value=perfective
+      verb-pc1_lrt8_feat1_head=verb
+      verb-pc1_lrt8_lri1_inflecting=yes
+      verb-pc1_lrt8_lri1_orth=-saːp
+    verb-pc1_lrt9_name=misc
+      verb-pc1_lrt9_lri1_inflecting=yes
+      verb-pc1_lrt9_lri1_orth=='ap
+      verb-pc1_lrt9_lri2_inflecting=yes
+      verb-pc1_lrt9_lri2_orth==iq
+    verb-pc1_lrt10_name=wh3sg-pst
+      verb-pc1_lrt10_feat1_name=person
+      verb-pc1_lrt10_feat1_value=3rd
+      verb-pc1_lrt10_feat1_head=subj
+      verb-pc1_lrt10_feat2_name=number
+      verb-pc1_lrt10_feat2_value=sg
+      verb-pc1_lrt10_feat2_head=subj
+      verb-pc1_lrt10_feat3_name=question
+      verb-pc1_lrt10_feat3_value=wh
+      verb-pc1_lrt10_feat3_head=verb
+      verb-pc1_lrt10_feat4_name=tense
+      verb-pc1_lrt10_feat4_value=past
+      verb-pc1_lrt10_feat4_head=verb
+      verb-pc1_lrt10_lri1_inflecting=yes
+      verb-pc1_lrt10_lri1_orth==bu=i
+    verb-pc1_lrt11_name=wh3-pl
+      verb-pc1_lrt11_feat1_name=question
+      verb-pc1_lrt11_feat1_value=wh
+      verb-pc1_lrt11_feat1_head=verb
+      verb-pc1_lrt11_feat2_name=person
+      verb-pc1_lrt11_feat2_value=3rd
+      verb-pc1_lrt11_feat2_head=subj
+      verb-pc1_lrt11_feat3_name=number
+      verb-pc1_lrt11_feat3_value=pl
+      verb-pc1_lrt11_feat3_head=subj
+      verb-pc1_lrt11_lri1_inflecting=yes
+      verb-pc1_lrt11_lri1_orth==qaːɬ=iɬ
+  verb-pc2_name=spc
+  verb-pc2_order=suffix
+  verb-pc2_inputs=verb
+    verb-pc2_lrt1_name=temp
+      verb-pc2_lrt1_lri1_inflecting=yes
+      verb-pc2_lrt1_lri1_orth=='aƛ
+
+section=toolbox-import
+
+section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon

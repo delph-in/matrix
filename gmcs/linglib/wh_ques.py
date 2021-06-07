@@ -25,7 +25,9 @@ WH_Q_PHR = ''' wh-ques-phrase := basic-head-filler-phrase & interrogative-clause
 			NON-LOCAL.QUE.LIST < > ],
      HEAD-DTR.SYNSEM.LOCAL.CAT.VAL #val & [ SUBJ < >,
 					                        COMPS < > ],
-     NON-HEAD-DTR.SYNSEM [ NON-LOCAL.QUE.LIST < ref-ind >,
+     NON-HEAD-DTR.SYNSEM [ NON-LOCAL [ QUE.LIST < ref-ind >,
+                                       SLASH.LIST < >,
+                                       REL.LIST < > ],
                            LOCAL.CONT.HOOK.ICONS-KEY focus ] ].'''
 
 
@@ -66,11 +68,12 @@ EX_DET_PHRASE = '''extracted-det-phrase := basic-extracted-arg-phrase & head-com
                                SPEC < > ] ],
              NON-LOCAL.SLASH.APPEND < #slash,
                                       [ LIST < #local > ] > ],
-    HEAD-DTR.SYNSEM [ LOCAL [ CAT.VAL.SPR < gap &
+    HEAD-DTR.SYNSEM [ LOCAL [ CAT [ HEAD noun,
+                                    VAL.SPR < gap &
                                           [ LOCAL #local & local &
                                                   [ CAT [ HEAD det,
                                                           VAL.SPEC.FIRST.LOCAL #specloc ],
-                                                    CONT.HOOK #hook ] ] > ],
+                                                    CONT.HOOK #hook ] ] > ] ],
                             NON-LOCAL.SLASH #slash ],
     C-CONT [ RELS.LIST < >,
              HCONS.LIST < >,

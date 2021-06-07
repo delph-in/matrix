@@ -1,0 +1,274 @@
+
+version=34
+
+section=general
+language=Pacoh
+iso-code=pac
+punctuation-chars=keep-all
+archive=yes
+email=olzama@uw.edu
+affiliation=University of Washington
+motivation=Testing of constituent questions Matrix library
+
+section=word-order
+word-order=svo
+has-dets=yes
+noun-det-order=det-noun
+has-aux=yes
+aux-comp-order=before
+aux-comp=vp
+multiple-aux=no
+subord-word-order=same
+
+section=number
+  number1_name=sg
+  number2_name=pl
+
+section=person
+person=1-2-3
+first-person=none
+
+section=gender
+  gender1_name=anim
+  gender2_name=inanim
+
+section=case
+case-marking=none
+
+section=adnom-poss
+
+section=direct-inverse
+
+section=tense-aspect-mood
+
+section=evidentials
+
+section=other-features
+form-fin-nf=on
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+q-part=on
+q-part-order=after
+  q-particle1_orth=ləjʔ
+  q-particle1_main=on
+  q-particle1_embed=on
+  q-particle1_wh=imp
+
+section=wh-q
+front-matrix=single
+matrix-front-opt=none-oblig
+pied-pip=on
+oblig-pied-pip-noun=on
+
+section=info-str
+
+section=arg-opt
+subj-drop=subj-drop-all
+subj-mark-drop=subj-mark-drop-opt
+subj-mark-no-drop=subj-mark-no-drop-opt
+subj-con=subj-con-always
+
+section=nominalclause
+
+section=clausal-comp
+  comps1_clause-pos-same=on
+  comps1_ques=ques
+  comps1_comp-pos-after=on
+  comps1_comp=opt
+    comps1_stem1_orth=nonexistent
+
+section=clausalmods
+
+section=lexicon
+  noun1_name=wh-inan
+  noun1_inter=on
+    noun1_feat1_name=gender
+    noun1_feat1_value=inanim
+    noun1_feat2_name=person
+    noun1_feat2_value=3rd
+  noun1_det=imp
+    noun1_stem1_orth=ʔaˌməh
+    noun1_stem1_pred=_thing_n_rel
+    noun1_stem2_orth=ʔmˌmɔː
+    noun1_stem2_pred=_thing_n_rel
+    noun1_stem3_orth=ʔəˌməh
+    noun1_stem3_pred=_thing_n_rel
+    noun1_stem4_orth=lam ʔmˌmɔː
+    noun1_stem4_pred=_thing_n_rel
+  noun2_name=2sg
+  noun2_pron=on
+    noun2_feat1_name=number
+    noun2_feat1_value=sg
+    noun2_feat2_name=person
+    noun2_feat2_value=2nd
+  noun2_det=imp
+    noun2_stem1_orth=maj
+    noun2_stem1_pred=_pron_rel
+  noun3_name=2pl
+  noun3_pron=on
+    noun3_feat1_name=number
+    noun3_feat1_value=pl
+    noun3_feat2_name=person
+    noun3_feat2_value=2nd
+  noun3_det=imp
+    noun3_stem1_orth=ʔiˌpɛː
+    noun3_stem1_pred=_pron_rel
+  noun4_name=cn
+  noun4_det=opt
+    noun4_stem1_orth=kəmˌpɔŋ
+    noun4_stem1_pred=_ladder_n_rel
+    noun4_stem2_orth=tʰəj
+    noun4_stem2_pred=_teacher_n_rel
+    noun4_stem3_orth=ʃaːc
+    noun4_stem3_pred=_book_n_rel
+    noun4_stem4_orth=bɛː ʔaˌriəw
+    noun4_stem4_pred=_bottle.of.wine_n_rel
+    noun4_stem5_orth=kən
+    noun4_stem5_pred=_kilogram_n_rel
+    noun4_stem6_orth=kən trɔ
+    noun4_stem6_pred=_kg.of.rice_n_rel
+    noun4_stem7_orth=tiːkuəj
+    noun4_stem7_pred=_person_n_rel
+  noun5_name=3sg
+  noun5_pron=on
+    noun5_feat1_name=person
+    noun5_feat1_value=3rd
+    noun5_feat2_name=number
+    noun5_feat2_value=sg
+  noun5_det=imp
+    noun5_stem1_orth=ʔaˌcaːj
+    noun5_stem1_pred=_pron_rel
+    noun5_stem2_orth=dɔː
+    noun5_stem2_pred=_pron_rel
+    noun5_stem3_orth=ʔaˌʔɛm
+    noun5_stem3_pred=_pron_rel
+  noun6_name=dem
+  noun6_det=imp
+    noun6_stem1_orth=ʔnˌnɛh
+    noun6_stem1_pred=_thing_n_rel
+  noun7_name=wh-anim
+  noun7_inter=on
+    noun7_feat1_name=gender
+    noun7_feat1_value=anim
+    noun7_feat2_name=person
+    noun7_feat2_value=3rd
+  noun7_det=imp
+    noun7_stem1_orth=ʔnˌnaw
+    noun7_stem1_pred=_person_n_rel
+  noun8_name=pn
+  noun8_det=imp
+    noun8_stem1_orth=Noː
+    noun8_stem1_pred=_name_n_rel
+  verb1_name=iv
+  verb1_valence=intrans
+    verb1_stem1_orth=pok
+    verb1_stem1_pred=_go_v_rel
+    verb1_stem2_orth=tuˌmo̯ŋ
+    verb1_stem2_pred=_live_v_rel
+    verb1_stem3_orth=pən
+    verb1_stem3_pred=_wait_v_rel
+    verb1_stem4_orth=ʔat
+    verb1_stem4_pred=_be.located_v_rel
+    verb1_stem5_orth=biʔ
+    verb1_stem5_pred=_sleep_v_rel
+    verb1_stem6_orth=ʔaˌŋoː
+    verb1_stem6_pred=_rest_v_rel
+    verb1_stem7_orth=cɛh
+    verb1_stem7_pred=_be.born_v_rel
+    verb1_stem8_orth=tətˌtoːm
+    verb1_stem8_pred=_talk.to.each.other_v_rel
+  verb2_name=tv
+  verb2_valence=trans
+    verb2_stem1_orth=paˌpiː
+    verb2_stem1_pred=_discuss_v_rel
+    verb2_stem2_orth=ʔiˌsər
+    verb2_stem2_pred=_climb_v_rel
+    verb2_stem3_orth=caː
+    verb2_stem3_pred=_do_v_rel
+    verb2_stem4_orth=pləj
+    verb2_stem4_pred=_buy_v_rel
+    verb2_stem5_orth=ʔŋˌkoh ʔaˌʔaj
+    verb2_stem5_pred=_feel.pain.in_v_rel
+    verb2_stem6_orth=ʔnˌtaːŋ
+    verb2_stem6_pred=_weigh_v_rel
+  verb3_name=ask
+  verb3_valence=trans,comps1
+    verb3_stem1_orth=cɔːm
+    verb3_stem1_pred=_know_v_rel
+    verb3_stem2_orth=ploh
+    verb3_stem2_pred=_ask_v_rel
+  verb4_name=poss
+    verb4_feat1_name=gender
+    verb4_feat1_value=anim
+    verb4_feat1_head=obj
+  verb4_valence=trans
+    verb4_stem1_orth=ʔnˌdɔ
+    verb4_stem1_pred=_belong.to_v_rel
+  aux1_name=want
+  aux1_sem=add-pred
+  aux1_subj=np
+    aux1_compfeature1_name=form
+    aux1_compfeature1_value=finite
+    aux1_stem1_orth=ʔiɲ
+    aux1_stem1_pred=_want_v_rel
+  aux2_name=can
+  aux2_sem=add-pred
+  aux2_subj=np
+    aux2_compfeature1_name=form
+    aux2_compfeature1_value=finite
+    aux2_stem1_orth=boːn
+    aux2_stem1_pred=can
+  det1_name=which
+  det1_inter=on
+    det1_stem1_orth=ʔmˌmɔː
+    det1_stem1_pred=_which_q_rel
+    det1_stem2_orth=ʔəˌməh
+    det1_stem2_pred=_which_q_rel
+  det2_name=this
+    det2_stem1_orth=ʔnˌnɛh
+    det2_stem1_pred=_this_q_rel
+  det3_name=unit
+    det3_stem1_orth=lam
+    det3_stem1_pred=_unit_q_rel
+  det4_name=how-many
+  det4_inter=on
+    det4_stem1_orth=liˌmɔː
+    det4_stem1_pred=_how.many_q_rel
+    det4_stem2_orth=ʔaˌliˌmɔː
+    det4_stem2_pred=_how.many_q_rel
+  adv1_name=where
+    adv1_stem1_orth=tuˌmɔː
+    adv1_stem1_pred=_place_n_rel
+  adv1_inter=on
+  adv1_type=loc
+  adv2_name=now
+    adv2_stem1_orth=ho̯ːj ʔnˌnɛh
+    adv2_stem1_pred=_time_n_rel
+  adv2_type=loc
+  adv3_name=how
+    adv3_stem1_orth=ʔiˌmɔː
+    adv3_stem1_pred=_manner_n_rel
+    adv3_stem2_orth=viːʔiˌmɔː
+    adv3_stem2_pred=_reason_n_rel
+  adv3_inter=on
+  adv3_type=manner
+  adv4_name=very
+    adv4_stem1_orth=hɨk lɨː
+    adv4_stem1_pred=_very_a_rel
+    adv4_stem2_orth=kiː
+    adv4_stem2_pred=_manner_n_rel
+  adv4_type=manner
+
+section=morphology
+
+section=toolbox-import
+
+section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon

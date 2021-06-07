@@ -1,0 +1,347 @@
+
+version=34
+
+section=general
+language=Jalkunan
+iso-code=bxl
+punctuation-chars=keep-all
+archive=yes
+email=olzama@uw.edu
+affiliation=University of Washington
+motivation=Testing of constituent questions Matrix library
+
+section=word-order
+word-order=sov
+has-dets=yes
+noun-det-order=noun-det
+has-aux=yes
+aux-comp-order=before
+aux-comp=vp
+multiple-aux=yes
+
+section=number
+  number1_name=sg
+  number2_name=pl
+
+section=person
+person=1-2-3
+first-person=none
+
+section=gender
+
+section=case
+case-marking=none
+
+section=adnom-poss
+  poss-pron1_type=non-affix
+  poss-pron1_agr=non-agree
+  poss-pron1_mod-spec=spec
+  poss-pron1_order=head-final
+    poss-pron1_instance1_name=your
+    poss-pron1_instance1_orth=wō
+      poss-pron1_instance1_feat1_name=number
+      poss-pron1_instance1_feat1_value=sg
+      poss-pron1_instance1_feat2_name=person
+      poss-pron1_instance1_feat2_value=2nd
+  poss-pron1_possessum-mark=no
+
+section=direct-inverse
+
+section=tense-aspect-mood
+tense-definition=choose
+future=on
+perimper=on
+
+section=evidentials
+
+section=other-features
+form-fin-nf=on
+
+section=sentential-negation
+neg-exp=1
+adv-neg=on
+neg-mod=s
+neg-order=after
+neg-adv-orth==rɛʔ
+
+section=coordination
+
+section=matrix-yes-no
+q-part=on
+q-part-order=after
+  q-particle1_orth=yà
+  q-particle1_main=on
+  q-particle1_embed=on
+  q-particle1_wh=imp
+  q-particle2_orth==V
+  q-particle2_main=on
+  q-particle2_embed=on
+  q-particle2_wh=oblig
+
+section=wh-q
+front-matrix=in-situ
+wh-q-inter-verbs=on
+
+section=info-str
+
+section=arg-opt
+
+section=nominalclause
+
+section=clausal-comp
+  comps1_clause-pos-same=on
+  comps1_ques=ques
+  comps1_comp-pos-after=on
+  comps1_comp=oblig
+  comps1_comp-q=on
+    comps1_stem1_orth=wà
+
+section=clausalmods
+
+section=lexicon
+  noun1_name=cn
+    noun1_feat1_name=person
+    noun1_feat1_value=3rd
+  noun1_det=opt
+    noun1_stem1_orth=dí
+    noun1_stem1_pred=_child_n_rel
+    noun1_stem2_orth=kún-ná
+    noun1_stem2_pred=_village_n_rel
+    noun1_stem3_orth=ká
+    noun1_stem3_pred=_rain_n_rel
+    noun1_stem4_orth=sàá
+    noun1_stem4_pred=_house_n_rel
+    noun1_stem5_orth=mùú
+    noun1_stem5_pred=_field_n_rel
+    noun1_stem6_orth=tàgà
+    noun1_stem6_pred=_sheep_n_rel
+    noun1_stem7_orth=làʔá
+    noun1_stem7_pred=_place_n_rel
+    noun1_stem8_orth=wáʔátí
+    noun1_stem8_pred=_time_n_rel
+    noun1_stem9_orth=mɛ̀ʔɛ́
+    noun1_stem9_pred=_person_n_rel
+    noun1_stem10_orth=kūmɛ̄é
+    noun1_stem10_pred=_meal_n_rel
+    noun1_stem11_orth=sàà-rá
+    noun1_stem11_pred=_house_n_rel
+  noun2_name=wh
+  noun2_inter=on
+    noun2_feat1_name=person
+    noun2_feat1_value=3rd
+  noun2_det=imp
+    noun2_stem1_orth=māʔā-nĭ
+    noun2_stem1_pred=_person_n_rel
+    noun2_stem2_orth=māʔā
+    noun2_stem2_pred=_person_n_rel
+    noun2_stem3_orth=kpɛ́
+    noun2_stem3_pred=_thing_n_rel
+    noun2_stem4_orth=māʔā-nì
+    noun2_stem4_pred=_person_n_rel
+    noun2_stem5_orth=māʔā-nì-ì
+    noun2_stem5_pred=_person_n_rel
+  noun3_name=pn
+    noun3_feat1_name=number
+    noun3_feat1_value=sg
+    noun3_feat2_name=person
+    noun3_feat2_value=3rd
+  noun3_det=imp
+    noun3_stem1_orth=zàkíì
+    noun3_stem1_pred=_name_n_rel
+  noun4_name=perpron
+  noun4_pron=on
+  noun4_det=imp
+  noun5_name=2sg
+  noun5_supertypes=noun4
+    noun5_feat1_name=number
+    noun5_feat1_value=sg
+    noun5_feat2_name=person
+    noun5_feat2_value=2nd
+    noun5_stem1_orth=wō
+    noun5_stem1_pred=_pron_rel
+    noun5_stem2_orth=wó
+    noun5_stem2_pred=_pron_rel
+  noun6_name=2pl
+  noun6_supertypes=noun4
+    noun6_feat1_name=number
+    noun6_feat1_value=pl
+    noun6_feat2_name=person
+    noun6_feat2_value=2nd
+    noun6_stem1_orth=e
+    noun6_stem1_pred=_pron_rel
+    noun6_stem2_orth=mǎā
+    noun6_stem2_pred=_pron_rel
+  noun7_name=1pl
+  noun7_supertypes=noun4
+    noun7_feat1_name=number
+    noun7_feat1_value=pl
+    noun7_feat2_name=person
+    noun7_feat2_value=1st
+    noun7_stem1_orth=mùʔú
+    noun7_stem1_pred=_pron_rel
+  noun8_name=3pl
+  noun8_supertypes=noun4
+    noun8_feat1_name=number
+    noun8_feat1_value=pl
+    noun8_feat2_name=person
+    noun8_feat2_value=3rd
+    noun8_stem1_orth=àà
+    noun8_stem1_pred=_pron_rel
+  noun9_name=3sg
+  noun9_supertypes=noun4
+    noun9_feat1_name=number
+    noun9_feat1_value=sg
+    noun9_feat2_name=person
+    noun9_feat2_value=3rd
+    noun9_stem1_orth=é
+    noun9_stem1_pred=_pron_rel
+    noun9_stem2_orth=ní
+    noun9_stem2_pred=_pron_rel
+  noun10_name=1sg
+  noun10_supertypes=noun4
+    noun10_feat1_name=number
+    noun10_feat1_value=sg
+    noun10_feat2_name=person
+    noun10_feat2_value=1st
+    noun10_stem1_orth=mā
+    noun10_stem1_pred=_pron_rel
+  verb1_name=iv
+  verb1_valence=intrans
+    verb1_stem1_orth=sɛ̆
+    verb1_stem1_pred=_come_v_rel
+    verb1_stem2_orth=sɛ̀
+    verb1_stem2_pred=_fall_v_rel
+    verb1_stem3_orth==∅
+    verb1_stem3_pred=_be_v_rel
+    verb1_stem4_orth==∅-ì
+    verb1_stem4_pred=_be_v_rel
+    verb1_stem5_orth=sɛ́
+    verb1_stem5_pred=_come_v_rel
+    verb1_stem6_orth=bɔ́
+    verb1_stem6_pred=_go.out_v_rel
+    verb1_stem7_orth=sɛ̄
+    verb1_stem7_pred=_come_v_rel
+    verb1_stem8_orth=mɛ̀ɛ́
+    verb1_stem8_pred=_happen_v_rel
+    verb1_stem9_orth=sà
+    verb1_stem9_pred=_come_v_rel
+    verb1_stem10_orth=bóō
+    verb1_stem10_pred=_happen_v_rel
+    verb1_stem11_orth=táʔá
+    verb1_stem11_pred=_go_v_rel
+    verb1_stem12_orth=sáá
+    verb1_stem12_pred=_come_v_rel
+    verb1_stem13_orth=wàà
+    verb1_stem13_pred=_go_v_rel
+    verb1_stem14_orth=ɲìí
+    verb1_stem14_pred=_spend.night_v_rel
+    verb1_stem15_orth==∅=è
+    verb1_stem15_pred=_be_v_rel
+    verb1_stem16_orth=màà
+    verb1_stem16_pred=_do_v_rel
+  verb2_name=tv
+  verb2_valence=trans
+    verb2_stem1_orth=báʔrì
+    verb2_stem1_pred=_hit_v_rel
+    verb2_stem2_orth=jíɛ́
+    verb2_stem2_pred=_see_v_rel
+    verb2_stem3_orth=kùnò
+    verb2_stem3_pred=_eat_v_rel
+    verb2_stem4_orth=màá
+    verb2_stem4_pred=_cultivate_v_rel
+    verb2_stem5_orth=màà
+    verb2_stem5_pred=_do_v_rel
+    verb2_stem6_orth=ká
+    verb2_stem6_pred=_have_v_rel
+    verb2_stem7_orth=kùnó
+    verb2_stem7_pred=_eat_v_rel
+  verb3_name=embed
+  verb3_valence=trans,comps1
+    verb3_stem1_orth=sɔ̀
+    verb3_stem1_pred=_know_v_rel
+  qverb1_name=be-where
+  qverb1_predtype=loc
+    qverb1_stem1_orth=dóò
+    qverb1_stem1_verbpred=be
+    qverb1_stem1_nounpred=place
+  aux1_name=fut
+  aux1_sem=no-pred
+    aux1_feat1_name=tense
+    aux1_feat1_value=future
+    aux1_feat1_head=verb
+  aux1_subj=np
+    aux1_compfeature1_name=form
+    aux1_compfeature1_value=finite
+    aux1_stem1_orth=sà
+    aux1_stem2_orth=sí=ì
+  aux2_name=ipfv
+  aux2_sem=add-pred
+    aux2_feat1_name=aspect
+    aux2_feat1_value=imperfective
+    aux2_feat1_head=verb
+  aux2_subj=np
+    aux2_compfeature1_name=form
+    aux2_compfeature1_value=nonfinite
+    aux2_stem1_orth==∅
+    aux2_stem1_pred=dummy
+  det1_name=how-many
+  det1_inter=on
+    det1_stem1_orth=sòló
+    det1_stem1_pred=_how.many_q_rel
+    det1_stem2_orth=sóló
+    det1_stem2_pred=_how.many_q_rel
+  det2_name=which
+  det2_inter=on
+    det2_stem1_orth=ɲɔ̀
+    det2_stem1_pred=_which_q_rel
+    det2_stem2_orth=ɲɔ̀-nɔ̀
+    det2_stem2_pred=_which_q_rel
+  det3_name=whose
+  det3_inter=on
+    det3_stem1_orth=māʔā-nĭ
+    det3_stem1_pred=_whose_q_rel
+  adv1_name=there
+    adv1_stem1_orth=nɛ̀
+    adv1_stem1_pred=_place_n_rel
+    adv1_stem2_orth=dè
+    adv1_stem2_pred=_place_n_rel
+    adv1_stem3_orth=nàà
+    adv1_stem3_pred=_place_n_rel
+    adv1_stem4_orth=kún-ná
+    adv1_stem4_pred=_village_a_rel
+  adv1_type=loc
+  adv2_name=today
+    adv2_stem1_orth=fì
+    adv2_stem1_pred=_today_a_rel
+  adv2_type=loc
+  adv3_name=where
+    adv3_stem1_orth=mì
+    adv3_stem1_pred=_place_n_rel
+  adv3_inter=on
+  adv3_type=loc
+  adv4_name=how
+    adv4_stem1_orth=mànâ
+    adv4_stem1_pred=_manner_n_rel
+  adv4_inter=on
+  adv4_type=manner
+  adv5_name=when
+    adv5_stem1_orth=wáʔátí ɲɔ̀-nɔ̀
+    adv5_stem1_pred=_time_n_rel
+  adv5_type=loc
+    normadp1_stem1_orth=dɛ̀
+    normadp1_stem1_pred=_with_p_rel
+    normadp1_stem2_orth=kùdù
+    normadp1_stem2_pred=_for_p_rel
+    normadp1_stem3_orth=tɔ́
+    normadp1_stem3_pred=_in_p_rel
+  normadp1_order=after
+
+section=morphology
+
+section=toolbox-import
+
+section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon

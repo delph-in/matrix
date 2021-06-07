@@ -1,0 +1,678 @@
+
+version=34
+
+section=general
+language=Paresi-Haliti
+iso-code=pab
+punctuation-chars=keep-list
+punctuation-chars-list=-=
+archive=yes
+email=olzama@uw.edu
+affiliation=University of Washington
+motivation=Testing of constituent questions Matrix library
+
+section=word-order
+word-order=free
+has-dets=yes
+noun-det-order=det-noun
+has-aux=no
+subord-word-order=same
+
+section=number
+  number1_name=sg
+  number2_name=pl
+
+section=person
+person=1-2-3
+first-person=none
+
+section=gender
+
+section=case
+case-marking=none
+
+section=adnom-poss
+  poss-pron1_type=affix
+  poss-pron1_agr=non-agree
+  poss-pron1_mod-spec=spec
+
+section=direct-inverse
+
+section=tense-aspect-mood
+tense-definition=choose
+future=on
+nonfuture=on
+  aspect1_name=imperfective
+    aspect1_supertype1_name=aspect
+  aspect2_name=transitional
+    aspect2_supertype1_name=aspect
+
+section=evidentials
+
+section=other-features
+form-fin-nf=on
+
+section=sentential-negation
+
+section=coordination
+  cs1_n=on
+  cs1_s=on
+  cs1_pat=a
+
+section=matrix-yes-no
+q-part=on
+q-part-order=before
+  q-particle1_orth=zoana
+  q-particle1_main=on
+  q-particle1_embed=on
+  q-particle1_wh=imp
+
+section=wh-q
+front-matrix=single
+matrix-front-opt=single-oblig
+pied-pip=on
+oblig-pied-pip-noun=on
+focus-marking=on
+wh-q-inter-verbs=on
+
+section=info-str
+c-focus-pos=clause-initial
+  c-focus-marker2_type=modifier
+  c-focus-marker2_pos=after
+  c-focus-marker2_cat=nouns, verbs
+  c-focus-marker2_orth==ala
+
+section=arg-opt
+subj-drop=subj-drop-all
+subj-mark-drop=subj-mark-drop-req
+subj-mark-no-drop=subj-mark-no-drop-req
+subj-con=subj-con-always
+
+section=nominalclause
+  ns1_name=nmz
+  ns1_level=high
+  ns1_nmzRel=no
+
+section=clausal-comp
+
+section=clausalmods
+  cms1_position=after
+  cms1_modifier-attach=either
+  cms1_subordinator=none
+    cms1_feat1_name=nominalization
+    cms1_feat1_value=nmz
+
+section=lexicon
+  noun1_name=common
+    noun1_feat1_name=person
+    noun1_feat1_value=3rd
+  noun1_det=opt
+    noun1_stem1_orth=zoimahaliti
+    noun1_stem1_pred=_boy_n_rel
+    noun1_stem2_orth=zoimahaloti
+    noun1_stem2_pred=_girl_n_rel
+    noun1_stem3_orth=oliti
+    noun1_stem3_pred=_game_n_rel
+    noun1_stem4_orth=ximarene
+    noun1_stem4_pred=_youngest.brother_n_rel
+    noun1_stem5_orth=aikoli
+    noun1_stem5_pred=_tooth_n_rel
+    noun1_stem6_orth=hatyo
+    noun1_stem6_pred=_that_n_rel
+    noun1_stem7_orth=ityani
+    noun1_stem7_pred=_child_n_rel
+    noun1_stem8_orth=atsero
+    noun1_stem8_pred=_grandmother_n_rel
+    noun1_stem9_orth=koreta
+    noun1_stem9_pred=_bamboo_n_rel
+    noun1_stem10_orth=zawati
+    noun1_stem10_pred=_axe_n_rel
+    noun1_stem11_orth=koho
+    noun1_stem11_pred=_basket_n_rel
+    noun1_stem12_orth=heko
+    noun1_stem12_pred=_time_n_rel
+    noun1_stem13_orth=kotyoi
+    noun1_stem13_pred=_tapir_n_rel
+    noun1_stem14_orth=koke
+    noun1_stem14_pred=_uncle_n_rel
+    noun1_stem15_orth=eze-hare
+    noun1_stem15_pred=_this.thing_n_rel
+    noun1_stem16_orth=hatyo-hare
+    noun1_stem16_pred=_that.thing_n_rel
+    noun1_stem17_orth=akero
+    noun1_stem17_pred=_aunt_n_rel
+    noun1_stem18_orth=kohtse
+    noun1_stem18_pred=_fish_n_rel
+    noun1_stem19_orth=ferakene
+    noun1_stem19_pred=_day_n_rel
+    noun1_stem20_orth=hinae-hare
+    noun1_stem20_pred=_relatives_n_rel
+    noun1_stem21_orth=txihotya-kala-ti
+    noun1_stem21_pred=_lid_n_rel
+    noun1_stem22_orth=luitxi-ri
+    noun1_stem22_pred=_lightbulb_n_rel
+    noun1_stem23_orth=hiyotoko
+    noun1_stem23_pred=_cupari.fruit_n_rel
+    noun1_stem24_orth=z-olaki-tako-tyoa-kala-ti
+    noun1_stem24_pred=_belt_n_rel
+    noun1_stem25_orth=zaitse
+    noun1_stem25_pred=_nephew_n_rel
+    noun1_stem26_orth=nozai
+    noun1_stem26_pred=_nephew_n_rel
+    noun1_stem27_orth=katore
+    noun1_stem27_pred=_brother_n_rel
+    noun1_stem28_orth=abe
+    noun1_stem28_pred=_grandma_n_rel
+    noun1_stem29_orth=koko
+    noun1_stem29_pred=_uncle_n_rel
+    noun1_stem30_orth=maheta
+    noun1_stem30_pred=_purpose_n_rel
+  noun2_name=wh
+  noun2_inter=on
+    noun2_feat1_name=person
+    noun2_feat1_value=3rd
+  noun2_det=imp
+    noun2_stem1_orth=zoare
+    noun2_stem1_pred=_thing_n_rel
+    noun2_stem2_orth=zoare=ite
+    noun2_stem2_pred=_thing_n_rel
+    noun2_stem3_orth=zola
+    noun2_stem3_pred=_person_n_rel
+    noun2_stem4_orth=zoare kore
+    noun2_stem4_pred=_person_n_rel
+    noun2_stem5_orth=zoare-ta-tya
+    noun2_stem5_pred=_thing_n_rel
+    noun2_stem6_orth=zoare=kakoa kani
+    noun2_stem6_pred=_thing_n_rel
+    noun2_stem7_orth=zala iya
+    noun2_stem7_pred=_person_n_rel
+    noun2_stem8_orth=zala-nae zamani=te
+    noun2_stem8_pred=_person_n_rel
+    noun2_stem9_orth=zoana kore
+    noun2_stem9_pred=_thing_n_rel
+    noun2_stem10_orth=zoare halani
+    noun2_stem10_pred=_thing_n_rel
+    noun2_stem11_orth=zoare zamani
+    noun2_stem11_pred=_thing_n_rel
+    noun2_stem12_orth=zala
+    noun2_stem12_pred=_person_n_rel
+  noun3_name=2sg
+  noun3_pron=on
+  noun3_det=imp
+    noun3_stem1_orth=hitso
+    noun3_stem1_pred=_pron_rel
+  noun4_name=1sg
+  noun4_pron=on
+  noun4_det=imp
+    noun4_stem1_orth=natyo
+    noun4_stem1_pred=_pron_rel
+  noun5_name=pn
+  noun5_det=imp
+    noun5_stem1_orth=Kazatarene
+    noun5_stem1_pred=_name_rel
+    noun5_stem2_orth=Bere
+    noun5_stem2_pred=_name_rel
+    noun5_stem3_orth=Dora
+    noun5_stem3_pred=_name_rel
+    noun5_stem4_orth=Luciano
+    noun5_stem4_pred=_name_rel
+    noun5_stem5_orth=Alaoliro
+    noun5_stem5_pred=_name_rel
+    noun5_stem6_orth=Jucilene
+    noun5_stem6_pred=_name_rel
+    noun5_stem7_orth=Owihoko
+    noun5_stem7_pred=_name_rel
+  noun6_name=2pl
+  noun6_pron=on
+    noun6_feat1_name=number
+    noun6_feat1_value=pl
+    noun6_feat2_name=person
+    noun6_feat2_value=2nd
+  noun6_det=imp
+    noun6_stem1_orth=xitso
+    noun6_stem1_pred=_pron_rel
+    noun6_stem2_orth=z=-om-ana
+    noun6_stem2_pred=_pron_rel
+    noun6_stem3_orth=xitso-kakoa
+    noun6_stem3_pred=_pron_rel
+  verb2_name=trans
+  verb2_valence=trans
+    verb2_stem1_orth=waiya
+    verb2_stem1_pred=_see_v_rel
+    verb2_stem2_orth=aitsa-ha
+    verb2_stem2_pred=_kill_v_rel
+    verb2_stem3_orth=tyom
+    verb2_stem3_pred=_do_v_rel
+    verb2_stem4_orth=aroma
+    verb2_stem4_pred=_fix_v_rel
+    verb2_stem5_orth=aza
+    verb2_stem5_pred=_ask_v_rel
+    verb2_stem6_orth=maira
+    verb2_stem6_pred=_fish_v_rel
+    verb2_stem7_orth=kolatya
+    verb2_stem7_pred=_take_v_rel
+    verb2_stem8_orth=iriko
+    verb2_stem8_pred=_cut_v_rel
+    verb2_stem9_orth=ka-iyare-tya-ha
+    verb2_stem9_pred=_be.named_v_rel
+    verb2_stem10_orth=moka
+    verb2_stem10_pred=_put_v_rel
+    verb2_stem11_orth=irai
+    verb2_stem11_pred=_talk_v_rel
+    verb2_stem12_orth=tsema-ha-ti-ye
+    verb2_stem12_pred=_hear_v_rel
+    verb2_stem13_orth=tsaona
+    verb2_stem13_pred=_do_v_rel
+    verb2_stem14_orth=tyaona
+    verb2_stem14_pred=_live_v_rel
+    verb2_stem15_orth=ha-h-ita-ha
+    verb2_stem15_pred=_work_v_rel
+    verb2_stem16_orth=aoka
+    verb2_stem16_pred=_say_v_rel
+    verb2_stem17_orth=tyoma
+    verb2_stem17_pred=_do_v_rel
+    verb2_stem19_orth=nea
+    verb2_stem19_pred=_ask_v_rel
+  verb3_name=intran
+  verb3_valence=intrans
+    verb3_stem1_orth=hikoa
+    verb3_stem1_pred=_arrive_v_rel
+    verb3_stem2_orth=nemakakawe
+    verb3_stem2_pred=_sleep_v_rel
+    verb3_stem3_orth=eze
+    verb3_stem3_pred=_be_v_rel
+    verb3_stem4_orth=ezoa
+    verb3_stem4_pred=_fall_v_rel
+    verb3_stem5_orth=ehare
+    verb3_stem5_pred=_be_v_rel
+    verb3_stem6_orth=en=eare
+    verb3_stem6_pred=_be.name_v_rel
+    verb3_stem7_orth=zane
+    verb3_stem7_pred=_go_v_rel
+    verb3_stem8_orth=tyaona
+    verb3_stem8_pred=_stay_v_rel
+    verb3_stem9_orth=hatyohare
+    verb3_stem9_pred=_be.this_v_rel
+    verb3_stem10_orth=ehoko-tyoa
+    verb3_stem10_pred=_lay.down_v_rel
+    verb3_stem11_orth=tyaona
+    verb3_stem11_pred=_be_v_rel
+    verb3_stem12_orth=tyo
+    verb3_stem12_pred=_come_v_rel
+    verb3_stem13_orth=karekare-halo-tya-kakoa-ita
+    verb3_stem13_pred=_gossip_v_rel
+    verb3_stem14_orth=no=tyonakiri-nae
+    verb3_stem14_pred=_be.my.descendants_v_rel
+    verb3_stem15_orth=zane-ta
+    verb3_stem15_pred=_go_v_rel
+    verb3_stem16_orth=zane-ta-ha
+    verb3_stem16_pred=_go_v_rel
+    verb3_stem17_orth=hare
+    verb3_stem17_pred=_be_v_rel
+    verb3_stem18_orth=nema
+    verb3_stem18_pred=_sleep_v_rel
+    verb3_stem19_orth=tsaona
+    verb3_stem19_pred=_be_v_rel
+    verb3_stem20_orth=zane-heta
+    verb3_stem20_pred=_go_v_rel
+  verb4_name=be-2pl
+    verb4_feat1_name=person
+    verb4_feat1_value=2nd
+    verb4_feat1_head=subj
+    verb4_feat2_name=number
+    verb4_feat2_value=pl
+    verb4_feat2_head=subj
+  verb4_valence=intrans
+    verb4_stem1_orth=xitso
+    verb4_stem1_pred=_be_v_rel
+  qverb1_name=qiv-be
+  qverb1_predtype=ref
+    qverb1_stem1_orth=zoare
+    qverb1_stem1_verbpred=be
+    qverb1_stem1_nounpred=thing
+  qverb2_name=qiv-loc
+  qverb2_predtype=loc
+    qverb2_stem1_orth=aliyo
+    qverb2_stem1_verbpred=be
+    qverb2_stem1_nounpred=place
+  det1_name=whose
+  det1_inter=on
+    det1_stem1_orth=zala
+    det1_stem1_pred=_whose_q_rel
+  det2_name=how-much
+  det2_inter=on
+    det2_stem1_orth=zoane-re
+    det2_stem1_pred=_how.much_q_rel
+  det3_name=which
+  det3_inter=on
+    det3_stem1_orth=zoana
+    det3_stem1_pred=_which_q_rel
+  adv1_name=why
+    adv1_stem2_orth=zoane-re
+    adv1_stem2_pred=_reason_n_rel
+    adv1_stem3_orth=zoane-re-tya
+    adv1_stem3_pred=_reason_n_rel
+    adv1_stem4_orth=zoane-re =ala
+    adv1_stem4_pred=_reason_n_rel
+    adv1_stem5_orth=zoare maheta
+    adv1_stem5_pred=_purpose_n_rel
+  adv1_inter=on
+  adv1_type=manner
+  adv2_name=where
+    adv2_stem1_orth=aliyo
+    adv2_stem1_pred=_place_n_rel
+    adv2_stem2_orth=aliyo=atyo
+    adv2_stem2_pred=_place_n_rel
+    adv2_stem3_orth=alyako
+    adv2_stem3_pred=_place_n_rel
+    adv2_stem4_orth=alyako=ite
+    adv2_stem4_pred=_place_n_rel
+    adv2_stem5_orth=aliyo=atyo=ala
+    adv2_stem5_pred=_place_n_rel
+    adv2_stem6_orth=alyako=ala
+    adv2_stem6_pred=_place_n_rel
+    adv2_stem7_orth=alyako=atyo=ala
+    adv2_stem7_pred=_place_n_rel
+  adv2_inter=on
+  adv2_type=loc
+  adv3_name=how
+    adv3_stem1_orth=aliyakere=ta
+    adv3_stem1_pred=_manner_n_rel
+    adv3_stem2_orth=zoana=ite
+    adv3_stem2_pred=_manner_n_rel
+    adv3_stem3_orth=zoana
+    adv3_stem3_pred=_manner_n_rel
+    adv3_stem4_orth=zoana-re-tya
+    adv3_stem4_pred=_manner_n_rel
+    adv3_stem5_orth=aliyakere
+    adv3_stem5_pred=_manner_n_rel
+    adv3_stem6_orth=aliyakere zamani
+    adv3_stem6_pred=_manner_n_rel
+    adv3_stem8_orth=aliyakere=te
+    adv3_stem8_pred=_manner_n_rel
+    adv3_stem9_orth=aliyakere-ta=ala
+    adv3_stem9_pred=_manner_n_rel
+    adv3_stem10_orth=aliyakere=ala
+    adv3_stem10_pred=_manner_n_rel
+    adv3_stem11_orth=aliyakere=ta=ala
+    adv3_stem11_pred=_manner_n_rel
+  adv3_inter=on
+  adv3_type=manner
+  adv4_name=loc-adv
+    adv4_stem1_orth=ali
+    adv4_stem1_pred=_here_a_rel
+    adv4_stem2_orth=nali
+    adv4_stem2_pred=_there_a_rel
+  adv4_type=loc
+  adv5_name=time
+    adv5_stem1_orth=kafaka
+    adv5_stem1_pred=_yesterday_a_rel
+    adv5_stem2_orth=kalikini
+    adv5_stem2_pred=_now_a_rel
+  adv5_type=loc
+  adv6_name=pp
+    adv6_stem1_orth=zala zema
+    adv6_stem1_pred=_with.whom_a_rel
+    adv6_stem2_orth=zala zema ite
+    adv6_stem2_pred=_with.whom_a_rel
+  adv6_inter=on
+  adv6_type=manner
+    normadp1_stem1_orth==kakoa
+    normadp1_stem1_pred=_with_p_rel
+    normadp1_stem2_orth=zema ite
+    normadp1_stem2_pred=_with_p_rel
+  normadp1_order=after
+
+section=morphology
+  noun-pc1_name=poss
+  noun-pc1_obligatory=on
+  noun-pc1_order=prefix
+  noun-pc1_inputs=noun
+    noun-pc1_lrt1_name=poss2sg
+      noun-pc1_lrt1_feat1_name=number
+      noun-pc1_lrt1_feat1_value=sg
+      noun-pc1_lrt1_feat1_head=possessor
+      noun-pc1_lrt1_feat2_name=person
+      noun-pc1_lrt1_feat2_value=2nd
+      noun-pc1_lrt1_feat2_head=possessor
+      noun-pc1_lrt1_feat3_name=poss-pron1
+      noun-pc1_lrt1_feat3_value=plus
+      noun-pc1_lrt1_feat3_head=itself
+      noun-pc1_lrt1_lri1_inflecting=yes
+      noun-pc1_lrt1_lri1_orth=hi=
+    noun-pc1_lrt2_name=poss1pl
+      noun-pc1_lrt2_feat1_name=number
+      noun-pc1_lrt2_feat1_value=pl
+      noun-pc1_lrt2_feat1_head=possessor
+      noun-pc1_lrt2_feat2_name=person
+      noun-pc1_lrt2_feat2_value=1st
+      noun-pc1_lrt2_feat2_head=possessor
+      noun-pc1_lrt2_feat3_name=poss-pron1
+      noun-pc1_lrt2_feat3_value=plus
+      noun-pc1_lrt2_feat3_head=itself
+      noun-pc1_lrt2_lri1_inflecting=yes
+      noun-pc1_lrt2_lri1_orth=w=
+      noun-pc1_lrt2_lri2_inflecting=yes
+      noun-pc1_lrt2_lri2_orth=wi=
+    noun-pc1_lrt3_name=poss1sg
+      noun-pc1_lrt3_feat1_name=number
+      noun-pc1_lrt3_feat1_value=sg
+      noun-pc1_lrt3_feat1_head=possessor
+      noun-pc1_lrt3_feat2_name=person
+      noun-pc1_lrt3_feat2_value=1st
+      noun-pc1_lrt3_feat2_head=possessor
+      noun-pc1_lrt3_feat3_name=poss-pron1
+      noun-pc1_lrt3_feat3_value=plus
+      noun-pc1_lrt3_feat3_head=itself
+      noun-pc1_lrt3_lri1_inflecting=yes
+      noun-pc1_lrt3_lri1_orth=n=
+      noun-pc1_lrt3_lri2_inflecting=yes
+      noun-pc1_lrt3_lri2_orth=no=
+    noun-pc1_lrt4_name=poss3sg
+      noun-pc1_lrt4_feat1_name=number
+      noun-pc1_lrt4_feat1_value=sg
+      noun-pc1_lrt4_feat1_head=possessor
+      noun-pc1_lrt4_feat2_name=person
+      noun-pc1_lrt4_feat2_value=3rd
+      noun-pc1_lrt4_feat2_head=possessor
+      noun-pc1_lrt4_feat3_name=poss-pron1
+      noun-pc1_lrt4_feat3_value=plus
+      noun-pc1_lrt4_feat3_head=itself
+      noun-pc1_lrt4_lri1_inflecting=yes
+      noun-pc1_lrt4_lri1_orth=ha=
+  noun-pc2_name=nonposs
+  noun-pc2_obligatory=on
+  noun-pc2_order=prefix
+  noun-pc2_inputs=noun
+    noun-pc2_lrt1_name=dummy
+      noun-pc2_lrt1_feat1_name=poss-pron1
+      noun-pc2_lrt1_feat1_value=minus
+      noun-pc2_lrt1_feat1_head=itself
+      noun-pc2_lrt1_lri1_inflecting=no
+  noun-pc3_name=num
+  noun-pc3_order=suffix
+  noun-pc3_inputs=noun-pc1, noun-pc2
+    noun-pc3_lrt1_name=pl
+      noun-pc3_lrt1_feat1_name=number
+      noun-pc3_lrt1_feat1_value=pl
+      noun-pc3_lrt1_feat1_head=itself
+      noun-pc3_lrt1_lri1_inflecting=yes
+      noun-pc3_lrt1_lri1_orth=-nae
+  verb-pc1_name=subj-tran
+  verb-pc1_obligatory=on
+  verb-pc1_order=prefix
+  verb-pc1_inputs=tverb
+    verb-pc1_lrt1_name=1sg
+      verb-pc1_lrt1_feat1_name=number
+      verb-pc1_lrt1_feat1_value=sg
+      verb-pc1_lrt1_feat1_head=subj
+      verb-pc1_lrt1_feat2_name=person
+      verb-pc1_lrt1_feat2_value=1st
+      verb-pc1_lrt1_feat2_head=subj
+      verb-pc1_lrt1_lri1_inflecting=yes
+      verb-pc1_lrt1_lri1_orth=n=
+    verb-pc1_lrt2_name=3sg
+      verb-pc1_lrt2_feat2_name=person
+      verb-pc1_lrt2_feat2_value=3rd
+      verb-pc1_lrt2_feat2_head=subj
+      verb-pc1_lrt2_lri1_inflecting=yes
+      verb-pc1_lrt2_lri1_orth=0=
+    verb-pc1_lrt3_name=1pl
+      verb-pc1_lrt3_feat1_name=number
+      verb-pc1_lrt3_feat1_value=pl
+      verb-pc1_lrt3_feat1_head=subj
+      verb-pc1_lrt3_feat2_name=person
+      verb-pc1_lrt3_feat2_value=1st
+      verb-pc1_lrt3_feat2_head=subj
+      verb-pc1_lrt3_lri1_inflecting=yes
+      verb-pc1_lrt3_lri1_orth=wa=
+      verb-pc1_lrt3_lri2_inflecting=yes
+      verb-pc1_lrt3_lri2_orth=wi=
+    verb-pc1_lrt4_name=2sg
+      verb-pc1_lrt4_feat1_name=number
+      verb-pc1_lrt4_feat1_value=sg
+      verb-pc1_lrt4_feat1_head=subj
+      verb-pc1_lrt4_feat2_name=person
+      verb-pc1_lrt4_feat2_value=2nd
+      verb-pc1_lrt4_feat2_head=subj
+      verb-pc1_lrt4_lri1_inflecting=yes
+      verb-pc1_lrt4_lri1_orth=ha=
+    verb-pc1_lrt5_name=2pl-tr
+      verb-pc1_lrt5_feat1_name=number
+      verb-pc1_lrt5_feat1_value=pl
+      verb-pc1_lrt5_feat1_head=subj
+      verb-pc1_lrt5_feat2_name=person
+      verb-pc1_lrt5_feat2_value=2nd
+      verb-pc1_lrt5_feat2_head=subj
+      verb-pc1_lrt5_lri1_inflecting=yes
+      verb-pc1_lrt5_lri1_orth=x=
+    verb-pc1_lrt6_name=3-zero
+      verb-pc1_lrt6_feat2_name=person
+      verb-pc1_lrt6_feat2_value=3rd
+      verb-pc1_lrt6_feat2_head=subj
+      verb-pc1_lrt6_lri1_inflecting=no
+  verb-pc2_name=subj-intran
+  verb-pc2_obligatory=on
+  verb-pc2_order=prefix
+  verb-pc2_inputs=iverb
+    verb-pc2_lrt1_name=3sg-a
+      verb-pc2_lrt1_feat1_name=number
+      verb-pc2_lrt1_feat1_value=sg
+      verb-pc2_lrt1_feat1_head=subj
+      verb-pc2_lrt1_feat2_name=person
+      verb-pc2_lrt1_feat2_value=3rd
+      verb-pc2_lrt1_feat2_head=subj
+      verb-pc2_lrt1_lri1_inflecting=yes
+      verb-pc2_lrt1_lri1_orth=e=
+      verb-pc2_lrt1_lri2_inflecting=yes
+      verb-pc2_lrt1_lri2_orth=en=
+    verb-pc2_lrt2_name=2pl-itr
+      verb-pc2_lrt2_feat1_name=number
+      verb-pc2_lrt2_feat1_value=pl
+      verb-pc2_lrt2_feat1_head=subj
+      verb-pc2_lrt2_feat2_name=person
+      verb-pc2_lrt2_feat2_value=2nd
+      verb-pc2_lrt2_feat2_head=subj
+      verb-pc2_lrt2_lri1_inflecting=yes
+      verb-pc2_lrt2_lri1_orth=z=
+      verb-pc2_lrt2_lri2_inflecting=yes
+      verb-pc2_lrt2_lri2_orth=xi=
+      verb-pc2_lrt2_lri3_inflecting=yes
+      verb-pc2_lrt2_lri3_orth=wi=
+    verb-pc2_lrt3_name=2sg-itr
+      verb-pc2_lrt3_feat1_name=number
+      verb-pc2_lrt3_feat1_value=sg
+      verb-pc2_lrt3_feat1_head=subj
+      verb-pc2_lrt3_feat2_name=person
+      verb-pc2_lrt3_feat2_value=2nd
+      verb-pc2_lrt3_feat2_head=subj
+      verb-pc2_lrt3_lri1_inflecting=yes
+      verb-pc2_lrt3_lri1_orth=hi=
+    verb-pc2_lrt4_name=1pl-itr
+      verb-pc2_lrt4_feat1_name=number
+      verb-pc2_lrt4_feat1_value=pl
+      verb-pc2_lrt4_feat1_head=subj
+      verb-pc2_lrt4_feat2_name=person
+      verb-pc2_lrt4_feat2_value=1st
+      verb-pc2_lrt4_feat2_head=subj
+      verb-pc2_lrt4_lri1_inflecting=yes
+      verb-pc2_lrt4_lri1_orth=wi=
+      verb-pc2_lrt4_lri2_inflecting=yes
+      verb-pc2_lrt4_lri2_orth=wa=
+    verb-pc2_lrt5_name=3sg-zero
+      verb-pc2_lrt5_feat1_name=number
+      verb-pc2_lrt5_feat1_value=sg
+      verb-pc2_lrt5_feat1_head=subj
+      verb-pc2_lrt5_feat2_name=person
+      verb-pc2_lrt5_feat2_value=3rd
+      verb-pc2_lrt5_feat2_head=subj
+      verb-pc2_lrt5_lri1_inflecting=no
+    verb-pc2_lrt6_name=3sg-0
+      verb-pc2_lrt6_feat1_name=number
+      verb-pc2_lrt6_feat1_value=sg
+      verb-pc2_lrt6_feat1_head=subj
+      verb-pc2_lrt6_feat2_name=person
+      verb-pc2_lrt6_feat2_value=3rd
+      verb-pc2_lrt6_feat2_head=subj
+      verb-pc2_lrt6_lri1_inflecting=yes
+      verb-pc2_lrt6_lri1_orth=0=
+  verb-pc3_name=asp
+  verb-pc3_order=suffix
+  verb-pc3_inputs=verb-pc1, verb-pc2
+    verb-pc3_lrt1_name=ifv
+      verb-pc3_lrt1_feat1_name=aspect
+      verb-pc3_lrt1_feat1_value=imperfective
+      verb-pc3_lrt1_feat1_head=verb
+      verb-pc3_lrt1_lri1_inflecting=yes
+      verb-pc3_lrt1_lri1_orth=-ita
+      verb-pc3_lrt1_lri2_inflecting=yes
+      verb-pc3_lrt1_lri2_orth=-ta
+      verb-pc3_lrt1_lri3_inflecting=yes
+      verb-pc3_lrt1_lri3_orth=-tyoa-ita
+    verb-pc3_lrt2_name=trs
+      verb-pc3_lrt2_feat1_name=aspect
+      verb-pc3_lrt2_feat1_value=transitional
+      verb-pc3_lrt2_feat1_head=verb
+      verb-pc3_lrt2_lri1_inflecting=yes
+      verb-pc3_lrt2_lri1_orth=-hene
+      verb-pc3_lrt2_lri2_inflecting=yes
+      verb-pc3_lrt2_lri2_orth=-hena
+    verb-pc3_lrt3_name=caus-perf
+      verb-pc3_lrt3_valchg1_operation=subj-add
+      verb-pc3_lrt3_valchg1_inputs=intrans
+      verb-pc3_lrt3_valchg1_argpos=pre
+      verb-pc3_lrt3_valchg1_argtype=np
+      verb-pc3_lrt3_lri1_inflecting=yes
+      verb-pc3_lrt3_lri1_orth=-ki-heta
+  verb-pc6_name=tense
+  verb-pc6_obligatory=on
+  verb-pc6_order=suffix
+  verb-pc6_inputs=verb-pc1, verb-pc2, verb-pc3
+    verb-pc6_lrt1_name=nonfut
+      verb-pc6_lrt1_feat1_name=tense
+      verb-pc6_lrt1_feat1_value=nonfuture
+      verb-pc6_lrt1_feat1_head=verb
+      verb-pc6_lrt1_lri1_inflecting=no
+    verb-pc6_lrt2_name=fut
+      verb-pc6_lrt2_feat1_name=tense
+      verb-pc6_lrt2_feat1_value=future
+      verb-pc6_lrt2_feat1_head=verb
+      verb-pc6_lrt2_lri1_inflecting=yes
+      verb-pc6_lrt2_lri1_orth==ite
+  verb-pc7_name=nmz
+  verb-pc7_order=suffix
+  verb-pc7_inputs=verb-pc6
+    verb-pc7_lrt1_name=hnmz
+      verb-pc7_lrt1_feat1_name=nominalization
+      verb-pc7_lrt1_feat1_value=nmz
+      verb-pc7_lrt1_feat1_head=verb
+      verb-pc7_lrt1_lri1_inflecting=yes
+      verb-pc7_lrt1_lri1_orth=-re
+
+section=toolbox-import
+
+section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon
