@@ -1842,7 +1842,7 @@ def validate_wh_ques(ch, vr):
         vr.err(PIED_ADP, mess)
 
     # Pied piping of adpositions only makes sense when there are adpositions:
-    if ch.get(PIED_ADP) == ON and not len(ch.get('adp', [])) > 0:
+    if ch.get(PIED_ADP) == ON and not len(ch.get('normadp', [])) > 0:
         mess = 'You have not added any adpositions to the lexicon.'
         vr.err(PIED, mess)
 
