@@ -501,6 +501,7 @@ def customize_determiners(mylang, ch, lexicon, hierarchies):
 
     for det in ch.get('det', []):
         if det[INTER] == ON:
+            USED_TYPES['qdet'] = True
             mylang.add(lexbase.WH_DET)
             if ch.get('q-part-order') == 'second':
                 mylang.add('''wh-determiner-lex := non-ynq-word.''')

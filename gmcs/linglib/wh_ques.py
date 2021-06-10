@@ -8,6 +8,7 @@ from gmcs.constants import MTRX_FR_OPT, MTRX_FRONT, NO_MULTI, \
     IN_SITU, NONE_OBLIG
 from gmcs.utils import get_name, TDLencode, orth_encode
 
+from gmcs.feature_type_use import USED_TYPES
 
 '''
 CONSTANTS
@@ -292,7 +293,8 @@ def customize_wh_ques(mylang, ch, rules, roots):
                                              and not (ch.get('oblig-pied-pip-noun') == ON))):
             mylang.add_literal('; If there is no obligatory pied-piping, determiners '
                                'can be extracted separately:', section='phrasal')
-            mylang.add(EX_DET_PHRASE, section='phrases')
+            if USED_TYPES['qdet']:
+                mylang.add(EX_DET_PHRASE, section='phrases')
             rules.add('ex-det := extracted-det-phrase.')
         # The following would rule out "Which royal house did you see a member of?"
         # if ch.get('pied-pip-adp') == 'on' and not ch.get('oblig-pied-pip-adp') == ON:
