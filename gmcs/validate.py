@@ -1841,6 +1841,11 @@ def validate_wh_ques(ch, vr):
         mess = 'You did not check pied piping itself but said it is obligatory'
         vr.err(PIED_ADP, mess)
 
+    # Pied piping of adpositions only makes sense when there are adpositions:
+    if ch.get(PIED_ADP) == ON and not len(ch.get('normadp', [])) > 0:
+        mess = 'You have not added any adpositions to the lexicon.'
+        vr.err(PIED, mess)
+
     if ch.get(NO_MULTI) == ON:
         if (ch.get(MTRX_FRONT) == MULTI
                 or ch.get(MTRX_FR_OPT) == ALL_OBLIG):
@@ -1880,6 +1885,10 @@ def validate_wh_ques(ch, vr):
     if ch.get('wh-q-inter-verbs') != ON and len(ch.get('qverb')) > 0:
         mess = 'You must check this box if you specified any question verbs on the Lexicon page.'
         vr.err('wh-q-inter-verbs', mess)
+
+    if ch.get('wh-q-infl') and not ch.get('q-infl'):
+        mess = 'Please also check Verbal Inflection on Yes/No page; the checkbox here will not have the effect on its own.'
+        vr.err('wh-q-infl', mess)
 
 
 def validate(ch, extra=False):
