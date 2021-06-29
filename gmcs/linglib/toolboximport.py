@@ -177,7 +177,7 @@ def import_toolbox_lexicon(choicesfile):
             if not tbfile.get('tbfilename'):
                 continue
             tb_lines = None
-            with open(tbfile.get('tbfilename'), 'r', encoding='utf8') as tblex:
+            with open(tbfile.get('tbfilename'), 'r', encoding='utf-8') as tblex:
                 tbentry = {}
                 # List of values of the bistemtag field.
                 affixes = []
@@ -216,7 +216,7 @@ def import_toolbox_lexicon(choicesfile):
                         affixids = False
 
             if affixids and affixes:
-                with open(tbfile.get('tbfilename'), 'r', encoding='utf8') as tblex:
+                with open(tbfile.get('tbfilename'), 'r', encoding='utf-8') as tblex:
                     affix_strings = {}
                     for line in tblex.readlines():
                         words = line.rstrip().split()
