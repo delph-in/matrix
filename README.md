@@ -17,8 +17,8 @@ such as [Zhong] (Chinese languages) and [INDRA] (Indonesian).
 ## Links and Resources
 
 - [Customization Page](http://www.delph-in.net/matrix/customize/matrix.cgi) &ndash; a questionnaire for creating starting grammars
-- [The Grammar Matrix wiki](http://moin.delph-in.net/MatrixTop) &ndash; documentation for users and developers
-- [Grammar Engineering FAQ](http://moin.delph-in.net/GrammarEngineeringFaq) &ndash; help for grammar developers
+- [The Grammar Matrix wiki](https://github.com/delph-in/docs/wiki/MatrixTop) &ndash; documentation for users and developers
+- [Grammar Engineering FAQ](https://github.com/delph-in/docs/wiki/GrammarEngineeringFAQ) &ndash; help for grammar developers
 
 ## Citation
 
