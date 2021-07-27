@@ -2115,9 +2115,10 @@ BeginIter comps{i} "a Clausal Complement Type" 1
 
         EndIter stem
 
-        Label "<p> You can put a FORM feature on the obligatory complementizer if you want to constrain the clausal
-        verb in terms of which complementizers it can go with. (Note that all complementizers here
-        are still assumed to be semantically empty.)</p>"
+        Label "<p> You can put a FORM feature on the obligatory complementizer if you want to constrain the clause-embedding
+        verb in terms of which complementizers it can go with. (Note that (1) this is not about the embedded clause FORM; and (2) that all complementizers here
+        are still assumed to be semantically empty. A complementizer's FORM is usually just its orthography, like that of an adposition. 
+        FORM is specified in Other Features.)</p>"
 
         Select cformvalue "Clausal Complement Type {i} Complementizer Form {k} Value" "Form Value: " ""
         fillvalues p=form l=1
