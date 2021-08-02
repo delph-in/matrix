@@ -2905,7 +2905,7 @@ BeginIter det{i} "a Determiner" 1
 
   BeginIter forbid{j} "a Forbid constraint"
 
-    MultiSelect others "Determiner {i} requires" "Determiner {i} requires one of the following position classes: " ""
+    MultiSelect others "Determiner {i} forbids" "Determiner {i} forbids one of the following position classes: " ""
     fillcache c=detlrs
 
   EndIter forbid
