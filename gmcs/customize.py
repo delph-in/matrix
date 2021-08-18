@@ -480,7 +480,7 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
     case.init_case_hierarchy(ch, hierarchies)
     agreement_features.init_agreement_hierarchies(ch, mylang, hierarchies)
     verbal_features.init_verbal_hierarchies(ch, hierarchies)
-    information_structure.init_infostr_hierarchies(ch,hierarchies)
+    information_structure.init_infostr_hierarchies(ch, hierarchies)
 
     # Integrate choices related to lexical entries imported from
     # Toolbox lexicon file(s), if any.  NOTE: This needs to be called

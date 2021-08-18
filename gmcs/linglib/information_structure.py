@@ -1,3 +1,4 @@
+from gmcs.lib import TDLHierarchy
 from gmcs.linglib import features
 from gmcs.utils import get_name
 from gmcs.utils import TDLencode
@@ -1222,6 +1223,43 @@ def customize_infostr_adpositions(mylang, lexicon, trigger, ch):
         to_cfv += [(adp.full_key, adp_type, 'adp')]
 
     return to_cfv
+
+
+"""
+; constraints on information structure
+non-topic := info-str.
+contrast-or-focus := info-str.
+focus-or-topic := info-str.
+contrast-or-topic := info-str.
+non-focus := info-str.
+
+focus := non-topic & contrast-or-focus & focus-or-topic.
+contrast := focus-or-topic & contrast-or-focus & contrast-or-topic.
+topic := non-focus & focus-or-topic & contrast-or-topic.
+
+bg := non-topic & non-focus.
+
+semantic-focus := focus.
+contrast-focus := contrast & focus.
+contrast-topic := contrast & topic.
+aboutness-topic := topic.
+
+"""
+
+
+def init_infostr_hierarchies(ch, hierarchies):
+    hier = TDLHierarchy('information-structure meaning')
+    if 'topic-first' in ch:
+        hier.add('topic', 'info-str')
+        hier.add('non-topic', 'info-str')
+    if 'focus-pos' in ch:
+        hier.add('focus', 'info-str')
+        hier.add('non-focus','info-str')
+        hier.add('semantic-focus','focus')
+    if 'c-focus' in ch:
+        hier.add('contrast',)
+    if not hier.is_empty():
+        hierarchies[hier.name] = hier
 
 
 def customize_information_structure(mylang, ch, rules, irules, lexicon, trigger, hierarchies):
