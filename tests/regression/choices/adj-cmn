@@ -1,0 +1,93 @@
+
+version=28
+
+section=general
+language=Mandarin
+iso-code=cmn
+punctuation-chars=keep-list
+punctuation-chars-list=-
+
+section=word-order
+word-order=svo
+has-dets=yes
+noun-det-order=det-noun
+has-aux=no
+
+section=number
+  number1_name=singular
+  number2_name=plural
+
+section=person
+person=1-2-3
+first-person=none
+
+section=gender
+
+section=case
+case-marking=none
+
+section=direct-inverse
+
+section=tense-aspect-mood
+
+section=other-features
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=info-str
+
+section=arg-opt
+
+section=lexicon
+  noun1_name=noun_common
+    noun1_feat1_name=person
+    noun1_feat1_value=3rd
+  noun1_det=opt
+    noun1_stem1_orth=shu1
+    noun1_stem1_pred=_shu_book_n_rel
+  noun2_name=pronoun_1-SG
+    noun2_feat1_name=person
+    noun2_feat1_value=1st
+    noun2_feat2_name=number
+    noun2_feat2_value=singular
+  noun2_det=imp
+    noun2_stem1_orth=wo3
+    noun2_stem1_pred=pron_rel
+  verb2_name=verb_transitive
+  verb2_valence=trans
+    verb2_stem1_orth=yao4
+    verb2_stem1_pred=_yao_want_v_rel
+    verb2_stem2_orth=you3
+    verb2_stem2_pred=_you_have_v_rel
+  adj1_name=adjective_regular
+  adj1_mod=both
+  adj1_modpos=after
+  adj1_predcop=imp
+    adj1_stem1_orth=hao3
+    adj1_stem1_pred=_hao_good_a_rel
+    adj1_stem2_orth=xiao3
+    adj1_stem2_pred=_xiao_small_a_rel
+  det1_name=determiner_proximal
+    det1_stem1_orth=zhe4ben3
+    det1_stem1_pred=proximal+dem_q_rel
+  det2_name=determiner_distal
+    det2_stem1_orth=na4ben3
+    det2_stem1_pred=distal+dem_q_rel
+
+section=morphology
+  adj-pc1_order=suffix
+  adj-pc1_inputs=adj
+      adj-pc1_lrt1_lri1_inflecting=yes
+      adj-pc1_lrt1_lri1_orth=-de
+
+section=toolbox-import
+
+section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon

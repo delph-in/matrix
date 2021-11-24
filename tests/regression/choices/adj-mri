@@ -1,0 +1,218 @@
+
+version=28
+
+section=general
+language=Maori
+iso-code=mri
+punctuation-chars=keep-list
+punctuation-chars-list==
+
+section=word-order
+word-order=vso
+has-dets=no
+noun-det-order=det-noun
+has-aux=no
+
+section=number
+  number1_name=singular
+  number2_name=plural
+
+section=person
+person=1-2-3
+first-person=none
+
+section=gender
+
+section=case
+case-marking=nom-acc
+nom-acc-nom-case-name=nominative
+nom-acc-acc-case-name=accusative
+
+section=direct-inverse
+scale-equal=direct
+
+section=tense-aspect-mood
+tense-definition=choose
+past=on
+present=on
+  aspect1_name=inceptive
+    aspect1_supertype1_name=aspect
+
+section=other-features
+  feature1_name=definiteness
+  feature1_type=index
+  feature1_cat=noun
+  feature1_new=yes
+    feature1_value1_name=definite
+      feature1_value1_supertype1_name=definiteness
+    feature1_value2_name=indefinite
+      feature1_value2_supertype1_name=definiteness
+  feature2_name=pronoun
+  feature2_type=index
+  feature2_cat=noun
+  feature2_new=no
+  feature2_existing=bool
+
+section=sentential-negation
+
+section=coordination
+  cs1_np=on
+  cs1_pat=a
+
+section=matrix-yes-no
+
+section=info-str
+
+section=arg-opt
+
+section=lexicon
+  noun1_name=common
+  noun1_det=imp
+    noun1_stem1_orth=kootiro
+    noun1_stem1_pred=_kootiro_girl_n_rel
+    noun1_stem2_orth=whare
+    noun1_stem2_pred=_whare_house_n_rel
+    noun1_stem3_orth=kiwi
+    noun1_stem3_pred=_kiwi_kiwi_n_rel
+    noun1_stem4_orth=manu
+    noun1_stem4_pred=_manu_bird_n_rel
+    noun1_stem5_orth=koorero
+    noun1_stem5_pred=_koorero_talk_n_rel
+    noun1_stem6_orth=konohi
+    noun1_stem6_pred=_konohi_face_n_rel
+    noun1_stem7_orth=waewae
+    noun1_stem7_pred=_waewae_leg_n_rel
+    noun1_stem8_orth=ringa
+    noun1_stem8_pred=_ringa_hand_n_rel
+    noun1_stem9_orth=rakau
+    noun1_stem9_pred=_rakau_tree_n_rel
+  noun2_name=pronoun
+    noun2_feat1_name=person
+    noun2_feat1_value=1st
+    noun2_feat2_name=number
+    noun2_feat2_value=singular
+    noun2_feat3_name=pronoun
+    noun2_feat3_value=+
+  noun2_det=imp
+    noun2_stem1_orth=ahau
+    noun2_stem1_pred=pron_rel
+  verb1_name=verb_intransitive
+  verb1_valence=nom
+    verb1_stem1_orth=oma
+    verb1_stem1_pred=_oma_run_v_rel
+  verb2_name=verb_transitive
+  verb2_valence=nom-acc
+    verb2_stem1_orth=kite
+    verb2_stem1_pred=_kite_see_v_rel
+  adj1_name=adjective_attributive
+  adj1_mod=attr
+    adj1_feat1_name=pronoun
+    adj1_feat1_value=-
+    adj1_feat1_head=xarg
+  adj1_modpos=before
+  adj1_modunique=on
+    adj1_stem1_orth=paru
+    adj1_stem1_pred=_paru_dirty_a_rel
+    adj1_stem2_orth=nui
+    adj1_stem2_pred=_nui_big_a_rel
+    adj1_stem3_orth=ataahua
+    adj1_stem3_pred=_ataahua_beautiful_a_rel
+  adj2_name=adjective_predicative
+  adj2_mod=pred
+  adj2_predcop=imp
+    adj2_stem1_orth=pukuriri
+    adj2_stem1_pred=_pukuriri_angry_a_rel
+    adj2_stem2_orth=pai
+    adj2_stem2_pred=_pai_good_a_rel
+    adj2_stem3_orth=whero
+    adj2_stem3_pred=_whero_red_a_rel
+    adj2_stem4_orth=parauri
+    adj2_stem4_pred=_parauri_brown_a_rel
+
+section=morphology
+  noun-pc1_name=noun_marking
+  noun-pc1_obligatory=on
+  noun-pc1_order=prefix
+  noun-pc1_inputs=noun
+    noun-pc1_lrt1_name=noun_plural
+      noun-pc1_lrt1_feat1_name=number
+      noun-pc1_lrt1_feat1_value=plural
+      noun-pc1_lrt1_lri1_inflecting=yes
+      noun-pc1_lrt1_lri1_orth=ngaa=
+    noun-pc1_lrt2_name=noun_definite
+      noun-pc1_lrt2_feat1_name=definiteness
+      noun-pc1_lrt2_feat1_value=definite
+      noun-pc1_lrt2_feat2_name=number
+      noun-pc1_lrt2_feat2_value=singular
+      noun-pc1_lrt2_lri1_inflecting=yes
+      noun-pc1_lrt2_lri1_orth=te=
+    noun-pc1_lrt3_name=noun_indefinite
+      noun-pc1_lrt3_feat1_name=definiteness
+      noun-pc1_lrt3_feat1_value=indefinite
+      noun-pc1_lrt3_feat2_name=number
+      noun-pc1_lrt3_feat2_value=singular
+      noun-pc1_lrt3_lri1_inflecting=yes
+      noun-pc1_lrt3_lri1_orth=he=
+    noun-pc1_lrt4_name=noun_unspecified
+      noun-pc1_lrt4_lri1_inflecting=no
+  noun-pc2_name=noun_case
+  noun-pc2_obligatory=on
+  noun-pc2_order=prefix
+  noun-pc2_inputs=noun-pc1
+    noun-pc2_lrt1_name=noun_accusative
+      noun-pc2_lrt1_feat1_name=case
+      noun-pc2_lrt1_feat1_value=acc
+      noun-pc2_lrt1_lri1_inflecting=yes
+      noun-pc2_lrt1_lri1_orth=i=
+    noun-pc2_lrt2_name=noun_nominative
+      noun-pc2_lrt2_feat1_name=case
+      noun-pc2_lrt2_feat1_value=nom
+      noun-pc2_lrt2_lri1_inflecting=no
+  verb-pc1_name=verb_TAM
+  verb-pc1_order=prefix
+  verb-pc1_inputs=verb
+    verb-pc1_lrt1_name=verb_inceptive
+      verb-pc1_lrt1_feat1_name=aspect
+      verb-pc1_lrt1_feat1_value=inceptive
+      verb-pc1_lrt1_feat1_head=verb
+      verb-pc1_lrt1_feat2_name=tense
+      verb-pc1_lrt1_feat2_value=present
+      verb-pc1_lrt1_feat2_head=verb
+      verb-pc1_lrt1_lri1_inflecting=yes
+      verb-pc1_lrt1_lri1_orth=ka=
+    verb-pc1_lrt2_name=verb_past
+      verb-pc1_lrt2_feat1_name=tense
+      verb-pc1_lrt2_feat1_value=past
+      verb-pc1_lrt2_feat1_head=verb
+      verb-pc1_lrt2_lri1_inflecting=yes
+      verb-pc1_lrt2_lri1_orth=i=
+  adj-pc1_name=adjective_encoding
+  adj-pc1_obligatory=on
+  adj-pc1_order=prefix
+  adj-pc1_inputs=adj2
+    adj-pc1_lrt2_name=aspect_encoding
+      adj-pc1_lrt2_feat1_name=aspect
+      adj-pc1_lrt2_feat1_value=inceptive
+      adj-pc1_lrt2_feat1_head=adj
+      adj-pc1_lrt2_lri1_inflecting=yes
+      adj-pc1_lrt2_lri1_orth=ka=
+    adj-pc1_lrt3_name=definiteness_encoding_definite
+      adj-pc1_lrt3_feat1_name=definiteness
+      adj-pc1_lrt3_feat1_value=definite
+      adj-pc1_lrt3_feat1_head=xarg
+      adj-pc1_lrt3_lri1_inflecting=yes
+      adj-pc1_lrt3_lri1_orth=te=
+    adj-pc1_lrt4_name=definiteness_encoding_indefinite
+      adj-pc1_lrt4_feat1_name=definiteness
+      adj-pc1_lrt4_feat1_value=definite
+      adj-pc1_lrt4_feat1_head=xarg
+      adj-pc1_lrt4_lri1_inflecting=yes
+      adj-pc1_lrt4_lri1_orth=he=
+
+section=toolbox-import
+
+section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon
