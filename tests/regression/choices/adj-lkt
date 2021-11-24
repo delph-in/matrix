@@ -1,0 +1,141 @@
+
+version=28
+
+section=general
+language=Lakota
+iso-code=lkt
+punctuation-chars=discard-all
+
+section=word-order
+word-order=sov
+has-dets=yes
+noun-det-order=noun-det
+has-aux=no
+
+section=number
+  number1_name=singular
+  number2_name=plural
+
+section=person
+person=1-2-3
+first-person=none
+
+section=gender
+
+section=case
+case-marking=erg-abs
+erg-abs-erg-case-name=agentive
+erg-abs-abs-case-name=patientive
+
+section=direct-inverse
+
+section=tense-aspect-mood
+
+section=other-features
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=info-str
+
+section=arg-opt
+subj-drop=subj-drop-all
+subj-mark-drop=subj-mark-drop-req
+subj-mark-no-drop=subj-mark-no-drop-req
+subj-con=subj-con-always
+
+section=lexicon
+  noun1_name=noun_common_count
+  noun1_det=obl
+    noun1_stem1_orth=mní
+    noun1_stem1_pred=_mní_water_n_rel
+    noun1_stem2_orth=igmú
+    noun1_stem2_pred=_igmú_cat_n_rel
+    noun1_stem3_orth=šúŋka
+    noun1_stem3_pred=_šúŋka_dog_n_rel
+    noun1_stem4_orth=mniȟúha
+    noun1_stem4_pred=_mniȟúha_cloth_n_rel
+  noun2_name=noun_common_mass
+  noun2_det=imp
+    noun2_stem1_orth=wóyute
+    noun2_stem1_pred=_wóyute_food_n_rel
+  verb1_name=verb_intransitive_3-SG-AGT
+    verb1_feat1_name=number
+    verb1_feat1_value=singular
+    verb1_feat1_head=subj
+    verb1_feat2_name=person
+    verb1_feat2_value=3rd
+    verb1_feat2_head=subj
+  verb1_valence=abs
+    verb1_stem1_orth=lowáŋ
+    verb1_stem1_pred=_lowáŋ_sing_v_rel
+  verb2_name=verb_transitive
+  verb2_valence=erg-abs
+  verb3_name=verb_transitive-3-SG-AGT
+  verb3_supertypes=verb2
+    verb3_feat1_name=number
+    verb3_feat1_value=singular
+    verb3_feat1_head=subj
+    verb3_feat2_name=person
+    verb3_feat2_value=3rd
+    verb3_feat2_head=subj
+    verb3_stem1_orth=khuwá
+    verb3_stem1_pred=_khuwá_chase_v_rel
+  verb4_name=verb_transitive-1-PL-AGT
+  verb4_supertypes=verb2
+    verb4_feat1_name=number
+    verb4_feat1_value=plural
+    verb4_feat1_head=subj
+    verb4_feat2_name=person
+    verb4_feat2_value=1st
+    verb4_feat2_head=subj
+    verb4_stem1_orth=opȟéwatȟuŋ
+    verb4_stem1_pred=_opȟéwatȟuŋ_buy_v_rel
+    verb4_stem2_orth=uŋyútapi
+    verb4_stem2_pred=_uŋyútapi_eat_v_rel
+  adj1_name=adjective_common
+  adj1_mod=both
+  adj1_modpos=before
+  adj1_predcop=imp
+    adj1_stem1_orth=ská
+    adj1_stem1_pred=_ská_white_a_rel
+    adj1_stem2_orth=káŋ
+    adj1_stem2_pred=_káŋ_old_a_rel
+    adj1_stem3_orth=wašté
+    adj1_stem3_pred=_wašté_good_a_rel
+    adj1_stem4_orth=šmé
+    adj1_stem4_pred=_šmé_deep_a_rel
+  det1_name=determiner_definite
+    det1_stem1_orth=kiŋ
+    det1_stem1_pred=_def_q_rel
+  det2_name=determiner_indefinite
+    det2_stem1_orth=waŋ
+    det2_stem1_pred=_indef_q_rel
+
+section=morphology
+  adj-pc2_name=adjective_predicative_subject_agreement
+  adj-pc2_order=prefix
+  adj-pc2_inputs=adj
+    adj-pc2_lrt1_name=adjective_predicative_subject_agreement_2-SG-PAT
+      adj-pc2_lrt1_feat1_name=case
+      adj-pc2_lrt1_feat1_value=abs
+      adj-pc2_lrt1_feat1_head=xarg
+      adj-pc2_lrt1_feat2_name=number
+      adj-pc2_lrt1_feat2_value=singular
+      adj-pc2_lrt1_feat2_head=xarg
+      adj-pc2_lrt1_feat3_name=person
+      adj-pc2_lrt1_feat3_value=2nd
+      adj-pc2_lrt1_feat3_head=xarg
+      adj-pc2_lrt1_lri1_inflecting=yes
+      adj-pc2_lrt1_lri1_orth=ni
+
+section=toolbox-import
+
+section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon
