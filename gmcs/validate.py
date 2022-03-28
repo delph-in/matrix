@@ -1758,6 +1758,13 @@ def validate_adnominal_possession(ch, vr):
                 if not inst.get('orth'):
                     mess = 'You must give the spelling for this pronoun.'
                     vr.err(inst.full_key+'_orth', mess)
+
+                # These variables are used to test if there are duplicated person features
+                # in poss-pron_instance_feat path
+                has_person_feat = False
+                duplicated_person_feat = False
+                duplicated_person_index = -1
+                index = 1
                 for feat in inst.get('feat'):
                     if not feat.get('name'):
                         mess = 'You must give a name for this feature.'
@@ -1765,6 +1772,17 @@ def validate_adnominal_possession(ch, vr):
                     if not feat.get('value'):
                         mess = 'You must give a value for this feature.'
                         vr.err(feat.full_key+'_value', mess)
+                    if has_person_feat:
+                        duplicated_person_feat = True
+                        duplicated_person_index = index
+                    if feat.get('name') == 'person':
+                        has_person_feat = True
+                    index += 1
+
+                if duplicated_person_feat:
+                    mess = 'You must only give one person value for this feature.'
+                    vr.err(inst.get('feat')[duplicated_person_index].full_key+'_value', mess)
+
                 for feat in inst.get('agr-feat'):
                     if not feat.get('name'):
                         mess = 'You must give a name for this feature.'
