@@ -421,6 +421,9 @@ def customize_poss_rules(strat, mylang, ch, rules, hierarchies):
         if strat_order == 'either':
             mylang.add(phrase_rule+' := binary-headed-phrase.')
 
+        # Fix issue #632 where the adnominal possession library leaves the NON-LOCAL features underspecified
+        mylang.add(phrase_rule + ' := binary-nonloc-phrase.')
+
         # Add any feature constraints to possessor in juxt construction
         if strat.get('feat'):
             customize_feature_values(
