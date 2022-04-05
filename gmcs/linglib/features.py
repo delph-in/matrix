@@ -228,7 +228,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                 if n == 'case':
                     hier = hierarchies['case']
                     if (not len(hier.leaves) == 0) and (value not in hier.leaves):
-                        mylang.add(value + ' := real-case.')
+                        mylang.add(value + ' := case.')
 
 
                 if n == 'case' and ch.has_mixed_case():
