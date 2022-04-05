@@ -500,7 +500,7 @@ def customize_poss_rules(strat, mylang, ch, rules, hierarchies):
             if strat_order != 'either':
                 spec_init = '+' if strat_order == 'head-final' else '-'
                 mylang.add('poss-unary-phrase-'+strat_num +
-                           ' := [ SYNSEM.LOCAL.CAT.HEAD.SPEC-INIT ' + spec_init + ' ].', section='phrases')
+                        ' := poss-unary-phrase & [ SYNSEM.LOCAL.CAT.HEAD.SPEC-INIT ' + spec_init + ' ].', section='phrases')
 
             # Check if you need to add any head-spec rules
             head_spec_order = ch.get('noun-det-order')
