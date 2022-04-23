@@ -537,6 +537,13 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
     agreement_features.customize_agreement_features(mylang, hierarchies)
     adnominal_possession.customize_adnominal_possession(
         mylang, ch, rules, irules, lexicon, hierarchies)
+
+    # LTX 2022-04-22: It is possible to generate disjunctive case from
+    # adnom_poss library (see issue issue #621).
+    # Therefore, it should save case hierarchy to mylang.tdl after
+    # adnominal possession customization.
+    case.customize_case_type(mylang, hierarchies)
+
     verbal_features.customize_verbal_features(mylang, hierarchies)
     valence_change.customize_valence_change(
         mylang, ch, lexicon, rules, lrules, hierarchies)

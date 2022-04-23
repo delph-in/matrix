@@ -223,14 +223,6 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                             ' := [ ' + geom + ' ' + value + ' ].',
                             merge=True)
 
-                # check if the case is created (issue #621)
-                # if not, add it into mylang.tdl (TODO: may be optimized)
-                if n == 'case':
-                    hier = hierarchies['case']
-                    if (not len(hier.leaves) == 0) and (value not in hier.leaves):
-                        mylang.add(value + ' := case.')
-
-
                 if n == 'case' and ch.has_mixed_case():
                     val = '-' if '-synth-' in type_name else '+'
                     tdlfile.add(type_name +
