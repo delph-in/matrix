@@ -479,7 +479,7 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
         if pos == 'clause-initial' or infostr_type == 'topic-first':
             if wo == 'sov':
                 ph_types['comp-head-phrase'] = 'comp-head-phrase := [ SYNSEM.L-PERIPH -, HEAD-DTR.SYNSEM.L-PERIPH - ].'
-                ph_types['subj-head-phrase'] = 'subj-head-phrase := [ SYNSEM [ LOCAL.CAT.MC +, NON-LOCAL.SLASH.LIST < > ], ' \
+                ph_types['subj-head-phrase'] = 'subj-head-phrase := [ SYNSEM [ LOCAL.CAT.MC + ], ' \
                                                'HEAD-DTR.SYNSEM.L-PERIPH - ].'
                 ph_types['subj-head-nmc-phrase'] = subj_head_nmc_phrase.replace(
                     '$', infostr_in_flr)
