@@ -2486,6 +2486,7 @@ basic-extracted-adj-phrase := head-mod-phrase & head-only & phrasal &
                    CONT.HOOK #hook,
                    CTXT #ctxt ],
 	     MODIFIED notmod,
+       LIGHT +,
 	     NON-LOCAL [ SLASH #slash,
                    QUE #que, 
                    REL #rel ] ],
