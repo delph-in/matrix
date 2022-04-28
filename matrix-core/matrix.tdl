@@ -949,6 +949,8 @@ null-copy := list-copy & null &
     END-LIST #end ].
 
 
+; This was an experiment for more concise append list writing,
+; but it is not currently used.
 append-list-with-placeholder := append-list &
   [ PLACEHOLDER.LIST < [ ] > ].
 
@@ -2454,8 +2456,6 @@ head-mod-phrase := headed-phrase &
 ; OZ 2020-09-25 Adjunct extraction hierarchy consists of
 ; a basic phrase which links the element on the SLASH|MOD list to the head daughter,
 ; and the same CAT values are shared by the mother itself.
-; The PLACEHOLDER feature makes it easier to then write rules for
-; flexible word order (and not repeat the MOD constraints).
 
 basic-extracted-adj-phrase := head-mod-phrase & head-only & phrasal &
   [ SYNSEM [ LOCAL.CAT [ WH #wh,
