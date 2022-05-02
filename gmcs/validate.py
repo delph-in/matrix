@@ -1759,8 +1759,17 @@ def validate_adnominal_possession(ch, vr):
                     mess = 'You must give the spelling for this pronoun.'
                     vr.err(inst.full_key+'_orth', mess)
 
-                # These variables are used to test if there are duplicated features
-                # in poss-pron_instance_feat path
+                # LTX 2022-05-02
+                # features_map is a map with feature name as the key,
+                # and another map with index and count as the value, e.g.:
+                #   {
+                #    "feature_name_1": {"index": 0, "count": 1},
+                #    "feature_name_2": {"index": 1, "count": 1},
+                #   }
+                # index indicates this feature's index of occurrence for vr.err to retrieve
+                # its full_key
+                # count is the number of occurrence of this feature. More than 1 indicates
+                # a duplicated feature
                 features_map = {}
                 index = 1
                 for feat in inst.get('feat'):
