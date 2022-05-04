@@ -1758,6 +1758,20 @@ def validate_adnominal_possession(ch, vr):
                 if not inst.get('orth'):
                     mess = 'You must give the spelling for this pronoun.'
                     vr.err(inst.full_key+'_orth', mess)
+
+                # LTX 2022-05-02
+                # features_map is a map with feature name as the key,
+                # and another map with index and count as the value, e.g.:
+                #   {
+                #    "feature_name_1": {"index": 0, "count": 1},
+                #    "feature_name_2": {"index": 1, "count": 1},
+                #   }
+                # index indicates this feature's index of occurrence for vr.err to retrieve
+                # its full_key
+                # count is the number of occurrence of this feature. More than 1 indicates
+                # a duplicated feature
+                features_map = {}
+                index = 1
                 for feat in inst.get('feat'):
                     if not feat.get('name'):
                         mess = 'You must give a name for this feature.'
@@ -1765,6 +1779,18 @@ def validate_adnominal_possession(ch, vr):
                     if not feat.get('value'):
                         mess = 'You must give a value for this feature.'
                         vr.err(feat.full_key+'_value', mess)
+                    if not feat.get('name') in features_map:
+                        features_map[feat.get('name')] = {'index': index, 'count': 0}
+                    features_map[feat.get('name')]['count'] += 1
+                    features_map[feat.get('name')]['index'] = index
+                    index += 1
+
+                for key in features_map.keys():
+                    if features_map[key]['count'] > 1:
+                        mess = 'If you would like this value to be a disjunctive value, ' \
+                               'please use the multi-select functionality.'
+                        vr.err(inst.get('feat')[features_map[key]['index']].full_key+'_value', mess)
+
                 for feat in inst.get('agr-feat'):
                     if not feat.get('name'):
                         mess = 'You must give a name for this feature.'
