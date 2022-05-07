@@ -155,7 +155,13 @@ class TDLHierarchy:
         supers = []
         subs = []
         if bad_hierarchy:
-            supers = [self.name]
+            # LTX 2022-04-22: The real-case can be created as an intermediate
+            # case type for all real cases for possessive strategy. If the real-case
+            # exists, it should be the supertype of the new_type
+            if 'real-case' in self.supertypes:
+                supers = ['real-case']
+            else:
+                supers = [self.name]
             subs = type_set
         else:
             # Find types in the hierarchy that are supersets and subsets of

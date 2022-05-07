@@ -114,10 +114,12 @@ def init_case_hierarchy(ch, hierarchies):
     # For most case patterns, just make a flat hierarchy.  For fluid-s,
     # split-n and split-v, however, a more articulated hierarchy is required.
     if cm in ['nom-acc', 'erg-abs', 'tripartite', 'split-s', 'focus']:
+        # LTX 2022-04-22: real-case should be only defined once
+        if poss:
+            hier.add('real-case', 'case',
+                     'intermediate case type for all real cases')
         for c in cases:
             if poss:
-                hier.add('real-case', 'case',
-                         'intermediate case type for all real cases')
                 hier.add(c[2], 'real-case', c[1])
             else:
                 hier.add(c[2], 'case', c[1])
@@ -345,8 +347,13 @@ def customize_case(mylang, ch, hierarchies):
         adp_cases.sort()
         hierarchies['case'].get_type_covering(adp_cases)
 
+    # LTX 2022-04-22: It is possible to generate disjunctive case from
+    # adnom_poss library (see issue issue #621).
+    # Therefore, it should save case hierarchy to mylang.tdl after
+    # adnominal possession customization.
+
     # now output the case hierarchies
-    customize_case_type(mylang, hierarchies)
+    # customize_case_type(mylang, hierarchies)
 
 
 def convert_mixed_case(item, hierarchies, cases):
