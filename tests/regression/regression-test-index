@@ -525,3 +525,4 @@ adj-esu=Adjectives: Held Out Yup'ik
 adj-frr=Adjectives: Held Out Frisian
 adj-lkt=Adjectives: Held Out Lakota
 adj-luo=Adjectives: Held Out Luo
+adnom-poss-disjunctive-case=test if the adnominal possession library invokes disjunctive types (see issue #621)

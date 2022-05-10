@@ -1,0 +1,10 @@
+n1 iv
+n1 tv n2
+poss n1 iv
+poss n1 tv n2
+*poss n1 n2 iv
+*n1 tv poss n2
+*n1 poss tv n2
+*n1 tv n2 poss
+*poss n1 iv n2
+
