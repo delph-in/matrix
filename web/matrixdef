@@ -7,7 +7,7 @@ Label "<h3>Language</h3>"
 Text language "Language name" "<p>Name of your language: " "<br>" 50
 Text iso-code "ISO code" "<a href=\"http://www.sil.org/iso639-3/codes.asp\">ISO code</a> for your language: " " (optional) </p>" 6
 
-Label "<h3>String-processing</h3><p>Your grammar will include a basic tokenizer file for string-level processing (<span class='tt'>vanilla.rpp</span>, see <a href='http://moin.delph-in.net/ReppTop/'>ReppTop</a> documentation).  We have three default options for this file.  If you do not answer, your grammar will include a tokenizer which will discard most ascii punctuation (except the hyphen, colon, and equals [-,:,=]).<br />"
+Label "<h3>String-processing</h3><p>Your grammar will include a basic tokenizer file for string-level processing (<span class='tt'>vanilla.rpp</span>, see <a href='https://github.com/delph-in/docs/wiki/ReppTop/'>ReppTop</a> documentation).  We have three default options for this file.  If you do not answer, your grammar will include a tokenizer which will discard most ascii punctuation (except the hyphen, colon, and equals [-,:,=]).<br />"
 
 Radio punctuation-chars "Punctuation characters" "<br />" ""
 . discard-all "discard-all" "" "split on, and then discard all punctuation characters found in this default list (all lower ascii punctuation except \x22 \"): <span class='tt'>!#$%&#38;'()*+,-./:;&lt;=&gt;?@[]^_`{|}~\</span><!--we can't currently do anything about the unicode characters... maybe later 。！？…．　○●◎＊☆★◇◆--><br />"
@@ -44,7 +44,7 @@ Text motivation "Motivation" "<tr><td>Your reason for using this system: <td>" "
 
 TextArea comment "Comments" "<tr><td>Comments on your implementation of the grammar: <td>" "<br>(e.g. Choice of analyses, sources of information, etc.)</tr></table>" 80x6
 
-Label "<p>We recommend that you use version control for your grammar development, and aim to facilitate that in two ways.  First, you can choose to have your grammar's code initialized into a Git or Mercurial repository.  Please see <a href=\"http://wiki.delph-in.net/moin/VersionControlForGrammarDevelopment\">this wiki page</a> for information on how to use these systems. The wiki also includes information on how to use Subversion (svn) with your grammar.</p>"
+Label "<p>We recommend that you use version control for your grammar development, and aim to facilitate that in two ways.  First, you can choose to have your grammar's code initialized into a Git or Mercurial repository.  Please see <a href=\"https://github.com/delph-in/docs/wiki/VersionControlForGrammarDevelopment\">this wiki page</a> for information on how to use these systems. The wiki also includes information on how to use Subversion (svn) with your grammar.</p>"
 
 Radio vcs "Version Control System" "<p>Version Control System.<br>" ""
 . none "None" "" " None<br>"
@@ -2350,7 +2350,7 @@ contribution (e.g. <span class=\"tt\">_cat_n_rel</span> for the noun relation
 contributed by <i>cat</i> or <span class=\"tt\">_sleep_v_rel</span> for the verb
 relation contributed by <i>sleep</i>).  If the predicate is empty
 upon adding a spelling the page will create a predicate value based
-on the <a href=http://wiki.delph-in.net/moin/RmrsPos>DELPH-IN</a>
+on the <a href=https://github.com/delph-in/docs/wiki/RmrsPos>DELPH-IN</a>
 standards. If you completed the Argument
 Optionality page, be sure to specify whether each verb type allows
 subject and or object dropping by selecting the correct value for the
