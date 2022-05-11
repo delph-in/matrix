@@ -583,7 +583,7 @@ class MatrixDefFile:
                 'evidentials': 'Evidentials',
                 'other-features': 'OtherFeatures', 'sentential-negation': 'SententialNegation',
                 'coordination': 'Coordination', 'matrix-yes-no': 'YesNoQ',
-                'wh-q': 'WhQ',
+                'wh-q': 'WhQuestions',
                 'info-str': 'InformationStructure',
                 'arg-opt': 'ArgumentOptionality',
                 'clausal-comp': 'ClausalComplements',
