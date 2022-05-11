@@ -1228,7 +1228,8 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
             elif feat['head'] in ['higher', 'lower'] and not choices.get('scale'):
                 vr.err(feat.full_key + '_head',
                        'To use higher/lower ranked NP, please define a scale on the direct-inverse page.')
-            elif feat['head'] == 'verb' and feat.get('name', '') in index_feats:
+            # LTX 5/11/2022: CASE feature should also be a nouny feature only
+            elif feat['head'] == 'verb' and (feat.get('name', '') in index_feats or feat.get('name', '') in 'case'):
                 vr.err(feat.full_key + '_head',
                        'This feature is associated with nouns, ' +
                        'please select one of the NP options.')

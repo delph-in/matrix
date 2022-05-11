@@ -1044,14 +1044,16 @@ def validate_lexicon(ch, vr):
 
                 # TJT 2014-09-03: Adding adjectives and copulas here
                 # or lextype == 'aux': lap: 1/5/11 removed aux to get rid of overzealous validation
-                if lextype in ('verb', 'adj', 'cop'):
+                # LTX 5/11/2022: added aux back, see issue #623 https://github.com/delph-in/matrix/issues/623
+                if lextype in ('verb', 'adj', 'cop', 'aux'):
                     # The head must be defined
                     if not feat.get('head'):
                         mess = 'You must choose where the feature is specified.'
                         vr.err(feat.full_key + '_head', mess)
                     # Index features must be defined on some argument
-                    elif feat.get('head') in ('verb', 'adj', 'cop'):
-                        if feat.get('name') in index_features:
+                    elif feat.get('head') in ('verb', 'adj', 'cop', 'aux'):
+                        # LTX 5/11/2022: CASE feature should also be a nouny feature only
+                        if feat.get('name') in index_features or feat.get('name') in 'case':
                             mess = 'This feature is associated with nouns. ' + \
                                    'Please select one of the NP options to use this feature.'
                             vr.err(feat.full_key + '_head', mess)
