@@ -15,7 +15,7 @@
 ;;; trigger.mtr in lkb/script.
 
 ;;; The documentation on trigger rules:
-;;; http://moin.delph-in.net/LkbGeneration
+;;; https://github.com/delph-in/docs/wiki/LkbGeneration
 
 ;;; The following loop automatically generates and lists rules for all
 ;;; semantically empty items that do not already have trigger rules.
