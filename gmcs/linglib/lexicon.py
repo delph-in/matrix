@@ -438,6 +438,14 @@ def validate_lexicon(ch, vr):
     seenTrans = False
     seenIntrans = False
 
+    # LTX 2022-05-16: validate if a verb inherits another verb
+    # and has valence, see issue #627
+    for v in ch.get('verb'):
+        if len(vtsts[v.full_key]) > 0 and vtsts[v.full_key][0] != '' and v.get('valence') != '':
+            mess = 'You must either remove the valence of a subtype verb ' \
+                   'or remove the inheritance hierarchy for this verb.'
+            vr.err(v.full_key, mess)
+
     for v in ch.get('verb'):
         st_anc = []  # used to make sure we don't have an lkb err as
         # described in comments above
