@@ -2,7 +2,7 @@ from collections import defaultdict
 
 from gmcs.linglib import case
 #from gmcs.linglib import lexical_items
-from gmcs.utils import get_name
+from gmcs.utils import get_name, recursive_get_supertypes_features
 from gmcs.choices import ChoiceDict
 from gmcs.linglib.lexbase import LexicalType, PositionClass
 from gmcs.linglib.lexbase import ALL_LEX_TYPES
@@ -195,7 +195,10 @@ def get_lt_name(key, choices):
 
 
 def validate_lexicon(ch, vr):
-
+    # This variable is used to check if the inheritance hierarchy
+    # of lexicon types has a cycle
+    contain_cycle = False
+    
     # Did they specify enough lexical entries?
     if 'noun' not in ch:
         mess = 'You should create at least one noun class.'
@@ -327,6 +330,7 @@ def validate_lexicon(ch, vr):
                                 if not q in st_anc:
                                     st_anc.append(q)
                                 if q in r:
+                                    contain_cycle = True
                                     vr.err(n.full_key + '_supertypes', "This hierarchy " +
                                            "contains a cycle.  The type _"+q+"_ was found " +
                                            "at multiple points in the inheritance path: " +
@@ -520,6 +524,7 @@ def validate_lexicon(ch, vr):
                                 if not q in st_anc:
                                     st_anc.append(q)
                                 if q in r:
+                                    contain_cycle = True
                                     vr.err(v.full_key + '_supertypes', "This hierarchy contains " +
                                            "a cycle.  The type _"+q+"_ was found at multiple " +
                                            "points in the inheritance path: "+str(r + [q]))
@@ -1080,3 +1085,29 @@ def validate_lexicon(ch, vr):
                     mess = 'That choice is not available in languages ' + \
                            'without a direct-inverse scale.'
                     vr.err(feat.full_key + '_head', mess)
+
+    # LTX 2022-05-16: Check if there are duplicated features (maybe with different values)
+    # with inheritance hierarchy (see discussion in issue #627)
+
+    # Only check if there is no cycle in the hierarchy
+    if not contain_cycle:
+        for lextype in ALL_LEX_TYPES:
+            # skip for nouns since it is check already above
+            if lextype == 'noun':
+                continue
+            for lt in ch.get(lextype):
+                # If lt has supertypes
+                lt_supertypes = lt.get('supertypes')
+                if len(lt_supertypes) != 0:
+                    # parent_features_list stores all features from child node (exclusive) to most top parent node
+                    parent_features_list = []
+                    recursive_get_supertypes_features(ch, lt_supertypes, parent_features_list)
+                    # check if the child node has duplicated feature type in parent_features_list
+                    for feat in lt.get('feat'):
+                        for parent_feat in parent_features_list:
+                            if feat.get('name') == parent_feat.get('name'):
+                                mess = 'Please be aware that this type has a duplicated feature (' + \
+                                       lt.full_key + ': ' + feat.full_key + \
+                                       ') with inheritance hierarchy, ' \
+                                       'which can be factors to create redundant or conflicting grammars.'
+                                vr.warn(lt.full_key, mess)
