@@ -448,7 +448,7 @@ def validate_lexicon(ch, vr):
         if len(vtsts[v.full_key]) > 0 and vtsts[v.full_key][0] != '' and v.get('valence') != '':
             mess = 'You must either remove the valence of a subtype verb ' \
                    'or remove the inheritance hierarchy for this verb.'
-            vr.err(v.full_key, mess)
+            vr.err(v.full_key + '_valence', mess)
 
     for v in ch.get('verb'):
         st_anc = []  # used to make sure we don't have an lkb err as
@@ -1110,4 +1110,4 @@ def validate_lexicon(ch, vr):
                                        lt.full_key + ': ' + feat.full_key + \
                                        ') with inheritance hierarchy, ' \
                                        'which can be factors to create redundant or conflicting grammars.'
-                                vr.warn(lt.full_key, mess)
+                                vr.warn(feat.full_key+'_name', mess)
