@@ -1097,5 +1097,5 @@ def validate_lexicon(ch, vr):
                             if feat.get('name') == parent_feat.get('name'):
                                 mess = 'A value for this feature is already specified on a super type for this ' \
                                        + lextype + ' class. If the value specified here is conflict with that other' \
-                                              'specification, the grammar will not compile.'
+                                              ' specification, the grammar will not compile.'
                                 vr.warn(feat.full_key+'_name', mess)
