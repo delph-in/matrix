@@ -1095,8 +1095,7 @@ def validate_lexicon(ch, vr):
                     for feat in lt.get('feat'):
                         for parent_feat in parent_features_list:
                             if feat.get('name') == parent_feat.get('name'):
-                                mess = 'Please be aware that this type has a duplicated feature (' + \
-                                       lt.full_key + ': ' + feat.full_key + \
-                                       ') with inheritance hierarchy, ' \
-                                       'which can be factors to create redundant or conflicting grammars.'
+                                mess = 'A value for this feature is already specified on a super type for this ' \
+                                       + lextype + ' class. If the value specified here is conflict with that other' \
+                                              'specification, the grammar will not compile.'
                                 vr.warn(feat.full_key+'_name', mess)
