@@ -290,14 +290,7 @@ def validate_lexicon(ch, vr):
                         continue
                     for f in feats[p]:
                         # see if this feat conflicts with what we already know
-                        if f in feats[n.full_key] and feats[p][f] != feats[n.full_key][f]:
-                            # inherited feature conficts with self defined feature
-                            vr.warn(n.full_key + '_feat', "The specification of "+f+"=" +
-                                    str(feats[n.full_key][f])+" may confict with the value" +
-                                    " defined on the supertype " +
-                                    ptype.get('name')+" ("+p+").",
-                                    concat=False)
-                        elif f in inherited_feats[n.full_key] and \
+                        if f in inherited_feats[n.full_key] and \
                                 feats[p][f] != inherited_feats[n.full_key][f]:
                             vr.warn(n.full_key + '_supertypes',
                                     "This inherited specification of "+f+"=" +
@@ -446,8 +439,7 @@ def validate_lexicon(ch, vr):
     # and has valence, see issue #627
     for v in ch.get('verb'):
         if len(vtsts[v.full_key]) > 0 and vtsts[v.full_key][0] != '' and v.get('valence') != '':
-            mess = 'You must either remove the valence of a subtype verb ' \
-                   'or remove the inheritance hierarchy for this verb.'
+            mess = 'A verb class that specifies a value for valence can\'t also inherit a value for valence'
             vr.err(v.full_key + '_valence', mess)
 
     for v in ch.get('verb'):
@@ -1092,9 +1084,6 @@ def validate_lexicon(ch, vr):
     # Only check if there is no cycle in the hierarchy
     if not contain_cycle:
         for lextype in ALL_LEX_TYPES:
-            # skip for nouns since it is check already above
-            if lextype == 'noun':
-                continue
             for lt in ch.get(lextype):
                 # If lt has supertypes
                 lt_supertypes = lt.get('supertypes')
