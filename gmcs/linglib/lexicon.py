@@ -2,7 +2,7 @@ from collections import defaultdict
 
 from gmcs.linglib import case
 #from gmcs.linglib import lexical_items
-from gmcs.utils import get_name
+from gmcs.utils import get_name, recursive_get_supertypes_features
 from gmcs.choices import ChoiceDict
 from gmcs.linglib.lexbase import LexicalType, PositionClass
 from gmcs.linglib.lexbase import ALL_LEX_TYPES
@@ -195,7 +195,10 @@ def get_lt_name(key, choices):
 
 
 def validate_lexicon(ch, vr):
-
+    # This variable is used to check if the inheritance hierarchy
+    # of lexicon types has a cycle
+    contain_cycle = False
+    
     # Did they specify enough lexical entries?
     if 'noun' not in ch:
         mess = 'You should create at least one noun class.'
@@ -287,14 +290,7 @@ def validate_lexicon(ch, vr):
                         continue
                     for f in feats[p]:
                         # see if this feat conflicts with what we already know
-                        if f in feats[n.full_key] and feats[p][f] != feats[n.full_key][f]:
-                            # inherited feature conficts with self defined feature
-                            vr.warn(n.full_key + '_feat', "The specification of "+f+"=" +
-                                    str(feats[n.full_key][f])+" may confict with the value" +
-                                    " defined on the supertype " +
-                                    ptype.get('name')+" ("+p+").",
-                                    concat=False)
-                        elif f in inherited_feats[n.full_key] and \
+                        if f in inherited_feats[n.full_key] and \
                                 feats[p][f] != inherited_feats[n.full_key][f]:
                             vr.warn(n.full_key + '_supertypes',
                                     "This inherited specification of "+f+"=" +
@@ -327,6 +323,7 @@ def validate_lexicon(ch, vr):
                                 if not q in st_anc:
                                     st_anc.append(q)
                                 if q in r:
+                                    contain_cycle = True
                                     vr.err(n.full_key + '_supertypes', "This hierarchy " +
                                            "contains a cycle.  The type _"+q+"_ was found " +
                                            "at multiple points in the inheritance path: " +
@@ -438,6 +435,13 @@ def validate_lexicon(ch, vr):
     seenTrans = False
     seenIntrans = False
 
+    # LTX 2022-05-16: validate if a verb inherits another verb
+    # and has valence, see issue #627
+    for v in ch.get('verb'):
+        if len(vtsts[v.full_key]) > 0 and vtsts[v.full_key][0] != '' and v.get('valence') != '':
+            mess = 'A verb class that specifies a value for valence can\'t also inherit a value for valence'
+            vr.err(v.full_key + '_valence', mess)
+
     for v in ch.get('verb'):
         st_anc = []  # used to make sure we don't have an lkb err as
         # described in comments above
@@ -512,6 +516,7 @@ def validate_lexicon(ch, vr):
                                 if not q in st_anc:
                                     st_anc.append(q)
                                 if q in r:
+                                    contain_cycle = True
                                     vr.err(v.full_key + '_supertypes', "This hierarchy contains " +
                                            "a cycle.  The type _"+q+"_ was found at multiple " +
                                            "points in the inheritance path: "+str(r + [q]))
@@ -1072,3 +1077,25 @@ def validate_lexicon(ch, vr):
                     mess = 'That choice is not available in languages ' + \
                            'without a direct-inverse scale.'
                     vr.err(feat.full_key + '_head', mess)
+
+    # LTX 2022-05-16: Check if there are duplicated features (maybe with different values)
+    # with inheritance hierarchy (see discussion in issue #627)
+
+    # Only check if there is no cycle in the hierarchy
+    if not contain_cycle:
+        for lextype in ALL_LEX_TYPES:
+            for lt in ch.get(lextype):
+                # If lt has supertypes
+                lt_supertypes = lt.get('supertypes')
+                if len(lt_supertypes) != 0:
+                    # parent_features_list stores all features from child node (exclusive) to most top parent node
+                    parent_features_list = []
+                    recursive_get_supertypes_features(ch, lt_supertypes, parent_features_list)
+                    # check if the child node has duplicated feature type in parent_features_list
+                    for feat in lt.get('feat'):
+                        for parent_feat in parent_features_list:
+                            if feat.get('name') == parent_feat.get('name'):
+                                mess = 'A value for this feature is already specified on a super type for this ' \
+                                       + lextype + ' class. If the value specified here is conflict with that other' \
+                                              ' specification, the grammar will not compile.'
+                                vr.warn(feat.full_key+'_name', mess)
