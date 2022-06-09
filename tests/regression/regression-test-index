@@ -526,3 +526,4 @@ adj-frr=Adjectives: Held Out Frisian
 adj-lkt=Adjectives: Held Out Lakota
 adj-luo=Adjectives: Held Out Luo
 adnom-poss-disjunctive-case=test if the adnominal possession library invokes disjunctive types (see issue #621)
+adnom-poss-defined-poss-strat-with-no-morpho-instance=This regression test accounts for issue #598, which only testing for the grammar compiles, so it only have one simple sentence.

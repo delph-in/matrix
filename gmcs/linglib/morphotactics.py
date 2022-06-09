@@ -1141,6 +1141,16 @@ def validate(choices, vr):
         for lrt in pc.get('is-lrt', []):
             lrt_validation(lrt, vr, index_feats, choices, incorp=True,
                            inputs=pc_switching_inputs, switching=switching)
+    # LTX 2020-04-29: Validate if defined poss-strategy is not used in morphology
+    poss_strategies = set([item.full_key for item in choices.get('poss-strat')])
+    for pc in all_pcs:
+        if pc['name'] == 'possessive':
+            for l in pc['lrt']:
+                for f in l['feat']:
+                    if f['name'] in poss_strategies:
+                        poss_strategies.remove(f['name'])
+    for unused_poss_strat in poss_strategies:
+        vr.warn(unused_poss_strat+'_order', 'This possessive strategy is defined but not instantiated in the morphology.')
     cycle_validation(choices, vr)
 
 

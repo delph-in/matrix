@@ -498,6 +498,14 @@ def customize_poss_rules(strat, mylang, ch, rules, hierarchies):
                 spec_init = '+' if strat_order == 'head-final' else '-'
                 mylang.add('poss-unary-phrase-'+strat_num +
                            ' := [ SYNSEM.LOCAL.CAT.HEAD.SPEC-INIT ' + spec_init + ' ].', section='phrases')
+                # LTX 2022-04-28: Fix issue #598:
+                # The line above does not assign a supertype for poss-unary-phrase until
+                # the customized_possessor_irules() function is called (i.e., only
+                # if this possessive strategy is used in morphology).
+                # Therefore, the supertype should be defined even though it's not instantiated
+                # in the morphology as below:
+                mylang.add('poss-unary-phrase-'+strat_num +
+                           ' := poss-unary-phrase.')
 
             # Check if you need to add any head-spec rules
             head_spec_order = ch.get('noun-det-order')
