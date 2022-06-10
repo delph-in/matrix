@@ -1142,15 +1142,26 @@ def validate(choices, vr):
             lrt_validation(lrt, vr, index_feats, choices, incorp=True,
                            inputs=pc_switching_inputs, switching=switching)
     # LTX 2020-04-29: Validate if defined poss-strategy is not used in morphology
-    poss_strategies = set([item.full_key for item in choices.get('poss-strat')])
+    possessum_strategies_with_affix = set()
+    possessor_strategies_with_affix = set()
+    # only if the morpheme is marked as affix
+    for item in choices.get('poss-strat'):
+        if item['possessum-type'] == 'affix':
+            possessum_strategies_with_affix.add(item.full_key)
+        if item['possessor-type'] == 'affix':
+            possessor_strategies_with_affix.add(item.full_key)
     for pc in all_pcs:
         if pc['name'] == 'possessive':
             for l in pc['lrt']:
                 for f in l['feat']:
-                    if f['name'] in poss_strategies:
-                        poss_strategies.remove(f['name'])
-    for unused_poss_strat in poss_strategies:
-        vr.warn(unused_poss_strat+'_order', 'This possessive strategy is defined but not instantiated in the morphology.')
+                    if f['name'] in possessum_strategies_with_affix:
+                        possessum_strategies_with_affix.remove(f['name'])
+                    if f['name'] in possessor_strategies_with_affix:
+                        possessor_strategies_with_affix.remove(f['name'])
+    for unused_poss_strat in possessum_strategies_with_affix:
+        vr.warn(unused_poss_strat+'_possessum-type', 'This possessive strategy is defined but not instantiated in the morphology.')
+    for unused_poss_strat in possessor_strategies_with_affix:
+        vr.warn(unused_poss_strat+'_possessor-type', 'This possessive strategy is defined but not instantiated in the morphology.')
     cycle_validation(choices, vr)
 
 
