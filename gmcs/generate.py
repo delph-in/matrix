@@ -136,11 +136,16 @@ def clean_tree(tree):
     return re.sub(r'\("([^()]+)"\)', r'(@\1@)', tree).replace('"', '').replace('@', "'")
 
 
-def remove_duplicates(list):
+def remove_duplicates(input_list):
+    '''Takes an input list that has the form [[a1,b1],[a2,b2], ... [a{n}, b{n}]] ie. a list of pairs.
+    It removes any pair in the list where the "a" value appeared earlier in the list. 
+    
+    For example if a2 == a1 in the example list above then [a2, b2] would be removed from the list.
+    '''
     new_list = []
-    while(list != []):
-        new_list.append(list[0])
-        list = list(filter((lambda x: x[0] != list[0][0]), list))
+    while(input_list != []):
+        new_list.append(input_list[0])
+        input_list = list(filter((lambda x: x[0] != input_list[0][0]), input_list))
     return new_list
 
 # Extract predications from the grammar
