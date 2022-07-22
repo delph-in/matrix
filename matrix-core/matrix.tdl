@@ -406,36 +406,52 @@ semsort := sort.
 ;   HCONS append-list        ; Scope constraints: list of qeq's
 ;   ICONS append-list        ; Individual constraints: list of icons
 
-mrs-min := avm.
-
-; ERB 2007-01-21 Removing feature MSG here (moving it to a feature--SF---
-; of events).
-
-; SSH 2012-02-16 ICONS (individual contraints)
+mrs-min := avm
+"""Supertype for mrs with no features to keep feature structures small""".
 
 mrs := mrs-min &
   [ HOOK hook,
     RELS append-list,
     HCONS append-list,
-    ICONS append-list ].
+    ICONS append-list ]
+"""Defines the mrs object, i.e. the grammar-internal representation of
+the semantics of a sign
 
-; HOOK values include
-;    GTOP                  ; Global top handle
-;    LTOP                  ; Local top handle
-;    INDEX                 ; The salient nominal instance or event
-;    XARG                  ; The external (controlled) argument of a phrase
-;    ICONS-KEY             ; Indexes for icons
-;    CLAUSE-KEY            ; A feature to mediate between the INDEX of the
-;                            head and the CLAUSE value of the dependent.
+<features>
+HOOK: information available for further semantic composition
+RELS: list of elementary predications, value is append-list to facilitate
+      append
+HCONS: list of handle constraints, used to model partial constraints
+       on scope, value is append-list to facilitate append
+ICONS: list of individual constraints, used in the implemtnation of
+       information structure; value is append-list to facilitate append
 
-; SSH 2012-02-16 --ICONS
+<history>
+ERB 2007-01-21 Removing feature MSG here (moving it to a feature--SF---of events).
+SSH 2012-02-16 ICONS (individual contraints)""".
+
+
 hook := avm &
   [ GTOP handle,
     LTOP handle,
     INDEX individual,
     XARG individual,
     ICONS-KEY icons,
-    CLAUSE-KEY event ].
+    CLAUSE-KEY event ]
+"""Sturcture that houses a collection of features used in semantic
+composition
+
+<features>
+GTOP: Global top handle
+LTOP: Local top handle
+INDEX: The salient nominal instance or event
+XARG: The external (controlled) argument of a phrase
+ICONS-KEY: Indexes for icons
+CLAUSE-KEY: A feature to mediate between the INDEX of the
+head and the CLAUSE value of the dependent
+
+<history>
+SSH 2012-02-16 --ICONS""".
 
 ; MRSs are divided into psoas (with a distinguished event) and
 ; nom-objs (with a distinguished index).  We use a polymorphic
@@ -446,92 +462,72 @@ hook := avm &
 ; useful for coordination.
 
 psoa := mrs &
-  [ HOOK.INDEX event ].
+  [ HOOK.INDEX event ]
+"""Type listed for deletion""".
 
 nom-obj := mrs &
-  [ HOOK.INDEX index ].
+  [ HOOK.INDEX index ]
+"""Type listed for deletion""".
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; LKEYS attributes, providing pointers to semantic relations and complement
-; predsorts in lexical types:
-;  KEYREL relation         ; Pointer to main relation in RELS
-;  ALTKEYREL relation      ; Pointer to an alternate relation in RELS
-;  --COMPKEY predsort      ; Pointer to the first complement's KEY predsort
-;  --OCOMPKEY predsort     ; Pointer to the oblique complement's KEY predsort
+; LKEYS
 
 lexkeys := avm &
   [ KEYREL relation,
     ALTKEYREL relation,
     --COMPKEY predsort,
-    --OCOMPKEY predsort ].
+    --OCOMPKEY predsort ]
+"""Collection lf attributes which provides pointers to semantic relation
+and PRED value information in complements. Used in lexical types only.
+
+<features>
+KEYREL: Pointer to main relation in RELS
+ALTKEYREL: Pointer to an alternate relation in RELS
+--COMPKEY: Pointer to the first complement's KEY predsort
+--OCOMPKEY: Pointer to the oblique complement's KEY predsort
+""".
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;  CTXT values
 
-ctxt-min := avm.
+ctxt-min := avm
+"""Supertype for ctxt with no features to keep feature structures small""".
 
 ctxt := ctxt-min &
   [ ACTIVATED bool,
-    PRESUP append-list ].
+    PRESUP append-list ]
+"""Location for information useful for pragmatics, not used in any detail
+as of 2022""".
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Basic semantic types
 
-; The message represents the semantic type of a clause (cf. Ginzburg &
-; Sag 2000).  All clauses have messages.  Elements that take clauses
-; as semantic arguments should end up with the LBL of the clause as
-; the value of ARGn, L/R-HNDL, etc.  The MARG (message argument) of a
-; message is a handle that qeqs the LBL of the main verb in the clause.
-; This leaves room for quantifiers to scope at each clause without
-; allowing scope ambiguity between quanitifers and messages, as it is
-; not clear what that would mean.
-
-; ERB 2007-01-21 Moving to a message free universe.
-
-;basic_message := relation.
-;message := basic_message &
-;  [ PRED message_m_rel,
-;    MARG handle ].
-
-;no-msg := basic_message.
-
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Message preds
-
-; ERB 2007-01-21 Moving to a message free universe.
-
-;message_m_rel := predsort.
-;command_m_rel := message_m_rel.
-;prop-or-ques_m_rel := message_m_rel.          ;for COMPS of e.g. 'know'
-;proposition_m_rel := prop-or-ques_m_rel.
-;abstr-ques_m_rel := prop-or-ques_m_rel.
-;question_m_rel := abstr-ques_m_rel.
-
-
-
-; Subtype of int_rel for tag questions and structures in other languages
-; with equivalent pragmatics.
-;ne_m_rel := abstr-ques_m_rel.
-
-; Constrains handle of scopable argument HARG relative to one
-; outscoped LARG handle (the "H" is mnemonic for either "higher" or
-; "hole" argument, while the "L" is mnemonic for either "lower" or
-; "label" argument.
-
 qeq := avm &
   [ HARG handle,
-    LARG handle ].
+    LARG handle ]
+"""<name lang='en'>equal modulo quantifiers<EOL>
+Relates scopal argument positions to the elementary predications
+they outscope, leaving room for quantifiers to intervene.
 
-
-; "INSTLOC is used by generator to index input.  Changed from
-; value instloc to value string in July 2004.  The grammar
-; should never need to make reference to it beyond this."
+<features>
+HARG: The scopable argument; the 'H' mnemonic for either 'higher'
+      or 'hole'
+LARG: The handle of the outscoped predication; the 'L' is mnemonic
+      for either 'lower' or 'label'
+""".
 
 semarg := avm &
-  [ INSTLOC string ].
+  [ INSTLOC string ]
+"""Supertype for handle and individual, the possible values of
+semantic features.
+
+<features>
+INTLOC: used by generator to index input; the grammar should
+never need to make reference to it beyond this
+
+<history>
+Value of INSTLOC changed from instloc to string in July 2004.""".
 
 handle := semarg.
 individual := semarg &
