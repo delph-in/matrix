@@ -128,25 +128,35 @@ phrase := phrase-or-lexrule
 
 non-affix-bearing := word-or-lexrule &
   [ INFLECTED infl-satisfied,
-    SYNSEM.LKEYS.KEYREL.WLINK cons ].
+    SYNSEM.LKEYS.KEYREL.WLINK cons ]
+"""Words or lexical rules that do not take affixes.""".
 
 ; Rule
 
 rule := sign &
-  [ RULE-NAME string ].
+  [ RULE-NAME string ]
+"""A rule with a display name.""".
 
 ; LABEL-NAME and META used for labeling nodes in parse trees
 
 tree-node-label := *top* &
-  [ NODE sign ].
+  [ NODE sign ]
+"""Unused type for labeling nodes on trees.""".
 
 label := sign &
-  [ LABEL-NAME string ].
+  [ LABEL-NAME string ]
+"""User-friendly node labels, e.g., for labeled trees.
+<features>
+LABEL-NAME: The node label to display on the tree.""".
 
 ; For complex node labels, like S/NP
 meta := sign &
   [ META-PREFIX string,
-    META-SUFFIX string ].
+    META-SUFFIX string ]
+"""Node labels with two parts, e.g., S/NP.
+<features>
+META-PREFIX: The first part of the node label.
+META-SUFFIX: The second part of the node label.""".
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; SYNSEM values
@@ -436,36 +446,52 @@ semsort := sort.
 ;   HCONS append-list        ; Scope constraints: list of qeq's
 ;   ICONS append-list        ; Individual constraints: list of icons
 
-mrs-min := avm.
-
-; ERB 2007-01-21 Removing feature MSG here (moving it to a feature--SF---
-; of events).
-
-; SSH 2012-02-16 ICONS (individual contraints)
+mrs-min := avm
+"""Supertype for mrs with no features to keep feature structures small""".
 
 mrs := mrs-min &
   [ HOOK hook,
     RELS append-list,
     HCONS append-list,
-    ICONS append-list ].
+    ICONS append-list ]
+"""Defines the mrs object, i.e. the grammar-internal representation of
+the semantics of a sign
 
-; HOOK values include
-;    GTOP                  ; Global top handle
-;    LTOP                  ; Local top handle
-;    INDEX                 ; The salient nominal instance or event
-;    XARG                  ; The external (controlled) argument of a phrase
-;    ICONS-KEY             ; Indexes for icons
-;    CLAUSE-KEY            ; A feature to mediate between the INDEX of the
-;                            head and the CLAUSE value of the dependent.
+<features>
+HOOK: information available for further semantic composition
+RELS: list of elementary predications, value is append-list to facilitate
+      append
+HCONS: list of handle constraints, used to model partial constraints
+       on scope, value is append-list to facilitate append
+ICONS: list of individual constraints, used in the implemtnation of
+       information structure; value is append-list to facilitate append
 
-; SSH 2012-02-16 --ICONS
+<history>
+ERB 2007-01-21 Removing feature MSG here (moving it to a feature--SF---of events).
+SSH 2012-02-16 ICONS (individual contraints)""".
+
+
 hook := avm &
   [ GTOP handle,
     LTOP handle,
     INDEX individual,
     XARG individual,
     ICONS-KEY icons,
-    CLAUSE-KEY event ].
+    CLAUSE-KEY event ]
+"""Sturcture that houses a collection of features used in semantic
+composition
+
+<features>
+GTOP: Global top handle
+LTOP: Local top handle
+INDEX: The salient nominal instance or event
+XARG: The external (controlled) argument of a phrase
+ICONS-KEY: Indexes for icons
+CLAUSE-KEY: A feature to mediate between the INDEX of the
+head and the CLAUSE value of the dependent
+
+<history>
+SSH 2012-02-16 --ICONS""".
 
 ; MRSs are divided into psoas (with a distinguished event) and
 ; nom-objs (with a distinguished index).  We use a polymorphic
