@@ -34,22 +34,37 @@
 ; Types for Sign, Word, Phrase, and Lex-Entry
 
 sign-min := avm &
-  [ STEM list ].
+  [ STEM list ]
+""" General type from which most types inherit.
+<features> 
+STEM: orthography 
+<notes> 
+The history of the term sign goes 
+back to the concept of language as a system of signs (Saussure, 1916). """.
 
 basic-sign := sign-min &
-  [ KEY-ARG bool ].
+  [ KEY-ARG bool ]
+"""
+A general type introducing the KEY-ARG feature.
+<features>
+KEY-ARG: Which argument the parser should try to unify with first.
+""".
 
-; SSH 2013-03-06 - added PHON.
-; SSH 2013-04-19 - PHON is temporarily commented out.
-; sign := basic-sign &
-;   [ SYNSEM synsem,
-;     ARGS list,
-;     PHON phon,
-;     INFLECTED inflected ].
 sign := basic-sign &
   [ SYNSEM synsem,
     ARGS list,
-    INFLECTED inflected ].
+    INFLECTED inflected ]
+""" 
+A general type introducing the basic morphosyntactic structure.
+<features>
+SYNSEM: main structure for SYNtax and SEMantics. (Pollard and Sag 1994)
+ARGS: The daughters, such as daughters of a phrase-structure rule or the 
+daughter of a lexical rule.
+INFLECTED: a flag to determine whether or not the sign is already 
+inflected or still requires to go through a lexical rule.
+<history>
+SSH 2013-04-19 - removed PHON which was previously at the same level as SYNSEM. 
+""" .
 
 ; C-CONT encodes the semantic contribution of the rule (phrasal
 ; or lexical).
@@ -57,32 +72,46 @@ sign := basic-sign &
 phrase-or-lexrule := sign &
   [ SYNSEM canonical-synsem &
 	   [ LOCAL.CONT.HOOK #hook],
-    C-CONT mrs-min & [ HOOK #hook] ].
+    C-CONT mrs-min & [ HOOK #hook] ]
+""" A general type for phrases and lexical rules identifying the semantic hook
+in the local substructure with the C-CONT hook. """.
 
-word-or-lexrule-min := sign-min.
-
-; ALTS allow lexical entries to block lexical rule application
-; ARG-ST is the argument structure list.  It appears only on
-; lexical items (words or lexical rules), not on phrases.
+word-or-lexrule-min := sign-min
+"""A minimal supertype for words and lexical rules.""".
 
 word-or-lexrule := word-or-lexrule-min & sign &
   [ ALTS alts-min,
-    ARG-ST list ].
+    ARG-ST list ]
+"""
+<features>
+ALTS: allow lexical entries to block lexical rule application.
+ARG-ST: the argument structure list.  It appears only on lexical items 
+(words or lexical rules), not on phrases.
+""".
 
 nocoord := sign &
-  [ SYNSEM.LOCAL.COORD - ].
+  [ SYNSEM.LOCAL.COORD - ]
+"""A type which should cannot be daughter to any coordination rule.""".
 
-alts-min := avm.
+alts-min := avm
+"""A minimal supertype for alts, needed to block lexical rule application.""".
 alts := alts-min &
-  [ PASSIVE bool ].
-no-alts := alts-min.
+  [ PASSIVE bool ]
+"""
+<features>
+PASSIVE: A flag to indicate whether the type can undergo a passive lexical rule.
+""".
+no-alts := alts-min
+"""A subtype to prevent TODO """.
 
 ; Not all words have lex-synsem - e.g. lexical PPs like "tomorrow" are
 ; phr-synsem since they can be post-nominal modifiers.
 
-word := word-or-lexrule & nocoord.
+word := word-or-lexrule & nocoord
+""" A type for words, to differentiate them from lexical items. """.
 
-lex-item := word-or-lexrule & nocoord.
+lex-item := word-or-lexrule & nocoord
+""" A type for lexical items, to differentiate them from words.""".
 
 ;; Not all phrases have SYNSEM phr-synsem, since we need to allow the
 ;; head-comp rules to build signs which are still [ SYNSEM lex-synsem
@@ -90,7 +119,8 @@ lex-item := word-or-lexrule & nocoord.
 ;; most phrases will assign the type phr-synsem to the value of
 ;; SYNSEM, but not all.
 
-phrase := phrase-or-lexrule.
+phrase := phrase-or-lexrule
+""" A type for phrases, to differentiate the from words and lexical items.""".
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Affixation
