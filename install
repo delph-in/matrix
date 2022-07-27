@@ -93,7 +93,7 @@ rsync -a -o --exclude={CVS/,.svn/,delphin/,regression_tests/,tests/,sql_profiles
 # create datestamp, matrix-types, and head-types files
 date -u > $tempdir/datestamp
 matrix_core=${CUSTOMIZATIONROOT}/../matrix-core/
-cat $matrix_core/{matrix.tdl,head-types.tdl,roots.tdl,labels.tdl} | grep '^[^;].*:=' | sed 's/ *:=.*//g' | sort | uniq > $tempdir/matrix-types
+cat $matrix_core/{matrix.tdl,head-types.tdl,labels.tdl} | grep '^[^;].*:=' | sed 's/ *:=.*//g' | sort | uniq > $tempdir/matrix-types
 
 # Redirect directory index to cgi script (rather than index.html)
 echo "DirectoryIndex matrix.cgi" >> $tempdir/.htaccess

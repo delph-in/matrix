@@ -12,7 +12,7 @@
 
 ;;;
 ;;; vanilla.rpp file contains rules for tokenization
-;;; see http://moin.delph-in.net/ReppTop for docs
+;;; see https://github.com/delph-in/docs/wiki/ReppTop for docs
 (read-repp (lkb-pathname (parent-directory) "repp/vanilla.rpp"))
 (setf *repp-interactive* '(:vanilla))
 
@@ -96,7 +96,7 @@
 ;;; SSH 2012-03-27 This invokes trigger rules for semantically empty
 ;;; lexical entries. The trigger rules themselves should be in
 ;;; trigger.mtr in the grammar directory. The documentation on trigger
-;;; rules: http://moin.delph-in.net/LkbGeneration
+;;; rules: https://github.com/delph-in/docs/wiki/LkbGeneration
 ;;;
 ;;; SSH 2013-05-23 The semi.vpm file needs to be loaded *before* the
 ;;; trigger.mtr file in lkb/script for correct interaction.

@@ -62,7 +62,7 @@ JUXTAPOSITION_RULE = ' := [ SYNSEM.LOCAL [ CAT [ HEAD #head,\
                                                        CONT.HOOK.INDEX #possessor ] ].'
 
 
-TWO_REL_ADP = 'two-rel-adposition-lex := same-non-local-lex-rule &\
+TWO_REL_ADP = 'two-rel-adposition-lex := basic-icons-lex-item &\
   [ SYNSEM [ LOCAL [ CAT [ HEAD adp,\
                            VAL.COMPS < [ LOCAL [ CAT cat-sat,\
                                                  CONT.HOOK #hook & [ INDEX #ind,\
@@ -421,9 +421,6 @@ def customize_poss_rules(strat, mylang, ch, rules, hierarchies):
         if strat_order == 'either':
             mylang.add(phrase_rule+' := binary-headed-phrase.')
 
-        # Fix issue #632 where the adnominal possession library leaves the NON-LOCAL features underspecified
-        mylang.add(phrase_rule + ' := binary-nonloc-phrase.')
-
         # Add any feature constraints to possessor in juxt construction
         if strat.get('feat'):
             customize_feature_values(
@@ -500,7 +497,15 @@ def customize_poss_rules(strat, mylang, ch, rules, hierarchies):
             if strat_order != 'either':
                 spec_init = '+' if strat_order == 'head-final' else '-'
                 mylang.add('poss-unary-phrase-'+strat_num +
-                        ' := poss-unary-phrase & [ SYNSEM.LOCAL.CAT.HEAD.SPEC-INIT ' + spec_init + ' ].', section='phrases')
+                           ' := [ SYNSEM.LOCAL.CAT.HEAD.SPEC-INIT ' + spec_init + ' ].', section='phrases')
+                # LTX 2022-04-28: Fix issue #598:
+                # The line above does not assign a supertype for poss-unary-phrase until
+                # the customized_possessor_irules() function is called (i.e., only
+                # if this possessive strategy is used in morphology).
+                # Therefore, the supertype should be defined even though it's not instantiated
+                # in the morphology as below:
+                mylang.add('poss-unary-phrase-'+strat_num +
+                           ' := poss-unary-phrase.')
 
             # Check if you need to add any head-spec rules
             head_spec_order = ch.get('noun-det-order')

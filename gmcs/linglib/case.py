@@ -347,11 +347,12 @@ def customize_case(mylang, ch, hierarchies):
         adp_cases.sort()
         hierarchies['case'].get_type_covering(adp_cases)
 
-    # now output the case hierarchies
     # LTX 2022-04-22: It is possible to generate disjunctive case from
     # adnom_poss library (see issue issue #621).
     # Therefore, it should save case hierarchy to mylang.tdl after
     # adnominal possession customization.
+
+    # now output the case hierarchies
     # customize_case_type(mylang, hierarchies)
 
 
