@@ -65,9 +65,30 @@ def generate_sentences(grammar, mrs_files, verb_preds, delphin_dir, session):
     lkb_input.close()
     os.remove('lkb_input'+session)
     output.close()
-    output = open('lkb_output'+session, 'r')
 
+    sentences = get_sentences_from_lkb_output('lkb_output'+session, mrs_files, verb_preds)
+    # the structure of this sentences list is
+    # [ 
+    #   [
+    #       [ <mrs_file_name>:, <dictionary_with_verb_predicate_names>, <mrs_template_label>, <mrs_template_file_name> ],
+    #       [ <sentence_generated> ], 
+    #       [ <tree_structure_for_sentences> ], 
+    #       [ <values_for_tags_and_features_in_MRS> ]
+    #   ]
+    # ]
+    # Eg. [[['8098Pattern 1:', {'ITR-VERB1': '_sleep_v_rel'}, 'Intransitive verb phrase', 'itv'], [b'i sleep'], ["&nbsp&nbsp&nbsp&nbsp (S (NP (N ('I'))) (VP ('sleep')))<br>"], ['&nbsp&nbsp&nbsp&nbsp &lt h1,e2:PROP-OR-QUES:TENSE:ASPECT:MOOD,...]
+    return sentences
+
+def get_sentences_from_lkb_output(output_file,  mrs_files, verb_preds):
+    '''parses the output file from lkb after generating sentences to extract the sentence information.'''
+    output = open(output_file, 'r')
     sentences = []
+
+     # create an entry in sentences for every mrs pattern in mrs_files
+    for i in range(len(mrs_files)):
+        sentences.append([[mrs_files[i]+":", verb_preds[i][0],
+                               verb_preds[i][1], verb_preds[i][2]], [], [], []])
+
     index = -1
     sentence = parse = mrs = state = ""
     in_output = False
@@ -78,8 +99,6 @@ def generate_sentences(grammar, mrs_files, verb_preds, delphin_dir, session):
         # continue
         if line.find("new-pattern") == 0:
             index += 1
-            sentences.append([[mrs_files[index]+":", verb_preds[index][0],
-                               verb_preds[index][1], verb_preds[index][2]], [], [], []])
         elif line.find("start-entry") == 0:
             state = "sentence"
         elif line.find("parse") == 0:
@@ -124,14 +143,12 @@ def generate_sentences(grammar, mrs_files, verb_preds, delphin_dir, session):
             mrs += "&nbsp&nbsp&nbsp&nbsp " + \
                 line.strip().replace("<", "&lt ").replace(">", "&gt") + "<br>"
     output.close()
-    os.remove('lkb_output'+session)
+    os.remove(output_file)
     for entry in sentences:
         entry[2] = [clean_tree(s) for s in entry[2]]
     return sentences
 
 # returns a clean version of a tree outputted by the lkb
-
-
 def clean_tree(tree):
     return re.sub(r'\("([^()]+)"\)', r'(@\1@)', tree).replace('"', '').replace('@', "'")
 
@@ -253,6 +270,7 @@ def get_v_predications(grammar_dir, lang):
 
 class Template:
     def __init__(self, file=None):
+        # The file name is expected to be a file listed in web/templates/
         if file:
             pred_re = re.compile(r'#(.*?)#')
             feat_re = re.compile(r'@(.*?)@')
