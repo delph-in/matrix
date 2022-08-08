@@ -83,6 +83,12 @@ def get_sentences_from_lkb_output(output_file,  mrs_files, verb_preds):
     '''parses the output file from lkb after generating sentences to extract the sentence information.'''
     output = open(output_file, 'r')
     sentences = []
+
+     # create an entry in sentences for every mrs pattern in mrs_files
+    for i in range(len(mrs_files)):
+        sentences.append([[mrs_files[i]+":", verb_preds[i][0],
+                               verb_preds[i][1], verb_preds[i][2]], [], [], []])
+
     index = -1
     sentence = parse = mrs = state = ""
     in_output = False
@@ -93,8 +99,6 @@ def get_sentences_from_lkb_output(output_file,  mrs_files, verb_preds):
         # continue
         if line.find("new-pattern") == 0:
             index += 1
-            sentences.append([[mrs_files[index]+":", verb_preds[index][0],
-                               verb_preds[index][1], verb_preds[index][2]], [], [], []])
         elif line.find("start-entry") == 0:
             state = "sentence"
         elif line.find("parse") == 0:
