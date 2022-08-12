@@ -256,6 +256,12 @@ def get_sentences_from_ace_output(output_file,  mrs_files, verb_preds):
                 state = "sentence"
         else:
             continue
+    # If no sentence was added to the sentence position (sentences[x][1]) then add "#NO-SENTENCES"
+    for i in range(len(mrs_files)):
+        if len(sentences[i][1]) == 0:
+            sentences[i][1].append("#NO-SENTENCES#")
+            sentences[i][1].append("")
+            sentences[i][1].append("")
     return sentences
             
 
@@ -287,6 +293,8 @@ def get_n_predications(grammar_dir):
     choices = open(os.path.join(grammar_dir, 'choices'), 'r')
     lang = None
 
+    # Worth noting that since the stem must explicitly be [0-9] only the first 10 predicates
+    # Are ever stored for each noun type.
     pred_re = re.compile(r'noun([0-9]+)_stem[0-9]_pred')
 
     # det_re is searching for whether dets are opt, obl or imp
@@ -295,6 +303,10 @@ def get_n_predications(grammar_dir):
     # det2_re is searching for determiner predications
     det2_re = re.compile(r'det[0-9]+_stem[0-9]_pred')
 
+    # Every noun type in the choices file should have a number eg.noun23
+    # And every noun type should define exactly one determiner type (opt, obl, imp)
+    # This dictionary maps the noun number to the det type.
+    noun_det_dict = {}
     # noun_rels_dets is a list of pairs, where the first element is a noun_rel
     # the second element is whether a determiner is 'obl','opt' or 'imp'
     # for that noun_rel
@@ -302,24 +314,24 @@ def get_n_predications(grammar_dir):
     # det_list is the set of determiner rels found in the choices
     det_list = set([])
     for line in choices:
-        pline = line.lstrip().split('=')
-        m1 = pred_re.match(pline[0])
-        m2 = det_re.match(pline[0])
-        m3 = det2_re.match(pline[0])
-        if pline[0] == 'language':
-            lang = os.path.join(grammar_dir, pline[1].lower().rstrip()+'.tdl')
+        pline = line.strip().split('=')
+        if len(pline) != 2:
+            continue
+        feature, value = pline
+        m1 = pred_re.match(feature)
+        m2 = det_re.match(feature)
+        m3 = det2_re.match(feature)
+        if feature == 'language':
+            lang = os.path.join(grammar_dir, value.lower()+'.tdl')
         if m1:  # m1 is results of looking for noun predications
-            if int(m1.group(1)) <= len(noun_rels_dets):
-                noun_rels_dets[int(m1.group(1))-1][0] = pline[1].rstrip()
-            else:
-                noun_rels_dets.append([pline[1].rstrip(), None])
+            noun_number = m1.group(1)
+            if noun_number in noun_det_dict:
+                noun_rels_dets.append([value, noun_det_dict[noun_number]])
         if m2:
-            if int(m2.group(1)) <= len(noun_rels_dets):
-                noun_rels_dets[int(m2.group(1))-1][1] = pline[1].rstrip()
-            else:
-                noun_rels_dets.append([None, pline[1].rstrip()])
+            noun_number = m2.group(1)
+            noun_det_dict[noun_number] = value
         if m3:
-            det_list.add(pline[1].rstrip())
+            det_list.add(value)
 
     noun_rels_dets = remove_duplicates(noun_rels_dets)
     # print "noun_rels_dets: <<",noun_rels_dets,">><br />"
@@ -336,17 +348,29 @@ def get_n_predications(grammar_dir):
     choices.close()
     return(noun_rels_dets, det_rels, lang)
 
+def get_section(text:str, section_start_symbol:str, section_end_symbol:str):
+    start = text.find(section_start_symbol)
+    end = text.find(section_end_symbol, start+1)
+    return text[start:end]
 
 def get_v_predications(grammar_dir, lang):
     itv_rels = []
     stv_rels = []
+    # verbs has the structure {"verb_v_rel": "some-verb-lex"}
     verbs = {}
     cur_type = ""
+    # Not sure what the rationality of used_types is but the way its used
+    # is there can only be one predicate per verb-lex-type in the dict
+    # so if multiple verbs are trans-verb-lex, only one goes into the dict 
+    # which seems wrong.
     used_types = []
-    p1 = re.compile(r'(\S*verb-lex)')
+    p1 = re.compile(r'(\S*-verb-lex)')
     p2 = re.compile(r'PRED \"(\S*)\"')
     lexicon = open(os.path.join(grammar_dir, 'lexicon.tdl'), 'r')
-    for line in lexicon:
+    verb_section = get_section(lexicon.read(), ";;; Verbs", ";;; ")
+    verb_lines = verb_section.split('\n')
+    # iterates through lexicon.tdl
+    for line in verb_lines:
         m1 = p1.search(line)
         m2 = p2.search(line)
         if m1:
@@ -355,28 +379,33 @@ def get_v_predications(grammar_dir, lang):
             verbs[m2.group(1)] = [cur_type]
             used_types.append(cur_type)
             cur_type = ""
-    p = re.compile(r'(\S*) := (.*)')
-    while verbs != {}:
-        language = open(lang, 'r')
-        for line in language:
-            if line.find(":=") > -1:
-                for verb in list(verbs.keys()):
-                    for type in verbs[verb]:
-                        if line.find(type) == 0:
-                            verbs[verb].remove(type)
-                            new = p.match(line).group(2).split('&')
-                            new = [x.lstrip().rstrip('. \t\n') for x in new]
-                            if '' in new:
-                                new.remove('')
-                            verbs[verb] = verbs[verb] + new
-                            if 'intransitive-lex-item' in verbs[verb]:
-                                itv_rels.append(verb)
-                                del verbs[verb]
-                            elif 'transitive-lex-item' in verbs[verb]:
-                                stv_rels.append(verb)
-                                del verbs[verb]
-        language.close()
     lexicon.close()
+    language = open(lang, 'r')
+    verb_section = get_section(language.read(), ";;; Verbs", ";;; ")
+    # For each verb in verbs, we need to find out if it is a 
+    # descendant of transitive-lex-item or intransitive-lex-item
+    for verb in verbs.keys():
+        lex_types = verbs[verb]
+        while len(lex_types) > 0:
+            for lex_type in list(lex_types):
+                type_regex = re.compile(r'\s{} := (.*)\n'.format(lex_type))
+                type_match = type_regex.search(verb_section)
+                if type_match:
+                    new_types = type_match.group(1).split('&')
+                    new_types = [item.strip().rstrip('.') for item in new_types if len(item) > 0]
+                    if 'intransitive-lex-item' in new_types:
+                        itv_rels.append(verb)
+                        lex_types = []
+                    elif 'transitive-lex-item' in new_types:
+                        stv_rels.append(verb)
+                        lex_types = []
+                    else:
+                        lex_types = lex_types + new_types
+                # Always remove the current type from the lex_types list
+                # after we finished "searching" this type.
+                if lex_type in lex_types:
+                    lex_types.remove(lex_type)
+    language.close()
     return (itv_rels, stv_rels)
 
 # Class for storing templates with methods to facilitate predicate and feature replacement
@@ -608,7 +637,7 @@ def get_additional_sentences(grammar_dir, delphin_dir, verb_rels, template_file,
     templates = [t]
     repl_feats = get_replacement_features_from_grammar(grammar_dir)
     t.replace_features_from_grammar(repl_feats)
-    for pred in t.preds:
+    for pred in t.preds.copy():
         m1, m2, m3, m4 = itr_verb_re.match(pred), tr_verb_re.match(
             pred), noun_re.match(pred), det_re.match(pred)
         if m1:
