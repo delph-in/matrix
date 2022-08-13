@@ -8,6 +8,7 @@ import os
 import shutil
 import subprocess
 import json
+from delphin import ace
 
 display_gen_results_fn = '''
 (defun TbG-gen-results nil
@@ -157,112 +158,82 @@ def clean_tree(tree):
 def generate_sentences_ace(grammar_dir, mrs_files, verb_preds, delphin_dir, session):
     iso = os.path.basename(grammar_dir)
 
-    # command to compile the grammar
-    compile_grammar_cmd = '/usr/local/bin/ace -G %(grammar_dir)s/%(iso)s.dat -g %(grammar_dir)s/ace/config.tdl' % {'grammar_dir':grammar_dir, 'iso':iso}
-    # print(compile_grammar_cmd)
-
     # open a file to catch the ace output
     output = open('ace_output'+session, 'w')
-    output.write('Compiling grammar...\n> '+compile_grammar_cmd+'\n')
+    output.write('Compiling grammar...\n')
     output.flush()
 
     ace_error = open('ace_error'+session, 'w')
-    ace_error.write('Compiling grammar...\n> '+compile_grammar_cmd+'\n')
+    ace_error.write('Compiling grammar...\n')
     ace_error.flush()
 
     # compile the grammar
-    subprocess.run(compile_grammar_cmd.split(),
-                    stdout=output, stderr=ace_error, env=os.environ)
+    ace.compile('%(grammar_dir)s/ace/config.tdl' % {'grammar_dir': grammar_dir}, 
+                '%(grammar_dir)s/%(iso)s.dat' % {'grammar_dir':grammar_dir, 'iso':iso},
+                executable='/usr/local/bin/ace',
+                stdout=output, stderr=ace_error)
 
     # rewrite the multiple mrs files to be one mrs per line
-    ace_mrs = open('ace_mrs'+session, 'w')
+    ace_mrs_iterable = []
     for mrs_file in mrs_files:
         text = collapse_mrs_to_one_line(mrs_file)
-        ace_mrs.write(text+"\n")
-    ace_mrs.flush()
-    ace_mrs.close()
+        ace_mrs_iterable.append(text)
 
-    # command to generate sentences
-    # TODO: add -n [count] to enumerate only the top [count] results.
-    generate_sentences_cmd = '/usr/local/bin/ace -g %(grammar_dir)s/%(iso)s.dat -f -e  --disable-subsumption-test --show-realization-mrses ace_mrs%(session)s' % {'grammar_dir':grammar_dir, 'iso':iso, 'session':session, 'count':str(len(mrs_files))}
-    # print(generate_sentences_cmd)
-
-    output.write('\nGenerating Sentences...\n> '+generate_sentences_cmd+'\n')
+    output.write('\nGenerating Sentences...\n')
     output.flush()
-    ace_error.write('\nGenerating Sentences...\n> '+generate_sentences_cmd+'\n')
+    ace_error.write('\nGenerating Sentences...\n')
     ace_error.flush()
-    subprocess.run(generate_sentences_cmd.split(),
-                    stdout=output, stderr=ace_error, env=os.environ)
 
+    # generate sentences with ace
+    # TODO: add -n [count] to enumerate only the top [count] results.
+    response_iter = ace.generate_from_iterable(
+        '%(grammar_dir)s/%(iso)s.dat' % {'grammar_dir':grammar_dir, 'iso':iso},
+        ace_mrs_iterable,
+        cmdargs = ['--disable-subsumption-test'],
+        executable='/usr/local/bin/ace',
+        stderr=ace_error
+    )
+
+    sentences = get_sentences_from_ace_response(response_iter, mrs_files, verb_preds)
+    # get_sentences_from_ace_output('ace_output'+session, mrs_files, verb_preds)
+    # the structure of this sentences list is
+    # [ 
+    #   [
+    #       [ <mrs_file_name>:, <dictionary_with_verb_predicate_names>, <mrs_template_label>, <mrs_template_file_name> ],
+    #       [ <sentence_generated> ], 
+    #       [ <tree_structure_for_sentences> ], 
+    #       [ <values_for_tags_and_features_in_MRS> ]
+    #   ]
+    # ]
+    # Eg. [[['8098Pattern 1:', {'ITR-VERB1': '_sleep_v_rel'}, 'Intransitive verb phrase', 'itv'], [b'i sleep'], ["&nbsp&nbsp&nbsp&nbsp (S (NP (N ('I'))) (VP ('sleep')))<br>"], ['&nbsp&nbsp&nbsp&nbsp &lt h1,e2:PROP-OR-QUES:TENSE:ASPECT:MOOD,...]
     ace_error.close()
     output.close()
-    sentences = get_sentences_from_ace_output('ace_output'+session, mrs_files, verb_preds)
     return sentences
 
-def get_sentences_from_ace_output(output_file,  mrs_files, verb_preds):
-    '''parses the output file from lkb after generating sentences to extract the sentence information.'''
-    output = open(output_file, 'r')
+def get_sentences_from_ace_response(response_iter, mrs_files, verb_preds):
     sentences = []
 
     # create an entry in sentences for every mrs pattern in mrs_files
     for i in range(len(mrs_files)):
         sentences.append([[mrs_files[i]+":", verb_preds[i][0],
                                verb_preds[i][1], verb_preds[i][2]], [], [], []])
-
-    state = "start"
-    mrs_index = -1
-    mrs = ""
-    for line in output:
-        # print(line)
-        if line.find("Generating Sentences") == 0:
-            state = "cmd"
-            mrs_index +=1
-        # The only reason we have this command state is because the command sent to ace is in the output file 
-        # and immediately after this line, the sentences are listed.
-        elif state == "cmd":
-            state = "sentence"
-        elif state == "sentence":
-            sentence = line.strip()
-            # if the sentence line is empty that may mean either
-            if len(sentence) == 0:
-                # no sentences were generated
-                if len(sentences[mrs_index][1]) == 0:
-                    sentences[mrs_index][1].append("#NO-SENTENCES#")
-                    sentences[mrs_index][1].append("")
-                    sentences[mrs_index][1].append("")
-                # or we reached the last sentence of this pattern.
-                mrs_index += 1
-            else:
-                sentences[mrs_index][1].append(sentence)
-                state = "parse_tree"
-        elif state == "parse_tree":
-            # TODO: Add parse tree information, as of now it is empty by default.
+    
+    mrs_index = 0
+    for response in response_iter:
+        results = len(response.results())
+        if results == 0:
+            sentences[mrs_index][1].append("#NO-SENTENCES#")
             sentences[mrs_index][2].append("")
-            state = "mrs"
-        if state == "mrs":
-            if line.startswith("MRS = "):
-                mrs = ""
-                line = line.lstrip("MRS = ")
-            if len(line.strip()) > 0:
-                display_mrs = "&nbsp&nbsp&nbsp&nbsp" + line.strip().replace("<", "&lt ").replace(">", "&gt") + "<br>"
-                mrs += display_mrs
-            else:
-                # There is no MRS
-                sentences[mrs_index][3].append("")
-                state = "sentence" # not sure if this is the right state to be if there is no mrs.
-            # I'm making an assumption here that the last line in the MRS is always the ICONS line.
-            if line.startswith("ICONS:"):
-                sentences[mrs_index][3].append(mrs)
-                state = "sentence"
+            sentences[mrs_index][3].append("")
         else:
-            continue
-    # If no sentence was added to the sentence position (sentences[x][1]) then add "#NO-SENTENCES"
-    for i in range(len(mrs_files)):
-        if len(sentences[i][1]) == 0:
-            sentences[i][1].append("#NO-SENTENCES#")
-            sentences[i][1].append("")
-            sentences[i][1].append("")
+            for i in range(results):
+                result = response.result(i)
+                sentences[mrs_index][1].append(result['surface'])
+                sentences[mrs_index][2].append("&nbsp&nbsp&nbsp&nbsp " + result['tree'].strip() + '<br>')
+                sentences[mrs_index][3].append("&nbsp&nbsp&nbsp&nbsp " + result['mrs'].strip())
+        mrs_index += 1
     return sentences
+
             
 
 def collapse_mrs_to_one_line(mrs_file):
