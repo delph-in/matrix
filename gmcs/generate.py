@@ -9,6 +9,7 @@ import shutil
 import subprocess
 import json
 from delphin import ace
+from delphin.codecs import simplemrs
 
 display_gen_results_fn = '''
 (defun TbG-gen-results nil
@@ -230,7 +231,9 @@ def get_sentences_from_ace_response(response_iter, mrs_files, verb_preds):
                 result = response.result(i)
                 sentences[mrs_index][1].append(result['surface'])
                 sentences[mrs_index][2].append("&nbsp&nbsp&nbsp&nbsp " + result['tree'].strip() + '<br>')
-                sentences[mrs_index][3].append("&nbsp&nbsp&nbsp&nbsp " + result['mrs'].strip())
+                mrs = simplemrs.decode(result['mrs'].strip())
+                mrs_string = simplemrs.encode(mrs, indent=True).replace('\n', '<br>&nbsp&nbsp&nbsp&nbsp&nbsp')
+                sentences[mrs_index][3].append("&nbsp&nbsp&nbsp&nbsp " + mrs_string)
         mrs_index += 1
     return sentences
 
