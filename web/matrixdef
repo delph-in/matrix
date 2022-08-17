@@ -3817,6 +3817,10 @@ BeginIter stv-feat{j} "a Feature"
 
 EndIter stv-feat
 
+Separator
+
+Check from-test-sentences "Test Sentences" "" "Generate from Test Sentences<br>"
+
 Section ToolboxLexicon "Toolbox Lexicon" 0
 
 Label "<p> Imported Toolbox Lexical items are displayed here, if any of these are incorrect
