@@ -7,6 +7,9 @@ import re
 import os
 import shutil
 import subprocess
+import json
+from delphin import ace
+from delphin.codecs import simplemrs
 
 display_gen_results_fn = '''
 (defun TbG-gen-results nil
@@ -28,7 +31,7 @@ display_gen_results_fn = '''
 '''
 
 
-def generate_sentences(grammar, mrs_files, verb_preds, delphin_dir, session):
+def generate_sentences_lkb(grammar, mrs_files, verb_preds, delphin_dir, session):
 
     # open a file called lkb_input+session for writing
     # this file will contain commands to be sent to the lkb
@@ -65,9 +68,30 @@ def generate_sentences(grammar, mrs_files, verb_preds, delphin_dir, session):
     lkb_input.close()
     os.remove('lkb_input'+session)
     output.close()
-    output = open('lkb_output'+session, 'r')
 
+    sentences = get_sentences_from_lkb_output('lkb_output'+session, mrs_files, verb_preds)
+    # TODO: This complicated list structure could be cleaner. 
+    # The structure of this sentences list is
+    # [ 
+    #   [
+    #       [ <mrs_file_name>:, <dictionary_with_verb_predicate_names>, <mrs_template_label>, <mrs_template_file_name> ],
+    #       [ <sentence_generated> ], 
+    #       [ <tree_structure_for_sentences> ], 
+    #       [ <values_for_tags_and_features_in_MRS> ]
+    #   ]
+    # ]
+    # Eg. [[['8098Pattern 1:', {'ITR-VERB1': '_sleep_v_rel'}, 'Intransitive verb phrase', 'itv'], [b'i sleep'], ["&nbsp&nbsp&nbsp&nbsp (S (NP (N ('I'))) (VP ('sleep')))<br>"], ['&nbsp&nbsp&nbsp&nbsp &lt h1,e2:PROP-OR-QUES:TENSE:ASPECT:MOOD,...]
+    return sentences
+
+def get_sentences_from_lkb_output(output_file,  mrs_files, verb_preds):
+    '''parses the output file from lkb after generating sentences to extract the sentence information.'''
+    output = open(output_file, 'r')
     sentences = []
+
+     # create an entry in sentences for every mrs pattern in mrs_files
+    for i in range(len(mrs_files)):
+        sentences.append([[mrs_files[i]+":", verb_preds[i][0],
+                               verb_preds[i][1], verb_preds[i][2]], [], [], []])
     index = -1
     sentence = parse = mrs = state = ""
     in_output = False
@@ -78,8 +102,6 @@ def generate_sentences(grammar, mrs_files, verb_preds, delphin_dir, session):
         # continue
         if line.find("new-pattern") == 0:
             index += 1
-            sentences.append([[mrs_files[index]+":", verb_preds[index][0],
-                               verb_preds[index][1], verb_preds[index][2]], [], [], []])
         elif line.find("start-entry") == 0:
             state = "sentence"
         elif line.find("parse") == 0:
@@ -117,30 +139,138 @@ def generate_sentences(grammar, mrs_files, verb_preds, delphin_dir, session):
 
         elif state == "sentence":
             sentence = line.lstrip('( \n').rstrip(') .\n').replace(
-                '"', '').lower().encode('utf-8')
+                '"', '').lower()
         elif state == "parse":
             parse += "&nbsp&nbsp&nbsp&nbsp " + line.strip()
         elif state == "mrs":
             mrs += "&nbsp&nbsp&nbsp&nbsp " + \
                 line.strip().replace("<", "&lt ").replace(">", "&gt") + "<br>"
     output.close()
-    os.remove('lkb_output'+session)
+    os.remove(output_file)
     for entry in sentences:
         entry[2] = [clean_tree(s) for s in entry[2]]
     return sentences
 
 # returns a clean version of a tree outputted by the lkb
-
-
 def clean_tree(tree):
     return re.sub(r'\("([^()]+)"\)', r'(@\1@)', tree).replace('"', '').replace('@', "'")
 
+def compile_grammar_ace(grammar_dir, session):
+    '''Compiles the grammar in the given directory using ACE'''
+    iso = os.path.basename(grammar_dir)
 
-def remove_duplicates(list):
+    # open a file to catch the ace output
+    output = open('ace_output'+session, 'w')
+    output.write('Compiling grammar...\n')
+    output.flush()
+
+    ace_error = open('ace_error'+session, 'w')
+    ace_error.write('Compiling grammar...\n')
+    ace_error.flush()
+
+    # compile the grammar
+    ace.compile('%(grammar_dir)s/ace/config.tdl' % {'grammar_dir': grammar_dir}, 
+                '%(grammar_dir)s/%(iso)s.dat' % {'grammar_dir':grammar_dir, 'iso':iso},
+                executable='/usr/local/bin/ace',
+                stdout=output, stderr=ace_error)
+    output.close()
+    ace_error.close()
+
+def generate_sentences_ace(grammar_dir, mrs_files, template_data, delphin_dir, session):
+    '''Generates sentences using the grammar image in grammar_dir and the mrs_files. 
+    Note that this function assumes that the grammar is already compiled.'''
+    # rewrite the multiple mrs files to be one mrs per line
+    ace_mrs_iterable = []
+    for mrs_file in mrs_files:
+        text = collapse_mrs_to_one_line(mrs_file)
+        ace_mrs_iterable.append(text)
+
+    iso = os.path.basename(grammar_dir)
+    ace_output = open('ace_output'+session, 'w')
+    ace_error = open('ace_error'+session, 'w')
+
+    ace_output.write('\nGenerating Sentences...\n')
+    ace_output.flush()
+    ace_error.write('\nGenerating Sentences...\n')
+    ace_error.flush()
+
+    # generate sentences with ace
+    # TODO: add -n [count] to enumerate only the top [count] results.
+    response_iter = ace.generate_from_iterable(
+        '%(grammar_dir)s/%(iso)s.dat' % {'grammar_dir':grammar_dir, 'iso':iso},
+        ace_mrs_iterable,
+        cmdargs = ['--disable-subsumption-test'],
+        executable='/usr/local/bin/ace',
+        stderr=ace_error
+    )
+
+    sentences = get_sentences_from_ace_response(response_iter, mrs_files, template_data, ace_output)
+    # get_sentences_from_ace_output('ace_output'+session, mrs_files, verb_preds)
+    # the structure of this sentences list is
+    # [ 
+    #   [
+    #       [ <mrs_file_name>:, <dictionary_with_verb_predicate_names>, <mrs_template_label>, <mrs_template_file_name> ],
+    #       [ <sentence_generated> ], 
+    #       [ <tree_structure_for_sentences> ], 
+    #       [ <values_for_tags_and_features_in_MRS> ]
+    #   ]
+    # ]
+    # Eg. [[['8098Pattern 1:', {'ITR-VERB1': '_sleep_v_rel'}, 'Intransitive verb phrase', 'itv'], [b'i sleep'], ["&nbsp&nbsp&nbsp&nbsp (S (NP (N ('I'))) (VP ('sleep')))<br>"], ['&nbsp&nbsp&nbsp&nbsp &lt h1,e2:PROP-OR-QUES:TENSE:ASPECT:MOOD,...]
+    ace_error.close()
+    ace_output.close()
+    return sentences
+
+def get_sentences_from_ace_response(response_iter, mrs_files, template_data, ace_output):
+    sentences = []
+
+    # create an entry in sentences for every mrs pattern in mrs_files
+    for i in range(len(mrs_files)):
+        sentences.append([[mrs_files[i]+":", template_data[i][0],
+                               template_data[i][1], template_data[i][2]], [], [], []])
+    
+    mrs_index = 0
+    for response in response_iter:
+        results = len(response.results())
+        if results == 0:
+            sentences[mrs_index][1].append("#NO-SENTENCES#")
+            sentences[mrs_index][2].append("")
+            sentences[mrs_index][3].append("")
+        else:
+            for i in range(results):
+                result = response.result(i)
+                sentences[mrs_index][1].append(result['surface'])
+                print(result['surface'], file=ace_output)
+
+                sentences[mrs_index][2].append("&nbsp&nbsp&nbsp&nbsp " + result['tree'].strip() + '<br>')
+                print(result['surface'], file=ace_output)
+
+                mrs = simplemrs.decode(result['mrs'].strip())
+                mrs_string = simplemrs.encode(mrs, indent=True).replace('\n', '<br>&nbsp&nbsp&nbsp&nbsp&nbsp')
+                print(simplemrs.encode(mrs, indent=True), file=ace_output)
+                sentences[mrs_index][3].append("&nbsp&nbsp&nbsp&nbsp " + mrs_string)
+        mrs_index += 1
+    return sentences
+
+            
+
+def collapse_mrs_to_one_line(mrs_file):
+    '''Takes a multiline mrs file, splits the white sapce and puts everything together into one line.'''
+    file = open(mrs_file, 'r')
+    text = file.read()
+    text = " ".join(text.split())
+    return text
+
+
+def remove_duplicates(input_list):
+    '''Takes an input list that has the form [[a1,b1],[a2,b2], ... [a{n}, b{n}]] ie. a list of pairs.
+    It removes any pair in the list where the "a" value appeared earlier in the list. 
+    
+    For example if a2 == a1 in the example list above then [a2, b2] would be removed from the list.
+    '''
     new_list = []
-    while(list != []):
-        new_list.append(list[0])
-        list = list(filter((lambda x: x[0] != list[0][0]), list))
+    while(input_list != []):
+        new_list.append(input_list[0])
+        input_list = list(filter((lambda x: x[0] != input_list[0][0]), input_list))
     return new_list
 
 # Extract predications from the grammar
@@ -151,6 +281,8 @@ def get_n_predications(grammar_dir):
     choices = open(os.path.join(grammar_dir, 'choices'), 'r')
     lang = None
 
+    # Worth noting that since the stem must explicitly be [0-9] only the first 10 predicates
+    # Are ever stored for each noun type.
     pred_re = re.compile(r'noun([0-9]+)_stem[0-9]_pred')
 
     # det_re is searching for whether dets are opt, obl or imp
@@ -159,6 +291,10 @@ def get_n_predications(grammar_dir):
     # det2_re is searching for determiner predications
     det2_re = re.compile(r'det[0-9]+_stem[0-9]_pred')
 
+    # Every noun type in the choices file should have a number eg.noun23
+    # And every noun type should define exactly one determiner type (opt, obl, imp)
+    # This dictionary maps the noun number to the det type.
+    noun_det_dict = {}
     # noun_rels_dets is a list of pairs, where the first element is a noun_rel
     # the second element is whether a determiner is 'obl','opt' or 'imp'
     # for that noun_rel
@@ -166,24 +302,24 @@ def get_n_predications(grammar_dir):
     # det_list is the set of determiner rels found in the choices
     det_list = set([])
     for line in choices:
-        pline = line.lstrip().split('=')
-        m1 = pred_re.match(pline[0])
-        m2 = det_re.match(pline[0])
-        m3 = det2_re.match(pline[0])
-        if pline[0] == 'language':
-            lang = os.path.join(grammar_dir, pline[1].lower().rstrip()+'.tdl')
+        pline = line.strip().split('=')
+        if len(pline) != 2:
+            continue
+        feature, value = pline
+        m1 = pred_re.match(feature)
+        m2 = det_re.match(feature)
+        m3 = det2_re.match(feature)
+        if feature == 'language':
+            lang = os.path.join(grammar_dir, value.lower()+'.tdl')
         if m1:  # m1 is results of looking for noun predications
-            if int(m1.group(1)) <= len(noun_rels_dets):
-                noun_rels_dets[int(m1.group(1))-1][0] = pline[1].rstrip()
-            else:
-                noun_rels_dets.append([pline[1].rstrip(), None])
+            noun_number = m1.group(1)
+            if noun_number in noun_det_dict:
+                noun_rels_dets.append([value, noun_det_dict[noun_number]])
         if m2:
-            if int(m2.group(1)) <= len(noun_rels_dets):
-                noun_rels_dets[int(m2.group(1))-1][1] = pline[1].rstrip()
-            else:
-                noun_rels_dets.append([None, pline[1].rstrip()])
+            noun_number = m2.group(1)
+            noun_det_dict[noun_number] = value
         if m3:
-            det_list.add(pline[1].rstrip())
+            det_list.add(value)
 
     noun_rels_dets = remove_duplicates(noun_rels_dets)
     # print "noun_rels_dets: <<",noun_rels_dets,">><br />"
@@ -200,17 +336,29 @@ def get_n_predications(grammar_dir):
     choices.close()
     return(noun_rels_dets, det_rels, lang)
 
+def get_section(text:str, section_start_symbol:str, section_end_symbol:str):
+    start = text.find(section_start_symbol)
+    end = text.find(section_end_symbol, start+1)
+    return text[start:end]
 
 def get_v_predications(grammar_dir, lang):
     itv_rels = []
     stv_rels = []
+    # verbs has the structure {"verb_v_rel": "some-verb-lex"}
     verbs = {}
     cur_type = ""
+    # Not sure what the rationality of used_types is but the way its used
+    # is there can only be one predicate per verb-lex-type in the dict
+    # so if multiple verbs are trans-verb-lex, only one goes into the dict 
+    # which seems wrong.
     used_types = []
-    p1 = re.compile(r'(\S*verb-lex)')
+    p1 = re.compile(r'(\S*-verb-lex)')
     p2 = re.compile(r'PRED \"(\S*)\"')
     lexicon = open(os.path.join(grammar_dir, 'lexicon.tdl'), 'r')
-    for line in lexicon:
+    verb_section = get_section(lexicon.read(), ";;; Verbs", ";;; ")
+    verb_lines = verb_section.split('\n')
+    # iterates through lexicon.tdl
+    for line in verb_lines:
         m1 = p1.search(line)
         m2 = p2.search(line)
         if m1:
@@ -219,28 +367,33 @@ def get_v_predications(grammar_dir, lang):
             verbs[m2.group(1)] = [cur_type]
             used_types.append(cur_type)
             cur_type = ""
-    p = re.compile(r'(\S*) := (.*)')
-    while verbs != {}:
-        language = open(lang, 'r')
-        for line in language:
-            if line.find(":=") > -1:
-                for verb in list(verbs.keys()):
-                    for type in verbs[verb]:
-                        if line.find(type) == 0:
-                            verbs[verb].remove(type)
-                            new = p.match(line).group(2).split('&')
-                            new = [x.lstrip().rstrip('. \t\n') for x in new]
-                            if '' in new:
-                                new.remove('')
-                            verbs[verb] = verbs[verb] + new
-                            if 'intransitive-lex-item' in verbs[verb]:
-                                itv_rels.append(verb)
-                                del verbs[verb]
-                            elif 'transitive-lex-item' in verbs[verb]:
-                                stv_rels.append(verb)
-                                del verbs[verb]
-        language.close()
     lexicon.close()
+    language = open(lang, 'r')
+    verb_section = get_section(language.read(), ";;; Verbs", ";;; ")
+    # For each verb in verbs, we need to find out if it is a 
+    # descendant of transitive-lex-item or intransitive-lex-item
+    for verb in verbs.keys():
+        lex_types = verbs[verb]
+        while len(lex_types) > 0:
+            for lex_type in list(lex_types):
+                type_regex = re.compile(r'\s{} := (.*)\n'.format(lex_type))
+                type_match = type_regex.search(verb_section)
+                if type_match:
+                    new_types = type_match.group(1).split('&')
+                    new_types = [item.strip().rstrip('.') for item in new_types if len(item) > 0]
+                    if 'intransitive-lex-item' in new_types:
+                        itv_rels.append(verb)
+                        lex_types = []
+                    elif 'transitive-lex-item' in new_types:
+                        stv_rels.append(verb)
+                        lex_types = []
+                    else:
+                        lex_types = lex_types + new_types
+                # Always remove the current type from the lex_types list
+                # after we finished "searching" this type.
+                if lex_type in lex_types:
+                    lex_types.remove(lex_type)
+    language.close()
     return (itv_rels, stv_rels)
 
 # Class for storing templates with methods to facilitate predicate and feature replacement
@@ -248,6 +401,7 @@ def get_v_predications(grammar_dir, lang):
 
 class Template:
     def __init__(self, file=None):
+        # The file name is expected to be a file listed in web/templates/
         if file:
             pred_re = re.compile(r'#(.*?)#')
             feat_re = re.compile(r'@(.*?)@')
@@ -334,7 +488,7 @@ def get_replacement_features_from_grammar(grammar_dir):
                 in_options = False
         elif in_options:
             m2, m3 = choice_re.match(line), temp_re.match(line)
-            if m3:
+            if m3 and m3.group(1).strip() != 'from-test-sentences':
                 result[m3.group(1)] = {}
             elif m2 and m2.group(1).strip() in list(result.keys()):
                 name = m2.group(1).strip()
@@ -367,7 +521,7 @@ def get_templates(grammar_dir):
                 in_options = True
             else:
                 in_options = False
-        elif in_options and m2:
+        elif in_options and m2 and m2.group(1) != 'from-test-sentences':
             template_files.append(m2.group(1))
             choices_present = True
     if not choices_present:
@@ -396,9 +550,114 @@ def process_mrs_file(mrs, outfile, noun1_rel, det1_rel, noun2_rel, det2_rel, ver
 #    mrs_files.append(session+'Pattern ' + str(i))
 #    process_mrs_file(MRS_stv,session+'Pattern '+str(i),noun_rels_dets[0][0],det_rels[noun_rels_dets[0][1]][0],noun_rels_dets[1][0],det_rels[noun_rels_dets[1][1]][0],verb_rel)
 
+def get_mrs_from_test_sentences(grammar_dir, session, optional_sentence_num = -1):
+    '''Generates MRS files from the Test Sentences in the choices file;
+    Returns a list of mrs file names and some info used to display/describe the MRS;
+    optional_sentence_num: an integer x that can be specified if only the mrs for sentence x is needed.'''
+    choices = open(os.path.join(grammar_dir, 'choices'), 'r')
+    choices_text = choices.read()
+    mrs_files = []
+    mrs_info = []
+    if choices_text.find('from-test-sentences=on') >= 0:
+        # Compile the grammar
+        iso = os.path.basename(grammar_dir)
+        compile_grammar_ace(grammar_dir, session)
+
+        # Grab the sentences form the choices file
+        sentences_section = get_section(choices_text, 'section=test-sentences', 'section=')
+        sentence_re = re.compile(r'sentence[0-9]+_orth=(.*)\n')
+        sentences = sentence_re.findall(sentences_section)
+
+        ace_output = open('ace_output'+session, 'w')
+        ace_output.write('\Parsing Test Sentences...\n')
+        ace_output.flush()
+
+        ace_error = open('ace_error'+session, 'w')
+        ace_error.write('\Parsing Test Sentences...\n')
+        ace_error.flush()
+
+        verb_re = re.compile(r'(.*_v_rel)')
+        # Parse each sentence to get MRS
+        for i, sent in enumerate(sentences, 1):
+            if optional_sentence_num > 0 and i != optional_sentence_num:
+                continue
+            
+            ace_output.write(sent+'\n')
+            ace_output.flush()
+
+            response = ace.parse(
+                '%(grammar_dir)s/%(iso)s.dat' % {'grammar_dir':grammar_dir, 'iso':iso},
+                sent, cmdargs = ['-1'], executable='/usr/local/bin/ace',
+                stderr=ace_error
+            )
+            if len(response.results()) > 0:
+                filename=session+'Sentence'+str(i)
+                mrs_file = open(filename, 'w')
+                mrs = response['results'][0]['mrs']
+
+                m = simplemrs.decode(mrs)
+                mrs_string = simplemrs.encode(m, indent=True)
+                verb_rels = {}
+                verb_num = 1
+                predicates = [rel.predicate for rel in m.rels]
+                replaced_preds = set()
+                for pred in predicates:
+                    # There seems to be some bug where the predicates are striped of '_rel' suffix after
+                    # they are decoded into an mrs object.
+                    if not pred.endswith('_rel'):
+                        if pred not in replaced_preds:
+                            mrs_string = mrs_string.replace(pred, pred+'_rel')
+                            replaced_preds.add(pred)
+                        pred = pred +'_rel'
+                    verb_rel = verb_re.match(pred)
+                    if verb_rel:
+                        verb_rels['VERB'+str(verb_num)] = verb_rel.group(1)
+                        verb_num+=1
+
+                mrs_file.write(mrs_string)
+                mrs_file.flush()
+
+                ace_output.write(mrs_string+'\n')
+                ace_output.flush()
+                
+                mrs_files.append(filename)
+                mrs_info.append([verb_rels, "Test Sentence ('"+sent+"')", filename])
+                mrs_file.close()
+
+        ace_output.close()
+        ace_error.close()
+    choices.close()
+    return (mrs_files, mrs_info)
+
+def convert_mrs_file_to_template(mrs_filename, mrs_info, det_rels):
+    mrs_file = open(mrs_filename, 'r')
+    template_file = open('web/templates/'+mrs_filename, 'w')
+
+    template_file.write('label={}'.format(mrs_info[1]+'\n'))
+    template_file.flush()
+    pred_re = re.compile(r'((\S+_rel)<.*?>)')
+    dets = 0
+    nouns = 0
+    for line in mrs_file:
+        pred_match = pred_re.search(line)
+        if pred_match:
+            rel = pred_match.group(2)
+            rel_to_replace = pred_match.group(1)
+            # Check if the rel matches one of the det_rels and replace it with a #DET[0-9]# placeholder
+            if rel in det_rels['opt']:
+                dets+=1
+                line = line.replace(rel_to_replace, '#DET'+str(dets)+'#')
+            # Check if the rel is a noun rel and replace it with a #NOUN[0-9]# placeholder
+            elif rel.endswith("_n_rel"):
+                nouns += 1
+                line = line.replace(rel_to_replace, '#NOUN'+str(nouns)+'#')
+        template_file.write(line)
+        template_file.flush()
+    template_file.close()
+
 
 # Wrap up all of the components involved in generation, and return the results
-def get_sentences(grammar_dir, delphin_dir, session):
+def get_sentences(grammar_dir, delphin_dir, session, with_lkb=False):
     (noun_rels_dets, det_rels, language) = get_n_predications(grammar_dir)
     (itvs, stvs) = get_v_predications(grammar_dir, language)
     templates = get_templates(grammar_dir)
@@ -444,8 +703,17 @@ def get_sentences(grammar_dir, delphin_dir, session):
         f.write(template.string)
         f.close()
         info_list.append([verb_rels, template.label, template.name])
-    sentences = generate_sentences(
-        grammar_dir, mrs_files, info_list, delphin_dir, session)
+
+    additional_mrs, mrs_info = get_mrs_from_test_sentences(grammar_dir, session)
+    mrs_files = additional_mrs + mrs_files
+    info_list = mrs_info + info_list
+    if with_lkb:
+        sentences = generate_sentences_lkb(
+            grammar_dir, mrs_files, info_list, delphin_dir, session)
+    else:
+        compile_grammar_ace(grammar_dir, session)
+        sentences = generate_sentences_ace(
+            grammar_dir, mrs_files, info_list, delphin_dir, session)
 
     for file in mrs_files:
         try:
@@ -460,13 +728,27 @@ def get_additional_sentences(grammar_dir, delphin_dir, verb_rels, template_file,
     (noun_rels_dets, det_rels, language) = get_n_predications(grammar_dir)
     itr_verb_re, tr_verb_re, noun_re, det_re = re.compile(r'ITR-VERB([0-9]*)'), re.compile(
         r'TR-VERB([0-9]*)'), re.compile(r'NOUN([0-9]*)'), re.compile(r'DET([0-9]*)')
-    exec("verb_rels = "+verb_rels)
+    # verb_rels is a string dictionary with the same structure as verbs dictionary in get_v_predications
+    verb_rels = json.loads(verb_rels.replace("'", '"'))
+
+    # Create template files when generating from Test Sentences
+    sent_template_file_re = re.compile(r'{}Sentence([0-9]+)'.format(session))
+    sent_match = sent_template_file_re.match(template_file)
+    if sent_match:
+        sent_num = int(sent_match.group(1))
+        mrs_files, mrs_info = get_mrs_from_test_sentences(grammar_dir, session, optional_sentence_num=sent_num)
+        convert_mrs_file_to_template(mrs_files[0], mrs_info[0], det_rels)
+        # Remove the sentence mrs file once we're done using them.
+        for mrs_file in mrs_files:
+            os.remove(mrs_file)    
+    
+    # Create MRS files from template
     mrs_files = []
     t = Template(template_file)
     templates = [t]
     repl_feats = get_replacement_features_from_grammar(grammar_dir)
     t.replace_features_from_grammar(repl_feats)
-    for pred in t.preds:
+    for pred in t.preds.copy():
         m1, m2, m3, m4 = itr_verb_re.match(pred), tr_verb_re.match(
             pred), noun_re.match(pred), det_re.match(pred)
         if m1:
@@ -491,7 +773,7 @@ def get_additional_sentences(grammar_dir, delphin_dir, verb_rels, template_file,
         # print temp.string
         # print "<br>"
         f.close()
-    sentences_with_info = generate_sentences(grammar_dir, mrs_files, [
+    sentences_with_info = generate_sentences_ace(grammar_dir, mrs_files, [
                                              [verb_rels, "", ""]] * len(mrs_files), delphin_dir, session)
     sentences = []
     trees = []
@@ -509,4 +791,6 @@ def get_additional_sentences(grammar_dir, delphin_dir, verb_rels, template_file,
             os.remove(file)
         except OSError:
             pass
+    if sent_match:
+        os.remove('web/templates/'+template_file)
     return sentences, trees, mrss
