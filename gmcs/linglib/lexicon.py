@@ -1101,9 +1101,9 @@ def validate_lexicon(ch, vr):
     # so no need to check for cycles (see discussion in issue #671)
     for lextype in ALL_LEX_TYPES:
         for lt in ch.get(lextype):
-            feat_name2full_key = {feat.get('name') : feat.full_key for feat in lt.get('feat') if feat}
-            supertype_feat_names = { feat.get('name', '') for feat in get_all_supertypes_features(ch, lt) }
-            dupe_feats = supertype_feat_names.intersection(feat_name2full_key.keys())
+            feat_name2full_key = {feat.get('name'): feat.full_key for feat in lt.get('feat') if feat}
+            supertype_feat_names = {feat.get('name', '') for feat in get_all_supertypes_features(ch, lt)}
+            dupe_feats = supertype_feat_names.intersection(feat_name2full_key)
             dupe_feats.discard('')
             for dupe_feat in dupe_feats:
                 mess = 'A value for this feature is already specified on a super type for this ' \
