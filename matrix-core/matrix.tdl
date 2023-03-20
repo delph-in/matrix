@@ -817,118 +817,141 @@ aboutness-topic := topic.
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Head types
-
-; Values for head features such as CASE, VFORM, ...
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;  Sorts for atomic values
 
-; person, number and gender
+luk := sort
+"""Three-valued sort evoking Polish logician Jan Lukasiewicz.
+Its subtypes allow the statement of constraints (e.g., in
+subcategorization) of the form:  If you care, you must have
+the value + (-), but you don't have to care.  Useful for keeping
+down the number of constructions and subcategorization types.""".
 
-; clause mode
+na-or-+ := luk
+"""not applicable or true""".
+na-or-- := luk
+"""not applicable or false""".
+bool := luk
+"""true or false""".
 
-; voice
++-or-- := luk
+"""<todo> remove this type; redundant with bool""".
 
-; mood
-
-; pronoun type
-
-; Three-valued sort evoking Polish logician Jan Lukasiewicz
-
-luk := sort.
-
-; These types allow the statement of constraints (e.g., in
-; subcategorization) of the form:  If you care, you must have
-; the value + (-), but you don't have to care.  Useful for keeping
-; down the number of constructions and subcategorization types.
-
-na-or-+ := luk.
-na-or-- := luk.
-+-or-- := luk.
-
-na := na-or-+ & na-or--.
-bool := luk.
-+ := bool & na-or-+ & +-or--.
-- := bool & na-or-- & +-or--.
-
-; Three-valued sort for distinguishing unmodified signs from both
-; left-modified and right-modified signs PERIPH indicates whether this
-; modifier is left- or right-peripheral in its phrase - e.g., "the IBM
-; temporary employees" but "*the IBM five employees"
+na := na-or-+ & na-or--
+"""not applicable""".
++ := bool & na-or-+ & +-or--
+"""true""".
+- := bool & na-or-- & +-or--
+"""false""".
 
 xmod := sort &
-  [ PERIPH luk ].
-notmod-or-rmod := xmod.
-notmod-or-lmod := xmod.
-notmod := notmod-or-rmod & notmod-or-lmod.
+  [ PERIPH luk ]
+"""Three-valued sort for distinguishing unmodified signs from both
+left-modified and right-modified signs.
 
-hasmod := xmod.
-lmod := hasmod & notmod-or-lmod.
-rmod := hasmod & notmod-or-rmod.
+<features>
+PERIPH: indicates whether this modifier is left- or right-peripheral
+in its phrase - e.g., "the IBM temporary employees" but
+"*the IBM five employees".""".
+
+notmod-or-rmod := xmod
+"""not modified or right-modified""".
+notmod-or-lmod := xmod
+"""not modified or left-modified""".
+notmod := notmod-or-rmod & notmod-or-lmod
+"""not modified""".
+
+hasmod := xmod
+"""modified""".
+lmod := hasmod & notmod-or-lmod
+"""left-modified""".
+rmod := hasmod & notmod-or-rmod
+"""right-modified""".
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;  Basic types
 
-sort := *top*.
-predsort := sort.
-atom := predsort.
-no-pred := predsort.
-avm := *top*.
-list := avm.
+sort := *top*
+"""supertype for atomic types""".
+predsort := sort
+"""semantic predicate""".
+atom := predsort
+"""supertype for special types (strings, integers)""".
+no-pred := predsort
+"""placeholder predicate (used in trigger rules)""".
+avm := *top*
+"""attribute-value matrix""".
+
+list := avm
+"""an ordered sequence of elements""".
 
 cons := list &
   [ FIRST *top*,
-    REST list ].
+    REST list ]
+"""a non-empty list
 
-0-1-list := list.
+<features>
+FIRST: the first element of the list
+REST: the rest of the list""".
+
+0-1-list := list
+"""an underspecified list with 0 or 1 elements""".
 1-list := 0-1-list & cons &
-  [ REST null ].
-null := 0-1-list.
+  [ REST null ]
+"""a list with exactly 1 element""".
+null := 0-1-list
+"""an empty list""".
 1-plus-list := cons &
-  [ REST cons ].
+  [ REST cons ]
+"""a list with more than 1 element""".
 
-; supertype for diff-lists and append-lists
 list-wrapper := avm &
-  [ LIST list ].
+  [ LIST list ]
+"""a wrapper type for lists""".
 
-; diff-lists for backward compatibility
 diff-list := list-wrapper &
-  [ LAST list ].
+  [ LAST list ]
+"""a difference list, designed to be easy to append.
+<features>
+LAST: the notional end of the difference list.
+This is intended to be somewhere on the list,
+i.e. it is identified with LIST (a diff-list of length 0),
+or with LIST.REST (a diff-list of length 1),
+or with LIST.REST.REST (a diff-list of length 2), etc.""".
 
 0-1-dlist := diff-list &
-  [ LIST 0-1-list ].
+  [ LIST 0-1-list ]
+"""a diff-list of length 0 or 1""".
 0-dlist := 0-1-dlist &
   [ LIST #list,
-    LAST #list ].
-
-; ADD DOC -- don't use for lists which are constructive.
-; might be good now -- circular structure check?
-; dpf will look into it. -- remove null?
-
+    LAST #list ]
+"""a diff-list of length 0""".
 1-dlist := 0-1-dlist &
   [ LIST 1-list &
 	 [ REST #rest ],
-    LAST #rest ].
-
-
-; This type shows the basic form for diff-list appends.
-; It is not meant to be used as a supertype.  Actual instances
-; of diff-list append will involve different features in different
-; relationships to each other & the feature geometry.
+    LAST #rest ]
+"""a diff-list of length 1""".
 
 dl-append := avm & [APPARG1 [LIST #first,
                              LAST #between],
                     APPARG2 [LIST #between,
                              LAST #last],
                     RESULT  [LIST #first,
-                             LAST #last]].
+                             LAST #last]]
+"""This type shows the basic form for diff-list appends.
+It is not meant to be used as a supertype.  Actual instances
+of diff-list append will involve different features in different
+relationships to each other & the feature geometry.""".
 
-integer := atom.
+string := atom
+"""Supertype for strings (treated specially by processing engines).
+In TDL syntax, strings are indicated by double quotes,
+e.g. [ PRED "_example_n_of_rel" ].""".
 
-; NB: strings should be enclosed in double quotes, e.g., [PRED "named_rel"].
+integer := atom
+"""Supertype for integers (possibly treated specially by processing engines)""".
 
-string := atom.
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;  Wrapper types
 
 ; APPEND holds the lists to be appended
 ; LIST holds the result of the append
@@ -938,6 +961,9 @@ append-list := list-wrapper &
 
 ; OZ 2020-02-18 needed for generation with ACE to work:
 append-diff-list := append-list & diff-list.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;  Computation types
 
 ; START is the start of the new list (result of append)
 list-of-alists := list &

@@ -232,7 +232,7 @@ function toggle_visibility(ids) {
 </script>
 
 <h3>Generated Sentences</h3>
-Click on a sentence to view its parse tree and the mrs associated to that parse.  Capitalized lexical entries indicate that the lexical entry has undergone a spelling-changing lexical rule<br><br>
+Click on a sentence to view its parse tree and the mrs associated to that parse. <br><br>
 '''
 
 HTML_sentencespostbody = '''
