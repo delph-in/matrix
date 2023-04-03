@@ -2,7 +2,7 @@ from collections import defaultdict
 
 from gmcs.linglib import case
 #from gmcs.linglib import lexical_items
-from gmcs.utils import get_name, recursive_get_supertypes_features
+from gmcs.utils import get_name
 from gmcs.choices import ChoiceDict
 from gmcs.linglib.lexbase import LexicalType, PositionClass
 from gmcs.linglib.lexbase import ALL_LEX_TYPES
@@ -178,6 +178,23 @@ def get_all_supertypes(key, choices):
                     supertypes.extend(parents)
     return supertypes, pathToRoot
 
+
+
+def get_all_supertypes_features(ch, lt):
+    """
+    Return a list of all features of all the supertypes of a given lexical type as defined by
+    the user. This does not include matrix internal types. Returns an empty list if no supertypes
+    defined.
+    """
+    lt_supertypes, pathToRoot = get_all_supertypes(lt, ch)
+    supertype_feats = []
+    for supertype in lt_supertypes:
+        if supertype:
+            supertype_dict = ch.get(supertype, '')
+            if supertype_dict:
+                for feat in supertype_dict.get('feat', ''):
+                    supertype_feats.append(feat)
+    return supertype_feats
 
 def get_lt_name(key, choices):
     if key in LEXICAL_SUPERTYPES:
@@ -1080,22 +1097,16 @@ def validate_lexicon(ch, vr):
 
     # LTX 2022-05-16: Check if there are duplicated features (maybe with different values)
     # with inheritance hierarchy (see discussion in issue #627)
-
-    # Only check if there is no cycle in the hierarchy
-    if not contain_cycle:
-        for lextype in ALL_LEX_TYPES:
-            for lt in ch.get(lextype):
-                # If lt has supertypes
-                lt_supertypes = lt.get('supertypes')
-                if len(lt_supertypes) != 0:
-                    # parent_features_list stores all features from child node (exclusive) to most top parent node
-                    parent_features_list = []
-                    recursive_get_supertypes_features(ch, lt_supertypes, parent_features_list)
-                    # check if the child node has duplicated feature type in parent_features_list
-                    for feat in lt.get('feat'):
-                        for parent_feat in parent_features_list:
-                            if feat.get('name') == parent_feat.get('name'):
-                                mess = 'A value for this feature is already specified on a super type for this ' \
-                                       + lextype + ' class. If the value specified here is conflict with that other' \
-                                              ' specification, the grammar will not compile.'
-                                vr.warn(feat.full_key+'_name', mess)
+    # Abhinav 2023-01-31: Fixed bug blocking multiple inheritance, no longer recursive
+    # so no need to check for cycles (see discussion in issue #671)
+    for lextype in ALL_LEX_TYPES:
+        for lt in ch.get(lextype):
+            feat_name2full_key = {feat.get('name'): feat.full_key for feat in lt.get('feat') if feat}
+            supertype_feat_names = {feat.get('name', '') for feat in get_all_supertypes_features(ch, lt)}
+            dupe_feats = supertype_feat_names.intersection(feat_name2full_key)
+            dupe_feats.discard('')
+            for dupe_feat in dupe_feats:
+                mess = 'A value for this feature is already specified on a super type for this ' \
+                        f'{lextype} class. If the value specified here is conflict with that other ' \
+                        'specification, the grammar will not compile.'
+                vr.warn(f'{feat_name2full_key[dupe_feat]}_name', mess)
