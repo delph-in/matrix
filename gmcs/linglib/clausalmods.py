@@ -634,7 +634,7 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
           					        COORD - ] ] ] > ].')
     else:
         supertype = 'morphological-subord-clause-phrase'
-        mylang.add(supertype + ' := unary-phrase &\
+        mylang.add(supertype + ' := unary-phrase & unary-nonloc-phrase &\
     [ SYNSEM [ LOCAL [ CAT [ MC -,\
                             VAL [ SUBJ #subj,\
                                   SPR < >,\
