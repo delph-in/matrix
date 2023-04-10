@@ -292,10 +292,10 @@ def customize_wh_ques(mylang, ch, rules, roots):
         if (not ch.get('pied-pip') == ON or (ch.get('pied-pip') == ON
                                              and not (ch.get('oblig-pied-pip-noun') == ON))):
             mylang.add_literal('; If there is no obligatory pied-piping, determiners '
-                               'can be extracted separately:', section='phrasal')
+                               'can be extracted separately:', section='phrases')
             if USED_TYPES['qdet']:
                 mylang.add(EX_DET_PHRASE, section='phrases')
-            rules.add('ex-det := extracted-det-phrase.')
+                rules.add('ex-det := extracted-det-phrase.')
         # The following would rule out "Which royal house did you see a member of?"
         # if ch.get('pied-pip-adp') == 'on' and not ch.get('oblig-pied-pip-adp') == ON:
             #mylang.add('extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +vp ].')
