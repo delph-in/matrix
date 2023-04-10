@@ -212,6 +212,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
         if geom:
             if n in hierarchies:
                 value = hierarchies[n].get_type_covering(v)
+
                 # EKN 2018-01-19: Add the closing brackets for the possessive
                 # pronoun's feature path
                 if poss_pron_lrt:
@@ -221,6 +222,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                 tdlfile.add(type_name +
                             ' := [ ' + geom + ' ' + value + ' ].',
                             merge=True)
+
                 if n == 'case' and ch.has_mixed_case():
                     val = '-' if '-synth-' in type_name else '+'
                     tdlfile.add(type_name +

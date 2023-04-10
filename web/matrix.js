@@ -235,6 +235,13 @@ function toggle_display_lex(element_id, button_id) {
     //    document.cookie = element_id+"=none";
     //    document.cookie = button_id+"=none";
   }
+  var selects = document.getElementsByTagName('select');
+  for (var i = 0; i < selects.length; i++) {
+    var s = selects[i];
+    if (s.className == 'multi' && is_displayed(s) && s.name.includes(element_id)) {
+      multi_create(s);
+    }
+  }
 }
 
 // toggle_all_display_lex()
@@ -315,7 +322,7 @@ function animate() {
     blink_count++;
     var r = get_css_rule('.error');
     if (r) {
-  
+
       var bcm = blink_count % 100;
       var br = 20;
       if (bcm < br) {
@@ -1280,7 +1287,7 @@ function set_negmorph(t1, t2) {
   //  this choice is useful at customize time
   //
   //  also, set subchoices to interface with
-  //  deffile side-effects (neg-aux), and 
+  //  deffile side-effects (neg-aux), and
   //  neg library dependencies
   if (t.search(/head/) > -1) {
     document.forms['choices_form']['neg-aux'].checked = true;
@@ -1317,9 +1324,9 @@ function display_neg_form() {
   // this function constrols the logical constraints on the form
   // choices.  it's a little like a pre-validation step.
   // there are a lot of possible combinations of choices on the
-  // negation page, but most of the combinations won't lead to successful 
-  // grammars.  thus the need to prevent users from going down 
-  // dead ends we know about. 
+  // negation page, but most of the combinations won't lead to successful
+  // grammars.  thus the need to prevent users from going down
+  // dead ends we know about.
 
   // here we display only the exponence section the user has
   // asked for
@@ -1525,5 +1532,133 @@ function nav_customize(type) {
 
   f.removeChild(t);
   f.removeChild(i);
+}
+
+function navigate_to_item(item, isMorphology) {
+  toggle_display_lex(item, item + "button");
+  const navAnchor = item + (isMorphology ? "button" : "");
+  location.hash = "#" + navAnchor;
+}
+
+
+// return a dict with type names as key and another dict as value
+// e.g., {
+//    "noun1": [{"spelling": "apple", "predicate": "_n_rel"}, {"spelling": "pear", "predicate": "_n_rel"},...],
+//    "noun2": [{"spelling": "cat", "predicate": "_n_rel"}, {"spelling": "dog", "predicate": "_n_rel"},...],
+// }
+function build_search_index(section) {
+  const choicesDOM = document.querySelector("#choicesLink");
+  let content;
+  fetch(choicesDOM.href)
+      .then(function (response) {
+        response.text().then(function (text) {
+          if (section == "lexicon") {
+            let lexiconSearchIndex = new Object();
+            content = text.split("section=" + section)[1].split("section=morphology")[0];
+            const lines = content.split("\n");
+            let currentKey = "";
+            for (let i = 0; i < lines.length; i++) {
+              if (lines[i].includes("_name=") && !lines[i].includes("_feat") && !lines[i].includes("_compfeature")) {
+                lexiconSearchIndex[lines[i]] = [];
+                currentKey = lines[i];
+              }
+              if (lines[i].includes("_stem") && lines[i].includes("_orth=")) {
+                const predVal = lines[i + 1].split("_pred=")[1];
+                lexiconSearchIndex[currentKey].push({
+                  "spelling": lines[i].split("_orth=")[1],
+                  "predicate": predVal == undefined ? "" : predVal
+                });
+                i++;
+              }
+            }
+            const selectEle = document.querySelector(".searchSelectEle");
+            selectEle.innerHTML = "     <option value='0'>Search by type name/spelling/predicate...</option> \n";
+
+            Object.keys(lexiconSearchIndex).forEach(function (key) {
+              // build search value
+              let searchValue = "";
+              let typeName = key.trim().split("_name")[0];
+              for (let i = 0; i < lexiconSearchIndex[key].length; i++) {
+                searchValue += lexiconSearchIndex[key][i]["spelling"] + " " + lexiconSearchIndex[key][i]["predicate"] + " ";
+              }
+              selectEle.innerHTML += "     <option value='" + (searchValue) + "'>"
+                  + typeName + " " + searchValue +
+                  "</option> \n";
+            });
+            $('.searchSelectEle').on("select2:select", function (e) {
+              const item = document.querySelector("#searchDiv").children[1].children[0].children[0].innerText.split(" ")[0].trim();
+              navigate_to_item(item, false);
+            });
+          } else if (section == "morphology") {
+            let morphoSearchIndex = new Object();
+            content = text.split("section=" + section)[1].split("section=toolbox-import")[0];
+            const lines = content.split("\n");
+            let currentKey = "";
+            for (let i = 0; i < lines.length; i++) {
+              if (lines[i].includes("_name=") && !lines[i].includes("_lrt")) {
+                morphoSearchIndex[lines[i]] = [];
+                currentKey = lines[i];
+              }
+              if (lines[i].includes("_lri") && lines[i].includes("_orth=")) {
+                morphoSearchIndex[currentKey].push({"spelling": lines[i].split("_orth=")[1]});
+              }
+            }
+
+            const selectEle = document.querySelector(".searchSelectEle");
+            selectEle.innerHTML = "     <option value='0'>Search by postion class name/affix spelling...</option> \n";
+
+            Object.keys(morphoSearchIndex).forEach(function (key) {
+              // build search value
+              let searchValue = "";
+              let typeName = key.trim().split("_name")[0];
+              for (let i = 0; i < morphoSearchIndex[key].length; i++) {
+                searchValue += morphoSearchIndex[key][i]["spelling"] + " ";
+              }
+              selectEle.innerHTML += "     <option value='" + (searchValue) + "'>"
+                  + typeName + " " + searchValue +
+                  "</option> \n";
+            });
+            $('.searchSelectEle').on("select2:select", function (e) {
+              const item = document.querySelector("#searchDiv").children[1].children[0].children[0].innerText.split(" ")[0].trim();
+              navigate_to_item(item, true);
+            });
+
+          }
+        });
+      });
+}
+
+function multi_init_and_focus_all_fields() {
+  if (document.title.toLocaleLowerCase() == "lexicon" || document.title.toLocaleLowerCase() == "morphology") {
+    toggle_all_display_lex(1);
+    // LTX 7/26/2022:
+    // TODO: This is a temporary way to implement searching functionality.
+    // It uses DOM to inject HTML fragment and displays content, which
+    // is not an elegant way to do.
+    const parentNode = document.querySelector("#form_holder").children[0];
+    const allLexBtn = document.querySelector("#toggle_all_lex_button");
+    const searchDiv = document.createElement("div");
+    searchDiv.id = "searchDiv";
+
+    const selectEle = document.createElement("select");
+    selectEle.className = "searchSelectEle";
+    selectEle.style = "width: 400px";
+    selectEle.innerHTML = "     <option value='0'>Loading...</option> \n";
+    // generate search options from choices
+    if (document.title.toLocaleLowerCase() == "lexicon") {
+      build_search_index("lexicon");
+    } else {
+      build_search_index("morphology");
+    }
+    searchDiv.append(selectEle);
+    parentNode.insertBefore(searchDiv, allLexBtn);
+
+    $(document).ready(function () {
+      $(".searchSelectEle").select2();
+    });
+  } else {
+    multi_init();
+    focus_all_fields();
+  }
 }
 

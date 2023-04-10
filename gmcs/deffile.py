@@ -46,6 +46,9 @@ HTML_pretitle = '''<!doctype html>
 
 HTML_posttitle = '''<script type="text/javascript" src="web/matrix.js?cachebuster=103">
 </script>
+<script src="https://code.jquery.com/jquery-3.6.0.slim.js" integrity="sha256-HwWONEZrpuoh951cQD1ov2HUK5zA5DwJ1DNUXaM6FsY=" crossorigin="anonymous"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <script type="text/javascript">
 // An array of strings, each of the form 'name:value|friendly value,...'
@@ -239,12 +242,12 @@ HTML_sentencespostbody = '''
 <a href="http://www.delph-in.net/lkb">To the LKB page</a>
 '''
 
-HTML_prebody = '''<body onload="animate(); focus_all_fields(); multi_init(); fill_hidden_errors(); scalenav();">
+HTML_prebody = '''<body onload="animate(); multi_init_and_focus_all_fields(); fill_hidden_errors(); scalenav();">
 '''
 
-HTML_prebody_sn = '''<body onload="animate(); focus_all_fields(); multi_init(); fill_hidden_errors();display_neg_form();scalenav();">'''
+HTML_prebody_sn = '''<body onload="animate(); multi_init_and_focus_all_fields(); fill_hidden_errors();display_neg_form();scalenav();">'''
 
-HTML_prebody_ap = '''<body onload="animate(); focus_all_fields(); multi_init(); fill_hidden_errors();display_poss();scalenav();">'''
+HTML_prebody_ap = '''<body onload="animate(); multi_init_and_focus_all_fields(); fill_hidden_errors();display_poss();scalenav();">'''
 
 HTML_method = 'post'
 
@@ -1392,7 +1395,7 @@ class MatrixDefFile:
 
             print('<hr />')
             print('<a href="' + choices_file +
-                  '" class="navleft">Choices file</a><br /><div class="navleft" style="margin-bottom:0;padding-bottom:0">(right-click to download)</div>')
+                  '" class="navleft" id="choicesLink">Choices file</a><br /><div class="navleft" style="margin-bottom:0;padding-bottom:0">(right-click to download)</div>')
             print(
                 '<a href="#stay" onclick="document.forms[0].submit()" class="navleft">Save &amp; stay</a><br />')
             # TJT 2014-05-28: Not sure why the following doesn't work -- need to do more investigation

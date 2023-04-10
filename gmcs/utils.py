@@ -121,18 +121,3 @@ def has_nmz_ccomp(ch):
             if f['name'] == 'nominalization':
                 return True
     return False
-
-
-'''
-LTX 2022-05-16: 
-** Need to check the hierarchy DOES NOT contain a cycle before using this function **
-Recursively build up a list of features (parent_features_list)
-from a child node to its parent top node. 
-'''
-def recursive_get_supertypes_features(ch, lt, parent_features_list):
-    feats = ch.get(lt).get('feat')
-    for feat in feats:
-        parent_features_list.append(feat)
-    lt_supertypes = ch.get(lt).get('supertypes')
-    if len(lt_supertypes) != 0:
-        recursive_get_supertypes_features(ch, lt_supertypes, parent_features_list)
