@@ -128,7 +128,7 @@ NON_POSS_LEX_ITEM = '[ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR nonpossessive,\
 POSS_UNARY = ' := basic-unary-phrase & \
               [ SYNSEM [ NON-LOCAL #nonloc \
                             LOCAL [ CONT.HOOK #hook,\
-                               CAT [ HEAD det & [ POSSESSOR possessor ],\
+                               CAT [ HEAD det & [ MOD < >, POSSESSOR possessor ],\
   	                 	   VAL [ SPR < >,\
                                          COMPS < >,\
 			                 SUBJ < >,\
