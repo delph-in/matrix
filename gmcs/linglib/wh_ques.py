@@ -235,7 +235,7 @@ def customize_wh_ques(mylang, ch, rules, roots):
         # Rule out structural ambiguity for sentences like "Who sleeps where?"
         if ch.get('word-order') in ['svo', 'sov', 'osv']:
             mylang.add('''head-adj-int-phrase :+ [ 
-             LOCAL.CAT.VAL [ SUBJ clist, COMPS clist ] ] ].''', section='addenda')
+             SYNSEM.LOCAL.CAT.VAL [ SUBJ clist, COMPS clist ] ] ].''', section='addenda')
         if ch.get('word-order') == 'free':
             mylang.add(
                 '''adj-head-int-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ clist ].''', merge=True)
