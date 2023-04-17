@@ -42,7 +42,8 @@ POSSESSUM_ID_HS = ' [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPEC < [ LOCAL.CAT.POSSE
                     HEAD-DTR.SYNSEM.LOCAL.CAT.POSSESSUM #poss  ].'
 
 POSSESSUM_RULE = ' :=\
-                  [ SYNSEM.LOCAL.CAT.HEAD.POSSESSOR nonpossessive ].'
+                  [ SYNSEM.LOCAL.CAT.HEAD [ MOD < >,\
+                                            POSSESSOR nonpossessive ] ].'
 
 
 JUXTAPOSITION_RULE = ' := [ SYNSEM.LOCAL [ CAT [ HEAD #head,\
