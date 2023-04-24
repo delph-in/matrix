@@ -11,7 +11,7 @@ from gmcs import constants
 # Constants
 
 HEAD_ADJ = '''my-head-adj-phrase := head-adj-int-phrase &
- [ HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD +nvr, VAL [ SUBJ clist, COMPS clist ] ],
+ [ HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD +nvr],
    NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD +jrp, VAL.COMPS < > ] ].
  '''
 
