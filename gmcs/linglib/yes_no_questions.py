@@ -71,7 +71,7 @@ def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies, roots):
 			same-posthead-lex-rule &
                         constant-lex-rule &
       [ INFLECTED #infl,
-        SYNSEM [ LOCAL.CAT [ HEAD verb & [ INV + ],
+        SYNSEM [ LOCAL.CAT [ HEAD verb & [ MOD < >, INV + ],
                              VAL [ COMPS < #subj . #comps >,
                                      SUBJ < >,
                                      SPR #spr,

@@ -1369,7 +1369,7 @@ def customize_possessor_pron_lexicon(strat, mylang, ch, lexicon, strat_name, str
         agr_prefix = 'SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
 
         mylang.add(noun_type+' := \
-                        [ SYNSEM.LOCAL [ CAT [ HEAD.POSSESSOR possessor-pron-'+strat_num+',\
+                        [ SYNSEM.LOCAL [ CAT [ HEAD [ MOD < >, POSSESSOR possessor-pron-'+strat_num+'],\
                                                VAL.SPEC < > ],\
                                          CONT [ RELS.LIST  < #altkeyrel >,\
                                                   HCONS.LIST < > ] ] ].')
