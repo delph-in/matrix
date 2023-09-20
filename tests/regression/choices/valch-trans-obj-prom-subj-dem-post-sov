@@ -1,0 +1,86 @@
+
+version=34
+
+section=general
+language=minimal-grammar
+
+section=word-order
+word-order=sov
+has-dets=no
+has-aux=no
+
+section=number
+
+section=person
+person=none
+
+section=gender
+
+section=case
+case-marking=none
+
+section=adnom-poss
+
+section=direct-inverse
+
+section=tense-aspect-mood
+
+section=evidentials
+
+section=other-features
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=wh-q
+
+section=info-str
+
+section=arg-opt
+
+section=nominalclause
+
+section=clausal-comp
+
+section=clausalmods
+
+section=lexicon
+  noun1_det=imp
+    noun1_stem1_orth=n1
+    noun1_stem1_pred=_n1_n_rel
+  noun2_det=imp
+    noun2_stem1_orth=n2
+    noun2_stem1_pred=_n2_n_rel
+  verb1_valence=intrans
+    verb1_stem1_orth=iv
+    verb1_stem1_pred=_iv_v_rel
+  verb2_valence=trans
+    verb2_stem1_orth=tv
+    verb2_stem1_pred=_tv_v_rel
+
+section=morphology
+  verb-pc1_name=valch
+  verb-pc1_order=suffix
+  verb-pc1_inputs=tverb
+    verb-pc1_lrt1_name=passive
+      verb-pc1_lrt1_valchg1_operation=subj-dem
+      verb-pc1_lrt1_valchg1_inputs=trans
+      verb-pc1_lrt1_valchg1_argpos=post
+      verb-pc1_lrt1_valchg1_argtype=np
+      verb-pc1_lrt1_valchg2_operation=obj-prom
+      verb-pc1_lrt1_valchg2_inputs=trans
+      verb-pc1_lrt1_valchg2_argpos=post
+      verb-pc1_lrt1_valchg2_argtype=np
+      verb-pc1_lrt1_lri1_inflecting=yes
+      verb-pc1_lrt1_lri1_orth=-pass
+
+section=toolbox-import
+
+section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon
