@@ -17,6 +17,19 @@ def added_argnum_for_vchop(vchop):
     argnum = numargs - (1 if (transitive and position == 'pre') else 0)
     return (argnum, numargs)
 
+#Function used only by subj_dem and obj_prom operations since arguments
+#are only demoted/promoted and not added
+def demoted_argnum_for_vchop(vchop):
+    position = vchop.get('argpos', 'post').lower()  # default to post
+    inputs = vchop.get('inputs', '').split(',')
+    transitive = 'trans' in inputs
+    ditransitive = 'ditrans' in inputs
+    if transitive:
+        numargs = 2
+    elif ditransitive:
+        numargs = 3
+    argnum = numargs - (1 if position == 'pre' else 0)
+    return (argnum, numargs)
 
 ####  RULE NAME GENERATORS ####
 
@@ -26,12 +39,12 @@ def subj_rem_op_lex_rule_name(transitive):
     return 'subj-rem-{0}-op-lex-rule'.format(tr_itr)
 
 
-def subj_dem_op_lex_rule_name(added_arg, total_args):
-    return 'subj-dem-to-arg{0}of{1}-op-lex-rule'.format(added_arg, total_args)
+def subj_dem_op_lex_rule_name(demoted_arg, total_args):
+    return 'subj-dem-to-arg{0}of{1}-op-lex-rule'.format(demoted_arg, total_args)
 
 
-def obj_prom_op_lex_rule_name(added_arg, total_args):
-    return 'obj-prom-from-arg{0}of{1}-op-lex-rule'.format(added_arg, total_args)
+def obj_prom_op_lex_rule_name(promoted_arg, total_args):
+    return 'obj-prom-from-arg{0}of{1}-op-lex-rule'.format(promoted_arg, total_args)
 
 
 def added_arg_non_local_lex_rule_name(added_arg, total_args):
@@ -109,13 +122,9 @@ SUBJ_REM_OP_TR_RULE_TEMPLATE = '''{0} := subj-and-comps-change-only-lex-rule &
                                                  NON-LOCAL #nl ],
                                          REST #rest ] ] ] ].'''
 
-SUBJ_DEM_OP_RULE_TEMPLATE = '''{0} := subj-and-comps-change-only-lex-rule &
-  [ SYNSEM.LOCAL [ CAT.VAL [ SUBJ < #comp & [ LOCAL.CONT.HOOK.INDEX #sind ] >,
-                             COMPS #rest ] ],
-    C-CONT.HOOK.XARG #sind,
-    DTR.SYNSEM.LOCAL [ CAT.VAL [ SUBJ < unexpressed >,
-                                 COMPS [ FIRST #comp,
-                                         REST #rest ] ] ] ].'''
+#SUBJ_DEM_OP_RULE_TEMPLATE = '''{0} := subj-and-comps-change-only-lex-rule &
+#  [ SYNSEM.LOCAL [ CAT.VAL [ COMPS < [ LOCAL.CONT.HOOK.INDEX #sind ] > ] ],
+#    DTR.SYNSEM.LOCAL [ CAT.VAL [ SUBJ < [ LOCAL.CONT.HOOK.INDEX #sind ] > ] ] ].'''
 
 
 # no-ccont-lex-rule is in local-change-only
@@ -144,10 +153,10 @@ def obj_rem_op_lex_rule():
     DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < unexpressed . #comps > ].'''
 
 
-def old_subj_dem_op_lex_rule():
-    return lexrule_name('subj-dem-op') + ''' := subj-and-comps-change-only-lex-rule &
-  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX #oind,
-    DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX #oind ] > ].'''
+#def old_subj_dem_op_lex_rule():
+#    return lexrule_name('subj-dem-op') + ''' := subj-and-comps-change-only-lex-rule &
+#  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX #oind,
+#    DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX #oind ] > ].'''
 
 
 def subj_dem_op_lex_rule(demoted_argnum, total_args):
@@ -158,23 +167,24 @@ def subj_dem_op_lex_rule(demoted_argnum, total_args):
     hook = ['[ {hook} ]']
     hook_path = 'LOCAL.CONT.HOOK.INDEX #sidx'
     # ok here if only 2 args; adding [] doesn't do anything to the list
-    compslist = ', '.join(
-        (other_arg + hook) if demoted_argnum == 3 else (hook + other_arg))
+    compslist = ', '.join((other_arg + hook) if demoted_argnum == 3 else (hook + other_arg))
     rulevars['rulename'] = gen_rulename(
         'subj-dem-op', demoted_argnum, total_args)
+
     rulevars['dtrcomps'] = compslist.format(hook='')
     rulevars['mtrcomps'] = compslist.format(hook=hook_path)
     rule = '''{rulename} := subj-and-comps-change-only-lex-rule &
-  [ SYNSEM.LOCAL.CAT.VAL.COMPS < {mtrcomps} >,
-    DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ < [ LOCAL.CONT.HOOK.INDEX #sidx ] >,
+        [ SYNSEM.LOCAL.CAT.VAL.COMPS < {mtrcomps} >,
+        DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ < [ LOCAL.CONT.HOOK.INDEX #sidx ] >,
                                COMPS < {dtrcomps} > ] ].'''.format(**rulevars)
     return rule
 
 
-def old_obj_prom_op_lex_rule():
-    return lexrule_name('obj-prom-op') + ''' := subj-and-comps-change-only-lex-rule &
-  [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX #sidx ] >,
-    DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX #sidx ].'''
+#def obj_prom_op_lex_rule():
+#    return lexrule_name('obj-prom-op') + ''' := subj-and-comps-change-only-lex-rule &
+#  [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CONT.HOOK.INDEX #sidx ] >,
+#    DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL [CAT.HEAD +np,
+#                                              CONT.HOOK.INDEX #sidx ]]>].'''
 
 
 # if the daughter has two comps (= ditransitive) then we need to no-op the one
@@ -187,16 +197,15 @@ def obj_prom_op_lex_rule(promoted_argnum, total_args):
     hook = ['[ {hook} ]']
     hook_path = 'LOCAL.CONT.HOOK.INDEX #sidx'
     # ok here if only 2 args; adding [] doesn't do anything to the list
-    compslist = (
-        other_arg + hook) if promoted_argnum == 3 else (hook + other_arg)
+    compslist = (other_arg + hook) if promoted_argnum == 3 else (hook + other_arg)
     rulevars['rulename'] = gen_rulename(
         'obj-prom-op', promoted_argnum, total_args)
     rulevars['dtrcomps'] = ', '.join(compslist).format(hook=hook_path)
     rulevars['mtrcomps'] = ', '.join(compslist).format(hook='')
     rule = '''{rulename} := subj-and-comps-change-only-lex-rule &
-  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < [ LOCAL.CONT.HOOK.INDEX #sidx ] >,
-                           COMPS < {mtrcomps} > ],
-    DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < {dtrcomps} > ].'''.format(**rulevars)
+        [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < [ LOCAL.CONT.HOOK.INDEX #sidx ] >,
+                                 COMPS < {mtrcomps} > ],
+          DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < {dtrcomps} > ].'''.format(**rulevars)
     return rule
 
 # These rules implement non-local diff list stitching for argument-adding
@@ -511,7 +520,10 @@ def customize_valence_change(mylang, ch, lexicon, rules, irules, lrules):
                 transitive = 'trans' in inputs or (
                     len(inputs) == 1 and inputs[0] == '')
                 opname = vchop['operation'].lower()
-                argnum, numargs = added_argnum_for_vchop(vchop)
+                if opname == 'subj-dem' or opname == 'obj-prom':
+                    argnum, numargs = demoted_argnum_for_vchop(vchop)
+                else:
+                    argnum,numargs = added_argnum_for_vchop(vchop)
                 if opname == 'subj-rem':
                     rules.add('subj-rem-op', transitive)
                 elif opname == 'obj-rem':
@@ -544,8 +556,10 @@ def add_lexrules(ch):
             # argument in the COMPS list.
             # pre: obj = obj2, newobj = obj
             # post: obj = obj, newobj = obj2
-            ops_to_fixup = ['subj-add', 'obj-add', 'subj-dem', 'obj-prom']
-            for vchop in [vchop for vchop in lrt.get('valchg', []) if vchop['operation'].lower() in ops_to_fixup]:
+            #ops_to_fixup = ['subj-add', 'obj-add', 'subj-dem', 'obj-prom']
+            ops_to_fixup = ['subj-add', 'obj-add']
+            ops_to_fixup_ditrans = ['subj-dem', 'obj-prom']
+            for vchop in [vchop for vchop in lrt.get('valchg', []) if vchop['operation'].lower() in ops_to_fixup or (vchop['operation'].lower() in ops_to_fixup_ditrans and 'ditrans' in vchop.get('inputs', '').split(','))]:
                 newarg_is_post = (vchop.get('argpos', '') == 'post')
                 for feat in lrt.get('feat', []):
                     if newarg_is_post:
