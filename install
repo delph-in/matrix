@@ -45,7 +45,7 @@ while [ "$1" = -r -o "$1" = -lkb -o "$1" = -iso ]
 do
     if [ "$1" = -r ]
     then
-        dest_prefix="$username@patas.ling.washington.edu:/home/www-matrix/html/"
+        dest_prefix="$username@patas.ling.washington.edu:/home2/www-matrix/html/"
 	enable_captcha=1
         #dest_prefix="uwcl@homer.u.washington.edu:~/public_html/"
     elif [ "$1" = -iso ]
@@ -147,7 +147,7 @@ rsync -Kvzrlt $tempdir/ $dest --omit-dir-times
 # fix permissions:
 #echo "Fixing permissions (you will be prompted for your password once more)."
 
-#ssh $username@patas.ling.washington.edu 'sudo /home/www-matrix/fixperm.sh'
+#ssh $username@patas.ling.washington.edu 'sudo /home2/www-matrix/fixperm.sh'
 
 # and clean up
 rm -rf $tempdir
