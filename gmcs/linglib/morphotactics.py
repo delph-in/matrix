@@ -954,7 +954,7 @@ def write_possessive_behavior(pc, lrt, mylang, choices):
 
 
 def write_valence_change_behavior(pc, lrt, mylang, choices):
-    from gmcs.linglib.valence_change import lexrule_name, added_argnum_for_vchop
+    from gmcs.linglib.valence_change import lexrule_name, added_argnum_for_vchop,demoted_argnum_for_vchop
 
     # Need to push down a stricter constraint to LRT created by argument optionality.
     # Specifically, if pc.has_valchg_ops() is True, then the PC supertype will inherit from
@@ -968,8 +968,10 @@ def write_valence_change_behavior(pc, lrt, mylang, choices):
         operation = op.get('operation', '').lower()
         lrt_ops.add(operation)
         transitive = 'trans' in op.get('inputs', '').split(',')
-        argnum, numargs = added_argnum_for_vchop(op)
-
+        if operation == 'subj-dem' or operation == 'obj-prom':
+            argnum, numargs = demoted_argnum_for_vchop(op)
+        else:
+            argnum,numargs = added_argnum_for_vchop(op)
         if operation == 'subj-rem':
             # includes no-ccont
             lrt.supertypes.add('local-change-only-lex-rule')
@@ -981,12 +983,12 @@ def write_valence_change_behavior(pc, lrt, mylang, choices):
             lrt.supertypes.add('local-change-only-lex-rule')
             lrt.supertypes.add('same-cont-lex-rule')
             mylang.add(lrt.identifier() + ' := ' +
-                       lexrule_name('subj-dem-op', argnum, numargs) + '.', merge=True)
+                       lexrule_name('subj-dem-op',argnum,numargs) + '.', merge=True)
         elif operation == 'obj-prom':
             lrt.supertypes.add('local-change-only-lex-rule')
             lrt.supertypes.add('xarg-change-only-ccont-lex-rule')
             mylang.add(lrt.identifier() + ' := ' +
-                       lexrule_name('obj-prom-op', argnum, numargs) + '.', merge=True)
+                       lexrule_name('obj-prom-op',argnum,numargs) + '.', merge=True)
         elif operation == 'obj-rem':
             # includes no-ccont
             lrt.supertypes.add('local-change-only-lex-rule')
@@ -1284,6 +1286,8 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
         orths.add(orth)
 
     # CMC 2017-04-07: Valence-changing operations validation
+    subj_dem = False
+    obj_prom = False
     for vchop in lrt.get('valchg', []):
         optype = vchop.get('operation', '')
         if not optype:
@@ -1299,6 +1303,36 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
             if not vchop.get('predname'):
                 vr.warn(vchop.full_key+'_predname',
                         'The added predicate should have a name specified.')
+            if "ditrans" in vchop.get('inputs'):
+                vr.err(vchop.full_key+'_inputs', 'Ditransitive inputs are only supported ' +
+                       'for subject-demoting and object-promoting operations.')
+        elif optype == 'subj-dem':
+            subj_dem = True
+            subj_dem_argpos = vchop.get('argpos')
+            subj_dem_input =  vchop.get('inputs')
+        elif optype == 'obj-prom':
+            obj_prom = True
+            obj_prom_argpos = vchop.get('argpos')
+            obj_prom_input =  vchop.get('inputs')
+        else:
+            if "ditrans" in vchop.get('inputs'):
+                vr.err(vchop.full_key+'_inputs', 'Ditransitive inputs are only supported ' +
+                       'for subject-demoting and object-promoting operations.')
+    if (obj_prom and not subj_dem) or (subj_dem and not obj_prom):
+        vr.warn(vchop.full_key+'_operation', "Object-promoting and subject-demoting operations " + \
+                       " are designed to be used either together in the same LRT or with another operation such as subject-removing " + \
+                       "across different position classes. " + \
+                       "The system does not support their use in isolation.")
+    if (obj_prom or subj_dem) and 'intrans' in vchop.get('inputs'):
+        vr.err(vchop.full_key+'_inputs', "The system does not support object-promoting operations  " + \
+                       "or subject-demoting operations on intransitive verbs.")
+    if subj_dem and obj_prom and 'ditrans' in vchop.get('inputs') and subj_dem_argpos != obj_prom_argpos:
+        vr.warn(vchop.full_key+'_argpos', "The position of the erstwhile subject should be the same " + \
+                       "for both the object-promoting and subject-demoting operations.")
+    if subj_dem and obj_prom and subj_dem_input != obj_prom_input:
+        vr.warn(vchop.full_key+'_inputs', "To implement a passive construction, " + \
+              "the target input for subject-demoting and object-promoting operations " + \
+              "within the same LRT need to be the same.")
 
     # EKN 2018-01-09: Check that only one possessive strategy or
     # possessive pronoun is selected per LRT

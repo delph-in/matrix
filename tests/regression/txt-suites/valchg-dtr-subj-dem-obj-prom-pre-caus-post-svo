@@ -1,0 +1,5 @@
+n1 tv n2
+n1 tv-caus n1 n2
+n1 tv-caus-pass n1 n2
+*n1 tv-pass n1 n2
+*n1 tv-caus-pass n1

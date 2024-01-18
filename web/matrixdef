@@ -3288,19 +3288,22 @@ including changes to e.g. case frames or adding predicates. (<b>Experimental</b>
       . obj-prom "Object-promoting" "object-promoting"
 
       Label "<p>Most valence-changing operations currently must operate on a known input valence. If both intransitive and transitive
-inputs are possible, these need to be created as two separate lexical rule types. (This may change in the future).</p>"
+inputs are possible, these need to be created as two separate lexical rule types. (This may change in the future).
+       Ditransitive targets are currently only supported for subj-demoting and object-promoting operations.</p>"
 
       Select inputs  "Verb Position Class {i} Lexical Rule Type {j} Valence-changing Operation {k} Target Valence" "Should apply to: " " targets"
       . intrans "Intransitive" "intransitive"
       . trans "Transitive" "transitive"
+      . ditrans "Ditransitive" "ditransitive"
+
+      Label "<p>For subject- and object-adding, and subject-demoting operations also specify (ignored for other operations):</P>"
+      Select argpos "Verb Position Class {i} Lexical Rule Type {j} Valence-changing Operation {k} Complement Position" "The added argument/erstwhile subject is at the: " " of the complements list.<br/>"
+      . pre "front" "front"
+      . post "end" "end"
 
       Label "<p>Object-adding operations currently only support strict transitive verbs as inputs.<br/>
         For subject- and object-adding operations, also specify (ignored for other operations):</P>"
       Text predname "Verb Position Class {i} Lexical Rule Type {j} Valence-changing Operation {k} Predicate Name" "Predicate: " "<br/> " 20
-
-      Select argpos "Verb Position Class {i} Lexical Rule Type {j} Valence-changing Operation {k} Complement Position" "The added argument/erstwhile subject is at the: " " of the complements list.<br/>"
-      . pre "front" "front"
-      . post "end" "end" 
 
 
       Select argtype "Verb Position Class {i} Lexical Rule Type {j} Valence-changing Operation {k} Argument Type" "The added argument must be a(n): " ""
