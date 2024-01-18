@@ -905,6 +905,7 @@ class ChoicesFile:
                     patterns[i][1] += ' (case unspecified)'
             else:
                 w = patterns[i][0].split('-')
+                w_original = w.copy()
                 for j in range(0, len(w)):
                     for c in cases:
                         if w[j] == c[0]:
@@ -928,10 +929,10 @@ class ChoicesFile:
                           (ccs.full_key), 'transitive-clausal-%s (case unspecified)' % (ccs.full_key), False]]
             if w and w[0] and w[1]:
                 if clausalcomps.is_nominalized_complement(ccs):
-                    patterns += [['%s-%s,%s' % (w[0], w[1], ccs.full_key),
+                    patterns += [['%s-%s,%s' % (w_original[0], w_original[1], ccs.full_key),
                                   'transitive-clausal-%s (%s-%s)' % (ccs.full_key, w[0], w[1]), False]]
             if w and w[0] and not cm == 'focus':
-                patterns += [['%s,%s' % (w[0], ccs.full_key),
+                patterns += [['%s,%s' % (w_original[0], ccs.full_key),
                               'transitive-clausal-%s (%s-unspecified)' % (ccs.full_key, w[0]), False]]
         return patterns
 
