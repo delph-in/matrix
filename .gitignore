@@ -4,6 +4,7 @@
 tests/regression/grammars/
 tests/regression/logs/
 tests/regression/home/current/
+tests/regression/skeletons/*
 
 # Ignore files under home/gold/testname which are not needed
 tests/regression/home/gold/*/update
@@ -159,3 +160,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# JetBrains project settings
+.idea/
