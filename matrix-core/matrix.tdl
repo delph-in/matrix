@@ -493,22 +493,6 @@ head and the CLAUSE value of the dependent
 <history>
 SSH 2012-02-16 --ICONS""".
 
-; MRSs are divided into psoas (with a distinguished event) and
-; nom-objs (with a distinguished index).  We use a polymorphic
-; attribute name INDEX for both of these, to simplify manipulation of
-; these objects; for example, modifying PPs assign as their ARG's
-; value the INDEX of the phrase they modify, whether it's an N-bar
-; (with a ref-ind value) or a VP (with an event value).  Similarly
-; useful for coordination.
-
-psoa := mrs &
-  [ HOOK.INDEX event ]
-"""Type listed for deletion""".
-
-nom-obj := mrs &
-  [ HOOK.INDEX index ]
-"""Type listed for deletion""".
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; LKEYS
 
