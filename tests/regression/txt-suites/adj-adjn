@@ -10,7 +10,6 @@ adj n iv
 det adj n iv
 adj adj n iv
 det adj adj n iv
-
 *n adj tv n
 *adj n adj tv n
 *n adj adj tv n
@@ -29,5 +28,3 @@ det adj adj n iv
 *n tv det adj n adj
 *n tv n adj adj
 *n tv det n adj adj
-
-
