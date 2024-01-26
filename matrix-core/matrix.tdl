@@ -528,8 +528,8 @@ as of 2022""".
 ; Basic semantic types
 
 qeq := avm &
-  [ HARG handle,
-    LARG handle ]
+  [ HARG handle & [ INSTLOC #il ],
+    LARG handle & [ INSTLOC #il ] ]
 """<name lang='en'>equal modulo quantifiers<EOL>
 Relates scopal argument positions to the elementary predications
 they outscope, leaving room for quantifiers to intervene.
