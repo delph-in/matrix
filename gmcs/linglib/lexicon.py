@@ -628,8 +628,12 @@ def validate_lexicon(ch, vr):
     adj_pc_switching_inputs = defaultdict(list)
     for adj_pc in ch.get('adj-pc', []):
         if adj_pc.get('switching', ''):
-            inputs = adj_pc.get('inputs', []).split(', ')
-            if isinstance(inputs, str):
+            # Check for inputs for the adjective position class
+            inputs = adj_pc.get('inputs', [])
+            inputs = inputs.split(', ') if isinstance(inputs, str) else inputs
+            if not inputs:
+                continue
+            elif isinstance(inputs, str):
                 adj_pc_switching_inputs[inputs].append(adj_pc)
             else:
                 # Else, assume list

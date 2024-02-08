@@ -1131,11 +1131,9 @@ def validate(choices, vr):
         switching = pc.get('switching', False)
         pc_switching_inputs = set()
         if pc.get('switching', ''):
-            inputs = pc.get('inputs', []).split(', ')
-            if isinstance(inputs, str):
-                pc_switching_inputs.add(inputs)
-            else:  # assume list
-                pc_switching_inputs.update(inputs)
+            inputs = pc.get('inputs', [])
+            inputs = inputs.split(', ') if isinstance(inputs, str) else inputs
+            pc_switching_inputs.update(inputs)
         for lrt in pc.get('lrt', []):
             lrt_validation(lrt, vr, index_feats, choices,
                            inputs=pc_switching_inputs, switching=switching)
