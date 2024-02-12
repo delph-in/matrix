@@ -153,6 +153,8 @@ cust_types = (
     'adj-comp-copula-verb-lex',
     'adj_incorporation-lex-rule',
     'wh-determiner-lex',
+    # Added for possessive pronouns
+    'poss-pron1'
 )
 
 # regex patterns for sets of names that are not available for
