@@ -387,6 +387,8 @@ def customize_poss_rules(strat, mylang, ch, rules, hierarchies):
         rule_added = True
         phrase_rule = 'poss-phrase-'+strat_num
         mylang.add(phrase_rule+JUXTAPOSITION_RULE)
+        #Added binary-nonloc-phrase supertype
+        mylang.add(phrase_rule + ' := binary-nonloc-phrase.')
 
         # Add constraints to general juxtaposition rule
         if strat.get('mod-spec') == 'spec':
