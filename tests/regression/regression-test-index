@@ -560,3 +560,4 @@ valchg-subj-add-pre=subject-adding, prepend, SVO
 valchg-subj-add-pre-sov=subject-adding, prepend, SOV
 valchg-subj-rem-obj-rem=combining subject-removing and object-removing valence change
 valchg-jpn-rom-dtr=testing valence change in Japanese
+adnom-poss-binary=Test for adnominal possession phrases missing binary-nonloc-phrase as a supertype. For test sentences, the desired result is 1 tree, and the bad result is 2.
