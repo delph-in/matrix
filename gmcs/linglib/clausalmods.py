@@ -49,7 +49,7 @@ def create_head_subordinator_basic_lex_type(mylang, ch, cms):
     """
     nominalized, nmzRel, nom_strategy = is_nominalized(cms, ch)
     mylang.set_section('subordlex')
-    # Added non-local-none-lex-item to prevent spurious ambiguity
+    # Added non-local-none-lex-item as supertype to prevent spurious ambiguity
     mylang.add('adposition-subord-lex-item := single-rel-lex-item & norm-ltop-lex-item & basic-icons-lex-item &\
                                                 non-local-none-lex-item &\
             [ SYNSEM.LOCAL.CAT [ MC -,\
