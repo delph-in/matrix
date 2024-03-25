@@ -142,3 +142,8 @@
 ; output all complete generated results
 ; (setf *bypass-equality-check* t)
 
+;;; Added for modern LKB 2024-03-25
+
+(setf *gen-equate-qeqs-p* t)
+(defparameter *gen-start-symbol* '(root)
+  "specifying valid realizations")
