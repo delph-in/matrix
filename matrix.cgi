@@ -1,4 +1,4 @@
-#!/usr/bin/env /usr/local/python-virt/matrix/bin/python3
+#!/home/ubuntu/matrix/py3env/bin/python3
 
 # $Id: matrix.cgi,v 1.27 2008-09-09 08:37:52 sfd Exp $
 
