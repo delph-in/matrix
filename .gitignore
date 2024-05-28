@@ -22,6 +22,9 @@ tests/regression/home/gold/*/analysis
 *.dat
 *.grm
 
+# Local matrix session files
+sessions/
+
 
 ### General ###
 
@@ -142,6 +145,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+matrix_env/
 
 # Spyder project settings
 .spyderproject

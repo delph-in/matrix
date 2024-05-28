@@ -2072,9 +2072,43 @@ Section lvc "Light Verb Constructions"
 Label "<p>If your langauge uses light verb constructions (LVCs), mark the appropriate options below.</p>"
 
 Label "<p>What possible coverbs are allowed in your language?<br>(selecting one or more of these options will allow you to add coverbs of that type to the lexicon)</p>"
-Check coverb-n "Noun Coverbs" "" "Noun Coverbs<br>"
-Check coverb-v "Verb Coverbs" "" "Verb Coverbs<br>"
-Check coverb-adj "Adjective Coverbs" "" "Adjective Coverbs<br>"
+Check coverb-n "Noun coverbs" "" "Noun Coverbs<br>" "toggle_element.call(this, 'lv-noun-cv-dep', 'toggle');"
+Check coverb-v "Verb coverbs" "" "Verb Coverbs<br>" "toggle_element.call(this, 'lv-verb-cv-dep', 'toggle');"
+Check coverb-adj "Adjective coverbs" "" "NOT IMPLEMENTED YET Adjective Coverbs<br>" "toggle_element.call(this, 'lv-adj-cv-dep', 'toggle');"
+
+Radio lv-semantics "LVC semantics" "<p>What is the nature of the semantics of light verbs?</p>" ""
+. lv-sem-bleached "Semantically bleached" "" "Semantically bleached<br>"
+. lv-sem-some "Some semantics" "" "Contributes some semantics<br>"
+. lv-sem-both "Both" "" "Some light verbs are semantically bleached, others contribute some semantics"
+
+Radio lv-word-order "LVC order" "<p>The word order within an LVC is:</p>" ""
+. lv-cv-pre "Coverb before light verb" "" "The coverb is before the light verb<br>"
+. lv-cv-post "Coverb after light verb" "" "The coverb is after the light verb<br>"
+
+Radio lv-between "LVC between" "<p>Can words go in between the coverb and the light verb?</p>" ""
+. lv-btwn-yes "Yes" "" "yes<br>"
+. lv-btwn-no "No" "" "no<br>"
+
+Label "<div id='lv-noun-cv-dep' style='display:none'>"
+Radio lv-noun-cv-dep "LVC noun coverb dependents" "<p>Do noun coverbs take noun-normal dependents?</p>" ""
+. lv-n-dep-yes "Yes" "" "yes<br>"
+. lv-n-dep-no "No" "" "no<br>"
+
+Label "</div>"
+
+Label "<div id='lv-verb-cv-dep' style='display:none'>"
+Radio lv-verb-cv-dep "LVC verb coverb dependents" "<p>Do verb coverbs take noun-normal dependents?</p>" ""
+. lv-v-dep-yes "Yes" "" "yes<br>"
+. lv-v-dep-no "No" "" "no<br>"
+
+Label "</div>"
+
+Label "<div id='lv-adj-cv-dep' style='display:none'>"
+Radio lv-adj-cv-dep "LVC adj coverb dependents" "<p>Do adjective coverbs take noun-normal dependents?</p>" ""
+. lv-adj-dep-yes "Yes" "" "yes<br>"
+. lv-adj-dep-no "No" "" "no<br>"
+
+Label "</div>"
 
 Section clausal-comp "Clausal Complements"
 
@@ -2435,22 +2469,24 @@ BeginIter noun{i} "a Noun Type" 1 1
   Label "<p>Light Verb Constructions:</p>"
 
   Radio coverb-type "Coverb type" "" ""
-    . cv-opt "Can be coverb" "<br>" "This can be a coverb<br>"
-    . cv-only "Is only coverb" "<br>" "This is only a coverb<br>"
+    . cv-opt "Can be coverb" "" "This can be a coverb<br>" "toggle_element.call(this, 'lv-for-noun-cv{i}', 'on');"
+    . cv-only "Is only coverb" "" "This is only a coverb<br>" "toggle_element.call(this, 'lv-for-noun-cv{i}', 'on');"
 
+  Label "<div id='lv-for-noun-cv{i}' style='display:none'>"
   Label "<p>Light verbs that take this coverb class as an argument:</p>"
 
-  BeginIter coverb{j} "a light verb" 1
+  BeginIter lv{j} "a light verb" 1
 
-    MultiSelect lvs "Light verb" "Light verb: " ""
+    MultiSelect lvs "Light verb" "Light verb(s): " ""
     fillregex p=lv[0-9]+_name
 
-    Select lvc-valence "LVC valence" "LVC valence: " ""
+    Select valence "LVC valence" "LVC valence: " ""
     . coverb-only "just coverb" "just coverb"
     . coverb-1arg "coverb plus 1 arg" "coverb plus 1 argument"
     . coverb-2arg "coverb plus 2 args" "coverb plus 2 arguments"
 
-  EndIter coverb
+  EndIter lv
+  Label "</div>"
 
   Label "</div>"
 
@@ -2531,6 +2567,28 @@ BeginIter verb{i} "a Verb Type" 1 2
     fillcache c=verblrs
 
   EndIter forbid
+
+  Label "<p>Light Verb Constructions:</p>"
+
+  Radio coverb-type "Coverb type" "" ""
+    . cv-opt "Can be coverb" "" "This can be a coverb<br>" "toggle_element.call(this, 'lv-for-verb-cv{i}', 'on');"
+    . cv-only "Is only coverb" "" "This is only a coverb<br>" "toggle_element.call(this, 'lv-for-verb-cv{i}', 'on');"
+
+  Label "<div id='lv-for-verb-cv{i}' style='display:none'>"
+  Label "<p>Light verbs that take this coverb class as an argument:</p>"
+
+  BeginIter lv{j} "a light verb" 1
+
+    MultiSelect lvs "Light verb" "Light verb(s): " ""
+    fillregex p=lv[0-9]+_name
+
+    Select valence "LVC valence" "LVC valence: " ""
+    . coverb-only "just coverb" "just coverb"
+    . coverb-1arg "coverb plus 1 arg" "coverb plus 1 argument"
+    . coverb-2arg "coverb plus 2 args" "coverb plus 2 arguments"
+
+  EndIter lv
+  Label "</div>"
 
   Label "</div>"
 
