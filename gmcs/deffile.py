@@ -1116,7 +1116,12 @@ class MatrixDefFile:
                 if len(word) > 5:
                     # matrixdef contains name of choice to switch on
                     switch = word[5]
-                    skip_this_iter = self.check_choice_switch(switch, choices)
+                    if switch:
+                        skip_this_iter = self.check_choice_switch(switch, choices)
+                alt_val_prefix = False
+                if len(word) > 6: # TEW 2024-06-03 adding option to have iterable start with word other than "Add"
+                    # matrixdef contains alternate value prefix
+                    alt_val_prefix = word[6]
 
                 i += 1
 
@@ -1222,7 +1227,14 @@ class MatrixDefFile:
                     elif prefix + iter_name in vr.infos:
                         html += html_info_mark(vr.infos[prefix + iter_name])
                     # finally add the button
-                    html += '<input type="button" name="" ' + \
+                    if alt_val_prefix:
+                        html += '<input type="button" name="" ' + \
+                                'value="' + alt_val_prefix + ' ' + label + '" ' + \
+                                'onclick="clone_region(\'' + \
+                                prefix + iter_name + '\', \'' + \
+                                iter_var + '\','
+                    else:
+                        html += '<input type="button" name="" ' + \
                             'value="Add ' + label + '" ' + \
                             'onclick="clone_region(\'' + \
                             prefix + iter_name + '\', \'' + \
