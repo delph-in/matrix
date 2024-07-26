@@ -14,7 +14,7 @@ from delphin import tsdb
 
 from gmcs import tdl
 from gmcs.choices import ChoicesFile
-from gmcs.linglib import adnominal_possession
+from gmcs.linglib import adnominal_possession, light_verb_constructions
 from gmcs.linglib import adverbs_adpositions
 from gmcs.linglib import agreement_features
 from gmcs.linglib import argument_optionality
@@ -26,6 +26,7 @@ from gmcs.linglib import direct_inverse
 from gmcs.linglib import features
 from gmcs.linglib import information_structure
 from gmcs.linglib import lexical_items
+from gmcs.linglib import light_verb_constructions as lvc
 from gmcs.linglib import morphotactics
 from gmcs.linglib import negation
 from gmcs.linglib import nominalized_clauses
@@ -480,6 +481,7 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
     case.init_case_hierarchy(ch, hierarchies)
     agreement_features.init_agreement_hierarchies(ch, mylang, hierarchies)
     verbal_features.init_verbal_hierarchies(ch, hierarchies)
+    light_verb_constructions.init_light_verb_hierarchy(ch, hierarchies)
 
     # Integrate choices related to lexical entries imported from
     # Toolbox lexicon file(s), if any.  NOTE: This needs to be called
@@ -508,6 +510,7 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
     argument_optionality.customize_arg_op(mylang, ch, rules, hierarchies)
     direct_inverse.customize_direct_inverse(ch, mylang, hierarchies)
     case.customize_case(mylang, ch, hierarchies)
+    lvc.customize_light_verb(mylang, hierarchies)
 
     # after all structures have been customized, customize inflection,
     # but provide the methods the components above have for their own
@@ -554,6 +557,7 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
     clausalcomps.customize_clausalcomps(mylang, ch, lexicon, rules)
     adverbs_adpositions.customize_adv_adp(ch, mylang, rules)
     wh_ques.customize_wh_ques(mylang, ch, rules, roots)
+    lvc.customize_lvc(mylang, ch, hierarchies, rules)
 
     # Customization having to do with punctuation, [incr tsdb()],
     # parsers, roots, and vpm.

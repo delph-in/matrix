@@ -6,6 +6,7 @@
 import sys
 #import os
 import copy
+import inspect
 
 ###########################################################################
 # TDL Tokenization
@@ -254,6 +255,12 @@ class TDLelem_typedef(TDLelem):
 
     def get_one_line(self):
         return self.one_line
+
+    def set_merge(self, merge):
+        self.merge = merge
+
+    def get_merge(self):
+        return self.merge
 
 
 ###########################################################################
@@ -920,7 +927,7 @@ class TDLfile(object):
             t.write()
 
     def add(self, tdl_type,
-            comment='', one_line=False, merge=False, section=''):
+            comment='', one_line=False, merge=True, section=''):
         """
         Add a type definition to this file, merging with an existing
         definition if possible.
@@ -928,6 +935,7 @@ class TDLfile(object):
         typedef = TDLparse(tdl_type)
         typedef.set_comment(comment)
         typedef.set_one_line(one_line)
+        typedef.set_merge(merge)
 
         typedef.section = section
         if not section:
@@ -935,7 +943,7 @@ class TDLfile(object):
 
         handled = False
         for i in range(len(self.typedefs) - 1, -1, -1):
-            if TDLmergeable(self.typedefs[i], typedef):
+            if merge and TDLmergeable(self.typedefs[i], typedef):
                 self.typedefs[i] = TDLmerge(self.typedefs[i], typedef)
                 handled = True
                 break
@@ -961,3 +969,24 @@ class TDLfile(object):
             l.section = self.section
 
         self.typedefs.append(l)
+
+    def remove_subtypes(self, type_name, subtype_types):
+        """
+        Given a type name and a set of subtypes, remove typedefs for the
+        subtypes corresponding to the type name
+        """
+        # print(type_name, subtype_types)
+
+        for subtype_type in subtype_types:
+            for typedef_super in self.typedefs:
+                typedef = typedef_super
+                if 'typedef\'' in str(type(typedef)) and typedef.type == type_name:
+                    has_child = True
+                    while has_child:
+                        for child in typedef.child:
+                            if 'type\'' in str(type(child)) and child.type == subtype_type:
+                                self.typedefs.remove(typedef_super)
+                                # print("\t" + subtype_type)
+                        typedef = child
+                        if not typedef.child:
+                            has_child = False

@@ -1095,6 +1095,10 @@ def validate_lexicon(ch, vr):
                            'without a direct-inverse scale.'
                     vr.err(feat.full_key + '_head', mess)
 
+    # Light Verbs
+    for lv in ch.get('lv'):
+        print("in lexicon.py")
+
     # LTX 2022-05-16: Check if there are duplicated features (maybe with different values)
     # with inheritance hierarchy (see discussion in issue #627)
     # Abhinav 2023-01-31: Fixed bug blocking multiple inheritance, no longer recursive

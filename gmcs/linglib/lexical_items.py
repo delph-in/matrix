@@ -12,6 +12,7 @@ from gmcs.linglib import features
 from gmcs.linglib import auxiliaries
 from gmcs.linglib import information_structure
 from gmcs.linglib import clausalcomps
+from gmcs.linglib.light_verb_constructions import customize_light_verbs, customize_coverbs
 from gmcs.linglib.parameters import determine_vcluster
 from gmcs.linglib.lexbase import ALL_LEX_TYPES, LEXICAL_SUPERTYPES
 from gmcs.linglib.lexicon import get_all_supertypes
@@ -58,6 +59,11 @@ def adp_id(item):
 def qpart_id(item):
     """Return the identifier for a question particle lexical item."""
     return get_name(item) + '-lex'
+
+
+def lv_id(item):
+    """Return the identifier for a light verb lexical item."""
+    return get_name(item) + '-lv-tr-verby-lex'
 
 ##########################################################
 # insert_ids()
@@ -338,7 +344,8 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
     # Now create the lexical entries for all the defined verb types
     cases = case.case_names(ch)
     for verb in ch.get('verb', []):
-        create_verb_lex_type(cases, ch, hierarchies, lexicon, mylang, verb)
+        if not verb.get('coverb-type') == 'cv-only':
+            create_verb_lex_type(cases, ch, hierarchies, lexicon, mylang, verb)
     if ch.get('wh-q-inter-verbs') == 'on':
         mylang.add(lexbase.ITRG_VB)
         for verb in ch.get('qverb', []):
@@ -685,44 +692,45 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
                         parents = next_parents
 
     for noun in ch.get('noun', []):
-        ntype = noun_id(noun)
-        det = noun.get('det')
-        pron = noun.get('pron') == ON
-        qpron = noun.get(INTER) == ON
-        if noun.full_key in stopdets:
-            det = ''
+        if not noun.get('coverb-type') == 'cv-only':
+            ntype = noun_id(noun)
+            det = noun.get('det')
+            pron = noun.get('pron') == ON
+            qpron = noun.get(INTER) == ON
+            if noun.full_key in stopdets:
+                det = ''
 
-        stypes = noun.get('supertypes').split(', ')
-        stype_names = [noun_id(ch[st]) for st in stypes if st != '']
+            stypes = noun.get('supertypes').split(', ')
+            stype_names = [noun_id(ch[st]) for st in stypes if st != '']
 
-        # if singlentype or det == 'opt':
-        #  stype = 'noun-lex'
-        if not singlentype and not qpron:
-            if det == 'obl':
-                stype_names.append('obl-spr-noun-lex')
-            elif det == 'imp':
-                stype_names.append('no-spr-noun-lex')
-        if qpron:
-            stype_names.append(WH_PRO)
-        if len(stype_names) == 0:
-            mylang.add(ntype + ' := noun-lex .')
-        else:
-            mylang.add(ntype + ' := ' + ' & '.join(stype_names) + '.')
-        # EKN 2018-01-31 Adding PRON feature to individual types:
-        if pron:
-            mylang.add(ntype + ' := [ SYNSEM.LOCAL.CAT.HEAD.PRON + ].')
-        features.customize_feature_values(
-            mylang, ch, hierarchies, noun, ntype, 'noun')
-        for stem in noun.get('stem', []):
-            # consider instead using (should be the same effect):
-            # add_stem_to_lexicon(lexicon, stem, ntype)
-            orthstr = orth_encode(stem.get('orth'))
-            pred = stem.get('pred')
-            name = stem.get('name')
-            typedef = TDLencode(name) + ' := ' + ntype + ' & \
-                  [ STEM < "' + orthstr + '" >, \
-                    SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
-            lexicon.add(typedef)
+            # if singlentype or det == 'opt':
+            #  stype = 'noun-lex'
+            if not singlentype and not qpron:
+                if det == 'obl':
+                    stype_names.append('obl-spr-noun-lex')
+                elif det == 'imp':
+                    stype_names.append('no-spr-noun-lex')
+            if qpron:
+                stype_names.append(WH_PRO)
+            if len(stype_names) == 0:
+                mylang.add(ntype + ' := noun-lex .')
+            else:
+                mylang.add(ntype + ' := ' + ' & '.join(stype_names) + '.')
+            # EKN 2018-01-31 Adding PRON feature to individual types:
+            if pron:
+                mylang.add(ntype + ' := [ SYNSEM.LOCAL.CAT.HEAD.PRON + ].')
+            features.customize_feature_values(
+                mylang, ch, hierarchies, noun, ntype, 'noun')
+            for stem in noun.get('stem', []):
+                # consider instead using (should be the same effect):
+                # add_stem_to_lexicon(lexicon, stem, ntype)
+                orthstr = orth_encode(stem.get('orth'))
+                pred = stem.get('pred')
+                name = stem.get('name')
+                typedef = TDLencode(name) + ' := ' + ntype + ' & \
+                    [ STEM < "' + orthstr + '" >, \
+                        SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
+                lexicon.add(typedef)
 
 
 def customize_adverbs(mylang, ch, lexicon):
@@ -1241,6 +1249,9 @@ def customize_lexicon(mylang, ch, lexicon, trigger, hierarchies, rules):
 
     mylang.set_section('verblex')
     customize_verbs(mylang, ch, lexicon, hierarchies)
+
+    customize_light_verbs(mylang, ch, lexicon, hierarchies)
+    customize_coverbs(mylang, ch, lexicon, hierarchies)
 
     if ch.get('has-aux') == 'yes':
         mylang.set_section('auxlex')

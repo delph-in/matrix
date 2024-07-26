@@ -192,6 +192,13 @@ class TDLHierarchy:
             for i in remove_array:
                 del(subs[i])
 
+        # turn subs and supers into lists so they can be sorted; prevents
+        # order of types from changing when written out
+        subs = list(subs)
+        subs.sort()
+        supers = list(supers)
+        supers.sort()
+
         # figure out the name of the new type
         new_type = ''
         for h in self.hierarchy:

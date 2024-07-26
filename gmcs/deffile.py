@@ -1002,7 +1002,8 @@ class MatrixDefFile:
                                'fillverbpat': 'fill_case_patterns(false)',
                                'fillnumbers': 'fill_numbers()',
                                'fillcache': 'fill_cache(%(args)s)',
-                               'fillforms': 'fill_forms()'}
+                               'fillforms': 'fill_forms()',
+                               'fillempty': 'fill_empty()'}
                 # look ahead and see if we have an auto-filled drop-down
                 i += 1
                 # OZ 2017-12-05 Adding check that i is not out of array bounds; managed to break it otherwise,

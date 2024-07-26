@@ -6,6 +6,7 @@
 import re
 from gmcs.util.misc import safe_int
 from gmcs.linglib import case, clausalcomps
+from gmcs.utils import get_name, orth_encode
 
 ######################################################################
 # globals
@@ -1056,6 +1057,25 @@ class ChoicesFile:
             genders += [[name, stype]]
 
         return genders
+
+    def light_verbs(self):
+        light_verbs = set()
+
+        for lv in self.get('lv'):
+            for val_type in lv.get('valence').split(', '):
+                name = get_name(lv)
+                stype = 'lv-all'
+
+                if val_type == 'coverb-only':
+                    name += '-it'
+                    stype += '-it'
+                elif val_type == 'coverb-1comp':
+                    name += '-tr'
+                    stype += '-tr'
+
+                light_verbs.add((name, stype))
+
+        return light_verbs
 
     # forms()
     #   Create and return a list containing the values of the FORM
