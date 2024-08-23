@@ -1057,7 +1057,7 @@ function aux_fill_pred(name, stem, pos) {
 
 // subpair_matrix_fill_pred is similar to fill pred, except that it uses the matrixorth
 // and matrixpred values. These values distinguish between the subordinator morphemes
-// in the matrix and subordinate clauses in claual modifiers with subordinate pairs
+// in the matrix and subordinate clauses in clausal modifiers with subordinate pairs
 function subpair_matrix_fill_pred(name, pos) {
   var elms = document.getElementsByName(name + '_matrixorth');
   var word = '';

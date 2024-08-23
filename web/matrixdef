@@ -450,7 +450,7 @@ BeginIter poss-strat{i} "a possessive strategy"
      . spec "specifier" "" "specifier<br>"
      . mod "modifier" "" "modifier<br>"
 
-     Radio mark-loc "Mark location" "<p> Do any morphemes (affixes, clitics, or separate words) appear which mark the noun phrase as possessive? If so, where?</p>" ""
+     Radio mark-loc "Mark location" "<p>Do any morphemes (affixes, clitics, or separate words) appear which mark the noun phrase as possessive? If so, where?</p>" ""
      . possessor "Possessor marking" "" "On the possessor<br>"  "toggle_element.call(this, 'possessor-morph{i}', 'on'); toggle_element.call(this, 'possessum-morph{i}', 'off');toggle_element.call(this, 'juxt{i}', 'off');toggle_element.call(this, 'possessum-only{i}', 'off');"
      . possessum "Possessum marking" "" "On the possessum<br>"  "toggle_element.call(this, 'possessum-morph{i}', 'on'); toggle_element.call(this, 'possessor-morph{i}', 'off');toggle_element.call(this, 'juxt{i}', 'off');toggle_element.call(this, 'possessum-only{i}', 'on');"
      . both "Both marking" "" "On both the possessor and the possessum<br>" "toggle_element.call(this, 'possessum-morph{i}', 'on'); toggle_element.call(this, 'possessor-morph{i}', 'on');toggle_element.call(this, 'juxt{i}', 'off');toggle_element.call(this, 'possessum-only{i}', 'off');"
@@ -500,7 +500,7 @@ BeginIter poss-strat{i} "a possessive strategy"
 	   . head-final "Marker after" "" "after<br>"
 	   . either "Marter either order" "" "either<br>"
 
-	   Radio pronoun-allow "Pronoun allowability" "<p>Can the possessor marked by this word or clitic be a pronoun?</p>" ""
+	   Radio marked-pronoun-allow "Pronoun allowability" "<p>Can the possessor marked by this word or clitic be a pronoun?</p>" ""
 	   . yes "Pronouns allowed" "" "yes<br>"
 	   . no "Pronouns disallowed" "" "no<br>"
 
