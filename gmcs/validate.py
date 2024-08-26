@@ -239,7 +239,27 @@ def validate_names(ch, vr):
         reserved_types['form'] = True
         reserved_types['finite'] = True
         reserved_types['nonfinite'] = True
-
+        if ch.has_adp_form():
+            for adp in ch.get('adp', []):
+                subform = adp.get('orth') + "_"
+                has_case = False
+                has_infostr = False
+                for feat in adp.get('feat', []):
+                    if feat['name'] == 'case':
+                        has_case = True
+                        subform += 'case'
+                    if feat['name'] == 'information-structure meaning':
+                        has_infostr = True
+                        subform += 'infostr'
+                if not (has_case or has_infostr):
+                    subform += 'sem'
+                reserved_types[subform] = True
+            for normadp in ch.get('normadp'):
+                for stem in normadp.get('stem'):
+                    if not stem.get("form"):
+                        reserved_types['adpform'] = True
+                        break
+                    
     if 'ns' in ch:
         reserved_types['nominalization'] = True
 
@@ -1320,11 +1340,15 @@ def validate_features(ch, vr):
         for subval in value.split(', '):
             valid = False
             for f in features:
-                if f[0] == name:
-                    for v in f[1].split(';'):
-                        (vn, vf) = v.split('|')
-                        if vn == subval:
-                            valid = True
+                #features of category 'poss' don't take feature values and thus don't have any invalid value options
+                if f[3] == 'poss':
+                    valid = True
+                else:
+                    if f[0] == name:
+                        for v in f[1].split(';'):
+                            (vn, vf) = v.split('|')
+                            if vn == subval:
+                                valid = True
             if not valid:
                 break
         if not valid:
@@ -1584,10 +1608,11 @@ def validate_nominalized_clauses(ch, vr):
             mess = 'You must enter a name for the nominalization strategy.'
             vr.err(ns.full_key + '_name', mess)
         level = ns.get('level')
+        nmz_type = ns.get('nmz_type')
         if level in ['mid', 'low'] and not ns['nmzRel'] == 'yes':
             vr.err(ns.full_key + '_level',
                    'Mid and low nominalization must be specified as having semantics.')
-        if not ns['nmzRel'] == 'yes' and not ns['nmzRel'] == 'no':
+        if not ns['nmzRel'] == 'yes' and not ns['nmzRel'] == 'no' and nmz_type in ['sentential', 'alt-sent']:
             vr.err(ns.full_key + '_nmzRel',
                    'Please choose whether nominalization contributes to the semantics.')
         if ns.get('level') == 'mid':

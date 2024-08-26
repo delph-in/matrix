@@ -141,11 +141,38 @@ def init_form_hierarchy(ch, hierarchies):
     about verb forms
     """
     hier = TDLHierarchy('form')
-    if ('form-fin-nf' in ch):
+    if ('form-fin-nf' in ch or ch.has_adp_form()):
         hier.add('nonfinite', 'form')
         hier.add('finite', 'form')
         for subform in ch.get('form-subtype', []):
             hier.add(subform.get('name'), subform.get('supertype'))
+        #If the language has at least one semantically empty 
+        #adp that is neither case-marking nor information-structure marking
+        #all adpositions (normadp and adp) need to take form values
+        #an adposition's form value is just equal to its orth value plus
+        #what kind of adp it is:(case,infostr,sem)
+        if ch.has_adp_form():
+            for adp in ch.get('adp'):
+                subform = adp.get('orth') + "_"
+                has_case = False
+                has_infostr = False
+                for feat in adp.get('feat', []):
+                    if feat['name'] == 'case':
+                        has_case = True
+                        subform += 'case'
+                    if feat['name'] == 'information-structure meaning':
+                        has_infostr = True
+                        subform += 'infostr'
+                if not (has_case or has_infostr):
+                    subform += 'sem'
+                hier.add(subform, 'form')
+            #Need to make sure that the FORM value has not allready been added by the user
+            #Can just validate so that a person has to set the FORM value of a normadp to be the same as the orth
+            for normadp in ch.get('normadp'):
+                for stem in normadp.get('stem'):
+                    if not stem.get("form"):
+                        hier.add('adpform', 'form')
+                        break
     if not hier.is_empty():
         hierarchies[hier.name] = hier
 

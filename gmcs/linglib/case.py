@@ -146,7 +146,11 @@ def init_case_hierarchy(ch, hierarchies):
         abs_a = canon_to_abbr('abs', cases)
         if cm == 'split-v':
             for c in cases:
-                hier.add(c[2], 'case', c[1])
+                #hier.add(c[2], 'case', c[1])
+                if poss:
+                    hier.add(c[2], 'real-case', c[1])
+                else:
+                    hier.add(c[2], 'case', c[1])
         else:  # 'split-n':
             if poss:
                 hier.add('a_case', 'real-case', 'transitive agent')
@@ -201,10 +205,8 @@ def customize_trigger_rules(adp_type, trigger):
 
 # customize_case_adpositions()
 #   Create the appropriate types for case-marking adpositions
-def customize_case_adpositions(mylang, lexicon, trigger, ch, case_pos):
-    cases = case_names(ch)
+def customize_case_adpositions(mylang, ch, case_pos):
     # features = ch.features()
-    to_cfv = []
 
     if ch.has_adp_case():
         comment = \
@@ -219,14 +221,9 @@ def customize_case_adpositions(mylang, lexicon, trigger, ch, case_pos):
         poss = True if ch.get('poss-strat') or ch.get('poss-pron') else False
 
         typedef = \
-            'case-marking-adp-lex := non-local-none-lex-item & raise-sem-lex-item & \
-                [ SYNSEM.LOCAL.CAT [ HEAD adp & [ CASE #case, MOD < > ], \
-                                     VAL [ SPR < >, \
-                                           SUBJ < >, \
-                                           COMPS < #comps >, \
-                                           SPEC < > ]], \
-                  ARG-ST < #comps & [ LOCAL.CAT [ HEAD noun & [ CASE #case ], \
-                                                  VAL.SPR < > ]] > ].'
+            'case-marking-adp-lex := non-infostr-marking-adp-lex & \
+            [ SYNSEM.LOCAL.CAT [ HEAD [ CASE #case]],  \
+              ARG-ST < [ LOCAL.CAT.HEAD.CASE #case ] > ].' 
         mylang.add(typedef)
 
         # EKN 03-02-2018 Add CASE real-case to comp of adp if possessives
@@ -243,82 +240,6 @@ def customize_case_adpositions(mylang, lexicon, trigger, ch, case_pos):
                 'case-marking-adp-lex := \
                  [ ARG-ST < [ LOCAL.CAT.HEAD.CASE-MARKED - ] > ].')
 
-        # checking whether language has both prepositions and postpositions
-        bidirectional = False
-        adporders = []
-        for adp in ch.get('adp', []):
-            adp_order = adp.get('order')
-            if adp_order not in adporders:
-                adporders.append(adp_order)
-        if len(adporders) == 2:
-            bidirectional = True
-            mylang.add('case-marking-prep-lex := case-marking-adp-lex & \
-               [ SYNSEM.LOCAL.CAT.HEADFINAL - ].')
-            mylang.add('case-marking-postp-lex := case-marking-adp-lex & \
-               [ SYNSEM.LOCAL.CAT.HEADFINAL + ].')
-
-        # Lexical entries
-        lexicon.add_literal(';;; Case-marking adpositions')
-
-        adp_type_names = []
-        for adp in ch.get('adp', []):
-            orth = orth_encode(adp.get('orth'))
-            infix_tname = 'ad'
-            if bidirectional:
-                if adp.get('order') == 'before':
-                    infix_tname = 'pre'
-                elif adp.get('order') == 'after':
-                    infix_tname = 'post'
-
-            super_type = 'case-marking-' + infix_tname + 'p-lex'
-            # figure out the abbreviation for the case this adp marks
-            cn = ''
-            abbr = ''
-            for feat in adp.get('feat', []):
-                if feat['name'] == 'case':
-                    cn = feat['value']
-                    break
-
-            abbr = name_to_abbr(cn, cases)
-
-            # the type name for the adp marker includes the orthography of the marker at the end
-            # this serves to ensure each marker has its own lexical entry
-            # and prevents them from being "merged" due to having identical names
-            adp_type = TDLencode(abbr + '-marker_' + orth)
-            adp_type_names.append(adp_type)
-
-            typedef = \
-                adp_type + ' := ' + super_type + ' & \
-                        [ STEM < "' + orth + '" > ].'
-            lexicon.add(typedef)
-
-            has_inforstr_feat = False
-            for feat in adp.get('feat', []):
-                if feat['name'] == "information-structure meaning":
-                    has_inforstr_feat = True
-                    typedef = adp_type + \
-                        ' := [ SYNSEM.LOCAL \
-                                [ CAT.VAL.COMPS < \
-                                    [ LOCAL.CONT.HOOK.INDEX #target ] >, \
-                                  CONT [ HOOK.ICONS-KEY #icons, \
-                                         ICONS.LIST < info-str & \
-                                         #icons & [ \
-                                             IARG2 #target ] > ] ] ] ].'
-                    lexicon.add(typedef)
-                    break
-            if not has_inforstr_feat:
-                typedef = \
-                    adp_type + ' := [ SYNSEM.LOCAL.CONT [ \
-                                        HOOK [ ICONS-KEY.IARG1 #clause, \
-                                               CLAUSE-KEY #clause ], \
-                                        ICONS.LIST < > ] ].'
-                lexicon.add(typedef)
-
-            if cn.strip() != '':
-                customize_trigger_rules(adp_type, trigger)
-
-            to_cfv += [(adp.full_key, adp_type, 'adp')]
-    return to_cfv
 
 
 def customize_case(mylang, ch, hierarchies):

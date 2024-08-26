@@ -67,12 +67,13 @@ function is_displayed(node) {
 //  id (string): which id to toggle
 //  how (string): toggle, turn on, or turn off div with id
 //  switchOn ([string, ...]): list of options able to activate toggle in select
-function toggle_element(id, how, switchOn) {
+function toggle_element(id, how, switchOn, strategy="") {
   how = how || "toggle"; // set default to "toggle"
   switchOn = switchOn || null; // set default to null
   switchActive = true; // Ignore switch unless switchOn activates
   // Get element to toggle
   element = document.getElementById(id);
+  
   if (switchOn) {
     switchActive = false; // If switchOn, do nothing by default
     // Check to see if the node is a standard node
@@ -86,13 +87,38 @@ function toggle_element(id, how, switchOn) {
       }
     }
   }
+  
+    if (strategy != "") {
+        if (!element.hasAttribute('all-on-strats')) {
+           element.setAttribute('all-on-strats', '')
+        }
+        all_on_strats_array = element.getAttribute('all-on-strats').split(" ");
+        ind = all_on_strats_array.indexOf(strategy);
+        if (ind > -1) {
+	       if (how == 'off'){
+                all_on_strats_array.splice(ind);
+	       }
+       }
+       else {
+	       if (how == 'on') {
+                    all_on_strats_array.push(strategy)
+		    element.setAttribute('all-on-strats', all_on_strats_array.join(" "));
+	     }
+      }
+
+    if (how == 'off' && all_on_strats_array.length != 0) {
+        return;
+      }
+    
+    }
+
   // If element found and switch active, do the toggling
   if (element != null && switchActive) {
     if (how == "toggle") {
       element.style.display = (element.style.display != 'block') ? 'block' : 'none';
     }
     else if (how == "on") {
-      element.style.display = 'block';
+            element.style.display = 'block';   
     }
     else if (how == "off") {
       element.style.display = 'none';
@@ -154,6 +180,7 @@ function clear_form() {
 // Save and Vivify the choices on the current subpage
 // Vivify --> Validate? --JDC 10feb2012
 function save_form(section) {
+  alert("save_form")
   var elm = document.getElementsByTagName('form')[0];
   var inp = document.createElement('input');
   inp.type = "hidden";
@@ -682,7 +709,11 @@ function fill_feature_names(cat) {
   var items = new Array()
   for (var i = 0; i < features.length; i++) {
     var f = features[i].split(':');
-
+    //Ensures 'both' corresponds to 'noun' and 'verb' 
+    //categories and not 'poss' 
+    if (cat == 'both' && f[2] == 'poss') {
+       continue;
+    } 
     if (typeof (cat) == "undefined" ||
       f[2] == cat || f[2] == 'both' || cat == 'both') {
       items.push([f[0], f[0]]);

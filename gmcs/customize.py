@@ -498,6 +498,7 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
     yes_no_questions.customize_yesno_questions(
         mylang, ch, rules, lrules, hierarchies, roots)
 
+
     # The following might modify hierarchies in some way, so it's best
     # to customize those components and only have them contribute their
     # information to lexical rules when we customize inflection.
@@ -513,7 +514,7 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
     # but provide the methods the components above have for their own
     # contributions to the lexical rules
 
-    nominalized_clauses.customize_nmcs(mylang, ch, rules, roots)
+    nominalized_clauses.customize_nmcs(mylang, ch, rules)
     negation.customize_sentential_negation(
         mylang, ch, lexicon, rules, lrules, hierarchies)
 
@@ -530,7 +531,6 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
 
     # customize_feature_values is called by process_cfv_list
     # negation.py needs to run first!
-
     features.process_cfv_list(mylang, ch, hierarchies, to_cfv)
 
     # Call the other customization functions

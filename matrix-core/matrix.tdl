@@ -2118,7 +2118,7 @@ basic-head-spec-phrase-super := binary-nonloc-phrase & phrasal &
   [ INFLECTED infl-satisfied,
     SYNSEM [ LOCAL.CAT [ WH [ OR < #or1, #or2 > ],
                          VAL [ SUBJ #subj,
-                               COMPS #spcomps,
+                               COMPS #comps,
                                SPR #spr,
                                SPEC #spec ],
                          POSTHEAD #ph,
@@ -2128,7 +2128,7 @@ basic-head-spec-phrase-super := binary-nonloc-phrase & phrasal &
                SYNSEM [ LOCAL [ CAT [ WH #or1,
                                       HEAD #head,
                                       VAL [ SUBJ #subj,
-                                            COMPS olist & #comps,
+                                            COMPS #comps,
                                             SPR < #synsem &
                                                   canonical-synsem . #spr >,
                                             SPEC #spec ],
@@ -2136,11 +2136,9 @@ basic-head-spec-phrase-super := binary-nonloc-phrase & phrasal &
                                 CONT.HOOK #hdhook ],
                         MODIFIED #hmodif ] ],
     NON-HEAD-DTR.SYNSEM #synsem &
-     [ LOCAL [ CAT [ WH #or2, VAL [ SPEC < [ LOCAL [ CAT [ HEAD #head,
-                                                  VAL.COMPS #comps ],
+     [ LOCAL [ CAT [ WH #or2, VAL [ SPEC < [ LOCAL [ CAT [ HEAD #head ],
                                             CONT.HOOK #hdhook ],
-                                    MODIFIED #hmodif ] >,
-                           COMPS #spcomps ] ] ],
+                                    MODIFIED #hmodif ] > ] ] ],
        MODIFIED #modif ],
     C-CONT [ RELS.LIST < >, HCONS.LIST < >, ICONS.LIST < > ] ].
 
@@ -2246,6 +2244,9 @@ basic-head-comp-nmc-phrase := binary-nonloc-que-rel & head-compositional &
 ; is, using [ ICONS.LIST.FIRST ... ] is dangerous. Plus, CLAUSE/TARGET
 ; are replaced by IARG1/IARG2.
 
+; KR 2024-03-07: Removing [ HEAD-DTR..INDEX event ] to allow nominalized 
+; verbs to take optional complements 
+ 
 basic-head-opt-comp-phrase := unary-nonloc-phrase & head-only &
                               head-compositional &
   [ INFLECTED #infl,
@@ -2270,8 +2271,7 @@ basic-head-opt-comp-phrase := unary-nonloc-phrase & head-only &
 					    SPEC #spec ],
 				      MC #mc,
 				      POSTHEAD #ph,
-              WH #wh ],
-				CONT.HOOK.INDEX event ],
+              WH #wh ]],
 			MODIFIED #mod ] ],
     C-CONT [ RELS.LIST < >,
 	     HCONS.LIST < >,
@@ -2301,6 +2301,8 @@ basic-head-opt-comp-phrase := unary-nonloc-phrase & head-only &
 ; down to decl-head-opt-subj-phrase, since we might *not* want it for
 ; imperatives.
 
+
+;TODO: change unexpressed back to gap
 basic-head-opt-subj-phrase := unary-nonloc-phrase & head-only &
   [ INFLECTED #infl,
     SYNSEM canonical-synsem &

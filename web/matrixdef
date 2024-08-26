@@ -68,7 +68,6 @@ Radio word-order "Basic word order" "Please indicate which pattern best describe
 . v-initial "Verb-initial" "" "V-initial<br>"
 . free "Free word order" "" "free (pragmatically determined word order)<br>"
 . v2 "v2 word order" "" "finite verb or auxiliary in second position, else free word order<br>"
-. v2 "v2 word order" "" "finite verb second, non-finite verb clause-finally"
 
 Separator
 
@@ -1611,6 +1610,7 @@ BeginIter fr{i} "a feature resolution pattern" 1
   
   Text name "Feature resolution agreement pattern {i}'s name: " "" "" 10
 
+
   Label "<p>This feature resolution pattern uses the following features: <br> "
 
   BeginIter feat{j} "a Feature"
@@ -2046,26 +2046,329 @@ Label "</div>"
 
 Section nominalclause "Nominalized Clauses"
 
-Label "<p>If your language uses nominalization in the context of clausal complements
-and/or clausal modifiers, define the nomminalization strategies here. They will then be available on the Clausal Complements, Clausal Modifers, and Morphology pages.</p>"
+Label "<p>If your language uses affixal nominalization define the nomminalization strategies here.
+Once defined a nominalization feature will become available to select on the morphology page.
+The different values of this feature correspond to the names of all defined nominalization strategies.
+To define a nominalization affix create a lexical rule type on the morphology page
+and mark the rule with the desired nominalization strategy. Each nominalization affix
+should only use a single nominalization strategy.
+
+The nominalization feature will also be available on both the clausal complement and clausal modfier pages allowing
+nomminalization strategies to serve as markers of these constructions. A NMZ 
+feature will also become available on the Morphology and Lexicon pages. Specifiying 
+that a verb's argument is [NMZ +] indicates that the argument must be nominalized.
+Specifying that a verb's argument is [NMZ -] indicates that the argument cannot be nominalized.</p>"
+
+Label "<p> By default all arguments in nominalized clauses are treated as optional. 
+If a nominalization strategy requires that one or both arguments are obligatory, check the box below.<p>
+Then on the Morphology
+page, for each affix that uses a nominalization strategy specifiy that an argument must 
+appear by selecting OPT - on that argument. The only exception to this are optional arguments
+marked by possessive strategies (only relevant for poss-acc, erg-poss, or nominal 
+nominalization strategies) which should be dealt with by answering the relevant questions
+on this page.</p>"
+
+Check mandatory-arg "Mandatory arguments" "" "At least one nominalization strategy has arguments which must overtly appear<br>"
+
+Label "<p></p>"
+
+Label "
+
+Nominalization strategies are characterized according to the typology of action nominal 
+constructions proposed by Koptjevskaja-Tamm (1993). The typology organizes ANCs into four types
+based on how the arguments referring to the agent and the patient of the underlying verb are
+marked. These four types are sentential, poss-acc, erg-poss, and nominal. Descriptions of these 
+four types as well as two additional categories (alternative-sentential and all-comps) which
+serve as slight extensions are given below. Each nominalization should fall into one of 
+these categories according to the expected marking behavior of its arguments. In the 
+descriptions below A (agent) refers to the argument marked as the semantic agent while 
+P (patient) refers to the argument marked as the semantic patient.
+
+<p> </p>
+
+<b>sentential:</b> All arguments are marked in the same way as they would be for the underlying verb.<br>
+<b>alternative-sentential:</b> The P is marked in the same as the original verb, 
+but the A is marked differently. This can be either due to being marked with a different case or a different adposition.
+Cruically, this marking strategy is not covered by any of the possessive strategies in the language.<br>
+<b>all-comps:</b> Both arguments of the nominalized verb are treated as complements. 
+Neither argument is marked with a possessive strategy.<br> 
+<b>poss-acc:</b> The A of intransitive and transitive verbs are marked in the same way as possessors in a specific adnominal possessive strategy, the P is marked as it would be for the non-nominilized verb.<br>
+<b>erg-poss:</b> The A of intransitive verbs and the P of transitive verbs are marked in the same way as possessors in a specific adnominal possessive strategy, the A of transitive verbs uses an oblique verbal marking pattern.<br>
+<b>nominal:</b> The A of intransitive and transitive verbs are marked in the same way as possessors in a specific adnominal possessive strategy, the P is marked in manner typical of nominal arguments." 
+
+
+Label "<p></p>"
 
 BeginIter ns{i} "a Nominalization Strategy" 1
 
   Text name "Nominalization Strategy {i} Name" "<b>Nominalization Strategy {i}</b>:<br/>Nominalization Strategy Name: " " " 20
 
-    Radio level "Nominalization Strategy {i} Level" "<br><b>The nominalization of the clause happens:</b><br>" ""
-  . low "Low" "" "at V"
-  . mid "Mid" "" "at VP"
-  . high "High" "" "at S"
+    Radio nmz_type "Nominalization Strategy {i} nmz_type" "<br><b>Based on the above defintions the nominalization type of this strategy is:</b><br>" ""
+  . sentential "sentential" "" "sentential<br>" "toggle_element.call(this, 'use-poss-strat-general', 'off',null ,'{i}'); toggle_element.call(this, 'use-poss-strat{i}', 'off'); toggle_element.call(this, 'has-dets{i}', 'off');toggle_element.call(this, 'sent-strat{i}', 'on');toggle_element.call(this, 'all-comps{i}', 'off');
+	toggle_element.call(this, 'sent{i}', 'on');
+	toggle_element.call(this, 'alt-sent{i}', 'off');
+	toggle_element.call(this, 'poss-acc{i}', 'off');
+	toggle_element.call(this, 'erg-poss{i}', 'off');
+	toggle_element.call(this, 'nomn{i}', 'off');" 
+  . alt-sent "alternative-sentential" "" "alternative-sentential<br>" "toggle_element.call(this, 'use-poss-strat-general', 'off', null, '{i}'); toggle_element.call(this, 'use-poss-strat{i}', 'off'); toggle_element.call(this, 'has-dets{i}', 'off');toggle_element.call(this, 'sent-strat{i}', 'on');toggle_element.call(this, 'all-comps{i}', 'off');
+	toggle_element.call(this, 'sent{i}', 'off');
+	toggle_element.call(this, 'alt-sent{i}', 'on');
+	toggle_element.call(this, 'poss-acc{i}', 'off');
+	toggle_element.call(this, 'erg-poss{i}', 'off');
+	toggle_element.call(this, 'nomn{i}', 'off');"
+  . all-comps "all-comps" "" "all-comps<br>" "toggle_element.call(this, 'use-poss-strat-general', 'off', null ,'{i}'); toggle_element.call(this, 'use-poss-strat{i}', 'off'); toggle_element.call(this, 'has-dets{i}', 'on');toggle_element.call(this, 'sent-strat{i}', 'off');toggle_element.call(this, 'all-comps{i}', 'on');
+	toggle_element.call(this, 'sent{i}', 'off');
+	toggle_element.call(this, 'alt-sent{i}', 'off');
+	toggle_element.call(this, 'poss-acc{i}', 'off');
+	toggle_element.call(this, 'erg-poss{i}', 'off');
+	toggle_element.call(this, 'nomn{i}', 'off');"
+  . poss-acc "poss-acc" "" "poss-acc<br>" "toggle_element.call(this, 'use-poss-strat-general', 'on',null,'{i}'); toggle_element.call(this, 'use-poss-strat{i}', 'on'); toggle_element.call(this, 'has-dets{i}', 'on');toggle_element.call(this, 'sent-strat{i}', 'off');toggle_element.call(this, 'all-comps{i}', 'off');
+	toggle_element.call(this, 'sent{i}', 'off');
+	toggle_element.call(this, 'alt-sent{i}', 'off');
+	toggle_element.call(this, 'poss-acc{i}', 'on');
+	toggle_element.call(this, 'erg-poss{i}', 'off');
+	toggle_element.call(this, 'nomn{i}', 'off');"
+  . erg-poss "erg-poss" "" "erg-poss<br>" "toggle_element.call(this, 'use-poss-strat-general', 'on', null ,'{i}'); toggle_element.call(this, 'use-poss-strat{i}', 'on');toggle_element.call(this, 'has-dets{i}', 'on');toggle_element.call(this, 'sent-strat{i}', 'off');toggle_element.call(this, 'all-comps{i}', 'off');
+	toggle_element.call(this, 'sent{i}', 'off');
+	toggle_element.call(this, 'alt-sent{i}', 'off');
+	toggle_element.call(this, 'poss-acc{i}', 'off');
+	toggle_element.call(this, 'erg-poss{i}', 'on');
+	toggle_element.call(this, 'nomn{i}', 'off');"
+  . nominal "nominal" "" "nominal" "toggle_element.call(this, 'use-poss-strat-general', 'on', null,'{i}'); toggle_element.call(this, 'use-poss-strat{i}', 'on');toggle_element.call(this, 'has-dets{i}', 'on');toggle_element.call(this, 'sent-strat{i}', 'off');toggle_element.call(this, 'all-comps{i}', 'off');
+	toggle_element.call(this, 'sent{i}', 'off');
+	toggle_element.call(this, 'alt-sent{i}', 'off');
+	toggle_element.call(this, 'poss-acc{i}', 'off');
+	toggle_element.call(this, 'erg-poss{i}', 'off');
+	toggle_element.call(this, 'nomn{i}', 'on');"
+
+Label "<div id='sent{i}'' style='display:none'>"
+
+Label "<p> The A for this strategy is the subject and the P is the 
+object. Mandatory arguments can be specified on the Morphology page by selecting [OPT -]
+on the subject and/or object for lexical rule types that use this nominalization strategy.
+All other constraints on the subject and object will be identical to those specified
+on the arguments of the underlying verb. <br></p>"
+
+Label "</div>"
+
+Label "<div id='alt-sent{i}'' style='display:none'>"
+
+Label "<p> The A for this strategy is the subject and the P is the 
+object. Mandatory arguments can be specified on the Morphology page by selecting [OPT -]
+on the subject and/or object for lexical rule types that use this nominalization strategy.
+All constraints on the object will be identical to those on the object of 
+the underlying verb. Additional feature constraints (and whether the argument
+can be marked by a semantically empty adposition) can be specified for the subject on
+lexical rule types that use this nominalization strategy on the Morphology page.<br></p>"
+
+Label "</div>"
+
+Label "<div id='all-comps{i}'' style='display:none'>"
+
+Label "<p> The A and P for this strategy are the first and second
+complements. Whether the first or second complement is the A or P for 
+transitive nominalized verbs can be selected below. Mandatory arguments can be specified on 
+the Morphology page by selecting [OPT -] on the object and/or second object 
+for lexical rule types that use this nominalization strategy.
+Additional feature constraints can be specified on the object and 
+second object for lexical rule types that use this nominalization strategy on the Morphology page.
+If this strategy is also selected as acting on intransitive verbs (see how 
+to handle strategies which act on both intransitive and transitive verbs below), the single argument
+of the intransitive nominalized verb will take the same feature constraints 
+as those placed on the object of the transitive lrt.<br></p>"
+
+
+Radio all_comps_arg_order "All_comps_argument_order {i}" "<br>If all-comps is selected, for transitive verbs,
+which argument serves as the first complement to the nominalized verb: the more agent-like or the more patient-like argument<br>" ""
+    . agent "agent-like" "" "Agent-like<br>"
+    . patient "patient-like" "" "Patient-like<br>"
+
+Label "</div>"
+
+Label "<div id='poss-acc{i}'' style='display:none'>"
+
+Label "<p> The A for this strategy is the possessor and the P is the object. 
+Mandatory objects can be specified on the Morphology page by selecting [OPT -]
+on the object for lexical rule types that use this nominalization strategy.
+Mandatory possessors can be specified by answering the questions below.
+All constraints on the object will be identical to those on the object of 
+the underlying verb. The A argument will be marked using one of the possessive 
+strategies selected at the bottom of the page.<br></p>"
+
+Label "</div>"
+
+Label "<div id='erg-poss{i}'' style='display:none'>"
+
+Label "<p> The A for this strategy is the object and the P is the possessor. 
+Mandatory objects can be specified on the Morphology page by selecting [OPT -]
+on the object for lexical rule types that use this nominalization strategy.
+Mandatory possessors can be specified by answering the questions below.
+Additional feature constraints (and whether the argument
+can be marked by a semantically empty adposition) can be specified for the object on
+lexical rule types that use this nominalization strategy on the Morphology page.
+The P argument for transitive verbs and the A argument for intransitive verbs
+will be marked using one of the possessive strategies selected at the bottom of the page.<br></p>"
+
+Label "</div>"
+
+Label "<div id='nomn{i}'' style='display:none'>"
+
+Label "<p> The A for this strategy is the possessor and the P is the object. 
+Mandatory objects can be specified on the Morphology page by selecting [OPT -]
+on the object for lexical rule types that use this nominalization strategy.
+Mandatory possessors can be specified by answering the questions below.
+Additional feature constraints (and whether the argument
+can be marked by a semantically empty adposition) can be specified for the object on
+lexical rule types that use this nominalization strategy on the Morphology page.
+The A argument will be marked using one of the possessive strategies selected at the bottom of the page.<br></p>"
+
+Label "</div>"
+
+Label "<div id='sent-strat{i}'' style='display:none'>"
 
 Radio nmzRel "Nominalization Strategy {i} Relation" "<br><br><b>Is the nominalization syntactic
 only or should it also be reflected in the semantics?</b><br>
-  (Note: for mid or low nominalization, currently you must say that it is reflected in the semantics).
+  (Note: option of having nominalization not appear in the semantics is only available for
+         sentential and alternative-sentential nominalization).
   </b><br>" ""
     . no "No" "" "Nominalization is syntactic only<br>"
     . yes "Yes" "" "Nominalization should be reflected in the semantics<br>"
 
+Label "</div>"
+
+Label "<div id='use-poss-strat{i}'' style='display:none'>"
+
+Label "<p> Check the box below if the argument marked by a possessive strategy 
+is mandatory (this argument must be present in the full nominalized clause).<br></p>"
+
+Check mand-spr "Mandatory Specifier" "" "The argument marked by the possessive strategy or 
+strategies listed above must appear in the nominalized clause.<br>"
+
+Label "<p></p>"
+
+Label "<p>single argument marking" "" "For strategies acting on transitive verbs, when only a single 
+argument appears (either the A or the P), check the box below if the argument is always marked using a possessive strategy.
+This is despite how this same argument would be marked if it appeared alongside the other argument.
+For example, in Russian whenever a P or an A appears alone with a nominalized verb
+they take genitive case (the same way possessors are marked). However, when both 
+the A and P appear with the nominalized verb, only the P takes 
+genitive case while the A takes instrumental case (Comrie, 1976).<br></p>"
+
+Check single-arg "Single argument marking" "" "A single argument is always marked as a posssessor<br>"
+
+Label "</div>"
+
+Label "<p></p>"
+
+Label "<div id='has-dets{i}'' style='display:none'>"
+
+Label "<p> If the lanuage has determiners, specifiy how the nominalized verb resulting from this strategy interacts with determiners.
+For poss-acc/erg-poss/nominal strategies this refers to the behavior when the argument
+marked by a possessive strategy does not appear in the nominalized clause.
+For example, in the English example 'the running of the race', the nominalized 
+verb 'running' must obliagatorily appear with a determiner when the NP 
+corresponding to an agent-like arugment is dropped ('the rabbit's running of the race').</p>"
+
+
+Radio det "Nominalization Strategy {i} determiner" "<p>For nominalized verbs of this type, a determiner is: " "</p>"
+  . obl "Obligatory" "" " obligatory"
+  . opt "Optional" "" " optional"
+  . imp "Impossible" "" " impossible"
+
+Label "</div>"
+
+Label "<p></p>"
+
+Label "<p> Specifiy whether this strategy acts on intransitive or transitive verbs.
+           If both intransitive and transitive verbs are selected, only create 
+           an lrt on the Morphology page corresponding to the transitive verb,
+           but which can still take both intransitive and transitive verbs as input.
+           An intransitive lrt will be created automatically based on the transitive one.<br>"
+
+Label "<p></p>"
+
+	Check intrans "Intransitive" "" "intransitive verbs<br>" 
+	Check trans  "Transitive" "" "transitive verbs"
+
+Label "<p></p>"
+
+
+Label "<br>In this strategy, the nominalized verb can be modified by<br>"
+	Check adj "Adjectives" "" "Adjectives<br>" 
+	Check adv   "Adverbs" "" "Adverbs"
+
+
+Label "<p></p>"
+
 EndIter ns
+
+Label "<div id='use-poss-strat-general' style='display:none'>"
+
+Label "<p> A different word order from that in finite clauses can be selected 
+for poss-acc, erg-poss, or nominal nominalization strategies. 
+However, the same alternative word order must be shared by all three of these types. For example,
+if the finite word order is SOV, and a language has both poss-acc and erg-poss nominalization strategies, 
+it is possible to specify that these two types should use OSV word order. 
+However, it would not be possible for the poss-acc nominalization strategy to use SOV 
+word order and the erg-poss strategy to  use OSV word order. </p>"
+
+
+Label "<p></p>"
+Radio same-word-order "noun vs verb word order" "For poss-acc, erg-poss, or nominal nominalization strategies, do nominalized clauses have the same word as regular verb phrases?<br>" ""
+. yes "Yes" "" "Yes<br>" "toggle_element.call(this, 'same-wo', 'on');toggle_element.call(this, 'diff-wo', 'off');"
+. no "No" "" "No<br>" "toggle_element.call(this, 'same-wo', 'off');toggle_element.call(this, 'diff-wo', 'on');"
+
+
+Label "<p></p>"
+
+Label "<div id='diff-wo' style='display:none'>"
+
+Radio nmz-clause-word-order "nominalized clause word order" "Please indicate which pattern best describes the word order of your language in nominalized clauses.
+Here the subject should map to the semantic agent and the object to the semantic patient:<br>" "</p>"
+. sov "Subject, Object, Nominalized verb" "" "SOV<br>"
+. svo "Subject, Nominalized verb, Object" "" "SVO<br>"
+. vso "Nominalized verb, Subject, Object" "" "VSO<br>"
+. osv "Object, Subject, Nominalized verb" "" "OSV<br>"
+. ovs "Object, Nominalized verb, Subject" "" "OVS<br>"
+. vos "Verb, Nominalized verb, Object" "" "VOS<br>"
+. v-final "Nominalized verb-final" "" "V-final<br>"
+. v-initial "Nominalized verb-initial" "" "V-initial<br>"
+. free "Free word order" "" "free (pragmatically determined word order)<br>"
+. v2 "v2 word order" "" "finite verb or auxiliary in second position, else free word order<br>"
+
+ Label "</div>"
+
+Label "<p></p>"
+
+Label "<p> Please select which adnominal possessive strategies can be used when combining 
+the nominalized verb with a possessor. For nominal nominaliization strategies, this should 
+be the strategy used on the A, even if the P is also marked as a possessor:</p>"
+
+    BeginIter nmz_poss_strat{l} "a Possessive strategy"
+
+      Select name "Nominalization Strategy {i} Possessive strategy {l} Name" "Name: " ""
+	  fillnames2 c=poss
+
+    EndIter nmz_poss_strat
+
+
+Radio non_sent_sem "Nominalization Strategy {i} Relation" "<br><br><b>When the nominalized verb appears with a syntactic possessor the semantic represenation should: </b><br>
+  </b><br>" ""
+    . both  "both" "" "Include both the possessive and verbal semantics (the argument marked by the possessive strategy will be interpretated as both a verbal argument and a possessor)<br>" 
+    . verb-only "verb-only" "" "Include only the verbal semantics (the argument marked by the possessive strategy will be represented 
+	as only a verbal argument)<br>"
+    . noun-only "noun-only" "" "Include only the possessive semantics (the argument marked by the possessive strategy will be represented 
+	as just the possessor)<br>"
+
+Label "<p></p>"
+ 
+
+Label "</div>"
+
+Label "<h4>References</h4>"
+Label "<div style=\"font-size:2\">"
+Label "<p>Comrie, Bernard. 1976. The Syntax of Action Nominals: A Cross-Linguistic Study.Lingua, 40. 177-201 </p>" 
+Label "<p>Koptjevskaja-Tamm, Maria. 1993. Nominalizations. London: Routledge.</p>"
 
 Section clausal-comp "Clausal Complements"
 
@@ -3004,6 +3307,21 @@ BeginIter adp{i} "a Case-marking and/or Information Structural Adposition" 1
 
   EndIter feat
 
+
+Label "<p>A feature should only be specified on an adposition's complement, 
+if no features (case or information-marking) are specified on the adposition 
+itself.</p>"
+
+  BeginIter adpcomp_feat{j} "a Feature on Adposition's Complement" 0 0
+
+    Select name "Adposition {i} feature {j} name" "Name: " " "
+    fillnames c=noun
+
+    MultiSelect value "Adposition's Complement {i} feature {j} value" "Value: " ""
+    fillvalues p=adp{i}_adpcomp_feat{j}_name
+
+  EndIter adpcomp_feat
+
 EndIter adp
 
 
@@ -3054,7 +3372,7 @@ Select order "Noun Position Class {i} Order" "<br/>Appears as a prefix or suffix
 
     MultiSelect others "Noun Position Class {i} Requires" "Noun Position Class {i} requires one of the following: " ""
     fillcache c=nouns
-    fillregex p=noun-pc[0-9]+(_lrt[0-9]+)?_name
+    fillregex p=(verb|noun)-pc[0-9]+(_lrt[0-9]+)?_name
     . noun "Any noun" "any noun"
 
   EndIter require
@@ -3063,7 +3381,7 @@ Select order "Noun Position Class {i} Order" "<br/>Appears as a prefix or suffix
 
     Select others "Noun Position Class {i} Forbids" "Noun Position Class {i} forbids the following: " ""
     fillcache c=nouns
-    fillregex p=noun-pc[0-9]+(_lrt[0-9]+)?_name
+    fillregex p=(verb|noun)-pc[0-9]+(_lrt[0-9]+)?_name
     . noun "Any noun" "any noun"
 
   EndIter forbid
@@ -3100,7 +3418,7 @@ Select order "Noun Position Class {i} Order" "<br/>Appears as a prefix or suffix
 
       MultiSelect others "Noun Position Class {i} Lexical Rule Type {j} Requires" "Lexical Rule Type {j} requires one of the following: " ""
       fillcache c=nouns
-      fillregex p=noun-pc[0-9]+(_lrt[0-9]+)?_name
+      fillregex p=(verb|noun)-pc[0-9]+(_lrt[0-9]+)?_name
       . noun "Any noun" "any noun"
 
     EndIter require
@@ -3109,7 +3427,7 @@ Select order "Noun Position Class {i} Order" "<br/>Appears as a prefix or suffix
 
       Select others "Noun Position Class {i} Lexical Rule Type {j} forbids" "Lexical Rule Type {j} forbids the following: " ""
       fillcache c=nouns
-      fillregex p=noun-pc[0-9]+(_lrt[0-9]+)?_name
+      fillregex p=(verb|noun)-pc[0-9]+(_lrt[0-9]+)?_name
       . noun "Any noun" "any noun"
 
     EndIter forbid
@@ -3220,7 +3538,7 @@ BeginIter verb-pc{i} "a Position Class" 1
     MultiSelect others "Verb Position Class {i} Requires" "Verb Position Class {i} requires one of the following: " ""
     fillcache c=verbs
     fillcache c=auxes
-    fillregex p=verb-pc[0-9]+(_lrt[0-9]+)?_name
+    fillregex p=(verb|noun)-pc[0-9]+(_lrt[0-9]+)?_name
     . verb "Any verb" "any verb"
     . iverb "Any intransitive verb" "any intransitive verb"
     . tverb "Any transitive verb" "any transitive verb"
@@ -3234,7 +3552,7 @@ BeginIter verb-pc{i} "a Position Class" 1
     Select others "Verb Position Class {i} Forbids" "Verb Position Class {i} forbids the following: " ""
     fillcache c=verbs
     fillcache c=auxes
-    fillregex p=verb-pc[0-9]+(_lrt[0-9]+)?_name
+    fillregex p=(verb|noun)-pc[0-9]+(_lrt[0-9]+)?_name
     . verb "Any verb" "any verb"
     . iverb "Any intransitive verb" "any intransitive verb"
     . tverb "Any transitive verb" "any transitive verb"
@@ -3254,6 +3572,12 @@ BeginIter verb-pc{i} "a Position Class" 1
 
     Label "<p>Features:</p>"
 
+    Label "<p> For lexical rule types using a nominalization strategy, if one of the arguments of the verb is marked through the use of 
+	       a semantically empty adposition (which is neither case-marking nor 
+		information structure marking), select the form value associated 
+		with the adposition and which argument it should mark. The form value for all semantically  
+                empty adpositions is just their orthography followed by _sem.</p>"
+
     BeginIter feat{k} "a Feature"
 
       Select name "Verb Position Class {i} Lexical Rule Type {j} Feature {k} Name" "Name: " " "
@@ -3266,16 +3590,17 @@ BeginIter verb-pc{i} "a Position Class" 1
       . verb "The verb" "the verb"
       . subj "The subject" "the subject NP"
       . obj "The object" "the object NP"
+      . obj2 "The second object" "the second object NP"
       . newobj "The added object" "the added object NP"
       . higher "Higher-ranked" "the higher-ranked NP"
       . lower "Lower-ranked" "the lower-ranked NP"
 
     EndIter feat
 
+
     Label "<p>Valence-changing operations may modify the valence structure of<br/>
 a verb by adding or removing either a subject or object, possibly <br/>
 including changes to e.g. case frames or adding predicates. (<b>Experimental</b>)</p>"
-
 
     BeginIter valchg{k} "a valence-changing operation"
 
@@ -3319,7 +3644,7 @@ inputs are possible, these need to be created as two separate lexical rule types
       MultiSelect others "Verb Position Class {i} Lexical Rule Type {j} Requires" "Lexical Rule Type {j} requires one of the following: " ""
       fillcache c=verbs
       fillcache c=auxes
-      fillregex p=verb-pc[0-9]+(_lrt[0-9]+)?_name
+      fillregex p=(verb|noun)-pc[0-9]+(_lrt[0-9]+)?_name
       . verb "Any verb" "any verb"
       . iverb "Any intransitive verb" "any intransitive verb"
       . tverb "Any transitive verb" "any transitive verb"
@@ -3333,7 +3658,7 @@ inputs are possible, these need to be created as two separate lexical rule types
       Select others "Verb Position Class {i} Lexical Rule Type {j} forbids" "Lexical Rule Type {j} forbids the following: " ""
       fillcache c=verbs
       fillcache c=auxes
-      fillregex p=verb-pc[0-9]+(_lrt[0-9]+)?_name
+      fillregex p=(verb|noun)-pc[0-9]+(_lrt[0-9]+)?_name
       . verb "Any verb" "any verb"
       . iverb "Any intransitive verb" "any intransitive verb"
       . tverb "Any transitive verb" "any transitive verb"

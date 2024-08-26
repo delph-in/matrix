@@ -634,6 +634,8 @@ class ChoicesFile:
             self.convert_32_to_33()
         if self.version < 34:
             self.convert_33_to_34()
+        if self.version < 35:
+            self.convert_34_to_35()
 
         # As we get more versions, add more version-conversion methods, and:
         # if self.version < N:
@@ -693,6 +695,32 @@ class ChoicesFile:
         self.cached_values[k] = result
 
         return result
+    
+    def has_adp_form(self):
+        """
+        Returns True iff the target language has at least one sementically-empty adposition
+        which is neither case-marking or information-structure marking
+        """
+        for adp in self.get('adp'):
+            case_or_info = False
+            for feat in adp.get('feat', []):
+                if feat['name'] == 'information-structure meaning' or feat['name'] == 'case':
+                    case_or_info = True
+            if not case_or_info:
+                return True
+        return False
+    
+    def has_adp_only_form(self):
+        """
+        Returns True iff the target language has only sementically-empty adpositions
+        without either case-marking or information structural marking adpositions.
+        """
+        if self.has_adp_case() or self.has_adp_only_infostr():
+            return False
+
+        if self.get('adp'):
+            return True
+        return False
 
     def has_adp_only_infostr(self):
         """
@@ -922,7 +950,6 @@ class ChoicesFile:
                     patterns += [[patterns[i][0] + ',dirinv',
                                   patterns[i][1] + ', direct-inverse',
                                   patterns[i][2]]]
-
         # Extend the patterns to include clausal complement strategies
         for ccs in self['comps']:
             patterns += [['trans,%s' %
@@ -1064,13 +1091,35 @@ class ChoicesFile:
     #   This list consists of tuples:
     #     [name, supertype]
     def forms(self):
-        if 'form-fin-nf' in self and self['form-fin-nf'] == 'on':
+        if 'form-fin-nf' in self and self['form-fin-nf'] == 'on' or self.has_adp_form():
             forms = [['form', 'form'], [
                 'finite', 'form'], ['nonfinite', 'form']]
             for f in self.get('form-subtype'):
                 name = f['name']
                 stype = f.get('supertype') if f.get('supertype') else 'form'
                 forms += [[name, stype]]
+            if self.has_adp_form():
+                for adp in self.get('adp'):
+                    subform = adp.get('orth') + "_"
+                    has_case = False
+                    has_infostr = False
+                    for feat in adp.get('feat', []):
+                        if feat['name'] == 'case':
+                            has_case = True
+                            subform += 'case'
+                        if feat['name'] == 'information-structure meaning':
+                            has_infostr = True
+                            subform += 'infostr'
+                    if not (has_case or has_infostr):
+                        subform += 'sem'
+                    forms += [[subform, 'form']]
+                #Need to make sure that the FORM value has not allready been added by the user
+                #Can just validate so that a person has to set the FORM value of a normadp to be the same as the orth
+                for normadp in self.get('normadp'):
+                    for stem in normadp.get('stem'):
+                        if not stem.get("form"):
+                            forms += [['adpform', 'form']]
+                            break
             return forms
         return []
 
@@ -1256,20 +1305,26 @@ class ChoicesFile:
 
         # Possessives EKN 2017-01-13
         for strat in self.get('poss-strat'):
+            strat_name = strat.full_key
             if strat.get('possessor-type') == 'affix' or strat.get('possessum-type') == 'affix':
-                strat_name = strat.full_key
                 features += [[strat_name, 'possessor|possessor;possessum|possessum;nonpossessive|nonpossessive', '', 'noun', 'y']]
+                features += [[strat_name, '', '', 'poss', 'y']]
+            else:
+                features += [[strat_name, '', '', 'poss', 'y']]
         for pron in self.get('poss-pron'):
+            pron_name = pron.full_key
             if pron.get('type') == 'affix':
-                pron_name = pron.full_key
                 features += [[pron_name,
                               'plus|plus;minus|minus', '', 'noun', 'y']]
-            if pron.get('type') == 'non-affix':
+                features += [[pron_name,
+                              '', '', 'poss', 'y']]
+            elif pron.get('type') == 'non-affix':
+                features += [[pron_name,'', '', 'poss', 'y']]
                 if pron.get('possessum-mark') == 'yes':
                     if pron.get('possessum-mark-type') == 'affix':
-                        pron_name = pron.full_key
                         features += [[pron_name+'_possessum',
                                       'plus|plus;minus|minus', '', 'noun', 'y']]
+            
 
         # Questions
         if 'q-infl' in self.choices and not 'wh-q-infl' in self.choices:
@@ -1293,10 +1348,14 @@ class ChoicesFile:
                 else:
                     nom_types += (';' + ns.get('name') + '|' + ns.get('name'))
             features += [['nominalization', nom_types, '', 'verb', 'y']]
+            features += [['NMZ', 'plus|plus;minus|minus', 'LOCAL.CAT.HEAD.NMZ', 'both', 'n']]
+
+
 
         # Argument Optionality
-        if 'subj-drop' in self.choices or 'obj-drop' in self.choices:
+        if 'subj-drop' in self.choices or 'obj-drop' in self.choices or 'mandatory-arg' in self.choices:
             features += [['OPT', 'plus|plus;minus|minus', '', 'verb', 'y']]
+
 
         perm_notperm_string = 'permitted|permitted;not-permitted|not-permitted'
         # Overt Argument
@@ -2395,6 +2454,55 @@ class ChoicesFile:
                         for feat in lrt['feat']:
                             if feat['name'] == 'question' and feat['value'] == 'plus':
                                 feat['value'] = 'polar'
+
+    def convert_34_to_35(self):
+        needs_both = True
+        trans_or_intrans_on = False
+        rules = []
+        for vpc in self['verb-pc']:
+            for lrt in vpc['lrt']:
+                for f in lrt['feat']:
+                    if 'nominalization' in f['name']:
+                        for ns in self['ns']:
+                            if f['value'] == ns['name']:
+                                rules.append((lrt, ns, vpc))
+
+        for ns in self.get('ns'):
+            if self[ns.full_key + '_trans'] == 'on' or self[ns.full_key + '_intrans'] == 'on':
+                trans_or_intrans_on = True
+                break
+
+        if not trans_or_intrans_on:        
+            for lrt, ns, vpc in rules:
+                inputs = vpc['inputs'].split(',')
+                if 'tverb' in inputs:
+                    needs_both = False
+                    self[ns.full_key + '_trans'] = 'on'
+                elif 'iverb' in inputs:
+                    needs_both = False
+                    self[ns.full_key + '_intrans'] = 'on'
+                elif 'valence' in self.get(inputs[0]):
+                    needs_both = False
+                else:
+                    for lrt in vpc['lrt']:
+                        for feat in lrt['feat']:
+                            if feat['head'] == 'obj':
+                                self[ns.full_key + '_trans'] = 'on'
+                                needs_both = False
+                if needs_both:
+                    self[ns.full_key + '_trans'] = 'on'
+                    self[ns.full_key + '_intrans'] = 'on'
+                
+        for ns in self.get('ns'):
+            if ns['level'] == 'high':
+                self.delete(ns.full_key + '_level')
+                self[ns.full_key + '_nmz_type'] = 'sentential'
+                self[ns.full_key + '_nmz_mod'] = 'adv'
+            elif ns['level'] == 'mid':
+                self.delete(ns.full_key + '_level')
+                self[ns.full_key +'_nmz_type'] = 'alt-sent'
+                self[ns.full_key +'_nmzRel'] = 'yes'
+                self[ns.full_key + '_nmz_mod'] = 'both'
 
 
 ########################################################################

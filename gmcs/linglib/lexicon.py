@@ -10,6 +10,7 @@ from gmcs.linglib.lexbase import LEXICAL_CATEGORIES
 from gmcs.linglib.lexbase import LEXICAL_SUPERTYPES
 
 
+
 def lexical_type_hierarchy(choices, lexical_supertype):
     if lexical_supertype not in LEXICAL_CATEGORIES:
         return None
@@ -456,8 +457,12 @@ def validate_lexicon(ch, vr):
     # and has valence, see issue #627
     for v in ch.get('verb'):
         if len(vtsts[v.full_key]) > 0 and vtsts[v.full_key][0] != '' and v.get('valence') != '':
-            mess = 'A verb class that specifies a value for valence can\'t also inherit a value for valence'
-            vr.err(v.full_key + '_valence', mess)
+            for parent_v in ch.get('verb'):
+                v_name = str(parent_v).split()[0].split('_')[0]
+                for st in vtsts[v.full_key]:
+                    if v_name == st and parent_v.get('valence') != '':
+                        mess = 'A verb class that specifies a value for valence can\'t also inherit a value for valence'
+                        vr.err(v.full_key + '_valence', mess)
 
     for v in ch.get('verb'):
         st_anc = []  # used to make sure we don't have an lkb err as

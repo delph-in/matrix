@@ -1,5 +1,5 @@
 
-version=32
+version=34
 
 section=general
 language=ccomp-pab
@@ -45,6 +45,8 @@ section=sentential-negation
 section=coordination
 
 section=matrix-yes-no
+
+section=wh-q
 
 section=info-str
 
@@ -143,6 +145,7 @@ section=morphology
   verb-pc3_name=asp
   verb-pc3_order=suffix
   verb-pc3_inputs=verb-pc1, verb-pc2
+    verb-pc3_require1_others=verb-pc1, verb-pc2
     verb-pc3_forbid1_others=verb-pc5
     verb-pc3_lrt1_name=ifv
       verb-pc3_lrt1_feat1_name=aspect
@@ -158,7 +161,7 @@ section=morphology
       verb-pc3_lrt2_lri1_orth=-hene
   verb-pc4_name=nmz1
   verb-pc4_order=suffix
-  verb-pc4_inputs=verb2, verb-pc3
+  verb-pc4_inputs=verb-pc3
     verb-pc4_lrt1_name=re
       verb-pc4_lrt1_feat1_name=nominalization
       verb-pc4_lrt1_feat1_value=high

@@ -1129,8 +1129,7 @@ def customize_information_structure_marker(mylang, ch, rules, irules, lexicon, t
             pass
 
 
-def customize_infostr_adpositions(mylang, lexicon, trigger, ch):
-    to_cfv = []
+def customize_infostr_adpositions(mylang):
 
     comment = \
         ';;; Information structural adpositions\n' + \
@@ -1139,89 +1138,14 @@ def customize_infostr_adpositions(mylang, lexicon, trigger, ch):
     mylang.add_literal(comment)
 
     typedef = \
-        'infostr-marking-adp-lex := non-local-none-lex-item & raise-sem-lex-item & one-icons-lex-item & \
-        [ SYNSEM.LOCAL [ CAT [ HEAD adp & [ MOD < > ], \
-                               VAL [ SPR < >, \
-                                     SUBJ < >, \
-                                     COMPS < #comps & [ LOCAL.CONT.HOOK.INDEX #target ] >, \
-                                     SPEC < > ] ], \
-                         CONT [ HOOK.ICONS-KEY #icons, \
-			        ICONS.LIST < #icons & [ IARG2 #target ] > ] ],\
-          ARG-ST < #comps & [ LOCAL.CAT [ HEAD noun, \
-                                          VAL.SPR < > ] ] > ].'
+        'infostr-marking-adp-lex := one-icons-lex-item & no-sem-adp-lex & \
+            [SYNSEM.LOCAL [ CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX #target ] >, \
+                            CONT [ HOOK.ICONS-KEY #icons,  \
+                                    ICONS.LIST < info-str & #icons & [ IARG2 #target ] >] ] ] ].'
     mylang.add(typedef)
 
     # TODO: EKN 03-02-2018 Add CASE real-case to comp of adp
     # the lg has case and has possessives
-
-    # checking whether language has both prepositions and postpositions
-    bidirectional = False
-    infostr_marking = False
-    no_case_adp = True
-    adporders = []
-
-    for adp in ch.get('adp', []):
-        for feat in adp.get('feat', []):
-            if feat['name'] == 'case' and (feat['value'] == case or case == ''):
-                no_case_adp = False
-            if feat['name'] == 'information-structure meaning':
-                infostr_marking = True
-        if no_case_adp and infostr_marking:
-            adp_order = adp.get('order')
-            if not adp_order in adporders:
-                adporders.append(adp_order)
-
-    if len(adporders) == 2:
-        bidirectional = True
-        mylang.add('infostr-marking-prep-lex := infostr-marking-adp-lex & \
-               [ SYNSEM.LOCAL.CAT.HEADFINAL - ].')
-        mylang.add('infostr-marking-postp-lex := infostr-marking-adp-lex & \
-               [ SYNSEM.LOCAL.CAT.HEADFINAL + ].')
-
-    # Lexical entries
-    lexicon.add_literal(';;; Information structural adpositions')
-    for adp in ch.get('adp', []):
-        infostr_marking = False
-        no_case_adp = True
-        for feat in adp.get('feat', []):
-            if feat['name'] == 'case' and (feat['value'] == case or case == ''):
-                no_case_adp = False
-            if feat['name'] == 'information-structure meaning':
-                infostr_marking = True
-        if not no_case_adp or not infostr_marking:
-            continue
-
-        orth = orth_encode(adp.get('orth'))
-        infix_tname = 'ad'
-        if bidirectional:
-            if adp.get('order') == 'before':
-                infix_tname = 'pre'
-            elif adp.get('order') == 'after':
-                infix_tname = 'post'
-
-        super_type = 'infostr-marking-' + infix_tname + 'p-lex'
-        adp_type = TDLencode(orth + '-marker')
-        typedef = \
-            adp_type + ' := ' + super_type + ' & \
-                        [ STEM < "' + orth + '" > ].'
-        lexicon.add(typedef)
-
-        grdef1 = adp_type + '_gr_1 := arg0e_gtr & \
-                    [ CONTEXT [ RELS.LIST <  [ ARG1 individual & #i ] > ], \
-                      FLAGS [ SUBSUME < #i >, TRIGGER "' + adp_type + '" ] ].'
-        grdef2 = adp_type + '_gr_2 := arg0e_gtr & \
-                      [ CONTEXT [ RELS.LIST <  [ ARG2 individual & #i ] > ], \
-                        FLAGS [ SUBSUME < #i >, TRIGGER "' + adp_type + '" ] ].'
-        grdef3 = adp_type + '_gr_3 := arg0e_gtr & \
-                      [ CONTEXT [ RELS.LIST <  [ ARG3 individual & #i ] > ], \
-                        FLAGS [ SUBSUME < #i >, TRIGGER "' + adp_type + '" ] ].'
-        trigger.add(grdef1)
-        trigger.add(grdef2)
-        trigger.add(grdef3)
-
-        to_cfv += [(adp.full_key, adp_type, 'adp')]
-
-    return to_cfv
 
 
 def customize_information_structure(mylang, ch, rules, irules, lexicon, trigger, hierarchies):

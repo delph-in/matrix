@@ -11,6 +11,7 @@ from gmcs.linglib.lexbase import (PositionClass, LexicalRuleType,
 
 from gmcs.lib import Hierarchy
 from gmcs.utils import get_name
+from gmcs.linglib.nominalized_clauses import needs_anc_wo_feat
 from functools import reduce
 #from gmcs.utils import TDLencode
 
@@ -289,7 +290,7 @@ def create_lexical_rule_type(lrt, mtx_supertypes, cur_pc):
             # some kind, though it won't actually be used
             # to add any tdl here. It'll just prevent this
             # lrt from getting a default supertype added.
-            elif feat['value'] == 'plus':
+            elif feat['value'] == 'plus' or feat['value'] == 'ANC':
                 new_lrt.possessive = 'pron'
         # EKN 2018-02-17 Add info about lrts for possessum marking
         # that accompanies pronoun possessors:
@@ -363,12 +364,28 @@ def interpret_constraints(choices):
 def convert_obligatoriness_to_req(choices):
     """
     For all PCs marked as obligatory, add a "require" constraint for
-    that PC on each of its basetypes.
+    that PC on each of its basetypes. If the PC/LRT has a category-change rule
+    then the "require" constraint is added to the PC/LRT and not the basetype.
     """
-    for pc in all_position_classes(choices):
-        if pc.get('obligatory', '') == 'on':
-            basetypes = [i for i in list(_mns[pc.full_key].input_span().values())
-                         if len(i.inputs()) == 0]
+    for lc in LEXICAL_CATEGORIES:
+        for pc in choices[lc + '-pc']:
+            basetypes = []
+            if pc.get('obligatory', '') == 'on':
+                for i in list(_mns[pc.full_key].input_span().values()):
+                    #The input i is a basetype of the same lexical category 
+                    # as the obligartory pc
+                    if len(i.inputs()) == 0 and lc in str(i):
+                        basetypes.append(i)
+                    #The "require" constraint still goes on the verb-lex basetype if the
+                    #the obligartory pc takes an auxilary as input
+                    elif len(i.inputs()) == 0 and lc == "verb" and "aux" in str(i):
+                        basetypes.append(i)
+                    #condition where i is a PC with a category-change rule
+                    elif len(i.inputs()) != 0 and isinstance(i,PositionClass) and i.has_category_change():
+                        i.constraints['req-fwd'][pc.full_key] = _mns[pc.full_key]
+                    #condition where i is a LRT with a category-change rule
+                    elif len(i.inputs()) != 0 and isinstance(i,LexicalRuleType) and "nominalization" in i.features:
+                        i.constraints['req-fwd'][pc.full_key] = _mns[pc.full_key]
             for bt in basetypes:
                 bt.constraints['req-fwd'][pc.full_key] = _mns[pc.full_key]
 
@@ -492,6 +509,7 @@ def set_req_bkwd_initial_flags(lex_pc, flag_tuple):
 # Changed the code to make the relationship explicit.
 LEX_RULE_SUPERTYPES = ['cat-change-only-lex-rule',
                        'same-agr-lex-rule',
+                       'same-non-local-lex-rule',
                        'cont-change-only-lex-rule',
                        'add-only-no-rels-hcons-rule',
                        'add-only-no-ccont-rule',
@@ -502,12 +520,23 @@ LEX_RULE_SUPERTYPES = ['cat-change-only-lex-rule',
                        'val-change-with-ccont-lex-rule',
                        'head-change-only-lex-rule',
                        'cont-change-only-lex-rule',
-                       'high-or-mid-nominalization-lex-rule',
-                       'mid-nominalization-lex-rule',
-                       'low-nmz-no-subjid-trans-lex-rule',
-                       'low-nmz-no-subjid-compsid-lex-rule',
-                       'low-nmz-subjid-trans-lex-rule',
-                       'low-nmz-subjid-compsid-lex-rule',
+                       'trans-sent-lex-rule',
+                       'intrans-sent-lex-rule',
+                       'trans-sent-alt-lex-rule',
+                       'intrans-sent-alt-lex-rule',
+                       'comps-anc-intrans-lex-rule',
+                       'comp-obj-trans-lex-rule',
+                       'comp-subj-trans-lex-rule',
+                       'non-sent-anc-intrans-lex-rule',
+                       'trans-poss-acc-lex-rule',
+                       'trans-erg-poss-lex-rule',
+                       'trans-nominal-lex-rule',
+                       'det-non-sent-anc-intrans-lex-rule',
+                       'det-trans-poss-acc-lex-rule',
+                       'det-trans-erg-poss-lex-rule',
+                       'det-trans-nominal-lex-rule',
+                       'trans-non-erg-poss-obj-only-lex-rule',
+                       'trans-erg-poss-subj-only-lex-rule',
                        'add-icons-subj-foc-lex-rule',
                        'add-icons-obj-foc-lex-rule']
 
@@ -608,6 +637,8 @@ def percolate_supertypes(pc):
                     x.supertypes.add('add-only-no-ccont-rule')
                 elif pc.has_infostr():
                     x.supertypes.add('add-only-no-rels-hcons-rule')
+                elif pc.has_possessive():
+                    x.supertypes.add('same-non-local-lex-rule')
 
     for r in pc.roots():
         r.percolate_down(items=lambda x: x.supertypes,
@@ -672,7 +703,6 @@ def get_infostr_constraints(choices):
         for j, lrt in enumerate(pc.get('lrt')):
             get_infostr_constraint(lrt.full_key, lrt.full_key)
 
-
 def write_rules(pch, mylang, irules, lrules, lextdl, choices):
     # Set up irules.tdl
     irules.define_sections([['regular', 'Inflecting Lexical Rule Instances', False, False],
@@ -697,6 +727,8 @@ def write_rules(pch, mylang, irules, lrules, lextdl, choices):
         # only lexical rules from this point
         write_supertypes(mylang, pc.identifier(), pc.supertypes)
         write_pc_flags(mylang, lextdl, pc, all_flags, choices)
+        if pc.has_possessive() and choices.get('ns', ''):
+            write_copy_nmz(mylang, choices, pc)
         for lrt in sorted(list(pc.nodes.values()), key=lambda x: x.tdl_order):
             write_i_or_l_rules(irules, lrules, lrt, pc.order)
             # TJT 2014-08-27: Write adjective position class features
@@ -790,12 +822,25 @@ def write_pc_flags(mylang, lextdl, pc, all_flags, choices):
         to_copy[mn.key] = write_mn_flags(mylang, lextdl, mn, out_flags, all_flags,
                                          choices)
     # for lex-rule PCs (not lexical types), write copy-up flags
-    if pc.is_lex_rule:
+    #Flags are not copied up for category-changing rules
+    if pc.is_lex_rule and not pc.has_category_change():
         # first write copy-ups for the root nodes
         copied_flags = write_copy_up_flags(mylang, to_copy, all_flags)
         # then, if any remain, copy up on the pc (if a lexrule)
         to_copy = {pc.key: all_flags.difference(out_flags.union(copied_flags))}
         write_copy_up_flags(mylang, to_copy, all_flags, force_write=True)
+
+def write_copy_nmz(mylang, choices, pc):
+    mylang.add(pc.identifier() + ' := [SYNSEM.LOCAL.CAT.HEAD [NMZ #nmz,\
+                                                              MOD #mod ],\
+                                   DTR.SYNSEM.LOCAL.CAT.HEAD [NMZ #nmz,\
+                                                              MOD #mod]].')
+    if choices.get("adv", ''):
+        mylang.add(pc.identifier() + ' := [SYNSEM.LOCAL.CAT.HEAD.ADV-MOD #adv-mod,\
+                                           DTR.SYNSEM.LOCAL.CAT.HEAD.ADV-MOD #adv-mod ].')
+    if needs_anc_wo_feat(choices):
+         mylang.add(pc.identifier() + ' := [SYNSEM.LOCAL.CAT.HEAD.ANC-WO #anc-wo,\
+                                           DTR.SYNSEM.LOCAL.CAT.HEAD.ANC-WO #anc-wo ].')
 
 
 def write_mn_flags(mylang, lextdl, mn, output_flags, all_flags, choices):
@@ -952,6 +997,30 @@ def write_possessive_behavior(pc, lrt, mylang, choices):
     elif lrt.possessive == None and pc.has_possessive():
         lrt.supertypes.add('add-only-no-ccont-rule')
 
+#Called by the adnominal_possessive library
+def add_nonpossessive_behavior(ch, mylang):
+    noun_inputs = set()
+    input_values = []
+    for pc in ch.get('noun-pc', ''):
+        poss_strat = False
+        for lrt in pc['lrt']:
+            if poss_strat:
+                break
+            for feat in lrt['feat']:
+                if 'poss-strat'in feat['name']:
+                    poss_strat = True
+                    break
+        if poss_strat:
+            input_values = _mns[pc.full_key].input_span()
+            for item in input_values:
+                lt_pc = item.split("-")
+                if len(lt_pc) == 1 and 'noun' in lt_pc[0]:
+                    noun_inputs.add(lt_pc[0])
+    for noun in ch.get('noun', ''):
+            noun_type = get_name(noun)  + '-noun-lex'
+            if noun.full_keys()[0].split("_")[0] not in noun_inputs:
+                mylang.add(noun_type + ':= [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR nonpossessive,\
+                                                     POSSESSUM nonpossessive ] ].', section='nounlex')
 
 def write_valence_change_behavior(pc, lrt, mylang, choices):
     from gmcs.linglib.valence_change import lexrule_name, added_argnum_for_vchop,demoted_argnum_for_vchop
