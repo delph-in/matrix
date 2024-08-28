@@ -259,7 +259,7 @@ def list_tests(args, verbose=False):
 
 def update_test(args):
     """
-    Use the current test profile to the gold.
+    Update the current test profile to the gold.
     """
     tests = list(_discover(args))
     if len(tests) != 1:

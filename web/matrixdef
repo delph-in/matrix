@@ -414,7 +414,7 @@ Label "</p>"
 
 Label "<p><b>Additional Cases</b></p><p>If your language has any
 additional cases not covered above that occur in simple intransitive
-or transitive clauses (e.g. if you language has verbs whose O is
+or transitive clauses (e.g. if your language has verbs whose O is
 marked by the dative), define those cases here:</p>"
 
 BeginIter case{i} "a Case"
@@ -450,7 +450,7 @@ BeginIter poss-strat{i} "a possessive strategy"
      . spec "specifier" "" "specifier<br>"
      . mod "modifier" "" "modifier<br>"
 
-     Radio mark-loc "Mark location" "<p> Do any morphemes (affixes, clitics, or separate words) appear which mark the noun phrase as possessive? If so, where?</p>" ""
+     Radio mark-loc "Mark location" "<p>Do any morphemes (affixes, clitics, or separate words) appear which mark the noun phrase as possessive? If so, where?</p>" ""
      . possessor "Possessor marking" "" "On the possessor<br>"  "toggle_element.call(this, 'possessor-morph{i}', 'on'); toggle_element.call(this, 'possessum-morph{i}', 'off');toggle_element.call(this, 'juxt{i}', 'off');toggle_element.call(this, 'possessum-only{i}', 'off');"
      . possessum "Possessum marking" "" "On the possessum<br>"  "toggle_element.call(this, 'possessum-morph{i}', 'on'); toggle_element.call(this, 'possessor-morph{i}', 'off');toggle_element.call(this, 'juxt{i}', 'off');toggle_element.call(this, 'possessum-only{i}', 'on');"
      . both "Both marking" "" "On both the possessor and the possessum<br>" "toggle_element.call(this, 'possessum-morph{i}', 'on'); toggle_element.call(this, 'possessor-morph{i}', 'on');toggle_element.call(this, 'juxt{i}', 'off');toggle_element.call(this, 'possessum-only{i}', 'off');"
@@ -500,7 +500,7 @@ BeginIter poss-strat{i} "a possessive strategy"
 	   . head-final "Marker after" "" "after<br>"
 	   . either "Marter either order" "" "either<br>"
 
-	   Radio pronoun-allow "Pronoun allowability" "<p>Can the possessor marked by this word or clitic be a pronoun?</p>" ""
+	   Radio marked-pronoun-allow "Pronoun allowability" "<p>Can the possessor marked by this word or clitic be a pronoun?</p>" ""
 	   . yes "Pronouns allowed" "" "yes<br>"
 	   . no "Pronouns disallowed" "" "no<br>"
 
@@ -782,6 +782,7 @@ BeginIter scale{i} "a Scale Entry" 1
 
     Select name "Scale entry {i} feature {j} name" "Name: " " "
     fillnames c=noun
+    . "information-structure meaning" "information-structure meaning" "information-structure meaning"
 
     Select value "Scale entry {i} feature {j} value" "Value: " ""
     fillvalues p=scale{i}_feat{j}_name
@@ -1296,7 +1297,7 @@ Radio neg-order "Negative adverb order" "and appears " ""
 . after "after" "" "after "
 . either "either" "" "on either side of the category it modifies.<br>"
 
-Text neg-adv-orth "Negative adverb spelling" "...and which is spelled: " "" 20
+Text neg-adv-orth "Negative adverb spelling" "...and has ORTH value: " "" 20
 
 Check comp-neg "Negation by selected complement" "<p>" "An adverb like particle
 which is a selected complement.  This option will create a non-inflecting lexical
@@ -1407,7 +1408,7 @@ Radio neg-mod-order-infl-mod-neg "negative adverb order" "NEG adverb is ordered:
 . after "after" "" "after "
 . either "either" "" "on either side of the category it modifies.<br>"
 
-Text neg-mod-orth "negative adverb spelling" "NEG adverb is spelled: " "" 20
+Text neg-mod-orth "negative adverb spelling" "the ORTH value of NEG adverb is: " "" 20
 Label "</div>"
 
 Label "<div id='head-head-neg' class='bineg_switch' style='display:none'><p>Two negative heads is not available.  Please contact matrix-dev if you believe this is the best analysis for your language.</p></div>"
@@ -1438,7 +1439,7 @@ Radio neg-mod-order-head-mod-neg "negative adverb order" "NEG adverb is ordered:
 . after "after" "" "after "
 . either "either" "" "on either side of the category it modifies.<br>"
 
-Text neg-mod-orth "negative adverb spelling" "NEG adverb is spelled: " "" 20
+Text neg-mod-orth "negative adverb spelling" "the ORTH value of NEG adverb is: " "" 20
 Label "</div>"
 
 Label "<div id='comp-comp-neg' class='bineg_switch' style='display:none'><p>You have selected a construction with two negative complements.  Please provide some further information about the two complements here:</p><p>"
@@ -1486,7 +1487,7 @@ Radio neg-mod-order-comp-mod-neg "negative adverb order" "NEG adverb is ordered:
 . after "after" "" "after "
 . either "either" "" "on either side of the category it modifies.<br>"
 
-Text neg-mod-orth "negative adverb spelling" "NEG adverb is spelled: " "</p>" 20
+Text neg-mod-orth "negative adverb spelling" "the ORTH value of NEG adverb is: " "</p>" 20
 Label "</div>"
 
 Label "<div id='mod-mod-neg' class='bineg_switch' style='display:none'><p>You have selected a negation construction with two negative modifiers.  Please provide some further information here:</p><p>"
@@ -1501,7 +1502,7 @@ Radio neg1-mod-order "negative adverb order" "NEG1 is ordered: " ""
 . after "after" "" "after "
 . either "either" "" "on either side of the category it modifies.<br>"
 
-Text neg1-mod-orth "negative adverb spelling" "NEG1 is spelled: " "</p>" 20
+Text neg1-mod-orth "negative adverb spelling" "the ORTH value of NEG1 is: " "</p>" 20
 
 Radio neg2-mod "negative adv modifies" "NEG2 modifies:" "<br />"
 . s "S" "" "S "
@@ -1513,7 +1514,7 @@ Radio neg2-mod-order "negative adverb order" "NEG2 is ordered: " ""
 . after "after" "" "after "
 . either "either" "" "on either side of the category it modifies.<br>"
 
-Text neg2-mod-orth "negative adverb spelling" "NEG2 is spelled: " "" 20
+Text neg2-mod-orth "negative adverb spelling" "the ORTH value of NEG2 is: " "" 20
 Label "</div>"
 
 Label "<div id=\"bineg_fb\"></div></div>"
@@ -1755,11 +1756,11 @@ Check focus-marking "Information Structure Marking" "<p>" "Question words may be
  overt focus marking (specify on Information Structure page).</p>"
 
 Label "<p> "
- Check wh-q-inter-verbs "Iterrogative verbs" "" "Interrogative verbs (add appropriate entries on the Lexicon page).</p>"
+ Check wh-q-inter-verbs "Interrogative verbs" "" "Interrogative verbs (add appropriate entries on the Lexicon page).</p>"
 
  Label "<p> If you specified Auxiliary-Subject inversion for polar questions, does it also happen in constituent questions?<br>"
  Check wh-inv-matrix "Matrix Inversion" "" "yes, in matrix clauses <br>"
- Check wh-inv-embed "Embedded Inversion" "" "also in embedded clauses with constituent questions<br>"
+ Check wh-inv-embed "Embedded Inversion" "" "also in embedded constituent questions<br>"
  Check wh-inv-notsubj "No Inversion with Questions about Subjects" "" "but not in questions about subjects.</p>"
 
 

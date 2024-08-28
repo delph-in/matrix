@@ -817,14 +817,11 @@ na-or-- := luk
 bool := luk
 """true or false""".
 
-+-or-- := luk
-"""<todo> remove this type; redundant with bool""".
-
 na := na-or-+ & na-or--
 """not applicable""".
-+ := bool & na-or-+ & +-or--
++ := bool & na-or-+
 """true""".
-- := bool & na-or-- & +-or--
+- := bool & na-or--
 """false""".
 
 xmod := sort &
@@ -3679,6 +3676,7 @@ conj-lex := basic-conj-lex & single-rel-lex-item &
 nosem-conj-lex := basic-conj-lex &
   [ SYNSEM [ LOCAL [ CAT [ HEAD conj & [ MOD null ],
                            VAL [ SPR < >,
+                                 SPEC < >,
                                  COMPS < >,
                                  SUBJ < > ]],
                      CONT.RELS.LIST < > ]]].
