@@ -1167,12 +1167,7 @@ def customize_cops(mylang, ch, lexicon, hierarchies, trigger):
                 name = stem.get('name')
                 typedef = TDLencode(name) + ' := ' + ctype + ' & \
                         [ STEM < "' + orthstr + '" > ].'
-                lexicon.add(typedef)
-                
-                grdef= TDLencode(orth) +'_gr := arg0e_gtr & \
-                            [ CONTEXT [ RELS.LIST < [ PRED "_' + TDLencode(orth) + '_v_rel" ] > ], \
-                                FLAGS.TRIGGER "' + TDLencode(orth) + '" ].'
-                trigger.add(grdef)                
+                lexicon.add(typedef)               
                 
 
 def customize_adpositions(mylang, lexicon, ch, hierarchies):
