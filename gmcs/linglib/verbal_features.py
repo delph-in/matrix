@@ -173,6 +173,13 @@ def init_form_hierarchy(ch, hierarchies):
                     if not stem.get("form"):
                         hier.add('adpform', 'form')
                         break
+            #Free morpheme adposition used to mark clausal modifier phrases
+            if 'cms' in ch:
+                for cms in ch.get('cms'):
+                    if cms.get('subordinator-type') == 'head':
+                        for freemorph in cms.get('freemorph'):
+                            subform = freemorph.get('orth') + "_clausalmod"
+                            hier.add(subform, 'form')
             
     if not hier.is_empty():
         hierarchies[hier.name] = hier

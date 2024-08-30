@@ -213,7 +213,7 @@ def create_head_subordinator_lexical_subtypes(mylang, lexicon, ch, cms):
                 mylang.add(type + ' := [ ' + constraints.pop() + ' ].')
         # add each subordinator to the lexicon
         for freemorph in cms.get('freemorph'):
-            add_to_lexicon(freemorph, type, '', lexicon)
+            add_to_lexicon(freemorph, type, '', lexicon, ch)
 
      # for pair subordinators, add each of the constraints enumerated above to the lexical type
     # (with the appropriate subertype based on whether the clausal mod is nominalized). A separate
@@ -247,7 +247,7 @@ def create_head_subordinator_lexical_subtypes(mylang, lexicon, ch, cms):
                     mylang.add(type + ' := [ ' + constraints.pop() + ' ].')
             # add each subordinator to lexicon
             for morphpair in cms.get('morphpair'):
-                add_to_lexicon(morphpair, type, 'subord', lexicon)
+                add_to_lexicon(morphpair, type, 'subord', lexicon, ch)
 
 
 def create_adverb_subordinator_lexical_subtypes(mylang, lexicon, trigger, cms):
@@ -530,7 +530,7 @@ def add_subordinators_matrix_pair_to_lexicon(mylang, lexicon, cms, ch):
             type + ' := subord-pair-matrix-lex-item & [ ' + constraints.pop() + ' ].')
         while constraints != []:
             mylang.add(type + ' := [ ' + constraints.pop() + ' ].')
-        add_to_lexicon(adverb, type, 'matrix', lexicon)
+        add_to_lexicon(adverb, type, 'matrix', lexicon, ch)
 
 
 def add_morphological_subord_rel(mylang, cms, ch, rules):
@@ -940,7 +940,7 @@ def shortform_pred(pred):
     return value
 
 
-def add_to_lexicon(morphtype, typename, type, lexicon):
+def add_to_lexicon(morphtype, typename, type, lexicon, ch):
     """
     add the subordinator or adverb to lexicon
     """
@@ -951,6 +951,11 @@ def add_to_lexicon(morphtype, typename, type, lexicon):
     lexicon.add(name + ' := ' + typename + ' &\
                       [ STEM < "' + orthstr + '" >,\
                    SYNSEM.LKEYS.KEYREL.PRED "' + pred + '"].')
+    #Add a FORM value to the subordinator's lexical entry if the language 
+    #has semantically empty adps that are neither case-morking or information structure marking
+    if type == '' and ch.has_adp_form():
+        form = orthstr + "_clausalmod"
+        lexicon.add(name + ' := ' + '[ SYNSEM.LOCAL.CAT.HEAD.FORM ' + form + '].')
 
 def get_subord_stemids(ch, stemids):
     """

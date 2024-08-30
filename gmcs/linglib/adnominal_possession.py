@@ -716,7 +716,9 @@ def customize_poss_rules(strat, mylang, ch, rules, hierarchies):
                                                    ICONS.LIST < >,\
                                                    RELS.LIST < '+POSS_REL+' >,\
                                                    HCONS.LIST < > ] ].')
-
+            #Modifier possessive strategies are never used by nominalized verbs
+            if ch.get('ns'):
+                mylang.add(phrase_rule+':= [HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.NMZ - ].')
             # Add order variation and add rules to rules.tdl:
             if strat_order == 'either':
                 mylang.add(
@@ -1103,7 +1105,7 @@ def customize_poss_irules(strat, mylang, ch, irules, hierarchies, rules):
                         if only_pron_strat:
                             customize_nmz_clause_word_order(mylang, ch, rules, get_nmz_clause_wo(ch), '')
                     customize_possessor_pron_irules(
-                        mylang, strat_name, feat, lrt, mod_spec, anc_strats, strat_num)
+                        ch, mylang, strat_name, feat, lrt, mod_spec, anc_strats, strat_num)
 
 
 def customize_possessor_irules(strat, mylang, rules, ch, strat_num, mod_spec, mark_loc, hierarchies):
@@ -1154,6 +1156,9 @@ def customize_possessor_irules(strat, mylang, rules, ch, strat_num, mod_spec, ma
             ph = '-'
         else:
             ph = 'bool'
+        #Modifier possessive strategies are never used by nominalized verbs
+        if ch.get('ns'):
+            mylang.add(possessor_rule_name+' := [SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.HEAD.NMZ -].')
         # Add constraints to mod version for single marking
         if mark_loc == 'possessor':
             agr_prefix = 'SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
@@ -1261,6 +1266,9 @@ def customize_possessum_irules(strat, mylang, rules, ch, strat_num, mod_spec, ma
 
         agr_prefix = 'SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
         mylang.add(possessum_rule_name+POSSESSUM_RULE)
+        #Modifier possessive strategies are never used by nominalized verbs
+        if ch.get('ns'):
+            mylang.add(possessum_rule_name+' := [SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.HEAD.NMZ -].')
         if mark_loc == 'possessum' or mark_loc == 'both':
             mylang.add(possessum_rule_name+':= val-change-with-ccont-lex-rule & \
                             [ SYNSEM.LOCAL.CAT [ POSSESSUM possessum-'+strat_num+',\
@@ -1338,7 +1346,7 @@ def customize_possessum_irules(strat, mylang, rules, ch, strat_num, mod_spec, ma
                                                           CONT.HOOK.INDEX.PNG #poss-png ] ].')
 
 
-def customize_possessor_pron_irules(mylang, strat_name, feat, lrt, mod_spec, anc_strats, strat_num):
+def customize_possessor_pron_irules(ch, mylang, strat_name, feat, lrt, mod_spec, anc_strats, strat_num):
     has_anc = False
     anc_strat = False
 
@@ -1476,6 +1484,10 @@ def customize_possessor_pron_irules(mylang, strat_name, feat, lrt, mod_spec, anc
                                    RSTR #harg2 ] >,\
                           HCONS.LIST < qeq & [ HARG #harg2,\
                                            LARG #lbl2 ] > ] ].')
+            #Modifier possessive strategies are never used by nominalized verbs
+            if ch.get('ns'):
+                mylang.add(get_name(lrt)+'-lex-rule  := [SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.HEAD.NMZ -].')
+
 
 
 
@@ -1596,6 +1608,9 @@ def customize_possessor_lexicon(strat, mylang, ch, lexicon, strat_name, strat_nu
                                                                                      VAL.SPR < [ ] > ] ] ] ],\
                                                   CONT.HCONS.LIST < > ] ] .')
         
+        #Modifier possessive strategies are never used by nominalized verbs
+        if ch.get('ns'):
+            mylang.add('possessor-adp-lex-'+strat_num+' :=  [SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.HEAD.NMZ -].')
 
         # Add constraints to mod version for single-marking:
         if mark_loc == 'possessor':
@@ -1770,6 +1785,9 @@ def customize_possessum_lexicon(strat, mylang, ch, lexicon, strat_name, strat_nu
         possessor_constr = '& [ POSSESSOR possessor-' + \
             strat_num+' ]' if mark_loc == 'both' else ''
         
+        #Modifier possessive strategies are never used by nominalized verbs
+        if ch.get('ns'):
+            mylang.add('possessum-noun-lex-'+strat_num+' :=  [SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.HEAD.NMZ -].')
         if mark_loc != 'possessum-with-pron':
 
             mylang.add('possessum-noun-lex-'+strat_num+' := non-local-none-lex-item &\
@@ -1930,6 +1948,9 @@ def customize_possessor_pron_lexicon(strat, mylang, ch, lexicon, strat_name, str
                                          CONT [ RELS.LIST  <  '+POSS_REL+',\
                                                            #altkeyrel >,\
                                                 HCONS.LIST < > ] ] ].')
+        #Modifier possessive strategies are never used by nominalized verbs
+        if ch.get('ns'):
+            mylang.add(noun_type+ ' :=  [SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.HEAD.NMZ -].')
 
 
         if agr:

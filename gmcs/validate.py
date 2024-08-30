@@ -259,6 +259,14 @@ def validate_names(ch, vr):
                     if not stem.get("form"):
                         reserved_types['adpform'] = True
                         break
+            #Free morpheme adposition used to mark clausal modifier phrases
+            if 'cms' in ch:
+                for cms in ch.get('cms'):
+                    if cms.get('subordinator-type') == 'head':
+                        for freemorph in cms.get('freemorph'):
+                            subform = freemorph.get('orth') + "_clausalmod"
+                            reserved_types[subform] = True
+
                            
             
                     

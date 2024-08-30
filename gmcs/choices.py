@@ -1122,6 +1122,13 @@ class ChoicesFile:
                         if not stem.get("form"):
                             forms += [['adpform', 'form']]
                             break
+                #Free morpheme adposition used to mark clausal modifier phrases
+                if 'cms' in self:
+                    for cms in self.get('cms'):
+                        if cms.get('subordinator-type') == 'head':
+                            for freemorph in cms.get('freemorph'):
+                                subform = freemorph.get('orth') + "_clausalmod"
+                                forms += [[subform, 'form']]
             return forms
         return []
 
