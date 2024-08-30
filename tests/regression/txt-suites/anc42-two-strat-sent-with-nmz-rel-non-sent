@@ -1,0 +1,15 @@
+n1 cv n1 iv-sent
+n1 cv poss n1 iv-possacc
+n1 cv iv-sent
+n1 cv iv-possacc
+n1 cv n1 tv-sent n2
+n1 cv poss n1 tv-possacc n2
+n1 cv tv-sent n2
+n1 cv tv-possacc n2
+n1 cv n1 tv-sent
+n1 cv poss n1 tv-possacc
+*n1 cv n1 tv-possacc
+*n1 cv poss n1 tv-sent
+*n1 cv n1 iv-possacc
+*n1 cv n1 tv-possacc n2
+*n1 cv poss n1 tv-sent n2

@@ -1,0 +1,18 @@
+noun1 det itr-verb3sg
+noun1 det adv1 itr-verb3sg
+adj1 noun1 det itr-verb3sg
+noun1 det noun2 det tr-verb3sg
+adp2 noun1 det adp1 noun2 det tr-verb-nmz det itr-verb3sg
+adp1 noun2 det tr-verb-nmz det itr-verb3sg
+adp2 noun1 det tr-verb-nmz det itr-verb3sg
+tr-verb-nmz det itr-verb3sg
+adp2 noun1 det adp1 noun2 det adv1 tr-verb-nmz det itr-verb3sg
+*adp2 noun1 det adp1 noun2 det tr-verb-nmz itr-verb3sg
+*adp1 noun1 det adp2 noun2 det tr-verb-nmz det itr-verb3sg
+*noun1 det noun2 det tr-verb-nmz det itr-verb3sg
+*noun1 det adp1 noun2 det tr-verb-nmz det itr-verb3sg
+*adp2 noun1 det noun2 det tr-verb-nmz det itr-verb3sg
+*adp1 noun2 det itr-verb-nmz det itr-verb3sg
+*adp2 noun1 det adp1 noun2 det adj1 tr-verb-nmz det itr-verb3sg
+*adp2 noun1 det adp1 noun2 det tr-verb-nmz det
+*noun1 det noun2 det tr-verb-nmz itr-verb3sg

@@ -1,0 +1,16 @@
+det n1 cv poss det n1 iv-possacc
+det n1 cv poss det n1 iv-ergposs
+det n1 cv iv-possacc
+*det n1 cv iv-ergposs
+*det n1 cv det iv-possacc
+det n1 cv det iv-ergposs
+det n1 cv poss det n1 tv-possacc det n2 
+*det n1 cv poss det n1 tv-ergposs det n2 
+det n1 cv poss det n1 tv-ergposs adp1 det n2
+*det n1 cv poss det n1 tv-possacc adp1 det n2
+det n1 cv poss det n1 tv-possacc 
+det n1 cv poss det n1 tv-ergposs
+*det n1 cv tv-possacc det n2 
+*det n1 cv tv-ergposs adp1 det n2
+*det n1 cv det tv-possacc det n2
+*det n1 cv det tv-ergposs adp1 det n2

@@ -1,0 +1,8 @@
+det n1 tv det n1 conj1 n2 
+det n1 tv det n1 conj2 n2 
+det n1 tv det n1 conj1 det n2 
+det n1 tv det n1 conj2 det n2
+det n1 cv iv-nmz-pronposs conj1 iv-nmz-pronposs
+det n1 cv iv-nmz-pronposs conj2 iv-nmz-pronposs
+det n1 cv det n1 conj1 iv-nmz-pronposs
+*det n1 cv det n1 conj2 iv-nmz-pronposs

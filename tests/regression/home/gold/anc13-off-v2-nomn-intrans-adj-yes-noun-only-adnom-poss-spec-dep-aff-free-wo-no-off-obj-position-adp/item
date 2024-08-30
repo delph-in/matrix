@@ -1,0 +1,16 @@
+1@@@@1@@noun1 itr-verb3sg@@@@1@2@@@
+2@@@@1@@noun1 adv1 itr-verb3sg@@@@1@3@@@
+3@@@@1@@adj1 noun1 itr-verb3sg@@@@1@3@@@
+4@@@@1@@noun1 tr-verb3sg noun2@@@@1@3@@@
+5@@@@1@@noun1possessor noun2 itr-verb3sg@@@@1@3@@@
+6@@@@1@@noun2 noun1possessor itr-verb3sg@@@@1@3@@@
+7@@@@1@@noun1 tr-verb3sg noun1possessor itr-verb-nmz@@@@1@4@@@
+8@@@@1@@noun1 tr-verb3sg itr-verb-nmz noun1possessor@@@@1@4@@@
+9@@@@1@@noun1 tr-verb3sg itr-verb-nmz@@@@1@3@@@
+10@@@@1@@noun1 tr-verb3sg noun1possessor adj1 itr-verb-nmz@@@@1@5@@@
+11@@@@1@@noun1 tr-verb3sg noun1possessor tr-verb-nmz noun1@@@@0@5@@@
+12@@@@1@@noun1 tr-verb3sg noun1possessor adv1 itr-verb-nmz@@@@0@5@@@
+13@@@@1@@noun1 tr-verb3sg noun1 itr-verb-nmz@@@@0@4@@@
+14@@@@1@@noun1 tr-verb3sg noun1 itr-verb-3sg@@@@0@4@@@
+15@@@@1@@noun1possessor itr-verb-nmz@@@@0@2@@@
+16@@@@1@@noun1 tr-verb3sg noun1 itr-verb-nmz@@@@0@4@@@
