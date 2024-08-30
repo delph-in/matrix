@@ -435,7 +435,7 @@ def customize_nmcs(mylang, ch, rules):
     if not ch.get('ns'):
         return
     
-    add_lexrules(ch)  
+    add_anc_lexrules(ch)  
     update_lexical_rules(mylang, ch)
     add_nmz_feature(mylang)
     add_anc_lex_supertype(mylang, ch)
@@ -450,13 +450,13 @@ def customize_nmcs(mylang, ch, rules):
         if ch.get("adv", '') or ch.get("adj", ''):
             add_nmz_mod_constraints(ch, mylang)
     if ch.get('cs'):
-        add_coord_constraints(mylang, ch)
-    handle_spr_restrictions(mylang, ch)
+        add_anc_coord_constraints(mylang, ch)
+    handle_anc_spr_restrictions(mylang, ch)
     if needs_anc_wo_feat(ch):
         set_anc_wo_value(ch, mylang)
 
 #TODO --> validate so that if someone defines a nmz strategy that requires a morph rule, they actually make that rule on the morph page
-def add_lexrules(ch):
+def add_anc_lexrules(ch):
     '''
     Adds additional lexical rules to the choices object that the user does not define 
     @param ch:  the entire choices object
@@ -706,20 +706,20 @@ def update_lexical_rules(mylang, ch):
                     trans = True  
                 if intrans and trans:
                     for feat in lrt['feat']:
-                        #lrt added by add_lexrules for intransitive verbs
+                        #lrt added by add_anc_lexrules for intransitive verbs
                         if feat['name'] == 'valence_intransitive':
                             needs_intrans = True
 
                 needs_extra_rule = False
                 if ns.get('single-arg') == 'on':
                     for feat in lrt['feat']:
-                        #lrt added by add_lexrules for the 'single-arg' analysis
+                        #lrt added by add_anc_lexrules for the 'single-arg' analysis
                         if feat['name'] == "anc-obligatory-arg":
                             needs_extra_rule = True
                 det_rules = False
                 if need_det_rules(ch, ns):
                     for feat in lrt['feat']:
-                        #lrt added by add_lexrules for the action nominals which take determiners instead of possessors
+                        #lrt added by add_anc_lexrules for the action nominals which take determiners instead of possessors
                         if feat['name'] == "anc_det":
                             det_rules = True
 
@@ -944,7 +944,7 @@ def add_nmz_mod_constraints(ch, mylang):
     for lrt, val, vpc in get_nmz_lexrules(ch):
         customize_non_user_nmz_features(ch, mylang, lrt, val, 'nmz_adv-mod', get_name(lrt) + '-lex-rule', 'SYNSEM.LOCAL.CAT.HEAD.ADV-MOD')
 
-def add_coord_constraints(mylang, ch):
+def add_anc_coord_constraints(mylang, ch):
         '''
         Add constraints related to coordination
         '''
@@ -970,7 +970,7 @@ def add_coord_constraints(mylang, ch):
             mylang.add('n-coord-phrase :+ [ LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX ref-ind, \
                                             RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX ref-ind].')
         
-def handle_spr_restrictions(mylang, ch):
+def handle_anc_spr_restrictions(mylang, ch):
     '''
     Add constraints related to the behavior of specifers for 
     poss-acc/erg-poss/nominal/all-comps nominalization types
