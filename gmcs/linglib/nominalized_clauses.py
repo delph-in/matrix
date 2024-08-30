@@ -89,7 +89,8 @@ TRANS_ERG_POSS_LEX_RULE_SUPERTYPE = 'trans-erg-poss-lex-rule_supertype := anc-lo
   [ SYNSEM.LOCAL.CAT.VAL [ COMPS < [LOCAL [CONT.HOOK.INDEX #subj, \
                                               CAT.VAL.SPR <>]] >,\
                            SPR < [LOCAL [CAT.VAL.SPR <>]] >],\
-    DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ  < [LOCAL.CONT.HOOK.INDEX #subj] > ]].'
+    DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ  < [LOCAL.CONT.HOOK.INDEX #subj] >, \
+                               COMPS <[]>]].'
 
 
 TRANS_ERG_POSS_LEX_RULE = 'trans-erg-poss-lex-rule := trans-erg-poss-lex-rule_supertype &\
