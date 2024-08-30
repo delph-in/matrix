@@ -3286,8 +3286,15 @@ BeginIter normadp{i} "an Adposition" 0
 
 EndIter normadp
 
+Label "<p> The button below (Add a Semantically Empty Adposition) can be used to create
+            case-marking and/or information structural adpositions
+            by adding the appropiate feature constraints to an adposition.
+            If no feature constraints are added to an adposition then it will automatically
+            be assigned a form value consisting of its orthography followed by <i>_sem</i>.
+            This form value can be used on the Morphology page to mark the
+            argument of a nominalization <b>LRT</b> with this specific adposition.</p>"
 
-BeginIter adp{i} "a Case-marking and/or Information Structural Adposition" 1
+BeginIter adp{i} "a Semantically Empty Adposition" 1
 
   Text orth "Adposition {i} spelling" "Spelling: " "" 20
 
