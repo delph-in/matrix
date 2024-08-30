@@ -952,7 +952,6 @@ def add_to_lexicon(morphtype, typename, type, lexicon):
                       [ STEM < "' + orthstr + '" >,\
                    SYNSEM.LKEYS.KEYREL.PRED "' + pred + '"].')
 
-
 def get_subord_stemids(ch, stemids):
     """
     A function called by insert_ids() in lexical_items.py to

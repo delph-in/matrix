@@ -259,6 +259,8 @@ def validate_names(ch, vr):
                     if not stem.get("form"):
                         reserved_types['adpform'] = True
                         break
+                           
+            
                     
     if 'ns' in ch:
         reserved_types['nominalization'] = True

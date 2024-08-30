@@ -148,9 +148,9 @@ def init_form_hierarchy(ch, hierarchies):
             hier.add(subform.get('name'), subform.get('supertype'))
         #If the language has at least one semantically empty 
         #adp that is neither case-marking nor information-structure marking
-        #all adpositions (normadp and adp) need to take form values
+        #all adpositions (normadp and adp) need to take form values.
         #an adposition's form value is just equal to its orth value plus
-        #what kind of adp it is:(case,infostr,sem)
+        #what kind of adp it is:(case, infostr, sem)
         if ch.has_adp_form():
             for adp in ch.get('adp'):
                 subform = adp.get('orth') + "_"
@@ -166,13 +166,14 @@ def init_form_hierarchy(ch, hierarchies):
                 if not (has_case or has_infostr):
                     subform += 'sem'
                 hier.add(subform, 'form')
-            #Need to make sure that the FORM value has not allready been added by the user
-            #Can just validate so that a person has to set the FORM value of a normadp to be the same as the orth
+            #Add the FORM feature adpform for all 
+            #normadps that do not already have user-defined FORM values
             for normadp in ch.get('normadp'):
                 for stem in normadp.get('stem'):
                     if not stem.get("form"):
                         hier.add('adpform', 'form')
                         break
+            
     if not hier.is_empty():
         hierarchies[hier.name] = hier
 

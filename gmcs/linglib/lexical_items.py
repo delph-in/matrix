@@ -61,6 +61,8 @@ def qpart_id(item):
     return get_name(item) + '-lex'
 
 def not_nominalized(ch, mylang, lex_type, pos):
+    """ Sets the NMZ, ADV-MOD, ANC-WO features as necessary 
+        for languages with defined nominalization strategies."""
     if ch.get('ns', ''):
             if pos != 'adp':
                 mylang.add( lex_type +' := [ SYNSEM.LOCAL.CAT.HEAD.NMZ - ].')
@@ -434,6 +436,8 @@ def add_stem_to_lexicon(lexicon, stem, stype, ch, pos):
     lexicon.add(TDLencode(name) + ' := ' + stype + ' & \
                     [ STEM < "' + orthstr + '" >, \
                       SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].')
+    #Add the FORM value to the lexicon entry of normadps in languages
+    #with semantically empty adps that are neither case-marking nor information structure marking
     if ch.has_adp_form() and pos == "adp":
         if not stem.get('form', ''):
             lexicon.add(TDLencode(name) + ' := [SYNSEM.LOCAL.CAT.HEAD.FORM adpform ].')
@@ -666,7 +670,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     for pron in ch.get('poss-pron', []):
         if pron.get('type') != 'affix':
             poss_prons = True
-    #Adding a check for nominalized which cannot take dets
+    #Adding a check for nominalized verbs which cannot take dets
     imp_ancs = False
     for ns in ch.get('ns'):
         if ns['det'] == 'imp':
@@ -1038,6 +1042,9 @@ def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
                     [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT [ HEAD noun,
                                                                 VAL.SPR cons ] ] > ].''',
                    comment='Basic attributive adjective definition')
+
+        #If action nominals cannot be modified by adjectives, then all the adjective lexical 
+        #types need to constrain their MOD values to be [ADV-MOD -]
         for ns in ch.get('ns'):
             if ns.get('adj') != 'on':
                 mylang.add('attr-adj-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD < [LOCAL.CAT.HEAD.ADV-MOD - ] >].')

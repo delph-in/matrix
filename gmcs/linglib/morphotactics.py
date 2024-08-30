@@ -728,6 +728,8 @@ def write_rules(pch, mylang, irules, lrules, lextdl, choices):
         write_supertypes(mylang, pc.identifier(), pc.supertypes)
         write_pc_flags(mylang, lextdl, pc, all_flags, choices)
         if pc.has_possessive() and choices.get('ns', ''):
+            #possessive pcs should copy up MOD, NMZ, ADV-MOD, and ANC-WO values
+            #when a language has defined nominalization strategies
             write_copy_nmz(mylang, choices, pc)
         for lrt in sorted(list(pc.nodes.values()), key=lambda x: x.tdl_order):
             write_i_or_l_rules(irules, lrules, lrt, pc.order)
@@ -831,6 +833,9 @@ def write_pc_flags(mylang, lextdl, pc, all_flags, choices):
         write_copy_up_flags(mylang, to_copy, all_flags, force_write=True)
 
 def write_copy_nmz(mylang, choices, pc):
+    """
+    Require a pc to pass up MOD, NMZ, ADV-MOD, and ANC-WO values
+    """
     mylang.add(pc.identifier() + ' := [SYNSEM.LOCAL.CAT.HEAD [NMZ #nmz,\
                                                               MOD #mod ],\
                                    DTR.SYNSEM.LOCAL.CAT.HEAD [NMZ #nmz,\

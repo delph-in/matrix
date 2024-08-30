@@ -151,7 +151,7 @@ COMP_SUBJ_FIRST_TRANS_LEX_RULE = 'comp-subj-trans-lex-rule := comps-anc-lex-rule
 #Constants for phrase-structure rules:
 
 # A non-branching rule for nominalized clauses to form a NP, with nominalized_rel for the MRS.
-# For sentential nominalization.
+# For sent/alt-sent nominalization.
 HIGH_NMZ_CLAUSE = 'high-nominalized-clause-phrase := unary-phrase &\
   [ SYNSEM [ LOCAL [ CAT [ HEAD #head & noun &\
                                 [ NMZ +,\
@@ -383,6 +383,11 @@ def get_nmz_clause_wo(ch):
     return nmz_wo
 
 def needs_anc_wo_feat(ch):
+    '''
+    Determines if the ANC-WO feature is necessary for a choices file
+    @param ch:  the entire choices object
+    @return: needs_anc_wo (a boolean indicating whether the ANC-WO feature is necessary for the choices file)
+    '''
     head_final_wo = ['sov', 'osv', 'ovs', 'v-final']
     head_init_wo = ['svo', 'vos', 'vso', 'v-initial']
 
@@ -391,6 +396,8 @@ def needs_anc_wo_feat(ch):
 
     needs_anc_wo = False
 
+    #The ANC-WO feature is necessary whenever an additional head-comp rule needs 
+    #to be added which is exclusive to POSS-ACC/ERG-POSS/NOMINAL ANCS
     if (nmz_wo in head_final_wo and verb_wo in head_init_wo) or (nmz_wo in head_init_wo and verb_wo in head_final_wo) or  nmz_wo in ['vso', 'osv'] or (verb_wo in ['free', 'v2'] and nmz_wo not in ['free', 'v2']):
         needs_anc_wo = True
     if nmz_wo in ['free', 'v2']:
@@ -403,6 +410,12 @@ def needs_anc_wo_feat(ch):
 
 
 def need_det_rules(ch, ns):
+    '''
+    Determines if a nominalization strategy allows for action nominals which take both a determiner and a syntactic possessor
+    @param ch:  the entire choices object
+    @param na:  a nominalization strategy
+    @return: boolean indicating whether the ns allows for both a determiner and a syntactic possesor
+    '''
     if not ch.get('has-dets'):
         return False
     
@@ -981,6 +994,10 @@ def handle_spr_restrictions(mylang, ch):
                             mylang.add(get_name(lrt) + '-lex-rule := [SYNSEM.LOCAL.CAT.VAL.SPR < [LOCAL.CAT.HEAD.POSSESSOR possessive ] > ].')
 
 def set_anc_wo_value(ch, mylang):
+    '''
+    Set the ANC-WO value for all action nominals as well as for other lexical items
+    which take complements
+    ''' 
     mylang.add('head :+ [ ANC-WO bool ].', section='addenda')
     for pos in ['noun', 'tverb', 'comps','comp', 'aux']:
         if ch.get(pos) or pos in ['tverb', 'comp']:

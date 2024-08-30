@@ -2113,6 +2113,9 @@ basic-head-subj-nmc-phrase := declarative-clause & binary-nonloc-que-rel &
 
 ; OZ 2020-05-19 Adding WH feature for handling embedded constituent questions.
 
+; KR 2024-08-26 The rule mother now identifies its COMPS value with the HEAD-DTR and not 
+; the NON-HEAD-DTR to allow action nominals to take pass up their comps value
+
 basic-head-spec-phrase-super := binary-nonloc-phrase & phrasal &
               binary-headed-phrase &
   [ INFLECTED infl-satisfied,
@@ -2302,7 +2305,6 @@ basic-head-opt-comp-phrase := unary-nonloc-phrase & head-only &
 ; imperatives.
 
 
-;TODO: change unexpressed back to gap
 basic-head-opt-subj-phrase := unary-nonloc-phrase & head-only &
   [ INFLECTED #infl,
     SYNSEM canonical-synsem &

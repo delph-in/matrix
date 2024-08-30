@@ -180,7 +180,6 @@ function clear_form() {
 // Save and Vivify the choices on the current subpage
 // Vivify --> Validate? --JDC 10feb2012
 function save_form(section) {
-  alert("save_form")
   var elm = document.getElementsByTagName('form')[0];
   var inp = document.createElement('input');
   inp.type = "hidden";

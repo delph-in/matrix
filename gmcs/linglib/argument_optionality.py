@@ -62,8 +62,7 @@ def customize_arg_op(mylang, ch, rules, hierarchies):
             mylang.add('basic-head-opt-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX event]. ')
         mylang.add('no-obj-drop-verb-lex := transitive-verb-lex &\
                         [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].')
-        mylang.add('obj-drop-verb-lex := transitive-verb-lex.')
-    #VAL.SPR <[]> 
+        mylang.add('obj-drop-verb-lex := transitive-verb-lex.') 
     #Nominalized clauses have optional complements and subjects by default
     if ch.get('ns', ''):
         mylang.add('anc-head-opt-comp-phrase := basic-head-opt-comp-phrase & [HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD noun & [NMZ +]].')
@@ -84,6 +83,7 @@ def customize_arg_op(mylang, ch, rules, hierarchies):
         rules.add('anc-head-opt-comp := anc-head-opt-comp-phrase.')
         rules.add('anc-decl-head-opt-subj := anc-decl-head-opt-subj-phrase.')
 
+        #Adds the [NMZ -] version of the rules which can be used by non-nominalized verbs 
         if ch.get('subj-drop'):
             mylang.add('regular-decl-head-opt-subj-phrase := decl-head-opt-subj-phrase &  [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.NMZ - ].')
             rules.add('regular-decl-head-opt-subj := regular-decl-head-opt-subj-phrase.')

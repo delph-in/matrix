@@ -1098,6 +1098,8 @@ class ChoicesFile:
                 name = f['name']
                 stype = f.get('supertype') if f.get('supertype') else 'form'
                 forms += [[name, stype]]
+            #Adds FORM values for all adpositions if a language has a least one defined
+            #semantically empty adp which is neither case nor information structure marking
             if self.has_adp_form():
                 for adp in self.get('adp'):
                     subform = adp.get('orth') + "_"
@@ -1113,10 +1115,10 @@ class ChoicesFile:
                     if not (has_case or has_infostr):
                         subform += 'sem'
                     forms += [[subform, 'form']]
-                #Need to make sure that the FORM value has not allready been added by the user
-                #Can just validate so that a person has to set the FORM value of a normadp to be the same as the orth
                 for normadp in self.get('normadp'):
                     for stem in normadp.get('stem'):
+                        #Add the FORM feature adpform for all 
+                        #normadps that do not allready have user-defined FORM values
                         if not stem.get("form"):
                             forms += [['adpform', 'form']]
                             break
@@ -1308,6 +1310,8 @@ class ChoicesFile:
             strat_name = strat.full_key
             if strat.get('possessor-type') == 'affix' or strat.get('possessum-type') == 'affix':
                 features += [[strat_name, 'possessor|possessor;possessum|possessum;nonpossessive|nonpossessive', '', 'noun', 'y']]
+                #The category word 'poss' provides a way to list all and only the possessive 
+                #strategies on the nominalized clauses subpage.
                 features += [[strat_name, '', '', 'poss', 'y']]
             else:
                 features += [[strat_name, '', '', 'poss', 'y']]
@@ -2456,9 +2460,15 @@ class ChoicesFile:
                                 feat['value'] = 'polar'
 
     def convert_34_to_35(self):
+        '''
+        Updates nominalized clauses
+        high nominalization is converted into SENT nominalization with adverb modification
+        mix nominalization is converted into ALT-SENT nominalization with both adjective/adverb modfication.
+        '''
         needs_both = True
         trans_or_intrans_on = False
         rules = []
+        #Get all nominalization lrts 
         for vpc in self['verb-pc']:
             for lrt in vpc['lrt']:
                 for f in lrt['feat']:
@@ -2472,6 +2482,8 @@ class ChoicesFile:
                 trans_or_intrans_on = True
                 break
 
+        #For lrts in languages from older grammars determine whether the 
+        #lrts acts on transitive or intransitive verbs
         if not trans_or_intrans_on:        
             for lrt, ns, vpc in rules:
                 inputs = vpc['inputs'].split(',')

@@ -731,6 +731,11 @@ def specialize_word_order(hc, orders, mylang, ch, rules):
 #                'comp-head-phrase is only for auxiliaries.')
 
 
+
+#The following function handles word order in ANCS and is 
+#modeled after customize_major_constituent_order following the same
+#basic logic just switching head-subj rules with the appropriate
+#possessor-possessum combining rule in ANCS 
 def customize_nmz_clause_word_order(mylang, ch, rules, nmz_wo, hs):
 
     if nmz_wo is None:
@@ -740,13 +745,6 @@ def customize_nmz_clause_word_order(mylang, ch, rules, nmz_wo, hs):
     head_initial_nexus = 'head-initial-head-nexus'
     head_final_nexus = 'head-final-head-nexus'
     
-    # This part of the code handles the following basic word orders:
-    # all six strict orders, V-final and V-initial.  These 8 possible
-    # orders can be grouped according to head-comp order, head-subj order,
-    # and whether or not complements must attach before subjects, or subjects before
-    # complements.  I'm treating SVO and OVS as having complements attaching
-    # lower.
-
     verb_wo = ch.get('word-order')
 
     needs_opt = False
@@ -755,6 +753,9 @@ def customize_nmz_clause_word_order(mylang, ch, rules, nmz_wo, hs):
     for ns in ch.get('ns'):
         if ns.get('single-arg') == 'on':
             needs_opt = True
+
+    # Handles the eight basic word orders: the six strict orders, V-final and V-initial.  
+    # In SVO/OVS word orders, complements attach lower
 
     # Head-comp order
         
@@ -765,8 +766,9 @@ def customize_nmz_clause_word_order(mylang, ch, rules, nmz_wo, hs):
             hc = 'comp-head'
     if nmz_wo in head_init_wo:
             hc = 'head-comp'
-    
-    #nmz_wo in ['vso', 'osv'] --> head-comp-phrase rule need to be SPR <>
+
+    #Determines if a single additional head-comp rule is needed
+    #and adds it to the grammar
     if (nmz_wo in head_final_wo and verb_wo in head_init_wo) or (nmz_wo in head_init_wo and verb_wo in head_final_wo) or  nmz_wo in ['vso', 'osv'] or (verb_wo in ['free', 'v2'] and nmz_wo not in ['free', 'v2']):
         add_anc_head_comp = True
         if nmz_wo in head_final_wo:
@@ -789,7 +791,7 @@ def customize_nmz_clause_word_order(mylang, ch, rules, nmz_wo, hs):
          if needs_opt:
             mylang.add(hc + '-phrase := [NON-HEAD-DTR.SYNSEM.OPT -].')
 
-    # Complements attach before specifiers
+    #Complements attach before specifiers
     #This step has to be done in the adnominal_possessives.py
     #for the juxtaposition rule
     if nmz_wo in ['ovs', 'vos', 'sov', 'svo']:
@@ -803,10 +805,7 @@ def customize_nmz_clause_word_order(mylang, ch, rules, nmz_wo, hs):
         elif hs:
             mylang.add('anc-' + hc + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPR < > ].')
 
-     # LLD 2016-03-24 to allow argument optionality with VSO and OSV languages,
-        # we have to move COMPS < > from basic-head-opt-subj-phrase in matrix.tdl and
-        # only add it with languages where O attaches lower than S. To prevent spurious
-        # ambiguity, we add SUBJ < > to head-opt-comp in these languages instead.
+     # Add constraints to the optional argument rules
 
     if nmz_wo in ['vso', 'osv']:
         mylang.add(
@@ -818,7 +817,7 @@ def customize_nmz_clause_word_order(mylang, ch, rules, nmz_wo, hs):
             'anc-decl-head-opt-subj-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].', section='addenda')
 
 
-    # ERB 2006-09-14 Free word order is a big fat special case:
+    #Free word order:
 
     if nmz_wo == 'free' and verb_wo != 'free':
         mylang.add('synsem :+ [ ATTACH xmod ].',
@@ -854,19 +853,7 @@ def customize_nmz_clause_word_order(mylang, ch, rules, nmz_wo, hs):
                 [ SYNSEM.ATTACH rmod ].')
         
 
-    # ASF (2008-11-03) Another big special case: v2
-    #
-    # This implementation does Autronesian-type v2, but without discontinuous nps.
-    # The only word order constraint is that the (verbal) head of the phrase must
-    # be in second position.
-    # It can be preceded by a noun phrase, verb or verbal cluster.
-    # Interaction with auxiliaries is not implemented for now, because it is not
-    # clear what may occur (so auxiliaries can occur anywhere for now, as long as
-    # the v2 constraint is respected)
-    # Also note that the implementation may need to be revised when more complex
-    # phenomena (such as clause final verbal cluster and vp-fronting) are
-    # implemented
-    
+    # v2 word order    
 
     if nmz_wo == 'v2' and verb_wo != 'v2':
         #mylang.add('verbal-head-nexus := headed-phrase & \
@@ -878,13 +865,10 @@ def customize_nmz_clause_word_order(mylang, ch, rules, nmz_wo, hs):
         mylang.add(head_initial_nexus + ' := head-initial & \
                     [ SYNSEM.LOCAL.CAT.MC na & #mc, \
                     HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].')
-        # OZ 2017-11-13 [ MC bool ] is to allow v2 order in subordinate clauses, like in Wabmbaya.
         if not ch.get('subord-word-order') or ch.get('subord-word-order') == 'same':
             mylang.add(head_final_nexus +' := head-final & \
                 [ SYNSEM.LOCAL.CAT.MC bool, \
                     HEAD-DTR.SYNSEM.LOCAL.CAT.MC na ].')
-        # OZ 2017-11-13 For strict subordinate order, like in formal German,
-        # need [ MC + ] for the head-final phrase.
         else:
             mylang.add(head_final_nexus + ' := head-final & \
             [ SYNSEM.LOCAL.CAT.MC +, \
@@ -976,16 +960,13 @@ def customize_nmz_clause_word_order(mylang, ch, rules, nmz_wo, hs):
         mylang.add(
             'comp-head-phrase-2 := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.ANC-WO -].')
             
-    # Add rule definitions for major constituent order.
 
     if nmz_wo in ['free', 'v2'] and verb_wo not in ['free', 'v2']:
         rules.add('anc-head-comp := anc-head-comp-phrase.')
         rules.add('anc-comp-head := anc-comp-head-phrase.')
         rules.add('anc-head-comp-2 := anc-head-comp-phrase-2.')
         rules.add('anc-comp-head-2 := anc-comp-head-phrase-2.')
-    # Assume at this point that there's a good value of wo.
-    # Rule names are stored in hs and hc, since they're the same as type names
-    # without the -phrase suffix.
+
     elif hc and add_anc_head_comp:
         rules.add("anc-" + hc + ' :=  anc-' + hc + '-phrase.')
 

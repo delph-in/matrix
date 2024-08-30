@@ -83,7 +83,6 @@ WH_PRONOUN = '''wh-pronoun-noun-lex := basic-wh-word-lex & norm-hook-lex-item & 
 	     NON-LOCAL.QUE.LIST < #arg0 > ] ].'''
 
 
-#CLAUSE-KEY #arg1
 
 ADV_ITEM = '''adverb-lex-item := nonscop-adverb-lex & 
   [ SYNSEM [ LOCAL [ CAT [ VAL [ SUBJ < >, SPEC < >,

@@ -94,8 +94,6 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
         # for full-form determiners.
     }
 
-    if iter_feat == 'compadp_feat':
-        print(ch_dict.get(iter_feat, []))
     for feat in ch_dict.get(iter_feat, []):
         n = feat.get('name', '')
         v = feat.get('value', '').split(', ')

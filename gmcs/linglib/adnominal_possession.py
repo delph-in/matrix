@@ -300,6 +300,7 @@ def check_hc_order_manip(ch, strat, hc):
     nmz_hc = None
     nmz_head_comp_order = None
     if ch.get('ns'):
+         #Check if ANCs use the same head-comp word order as verbs or an alternative word order
         if 'same-word-order' not in ch or ch.get('same-word-order') == 'yes':
             default_nmz_init = default_init
             nmz_hc = hc
@@ -354,7 +355,7 @@ the possessive strategies and returns a list of the strategies along
 with their semantic types.
 
 arguments: ch = choices file
-returns: a list of tuples contains (poss_strategy_name, semantic type)
+returns: a list of tuples containing (poss_strategy_name, semantic type)
 semantic type can be either 'both', 'verb-only'. 'noun-only'
 
 """
@@ -365,6 +366,20 @@ def check_nom_strats(ch):
         anc_strat.add((strat.get('name'), ch.get('non_sent_sem')))
     return anc_strat
 
+
+"""
+Add the poss-phrase rules which handle the word order in specifier juxtaposition phrases for 
+non-derived nouns and ancs (if the possessive strategy can be used in ANCs)
+
+arguments:
+strat: a juxtaposition possessive strategy 
+anc_strat: The name of the possessive strategy if it is used in ANCs, None otherwise
+phrase_rule: string containing the name of the immediate supertype (poss-phrase-strat_num)
+anc_phrase_rule: string containing the anc subtype (anc-poss-phrase-strat_num)
+noun_phrase_rule: string containing the noun subtype (anc-poss-phrase-strat_num)
+
+"""
+
 def handle_juxt_word_order(mylang, rules, strat, anc_strat, phrase_rule, anc_phrase_rule, noun_phrase_rule):
     if strat.get('order') == 'either':
         mylang.add(noun_phrase_rule+'-head-initial := head-initial & '+ noun_phrase_rule+'.')
@@ -372,7 +387,7 @@ def handle_juxt_word_order(mylang, rules, strat, anc_strat, phrase_rule, anc_phr
         rules.add(noun_phrase_rule.replace('-phrase', '') + '-head-initial := '+noun_phrase_rule+'-head-initial.')
         rules.add(noun_phrase_rule.replace('-phrase', '') + '-head-final := '+noun_phrase_rule+'-head-final. ')
         if anc_strat is not None:
-                #head-initial and head-final should both be added to these rules in the word-order library
+                #The nexus head-initial and head-final subtypes should both be added to these rules in the word-order library
                 #since the 'either' option in the adnom-poss library should always coincide with
                 #free or v2 word order in nominalized clauses
                 mylang.add(anc_phrase_rule+'-head-initial := '+ anc_phrase_rule + '.')
@@ -383,11 +398,23 @@ def handle_juxt_word_order(mylang, rules, strat, anc_strat, phrase_rule, anc_phr
         mylang.add(phrase_rule + ' := '+strat.get('order') +'.', merge=True)
         rules.add(noun_phrase_rule.replace('-phrase', '') + ':= '+noun_phrase_rule+'. ')
         if anc_strat is not None:
-            rules.add(anc_phrase_rule.replace('-phrase', '') + ':= '+anc_phrase_rule+'. ') 
-            
+            rules.add(anc_phrase_rule.replace('-phrase', '') + ':= '+anc_phrase_rule+'. ')
+
+"""
+Add all semantic constraints to poss-phrase for specifier juxtaposition strategies
+
+arguments:
+phrase_rule: string containing the name of the immediate supertype (poss-phrase-strat_num)
+noun_phrase_rule: string containing the noun subtype (noun-poss-phrase-strat_num)
+anc_phrase_rule: string containing the anc subtype (anc-poss-phrase-strat_num)
+anc_strat: The name of the possessive strategy if it is used in ANCs, None otherwise
+nmz_wo: word order in ANCS
+has_nmz: boolean specifying whether ANCs in a language use any possessive strategies
+
+"""       
 
 def add_juxt_semantics(mylang, phrase_rule, noun_phrase_rule, anc_phrase_rule, anc_strat, nmz_wo, has_nmz):
-        #add semantic constraints common to both the noun and anc versions of the poss-phrase rule
+        #semantic constraints common to both the noun and anc versions of the poss-phrase rule
 
         common_constraints = '[HEAD-DTR.SYNSEM.LOCAL [ CONT.HOOK #hook & [LTOP #lbl,\
                                                                                  INDEX #possessum & [COG-ST uniq-id]]],\
@@ -400,7 +427,6 @@ def add_juxt_semantics(mylang, phrase_rule, noun_phrase_rule, anc_phrase_rule, a
     
     
         #Add constraints specific to non-derived noun phrases
-	#RELS.LIST. (first item on rels list will be the same on sub/supertype)
         mylang.add(noun_phrase_rule + ' := ' + phrase_rule + ' & [ SYNSEM.LOCAL.CAT.VAL.COMPS < >,\
                                                                     NON-HEAD-DTR [SYNSEM.LOCAL [ CAT.VAL.COMPS < >, \
                                                                                                  CONT.HOOK.INDEX #possessor ]] ,\
@@ -417,6 +443,8 @@ def add_juxt_semantics(mylang, phrase_rule, noun_phrase_rule, anc_phrase_rule, a
             mylang.add(anc_phrase_rule+ ' := ' + phrase_rule + ' & [ SYNSEM.LOCAL.CAT [ VAL.COMPS #comps],\
                                                                      HEAD-DTR.SYNSEM.LOCAL [ CAT.VAL [SPR <[LOCAL.CAT.HEAD.POSSESSOR possessive]>,\
                                                                                                       COMPS #comps]]].')
+
+            #Languages where the complement attaches before the possessor in ANCS
             if nmz_wo in ['ovs','vos', 'sov','svo']:
                 mylang.add('anc-' + phrase_rule + ':= [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS & null ].')
 
@@ -433,6 +461,19 @@ def add_juxt_semantics(mylang, phrase_rule, noun_phrase_rule, anc_phrase_rule, a
                                                                         NON-HEAD-DTR [SYNSEM.LOCAL.CONT.HOOK.INDEX #possessor],\
                                                                         C-CONT [RELS.LIST < [], '+POSS_REL+' >]].')
         
+
+"""
+Creates all necessary subtypes of the head-spec rules in
+non-juxtaposition specifier possessive phrases for 
+non-derived nouns and ancs
+
+arguments:
+strat: a non-juxtaposition possessive strategy 
+head_spec_order: noun-det order in an language
+order_mismatch: a boolean indicating whether an additional head-spec rule is needed
+anc_strat: The name of the possessive strategy if it is used in ANCs, None otherwise
+
+"""
 
 def handle_poss_unary_word_order(mylang, rules, strat, head_spec_order, order_mismatch, anc_strat):
     if strat.get('order') == 'head-initial':
@@ -523,8 +564,20 @@ def handle_poss_unary_word_order(mylang, rules, strat, head_spec_order, order_mi
                                                                                                                         NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSSESSOR nonpossessive].')
                 rules.add('det-anc-' + hs_phrase_name  + ':= det-anc-' + hs_phrase_name + '-phrase.')
         
+"""
+Add all semantic constraints to poss-unary-phrase for specifier non-juxtaposition strategies
+
+arguments:
+anc_strat: The name of the possessive strategy if it is used in ANCs, None otherwise
+phrase_rule: string containing the name of the immediate supertype (poss-unary-phrase-strat_num)
+noun_phrase_rule: string containing the noun subtype (noun-poss-unary-phrase-strat_num)
+anc_phrase_rule: string containing the anc subtype (anc-poss-unary-phrase-strat_num)
+has_nmz: boolean specifying whether ANCs in a language use any possessive strategies
+
+"""
+
 def add_poss_unary_semantics(mylang, rules, anc_strat, phrase_rule, noun_phrase_rule, anc_phrase_rule, has_nmz):
-    #add semantic constraints common to both the noun and anc versions of the poss-unary phrase rule
+    #semantic constraints common to both the noun and anc versions of the poss-unary phrase rule
 
     common_constraints = '[SYNSEM [LOCAL [CAT.VAL.SPEC < [ LOCAL.CONT.HOOK [ INDEX #possessum & [ COG-ST uniq-id ], \
 				      		      	                      LTOP #lbl ] ] >]], \
@@ -564,6 +617,10 @@ def add_poss_unary_semantics(mylang, rules, anc_strat, phrase_rule, noun_phrase_
         mylang.add(noun_phrase_rule + ':= ' + phrase_rule + ' & [SYNSEM.LOCAL.CAT.VAL.SPEC < [ LOCAL.CAT.HEAD.NMZ -] > ].')
        
 
+"""
+Add the noun and anc varients (if necessary) of poss-phrase, the head-spec rules, and poss-unary
+for specifier possessive strategies
+"""
 
 def add_spec_semantics(ch, mylang, strat, anc_strat, phrase_rule, poss_strat, order_mismatch, rules, head_spec_order, nmz_wo, has_nmz):
     noun_phrase_rule = "noun-" + phrase_rule
@@ -626,6 +683,8 @@ def customize_poss_rules(strat, mylang, ch, rules, hierarchies):
     anc_strats =  check_nom_strats(ch)
     anc_strat = None
     for item in anc_strats:
+         #anc_strat is not None whenever the possessive strategy is 
+         #used in action nominal constructions
          if strat_name == item[0]:
              anc_strat = item
 
@@ -657,6 +716,7 @@ def customize_poss_rules(strat, mylang, ch, rules, hierarchies):
                                                    ICONS.LIST < >,\
                                                    RELS.LIST < '+POSS_REL+' >,\
                                                    HCONS.LIST < > ] ].')
+
             # Add order variation and add rules to rules.tdl:
             if strat_order == 'either':
                 mylang.add(
@@ -827,6 +887,9 @@ def customize_poss_rules(strat, mylang, ch, rules, hierarchies):
                         mylang.add(hs_phrase_name + '-phrase := '+strat_order+' & \
                                 [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPEC < [ LOCAL.CAT.POSSESSUM #poss ] > ,\
                                   HEAD-DTR.SYNSEM.LOCAL.CAT.POSSESSUM #poss  ].')
+                        #If no subtypes of the head-spec rules are needed for ANCS,
+                        #Then head-spec-phrase can inherit from basic-head-spec-phrase
+                        #Otherwise head-spec-phrase inherits from a supertype basic-head-spec-phrase-super
                         if not need_specialized_head_spec(ch):
                             mylang.add(hs_phrase_name + '-phrase := basic-head-spec-phrase.')
                             rules.add(hs_phrase_name + ' := ' + hs_phrase_name + '-phrase.')
@@ -842,6 +905,9 @@ def customize_poss_rules(strat, mylang, ch, rules, hierarchies):
                             mylang.add('spec-head-phrase := basic-head-spec-phrase-super.')
                             mylang.add('head-spec-phrase := basic-head-spec-phrase-super.')
                             if nmz_wo not in ['free', 'v2']:
+                                #IN free/v2 word order languages, the head-spec rules used by ANCs
+                                #inherit from the nexus head-initial/head-final types and not directly 
+                                #from head-initial/head-final
                                 mylang.add('spec-head-phrase := head-final.')
                                 mylang.add('head-spec-phrase := head-initial.')
                             else:
@@ -909,6 +975,8 @@ def customize_poss_rules(strat, mylang, ch, rules, hierarchies):
                                            HEAD-DTR.SYNSEM.LOCAL.CAT.POSSESSUM #poss  ].')
 
             mylang.add('poss-unary-phrase'+POSS_UNARY)
+            #Forces SENT/ALT-SENT ANCs to have nominal semantics before they can use the poss-unary-phrase
+            #rule in languages which require SENT/ALT-SENT ANCS to have nominal semantics
             if has_sent_nmz_rel_strats:
                 mylang.add('poss-unary-phrase := [ARGS < [SYNSEM.LOCAL [CONT.HOOK.INDEX ref-ind]] >] .')
             if head_spec_order != strat_order and head_spec_order != "none":
@@ -1031,6 +1099,7 @@ def customize_poss_irules(strat, mylang, ch, irules, hierarchies, rules):
                             if 'poss-strat' in name:
                                 only_pron_strat = False
                                 break
+                        #Customize the word order of action nominal constructions containing pronominal possessive strategies 
                         if only_pron_strat:
                             customize_nmz_clause_word_order(mylang, ch, rules, get_nmz_clause_wo(ch), '')
                     customize_possessor_pron_irules(
@@ -1192,7 +1261,6 @@ def customize_possessum_irules(strat, mylang, rules, ch, strat_num, mod_spec, ma
 
         agr_prefix = 'SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
         mylang.add(possessum_rule_name+POSSESSUM_RULE)
-
         if mark_loc == 'possessum' or mark_loc == 'both':
             mylang.add(possessum_rule_name+':= val-change-with-ccont-lex-rule & \
                             [ SYNSEM.LOCAL.CAT [ POSSESSUM possessum-'+strat_num+',\
@@ -1280,6 +1348,8 @@ def customize_possessor_pron_irules(mylang, strat_name, feat, lrt, mod_spec, anc
             if item[0] == strat_name:
                 sem_type = item[1]
 
+    #Signifies that the lrt is the one automatically added to the choices file to 
+    #be used by action nominals
     if feat['value'] == 'ANC':
         anc_strat = True
 
@@ -1357,7 +1427,7 @@ def customize_possessor_pron_irules(mylang, strat_name, feat, lrt, mod_spec, anc
         # Add constraints to pronoun affix rule for spec version
         if mod_spec == 'spec':
             if not anc_strat:
-                #Add all syntactic constraints
+                #Add all syntactic constraints to the lrt used by non-derived noun
                 mylang.add(get_name(lrt)+ '-lex-rule '+ spec_lrt_syn_constraints)
 
                 #Add semantic constraints for non-derived nouns
@@ -1368,11 +1438,12 @@ def customize_possessor_pron_irules(mylang, strat_name, feat, lrt, mod_spec, anc
                [ DTR.SYNSEM.LOCAL.CAT.HEAD.NMZ - ].')
                     
             else:
-                #Add all syntactic constraints
+                #Add all syntactic constraints to the lrt used by action nominals
                 mylang.add(get_name(lrt) + '-lex-rule '+ spec_lrt_syn_constraints)
                 mylang.add(get_name(lrt)+ '-lex-rule '+ ':= \
                [ DTR.SYNSEM.LOCAL.CAT.HEAD.NMZ + ].' )
                 
+                #Add semantic constraints for action nominals depending on the user's choice
                 if sem_type == 'noun-only':
                     mylang.add(get_name(lrt) + '-lex-rule '+ spec_lrt_sem_constraints_noun_only)
                 elif sem_type == 'both':
@@ -1382,8 +1453,6 @@ def customize_possessor_pron_irules(mylang, strat_name, feat, lrt, mod_spec, anc
 
         # Add constraints to pronoun affix rule for mod version
         elif mod_spec == 'mod':
-
-            # TODO: change COG-ST on pron to activ-or-more, and adjust any tests as needed.
 
             mylang.add(get_name(lrt)+'-lex-rule :=\
               [ SYNSEM.LOCAL.CAT.HEAD #head ,\
@@ -1407,6 +1476,8 @@ def customize_possessor_pron_irules(mylang, strat_name, feat, lrt, mod_spec, anc
                                    RSTR #harg2 ] >,\
                           HCONS.LIST < qeq & [ HARG #harg2,\
                                            LARG #lbl2 ] > ] ].')
+
+
 
 
 #########################################################################################
@@ -1524,6 +1595,7 @@ def customize_possessor_lexicon(strat, mylang, ch, lexicon, strat_name, strat_nu
                                                              MOD.FIRST.LOCAL [ CAT [ HEAD noun & [ PRON - ],\
                                                                                      VAL.SPR < [ ] > ] ] ] ],\
                                                   CONT.HCONS.LIST < > ] ] .')
+        
 
         # Add constraints to mod version for single-marking:
         if mark_loc == 'possessor':
@@ -1697,7 +1769,7 @@ def customize_possessum_lexicon(strat, mylang, ch, lexicon, strat_name, strat_nu
 
         possessor_constr = '& [ POSSESSOR possessor-' + \
             strat_num+' ]' if mark_loc == 'both' else ''
-
+        
         if mark_loc != 'possessum-with-pron':
 
             mylang.add('possessum-noun-lex-'+strat_num+' := non-local-none-lex-item &\
@@ -1858,6 +1930,7 @@ def customize_possessor_pron_lexicon(strat, mylang, ch, lexicon, strat_name, str
                                          CONT [ RELS.LIST  <  '+POSS_REL+',\
                                                            #altkeyrel >,\
                                                 HCONS.LIST < > ] ] ].')
+
 
         if agr:
             mylang.add(noun_type+' := [ SYNSEM.LOCAL.CAT.HEAD.POSSESSOR.POSS-AGR #png,\

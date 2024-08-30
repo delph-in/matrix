@@ -723,6 +723,8 @@ def customize_clausal_verb(clausalverb, mylang, ch, cs, extra):
             if feat["name"] ==  'nominalization':
                 nom_strat = feat['value'].split(', ')
                 for ns in ch['ns']:
+                    #Add appropiate semantic constraint to a nominalized clausal complement
+                    #depending on whether the nominalized clause included nominal semantics or not
                     if ns['name'] in nom_strat and ns['nmzRel'] == 'yes':
                         mylang.add(clausalverb + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [LOCAL.CONT.HOOK.INDEX ref-ind ] >].', merge=True)
                     elif ns['name'] in nom_strat and ns['nmzRel'] == 'no':
