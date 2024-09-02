@@ -1,0 +1,22 @@
+noun1 itr-verb3sg
+noun1 adv1 itr-verb3sg 
+adj1 noun1 itr-verb3sg 
+noun1 noun2 tr-verb3sg
+mod adp1 noun2 itr-verb-nmz noun1 itr-verb3sg
+mod adp1 noun2 noun1 tr-verb-nmz noun1 itr-verb3sg
+mod adp1 noun2 tr-verb-nmz noun1 itr-verb3sg
+mod adp1 noun2 adv1 itr-verb-nmz noun1 itr-verb3sg
+mod adp1 noun2 noun1 adv1 tr-verb-nmz noun1 itr-verb3sg
+*mod possessor noun2 possessum itr-verb-nmz noun1 itr-verb3sg
+*mod possessor noun2 possessum itr-verb-nmz noun1 itr-verb3sg
+*mod adp1 noun2 adp1 noun1 tr-verb-nmz noun1 itr-verb3sg
+*mod noun1 tr-verb-nmz noun1 itr-verb3sg
+*mod tr-verb-nmz noun1 itr-verb3sg
+*mod itr-verb-nmz noun1 itr-verb3sg
+*mod adp1 noun2 advj itr-verb-nmz noun1 itr-verb3sg
+*mod adp1 noun2 noun1 adj1 tr-verb-nmz noun1 itr-verb3sg
+*adp1 noun2 noun1 tr-verb-nmz
+*mod adp1 noun2 noun1 tr-verb noun1 itr-verb3sg
+*mod noun2 noun1 tr-verb-nmz noun1 itr-verb3sg
+*mod noun2 noun1 tr-verb noun1 itr-verb3sg
+*mod noun2 noun1 tr-verb3sg noun1 itr-verb3sg
