@@ -721,7 +721,7 @@ def write_rules(pch, mylang, irules, lrules, lextdl, choices):
 def write_intermediate_types(mylang):
     if _dtrs:
         mylang.add_literal(';;; Intermediate rule types')
-        for dtr in _dtrs:
+        for dtr in sorted(list(_dtrs)):
             mylang.add('''%(dtr)s := word-or-lexrule.''' %
                        {'dtr': dtr}, one_line=True)
 
@@ -768,7 +768,7 @@ def write_daughter_types(mylang, pc):
 
 def write_inflected_avms(mylang, all_flags):
     mylang.set_section('addenda')
-    for f in all_flags:
+    for f in sorted(all_flags, key=flag_name):
         flag = flag_name(f)
         mylang.add('''inflected :+ [%(flag)s luk].''' % {'flag': flag})
         mylang.add(
@@ -819,11 +819,11 @@ def write_flags(tdlfile, mn):
     if len(mn.flags['in']) > 0:
         flag_strs += ['DTR.INFLECTED [ ' +
                       ', '.join(flag_name(flag) + ' ' + mn.flags['in'][flag]
-                                for flag in mn.flags['in']) + ' ]']
+                                for flag in sorted(mn.flags['in'], key=flag_name)) + ' ]']
     if len(mn.flags['out']) > 0:
         flag_strs += ['INFLECTED [ ' +
                       ', '.join(flag_name(flag) + ' ' + mn.flags['out'][flag]
-                                for flag in mn.flags['out']) + ' ]']
+                                for flag in sorted(mn.flags['out'], key=flag_name)) + ' ]']
     tdl_str = mn.identifier() + ' := [ ' + ', '.join(flag_strs) + ' ].'
     tdlfile.add(tdl_str)
 
@@ -848,6 +848,7 @@ def write_copy_up_flags(mylang, to_copy, all_flags, force_write=False):
         elif len(mn_copy_flags) > 0:
             flag_tags = [(flag_name(flag), disjunctive_typename(flag).lower())
                          for flag in mn_copy_flags]
+            flag_tags = sorted(flag_tags)
             tdl_str = mn.identifier() + ' := [ ' + \
                 'INFLECTED [ ' + \
                 ', '.join(['%(flag)s #%(tag)s' % {'flag': ft[0], 'tag':ft[1]}
