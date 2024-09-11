@@ -1534,6 +1534,43 @@ function nav_customize(type) {
   f.removeChild(i);
 }
 
+// call customize grammar from a subpage with intent to generate test sentences
+function nav_customize_test(type) {
+  var f = document.forms['choices_form'];
+  var elms = document.getElementsByTagName('input');
+  for (var i = 0; i < elms.length; i++) {
+    if (elms[i].name == "subpage" || elms[i].name == "delivery" || elms[i].name == "customize") {
+      f.removeChild(elms[i]);
+    }
+  }
+
+  var t = document.createElement('input');
+  var i = document.createElement('input');
+  var s = document.createElement('input');
+
+  t.id = "delivery";
+
+  t.type = "hidden";
+  i.type = "hidden";
+
+  t.name = "delivery";
+  i.name = "customize";
+  s.name = "sentences";
+
+  t.value = type;
+  i.value = "customize"
+  s.value = "sentences";
+
+  f.appendChild(t);
+  f.appendChild(i);
+  f.appendChild(s);
+  f.submit();
+
+  f.removeChild(t);
+  f.removeChild(i);
+  f.removeChild(s);
+}
+
 function navigate_to_item(item, isMorphology) {
   toggle_display_lex(item, item + "button");
   const navAnchor = item + (isMorphology ? "button" : "");
