@@ -232,7 +232,7 @@ function toggle_visibility(ids) {
 </script>
 
 <h3>Generated Sentences</h3>
-Click on a sentence to view its parse tree and the mrs associated to that parse. <br><br>
+<u>Click on a sentence</u> to view its parse tree and the mrs associated to that parse. <br><br>
 '''
 
 HTML_sentencespostbody = '''
@@ -1402,6 +1402,7 @@ class MatrixDefFile:
             # print '<a href="?subpage=%s" onclick="document.forms[0].submit()" class="navleft">Save &amp; stay</a><br />' % section
             print(
                 '<a href="#clear" onclick="clear_form()" class="navleft">Clear current subpage</a><br />')
+            print('<a href="#" onclick="nav_customize_test(\'tgz\')" class="navleft">Test by Generation</a><br />')
 
             # if there are errors, then we print the links in red and
             # unclickable
@@ -1493,7 +1494,7 @@ class MatrixDefFile:
                     if j == 10:
                         print('<div id="%s_extra" style=display:none;>' % (i+1))
                         long = True
-                    print('<div onclick=toggle_visibility(["%s_%s_parsemrs"])>%s. %s</div>' % (
+                    print('<a onMouseOver="this.style.color=\'#a3a0a1\'" onMouseOut="this.style.color=\'#0a0a0a\'" onclick=toggle_visibility(["%s_%s_parsemrs"])>%s. %s</a> <br />' % (
                         i+1, j+1, j+1, sentences[i][1][j]))
                     print('<div id="%s_%s_parsemrs" style=display:none;>' %
                           (i+1, j+1))
@@ -1545,8 +1546,7 @@ class MatrixDefFile:
             else:
                 for j in range(len(sentences)):
                     # print str(j+1) + '. <span title="' + trees[j] + '">' + sentences[j] + "</span><br>"
-                    print(
-                        '<div onclick=toggle_visibility(["%s_parsemrs"])>%s. %s</div>' % (j+1, j+1, sentences[j]))
+                    print('<a onMouseOver="this.style.color=\'#a3a0a1\'" onMouseOut="this.style.color=\'#0a0a0a\'" onclick=toggle_visibility(["%s_parsemrs"])>%s. %s</a> <br />' % (j+1, j+1, sentences[j]))
                     print('<div id="%s_parsemrs" style=display:none;>' % (j+1))
                     print('&nbsp&nbsp Parse tree:<br>' + trees[j])
                     print('&nbsp&nbsp MRS:<br>' + mrss[j])
