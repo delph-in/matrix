@@ -1,6 +1,8 @@
 from gmcs.utils import TDLencode
 from gmcs.utils import orth_encode
 
+import sys
+
 ######################################################################
 # customize_sentential_negation()
 #   Create the type definitions associated with the user's choices
@@ -57,10 +59,13 @@ def customize_sentential_negation(mylang, ch, lexicon, rules, lrules, hierarchie
 
     # exponence of sentential negation: simple, bipartite
     exp = ch.get('neg-exp')
+    print("HERE", file=sys.stderr)
 
     if exp in ['1', '0']:
+        print("exp in 1,0", file=sys.stderr)
         # we have a simple negation strategy
         if ch.get('infl-neg') == 'on':
+            print("inside if", file=sys.stderr)
             # two things to do:
             #  * add supertype to appropriate lri (for morphotactic.py to work)
             #  * change value of negation=plus to negation=a (for feature.py to work)
@@ -72,14 +77,17 @@ def customize_sentential_negation(mylang, ch, lexicon, rules, lrules, hierarchie
                                                           ['cont-change-only-lex-rule'])
                             f['value'] = 'a'
         elif ch.get('neg-aux') == 'on':
+            print("inside elif 1", file=sys.stderr)
             pass
             # nothing to do, neg-aux is like any other aux,
             # should be handled appropriately by word-order library
         elif ch.get('adv-neg') == 'on':
+            print("inside elif 2", file=sys.stderr)
             # call create_neg_adv with proper parameters!
             # create_neg_adv_lex_item(mylang, ch, lexicon, rules, 1)
             customize_adv_neg(mylang, ch, lexicon, rules)
         elif ch.get('comp-neg') == 'on':
+            print("inside elif 3", file=sys.stderr)
             # call create_neg_comp with proper parameters!
             customize_comp_neg(mylang, ch, lexicon, rules, lrules)
     elif exp == '2':
@@ -112,6 +120,7 @@ def customize_sentential_negation(mylang, ch, lexicon, rules, lrules, hierarchie
 
 
 def customize_adv_neg(mylang, ch, lexicon, rules):
+    print("inside customize_adv_neg", file=sys.stderr) ## feel like the problem must be in here somewhere
     # first add lexical type for negative adverb
     mylang.set_section('otherlex')
     mylang.add('''neg-adv-lex := basic-scopal-adverb-lex &
@@ -148,6 +157,7 @@ def customize_adv_neg(mylang, ch, lexicon, rules):
 
     # add spelling for neg-adverb
     if(ch.get('neg-adv-orth')):
+        print("has neg-adv-orth", file=sys.stderr)
         orth = ch.get('neg-adv-orth')
         orthstr = orth_encode(orth)
         lexicon.add(TDLencode(orth) + ' := neg-adv-lex &\
