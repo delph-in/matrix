@@ -97,6 +97,16 @@ function toggle_element(id, how, switchOn) {
     else if (how == "off") {
       element.style.display = 'none';
     }
+
+    if (element.style.display === "block") {
+      let selects = element.querySelectorAll("select");
+      for (let i = 0; i < selects.length; i++) {
+        let s = selects[i];
+        if (s.className == 'multi' && is_displayed(s)) {
+          multi_create(s);
+        }
+      }
+    }
   }
 }
 
