@@ -17,7 +17,7 @@ def process_cfv_list(mylang, ch, hierarchies, to_cfv, tdlfile=None):
 # Consider improving it and perhaps even have several separate functions?
 
 
-def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, features=None, cases=None, tdlfile=None):
+def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, features=None, cases=None, tdlfile=None, section=''):
 
     if not features:
         features = ch.features()
@@ -76,7 +76,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     # Map from head value to geometry prefix
     head_map = {
         'subj': 'LOCAL.CAT.VAL.SUBJ.FIRST.',
-        'obj': 'LOCAL.CAT.VAL.COMPS.FIRST.',
+        'obj': 'LOCAL.CAT.VAL.COMPS.',
         'obj2': 'LOCAL.CAT.VAL.COMPS.REST.FIRST.',
         'higher': 'SC-ARGS.FIRST.',
         'lower': 'SC-ARGS.REST.FIRST.',
@@ -87,6 +87,12 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
         # There was interference between this line for determiner inflection and prefix_map
         # for full-form determiners.
     }
+
+    if pos == 'lv':
+        head_map['obj'] += 'REST.FIRST.'
+        head_map['obj2'] += 'COMPS.REST.FIRST.' # not sure about this
+    else:
+        head_map['obj'] += 'FIRST.'
 
     for feat in ch_dict.get(iter_feat, []):
         n = feat.get('name', '')
@@ -221,22 +227,22 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                     value = value+'] >'
                 tdlfile.add(type_name +
                             ' := [ ' + geom + ' ' + value + ' ].',
-                            merge=True)
+                            merge=True, section=section)
 
                 if n == 'case' and ch.has_mixed_case():
                     val = '-' if '-synth-' in type_name else '+'
                     tdlfile.add(type_name +
                                 ' := [ ' + geom + '-MARKED ' + val + ' ].',
-                                merge=True)
+                                merge=True, section=section)
             else:
                 for value in v:
                     tdlfile.add(type_name +
                                 ' := [ ' + geom + ' ' + value + ' ].',
-                                merge=True)
+                                merge=True, section=section)
         elif n == 'argument structure':
             # constrain the ARG-ST to be passed up
             tdlfile.add(type_name + ' := [ ARG-ST #arg-st, DTR.ARG-ST #arg-st ].',
-                        merge=True)
+                        merge=True, section=section)
 
             for argst in v:
                 # specify the subj/comps CASE values
@@ -253,14 +259,14 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                     tdlfile.add(type_name +
                                 ' := [ ARG-ST < [ ' + a_case + '], ' +
                                 '[ ' + o_case + '] > ].',
-                                merge=True)
+                                merge=True, section=section)
                 else:
                     c = c[0]
                     s_case = '' if c == 'intrans' \
                         else (case_geom + ' ' + case.canon_to_abbr(c, cases))
                     tdlfile.add(type_name +
                                 ' := [ ARG-ST < [ ' + s_case + '] > ].',
-                                merge=True)
+                                merge=True, section=section)
 
         # ERB 2009-01-22 This is where we deal with the
         # negative affixes.
@@ -272,13 +278,13 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
 
             tdlfile.add(type_name + basic_infl_neg_def,
                         'This adds negative semantics to the verb\'s\nRELS list.',
-                        merge=True)
+                        merge=True, section=section)
             # If neg-head-feature is on, then we also mark the verb
             # negated +.
             # and ensure that verbs start out negated -
             if ch.get('neg-head-feature') == 'on':
                 tdlfile.add(
-                    type_name + ':= [ SYNSEM.LOCAL.CAT.HEAD.NEGATED + ].', merge=True)
+                    type_name + ':= [ SYNSEM.LOCAL.CAT.HEAD.NEGATED + ].', merge=True, section=section)
 
         elif (n == 'negation' and v[0] == 'b'):
             # this is a negation lex rule that also requires negform on its
@@ -297,7 +303,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                                                   SUBJ #subj,
                                                   SPEC #spec ] ].''', section='addenda')
 
-            tdlfile.add(type_name + basic_infl_neg_def, merge=True)
+            tdlfile.add(type_name + basic_infl_neg_def, merge=True, section=section)
             # because this is a val changing rule, we need the complement verbs VAL
             # and HOOK to be copied up explicitly
             # also, we specify FORM negform on the complement
@@ -306,9 +312,9 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                                                                                CONT.HOOK #hook ],
                                       DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL [ CAT.VAL #val,
                                                                                    CONT.HOOK #hook ] ]. ''',
-                        merge=True)
+                        merge=True, section=section)
             tdlfile.add(type_name + ':= [ SYNSEM.LOCAL.CAT.HEAD.AUX + ].',
-                        merge=True)
+                        merge=True, section=section)
 
         #    elif (n == 'negation' and v[0] == 'c'):
         #   'c'  is deprecated!
@@ -331,11 +337,11 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                                      SPEC #spec,
                                      SUBJ #subj,
                                      COMPS #oldcomps ],
-                           CONT.HOOK #hook ] ].''', merge=True)
+                           CONT.HOOK #hook ] ].''', merge=True, section=section)
 
         elif (n == 'negation' and v[0] == 'e'):
             #  negation lex rule to set NEG-SAT to -
-            tdlfile.add(type_name + ':= [ SYNSEM.NEG-SAT - ].')
+            tdlfile.add(type_name + ':= [ SYNSEM.NEG-SAT - ].', section=section)
 
         elif (n == 'negation' and v[0] == 'f'):
             # negation lex rule to add negative complement and
@@ -358,7 +364,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                                                            CONT #c ],
                                                    NON-LOCAL #nl ] ],
                                HEAD.AUX + ],
-                         CONT.HOOK #hook ] ] ].''', merge=True)
+                         CONT.HOOK #hook ] ] ].''', merge=True, section=section)
 
         elif (n == 'negation' and v[0] == 'g'):
             # negation lex rule to add dummy negative complement and
@@ -380,7 +386,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                                      SUBJ #subj,
                                      COMPS #oldcomps ],
                                HEAD.AUX - ],
-                         CONT.HOOK #hook ] ] ].''', merge=True)
+                         CONT.HOOK #hook ] ] ].''', merge=True, section=section)
 
         elif (n == 'negation' and v[0] == 'h'):
             # comps adding neg rule which also sets NEG-SAT -
@@ -397,13 +403,13 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                                      SPEC #spec,
                                      SUBJ #subj,
                                      COMPS #oldcomps ],
-                           CONT.HOOK #hook ] ].''', merge=True)
+                           CONT.HOOK #hook ] ].''', merge=True, section=section)
         elif (n == 'negation' and v[0] == 'minus'):
             # JDC 2011-01-11 Users specify negation minus to indicate that a
             # lexical type is not compatible with negation
             if ch.get('neg-head-feature') == 'on':
                 tdlfile.add(
-                    type_name + ':= [ ARGS.FIRST.SYNSEM.LOCAL.CAT.HEAD.NEGATED - ].', merge=True)
+                    type_name + ':= [ ARGS.FIRST.SYNSEM.LOCAL.CAT.HEAD.NEGATED - ].', merge=True, section=section)
 
         # Specifiying OPT- on each user defined type instead of creating a supertype because
         # It the supertype would need to inherit from transitive-verb-lex and the code already puts
@@ -422,21 +428,21 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                 val_geom = geom_map[head.lower()]
                 tdlfile.add('%(id)s := [SYNSEM.LOCAL.CAT.VAL.%(vg)s.FIRST.OPT %(bv)s].'
                             % {'id': type_name, 'vg': val_geom, 'bv': bool_val},
-                            merge=True)
+                            merge=True, section=section)
 
         elif n == 'direction':
             if v[0] == 'dir':
-                tdlfile.add(type_name + ' := dir-lex-rule.')
+                tdlfile.add(type_name + ' := dir-lex-rule.', section=section)
             else:
-                tdlfile.add(type_name + ' := inv-lex-rule.')
+                tdlfile.add(type_name + ' := inv-lex-rule.', section=section)
         elif n == 'dirinv-type':
             d = v[0]
             if head == 'subj':
                 tdlfile.add(
-                    type_name + ' := [SYNSEM.LOCAL.CAT.VAL.SUBJ < '+d+' > ].')
+                    type_name + ' := [SYNSEM.LOCAL.CAT.VAL.SUBJ < '+d+' > ].', section=section)
             elif head == 'obj':
                 tdlfile.add(
-                    type_name + ' := [SYNSEM.LOCAL.CAT.VAL.COMPS < '+d+' > ].')
+                    type_name + ' := [SYNSEM.LOCAL.CAT.VAL.COMPS < '+d+' > ].', section=section)
 
 # Note: customize case code is now in gmcs/linglib/case.py
 
