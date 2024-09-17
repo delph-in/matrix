@@ -2075,14 +2075,14 @@ Label "<p>What possible coverbs are allowed in your language?<br>(selecting one 
 Check coverb-n "Noun coverbs" "" "Noun Coverbs<br>" "toggle_element.call(this, 'lvc-noun-cv-dep', 'toggle');"
 Check coverb-v "Verb coverbs" "" "Verb Coverbs<br>" "toggle_element.call(this, 'lvc-verb-cv-dep', 'toggle');"
 
-Label "<div id='lv-noun-cv-dep' style='display:none'>"
+Label "<div id='lvc-noun-cv-dep' style='display:none'>"
 Radio lvc-noun-cv-dep "LVC noun coverb dependents" "<p>Can noun coverbs pick up dependents on their own (e.g. determiner, modifier, complement)?</p>" ""
 . yes "Yes" "" "yes<br>"
 . no "No" "" "no<br>"
 
 Label "</div>"
 
-Label "<div id='lv-verb-cv-dep' style='display:none'>"
+Label "<div id='lvc-verb-cv-dep' style='display:none'>"
 Radio lvc-verb-cv-dep "LVC verb coverb dependents" "<p>Can verb coverbs pick up dependents on their own (e.g. modifier, complement)?</p>" ""
 . yes "Yes" "" "yes<br>"
 . no "No" "" "no<br>"
@@ -2094,13 +2094,13 @@ Radio lvc-word-order "LVC order" "<p>The word order within an LVC is:</p>" ""
 . lv-cv "Coverb after light verb" "" "The coverb is after the light verb<br>"
 . both "Coverb before/after light verb" "" "The coverb can be before or after the light verb<br>"
 
-Radio lvc-adjacent "LVC adjacent" "<p>Does the coverb (or the constituent it heads) have to be immediately adjacent to the light verb?</p>" ""
+Radio lvc-adjacent "LVC adjacent" "<p>Does a coverb (or the constituent it heads) have to be immediately adjacent to a light verb?</p>" ""
 . yes "Yes" "" "yes<br>"
 . no "No" "" "no <br>"
 
 Label "<p>What possible valence options are allowed for light verbs in your language?</p>"
-Check lvc-it "Just coverb" "" "The light verb can take just the coverb as an argument (i.e. intransitive)<br>"
-Check lvc-tr "Coverb plus 1 compelement" "" "The light verb can take the coverb plus an additional complement as arguments (i.e. transitive)<br>"
+Check lvc-it "Just coverb" "" "A light verb can take just a coverb as an argument (i.e. intransitive)<br>"
+Check lvc-tr "Coverb plus 1 compelement" "" "A light verb can take a coverb plus an additional complement as arguments (i.e. transitive)<br>"
 
 Section clausal-comp "Clausal Complements"
 
@@ -2465,18 +2465,9 @@ BeginIter noun{i} "a Noun Type" 1 1
   Label "<div id='lv-for-noun-cv{i}' style='display:none'>"
   Label "<p>Light verbs that take this coverb class as an argument:</p>"
 
-  BeginIter lv{j} "a light verb" 1 0 "" "Choose"
-
-    MultiSelect lvs "Light verb" "Light verb(s): " ""
+  MultiSelect lvs "Light verb {i}" "Light verb(s): " "<br>"
     fillregex p=lv[0-9]+_name
     . all-lv "all light verbs" "all light verbs"
-
-    MultiSelect valence "LVC valence" "LVC valence: " ""
-    fillempty
-    . coverb-only "just coverb" "just coverb"
-    . coverb-1comp "coverb plus 1 complement" "coverb plus 1 complement"
-
-  EndIter lv
 
   Label "</div>"
 
@@ -2567,18 +2558,9 @@ BeginIter verb{i} "a Verb Type" 1 2
   Label "<div id='lv-for-verb-cv{i}' style='display:none'>"
   Label "<p>Light verbs that take this coverb class as an argument:</p>"
 
-  BeginIter lv{j} "a light verb" 1 0 "" "Choose"
-
-    MultiSelect lvs "Light verb" "Light verb(s): " ""
+  MultiSelect lvs "Light verb {i}" "Light verb(s): " "<br>"
     fillregex p=lv[0-9]+_name
-    . lv-all "all light verbs" "all light verbs"
-
-    MultiSelect valence "LVC valence" "LVC valence: " ""
-    fillempty
-    . coverb-only "just coverb" "just coverb"
-    . coverb-1comp "coverb plus 1 complement" "coverb plus 1 complement"
-
-  EndIter lv
+    . all-lv "all light verbs" "all light verbs"
 
   Label "</div>"
 
@@ -3093,19 +3075,44 @@ BeginIter lv{i} "a light verb" 1
 
   Label "<div style=\"padding-left: 16px\"></div>"
 
-  Text name "Light verb {i} name" "Type name: " "<br>" 20
+  Text name "Light verb {i} name" "Type name: " "" 20
 
-  Check sem-bleached "bleached?" "" "bleached?<br>"
+  Label "<div style=\"padding-left: 16px\"></div><br>"
 
-  MultiSelect valence "LVC valence" "LVC valence: " "<br>"
+  Label "Features:"
+
+  BeginIter feat{j} "a Feature"
+
+  Select name "Light verb {i} feature {j} name" "Name: " " "
+  fillnames c=both
+
+  MultiSelect value "Light verb {i} feature {j} value" "Value: " ""
+  fillvalues p=lv{i}_feat{j}_name
+
+  Select head "Ligh verb {i} feature {j} head" "Specified on: " ""
+  . verb "The verb" "the verb"
+  . subj "The subject" "the subject NP"
+  . obj "The object" "the object NP"
+  . higher "Higher-ranked" "the higher-ranked NP"
+  . lower "Lower-ranked" "the lower-ranked NP"
+
+  EndIter feat
+
+  Label "<div style=\"padding-left: 16px\"></div>"
+
+  Select valence "LVC valence" "LVC valence: " "<br>"
   fillempty
     . coverb-only "just coverb" "just coverb"
     . coverb-1comp "coverb plus 1 complement" "coverb plus 1 complement"
   
-  MultiSelect cv-type "Coverb type" "Coverb type: " ""
+  MultiSelect cv-type "Coverb type" "Coverb type: " "<br>"
   fillempty
     . noun "noun coverb" "noun coverb"
     . verb "verb coverb" "verb coverb"
+  
+  Check sem-bleached "bleached?" "" "bleached?"
+
+  Label "<div style=\"padding-left: 16px\"></div><br>"
 
   BeginIter stem{j} "a simple Stem" 0 1
 
@@ -3127,6 +3134,7 @@ Cache auxes aux[0-9]+$ name
 Cache dets q?det[0-9]+$ name
 Cache adjs adj[0-9]+$ name
 Cache cops cop[0-9]+$ name
+Cache lverbs lv[0-9]+$ name
 
 Label "<p>Here you can define inflectional morphology for nouns, verbs, and
 determiners.  To do so, first define one or more inflectional <span
@@ -3316,12 +3324,14 @@ BeginIter verb-pc{i} "a Position Class" 1
   fillcache c=verbs
   fillcache c=qverbs
   fillcache c=auxes
+  fillcache c=lverbs
   fillregex p=verb-pc[0-9]+(_lrt[0-9]+)?_name
   . verb "Any verb" "any verb"
   . iverb "Any intransitive verb" "any intransitive verb"
   . tverb "Any transitive verb" "any transitive verb"
   . aux "Any auxiliary verb" "any auxiliary verb"
   . qverb "Any question verb" "any question verb"
+  . lverb "Any light verb" "any light verb"
 
   Label "<p>Morphotactic Constraints:</p>"
 
@@ -3330,12 +3340,14 @@ BeginIter verb-pc{i} "a Position Class" 1
     MultiSelect others "Verb Position Class {i} Requires" "Verb Position Class {i} requires one of the following: " ""
     fillcache c=verbs
     fillcache c=auxes
+    fillcache c=lverbs
     fillregex p=verb-pc[0-9]+(_lrt[0-9]+)?_name
     . verb "Any verb" "any verb"
     . iverb "Any intransitive verb" "any intransitive verb"
     . tverb "Any transitive verb" "any transitive verb"
     . aux "Any auxiliary verb" "any auxiliary verb"
     . qverb "Any question verb" "any question verb"
+    . lverb "Any light verb" "any light verb"
 
   EndIter require
 
@@ -3344,12 +3356,14 @@ BeginIter verb-pc{i} "a Position Class" 1
     Select others "Verb Position Class {i} Forbids" "Verb Position Class {i} forbids the following: " ""
     fillcache c=verbs
     fillcache c=auxes
+    fillcache c=lverbs
     fillregex p=verb-pc[0-9]+(_lrt[0-9]+)?_name
     . verb "Any verb" "any verb"
     . iverb "Any intransitive verb" "any intransitive verb"
     . tverb "Any transitive verb" "any transitive verb"
     . aux "Any auxiliary verb" "any auxiliary verb"
     . qverb "Any question verb" "any question verb"
+    . lverb "Any light verb" "any light verb"
 
   EndIter forbid
 
@@ -3429,12 +3443,14 @@ inputs are possible, these need to be created as two separate lexical rule types
       MultiSelect others "Verb Position Class {i} Lexical Rule Type {j} Requires" "Lexical Rule Type {j} requires one of the following: " ""
       fillcache c=verbs
       fillcache c=auxes
+      fillcache c=lverbs
       fillregex p=verb-pc[0-9]+(_lrt[0-9]+)?_name
       . verb "Any verb" "any verb"
       . iverb "Any intransitive verb" "any intransitive verb"
       . tverb "Any transitive verb" "any transitive verb"
       . aux "Any auxiliary verb" "any auxiliary verb"
       . qverb "Any question verb" "any question verb"
+      . lverb "Any light verb" "any light verb"
 
     EndIter require
 
@@ -3443,12 +3459,14 @@ inputs are possible, these need to be created as two separate lexical rule types
       Select others "Verb Position Class {i} Lexical Rule Type {j} forbids" "Lexical Rule Type {j} forbids the following: " ""
       fillcache c=verbs
       fillcache c=auxes
+      fillcache c=lverbs
       fillregex p=verb-pc[0-9]+(_lrt[0-9]+)?_name
       . verb "Any verb" "any verb"
       . iverb "Any intransitive verb" "any intransitive verb"
       . tverb "Any transitive verb" "any transitive verb"
       . aux "Any auxiliary verb" "any auxiliary verb"
       . qverb "Any question verb" "any question verb"
+      . lverb "Any light verb" "any light verb"
 
     EndIter forbid
 
