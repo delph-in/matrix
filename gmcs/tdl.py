@@ -223,7 +223,10 @@ class TDLelem_typedef(TDLelem):
     def write(self):
         if self.comment and not self.one_line:
             for l in self.comment.split('\n'):
-                TDLwrite('; ' + l + '\n')
+                if l:
+                    TDLwrite('; ' + l + '\n')
+                else:
+                    TDLwrite(';\n')
             TDLwrite('\n')
 
         if debug_write:
@@ -969,24 +972,3 @@ class TDLfile(object):
             l.section = self.section
 
         self.typedefs.append(l)
-
-    def remove_subtypes(self, type_name, subtype_types):
-        """
-        Given a type name and a set of subtypes, remove typedefs for the
-        subtypes corresponding to the type name
-        """
-        # print(type_name, subtype_types)
-
-        for subtype_type in subtype_types:
-            for typedef_super in self.typedefs:
-                typedef = typedef_super
-                if 'typedef\'' in str(type(typedef)) and typedef.type == type_name:
-                    has_child = True
-                    while has_child:
-                        for child in typedef.child:
-                            if 'type\'' in str(type(child)) and child.type == subtype_type:
-                                self.typedefs.remove(typedef_super)
-                                # print("\t" + subtype_type)
-                        typedef = child
-                        if not typedef.child:
-                            has_child = False
