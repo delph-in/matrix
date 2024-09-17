@@ -1,6 +1,7 @@
 from collections import defaultdict
 
 from gmcs.linglib import case
+from gmcs.linglib import light_verb_constructions as lvc
 #from gmcs.linglib import lexical_items
 from gmcs.utils import get_name
 from gmcs.choices import ChoiceDict
@@ -19,6 +20,7 @@ def lexical_type_hierarchy(choices, lexical_supertype):
     lth.add_node(LexicalType(lexical_supertype,
                              get_lt_name(lexical_supertype, choices)))
     lts_to_add = [lexical_supertype]
+
     if lexical_supertype == 'verb':
         if choices['has-aux'] == 'yes':
             lth.add_node(LexicalType('aux', get_lt_name('aux', choices),
@@ -33,8 +35,17 @@ def lexical_type_hierarchy(choices, lexical_supertype):
         lth.add_node(LexicalType('tverb', get_lt_name('tverb', choices),
                                  parents={st: lth.nodes[st]}))
 
+    if lexical_supertype == 'lv':
+        st = get_lexical_supertype('lv-iverb', choices)
+        lth.add_node(LexicalType('lv-iverb', get_lt_name('lv-iverb', choices),
+                                 parents={st: lth.nodes[st]}))
+        st = get_lexical_supertype('lv-tverb', choices)
+        lth.add_node(LexicalType('lv-tverb', get_lt_name('lv-tverb', choices),
+                                 parents={st: lth.nodes[st]}))
+
     if lexical_supertype == 'qverb':
         st = get_lexical_supertype('qverb', choices)
+
     for lst in lts_to_add:
         for lt in choices[lst]:
             st = get_lexical_supertype(lt.full_key, choices)
@@ -43,7 +54,7 @@ def lexical_type_hierarchy(choices, lexical_supertype):
             # If we're dealing with a verb add nodes for all lexical entries
             # because bistems can give rise to flags that need to appear on
             # all verbs.
-            if lexical_supertype in ['verb', 'qverb']:
+            if lexical_supertype in ['verb', 'qverb', 'lv']:
                 bistems = choices[lt.full_key]['bistem'] or []
                 stems = choices[lt.full_key]['stem'] or []
                 stems.extend(bistems)
@@ -63,12 +74,16 @@ def get_lexical_supertype(lt_key, choices):
         return 'verb'
     elif lexical_category == 'verb':
         return case.interpret_verb_valence(choices[lt_key]['valence'])
+    elif lexical_category in ('lv-iverb', 'lv-tverb'):
+        return 'lv'
+    elif lexical_category == 'lv':
+        return lvc.interpret_lv_valence(choices[lt_key]['valence'])
     # TJT Added adj, cop, removed aux
     elif lexical_category in ('noun', 'det', 'adv', 'adj', 'cop', 'qverb'):
         return lexical_category
     return None
 
-
+# TODO possibly deprecated?
 def expand_lexical_supertype(st_key, choices):
     """
     Given a generic lexical supertype, like those defined in
@@ -91,7 +106,7 @@ def expand_lexical_supertype(st_key, choices):
     else:
         return [x.full_key for x in choices.get(st_key, [])]
 
-
+# TODO possibly deprecated?
 def get_lexical_supertype_expansions(choices):
     """
     Return a dictionary mapping each supertype to its possible
@@ -100,12 +115,13 @@ def get_lexical_supertype_expansions(choices):
     return dict([(st, expand_lexical_supertype(st, choices))
                  for st in LEXICAL_SUPERTYPES])
 
-
+# TODO possibly deprecated?
 def used_lexical_supertypes(choices):
     """
     Return a list of lexical supertypes (as defined in
     lexical_supertypes) that will actually be used in the grammar.
     """
+    print('test')
     # TJT 2014-09-08: Changing this to set comprehension and adding "cop"
     # TJT 2014-12-19: Changing back to loop for older versions of python
     used = set([item for item in ('noun', 'aux', 'adj',
@@ -116,9 +132,15 @@ def used_lexical_supertypes(choices):
                      for v in choices['verb']])
         if choices['has-aux'] == 'yes':
             used.add('mverb')
+
+    # if this function isn't used, this isn't necessary
+    if 'lv' in choices:
+        used.add('lv')
+        used.update([lvc.interpret_lv_valence(lv['valence'] for lv in choices.get('lv'))])
+
     return used
 
-
+# TODO possibly deprecated?
 def get_lexical_supertypes(lrt_key, choices):
     """
     Return the list of appropriate lexical types for the given rule
@@ -1094,10 +1116,6 @@ def validate_lexicon(ch, vr):
                     mess = 'That choice is not available in languages ' + \
                            'without a direct-inverse scale.'
                     vr.err(feat.full_key + '_head', mess)
-
-    # Light Verbs
-    for lv in ch.get('lv'):
-        print("in lexicon.py")
 
     # LTX 2022-05-16: Check if there are duplicated features (maybe with different values)
     # with inheritance hierarchy (see discussion in issue #627)

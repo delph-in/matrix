@@ -1,4 +1,9 @@
+# imports for typing
+from typing import Dict
 from gmcs.lib import TDLHierarchy
+from gmcs.tdl import TDLfile
+from gmcs.choices import ChoicesFile
+
 from gmcs.constants import ON, YES, INTRANSITIVE, TRANSITIVE
 
 ###########################################
@@ -70,7 +75,7 @@ LV_TR_VERB_ITEM = TRANSITIVE + '-' + COVERB_VERB + '-lv-lex := ' + COVERB_VERB +
 #   Create the type definitions associated with the user's
 #   choices about light verbs.
 
-def init_light_verb_hierarchy(ch, hierarchies):
+def init_light_verb_hierarchy(ch: ChoicesFile, hierarchies: Dict[str, TDLHierarchy]):
     if ch.get('coverb-n') == ON or ch.get('coverb-v') == ON :
         hier = TDLHierarchy(LVC_TYPE)
 
@@ -89,7 +94,7 @@ def init_light_verb_hierarchy(ch, hierarchies):
             hierarchies[hier.name] = hier
 
 
-def customize_light_verb(mylang, hierarchies):
+def customize_light_verb(mylang: TDLfile, hierarchies: Dict[str, TDLHierarchy]):
     if LVC_TYPE in hierarchies:
         mylang.add('+nv :+ [ LVC lvc ].', section='addenda')
         hierarchies[LVC_TYPE].save(mylang)
@@ -101,19 +106,19 @@ def customize_light_verb(mylang, hierarchies):
 ### Primary function (called from customize.py) ###
 ###################################################
 
-def customize_lvc(mylang, ch, rules):
+def customize_lvc(ch: ChoicesFile, mylang: TDLfile, rules: TDLfile):
     """
     Customize light verb constructions.
     """
     if ch.get('coverb-n') == ON or ch.get('coverb-v') == ON :
-        create_lvc_phrase_types(mylang, ch, rules)
+        create_lvc_phrase_types(ch, mylang, rules)
 
 
 ########################
 ### Helper functions ###
 ########################
 
-def create_lvc_phrase_types(mylang, ch, rules):
+def create_lvc_phrase_types(ch: ChoicesFile, mylang: TDLfile, rules: TDLfile):
     """
     Create/modify phrasal types for light verb constructions.
     """
@@ -144,16 +149,16 @@ def create_lvc_phrase_types(mylang, ch, rules):
 
     # coverb after light verb
     if lvc_wo == 'lv-cv':
-        add_lvc_phrase(mylang, ch, True, False, head_type_suffix, rules)
+        add_lvc_phrase(ch, mylang, rules, True, False, head_type_suffix)
     # coverb before light verb
     elif lvc_wo == 'cv-lv':
-        add_lvc_phrase(mylang, ch, False, True, head_type_suffix, rules)
+        add_lvc_phrase(ch, mylang, rules, False, True, head_type_suffix)
     # coverb before/after light verb
     elif lvc_wo == 'both':
-        add_lvc_phrase(mylang, ch, True, True, head_type_suffix, rules)
+        add_lvc_phrase(ch, mylang, rules, True, True, head_type_suffix)
 
 
-def add_lvc_phrase(mylang, ch, lv_cv, cv_lv, head_type_suffix, rules):
+def add_lvc_phrase(ch: ChoicesFile, mylang: TDLfile, rules: TDLfile, lv_cv: bool, cv_lv: bool, head_type_suffix: str):
     """
     Add LVC phrasal types based on the order of the light verb and
     coverb within the LVC. Add LVC rule instances.
@@ -211,3 +216,13 @@ def add_lvc_phrase(mylang, ch, lv_cv, cv_lv, head_type_suffix, rules):
         # coverb doesn't have to be immediately adjacent to light verb
         pass
 
+
+def interpret_lv_valence(valence: str) -> str:
+    """
+    Return the canonical valence name (e.g. lv-iverb, lv-tverb) given the
+    valence for a light verb as defined in a choices file.
+    """
+    if valence == 'coverb-1comp':
+        return 'lv-tverb'
+    else:
+        return 'lv-iverb'

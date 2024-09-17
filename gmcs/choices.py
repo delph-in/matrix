@@ -1059,19 +1059,22 @@ class ChoicesFile:
         return genders
 
     def light_verbs(self):
+        from gmcs.constants import INTRANSITIVE, TRANSITIVE
+        from gmcs.linglib.light_verb_constructions import LV_ALL_TYPE
+
         light_verbs = set()
 
         for lv in self.get('lv'):
             for val_type in lv.get('valence').split(', '):
                 name = get_name(lv)
-                stype = 'lv-all'
+                stype = LV_ALL_TYPE
 
                 if val_type == 'coverb-only':
-                    name += '-it'
-                    stype += '-it'
+                    name += '-' + INTRANSITIVE
+                    stype += '-' + INTRANSITIVE
                 elif val_type == 'coverb-1comp':
-                    name += '-tr'
-                    stype += '-tr'
+                    name += '-' + TRANSITIVE
+                    stype += '-' + TRANSITIVE
 
                 light_verbs.add((name, stype))
 
