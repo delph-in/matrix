@@ -49,7 +49,6 @@ if os.path.exists('sessions/choices'):
 matrixdef = MatrixDefFile('web/matrixdef')
 
 form_data = cgi.FieldStorage()
-print("form_data.keys()=", form_data.keys(), file=sys.stderr)
 
 # see if we are in debug mode
 debug = 'debug' in form_data and form_data['debug'].value in ('true', 'True')
@@ -139,7 +138,7 @@ if 'choices' in form_data:
             with open(choices, 'r', encoding=READ_ENCODING) as f:
                 data = f.read()
         elif choices.startswith('collage/'):
-            # Get choices files from COLLAGE
+            # Get choices files from CoLLAGE
             # should be 3 or 7 letter keys... doesn't work for other length keys
             if len(choices) in ((len('collage/') + 3), (len('collage/') + 7)):
                 import urllib.request
@@ -243,9 +242,7 @@ elif 'customize' in form_data:
 
         # Create the customized grammar
         try:
-            print("in matrix.cgi, about to customize matrix", file=sys.stderr)
             grammar_dir = customize_matrix(session_path, arch_type)
-            print("in matrix.cgi, done customizing matrix", file=sys.stderr)
         except:
             exc = sys.exc_info()
             matrixdef.customize_error_page(choices_path,
