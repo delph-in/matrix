@@ -2,8 +2,20 @@ from gmcs.utils import TDLencode
 from gmcs.utils import orth_encode
 from gmcs.utils import get_name
 from gmcs.lib import TDLHierarchy
-from gmcs.constants import ORTH, ON, YES
+from gmcs.constants import ORTH, ON, YES, INTRANSITIVE, TRANSITIVE
 from gmcs.tdl import TDLparse
+from gmcs.linglib.case import get_verb_case
+from gmcs.linglib.morphotactics import customize_lexical_rules
+from gmcs.linglib import features
+
+# TODO: can't import cause circular import but after moving funcs to respective files,
+# no need to have this in here
+# Returns the verb type for lexical/main verbs.
+def main_or_verb(ch):
+    if ch.get('has-aux') == 'yes':
+        return 'main-verb-lex'
+    else:
+        return 'verb-lex'
 
 LVC_TYPE = 'lvc'
 LV_NONE_TYPE = 'lv-none'
@@ -18,12 +30,10 @@ COVERB_NOUN_ITEM = 'coverb-' + COVERB_NOUN + '-lex := basic-noun-lex & \
                             SPR < #spr & [ LOCAL.CAT.HEAD det ] > ] ], \
     ARG-ST < #spr > ].'
 
-# all verb coverbs default to intransitive
-COVERB_VERB_ITEM = 'coverb-' + COVERB_VERB + '-lex := intransitive-verb-lex.'
+COVERB_INTRANS_VERB_ITEM = 'coverb-' + INTRANSITIVE + '-' + COVERB_VERB + '-lex := intransitive-verb-lex.'
+COVERB_TRANS_VERB_ITEM = 'coverb-' + TRANSITIVE + '-' + COVERB_VERB + '-lex := transitive-verb-lex.'
 
-# bardi has inflected flags, need to figure out how to add that
-# bardi inherits from various rule-dtr types
-LV_ITEM = 'lv-lex := verb-lex & \
+LV_ITEM = 'lv-lex := <TEMP> & \
     [ SYNSEM [ LOCAL [ CAT [ HEAD.LVC lv-none, \
                              VAL.COMPS.FIRST #comps ], \
                        CONT.HOOK [ CLAUSE-KEY #clause, \
@@ -37,39 +47,34 @@ LV_ITEM = 'lv-lex := verb-lex & \
                                                           XARG #ind1, \
                                                           LTOP #ltop ] ] ] ] ].'
 
-LV_NOUN_ITEM = 'lv-' + COVERB_NOUN + '-lex := lv-lex & \
+LV_NOUN_ITEM = COVERB_NOUN + '-lv-lex := lv-lex & \
     [ SYNSEM [ LOCAL.CAT.VAL.COMPS.FIRST #comps, \
                LKEYS.KEYREL.ARG2 #ind2 ], \
       ARG-ST.REST.FIRST #comps & [ LOCAL [ CAT cat-sat & [ VAL.SPR < > ], \
                                            CONT.HOOK.INDEX ref-ind & #ind2 ] ] ].'
 
-LV_VERB_ITEM = 'lv-' + COVERB_VERB + '-lex := lv-lex & \
+LV_VERB_ITEM = COVERB_VERB + '-lv-lex := lv-lex & \
     [ SYNSEM [ LOCAL.CAT.VAL.COMPS.FIRST #comps, \
                LKEYS.KEYREL.ARG2 #ind2 ], \
       ARG-ST.REST.FIRST #comps & [ LOCAL.CONT.HOOK.INDEX event & #ind2 ] ].'
 
-# bardi has inflected flags, need to figure out how to add them
-LV_IT_ITEM = 'lv-it-lex := tr-min-rule-dtr & \
-    [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CAT.HEAD.CASE abs ].'
+LV_IT_ITEM = INTRANSITIVE + '-lv-lex := non-mod-lex-item.'
 
-# bardi has inflected flags, need to figure out how to add them
-LV_TR_ITEM = 'lv-tr-lex := non-local-none-no-hcons & basic-icons-lex-item & tr-aug-rule-dtr & tr-min-rule-dtr & \
-    [ SYNSEM [ LOCAL [ CAT.VAL [ SUBJ.FIRST.LOCAL.CAT.HEAD.CASE erg, \
-                                 COMPS < [], [ LOCAL [ CAT cat-sat & [ HEAD.CASE not-erg, \
-                                                                       VAL.SPR < > ], \
+LV_TR_ITEM = TRANSITIVE + '-lv-lex := non-mod-lex-item & non-local-none-no-hcons & basic-icons-lex-item & \
+    [ SYNSEM [ LOCAL [ CAT.VAL [ COMPS < [], [ LOCAL [ CAT cat-sat & [ VAL.SPR < > ], \
                                                         CONT.HOOK [ INDEX ref-ind & #ind3, \
                                                                     ICONS-KEY.IARG1 #clause ] ] ] > ], \
                        CONT.HOOK.CLAUSE-KEY #clause ], \
                 LKEYS.KEYREL.ARG3 #ind3, \
                 LIGHT + ] ].'
 
-LV_IT_NOUN_ITEM = 'lv-it-' + COVERB_NOUN + '-lex := lv-' + COVERB_NOUN + '-lex & lv-it-lex.'
+LV_IT_NOUN_ITEM = INTRANSITIVE + '-' + COVERB_NOUN + '-lv-lex := ' + COVERB_NOUN + '-lv-lex & ' + INTRANSITIVE + '-lv-lex.'
 
-LV_IT_VERB_ITEM = 'lv-it-' + COVERB_VERB + '-lex := lv-' + COVERB_VERB + '-lex & lv-it-lex.'
+LV_IT_VERB_ITEM = INTRANSITIVE + '-' + COVERB_VERB + '-lv-lex := ' + COVERB_VERB + '-lv-lex & ' + INTRANSITIVE + '-lv-lex.'
 
-LV_TR_NOUN_ITEM = 'lv-tr-' + COVERB_NOUN + '-lex := lv-' + COVERB_NOUN + '-lex & lv-tr-lex.'
+LV_TR_NOUN_ITEM = TRANSITIVE + '-' + COVERB_NOUN + '-lv-lex := ' + COVERB_NOUN + '-lv-lex & ' + TRANSITIVE + '-lv-lex.'
 
-LV_TR_VERB_ITEM = 'lv-tr-' + COVERB_VERB + '-lex := lv-' + COVERB_VERB + '-lex & lv-tr-lex.'
+LV_TR_VERB_ITEM = TRANSITIVE + '-' + COVERB_VERB + '-lv-lex := ' + COVERB_VERB + '-lv-lex & ' + TRANSITIVE + '-lv-lex.'
 
 ######################################################################
 # customize_light_verb()
@@ -81,11 +86,12 @@ def init_light_verb_hierarchy(ch, hierarchies):
         hier = TDLHierarchy(LVC_TYPE)
 
         hier.add(LV_NONE_TYPE, LVC_TYPE)
+        hier.add(LV_ALL_TYPE, LVC_TYPE)
 
         if ch.get('lvc-it') == ON:
-            hier.add(LV_ALL_TYPE + '-it', LVC_TYPE)
+            hier.add(LV_ALL_TYPE + '-' + INTRANSITIVE, LV_ALL_TYPE)
         if ch.get('lvc-tr') == ON:
-            hier.add(LV_ALL_TYPE + '-tr', LVC_TYPE)
+            hier.add(LV_ALL_TYPE + '-' + TRANSITIVE, LV_ALL_TYPE)
 
         for lv in ch.light_verbs():
             hier.add('lv-' + lv[0], lv[1])
@@ -104,13 +110,13 @@ def customize_light_verb(mylang, hierarchies):
 def customize_lvc(mylang, ch, hierarchies, rules):
     if ch.get('coverb-n') == ON or ch.get('coverb-v') == ON :
         # Make sure regular nouns (non-coverbs) can't be used in LVC constructions
-        mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT.HEAD.LVC lv-none ].')
+        # mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT.HEAD.LVC lv-none ].')
 
         # Create lexical types for all the defined light verb types
-        create_lv_lex_types(mylang, ch, hierarchies)
+        # create_lv_lex_types(mylang, ch, hierarchies)
 
         # Create lexical types for all the defined coverb types
-        create_coverb_lex_types(mylang, ch, hierarchies)
+        # create_coverb_lex_types(mylang, ch, hierarchies)
 
         # Create/modify phrasal types for lvcs
         create_lvc_phrase_types(mylang, ch, hierarchies, rules)
@@ -208,15 +214,21 @@ def add_lvc_phrase(mylang, ch, lv_cv, cv_lv, head_type_suffix, rules):
         # coverb doesn't have to be immediately adjacent to light verb
         pass
 
+
+
+
+
+
+# in lexical_items.py now
 def lv_id(item, cv_pos, val_type, with_name=True):
     """Return the identifier for a light verb lexical item."""
 
     identifier = 'lv-'
 
     if val_type == 'coverb-only':
-        identifier += 'it-'
+        identifier += INTRANSITIVE + '-'
     elif val_type == 'coverb-1comp':
-        identifier += 'tr-'
+        identifier += TRANSITIVE + '-'
     
     identifier += cv_pos + '-lex'
 
@@ -225,7 +237,7 @@ def lv_id(item, cv_pos, val_type, with_name=True):
     else:
         return identifier
 
-# for lexical_items.py
+# in lexical_items.py now
 def customize_light_verbs(mylang, ch, lexicon, hierarchies):
     if ch.get('coverb-n') == ON or ch.get('coverb-v') == ON :
         # Lexical entries
@@ -236,6 +248,7 @@ def customize_light_verbs(mylang, ch, lexicon, hierarchies):
 
         print('---added LVs to lexicon')
 
+# in lexical_items.py now
 def create_lv_lex_entries(ch, lexicon):
     """
     Create light verb lexical entries and add them to the lexicon.
@@ -266,16 +279,78 @@ def create_lv_lex_entries(ch, lexicon):
         
         lv_name_set.add(get_name(lv))
 
+# in lexical_items.py now
+def get_rule_dtrs(ch):
+    it_rule_dtrs = set()
+    tr_rule_dtrs = set()
+
+    pch = customize_lexical_rules(ch)
+
+    for pc in sorted(list(pch.nodes.values()), key=lambda x: x.tdl_order):
+        # only looking at lexical types
+        if not pc.is_lex_rule:
+            for lt in list(pc.nodes.values()):
+                if lt.supertypes is not None and len(lt.supertypes) > 0:
+                    if INTRANSITIVE + '-' in lt.identifier() or 'intransitive-' in lt.identifier():
+                        it_rule_dtrs = it_rule_dtrs.union(lt.supertypes)
+                    if TRANSITIVE + '-' in lt.identifier() or 'transitive-' in lt.identifier():
+                        tr_rule_dtrs = tr_rule_dtrs.union(lt.supertypes)
+    
+    both_rule_dtrs = it_rule_dtrs.intersection(tr_rule_dtrs)
+    it_rule_dtrs.difference_update(both_rule_dtrs)
+    tr_rule_dtrs.difference_update(both_rule_dtrs)
+
+    both_rule_dtrs = sorted(list(both_rule_dtrs))
+    it_rule_dtrs = sorted(list(it_rule_dtrs))
+    tr_rule_dtrs = sorted(list(tr_rule_dtrs))
+
+    return both_rule_dtrs, it_rule_dtrs, tr_rule_dtrs
+
+# in lexical_items.py now
+def add_lv_lex_morphotactic_rules(mylang, type_name, rule_dtrs):
+    if len(rule_dtrs) > 0:
+        typedef = '' + type_name + ' := '
+        for rule_dtr in rule_dtrs:
+            typedef += rule_dtr + ' & '
+        typedef = typedef[0:-3] + '.'
+        mylang.add(typedef, section='otherlex')
+
+# in lexical_items.py now
 def create_lv_lex_types(mylang, ch, hierarchies):
     mylang.add_literal(';;; Light Verbs', section='otherlex')
 
-    mylang.add(LV_ITEM, section='otherlex')
+    verb_case = get_verb_case(ch)
+
+    both_rule_dtrs, it_rule_dtrs, tr_rule_dtrs = get_rule_dtrs(ch)
+
+    # add basic lv-lex item
+    mainorverbtype = main_or_verb(ch)
+    mylang.add(LV_ITEM.replace('<TEMP>', mainorverbtype), section='otherlex')
+
+    # Add morphotactic rules to lv-lex
+    add_lv_lex_morphotactic_rules(mylang, 'lv-lex', both_rule_dtrs)
 
     if ch.get('lvc-it') == ON:
         mylang.add(LV_IT_ITEM, section='otherlex')
-    
+
+        # if not ch.get('case-marking') == 'none':
+        #     typedef = 'lv-it-lex := [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CAT.HEAD.CASE ' + verb_case['intran']['S'] + ' ].'
+        #     mylang.add(typedef)
+
+        # Add morphotactic rules to lv-it-lex
+        add_lv_lex_morphotactic_rules(mylang, 'lv-it-lex', it_rule_dtrs)
+
     if ch.get('lvc-tr') == ON:
         mylang.add(LV_TR_ITEM, section='otherlex')
+
+        # if not ch.get('case-marking') == 'none':
+        #     typedef = 'lv-tr-lex := [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CAT.HEAD.CASE ' + verb_case['tran']['A'] + ' ].'
+        #     mylang.add(typedef, section='otherlex')
+        #     typedef = 'lv-tr-lex := [ SYNSEM.LOCAL.CAT.VAL.COMPS.REST.FIRST.LOCAL.CAT.HEAD.CASE ' + verb_case['tran']['O'] + ' ].'
+        #     mylang.add(typedef, section='otherlex')
+
+        # Add morphotactic rules to lv-tr-lex
+        add_lv_lex_morphotactic_rules(mylang, 'lv-tr-lex', tr_rule_dtrs)
 
     if ch.get('coverb-n') == ON:
         mylang.add(LV_NOUN_ITEM, section='otherlex')
@@ -300,35 +375,23 @@ def create_lv_lex_types(mylang, ch, hierarchies):
         val_types = lv.get('valence').split(', ')
         cv_poses = lv.get('cv-type').split(', ')
 
+        # TODO i think i have a func for getting the type name
         for val_type in val_types:
+            type_name = ""
+            if val_type == 'coverb-only':
+                type_name = 'lv-' + name + '-' + INTRANSITIVE
+            if val_type == 'coverb-1comp':
+                type_name = 'lv-' + name + '-' + TRANSITIVE
+
             for cv_pos in cv_poses:
-                typedef = lv_id(lv, cv_pos, val_type) + ' := ' + lv_id(lv, cv_pos, val_type, False) + ' & \
-                    [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.LVC ' + TDLencode(name) + ' ].'
+                lvtype = lv_id(lv, cv_pos, val_type)
+                typedef = lvtype + ' := ' + lv_id(lv, cv_pos, val_type, False) + ' & \
+                    [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.LVC ' + TDLencode(type_name) + ' ].'
                 mylang.add(typedef, section='otherlex')
 
-def coverb_id(cv_pos, lv_type):
-    """Return the identifier for a coverb lexical item."""
+                features.customize_feature_values(mylang, ch, hierarchies, lv, lvtype, 'lv')
 
-    return 'coverb-' + cv_pos + '-' + lv_type + '-lex'
-
-def customize_coverbs(mylang, ch, lexicon, hierarchies):
-    if ch.get('coverb-n') == ON or ch.get('coverb-v') == ON :
-        # Lexical entries
-        lexicon.add_literal(';;; Coverbs')
-
-        if ch.get('coverb-n') == ON:
-            # Create lexical entries for all the defined coverb types
-            lexicon.add_literal('; Noun Coverbs')
-            cv_names_to_types = create_coverb_lex_entries(ch, lexicon, COVERB_NOUN, hierarchies)
-            cleanup_coverb_lex_entries(lexicon, COVERB_NOUN, hierarchies, cv_names_to_types)
-
-        if ch.get('coverb-v') == ON :
-            lexicon.add_literal('; Verb Coverbs')
-            cv_names_to_types = create_coverb_lex_entries(ch, lexicon, COVERB_VERB, hierarchies)
-            cleanup_coverb_lex_entries(lexicon, COVERB_VERB, hierarchies, cv_names_to_types)
-        
-        print('---added coverbs to lexicon')
-
+# in lexical_items.py now
 def create_coverb_lex_types(mylang, ch, hierarchies):
     """
     Create coverb lexical types and add them to mylang.tdl.
@@ -350,26 +413,37 @@ def create_coverb_lex_types(mylang, ch, hierarchies):
         mylang.add(COVERB_VERB_ITEM, section='otherlex')
         add_coverb_lex_type(mylang, ch, hierarchies, COVERB_VERB)
 
+# not used anymore
 def add_coverb_lex_type(mylang, ch, hierarchies, cv_pos):
     """
     Create coverb lexical types for each LVC type and add them to mylang.tdl.
-        Only add if the LV type can take the cover part of speech
+        Only add if the LV type can take the coverb part of speech
     """
     lvs_for_pos = set()
     for lv in ch.get('lv'):
         name = lv.get('name')
-        cv_poses_from_ch = lv.get('cv-type').split(', ')
-        if cv_pos in cv_poses_from_ch:
-            lvs_for_pos.add('lv-' + name)
+        val_types = lv.get('valence').split(', ')
+        for val_type in val_types:
+            type_name = ""
+            if val_type == 'coverb-only':
+                type_name = name + '-' + INTRANSITIVE
+            if val_type == 'coverb-1comp':
+                type_name = name + '-' + TRANSITIVE
+
+            cv_poses_from_ch = lv.get('cv-type').split(', ')
+            if cv_pos in cv_poses_from_ch:
+                lvs_for_pos.add('lv-' + type_name)
 
     for lv_type in hierarchies[LVC_TYPE].hierarchy:
-        typedef = 'coverb-' + cv_pos + '-lex-' + lv_type[0] + ' := coverb-' + cv_pos + '-lex & \
+        cvtype = 'coverb-' + cv_pos + '-' + lv_type[0] + '-lex'
+        typedef = cvtype + ' := coverb-' + cv_pos + '-lex & \
             [ SYNSEM.LOCAL.CAT.HEAD.LVC ' + lv_type[0] + ' ].'
 
         if lv_type[0] == LV_ALL_TYPE:
             mylang.add(typedef, section='otherlex')
+            # features.customize_feature_values(mylang, ch, hierarchies, ?, cvtype, 'coverb')
         elif not lv_type[0] == LV_NONE_TYPE:
-            if hierarchies[LVC_TYPE].subtypes[lv_type[0]]:
+            if hierarchies[LVC_TYPE].subtypes and hierarchies[LVC_TYPE].subtypes[lv_type[0]]:
                 subtypes = hierarchies[LVC_TYPE].subtypes[lv_type[0]]
                 is_in_lvs = False
                 for subtype in subtypes:
@@ -378,8 +452,34 @@ def add_coverb_lex_type(mylang, ch, hierarchies, cv_pos):
                 if is_in_lvs:
                     mylang.add(typedef, section='otherlex')
             elif lv_type[0] in lvs_for_pos:
-                    mylang.add(typedef, section='otherlex')
+                mylang.add(typedef, section='otherlex')
 
+# in lexical_items.py now
+def coverb_id(cv_pos, lv_type):
+    """Return the identifier for a coverb lexical item."""
+
+    return 'coverb-' + cv_pos + '-' + lv_type + '-lex'
+
+# in lexical_items.py now
+def customize_coverbs(ch, lexicon, hierarchies):
+    if ch.get('coverb-n') == ON or ch.get('coverb-v') == ON :
+        # Lexical entries
+        lexicon.add_literal(';;; Coverbs')
+
+        if ch.get('coverb-n') == ON:
+            # Create lexical entries for all the defined coverb types
+            lexicon.add_literal('; Noun Coverbs')
+            cv_names_to_types = create_coverb_lex_entries(ch, lexicon, COVERB_NOUN, hierarchies)
+            cleanup_coverb_lex_entries(lexicon, COVERB_NOUN, hierarchies, cv_names_to_types)
+
+        if ch.get('coverb-v') == ON :
+            lexicon.add_literal('; Verb Coverbs')
+            cv_names_to_types = create_coverb_lex_entries(ch, lexicon, COVERB_VERB, hierarchies)
+            cleanup_coverb_lex_entries(lexicon, COVERB_VERB, hierarchies, cv_names_to_types)
+        
+        print('---added coverbs to lexicon')
+
+# in lexical_items.py now
 def create_coverb_lex_entries(ch, lexicon, cv_pos, hierarchies):
     """
     Create coverb lexical entries and add them to the lexicon.
@@ -408,9 +508,9 @@ def create_coverb_lex_entries(ch, lexicon, cv_pos, hierarchies):
                         for val_type in val_types.split(', '):
                             cv_lv_name = ''
                             if val_type == 'coverb-only':
-                                cv_lv_name = LV_ALL_TYPE + '-it'
+                                cv_lv_name = LV_ALL_TYPE + '-' + INTRANSITIVE
                             if val_type == 'coverb-1comp':
-                                cv_lv_name = LV_ALL_TYPE + '-tr'
+                                cv_lv_name = LV_ALL_TYPE + '-' + TRANSITIVE
 
                             coverb_type = coverb_id(cv_pos, cv_lv_name)
                             typedef = TDLencode(name) + ' := ' + coverb_type + ' & \
@@ -423,9 +523,9 @@ def create_coverb_lex_entries(ch, lexicon, cv_pos, hierarchies):
                         for val_type in val_types.split(', '):
                             val_type_suffix = ''
                             if val_type == 'coverb-only':
-                                val_type_suffix = '-it'
+                                val_type_suffix = '-' + INTRANSITIVE
                             elif val_type == 'coverb-1comp':
-                                val_type_suffix = '-tr'
+                                val_type_suffix = '-' + TRANSITIVE
 
                             lv_type_list = []
 
@@ -451,6 +551,7 @@ def create_coverb_lex_entries(ch, lexicon, cv_pos, hierarchies):
                             lv_type_set.add(cv_lv_name)
     return cv_names_to_types
 
+# NOT USED ANYMORE
 def cleanup_coverb_lex_entries(lexicon, cv_pos, hierarchies, cv_names_to_types):
     """
     For all supertypes associated with a lexical entry, if the subtypes for that
@@ -462,6 +563,7 @@ def cleanup_coverb_lex_entries(lexicon, cv_pos, hierarchies, cv_names_to_types):
                 if coverb_id(cv_pos, supertype) in cv_names_to_types[name]:
                     search_cv_subtypes(lexicon, cv_pos, hierarchies, subtypes, name)
 
+# NOT USED ANYMORE
 def search_cv_subtypes(lexicon, cv_pos, hierarchies, curr_subtypes, name):
     """
     Recursively go through subtypes of subtypes and remove them if necessary.
