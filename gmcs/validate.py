@@ -18,6 +18,7 @@ import gmcs.linglib.morphotactics
 import gmcs.linglib.negation
 import gmcs.linglib.lexicon
 import gmcs.linglib.clausalcomps
+from gmcs.linglib.light_verb_constructions import validate_lvc
 
 
 ######################################################################
@@ -1949,6 +1950,7 @@ def validate(ch, extra=False):
     validate_hierarchy(ch, vr)
     validate_arg_opt(ch, vr)
     validate_wh_ques(ch, vr)
+    validate_lvc(ch, vr)
 
     if extra:
         validate_extra_constraints(ch, vr)

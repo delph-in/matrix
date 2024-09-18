@@ -530,7 +530,9 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
     # save the hierarchies to the choices object
     ch['hierarchies'] = hierarchies
 
-    # need to add lexrules for coverbs and then add them to lexicon.py
+    # TODO need to add lexrules for coverbs and then add them to lexicon.py
+    # TODO need to make sure that inflection isn't added to the
+    #   noun/verb lexical entries of coverb-only coverbs
     add_lexrules_methods = [case.add_lexrules,
                             argument_optionality.add_lexrules,
                             valence_change.add_lexrules,
