@@ -2047,25 +2047,28 @@ Label "</div>"
 Section nominalclause "Nominalized Clauses"
 
 Label "<p>If your language uses affixal nominalization define the nomminalization strategies here.
-Once defined a nominalization feature will become available to select on the morphology page.
+Once defined a nominalization feature will become available to select on the Morphology page.
 The different values of this feature correspond to the names of all defined nominalization strategies.
-To define a nominalization affix create a lexical rule type on the morphology page
+To define a nominalization affix create a lexical rule type on the Morphology page
 and mark the rule with the desired nominalization strategy. Each nominalization affix
-should only use a single nominalization strategy.
+should only use a single nominalization strategy.</p>"
 
-The nominalization feature will also be available on both the clausal complement and clausal modfier pages allowing
-nomminalization strategies to serve as markers of these constructions. A NMZ 
-feature will also become available on the Morphology and Lexicon pages. Specifiying 
-that a verb's argument is [NMZ +] indicates that the argument must be nominalized.
-Specifying that a verb's argument is [NMZ -] indicates that the argument cannot be nominalized.</p>"
+
+Label "<p>The nominalization feature will also be available on both the Clausal Complements and Clausal Modfiers pages allowing
+both of these constructions to be marked by nominalization.</p>"
+
+Label "<p>In addition to the nominalization feature, an NMZ feature will become available on the Morphology, Lexicon and Coordination pages. 
+Specifiying  that a verb's argument is [NMZ +] indicates that the argument must be nominalized.
+Specifying that a verb's argument is [NMZ -] indicates that the argument cannot be nominalized.
+The NMZ feature can be used on the coordination page within feature resolution patterns.</p>"
 
 Label "<p> By default all arguments in nominalized clauses are treated as optional. 
-If a nominalization strategy requires that one or both arguments are obligatory, check the box below.<p>
+If a nominalization strategy requires that one or both arguments are obligatory, check the box below.
 Then on the Morphology
 page, for each affix that uses a nominalization strategy specifiy that an argument must 
-appear by selecting OPT - on that argument. The only exception to this are optional arguments
+appear by selecting [OPT -] on that argument. The only exception to this are optional arguments
 marked by possessive strategies (only relevant for poss-acc, erg-poss, or nominal 
-nominalization strategies) which should be dealt with by answering the relevant questions
+nominalization strategies) which should be dealt with by answering the relevant question
 on this page.</p>"
 
 Check mandatory-arg "Mandatory arguments" "" "At least one nominalization strategy has arguments which must overtly appear<br>"
@@ -2079,22 +2082,23 @@ constructions proposed by Koptjevskaja-Tamm (1993). The typology organizes ANCs 
 based on how the arguments referring to the agent and the patient of the underlying verb are
 marked. These four types are sentential, poss-acc, erg-poss, and nominal. Descriptions of these 
 four types as well as two additional categories (alternative-sentential and all-comps) which
-serve as slight extensions are given below. Each nominalization should fall into one of 
+serve as slight extensions are given below. Each nominalization strategy should fall into one of 
 these categories according to the expected marking behavior of its arguments. In the 
-descriptions below A (agent) refers to the argument marked as the semantic agent while 
-P (patient) refers to the argument marked as the semantic patient.
+descriptions below A (agent) refers to the more agent-like argument while 
+P (patient) refers to the more patient-like argument. Examples of all six nominalization strategy
+types are given on the documentation page.
 
 <p> </p>
 
 <b>sentential:</b> All arguments are marked in the same way as they would be for the underlying verb.<br>
 <b>alternative-sentential:</b> The P is marked in the same as the original verb, 
-but the A is marked differently. This can be either due to being marked with a different case or a different adposition.
-Cruically, this marking strategy is not covered by any of the possessive strategies in the language.<br>
+but the A is marked differently. The A can either take a distinct case-marking or be marked with a specific adposition. 
+Cruically, the marking of the A is not covered by any of the possessive strategies in the language.<br>
 <b>all-comps:</b> Both arguments of the nominalized verb are treated as complements. 
-Neither argument is marked with a possessive strategy.<br> 
-<b>poss-acc:</b> The A of intransitive and transitive verbs are marked in the same way as possessors in a specific adnominal possessive strategy, the P is marked as it would be for the non-nominilized verb.<br>
-<b>erg-poss:</b> The A of intransitive verbs and the P of transitive verbs are marked in the same way as possessors in a specific adnominal possessive strategy, the A of transitive verbs uses an oblique verbal marking pattern.<br>
-<b>nominal:</b> The A of intransitive and transitive verbs are marked in the same way as possessors in a specific adnominal possessive strategy, the P is marked in manner typical of nominal arguments." 
+In this type, neither argument can be marked with a possessive strategy.<br> 
+<b>poss-acc:</b> The A of intransitive and transitive verbs is marked in the same way as possessors in a specific adnominal possessive strategy, the P is marked as it would be for the non-nominilized verb.<br>
+<b>erg-poss:</b> The A of intransitive verbs and the P of transitive verbs is marked in the same way as possessors in a specific adnominal possessive strategy, the A of transitive verbs uses an oblique verbal marking pattern.<br>
+<b>nominal:</b> The A of intransitive and transitive verbs is marked in the same way as possessors in a specific adnominal possessive strategy, the P is marked in manner typical of nominal arguments." 
 
 
 Label "<p></p>"
@@ -2156,30 +2160,29 @@ Label "<div id='alt-sent{i}'' style='display:none'>"
 Label "<p> The A for this strategy is the subject and the P is the 
 object. Mandatory arguments can be specified on the Morphology page by selecting [OPT -]
 on the subject and/or object for lexical rule types that use this nominalization strategy.
-All constraints on the object will be identical to those on the object of 
-the underlying verb. Additional feature constraints (and whether the argument
-can be marked by a semantically empty adposition) can be specified for the subject on
-lexical rule types that use this nominalization strategy on the Morphology page.<br></p>"
+All other constraints on the object will be identical to those on the object of 
+the underlying verb. Additional feature constraints (case,form) can be specified for the subject on
+the Morphology page.<br></p>"
 
 Label "</div>"
 
 Label "<div id='all-comps{i}'' style='display:none'>"
 
-Label "<p> The A and P for this strategy are the first and second
+Label "<p> The A and P for this strategy are the first (object) and second (second object)
 complements. Whether the first or second complement is the A or P for 
 transitive nominalized verbs can be selected below. Mandatory arguments can be specified on 
 the Morphology page by selecting [OPT -] on the object and/or second object 
 for lexical rule types that use this nominalization strategy.
-Additional feature constraints can be specified on the object and 
-second object for lexical rule types that use this nominalization strategy on the Morphology page.
-If this strategy is also selected as acting on intransitive verbs (see how 
+Additional feature constraints (case,form) can be specified on the object and 
+second object on the Morphology page.
+If this strategy is selected as acting on both intransitive and transitive verbs (see how 
 to handle strategies which act on both intransitive and transitive verbs below), the single argument
 of the intransitive nominalized verb will take the same feature constraints 
-as those placed on the object of the transitive lrt.<br></p>"
+as those placed on the first complement (the object) of the transitive nominalized verb.<br></p>"
 
 
-Radio all_comps_arg_order "All_comps_argument_order {i}" "<br>If all-comps is selected, for transitive verbs,
-which argument serves as the first complement to the nominalized verb: the more agent-like or the more patient-like argument<br>" ""
+Radio all_comps_arg_order "All_comps_argument_order {i}" "<br><b>For transitive verbs,
+which argument serves as the first complement to the nominalized verb: the more agent-like or the more patient-like argument?</b><br>" ""
     . agent "agent-like" "" "Agent-like<br>"
     . patient "patient-like" "" "Patient-like<br>"
 
@@ -2190,7 +2193,7 @@ Label "<div id='poss-acc{i}'' style='display:none'>"
 Label "<p> The A for this strategy is the possessor and the P is the object. 
 Mandatory objects can be specified on the Morphology page by selecting [OPT -]
 on the object for lexical rule types that use this nominalization strategy.
-Mandatory possessors can be specified by answering the questions below.
+Mandatory possessor arguments can be specified by answering the questions below.
 All constraints on the object will be identical to those on the object of 
 the underlying verb. The A argument will be marked using one of the possessive 
 strategies selected at the bottom of the page.<br></p>"
@@ -2199,13 +2202,13 @@ Label "</div>"
 
 Label "<div id='erg-poss{i}'' style='display:none'>"
 
-Label "<p> The A for this strategy is the object and the P is the possessor. 
+Label "<p> The A argument for this strategy is the object for transitive verbs and the possessor
+for intransitive verbs. For transitive verbs, the P argument is the possessor. 
 Mandatory objects can be specified on the Morphology page by selecting [OPT -]
 on the object for lexical rule types that use this nominalization strategy.
-Mandatory possessors can be specified by answering the questions below.
-Additional feature constraints (and whether the argument
-can be marked by a semantically empty adposition) can be specified for the object on
-lexical rule types that use this nominalization strategy on the Morphology page.
+Mandatory possessors can be specified by answering the question below.
+Additional feature constraints (case,form) can be specified for the object 
+on the Morphology page.
 The P argument for transitive verbs and the A argument for intransitive verbs
 will be marked using one of the possessive strategies selected at the bottom of the page.<br></p>"
 
@@ -2216,10 +2219,8 @@ Label "<div id='nomn{i}'' style='display:none'>"
 Label "<p> The A for this strategy is the possessor and the P is the object. 
 Mandatory objects can be specified on the Morphology page by selecting [OPT -]
 on the object for lexical rule types that use this nominalization strategy.
-Mandatory possessors can be specified by answering the questions below.
-Additional feature constraints (and whether the argument
-can be marked by a semantically empty adposition) can be specified for the object on
-lexical rule types that use this nominalization strategy on the Morphology page.
+Mandatory possessors can be specified by answering the question below.
+Additional feature constraints (case,form) can be specified for the object on the Morphology page.
 The A argument will be marked using one of the possessive strategies selected at the bottom of the page.<br></p>"
 
 Label "</div>"
@@ -2228,8 +2229,6 @@ Label "<div id='sent-strat{i}'' style='display:none'>"
 
 Radio nmzRel "Nominalization Strategy {i} Relation" "<br><br><b>Is the nominalization syntactic
 only or should it also be reflected in the semantics?</b><br>
-  (Note: option of having nominalization not appear in the semantics is only available for
-         sentential and alternative-sentential nominalization).
   </b><br>" ""
     . no "No" "" "Nominalization is syntactic only<br>"
     . yes "Yes" "" "Nominalization should be reflected in the semantics<br>"
@@ -2238,21 +2237,18 @@ Label "</div>"
 
 Label "<div id='use-poss-strat{i}'' style='display:none'>"
 
-Label "<p> Check the box below if the argument marked by a possessive strategy 
-is mandatory (this argument must be present in the full nominalized clause).<br></p>"
+Label "<p><b> Check the box below if the argument marked by a possessive strategy 
+is mandatory (this argument must be present in the full nominalized clause).</b><br></p>"
 
 Check mand-spr "Mandatory Specifier" "" "The argument marked by the possessive strategy or 
-strategies listed above must appear in the nominalized clause.<br>"
+strategies listed below must appear in the nominalized clause.<br>"
 
 Label "<p></p>"
 
 Label "<p>single argument marking" "" "For strategies acting on transitive verbs, when only a single 
-argument appears (either the A or the P), check the box below if the argument is always marked using a possessive strategy.
+argument appears (either the A or the P), check the box below if the argument is always marked using a possessive strategy (the single-possessor analysis).
 This is despite how this same argument would be marked if it appeared alongside the other argument.
-For example, in Russian whenever a P or an A appears alone with a nominalized verb
-they take genitive case (the same way possessors are marked). However, when both 
-the A and P appear with the nominalized verb, only the P takes 
-genitive case while the A takes instrumental case (Comrie, 1976).<br></p>"
+This single argument will be ambigous between a patient-like and agent-like interpretation.<br></p>"
 
 Check single-arg "Single argument marking" "" "A single argument is always marked as a posssessor<br>"
 
@@ -2262,12 +2258,7 @@ Label "<p></p>"
 
 Label "<div id='has-dets{i}'' style='display:none'>"
 
-Label "<p> If the lanuage has determiners, specifiy how the nominalized verb resulting from this strategy interacts with determiners.
-For poss-acc/erg-poss/nominal strategies this refers to the behavior when the argument
-marked by a possessive strategy does not appear in the nominalized clause.
-For example, in the English example 'the running of the race', the nominalized 
-verb 'running' must obliagatorily appear with a determiner when the NP 
-corresponding to an agent-like arugment is dropped ('the rabbit's running of the race').</p>"
+Label "<p><b> If a lanuage has determiners, specifiy how the nominalized verb resulting from this strategy interacts with determiners.</b></p>"
 
 
 Radio det "Nominalization Strategy {i} determiner" "<p>For nominalized verbs of this type, a determiner is: " "</p>"
@@ -2279,11 +2270,11 @@ Label "</div>"
 
 Label "<p></p>"
 
-Label "<p> Specifiy whether this strategy acts on intransitive or transitive verbs.
+Label "<p> <b>Specifiy whether this strategy acts on intransitive or transitive verbs.</b>
            If both intransitive and transitive verbs are selected, only create 
-           an lrt on the Morphology page corresponding to the transitive verb,
+           an LRT on the Morphology page corresponding to the transitive verb,
            but which can still take both intransitive and transitive verbs as input.
-           An intransitive lrt will be created automatically based on the transitive one.<br>"
+           An intransitive LRT will be created automatically based on the transitive one.<br>"
 
 Label "<p></p>"
 
@@ -2293,7 +2284,7 @@ Label "<p></p>"
 Label "<p></p>"
 
 
-Label "<br>In this strategy, the nominalized verb can be modified by<br>"
+Label "<br><b>In this strategy, the nominalized verb can be modified by</b><br>"
 	Check adj "Adjectives" "" "Adjectives<br>" 
 	Check adv   "Adverbs" "" "Adverbs"
 
@@ -2308,13 +2299,13 @@ Label "<p> A different word order from that in finite clauses can be selected
 for poss-acc, erg-poss, or nominal nominalization strategies. 
 However, the same alternative word order must be shared by all three of these types. For example,
 if the finite word order is SOV, and a language has both poss-acc and erg-poss nominalization strategies, 
-it is possible to specify that these two types should use OSV word order. 
+it is possible to specify that these two types should both use OSV word order. 
 However, it would not be possible for the poss-acc nominalization strategy to use SOV 
-word order and the erg-poss strategy to  use OSV word order. </p>"
+word order and the erg-poss strategy to use OSV word order. </p>"
 
 
 Label "<p></p>"
-Radio same-word-order "noun vs verb word order" "For poss-acc, erg-poss, or nominal nominalization strategies, do nominalized clauses have the same word as regular verb phrases?<br>" ""
+Radio same-word-order "noun vs verb word order" "<b>For poss-acc, erg-poss, or nominal nominalization strategies, do nominalized clauses have the same word as regular verb phrases?</b><br>" ""
 . yes "Yes" "" "Yes<br>" "toggle_element.call(this, 'same-wo', 'on');toggle_element.call(this, 'diff-wo', 'off');"
 . no "No" "" "No<br>" "toggle_element.call(this, 'same-wo', 'off');toggle_element.call(this, 'diff-wo', 'on');"
 
@@ -2323,8 +2314,9 @@ Label "<p></p>"
 
 Label "<div id='diff-wo' style='display:none'>"
 
-Radio nmz-clause-word-order "nominalized clause word order" "Please indicate which pattern best describes the word order of your language in nominalized clauses.
-Here the subject should map to the semantic agent and the object to the semantic patient:<br>" "</p>"
+Radio nmz-clause-word-order "nominalized clause word order" "<b>Please indicate which pattern best describes the word order of nominalized clauses in a language.
+Here the subject (S) should map to the semantic agent, the object (O) to the semantic patient, and
+the verb (V) to the nominalized verb:</b><br>" "</p>"
 . sov "Subject, Object, Nominalized verb" "" "SOV<br>"
 . svo "Subject, Nominalized verb, Object" "" "SVO<br>"
 . vso "Nominalized verb, Subject, Object" "" "VSO<br>"
@@ -2340,9 +2332,9 @@ Here the subject should map to the semantic agent and the object to the semantic
 
 Label "<p></p>"
 
-Label "<p> Please select which adnominal possessive strategies can be used when combining 
-the nominalized verb with a possessor. For nominal nominaliization strategies, this should 
-be the strategy used on the A, even if the P is also marked as a possessor:</p>"
+Label "<p><b> Please select which possessive strategies can be used to mark a syntactic 
+possessor in nominalized clauses.</b> For nominal nominalization strategies, this should 
+only include strategies used on the A, even if the P is also marked as a syntactic possessor:</p>"
 
     BeginIter nmz_poss_strat{l} "a Possessive strategy"
 
@@ -2355,10 +2347,10 @@ be the strategy used on the A, even if the P is also marked as a possessor:</p>"
 Radio non_sent_sem "Nominalization Strategy {i} Relation" "<br><br><b>When the nominalized verb appears with a syntactic possessor the semantic represenation should: </b><br>
   </b><br>" ""
     . both  "both" "" "Include both the possessive and verbal semantics (the argument marked by the possessive strategy will be interpretated as both a verbal argument and a possessor)<br>" 
-    . verb-only "verb-only" "" "Include only the verbal semantics (the argument marked by the possessive strategy will be represented 
+    . verb-only "verb-only" "" "Include only the verbal semantics (the argument marked by the possessive strategy will be interpretated
 	as only a verbal argument)<br>"
-    . noun-only "noun-only" "" "Include only the possessive semantics (the argument marked by the possessive strategy will be represented 
-	as just the possessor)<br>"
+    . noun-only "noun-only" "" "Include only the possessive semantics (the argument marked by the possessive strategy will be interpretated 
+	as only the possessor)<br>"
 
 Label "<p></p>"
  
@@ -2367,7 +2359,6 @@ Label "</div>"
 
 Label "<h4>References</h4>"
 Label "<div style=\"font-size:2\">"
-Label "<p>Comrie, Bernard. 1976. The Syntax of Action Nominals: A Cross-Linguistic Study.Lingua, 40. 177-201 </p>" 
 Label "<p>Koptjevskaja-Tamm, Maria. 1993. Nominalizations. London: Routledge.</p>"
 
 Section clausal-comp "Clausal Complements"
