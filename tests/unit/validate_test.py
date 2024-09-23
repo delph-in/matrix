@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+'''
+Run these tests with `python -m tests.unit.validate_test` from the matrix directory.
+'''
 
 import unittest
 from gmcs.choices import ChoicesFile
@@ -290,7 +293,11 @@ class TestValidate(unittest.TestCase):
         # missing answers about particles
         c = ChoicesFile()
         c['q-part'] = 'on'
-        self.assertErrors(c, ['q-part-order', 'q-part-orth'])
+        # missing order and no specified particles
+        self.assertErrors(c, ['q-part-order', 'q-particle'])
+        # missing orth of specified particle
+        c['q-particle1_main'] = 'on' 
+        self.assertErrors(c, ['q-particle'])
 
         # missing or incompatible answers about inversion
         c = ChoicesFile()
@@ -371,6 +378,10 @@ class TestValidate(unittest.TestCase):
         c['has-dets'] = 'no'
         self.assertErrors(c, ['has-dets', 'noun1_det'])
 
+        # question pronoun, but no question constituent question selections
+        c['noun1_inter'] = 'on'
+        self.assertWarnings(c, ['noun1_inter'])
+        
         # Verbs
         c = ChoicesFile()
         c['verb1_dummy'] = 'dummy'
@@ -400,11 +411,6 @@ class TestValidate(unittest.TestCase):
         c['aux1_sem'] = ''
         c['aux1_stem1_pred'] = 'dummy'
         self.assertError(c, 'aux1_sem')
-
-        # Adpositions
-        c = ChoicesFile()
-        c['adp1_dummy'] = 'dummy'
-        self.assertWarning(c, 'adp1_feat1_name')
 
         # Adpositions
         c = ChoicesFile()
@@ -443,7 +449,7 @@ class TestValidate(unittest.TestCase):
                 #  self.assertErrors(c, [pcprefix + '-pc1_lrt1_feat1_name',
                 #                        pcprefix + '-pc1_lrt1_feat1_value'])
                 #  if pcprefix == 'verb':
-                #    self.assertError(c, pcprefix + '-pc1_lrt1_feat1_head')
+                #    self.assertError(c, pcprefix + '-pc1_lrt1_feat1_head')             
 
     def test_features(self):
         # try a bad feature and value everywhere
@@ -455,6 +461,24 @@ class TestValidate(unittest.TestCase):
             c[p + '1_feat1_name'] = 'dummy'
             c[p + '1_feat1_value'] = 'dummy'
             self.assertErrors(c, [p + '1_feat1_name', p + '1_feat1_value'])
+            
+    
+        # test features whose categories do not match lrt feature head
+        for lt in ['verb-pc1_lrt' , 'adj-pc1_lrt']: 
+            c = ChoicesFile()
+            feature_name = 'feat1'
+            for head in ['subj', 'obj', 'noun']:
+                c[lt + '1_feat1_name'] = feature_name
+                c['feature1_name'] = feature_name
+                c['feature1_cat'] = 'verb'
+                c[lt + '1_feat1_head'] = head
+                self.assertError(c, lt + '1_feat1_head') 
+            for head in ['verb']:
+                c[lt + '1_feat1_name'] = feature_name
+                c['feature1_name'] = feature_name
+                c['feature1_cat'] = 'noun'
+                c[lt + '1_feat1_head'] = head
+                self.assertError(c, lt + '1_feat1_head')   
 
     def test_argopt(self):
         c = ChoicesFile()
@@ -464,3 +488,6 @@ class TestValidate(unittest.TestCase):
         self.assertErrors(c, ['subj-mark-drop', 'subj-mark-no-drop',
                               'obj-mark-drop', 'obj-mark-no-drop',
                               'context1_feat1_head'])
+
+if __name__ == '__main__':
+    unittest.main()

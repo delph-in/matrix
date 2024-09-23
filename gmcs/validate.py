@@ -1020,6 +1020,10 @@ def validate_yesno_questions(ch, vr):
                    'for yes-no questions, you must specify ' + \
                    'where the question particle appears.'
             vr.err('q-part-order', mess)
+        if not ch.get('q-particle'):
+            mess = 'If you chose the question particle strategy for yes-no questions, ' + \
+                   'you must specify at least one question particle.'
+            vr.err('q-particle', mess)
         for qpart in ch.get('q-particle'):
             if not qpart['orth']:
                 mess = 'If you chose the question particle strategy ' + \
@@ -1283,6 +1287,46 @@ def validate_features(ch, vr):
                     value_list += \
                         [[feat.full_key + '_value',
                             feat.get('name'), feat.get('value')]]
+                            
+                    if 'name' not in feat:
+                        vr.err(feat.full_key + '_name',
+                            'You must choose which feature you are specifying.')
+                    if 'value' not in feat:
+                        vr.err(feat.full_key + '_value',
+                            'You must choose a value for each feature you specify.')
+                            
+                    # MTH 2017-11-27: check to make sure that only one evidential value is selected
+                    if feat['name'] == 'evidential' and len(feat.get('value').split(',')) > 1:
+                        vr.err(feat.full_key + '_value',
+                               'Choose only one evidential term.')
+                            
+                    if lrt.full_key.startswith('verb-pc') or \
+                            lrt.full_key.startswith('adj-pc') or \
+                        'is-lrt' in lrt.full_key:
+                        if 'head' not in feat:
+                            vr.err(feat.full_key + '_head',
+                                   'You must choose where the feature is specified.')
+                        elif feat['head'] in ['higher', 'lower'] and not choices.get('scale'):
+                            vr.err(feat.full_key + '_head',
+                                   'To use higher/lower ranked NP, please define a scale on the direct-inverse page.')
+                        elif feat['head'] == 'verb' and (feat.get('name', '') in 'case'):
+                            vr.err(feat.full_key + '_head',
+                                   'This feature is associated with nouns, ' +
+                                   'please select one of the NP options.')
+                        
+                        name = feat['name']
+                        head = feat['head']
+                        other_features = ch.get('feature')          
+                    
+                        for f in list(other_features):
+                            if name == f['name']:
+                                cat = f['cat']
+                                y1 = (cat == 'noun')
+                                y2 = (head in ['subj', 'obj', 'noun'])
+                                if cat == 'noun' and not head in ['subj', 'obj', 'noun']:
+                                    vr.err(feat.full_key + '_head', 'This feature is associated with nouns, please select one of the NP options.')   
+                                if cat == 'verb' and not head in ['verb']:
+                                    vr.err(feat.full_key + '_head', 'This feature is associated with verbs, please select on of the VP options.')
 
     for context in ch.get('context', []):
         for feat in context.get('feat', []):

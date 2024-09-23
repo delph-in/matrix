@@ -1,3 +1,7 @@
+'''
+Run these tests with `python -m tests.unit.choices_test` from the matrix directory.
+'''
+
 import unittest
 from gmcs.choices import ChoicesFile
 from gmcs.choices import ChoicesFileParseError
