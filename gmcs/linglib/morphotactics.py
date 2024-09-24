@@ -1232,32 +1232,6 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
     #  vr.err(lrt.full_key + '_supertypes',
     #         'You must select a supertype for every lexical rule type.')
     # any features on an LR need a name and value (and head for verbs)
-    for feat in lrt.get('feat', []):
-        if 'name' not in feat:
-            vr.err(feat.full_key + '_name',
-                   'You must choose which feature you are specifying.')
-        if 'value' not in feat:
-            vr.err(feat.full_key + '_value',
-                   'You must choose a value for each feature you specify.')
-        # TJT 2014-08-22: check head for adjectives and incorporated stems
-        if lrt.full_key.startswith('verb-pc') or \
-                lrt.full_key.startswith('adj-pc') or \
-            'is-lrt' in lrt.full_key:
-            if 'head' not in feat:
-                vr.err(feat.full_key + '_head',
-                       'You must choose where the feature is specified.')
-            elif feat['head'] in ['higher', 'lower'] and not choices.get('scale'):
-                vr.err(feat.full_key + '_head',
-                       'To use higher/lower ranked NP, please define a scale on the direct-inverse page.')
-            elif feat['head'] == 'verb' and (feat.get('name', '') in 'case'):
-                vr.err(feat.full_key + '_head',
-                       'This feature is associated with nouns, ' +
-                       'please select one of the NP options.')
-
-        # MTH 2017-11-27: check to make sure that only one evidential value is selected
-        if feat['name'] == 'evidential' and len(feat.get('value').split(',')) > 1:
-            vr.err(feat.full_key + '_value',
-                   'Choose only one evidential term.')
 
     # TJT 2015-02-02: Any given LRT should be either inflecting or non-inflecting
     inflecting_count = len([_f for _f in [lri.get(

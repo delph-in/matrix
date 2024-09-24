@@ -3,6 +3,8 @@ from collections import defaultdict
 from gmcs.linglib import case
 #from gmcs.linglib import lexical_items
 from gmcs.utils import get_name
+from gmcs import constants
+from gmcs.constants import MTRX_FRONT
 from gmcs.choices import ChoiceDict
 from gmcs.linglib.lexbase import LexicalType, PositionClass
 from gmcs.linglib.lexbase import ALL_LEX_TYPES
@@ -406,6 +408,12 @@ def validate_lexicon(ch, vr):
             mess = 'A noun defined as %s taking a determiner is unusable %s' + \
                    'without any determiners defined.'
             vr.warn(n.full_key + '_det', mess % message_map[det])
+            
+        q = n.get('inter')
+        wh_q1 = ch.get(MTRX_FRONT)
+        if q == 'on' and (not wh_q1):
+            vr.warn(n.full_key + '_inter', 'A noun defined as a question pronoun is unusable ' + \
+                    'without any constituent question selections.')
 
         for stem in s:
             orth = stem.get('orth')
