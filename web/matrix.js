@@ -1087,7 +1087,7 @@ function aux_fill_pred(name, stem, pos) {
 
 // subpair_matrix_fill_pred is similar to fill pred, except that it uses the matrixorth
 // and matrixpred values. These values distinguish between the subordinator morphemes
-// in the matrix and subordinate clauses in claual modifiers with subordinate pairs
+// in the matrix and subordinate clauses in clausal modifiers with subordinate pairs
 function subpair_matrix_fill_pred(name, pos) {
   var elms = document.getElementsByName(name + '_matrixorth');
   var word = '';
@@ -1562,6 +1562,43 @@ function nav_customize(type) {
 
   f.removeChild(t);
   f.removeChild(i);
+}
+
+// call customize grammar from a subpage with intent to generate test sentences
+function nav_customize_test(type) {
+  var f = document.forms['choices_form'];
+  var elms = document.getElementsByTagName('input');
+  for (var i = 0; i < elms.length; i++) {
+    if (elms[i].name == "subpage" || elms[i].name == "delivery" || elms[i].name == "customize") {
+      f.removeChild(elms[i]);
+    }
+  }
+
+  var t = document.createElement('input');
+  var i = document.createElement('input');
+  var s = document.createElement('input');
+
+  t.id = "delivery";
+
+  t.type = "hidden";
+  i.type = "hidden";
+
+  t.name = "delivery";
+  i.name = "customize";
+  s.name = "sentences";
+
+  t.value = type;
+  i.value = "customize"
+  s.value = "sentences";
+
+  f.appendChild(t);
+  f.appendChild(i);
+  f.appendChild(s);
+  f.submit();
+
+  f.removeChild(t);
+  f.removeChild(i);
+  f.removeChild(s);
 }
 
 function navigate_to_item(item, isMorphology) {

@@ -1220,14 +1220,17 @@ def customize_cops(mylang, ch, lexicon, hierarchies, trigger):
             mylang.add(ctype + ' := ' + stype_def + '.')
 
             for stem in cop.get('stem'):
-                orthstr = orth_encode(stem.get('orth'))
+                orth = stem.get('orth')
+                orthstr = orth_encode(orth)
                 name = stem.get('name')
                 typedef = TDLencode(name) + ' := ' + ctype + ' & \
                         [ STEM < "' + orthstr + '" > ].'
-                lexicon.add(typedef)
-
-                # TODO: Add copula types to trigger.mtr
-
+                                
+                grdef= TDLencode(orth) +'_gr := arg0e_gtr & \
+                            [ CONTEXT [ RELS.LIST < [ PRED "~._a_" ] > ], \
+                                FLAGS.TRIGGER "' + TDLencode(orth) + '" ].'
+                trigger.add(grdef)                
+                lexicon.add(typedef)             
 
 def customize_adpositions(mylang, lexicon, ch, hierarchies):
     mylang.add(lexbase.ADP_LEX)

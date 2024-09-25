@@ -1450,7 +1450,7 @@ class ChoicesFile:
                 if feature['existing'] == 'bool':
                     values = '+|+;-|-'
                 elif feature['existing'] == 'luk':
-                    values = 'na-or-+|na-or-+;na-or--|na-or--;+-or--|+-or--;na|na;+|+;-|-'
+                    values = 'na-or-+|na-or-+;na-or--|na-or--;na|na;+|+;-|-'
 
             geom = ''
             if feat_type == 'head':
