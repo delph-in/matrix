@@ -1007,9 +1007,11 @@ def validate_lexicon(ch, vr):
 
     # Adpositions
     for adp in ch.get('adp'):
-        if 'feat' not in adp:
-            mess = 'You should specify a value for at least one feature (e.g., CASE).'
-            vr.warn(adp.full_key + '_feat1_name', mess)
+        #The below message is no longer needed, since adpositions with no defined
+        #adpositions are given automatic FORM values
+        #if 'feat' not in adp:
+        #    mess = 'You should specify a value for at least one feature (e.g., CASE).'
+        #    vr.warn(adp.full_key + '_feat1_name', mess)
         # EKN 2018-02-05 Warn people not to try to use lexicon page for possessive words
         for feat in adp.get('feat'):
             if 'poss-strat' in feat.get('name') or 'poss-pron' in feat.get('name'):

@@ -71,8 +71,7 @@ NON_SENT_ANC_INTRANS_LEX_RULE_SUPERTPYE = 'non-sent-anc-intrans-lex-rule_superty
 
 
 NON_SENT_ANC_INTRANS_LEX_RULE = 'non-sent-anc-intrans-lex-rule := non-sent-anc-intrans-lex-rule_supertype &\
-  [ SYNSEM.LOCAL.CAT.VAL [SPR < [LOCAL [CONT.HOOK.INDEX #subj, \
-                                         CAT.HEAD.POSSESSOR possessive ]] >],\
+  [ SYNSEM.LOCAL.CAT.VAL [SPR < [LOCAL [CONT.HOOK.INDEX #subj ]] >],\
     DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ < [LOCAL.CONT.HOOK.INDEX #subj] >]].'
 
 TRANS_POSS_ACC_LEX_RULE_SUPERTYPE = 'trans-poss-acc-lex-rule_supertype := anc-low-nmz-lex-rule &\
@@ -81,8 +80,7 @@ TRANS_POSS_ACC_LEX_RULE_SUPERTYPE = 'trans-poss-acc-lex-rule_supertype := anc-lo
     DTR.SYNSEM.LOCAL.CAT.VAL [ COMPS #comps & cons]].'
 
 TRANS_POSS_ACC_LEX_RULE = 'trans-poss-acc-lex-rule := trans-poss-acc-lex-rule_supertype &\
-  [ SYNSEM.LOCAL.CAT.VAL [SPR < [LOCAL [CONT.HOOK.INDEX #subj, \
-                                       CAT.HEAD.POSSESSOR possessive ]] >],\
+  [ SYNSEM.LOCAL.CAT.VAL [SPR < [LOCAL [CONT.HOOK.INDEX #subj ]] >],\
     DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ < [LOCAL.CONT.HOOK.INDEX #subj] >]].'
 
 TRANS_ERG_POSS_LEX_RULE_SUPERTYPE = 'trans-erg-poss-lex-rule_supertype := anc-low-nmz-lex-rule &\
@@ -94,8 +92,7 @@ TRANS_ERG_POSS_LEX_RULE_SUPERTYPE = 'trans-erg-poss-lex-rule_supertype := anc-lo
 
 
 TRANS_ERG_POSS_LEX_RULE = 'trans-erg-poss-lex-rule := trans-erg-poss-lex-rule_supertype &\
-  [ SYNSEM.LOCAL.CAT.VAL [ SPR < [LOCAL [CONT.HOOK.INDEX #obj, \
-                                         CAT.HEAD.POSSESSOR possessive]] >],\
+  [ SYNSEM.LOCAL.CAT.VAL [ SPR < [LOCAL [CONT.HOOK.INDEX #obj]] >],\
     DTR.SYNSEM.LOCAL.CAT.VAL [ COMPS < [LOCAL.CONT.HOOK.INDEX #obj] > ]].'
 
 TRANS_NOMINAL_LEX_RULE_SUPERTYPE = 'trans-nominal-lex-rule_supertype := anc-low-nmz-lex-rule &\
@@ -106,8 +103,7 @@ TRANS_NOMINAL_LEX_RULE_SUPERTYPE = 'trans-nominal-lex-rule_supertype := anc-low-
 
 
 TRANS_NOMINAL_LEX_RULE = 'trans-nominal-lex-rule := trans-nominal-lex-rule_supertype &\
-  [ SYNSEM.LOCAL.CAT.VAL [ SPR < [LOCAL [CONT.HOOK.INDEX #subj, \
-                                        CAT.HEAD.POSSESSOR possessive]] >],\
+  [ SYNSEM.LOCAL.CAT.VAL [ SPR < [LOCAL [CONT.HOOK.INDEX #subj]] >],\
     DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ  < [LOCAL.CONT.HOOK.INDEX #subj] >]].'
 
 TRANS_NON_ERG_POSS_OBJ_ONLY_LEX = 'trans-non-erg-poss-obj-only-lex-rule := anc-low-nmz-lex-rule &\
@@ -455,7 +451,7 @@ def customize_nmcs(mylang, ch, rules):
     if needs_anc_wo_feat(ch):
         set_anc_wo_value(ch, mylang)
 
-#TODO --> validate so that if someone defines a nmz strategy that requires a morph rule, they actually make that rule on the morph page
+
 def add_anc_lexrules(ch):
     '''
     Adds additional lexical rules to the choices object that the user does not define 
@@ -694,7 +690,6 @@ def update_lexical_rules(mylang, ch):
                                                                         POSSESSUM nonpossessive]]>].'
     for lrt, val, vpc in get_nmz_lexrules(ch):
         for ns in ch.get('ns'):
-
             intrans = False
             trans = False
             if ns.get('name') == val:
@@ -781,7 +776,8 @@ def update_lexical_rules(mylang, ch):
                     else:
                         lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') +
                                                   ['trans-poss-acc-lex-rule'])
-                        mylang.add(get_name(lrt) + '-lex-rule :=' + non_poss_comp)
+                        if has_poss_strats:
+                            mylang.add(get_name(lrt) + '-lex-rule :=' + non_poss_comp)
                 elif nmz_type == 'erg-poss':
                     if needs_extra_rule:
                         lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') +
@@ -792,7 +788,8 @@ def update_lexical_rules(mylang, ch):
                     else:
                         lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') +
                                                     ['trans-erg-poss-lex-rule'])
-                        mylang.add(get_name(lrt) + '-lex-rule :=' + non_poss_comp)
+                        if has_poss_strats:
+                            mylang.add(get_name(lrt) + '-lex-rule :=' + non_poss_comp)
                     customize_non_user_nmz_features(ch, mylang, lrt, val, 'nmz-comp-change', get_name(lrt) + '-lex-rule', path_comps)
 
                 elif nmz_type == 'nominal':
@@ -805,7 +802,8 @@ def update_lexical_rules(mylang, ch):
                     else:
                         lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') +
                                                     ['trans-nominal-lex-rule'])
-                        mylang.add(get_name(lrt) + '-lex-rule :=' + non_poss_comp)
+                        if has_poss_strats:
+                            mylang.add(get_name(lrt) + '-lex-rule :=' + non_poss_comp)
                     customize_non_user_nmz_features(ch, mylang, lrt, val, 'nmz-comp-change', get_name(lrt) + '-lex-rule', path_comps)
 
 def add_nmz_feature(mylang):
@@ -896,24 +894,32 @@ def add_nmz_lexrules(ch, mylang, ns, nmz_type, single_arg, arg_order):
             lex_rule_name = 'non-sent-anc-intrans-lex-rule'
             mylang.add(NON_SENT_ANC_INTRANS_LEX_RULE_SUPERTPYE)
             mylang.add(NON_SENT_ANC_INTRANS_LEX_RULE)
+            if 'poss-strat' in ch or 'poss-pron' in ch:
+                mylang.add('non-sent-anc-intrans-lex-rule := [ SYNSEM.LOCAL.CAT.VAL.SPR < [LOCAL.CAT.HEAD.POSSESSOR possessive] > ].')
             if det_rules:
                 mylang.add('det-' + lex_rule_name + ':=' + lex_rule_name + '_supertype &' + det_rule_constraint)
         if trans and nmz_type == 'poss-acc':
             lex_rule_name = 'trans-poss-acc-lex-rule'
             mylang.add(TRANS_POSS_ACC_LEX_RULE_SUPERTYPE)
             mylang.add(TRANS_POSS_ACC_LEX_RULE)
+            if 'poss-strat' in ch or 'poss-pron' in ch:
+                mylang.add('trans-poss-acc-lex-rule := [ SYNSEM.LOCAL.CAT.VAL.SPR < [LOCAL.CAT.HEAD.POSSESSOR possessive] > ].')
             if det_rules:
                 mylang.add('det-' + lex_rule_name + ':=' + lex_rule_name + '_supertype &' + det_rule_constraint)
         if trans and nmz_type == 'erg-poss':
             lex_rule_name = 'trans-erg-poss-lex-rule'
             mylang.add(TRANS_ERG_POSS_LEX_RULE_SUPERTYPE)
             mylang.add(TRANS_ERG_POSS_LEX_RULE)
+            if 'poss-strat' in ch or 'poss-pron' in ch:
+                mylang.add('trans-erg-poss-lex-rule := [ SYNSEM.LOCAL.CAT.VAL.SPR < [LOCAL.CAT.HEAD.POSSESSOR possessive] > ].')
             if det_rules:
                 mylang.add('det-' + lex_rule_name + ':=' + lex_rule_name + '_supertype &' + det_rule_constraint)
         if trans and nmz_type == 'nominal':
             lex_rule_name = 'trans-nominal-lex-rule'
             mylang.add(TRANS_NOMINAL_LEX_RULE_SUPERTYPE)
             mylang.add(TRANS_NOMINAL_LEX_RULE)
+            if 'poss-strat' in ch or 'poss-pron' in ch:
+                mylang.add('trans-nominal-lex-rule := [ SYNSEM.LOCAL.CAT.VAL.SPR < [LOCAL.CAT.HEAD.POSSESSOR possessive] > ].')
             if det_rules:
                 mylang.add('det-' + lex_rule_name + ':=' + lex_rule_name + '_supertype &' + det_rule_constraint)
         if trans and single_arg == 'on':

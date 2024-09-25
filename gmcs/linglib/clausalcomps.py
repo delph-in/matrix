@@ -783,7 +783,7 @@ def nonempty_nmz(cs, ch):
         if f['name'] == 'nominalization':
             for ns in ch['ns']:
                 if ns['name'] == f['value']:
-                    if ns['nmzRel'] == 'yes' or ns['level'] in ['mid', 'low']:
+                    if ns['nmzRel'] == 'yes' or ns['nmz_type'] not in ['sentential', 'alt-sent']:
                         return True
     return False
 
