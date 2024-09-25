@@ -357,6 +357,33 @@ def get_next_key(complex_key):
         next_key_cache[rest] = subkeys[1:]
     return safe_int(next_key), rest
 
+def look_through_inputs(self, verb_input, valence_set):
+    """
+    Looks through the inputs of a verbal position class and determines whether the position class
+    is restricted to intransitive verbs, transitive verbs or allows both. If a verbal position class 
+    can take both transitive and intransitive verbs, valence_set will contain the strings 'intrans'
+    and 'trans', otherwise it will only contain one string corresponding to the valence of the verb inputs it
+    can take.
+    """
+    verb_input = verb_input.strip()
+    for verb_pc in self['verb-pc']:
+        if verb_input == str(verb_pc).split('_')[0]:
+            inputs = verb_pc['inputs'].split(',')
+            for i in inputs:
+                #recursively search through inputs until a verb and not a pc is found
+                look_through_inputs(self, i, valence_set)
+    if verb_input ==  'iverb':
+        valence_set.add('intrans')
+    elif verb_input == 'tverb':
+        valence_set.add('trans')
+    for verb in self['verb']:
+        if verb_input == str(verb).split('_')[0]:
+            if len(verb.get('valence').split('-')) == 1 and verb.get('valence').split('-')[0] != 'trans':
+                valence_set.add('intrans')
+            else:
+                valence_set.add('trans')
+
+
 ######################################################################
 # ChoicesFile is a class that wraps the choices file, a list of
 # variables and values, and provides methods for loading, accessing,
@@ -1122,13 +1149,6 @@ class ChoicesFile:
                         if not stem.get("form"):
                             forms += [['adpform', 'form']]
                             break
-                #Free morpheme adposition used to mark clausal modifier phrases
-                if 'cms' in self:
-                    for cms in self.get('cms'):
-                        if cms.get('subordinator-type') == 'head':
-                            for freemorph in cms.get('freemorph'):
-                                subform = freemorph.get('orth') + "_clausalmod"
-                                forms += [[subform, 'form']]
             return forms
         return []
 
@@ -2466,11 +2486,15 @@ class ChoicesFile:
                             if feat['name'] == 'question' and feat['value'] == 'plus':
                                 feat['value'] = 'polar'
 
+                
+
     def convert_34_to_35(self):
         '''
-        Updates nominalized clauses
+        Updates the treatment of nominalized clauses
         high nominalization is converted into SENT nominalization with adverb modification
-        mix nominalization is converted into ALT-SENT nominalization with both adjective/adverb modfication.
+        mid nominalization is converted into ALT-SENT nominalization with both adjective/adverb modfication.
+        low nominalization cannot be automatically converted and instead causes a validation error instructing 
+        the user to update the choices file.
         '''
         needs_both = True
         trans_or_intrans_on = False
@@ -2485,45 +2509,144 @@ class ChoicesFile:
                                 rules.append((lrt, ns, vpc))
 
         for ns in self.get('ns'):
+            #Only need to go through the remaining uprev code if this choices file comes from an older
+            #grammar (one without a mandatory question regarding the valence of the nominalization strategy)
             if self[ns.full_key + '_trans'] == 'on' or self[ns.full_key + '_intrans'] == 'on':
                 trans_or_intrans_on = True
                 break
 
         #For lrts in languages from older grammars determine whether the 
-        #lrts acts on transitive or intransitive verbs
+        #lrts takes transitive or intransitive verbs as input
+        keep_track = {}
         if not trans_or_intrans_on:        
             for lrt, ns, vpc in rules:
+                #Can't do an automatic update for low nominalization strategies, so no point to figuring out their valence
+                if ns.get('level') == 'low':
+                    continue
+                if ns.get('name') not in keep_track:
+                    keep_track[ns.get('name')] = set()
+                intrans = False
+                trans = False
                 inputs = vpc['inputs'].split(',')
-                if 'tverb' in inputs:
+                valence_set = set()
+                for i in inputs:
+                    #For each verbal position class containing a nominalization lrt, determine whether it takes
+                    #instransitive inputs, transitive inputs, or both
+                    look_through_inputs(self, i, valence_set)
+                if len(valence_set) == 1:
+                    if 'intrans' in valence_set:
+                        intrans = True
+                    else:
+                        trans = True
+                if trans:
                     needs_both = False
                     self[ns.full_key + '_trans'] = 'on'
-                elif 'iverb' in inputs:
+                    keep_track[ns.get('name')].add('trans')
+                elif intrans:
                     needs_both = False
                     self[ns.full_key + '_intrans'] = 'on'
-                elif 'valence' in self.get(inputs[0]):
-                    needs_both = False
+                    keep_track[ns.get('name')].add('intrans')
                 else:
                     for lrt in vpc['lrt']:
                         for feat in lrt['feat']:
                             if feat['head'] == 'obj':
                                 self[ns.full_key + '_trans'] = 'on'
+                                keep_track[ns.get('name')].add('trans')
                                 needs_both = False
                 if needs_both:
+                    keep_track[ns.get('name')].add('both')
                     self[ns.full_key + '_trans'] = 'on'
                     self[ns.full_key + '_intrans'] = 'on'
-                
+
+            for ns in self.get('ns'):
+                if ns.get('level') == 'low':
+                    continue
+                if ns.get('name') in keep_track:
+                    val_info = keep_track[ns.get('name')] 
+                    #The old nominalized clauses library did not specifiy valence information in the nominalization strategy,
+                    #but required users to create separate lrts for intransitive and transitive inputs. If an old choices file has
+                    #intransitive and transitive lrts using the same nominalization strategy, 
+                    #create additional nominalization strategies from the original (specific to intransitive verbs or transitive verbs as necessary)
+                    #to still get the expected behavior
+                    if len(val_info) == 3: #This nominalization strategy marks lrts specific to intransitive verbs, transitive verbs, and both
+                        idx_trans = len(self.get('ns')) + 1
+                        ns_key_trans = ns.full_key[0:-1] + str(idx_trans)
+                        idx_intrans = idx_trans + 1
+                        ns_key_intrans = ns.full_key[0:-1] + str(idx_intrans)
+                        #Create a new nominalization strategy identical to the user's aside from being specific to transitive verbs
+                        self[ns_key_trans + '_name'] = self[ns.full_key + '_name'] + '_trans'
+                        self[ns_key_trans + '_level'] = self[ns.full_key + '_level']
+                        if self[ns.full_key + '_nmzRel']:
+                            self[ns_key_trans + '_nmzRel']= self[ns.full_key + '_nmzRel']
+                        self[ns_key_trans + '_trans'] = 'on'
+                        #Create a new nominalization strategy identical to the user's aside from being specific to intransitive verbs
+                        self[ ns_key_intrans + '_name'] = self[ns.full_key + '_name'] + '_intrans'
+                        self[ ns_key_intrans + '_level'] = self[ns.full_key + '_level']
+                        if self[ns.full_key + '_nmzRel']:
+                            self[ns_key_intrans + '_nmzRel']= self[ns.full_key + '_nmzRel']
+                        self[ns_key_intrans + '_intrans'] = 'on'
+                        #Update all exclusively intransitive and transitive nominalization lrts, so that they use the correct nominalization strategy.
+                        for lrt, second_ns, vpc in rules:
+                            intrans = False
+                            trans = False
+                            if second_ns.get('name') == self[ns.full_key + '_name']:
+                                inputs = vpc['inputs'].split(',')
+                                valence_set = set()
+                                for i in inputs:
+                                    look_through_inputs(self, i, valence_set)
+                                if len(valence_set) == 1:
+                                    if 'intrans' in valence_set:
+                                        intrans = True
+                                    else:
+                                        trans = True
+                            for feat in lrt.get('feat'):
+                                if feat.get('name') == 'nominalization':
+                                    if intrans:
+                                        self[feat.full_key + '_value'] = self[ns_key_intrans + '_name']
+                                    elif trans:
+                                        self[feat.full_key + '_value'] = self[ns_key_trans + '_name']
+
+                    if len(val_info) == 2:
+                        if ('intrans' in val_info and 'trans' in val_info) or ('intrans' in val_info and 'both' in val_info):
+                            if 'intrans' in val_info and 'trans' in val_info:
+                                #The original user-defined nominalization strategy is now specific to transitive verbs
+                                self.delete(ns.full_key + '_intrans')
+                            idx = len(self.get('ns')) + 1
+                            ns_key = ns.full_key[0:-1] + str(idx)
+                            #Create a new nominalization strategy identical to the user's aside from being specific to intransitive verbs
+                            self[ns_key + '_name'] = self[ns.full_key + '_name'] + '_intrans'
+                            self[ns_key + '_level'] = self[ns.full_key + '_level']
+                            if self[ns.full_key + '_nmzRel']:
+                                self[ns_key + '_nmzRel']= self[ns.full_key + '_nmzRel']
+                            self[ns_key + '_intrans'] = 'on'
+                            #Update all intransitive nominalization lrts, so that they use the correct nominalization strategy.
+                            for lrt, second_ns, vpc in rules:
+                                intrans = False
+                                if second_ns.get('name') == self[ns.full_key + '_name']:
+                                    inputs = vpc['inputs'].split(',')
+                                    valence_set = set()
+                                    for i in inputs:
+                                        look_through_inputs(self, i, valence_set)
+                                    if len(valence_set) == 1:
+                                        if 'intrans' in valence_set:
+                                            intrans = True
+                                if intrans:
+                                    for feat in lrt.get('feat'):
+                                        if feat.get('name') == 'nominalization':
+                                            self[feat.full_key + '_value'] = self[ns_key + '_name']
+        
+        #Convert high and mid nominalization stratgies to work in the new library
         for ns in self.get('ns'):
             if ns['level'] == 'high':
-                self.delete(ns.full_key + '_level')
                 self[ns.full_key + '_nmz_type'] = 'sentential'
-                self[ns.full_key + '_nmz_mod'] = 'adv'
+                self[ns.full_key + '_adv'] = 'on'
             elif ns['level'] == 'mid':
-                self.delete(ns.full_key + '_level')
                 self[ns.full_key +'_nmz_type'] = 'alt-sent'
                 self[ns.full_key +'_nmzRel'] = 'yes'
-                self[ns.full_key + '_nmz_mod'] = 'both'
+                self[ns.full_key + '_adv'] = 'on'
+                self[ns.full_key + '_adj'] = 'on'
 
-
+            
 ########################################################################
 # FormData Class
 # This Class acts like form data which would normally
