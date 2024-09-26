@@ -2047,7 +2047,7 @@ Label "</div>"
 Section nominalclause "Nominalized Clauses"
 
 Label "<p>If your language uses nominalization in the context of clausal complements
-and/or clausal modifiers, define the nomminalization strategies here. They will then be available on the Clausal Complements, Clausal Modifers, and Morphology pages.</p>"
+and/or clausal modifiers, define the nominalization strategies here. They will then be available on the Clausal Complements, Clausal Modifers, and Morphology pages.</p>"
 
 BeginIter ns{i} "a Nominalization Strategy" 1
 
