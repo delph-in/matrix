@@ -416,6 +416,12 @@ class TestValidate(unittest.TestCase):
         c = ChoicesFile()
         c['adp1_dummy'] = 'dummy'
         self.assertWarning(c, 'adp1_feat1_name')
+        
+        # Adverbs 
+        c = ChoicesFile()
+        c['adv1_stem1_pred'] = '_pred_a_rel'
+        c['adv1_inter'] = 'on'
+        self.assertWarning(c, 'adv1_stem1_pred')
 
         # Features
         for lt in ['noun', 'verb', 'aux', 'det', 'adp']:
