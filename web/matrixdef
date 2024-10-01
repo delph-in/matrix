@@ -2936,7 +2936,7 @@ BeginIter adv{i} "an Adverb" 1
 
   EndIter stem
 
-  Check inter "Interrogative Adverb" "<br>" "This is a question adverb (like <i>where/when</i>) <br><br>"
+  Check inter "Interrogative Adverb" "<br>" "This is a question adverb (like <i>where/when</i>). If selected,  predicate should contain <i>_n_rel</i>. <br><br>"
 
       Radio type "Adverb {i} Type" "This is a " " adverb."
       . loc "Location in Time or Space" "" "location in time/space"
