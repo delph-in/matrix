@@ -1104,8 +1104,6 @@ def validate_yesno_questions(ch, vr):
 # validate_tanda(ch, vr)
 #   Validate the user's choices about tense, aspect (viewpoint and
 #   situation) and form features
-
-
 def validate_tanda(ch, vr):
     """
     Validate the user's choices about tense, aspect (viewpoint and situation), mood and form features
@@ -1121,6 +1119,11 @@ def validate_tanda(ch, vr):
             mess = 'You cannot add a subtype if the supertype is not selected.'
             for st in ch[t + '-subtype']:
                 vr.err(st.full_key + '_name', mess)
+                
+    if chosen and not ch.get('tense-definition') == 'choose':
+        mess = 'You have selected a tense element. You need to choose to select among hierarchy elements ' + \
+                'in order to see the tense feature available in the lexicon.'
+        vr.warn('tense-definition', mess)
 
     if ch.get('tense-definition') == 'choose' and not chosen:
         mess = 'You have chosen to select among hierarchy elements. ' + \

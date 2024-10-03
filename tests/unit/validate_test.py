@@ -323,6 +323,11 @@ class TestValidate(unittest.TestCase):
                 c[st] = 'on'
                 c[t + '-subtype1_name'] = 'dummy'
                 self.assertError(c, t + '-subtype1_name')
+                
+        # added a hierarchy element but didn't answer yes to tense-definition
+        c = ChoicesFile()
+        c['past'] = 'on'
+        self.assertWarning(c, 'tense-definition')
 
         # answered yes to tense-definition but then didn't define
         c = ChoicesFile()
