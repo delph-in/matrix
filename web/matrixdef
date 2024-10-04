@@ -1563,7 +1563,7 @@ BeginIter cs{i} "a Coordination Strategy" 1
 
   Check n "Coordination Strategy {i} coordinates Ns" "" "nouns "
   Check np "Coordination Strategy {i} coordinates NPs" "" "NPs "
-  Check vp "Coordination Strategy {i} coordinates VPs" "" "VPs "
+  Check vp "Coordination Strategy {i} coordinates VPs" "" "verbs or VPs "
   Check s "Coordination Strategy {i} coordinates Ss" "" "sentences<br>"
 
   Radio pat "Coordination Strategy {i} pattern" "&nbsp;&nbsp;&nbsp;&nbsp;are marked in a " ""
