@@ -18,6 +18,6 @@ def customize_adv_adp(ch, mylang, rules):
         mylang.add_literal(
             '; For intersective adjuncts with underspecified attachment locations:', section='phrases')
         mylang.add('bare-np-phrase := [ SYNSEM.LIGHT - ].')
-        rules.add('head-adj := head-adj-int-phrase.')
-        rules.add('adj-head := adj-head-int-phrase.')
+        rules.add('head-adj-int := head-adj-int-phrase.')
+        rules.add('adj-head-int := adj-head-int-phrase.')
        
