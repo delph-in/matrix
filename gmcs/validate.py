@@ -1374,7 +1374,8 @@ def validate_features(ch, vr):
                             valid = True
             if not valid:
                 break
-        if not valid:
+        # when value is blank, there is an alternate error message
+        if not valid and not value == '':
             vr.err(var, 'You have selected an invalid feature value.')
 
 
