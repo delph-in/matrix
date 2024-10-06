@@ -397,8 +397,6 @@ def get_v_predications(grammar_dir, lang):
     return (itv_rels, stv_rels)
 
 # Class for storing templates with methods to facilitate predicate and feature replacement
-
-
 class Template:
     def __init__(self, file=None):
         # The file name is expected to be a file listed in web/templates/
@@ -531,8 +529,6 @@ def get_templates(grammar_dir):
     return templates
 
 # Output an mrs file from a template, replacing the appropriate predications
-
-
 def process_mrs_file(mrs, outfile, noun1_rel, det1_rel, noun2_rel, det2_rel, verb_rel):
     output = mrs.replace("#NOUN1#", noun1_rel).replace("#NOUN2#", noun2_rel).replace(
         "#VERB#", verb_rel).replace("#DET1#", det1_rel).replace("#DET2#", det2_rel)
@@ -674,16 +670,16 @@ def get_sentences(grammar_dir, delphin_dir, session, with_lkb=False):
         for pred in template.preds.copy():
             m1, m2, m3, m4 = itr_verb_re.match(pred), tr_verb_re.match(
                 pred), noun_re.match(pred), det_re.match(pred)
-            if m1:
+            if m1 and len(itvs) > 0:
                 template.replace_pred(pred, itvs[int(m1.group(1)) % len(itvs)])
                 verb_rels[pred] = itvs[int(m1.group(1)) % len(itvs)]
-            elif m2:
+            elif m2 and len(stvs) > 0:
                 template.replace_pred(pred, stvs[int(m2.group(1)) % len(stvs)])
                 verb_rels[pred] = stvs[int(m2.group(1)) % len(stvs)]
-            elif m3:
+            elif m3 and len(noun_rels_dets) > 0:
                 template.replace_pred(pred, noun_rels_dets[int(
                     m3.group(1)) % len(noun_rels_dets)][0])
-            elif m4:
+            elif m4 and len(noun_rels_dets) > 0:
                 # print "det_list = det_rels[noun_rels_dets[int(m4.group(1)) % len(noun_rels_dets)][1]]<br />"
                 # print "m4.group(1): ",m4.group(1),"<br />"
                 # print "int(m4.group(1)): ",int(m4.group(1)),"<br />"

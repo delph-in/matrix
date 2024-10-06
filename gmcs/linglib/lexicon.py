@@ -1063,6 +1063,14 @@ def validate_lexicon(ch, vr):
         if not adv['type']:
             mess = 'Please select the type for this adverb.'
             vr.err(adv.full_key+'_type', mess)
+            
+        q_adverb = adv['inter']
+        if q_adverb == 'on':
+            stems = adv['stem']
+            for stem in stems:
+                if "_a_rel" in stem['pred']:
+                    mess = 'You have indicated this is a question adverb. Please update predicate to be a noun relation.'
+                    vr.warn(stem.full_key+'_pred', mess)
 
     # Features on all lexical types
     # TJT 2014-09-02: Adding adj and cop
