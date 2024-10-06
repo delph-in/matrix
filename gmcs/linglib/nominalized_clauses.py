@@ -1004,7 +1004,9 @@ def set_anc_wo_value(ch, mylang):
     Set the ANC-WO value for all action nominals as well as for other lexical items
     which take complements
     ''' 
-    mylang.add('head :+ [ ANC-WO bool ].', section='addenda')
+    mylang.add('head :+ [ ANC-WO bool ].', 'The ANC-WO feature is added to certain languages to handle word order in\n' +
+       'action nominal constructions (ANCs). [ANC-WO +] indicates that an action nominal (nominalized verb) uses a word order\n' +
+'distinct from that of regular verbs, while [ANC-WO -] indicates that a lexical item uses the same word order as non-derived verbs.' ,section='addenda')
     for pos in ['noun', 'tverb', 'comps','comp', 'aux']:
         if ch.get(pos) or pos in ['tverb', 'comp']:
             if pos == 'comps':
