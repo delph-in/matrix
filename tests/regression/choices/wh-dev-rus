@@ -117,9 +117,6 @@ subj-mark-no-drop=subj-mark-no-drop-not
 subj-con=subj-con-always
 
 section=nominalclause
-  ns1_name=low
-  ns1_level=low
-  ns1_nmzRel=yes
 
 section=clausal-comp
   comps1_clause-pos-same=on

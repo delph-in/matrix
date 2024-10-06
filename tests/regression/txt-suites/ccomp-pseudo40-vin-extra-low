@@ -1,4 +1,0 @@
-tverb noun1 noun2
-cverb noun1 tverb-NMZ noun2 noun3
-*cverb noun1 tverb noun2 noun3
-*cverb tverb-NMZ noun2 noun3 noun1
