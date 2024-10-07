@@ -1772,8 +1772,12 @@ def validate_nominalized_clauses(ch, vr):
                             second_break = True
                             break
                         elif anc_wo not in word_orders[poss_strat.get('order')]:
-                            vr.err(nmz_poss_strat.full_key + '_name',
-                    'The order of this possessive strategy is not compatible with the word order you have selected in nominalized clauses.')
+                            if anc_wo in word_orders['either']:
+                                vr.warn(nmz_poss_strat.full_key + '_name',
+                                    'The overall nominalized clause uses a ' + anc_wo + ' word order, while this selected possessive strategy applies further restrictions on word order. The argument marked by this possessive strategy will respect the stricter word order constraints imposed by the possessive strategy as defined on the Adnominal Possession page.')
+                            else:
+                                vr.err(nmz_poss_strat.full_key + '_name',
+                                    'The order of this possessive strategy is not compatible with the word order you have selected in nominalized clauses.')
                             second_break = True
                             break
 
@@ -1786,8 +1790,14 @@ def validate_nominalized_clauses(ch, vr):
                             break
                         elif pron.get('type') != 'affix':
                             if anc_wo not in word_orders[pron.get('order')]:
-                                vr.err(nmz_poss_strat.full_key + '_name',
-                        'The order of this possessive strategy is not compatible with the word order you have selected in nominalized clauses.')
+                                if anc_wo in word_orders['either']:
+                                    vr.warn(nmz_poss_strat.full_key + '_name',
+                                        'The overall nominalized clause uses a ' + anc_wo + ' word order, while this selected possessive strategy applies further restrictions \
+                                        on word order. The argument marked by this possessive strategy will respect the stricter word order constraints imposed by the possessive strategy \
+                                        as defined on the Adnominal Possession page.')
+                                else:
+                                    vr.err(nmz_poss_strat.full_key + '_name',
+                            'The order of this possessive strategy is not compatible with the word order you have selected in nominalized clauses.')
                                 second_break = True
                                 break
             if second_break:
@@ -1800,8 +1810,10 @@ def validate_nominalized_clauses(ch, vr):
         for lrt in vpc['lrt']:
             for f in lrt['feat']:
                 if 'nominalization' in f['name']:
-                    rules.append((lrt, ns, vpc))
-                    rule_ns_strats.add(f['value'])
+                    for ns in ch.get('ns'):
+                        if ns.get('name') == f['value']:
+                            rules.append((lrt, ns, vpc))
+                            rule_ns_strats.add(f['value'])
                     
     #set_diff contains all the nominalization strategy names that are defined on the Nominalized Clauses page,
     #but are never used on the Morphology page
