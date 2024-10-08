@@ -989,7 +989,7 @@ def customize_poss_lexicon(strat, mylang, ch, lexicon, rules, hierarchies):
 
     # Define vars for all elements of strategy:
     strat_name = strat.full_keys()[0].split("_")[0]
-    strat_num = strat_name[-1]
+    strat_num = strat_name[-1] # this will be problematic for > 9 strats
     mark_loc = strat.get('mark-loc')
     mod_spec = strat.get('mod-spec')
     possessor_type = strat.get('possessor-type')
