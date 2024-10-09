@@ -1684,7 +1684,7 @@ def validate_nominalized_clauses(ch, vr):
         elif ns.get('level') == 'low':
             vr.err(ns.full_key + '_nmz_type',
                    'The current Nominalized Clauses library is no longer based on level (low, mid, high). ' +
-                    'It is necessary to define a new nominalization strategy based on the options avialable in the current ' +
+                    'It is necessary to define a new nominalization strategy based on the options available in the current ' +
                     'library. Once a new strategy is defined make sure to make any corresponding changes to all lrts using the ' +
                     'nominalization feature on the Morphology page.')
         ch.delete(ns.full_key + '_level')
@@ -1718,7 +1718,7 @@ def validate_nominalized_clauses(ch, vr):
                         'Adjective nominalization will only be possible at the S level (once the nominalized verb has picked up both arguments).')
                 elif ns['nmzRel'] == 'no':
                      vr.err(ns.full_key + '_adj',
-                        'Adjective nominalization is not avialable for sentential/alternative-sentential strategies that do not contain nominalization semantics')
+                        'Adjective nominalization is not available for sentential/alternative-sentential strategies that do not contain nominalization semantics')
 
         #Mandatory questions for all-comps nominalization strategies
         if not ns['all_comps_arg_order'] and ns['trans'] == 'on' and nmz_type == 'all-comps':
@@ -1829,7 +1829,7 @@ def validate_nominalized_clauses(ch, vr):
                             values = feat.get('value').split(', ')
                             for value in values:
                                 if value == ns.get('name'):
-                                    vr.err(feat.full_key + '_name', 'To be able to use this nominalization strategy, at least one lrt on the Morpology page needs to take ' +
+                                    vr.err(feat.full_key + '_name', 'To be able to use this nominalization strategy, at least one lrt on the Morphology page needs to take ' +
                                         'a nominalization feature with this nominalization strategy\'s name.')
                 for comps in ch.get('comps'):
                     for feat in comps.get('feat'):
@@ -1837,7 +1837,7 @@ def validate_nominalized_clauses(ch, vr):
                             values = feat.get('value').split(', ')
                             for value in values:
                                 if value == ns.get('name'):
-                                    vr.err(feat.full_key + '_name', 'To be able to use this nominalization strategy, at least one lrt on the Morpology page needs to take ' +
+                                    vr.err(feat.full_key + '_name', 'To be able to use this nominalization strategy, at least one lrt on the Morphology page needs to take ' +
                                         'a nominalization feature with this nominalization strategy\'s name.')
                                     
     #Validation issues with nominalization use in clausal modifier and clausal complement strategies                                

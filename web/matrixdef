@@ -1,3 +1,4 @@
+
 ## $Id: matrixdef,v 1.37 2008-09-30 23:50:02 lpoulson Exp $
 
 Section general "General Information"
@@ -2047,27 +2048,27 @@ Label "</div>"
 
 Section nominalclause "Nominalized Clauses"
 
-Label "<p>If your language uses affixal nominalization define the nomminalization strategies here.
+Label "<p>If your language uses affixal nominalization define the nominalization strategies here.
 Once defined a nominalization feature will become available to select on the Morphology page.
 The different values of this feature correspond to the names of all defined nominalization strategies.
-To define a nominalization affix create a lexical rule type on the Morphology page
+To define a nominalization affix, create a lexical rule type on the Morphology page
 and mark the rule with the desired nominalization strategy. Each nominalization affix
 should only use a single nominalization strategy.</p>"
 
 
-Label "<p>The nominalization feature will also be available on both the Clausal Complements and Clausal Modfiers pages allowing
+Label "<p>The nominalization feature will also be available on both the Clausal Complements and Clausal Modifiers pages allowing
 both of these constructions to be marked by nominalization.</p>"
 
 Label "<p>In addition to the nominalization feature, an NMZ feature will become available on the Morphology, Lexicon and Coordination pages. 
-Specifiying  that a verb's argument is [NMZ +] indicates that the argument must be nominalized.
+Specifying that a verb's argument is [NMZ +] indicates that the argument must be nominalized.
 Specifying that a verb's argument is [NMZ -] indicates that the argument cannot be nominalized.
 The NMZ feature can be used on the coordination page within feature resolution patterns.</p>"
 
 Label "<p> By default all arguments in nominalized clauses are treated as optional. 
 If a nominalization strategy requires that one or both arguments are obligatory, check the box below.
 Then on the Morphology
-page, for each affix that uses a nominalization strategy specifiy that an argument must 
-appear by selecting [OPT -] on that argument. The only exception to this are optional arguments
+page, for each affix that uses a nominalization strategy specify that an argument must 
+appear by selecting [OPT -] on that argument. The only exception to this is optional arguments
 marked by possessive strategies (only relevant for poss-acc, erg-poss, or nominal 
 nominalization strategies) which should be dealt with by answering the relevant question
 on this page.</p>"
@@ -2094,10 +2095,10 @@ types are given on the documentation page.
 <b>sentential:</b> All arguments are marked in the same way as they would be for the underlying verb.<br>
 <b>alternative-sentential:</b> The P is marked in the same as the original verb, 
 but the A is marked differently. The A can either take a distinct case-marking or be marked with a specific adposition. 
-Cruically, the marking of the A is not covered by any of the possessive strategies in the language.<br>
+Crucially, the marking of the A is not covered by any of the possessive strategies in the language.<br>
 <b>all-comps:</b> Both arguments of the nominalized verb are treated as complements. 
 In this type, neither argument can be marked with a possessive strategy.<br> 
-<b>poss-acc:</b> The A of intransitive and transitive verbs is marked in the same way as possessors in a specific adnominal possessive strategy, the P is marked as it would be for the non-nominilized verb.<br>
+<b>poss-acc:</b> The A of intransitive and transitive verbs is marked in the same way as possessors in a specific adnominal possessive strategy, the P is marked as it would be for the non-nominalized verb.<br>
 <b>erg-poss:</b> The A of intransitive verbs and the P of transitive verbs is marked in the same way as possessors in a specific adnominal possessive strategy, the A of transitive verbs uses an oblique verbal marking pattern.<br>
 <b>nominal:</b> The A of intransitive and transitive verbs is marked in the same way as possessors in a specific adnominal possessive strategy, the P is marked in manner typical of nominal arguments." 
 
@@ -2108,7 +2109,7 @@ BeginIter ns{i} "a Nominalization Strategy" 1
 
   Text name "Nominalization Strategy {i} Name" "<b>Nominalization Strategy {i}</b>:<br/>Nominalization Strategy Name: " " " 20
 
-    Radio nmz_type "Nominalization Strategy {i} nmz_type" "<br><b>Based on the above defintions the nominalization type of this strategy is:</b><br>" ""
+    Radio nmz_type "Nominalization Strategy {i} nmz_type" "<br><b>Based on the above definitions the nominalization type of this strategy is:</b><br>" ""
   . sentential "sentential" "" "sentential<br>" "toggle_element.call(this, 'use-poss-strat-general', 'off',null ,'{i}'); toggle_element.call(this, 'use-poss-strat{i}', 'off'); toggle_element.call(this, 'has-dets{i}', 'off');toggle_element.call(this, 'sent-strat{i}', 'on');toggle_element.call(this, 'all-comps{i}', 'off');
 	toggle_element.call(this, 'sent{i}', 'on');
 	toggle_element.call(this, 'alt-sent{i}', 'off');
@@ -2162,7 +2163,7 @@ Label "<p> The A for this strategy is the subject and the P is the
 object. Mandatory arguments can be specified on the Morphology page by selecting [OPT -]
 on the subject and/or object for lexical rule types that use this nominalization strategy.
 All other constraints on the object will be identical to those on the object of 
-the underlying verb. Additional feature constraints (case,form) can be specified for the subject on
+the underlying verb. Additional feature constraints (case, form) can be specified for the subject on
 the Morphology page.<br></p>"
 
 Label "</div>"
@@ -2174,7 +2175,7 @@ complements. Whether the first or second complement is the A or P for
 transitive nominalized verbs can be selected below. Mandatory arguments can be specified on 
 the Morphology page by selecting [OPT -] on the object and/or second object 
 for lexical rule types that use this nominalization strategy.
-Additional feature constraints (case,form) can be specified on the object and 
+Additional feature constraints (case, form) can be specified on the object and 
 second object on the Morphology page.
 If this strategy is selected as acting on both intransitive and transitive verbs (see how 
 to handle strategies which act on both intransitive and transitive verbs below), the single argument
@@ -2208,7 +2209,7 @@ for intransitive verbs. For transitive verbs, the P argument is the possessor.
 Mandatory objects can be specified on the Morphology page by selecting [OPT -]
 on the object for lexical rule types that use this nominalization strategy.
 Mandatory possessors can be specified by answering the question below.
-Additional feature constraints (case,form) can be specified for the object 
+Additional feature constraints (case, form) can be specified for the object 
 on the Morphology page.
 The P argument for transitive verbs and the A argument for intransitive verbs
 will be marked using one of the possessive strategies selected at the bottom of the page.<br></p>"
@@ -2221,7 +2222,7 @@ Label "<p> The A for this strategy is the possessor and the P is the object.
 Mandatory objects can be specified on the Morphology page by selecting [OPT -]
 on the object for lexical rule types that use this nominalization strategy.
 Mandatory possessors can be specified by answering the question below.
-Additional feature constraints (case,form) can be specified for the object on the Morphology page.
+Additional feature constraints (case, form) can be specified for the object on the Morphology page.
 The A argument will be marked using one of the possessive strategies selected at the bottom of the page.<br></p>"
 
 Label "</div>"
@@ -2249,9 +2250,9 @@ Label "<p></p>"
 Label "<p>single argument marking" "" "For strategies acting on transitive verbs, when only a single 
 argument appears (either the A or the P), check the box below if the argument is always marked using a possessive strategy (the single-possessor analysis).
 This is despite how this same argument would be marked if it appeared alongside the other argument.
-This single argument will be ambigous between a patient-like and agent-like interpretation.<br></p>"
+This single argument will be ambiguous between a patient-like and agent-like interpretation.<br></p>"
 
-Check single-arg "Single argument marking" "" "A single argument is always marked as a posssessor<br>"
+Check single-arg "Single argument marking" "" "A single argument is always marked as a possessor<br>"
 
 Label "</div>"
 
@@ -2259,7 +2260,7 @@ Label "<p></p>"
 
 Label "<div id='has-dets{i}'' style='display:none'>"
 
-Label "<p><b> If a lanuage has determiners, specifiy how the nominalized verb resulting from this strategy interacts with determiners.</b></p>"
+Label "<p><b> If a language has determiners, specify how the nominalized verb resulting from this strategy interacts with determiners.</b></p>"
 
 
 Radio det "Nominalization Strategy {i} determiner" "<p>For nominalized verbs of this type, a determiner is: " "</p>"
@@ -2271,7 +2272,7 @@ Label "</div>"
 
 Label "<p></p>"
 
-Label "<p> <b>Specifiy whether this strategy acts on intransitive or transitive verbs.</b>
+Label "<p> <b>Specify whether this strategy acts on intransitive or transitive verbs.</b>
            If both intransitive and transitive verbs are selected, only create 
            an LRT on the Morphology page corresponding to the transitive verb,
            but which can still take both intransitive and transitive verbs as input.
@@ -2345,7 +2346,7 @@ only include strategies used on the A, even if the P is also marked as a syntact
     EndIter nmz_poss_strat
 
 
-Radio non_sent_sem "Nominalization Strategy {i} Relation" "<br><br><b>When the nominalized verb appears with a syntactic possessor the semantic represenation should: </b><br>
+Radio non_sent_sem "Nominalization Strategy {i} Relation" "<br><br><b>When the nominalized verb appears with a syntactic possessor the semantic representation should: </b><br>
   </b><br>" ""
     . both  "both" "" "Include both the possessive and verbal semantics (the argument marked by the possessive strategy will be interpretated as both a verbal argument and a possessor)<br>" 
     . verb-only "verb-only" "" "Include only the verbal semantics (the argument marked by the possessive strategy will be interpretated
@@ -3280,7 +3281,7 @@ EndIter normadp
 
 Label "<p> The button below (Add a Semantically Empty Adposition) can be used to create
             case-marking and/or information structural adpositions
-            by adding the appropiate feature constraints to an adposition.
+            by adding the appropriate feature constraints to an adposition.
             If no feature constraints are added to an adposition then it will automatically
             be assigned a form value consisting of its orthography followed by <i>_sem</i>.
             This form value can be used on the Morphology page to mark the
