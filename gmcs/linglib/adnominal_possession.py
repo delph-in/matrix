@@ -351,10 +351,10 @@ def check_hc_order_manip(ch, strat, hc):
 
 """
 Checks to see if there are any nominalization strategies that use 
-the possessive strategies and returns a list of the strategies along
+possessive strategies and returns a list of the possessive strategies along
 with their semantic types.
 
-arguments: ch = choices file
+arguments: ch = choices file object
 returns: a list of tuples containing (poss_strategy_name, semantic type)
 semantic type can be either 'both', 'verb-only'. 'noun-only'
 
@@ -415,7 +415,6 @@ has_nmz: boolean specifying whether ANCs in a language use any possessive strate
 
 def add_juxt_semantics(mylang, phrase_rule, noun_phrase_rule, anc_phrase_rule, anc_strat, nmz_wo, has_nmz):
         #semantic constraints common to both the noun and anc versions of the poss-phrase rule
-
         common_constraints = '[HEAD-DTR.SYNSEM.LOCAL [ CONT.HOOK #hook & [LTOP #lbl,\
                                                                                  INDEX #possessum & [COG-ST uniq-id]]],\
                                             C-CONT [ HCONS.LIST < qeq & [ HARG #harg, LARG #lbl]  >,\
@@ -493,8 +492,6 @@ def handle_poss_unary_word_order(mylang, rules, strat, head_spec_order, order_mi
                                   NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSSESSOR nonpossessive].'
 
     if strat.get('order') == 'either':
-
-
         #Regular non-head compositional version of the head-spec rule
         mylang.add('non-head-comp-head-spec-phrase := head-spec-phrase &' + general_non_head_compositional)
         mylang.add('non-head-comp-spec-head-phrase := spec-head-phrase &' + general_non_head_compositional)
@@ -505,6 +502,7 @@ def handle_poss_unary_word_order(mylang, rules, strat, head_spec_order, order_mi
         rules.add('noun-head-spec:= noun-head-spec-phrase.')
         rules.add('noun-spec-head:= noun-spec-head-phrase.')
 
+        #head-compositional version of the head-spec rule used only by nominalized verbs
         if anc_strat is not None:
             mylang.add('anc-head-spec-phrase := head-spec-phrase &' + anc_head_compositional)
             mylang.add('anc-spec-head-phrase := spec-head-phrase &' + anc_head_compositional)
@@ -536,6 +534,7 @@ def handle_poss_unary_word_order(mylang, rules, strat, head_spec_order, order_mi
         rules.add('noun-head-spec:= noun-head-spec-phrase.')
         rules.add('noun-spec-head:= noun-spec-head-phrase.')
 
+        #head-compositional version of the head-spec rule used only by nominalized verbs
         if anc_strat is not None:
             mylang.add('anc-'+ hs_phrase_name + '-phrase := ' + hs_phrase_name + '-phrase &' + anc_head_compositional)
             rules.add('anc-' + hs_phrase_name + ':= anc-' + hs_phrase_name + '-phrase.')
@@ -578,7 +577,6 @@ has_nmz: boolean specifying whether ANCs in a language use any possessive strate
 
 def add_poss_unary_semantics(mylang, rules, anc_strat, phrase_rule, noun_phrase_rule, anc_phrase_rule, has_nmz):
     #semantic constraints common to both the noun and anc versions of the poss-unary phrase rule
-
     common_constraints = '[SYNSEM [LOCAL [CAT.VAL.SPEC < [ LOCAL.CONT.HOOK [ INDEX #possessum & [ COG-ST uniq-id ], \
 				      		      	                      LTOP #lbl ] ] >]], \
                                               C-CONT [ HCONS.LIST < qeq & [ HARG #harg, LARG #lbl ] >, \
@@ -618,7 +616,7 @@ def add_poss_unary_semantics(mylang, rules, anc_strat, phrase_rule, noun_phrase_
        
 
 """
-Add the noun and anc varients (if necessary) of poss-phrase, the head-spec rules, and poss-unary
+Add the noun and anc varients (if necessary) of poss-phrase, the head-spec rules, and the poss-unary rule
 for specifier possessive strategies
 """
 
@@ -1356,7 +1354,7 @@ def customize_possessor_pron_irules(ch, mylang, strat_name, feat, lrt, mod_spec,
             if item[0] == strat_name:
                 sem_type = item[1]
 
-    #Signifies that the lrt is the one automatically added to the choices file to 
+    #This lrt is added automatically to the choices file to 
     #be used by action nominals
     if feat['value'] == 'ANC':
         anc_strat = True
@@ -1435,7 +1433,7 @@ def customize_possessor_pron_irules(ch, mylang, strat_name, feat, lrt, mod_spec,
         # Add constraints to pronoun affix rule for spec version
         if mod_spec == 'spec':
             if not anc_strat:
-                #Add all syntactic constraints to the lrt used by non-derived noun
+                #Add all syntactic constraints to the lrt used by non-derived nouns
                 mylang.add(get_name(lrt)+ '-lex-rule '+ spec_lrt_syn_constraints)
 
                 #Add semantic constraints for non-derived nouns

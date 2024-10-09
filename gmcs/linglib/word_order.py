@@ -731,10 +731,10 @@ def specialize_word_order(hc, orders, mylang, ch, rules):
 
 
 
-#The following function handles word order in ANCS and is 
+#The following function handles word order in ANCs and is 
 #modeled after customize_major_constituent_order following the same
 #basic logic just switching head-subj rules with the appropriate
-#possessor-possessum combining rule in ANCS 
+#possessor-possessum combining rule in ANCs
 def customize_nmz_clause_word_order(mylang, ch, rules, nmz_wo, hs):
 
     if nmz_wo is None:
@@ -791,7 +791,7 @@ def customize_nmz_clause_word_order(mylang, ch, rules, nmz_wo, hs):
             mylang.add(hc + '-phrase := [NON-HEAD-DTR.SYNSEM.OPT -].')
 
     #Complements attach before specifiers
-    #This step has to be done in the adnominal_possessives.py
+    #This step has to be done in adnominal_possessives.py
     #for the juxtaposition rule
     if nmz_wo in ['ovs', 'vos', 'sov', 'svo']:
         if hs == 'head-spec' or hs == 'spec-head':
@@ -855,8 +855,6 @@ def customize_nmz_clause_word_order(mylang, ch, rules, nmz_wo, hs):
     # v2 word order    
 
     if nmz_wo == 'v2' and verb_wo != 'v2':
-        #mylang.add('verbal-head-nexus := headed-phrase & \
-        #        [ SYNSEM.LOCAL.CAT.HEAD verb ].')
         if verb_wo == 'free':
             head_initial_nexus = 'head-initial-head-nexus-anc-v2'
             head_final_nexus = 'head-final-head-nexus-anc-v2' 

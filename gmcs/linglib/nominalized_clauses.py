@@ -227,12 +227,11 @@ def get_nmz_lexrules(ch):
 
 def need_specialized_head_spec(ch):
     '''
-    Called by word_order.py and adnominal_possession.py
-    and determines whether a [NMZ +] version of the head-spec-phrase rule is needed. 
-    Needed if there is at least one nominalization possessive strategy 
-    that uses the poss-unary-phrase rule.
+    Determines whether a [NMZ +] version of the head-spec-phrase rule is needed. 
+    This is needed if there is at least one possessive strategy 
+    used in nominalized clauses which uses the poss-unary-phrase rule.
     @param ch: the entire choices object
-    @return: True is a [NMZ +] subtype of the head-spec-phrase rule is necessary
+    @return: True if a [NMZ +] subtype of the head-spec-phrase rule is necessary
     '''
     
     for strat in ch.get('nmz_poss_strat', []):
@@ -249,14 +248,17 @@ def need_specialized_head_spec(ch):
 
 def add_sem_empty_adp(mylang, nmz_lrt, type_name, geom, arg):
     '''
-    Writes the feature path for semantically empty adpositions
+    Writes the [HEAD adp] value for semantically empty adpositions in nominalization lrts
     @param mylang:
     @param nmz_lrt: nominalization lrt
     @param type_name: name of the nominalization lrt
-    @param geom: feature path
+    @param geom: HEAD feature path
     @param arg: obj or subj or obj2
     '''
     for feat in nmz_lrt['feat']:
+        #Only add [HEAD adp] for semantically empty adpositions (which are neither case or
+        #informational structure marking). These adpositions have a form value ending in
+        #"_sem"
         if feat['name'] == 'form' and feat['value'].endswith("_sem"):
             head = feat['head']
             if head == arg:
@@ -265,7 +267,7 @@ def add_sem_empty_adp(mylang, nmz_lrt, type_name, geom, arg):
 
 def write_head_type(ch, mylang, nmz_lrt, type_name, geom, arg):
     '''
-     Writes the head value for case-marked arguments
+    Writes the head value for case-marked arguments
     @param mylang:
     @param nmz_lrt: nominalization lrt
     @param type_name: name of the nominalization lrt
@@ -280,8 +282,9 @@ def write_head_type(ch, mylang, nmz_lrt, type_name, geom, arg):
 
 def customize_non_user_nmz_features(ch, mylang, nmz_lrt, val, pos, type_name, geom):
     '''
-    Adds all constraints to the nominalization lrts that will not be handled by them morphotactics library.
-    This includes the HEAD value of case-marked arguments, the FORM value of semantically empty adps, and the ADV-MOD feature
+    Adds all constraints to nominalization lrts that will not be handled by the morphotactics library.
+    This includes the HEAD value of case-marked and semantically emtpy adp arguments, 
+    the FORM value of semantically empty adps, and the ADV-MOD feature.
     @param ch:  the entire choices object
     @param mylang:
     @param nmz_lrt: nominalization lrt
@@ -346,12 +349,11 @@ def customize_non_user_nmz_features(ch, mylang, nmz_lrt, val, pos, type_name, ge
 
 def get_nmz_clause_wo(ch):
     '''
-    Called by word_order.py and adnominal_possession.py
-    Returns the word order in ANCs for the relevant strategies (poss-acc/erg-poss/nominal).
-    Converts the value for erg-poss. The semantic agent (S) becomes the syntactic object (O)
-    and the semantic object (O) becomes the syntactic specifer (S).
+    Returns the word order in ANCs for the relevant nominalization strategies (poss-acc/erg-poss/nominal).
+    Converts the value for erg-poss (the semantic agent (S) becomes the syntactic object (O)
+    and the semantic object (O) becomes the syntactic specifer (S)).
     @param ch:  the entire choices object
-    @return: nmz_wo (a string consisting of the word order within ANCs)
+    @return: nmz_wo:a string consisting of the word order within ANCs
     '''
     erg_poss_conversion =  {"sov": "osv",
                             "svo": "ovs",
@@ -382,7 +384,7 @@ def needs_anc_wo_feat(ch):
     '''
     Determines if the ANC-WO feature is necessary for a choices file
     @param ch:  the entire choices object
-    @return: needs_anc_wo (a boolean indicating whether the ANC-WO feature is necessary for the choices file)
+    @return: needs_anc_wo:a boolean indicating whether the ANC-WO feature is necessary for the choices file
     '''
     head_final_wo = ['sov', 'osv', 'ovs', 'v-final']
     head_init_wo = ['svo', 'vos', 'vso', 'v-initial']
@@ -392,8 +394,7 @@ def needs_anc_wo_feat(ch):
 
     needs_anc_wo = False
 
-    #The ANC-WO feature is necessary whenever an additional head-comp rule needs 
-    #to be added which is exclusive to POSS-ACC/ERG-POSS/NOMINAL ANCS
+    #The ANC-WO feature is necessary whenever an additional head-comp rule needs to be added
     if (nmz_wo in head_final_wo and verb_wo in head_init_wo) or (nmz_wo in head_init_wo and verb_wo in head_final_wo) or  nmz_wo in ['vso', 'osv'] or (verb_wo in ['free', 'v2'] and nmz_wo not in ['free', 'v2']):
         needs_anc_wo = True
     if nmz_wo in ['free', 'v2']:
@@ -409,7 +410,7 @@ def need_det_rules(ch, ns):
     '''
     Determines if a nominalization strategy allows for action nominals which take both a determiner and a syntactic possessor
     @param ch:  the entire choices object
-    @param na:  a nominalization strategy
+    @param ns:  a nominalization strategy
     @return: boolean indicating whether the ns allows for both a determiner and a syntactic possesor
     '''
     if not ch.get('has-dets'):
@@ -501,10 +502,10 @@ def add_anc_lexrules(ch):
                         if rules_created:
                             break
 
-    #Three situations where an additional lrt has to be added based on an existing nominalization lrt 
-    #(1) If the 'single-arg' option is selected for a nominalization strategy add the COMPS [OPT +] version of the nominalization lrt
-    #(2) if the strategy applies to both transitive and intransitive verbs, add an intransitive version of the nominalization lrt
-    #(2) if the strategy can take determiners in addition to possessors, add a nonpossessive version of the rule to the get the correct semantics
+    #Three situations where an additional lrt has to be added to the choices object based on an existing nominalization lrt 
+    #(1) If the 'single-arg' option is selected for a nominalization strategy, add a COMPS [OPT +] version of the nominalization lrt
+    #(2) if the strategy applies to both transitive and intransitive verbs, add an intransitive version of the transitive nominalization lrt
+    #(3) if the strategy can take determiners in addition to possessors, add a version of the rule that takes a determiner only to get the correct semantics
     for pc in ch['verb-pc']:
         real_rule_num = len(pc['lrt'])
         counter = 0
@@ -580,7 +581,7 @@ def add_anc_lexrules(ch):
                                     ch[lrt_key + '_forbid' + str(forbid_num) +'_others'] = forbid['others']
                                     forbid_num += 1
                             
-                            #The nominalization strategy can use determiners instead of a possessor
+                            #The nominalization strategy can use determiners as well as a possessor
                             if  need_det_rules(ch, ns):
                                 rules_created = True
                                 idx = ch[pc.full_key + '_lrt'].next_iter_num()
@@ -618,6 +619,8 @@ def add_anc_lexrules(ch):
                     if rules_created:
                         break
 
+   #Go back through the rules and ensure any intransitive lrts added in the previous loop 
+   #also get determiner varients if needed
     for pc in ch['verb-pc']:
         real_rule_num = len(pc['lrt'])
         counter = 0
@@ -631,13 +634,13 @@ def add_anc_lexrules(ch):
                 if feat['name'] == 'nominalization':
                     nmz_strat = feat['value'] 
                     for feat in lrt['feat']:
+                        #Intransitive lrt not added the user, but the above loop
                         if feat['name'] == 'valence_intransitive':
                             needs_intrans = True
                     if not needs_intrans:
                         continue
                     rules_created = False
                     for ns in ch.get('ns'):
-                        #The nominalization strategy can use determiners instead of a possessor (have to do this step after all other rules are added)
                         if ns.get('name') == nmz_strat and need_det_rules(ch, ns):
                             rules_created = True
                             idx = ch[pc.full_key + '_lrt'].next_iter_num()
@@ -676,9 +679,11 @@ def add_anc_lexrules(ch):
 
 def update_lexical_rules(mylang, ch):
     """
-    Create appropriate lexical rule subtypes for nominalization.
     Add an appropriate supertype to each nominalizing verbal position class.
     Also adds any features to the nominalization lrt that will not be handled by the morphotactics library
+    by calling   customize_non_user_nmz_features
+    @param mylang: 
+    @param ch:  the entire choices object    
     """
     path_subj = 'SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CAT.HEAD'
     path_comps = 'SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD'
@@ -714,7 +719,7 @@ def update_lexical_rules(mylang, ch):
                 det_rules = False
                 if need_det_rules(ch, ns):
                     for feat in lrt['feat']:
-                        #lrt added by add_anc_lexrules for the action nominals which take determiners instead of possessors
+                        #lrt added by add_anc_lexrules for action nominals which take determiners instead of possessors
                         if feat['name'] == "anc_det":
                             det_rules = True
 
@@ -752,7 +757,6 @@ def update_lexical_rules(mylang, ch):
                             lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') +
                                                     ['comp-obj-trans-lex-rule'])
                         if has_poss_strats:
-                            mylang.add(get_name(lrt) + '-lex-rule :=' + non_poss_comp)
                             mylang.add(get_name(lrt) + '-lex-rule := [SYNSEM.LOCAL.CAT.VAL.COMPS < [LOCAL.CAT [HEAD.POSSESSOR nonpossessive, \
                                                                         POSSESSUM nonpossessive]], [LOCAL.CAT [HEAD.POSSESSOR nonpossessive, \
                                                                         POSSESSUM nonpossessive]] >].')
@@ -819,6 +823,11 @@ def add_nmz_feature(mylang):
 
 
 def add_anc_lex_supertype(mylang, ch): 
+    """
+    Add the supertype shared by all nominalization lrts (anc-lex-rule)
+    @param mylang: 
+    @param ch: the entire choices object 
+    """
     mylang.set_section('lexrules')
     mylang.add(ANC_LEX_RULE)
     if ('poss-strat' in ch or 'poss-pron' in ch):
@@ -829,7 +838,10 @@ def add_anc_lex_supertype(mylang, ch):
 
 def add_nmz_clause_phrases(ch, mylang, rules):
     """
-    Add the non-branching rule for sentential nominalization which turns a nominalized clause into a NP.
+    Add the non-branching rule for sentential/alt-sent nominalization which turns a nominalized clause into a NP.
+    @param ch: the entire choices object
+    @param mylang: 
+    @param rules: 
     """
     mylang.set_section('phrases')
     mylang.add(HIGH_NMZ_CLAUSE)
@@ -840,12 +852,13 @@ def add_nmz_clause_phrases(ch, mylang, rules):
 
 def add_nmz_lexrules(ch, mylang, ns, nmz_type, single_arg, arg_order):
     """
-    Add appropriate lexical rules.
+    Add the appropriate nominalization lexical rule types.
+    @param ch: the entire choices object
     @param mylang: .
     @param ns: the nominalizaition strategy object
     @param nmz_type: sentential, alt-sent, all-comps, poss-acc, erg-poss, or nominal.
     @param single_arg: the 'single-arg' choice for ns (on or off)
-    @param arg-order: which argument serves as the first complement for all-comps (agent or patient)
+    @param arg-order: which argument serves as the first complement for all-comps (agent-like or patient-like)
     """
     intrans = False
     trans= False
@@ -936,8 +949,10 @@ def add_nmz_lexrules(ch, mylang, ns, nmz_type, single_arg, arg_order):
 
 def add_nmz_mod_constraints(ch, mylang):
     '''
-    Add ADV-MOD feature to addenda, verb, nouns, adverb-lex-item and to all the nominalization lrts.
+    Add the ADV-MOD feature to addenda, verb, nouns, adverb-lex-item and to all the nominalization lrts.
     The ADV-MOD feature is added to adjective lexical types within lexical_items.py
+    @param ch: the entire choices object
+    @param mylang:
     '''
     mylang.set_section('addenda')
     mylang.add('head :+ [ ADV-MOD luk ].')
@@ -953,6 +968,8 @@ def add_nmz_mod_constraints(ch, mylang):
 def add_anc_coord_constraints(mylang, ch):
         '''
         Add constraints related to coordination
+        @param ch: the entire choices object
+        @param mylang:
         '''
         mylang.set_section('addenda')
         mylang.add('bottom-coord-phrase :+ [ SYNSEM.LOCAL.CAT.HEAD.NMZ #nmz,\
@@ -969,7 +986,7 @@ def add_anc_coord_constraints(mylang, ch):
                 has_nmz_rel = True
                 break    
 
-        #Needed to force SENT/ALT-SENT nominalized verbs to go through the high-nominalization phrase   
+        #Needed to force SENT/ALT-SENT nominalized verbs to go through the high-nominalization phrase structure rule 
         if has_nmz_rel:
             mylang.add('np-coord-phrase :+ [ LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX ref-ind, \
                                             RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX ref-ind].')
@@ -980,6 +997,8 @@ def handle_anc_spr_restrictions(mylang, ch):
     '''
     Add constraints related to the behavior of specifers for 
     poss-acc/erg-poss/nominal/all-comps nominalization types
+    @param mylang:
+    @param ch: the entire choices object
     '''                        
     for lrt, val, vpc in get_nmz_lexrules(ch):
         for ns in ch.get('ns'):
@@ -1003,6 +1022,8 @@ def set_anc_wo_value(ch, mylang):
     '''
     Set the ANC-WO value for all action nominals as well as for other lexical items
     which take complements
+    @param mylang:
+    @param ch: the entire choices object
     ''' 
     mylang.add('head :+ [ ANC-WO bool ].', 'The ANC-WO feature is added to certain languages to handle word order in\n' +
        'action nominal constructions (ANCs). [ANC-WO +] indicates that an action nominal (nominalized verb) uses a word order\n' +
