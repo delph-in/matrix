@@ -1,4 +1,3 @@
-# from sets import Set
 from gmcs.linglib.parameters import determine_vcluster
 from gmcs.linglib.lexical_items import update_lex_items_vcluster
 from gmcs.linglib.clausalcomps import extraposed_comps
