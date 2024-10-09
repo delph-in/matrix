@@ -5,7 +5,7 @@ Section general "General Information"
 Label "<h3>Language</h3>"
 
 Text language "Language name" "<p>Name of your language: " "<br>" 50
-Text iso-code "ISO code" "<a href=\"http://www.sil.org/iso639-3/codes.asp\">ISO code</a> for your language: " " (optional) </p>" 6
+Text iso-code "ISO code" "<a href=\"https://iso639-3.sil.org/code_tables/639/data\">ISO code</a> for your language: " " (optional) </p>" 6
 
 Label "<h3>String-processing</h3><p>Your grammar will include a basic tokenizer file for string-level processing (<span class='tt'>vanilla.rpp</span>, see <a href='https://github.com/delph-in/docs/wiki/ReppTop/'>ReppTop</a> documentation).  We have three default options for this file.  If you do not answer, your grammar will include a tokenizer which will discard most ascii punctuation (except the hyphen, colon, and equals [-,:,=]).<br />"
 
@@ -3681,7 +3681,7 @@ Separator
 
 Section toolbox-import "Import Toolbox Lexicon"
 
-Label "<p><a href=\"http://www.sil.org/computing/toolbox\">Toolbox</a>
+Label "<p><a href=\"https://software.sil.org/toolbox/\">Toolbox</a>
 is a tool provided by SIL and used by many field linguists. This page
 allows you to automatically create lexical entries for your Grammar
 Matrix grammar on the basis of lexical entries in a Toolbox lexicon.
