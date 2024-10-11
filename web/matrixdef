@@ -790,9 +790,11 @@ BeginIter scale{i} "a Scale Entry" 1
 
 EndIter scale
 
-Select scale-equal "Direction when equal" "<p>When the agent and patient have the same scale value, the main verb is " "<br>(The other form may be something like a reflexive.  If you select \"some other form\", the resulting grammar will not parse sentences where the agent and patient are equally ranked.  You will need to edit the starter grammar manually to add the other form.)</p>"
-. direct "Direct" "direct"
-. other "Some other form" "some other form"
+Radio scale-equal "Direction when equal" "<p>When the agent and patient have the same scale value, the main verb is:</p>" ""
+. direct "direct" "" "direct"
+. other "other" "" "Some other form"
+
+Label "<p>The other form may be something like a reflexive.  If you select some other form, the resulting grammar will not parse sentences where the agent and patient are equally ranked.  You will need to edit the starter grammar manually to add the other form.</p>"
 
 
 Section tense-aspect-mood "Tense, Aspect and Mood"
