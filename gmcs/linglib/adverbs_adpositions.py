@@ -1,15 +1,8 @@
-'''
+"""
 This is not a fully fledged library.
 Below is what was added along with the Constituent (Wh-) Questions library, mostly for testing purposes.
 olzama@uw.edu
-'''
-
-from gmcs.utils import get_name, TDLencode, orth_encode
-
-from gmcs import constants
-
-# Constants
-
+"""
 
 def customize_adv_adp(ch, mylang, rules):
     # need to handle also adjectives here

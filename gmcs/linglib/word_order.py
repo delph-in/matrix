@@ -3,13 +3,13 @@ from gmcs.linglib.lexical_items import update_lex_items_vcluster
 from gmcs.linglib.clausalcomps import extraposed_comps
 
 ######################################################################
-# customize_word_order()
-#   Create the type definitions associated with the user's choices
-#   about basic word order, including information about adpositions
-#   and auxiliaries.
-
 
 def customize_word_order(mylang, ch, rules):
+    """
+    Create the type definitions associated with the user's choices
+    about basic word order, including information about adpositions
+    and auxiliaries.
+    """
 
     wo = ch.get('word-order')
 
@@ -722,9 +722,8 @@ def specialize_word_order(hc, orders, mylang, ch, rules):
 #                'comp-head-phrase is only for auxiliaries.')
 
 
-# ERB 2006-09-15 Subroutine for handling NP rules.
-
 def customize_np_word_order(mylang, ch, rules):
+    """ERB 2006-09-15 Subroutine for handling NP rules."""
 
     if ch.get('has-dets') == 'yes':
         mylang.add(
@@ -750,13 +749,14 @@ def customize_np_word_order(mylang, ch, rules):
                'the semantic effect of bare NPs in your language.')
     rules.add('bare-np := bare-np-phrase.')
 
-# OZ 2017-11-13 A subroutine to create appropriate phrase structure rules
-# for subordinate clauses, if needed. Currently only supports V2 matrix order
-# with V-final subordinate order. If the subordinate word order is the same
-# as in the matrix clause, no work needs to be done here.
-
 
 def customize_subord_word_order(mylang, ch, wo, rules):
+    """
+    OZ 2017-11-13 A subroutine to create appropriate phrase structure rules
+    for subordinate clauses, if needed. Currently only supports V2 matrix order
+    with V-final subordinate order. If the subordinate word order is the same
+    as in the matrix clause, no work needs to be done here.
+    """
     if 'subord-word-order' in ch:
         if ch.get('subord-word-order') == 'vfinal' and wo == 'v2':
             mylang.add('subord-phrase := head-final &\n'
@@ -793,13 +793,14 @@ def customize_subord_word_order(mylang, ch, wo, rules):
                     mylang.add('basic-head-spec-phrase :+ [ SYNSEM.LOCAL.CAT.VC #vc,'
                                'HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc ].')
 
-# ERB 2006-09-14 Subroutine for figuring out the relationship of major
-# constituent order to adpositions and auxiliaries.  Returns two values:
-# for adp and aux.  It takes in the values of wo and hc determined in
-# the course of creating the basic word order rules.
-
 
 def determine_consistent_order(wo, hc, ch):
+    """
+    ERB 2006-09-14 Subroutine for figuring out the relationship of major
+    constituent order to adpositions and auxiliaries.  Returns two values:
+    for adp and aux.  It takes in the values of wo and hc determined in
+    the course of creating the basic word order rules.
+    """
 
     adp = 'easy'
     aux = 'easy'

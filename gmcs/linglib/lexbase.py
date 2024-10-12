@@ -260,8 +260,6 @@ class MorphotacticNode(HierarchyNode):
 
 
 class PositionClass(MorphotacticNode):
-    """
-    """
 
     def __init__(self, key, name, parents=None, order=None,
                  identifier_suffix=None, lex_rule=True):
@@ -344,8 +342,10 @@ class PositionClass(MorphotacticNode):
         return False
 
     def has_incorporated_stems(self):
-        # 2014-08-21 TJT: Keep track of whether a PositionClass has
-        # Incorporated Stem Lexical Rule Instances
+        """
+        2014-08-21 TJT: Keep track of whether a PositionClass has
+        Incorporated Stem Lexical Rule Instances.
+        """
         if self._has_is == None:  # Only do this once
             for lrt in self.nodes.values():
                 for lri in lrt.lris:
@@ -410,13 +410,9 @@ class LexicalRuleType(MorphotacticNode):
         # return set(parents).union(self.supertypes)
         return set(parents).union(self.supertypes).difference(self.pc.supertypes)
 
-# TJT 2014-08-21: Class for keeping Lexical Rule Instances and their
-# predicates together
-
-
 class LexicalRuleInstance:
     """
-    Store LRI name and pred together
+    Class for keeping Lexical Rule Instances and their predicates together
     """
 
     def __init__(self, name, pred=None):

@@ -226,7 +226,7 @@ SUBJ_NMZ_CLAUSE = '-nominalized-clause-phrase := unary-phrase &\
 
 def customize_nmcs(mylang, ch, rules, roots):
     """
-    the main nominalized clause customization routine
+    The main nominalized clause customization routine.
     """
     update_lexical_rules(mylang, ch)
     for ns in ch.get('ns'):
@@ -379,8 +379,7 @@ def get_head_type(arg, lrt, ch):
 
 def get_nmz_lexrules(ch):
     """
-    Collect all lexical rule types from verbal
-    position classes that involve nominalization.
+    Collect all lexical rule types from verbal position classes that involve nominalization.
     @param ch:
     @return: rules (list of tuples (lrt, nominalization_value (e.g. "low")).
     """

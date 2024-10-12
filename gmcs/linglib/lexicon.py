@@ -1,7 +1,6 @@
 from collections import defaultdict
 
 from gmcs.linglib import case
-#from gmcs.linglib import lexical_items
 from gmcs.utils import get_name
 from gmcs import constants
 from gmcs.constants import MTRX_FRONT
@@ -209,11 +208,9 @@ def get_lt_name(key, choices):
         return '-'.join([name, lex_st.rsplit('-lex', 1)[0]])
 
 ######################################################################
-# validate_lexicon(ch, vr)
-#   Validate the user's choices about the test lexicon.
-
 
 def validate_lexicon(ch, vr):
+    """Validate the user's choices about the test lexicon."""
     # This variable is used to check if the inheritance hierarchy
     # of lexicon types has a cycle
     contain_cycle = False

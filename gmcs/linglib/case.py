@@ -5,16 +5,13 @@ from gmcs.utils import get_name
 
 
 ######################################################################
-# customize_case()
-#   Create the type definitions associated with the user's choices
-#   about case.
 
-# case_names()
-#   Create and return a list containing information about the cases
-#   in the language described by the current choices.  This list consists
-#   of tuples with three values:
-#     [canonical name, friendly name, abbreviation]
 def case_names(ch):
+    """
+    Create and return a list containing information about the cases
+    in the language described by the current choices.  This list consists
+    of tuples with three values: [canonical name, friendly name, abbreviation].
+    """
     # first, make two lists: the canonical and user-provided case names
     cm = ch.get('case-marking')
     canon = []
@@ -79,21 +76,23 @@ def case_names(ch):
 
     return list(zip(canon, user, abbrev))
 
-
-# Given the canonical (i.e. choices variable) name of a case, return
-# its abbreviation from the list of cases, which should be created by
-# calling case_names().  If there is no abbreviation, return the name.
 def canon_to_abbr(name, cases):
+    """
+    Given the canonical (i.e. choices variable) name of a case, return
+    its abbreviation from the list of cases, which should be created by
+    calling case_names(). If there is no abbreviation, return the name.
+    """
     for c in cases:
         if c[0] == name:
             return c[2]
     return name
 
-
-# Given the name of a case, return its abbreviation from the list of
-# cases, which should be created by calling case_names().  If there
-# is no abbreviation, return the name.
 def name_to_abbr(name, cases):
+    """
+    Given the name of a case, return its abbreviation from the list of
+    cases, which should be created by calling case_names(). If there
+    is no abbreviation, return the name.
+    """
     for c in cases:
         if c[1] == name:
             return c[2]
@@ -173,17 +172,13 @@ def init_case_hierarchy(ch, hierarchies):
     if not hier.is_empty():
         hierarchies[hier.name] = hier
 
-
-# customize_case_type()
-#   Create a type for case
 def customize_case_type(mylang, hierarchies):
+    """Create a type for case."""
     if 'case' in hierarchies:
         hierarchies['case'].save(mylang)
 
-
-# customize_trigger_rules()
-#   Create trigger rules for case-marking adpositions
 def customize_trigger_rules(adp_type, trigger):
+    """Create trigger rules for case-marking adpositions."""
     grdef1 = adp_type + '_gr_1 := arg0e_gtr & \
                   [ CONTEXT [ RELS.LIST <  [ ARG1 individual & #i ] > ], \
                     FLAGS [ SUBSUME < #i >, TRIGGER "' + adp_type + '" ] ].'
@@ -198,10 +193,8 @@ def customize_trigger_rules(adp_type, trigger):
     trigger.add(grdef2)
     trigger.add(grdef3)
 
-
-# customize_case_adpositions()
-#   Create the appropriate types for case-marking adpositions
 def customize_case_adpositions(mylang, lexicon, trigger, ch, case_pos):
+    """Create the appropriate types for case-marking adpositions."""
     cases = case_names(ch)
     # features = ch.features()
     to_cfv = []
@@ -405,10 +398,10 @@ def add_lexrules(ch):
 
 
 def interpret_verb_valence(valence):
-    '''
+    """
     Return the canonical valence name (e.g. iverb, tverb) given the
     valence for a verb as defined in a choices file.
-    '''
+    """
     if valence == 'trans' or '-' in valence:
         return 'tverb'
     else:
@@ -566,14 +559,12 @@ def customize_verb_case(mylang, ch):
                     mylang.add(typedef)
 
 
-'''
-OZ 2020-06-09
-This is a reduced duplicate of the customize_verb_case() function; I did 
-not want to make it any more long or complex.
-'''
-
-
 def get_verb_case(ch):
+    """
+    OZ 2020-06-09
+    This is a reduced duplicate of the customize_verb_case() function; I did 
+    not want to make it any more long or complex.
+    """
     cases = case_names(ch)
     mycases = {'tran': None, 'intran': None}
     for p in ch.patterns():
@@ -645,10 +636,12 @@ def validate(choices, vr):
 
 
 ######################################################################
-# validate_one_case(pre)
-#   A helper function to validate the user's choices about one case.
-#   pre is the first few characters of the associated choices names
-#  (e.g. 'nom-acc-nom')
+
 def validate_one_case(ch, vr, pre):
+    """
+    A helper function to validate the user's choices about one case.
+    pre is the first few characters of the associated choices names
+    (e.g. 'nom-acc-nom').
+    """
     if not ch.get(pre + '-case-name'):
         vr.err(pre + '-case-name', 'You must specify a name for every case.')

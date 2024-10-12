@@ -2,12 +2,12 @@ from gmcs.utils import TDLencode
 from gmcs.utils import orth_encode
 
 ######################################################################
-# customize_sentential_negation()
-#   Create the type definitions associated with the user's choices
-#   about sentential negation.
-
 
 def customize_sentential_negation(mylang, ch, lexicon, rules, lrules, hierarchies):
+    """
+    Create the type definitions associated with the user's choices
+    about sentential negation.
+    """
     # JDC 2012-06-01 Nowadays this function is something like
     # the entry point for the sentential negation library.
     # So it makes sense to put some notes here.

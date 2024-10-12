@@ -60,8 +60,6 @@ def qpart_id(item):
     return get_name(item) + '-lex'
 
 ##########################################################
-# insert_ids()
-
 
 def insert_ids(ch):
     """
@@ -132,7 +130,6 @@ def insert_ids(ch):
 
 
 ##########################################################
-# customize_verbs()
 
 def customize_bipartite_stems(ch):
     """
@@ -467,9 +464,8 @@ def construct_supertype_names(cases, ch, stype_names, verb):
         elif (not dir_inv == '' or not tivity == ''):
             stype_names.append(dir_inv + tivity + 'itive-verb-lex')
 
-
-# Returns the verb type for lexical/main verbs.
 def main_or_verb(ch):
+    """Returns the verb type for lexical/main verbs."""
     if ch.get('has-aux') == 'yes':
         return 'main-verb-lex'
     else:
@@ -1199,11 +1195,11 @@ def customize_adpositions(mylang, lexicon, ch, hierarchies):
 
 
 ######################################################################
-# customize_lexicon()
-#   Create the type definitions associated with the user's test
-#   lexicon.
 
 def customize_lexicon(mylang, ch, lexicon, trigger, hierarchies, rules):
+    """
+    Create the type definitions associated with the user's test lexicon.
+    """
 
     comment = '''Type assigning empty mod list. Added to basic types for nouns, verbs and determiners.'''
     mylang.add('non-mod-lex-item := lex-item & \
