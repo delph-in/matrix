@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
-'''
+"""
 Run these tests with `python -m tests.unit.validate_test` from the matrix directory.
-'''
+"""
 
 import unittest
 from gmcs.choices import ChoicesFile
 from gmcs.validate import validate
 
-
 class TestValidate(unittest.TestCase):
 
-    # Methods for asserting the presence of errors and warnings when
-    # a ChoicesFile is put through validation
-
     def assertErrorsOrWarnings(self, c, variables, errors):
+        """
+        Methods for asserting the presence of errors and warnings when
+        # a ChoicesFile is put through validation.
+        """
         vr = validate(c)
         for v in variables:
             if errors:
