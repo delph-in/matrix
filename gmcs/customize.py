@@ -55,12 +55,12 @@ vpm = None
 
 
 ######################################################################
-# customize_punctuation(grammar_path)
-#   Determine which punctuation characters to ignore in parsing
 
 def customize_punctuation(grammar_path):
-    '''sets up repp preprocessing for lkb according to one of
-       three choices on the questionnaire.  '''
+    """
+    Determines which punctuation characters to ignore in parsing and sets up 
+    repp preprocessing for lkb according to one of three choices on the questionnaire.
+    """
     # TODO: pet.set output needs to be updated for
     # current questionnaire choices and for repp!
 
@@ -111,10 +111,12 @@ def customize_punctuation(grammar_path):
 
 
 ######################################################################
-# customize_test_sentences(grammar_path)
-#   Create the script file entries for the user's test sentences.
 
 def customize_test_sentences(grammar_path):
+    """
+    Create the script file entries for the user's test sentences.
+    """
+    
     try:
         with open(os.path.join(grammar_path, 'lkb/script'), 'r', encoding='utf-8') as b:
             lines = b.readlines()
@@ -188,9 +190,6 @@ def customize_script(grammar_path):
         pass
 
 ######################################################################
-# customize_pettdl()
-#
-
 
 def customize_pettdl(grammar_path):
     try:
@@ -212,9 +211,6 @@ def customize_pettdl(grammar_path):
         pass
 
 ######################################################################
-# customize_acetdl()
-#
-
 
 def customize_acetdl(grammar_path):
     myl = ch.get('language').lower()
@@ -226,11 +222,12 @@ def customize_acetdl(grammar_path):
         print(lines % replace_strings, file=a_out)
 
 ######################################################################
-# customize_roots()
-#   Create the file roots.tdl
-
 
 def customize_roots():
+    """
+    Creates the file roots.tdl.
+    """
+    
     comment = \
         'A sample start symbol: Accept fully-saturated verbal\n' + \
         'projections only; if a grammar makes use of the head-subject and\n' + \
@@ -289,10 +286,12 @@ def customize_roots():
 
 
 ######################################################################
-# customize_vpm()
-# Automatically create semi.vpm blocks.
 
 def customize_vpm(ch, vpm, hierarchies):
+    """
+    Automatically create semi.vpm blocks.
+    """
+    
     # Add default values to the file semi.vpm
     vpm.add_literal("""; A basic VPM for Matrix grammars.
 event          <> e
@@ -336,12 +335,13 @@ COG-ST : COG-ST
     verbal_features.create_vpm_blocks(ch, vpm, hierarchies)
 
 ######################################################################
-# Version Control
-#   Use shell commands to setup Mercurial or Bazaar, if the user
-#   has specified that they want one or the other.
-
 
 def setup_vcs(ch, grammar_path):
+    """
+    Use shell commands to setup Mercurial or Bazaar, if the user
+    has specified that they want one or the other.
+    """
+    
     if 'vcs' in ch:
         with open(os.devnull, 'w') as IGNORE:
             cwd = os.getcwd()
@@ -373,13 +373,14 @@ def setup_vcs(ch, grammar_path):
             os.chdir(cwd)
 
 ######################################################################
-# customize_matrix(path)
-#   Create and prepare for download a copy of the matrix based on
-#   the choices file in the directory 'path'.  This function
-#   assumes that validation of the choices has already occurred.
-
 
 def customize_matrix(path, arch_type, destination=None, force_dest=False):
+    """
+    Create and prepare for download a copy of the matrix based on
+    the choices file in the directory 'path'.  This function
+    assumes that validation of the choices has already occurred.
+    """
+    
     if os.path.isdir(path):
         path = os.path.join(path, 'choices')
     # if no destination dir is specified, just use the choices file's dir
@@ -593,10 +594,10 @@ def get_matrix_core_path():
 
 
 def get_grammar_path(isocode, language, destination):
-    '''
+    """
     Using the language or iso-code, get a unique pathname
     for the grammar directory.
-    '''
+    """
     # three possibilities for dir names. If all are taken, raise an exception
     for dir_name in [isocode, language, isocode + '_grammar']:
         if dir_name == '':

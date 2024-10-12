@@ -21,7 +21,6 @@ import gmcs.linglib.clausalcomps
 
 
 ######################################################################
-# ValidationResult class
 
 class ValidationResult:
     def __init__(self):
@@ -401,11 +400,9 @@ def validate_names(ch, vr):
                    ''.join(invalids))
 
 ######################################################################
-# validate_general(ch, vr)
-#   Validate the user's choices about general information
-
 
 def validate_general(ch, vr):
+    """Validate the user's choices about general information."""
     lang = ch.get('language')
 
     if not lang:
@@ -477,11 +474,9 @@ your installation root directory as iso.tab to enable iso validation:
                         ' Please see the General subpage.')
 
 ######################################################################
-# validate_person(ch, vr)
-#   Validate the user's choices about person
-
 
 def validate_person(ch, vr):
+    """Validate the user's choices about person."""
     person = ch.get('person')
     fp = ch.get('first-person')
 
@@ -502,10 +497,9 @@ def validate_person(ch, vr):
 
 
 ######################################################################
-# validate_number(ch, vr)
-#   Validate the user's choices about number
 
 def validate_number(ch, vr):
+    """Validate the user's choices about number."""
     for number in ch.get('number'):
         if 'name' not in number:
             vr.err(number.full_key + '_name',
@@ -513,10 +507,9 @@ def validate_number(ch, vr):
 
 
 ######################################################################
-# validate_gender(ch, vr)
-#   Validate the user's choices about gender
 
 def validate_gender(ch, vr):
+    """Validate the user's choices about gender."""
     for gender in ch.get('gender'):
         if 'name' not in gender:
             vr.err(gender.full_key + '_name',
@@ -524,10 +517,9 @@ def validate_gender(ch, vr):
 
 
 ######################################################################
-# validate_other_features(ch, vr)
-#   Validate the user's choices about other features
 
 def validate_other_features(ch, vr):
+    """Validate the user's choices about other features."""
     for feature in ch.get('feature'):
         if 'name' not in feature:
             vr.err(feature.full_key + '_name',
@@ -567,19 +559,17 @@ def validate_other_features(ch, vr):
 
 
 ######################################################################
-# validate_information_structure_msg(ch, vr, marker, _type, msg)
-#   Leave an error msg for information structural affixes
+
 def validate_information_structure_msg(ch, vr, marker, _type, msg):
+    """Leave an error msg for information structural affixes."""
     for m in ch.get(marker):
         if m['type'].strip() == _type:
             vr.err(m.full_key + '_type', msg)
 
 ######################################################################
-# validate_information_structure_affix(ch, marker, values)
-#   Validate the user's choices about information structure for each value
-
 
 def validate_information_structure_affix(ch, marker, values):
+    """Validate the user's choices about information structure for each value."""
     for cat in ['noun-pc', 'verb-pc']:
         for pc in ch.get(cat):
             for lrt in pc.get('lrt', []):
@@ -589,11 +579,9 @@ def validate_information_structure_affix(ch, marker, values):
     return False
 
 ######################################################################
-# validate_information_structure_adp(ch, marker, values)
-#   Validate the user's choices about information structure for each value
-
 
 def validate_information_structure_adp(ch, marker, values):
+    """Validate the user's choices about information structure for each value."""
     for adp in ch.get('adp'):
         for feat in adp.get('feat', []):
             if feat['name'] == 'information-structure meaning' and feat['value'] in values:
@@ -601,11 +589,9 @@ def validate_information_structure_adp(ch, marker, values):
     return False
 
 ######################################################################
-# validate_information_structure(ch, vr)
-#   Validate the user's choices about information structure
-
 
 def validate_information_structure(ch, vr):
+    """Validate the user's choices about information structure."""
     infostr_values = {
         'focus-marker': ['focus', 'semantic-focus', 'contrast-focus', 'focus-or-topic', 'contrast-or-focus', 'non-topic'],
         'topic-marker': ['topic', 'aboutness-topic', 'contrast-topic', 'frame-setting-topic', 'focus-or-topic', 'contrast-or-topic', 'non-focus'],
@@ -666,18 +652,19 @@ def validate_information_structure(ch, vr):
 
 
 ######################################################################
-# validate_word_order(ch, vr)
-#   Validate the user's choices about basic word order.
-
-# There should be some value for word order
-# If has-dets is true, there should be some value for noun-det-order
-# If aux-verb is defined, then aux-order needs to be too
-# I'm currently adding AUX as a feature in specialize_word_order()
-# but wonder if instead (in addition?) we should be doing validation
-# so that we don't find ourselves worrying about auxiliaries if we
-# don't have any in the lexicon.
 
 def validate_word_order(ch, vr):
+    """
+    Validate the user's choices about basic word order.
+
+    There should be some value for word order.
+    If has-dets is true, there should be some value for noun-det-order.
+    If aux-verb is defined, then aux-order needs to be too.
+    I'm currently adding AUX as a feature in specialize_word_order()
+    but wonder if instead (in addition?) we should be doing validation
+    so that we don't find ourselves worrying about auxiliaries if we
+    don't have any in the lexicon.
+    """
     # General word order
     if (not ch.get('word-order')):
         vr.err('word-order',
@@ -763,10 +750,9 @@ def validate_word_order(ch, vr):
 
 
 ######################################################################
-# validate_coordination(ch, vr)
-#   Validate the user's choices about coordination.
 
 def validate_coordination(ch, vr):
+    """Validate the user's choices about coordination."""
     used_patterns = set()  # used later to check which aps were used in a cs
     for cs in ch.get('cs'):
         csnum = str(cs.iter_num())
@@ -1004,10 +990,9 @@ def validate_coordination(ch, vr):
 
 
 ######################################################################
-# validate_yesno_questions(ch, vr)
-#   Validate the user's choices about matrix yes/no questions.
 
 def validate_yesno_questions(ch, vr):
+    """Validate the user's choices about matrix yes/no questions."""
     qinvverb = ch.get('q-inv-verb')
     qpartorder = ch.get('q-part-order')
     #qpartorth = ch.get('q-part-orth')
@@ -1101,12 +1086,9 @@ def validate_yesno_questions(ch, vr):
             #          'that your language has auxiliaries.'
             #   vr.err('q-infl-type', mess)
 
-# validate_tanda(ch, vr)
-#   Validate the user's choices about tense, aspect (viewpoint and
-#   situation) and form features
 def validate_tanda(ch, vr):
     """
-    Validate the user's choices about tense, aspect (viewpoint and situation), mood and form features
+    Validate the user's choices about tense, aspect (viewpoint and situation), mood and form features.
     """
 
     # validate tense
@@ -1191,20 +1173,18 @@ def validate_tanda(ch, vr):
         vr.err('form-subtype', mess)
 
 ######################################################################
-# validate_test_sentences(ch, vr)
-#   Validate the user's choices about test sentences.
-
 
 def validate_test_sentences(ch, vr):
+    """Validate the user's choices about test sentences."""
     pass
 
 ######################################################################
-# validate_extra_constraints()
-#   Some extra constraints we want to put on the random grammars
-#   for the regression/other testing
-
 
 def validate_extra_constraints(ch, vr):
+    """
+    Some extra constraints we want to put on the random grammars
+    for the regression/other testing.
+    """
 
     if ch.get('aux-sem') == 'pred':
         mess = 'Only semantically empty auxiliaries in test grammars.'
@@ -1489,8 +1469,10 @@ def validate_hierarchy(ch, vr):
 
 
 def validate_arg_opt(ch, vr):
-    """Check to see if the user completed the necessary portions of the arg
-     opt page and see that the OPT feature is used correctly elsewhere"""
+    """
+    Check to see if the user completed the necessary portions of the arg
+    opt page and see that the OPT feature is used correctly elsewhere.
+    """
 
     if ch.get('subj-drop') and not ch.get('subj-mark-drop'):
         vr.err('subj-mark-drop',
@@ -1527,12 +1509,12 @@ def validate_arg_opt(ch, vr):
                 vr.err(feat.full_key+'_head', mess)
 
 ######################################################################
-# Validation of clausal modifiers
-
 
 def validate_clausalmods(ch, vr):
-    """Check to see if the user completed the necessary portions of the
-       Clausal Modifiers page and check for unsupported combinations of choices"""
+    """
+    Check to see if the user completed the necessary portions of the
+    Clausal Modifiers page and check for unsupported combinations of choices.
+    """
     for cms in ch.get('cms'):
         # First check the choices that are required for all clausal mod strategies
         if not cms.get('position'):
@@ -1623,10 +1605,12 @@ def validate_clausalmods(ch, vr):
 
 
 ######################################################################
-# Validation nominalized clauses
+
 def validate_nominalized_clauses(ch, vr):
-    """Check to see if the user completed the necessary portions of the
-       Nominalized Clauses page and check for conflicts with word order"""
+    """
+    Check to see if the user completed the necessary portions of the
+    Nominalized Clauses page and check for conflicts with word order.
+    """
     for ns in ch.get('ns'):
         if not ns.get('name'):
             mess = 'You must enter a name for the nominalization strategy.'
@@ -1646,9 +1630,9 @@ def validate_nominalized_clauses(ch, vr):
 
 
 ######################################################################
-# validate_adnominal_possession(ch, vr)
-#   Validate the user's choices about adnominal possession
+
 def validate_adnominal_possession(ch, vr):
+    """Validate the user's choices about adnominal possession."""
     png_feats = set(['person', 'number', 'gender', 'pernum'])
     for feat in ch.get('feature'):
         if feat.get('type') != 'type':
