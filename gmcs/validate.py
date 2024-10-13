@@ -10,8 +10,9 @@ import os
 
 from gmcs import tdl
 from gmcs import constants
-from gmcs.choices import ChoicesFile
+from gmcs.choices import ChoicesFile, look_through_inputs
 from gmcs.utils import get_name
+from gmcs.linglib.nominalized_clauses import get_nmz_clause_wo
 
 import gmcs.linglib.case
 import gmcs.linglib.morphotactics
@@ -238,9 +239,40 @@ def validate_names(ch, vr):
         reserved_types['form'] = True
         reserved_types['finite'] = True
         reserved_types['nonfinite'] = True
+        if ch.has_adp_form():
+            for adp in ch.get('adp', []):
+                subform = adp.get('orth') + "_"
+                has_case = False
+                has_infostr = False
+                for feat in adp.get('feat', []):
+                    if feat['name'] == 'case':
+                        has_case = True
+                        subform += 'case'
+                    if feat['name'] == 'information-structure meaning':
+                        has_infostr = True
+                        subform += 'infostr'
+                if not (has_case or has_infostr):
+                    subform += 'sem'
+                reserved_types[subform] = True
+            for normadp in ch.get('normadp'):
+                for stem in normadp.get('stem'):
+                    if not stem.get("form"):
+                        reserved_types['adpform'] = True
+                        break
+            #Free morpheme adposition used to mark clausal modifier phrases
+            if 'cms' in ch:
+                for cms in ch.get('cms'):
+                    if cms.get('subordinator-type') == 'head':
+                        for freemorph in cms.get('freemorph'):
+                            subform = freemorph.get('orth') + "_clausalmod"
+                            reserved_types[subform] = True
 
+                           
+            
+                    
     if 'ns' in ch:
         reserved_types['nominalization'] = True
+        reserved_types['NMZ'] = True
 
     for pattern in ch.patterns():
         p = pattern[0].split(',')
@@ -1347,11 +1379,15 @@ def validate_features(ch, vr):
         for subval in value.split(', '):
             valid = False
             for f in features:
-                if f[0] == name:
-                    for v in f[1].split(';'):
-                        (vn, vf) = v.split('|')
-                        if vn == subval:
-                            valid = True
+                #features of category 'poss' don't take feature values and thus don't have any invalid value options
+                if f[3] == 'poss':
+                    valid = True
+                else:
+                    if f[0] == name:
+                        for v in f[1].split(';'):
+                            (vn, vf) = v.split('|')
+                            if vn == subval:
+                                valid = True
             if not valid:
                 break
         # when value is blank, there is an alternate error message
@@ -1611,24 +1647,279 @@ def validate_nominalized_clauses(ch, vr):
     Check to see if the user completed the necessary portions of the
     Nominalized Clauses page and check for conflicts with word order.
     """
+
+    word_orders = {'head-initial': ['VSO', 'OVS', 'VOS', 'V-INITIAL'], 'head-final': ['SVO', 'SOV', 'OSV', 'V-FINAL'], 
+                    'either': ['FREE','V2'] }
+    ns_strats = set()
+    sent_sem_strats = set()
+    non_sent_strat = set()
     for ns in ch.get('ns'):
+        #Messages regarding the change from the old (levels: low, mid, high) and new (6 different ANC types) versions of the nominalized clauses library
+        if ns.get('level') == 'high':
+             vr.warn(ns.full_key + '_nmz_type',
+                   'The current Nominalized Clauses library is no longer based on level (low, mid, high). ' +
+                    'All previously high nominalization strategies have been converted to sentential nominalization strategies ' + 
+                    'modified exclusively by adverbs.')
+        elif ns.get('level') == 'mid':
+            vr.warn(ns.full_key + '_nmz_type',
+                   'The current Nominalized Clauses library is no longer based on level (low, mid, high). ' +
+                   'All previously mid nominalization strategies have been converted to alternative-sentential nominalization strategies '
+                   'modified by both adverbs and adjectives.')
+        elif ns.get('level') == 'low':
+            vr.err(ns.full_key + '_nmz_type',
+                   'The current Nominalized Clauses library is no longer based on level (low, mid, high). ' +
+                    'It is necessary to define a new nominalization strategy based on the options available in the current ' +
+                    'library. Once a new strategy is defined make sure to make any corresponding changes to all lrts using the ' +
+                    'nominalization feature on the Morphology page.')
+        ch.delete(ns.full_key + '_level')
+            
+        nmz_type = ns.get('nmz_type')
+        #Mandatory questions for all nominalization strategies
         if not ns.get('name'):
             mess = 'You must enter a name for the nominalization strategy.'
             vr.err(ns.full_key + '_name', mess)
-        level = ns.get('level')
-        if level in ['mid', 'low'] and not ns['nmzRel'] == 'yes':
-            vr.err(ns.full_key + '_level',
-                   'Mid and low nominalization must be specified as having semantics.')
-        if not ns['nmzRel'] == 'yes' and not ns['nmzRel'] == 'no':
-            vr.err(ns.full_key + '_nmzRel',
-                   'Please choose whether nominalization contributes to the semantics.')
-        if ns.get('level') == 'mid':
-            if ch.get('word-order') == 'vso' or ch.get('word-order') == 'osv':
-                mess = 'The analysis for your word order does not include a' + \
-                       ' VP constituent. You must select V or S nominalization.'
-                vr.err(ns.full_key + '_level', mess)
+
+        ns_strats.add(ns.get('name'))
+        if not ns['nmz_type']:
+            vr.err(ns.full_key + '_nmz_type',
+                   'Please choose a nominalization type for this strategy.')
+        if not ns['intrans'] == 'on' and not ns['trans'] == 'on':
+            vr.err(ns.full_key + '_intrans', 
+                   'Each nominalization strategy must be specified as acting on either intransitive verbs, transitive verbs or both.')
+        #Mandatory questions for sentential/alt-sent nominalization strategies
+        if nmz_type in ['sentential', 'alt-sent']:
+            if not ns['nmzRel'] == 'yes' and not ns['nmzRel'] == 'no':
+                vr.err(ns.full_key + '_nmzRel',
+                    'Please choose whether nominalization contributes to the semantics.')
+            else:
+                sent_sem_strats.add(ns['nmzRel'])
+            if len(sent_sem_strats) > 1:
+                vr.err(ns.full_key + '_nmzRel',
+                    'All sentential/alternative-sentential nominalization strategies should use the same semantic option.')
+            if ns['adj'] == 'on' or ns['both'] == 'on':
+                if ns['nmzRel'] == 'yes':
+                    vr.warn(ns.full_key + '_adj',
+                        'Adjective nominalization will only be possible at the S level (once the nominalized verb has picked up both arguments).')
+                elif ns['nmzRel'] == 'no':
+                     vr.err(ns.full_key + '_adj',
+                        'Adjective nominalization is not available for sentential/alternative-sentential strategies that do not contain nominalization semantics')
+
+        #Mandatory questions for all-comps nominalization strategies
+        if not ns['all_comps_arg_order'] and ns['trans'] == 'on' and nmz_type == 'all-comps':
+            vr.err(ns.full_key + '_all_comps_arg_order',
+                   'Please choose whether the first complement of the action nominal is the more patient-like or ' +
+                    'or more agent-like argument.')
+            
+        #Mandatory questions for poss-acc/erg-poss/nominal nominalization strategies
+        if nmz_type in ['poss-acc', 'erg-poss', 'nominal']:
+            non_sent_strat.add(ns.get('name'))
+            if 'same-word-order' not in ch:
+                vr.err('same-word-order',
+                    'Please choose whether the word order in nominalized clauses is the same as in ' + 
+                    'regular verb phrases.')
+                break
+            if ch.get('same-word-order') == 'no' and 'nmz-clause-word-order' not in ch:
+                vr.err('nmz-clause-word-order',
+                    'Please choose which alternate word order is used in nominalized clauses.')
+                break
+            if 'non_sent_sem' not in ch:
+                vr.err('non_sent_sem',
+                    'Please choose one of the three options for possessive semantics in nominalized clauses.')
+                break
+            if not ('poss-strat' in ch or 'poss-pron' in ch):
+                vr.err('non_sent_sem',
+                        'Please define at least one possessive strategy on the Adnominal Possession page and '
+                        'then select it as a possessive strategy which can be used in nominalized clauses on this page.')
+                break
+            elif not ch.get('nmz_poss_strat'):
+                vr.err('non_sent_sem',
+                        'Please select at least one possessive strategy which can be used in nominalized clauses.')
+                break
+
+            if ns['single-arg'] == 'on' and ch['non_sent_sem'] == 'noun-only':
+                vr.warn('non_sent_sem', 
+                        'It it recommended to only use the single-possessor analysis with either the verb-only ' +
+                        'or both semantic options.')
+                break
+
+        #Issues with possessive strategies selected on the Nominalized Clauses page
+        if non_sent_strat:
+            second_break = False    
+            for nmz_poss_strat in ch.get('nmz_poss_strat'):
+                anc_wo = get_nmz_clause_wo(ch).upper()
+                nmz_poss_strat_name = nmz_poss_strat.get('name')
+                for poss_strat in ch.get('poss-strat', []):
+                    if get_name(poss_strat) == nmz_poss_strat_name:
+                        if poss_strat.get('mod-spec') == 'mod':
+                            vr.err(nmz_poss_strat.full_key + '_name',
+                    'All possessive strategies used in nominalization strategies must be specifier (not modifier) strategies.')
+                            second_break = True
+                            break
+                        elif anc_wo not in word_orders[poss_strat.get('order')]:
+                            if anc_wo in word_orders['either']:
+                                vr.warn(nmz_poss_strat.full_key + '_name',
+                                    'The overall nominalized clause uses a ' + anc_wo + ' word order, while this selected possessive strategy applies further restrictions on word order. The argument marked by this possessive strategy will respect the stricter word order constraints imposed by the possessive strategy as defined on the Adnominal Possession page.')
+                            else:
+                                vr.err(nmz_poss_strat.full_key + '_name',
+                                    'The order of this possessive strategy is not compatible with the word order you have selected in nominalized clauses.')
+                            second_break = True
+                            break
+
+                for pron in ch.get('poss-pron', []):
+                    if get_name(pron) == nmz_poss_strat_name:
+                        if pron.get('mod-spec') == 'mod':
+                            vr.err(nmz_poss_strat.full_key + '_name',
+                        'All possessive strategies used in nominalization strategies must be specifier (not modifier) strategies.')
+                            second_break = True
+                            break
+                        elif pron.get('type') != 'affix':
+                            if anc_wo not in word_orders[pron.get('order')]:
+                                if anc_wo in word_orders['either']:
+                                    vr.warn(nmz_poss_strat.full_key + '_name',
+                                        'The overall nominalized clause uses a ' + anc_wo + ' word order, while this selected possessive strategy applies further restrictions \
+                                        on word order. The argument marked by this possessive strategy will respect the stricter word order constraints imposed by the possessive strategy \
+                                        as defined on the Adnominal Possession page.')
+                                else:
+                                    vr.err(nmz_poss_strat.full_key + '_name',
+                            'The order of this possessive strategy is not compatible with the word order you have selected in nominalized clauses.')
+                                second_break = True
+                                break
+            if second_break:
+                break
+            
+    #Rules contains all nominalization lrts
+    rules = []
+    rule_ns_strats = set()
+    for vpc in ch['verb-pc']:
+        for lrt in vpc['lrt']:
+            for f in lrt['feat']:
+                if 'nominalization' in f['name']:
+                    for ns in ch.get('ns'):
+                        if ns.get('name') == f['value']:
+                            rules.append((lrt, ns, vpc))
+                            rule_ns_strats.add(f['value'])
+                    
+    #set_diff contains all the nominalization strategy names that are defined on the Nominalized Clauses page,
+    #but are never used on the Morphology page
+    set_diff = ns_strats - rule_ns_strats
+    if set_diff:
+        for ns in ch.get('ns'):
+            if ns.get('name') in set_diff:
+                vr.warn(ns.full_key + '_nmz_type',
+                   'There is no lrt on the Morphology page that uses this nominalization strategy meaning that this strategy is not currently realized in the grammar.')
+                for cms in ch.get('cms'):
+                    for feat in cms.get('feat'):
+                        if feat.get('name') == 'nominalization':
+                            values = feat.get('value').split(', ')
+                            for value in values:
+                                if value == ns.get('name'):
+                                    vr.err(feat.full_key + '_name', 'To be able to use this nominalization strategy, at least one lrt on the Morphology page needs to take ' +
+                                        'a nominalization feature with this nominalization strategy\'s name.')
+                for comps in ch.get('comps'):
+                    for feat in comps.get('feat'):
+                        if feat.get('name') == 'nominalization':
+                            values = feat.get('value').split(', ')
+                            for value in values:
+                                if value == ns.get('name'):
+                                    vr.err(feat.full_key + '_name', 'To be able to use this nominalization strategy, at least one lrt on the Morphology page needs to take ' +
+                                        'a nominalization feature with this nominalization strategy\'s name.')
+                                    
+    #Validation issues with nominalization use in clausal modifier and clausal complement strategies                                
+    for cms in ch.get('cms'):
+        for feat in cms.get('feat'):
+            if feat.get('name') == 'nominalization':
+                values = feat.get('value').split(', ')
+                sem_values = set()
+                for value in values:
+                    for second_ns in ch.get('ns'):
+                        if second_ns.get('name') == value:
+                            if second_ns.get('nmz_type') in ['sentential', 'alt-sent']:
+                                sem_values.add(second_ns.get('nmzRel'))
+                            else:
+                                sem_values.add('yes')
+                if len(sem_values) > 1:
+                    vr.err(feat.full_key + '_value', 'Nominalization strategies which only have syntactic nominalization should be kept separate from those ' +
+                        'that have nominalization represented in the semantics. Create two separate clausal modifier strategies, one containing nominalization strategies lacking in nominalization ' +
+                        'and one containing nominalization strategies containing nominalization semantics.')
+                    
+    for comps in ch.get('comps'):
+        nominalized = False
+        for feat in comps.get('feat'):
+            if feat.get('name') == 'nominalization':
+                nominalized = True
+                values = feat.get('value').split(', ')
+                sem_values = set()
+                for value in values:
+                    for second_ns in ch.get('ns'):
+                        if second_ns.get('name') == value:
+                            if second_ns.get('nmz_type') in ['sentential', 'alt-sent']:
+                                sem_values.add(second_ns.get('nmzRel'))
+                            else:
+                                sem_values.add('yes')
+                if len(sem_values) > 1:
+                    vr.err(feat.full_key + '_value', 'Nominalization strategies which only have syntactic nominalization should be kept separate from those ' +
+                        'that have nominalization represented in the semantics. Create two separate comps strategies, one containing nominalization strategies lacking in nominalization ' +
+                        'and one containing nominalization strategies containing nominalization semantics.')
+        if nominalized:
+            if comps.get('ques') or comps.get('comp-pos-before') or comps.get('comp-pos-after') or comps.get('comp') or comps.get('stem') or comps.get('cfromvalue') or comps.get('comp-q'):
+                vr.err(comps.full_key + '_clause-pos-same', 'Nominalized clausal complements with overt complementizers are not supported.')
 
 
+   #Make sure each lrt is only marked by one nominalization strategy
+    for lrt, ns, vpc in rules:
+        nmz_type = ns.get('nmz_type')
+        for second_lrt in vpc.get('lrt'):
+            not_nominalized = True
+            nmz_count = 0
+            for feat in second_lrt.get('feat'):
+                if feat.get('name') == 'nominalization':
+                    nmz_count += 1
+                    not_nominalized = False
+                    if len(feat.get('value').split(', ')) > 1:
+                        vr.err(second_lrt.full_key + '_name', 'Each lrt can only use one nominalization strategy.')
+            if nmz_count > 1:
+                vr.err(second_lrt.full_key + '_name', 'Each lrt can only use one nominalization strategy.')
+            if not_nominalized:
+                vr.warn(second_lrt.full_key + '_name', 'It is recommended to keep nominalization lrts in separate position classes from any non-nominalization lrts. ' +
+                                                  'Any non-nominalization lrts in a position class with a nominalization lrt will lose all verbal morphological requirements ' +
+                                                  'as is typically the case for nominalization lrts.')
+                
+        #Ensure only the correct arguments are being constrained for each nominalization type
+        if nmz_type == 'sentential':
+            for feat in lrt.get('feat'): 
+                if feat['head'] == 'subj' or feat['head'] == 'obj':
+                    vr.warn(feat.full_key + '_head', 'Both the subject and object of a nominalized verb nominalized with a sentential strategy should be marked '+ 
+                                                    'in the same way as it would be with the underlying verb.')
+        elif nmz_type == 'alt-sent' or nmz_type == 'poss-acc':
+            for feat in lrt.get('feat'): 
+                if feat['head'] == 'obj':
+                    vr.warn(feat.full_key + '_head', 'The object of a nominalized verb nominalized with a ' + nmz_type +  ' strategy should be marked '+ 
+                                                    'in the same way as it would be with the underlying verb.')
+                    
+        if nmz_type in ['all-comps', 'poss-acc', 'erg-poss', 'nominal']:
+             for feat in lrt.get('feat'): 
+                if feat['head'] == 'subj':
+                    if nmz_type in ['poss-acc', 'erg-poss', 'nominal']: 
+                        vr.err(feat.full_key + '_head', 'Nominalized verbs nominalized with a ' + nmz_type + ' strategy do not have subjects. Marking for the non-object argument ' + 
+                                                        'of these nominalized verbs can be defined on the Adnominal Possession page for possessive marking. The behavior of these nominalized verbs ' + 
+                                                        'with respect to determiners if relevant should be defined on the Nominalized Clauses page. ')
+                    else:
+                        vr.err(feat.full_key + '_head', 'Nominalized verbs nominalized with an ' + nmz_type + ' strategy do not have subjects. The behavior of these nominalized verbs ' + 
+                                                        'with respect to determiners if relevant should be defined on the Nominalized Clauses page. ')
+        if ns['intrans'] == 'on' and ns['trans'] == 'on':
+            inputs = vpc['inputs'].split(',')
+            valence_set = set()
+            for i in inputs:
+                look_through_inputs(ch, i, valence_set)
+            if len(valence_set) == 1:
+                if valence_set.pop() == 'intrans':
+                    valence = 'intransitive'
+                else:
+                    valence = 'transitive'
+                vr.warn(lrt.full_key + '_name', 'This nominalization strategy acts on both intransitive and transitive verbs, but this lrt only takes ' + valence +  ' verbs as inputs.')
+
+
+            
 ######################################################################
 
 def validate_adnominal_possession(ch, vr):
@@ -1904,7 +2195,7 @@ def validate_wh_ques(ch, vr):
     # Pied piping of adpositions only makes sense when there are adpositions:
     if ch.get(PIED_ADP) == ON and not len(ch.get('normadp', [])) > 0:
         mess = 'You have not added any adpositions to the lexicon.'
-        vr.err(PIED, mess)
+        vr.err(PIED_ADP, mess)
 
     if ch.get(NO_MULTI) == ON:
         if (ch.get(MTRX_FRONT) == MULTI

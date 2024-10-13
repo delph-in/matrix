@@ -1,5 +1,5 @@
 
-version=31
+version=34
 
 section=general
 language=ccomp-yak
@@ -46,6 +46,8 @@ section=coordination
 
 section=matrix-yes-no
 
+section=wh-q
+
 section=info-str
 
 section=arg-opt
@@ -59,8 +61,10 @@ obj-mark-no-drop=obj-mark-no-drop-opt
 
 section=nominalclause
   ns1_name=nmz
-  ns1_level=low
+  ns1_nmz_type=alt-sent
   ns1_nmzRel=yes
+  ns1_intrans=on
+  ns1_trans=on
 
 section=clausal-comp
   comps1_clause-pos-same=on

@@ -11,6 +11,7 @@ from gmcs.linglib.lexbase import LEXICAL_CATEGORIES
 from gmcs.linglib.lexbase import LEXICAL_SUPERTYPES
 
 
+
 def lexical_type_hierarchy(choices, lexical_supertype):
     if lexical_supertype not in LEXICAL_CATEGORIES:
         return None
@@ -461,8 +462,12 @@ def validate_lexicon(ch, vr):
     # and has valence, see issue #627
     for v in ch.get('verb'):
         if len(vtsts[v.full_key]) > 0 and vtsts[v.full_key][0] != '' and v.get('valence') != '':
-            mess = 'A verb class that specifies a value for valence can\'t also inherit a value for valence'
-            vr.err(v.full_key + '_valence', mess)
+            for parent_v in ch.get('verb'):
+                v_name = str(parent_v).split()[0].split('_')[0]
+                for st in vtsts[v.full_key]:
+                    if v_name == st and parent_v.get('valence') != '':
+                        mess = 'A verb class that specifies a value for valence can\'t also inherit a value for valence'
+                        vr.err(v.full_key + '_valence', mess)
 
     for v in ch.get('verb'):
         st_anc = []  # used to make sure we don't have an lkb err as
@@ -1007,9 +1012,11 @@ def validate_lexicon(ch, vr):
 
     # Adpositions
     for adp in ch.get('adp'):
-        if 'feat' not in adp:
-            mess = 'You should specify a value for at least one feature (e.g., CASE).'
-            vr.warn(adp.full_key + '_feat1_name', mess)
+        #The below message is no longer needed, since adpositions with no defined
+        #adpositions are given automatic FORM values
+        #if 'feat' not in adp:
+        #    mess = 'You should specify a value for at least one feature (e.g., CASE).'
+        #    vr.warn(adp.full_key + '_feat1_name', mess)
         # EKN 2018-02-05 Warn people not to try to use lexicon page for possessive words
         for feat in adp.get('feat'):
             if 'poss-strat' in feat.get('name') or 'poss-pron' in feat.get('name'):

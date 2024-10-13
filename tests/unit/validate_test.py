@@ -4,7 +4,7 @@ Run these tests with `python -m tests.unit.validate_test` from the matrix direct
 """
 
 import unittest
-from gmcs.choices import ChoicesFile
+from gmcs.choices import ChoicesFile, ChoiceList, ChoiceDict
 from gmcs.validate import validate
 
 class TestValidate(unittest.TestCase):
@@ -312,7 +312,107 @@ class TestValidate(unittest.TestCase):
         c = ChoicesFile()
         c['q-infl'] = 'on'
         self.assertError(c, 'q-infl')
-
+    
+    def test_wh_questions(self):
+        # missing question words in lexicon when question strategy defined
+        for wh_q_strat in ['front-matrix', 'wh-q-infl', 'wh-q-part']:
+            if wh_q_strat == 'front-matrix':
+                # choices file instantiated on each iteration because of elif logic
+                c = ChoicesFile()
+                c[wh_q_strat] = 'multi'
+            else:
+                c = ChoicesFile()
+                c[wh_q_strat] = 'on'
+            self.assertError(c, wh_q_strat)
+            
+        # pied piping but no determiners defined 
+        for p in ['pied-pip', 'pied-pip-adp']:
+            c = ChoicesFile()
+            c[p] = 'on'
+            self.assertError(c, p)
+            
+        # pied piping with determiner, but not adposition
+        c = ChoicesFile()
+        c['pied-pip-adp'] = 'on'
+        c['det'] = ChoiceList()
+        self.assertError(c, 'pied-pip-adp')
+        
+        # pied piping with in-situ fronting option
+        for p in ['pied-pip', 'pied-pip-adp']:
+            c = ChoicesFile()
+            c[p] = 'on'
+            c['front-matrix'] = 'in-situ'
+            self.assertError(c, p)
+            
+        # pied piping obligatory but not selected
+        c = ChoicesFile()
+        c['oblig-pied-pip-noun'] = 'on'
+        self.assertError(c, 'pied-pip')
+        
+        c = ChoicesFile()
+        c['oblig-pied-pip-adp'] = 'on'
+        self.assertError(c, 'pied-pip-adp')
+        
+        # Multi question fronting but multiple questions in one clause not allowed
+        c = ChoicesFile()
+        c['no-multi-ques'] = 'on'
+        c['front-matrix'] = 'multi'
+        self.assertError(c, 'no-multi-ques')
+        c = ChoicesFile()
+        c['no-multi-ques'] = 'on'
+        c['matrix-front-opt'] = 'all-oblig'
+        self.assertError(c, 'no-multi-ques')
+        
+        # In-situ and obligatory fronting not compatible
+        for opt in ['all-oblig', 'single-oblig']:
+            c = ChoicesFile()
+            c['matrix-front-opt'] = opt 
+            c['front-matrix'] = 'in-situ'
+            self.assertError(c, 'matrix-front-opt')
+        
+        # Embed in-situ only valid if fronting is optional
+        c = ChoicesFile()
+        c['matrix-front-opt'] = 'all-oblig'
+        c['embed-insitu'] = 'on'
+        self.assertError(c, 'embed-insitu')
+        
+        # Inversion not selected on Y/N page
+        c = ChoicesFile()
+        c['wh-inv-matrix'] = 'on'
+        self.assertError(c, 'wh-inv-matrix')
+        
+        # Inversion in matrix clauses not selected, but desired in embedded
+        c = ChoicesFile()
+        c['wh-inv-embed'] = 'on'
+        self.assertError(c, 'wh-inv-embed')
+        
+        # Inversion in matrix clauses not selected
+        c = ChoicesFile()
+        c['wh-inv-notsubj'] = 'on'
+        self.assertError(c, 'wh-inv-notsubj')
+        
+        # No contrastive focus marker specified
+        c = ChoicesFile()
+        c['focus-marking'] = 'on'
+        self.assertError(c, 'focus-marking')
+        
+        # No qverbs defined
+        c = ChoicesFile()
+        c['wh-q-inter-verbs'] = 'on'
+        self.assertError(c, 'wh-q-inter-verbs')
+        
+        # Qverbs defined but not select on WH page 
+        c = ChoicesFile()
+        cl = ChoiceList()
+        cl += [ChoiceDict(full_key='qverb')]
+        c['qverb'] = cl
+        self.assertError(c, 'wh-q-inter-verbs')
+        
+        # Verbal inflection not selected on Y/N page
+        c = ChoicesFile()
+        c['wh-q-infl'] = 'on'
+        self.assertError(c, 'wh-q-infl')
+        
     def test_tanda(self):
         tenses = ['past', 'present', 'future', 'nonpast', 'nonfuture']
         # Tense
@@ -473,7 +573,6 @@ class TestValidate(unittest.TestCase):
             c[p + '1_feat1_value'] = 'dummy'
             self.assertErrors(c, [p + '1_feat1_name', p + '1_feat1_value'])
             
-    
         # test features whose categories do not match lrt feature head
         for lt in ['verb-pc1_lrt' , 'adj-pc1_lrt']: 
             c = ChoicesFile()

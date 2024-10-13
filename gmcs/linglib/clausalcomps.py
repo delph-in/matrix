@@ -43,7 +43,7 @@ COMPLEMENTIZER = 'stem'  # Choices key for choices pertaining
 # a particular complementation strategy.
 
 # Error messages:
-EXTRA_VO = 'The only supporded word orders for extraposed complements are: SOV, VOS, OVS, OSV, v-final.'
+EXTRA_VO = 'The only supported word orders for extraposed complements are: SOV, VOS, OVS, OSV, v-final.'
 SAME_OR_EXTRA = 'Please choose whether the clausal complement takes the same position as noun ' \
     'complements or is extraposed to the end of the clause ' \
     '(the latter valid only for strict OV orders).'
@@ -218,6 +218,8 @@ def use_init(ch, mylang, wo):
 
 def add_complementizer_supertype(mylang, ch):
     mylang.add(lexbase.COMPLEMENTIZER, section=COMPLEX, merge=True)
+    if ch.get('ns'):
+        mylang.add('complementizer-lex-item := [SYNSEM.LOCAL.CAT.HEAD.NMZ -].')
 
 
 def add_complementizer_subtype(cs, mylang, ch, extra):
@@ -479,7 +481,7 @@ def determine_clausal_verb_comp_head(cs, ch):
             head = '+vc'
     else:
         if is_nominalized_complement(cs):
-            head = 'noun'
+            head = ch.case_head()
         elif ch.has_diverse_ques_particles():
             if cs['ques'] == 'ques':
                 head = 'comp'
@@ -704,6 +706,18 @@ def customize_clausal_verb(clausalverb, mylang, ch, cs, extra):
             if ch.get(MTRX_FRONT) in [SINGLE, MULTI] and not ch.get('embed-insitu') == 'on':
                 mylang.add(
                     clausalverb + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.WH.BOOL + ] > ].', merge=True)
+    else:
+        for feat in cs['feat']:
+            if feat["name"] ==  'nominalization':
+                nom_strat = feat['value'].split(', ')
+                for ns in ch['ns']:
+                    #Add appropiate semantic constraint to a nominalized clausal complement
+                    #depending on whether the nominalized clause included nominal semantics or not
+                    if ns['name'] in nom_strat and ns['nmzRel'] == 'yes':
+                        mylang.add(clausalverb + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [LOCAL.CONT.HOOK.INDEX ref-ind ] >].', merge=True)
+                    elif ns['name'] in nom_strat and ns['nmzRel'] == 'no':
+                        mylang.add(clausalverb + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [LOCAL.CONT.HOOK.INDEX event ] >].', merge=True)
+
 
     if ch.get('wh-inv-embed') == 'on':
         mylang.add(
@@ -725,7 +739,7 @@ def clausalverb_supertype(ch, cs):
         if f['name'] == 'nominalization':
             for ns in ch['ns']:
                 if ns['name'] == f['value']:
-                    if ns['nmzRel'] == 'yes' or ns['level'] in ['mid', 'low']:
+                    if ns['nmzRel'] == 'yes' or ns['nmz_type'] not in ['sentential', 'alt-sent']:
                         supertype = 'transitive-lex-item'
     if not supertype:
         supertype = 'clausal-second-arg-trans-lex-item'
@@ -754,7 +768,7 @@ def nonempty_nmz(cs, ch):
         if f['name'] == 'nominalization':
             for ns in ch['ns']:
                 if ns['name'] == f['value']:
-                    if ns['nmzRel'] == 'yes' or ns['level'] in ['mid', 'low']:
+                    if ns['nmzRel'] == 'yes' or ns['nmz_type'] not in ['sentential', 'alt-sent']:
                         return True
     return False
 

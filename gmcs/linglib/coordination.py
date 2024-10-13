@@ -133,7 +133,7 @@ def customize_feature_resolution(mylang, ch, ap):
             path = 'SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.'
 
             # if this is a custom feature, check whether it is semantic or syntactic
-            if v.upper() == featname and (v != 'case' and v != 'pernum'):
+            if v.upper() == featname and (v != 'case' and v != 'pernum' and v != 'NMZ'):
                 # find the right custom feature in the list...
                 for feature in ch.get('feature', []):
                     feat = feature.get('name', '')
@@ -141,6 +141,9 @@ def customize_feature_resolution(mylang, ch, ap):
                     if feat == v:
                         if type == 'head':
                             path = 'SYNSEM.LOCAL.CAT.HEAD.'
+
+            if v == 'NMZ':
+                path = 'SYNSEM.LOCAL.CAT.HEAD.'
 
             if v == 'case':
                 path = 'SYNSEM.LOCAL.CAT.HEAD.'  # special path for case
@@ -156,6 +159,7 @@ def customize_feature_resolution(mylang, ch, ap):
                 ch2 = rule.get('right') if rule.get('right') else 'any'
                 # the rule should always have a parent, but just in case
                 par = rule.get('par') if rule.get('par') else 'any'
+
 
                 if "," in ch1:
                     ch1_list = ch1.split(", ")
@@ -184,6 +188,20 @@ def write_coord_rule(ch1, ch2, par, path, featname, mylang):
     par = "#" + featname.lower() if par == "same" else par
     ch1 = "#" + featname.lower() if ch1 == "same" else ch1
     ch2 = "#" + featname.lower() if ch2 == "same" else ch2
+
+    if featname == 'NMZ':
+        if ch1 == 'minus':
+            ch1 = '-'
+        elif ch1 == 'plus':
+            ch1 = '+'
+        if ch2 == 'minus':
+            ch2 = '-'
+        elif ch2 == 'plus':
+            ch2 = '+'
+        if par == 'minus':
+            par = '-'
+        elif par == 'plus':
+            par = '+'
 
     # if both children are 'any', we just constrain the parent.
     if (ch1 == 'any' and ch2 == 'any' and par != 'any'):
@@ -290,7 +308,7 @@ def customize_conj_wo(mylang, ch, agr, csap):
                 'head-spec-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR ' + after + '].')
         if ch.get('noun-det-order') == 'det-noun':
             mylang.add(
-                'head-spec-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR ' + before + '].')
+                'spec-head-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR ' + before + '].')
 
     customize_coordagr_word_order(ch, mylang, before, after, subj_on, obj_on)
 

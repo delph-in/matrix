@@ -1,0 +1,17 @@
+noun1 det itr-verb3sg
+noun1 det adv1 itr-verb3sg
+adj1 noun1 det itr-verb3sg
+noun2 det noun1-acc det tr-verb3sg
+noun1 det noun2 itr-verb3sg
+pron3sg noun2 itr-verb3sg
+mod2 noun1 det itr-verb-nmz mod1 noun1 det itr-verb3sg
+mod2 pron3sg itr-verb-nmz mod1 noun1 det itr-verb3sg 
+mod2 itr-verb-nmz det mod1 noun1 det itr-verb3sg 
+mod2 itr-verb-nmz mod1 noun1 det itr-verb3sg
+mod2 noun1 det adv1 itr-verb-nmz mod1 noun1 det itr-verb3sg
+mod2 noun1 det adj1 itr-verb-nmz mod1 noun1 det itr-verb3sg
+*mod2 noun2 det noun1 det tr-verb-nmz mod1 noun1 det itr-verb3sg
+*noun1 det itr-verb-nmz
+*pron3sg itr-verb-nmz
+*mod2 noun1 det itr-verb mod1 noun1 det itr-verb3sg
+*mod2 noun1 det itr-verb3sg mod1 noun1 det itr-verb3sg

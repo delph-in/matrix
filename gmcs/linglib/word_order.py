@@ -1,6 +1,9 @@
 from gmcs.linglib.parameters import determine_vcluster
 from gmcs.linglib.lexical_items import update_lex_items_vcluster
 from gmcs.linglib.clausalcomps import extraposed_comps
+from gmcs.linglib.nominalized_clauses import need_specialized_head_spec, get_nmz_clause_wo
+from gmcs.utils import get_name
+from gmcs.linglib import lexbase
 
 ######################################################################
 
@@ -10,8 +13,9 @@ def customize_word_order(mylang, ch, rules):
     about basic word order, including information about adpositions
     and auxiliaries.
     """
-
     wo = ch.get('word-order')
+
+    nmz_wo = get_nmz_clause_wo(ch)
 
     mylang.set_section('phrases')
 
@@ -27,7 +31,7 @@ def customize_word_order(mylang, ch, rules):
 
     # Head specifier rules
 
-    customize_np_word_order(mylang, ch, rules)
+    customize_np_word_order(mylang, ch, rules, nmz_wo)
 
     # ERB 2006-09-14 Then add information as necessary to handle adpositions,
     # free auxiliaries, etc.
@@ -76,8 +80,11 @@ def customize_major_constituent_order(wo, mylang, ch, rules):
     # KPH 2017-12-14 Removed mc identity between non head daughter and mother in
     # basic-head-mod. This is not the case for clausal modifiers (in which the modifer
     # is MC -).
-
-    if not wo == 'v2':
+    if ch.get('ns'):
+        nmz_wo = get_nmz_clause_wo(ch)
+    else:
+        nmz_wo = None
+    if not wo == 'v2' and not nmz_wo == 'v2':
         mylang.add_literal(';Constraint on MC used to be part of matrix.tdl\n;' +
                            ';it applies to all wo implementations, except for v2')
         mylang.add('basic-head-comp-phrase :+\
@@ -721,22 +728,281 @@ def specialize_word_order(hc, orders, mylang, ch, rules):
 #     mylang.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.HEAD verb & [ AUX + ]].',
 #                'comp-head-phrase is only for auxiliaries.')
 
+def customize_nmz_clause_word_order(mylang, ch, rules, nmz_wo, hs):
+    """
+    Handles word order in ANCs and is modeled after 
+    customize_major_constituent_order following the same basic logic just 
+    switching head-subj rules with the appropriate possessor-possessum 
+    combining rule in ANCs.
+    """
 
-def customize_np_word_order(mylang, ch, rules):
-    """ERB 2006-09-15 Subroutine for handling NP rules."""
+    if nmz_wo is None:
+        return
 
-    if ch.get('has-dets') == 'yes':
+    hc = ''
+    head_initial_nexus = 'head-initial-head-nexus'
+    head_final_nexus = 'head-final-head-nexus'
+    
+    verb_wo = ch.get('word-order')
+
+    needs_opt = False
+    add_anc_head_comp = False
+
+    for ns in ch.get('ns'):
+        if ns.get('single-arg') == 'on':
+            needs_opt = True
+
+    # Handles the eight basic word orders: the six strict orders, V-final and V-initial.  
+    # In SVO/OVS word orders, complements attach lower
+
+    # Head-comp order
+        
+    head_final_wo = ['sov', 'osv', 'ovs', 'v-final']
+    head_init_wo = ['svo', 'vos', 'vso', 'v-initial']
+
+    if nmz_wo in head_final_wo:
+            hc = 'comp-head'
+    if nmz_wo in head_init_wo:
+            hc = 'head-comp'
+
+    #Determines if a single additional head-comp rule is needed
+    #and adds it to the grammar
+    if (nmz_wo in head_final_wo and verb_wo in head_init_wo) or (nmz_wo in head_init_wo and verb_wo in head_final_wo) or  nmz_wo in ['vso', 'osv'] or (verb_wo in ['free', 'v2'] and nmz_wo not in ['free', 'v2']):
+        add_anc_head_comp = True
+        if nmz_wo in head_final_wo:
+            mylang.add('anc-' + hc + '-phrase := basic-head-1st-comp-phrase & head-final & [HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.ANC-WO + ].')
+            if verb_wo in head_init_wo:
+                mylang.add('head-comp-phrase := [HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.ANC-WO - ].')
+            elif verb_wo in head_final_wo:
+                mylang.add('comp-head-phrase := [HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.ANC-WO - ].')
+
+        if nmz_wo in head_init_wo:
+            mylang.add('anc-' + hc + '-phrase := basic-head-1st-comp-phrase & head-initial & [HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.ANC-WO +].')
+            if verb_wo in head_final_wo:
+                mylang.add('comp-head-phrase := [HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.ANC-WO -  ].')
+            elif verb_wo in head_init_wo:
+                mylang.add('head-comp-phrase := [HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.ANC-WO -  ].')
+
+        if needs_opt:
+            mylang.add('anc-' + hc + '-phrase := [NON-HEAD-DTR.SYNSEM.OPT -].')
+    elif nmz_wo not in ['free', 'v2']:
+         if needs_opt:
+            mylang.add(hc + '-phrase := [NON-HEAD-DTR.SYNSEM.OPT -].')
+
+    #Complements attach before specifiers
+    #This step has to be done in adnominal_possessives.py
+    #for the juxtaposition rule
+    if nmz_wo in ['ovs', 'vos', 'sov', 'svo']:
+        if hs == 'head-spec' or hs == 'spec-head':
+            mylang.add('anc-' + hs + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].')
+
+    #Specifiers attach before complements
+    if nmz_wo in ['vso', 'osv']:
+        if hs == 'head-spec' or hs == 'spec-head':
+            mylang.add('anc-' + hc + '-phrase := [ SYNSEM.LOCAL.CAT.VAL.SPR < > ].')
+        elif hs:
+            mylang.add('anc-' + hc + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPR < > ].')
+
+     # Add constraints to the optional argument rules
+
+    if nmz_wo in ['vso', 'osv']:
         mylang.add(
-            'head-spec-phrase := basic-head-spec-phrase.',
-            'Rules for building NPs.  Note that the Matrix uses SPR for\n' +
-            'the specifier of nouns and SUBJ for the subject (specifier) of verbs.')
+            'anc-head-opt-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL [SPR < > \
+                                                                          SUBJ < > ]].', section='addenda')
+
+    else:
+        mylang.add(
+            'anc-decl-head-opt-subj-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].', section='addenda')
+
+
+    #Free word order:
+
+    if nmz_wo == 'free' and verb_wo != 'free':
+        mylang.add('synsem :+ [ ATTACH xmod ].',
+                   'We can\'t just use the V-final and V-initial word\n' +
+                   'order modules together to get a good free word order\n' +
+                   'module. The root of the problem seems to be that we\n' +
+                   'need the subject to be able to attach inside the\n' +
+                   'object(s) for VSO and OSV, but at the same time, we\n' +
+                   'don\'t want complete flexibility on order of attachment\n' +
+                   'when the verb is in the middle -- that would give\n' +
+                   'spurious ambiguity.  This solution adopts the xmod\n' +
+                   'hierarchy to enforce right-first attachment.  That is,\n' +
+                   'all arguments appears to the right of the verb must\n' +
+                   'attach before all arguments appearing to the left.  The\n' +
+                   'linguistic prediction of this analysis is that free\n' +
+                   'word order languages do not have a consistent VP\n' +
+                   'consituent, even when the verb and object are adjacent\n' +
+                   '(OV order).  Using a separate feature for tracking\n' +
+                   'argument attachment (as opposed to modifier\n' +
+                   'attachment).  We might be able to collapse these one\n' +
+                   'day, but that\'s not obvious.',
+                   section='addenda')
+
+        if verb_wo == 'v2':
+            head_initial_nexus = 'head-initial-head-nexus-anc-free'
+            head_final_nexus = 'head-final-head-nexus-anc-free'
+            
+        mylang.add(head_initial_nexus + ' := head-initial & \
+                [ SYNSEM.ATTACH lmod,\
+                HEAD-DTR.SYNSEM.ATTACH notmod-or-lmod ].')
+
+        mylang.add(head_final_nexus +' := head-final &\
+                [ SYNSEM.ATTACH rmod ].')
+        
+
+    # v2 word order    
+
+    if nmz_wo == 'v2' and verb_wo != 'v2':
+        if verb_wo == 'free':
+            head_initial_nexus = 'head-initial-head-nexus-anc-v2'
+            head_final_nexus = 'head-final-head-nexus-anc-v2' 
+
+        mylang.add(head_initial_nexus + ' := head-initial & \
+                    [ SYNSEM.LOCAL.CAT.MC na & #mc, \
+                    HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].')
+        if not ch.get('subord-word-order') or ch.get('subord-word-order') == 'same':
+            mylang.add(head_final_nexus +' := head-final & \
+                [ SYNSEM.LOCAL.CAT.MC bool, \
+                    HEAD-DTR.SYNSEM.LOCAL.CAT.MC na ].')
+        else:
+            mylang.add(head_final_nexus + ' := head-final & \
+            [ SYNSEM.LOCAL.CAT.MC +, \
+            HEAD-DTR.SYNSEM.LOCAL.CAT.MC na ].')        
+
+            
+        mylang.add_literal(';Constraint on MC used to be part of matrix.tdl\n;' +
+                           ';it applies to all wo implementations, except for v2')
+        
+        same_mc_constraint = '[ SYNSEM.LOCAL.CAT.MC #mc,\
+                                HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].'
+        if verb_wo == 'free':
+                mylang.add(
+                    'head-comp-phrase := ' + same_mc_constraint)
+                mylang.add(
+                    'comp-head-phrase := ' + + same_mc_constraint)
+                mylang.add(
+                    'head-comp-phrase-2 := ' + same_mc_constraint)
+                mylang.add(
+                    'comp-head-phrase-2 := ' + same_mc_constraint)
+        elif verb_wo in head_init_wo:
+                mylang.add('head-comp-phrase :=  ' + same_mc_constraint)
+        elif verb_wo in head_final_wo:
+                mylang.add('comp-head-phrase := ' + same_mc_constraint)
+
+    if nmz_wo != 'v2' and verb_wo == 'v2':
+        mylang.add_literal(';Constraint on MC used to be part of matrix.tdl\n;' +
+                           ';it applies to all wo implementations, except for v2')
+        
+        same_mc_constraint = '[ SYNSEM.LOCAL.CAT.MC #mc,\
+                                HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc ].'
+        if nmz_wo == 'free':
+                mylang.add(
+                    'anc-head-comp-phrase := ' + same_mc_constraint)
+                mylang.add(
+                    'anc-comp-head-phrase := ' + + same_mc_constraint)
+                mylang.add(
+                    'anc-head-comp-phrase-2 := ' + same_mc_constraint)
+                mylang.add(
+                    'anc-comp-head-phrase-2 := ' + same_mc_constraint)
+        elif nmz_wo in head_init_wo:
+                mylang.add('anc-head-comp-phrase := ' + same_mc_constraint)
+        elif nmz_wo in head_final_wo:
+                mylang.add('anc-comp-head-phrase := ' + same_mc_constraint)
+
+    # rules shared among free and v2
+            
+    if nmz_wo in ['free', 'v2']:
+        if hs == 'head-spec' or hs == 'spec-head':
+            mylang.add(
+                'anc-head-spec-phrase :='+ head_initial_nexus + '.')
+            mylang.add(
+                'anc-spec-head-phrase :=' + head_final_nexus +  '.')
+        elif hs:
+            mylang.add('anc-' + hs + '-head-initial :=' + head_initial_nexus + '.' )
+            mylang.add('anc-' + hs + '-head-final :='  + head_final_nexus +'.' )
+
+        if verb_wo not in ['free', 'v2'] or (verb_wo == 'free' and nmz_wo == 'v2') or (verb_wo == 'v2' and nmz_wo == 'free'):
+            mylang.add(
+                'anc-head-comp-phrase := basic-head-1st-comp-phrase &' + head_initial_nexus + '& [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.ANC-WO + ].')
+            mylang.add(
+                'anc-comp-head-phrase := basic-head-1st-comp-phrase &' + head_final_nexus + '& [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.ANC-WO + ].')
+            mylang.add(
+                'anc-head-comp-phrase-2 := basic-head-2nd-comp-phrase &' + head_initial_nexus + '& [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.ANC-WO +].')
+            mylang.add(
+                'anc-comp-head-phrase-2 := basic-head-2nd-comp-phrase &'+ head_final_nexus + '& [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.ANC-WO + ].')
+            if needs_opt:
+                mylang.add('anc-head-comp-phrase := := [NON-HEAD-DTR.SYNSEM.OPT -].')
+                mylang.add('anc-comp-head-phrase := := [NON-HEAD-DTR.SYNSEM.OPT -].')
+
+            if verb_wo in head_init_wo:
+                mylang.add('head-comp-phrase := [HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.ANC-WO - ].')
+                
+            elif verb_wo in head_final_wo:
+                mylang.add('comp-head-phrase := [HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.ANC-WO - ].')
+
+        elif needs_opt:
+            mylang.add(
+                'head-comp-phrase := [ NON-HEAD-DTR.SYNSEM.OPT -].')
+            mylang.add(
+                'comp-head-phrase :=  [ NON-HEAD-DTR.SYNSEM.OPT -].')
+    elif verb_wo in ['free', 'v2']:
+        mylang.add(
+            'head-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.ANC-WO -].')
+        mylang.add(
+            'comp-head-phrase :=  [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.ANC-WO -].')
+        mylang.add(
+            'head-comp-phrase-2 := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.ANC-WO -].')
+        mylang.add(
+            'comp-head-phrase-2 := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.ANC-WO -].')
+            
+
+    if nmz_wo in ['free', 'v2'] and verb_wo not in ['free', 'v2']:
+        rules.add('anc-head-comp := anc-head-comp-phrase.')
+        rules.add('anc-comp-head := anc-comp-head-phrase.')
+        rules.add('anc-head-comp-2 := anc-head-comp-phrase-2.')
+        rules.add('anc-comp-head-2 := anc-comp-head-phrase-2.')
+
+    elif hc and add_anc_head_comp:
+        rules.add("anc-" + hc + ' :=  anc-' + hc + '-phrase.')
+
+def customize_np_word_order(mylang, ch, rules, nmz_wo):
+    """ERB 2006-09-15 Subroutine for handling NP rules."""
+    if ch.get('has-dets') == 'yes':
 
         if ch.get('noun-det-order') == 'noun-det':
-            mylang.add('head-spec-phrase := head-initial.')
+            hs = 'head-spec' 
         if ch.get('noun-det-order') == 'det-noun':
-            mylang.add('head-spec-phrase := head-final.')
+            hs = 'spec-head' 
 
-        rules.add('head-spec := head-spec-phrase.')
+        if not need_specialized_head_spec(ch):
+            mylang.add(hs + '-phrase := basic-head-spec-phrase & [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS <>].',
+                'Rules for building NPs.  Note that the Matrix uses SPR for\n' +
+                'the specifier of nouns and SUBJ for the subject (specifier) of verbs.')
+            #Only adds head-spec to rules.tdl if 
+            #the nominalized clauses library will not add a more specific 
+            #rule (noun-head-spec and anc-head-spec)
+            rules.add(hs + ':= '  + hs + '-phrase.')
+        else:
+            #noun-head-spec and anc-head-spec require different semantic constraints
+            #so the supertype of basic-head-spec-phrase needs to be used here
+            mylang.add(hs + '-phrase :=  basic-head-spec-phrase-super.',
+                'Rules for building NPs.  Note that the Matrix uses SPR for\n' +
+                'the specifier of nouns and SUBJ for the subject (specifier) of verbs.')
+        
+
+        if hs == 'head-spec': 
+            if nmz_wo not in ['free', 'v2']:
+                mylang.add('head-spec-phrase := head-initial.')
+            else:
+                mylang.add('non-head-comp-head-spec-phrase := head-initial.')
+
+        if hs == 'spec-head': 
+            if nmz_wo not in ['free', 'v2']:
+                mylang.add('spec-head-phrase := head-final.')
+            else:
+                mylang.add('non-head-comp-spec-head-phrase := head-final.')
+
 
     # ERB 2006-09-14 I think that all languages have some form of
     # the Bare NP phrase.  Eventually there will be some choices about

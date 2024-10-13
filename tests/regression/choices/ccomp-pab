@@ -1,5 +1,5 @@
 
-version=32
+version=34
 
 section=general
 language=ccomp-pab
@@ -46,6 +46,8 @@ section=coordination
 
 section=matrix-yes-no
 
+section=wh-q
+
 section=info-str
 
 section=arg-opt
@@ -56,8 +58,16 @@ subj-con=subj-con-always
 
 section=nominalclause
   ns1_name=high
-  ns1_level=high
+  ns1_nmz_type=sentential
   ns1_nmzRel=no
+  ns1_intrans=on
+  ns1_trans=on
+  ns1_adv=on
+  ns2_name=high_intrans
+  ns2_nmz_type=sentential
+  ns2_nmzRel=no
+  ns2_intrans=on
+  ns2_adv=on
 
 section=clausal-comp
   comps1_clause-pos-extra=on
@@ -143,6 +153,7 @@ section=morphology
   verb-pc3_name=asp
   verb-pc3_order=suffix
   verb-pc3_inputs=verb-pc1, verb-pc2
+    verb-pc3_require1_others=verb-pc1, verb-pc2
     verb-pc3_forbid1_others=verb-pc5
     verb-pc3_lrt1_name=ifv
       verb-pc3_lrt1_feat1_name=aspect
@@ -158,11 +169,14 @@ section=morphology
       verb-pc3_lrt2_lri1_orth=-hene
   verb-pc4_name=nmz1
   verb-pc4_order=suffix
-  verb-pc4_inputs=verb2, verb-pc3
+  verb-pc4_inputs=verb-pc3
     verb-pc4_lrt1_name=re
       verb-pc4_lrt1_feat1_name=nominalization
       verb-pc4_lrt1_feat1_value=high
       verb-pc4_lrt1_feat1_head=verb
+      verb-pc4_lrt1_feat2_name=OPT
+      verb-pc4_lrt1_feat2_value=minus
+      verb-pc4_lrt1_feat2_head=obj
       verb-pc4_lrt1_lri1_inflecting=yes
       verb-pc4_lrt1_lri1_orth=-re
   verb-pc5_name=nmz2
@@ -171,7 +185,7 @@ section=morphology
     verb-pc5_forbid1_others=verb-pc3
     verb-pc5_lrt1_name=ne
       verb-pc5_lrt1_feat1_name=nominalization
-      verb-pc5_lrt1_feat1_value=high
+      verb-pc5_lrt1_feat1_value=high_intrans
       verb-pc5_lrt1_feat1_head=verb
       verb-pc5_lrt1_lri1_inflecting=yes
       verb-pc5_lrt1_lri1_orth=-ne

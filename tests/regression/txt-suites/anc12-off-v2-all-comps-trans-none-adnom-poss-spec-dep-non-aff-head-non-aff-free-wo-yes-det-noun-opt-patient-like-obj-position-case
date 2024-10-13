@@ -1,0 +1,19 @@
+det noun1 itr-verb3sg 
+adv1 itr-verb3sg det noun1
+det noun1-acc tr-verb3sg det noun2 
+det noun1 tr-verb3sg det noun2-acc 
+possessor det noun1 possessum noun2 itr-verb3sg
+possessum noun2 possessor det noun1 itr-verb3sg
+det noun1 tr-verb3sg det noun1-case3 tr-verb-nmz-acc det noun2-case4
+det noun1-case3 tr-verb-nmz-acc det noun2-case4 tr-verb3sg det noun1 
+det noun1 tr-verb3sg det tr-verb-nmz-acc det noun2-case4
+det noun1 tr-verb3sg det noun1-case3 tr-verb-nmz-acc 
+det noun1 tr-verb3sg det tr-verb-nmz-acc
+*det noun1 tr-verb3sg possessor det noun1 possessum tr-verb-nmz-acc det noun1-case3
+*det noun1 tr-verb3sg det noun1-case3 possessum tr-verb-nmz-acc possessor det noun1
+*det noun1 tr-verb3sg det noun1-case3 adv1 tr-verb-nmz-acc det noun2-case4
+*det noun1 tr-verb3sg det noun1-case3 adj1 tr-verb-nmz-acc det noun2-case4
+*det noun1 tr-verb3sg det noun1-case3 itr-verb-nmz-acc
+*det noun1 tr-verb3sg det noun1-acc tr-verb-nmz-acc det noun2
+*det noun1-case3 tr-verb-nmz det noun2-case4
+*det noun1 tr-verb3sg det noun1-case3 tr-verb-nmz det noun2-case4

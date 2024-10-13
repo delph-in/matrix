@@ -55,9 +55,17 @@ form-fin-nf=on
 section=sentential-negation
 
 section=coordination
-  cs1_n=on
   cs1_s=on
   cs1_pat=a
+  cs2_n=on
+  cs2_pat=a
+    cs2_csap1_pat=fr1
+    cs2_csap1_target=all
+  fr1_name=nmz_coord
+    fr1_feat1_name=NMZ
+      fr1_feat1_rule1_left=same
+      fr1_feat1_rule1_right=same
+      fr1_feat1_rule1_par=same
 
 section=matrix-yes-no
 q-part=on
@@ -90,8 +98,11 @@ subj-con=subj-con-always
 
 section=nominalclause
   ns1_name=nmz
-  ns1_level=high
+  ns1_nmz_type=sentential
   ns1_nmzRel=no
+  ns1_intrans=on
+  ns1_trans=on
+  ns1_adv=on
 
 section=clausal-comp
 
@@ -666,6 +677,9 @@ section=morphology
       verb-pc7_lrt1_feat1_name=nominalization
       verb-pc7_lrt1_feat1_value=nmz
       verb-pc7_lrt1_feat1_head=verb
+      verb-pc7_lrt1_feat2_name=OPT
+      verb-pc7_lrt1_feat2_value=minus
+      verb-pc7_lrt1_feat2_head=obj
       verb-pc7_lrt1_lri1_inflecting=yes
       verb-pc7_lrt1_lri1_orth=-re
 

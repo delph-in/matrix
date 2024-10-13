@@ -1,5 +1,5 @@
 
-version=30
+version=34
 
 section=general
 language=ccomp-illustr2-tur
@@ -25,6 +25,15 @@ nom-acc-acc-case-name=acc
   case1_name=gen
   case2_name=dat
 
+section=adnom-poss
+  poss-strat1_order=head-final
+  poss-strat1_mod-spec=spec
+  poss-strat1_mark-loc=possessum
+    poss-strat1_possessor-feat1_name=case
+    poss-strat1_possessor-feat1_value=gen
+  poss-strat1_possessum-type=affix
+  poss-strat1_possessum-affix-agr=agree
+
 section=direct-inverse
 
 section=tense-aspect-mood
@@ -33,6 +42,8 @@ past=on
 present=on
   aspect1_name=optative
     aspect1_supertype1_name=aspect
+
+section=evidentials
 
 section=other-features
 form-fin-nf=on
@@ -45,6 +56,8 @@ section=coordination
 
 section=matrix-yes-no
 
+section=wh-q
+
 section=info-str
 
 section=arg-opt
@@ -55,10 +68,14 @@ subj-con=subj-con-always
 
 section=nominalclause
   ns1_name=low
-  ns1_level=low
+  ns1_nmz_type=poss-acc
   ns1_nmzRel=yes
-
-section=clausalmods
+  ns1_intrans=on
+  ns1_trans=on
+  ns1_adj=on
+same-word-order=yes
+  nmz_poss_strat1_name=poss-strat1
+non_sent_sem=verb-only
 
 section=clausal-comp
   comps1_clause-pos-same=on
@@ -69,18 +86,20 @@ section=clausal-comp
   comps2_clause-pos-extra=on
   comps2_comp-pos-before=on
   comps2_comp=opt
-    comps2_complementizer1_orth=ki
+    comps2_stem1_orth=ki
     comps2_feat1_name=form
     comps2_feat1_value=finite
   comps3_clause-pos-same=on
   comps3_comp-pos-after=on
   comps3_comp=opt
-    comps3_complementizer1_orth=diye
+    comps3_stem1_orth=diye
     comps3_feat1_name=form
     comps3_feat1_value=finite
   comps4_clause-pos-same=on
     comps4_feat1_name=form
     comps4_feat1_value=subjunctive
+
+section=clausalmods
 
 section=lexicon
   noun1_name=2sg-nom
@@ -149,15 +168,18 @@ section=morphology
     noun-pc1_lrt1_name=nom4
       noun-pc1_lrt1_feat1_name=case
       noun-pc1_lrt1_feat1_value=nom
+      noun-pc1_lrt1_feat1_head=itself
       noun-pc1_lrt1_lri1_inflecting=no
     noun-pc1_lrt2_name=dat4
       noun-pc1_lrt2_feat1_name=case
       noun-pc1_lrt2_feat1_value=dat
+      noun-pc1_lrt2_feat1_head=itself
       noun-pc1_lrt2_lri1_inflecting=yes
       noun-pc1_lrt2_lri1_orth=-ya
     noun-pc1_lrt3_name=acc4
       noun-pc1_lrt3_feat1_name=case
       noun-pc1_lrt3_feat1_value=acc
+      noun-pc1_lrt3_feat1_head=itself
       noun-pc1_lrt3_lri1_inflecting=yes
       noun-pc1_lrt3_lri1_orth=-i
   noun-pc2_name=agr
@@ -167,6 +189,10 @@ section=morphology
     noun-pc2_lrt1_name=2sg-noun
       noun-pc2_lrt1_feat1_name=person
       noun-pc2_lrt1_feat1_value=2nd
+      noun-pc2_lrt1_feat1_head=possessor
+      noun-pc2_lrt1_feat2_name=poss-strat1
+      noun-pc2_lrt1_feat2_value=possessum
+      noun-pc2_lrt1_feat2_head=itself
       noun-pc2_lrt1_lri1_inflecting=yes
       noun-pc2_lrt1_lri1_orth=-n
   verb-pc1_name=tense
@@ -193,9 +219,6 @@ section=morphology
       verb-pc2_lrt1_feat1_name=nominalization
       verb-pc2_lrt1_feat1_value=low
       verb-pc2_lrt1_feat1_head=verb
-      verb-pc2_lrt1_feat2_name=case
-      verb-pc2_lrt1_feat2_value=gen
-      verb-pc2_lrt1_feat2_head=subj
       verb-pc2_lrt1_feat3_name=form
       verb-pc2_lrt1_feat3_value=nonfinite
       verb-pc2_lrt1_feat3_head=verb

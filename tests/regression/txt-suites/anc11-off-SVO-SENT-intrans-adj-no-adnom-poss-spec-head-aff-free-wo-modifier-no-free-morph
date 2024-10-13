@@ -1,0 +1,16 @@
+noun1 itr-verb3sg
+noun1 adv1 itr-verb3sg
+adj1 noun1 itr-verb3sg
+noun2 tr-verb3sg noun1 
+noun1 noun2possessum itr-verb3sg
+noun2possessum noun1 itr-verb3sg
+noun1 itr-verb-nmz noun2 itr-verb3sg
+itr-verb-nmz noun2 itr-verb3sg
+*noun1 adj1 itr-verb-nmz noun2 itr-verb3sg
+*noun1 itr-verb-nmzpossessum noun2 itr-verb3sg
+*itr-verb-nmzpossessum noun1 noun2 itr-verb3sg
+*noun1 tr-verb-nmz noun1 noun2 itr-verb3sg
+*noun1 itr-verb-nmz noun2
+*noun1 itr-verb noun2 itr-verb3sg
+*noun1 itr-verb3sg noun2 itr-verb3sg
+*noun1 adv1 itr-verb-nmz noun2 itr-verb3sg
