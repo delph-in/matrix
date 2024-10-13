@@ -1,6 +1,7 @@
 # $Id: deffile.py,v 1.16 2008-09-30 23:50:02 lpoulson Exp $
 
-"""This module is currently a bit of a hybrid.  Most of the code is
+"""
+This module is currently a bit of a hybrid.  Most of the code is
 part of the MatrixDefFile class, which is used both to parse
 ./matrixdef and to emit HTML.  However, a couple of the methods
 on that class, while they do output HTML, don't have anything to
