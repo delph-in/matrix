@@ -42,7 +42,10 @@ LEXICAL_SUPERTYPES = {'noun': 'noun-lex',
                       'qverb': 'interrogative-verb-lex',
                       'lv': 'lv-lex',
                       'lv-iverb': 'intrans-lv-lex',
-                      'lv-tverb': 'trans-lv-lex'}
+                      'lv-tverb': 'trans-lv-lex',
+                      'cv-iverb': 'coverb-intrans-verb-lex',
+                      'cv-tverb': 'coverb-trans-verb-lex',
+                      'cv-noun': 'coverb-noun-lex'}
 
 # TYPE DEFINITIONS (that can be shared with other libraries)
 COMPLEMENTIZER = '''

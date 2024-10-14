@@ -12,6 +12,7 @@ from gmcs.linglib.lexbase import (PositionClass, LexicalRuleType,
 from gmcs.lib import Hierarchy
 from gmcs.utils import get_name
 from functools import reduce
+from gmcs.linglib.light_verb_constructions import fix_coverb_pc_inputs
 #from gmcs.utils import TDLencode
 
 # Contents
@@ -208,6 +209,8 @@ def position_class_hierarchy(choices):
             pc_lrt_merge(cur_pc, pc)
         # Fill the lexical rule types with the information we know
         create_lexical_rule_types(cur_pc, pc)
+
+    pc_inputs = fix_coverb_pc_inputs(pc_inputs, choices)
     # now assign pc inputs
     for pc in pc_inputs:
         for inp in pc_inputs[pc]:

@@ -237,6 +237,42 @@ def interpret_lv_valence(valence: str) -> str:
         return 'lv-iverb'
 
 
+# Used in lexicon.py
+def interpret_cv_valence(valence: str) -> str:
+    """
+    Return the canonical valence name (e.g. lv-iverb, lv-tverb) given the
+    valence for a light verb as defined in a choices file.
+    """
+    if valence == 'coverb-1comp':
+        return 'cv-tverb'
+    else:
+        return 'cv-iverb'
+
+
+# Used in morphotactics.py
+def fix_coverb_pc_inputs(pc_inputs, ch):
+    """
+    Return pc inputs containing correct input name(s) for coverbs.
+    """
+    new_pc_inputs = {}
+
+    for pc in pc_inputs:
+        new_pc_inputs[pc] = set()
+        for inp in pc_inputs[pc]:
+            cv_type = ch.get(inp).get('coverb-type')
+            if cv_type == 'cv-only':
+                # no regular; yes coverb
+                new_pc_inputs[pc].add(inp + '-coverb')
+            elif cv_type == 'cv-opt':
+                # yes regular; yes coverb
+                new_pc_inputs[pc].add(inp)
+                new_pc_inputs[pc].add(inp + '-coverb')
+            else:
+                # yes regular; no coverb
+                new_pc_inputs[pc].add(inp)
+
+    return new_pc_inputs
+
 ############################
 ### Validation functions ###
 ############################

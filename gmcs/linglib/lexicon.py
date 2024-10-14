@@ -9,9 +9,11 @@ from gmcs.linglib.lexbase import LexicalType, PositionClass
 from gmcs.linglib.lexbase import ALL_LEX_TYPES
 from gmcs.linglib.lexbase import LEXICAL_CATEGORIES
 from gmcs.linglib.lexbase import LEXICAL_SUPERTYPES
+from gmcs.constants import ON
 
 
 def lexical_type_hierarchy(choices, lexical_supertype):
+    print(lexical_supertype)
     if lexical_supertype not in LEXICAL_CATEGORIES:
         return None
     lth = PositionClass(key=lexical_supertype + '-pc',
@@ -34,6 +36,18 @@ def lexical_type_hierarchy(choices, lexical_supertype):
         st = get_lexical_supertype('tverb', choices)
         lth.add_node(LexicalType('tverb', get_lt_name('tverb', choices),
                                  parents={st: lth.nodes[st]}))
+        if choices['coverb-v'] == ON:
+            st = get_lexical_supertype('cv-iverb', choices)
+            lth.add_node(LexicalType('cv-iverb', get_lt_name('cv-iverb', choices),
+                                 parents={st: lth.nodes[st]}))
+            st = get_lexical_supertype('cv-tverb', choices)
+            lth.add_node(LexicalType('cv-tverb', get_lt_name('cv-tverb', choices),
+                                 parents={st: lth.nodes[st]}))
+    
+    if lexical_supertype == 'noun' and choices['coverb-n'] == ON:
+        st = get_lexical_supertype('cv-noun', choices)
+        lth.add_node(LexicalType('cv-noun', get_lt_name('cv-noun', choices),
+                                 parents={st: lth.nodes[st]}))
 
     if lexical_supertype == 'lv':
         st = get_lexical_supertype('lv-iverb', choices)
@@ -48,29 +62,57 @@ def lexical_type_hierarchy(choices, lexical_supertype):
 
     for lst in lts_to_add:
         for lt in choices[lst]:
-            st = get_lexical_supertype(lt.full_key, choices)
-            lth.add_node(LexicalType(lt.full_key, get_lt_name(lt.full_key, choices),
-                                     parents={st: lth.nodes[st]}))
-            # If we're dealing with a verb add nodes for all lexical entries
-            # because bistems can give rise to flags that need to appear on
-            # all verbs.
-            if lexical_supertype in ['verb', 'qverb', 'lv']:
-                bistems = choices[lt.full_key]['bistem'] or []
-                stems = choices[lt.full_key]['stem'] or []
-                stems.extend(bistems)
-                for stem in stems:
-                    lth.add_node(LexicalType(stem.full_key, stem['name'],
-                                             parents={
-                                                 lt.full_key: lth.nodes[lt.full_key]},
-                                             entry=True))
+            if not lt.get('coverb-type') == 'cv-only':
+                st = get_lexical_supertype(lt.full_key, choices)
+                lth.add_node(LexicalType(lt.full_key, get_lt_name(lt.full_key, choices),
+                                        parents={st: lth.nodes[st]}))
+                # If we're dealing with a verb add nodes for all lexical entries
+                # because bistems can give rise to flags that need to appear on
+                # all verbs.
+                if lexical_supertype in ['verb', 'qverb', 'lv']:
+                    bistems = choices[lt.full_key]['bistem'] or []
+                    stems = choices[lt.full_key]['stem'] or []
+                    stems.extend(bistems)
+                    for stem in stems:
+                        lth.add_node(LexicalType(stem.full_key, stem['name'],
+                                                parents={
+                                                    lt.full_key: lth.nodes[lt.full_key]},
+                                                entry=True))
+
+            if lt.get('coverb-type') in ('cv-opt', 'cv-only'):
+                st = get_lexical_supertype(lt.full_key, choices, True)
+                # create unique key to avoid conflict with non-coverb
+                key = lt.full_key + '-coverb'
+                lth.add_node(LexicalType(key, get_lt_name(lt.full_key, choices, st),
+                                        parents={st: lth.nodes[st]}))
+                # If we're dealing with a verb add nodes for all lexical entries
+                # because bistems can give rise to flags that need to appear on
+                # all verbs.
+                if lexical_supertype in ['verb', 'qverb', 'lv']:
+                    bistems = choices[lt.full_key]['bistem'] or []
+                    stems = choices[lt.full_key]['stem'] or []
+                    stems.extend(bistems)
+                    for stem in stems:
+                        # create unique key to avoid conflict with non-coverb
+                        stem_key = stem.full_key.split('_stem')
+                        stem_key = stem_key[0] + '-coverb_stem' + stem_key[1]
+                        lth.add_node(LexicalType(stem_key, stem['name'],
+                                                parents={
+                                                    key: lth.nodes[key]},
+                                                entry=True))
     return lth
 
 
-def get_lexical_supertype(lt_key, choices):
+def get_lexical_supertype(lt_key, choices, is_coverb=False):
     lexical_category = lt_key.rstrip('0123456789')
-    if lexical_category in ('iverb', 'tverb') and choices['has-aux'] == 'yes':
+    if is_coverb:
+        if lexical_category == 'verb':
+            return lvc.interpret_cv_valence(choices[lt_key]['valence'])
+        elif lexical_category == 'noun':
+            return 'cv-noun'
+    elif lexical_category in ('iverb', 'tverb') and choices['has-aux'] == 'yes':
         return 'mverb'
-    elif lexical_category in ('aux', 'mverb', 'iverb', 'tverb'):
+    elif lexical_category in ('aux', 'mverb', 'iverb', 'tverb', 'cv-iverb', 'cv-tverb'):
         return 'verb'
     elif lexical_category == 'verb':
         return case.interpret_verb_valence(choices[lt_key]['valence'])
@@ -78,9 +120,12 @@ def get_lexical_supertype(lt_key, choices):
         return 'lv'
     elif lexical_category == 'lv':
         return lvc.interpret_lv_valence(choices[lt_key]['valence'])
+    elif lexical_category == 'cv-noun':
+        return 'noun'
     # TJT Added adj, cop, removed aux
     elif lexical_category in ('noun', 'det', 'adv', 'adj', 'cop', 'qverb'):
         return lexical_category
+    print(lexical_category)
     return None
 
 # TODO possibly deprecated?
@@ -218,15 +263,19 @@ def get_all_supertypes_features(ch, lt):
                     supertype_feats.append(feat)
     return supertype_feats
 
-def get_lt_name(key, choices):
+def get_lt_name(key, choices, coverb_type=None):
     if key in LEXICAL_SUPERTYPES:
         # lexical supertype-- pull out of lexical_supertypes, remove '-lex'
         return LEXICAL_SUPERTYPES[key].rsplit('-lex', 1)[0]
     else:
         # defined lextype, name may or may not be defined
         name = get_name(choices[key])
-        lex_st = LEXICAL_SUPERTYPES[key.strip('1234567890')]
-        return '-'.join([name, lex_st.rsplit('-lex', 1)[0]])
+        if coverb_type:
+            lex_st = LEXICAL_SUPERTYPES[coverb_type]
+            return '-'.join([name, lex_st.rsplit('-lex', 1)[0]])
+        else:
+            lex_st = LEXICAL_SUPERTYPES[key.strip('1234567890')]
+            return '-'.join([name, lex_st.rsplit('-lex', 1)[0]])
 
 ######################################################################
 # validate_lexicon(ch, vr)
