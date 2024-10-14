@@ -13,7 +13,6 @@ from gmcs.constants import ON
 
 
 def lexical_type_hierarchy(choices, lexical_supertype):
-    print(lexical_supertype)
     if lexical_supertype not in LEXICAL_CATEGORIES:
         return None
     lth = PositionClass(key=lexical_supertype + '-pc',
@@ -125,7 +124,6 @@ def get_lexical_supertype(lt_key, choices, is_coverb=False):
     # TJT Added adj, cop, removed aux
     elif lexical_category in ('noun', 'det', 'adv', 'adj', 'cop', 'qverb'):
         return lexical_category
-    print(lexical_category)
     return None
 
 # TODO possibly deprecated?
@@ -166,7 +164,6 @@ def used_lexical_supertypes(choices):
     Return a list of lexical supertypes (as defined in
     lexical_supertypes) that will actually be used in the grammar.
     """
-    print('test')
     # TJT 2014-09-08: Changing this to set comprehension and adding "cop"
     # TJT 2014-12-19: Changing back to loop for older versions of python
     used = set([item for item in ('noun', 'aux', 'adj',
