@@ -489,6 +489,19 @@ def validate_lexicon(ch, vr):
                 mess = 'You must specify a predicate for each noun you define.'
                 vr.err(stem.full_key + '_pred', mess)
 
+        # Coverb validation
+        if n.get('coverb-type'):
+            # If noun is a coverb, do they specify light verbs this coverb can take?
+            if not n.get('lvs'):
+                mess = 'You must specify light verbs for this coverb.'
+                vr.err(n.full_key + '_lvs', mess)
+            else:
+                # Can the light verbs they specified take this type of coverb?
+                for lv in n.get('lvs').split(', '):
+                    if ch.get(lv) and 'noun' not in ch.get(lv).get('cv-type').split(', '):
+                        mess = 'You must specify light verbs that can take *noun* coverbs.'
+                        vr.err(n.full_key + '_lvs', mess)
+
     # Verbs
     # check verb hierarchy for various properties
     # this is easier if we build some data objects
@@ -670,6 +683,19 @@ def validate_lexicon(ch, vr):
             if not pred:
                 mess = 'You must specify a predicate for each verb you define.'
                 vr.err(bistem.full_key + '_pred', mess)
+    
+        # Coverb validation
+        if v.get('coverb-type'):
+            # If verb is a coverb, do they specify light verbs this coverb can take?
+            if not v.get('lvs'):
+                mess = 'You must specify light verbs for this coverb.'
+                vr.err(v.full_key + '_lvs', mess)
+            else:
+                # Can the light verbs they specified take this type of coverb?
+                for lv in v.get('lvs').split(', '):
+                    if ch.get(lv) and 'verb' not in ch.get(lv).get('cv-type').split(', '):
+                        mess = 'You must specify light verbs that can take *verb* coverbs.'
+                        vr.err(v.full_key + '_lvs', mess)
 
     for qv in ch.get('qverb'):
         if not qv['predtype']:
@@ -1111,6 +1137,57 @@ def validate_lexicon(ch, vr):
         if not adv['type']:
             mess = 'Please select the type for this adverb.'
             vr.err(adv.full_key+'_type', mess)
+    
+    # Light Verbs
+    for lv in ch.get('lv'):
+        # Did they give a name?
+        if not lv.get('name'):
+            mess = 'You must specify a name for each light verb you define.'
+            vr.err(lv.full_key + '_name', mess)
+
+        # Did they specify the valence?
+        if not lv.get('valence'):
+            mess = 'You must specify the valence for each light verb you define.'
+            vr.err(lv.full_key + '_valence', mess)
+        
+        # Is the valence option they selected allowed on the LVC subpage?
+        if lv.get('valence') == 'coverb-only' and not ch.get('lvc-it') == ON:
+            mess = 'You must allow intransitive light verbs as a valence option on the LVC subpage.'
+            vr.err(lv.full_key + '_valence', mess)
+        if lv.get('valence') == 'coverb-1comp' and not ch.get('lvc-tr') == ON:
+            mess = 'You must allow transitive light verbs as a valence option on the LVC subpage.'
+            vr.err(lv.full_key + '_valence', mess)
+
+        # Did they specify the types of coverbs this light verb can take?
+        if not lv.get('cv-type'):
+            mess = 'You must specify what types of coverb each light verb you define can take as an argument.'
+            vr.err(lv.full_key + '_cv-type', mess)
+
+        # Is the coverb type they selected allowed on the LVC subpage?
+        for cv_type in lv.get('cv-type').split(', '):
+            if cv_type == 'noun' and not ch.get('coverb-n') == ON:
+                mess = 'You must allow noun coverbs on the LVC subpage.'
+                vr.err(lv.full_key + '_cv-type', mess)
+            if cv_type == 'verb' and not ch.get('coverb-v') == ON:
+                mess = 'You must allow verb coverbs on the LVC subpage.'
+                vr.err(lv.full_key + '_cv-type', mess)
+
+        # Did they give a stem?
+        if not lv.get('stem'):
+            mess = 'You must specify at least one spelling and predicate for each light verb you define.'
+            vr.err(lv.full_key + '_stem1_orth', mess)
+
+        for stem in lv.get('stem'):
+            # Did they give a spelling?
+            if not stem.get('orth'):
+                mess = 'You must specify a spelling for each light verb you define.'
+                vr.err(stem.full_key + '_orth', mess)
+
+            # Did they give a predicate?
+            if not stem.get('pred'):
+                mess = 'You must specify a predicate for each light verb you define.'
+                vr.err(stem.full_key + '_pred', mess)
+
 
     # Features on all lexical types
     # TJT 2014-09-02: Adding adj and cop

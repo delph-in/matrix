@@ -1643,7 +1643,7 @@ def hierarchy_validation(choices, pc, vr):
 def cycle_validation(choices, vr):
     try:
         pch = position_class_hierarchy(choices)
-    except KeyError:
+    except:
         return  # there is probably another error that validation will pick up
     for pc in list(pch.nodes.values()):
         cyclic_inps = set([i.key for i in list(pc.input_span().values())

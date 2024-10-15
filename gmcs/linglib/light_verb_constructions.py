@@ -1,13 +1,7 @@
-# imports for typing
-from __future__ import annotations      # makes it so you don't need to wrap
-                                        # types like ValidationResult in quotes
-from typing import Dict, TYPE_CHECKING
+from typing import Dict
 from gmcs.lib import TDLHierarchy
 from gmcs.tdl import TDLfile
 from gmcs.choices import ChoicesFile
-# to avoid circular import errors
-if TYPE_CHECKING:
-    from gmcs.validate import ValidationResult
 
 from gmcs.constants import ON, YES, INTRANSITIVE, TRANSITIVE
 
@@ -250,7 +244,7 @@ def interpret_cv_valence(valence: str) -> str:
 
 
 # Used in morphotactics.py
-def fix_coverb_pc_inputs(pc_inputs, ch):
+def fix_coverb_pc_inputs(pc_inputs: Dict[str, str], ch: ChoicesFile) -> Dict[str, str]:
     """
     Return pc inputs containing correct input name(s) for coverbs.
     """
@@ -272,61 +266,3 @@ def fix_coverb_pc_inputs(pc_inputs, ch):
                 new_pc_inputs[pc].add(inp)
 
     return new_pc_inputs
-
-############################
-### Validation functions ###
-############################
-
-def validate_lvc(ch: ChoicesFile, vr: ValidationResult):
-    """
-    Validate the user's choices about light verb constructions.
-    """
-    # if any LVC options are selected, make sure coverb-n/coverb-v is selected
-    valid = True
-    for option in ['lvc-word-order', 'lvc-adjacent', 'lvc-it', 'lvc-tr']:
-        if ch.get(option):
-            if not ch.get('coverb-n') and not ch.get('coverb-v'):
-                valid = False
-    if not valid:
-        msg = 'If a light verb construction option has been selected, you ' + \
-              'must specify that either noun or verb coverbs are allowed.'
-        vr.err('coverb-n', msg)
-
-    # make sure whether dependents can be picked up is selected
-    if ch.get('coverb-n') == ON:
-        if not ch.get('lvc-noun-cv-dep'):
-            msg = 'If noun coverbs are allowed, you must specify ' + \
-                  'whether they can pick up dependents.'
-            vr.err('lvc-noun-cv-dep', msg)
-    if ch.get('coverb-v') == ON:
-        if not ch.get('lvc-verb-cv-dep'):
-            msg = 'If verb coverbs are allowed, you must specify ' + \
-                  'whether they can pick up dependents.'
-            vr.err('lvc-verb-cv-dep', msg)
-    
-    # if whether dependents can be pick up is selected, make sure coverb-n/coverb-v is selected
-    if ch.get('lvc-noun-cv-dep'):
-        if not ch.get('coverb-n'):
-            msg = 'If you specify whether noun coverbs can pick up ' + \
-                  'dependents, you must specify that noun coverbs are allowed.'
-            vr.err('coverb-n', msg)
-    if ch.get('lvc-verb-cv-dep'):
-        if not ch.get('coverb-v'):
-            msg = 'If you specify whether verb coverbs can pick up ' + \
-                  'dependents, you must specify that verb coverbs are allowed.'
-            vr.err('coverb-v', msg)
-
-    # if coverbs are allowed, make sure all LVC options have a selection
-    if ch.get('coverb-n') == ON or ch.get('coverb-v') == ON:
-        if not ch.get('lvc-word-order'):
-            msg = 'If coverbs are allowed, you must specify the ' + \
-                'word order within an LVC.'
-            vr.err('lvc-word-order', msg)
-        if not ch.get('lvc-adjacent'):
-            msg = 'If coverbs are allowed, you must specify whether ' + \
-                  'a coverb is immediately adjacent to a light verb.'
-            vr.err('lvc-adjacentr', msg)
-        if not ch.get('lvc-it') and not ch.get('lvc-tr'):
-            msg = 'If coverbs are allowed, you must specify at least ' + \
-                  'one possible valence option.'
-            vr.err('lvc-it', msg)

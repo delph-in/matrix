@@ -18,7 +18,6 @@ import gmcs.linglib.morphotactics
 import gmcs.linglib.negation
 import gmcs.linglib.lexicon
 import gmcs.linglib.clausalcomps
-from gmcs.linglib.light_verb_constructions import validate_lvc
 
 
 ######################################################################
@@ -1916,6 +1915,89 @@ def validate_wh_ques(ch, vr):
     if ch.get('wh-q-infl') and not ch.get('q-infl'):
         mess = 'Please also check Verbal Inflection on Yes/No page; the checkbox here will not have the effect on its own.'
         vr.err('wh-q-infl', mess)
+
+
+######################################################################
+# Validation light verb constructions
+
+def validate_lvc(ch: ChoicesFile, vr: ValidationResult):
+    """
+    Validate the user's choices about light verb constructions.
+    """
+    from gmcs.constants import ON
+
+    # if any LVC options are selected, make sure coverb-n/coverb-v is selected
+    valid = True
+    for option in ['lvc-word-order', 'lvc-adjacent', 'lvc-it', 'lvc-tr']:
+        if ch.get(option):
+            if not ch.get('coverb-n') and not ch.get('coverb-v'):
+                valid = False
+    if not valid:
+        msg = 'If a light verb construction option has been selected, you ' + \
+              'must specify that either noun or verb coverbs are allowed.'
+        vr.err('coverb-n', msg)
+
+    # make sure whether dependents can be picked up is selected
+    if ch.get('coverb-n') == ON:
+        if not ch.get('lvc-noun-cv-dep'):
+            msg = 'If noun coverbs are allowed, you must specify ' + \
+                  'whether they can pick up dependents.'
+            vr.err('lvc-noun-cv-dep', msg)
+    if ch.get('coverb-v') == ON:
+        if not ch.get('lvc-verb-cv-dep'):
+            msg = 'If verb coverbs are allowed, you must specify ' + \
+                  'whether they can pick up dependents.'
+            vr.err('lvc-verb-cv-dep', msg)
+    
+    # if whether dependents can be pick up is selected, make sure coverb-n/coverb-v is selected
+    if ch.get('lvc-noun-cv-dep'):
+        if not ch.get('coverb-n'):
+            msg = 'If you specify whether noun coverbs can pick up ' + \
+                  'dependents, you must specify that noun coverbs are allowed.'
+            vr.err('coverb-n', msg)
+    if ch.get('lvc-verb-cv-dep'):
+        if not ch.get('coverb-v'):
+            msg = 'If you specify whether verb coverbs can pick up ' + \
+                  'dependents, you must specify that verb coverbs are allowed.'
+            vr.err('coverb-v', msg)
+
+    # if coverbs are allowed, make sure all LVC options have a selection
+    if ch.get('coverb-n') == ON or ch.get('coverb-v') == ON:
+        if not ch.get('lvc-word-order'):
+            msg = 'If coverbs are allowed, you must specify the ' + \
+                'word order within an LVC.'
+            vr.err('lvc-word-order', msg)
+        if not ch.get('lvc-adjacent'):
+            msg = 'If coverbs are allowed, you must specify whether ' + \
+                  'a coverb is immediately adjacent to a light verb.'
+            vr.err('lvc-adjacentr', msg)
+        if not ch.get('lvc-it') and not ch.get('lvc-tr'):
+            msg = 'If coverbs are allowed, you must specify at least ' + \
+                  'one possible valence option.'
+            vr.err('lvc-it', msg)
+    
+    # make sure at least 1 lv and 1 cv for each cv type (if enabled) is in lexicon
+    n_coverb_seen = False
+    for n in ch.get('noun'):
+        if n.get('coverb-type'):
+            n_coverb_seen = True
+            break
+    if ch.get('coverb-n') == ON and not n_coverb_seen:
+        msg = 'You must specify at least one noun coverb in the lexicon.'
+        vr.err('coverb-n', msg)
+    
+    v_coverb_seen = False
+    for v in ch.get('verb'):
+        if v.get('coverb-type'):
+            v_coverb_seen = True
+            break
+    if ch.get('coverb-v') == ON and not v_coverb_seen:
+        msg = 'You must specify at least one verb coverb in the lexicon.'
+        vr.err('coverb-v', msg)
+
+    if (ch.get('coverb-n') == ON or ch.get('coverb-v') == ON) and not ch.get('lv'):
+        msg = 'You must specify at least one light verb in the lexicon.'
+        vr.err('coverb-n', msg)
 
 
 def validate(ch, extra=False):
