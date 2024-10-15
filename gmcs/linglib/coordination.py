@@ -8,11 +8,10 @@ from gmcs.lib import TDLHierarchy
 #   about coordination.
 
 ######################################################################
-# define_coord_strat: a utility function, defines a strategy
-
 
 def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, mylang,
                        rules, irules, resrules, mixed_strat=False):
+    """This is a utility function that defines a coordination strategy."""
     mylang.add_literal(';;; Coordination Strategy ' + num)
 
     pn = pos + num
@@ -107,7 +106,7 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, mylang,
 
 def coord_strat_features(num, nm, mixed_strat):
     """Gets either just the COORD-STRAT number, or also the COORDAGR value,
-     which is only used in a mixed strategy language"""
+     which is only used in a mixed strategy language."""
     if mixed_strat and 'conjunct' not in nm:
         return '[ SYNSEM.LOCAL [ COORDAGR res, ' \
                'COORD-STRAT "' + num + '" ] ].'
@@ -376,7 +375,7 @@ def customize_mixed_strat_resolution(ch, mylang, target):
 
 
 def customize_conjunct_agreement(mylang, ch, agr, csap, cs):
-    """add everything to the grammar that's needed for distinguished conjunct agreement"""
+    """Add everything to the grammar that's needed for distinguished conjunct agreement."""
     # type addendum for distinguished conjunct
     mylang.add('local-min:+ [COORDAGR dir].', section='addenda')
 
@@ -458,7 +457,7 @@ def customize_agreement_pattern(mylang, ch, csap, cs):
 
 def customize_poss_feats(mylang, rule):
     """
-    Identify POSSESSOR and POSSESSUM across conjuncts
+    Identify POSSESSOR and POSSESSUM across conjuncts.
     """
     if rule == 'top' or rule == 'mid':
         mylang.add(rule+'-coord-rule :+ [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #possessor,\
@@ -476,7 +475,7 @@ def customize_poss_feats(mylang, rule):
 
 def customize_coordination(mylang, ch, lexicon, rules, irules):
     """
-    The main coordination customization routine
+    The main coordination customization routine.
     """
     mylang.set_section('coord')
 

@@ -2,10 +2,9 @@ from gmcs.lib import TDLHierarchy
 
 
 ######################################################################
-# customize_tense()
-# Create tense feature value hierarchies per the user's choices
 
 def init_tense_hierarchy(ch, hierarchies):
+    """Create tense feature value hierarchies per the user's choices."""
     hier = TDLHierarchy('tense')
 
     tdefn = ch.get('tense-definition')
@@ -53,8 +52,6 @@ def customize_tense(mylang, hierarchies):
 
 
 ######################################################################
-# customize_aspect()
-# Create viewpoint aspect feature value definitions per the user's choices
 
 def init_aspect_hierarchy(ch, hierarchies):
     hier = TDLHierarchy('aspect')
@@ -76,12 +73,11 @@ def init_aspect_hierarchy(ch, hierarchies):
 
 
 def customize_aspect(mylang, hierarchies):
+    """
+    Create viewpoint aspect feature value definitions per the user's choices.
+    """
     if 'aspect' in hierarchies:
         hierarchies['aspect'].save(mylang, False)
-
-# customize_situation()
-# Create situation aspect feature value definitions per the user's choices
-
 
 def init_situation_hierarchy(ch, hierarchies):
     hier = TDLHierarchy('situation')
@@ -97,6 +93,9 @@ def init_situation_hierarchy(ch, hierarchies):
 
 
 def customize_situation(mylang, hierarchies):
+    """
+    Create situation aspect feature value definitions per the user's choices.
+    """
     if 'situation' in hierarchies:
         mylang.set_section('features')
         mylang.add('situation := sort.')
@@ -104,11 +103,9 @@ def customize_situation(mylang, hierarchies):
         hierarchies['situation'].save(mylang, False)
 
 ######################################################################
-# customize_mood()
-# Create mood feature value definitions per the user's choices
-
 
 def init_mood_hierarchy(ch, hierarchies):
+    """Create mood feature value definitions per the user's choices."""
     hier = TDLHierarchy('mood')
 
     for mood in ch.get('mood', []):
@@ -133,12 +130,11 @@ def customize_mood(mylang, hierarchies):
 
 
 ###############################################################
-# customize_form()
 
 def init_form_hierarchy(ch, hierarchies):
     """
     Create the FORM hierarchies associated with the user's choices
-    about verb forms
+    about verb forms.
     """
     hier = TDLHierarchy('form')
     if ('form-fin-nf' in ch or ch.has_adp_form()):

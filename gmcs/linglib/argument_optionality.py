@@ -21,14 +21,12 @@ from gmcs.linglib.nominalized_clauses import get_nmz_clause_wo
 # different.
 
 ######################################################################
-# customize_arg_op()
-#   Create phrase-structure and lexical rules associated with user's
-#   choices on argument optionality page.
-
 
 def customize_arg_op(mylang, ch, rules, hierarchies):
-    """ Create the lexical types, lexical, rules and phrase structure
-        rules to allow argument dropping"""
+    """
+    Create the lexical types, lexical, rules and phrase structure
+    rules associated with user's choices on argument optionality page.
+    """
 
     if 'scale' in ch and (ch.get('subj-drop') or ch.get('obj-drop')):
         mylang.add('dir-inv-scale := unexpressed-reg.')
@@ -165,8 +163,6 @@ def customize_arg_op(mylang, ch, rules, hierarchies):
 
 
 def add_lexrules(choices):
-    '''
-    '''
     for pc in morphotactics.all_position_classes(choices):
         pc_key = pc.full_key
         idx = pc['lrt'].next_iter_num() if 'lrt' in pc else 1
@@ -214,11 +210,11 @@ def add_lexrules(choices):
 
 
 def need_no_drop_rule(obj_subj, choices):
-    '''
+    """
     Return True if the unordered values of the pair
     ((obj|subj)-mark-drop, (obj|subj)-mark-no-drop) is a valid pattern
     for needing a separate morpheme.
-    '''
+    """
     patterns = (set(['req', 'not']), set(['req', 'opt']))
     if set([choices[obj_subj + '-drop'].split('-')[-1],
             choices[obj_subj + '-no-drop'].split('-')[-1]]) in patterns:

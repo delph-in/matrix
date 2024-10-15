@@ -1,7 +1,8 @@
-##########################################################
-# This file contains functions for extracting predications
+"""
+This file contains functions for extracting predications
 # from grammar files, generating MRSs, and generating
-# sentences from those MRSs
+# sentences from those MRSs.
+"""
 
 import re
 import os
@@ -84,7 +85,7 @@ def generate_sentences_lkb(grammar, mrs_files, verb_preds, delphin_dir, session)
     return sentences
 
 def get_sentences_from_lkb_output(output_file,  mrs_files, verb_preds):
-    '''parses the output file from lkb after generating sentences to extract the sentence information.'''
+    """Parses the output file from lkb after generating sentences to extract the sentence information."""
     output = open(output_file, 'r')
     sentences = []
 
@@ -151,12 +152,12 @@ def get_sentences_from_lkb_output(output_file,  mrs_files, verb_preds):
         entry[2] = [clean_tree(s) for s in entry[2]]
     return sentences
 
-# returns a clean version of a tree outputted by the lkb
 def clean_tree(tree):
+    """Returns a clean version of a tree outputted by the lkb."""
     return re.sub(r'\("([^()]+)"\)', r'(@\1@)', tree).replace('"', '').replace('@', "'")
 
 def compile_grammar_ace(grammar_dir, session):
-    '''Compiles the grammar in the given directory using ACE'''
+    """Compiles the grammar in the given directory using ACE"""
     iso = os.path.basename(grammar_dir)
 
     # open a file to catch the ace output
@@ -177,8 +178,8 @@ def compile_grammar_ace(grammar_dir, session):
     ace_error.close()
 
 def generate_sentences_ace(grammar_dir, mrs_files, template_data, delphin_dir, session):
-    '''Generates sentences using the grammar image in grammar_dir and the mrs_files. 
-    Note that this function assumes that the grammar is already compiled.'''
+    """Generates sentences using the grammar image in grammar_dir and the mrs_files. 
+    Note that this function assumes that the grammar is already compiled."""
     # rewrite the multiple mrs files to be one mrs per line
     ace_mrs_iterable = []
     for mrs_file in mrs_files:
@@ -254,7 +255,7 @@ def get_sentences_from_ace_response(response_iter, mrs_files, template_data, ace
             
 
 def collapse_mrs_to_one_line(mrs_file):
-    '''Takes a multiline mrs file, splits the white sapce and puts everything together into one line.'''
+    """Takes a multiline mrs file, splits the white sapce and puts everything together into one line."""
     file = open(mrs_file, 'r')
     text = file.read()
     text = " ".join(text.split())
@@ -262,21 +263,20 @@ def collapse_mrs_to_one_line(mrs_file):
 
 
 def remove_duplicates(input_list):
-    '''Takes an input list that has the form [[a1,b1],[a2,b2], ... [a{n}, b{n}]] ie. a list of pairs.
+    """Takes an input list that has the form [[a1,b1],[a2,b2], ... [a{n}, b{n}]] ie. a list of pairs.
     It removes any pair in the list where the "a" value appeared earlier in the list. 
     
     For example if a2 == a1 in the example list above then [a2, b2] would be removed from the list.
-    '''
+    """
     new_list = []
     while(input_list != []):
         new_list.append(input_list[0])
         input_list = list(filter((lambda x: x[0] != input_list[0][0]), input_list))
     return new_list
 
-# Extract predications from the grammar
-
 
 def get_n_predications(grammar_dir):
+    """Extract predications from the grammar."""
     lexicon = open(os.path.join(grammar_dir, 'lexicon.tdl'), 'r')
     choices = open(os.path.join(grammar_dir, 'choices'), 'r')
     lang = None
@@ -396,8 +396,10 @@ def get_v_predications(grammar_dir, lang):
     language.close()
     return (itv_rels, stv_rels)
 
-# Class for storing templates with methods to facilitate predicate and feature replacement
 class Template:
+    """
+    Class for storing templates with methods to facilitate predicate and feature replacement.
+    """
     def __init__(self, file=None):
         # The file name is expected to be a file listed in web/templates/
         if file:
@@ -496,14 +498,14 @@ def get_replacement_features_from_grammar(grammar_dir):
                     2)][pos[m2.group(3)]] = m2.group(4)
     return result
 
-# Extract templates from the grammar
-# more specifically, this subprocess (seems to) be checking
-# to see if the TbG options section is present in the choices
-# file, and if it's not, we just make basic stv and itv
-# templates and return them
-
 
 def get_templates(grammar_dir):
+    """
+    Extract templates from the grammar more specifically, this subprocess 
+    (seems to) be checking to see if the TbG options section is present in 
+    the choices file, and if it's not, we just make basic stv and itv
+    templates and return them.
+    """
     choices = open(os.path.join(grammar_dir, 'choices'), 'r')
     choices_present = False
     in_options = False
@@ -528,8 +530,8 @@ def get_templates(grammar_dir):
         templates.append(Template(f))
     return templates
 
-# Output an mrs file from a template, replacing the appropriate predications
 def process_mrs_file(mrs, outfile, noun1_rel, det1_rel, noun2_rel, det2_rel, verb_rel):
+    """Output an mrs file from a template, replacing the appropriate predications."""
     output = mrs.replace("#NOUN1#", noun1_rel).replace("#NOUN2#", noun2_rel).replace(
         "#VERB#", verb_rel).replace("#DET1#", det1_rel).replace("#DET2#", det2_rel)
     # print output+"<br><br>"
@@ -547,9 +549,9 @@ def process_mrs_file(mrs, outfile, noun1_rel, det1_rel, noun2_rel, det2_rel, ver
 #    process_mrs_file(MRS_stv,session+'Pattern '+str(i),noun_rels_dets[0][0],det_rels[noun_rels_dets[0][1]][0],noun_rels_dets[1][0],det_rels[noun_rels_dets[1][1]][0],verb_rel)
 
 def get_mrs_from_test_sentences(grammar_dir, session, optional_sentence_num = -1):
-    '''Generates MRS files from the Test Sentences in the choices file;
+    """Generates MRS files from the Test Sentences in the choices file;
     Returns a list of mrs file names and some info used to display/describe the MRS;
-    optional_sentence_num: an integer x that can be specified if only the mrs for sentence x is needed.'''
+    optional_sentence_num: an integer x that can be specified if only the mrs for sentence x is needed."""
     choices = open(os.path.join(grammar_dir, 'choices'), 'r')
     choices_text = choices.read()
     mrs_files = []
@@ -652,8 +654,8 @@ def convert_mrs_file_to_template(mrs_filename, mrs_info, det_rels):
     template_file.close()
 
 
-# Wrap up all of the components involved in generation, and return the results
 def get_sentences(grammar_dir, delphin_dir, session, with_lkb=False):
+    """Wrap up all of the components involved in generation, and return the results."""
     (noun_rels_dets, det_rels, language) = get_n_predications(grammar_dir)
     (itvs, stvs) = get_v_predications(grammar_dir, language)
     templates = get_templates(grammar_dir)
@@ -719,8 +721,8 @@ def get_sentences(grammar_dir, delphin_dir, session, with_lkb=False):
     return sentences
 
 
-# Same as get_sentences, but for the additional sentences page
 def get_additional_sentences(grammar_dir, delphin_dir, verb_rels, template_file, session):
+    """Same as get_sentences, but for the additional sentences page."""
     (noun_rels_dets, det_rels, language) = get_n_predications(grammar_dir)
     itr_verb_re, tr_verb_re, noun_re, det_re = re.compile(r'ITR-VERB([0-9]*)'), re.compile(
         r'TR-VERB([0-9]*)'), re.compile(r'NOUN([0-9]*)'), re.compile(r'DET([0-9]*)')

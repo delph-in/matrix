@@ -5,7 +5,6 @@ from gmcs.utils import orth_encode
 
 g_tdls = []
 
-
 # focus-pos;topic-fisrt;c-focus;c-focus-pos : '1st;2nd;3rd'
 g_pos_types = {
     ';;;clause-initial': ['c-focus-pos|contrast-focus', '', '', ''],

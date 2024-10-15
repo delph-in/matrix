@@ -156,14 +156,11 @@ def customize_adnominal_possession(mylang, ch, rules, irules, lexicon, hierarchi
 ## Secondary functions (called by customize_adnominal_possession() or other secondary functions)  ###
 #####################################################################################################
 
-
-"""
-Adds things to the addenda section that are necessary
-for any strategy
-"""
-
-
 def customize_poss_addenda(mylang, ch):
+    """
+    Adds things to the addenda section that are necessary
+    for any strategy.
+    """
     mylang.add('head :+ [ POSSESSOR poss ].', section='addenda')
     mylang.add('cat :+ [ POSSESSUM poss ].', section='addenda')
     mylang.add('poss := *top* & [ POSS-AGR png ].', section='addenda')
@@ -208,16 +205,11 @@ def customize_poss_hier(mylang, strat_num):
              'possessum & possessive-'+str(strat_num), '')
     hier.save(mylang)
 
-
-
-
-"""
-Calls customize_poss_rules, customize_poss_irules, and customize_poss_lexicon
-to build possessive strategies for cases where the possessor is a full NP
-"""
-
-
 def customize_np_possession(mylang, ch, rules, irules, lexicon, hierarchies):
+    """
+    Calls customize_poss_rules, customize_poss_irules, and customize_poss_lexicon
+    to build possessive strategies for cases where the possessor is a full NP.
+    """
     for strat in ch.get('poss-strat', []):
 
         # Add subtypes of POSSESSOR and POSSESSUM features for this strategy
@@ -239,13 +231,11 @@ def customize_np_possession(mylang, ch, rules, irules, lexicon, hierarchies):
                 strat, mylang, ch, lexicon, rules, hierarchies)
 
 
-"""
-Calls customize_poss_rules, customize_poss_irules, and customize_poss_lexicon
-to build possessive strategies for cases where the possessor is a pronoun
-"""
-
-
 def customize_pronominal_possession(mylang, ch, rules, irules, lexicon, hierarchies):
+    """
+    Calls customize_poss_rules, customize_poss_irules, and customize_poss_lexicon
+    to build possessive strategies for cases where the possessor is a pronoun.
+    """
 
     for pron in ch.get('poss-pron', []):
 
@@ -270,13 +260,11 @@ def customize_pronominal_possession(mylang, ch, rules, irules, lexicon, hierarch
 # Add phrase rules
 #########################################################################################
 
-"""
- Helper function to determine if you'll need to
- manipulate the order of head-comp rules:
-"""
-
-
 def check_hc_order_manip(ch, strat, hc):
+    """
+    Helper function to determine if you'll need to manipulate the order of 
+    head-comp rules.
+    """
 
     # Order of major poss phrase
     strat_order = strat.get('order')
@@ -349,38 +337,33 @@ def check_hc_order_manip(ch, strat, hc):
 
     return order_manip, default_init, head_comp_order, default_nmz_init, nmz_head_comp_order
 
-"""
-Checks to see if there are any nominalization strategies that use 
-possessive strategies and returns a list of the possessive strategies along
-with their semantic types.
-
-arguments: ch = choices file object
-returns: a list of tuples containing (poss_strategy_name, semantic type)
-semantic type can be either 'both', 'verb-only'. 'noun-only'
-
-"""
-
 def check_nom_strats(ch):
+    """
+    Checks to see if there are any nominalization strategies that use 
+    possessive strategies and returns a list of the possessive strategies along
+    with their semantic types.
+
+    arguments: ch = choices file object
+    returns: a list of tuples containing (poss_strategy_name, semantic type)
+    semantic type can be either 'both', 'verb-only'. 'noun-only'
+    """
     anc_strat = set()
     for strat in ch.get('nmz_poss_strat'):
         anc_strat.add((strat.get('name'), ch.get('non_sent_sem')))
     return anc_strat
 
-
-"""
-Add the poss-phrase rules which handle the word order in specifier juxtaposition phrases for 
-non-derived nouns and ancs (if the possessive strategy can be used in ANCs)
-
-arguments:
-strat: a juxtaposition possessive strategy 
-anc_strat: The name of the possessive strategy if it is used in ANCs, None otherwise
-phrase_rule: string containing the name of the immediate supertype (poss-phrase-strat_num)
-anc_phrase_rule: string containing the anc subtype (anc-poss-phrase-strat_num)
-noun_phrase_rule: string containing the noun subtype (anc-poss-phrase-strat_num)
-
-"""
-
 def handle_juxt_word_order(mylang, rules, strat, anc_strat, phrase_rule, anc_phrase_rule, noun_phrase_rule):
+    """
+    Add the poss-phrase rules which handle the word order in specifier juxtaposition phrases for 
+    non-derived nouns and ancs (if the possessive strategy can be used in ANCs).
+
+    arguments:
+    strat: a juxtaposition possessive strategy 
+    anc_strat: The name of the possessive strategy if it is used in ANCs, None otherwise
+    phrase_rule: string containing the name of the immediate supertype (poss-phrase-strat_num)
+    anc_phrase_rule: string containing the anc subtype (anc-poss-phrase-strat_num)
+    noun_phrase_rule: string containing the noun subtype (anc-poss-phrase-strat_num)
+    """
     if strat.get('order') == 'either':
         mylang.add(noun_phrase_rule+'-head-initial := head-initial & '+ noun_phrase_rule+'.')
         mylang.add(noun_phrase_rule+'-head-final := head-final & '+ noun_phrase_rule+'.')
@@ -398,22 +381,20 @@ def handle_juxt_word_order(mylang, rules, strat, anc_strat, phrase_rule, anc_phr
         mylang.add(phrase_rule + ' := '+strat.get('order') +'.', merge=True)
         rules.add(noun_phrase_rule.replace('-phrase', '') + ':= '+noun_phrase_rule+'. ')
         if anc_strat is not None:
-            rules.add(anc_phrase_rule.replace('-phrase', '') + ':= '+anc_phrase_rule+'. ')
-
-"""
-Add all semantic constraints to poss-phrase for specifier juxtaposition strategies
-
-arguments:
-phrase_rule: string containing the name of the immediate supertype (poss-phrase-strat_num)
-noun_phrase_rule: string containing the noun subtype (noun-poss-phrase-strat_num)
-anc_phrase_rule: string containing the anc subtype (anc-poss-phrase-strat_num)
-anc_strat: The name of the possessive strategy if it is used in ANCs, None otherwise
-nmz_wo: word order in ANCS
-has_nmz: boolean specifying whether ANCs in a language use any possessive strategies
-
-"""       
+            rules.add(anc_phrase_rule.replace('-phrase', '') + ':= '+anc_phrase_rule+'. ')      
 
 def add_juxt_semantics(mylang, phrase_rule, noun_phrase_rule, anc_phrase_rule, anc_strat, nmz_wo, has_nmz):
+        """
+        Add all semantic constraints to poss-phrase for specifier juxtaposition strategies.
+
+        arguments:
+        phrase_rule: string containing the name of the immediate supertype (poss-phrase-strat_num)
+        noun_phrase_rule: string containing the noun subtype (noun-poss-phrase-strat_num)
+        anc_phrase_rule: string containing the anc subtype (anc-poss-phrase-strat_num)
+        anc_strat: The name of the possessive strategy if it is used in ANCs, None otherwise
+        nmz_wo: word order in ANCS
+        has_nmz: boolean specifying whether ANCs in a language use any possessive strategies
+        """ 
         #semantic constraints common to both the noun and anc versions of the poss-phrase rule
         common_constraints = '[HEAD-DTR.SYNSEM.LOCAL [ CONT.HOOK #hook & [LTOP #lbl,\
                                                                                  INDEX #possessum & [COG-ST uniq-id]]],\
@@ -459,22 +440,19 @@ def add_juxt_semantics(mylang, phrase_rule, noun_phrase_rule, anc_phrase_rule, a
                 mylang.add(anc_phrase_rule+' := ' + phrase_rule + ' & [ HEAD-DTR.SYNSEM.LOCAL [CAT.VAL.SPR < [LOCAL.CONT.HOOK.INDEX #possessor] >],\
                                                                         NON-HEAD-DTR [SYNSEM.LOCAL.CONT.HOOK.INDEX #possessor],\
                                                                         C-CONT [RELS.LIST < [], '+POSS_REL+' >]].')
-        
-
-"""
-Creates all necessary subtypes of the head-spec rules in
-non-juxtaposition specifier possessive phrases for 
-non-derived nouns and ancs
-
-arguments:
-strat: a non-juxtaposition possessive strategy 
-head_spec_order: noun-det order in an language
-order_mismatch: a boolean indicating whether an additional head-spec rule is needed
-anc_strat: The name of the possessive strategy if it is used in ANCs, None otherwise
-
-"""
 
 def handle_poss_unary_word_order(mylang, rules, strat, head_spec_order, order_mismatch, anc_strat):
+    """
+    Creates all necessary subtypes of the head-spec rules in
+    non-juxtaposition specifier possessive phrases for 
+    non-derived nouns and ancs.
+
+    arguments:
+    strat: a non-juxtaposition possessive strategy 
+    head_spec_order: noun-det order in an language
+    order_mismatch: a boolean indicating whether an additional head-spec rule is needed
+    anc_strat: The name of the possessive strategy if it is used in ANCs, None otherwise
+    """
     if strat.get('order') == 'head-initial':
             hs_phrase_name = 'head-spec'
     elif strat.get('order') == 'head-final':
@@ -562,20 +540,18 @@ def handle_poss_unary_word_order(mylang, rules, strat, head_spec_order, order_mi
                 mylang.add('det-anc-' + hs_phrase_name + '-phrase := non-head-comp-' + hs_phrase_name + '-phrase & [ SYNSEM.LOCAL.CAT.HEAD.NMZ +, \
                                                                                                                         NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSSESSOR nonpossessive].')
                 rules.add('det-anc-' + hs_phrase_name  + ':= det-anc-' + hs_phrase_name + '-phrase.')
-        
-"""
-Add all semantic constraints to poss-unary-phrase for specifier non-juxtaposition strategies
-
-arguments:
-anc_strat: The name of the possessive strategy if it is used in ANCs, None otherwise
-phrase_rule: string containing the name of the immediate supertype (poss-unary-phrase-strat_num)
-noun_phrase_rule: string containing the noun subtype (noun-poss-unary-phrase-strat_num)
-anc_phrase_rule: string containing the anc subtype (anc-poss-unary-phrase-strat_num)
-has_nmz: boolean specifying whether ANCs in a language use any possessive strategies
-
-"""
 
 def add_poss_unary_semantics(mylang, rules, anc_strat, phrase_rule, noun_phrase_rule, anc_phrase_rule, has_nmz):
+    """
+    Add all semantic constraints to poss-unary-phrase for specifier non-juxtaposition strategies.
+
+    arguments:
+    anc_strat: The name of the possessive strategy if it is used in ANCs, None otherwise
+    phrase_rule: string containing the name of the immediate supertype (poss-unary-phrase-strat_num)
+    noun_phrase_rule: string containing the noun subtype (noun-poss-unary-phrase-strat_num)
+    anc_phrase_rule: string containing the anc subtype (anc-poss-unary-phrase-strat_num)
+    has_nmz: boolean specifying whether ANCs in a language use any possessive strategies
+    """
     #semantic constraints common to both the noun and anc versions of the poss-unary phrase rule
     common_constraints = '[SYNSEM [LOCAL [CAT.VAL.SPEC < [ LOCAL.CONT.HOOK [ INDEX #possessum & [ COG-ST uniq-id ], \
 				      		      	                      LTOP #lbl ] ] >]], \
@@ -615,12 +591,11 @@ def add_poss_unary_semantics(mylang, rules, anc_strat, phrase_rule, noun_phrase_
         mylang.add(noun_phrase_rule + ':= ' + phrase_rule + ' & [SYNSEM.LOCAL.CAT.VAL.SPEC < [ LOCAL.CAT.HEAD.NMZ -] > ].')
        
 
-"""
-Add the noun and anc varients (if necessary) of poss-phrase, the head-spec rules, and the poss-unary rule
-for specifier possessive strategies
-"""
-
 def add_spec_semantics(ch, mylang, strat, anc_strat, phrase_rule, poss_strat, order_mismatch, rules, head_spec_order, nmz_wo, has_nmz):
+    """
+    Add the noun and anc varients (if necessary) of poss-phrase, the head-spec rules, and the poss-unary rule
+    for specifier possessive strategies.
+    """
     noun_phrase_rule = "noun-" + phrase_rule
     anc_phrase_rule = "anc-" + phrase_rule
     if poss_strat == "juxt":
@@ -630,16 +605,14 @@ def add_spec_semantics(ch, mylang, strat, anc_strat, phrase_rule, poss_strat, or
         add_poss_unary_semantics(mylang, rules, anc_strat, phrase_rule, noun_phrase_rule, anc_phrase_rule, has_nmz)
         if need_specialized_head_spec(ch):
             handle_poss_unary_word_order(mylang, rules, strat, head_spec_order, order_mismatch, anc_strat)
-            
-"""
-Add the necessary phrase rule to combine possessor and possessum
-If rule already exists (head-comp case), then make sure its order is correct.
-Also add constraints to non-possessive phrase rules to prevent
-them from allowing possessive words in incorrect places
-"""
-
 
 def customize_poss_rules(strat, mylang, ch, rules, hierarchies):
+    """
+    Add the necessary phrase rule to combine possessor and possessum
+    If rule already exists (head-comp case), then make sure its order is correct.
+    Also add constraints to non-possessive phrase rules to prevent
+    them from allowing possessive words in incorrect places.
+    """
 
     # Define vars for all elements of strategy:
     strat_name = strat.full_keys()[0].split("_")[0]
@@ -1047,11 +1020,11 @@ def customize_poss_rules(strat, mylang, ch, rules, hierarchies):
 # Add inflectional rules
 #########################################################################################
 
-# Adds inflectional rules (or adds constraints to inflectional rules added in
-# morphotactics.py) that create possessive forms
-
-
 def customize_poss_irules(strat, mylang, ch, irules, hierarchies, rules):
+    """
+    Adds inflectional rules (or adds constraints to inflectional rules added in
+    morphotactics.py) that create possessive forms.
+    """
 
     # Define vars for all elements of strategy:
     strat_name = strat.full_keys()[0].split("_")[0]
@@ -1494,9 +1467,11 @@ def customize_possessor_pron_irules(ch, mylang, strat_name, feat, lrt, mod_spec,
 # Add lexical items
 #########################################################################################
 
-# Adds lexical items for possession markers and possessor pronouns.
-# All needed phrase rules added in customize_poss_rules() above.
 def customize_poss_lexicon(strat, mylang, ch, lexicon, rules, hierarchies):
+    """
+    Adds lexical items for possession markers and possessor pronouns.
+    All needed phrase rules added in customize_poss_rules() above.
+    """
 
     # Define vars for all elements of strategy:
     strat_name = strat.full_keys()[0].split("_")[0]

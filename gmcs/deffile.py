@@ -1,13 +1,13 @@
 # $Id: deffile.py,v 1.16 2008-09-30 23:50:02 lpoulson Exp $
 
-######################################################################
-# This module is currently a bit of a hybrid.  Most of the code is
-# part of the MatrixDefFile class, which is used both to parse
-# ./matrixdef and to emit HTML.  However, a couple of the methods
-# on that class, while they do output HTML, don't have anything to
-# do with the matrixdef file.  The HTML-generation code should
-# probably be split out into a separate module/class.  Later.
-#   - sfd 3/5/2008
+"""
+This module is currently a bit of a hybrid.  Most of the code is
+part of the MatrixDefFile class, which is used both to parse
+./matrixdef and to emit HTML.  However, a couple of the methods
+on that class, while they do output HTML, don't have anything to
+do with the matrixdef file.  The HTML-generation code should
+probably be split out into a separate module/class. Later. - sfd 3/5/2008
+"""
 
 ######################################################################
 # imports
@@ -306,15 +306,16 @@ def html_warning_mark(vm):
 def html_info_mark(vm):
     return html_mark('#', vm)
 
-# Return an HTML <input> tag with the specified attributes and
-# surrounding text
-# TJT 2014-05-07 Adding randid to html_input to pass random number
-# matching radio buttons to their labels along
-# TJT 2014-09-05 Getting rid of randid to wrap entire radio option in label
-
-
 def html_input(vr, type, name, value, checked, before='', after='',
                size='', onclick='', disabled=False, onchange=''):
+    """
+    Return an HTML <input> tag with the specified attributes and
+    surrounding text.
+    TJT 2014-05-07 Adding randid to html_input to pass random number
+    matching radio buttons to their labels along.
+    TJT 2014-09-05 Getting rid of randid to wrap entire radio option in label.
+    """
+    
     chkd = ''
     if checked:
         chkd = ' checked="checked"'
@@ -365,10 +366,12 @@ def html_input(vr, type, name, value, checked, before='', after='',
             return "<label>%s</label>" % output
         return output
 
-
-# Return an HTML <select> tag with the specified name
-# TJT 2014-08-26: Adding onchange
 def html_select(vr, name, multi=False, onfocus='', onchange=''):
+    """
+    Return an HTML <select> tag with the specified name.
+    TJT 2014-08-26: Adding onchange.
+    """
+    
     mark = ''
     if name in vr.errors:
         mark = html_error_mark(vr.errors[name])
@@ -390,10 +393,12 @@ def html_select(vr, name, multi=False, onfocus='', onchange=''):
     return '%s<select name="%s"%s%s%s>' % \
            (mark, name, multi_attr, onfocus, onchange)
 
-
-# Return an HTML <option> tag with the specified attributes and
-# surrounding text
 def html_option(vr, name, selected, html, temp=False, strike=False):
+    """
+    Return an HTML <option> tag with the specified attributes and
+    surrounding text.
+    """
+    
     if selected:
         selected = ' selected'
     else:
@@ -437,12 +442,14 @@ def html_delbutton(id):
     # TJT 2014-5-27 Regular capital X looks the best + most compliant
     # 'value="&#x2169;" name="" title="Delete" ' + \
 
-
-# given a list of lines of text, some of which may contain
-# unterminated double-quoted strings, merge some lines as necessary so
-# that every quoted string is contained on a single line, and return
-# the merged list
 def merge_quoted_strings(line):
+    """
+    Given a list of lines of text, some of which may contain
+    unterminated double-quoted strings, merge some lines as necessary so
+    that every quoted string is contained on a single line, and return
+    the merged list.
+    """
+    
     i = 0
     while i < len(line):
         j = 0
@@ -463,12 +470,11 @@ def merge_quoted_strings(line):
     return line
 
 ######################################################################
-# Archive helper functions
-#   make_tgz(dir) and make_zip(dir) create an archive called
-#   dir.(tar.gz|zip) that contains the contents of dir
-
 
 def make_tgz(dir):
+    """
+    Creates an archive called dir.(tar.gz) that contains the contents of dir.
+    """
 
     # ERB First get rid of existing file because gzip won't
     # overwrite existing .tgz meaning you can only customize
@@ -502,48 +508,57 @@ def add_zip_files(z, dir):
 
 
 def make_zip(dir):
+    """
+    Creates an archive called dir.(zip.gz) that contains the contents of dir.
+    """
     z = zipfile.ZipFile(dir + '.zip', 'w')
     add_zip_files(z, dir)
     z.close()
 
 
-# Replace variables of the form {name} in word using the dict iter_vars
 def replace_vars(word, iter_vars):
+    """
+    Replace variables of the form {name} in word using the dict iter_vars.
+    """
     for k in list(iter_vars.keys()):
         word = re.sub('\\{' + k + '\\}', str(iter_vars[k]), word)
     return word
 
 
-# From a list of triples of strings [string1, string2, ...], return
-# a string containing a JavaScript-formatted list of strings of the
-# form 'string1:string2'.
 def js_array(list):
+    """
+    From a list of triples of strings [string1, string2, ...], return
+    a string containing a JavaScript-formatted list of strings of the
+    form 'string1:string2'.
+    """
+    
     val = ''
     for l in list:
         val += '\'' + l[0] + ':' + l[1] + '\',\n'
     val = val[:-2]  # trim off the last ,\n
     return val
 
-# From a list of triples of strings [string1, string2, ...], return
-# a string containing a JavaScript-formatted list of strings of the
-# form 'string1:string2:string3'. This is used to convey features,
-# values and category (category of feature).
-
-
 def js_array3(list):
+    """
+    From a list of triples of strings [string1, string2, ...], return
+    a string containing a JavaScript-formatted list of strings of the
+    form 'string1:string2:string3'. This is used to convey features,
+    values and category (category of feature).
+    """
     val = ''
     for l in list:
         val += '\'' + l[0] + ':' + l[1] + ':' + l[3] + '\',\n'
     val = val[:-2]  # trim off the last ,\n
     return val
 
-# From a list of triples of strings [string1, string2, ...], return
-# a string containing a JavaScript-formatted list of strings of the
-# form 'string1:string2:string3:string4'. This is used to convey features,
-# values, category (category of feature), a flag feature 'customized'.
-
 
 def js_array4(list):
+    """
+    From a list of triples of strings [string1, string2, ...], return
+    a string containing a JavaScript-formatted list of strings of the
+    form 'string1:string2:string3:string4'. This is used to convey features,
+    values, category (category of feature), a flag feature 'customized'.
+    """
     val = ''
     for l in list:
         val += '\'' + l[0] + ':' + l[1] + ':' + l[3] + ':' + l[4] + '\',\n'
@@ -551,13 +566,13 @@ def js_array4(list):
     return val
 
 ######################################################################
-# MatrixDefFile class
-# This class and its methods are used to parse Matrix definition
-# formatted files (currently just the file ./matrixdef), and based
-# on the contents, to produce HTML pages and save choices files.
-
 
 class MatrixDefFile:
+    """
+    This class and its methods are used to parse Matrix definition
+    # formatted files (currently just the file ./matrixdef), and based
+    # on the contents, to produce HTML pages and save choices files.
+    """
     # links between names and friendly names for
     # use in links on html navigation menu
     sections = {'general': 'General Information',
@@ -609,8 +624,10 @@ class MatrixDefFile:
     ######################################################################
     # Variable/friendly name mapping
 
-    # initialize the v2f and f2v dicts
     def make_name_map(self):
+        """
+        Initialize the v2f and f2v dicts.
+        """
         for l in self.def_lines:
             l = l.strip()
             if len(l):
@@ -624,17 +641,19 @@ class MatrixDefFile:
                         self.v2f[vn] = fn
                         self.f2v[fn] = vn
 
-    # return the friendly name for a variable, or the variable if none
-    # is defined
     def f(self, v):
+        """ 
+        Return the friendly name for a variable, or the variable if none is defined .
+        """
         if v in self.v2f:
             return self.v2f[v]
         else:
             return v
-
-    # return the variable for a friendly name, or the friendly name if
-    # none is defined
+            
     def v(self, f):
+        """
+        Return the variable for a friendly name, or the friendly name if none is defined.
+        """
         if f in self.f2v:
             return self.f2v[f]
         else:
@@ -642,9 +661,6 @@ class MatrixDefFile:
 
     ######################################################################
     # Utility methods
-
-    # TJT 2014-08-28: Adding method to find if some choice exists
-    # in order to enable skipping UI elements based on this choice
 
     def check_choice_switch(self, switch, choices):
         """
@@ -699,9 +715,11 @@ class MatrixDefFile:
     ######################################################################
     # HTML output methods
 
-    # Create and print the main matrix page.  The argument is a cookie
-    # that determines where to look for the choices file.
     def main_page(self, cookie, vr):
+        """
+        Create and print the main matrix page.  The argument is a cookie
+        that determines where to look for the choices file.
+        """
         print(HTTP_header)
         print('Set-cookie: session=' + cookie + '\n')
         print(HTML_pretitle)
@@ -864,10 +882,11 @@ class MatrixDefFile:
         print('</div>')
         print(HTML_postbody)
 
-    # Turn a list of lines containing matrix definitions into a string
-    # containing HTML.
-
     def defs_to_html(self, lines, choices, vr, prefix, vars):
+        """
+        Turn a list of lines containing matrix definitions into a string
+        containing HTML.
+        """
 
         html = ''
 
@@ -1280,10 +1299,12 @@ class MatrixDefFile:
         print(HTML_verify_form_postbody)
         print(HTML_postbody)
 
-    # Create and print the matrix subpage for the specified section
-    # based on the arguments, which are the name of the section and
-    # a cookie that determines where to look for the choices file
     def sub_page(self, section, cookie, vr):
+        """
+        Create and print the matrix subpage for the specified section
+        based on the arguments, which are the name of the section and
+        a cookie that determines where to look for the choices file.
+        """
         print(HTTP_header + '\n')
         print(HTML_pretitle)
         if section == 'lexicon':
@@ -1437,10 +1458,12 @@ class MatrixDefFile:
         print('</div>')
         print(HTML_postbody)
 
-    # Create and print the "download your matrix here" page for the
-    # customized matrix in the directory specified by session_path
 
     def custom_page(self, session_path, grammar_path, arch_type):
+        """
+        Create and print the "download your matrix here" page for the
+        customized matrix in the directory specified by session_path.
+        """
         print(HTTP_header + '\n')
         print(HTML_pretitle)
         print('<title>Matrix Customized</title>')
@@ -1461,8 +1484,10 @@ class MatrixDefFile:
         print(HTML_customprebody % (os.path.join(session_path, arch_file)))
         print(HTML_postbody)
 
-    # Generate and print sample sentences from the customized grammar
     def sentences_page(self, session_path, grammar_dir, session):
+        """
+        Generate and print sample sentences from the customized grammar.
+        """
         print(HTTP_header + '\n')
         print(HTML_pretitle)
         print('<title>Matrix Sample Sentences</title>')
@@ -1524,8 +1549,10 @@ class MatrixDefFile:
         print(HTML_sentencespostbody)
         print(HTML_postbody)
 
-    # Display page with additional sentences
     def more_sentences_page(self, session_path, grammar_dir, verbpred, template_file, session):
+        """
+        Display page with additional sentences.
+        """
         print(HTTP_header + '\n')
         print(HTML_pretitle)
         print('<title>More Sentences</title>')
@@ -1555,8 +1582,10 @@ class MatrixDefFile:
         print(HTML_sentencespostbody)
         print(HTML_postbody)
 
-    # Display errors and warnings that occurred during customization
     def error_page(self, vr):
+        """
+        Display errors and warnings that occurred during customization.
+        """
         print(HTTP_header + '\n')
         print(HTML_pretitle)
         print('<title>Matrix Customization Errors</title>')
@@ -1580,9 +1609,10 @@ class MatrixDefFile:
 
         print(HTML_postbody)
 
-    # Inform the user that cookies must be enabled
-
     def cookie_error_page(self):
+        """
+        Inform the user that cookies must be enabled.
+        """
         print(HTTP_header + '\n')
         print(HTML_pretitle)
         print('<title>Cookies Required</title>')
@@ -1600,13 +1630,14 @@ class MatrixDefFile:
 
         print(HTML_postbody)
 
-    # Based on a section of a matrix definition file in lines, save the
-    # values from choices into the file handle f.  The section in lines
-    # need not correspond to a whole named section (e.g. "Language"), but
-    # can be any part of the file not containing a section line.
-
     def save_choices_section(self, lines, f, choices,
                              iter_level=0, prefix=''):
+        """
+        Based on a section of a matrix definition file in lines, save the
+        values from choices into the file handle f.  The section in lines
+        need not correspond to a whole named section (e.g. "Language"), but
+        can be any part of the file not containing a section line.
+        """
         already_saved = {}  # don't save a variable more than once
         i = 0
         while i < len(lines):
@@ -1649,12 +1680,13 @@ class MatrixDefFile:
 
             i += 1
 
-    # Read the choices_file, stripping out the section associated with
-    # the 'section' member of form_data, and replacing it with all the
-    # values in form_data.  Use self.def_file to keep the choices file
-    # in order.
-
     def save_choices(self, form_data, choices_file):
+        """
+        Read the choices_file, stripping out the section associated with
+        the 'section' member of form_data, and replacing it with all the
+        values in form_data.  Use self.def_file to keep the choices file
+        in order.
+        """
         # The section isn't really a form field, but save it for later
         # section is page user is leaving (or clicking "save and stay" on)
         section = form_data['section'].value
@@ -1877,11 +1909,11 @@ class MatrixDefFile:
         f.close()
 
     def create_neg_aux_choices(self, choices, form_data):
-        '''this is a side effect of the existence of neg-aux
+        """This is a side effect of the existence of neg-aux
         in the form data, it puts some lines pertaining to a neg-aux
         lexical item into the choices file object unless they are
         already there. returns a ChoicesFile instance, and an int
-        which is the index number of the created neg-aux'''
+        which is the index number of the created neg-aux"""
 
         # get the next aux number
         next_n = choices['aux'].next_iter_num() if 'aux' in choices else 1
