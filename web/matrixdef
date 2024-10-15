@@ -1087,8 +1087,7 @@ they can be defined below.
 Label "<h3>Syntactic FORM Feature for verbs</h3>"
 
 Label "<p>To start, your
-grammar may utilize a syntactic feature characterizing the form the
-verb takes. The <span class=\"feat\">form</span> feature distinguishes
+grammar may utilize a syntactic feature characterizing the form taken by a verb, complementizer, or adposition. The <span class=\"feat\">form</span> feature distinguishes
 finite from non-finite forms and can be used to constrain auxiliary
 complement forms and for marking clausal complements (e.g. via morphology).
 If not applicable, you may leave this section
@@ -1105,7 +1104,7 @@ Check form-fin-nf "Finite-nonfinite" "" "Add finite/non-finite FORM feature dist
 
 Label "<p>It is often the case that languages have multiple non-finite
 forms, e.g., English: infinitive, past participle, present
-participle. If applicable, you may expand the hierarchy of verb <span
+participle. If applicable, you may expand the hierarchy of <span
 class=\"feat\">form</span> values in your grammar by providing
 subtypes of <span class=\"tt\">finite</span> and <span class=\"tt\">nonfinite</span>:</p>"
 

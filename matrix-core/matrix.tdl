@@ -131,32 +131,17 @@ non-affix-bearing := word-or-lexrule &
     SYNSEM.LKEYS.KEYREL.WLINK cons ]
 """Words or lexical rules that do not take affixes.""".
 
-; Rule
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Trees 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-rule := sign &
-  [ RULE-NAME string ]
-"""A rule with a display name.""".
-
-; LABEL-NAME and META used for labeling nodes in parse trees
-
-tree-node-label := *top* &
-  [ NODE sign ]
-"""Unused type for labeling nodes on trees.""".
+; LABEL-NAME used for labeling nodes in parse trees
 
 label := sign &
   [ LABEL-NAME string ]
 """User-friendly node labels, e.g., for labeled trees.
 <features>
 LABEL-NAME: The node label to display on the tree.""".
-
-; For complex node labels, like S/NP
-meta := sign &
-  [ META-PREFIX string,
-    META-SUFFIX string ]
-"""Node labels with two parts, e.g., S/NP.
-<features>
-META-PREFIX: The first part of the node label.
-META-SUFFIX: The second part of the node label.""".
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; SYNSEM values
@@ -4226,7 +4211,7 @@ add-icons-subj-comp-verb-rule := lex-rule &
 
 
 ; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; ;  EPR     ; Edges and PRominence
+; ;  EPR     ; Edges and Prominence
 ; ;  LE      ; Left Edge
 ; ;  RE      ; Right Edge
 ; ;  DTE     ; Designated Terminal Element

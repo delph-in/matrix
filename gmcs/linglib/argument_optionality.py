@@ -47,6 +47,9 @@ def customize_arg_op(mylang, ch, rules, hierarchies):
                          [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].')
         mylang.add('subj-drop-verb-lex := verb-lex.')
 
+    if ch.get('subj-drop') == 'subj-drop-all' and (ch.get('subj-con') == 'subj-con-some'):
+        rules.add('basic-head-opt-subj := basic-head-opt-subj-phrase.')
+
     # Figure out the constraints on object dropping and write the
     # appropriate types to mylang.tdl or rules.tdl
     if ch.get('obj-drop') == 'obj-drop-all':
