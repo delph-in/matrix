@@ -17,7 +17,6 @@ def set_supertypename(auxcomp):
 
 # class Auxiliary:
 
-
 #  def __init__(self, aux, ch, mylang, hierarchies):
 #    auxcomp = ch.get('aux-comp')
 #    set_supertypename(auxcomp)

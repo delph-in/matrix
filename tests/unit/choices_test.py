@@ -1,6 +1,6 @@
-'''
+"""
 Run these tests with `python -m tests.unit.choices_test` from the matrix directory.
-'''
+"""
 
 import unittest
 from gmcs.choices import ChoicesFile
@@ -10,7 +10,6 @@ from gmcs.choices import ChoiceDict
 from gmcs.choices import ChoiceList
 from gmcs.choices import split_variable_key
 from gmcs.choices import get_next_key
-
 
 class TestChoiceCategoryClasses(unittest.TestCase):
     def test_choicecategory(self):
@@ -373,7 +372,6 @@ class TestExampleChoicesFiles(unittest.TestCase):
 
 ##############################################################################
 # Choices File Strings
-
 
 empty_choices_file = ['']
 

@@ -345,7 +345,7 @@ def add_test(args):
 
 
 def remove_test(args):
-    '''
+    """
     Remove a test from the filesystem.
 
     This will look for and remove:
@@ -362,7 +362,7 @@ def remove_test(args):
     found, it is also good for removing partially created tests. It is
     the developer's responsibility to commit these changes to Git
     afterwards.
-    '''
+    """
     tests = list(_discover(args))
     if len(tests) > 1:
         raise RegressionTestError('only 1 test may be removed at a time')
@@ -391,7 +391,7 @@ def remove_test(args):
 
 
 def clean_up(args):
-    '''
+    """
     Delete temporary testing files.
 
     Temporary testing files include:
@@ -399,7 +399,7 @@ def clean_up(args):
     1) customized grammars
     2) current profiles
     3) logs
-    '''
+    """
     count = 0
     for name, _, _, _, _, prof, _ in _discover(args):
         deleted = False

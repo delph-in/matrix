@@ -13,7 +13,6 @@ from gmcs.lib import Hierarchy
 from gmcs.utils import get_name
 from gmcs.linglib.nominalized_clauses import needs_anc_wo_feat
 from functools import reduce
-#from gmcs.utils import TDLencode
 
 # Contents
 # 1. Module Variables
@@ -49,7 +48,7 @@ _supertypes = {}
 
 
 def all_position_classes(choices):
-    """ Yield each position class defined in the choices file. """
+    """Yield each position class defined in the choices file."""
     for lt in ALL_LEX_TYPES:
         for pc in choices[lt + '-pc']:
             yield pc
@@ -58,7 +57,7 @@ def all_position_classes(choices):
 def defined_lexrule_sts(lrt, pc):
     """
     Return the list of lexical rule supertypes, filtering out ones
-    not defined in the pc (likely Matrix types)
+    not defined in the pc (likely Matrix types).
     """
     sts = lrt.split_value('supertypes')
     to_return = []
@@ -230,8 +229,7 @@ def add_lexical_type_hierarchy(pch, choices):
 
 def pc_lrt_mergeable(pc):
     """
-    A pc is mergeable with its only daughter in case it only has
-    one daughter.
+    A pc is mergeable with its only daughter in case it only has one daughter.
     """
     return len([l for l in pc['lrt'] if not defined_lexrule_sts(l, pc)]) == 1
 
@@ -1130,7 +1128,7 @@ def write_pc_adj_syntactic_behavior(lrt, mylang, choices):
                            ''' := [ SYNSEM.LOCAL.CAT.HEAD.PRD - ].''')
 
 
-'''
+"""
 OZ-2020-09-24
 The interrogative inflection without lexical threading
 requires an interrogative supertype (which will work for
@@ -1149,7 +1147,7 @@ wh-obj-lex-rule := itrg-lex-rule &
 
 -- but it is not clear to me how to properly incorporate this into the hierarchy,
 and at what stage.
-'''
+"""
 
 
 def write_interrogative_rules(lrt, mylang):
@@ -1680,10 +1678,8 @@ def hierarchy_validation(choices, pc, vr):
                        " is both an immediate supertype of "+lrt.full_key+" and also " +
                        "an ancestor of another supertype.")
 
-# check for a cycle in the inputs
-
-
 def cycle_validation(choices, vr):
+    """Checks for a cycle in the inputs."""
     try:
         pch = position_class_hierarchy(choices)
     except KeyError:
@@ -1706,11 +1702,11 @@ def cooccurrence_validation(lrt, choices, vr):
     #  + reqs violating explicit inputs
     #     (e.g. A > B > C, A > C, A reqs B)
 
-# TJT 2014-08-26: Warn about merging obligatory position classes
-# with same inputs and positions
-
-
 def warn_merged_pcs(all_pcs, vr):
+    """
+    TJT 2014-08-26: Warn about merging obligatory position classes
+    with same inputs and positions
+    """
     input_map = defaultdict(lambda: defaultdict(set))
     # Gather map of inputs to position classes
     for pc in all_pcs:

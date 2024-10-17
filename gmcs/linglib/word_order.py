@@ -6,14 +6,13 @@ from gmcs.utils import get_name
 from gmcs.linglib import lexbase
 
 ######################################################################
-# customize_word_order()
-#   Create the type definitions associated with the user's choices
-#   about basic word order, including information about adpositions
-#   and auxiliaries.
-
 
 def customize_word_order(mylang, ch, rules):
-
+    """
+    Create the type definitions associated with the user's choices
+    about basic word order, including information about adpositions
+    and auxiliaries.
+    """
     wo = ch.get('word-order')
 
     nmz_wo = get_nmz_clause_wo(ch)
@@ -729,13 +728,13 @@ def specialize_word_order(hc, orders, mylang, ch, rules):
 #     mylang.add('comp-head-phrase := [ SYNSEM.LOCAL.CAT.HEAD verb & [ AUX + ]].',
 #                'comp-head-phrase is only for auxiliaries.')
 
-
-
-#The following function handles word order in ANCs and is 
-#modeled after customize_major_constituent_order following the same
-#basic logic just switching head-subj rules with the appropriate
-#possessor-possessum combining rule in ANCs
 def customize_nmz_clause_word_order(mylang, ch, rules, nmz_wo, hs):
+    """
+    Handles word order in ANCs and is modeled after 
+    customize_major_constituent_order following the same basic logic just 
+    switching head-subj rules with the appropriate possessor-possessum 
+    combining rule in ANCs.
+    """
 
     if nmz_wo is None:
         return
@@ -967,12 +966,8 @@ def customize_nmz_clause_word_order(mylang, ch, rules, nmz_wo, hs):
     elif hc and add_anc_head_comp:
         rules.add("anc-" + hc + ' :=  anc-' + hc + '-phrase.')
 
-    
-# ERB 2006-09-15 Subroutine for handling NP rules.
-
 def customize_np_word_order(mylang, ch, rules, nmz_wo):
-
-
+    """ERB 2006-09-15 Subroutine for handling NP rules."""
     if ch.get('has-dets') == 'yes':
 
         if ch.get('noun-det-order') == 'noun-det':
@@ -1020,13 +1015,14 @@ def customize_np_word_order(mylang, ch, rules, nmz_wo):
                'the semantic effect of bare NPs in your language.')
     rules.add('bare-np := bare-np-phrase.')
 
-# OZ 2017-11-13 A subroutine to create appropriate phrase structure rules
-# for subordinate clauses, if needed. Currently only supports V2 matrix order
-# with V-final subordinate order. If the subordinate word order is the same
-# as in the matrix clause, no work needs to be done here.
-
 
 def customize_subord_word_order(mylang, ch, wo, rules):
+    """
+    OZ 2017-11-13 A subroutine to create appropriate phrase structure rules
+    for subordinate clauses, if needed. Currently only supports V2 matrix order
+    with V-final subordinate order. If the subordinate word order is the same
+    as in the matrix clause, no work needs to be done here.
+    """
     if 'subord-word-order' in ch:
         if ch.get('subord-word-order') == 'vfinal' and wo == 'v2':
             mylang.add('subord-phrase := head-final &\n'
@@ -1063,13 +1059,14 @@ def customize_subord_word_order(mylang, ch, wo, rules):
                     mylang.add('basic-head-spec-phrase :+ [ SYNSEM.LOCAL.CAT.VC #vc,'
                                'HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc ].')
 
-# ERB 2006-09-14 Subroutine for figuring out the relationship of major
-# constituent order to adpositions and auxiliaries.  Returns two values:
-# for adp and aux.  It takes in the values of wo and hc determined in
-# the course of creating the basic word order rules.
-
 
 def determine_consistent_order(wo, hc, ch):
+    """
+    ERB 2006-09-14 Subroutine for figuring out the relationship of major
+    constituent order to adpositions and auxiliaries.  Returns two values:
+    for adp and aux.  It takes in the values of wo and hc determined in
+    the course of creating the basic word order rules.
+    """
 
     adp = 'easy'
     aux = 'easy'

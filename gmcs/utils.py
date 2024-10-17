@@ -45,7 +45,7 @@ def TDLencode(string):
 
 def orth_encode(orthin):
     """
-    prepare an orth string in a way that
+    Prepare an orth string in a way that
     words with spaces are treated properly.
     """
     orthlist = orthin.split(' ')
@@ -79,7 +79,7 @@ def verify():
     return input("  Do you want to continue? (y/n): ").lower() in ('y', 'yes')
 
 
-'''
+"""
 2017-12-08 OZ: An attempt to start modularizing the customization code better.
 A function
 (with lots of params, so, not sure this is going to work well, this is just a first take on it)
@@ -93,8 +93,7 @@ Example:
 This will merge in constraints on FORM into a complementizer lexical type.
 The idea is that this and similar functions can be used throughout,
 though like I said above I am not sure this is actually better.
-
-'''
+"""
 
 
 def merge_constraints(choicedict, mylang, typename, path, key1, key2, val):

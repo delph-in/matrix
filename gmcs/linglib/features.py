@@ -1,11 +1,6 @@
 from gmcs.linglib import case
 
 ######################################################################
-# customize_feature_values(ch_dict, type_name, pos, features, cases)
-#   In the passed-in choices dictionary, go through the 'feat'
-#   iterator and specify the feature/value pairs found to the
-#   passed-in type.
-
 
 def process_cfv_list(mylang, ch, hierarchies, to_cfv, tdlfile=None):
     for (ch_key, type_id, pos) in to_cfv:
@@ -18,6 +13,10 @@ def process_cfv_list(mylang, ch, hierarchies, to_cfv, tdlfile=None):
 
 
 def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, features=None, cases=None, tdlfile=None):
+    """
+    In the passed-in choices dictionary, go through the 'feat' iterator and 
+    specify the feature/value pairs found to the passed-in type.
+    """
     if not features:
         features = ch.features()
     if not cases:

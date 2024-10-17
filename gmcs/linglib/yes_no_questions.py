@@ -1,10 +1,6 @@
 from gmcs.linglib import lexbase
 
 ######################################################################
-# customize_yesno_questions()
-#   Create the type definitions associated with the user's choices
-#   about matrix yes/no questions.
-
 
 INT_CL = '''int-cl := head-only & interrogative-clause &
   [ SYNSEM [ LOCAL.CAT [ HEAD +vc, VAL #val,
@@ -35,6 +31,10 @@ SAME_YNQ = '''same-ynq-unary-phrase :=
 
 
 def customize_yesno_questions(mylang, ch, rules, lrules, hierarchies, roots):
+    """
+    Create the type definitions associated with the user's choices
+    about matrix yes/no questions.
+    """
 
     qinvverb = ch.get('q-inv-verb')
 

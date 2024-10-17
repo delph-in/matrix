@@ -11,7 +11,7 @@ from gmcs.linglib.nominalized_clauses import needs_anc_wo_feat
 
 def customize_clausalmods(mylang, ch, lexicon, rules, roots, trigger):
     """
-    The main clausal modifier customization routine
+    The main clausal modifier customization routine.
     """
     if not 'cms' in ch:
         return None
@@ -44,9 +44,9 @@ def customize_clausalmods(mylang, ch, lexicon, rules, roots, trigger):
 
 def create_head_subordinator_basic_lex_type(mylang, ch, cms):
     """
-    Create the basic lexical type if if the the subordinator is a head (or adposition)
+    Create the basic lexical type if if the the subordinator is a head (or adposition).
     A different type is added based on whether the subordinate clause is verbal or nominalized
-    and if the nominalized clause has a semantic nominalized (nmz) relation
+    and if the nominalized clause has a semantic nominalized (nmz) relation.
     """
     nominalized, nmzRel, nom_strategy = is_nominalized(cms, ch)
     mylang.set_section('subordlex')
@@ -122,7 +122,7 @@ def create_head_subordinator_basic_lex_type(mylang, ch, cms):
 
 def create_adverb_subordinator_basic_lex_type(ch, mylang):
     """
-    Create the basic subordinator lexical type if the subordinator is an adverb
+    Create the basic subordinator lexical type if the subordinator is an adverb.
     """
     mylang.set_section('subordlex')
     mylang.add('adverb-subord-lex-item := no-rels-hcons-lex-item & basic-icons-lex-item &\
@@ -361,7 +361,7 @@ def create_adverb_subordinator_lexical_subtypes(mylang, lexicon, trigger, cms):
 def add_head_modifier_phrases(mylang, rules, cms):
     """
     Add the appropriate head-modifier rules for the the clausal modifier's attachment to the
-    matrix clause and for adverb subordinators attachment in the subord clause
+    matrix clause and for adverb subordinators attachment in the subord clause.
     """
     mylang.set_section('addenda')
     mylang.add('basic-head-mod-phrase-simple :+ [ SYNSEM.LOCAL.CAT.MC #mc,\
@@ -391,7 +391,7 @@ def add_non_branching_rules(mylang, rules, cms, ch):
     """
     Create the non-branching rules for adverb subordinators. Add constraints for
     the clausal mod's attachment to the matrix clause (before/after a vp/s) and subject
-    sharing. Each subordinator needs it's own rule subtype to add the subordinator
+    sharing. Each subordinator needs it's own rule subtype to add the subordinator.
     """
     # First create the supertype
     mylang.add('adv-marked-subord-clause-phrase := unary-phrase &\
@@ -700,8 +700,8 @@ def add_morphological_subord_rel(mylang, cms, ch, rules):
 
 def create_subordinated_feature(mylang, roots, cms, ch):
     """
-    adds the SUBORDINATED feature to SYNSEM, adds the addenda to make sure
-    it is tracked through the grammar, and appropriately constrains verb-lex
+    Adds the SUBORDINATED feature to SYNSEM, adds the addenda to make sure
+    it is tracked through the grammar, and appropriately constrains verb-lex.
     """
     mylang.set_section('addenda')
     mylang.add('canonical-synsem :+ [ SUBORDINATED xsubord ].')
@@ -761,8 +761,8 @@ def create_subordinated_feature(mylang, roots, cms, ch):
 
 def create_subpair_feature(mylang, roots, morphpair, ch):
     """
-    adds the subpair feature to canonical synsem as well as adding constraints
-    to phrase types to pass it and mc up
+    Adds the subpair feature to canonical synsem as well as adding constraints
+    to phrase types to pass it and mc up.
     """
     mylang.set_section('addenda')
     mylang.add('cat :+ [ SUBPAIR subpair ].')
@@ -816,7 +816,7 @@ def create_subpair_feature(mylang, roots, morphpair, ch):
 
 def has_subpairs(ch):
     """
-    Returns true if the grammar will have subordinator pairs and false otherwise
+    Returns true if the grammar will have subordinator pairs and false otherwise.
     """
     subpair = False
     for cms in ch.get('cms'):
@@ -900,7 +900,7 @@ def add_morphological_constraints(lextype, constraints, cms, type):
 
 def build_type_name(lextype):
     """
-    From a list of words that need to be included in a type name, build the type name
+    From a list of words that need to be included in a type name, build the type name.
     """
     type = ''
     type += lextype.pop()
@@ -912,7 +912,7 @@ def build_type_name(lextype):
 def is_nominalized(cms, ch):
     """
     Find out if nominalization is among the special morphology features, and return the name of
-    the strategy and if there is an nmzRel
+    the strategy and if there is an nmzRel.
     """
     nominalized = 'no'
     nom_strategy = ''
@@ -930,8 +930,8 @@ def is_nominalized(cms, ch):
 
 def shortform_pred(pred):
     """
-    break the predication into a short name that can be used to distinguish between
-    different subordinators
+    Break the predication into a short name that can be used to distinguish between
+    different subordinators.
     """
     if pred.split('_')[0] == '':
         value = pred.split('_')[1]
@@ -942,7 +942,7 @@ def shortform_pred(pred):
 
 def add_to_lexicon(morphtype, typename, type, lexicon, ch):
     """
-    add the subordinator or adverb to lexicon
+    Add the subordinator or adverb to lexicon.
     """
     orth = morphtype.get(type + 'orth')
     orthstr = orth_encode(orth)
@@ -959,8 +959,8 @@ def add_to_lexicon(morphtype, typename, type, lexicon, ch):
 
 def get_subord_stemids(ch, stemids):
     """
-    A function called by insert_ids() in lexical_items.py to
-    check for name-space-collisions
+    A function called by insert_ids() in lexical_items.py to check for 
+    name-space-collisions.
     """
     for cms in ch.get('cms'):
         for freemorph in cms.get('freemorph'):
@@ -987,7 +987,7 @@ def add_subord_name(ch, stemids, stemidcounters):
     """
     A function called by insert_ids() in lexical_items.py to
     create a "name" for each subordinator in choices, preventing
-    name-space-collisions
+    name-space-collisions.
     """
     for cms in ch.get('cms'):
         for freemorph in cms.get('freemorph'):

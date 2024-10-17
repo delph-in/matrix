@@ -30,10 +30,10 @@ from gmcs.deffile import MatrixDefFile
 
 
 def make_pred(tbentry, stemtag, glosstag, predchoice, lextype):
-    '''
+    """
     Construct pred value from toolbox entry according
     to the predchoice specified.
-    '''
+    """
     # Figure out if we're doing a noun or a verb
     lex_cat = lextype.rstrip('0123456789')
     # FIXME: What should I actually be doing with these errors?
@@ -65,12 +65,12 @@ def make_pred(tbentry, stemtag, glosstag, predchoice, lextype):
 def process_tb_entry(tbentry, lexclasses, stemtag,
                      bistemtag, glosstag, predchoice, choices, affixes,
                      formdata, n):
-    '''
+    """
     Figure out which lexclass this entry should belong
     to then add information to the choices file.
     Along the way, if there are any bistems, add the value
     of that field to the list of affixes.
-    '''
+    """
 
     for lexclass in lexclasses:
         match = 0
@@ -107,11 +107,11 @@ def process_tb_entry(tbentry, lexclasses, stemtag,
 
 
 def get_affix_from_entry(tbentry, idtag, stemtag, affixes, affix_strings):
-    ''' 
+    """
     Given a toolbox entry see if it is an entry for a bistem
     affix, If so, find the orthography of the affix and store it in
     the affix_strings dictionary.
-    '''
+    """
     if idtag not in list(tbentry.keys()):
         # print tbentry
         # print "Error: tbentry without tbid"
@@ -127,11 +127,11 @@ def get_affix_from_entry(tbentry, idtag, stemtag, affixes, affix_strings):
 
 
 def insert_affixes(form_data, affix_strings, number):
-    '''
+    """
     Given a dictionary mapping affix ids to affix forms,
     update the imported-entry choices to replace the orthography
     of bistem affixes.
-    '''
+    """
     for entry in range(1, number):
         affix_id = form_data['imported-entry'+str(entry)+'_aff'].value
         #        full_key = entry.full_key
@@ -141,7 +141,7 @@ def insert_affixes(form_data, affix_strings, number):
 
 
 def import_toolbox_lexicon(choicesfile):
-    '''
+    """
     Add choices to the choices file on the basis of
     information in a Toolbox lexicon file guided by
     the specifications in toolboximportconfig in choices file.
@@ -150,7 +150,7 @@ def import_toolbox_lexicon(choicesfile):
     the Import Toolbox Lexicon button on the web page.
     The result is a new choices file that can then
     be customized.
-    '''
+    """
 
     # input choices
     choices = ChoicesFile(choicesfile)
@@ -245,14 +245,14 @@ def import_toolbox_lexicon(choicesfile):
 
 
 def integrate_imported_entries(choices):
-    '''
+    """
     Take ChoicesFile object and check for imported-entry
     choices.  If present, add stem or bistem choices to
     relevant lexical classes on the basis of imported-entry
     information.  This function should be called early in
     the customization process, before anything else that relies
     on lexicon-related choices.
-    '''
+    """
 
     for imported_entry in choices['imported-entry']:
         lextype = imported_entry['lextype']

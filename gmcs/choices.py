@@ -22,14 +22,15 @@ class ChoicesFileParseError(Exception):
         return repr(self.msg)
 
 ######################################################################
-# ChoiceCategory is a parent-class for ChoiceDict and ChoiceList.
-# Any meta-information about choices should be encoded in
-# ChoiceCategory, and ChoiceDict and ChoiceList should most likely
-# just be empty classes inheriting from ChoiceCategory and their
-# namesake datatype.
-
 
 class ChoiceCategory:
+    """
+    ChoiceCategory is a parent-class for ChoiceDict and ChoiceList.
+    Any meta-information about choices should be encoded in
+    ChoiceCategory, and ChoiceDict and ChoiceList should most likely
+    just be empty classes inheriting from ChoiceCategory and their
+    namesake datatype.
+    """
     def __init__(self, full_key=None):
         self.full_key = full_key
         # When safe_get is true, index operations (e.g. choices['key']) will
@@ -385,12 +386,13 @@ def look_through_inputs(self, verb_input, valence_set):
 
 
 ######################################################################
-# ChoicesFile is a class that wraps the choices file, a list of
-# variables and values, and provides methods for loading, accessing,
-# and saving them.
-
 
 class ChoicesFile:
+    """
+    ChoicesFile is a class that wraps the choices file, a list of
+    variables and values, and provides methods for loading, accessing,
+    and saving them.
+    """
 
     # initialize by passing either a file name or file handle
     def __init__(self, choices_file=None):
@@ -673,8 +675,8 @@ class ChoicesFile:
         for top_level_key in self:
             self.__reset_full_keys(top_level_key)
 
-    # Return the keys for the choices dict
     def keys(self):
+        """Returns the keys for the choices dict."""
         return list(self.choices.keys())
 
     def clear_cached_values(self):
@@ -824,8 +826,6 @@ class ChoicesFile:
         """
 
         return self.has_noun_case(case) and self.has_adp_case(case)
-
-    # case_head()
 
     def case_head(self, case=''):
         """
@@ -990,13 +990,13 @@ class ChoicesFile:
                               'transitive-clausal-%s (%s-unspecified)' % (ccs.full_key, w[0]), False]]
         return patterns
 
-    # numbers()
-    #   Create and return a list containing information about the values
-    #   of the number feature implied by the current choices.
-    #   This list consists of tuples:
-    #     [name, supertype;supertype;...]
-
     def numbers(self):
+        """
+        Create and return a list containing information about the values
+        of the number feature implied by the current choices.
+        This list consists of tuples: [name, supertype;supertype;...].
+        """
+        
         numbers = []
 
         for n in self.get('number'):
@@ -1007,12 +1007,13 @@ class ChoicesFile:
 
         return numbers
 
-    # persons()
-    #   Create and return a list containing information about the values
-    #   of the person feature implied by the current choices.
-    #   This list consists of tuples:
-    #     [name, supertype]
     def persons(self):
+        """
+        Create and return a list containing information about the values
+        of the person feature implied by the current choices. This list consists 
+        of tuples: [name, supertype].
+        """
+        
         persons = []
 
         person = self.get('person')
@@ -1037,15 +1038,15 @@ class ChoicesFile:
 
         return persons
 
-    # pernums()
-    #   Create and return a list containing information about the values
-    #   of the pernum feature implied by the current choices.  A pernum
-    #   feature is implied when the user has specified that the
-    #   first-person plural has sub-types.
-    #   This list consists of tuples:
-    #     [name, supertype;supertype;...]
-
     def pernums(self):
+        """
+        Create and return a list containing information about the values
+        of the pernum feature implied by the current choices. A pernum
+        feature is implied when the user has specified that the
+        first-person plural has sub-types. This list consists of tuples:
+        [name, supertype;supertype;...].
+        """
+        
         pernums = []
 
         fp = self.get('first-person')
@@ -1094,13 +1095,13 @@ class ChoicesFile:
 
         return pernums
 
-    # genders()
-    #   Create and return a list containing information about the
-    #   genders implied by the current choices.
-    #   This list consists of tuples:
-    #     [name, supertype;supertype;...]
-
     def genders(self):
+        """
+        Create and return a list containing information about the
+        genders implied by the current choices. This list consists of tuples:
+        [name, supertype;supertype;...].
+        """
+        
         genders = []
 
         for g in self.get('gender'):
@@ -1111,13 +1112,12 @@ class ChoicesFile:
 
         return genders
 
-    # forms()
-    #   Create and return a list containing the values of the FORM
-    #   feature that constrains the form of verbs as
-    #   defined in the current choices.
-    #   This list consists of tuples:
-    #     [name, supertype]
     def forms(self):
+        """
+        Create and return a list containing the values of the FORM
+        feature that constrains the form of verbs as defined in the current 
+        choices. This list consists of tuples: [name, supertype].
+        """
         if 'form-fin-nf' in self and self['form-fin-nf'] == 'on' or self.has_adp_form():
             forms = [['form', 'form'], [
                 'finite', 'form'], ['nonfinite', 'form']]
@@ -1152,12 +1152,13 @@ class ChoicesFile:
             return forms
         return []
 
-    # tenses()
-    #   Create and return a list containing information about the values
-    #   of the TENSE feature implied by the current choices.
-    #   This list consists of tuples:
-    #     [tense name]
     def tenses(self):
+        """
+        Create and return a list containing information about the values
+        of the TENSE feature implied by the current choices. This list consists 
+        of tuples: [tense name].
+        """
+        
         tenses = []
 
         tdefn = self.get('tense-definition')
@@ -1174,12 +1175,13 @@ class ChoicesFile:
 
         return tenses
 
-    # aspects()
-    #   Create and return a list containing information about the values
-    #   of the viewpoint ASPECT feature implied by the current choices.
-    #   This list consists of tuples:
-    #     [aspect name]
     def aspects(self):
+        """
+        Create and return a list containing information about the values
+        of the viewpoint ASPECT feature implied by the current choices.
+        This list consists of tuples: [aspect name].
+        """
+        
         aspects = []
 
         for asp in self.get('aspect'):
@@ -1191,20 +1193,22 @@ class ChoicesFile:
 
         return aspects
 
-    # situations()
-    #   Create and return a list containing information about the values
-    #   of the SITUATION aspect feature implied by the current choices.
-    #   This list consists of tuples:
-    #     [situation name]
     def situations(self):
+        """
+        Create and return a list containing information about the values
+        of the SITUATION aspect feature implied by the current choices.
+        This list consists of tuples: [situation name].
+        """
+        
         return [[situation['name']] for situation in self.get('situation')]
 
-    # moods()
-    #   Create and return a list containing information about the values
-    #   of the MOOD feature implied by the current choices.
-    #   This list consists of tuples:
-    #      [mood name]
     def moods(self):
+        """
+        Create and return a list containing information about the values
+        of the MOOD feature implied by the current choices.
+        This list consists of tuples: [mood name].
+        """
+        
         moods = []
 
         for md in self.get('mood'):
@@ -1235,7 +1239,7 @@ class ChoicesFile:
         """
         Create and return a list containing type names. FIX - these are
         based on the choices file. Need to include required types and
-        inferred types as well. This list consists of tuples: [(type, name)]
+        inferred types as well. This list consists of tuples: [(type, name)].
         """
         return [(self.choices[t]['name'], t)
                 for t in ('noun', 'verb', 'aux', 'det')
@@ -1258,24 +1262,25 @@ class ChoicesFile:
         return ['person', 'number', 'gender'] \
             + [f['name'] for f in self['feature'] if f['type'] == 'index']
 
-    # features()
-    #   Create and return a list containing information about the
-    #   features in the language described by the current choices.  This
-    #   list consists of tuples with four strings:
-    #       [feature name, list of values, feature geometry, category]
-    #   Note that the feature geometry is empty if the feature requires
-    #   more complex treatment that just FEAT=VAL (e.g. negation).
-    #   The list of values is separated by semicolons, and each item in the
-    #   list of values is a pair of the form 'name|friendly name'.
-    #   The category string can have the values 'noun' or 'verb' or 'both' depending
-    #   whether the features are appropriate for "nouny" or "verby" things.
-
-    #   SSH (2012-06-20)
-    #   A flag feature 'customized' is added, which indicates whether the feature
-    #   is created in the customization system by users. A feature is specified as
-    #   either 'customized=y' or 'customized=n'.
-
     def features(self):
+        """
+        Create and return a list containing information about the
+        features in the language described by the current choices. This
+        list consists of tuples with four strings:
+        [feature name, list of values, feature geometry, category]
+        Note that the feature geometry is empty if the feature requires
+        more complex treatment that just FEAT=VAL (e.g. negation).
+        The list of values is separated by semicolons, and each item in the
+        list of values is a pair of the form 'name|friendly name'.
+        The category string can have the values 'noun' or 'verb' or 'both' depending
+        whether the features are appropriate for "nouny" or "verby" things.
+
+        SSH (2012-06-20)
+        A flag feature 'customized' is added, which indicates whether the feature
+        is created in the customization system by users. A feature is specified as
+        either 'customized=y' or 'customized=n'.
+        """
+        
         features = []
 
         # Case
@@ -2639,11 +2644,13 @@ class ChoicesFile:
 
             
 ########################################################################
-# FormData Class
-# This Class acts like form data which would normally
-# be sent from the server. Used for testing purposes.
 
 class FormData:
+    """
+    This Class acts like form data which would normally be sent from the server. 
+    Used for testing purposes.
+    """
+    
     def __init__(self):
         self.data = {}
 
