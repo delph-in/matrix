@@ -10,8 +10,6 @@ from gmcs.linglib.lexbase import ALL_LEX_TYPES
 from gmcs.linglib.lexbase import LEXICAL_CATEGORIES
 from gmcs.linglib.lexbase import LEXICAL_SUPERTYPES
 
-
-
 def lexical_type_hierarchy(choices, lexical_supertype):
     if lexical_supertype not in LEXICAL_CATEGORIES:
         return None
@@ -1014,7 +1012,7 @@ def validate_lexicon(ch, vr):
     for adp in ch.get('adp'):
         #The below message is no longer needed, since adpositions with no defined
         #adpositions are given automatic FORM values
-        #if 'feat' not in adp:
+        # if 'feat' not in adp:
         #    mess = 'You should specify a value for at least one feature (e.g., CASE).'
         #    vr.warn(adp.full_key + '_feat1_name', mess)
         # EKN 2018-02-05 Warn people not to try to use lexicon page for possessive words
@@ -1068,6 +1066,13 @@ def validate_lexicon(ch, vr):
                 if "_a_rel" in stem['pred']:
                     mess = 'You have indicated this is a question adverb. Please update predicate to be a noun relation.'
                     vr.warn(stem.full_key+'_pred', mess)
+        
+        # check that stem does not match any existing negative adverb
+        neg_adv = ch.get('neg-adv-orth')
+        stems = adv['stem']
+        for s in stems:        
+            if s['orth'] == neg_adv:
+                vr.err(s.full_key+'_orth', 'You have used this spelling for an adverb on the sentential negation page. Please choose a unique spelling.')
 
     # Features on all lexical types
     # TJT 2014-09-02: Adding adj and cop
