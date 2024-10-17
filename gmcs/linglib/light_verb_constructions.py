@@ -190,7 +190,7 @@ def add_lvc_phrase(ch: ChoicesFile, mylang: TDLfile, rules: TDLfile, lv_cv: bool
             pass
         else:
             # coverb doesn't take noun-normal dependents
-            mylang.add('lv-' + COVERB_NOUN + '-lex := \
+            mylang.add(COVERB_NOUN + '-lv-lex := \
                 [ SYNSEM [ LOCAL.CAT.VAL.COMPS.FIRST #comps ], \
                     ARG-ST.REST.FIRST #comps & [ LIGHT + ] ].', section='phrases')
 
@@ -200,7 +200,7 @@ def add_lvc_phrase(ch: ChoicesFile, mylang: TDLfile, rules: TDLfile, lv_cv: bool
             pass
         else:
             # coverb doesn't take verb-normal dependents
-            mylang.add('lv-' + COVERB_VERB + '-lex := \
+            mylang.add(COVERB_VERB + '-lv-lex := \
                 [ SYNSEM [ LOCAL.CAT.VAL.COMPS.FIRST #comps ], \
                     ARG-ST.REST.FIRST #comps & [ LIGHT + ] ].', section='phrases')
 

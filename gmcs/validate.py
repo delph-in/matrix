@@ -153,6 +153,15 @@ cust_types = (
     'adj-comp-copula-verb-lex',
     'adj_incorporation-lex-rule',
     'wh-determiner-lex',
+    'lv-lex',
+    'intrans-lv-lex',
+    'trans-lv-lex',
+    'coverb-intrans-verb-lex',
+    'coverb-trans-verb-lex',
+    'coverb-noun-lex',
+    'head-final-lvc',
+    'comp-head-phrase-lvc',
+    'head-como-phrase-lvc',
 )
 
 # regex patterns for sets of names that are not available for
