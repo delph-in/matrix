@@ -7,6 +7,7 @@ import unittest
 from gmcs.choices import ChoicesFile, ChoiceList, ChoiceDict
 from gmcs.validate import validate
 
+import sys
 
 class TestValidate(unittest.TestCase):
 
@@ -266,6 +267,11 @@ class TestValidate(unittest.TestCase):
         c['comp-neg'] = 'on'
         c['comp-neg-head'] = 'aux'
         self.assertError(c, 'comp-neg-head')
+    
+        # negation adverb has same spelling as one already defined 
+        c['neg-adv-orth'] = 'test'
+        c['adv1_stem1_orth'] = 'test'
+        self.assertError(c, 'neg-adv-orth')
 
     def test_coordination(self):
         # missing answers
@@ -423,7 +429,7 @@ class TestValidate(unittest.TestCase):
                 c[st] = 'on'
                 c[t + '-subtype1_name'] = 'dummy'
                 self.assertError(c, t + '-subtype1_name')
-                
+
         # added a hierarchy element but didn't answer yes to tense-definition
         c = ChoicesFile()
         c['past'] = 'on'
@@ -519,14 +525,19 @@ class TestValidate(unittest.TestCase):
 
         # Adpositions
         c = ChoicesFile()
-        c['adp1_dummy'] = 'dummy'
-        self.assertWarning(c, 'adp1_feat1_name')
+        c['adp1_feat1_name'] = 'poss-strat'
+        self.assertError(c, 'adp1_feat1_name')
         
         # Adverbs 
         c = ChoicesFile()
         c['adv1_stem1_pred'] = '_pred_a_rel'
         c['adv1_inter'] = 'on'
         self.assertWarning(c, 'adv1_stem1_pred')
+
+        c = ChoicesFile()
+        c['neg-adv-orth'] = 'test'
+        c['adv1_stem1_orth'] = 'test'
+        self.assertError(c, 'adv1_stem1_orth')
 
         # Features
         for lt in ['noun', 'verb', 'aux', 'det', 'adp']:

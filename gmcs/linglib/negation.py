@@ -1019,7 +1019,7 @@ def validate(ch, vr):
         #         mess = 'You have not indicated on the word order page that your language has auxiliaries.'
         #         vr.err('neg-infl-type', mess)
 
-    # If adverb is indicated, must lexical entry, what it modifies, and
+    # If adverb is indicated, must specify lexical entry, what it modifies, and
     # ind/selected modifier -- now only applicable under single negation
     # bipartite negs need to validate this for themeselves
     if (ch.get('adv-neg') == 'on') and (ch.get('neg-exp') == '1'):
@@ -1039,6 +1039,15 @@ def validate(ch, vr):
             mess = 'If sentential negation is expressed through an adverb, ' + \
                    'you must specify the form of the adverb.'
             vr.err('neg-adv-orth', mess)
+            
+        # check that stem does not match any existing adverbs in lexicon
+        neg_adv = ch.get('neg-adv-orth')
+        for adv in ch.get('adv'):
+            stems = adv['stem']
+            for s in stems:
+                if s['orth'] == neg_adv:
+                    vr.err('neg-adv-orth', 'You have used this spelling for an adverb on the lexicon page. Please choose a unique spelling.')
+
 
     if ch.get('comp-neg') == 'on':
         if ch.get('comp-neg-head') == 'aux' and ch.get('has-aux') != 'yes':
