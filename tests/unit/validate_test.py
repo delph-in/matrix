@@ -169,6 +169,14 @@ class TestValidate(unittest.TestCase):
         for person in ['none', '2-non-2', '3-non-3']:
             c['person'] = person
             self.assertError(c, 'first-person')
+        
+        # first person distinction, but no number specified    
+        self.assertError(c, 'incl-excl-number')
+        
+        # number selected for first person distinction, but no distinction
+        c['first-person'] = ""
+        c['incl-excl-number'] = 'sg'
+        self.assertWarning(c, 'incl-excl-number')
 
     def test_number(self):
         c = ChoicesFile()
