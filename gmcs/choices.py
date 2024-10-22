@@ -410,9 +410,9 @@ class ChoicesFile:
                 self.load_choices(lines)
                 if type(choices_file) == str:
                     f.close()
-            except IOError:
-                print('Error loading choices from %s' % choices_file)
-                raise
+            except IOError as io:
+                message = 'Error loading choices from ' + choices_file + ": "
+                raise IOError(message + repr(io))
 
     def __str__(self):
         return str(self.choices)
@@ -467,15 +467,15 @@ class ChoicesFile:
                 if key.strip() in ('section', 'version'):
                     continue
                 choices[key.strip()] = value
-            except ValueError:
-                print('Error parsing choices on line: ', line)
-                raise
-            except AttributeError:
-                print('Error parsing choices on line: ', line)
-                raise
-            except ChoicesFileParseError:
-                print('Error parsing choices on line: ', line)
-                raise
+            except ValueError as v:
+                message = 'Error parsing choices on line: ' + line + ": "
+                raise ValueError(message + repr(v))
+            except AttributeError as a:
+                message = 'Error parsing choices on line :' + line + ": "
+                raise AttributeError(message + repr(a))
+            except ChoicesFileParseError as c:
+                message = 'Error parsing choices on line: ' + line + ": "
+                raise ChoicesFileParseError(message + repr(c))
         return choices
 
     ############################################################################
@@ -594,9 +594,9 @@ class ChoicesFile:
                 # add back to the lines
                 if key is not None:
                     new_lines += ['='.join([key, value])]
-            except ValueError:
-                print('Error converting choices on line: ', line)
-                raise
+            except ValueError as v:
+                message = 'Error converting choices on line: ' + line + ": "
+                raise ValueError(message + repr(v))
             except ChoicesFileParseError:
                 raise ChoicesFileParseError(
                     'Variable is multiply defined: %s' % key)
