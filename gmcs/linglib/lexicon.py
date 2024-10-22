@@ -1010,8 +1010,8 @@ def validate_lexicon(ch, vr):
                 mess = 'You must specify a predicate for each determiner you define.'
                 vr.err(stem.full_key + '_pred', mess)
 
-            if re.search("^_.*_q_rel$", stem.get('pred')) == None:
-                mess = 'Predicate should take the form _*_q_rel.'
+            if re.search("^.*_q_rel$", stem.get('pred')) == None:
+                mess = 'Predicate should take the form *_q_rel.'
                 vr.warn(stem.full_key + '_pred', mess)
 
     # Adpositions

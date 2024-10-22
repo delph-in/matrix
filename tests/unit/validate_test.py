@@ -540,7 +540,7 @@ class TestValidate(unittest.TestCase):
         
         # Determiners
         c = ChoicesFile()
-        c['det1_stem1_pred'] = '_x_q_rel'
+        c['det1_stem1_pred'] = 'x_q_rel'
         self.assertError(c, 'det1_stem1_orth')
         
         c = ChoicesFile()
