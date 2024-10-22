@@ -42,7 +42,7 @@ def lexical_type_hierarchy(choices, lexical_supertype):
             st = get_lexical_supertype('cv-tverb', choices)
             lth.add_node(LexicalType('cv-tverb', get_lt_name('cv-tverb', choices),
                                  parents={st: lth.nodes[st]}))
-    
+
     if lexical_supertype == 'noun' and choices['coverb-n'] == ON:
         st = get_lexical_supertype('cv-noun', choices)
         lth.add_node(LexicalType('cv-noun', get_lt_name('cv-noun', choices),
@@ -111,7 +111,7 @@ def get_lexical_supertype(lt_key, choices, is_coverb=False):
             return 'cv-noun'
     elif lexical_category in ('iverb', 'tverb') and choices['has-aux'] == 'yes':
         return 'mverb'
-    elif lexical_category in ('aux', 'mverb', 'iverb', 'tverb', 'cv-iverb', 'cv-tverb'):
+    elif lexical_category in ('aux', 'mverb', 'iverb', 'tverb'):
         return 'verb'
     elif lexical_category == 'verb':
         return case.interpret_verb_valence(choices[lt_key]['valence'])
@@ -119,6 +119,10 @@ def get_lexical_supertype(lt_key, choices, is_coverb=False):
         return 'lv'
     elif lexical_category == 'lv':
         return lvc.interpret_lv_valence(choices[lt_key]['valence'])
+    elif lexical_category == 'cv-iverb':
+        return 'iverb'
+    elif lexical_category == 'cv-tverb':
+        return 'tverb'
     elif lexical_category == 'cv-noun':
         return 'noun'
     # TJT Added adj, cop, removed aux
@@ -283,7 +287,7 @@ def validate_lexicon(ch, vr):
     # This variable is used to check if the inheritance hierarchy
     # of lexicon types has a cycle
     contain_cycle = False
-    
+
     # Did they specify enough lexical entries?
     if 'noun' not in ch:
         mess = 'You should create at least one noun class.'
@@ -683,7 +687,7 @@ def validate_lexicon(ch, vr):
             if not pred:
                 mess = 'You must specify a predicate for each verb you define.'
                 vr.err(bistem.full_key + '_pred', mess)
-    
+
         # Coverb validation
         if v.get('coverb-type'):
             # If verb is a coverb, do they specify light verbs this coverb can take?
@@ -1137,7 +1141,7 @@ def validate_lexicon(ch, vr):
         if not adv['type']:
             mess = 'Please select the type for this adverb.'
             vr.err(adv.full_key+'_type', mess)
-    
+
     # Light Verbs
     for lv in ch.get('lv'):
         # Did they give a name?
@@ -1149,7 +1153,7 @@ def validate_lexicon(ch, vr):
         if not lv.get('valence'):
             mess = 'You must specify the valence for each light verb you define.'
             vr.err(lv.full_key + '_valence', mess)
-        
+
         # Is the valence option they selected allowed on the LVC subpage?
         if lv.get('valence') == 'coverb-only' and not ch.get('lvc-it') == ON:
             mess = 'You must allow intransitive light verbs as a valence option on the LVC subpage.'
