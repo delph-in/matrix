@@ -210,7 +210,6 @@ Radio first-person "First person" "<p>What subtypes does your language distingui
 MultiSelect incl-excl-number "Inclusive/exclusive number" " in the: " "<br>"
 fillnumbers
 
-
 Radio first-person "First person" "" ""
 . other "Other" "" " other:</p>"
 

@@ -511,6 +511,7 @@ def validate_person(ch, vr):
     """Validate the user's choices about person."""
     person = ch.get('person')
     fp = ch.get('first-person')
+    n = ch.get('incl-excl-number')
 
     if not person:
         vr.err('person',
@@ -526,6 +527,12 @@ def validate_person(ch, vr):
                 vr.err('first-person',
                        'If your language has the first person, you must specify ' +
                        'whether it makes finer distinctions within that category.')
+    if fp == 'incl-excl' and n == "":
+        vr.err('incl-excl-number', 'If your language has first person distinction, you must specify ' +
+                                'which number values there are subtypes for.')
+    if not fp and n != "":
+        vr.warn('incl-excl-number', 'You have specified for which numbers your language distinguishes ' +
+                                    'clusivity. You must specify that it has first person distinction.')
 
 
 ######################################################################
