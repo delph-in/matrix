@@ -3176,7 +3176,7 @@ BeginIter det{i} "a Determiner" 1
 
     Text orth "Determiner {i} spelling" "Spelling: " "" 30
 
-    Text pred "Determiner {i} predicate" " Predicate: " "<br>Predicate suggestion: use _exist_q_rel for existentials and _all_q_rel for universals" 30
+    Text pred "Determiner {i} predicate" " Predicate: " "<br>Predicate suggestion: use exist_q_rel for existentials and all_q_rel for universals" 30
 
   EndIter stem
 
