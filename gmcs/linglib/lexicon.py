@@ -10,6 +10,8 @@ from gmcs.linglib.lexbase import ALL_LEX_TYPES
 from gmcs.linglib.lexbase import LEXICAL_CATEGORIES
 from gmcs.linglib.lexbase import LEXICAL_SUPERTYPES
 
+import re
+
 def lexical_type_hierarchy(choices, lexical_supertype):
     if lexical_supertype not in LEXICAL_CATEGORIES:
         return None
@@ -1007,6 +1009,10 @@ def validate_lexicon(ch, vr):
             if not stem.get('pred'):
                 mess = 'You must specify a predicate for each determiner you define.'
                 vr.err(stem.full_key + '_pred', mess)
+
+            if re.search("^.*_q_rel$", stem.get('pred')) == None:
+                mess = 'Predicate should take the form *_q_rel.'
+                vr.warn(stem.full_key + '_pred', mess)
 
     # Adpositions
     for adp in ch.get('adp'):

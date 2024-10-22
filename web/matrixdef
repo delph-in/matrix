@@ -3173,9 +3173,9 @@ BeginIter det{i} "a Determiner" 1
 
   BeginIter stem{j} "a Stem" 0 1
 
-    Text orth "Determiner {i} spelling" "Spelling: " "" 30 "fill_pred('det{i}_stem{j}', 'q')"
+    Text orth "Determiner {i} spelling" "Spelling: " "" 30
 
-    Text pred "Determiner {i} predicate" " Predicate: " "<br>" 30
+    Text pred "Determiner {i} predicate" " Predicate: " "<br>Predicate suggestion: use exist_q_rel for existentials and all_q_rel for universals" 30
 
   EndIter stem
 

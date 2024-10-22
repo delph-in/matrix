@@ -545,6 +545,19 @@ class TestValidate(unittest.TestCase):
         c['neg-adv-orth'] = 'test'
         c['adv1_stem1_orth'] = 'test'
         self.assertError(c, 'adv1_stem1_orth')
+        
+        # Determiners
+        c = ChoicesFile()
+        c['det1_stem1_pred'] = 'x_q_rel'
+        self.assertError(c, 'det1_stem1_orth')
+        
+        c = ChoicesFile()
+        c['det1_stem1_orth'] = 'test'
+        self.assertError(c, 'det1_stem1_pred')
+        
+        c = ChoicesFile()
+        c['det1_stem1_pred'] = 'test'
+        self.assertWarning(c, 'det1_stem1_pred')
 
         # Features
         for lt in ['noun', 'verb', 'aux', 'det', 'adp']:
