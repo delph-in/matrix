@@ -410,8 +410,9 @@ class ChoicesFile:
                 self.load_choices(lines)
                 if type(choices_file) == str:
                     f.close()
-            except IOError:
-                pass  # TODO: we should really be logging these
+            except IOError as io:
+                message = 'Error loading choices from ' + choices_file + ": "
+                raise IOError(message + repr(io))
 
     def __str__(self):
         return str(self.choices)
@@ -459,17 +460,22 @@ class ChoicesFile:
         """
         choices = ChoiceDict()
         for line in [l.strip() for l in choice_lines if l.strip() != '']:
+            if line == "":
+                continue
             try:
                 (key, value) = line.split('=', 1)
                 if key.strip() in ('section', 'version'):
                     continue
                 choices[key.strip()] = value
-            except ValueError:
-                pass  # TODO: log this!
-            except AttributeError:
-                pass  # TODO: log this!
-            except ChoicesFileParseError:
-                pass  # TODO: log this!
+            except ValueError as v:
+                message = 'Error parsing choices on line: ' + line + ": "
+                raise ValueError(message + repr(v))
+            except AttributeError as a:
+                message = 'Error parsing choices on line :' + line + ": "
+                raise AttributeError(message + repr(a))
+            except ChoicesFileParseError as c:
+                message = 'Error parsing choices on line: ' + line + ": "
+                raise ChoicesFileParseError(message + repr(c))
         return choices
 
     ############################################################################
@@ -575,6 +581,8 @@ class ChoicesFile:
         """
         new_lines = []
         for line in choice_lines:
+            if line == "":
+                continue
             try:
                 (key, value) = line.split('=', 1)
                 if key in ('section', 'version'):
@@ -586,8 +594,9 @@ class ChoicesFile:
                 # add back to the lines
                 if key is not None:
                     new_lines += ['='.join([key, value])]
-            except ValueError:
-                pass  # TODO: log this!
+            except ValueError as v:
+                message = 'Error converting choices on line: ' + line + ": "
+                raise ValueError(message + repr(v))
             except ChoicesFileParseError:
                 raise ChoicesFileParseError(
                     'Variable is multiply defined: %s' % key)
