@@ -565,18 +565,21 @@ def validate_lexicon(ch, vr):
             # otherwise we go again
             parents = next_parents
 
-        # now check val
-        # only care if it has stems
+        # check stems 
         s = v.get('stem', [])
-        if len(s) != 0:
-            if not val:
-                mess = 'You must specify the argument structure of each verb you ' + \
-                       'define.  Either on this type, or on a supertype.'
-                vr.err(v.full_key + '_valence', mess)
-            elif val[0:5] == 'trans' or '-' in val:
-                seenTrans = True
-            else:
-                seenIntrans = True
+        if s == []:
+            mess = 'You must define a stem for this verb class.'
+            vr.warn(v.full_key+'_stem', mess)
+        
+        # now check val
+        if not val:
+            mess = 'You must specify the argument structure of each verb you ' + \
+                   'define, either on this type, or on a supertype.'
+            vr.err(v.full_key + '_valence', mess)
+        elif val[0:5] == 'trans' or '-' in val:
+            seenTrans = True
+        else:
+            seenIntrans = True            
 
         if bistems and not bipartitepc:
             mess = 'If you add bipartite stems to a class, you must specify a ' + \

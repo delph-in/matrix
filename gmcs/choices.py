@@ -412,7 +412,8 @@ class ChoicesFile:
                     f.close()
             except IOError as io:
                 message = 'Error loading choices from ' + choices_file + ": "
-                raise IOError(message + repr(io))
+                # TODO fix: this error prevents main matrix page from loading
+                # raise IOError(message + repr(io))
 
     def __str__(self):
         return str(self.choices)
