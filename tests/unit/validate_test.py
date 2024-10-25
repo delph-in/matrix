@@ -12,7 +12,7 @@ class TestValidate(unittest.TestCase):
     def assertErrorsOrWarnings(self, c, variables, errors):
         """
         Methods for asserting the presence of errors and warnings when
-        # a ChoicesFile is put through validation.
+        a ChoicesFile is put through validation.
         """
         vr = validate(c)
         for v in variables:
@@ -62,7 +62,7 @@ class TestValidate(unittest.TestCase):
                      ['noun-pc2_lrt1_', '-lex-rule']]
 
         # Name for causing collisions, made up of the lower-case letter 'a' in:
-        #   Latin, accented Latin, accented Latin, Greek, Cyrillic, Armenian
+        # Latin, accented Latin, accented Latin, Greek, Cyrillic, Armenian
         value = 'aáāαаա'
 
         for v1 in variables:
@@ -507,6 +507,12 @@ class TestValidate(unittest.TestCase):
         self.assertErrors(c, ['verb1_valence',
                               'verb1_stem1_orth',
                               'verb1_stem1_pred'])
+                              
+        # warning for verb classes and missing stems
+        c = ChoicesFile()
+        c['verb1_name'] = 'test'
+        c['verb1_valence'] = 'trans'
+        self.assertWarnings(c, ['verb1_valence', 'verb1_stem'])
 
         # Auxiliaries
         c = ChoicesFile()
