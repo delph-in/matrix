@@ -625,7 +625,21 @@ class TestValidate(unittest.TestCase):
                 c['feature1_name'] = feature_name
                 c['feature1_cat'] = 'noun'
                 c[lt + '1_feat1_head'] = head
-                self.assertError(c, lt + '1_feat1_head')   
+                self.assertError(c, lt + '1_feat1_head')  
+                
+        # test features which can be specified for multiple values in one checkbox
+        for lt in ['noun-pc1_lrt', 'verb-pc1_lrt', 'adj-pc1_lrt']:
+            c = ChoicesFile()
+            c['number1_name'] = 'sg'
+            c['number2_name'] = 'pl'
+            c['person'] = '1-2-3'
+            c[lt + '1_feat1_name'] = 'number'
+            c[lt + '1_feat1_head'] = 'itself'
+            c[lt + '1_feat1_value'] = 'sg' 
+            c[lt + '1_feat2_name'] = 'number'
+            c[lt + '1_feat2_head'] = 'itself'
+            c[lt + '1_feat2_value'] = 'pl' 
+            self.assertError(c, lt + '1_feat2_value') 
 
     def test_argopt(self):
         c = ChoicesFile()
