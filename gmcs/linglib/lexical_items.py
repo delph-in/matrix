@@ -504,7 +504,7 @@ def create_verb_lex_type(cases, ch, hierarchies, lexicon, mylang, verb, verb_cv_
     return verb_cv_typedefs
 
 
-def add_stem_to_lexicon(lexicon, stem, stype, coverb_type):
+def add_stem_to_lexicon(lexicon, stem, stype, coverb_type=None):
     """
     Create verb lexical entry and add to the lexicon if the verb
         is not only a coverb.
@@ -1430,6 +1430,7 @@ def customize_adpositions(mylang, lexicon, ch, hierarchies):
 
 def customize_light_verbs(ch: ChoicesFile, mylang: TDLfile, lexicon: TDLfile, hierarchies: Dict[str, TDLHierarchy]):
     from gmcs.constants import ON
+    from gmcs.linglib.light_verb_constructions import LV_NONE_TYPE
 
     if ch.get('coverb-n') == ON or ch.get('coverb-v') == ON :
         # Lexical entries
@@ -1440,6 +1441,10 @@ def customize_light_verbs(ch: ChoicesFile, mylang: TDLfile, lexicon: TDLfile, hi
 
         # Create lexical types for all the defined light verb types
         create_lv_lex_types(ch, mylang, hierarchies)
+
+        # Update verb lexical types
+        mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HEAD.LVC ' + LV_NONE_TYPE + ' ].', section='verblex')
+        mylang.add('transitive-verb-lex := [ ARG-ST.REST.FIRST.LOCAL.CAT.HEAD.LVC ' + LV_NONE_TYPE + ' ].', section='verblex')
 
 def create_lv_lex_entries(ch: ChoicesFile, lexicon: TDLfile):
     """

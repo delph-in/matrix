@@ -35,6 +35,27 @@ def lexical_type_hierarchy(choices, lexical_supertype):
         st = get_lexical_supertype('tverb', choices)
         lth.add_node(LexicalType('tverb', get_lt_name('tverb', choices),
                                  parents={st: lth.nodes[st]}))
+
+        if choices.get('coverb-v') == ON or choices.get('coverb-n') == ON:
+            if choices.get('has-aux') == 'yes':
+                # add lv inhertiting from mverb
+                lth.add_node(LexicalType('lv', get_lt_name('lv', choices),
+                                         parents={'mverb': lth.nodes['mverb']}))
+            else:
+                # add lv inhertiting from verb
+                lth.add_node(LexicalType('lv', get_lt_name('lv', choices),
+                                         parents={'verb': lth.nodes['verb']}))
+            lts_to_add += ['lv']
+
+            if choices.get('lvc-it') == ON:
+                st = get_lexical_supertype('lv-iverb', choices)
+                lth.add_node(LexicalType('lv-iverb', get_lt_name('lv-iverb', choices),
+                                        parents={st: lth.nodes[st]}))
+            if choices.get('lvc-tr') == ON:
+                st = get_lexical_supertype('lv-tverb', choices)
+                lth.add_node(LexicalType('lv-tverb', get_lt_name('lv-tverb', choices),
+                                        parents={st: lth.nodes[st]}))
+
         if choices['coverb-v'] == ON:
             st = get_lexical_supertype('cv-iverb', choices)
             lth.add_node(LexicalType('cv-iverb', get_lt_name('cv-iverb', choices),
@@ -48,14 +69,6 @@ def lexical_type_hierarchy(choices, lexical_supertype):
         lth.add_node(LexicalType('cv-noun', get_lt_name('cv-noun', choices),
                                  parents={st: lth.nodes[st]}))
 
-    if lexical_supertype == 'lv':
-        st = get_lexical_supertype('lv-iverb', choices)
-        lth.add_node(LexicalType('lv-iverb', get_lt_name('lv-iverb', choices),
-                                 parents={st: lth.nodes[st]}))
-        st = get_lexical_supertype('lv-tverb', choices)
-        lth.add_node(LexicalType('lv-tverb', get_lt_name('lv-tverb', choices),
-                                 parents={st: lth.nodes[st]}))
-
     if lexical_supertype == 'qverb':
         st = get_lexical_supertype('qverb', choices)
 
@@ -63,8 +76,14 @@ def lexical_type_hierarchy(choices, lexical_supertype):
         for lt in choices[lst]:
             if not lt.get('coverb-type') == 'cv-only':
                 st = get_lexical_supertype(lt.full_key, choices)
-                lth.add_node(LexicalType(lt.full_key, get_lt_name(lt.full_key, choices),
+
+                if lst == 'lv':
+                    for cv_type in lt.get('cv-type').split(', '):
+                        lth.add_node(LexicalType(lt.full_key, get_lt_name(lt.full_key, choices, st, cv_type),
                                         parents={st: lth.nodes[st]}))
+                else:
+                    lth.add_node(LexicalType(lt.full_key, get_lt_name(lt.full_key, choices),
+                                            parents={st: lth.nodes[st]}))
                 # If we're dealing with a verb add nodes for all lexical entries
                 # because bistems can give rise to flags that need to appear on
                 # all verbs.
@@ -82,7 +101,7 @@ def lexical_type_hierarchy(choices, lexical_supertype):
                 st = get_lexical_supertype(lt.full_key, choices, True)
                 # create unique key to avoid conflict with non-coverb
                 key = lt.full_key + '-coverb'
-                lth.add_node(LexicalType(key, get_lt_name(lt.full_key, choices, st),
+                lth.add_node(LexicalType(key, get_lt_name(lt.full_key, choices, is_coverb=True),
                                         parents={st: lth.nodes[st]}))
                 # If we're dealing with a verb add nodes for all lexical entries
                 # because bistems can give rise to flags that need to appear on
@@ -264,15 +283,18 @@ def get_all_supertypes_features(ch, lt):
                     supertype_feats.append(feat)
     return supertype_feats
 
-def get_lt_name(key, choices, coverb_type=None):
+def get_lt_name(key, choices, lv_val=None, lv_type=None, is_coverb=False):
     if key in LEXICAL_SUPERTYPES:
         # lexical supertype-- pull out of lexical_supertypes, remove '-lex'
         return LEXICAL_SUPERTYPES[key].rsplit('-lex', 1)[0]
     else:
         # defined lextype, name may or may not be defined
         name = get_name(choices[key])
-        if coverb_type:
-            lex_st = LEXICAL_SUPERTYPES[coverb_type]
+        if lv_val and lv_type:
+            lex_st = LEXICAL_SUPERTYPES[lv_val]
+            return '-'.join([name, lex_st.rsplit('-lv-lex', 1)[0], lv_type, 'lv'])
+        elif is_coverb:
+            lex_st = LEXICAL_SUPERTYPES[lvc.interpret_cv_valence(choices[key]['coverb-type'])]
             return '-'.join([name, lex_st.rsplit('-lex', 1)[0]])
         else:
             lex_st = LEXICAL_SUPERTYPES[key.strip('1234567890')]

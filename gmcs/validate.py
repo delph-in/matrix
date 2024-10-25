@@ -2008,6 +2008,10 @@ def validate_lvc(ch: ChoicesFile, vr: ValidationResult):
         msg = 'You must specify at least one light verb in the lexicon.'
         vr.err('coverb-n', msg)
 
+    if ch.get('lvc-adjacent') == 'no' and ch.get('word-order') not in ('free', 'v2'):
+        msg = 'If you specify that the coverb does not have to be immediately adjacent to the light verb, the word order must be either free or v2.'
+        vr.err('lvc-adjacent', msg)
+
 
 def validate(ch, extra=False):
     """

@@ -26,8 +26,7 @@ COVERB_INTRANS_VERB_ITEM = 'coverb-' + INTRANSITIVE + '-' + COVERB_VERB + '-lex 
 
 COVERB_TRANS_VERB_ITEM = 'coverb-' + TRANSITIVE + '-' + COVERB_VERB + '-lex := transitive-verb-lex.'
 
-LV_ITEM = 'lv-lex := [ SYNSEM [ LOCAL [ CAT [ HEAD.LVC ' + LV_NONE_TYPE + ', \
-                             VAL.COMPS.FIRST #comps ], \
+LV_ITEM = 'lv-lex := [ SYNSEM [ LOCAL [ CAT.VAL.COMPS.FIRST #comps, \
                        CONT.HOOK [ CLAUSE-KEY #clause, \
                                    LTOP #ltop ] ], \
                LKEYS.KEYREL.ARG1 #ind1 ], \
@@ -50,7 +49,8 @@ LV_VERB_ITEM = COVERB_VERB + '-lv-lex := lv-lex & \
                LKEYS.KEYREL.ARG2 #ind2 ], \
       ARG-ST.REST.FIRST #comps & [ LOCAL.CONT.HOOK.INDEX event & #ind2 ] ].'
 
-LV_IT_ITEM = INTRANSITIVE + '-lv-lex := non-mod-lex-item.'
+LV_IT_ITEM = INTRANSITIVE + '-lv-lex := non-mod-lex-item & \
+    [ SYNSEM.LOCAL.CAT.VAL.COMPS.REST null ].'
 
 LV_TR_ITEM = TRANSITIVE + '-lv-lex := non-mod-lex-item & non-local-none-no-hcons & basic-icons-lex-item & \
     [ SYNSEM [ LOCAL [ CAT.VAL [ COMPS < [], [ LOCAL [ CAT cat-sat & [ VAL.SPR < > ], \
@@ -95,12 +95,15 @@ def init_light_verb_hierarchy(ch: ChoicesFile, hierarchies: Dict[str, TDLHierarc
             hierarchies[hier.name] = hier
 
 
-def customize_light_verb(mylang: TDLfile, hierarchies: Dict[str, TDLHierarchy]):
+def customize_light_verb(mylang: TDLfile, ch: ChoicesFile, hierarchies: Dict[str, TDLHierarchy]):
     """
     Create type definition allowing LVC feature.
     """
     if LVC_TYPE in hierarchies:
-        mylang.add('+nv :+ [ LVC lvc ].', section='addenda')
+        if ch.has_adp_case():
+            mylang.add('+nvp :+ [ LVC lvc ].', section='addenda')
+        else:
+            mylang.add('+nv :+ [ LVC lvc ].', section='addenda')
         hierarchies[LVC_TYPE].save(mylang)
 
 
@@ -171,9 +174,11 @@ def add_lvc_phrase(ch: ChoicesFile, mylang: TDLfile, rules: TDLfile, lv_cv: bool
     if cv_lv:
         rules.add('comp-head-lvc := comp-head-phrase-lvc.')
 
-        # allows for combination of coverb + light verb first
-        mylang.add('head-final-lvc := head-final & \
-            [ SYNSEM.ATTACH lmod ].', section='phrases')
+        # allows for combination of coverb + light verb first in
+        # langauges with free word order
+        if ch.get('word-order') == 'free':
+            mylang.add('head-final-lvc := head-final & \
+                [ SYNSEM.ATTACH lmod ].', section='phrases')
 
         # prevents object from combining w/ coverb in "subj obj coverb lv" 
         # before coverb + lv have combined
@@ -181,7 +186,11 @@ def add_lvc_phrase(ch: ChoicesFile, mylang: TDLfile, rules: TDLfile, lv_cv: bool
             [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.LVC ' + LV_NONE_TYPE + ' ].', section='phrases')
 
         # allows for formation of LVC
-        mylang.add('comp-head-phrase-lvc := basic-head-1st-comp-phrase & head-final-lvc & \
+        if ch.get('word-order') == 'free':
+            mylang.add('comp-head-phrase-lvc := basic-head-1st-comp-phrase & head-final-lvc & \
+                [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.LVC ' + LV_ALL_TYPE + ' ].', section='phrases')
+        else:
+            mylang.add('comp-head-phrase-lvc := basic-head-1st-comp-phrase & head-final & \
                 [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.LVC ' + LV_ALL_TYPE + ' ].', section='phrases')
 
     if ch.get('coverb-n') == ON:

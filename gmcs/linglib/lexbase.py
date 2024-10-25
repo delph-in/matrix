@@ -19,7 +19,7 @@ ALL_LEX_TYPES = ('noun', 'verb', 'det', 'aux', 'adj',
 # types used for lexical rules (verb and aux are merged)
 # TJT 2014-08-15: adding "cop"
 # TJT 2014-08-15: changing to tuple for speed
-LEXICAL_CATEGORIES = ('noun', 'verb', 'det', 'adj', 'cop', 'adv', 'qverb', 'lv')
+LEXICAL_CATEGORIES = ('noun', 'verb', 'det', 'adj', 'cop', 'adv', 'qverb')
 
 # TJT 2014-09-03: Types not automatically added to mylanguage.tdl
 NON_ESSENTIAL_LEX_CATEGORIES = (

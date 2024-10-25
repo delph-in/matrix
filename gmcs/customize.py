@@ -511,7 +511,7 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
     argument_optionality.customize_arg_op(mylang, ch, rules, hierarchies)
     direct_inverse.customize_direct_inverse(ch, mylang, hierarchies)
     case.customize_case(mylang, ch, hierarchies)
-    lvc.customize_light_verb(mylang, hierarchies)
+    lvc.customize_light_verb(mylang, ch, hierarchies)
 
     # after all structures have been customized, customize inflection,
     # but provide the methods the components above have for their own

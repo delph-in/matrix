@@ -242,6 +242,9 @@ def customize_case_adpositions(mylang, lexicon, trigger, ch, case_pos):
             mylang.add(
                 'case-marking-adp-lex := \
                  [ ARG-ST < [ LOCAL.CAT.HEAD.CASE-MARKED - ] > ].')
+        
+        if ch.get('coverb-v') == 'on' or ch.get('coverb-n') == 'on':
+            mylang.add('case-marking-adp-lex := [ SYNSEM.LOCAL.CAT.HEAD.LVC lv-none ].')
 
         # checking whether language has both prepositions and postpositions
         bidirectional = False
