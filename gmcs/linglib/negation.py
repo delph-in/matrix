@@ -989,13 +989,15 @@ def validate(ch, vr):
     if ch.get('neg-aux', default=False):
         has_neg_aux = False
         for aux in ch.get('aux', []):
-            if aux.get('name') == 'neg':
-                has_neg_aux = True
-                break
+            stems = aux.get('stem', [])
+            for s in stems:
+                if s.get('pred') == 'neg_rel':
+                    has_neg_aux = True
+                    break
         if has_neg_aux == False:
             vr.warn('neg-aux',
                     'You\'ve selected neg-aux but there is no corresponding ' +
-                    'type in the lexicon.')
+                    'type in the lexicon with a neg_rel predicate.')
             # ERB 2009-01-23 Commenting out the following because infl-neg is
             # now handled with customize_inflection.  We should eventually give
             # a warning if infl-neg is selected but no lexical rules actually

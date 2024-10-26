@@ -32,6 +32,20 @@ class TestValidate(unittest.TestCase):
 
     def assertErrors(self, c, errors):
         self.assertErrorsOrWarnings(c, errors, True)
+        
+    def assertNoErrors(self, c, errors):
+        vr = validate(c)
+        if isinstance(errors, str):
+            errors = [errors]
+        for e in errors:
+            self.assertFalse(e in vr.errors)
+
+    def assertNoWarnings(self, c, warnings):
+        vr = validate(c)
+        if isinstance(warnings, str):
+            warnings = [warnings]
+        for w in warnings:
+            self.assertFalse(w in vr.warnings)
 
     # Tests
 
@@ -279,6 +293,15 @@ class TestValidate(unittest.TestCase):
         c['neg-adv-orth'] = 'test'
         c['adv1_stem1_orth'] = 'test'
         self.assertError(c, 'neg-adv-orth')
+        
+        # no negation auxiliary in lexicon with neg_rel predicate
+        c['neg-aux'] = 'on'
+        self.assertWarning(c, 'neg-aux')
+        c['aux1_name'] =  'neg'
+        c['aux1_stem1_pred'] = 'test_rel'
+        self.assertWarning(c, 'neg-aux')
+        c['aux1_stem1_pred'] = 'neg_rel'
+        self.assertNoWarnings(c, 'neg-aux')
 
     def test_coordination(self):
         # missing answers
