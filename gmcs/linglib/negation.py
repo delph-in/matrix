@@ -999,7 +999,7 @@ def validate(ch, vr):
             # ERB 2009-01-23 Commenting out the following because infl-neg is
             # now handled with customize_inflection.  We should eventually give
             # a warning if infl-neg is selected but no lexical rules actually
-            # use it.  I think it would make sense for that warning to go
+            # use it. I think it would make sense for that warning to go
             # on the negation page.
 
             # If affix is indicated, must select prefix/suffix and

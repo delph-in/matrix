@@ -535,6 +535,14 @@ class TestValidate(unittest.TestCase):
         c['aux1_sem'] = ''
         c['aux1_stem1_pred'] = 'dummy'
         self.assertError(c, 'aux1_sem')
+        
+        c = ChoicesFile()
+        c['case-marking'] = 'none'
+        c['aux1_subj'] = 'np-comp-case'
+        self.assertError(c, 'aux1_subj')
+        
+        c['aux1_subj'] = 'np-aux-case'
+        self.assertError(c, 'aux1_subj')
 
         # Adpositions
         c = ChoicesFile()

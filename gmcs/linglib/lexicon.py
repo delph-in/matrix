@@ -930,6 +930,10 @@ def validate_lexicon(ch, vr):
             if not stem.get('orth'):
                 mess = 'You must specify a spelling for each auxiliary you define.'
                 vr.err(stem.full_key + '_orth', mess)
+        
+        if aux.get('subj') in ['np-comp-case', 'np-aux-case'] and ch.get('case-marking') == 'none':
+            vr.err(aux.full_key + '_subj', 'You have specified that this language does not have case marking but indicated the subject ' + \
+                    'of this auxiliary has case.')
 
     # TODO: Copulas: TJT 2014-08-25
     # Copulas
