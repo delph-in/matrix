@@ -123,13 +123,13 @@ NON_POSS_LEX_ITEM = '[ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR nonpossessive,\
 
 POSS_UNARY = ' := basic-unary-phrase & \
               [ SYNSEM [ NON-LOCAL #nonloc \
-                            LOCAL [CAT [ HEAD det & [ MOD < >, POSSESSOR possessor ],\
+                            LOCAL [ CAT [ HEAD det & [ MOD < >, POSSESSOR possessor ],\
   	                 	   VAL [ SPR < >,\
                                          COMPS < >,\
 			                 SUBJ < >,\
 		     	                 SPEC < [ LOCAL [ CAT [ VAL.COMPS < > ,\
                                                                 HEAD noun & [ PRON - ] ] ] ] > ] ] ] ],\
-                ARGS < [ SYNSEM [ LOCAL [ CAT [ VAL [ SPR < >,\
+                ARGS < [ SYNSEM [ LOCAL [ COORD -, CAT [ VAL [ SPR < >,\
        	       		      	                    COMPS < >,\
 				                    SUBJ < >,\
                                                     SPEC < > ],\
@@ -1891,7 +1891,7 @@ def customize_possessor_pron_lexicon(strat, mylang, ch, lexicon, strat_name, str
                                                   HCONS.LIST < > ] ] ].')
 
         mylang.add('poss-unary-phrase-pron-'+strat_num +
-                   ' := poss-unary-phrase & [ ARGS < [ SYNSEM.LOCAL.CAT.HEAD [ POSSESSOR possessor-pron-'+strat_num+' ] ] > ].', section='phrases')
+                   ' := poss-unary-phrase & [ ARGS < [ SYNSEM.LOCAL [ COORD -, CAT.HEAD.POSSESSOR possessor-pron-'+strat_num+' ] ] > ].', section='phrases')
 
         if agr:
             mylang.add('poss-unary-phrase-pron-'+strat_num+' := [ ARGS < [ SYNSEM.LOCAL.CAT.HEAD.POSSESSOR.POSS-AGR #png ] >,\
