@@ -1281,7 +1281,7 @@ on the morphology page.  Defining morphemes that specify [<span class=\"feat\">n
 
 Check neg-aux "Negation by auxiliary verb" "<p>" "Negative auxiliary verb:
 Checking this box creates a neg-aux type which contributes a neg_rel that
-outscopes it's complement's handle.  This lexical type will show up on the
+outscopes its complement's handle.  This lexical type will show up on the
 lexicon page where you'll need to further specify its syntax.</p>"
 
 Text neg-aux-index "index for neg aux" "<span style='display:none'>" "</span>" 1
@@ -2700,7 +2700,8 @@ BeginIter noun{i} "a Noun Type" 1 1
 
     Text orth "Noun {i} stem {j} spelling" "Spelling: " "" 30 "fill_pred('noun{i}_stem{j}', 'n')"
 
-    Text pred "Noun {i} stem {j} predicate" " Predicate: " "" 30
+    Text pred "Noun {i} stem {j} predicate" " Predicate: " "<br>Predicate suggestion for question pronouns: use _thing_n_rel, _person_n_rel, _place_n_rel or similar" 30
+    
 
   EndIter stem
 
@@ -4154,7 +4155,7 @@ Section ToolboxLexicon "Toolbox Lexicon" 0
 
 Label "<p> Imported Toolbox Lexical items are displayed here, if any of these are incorrect
 we recommend changing your import configurations and reimporting your files instead of
-directly correcing the entries.</p>"
+directly correcting the entries.</p>"
 
 Separator
 
