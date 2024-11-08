@@ -32,7 +32,10 @@ jobs:
         delphin --version
         which python 
         which delphin
+        echo MADE IT HERE
+        which ace
+        echo MADE IT HERE 2
         echo $PATH
     - name: Test
       run: |
-        python3 rtest.py
+        python3 rtest.py Cree
