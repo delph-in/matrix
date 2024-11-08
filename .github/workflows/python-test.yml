@@ -31,6 +31,7 @@ jobs:
         delphin --version
         which python 
         which delphin
+        echo $PATH
     - name: Test
       run: |
         python3 rtest.py
