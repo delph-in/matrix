@@ -29,9 +29,9 @@ jobs:
       run: |
         python --version
         delphin --version
-        where python 
-        where delphin
-        where ace
+        which python 
+        which delphin
+        which ace
     - name: Test
       run: |
         python3 rtest.py
