@@ -31,7 +31,6 @@ jobs:
         delphin --version
         which python 
         which delphin
-        which ace
     - name: Test
       run: |
         python3 rtest.py
