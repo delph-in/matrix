@@ -3,11 +3,11 @@
 
 name: Python test
 
-on:
-  push:
-    branches: [ "trunk" ]
-  pull_request:
-    branches: [ "trunk" ]
+on: [push]
+  # push:
+  #   branches: [ "trunk" ]
+  # pull_request:
+  #   branches: [ "trunk" ]
 
 permissions:
   contents: read
