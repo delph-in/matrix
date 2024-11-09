@@ -33,9 +33,12 @@ jobs:
         which python 
         which delphin
         echo MADE IT HERE
-        which ace
-        echo MADE IT HERE 2
         echo $PATH
     - name: Test
       run: |
         python3 rtest.py Cree
+    - name: Upload test logs as artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-logs
+        path: /home/runner/test_logs/*.log
