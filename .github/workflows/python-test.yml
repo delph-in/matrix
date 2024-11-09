@@ -35,7 +35,7 @@ jobs:
         run: |
           source venv/bin/activate
           pip install --upgrade pip
-          pip install delphin==1.4.0  # This will install both delphin and ace
+          pip install pydelphin==1.4.0  # This will install both delphin and ace
 
       # Ensure that ace can be imported from Python
       - name: Test Python import
