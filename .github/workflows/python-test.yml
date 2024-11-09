@@ -41,6 +41,7 @@ jobs:
         echo $GITHUB_PATH
         export GITHUB_PATH=$GITHUB_PATH:/opt/hostedtoolcache/Python/3.9.20/x64/lib/python3.9/site-packages/ace
         echo $GITHUB_PATH
+        find /opt/hostedtoolcache/Python/3.9.20/x64/ -name ace
     - name: Test
       id: run-tests
       run: |
