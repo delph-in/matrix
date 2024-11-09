@@ -37,10 +37,9 @@ jobs:
         echo HEREEEE
         echo $GITHUB_PATH
         echo HERE2
-        find / -name ace
         echo "/usr/bin/ace" >> $GITHUB_PATH
         echo $GITHUB_PATH
-        export GITHUB_PATH=$GITHUB_PATH:/usr/bin/ace
+        export GITHUB_PATH=$GITHUB_PATH:/opt/hostedtoolcache/Python/3.9.20/x64/lib/python3.9/site-packages/ace
         echo $GITHUB_PATH
     - name: Test
       id: run-tests
