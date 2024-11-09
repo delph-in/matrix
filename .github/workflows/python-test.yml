@@ -41,7 +41,7 @@ jobs:
       - name: Test Python import
         run: |
           source venv/bin/activate
-          python -m pip show delphin
+          python -m pip show pydelphin
           python -m pip freeze
           python -c "from delphin import ace; print('ace imported successfully')"
 
