@@ -46,7 +46,22 @@ jobs:
           python -c "from delphin import ace; print('ace imported successfully')"
 
       # Run your tests that use ace
-      - name: Run tests
+      - name: Test
+        id: run-tests
         run: |
           source venv/bin/activate
-          python your_test_script.py
+          python3 rtest.py wh-*
+        continue-on-error: true 
+      - name: Upload test logs as artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-logs
+          path: /home/runner/work/matrix/matrix/tests/regression/logs/*
+      - name: Fail the job if the tests failed
+        if: always()
+        run: |
+          if [ ${{ steps.run-tests.outcome }} != 'success' ]; then
+              echo "Tests failed. Check logs for details."
+              exit 1
+            fi
