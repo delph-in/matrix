@@ -35,6 +35,7 @@ jobs:
         echo MADE IT HERE
         echo $PATH
     - name: Test
+      id: run-tests
       run: |
         python3 rtest.py Cree
       continue-on-error: true 
@@ -45,10 +46,12 @@ jobs:
         name: test-logs
         path: /home/runner/work/matrix/matrix/tests/regression/logs/*
     - name: Fail the job if the tests failed
-      if: failure()
+      if: always()
       run: |
-        echo "Tests failed. Check logs for details."
-        exit 1
+        if [ ${{ steps.run-tests.outcome }} != 'success' ]; then
+            echo "Tests failed. Check logs for details."
+            exit 1
+          fi
 
   # logs:
   #   runs-on: ubuntu-latest
