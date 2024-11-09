@@ -46,4 +46,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: test-logs
-        path: /home/runner/test_logs/*.log
+        path: /home/runner/work/matrix/matrix/tests/regression/logs/*
