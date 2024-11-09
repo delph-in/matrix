@@ -42,6 +42,7 @@ jobs:
       run: |
         python3 rtest.py Cree
   logs:
+    runs-on: ubuntu-latest
     needs: [test]
     steps:
     - name: Upload test logs as artifact
