@@ -36,6 +36,10 @@ jobs:
         which delphin
         echo MADE IT HERE
         echo $PATH
+        echo HEREEEE
+        echo $GITHUB_PATH
+        echo HERE2
+        which ace
     - name: Test
       id: run-tests
       run: |
