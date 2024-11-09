@@ -34,9 +34,15 @@ jobs:
         which delphin
         echo MADE IT HERE
         echo $PATH
+  test:
+    continue-on-error: true
+    steps:
     - name: Test
       run: |
         python3 rtest.py Cree
+  logs:
+    needs: [test]
+    steps:
     - name: Upload test logs as artifact
       uses: actions/upload-artifact@v3
       with:
