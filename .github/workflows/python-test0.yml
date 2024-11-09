@@ -12,7 +12,6 @@ permissions:
 
 jobs:
   build:
-    continue-on-error: true
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -35,6 +34,11 @@ jobs:
         which delphin
         echo MADE IT HERE
         echo $PATH
+  test:
+    needs: [build]
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
     - name: Test
       run: |
         python3 rtest.py Cree
