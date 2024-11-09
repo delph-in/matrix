@@ -38,7 +38,7 @@ jobs:
         echo HEREEEE
         echo $GITHUB_PATH
         echo HERE2
-        which ace
+#        which ace
         echo "/usr/bin/ace" >> $GITHUB_PATH
     - name: Test
       id: run-tests
