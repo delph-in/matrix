@@ -1,11 +1,10 @@
-# This workflow will install Python dependencies and run tests with a single version of Python
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
+# This workflow will install Python and ace dependencies on a virtual environment
+# and run the regression test suite before a pull request can be merged.
+name: Regression test
 
-name: Python test
-
-on: [push]
-  # pull_request:
-  #   branches: [ "trunk" ]
+on:
+  pull_request:
+    branches: [ "trunk" ]
 
 permissions:
   contents: read
