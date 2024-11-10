@@ -44,6 +44,13 @@ jobs:
           python -m pip show pydelphin
           python -m pip freeze
           python -c "from delphin import ace; print('ace imported successfully')"
+          ls venv/bin 
+          python -c "from delphin import ace; price(ace.__file__)"
+          which ace || echo "ace not found in PATH"
+          ace --help || echo "Unable to run ace as executable"
+          echo "$PWD/venv/bin" >> $GITHUB_PATH
+          echo $GITHUB_PATH
+          which ace || echo "still not found"
 
       # Run your tests that use ace
       - name: Test
