@@ -73,7 +73,7 @@ jobs:
           echo "last check"
           ls -l /tmp/extracted/ace-0.9.34
           echo "about to mv"
-          sudo mv /tmp/extracted/ace-0.9.34/ace $PWD/venv/bin/ace
+          sudo mv /tmp/extracted/ace-0.9.34/ace /venv/bin/ace
           which ace || "first try didn't work"
           sudo mv /tmp/extracted/ace-0.9.34/ace venv/bin/ace
           which ace || "second try didn't work"
