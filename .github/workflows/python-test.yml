@@ -51,8 +51,21 @@ jobs:
           echo "$PWD/venv/bin"
           echo $GITHUB_PATH
           export GITHUB_PATH=$GITHUB_PATH:$PWD/venv/bin 
+          export PATH=$PATH:$PWD/venv/bin
           echo $GITHUB_PATH
           which ace || echo "still not found"
+      
+      - name: Attempting ace curl
+        run: |
+          source venv/bin/activate
+          TAR_URL="https://sweaglesw.org/linguistics/ace/download/ace-0.9.34-x86-64.tar.gz"
+          curl -L $TAR_URL -o /tmp/file.tar.gz
+          mkdir -p /tmp/file.tar.gz -C /tmp/extracted
+          ls /tmp/extracted
+          ls venv/bin 
+          export GITHUB_PATH=$GITHUB_PATH:$PWD/venv/bin 
+          export PATH=$PATH:$PWD/venv/bin
+          which ace || "STILL NOT FOUND"
 
       # Run your tests that use ace
       - name: Test
