@@ -44,16 +44,8 @@ jobs:
           python -m pip show pydelphin
           python -m pip freeze
           python -c "from delphin import ace; print('ace imported successfully')"
-          ls venv/bin 
-          python -c "from delphin import ace; print(ace.__file__)"
-          which ace || echo "ace not found in PATH"
-          ace --help || echo "Unable to run ace as executable"
-          echo "$PWD/venv/bin"
-          echo $GITHUB_PATH
           export GITHUB_PATH=$GITHUB_PATH:$PWD/venv/bin 
           export PATH=$PATH:$PWD/venv/bin
-          echo $GITHUB_PATH
-          which ace || echo "still not found"
       
       - name: Attempting ace curl
         run: |
@@ -62,30 +54,8 @@ jobs:
           curl -L $TAR_URL -o /tmp/file.tar.gz
           mkdir -p /tmp/extracted
           tar -xzvf /tmp/file.tar.gz -C /tmp/extracted
-          ls /tmp/extracted
           chmod +x /tmp/extracted/ace-0.9.34/ace
-          echo "made it past chmod"
-          ls -R /tmp/extracted
-          echo "now ls -R inner folder"
-          ls -R /tmp/extracted/ace-0.9.34
-          echo "seeing if symlink"
-          file /tmp/extracted/ace-0.9.34/ace
-          echo "last check"
-          ls -l /tmp/extracted/ace-0.9.34
-          echo "looking for /venv/bin"
-          ls -R venv/bin
-          echo "about to mv"
           sudo mv /tmp/extracted/ace-0.9.34/ace $VIRTUAL_ENV/bin/ace
-          which ace || "first try didn't work"
-          echo "THIS IS THE BIN INCOMING"
-          ls venv/bin 
-          export GITHUB_PATH=$GITHUB_PATH:$PWD/venv/bin 
-          export PATH=$PATH:$PWD/venv/bin
-          echo "github path===="
-          echo $GITHUB_PATH
-          echo "path===="
-          echo $PATH
-          which ace || "STILL NOT FOUND"
 
       # Run your tests that use ace
       - name: Test
