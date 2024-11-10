@@ -35,7 +35,7 @@ jobs:
         run: |
           source venv/bin/activate
           pip install --upgrade pip
-          pip install pydelphin==1.4.0
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       
       - name: Install ace (download tar and move executable to virtual bin)
         run: |
