@@ -63,12 +63,17 @@ jobs:
           mkdir -p /tmp/extracted
           tar -xzvf /tmp/file.tar.gz -C /tmp/extracted
           ls /tmp/extracted
+          chmod +x /tmp/extracted/ace-0.9.34/ace
+          sudo mv /tmp/extracted/ace-0.9.34/ace $PWD/venv/bin/ace
+          which ace || "first try didn't work"
+          sudo mv /tmp/extracted/ace-0.9.34/ace venv/bin/ace
+          which ace || "second try didn't work"
           echo "THIS IS THE BIN INCOMING"
           ls venv/bin 
           export GITHUB_PATH=$GITHUB_PATH:$PWD/venv/bin 
           export PATH=$PATH:$PWD/venv/bin
           echo "github path===="
-          echo GITHUB_PATH
+          echo $GITHUB_PATH
           echo "path===="
           echo $PATH
           which ace || "STILL NOT FOUND"
