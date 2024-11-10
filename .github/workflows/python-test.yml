@@ -70,9 +70,11 @@ jobs:
           ls -R /tmp/extracted/ace-0.9.34
           echo "seeing if symlink"
           file /tmp/extracted/ace-0.9.34/ace
+          echo "last check"
+          ls -l /tmp/extracted/ace-0.9.34
+          echo "about to mv"
           sudo mv /tmp/extracted/ace-0.9.34/ace $PWD/venv/bin/ace
           which ace || "first try didn't work"
-          ls -l /tmp/extracted/ace-0.9.34
           sudo mv /tmp/extracted/ace-0.9.34/ace venv/bin/ace
           which ace || "second try didn't work"
           echo "THIS IS THE BIN INCOMING"
