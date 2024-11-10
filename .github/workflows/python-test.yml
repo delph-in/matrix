@@ -64,6 +64,10 @@ jobs:
           tar -xzvf /tmp/file.tar.gz -C /tmp/extracted
           ls /tmp/extracted
           chmod +x /tmp/extracted/ace-0.9.34/ace
+          echo "made it past chmod"
+          ls -R /tmp/extracted
+          echo "now ls -R inner folder"
+          ls -R /tmp/extracted/ace-0.9.34
           sudo mv /tmp/extracted/ace-0.9.34/ace $PWD/venv/bin/ace
           which ace || "first try didn't work"
           sudo mv /tmp/extracted/ace-0.9.34/ace venv/bin/ace
