@@ -75,10 +75,8 @@ jobs:
           echo "looking for /venv/bin"
           ls -R venv/bin
           echo "about to mv"
-          sudo mv /tmp/extracted/ace-0.9.34/ace venv/bin/ace
+          sudo mv /tmp/extracted/ace-0.9.34/ace $VIRTUAL_ENV/bin/ace
           which ace || "first try didn't work"
-          sudo mv /tmp/extracted/ace-0.9.34/ace venv/bin/ace
-          which ace || "second try didn't work"
           echo "THIS IS THE BIN INCOMING"
           ls venv/bin 
           export GITHUB_PATH=$GITHUB_PATH:$PWD/venv/bin 
