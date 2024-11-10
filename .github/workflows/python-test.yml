@@ -63,9 +63,14 @@ jobs:
           mkdir -p /tmp/extracted
           tar -xzvf /tmp/file.tar.gz -C /tmp/extracted
           ls /tmp/extracted
+          echo "THIS IS THE BIN INCOMING"
           ls venv/bin 
           export GITHUB_PATH=$GITHUB_PATH:$PWD/venv/bin 
           export PATH=$PATH:$PWD/venv/bin
+          echo "github path===="
+          echo GITHUB_PATH
+          echo "path===="
+          echo $PATH
           which ace || "STILL NOT FOUND"
 
       # Run your tests that use ace
