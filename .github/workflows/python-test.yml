@@ -48,7 +48,9 @@ jobs:
           python -c "from delphin import ace; print(ace.__file__)"
           which ace || echo "ace not found in PATH"
           ace --help || echo "Unable to run ace as executable"
-          echo "$PWD/venv/bin" >> $GITHUB_PATH
+          echo "$PWD/venv/bin"
+          echo $GITHUB_PATH
+          export GITHUB_PATH=$GITHUB_PATH:$PWD/venv/bin 
           echo $GITHUB_PATH
           which ace || echo "still not found"
 
