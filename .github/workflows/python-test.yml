@@ -60,7 +60,8 @@ jobs:
           source venv/bin/activate
           TAR_URL="https://sweaglesw.org/linguistics/ace/download/ace-0.9.34-x86-64.tar.gz"
           curl -L $TAR_URL -o /tmp/file.tar.gz
-          mkdir -p /tmp/file.tar.gz -C /tmp/extracted
+          mkdir -p /tmp/extracted
+          tar -xzvf /tmp/file.tar.gz -C /tmp/extracted
           ls /tmp/extracted
           ls venv/bin 
           export GITHUB_PATH=$GITHUB_PATH:$PWD/venv/bin 
