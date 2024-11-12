@@ -342,7 +342,6 @@ def customize_verb_case(mylang, ch):
     # Which should get fixed...  - sfd
 
     # OZ: This currently also adds clausal types.
-
     for p in ch.patterns():
         rule_pattern = p[2]
         p = p[0].split(',')  # split off ',dirinv', if present
@@ -390,12 +389,14 @@ def customize_verb_case(mylang, ch):
                         mylang.add(t_type + ' := transitive-verb-lex.')
                     else:
                         mylang.add(t_type + ' := clausal-verb-lex.')
-                # constrain the head of the agent/subject
-                typedef = \
-                    t_type + ' := \
-          [ ARG-ST.FIRST.LOCAL.CAT.HEAD ' + a_head + ' ].'
-                mylang.add(typedef)
-
+    
+                # constrain the head of the agent/subject on parent transitive-verb-lex            
+                if t_type == 'transitive-verb-lex':
+                    typedef = \
+                        t_type + ' := \
+              [ ARG-ST.FIRST.LOCAL.CAT.HEAD ' + a_head + ' ].'
+                    mylang.add(typedef)
+          
                 # constrain the case of the agent/subject
                 if a_case:
                     typedef = \
@@ -411,12 +412,13 @@ def customize_verb_case(mylang, ch):
           [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CAT.HEAD.CASE-MARKED + ] > ].'
                     mylang.add(typedef)
 
-                # constrain the head of the patient/object
-                if o_head:
-                    typedef = \
-                        t_type + ' := \
-          [ ARG-ST < [ ], [ LOCAL.CAT.HEAD ' + o_head + ' ] > ].'
-                    mylang.add(typedef)
+                # constrain the head of the patient/object on parent transitive-verb-lex
+                if t_type == 'transitive-verb-lex':
+                    if o_head:
+                        typedef = \
+                            t_type + ' := \
+              [ ARG-ST < [ ], [ LOCAL.CAT.HEAD ' + o_head + ' ] > ].'
+                        mylang.add(typedef)
 
                 # constrain the case of the patient/object
                 if o_case:
@@ -458,11 +460,12 @@ def customize_verb_case(mylang, ch):
                     else:
                         mylang.add(i_type + ' := clausal-verb-lex.')
 
-                # constrain the head of the subject
-                typedef = \
-                    i_type + ' := \
-          [ ARG-ST.FIRST.LOCAL.CAT.HEAD ' + s_head + ' ].'
-                mylang.add(typedef)
+                # constrain the head of the subject on parent intransitive-verb-lex
+                if i_type == 'intransitive-verb-lex':
+                    typedef = \
+                        i_type + ' := \
+              [ ARG-ST.FIRST.LOCAL.CAT.HEAD ' + s_head + ' ].'
+                    mylang.add(typedef)
 
                 # constrain the case of the subject
                 if s_case:
