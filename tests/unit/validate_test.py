@@ -523,6 +523,14 @@ class TestValidate(unittest.TestCase):
         c['noun1_inter'] = 'on'
         self.assertWarnings(c, ['noun1_inter'])
         
+        # question pronoun, but not preferred predicate
+        c = ChoicesFile()
+        c['noun1_inter'] = 'on'
+        c['noun1_stem1_pred'] = '_test_n_rel'
+        self.assertWarning(c, 'noun1_stem1_pred')
+        c['noun1_stem1_pred'] = '_who_n_rel'
+        self.assertNoWarnings(c, ['noun1_stem1_pred'])
+        
         # Verbs
         c = ChoicesFile()
         c['verb1_dummy'] = 'dummy'
