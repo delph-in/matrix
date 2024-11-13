@@ -1778,7 +1778,8 @@ ternary-phrase := basic-ternary-phrase &
              SYNSEM.LOCAL.COORD - ] > ].
 
 
-ternary-headed-phrase := headed-phrase & ternary-phrase.
+ternary-headed-phrase := headed-phrase & ternary-phrase &
+  [ NON-HEAD-DTR sign & [ SYNSEM.LOCAL.COORD - ] ].
 
 ; ERB (2007-02-12) Hypothesizing for now that these will never be fulfilling
 ; valence requirements of the head, so just copy that up.
