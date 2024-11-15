@@ -67,13 +67,14 @@ TWO_REL_ADP = 'two-rel-adposition-lex := basic-icons-lex-item &\
              LKEYS.KEYREL arg12-ev-relation & [ ARG2 #ind ] ] ].'
 
 POSSESSOR_ADP_LEX = ':= two-rel-adposition-lex &\
-                                 [  SYNSEM.LOCAL [ CAT [ VAL [ SPEC < >,\
+                                 [  SYNSEM [ LOCAL [ CAT [ VAL [ SPEC < >,\
                                                                SUBJ < >,\
                                                                SPR < >,\
                                                                COMPS.FIRST [ LOCAL.CAT [ HEAD noun ,\
                                                                                           VAL.SPR < > ],\
                                                                               OPT - ] ] ],\
-                                                  CONT.ICONS.LIST < > ] ].'
+                                                  CONT.ICONS.LIST < > ],\
+                                    NON-LOCAL non-local-none ] ].'
 
 POSSESSUM_NOUN_LEX = ':= non-local-none-lex-item &\
                                    [ SYNSEM.LOCAL [ CAT [ HEAD #head & noun ,\
