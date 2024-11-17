@@ -1,18 +1,12 @@
 # $Id: choices.py,v 1.24 2008-09-30 23:50:02 lpoulson Exp $
 
 ######################################################################
-# imports
 
 import re
 from gmcs.util.misc import safe_int
 from gmcs.linglib import case, clausalcomps
 
 ######################################################################
-# globals
-
-######################################################################
-# Errors
-
 
 class ChoicesFileParseError(Exception):
     def __init__(self, msg=''):
@@ -365,6 +359,10 @@ def look_through_inputs(self, verb_input, valence_set):
     can take both transitive and intransitive verbs, valence_set will contain the strings 'intrans'
     and 'trans', otherwise it will only contain one string corresponding to the valence of the verb inputs it
     can take.
+    
+    Args:
+        verb_input (string): the verb input type
+        valence_set (set): empty set 
     """
     verb_input = verb_input.strip()
     for verb_pc in self['verb-pc']:
