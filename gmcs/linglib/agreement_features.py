@@ -1,7 +1,5 @@
 from gmcs.lib import TDLHierarchy
 
-######################################################################
-
 def init_person_hierarchy(ch, hierarchies):
     """
     Create the type definitions associated with the user's choices about person.
@@ -18,7 +16,7 @@ def init_person_hierarchy(ch, hierarchies):
 
 def init_number_hierarchy(ch, hierarchies):
     """
-    Create the type definitions associated with the user's choices about number.
+    Initialize the type definitions associated with the user's choices about number.
     """
     hier = TDLHierarchy('number')
 
@@ -31,6 +29,9 @@ def init_number_hierarchy(ch, hierarchies):
 
 
 def init_pernum_hierarchy(ch, hierarchies):
+    """
+    Initialize the type definitions associated with the user's choices about person/number.
+    """
     hier = TDLHierarchy('pernum')
 
     for pn in ch.pernums():
@@ -54,11 +55,9 @@ def customize_person_and_number(mylang, hierarchies):
             hierarchies['number'].save(mylang)
 
 
-######################################################################
-
 def init_gender_hierarchy(ch, hierarchies):
     """
-    Create the type definitions associated with the user's choices about gender.
+    Initialize the type definitions associated with the user's choices about gender.
     """
     hier = TDLHierarchy('gender')
 
@@ -75,8 +74,6 @@ def customize_gender(mylang, hierarchies):
         mylang.add('png :+ [ GEND gender ].', section='addenda')
         hierarchies['gender'].save(mylang)
 
-
-######################################################################
 
 def init_other_hierarchies(ch, mylang, hierarchies):
     """
@@ -243,7 +240,6 @@ def create_vpm_gender(ch, vpm):
 
 
 def create_vpm_others(ch, vpm):
-
     for feature in ch.get('feature', []):
         type = feature.get('type', '')
         if type != 'index':

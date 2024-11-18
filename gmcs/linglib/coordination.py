@@ -2,13 +2,6 @@ from gmcs.utils import TDLencode
 from gmcs.utils import orth_encode
 from gmcs.lib import TDLHierarchy
 
-######################################################################
-# Coordination
-#   Create the type definitions associated with the user's choices
-#   about coordination.
-
-######################################################################
-
 def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, mylang,
                        rules, irules, resrules, mixed_strat=False):
     """This is a utility function that defines a coordination strategy."""
