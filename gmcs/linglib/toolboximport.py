@@ -1,6 +1,3 @@
-######################################################################
-# imports
-
 import os
 import re
 from gmcs.utils import TDLencode
