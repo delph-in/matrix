@@ -345,8 +345,7 @@ def get_users_type_name(aux):
     userstypename = name + '-aux-lex'
     return userstypename
 
-
-def add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon, trigger):
+def add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon, hierarchies, trigger):
     for stem in aux.get('stem', []):
         orth = orth_encode(stem.get('orth'))
         id = stem.get('name')
@@ -371,12 +370,14 @@ def add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon, trigger):
             tense = aspect = mood = evidential = ''
 
             for feat in aux.get('feat', []):
-                if feat.get('name') == 'tense':
-                    tense = feat.get('value')
-                if feat.get('name') == 'aspect':
-                    aspect = feat.get('value')
-                if feat.get('name') == 'mood':
-                    mood = feat.get('value')
+                n = feat.get('name', '')
+                v = feat.get('value', '').split(', ')
+                if n == 'tense' and n in hierarchies:
+                    tense = hierarchies[n].get_type_covering(v)
+                if n == 'aspect' and n in hierarchies:
+                    aspect = hierarchies['aspect'].get_type_covering(v)
+                if n == 'mood' and n in hierarchies:
+                    mood = hierarchies['mood'].get_type_covering(v)
                 if feat.get('name') == 'evidential':
                     evidential = feat.get('value')
 
@@ -422,4 +423,4 @@ def customize_auxiliaries(mylang, ch, lexicon, trigger, hierarchies):
 
         define_arg_str_and_valency(aux, auxcomp, ch, mylang, negaux)
         create_semantics(sem, aux, auxcomp, mylang, ch, hierarchies, negaux)
-        add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon, trigger)
+        add_auxiliaries_to_lexicon(userstypename, sem, aux, lexicon, hierarchies, trigger)
