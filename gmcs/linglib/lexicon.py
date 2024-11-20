@@ -1,5 +1,4 @@
 from collections import defaultdict
-
 from gmcs.linglib import case
 from gmcs.utils import get_name
 from gmcs import constants
@@ -9,7 +8,6 @@ from gmcs.linglib.lexbase import LexicalType, PositionClass
 from gmcs.linglib.lexbase import ALL_LEX_TYPES
 from gmcs.linglib.lexbase import LEXICAL_CATEGORIES
 from gmcs.linglib.lexbase import LEXICAL_SUPERTYPES
-
 import re
 
 def lexical_type_hierarchy(choices, lexical_supertype):

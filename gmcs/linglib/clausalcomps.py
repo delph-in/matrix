@@ -1,20 +1,9 @@
 from gmcs.utils import get_name, TDLencode, orth_encode
-
 from gmcs import constants, feature_type_use
 from gmcs.linglib import lexbase
-
-
-######################################################################
-# Clausal Complements
-#   Create the type definitions associated with the user's choices
-#   about clasual complements.
-
-######################################################################
-
-# Constants (specific to this module)
-# TODO: It should probably all live in constants.py
 from gmcs.constants import MTRX_FRONT, SINGLE, MULTI
 
+# TODO: All these module-specific constants should probably live in constants.py
 COMPS = 'comps'  # choice name for clausal complement strategies
 COMP = 'comp'  # reserved head name for complementizers; should be a constant on some other page?
 # Also, the name for the choice for complementizer of a clausal complement strategy.
@@ -50,17 +39,13 @@ SAME_OR_EXTRA = 'Please choose whether the clausal complement takes the same pos
 WO_WARNING = 'You chose a flexible word order; note that the order will indeed be flexible, ' \
              'including within the embedded clause.'
 
-#### Methods ###
-
-"""
-Main function which will be called by customize.py.
-Should fully cover all the customization needed for
-what was specified on the Clausal Complements subpage
-of the Questionnaire.
-"""
-
-
 def customize_clausalcomps(mylang, ch, lexicon, rules):
+    """
+    Main function which will be called by customize.py.
+    Should fully cover all the customization needed for
+    what was specified on the Clausal Complements subpage
+    of the Questionnaire.
+    """
     if not COMPS in ch:
         return
     # Note: clausal verb type will be added by lexical_items.py.
@@ -149,9 +134,10 @@ def has_additional(ch, cs, wo):
 
 def is_more_flexible_order(wo, ccs):
     """
-    @param ch: choices
-    @return: True if the word order in complex sentences
-    subsumes the basic WO but not restricts it.
+    Args:
+        ch (ChoicesFile): choices
+    Returns: True if the word order in complex sentences
+    subsumes the basic WO but does not restrict it.
     E.g. If in a SOV order both OV and VO is allowed for clausal complements.
     Or if complementizers attach both before and after clause.
     If e.g. OV order is forbidden for clausal complements, must return False.
@@ -254,26 +240,23 @@ def add_complementizer_subtype(cs, mylang, ch, extra):
 
     return typename
 
-
-"""
-Add and modify head-complement rules depending
-on what kind of word order variations clausal complements
-exhibit.
-General and additional are default and new head-comp rule
-(determined simply by the word order).
-For example, if the order is OV, the general rule will
-be comp-head, and the additional will be head-comp,
-to accommodate non-default orders.
-Typename is the name of the complementizer involved in this
-complementation strategy.
-cs is the complementation strategy.
-init tells if the INIT feature is needed or not. The value must
-be true if INIT feature will be used in at least one of
-the complementation strategies in this grammar.
-"""
-
-
 def customize_order(ch, cs, mylang, rules, typename, init, general, additional):
+    """
+    Add and modify head-complement rules depending
+    on what kind of word order variations clausal complements
+    exhibit.
+    General and additional are default and new head-comp rule
+    (determined simply by the word order).
+    For example, if the order is OV, the general rule will
+    be comp-head, and the additional will be head-comp,
+    to accommodate non-default orders.
+    Typename is the name of the complementizer involved in this
+    complementation strategy.
+    cs is the complementation strategy.
+    init tells if the INIT feature is needed or not. The value must
+    be true if INIT feature will be used in at least one of
+    the complementation strategies in this grammar.
+    """
     wo = ch.get(constants.WORD_ORDER)
     init_gen, init_add = which_init(general, additional)
     is_flex = is_more_flexible_order(wo, cs)
@@ -338,7 +321,6 @@ def additional_hcr_needed(cs, wo):
 # This is an interesting function which should ideally be merged with
 # additional_hcr_needed somehow, in the higher logic of the library.
 # I think additional HEAD comp HCR is needed only in a couple cases.
-
 
 def complementizer_comp_head_needed(wo, cs):
     if not wo in ['v-initial', 'vos', 'v-final']:

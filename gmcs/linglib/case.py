@@ -3,9 +3,6 @@ from gmcs.utils import orth_encode
 from gmcs.lib import TDLHierarchy
 from gmcs.utils import get_name
 
-
-######################################################################
-
 def case_names(ch):
     """
     Create and return a list containing information about the cases
@@ -315,9 +312,6 @@ def add_lexrules(ch):
                 ch[lrt_key + '_lri1_inflecting'] = 'no'
                 ch[lrt_key + '_lri1_orth'] = ''
 
-
-
-
 def interpret_verb_valence(valence):
     """
     Return the canonical valence name (e.g. iverb, tverb) given the
@@ -525,7 +519,6 @@ def get_verb_case(ch):
 # VALIDATION #
 ##############
 
-
 def validate(choices, vr):
     cm = choices.get('case-marking')
 
@@ -557,9 +550,6 @@ def validate(choices, vr):
                'If you define a direct-inverse scale, ' +
                'you must say what direction the verb is ' +
                'when the agent and patient have equal rank.')
-
-
-######################################################################
 
 def validate_one_case(ch, vr, pre):
     """

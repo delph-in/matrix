@@ -1,9 +1,6 @@
 ### encoding: utf8
 # $Id: validate.py,v 1.44 2008-09-30 23:50:02 lpoulson Exp $
 
-######################################################################
-# imports
-
 import sys
 import re
 import os
@@ -19,9 +16,6 @@ import gmcs.linglib.morphotactics
 import gmcs.linglib.negation
 import gmcs.linglib.lexicon
 import gmcs.linglib.clausalcomps
-
-
-######################################################################
 
 class ValidationResult:
     def __init__(self):
@@ -75,7 +69,6 @@ class ValidationResult:
             self.infos[key] = ValidationMessage(key+"_info", message, anchor)
 
 # NTS: we only need to define an anchor for the main page versionsx
-
 
 class ValidationMessage:
     def __init__(self, key, text, anchor):
@@ -266,9 +259,6 @@ def validate_names(ch, vr):
                         for freemorph in cms.get('freemorph'):
                             subform = freemorph.get('orth') + "_clausalmod"
                             reserved_types[subform] = True
-
-                           
-            
                     
     if 'ns' in ch:
         reserved_types['nominalization'] = True
@@ -2152,12 +2142,9 @@ def validate_adnominal_possession(ch, vr):
 #                         'and the possessor is not supported.'
 #                    vr.err(pron.full_key+'_possessum-agr',mess)
 
-#############################################################
-########### Constituent questions validation ################
-#############################################################
-
 
 def validate_wh_ques(ch, vr):
+    """Validates users selections on WH questions."""
     from gmcs.constants import ON, IN_SITU, MTRX_FRONT, WH_QUE_PTCL, \
         WH_INFL, MULTI, ALL_OBLIG, NO_MULTI, PIED, \
         PIED_ADP, OBL_PIP_NOUN, OBL_PIP_ADP, \
@@ -2301,7 +2288,6 @@ def validate_choices(choices_file, extra=False):
 # Allow validate_choices() to be called directly from the
 # command line or shell scripts, and print out the errors
 # that result.
-
 
 if __name__ == "__main__":
     vr = validate_choices(sys.argv[1])

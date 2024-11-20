@@ -1,16 +1,13 @@
 from gmcs.linglib import case
 
-######################################################################
-
 def process_cfv_list(mylang, ch, hierarchies, to_cfv, tdlfile=None):
     for (ch_key, type_id, pos) in to_cfv:
         customize_feature_values(mylang, ch, hierarchies, ch[ch_key], type_id, pos,
                                  tdlfile=tdlfile or mylang)
 
-# olzama 2020-04-09 The below function has the benefit of serving many POS at once
+# TODO: olzama 2020-04-09 The below function has the benefit of serving many POS at once
 # however it is very difficult to follow and debug.
 # Consider improving it and perhaps even have several separate functions?
-
 
 def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, features=None, cases=None, tdlfile=None):
     """
@@ -453,10 +450,3 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
             elif head == 'obj':
                 tdlfile.add(
                     type_name + ' := [SYNSEM.LOCAL.CAT.VAL.COMPS < '+d+' > ].')
-        
-
-
-
-# Note: customize case code is now in gmcs/linglib/case.py
-
-# Note: direct inverse code is now in gmcs/linglib/direct_inverse.py

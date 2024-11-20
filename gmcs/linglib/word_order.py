@@ -5,8 +5,6 @@ from gmcs.linglib.nominalized_clauses import need_specialized_head_spec, get_nmz
 from gmcs.utils import get_name
 from gmcs.linglib import lexbase
 
-######################################################################
-
 def customize_word_order(mylang, ch, rules):
     """
     Create the type definitions associated with the user's choices
@@ -734,6 +732,13 @@ def customize_nmz_clause_word_order(mylang, ch, rules, nmz_wo, hs):
     customize_major_constituent_order following the same basic logic just 
     switching head-subj rules with the appropriate possessor-possessum 
     combining rule in ANCs.
+    
+    Args:
+        mylang (): TDL representation of current language
+        ch (): choices 
+        rules (): rules 
+        nmz_wo (): nominalization word order 
+        hs (string): head/spec order
     """
 
     if nmz_wo is None:
@@ -956,7 +961,6 @@ def customize_nmz_clause_word_order(mylang, ch, rules, nmz_wo, hs):
         mylang.add(
             'comp-head-phrase-2 := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.ANC-WO -].')
             
-
     if nmz_wo in ['free', 'v2'] and verb_wo not in ['free', 'v2']:
         rules.add('anc-head-comp := anc-head-comp-phrase.')
         rules.add('anc-comp-head := anc-comp-head-phrase.')

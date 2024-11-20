@@ -1,9 +1,7 @@
 from gmcs.utils import TDLencode
 from gmcs.utils import orth_encode
-
 from gmcs.linglib import case
 from gmcs.linglib import features
-
 
 def set_supertypename(auxcomp):
     if auxcomp == 's':

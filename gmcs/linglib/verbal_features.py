@@ -1,8 +1,5 @@
 from gmcs.lib import TDLHierarchy
 
-
-######################################################################
-
 def init_tense_hierarchy(ch, hierarchies):
     """Create tense feature value hierarchies per the user's choices."""
     hier = TDLHierarchy('tense')
