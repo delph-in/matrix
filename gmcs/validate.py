@@ -1933,7 +1933,7 @@ def validate_lvc(ch: ChoicesFile, vr: ValidationResult):
     """
     Validate the user's choices about light verb constructions.
     """
-    from gmcs.constants import ON
+    from gmcs.constants import ON, YES
 
     # if any LVC options are selected, make sure coverb-n/coverb-v is selected
     valid = True
@@ -1984,8 +1984,13 @@ def validate_lvc(ch: ChoicesFile, vr: ValidationResult):
             msg = 'If coverbs are allowed, you must specify at least ' + \
                   'one possible valence option.'
             vr.err('lvc-it', msg)
-    
-    # make sure at least 1 lv and 1 cv for each cv type (if enabled) is in lexicon
+
+    # only free or v2 word order can have cv not immediately adjacent to lv
+    if ch.get('lvc-adjacent') == 'no' and ch.get('word-order') not in ('free', 'v2'):
+        msg = 'If you specify that the coverb does not have to be immediately adjacent to the light verb, the word order must be either free or v2.'
+        vr.err('lvc-adjacent', msg)
+
+    # make sure at least 1 cv for each cv type (if enabled) is in lexicon
     n_coverb_seen = False
     for n in ch.get('noun'):
         if n.get('coverb-type'):
@@ -2004,13 +2009,35 @@ def validate_lvc(ch: ChoicesFile, vr: ValidationResult):
         msg = 'You must specify at least one verb coverb in the lexicon.'
         vr.err('coverb-v', msg)
 
+    # make sure at least 1 lv is in lexicon
     if (ch.get('coverb-n') == ON or ch.get('coverb-v') == ON) and not ch.get('lv'):
         msg = 'You must specify at least one light verb in the lexicon.'
         vr.err('coverb-n', msg)
 
-    if ch.get('lvc-adjacent') == 'no' and ch.get('word-order') not in ('free', 'v2'):
-        msg = 'If you specify that the coverb does not have to be immediately adjacent to the light verb, the word order must be either free or v2.'
-        vr.err('lvc-adjacent', msg)
+    # make sure at least 1 bleached lv is in lexicon
+    bleached_lv_seen = False
+    for lv in ch.get('lv'):
+        if lv.get('sem-bleached'):
+            bleached_lv_seen = True
+            break
+    if ch.get('lvc-bleached') == YES and not bleached_lv_seen:
+        msg = 'You must specify at least one bleached light verb in the lexicon.'
+        vr.err('lvc-bleached', msg)
+    
+    # make sure an option for lvc-all-bleached is selected if bleached lvs are possible
+    if ch.get('lvc-bleached') == YES and not ch.get('lvc-all-bleached'):
+        msg = 'If you specify that bleached light verbs are possible, you must specify whether or not all light verbs are bleached.'
+        vr.err('lvc-bleached', msg)
+    
+    # if selects that all lvs are bleached, make sure that bleached lvs are possible
+    if ch.get('lvc-all-bleached') == YES and not ch.get('lvc-bleached') == YES:
+        msg = 'If you specify that all light verbs are bleached, you must specify that bleached light verbs are possible.'
+        vr.err('lvc-all-bleached', msg)
+    
+    # make sure verb cvs are allowed if bleached lvs are possible
+    if ch.get('lvc-bleached') == YES and not ch.get('coverb-v') == ON:
+        msg = 'If you specify that bleached light verbs are possible, you must allow verb coverbs.'
+        vr.err('lvc-bleached', msg)
 
 
 def validate(ch, extra=False):

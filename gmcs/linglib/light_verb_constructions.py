@@ -15,6 +15,7 @@ LV_ALL_TYPE = 'lv-all'
 
 COVERB_VERB = 'verb'
 COVERB_NOUN = 'noun'
+BLEACHED_COVERB_VERB = 'bleached-verb'
 
 COVERB_NOUN_ITEM = 'coverb-' + COVERB_NOUN + '-lex := basic-noun-lex & \
     [ SYNSEM.LOCAL.CAT [ HEAD.MOD < >, \
@@ -38,6 +39,16 @@ LV_ITEM = 'lv-lex := [ SYNSEM [ LOCAL [ CAT.VAL.COMPS.FIRST #comps, \
                                                           XARG #ind1, \
                                                           LTOP #ltop ] ] ] ] ].'
 
+LV_BLEACHED_ITEM = 'bleached-lv-lex :=  verb-lex & \
+    [ SYNSEM [ LOCAL [ CAT.VAL [ COMPS.FIRST #comps, \
+                                 SUBJ.FIRST #subj ], \
+                       CONT.HOOK #hook ] ], \
+      ARG-ST < #subj & [ LOCAL [ CAT cat-sat, \
+                                 CONT.HOOK.INDEX ref-ind & #ind1 ] ] . [ FIRST #comps & \
+                                                                        [ LOCAL [ CAT cat-sat, \
+                                                                                  CONT.HOOK #hook ], \
+                                                                          LKEYS.KEYREL.ARG1 #ind1 ] ] > ].'
+
 LV_NOUN_ITEM = COVERB_NOUN + '-lv-lex := lv-lex & \
     [ SYNSEM [ LOCAL.CAT.VAL.COMPS.FIRST #comps, \
                LKEYS.KEYREL.ARG2 #ind2 ], \
@@ -49,16 +60,28 @@ LV_VERB_ITEM = COVERB_VERB + '-lv-lex := lv-lex & \
                LKEYS.KEYREL.ARG2 #ind2 ], \
       ARG-ST.REST.FIRST #comps & [ LOCAL.CONT.HOOK.INDEX event & #ind2 ] ].'
 
-LV_IT_ITEM = INTRANSITIVE + '-lv-lex := non-mod-lex-item & \
+BLEACHED_LV_VERB_ITEM = BLEACHED_COVERB_VERB + '-lv-lex := bleached-lv-lex & \
+    [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST #comps, \
+      ARG-ST.REST.FIRST #comps & [ LOCAL.CONT.HOOK.INDEX event ] ].'
+
+BASIC_LV_IT_ITEM = 'basic-' + INTRANSITIVE + '-lv-lex := non-mod-lex-item & \
     [ SYNSEM.LOCAL.CAT.VAL.COMPS.REST null ].'
 
-LV_TR_ITEM = TRANSITIVE + '-lv-lex := non-mod-lex-item & non-local-none-no-hcons & basic-icons-lex-item & \
+LV_IT_ITEM = INTRANSITIVE + '-lv-lex := lv-lex & basic-' + INTRANSITIVE + '-lv-lex.'
+
+BLEACHED_LV_IT_ITEM = 'bleached-' + INTRANSITIVE + '-lv-lex := bleached-lv-lex & basic-' + INTRANSITIVE + '-lv-lex.'
+
+BASIC_LV_TR_ITEM = 'basic-' + TRANSITIVE + '-lv-lex := non-mod-lex-item & non-local-none-no-hcons & basic-icons-lex-item & \
     [ SYNSEM [ LOCAL [ CAT.VAL [ COMPS < [], [ LOCAL [ CAT cat-sat & [ VAL.SPR < > ], \
                                                         CONT.HOOK [ INDEX ref-ind & #ind3, \
                                                                     ICONS-KEY.IARG1 #clause ] ] ] > ], \
                        CONT.HOOK.CLAUSE-KEY #clause ], \
                 LKEYS.KEYREL.ARG3 #ind3, \
                 LIGHT + ] ].'
+
+LV_TR_ITEM = TRANSITIVE + '-lv-lex := lv-lex & basic-' + TRANSITIVE + '-lv-lex.'
+
+BLEACHED_LV_TR_ITEM = 'bleached-' + TRANSITIVE + '-lv-lex := bleached-lv-lex & basic-' + TRANSITIVE + '-lv-lex.'
 
 LV_IT_NOUN_ITEM = INTRANSITIVE + '-' + COVERB_NOUN + '-lv-lex := ' + COVERB_NOUN + '-lv-lex & ' + INTRANSITIVE + '-lv-lex.'
 
@@ -68,6 +91,9 @@ LV_TR_NOUN_ITEM = TRANSITIVE + '-' + COVERB_NOUN + '-lv-lex := ' + COVERB_NOUN +
 
 LV_TR_VERB_ITEM = TRANSITIVE + '-' + COVERB_VERB + '-lv-lex := ' + COVERB_VERB + '-lv-lex & ' + TRANSITIVE + '-lv-lex.'
 
+BLEACHED_LV_IT_VERB_ITEM = 'bleached-' + INTRANSITIVE + '-' + COVERB_VERB + '-lv-lex := ' + BLEACHED_COVERB_VERB + '-lv-lex & ' + 'bleached-' + INTRANSITIVE + '-lv-lex.'
+
+BLEACHED_LV_TR_VERB_ITEM = 'bleached-' + TRANSITIVE + '-' + COVERB_VERB + '-lv-lex := ' + BLEACHED_COVERB_VERB + '-lv-lex & ' + 'bleached-' + TRANSITIVE + '-lv-lex.'
 
 #############################
 ### LVC feature functions ###
@@ -209,7 +235,12 @@ def add_lvc_phrase(ch: ChoicesFile, mylang: TDLfile, rules: TDLfile, lv_cv: bool
             pass
         else:
             # coverb doesn't take verb-normal dependents
-            mylang.add(COVERB_VERB + '-lv-lex := \
+            if not ch.get('lvc-all-bleached') == YES:
+                mylang.add(COVERB_VERB + '-lv-lex := \
+                    [ SYNSEM [ LOCAL.CAT.VAL.COMPS.FIRST #comps ], \
+                        ARG-ST.REST.FIRST #comps & [ LIGHT + ] ].', section='phrases')
+            if ch.get('lvc-bleached'):
+                mylang.add(BLEACHED_COVERB_VERB + '-lv-lex := \
                 [ SYNSEM [ LOCAL.CAT.VAL.COMPS.FIRST #comps ], \
                     ARG-ST.REST.FIRST #comps & [ LIGHT + ] ].', section='phrases')
 
@@ -238,6 +269,18 @@ def interpret_lv_valence(valence: str) -> str:
         return 'lv-tverb'
     else:
         return 'lv-iverb'
+
+
+def interpret_bleached_lv_valence(valence: str) -> str:
+    """
+    Return the canonical valence name (e.g. bleached-lv-iverb,
+    bleached-lv-tverb) given the valence for a bleached light verb as
+    defined in a choices file.
+    """
+    if valence == 'coverb-1comp':
+        return 'bleached-lv-tverb'
+    else:
+        return 'bleached-lv-iverb'
 
 
 # Used in lexicon.py

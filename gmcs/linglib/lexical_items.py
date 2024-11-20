@@ -65,15 +65,22 @@ def qpart_id(item):
     """Return the identifier for a question particle lexical item."""
     return get_name(item) + '-lex'
 
-def lv_id(item, cv_pos, with_name=True):
+def lv_id(item, cv_pos, with_name=True, is_bleached=False):
     """Return the identifier for a light verb."""
     from gmcs.constants import TRANSITIVE, INTRANSITIVE
 
     valence = INTRANSITIVE if item.get('valence') == 'coverb-only' else TRANSITIVE
-    if with_name:
-        return get_name(item) + '-' + valence + '-' + cv_pos + '-lv-lex'
+
+    if is_bleached:
+        if with_name:
+            return get_name(item) + '-bleached-' + valence + '-' + cv_pos + '-lv-lex'
+        else:
+            return 'bleached-' + valence + '-' + cv_pos + '-lv-lex'
     else:
-        return valence + '-' + cv_pos + '-lv-lex'
+        if with_name:
+            return get_name(item) + '-' + valence + '-' + cv_pos + '-lv-lex'
+        else:
+            return valence + '-' + cv_pos + '-lv-lex'
 
 def lvctype_id(item):
     """Return the identifier for the lvc type for a coverb."""
@@ -240,7 +247,7 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
     hclight = (negadv == 'ind-adv' and negmod == 'v')
     hclightallverbs = False
 
-    if ch.get('has-aux') == 'yes':
+    if ch.get('has-aux') == 'yes' or ch.get('lvc-bleached') == 'yes':
         # TODO: OZ 11-30-2017 Reconcile this with my VC stuff in word_order.py
         vc = determine_vcluster(auxcomp, auxorder, wo, ch)
         if wo == 'vso' or wo == 'osv':
@@ -275,7 +282,7 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
     # Neither mainverbs or auxs should start out as modifiers (for now)
     # Assigning constraint to verb-lex
 
-    if ch.get('has-aux') == 'yes':
+    if ch.get('has-aux') == 'yes' or ch.get('lvc-bleached') == 'yes':
         mylang.add('head :+ [ AUX bool ].', section='addenda')
         #mainorverbtype = 'main-verb-lex'
 
@@ -568,7 +575,7 @@ def construct_supertype_names(cases, ch, stype_names, verb):
 
 # Returns the verb type for lexical/main verbs.
 def main_or_verb(ch):
-    if ch.get('has-aux') == 'yes':
+    if ch.get('has-aux') == 'yes' or ch.get('lvc-bleached') == 'yes':
         return 'main-verb-lex'
     else:
         return 'verb-lex'
@@ -1406,7 +1413,7 @@ def customize_cops(mylang, ch, lexicon, hierarchies, trigger):
 
 def customize_adpositions(mylang, lexicon, ch, hierarchies):
     mylang.add(lexbase.ADP_LEX)
-    if ch.get('has-aux') == 'yes':
+    if ch.get('has-aux') == 'yes' or ch.get('lvc-bleached') == 'yes':
         mylang.add(
             'norm-adposition-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.HEAD.AUX - ] > ].')
     supertype = 'norm-adposition-lex'
@@ -1443,14 +1450,14 @@ def customize_light_verbs(ch: ChoicesFile, mylang: TDLfile, lexicon: TDLfile, hi
         create_lv_lex_types(ch, mylang, hierarchies)
 
         # Update verb lexical types
-        mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HEAD.LVC ' + LV_NONE_TYPE + ' ].', section='verblex')
+        # mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HEAD.LVC ' + LV_NONE_TYPE + ' ].', section='verblex')
         mylang.add('transitive-verb-lex := [ ARG-ST.REST.FIRST.LOCAL.CAT.HEAD.LVC ' + LV_NONE_TYPE + ' ].', section='verblex')
 
 def create_lv_lex_entries(ch: ChoicesFile, lexicon: TDLfile):
     """
     Create light verb lexical entries and add them to the lexicon.
     """
-    from gmcs.constants import ORTH
+    from gmcs.constants import ORTH, ON
 
     lv_name_set = set() # keep track of which lvs have been added to the lexicon
 
@@ -1461,17 +1468,24 @@ def create_lv_lex_entries(ch: ChoicesFile, lexicon: TDLfile):
         # can probably just get rid of this in the future
         if get_name(lv) not in lv_name_set:
             # print(lv.full_key, lv.get('name'))
+            is_bleached = lv.get('sem-bleached') == ON
 
             for cv_pos in lv.get('cv-type').split(', '):
-                lvtype = lv_id(lv, cv_pos, True)
+                lvtype = lv_id(lv, cv_pos, True, is_bleached)
 
                 for stem in lv.get('stem'):
                     orthstr = orth_encode(stem.get(ORTH))
                     pred = stem.get('pred')
-                    typedef = TDLencode(orthstr) + ' := ' + lvtype + ' & \
-                        [ STEM < "' + orthstr + '" >, \
-                        SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
-                    lexicon.add(typedef, merge=False)
+
+                    if is_bleached:
+                        typedef = TDLencode(orthstr) + ' := ' + lvtype + ' & \
+                            [ STEM < "' + orthstr + '" > ].'
+                        lexicon.add(typedef, merge=False)
+                    else:
+                        typedef = TDLencode(orthstr) + ' := ' + lvtype + ' & \
+                            [ STEM < "' + orthstr + '" >, \
+                            SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
+                        lexicon.add(typedef, merge=False)
 
         lv_name_set.add(get_name(lv))
 
@@ -1479,39 +1493,75 @@ def create_lv_lex_types(ch: ChoicesFile, mylang: TDLfile, hierarchies: Dict[str,
     """
     Create light verb lexical types and add them to mylang.
     """
-    from gmcs.constants import ON
+    from gmcs.constants import ON, YES
     from gmcs.linglib.light_verb_constructions import LV_ITEM, LV_IT_ITEM, \
         LV_TR_ITEM, LV_NOUN_ITEM, LV_VERB_ITEM, LV_IT_NOUN_ITEM, \
-        LV_IT_VERB_ITEM, LV_TR_NOUN_ITEM, LV_TR_VERB_ITEM
+        LV_IT_VERB_ITEM, LV_TR_NOUN_ITEM, LV_TR_VERB_ITEM, LV_BLEACHED_ITEM, \
+        BLEACHED_LV_VERB_ITEM, BLEACHED_LV_IT_VERB_ITEM, \
+        BLEACHED_LV_TR_VERB_ITEM, BASIC_LV_IT_ITEM, BLEACHED_LV_IT_ITEM, \
+        BASIC_LV_TR_ITEM, BLEACHED_LV_TR_ITEM
 
     mylang.add_literal('; Light Verbs', section='lvclex')
 
     # add basic lv-lex item
-    mainorverbtype = main_or_verb(ch)
-    mylang.add('lv-lex := ' + mainorverbtype + '.', section='lvclex')
-    mylang.add(LV_ITEM, section='lvclex')
+    if not ch.get('lvc-all-bleached') == YES:
+        mainorverbtype = main_or_verb(ch)
+        mylang.add('lv-lex := ' + mainorverbtype + '.', section='lvclex')
+        mylang.add(LV_ITEM, section='lvclex')
+
+    # add bleached lv-lex item
+    if ch.get('lvc-bleached') == YES:
+        mylang.add(LV_BLEACHED_ITEM, section='lvclex')
 
     if ch.get('lvc-it') == ON:
-        mylang.add(LV_IT_ITEM, section='lvclex')
+        mylang.add(BASIC_LV_IT_ITEM, section='lvclex')
+        if not ch.get('lvc-all-bleached') == YES:
+            mylang.add(LV_IT_ITEM, section='lvclex')
+        if ch.get('lvc-bleached') == YES:
+            mylang.add(BLEACHED_LV_IT_ITEM, section='lvclex')
+
     if ch.get('lvc-tr') == ON:
-        mylang.add(LV_TR_ITEM, section='lvclex')
+        mylang.add(BASIC_LV_TR_ITEM, section='lvclex')
+        if not ch.get('lvc-all-bleached') == YES:
+            mylang.add(LV_TR_ITEM, section='lvclex')
+        if ch.get('lvc-bleached') == YES:
+            mylang.add(BLEACHED_LV_TR_ITEM, section='lvclex')
+
     if ch.get('coverb-n') == ON:
-        mylang.add(LV_NOUN_ITEM, section='lvclex')
+        if not ch.get('lvc-all-bleached') == YES:
+            mylang.add(LV_NOUN_ITEM, section='lvclex')
+
     if ch.get('coverb-v') == ON:
-        mylang.add(LV_VERB_ITEM, section='lvclex')
+        if not ch.get('lvc-all-bleached') == YES:
+            mylang.add(LV_VERB_ITEM, section='lvclex')
+        if ch.get('lvc-bleached') == YES:
+            mylang.add(BLEACHED_LV_VERB_ITEM, section='lvclex')
+
     if ch.get('lvc-it') == ON and ch.get('coverb-n') == ON:
-        mylang.add(LV_IT_NOUN_ITEM, section='lvclex')
+        if not ch.get('lvc-all-bleached') == YES:
+            mylang.add(LV_IT_NOUN_ITEM, section='lvclex')
+
     if ch.get('lvc-it') == ON and ch.get('coverb-v') == ON:
-        mylang.add(LV_IT_VERB_ITEM, section='lvclex')
+        if not ch.get('lvc-all-bleached') == YES:
+            mylang.add(LV_IT_VERB_ITEM, section='lvclex')
+        if ch.get('lvc-bleached') == YES:
+            mylang.add(BLEACHED_LV_IT_VERB_ITEM, section='lvclex')
+
     if ch.get('lvc-tr') == ON and ch.get('coverb-n') == ON:
-        mylang.add(LV_TR_NOUN_ITEM, section='lvclex')
+        if not ch.get('lvc-all-bleached') == YES:
+            mylang.add(LV_TR_NOUN_ITEM, section='lvclex')
+
     if ch.get('lvc-tr') == ON and ch.get('coverb-v') == ON:
-        mylang.add(LV_TR_VERB_ITEM, section='lvclex')
+        if not ch.get('lvc-all-bleached') == YES:
+            mylang.add(LV_TR_VERB_ITEM, section='lvclex')
+        if ch.get('lvc-bleached') == YES:
+            mylang.add(BLEACHED_LV_TR_VERB_ITEM, section='lvclex')
 
     for lv in ch.get('lv'):
+        is_bleached = lv.get('sem-bleached') == ON
         for cv_pos in lv.get('cv-type').split(', '):
-            lvtype = lv_id(lv, cv_pos, True)
-            typedef = lvtype + ' := ' + lv_id(lv, cv_pos, False) + ' & \
+            lvtype = lv_id(lv, cv_pos, True, is_bleached)
+            typedef = lvtype + ' := ' + lv_id(lv, cv_pos, False, is_bleached) + ' & \
                 [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.LVC ' + TDLencode(lvctype_id(lv)) + ' ].'
             mylang.add(typedef, section='lvclex')
 
@@ -1566,7 +1616,7 @@ def customize_lexicon(mylang, ch, lexicon, trigger, hierarchies, rules):
 
     customize_light_verbs(ch, mylang, lexicon, hierarchies)
 
-    if ch.get('has-aux') == 'yes':
+    if ch.get('has-aux') == 'yes' or ch.get('lvc-bleached') == 'yes':
         mylang.set_section('auxlex')
         auxiliaries.customize_auxiliaries(
             mylang, ch, lexicon, trigger, hierarchies)
