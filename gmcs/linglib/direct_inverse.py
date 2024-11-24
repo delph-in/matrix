@@ -10,7 +10,6 @@ dirinv_geom = 'LOCAL.CAT.HEAD.DIRECTION'
 ### HELPER FUNCTIONS ###
 ########################
 
-
 def get_subj_comps_types(j, scale_size, direc, equal):
     hi_type = lo_type = 'dir-inv-'
     if equal == 'direct' and direc == 'dir':
@@ -28,7 +27,6 @@ def get_subj_comps_types(j, scale_size, direc, equal):
 ##########################
 ### MAIN LOGIC METHODS ###
 ##########################
-
 
 def customize_direct_inverse(choices, mylang, hierarchies):
     if not choices.has_dirinv():

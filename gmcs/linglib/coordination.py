@@ -2,17 +2,9 @@ from gmcs.utils import TDLencode
 from gmcs.utils import orth_encode
 from gmcs.lib import TDLHierarchy
 
-######################################################################
-# Coordination
-#   Create the type definitions associated with the user's choices
-#   about coordination.
-
-######################################################################
-# define_coord_strat: a utility function, defines a strategy
-
-
 def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, mylang,
                        rules, irules, resrules, mixed_strat=False):
+    """This is a utility function that defines a coordination strategy."""
     mylang.add_literal(';;; Coordination Strategy ' + num)
 
     pn = pos + num
@@ -107,7 +99,7 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, mylang,
 
 def coord_strat_features(num, nm, mixed_strat):
     """Gets either just the COORD-STRAT number, or also the COORDAGR value,
-     which is only used in a mixed strategy language"""
+     which is only used in a mixed strategy language."""
     if mixed_strat and 'conjunct' not in nm:
         return '[ SYNSEM.LOCAL [ COORDAGR res, ' \
                'COORD-STRAT "' + num + '" ] ].'
@@ -134,7 +126,7 @@ def customize_feature_resolution(mylang, ch, ap):
             path = 'SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.'
 
             # if this is a custom feature, check whether it is semantic or syntactic
-            if v.upper() == featname and (v != 'case' and v != 'pernum'):
+            if v.upper() == featname and (v != 'case' and v != 'pernum' and v != 'NMZ'):
                 # find the right custom feature in the list...
                 for feature in ch.get('feature', []):
                     feat = feature.get('name', '')
@@ -142,6 +134,9 @@ def customize_feature_resolution(mylang, ch, ap):
                     if feat == v:
                         if type == 'head':
                             path = 'SYNSEM.LOCAL.CAT.HEAD.'
+
+            if v == 'NMZ':
+                path = 'SYNSEM.LOCAL.CAT.HEAD.'
 
             if v == 'case':
                 path = 'SYNSEM.LOCAL.CAT.HEAD.'  # special path for case
@@ -157,6 +152,7 @@ def customize_feature_resolution(mylang, ch, ap):
                 ch2 = rule.get('right') if rule.get('right') else 'any'
                 # the rule should always have a parent, but just in case
                 par = rule.get('par') if rule.get('par') else 'any'
+
 
                 if "," in ch1:
                     ch1_list = ch1.split(", ")
@@ -185,6 +181,20 @@ def write_coord_rule(ch1, ch2, par, path, featname, mylang):
     par = "#" + featname.lower() if par == "same" else par
     ch1 = "#" + featname.lower() if ch1 == "same" else ch1
     ch2 = "#" + featname.lower() if ch2 == "same" else ch2
+
+    if featname == 'NMZ':
+        if ch1 == 'minus':
+            ch1 = '-'
+        elif ch1 == 'plus':
+            ch1 = '+'
+        if ch2 == 'minus':
+            ch2 = '-'
+        elif ch2 == 'plus':
+            ch2 = '+'
+        if par == 'minus':
+            par = '-'
+        elif par == 'plus':
+            par = '+'
 
     # if both children are 'any', we just constrain the parent.
     if (ch1 == 'any' and ch2 == 'any' and par != 'any'):
@@ -291,7 +301,7 @@ def customize_conj_wo(mylang, ch, agr, csap):
                 'head-spec-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR ' + after + '].')
         if ch.get('noun-det-order') == 'det-noun':
             mylang.add(
-                'head-spec-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR ' + before + '].')
+                'spec-head-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR ' + before + '].')
 
     customize_coordagr_word_order(ch, mylang, before, after, subj_on, obj_on)
 
@@ -358,7 +368,7 @@ def customize_mixed_strat_resolution(ch, mylang, target):
 
 
 def customize_conjunct_agreement(mylang, ch, agr, csap, cs):
-    """add everything to the grammar that's needed for distinguished conjunct agreement"""
+    """Add everything to the grammar that's needed for distinguished conjunct agreement."""
     # type addendum for distinguished conjunct
     mylang.add('local-min:+ [COORDAGR dir].', section='addenda')
 
@@ -440,7 +450,7 @@ def customize_agreement_pattern(mylang, ch, csap, cs):
 
 def customize_poss_feats(mylang, rule):
     """
-    Identify POSSESSOR and POSSESSUM across conjuncts
+    Identify POSSESSOR and POSSESSUM across conjuncts.
     """
     if rule == 'top' or rule == 'mid':
         mylang.add(rule+'-coord-rule :+ [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #possessor,\
@@ -458,7 +468,7 @@ def customize_poss_feats(mylang, rule):
 
 def customize_coordination(mylang, ch, lexicon, rules, irules):
     """
-    The main coordination customization routine
+    The main coordination customization routine.
     """
     mylang.set_section('coord')
 

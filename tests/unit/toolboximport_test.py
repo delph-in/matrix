@@ -7,7 +7,6 @@ from gmcs.choices import FormInfo
 from gmcs.linglib import toolboximport
 from gmcs.deffile import MatrixDefFile
 
-
 class TestToolboxImport(unittest.TestCase):
     def setUp(self):
         try:
@@ -23,7 +22,7 @@ class TestToolboxImport(unittest.TestCase):
         self.matrixdef = MatrixDefFile('web/matrixdef')
 
     def save_choices(self, choices):
-        '''This writes a choices file using matrix def.'''
+        """This writes a choices file using matrix def."""
         tmp = tempfile.NamedTemporaryFile(mode='w+')
         tmp.write('version=' + str(choices.current_version()) + '\n\n')
         tmp.write(str(choices))
@@ -34,11 +33,11 @@ class TestToolboxImport(unittest.TestCase):
         return tmp
 
     def add_toolbox_files(self, choices, tb_strings):
-        '''
+        """
         Add toolbox files to 'choices'.
         tb_strings should be a list of lists, where the inner lists are the contains the files
         grouped by which configuration they should be loaded with.
-        '''
+        """
         for i in range(len(tb_strings)):
             for j in range(len(tb_strings[i])):
                 fout = tempfile.NamedTemporaryFile(mode='w+')
@@ -49,9 +48,9 @@ class TestToolboxImport(unittest.TestCase):
         return self.save_choices(choices)
 
     def test_empty(self):
-        '''
+        """
         Test loading an empty toolbox lexicon into an empty choices file.
-        '''
+        """
         self.c.load_choices(empty_choices_file.splitlines())
         choices = self.save_choices(self.c)
         toolboximport.import_toolbox_lexicon(choices.name)
@@ -61,9 +60,9 @@ class TestToolboxImport(unittest.TestCase):
         self.assertEqual(self.c, self.gold)
 
     def test_import(self):
-        '''
+        """
         Load the mock toolbox file into the test choices file.
-        '''
+        """
         self.c.load_choices(test_choices_file.splitlines())
         choices = self.add_toolbox_files(self.c, [[test_toolbox_file]])
         toolboximport.import_toolbox_lexicon(choices.name)

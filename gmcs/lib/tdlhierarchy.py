@@ -1,13 +1,12 @@
 ######################################################################
-# TDLHierarchy class
 
-# TDLHierarchy:
-# A class for storing, operating on, and saving to TDL a type
-# hierarchy.  The hierarchy is stored as an array, each element of
-# which is itself an array of three strings: a type, a supertype, and
-# a comment.
 class TDLHierarchy:
-    # Initialize
+    """
+    A class for storing, operating on, and saving to TDL a type
+    hierarchy.  The hierarchy is stored as an array, each element of
+    which is itself an array of three strings: a type, a supertype, and
+    a comment.
+    """
     def __init__(self, name, type=''):
         self.name = name
         self.type = type
@@ -21,19 +20,20 @@ class TDLHierarchy:
     def is_empty(self):
         return len(self.hierarchy) == 0
 
-    # Add a type to the hierarchy
-
     def add(self, type, supertype, comment=''):
+        """Add a type to the hierarchy."""
         self.hierarchy += [[type, supertype, comment]]
-
-    # Save the hierarchy to the passed TDLfile object.  The resulting
-    # TDL will look like this:
-    #
-    # type1 := supertype1  ; comment1
-    # type2 := supertype2  ; comment2
-    # type3 := supertype3  ; comment3
-    # ...
+        
     def save(self, tdl_file, define=True):
+        """
+        Save the hierarchy to the passed TDLfile object. The resulting
+        TDL will look like this:
+        
+        type1 := supertype1  ; comment1
+        type2 := supertype2  ; comment2
+        type3 := supertype3  ; comment3
+        ...
+        """
         tdl_file.set_section('features')
 
         tdl_file.add_literal(';;; ' + self.name[0:1].upper() + self.name[1:])
@@ -44,9 +44,11 @@ class TDLHierarchy:
         for h in self.hierarchy:
             tdl_file.add(h[0] + ' := ' + h[1] + '.', h[2], True)
 
-    # For each type in the hierarchy, calculate which types it is
-    # the immediate supertype of, and save this information for later.
     def __calc_supertypes(self):
+        """
+        For each type in the hierarchy, calculate which types it is
+        the immediate supertype of, and save this information for later.
+        """
         self.supertypes = {}
         for h in self.hierarchy:
             if not h[0] in self.supertypes:
@@ -56,10 +58,11 @@ class TDLHierarchy:
 
             self.supertypes[h[0]].add(h[1])
 
-    # For each type in the hierarchy, calculate which types it is
-    # the immediate subtype of, and save this information for later.
-
     def __calc_subtypes(self):
+        """
+        For each type in the hierarchy, calculate which types it is
+        the immediate subtype of, and save this information for later.
+        """
         self.subtypes = {}
         for h in self.hierarchy:
             if not h[0] in self.subtypes:
@@ -69,10 +72,11 @@ class TDLHierarchy:
 
             self.subtypes[h[1]].add(h[0])
 
-    # Calculate the leaf types (i.e. types with no subtypes) and save
-    # this information for later.
-
     def __calc_leaves(self):
+        """
+        Calculate the leaf types (i.e. types with no subtypes) and save
+        this information for later.
+        """
         self.__calc_subtypes()
 
         self.leaves = set()
@@ -80,10 +84,11 @@ class TDLHierarchy:
             if len(self.subtypes[st]) == 0:
                 self.leaves.add(st)
 
-    # For each type in the hierarchy, calculate which leaf types it
-    # covers, and save this information for later.
-
     def __calc_coverage(self):
+        """
+        For each type in the hierarchy, calculate which leaf types it
+        covers, and save this information for later.
+        """
         self.__calc_leaves()
         self.__calc_supertypes()
 
@@ -100,24 +105,24 @@ class TDLHierarchy:
                     for st in self.supertypes[w]:
                         working += [st]
 
-    # Search the hierarchy for a type and return its comment, if any
-
     def get_comment(self, type):
+        """Search the hierarchy for a type and return its comment, if any."""
         for h in self.hierarchy:
             if h[0] == type:
                 return h[2]
 
         return ''
 
-    # Search the hierarchy for a type covering all the types in type_set
-    # and return it.  Type hierarchies as described in the questionnaire
-    # may be insufficient for some purposes.  For example, implementing
-    # the scale hierarchy of a direct-inverse language may require the
-    # existence of a grouping of leaf types that requires that does not
-    # exist.  This method will add such types to the hierarchy as
-    # necessary.
-
     def get_type_covering(self, type_set):
+        """
+        Search the hierarchy for a type covering all the types in type_set
+        and return it.  Type hierarchies as described in the questionnaire
+        may be insufficient for some purposes.  For example, implementing
+        the scale hierarchy of a direct-inverse language may require the
+        existence of a grouping of leaf types that requires that does not
+        exist.  This method will add such types to the hierarchy as
+        necessary.
+        """
 
         type_list = list(type_set)
         if len(type_list) == 1:

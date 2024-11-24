@@ -1,20 +1,9 @@
 from gmcs.utils import get_name, TDLencode, orth_encode
-
 from gmcs import constants, feature_type_use
 from gmcs.linglib import lexbase
-
-
-######################################################################
-# Clausal Complements
-#   Create the type definitions associated with the user's choices
-#   about clasual complements.
-
-######################################################################
-
-# Constants (specific to this module)
-# TODO: It should probably all live in constants.py
 from gmcs.constants import MTRX_FRONT, SINGLE, MULTI
 
+# TODO: All these module-specific constants should probably live in constants.py
 COMPS = 'comps'  # choice name for clausal complement strategies
 COMP = 'comp'  # reserved head name for complementizers; should be a constant on some other page?
 # Also, the name for the choice for complementizer of a clausal complement strategy.
@@ -43,24 +32,20 @@ COMPLEMENTIZER = 'stem'  # Choices key for choices pertaining
 # a particular complementation strategy.
 
 # Error messages:
-EXTRA_VO = 'The only supporded word orders for extraposed complements are: SOV, VOS, OVS, OSV, v-final.'
+EXTRA_VO = 'The only supported word orders for extraposed complements are: SOV, VOS, OVS, OSV, v-final.'
 SAME_OR_EXTRA = 'Please choose whether the clausal complement takes the same position as noun ' \
     'complements or is extraposed to the end of the clause ' \
     '(the latter valid only for strict OV orders).'
 WO_WARNING = 'You chose a flexible word order; note that the order will indeed be flexible, ' \
              'including within the embedded clause.'
 
-#### Methods ###
-
-'''
-Main function which will be called by customize.py.
-Should fully cover all the customization needed for
-what was specified on the Clausal Complements subpage
-of the Questionnaire.
-'''
-
-
 def customize_clausalcomps(mylang, ch, lexicon, rules):
+    """
+    Main function which will be called by customize.py.
+    Should fully cover all the customization needed for
+    what was specified on the Clausal Complements subpage
+    of the Questionnaire.
+    """
     if not COMPS in ch:
         return
     # Note: clausal verb type will be added by lexical_items.py.
@@ -149,9 +134,10 @@ def has_additional(ch, cs, wo):
 
 def is_more_flexible_order(wo, ccs):
     """
-    @param ch: choices
-    @return: True if the word order in complex sentences
-    subsumes the basic WO but not restricts it.
+    Args:
+        ch (ChoicesFile): choices
+    Returns: True if the word order in complex sentences
+    subsumes the basic WO but does not restrict it.
     E.g. If in a SOV order both OV and VO is allowed for clausal complements.
     Or if complementizers attach both before and after clause.
     If e.g. OV order is forbidden for clausal complements, must return False.
@@ -218,6 +204,8 @@ def use_init(ch, mylang, wo):
 
 def add_complementizer_supertype(mylang, ch):
     mylang.add(lexbase.COMPLEMENTIZER, section=COMPLEX, merge=True)
+    if ch.get('ns'):
+        mylang.add('complementizer-lex-item := [SYNSEM.LOCAL.CAT.HEAD.NMZ -].')
 
 
 def add_complementizer_subtype(cs, mylang, ch, extra):
@@ -252,26 +240,23 @@ def add_complementizer_subtype(cs, mylang, ch, extra):
 
     return typename
 
-
-'''
-Add and modify head-complement rules depending
-on what kind of word order variations clausal complements
-exhibit.
-General and additional are default and new head-comp rule
-(determined simply by the word order).
-For example, if the order is OV, the general rule will
-be comp-head, and the additional will be head-comp,
-to accommodate non-default orders.
-Typename is the name of the complementizer involved in this
-complementation strategy.
-cs is the complementation strategy.
-init tells if the INIT feature is needed or not. The value must
-be true if INIT feature will be used in at least one of
-the complementation strategies in this grammar.
-'''
-
-
 def customize_order(ch, cs, mylang, rules, typename, init, general, additional):
+    """
+    Add and modify head-complement rules depending
+    on what kind of word order variations clausal complements
+    exhibit.
+    General and additional are default and new head-comp rule
+    (determined simply by the word order).
+    For example, if the order is OV, the general rule will
+    be comp-head, and the additional will be head-comp,
+    to accommodate non-default orders.
+    Typename is the name of the complementizer involved in this
+    complementation strategy.
+    cs is the complementation strategy.
+    init tells if the INIT feature is needed or not. The value must
+    be true if INIT feature will be used in at least one of
+    the complementation strategies in this grammar.
+    """
     wo = ch.get(constants.WORD_ORDER)
     init_gen, init_add = which_init(general, additional)
     is_flex = is_more_flexible_order(wo, cs)
@@ -311,17 +296,15 @@ def constrain_head_subj_rules(cs, mylang, rules, ch):
         'head-subj-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].', merge=True)
 
 
-'''
-An additional HCR will *not* be needed if:
-The matrix order is VO and clausal complements are not extraposed,
-and there is not a complementizer or
-there is a complementizer but it can only use the normal HCR.
-Note that this relies that for some situations, complementizer_head_comp_needed
-will be called separately! (Which is bad of course and should be rewritten).
-'''
-
-
 def additional_hcr_needed(cs, wo):
+    """
+    An additional HCR will *not* be needed if:
+    The matrix order is VO and clausal complements are not extraposed,
+    and there is not a complementizer or
+    there is a complementizer but it can only use the normal HCR.
+    Note that this relies that for some situations, complementizer_head_comp_needed
+    will be called separately! (Which is bad of course and should be rewritten).
+    """
     if wo in ['vos'] and cs[EXTRA] and cs[SAME] and cs[BEF] and cs[AFT]:
         return False  # Because additional HSR instead
     if wo == 'v-initial' and cs[EXTRA] and cs[SAME] and not cs[AFT]:
@@ -338,7 +321,6 @@ def additional_hcr_needed(cs, wo):
 # This is an interesting function which should ideally be merged with
 # additional_hcr_needed somehow, in the higher logic of the library.
 # I think additional HEAD comp HCR is needed only in a couple cases.
-
 
 def complementizer_comp_head_needed(wo, cs):
     if not wo in ['v-initial', 'vos', 'v-final']:
@@ -366,15 +348,13 @@ def which_init(general, additional):
     return (init_general, init_add)
 
 
-'''
-If an additional head-comp rule is needed, it may also need constraints
-with respect to its head or the INIT feature. The default rule will
-also need to be constrained with respect to INIT, if INIT is used in
-the additional rule.
-'''
-
-
 def constrain_head_comp_rules(mylang, rules, init, general, additional, cs, ch):
+    """
+    If an additional head-comp rule is needed, it may also need constraints
+    with respect to its head or the INIT feature. The default rule will
+    also need to be constrained with respect to INIT, if INIT is used in
+    the additional rule.
+    """
     wo = ch.get(constants.WORD_ORDER)
     supertype = 'head-initial' if additional.startswith(
         constants.HEAD_COMP) else 'head-final'
@@ -483,7 +463,7 @@ def determine_clausal_verb_comp_head(cs, ch):
             head = '+vc'
     else:
         if is_nominalized_complement(cs):
-            head = 'noun'
+            head = ch.case_head()
         elif ch.has_diverse_ques_particles():
             if cs['ques'] == 'ques':
                 head = 'comp'
@@ -567,14 +547,12 @@ def constrain_lexitem_for_feature(typename, feature_path, feature_name, feature_
     mylang.add(typename + ' := [ ' + feature_path + '.' + feature_name.upper() + ' ' + feature_value + ' ]. ',
                merge=True)
 
-
-'''
-Determine whether the head of the additional head-comp rule
-should be constrained to just verbs, just complementizers, or both.
-'''
-
-
 def determine_head(wo, cs):
+    """
+    Determine whether the head of the additional head-comp rule
+    should be constrained to just verbs, just complementizers, or both.
+    """
+
     head = None
     if not cs[COMP]:
         head = 'verb'
@@ -599,14 +577,12 @@ def determine_head(wo, cs):
     return head
 
 
-'''
-Determine which head-complement rule is the generally applicable one
-and which one would be the secondary one, applicable only to complementizers
-and/or clausal complement verbs.
-'''
-
-
 def determine_head_comp_rule_type(wo, cs):
+    """
+    Determine which head-complement rule is the generally applicable one
+    and which one would be the secondary one, applicable only to complementizers
+    and/or clausal complement verbs.
+    """
     if wo == 'v2' or wo == 'free':
         # Note: it is possible that not much is needed here, as v2 and free are very flexible
         raise Exception(
@@ -617,18 +593,16 @@ def determine_head_comp_rule_type(wo, cs):
         else (constants.COMP_HEAD, constants.HEAD_COMP)
 
 
-'''
-Given word order and clausal complement choices,
-determine whether the INIT feature will be used,
-for this particular clausal complement strategy.
-Note that once the INIT feaure has been used for
-one strategy, you will need to keep it in mind
-for all of them, so you will need to stop
-calling this function once it returns True.
-'''
-
-
 def init_needed(wo, cs, mylang, is_flex):
+    """
+    Given word order and clausal complement choices,
+    determine whether the INIT feature will be used,
+    for this particular clausal complement strategy.
+    Note that once the INIT feaure has been used for
+    one strategy, you will need to keep it in mind
+    for all of them, so you will need to stop
+    calling this function once it returns True.
+    """
     if is_flex:
         return False
     res = False
@@ -665,14 +639,12 @@ def extra_needed(ch, mylang):
     return res
 
 
-'''
-Add clausal verb supertype to the grammar.
-'''
-# Note: this function is currently called from within lexical_items.py.
-# It is possible that that call should be moved to this module.
-
-
 def add_clausalcomp_verb_supertype(ch, mainorverbtype, mylang):
+    """
+    Add clausal verb supertype to the grammar.
+    Note: this function is currently called from within lexical_items.py.
+    It is possible that that call should be moved to this module.
+    """
     head = ch.case_head()
     typedef = CLAUSALCOMP + '-verb-lex := ' + mainorverbtype + '&\
       [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >,\
@@ -716,6 +688,18 @@ def customize_clausal_verb(clausalverb, mylang, ch, cs, extra):
             if ch.get(MTRX_FRONT) in [SINGLE, MULTI] and not ch.get('embed-insitu') == 'on':
                 mylang.add(
                     clausalverb + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.WH.BOOL + ] > ].', merge=True)
+    else:
+        for feat in cs['feat']:
+            if feat["name"] ==  'nominalization':
+                nom_strat = feat['value'].split(', ')
+                for ns in ch['ns']:
+                    #Add appropiate semantic constraint to a nominalized clausal complement
+                    #depending on whether the nominalized clause included nominal semantics or not
+                    if ns['name'] in nom_strat and ns['nmzRel'] == 'yes':
+                        mylang.add(clausalverb + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [LOCAL.CONT.HOOK.INDEX ref-ind ] >].', merge=True)
+                    elif ns['name'] in nom_strat and ns['nmzRel'] == 'no':
+                        mylang.add(clausalverb + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [LOCAL.CONT.HOOK.INDEX event ] >].', merge=True)
+
 
     if ch.get('wh-inv-embed') == 'on':
         mylang.add(
@@ -726,21 +710,18 @@ def customize_clausal_verb(clausalverb, mylang, ch, cs, extra):
     #    mylang.add(clausalverb + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ NON-LOCAL.QUE.LIST < > ] > ].', merge=True)
 
 
-'''
-Semantically non-empty nominalization requires that
-the clausal verb takes nominalization_rel's ARG0
-directly as its ARG2. In other cases, it wants
-the embedded verb's handle.
-'''
-
-
 def clausalverb_supertype(ch, cs):
+    """
+    Semantically non-empty nominalization requires that the clausal verb takes 
+    nominalization_rel's ARG0 directly as its ARG2. In other cases, it wants
+    the embedded verb's handle.
+    """
     supertype = None
     for f in cs['feat']:
         if f['name'] == 'nominalization':
             for ns in ch['ns']:
                 if ns['name'] == f['value']:
-                    if ns['nmzRel'] == 'yes' or ns['level'] in ['mid', 'low']:
+                    if ns['nmzRel'] == 'yes' or ns['nmz_type'] not in ['sentential', 'alt-sent']:
                         supertype = 'transitive-lex-item'
     if not supertype:
         supertype = 'clausal-second-arg-trans-lex-item'
@@ -769,7 +750,7 @@ def nonempty_nmz(cs, ch):
         if f['name'] == 'nominalization':
             for ns in ch['ns']:
                 if ns['name'] == f['value']:
-                    if ns['nmzRel'] == 'yes' or ns['level'] in ['mid', 'low']:
+                    if ns['nmzRel'] == 'yes' or ns['nmz_type'] not in ['sentential', 'alt-sent']:
                         return True
     return False
 

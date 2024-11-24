@@ -1,9 +1,9 @@
-'''
+"""
 Run these tests with `python -m tests.unit.morphotactics_test` from the matrix directory.
 
 TODO: This entire test class needs updating as morphotactics.py no longer uses 
 many of the types required in these tests.
-'''
+"""
 
 import unittest
 from gmcs import choices

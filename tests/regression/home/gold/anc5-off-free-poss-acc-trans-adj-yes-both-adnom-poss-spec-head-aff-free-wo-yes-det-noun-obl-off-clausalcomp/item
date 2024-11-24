@@ -1,0 +1,21 @@
+1@@@@1@@itr-verb3sg det noun1@@@@1@3@@@
+2@@@@1@@adv1 itr-verb3sg det noun1@@@@1@4@@@
+3@@@@1@@itr-verb3sg det adj1 noun1@@@@1@4@@@
+4@@@@1@@tr-verb3sg det noun1 det noun2 @@@@1@5@@@
+5@@@@1@@det noun1 noun2possessum itr-verb3sg@@@@1@4@@@
+6@@@@1@@noun2possessum det noun1 itr-verb3sg@@@@1@4@@@
+7@@@@1@@det noun1 cv3sg det noun2 tr-verb-nmzpossessum det noun1 @@@@1@8@@@
+8@@@@1@@det noun2 tr-verb-nmzpossessum det noun1 det noun1 cv3sg@@@@1@8@@@
+9@@@@1@@det noun1 det noun2 tr-verb-nmzpossessum det noun1 cv3sg@@@@1@8@@@
+10@@@@1@@det noun1 cv3sg det noun2 det noun1 tr-verb-nmzpossessum@@@@1@8@@@
+11@@@@1@@det noun1 cv3sg det tr-verb-nmz det noun1 @@@@1@7@@@
+12@@@@1@@det noun1 cv3sg tr-verb-nmzpossessum det noun1@@@@1@6@@@
+13@@@@1@@det noun1 cv3sg det noun2 adj1 tr-verb-nmzpossessum det noun1 @@@@1@9@@@
+14@@@@1@@det noun1 cv3sg tr-verb-nmzpossessum@@@@0@4@@@
+15@@@@1@@det noun1 cv3sg det noun2 itr-verb-nmzpossessum@@@@0@6@@@
+16@@@@1@@det noun1 cv3sg det noun2 tr-verb-nmz det noun1 @@@@0@8@@@
+17@@@@1@@det noun1 cv3sg det noun2 adv1 tr-verb-nmzpossessum det noun1 @@@@0@9@@@
+18@@@@1@@det noun2 tr-verb-nmzpossessum det noun1@@@@0@5@@@
+19@@@@1@@det noun1 cv3sg det noun2 tr-verb-nmz det noun1@@@@0@8@@@
+20@@@@1@@det noun1 cv3sg det noun2 tr-verb3sg det noun1 @@@@0@8@@@
+21@@@@1@@det noun1 cv3sg det noun2 tr-verb det noun1@@@@0@8@@@

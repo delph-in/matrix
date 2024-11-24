@@ -1,0 +1,230 @@
+
+version=35
+
+section=general
+language=anc-on-VOS-ALL-COMPS-intrans=on-adj-obj-adnom-poss-spec-dep-aff-head-non-aff-hf-agr-dep,head-final-yes-det-noun-imp-patient-like-clausalcomp-case
+comment=This is a sample choices file which exercises only a small range of the information provided by the customization system, in order to create a grammar for a very small fragment of English. It describes and SVO language with a small vocabulary drawn from English and subset of the (already simple) English verbal agreement paradigm.  Where it was not possible to leave a section blank, we have said the language does not manifest the phenomenon, even when this is not actually correct for English.
+
+section=word-order
+word-order=vos
+has-dets=yes
+noun-det-order=det-noun
+has-aux=no
+
+section=number
+  number1_name=sg
+  number2_name=pl
+
+section=person
+person=1-2-3
+first-person=none
+
+section=gender
+
+section=case
+case-marking=nom-acc
+nom-acc-nom-case-name=nominative
+nom-acc-acc-case-name=accusative
+  case1_name=case3
+  case2_name=case4
+
+section=adnom-poss
+  poss-strat1_order=head-final
+  poss-strat1_mod-spec=spec
+  poss-strat1_mark-loc=both
+  poss-strat1_possessor-type=affix
+  poss-strat1_possessor-affix-agr=agree
+  poss-strat1_possessum-type=non-affix
+  poss-strat1_possessum-mark-order=head-initial
+  poss-strat1_possessum-agr=non-agree
+  poss-strat1_possessum-orth=POSSESSUM
+
+section=direct-inverse
+scale-equal=direct
+
+section=tense-aspect-mood
+
+section=evidentials
+
+section=other-features
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=wh-q
+
+section=info-str
+
+section=arg-opt
+
+section=nominalclause
+mandatory-arg=on
+  ns1_name=nom_strat_1
+  ns1_nmz_type=all-comps
+  ns1_all_comps_arg_order=patient
+  ns1_det=imp
+  ns1_intrans=on
+  ns1_adj=on
+
+section=clausal-comp
+  comps1_clause-pos-same=on
+    comps1_feat1_name=nominalization
+    comps1_feat1_value=nom_strat_1
+
+section=clausalmods
+
+section=lexicon
+  noun1_name=common
+    noun1_feat1_name=person
+    noun1_feat1_value=3rd
+  noun1_det=obl
+    noun1_stem1_orth=noun1
+    noun1_stem1_pred=_noun1_n_rel
+    noun1_stem2_orth=noun2
+    noun1_stem2_pred=_noun2_n_rel
+  verb1_name=itr
+  verb1_valence=nom
+    verb1_stem1_orth=itr-verb
+    verb1_stem1_pred=_itr-verb_v_rel
+  verb2_name=tv
+  verb2_valence=nom-acc
+    verb2_stem1_orth=tr-verb
+    verb2_stem1_pred=_tr-verb_v_rel
+  verb3_name=clausal_verb
+  verb3_valence=nom-acc,comps1
+    verb3_stem1_orth=cv
+    verb3_stem1_pred=_cv_v_rel
+  adj1_name=adj1
+  adj1_mod=attr
+  adj1_modpos=after
+    adj1_stem1_orth=adj1
+    adj1_stem1_pred=_adj1_a_rel
+  det1_name=def
+    det1_stem1_orth=det
+    det1_stem1_pred=_det_q_rel
+  adv1_name=adv1
+    adv1_stem1_orth=adv1
+    adv1_stem1_pred=_adv1_a_rel
+  adv1_type=manner
+
+section=morphology
+  noun-pc1_name=num
+  noun-pc1_obligatory=on
+  noun-pc1_order=suffix
+  noun-pc1_inputs=noun1
+    noun-pc1_lrt1_name=singular
+      noun-pc1_lrt1_feat1_name=number
+      noun-pc1_lrt1_feat1_value=sg
+      noun-pc1_lrt1_feat1_head=itself
+      noun-pc1_lrt1_lri1_inflecting=no
+    noun-pc1_lrt2_name=plural
+      noun-pc1_lrt2_feat1_name=number
+      noun-pc1_lrt2_feat1_value=pl
+      noun-pc1_lrt2_feat1_head=itself
+      noun-pc1_lrt2_lri1_inflecting=yes
+      noun-pc1_lrt2_lri1_orth=PL
+  noun-pc3_name=case
+  noun-pc3_order=suffix
+  noun-pc3_inputs=noun-pc1, noun-pc4, verb-pc2
+    noun-pc3_lrt1_name=acc
+      noun-pc3_lrt1_feat1_name=case
+      noun-pc3_lrt1_feat1_value=acc
+      noun-pc3_lrt1_feat1_head=itself
+      noun-pc3_lrt1_lri1_inflecting=yes
+      noun-pc3_lrt1_lri1_orth=-acc
+    noun-pc3_lrt2_name=case3
+      noun-pc3_lrt2_feat1_name=case
+      noun-pc3_lrt2_feat1_value=case3
+      noun-pc3_lrt2_feat1_head=itself
+      noun-pc3_lrt2_lri1_inflecting=yes
+      noun-pc3_lrt2_lri1_orth=-case3
+    noun-pc3_lrt3_name=case4
+      noun-pc3_lrt3_feat1_name=case
+      noun-pc3_lrt3_feat1_value=case4
+      noun-pc3_lrt3_feat1_head=itself
+      noun-pc3_lrt3_lri1_inflecting=yes
+      noun-pc3_lrt3_lri1_orth=-case4
+  noun-pc4_name=possessive
+  noun-pc4_obligatory=on
+  noun-pc4_order=suffix
+  noun-pc4_inputs=noun-pc1
+    noun-pc4_lrt1_name=possessor-3sg
+      noun-pc4_lrt1_feat1_name=poss-strat1
+      noun-pc4_lrt1_feat1_value=possessor
+      noun-pc4_lrt1_feat1_head=itself
+      noun-pc4_lrt1_feat2_name=number
+      noun-pc4_lrt1_feat2_value=sg
+      noun-pc4_lrt1_feat2_head=itself
+      noun-pc4_lrt1_feat3_name=person
+      noun-pc4_lrt1_feat3_value=3rd
+      noun-pc4_lrt1_feat3_head=itself
+      noun-pc4_lrt1_lri1_inflecting=yes
+      noun-pc4_lrt1_lri1_orth=POSSESSOR3sg
+    noun-pc4_lrt2_name=possessor-3pl
+      noun-pc4_lrt2_feat1_name=poss-strat1
+      noun-pc4_lrt2_feat1_value=possessor
+      noun-pc4_lrt2_feat1_head=itself
+      noun-pc4_lrt2_feat2_name=number
+      noun-pc4_lrt2_feat2_value=pl
+      noun-pc4_lrt2_feat2_head=itself
+      noun-pc4_lrt2_feat3_name=person
+      noun-pc4_lrt2_feat3_value=3rd
+      noun-pc4_lrt2_feat3_head=itself
+      noun-pc4_lrt2_lri1_inflecting=yes
+      noun-pc4_lrt2_lri1_orth=POSSESSOR3pl
+    noun-pc4_lrt3_name=non-possessive
+      noun-pc4_lrt3_feat1_name=poss-strat1
+      noun-pc4_lrt3_feat1_value=nonpossessive
+      noun-pc4_lrt3_feat1_head=itself
+      noun-pc4_lrt3_lri1_inflecting=no
+  verb-pc1_name=pernum
+  verb-pc1_obligatory=on
+  verb-pc1_order=suffix
+  verb-pc1_inputs=verb
+    verb-pc1_lrt1_name=3sg
+      verb-pc1_lrt1_feat1_name=person
+      verb-pc1_lrt1_feat1_value=3rd
+      verb-pc1_lrt1_feat1_head=subj
+      verb-pc1_lrt1_feat2_name=number
+      verb-pc1_lrt1_feat2_value=sg
+      verb-pc1_lrt1_feat2_head=subj
+      verb-pc1_lrt1_lri1_inflecting=yes
+      verb-pc1_lrt1_lri1_orth=3sg
+    verb-pc1_lrt2_name=pl
+      verb-pc1_lrt2_feat1_name=number
+      verb-pc1_lrt2_feat1_value=pl
+      verb-pc1_lrt2_feat1_head=subj
+      verb-pc1_lrt2_lri1_inflecting=no
+    verb-pc1_lrt3_name=non-3rd
+      verb-pc1_lrt3_feat1_name=person
+      verb-pc1_lrt3_feat1_value=1st, 2nd
+      verb-pc1_lrt3_feat1_head=subj
+      verb-pc1_lrt3_lri1_inflecting=no
+  verb-pc2_name=nominalization
+  verb-pc2_order=suffix
+  verb-pc2_inputs=iverb
+    verb-pc2_lrt1_name=AN
+      verb-pc2_lrt1_feat1_name=nominalization
+      verb-pc2_lrt1_feat1_value=nom_strat_1
+      verb-pc2_lrt1_feat1_head=verb
+      verb-pc2_lrt1_feat2_name=OPT
+      verb-pc2_lrt1_feat2_value=minus
+      verb-pc2_lrt1_feat2_head=obj
+      verb-pc2_lrt1_feat3_name=case
+      verb-pc2_lrt1_feat3_value=case3
+      verb-pc2_lrt1_feat3_head=obj
+      verb-pc2_lrt1_lri1_inflecting=yes
+      verb-pc2_lrt1_lri1_orth=-nmz
+
+section=toolbox-import
+
+section=test-sentences
+  sentence1_orth=the cat chases the dog
+  sentence2_orth=the dogs sleep
+
+section=gen-options
+
+section=ToolboxLexicon

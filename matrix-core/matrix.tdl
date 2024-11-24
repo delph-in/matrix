@@ -3,7 +3,7 @@
 ;;;
 ;;; HPSG Grammar Matrix
 ;;;
-;;; $Id: matrix.tdl,v 1.51 2008-05-23 01:44:21 sfd Exp $
+;;; $Id: matrix.tdl,v 3.1 2024-10-09 Exp $
 ;;;
 ;;;  Copyright (c) 2002-2005
 ;;;    Emily M. Bender, Dan Flickinger, Stephan Oepen
@@ -1574,7 +1574,8 @@ headed-phrase := phrase &
 		   CONT.HOOK.ICONS-KEY #icons,
 		   AGR #agr,
 		   COORD -,
-		   COORD-REL #crel ] ].
+		   COORD-REL #crel ],
+    NON-HEAD-DTR sign & [ SYNSEM.LOCAL.COORD - ] ].
 
 non-headed-phrase := phrase.
 
@@ -1697,8 +1698,7 @@ binary-phrase := basic-binary-phrase &
     ARGS < [ INFLECTED infl-satisfied ],
            [ INFLECTED infl-satisfied ] > ].
 
-basic-binary-headed-phrase := headed-phrase & basic-binary-phrase &
-  [ NON-HEAD-DTR sign & [ SYNSEM.LOCAL.COORD - ] ].
+basic-binary-headed-phrase := headed-phrase & basic-binary-phrase.
 
 binary-headed-phrase := basic-binary-headed-phrase & binary-phrase.
 
@@ -2095,12 +2095,15 @@ basic-head-subj-nmc-phrase := declarative-clause & binary-nonloc-que-rel &
 
 ; OZ 2020-05-19 Adding WH feature for handling embedded constituent questions.
 
+; KR 2024-08-26 The rule mother now identifies its COMPS value with the HEAD-DTR and not 
+; the NON-HEAD-DTR to allow action nominals to take pass up their comps value
+
 basic-head-spec-phrase-super := binary-nonloc-phrase & phrasal &
               binary-headed-phrase &
   [ INFLECTED infl-satisfied,
     SYNSEM [ LOCAL.CAT [ WH [ OR < #or1, #or2 > ],
                          VAL [ SUBJ #subj,
-                               COMPS #spcomps,
+                               COMPS #comps,
                                SPR #spr,
                                SPEC #spec ],
                          POSTHEAD #ph,
@@ -2110,7 +2113,7 @@ basic-head-spec-phrase-super := binary-nonloc-phrase & phrasal &
                SYNSEM [ LOCAL [ CAT [ WH #or1,
                                       HEAD #head,
                                       VAL [ SUBJ #subj,
-                                            COMPS olist & #comps,
+                                            COMPS #comps,
                                             SPR < #synsem &
                                                   canonical-synsem . #spr >,
                                             SPEC #spec ],
@@ -2118,11 +2121,9 @@ basic-head-spec-phrase-super := binary-nonloc-phrase & phrasal &
                                 CONT.HOOK #hdhook ],
                         MODIFIED #hmodif ] ],
     NON-HEAD-DTR.SYNSEM #synsem &
-     [ LOCAL [ CAT [ WH #or2, VAL [ SPEC < [ LOCAL [ CAT [ HEAD #head,
-                                                  VAL.COMPS #comps ],
+     [ LOCAL [ CAT [ WH #or2, VAL [ SPEC < [ LOCAL [ CAT [ HEAD #head ],
                                             CONT.HOOK #hdhook ],
-                                    MODIFIED #hmodif ] >,
-                           COMPS #spcomps ] ] ],
+                                    MODIFIED #hmodif ] > ] ] ],
        MODIFIED #modif ],
     C-CONT [ RELS.LIST < >, HCONS.LIST < >, ICONS.LIST < > ] ].
 
@@ -2228,6 +2229,9 @@ basic-head-comp-nmc-phrase := binary-nonloc-que-rel & head-compositional &
 ; is, using [ ICONS.LIST.FIRST ... ] is dangerous. Plus, CLAUSE/TARGET
 ; are replaced by IARG1/IARG2.
 
+; KR 2024-03-07: Removing [ HEAD-DTR..INDEX event ] to allow nominalized 
+; verbs to take optional complements 
+ 
 basic-head-opt-comp-phrase := unary-nonloc-phrase & head-only &
                               head-compositional &
   [ INFLECTED #infl,
@@ -2252,8 +2256,7 @@ basic-head-opt-comp-phrase := unary-nonloc-phrase & head-only &
 					    SPEC #spec ],
 				      MC #mc,
 				      POSTHEAD #ph,
-              WH #wh ],
-				CONT.HOOK.INDEX event ],
+              WH #wh ]],
 			MODIFIED #mod ] ],
     C-CONT [ RELS.LIST < >,
 	     HCONS.LIST < >,
@@ -2282,6 +2285,7 @@ basic-head-opt-comp-phrase := unary-nonloc-phrase & head-only &
 ; ERB 2007-05-16 Moving MC identification from basic-head-opt-subj-phrase
 ; down to decl-head-opt-subj-phrase, since we might *not* want it for
 ; imperatives.
+
 
 basic-head-opt-subj-phrase := unary-nonloc-phrase & head-only &
   [ INFLECTED #infl,

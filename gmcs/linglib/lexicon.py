@@ -1,7 +1,5 @@
 from collections import defaultdict
-
 from gmcs.linglib import case
-#from gmcs.linglib import lexical_items
 from gmcs.utils import get_name
 from gmcs import constants
 from gmcs.constants import MTRX_FRONT
@@ -10,7 +8,7 @@ from gmcs.linglib.lexbase import LexicalType, PositionClass
 from gmcs.linglib.lexbase import ALL_LEX_TYPES
 from gmcs.linglib.lexbase import LEXICAL_CATEGORIES
 from gmcs.linglib.lexbase import LEXICAL_SUPERTYPES
-
+import re
 
 def lexical_type_hierarchy(choices, lexical_supertype):
     if lexical_supertype not in LEXICAL_CATEGORIES:
@@ -209,11 +207,9 @@ def get_lt_name(key, choices):
         return '-'.join([name, lex_st.rsplit('-lex', 1)[0]])
 
 ######################################################################
-# validate_lexicon(ch, vr)
-#   Validate the user's choices about the test lexicon.
-
 
 def validate_lexicon(ch, vr):
+    """Validate the user's choices about the test lexicon."""
     # This variable is used to check if the inheritance hierarchy
     # of lexicon types has a cycle
     contain_cycle = False
@@ -410,10 +406,21 @@ def validate_lexicon(ch, vr):
             vr.warn(n.full_key + '_det', mess % message_map[det])
             
         q = n.get('inter')
-        wh_q1 = ch.get(MTRX_FRONT)
-        if q == 'on' and (not wh_q1):
-            vr.warn(n.full_key + '_inter', 'A noun defined as a question pronoun is unusable ' + \
-                    'without any constituent question selections.')
+        if q == 'on':
+            wh_q1 = ch.get(MTRX_FRONT)
+            if not wh_q1:
+                vr.warn(n.full_key + '_inter', 'A noun defined as a question pronoun is unusable ' + \
+                        'without any constituent question selections.')
+            for stem in s:
+                p = stem.get('pred')
+                ques_preds = ["who", "what", "when", "where"]
+                needsPredicateWarning = True
+                for qp in ques_preds:
+                    if re.search(qp, p) != None:
+                        needsPredicateWarning = False
+                if needsPredicateWarning:
+                    vr.warn(stem.full_key + '_pred', 'Suggested predicates for question ' + \
+                        'pronouns include _thing_n_rel, _person_n_rel, _place_n_rel, or similar.')
 
         for stem in s:
             orth = stem.get('orth')
@@ -464,8 +471,12 @@ def validate_lexicon(ch, vr):
     # and has valence, see issue #627
     for v in ch.get('verb'):
         if len(vtsts[v.full_key]) > 0 and vtsts[v.full_key][0] != '' and v.get('valence') != '':
-            mess = 'A verb class that specifies a value for valence can\'t also inherit a value for valence'
-            vr.err(v.full_key + '_valence', mess)
+            for parent_v in ch.get('verb'):
+                v_name = str(parent_v).split()[0].split('_')[0]
+                for st in vtsts[v.full_key]:
+                    if v_name == st and parent_v.get('valence') != '':
+                        mess = 'A verb class that specifies a value for valence can\'t also inherit a value for valence'
+                        vr.err(v.full_key + '_valence', mess)
 
     for v in ch.get('verb'):
         st_anc = []  # used to make sure we don't have an lkb err as
@@ -563,18 +574,21 @@ def validate_lexicon(ch, vr):
             # otherwise we go again
             parents = next_parents
 
-        # now check val
-        # only care if it has stems
+        # check stems 
         s = v.get('stem', [])
-        if len(s) != 0:
-            if not val:
-                mess = 'You must specify the argument structure of each verb you ' + \
-                       'define.  Either on this type, or on a supertype.'
-                vr.err(v.full_key + '_valence', mess)
-            elif val[0:5] == 'trans' or '-' in val:
-                seenTrans = True
-            else:
-                seenIntrans = True
+        if s == []:
+            mess = 'You must define a stem for this verb class.'
+            vr.warn(v.full_key+'_stem', mess)
+        
+        # now check val
+        if not val:
+            mess = 'You must specify the argument structure of each verb you ' + \
+                   'define, either on this type, or on a supertype.'
+            vr.err(v.full_key + '_valence', mess)
+        elif val[0:5] == 'trans' or '-' in val:
+            seenTrans = True
+        else:
+            seenIntrans = True            
 
         if bistems and not bipartitepc:
             mess = 'If you add bipartite stems to a class, you must specify a ' + \
@@ -925,6 +939,10 @@ def validate_lexicon(ch, vr):
             if not stem.get('orth'):
                 mess = 'You must specify a spelling for each auxiliary you define.'
                 vr.err(stem.full_key + '_orth', mess)
+        
+        if aux.get('subj') in ['np-comp-case', 'np-aux-case'] and ch.get('case-marking') == 'none':
+            vr.err(aux.full_key + '_subj', 'You have specified that this language does not have case marking but indicated the subject ' + \
+                    'of this auxiliary has case.')
 
     # TODO: Copulas: TJT 2014-08-25
     # Copulas
@@ -1008,11 +1026,17 @@ def validate_lexicon(ch, vr):
                 mess = 'You must specify a predicate for each determiner you define.'
                 vr.err(stem.full_key + '_pred', mess)
 
+            if re.search("^.*_q_rel$", stem.get('pred')) == None:
+                mess = 'Predicate should take the form *_q_rel.'
+                vr.warn(stem.full_key + '_pred', mess)
+
     # Adpositions
     for adp in ch.get('adp'):
-        if 'feat' not in adp:
-            mess = 'You should specify a value for at least one feature (e.g., CASE).'
-            vr.warn(adp.full_key + '_feat1_name', mess)
+        #The below message is no longer needed, since adpositions with no defined
+        #adpositions are given automatic FORM values
+        # if 'feat' not in adp:
+        #    mess = 'You should specify a value for at least one feature (e.g., CASE).'
+        #    vr.warn(adp.full_key + '_feat1_name', mess)
         # EKN 2018-02-05 Warn people not to try to use lexicon page for possessive words
         for feat in adp.get('feat'):
             if 'poss-strat' in feat.get('name') or 'poss-pron' in feat.get('name'):
@@ -1056,6 +1080,21 @@ def validate_lexicon(ch, vr):
         if not adv['type']:
             mess = 'Please select the type for this adverb.'
             vr.err(adv.full_key+'_type', mess)
+            
+        q_adverb = adv['inter']
+        if q_adverb == 'on':
+            stems = adv['stem']
+            for stem in stems:
+                if "_a_rel" in stem['pred']:
+                    mess = 'You have indicated this is a question adverb. Please update predicate to be a noun relation.'
+                    vr.warn(stem.full_key+'_pred', mess)
+        
+        # check that stem does not match any existing negative adverb
+        neg_adv = ch.get('neg-adv-orth')
+        stems = adv['stem']
+        for s in stems:        
+            if s['orth'] == neg_adv:
+                vr.err(s.full_key+'_orth', 'You have used this spelling for an adverb on the sentential negation page. Please choose a unique spelling.')
 
     # Features on all lexical types
     # TJT 2014-09-02: Adding adj and cop

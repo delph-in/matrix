@@ -1,12 +1,9 @@
 from gmcs.lib import TDLHierarchy
 
-######################################################################
-# customize_person_and_number()
-#   Create the type definitions associated with the user's choices
-#   about person and number.
-
-
 def init_person_hierarchy(ch, hierarchies):
+    """
+    Create the type definitions associated with the user's choices about person.
+    """
     hier = TDLHierarchy('person')
 
     for p in ch.persons():
@@ -18,6 +15,9 @@ def init_person_hierarchy(ch, hierarchies):
 
 
 def init_number_hierarchy(ch, hierarchies):
+    """
+    Initialize the type definitions associated with the user's choices about number.
+    """
     hier = TDLHierarchy('number')
 
     for n in ch.numbers():
@@ -29,6 +29,9 @@ def init_number_hierarchy(ch, hierarchies):
 
 
 def init_pernum_hierarchy(ch, hierarchies):
+    """
+    Initialize the type definitions associated with the user's choices about person/number.
+    """
     hier = TDLHierarchy('pernum')
 
     for pn in ch.pernums():
@@ -52,12 +55,10 @@ def customize_person_and_number(mylang, hierarchies):
             hierarchies['number'].save(mylang)
 
 
-######################################################################
-# customize_gender()
-#   Create the type definitions associated with the user's choices
-#   about gender.
-
 def init_gender_hierarchy(ch, hierarchies):
+    """
+    Initialize the type definitions associated with the user's choices about gender.
+    """
     hier = TDLHierarchy('gender')
 
     for g in ch.genders():
@@ -74,12 +75,11 @@ def customize_gender(mylang, hierarchies):
         hierarchies['gender'].save(mylang)
 
 
-######################################################################
-# customize_other_features()
-#   Create the type definitions associated with the user's choices
-#   about other features.
-
 def init_other_hierarchies(ch, mylang, hierarchies):
+    """
+    Create the type definitions associated with the user's choices
+    about other features.
+    """
     for feature in ch.get('feature', []):
         feat = feature.get('name', '')
         type = feature.get('type', '')
@@ -240,7 +240,6 @@ def create_vpm_gender(ch, vpm):
 
 
 def create_vpm_others(ch, vpm):
-
     for feature in ch.get('feature', []):
         type = feature.get('type', '')
         if type != 'index':

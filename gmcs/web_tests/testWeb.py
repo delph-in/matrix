@@ -6,7 +6,7 @@ from selenium.common.exceptions import NoSuchElementException
 import unittest, time, re, os
 
 class AllPagesEmptyChoices(unittest.TestCase):
-    '''Check that all the pages load with an empty choices file'''
+    """Check that all the pages load with an empty choices file."""
     def setUp(self):
         self.driver = webdriver.Firefox()
         self.driver.implicitly_wait(30)
@@ -98,7 +98,7 @@ class AllPagesEmptyChoices(unittest.TestCase):
         self.assertEqual([], self.verificationErrors)
 
 class AllPagesJamamadiChoices(unittest.TestCase):
-    '''Check that all the pages load with a valid choices file'''
+    """Check that all the pages load with a valid choices file."""
     def setUp(self):
         self.driver = webdriver.Firefox()
         self.driver.implicitly_wait(30)
@@ -192,7 +192,7 @@ class AllPagesJamamadiChoices(unittest.TestCase):
         self.assertEqual([], self.verificationErrors)
 
 class GeneralErrors(unittest.TestCase):
-    '''Test Errors and Warnings for the General Information page.'''
+    """Test Errors and Warnings for the General Information page."""
     def setUp(self):
         self.driver = webdriver.Firefox()
         self.driver.implicitly_wait(30)
@@ -227,7 +227,7 @@ class GeneralErrors(unittest.TestCase):
         self.assertEqual([], self.verificationErrors)
 
 class WordOrderErrors(unittest.TestCase):
-    '''Check that errors and warnings appear correctly on the Word Order page.'''
+    """Check that errors and warnings appear correctly on the Word Order page."""
     def setUp(self):
         self.driver = webdriver.Firefox()
         self.driver.implicitly_wait(30)
@@ -285,7 +285,7 @@ class WordOrderErrors(unittest.TestCase):
         self.assertEqual([], self.verificationErrors)
 
 class NumberErrors(unittest.TestCase):
-    '''Test Errors and Warnings for the Numbers page.'''
+    """Test Errors and Warnings for the Numbers page."""
     def setUp(self):
         self.driver = webdriver.Firefox()
         self.driver.implicitly_wait(30)
@@ -317,7 +317,7 @@ class NumberErrors(unittest.TestCase):
         self.assertEqual([], self.verificationErrors)
 
 class PersonErrors(unittest.TestCase):
-    '''Test Errors and Warnings for the Person page.'''
+    """Test Errors and Warnings for the Person page."""
     def setUp(self):
         self.driver = webdriver.Firefox()
         self.driver.implicitly_wait(30)
@@ -350,7 +350,7 @@ class PersonErrors(unittest.TestCase):
         self.assertEqual([], self.verificationErrors)
 
 class CaseErrors(unittest.TestCase):
-    '''Test Errors and Warnings for the Case page.'''
+    """Test Errors and Warnings for the Case page."""
     def setUp(self):
         self.driver = webdriver.Firefox()
         self.driver.implicitly_wait(30)
@@ -386,7 +386,7 @@ class CaseErrors(unittest.TestCase):
         self.assertEqual([], self.verificationErrors)
 
 class DirectInverseErrors(unittest.TestCase):
-    '''Test Errors and Warnings for the Direct-Inverse page.'''
+    """Test Errors and Warnings for the Direct-Inverse page."""
     def setUp(self):
         self.driver = webdriver.Firefox()
         self.driver.implicitly_wait(30)
@@ -418,7 +418,7 @@ class DirectInverseErrors(unittest.TestCase):
         self.assertEqual([], self.verificationErrors)
 
 class TenseAspectMoodErrors(unittest.TestCase):
-    '''Test Errors and Warnings for the Tense/Aspect page.'''
+    """Test Errors and Warnings for the Tense/Aspect page."""
     def setUp(self):
         self.driver = webdriver.Firefox()
         self.driver.implicitly_wait(30)

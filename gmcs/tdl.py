@@ -1,24 +1,13 @@
 # $Id: tdl.py,v 1.17 2008-07-24 11:16:41 sfd Exp $
 
-######################################################################
-# imports
-
 import sys
-#import os
 import copy
 
 ###########################################################################
 # TDL Tokenization
-#
-# isid(s)
-#   return true iff s is a valid TDL identifier (or '...')
-#
-# TDLtokenize(s)
-#  convert s list of TDL tokens and return that list
-###########################################################################
-
 
 def isid(s):
+    """Return true iff s is a valid TDL identifier (or '...')."""
     if s == '...':
         return True
     for c in s:
@@ -28,6 +17,7 @@ def isid(s):
 
 
 def TDLtokenize(s):
+    """Convert s list of TDL tokens and return that list."""
     tok = ""
     val = []
 
@@ -122,10 +112,12 @@ def TDLwrite(s):
 
 
 ###########################################################################
-# A TDLelem is a node in a TDL parse tree.  This is an abstract class; the
-# specific classes below derive from it.
 
 class TDLelem(object):
+    """
+    A TDLelem is a node in a TDL parse tree.  This is an abstract class; the
+    specific classes below derive from it.
+    """
     def add(self, ch):
         self.child.append(ch)
 
@@ -162,15 +154,17 @@ class TDLelem(object):
 
 
 ###########################################################################
-# A TDLelem_literal is an unprocessed string.  It's used for things like
-# inflectional rules that must be formatted in a particular way, and
-# which aren't expected to merge:
-#
-# cs1n-bottom :=
-#   %prefix (* foo)
-#   cs1n-bottom-coord-rule.
 
 class TDLelem_literal(object):
+    """
+    A TDLelem_literal is an unprocessed string.  It's used for things like
+    inflectional rules that must be formatted in a particular way, and
+    which aren't expected to merge:
+    
+    cs1n-bottom :=
+       %prefix (* foo)
+       cs1n-bottom-coord-rule.
+    """
     def __init__(self, literal):
         self.child = []
         self.comment = ''
@@ -203,14 +197,16 @@ class TDLelem_literal(object):
 
 
 ###########################################################################
-# A TDLelem_typedef corresponds to a statement like:
-#
-# subj-head-phrase := basic-head-subj-phrase & head-final &
-#  [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
-#
-# ...as well as a comment preceding the statement
 
 class TDLelem_typedef(TDLelem):
+    """
+    A TDLelem_typedef corresponds to a statement like:
+    
+    subj-head-phrase := basic-head-subj-phrase & head-final &
+     [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
+    
+    ...as well as a comment preceding the statement.
+    """
     def __init__(self, type, op):
         self.child = []
         self.comment = ''
@@ -257,9 +253,9 @@ class TDLelem_typedef(TDLelem):
 
 
 ###########################################################################
-# A TDLelem_type corresponds to an identifier (e.g. basic-verb-lex)
 
 class TDLelem_type(TDLelem):
+    """A TDLelem_type corresponds to an identifier (e.g. basic-verb-lex)."""
     def __init__(self, type):
         self.child = []
         self.type = type
@@ -272,9 +268,9 @@ class TDLelem_type(TDLelem):
 
 
 ###########################################################################
-# A TDLelem_coref corresponds to a coreference (e.g. #comps)
 
 class TDLelem_coref(TDLelem):
+    """A TDLelem_coref corresponds to a coreference (e.g. #comps)."""
     def __init__(self, coref):
         self.child = []
         self.coref = coref
@@ -287,10 +283,11 @@ class TDLelem_coref(TDLelem):
 
 
 ###########################################################################
-# A TDLelem_conj corresponds to a list of TDL statements conjoined using
-# the & operator.
 
 class TDLelem_conj(TDLelem):
+    """A TDLelem_conj corresponds to a list of TDL statements conjoined using
+    the & operator.
+    """
     def __init__(self):
         self.child = []
 
@@ -322,17 +319,21 @@ class TDLelem_conj(TDLelem):
 
 
 ###########################################################################
-# A TDLelem_feat corresponds to an attribute-value matrix
-# (e.g. [ HEAD noun, VAL.SPR < > ])
 
 class TDLelem_feat(TDLelem):
+    """
+    A TDLelem_feat corresponds to an attribute-value matrix
+    (e.g. [ HEAD noun, VAL.SPR < > ]).
+    """
     def __init__(self):
         self.child = []
         self.empty_list = False
 
-    # Does self contain only a FIRST and a REST?  If so, self can be
-    # printed with '<' and '>' (and maybe as a list).
     def is_cons(self):
+        """
+        Does self contain only a FIRST and a REST?  If so, self can be
+        printed with '<' and '>' (and maybe as a list).
+        """
         if self.empty_list:
             return True
         c0 = None
@@ -346,10 +347,12 @@ class TDLelem_feat(TDLelem):
             ((c0.attr == 'FIRST' and c1.attr == 'REST') or
              (c0.attr == 'REST' and c1.attr == 'FIRST'))
 
-    # Does self contain only a FIRST and a REST, and is the value of REST
-    # either the type 'null' or also a list?  If so, self can be printed
-    # as a list.
     def is_list(self):
+        """
+        Does self contain only a FIRST and a REST, and is the value of REST
+        either the type 'null' or also a list?  If so, self can be printed
+        as a list.
+        """
         if self.is_cons():
             c0 = self.child[0]
             c1 = self.child[1]
@@ -426,10 +429,11 @@ class TDLelem_feat(TDLelem):
 
 
 ###########################################################################
-# A TDLelem_av corresponds to a single attribute-value pair
-# (e.g. HEAD noun)
 
 class TDLelem_av(TDLelem):
+    """
+    A TDLelem_av corresponds to a single attribute-value pair (e.g. HEAD noun).
+    """
     def __init__(self, attr):
         self.child = []
         self.attr = attr
@@ -460,9 +464,9 @@ class TDLelem_av(TDLelem):
 
 
 ###########################################################################
-# A TDLelem_dlist corresponds to a diff-list (e.g. <! [ PRED "_q_rel" ] !>)
 
 class TDLelem_dlist(TDLelem):
+    """A TDLelem_dlist corresponds to a diff-list (e.g. <! [ PRED "_q_rel" ] !>)."""
     def __init__(self):
         self.child = []
 
@@ -489,16 +493,13 @@ class TDLelem_dlist(TDLelem):
 
 tok = []
 
-
 def TDLparse_type():
     global tok
     return TDLelem_type(tok.pop(0))
 
-
 def TDLparse_coref():
     global tok
     return TDLelem_coref(tok.pop(0))
-
 
 def TDLparse_av():
     global tok
@@ -518,7 +519,6 @@ def TDLparse_av():
         elem.add(TDLparse_conj())
     return elem
 
-
 def TDLparse_feat():
     global tok
     tok.pop(0)  # '['
@@ -529,7 +529,6 @@ def TDLparse_feat():
             tok.pop(0)
     tok.pop(0)  # ']'
     return elem
-
 
 def TDLparse_list():
     global tok
@@ -619,7 +618,6 @@ def TDLparse_list():
 
     return elem
 
-
 def TDLparse_dlist():
     global tok
     tok.pop(0)  # '<!'
@@ -630,7 +628,6 @@ def TDLparse_dlist():
             tok.pop(0)
     tok.pop(0)  # '!>'
     return elem
-
 
 def TDLparse_term():
     global tok
@@ -645,7 +642,6 @@ def TDLparse_term():
     elif tok[0] == '<!':
         return TDLparse_dlist()
 
-
 def TDLparse_conj():
     global tok
     elem = TDLelem_conj()
@@ -654,7 +650,6 @@ def TDLparse_conj():
         tok.pop(0)
         elem.add(TDLparse_term())
     return elem
-
 
 def TDLparse_typedef():
     global tok
@@ -672,24 +667,23 @@ def TDLparse_typedef():
     tok.pop(0)  # '.'
     return elem
 
-
 def TDLparse(s):
     global tok
     tok = TDLtokenize(s)
     return TDLparse_typedef()
 
-
 ###########################################################################
-# TDLmergeable
-#   type:  e1.type == e2.type
-#   coref: e1.coref == e2.coref
-#   av:    same attr names
-#   conj:  always true
-#   feat:  always true
-#   list:  always true
-#   dlist: always true
 
 def TDLmergeable(e1, e2):
+    """
+    type:  e1.type == e2.type
+    coref: e1.coref == e2.coref
+    av:    same attr names
+    conj:  always true
+    feat:  always true
+    list:  always true
+    dlist: always true
+    """
     if type(e1) != type(e2):
         return False
     if isinstance(e1, TDLelem_typedef):
@@ -705,12 +699,13 @@ def TDLmergeable(e1, e2):
             isinstance(e1, TDLelem_dlist)):
         return True
 
-
 ###########################################################################
-# TDLmerge takes two TDLelem_typedef, merges them together as high up in
-# the tree as possible, and returns the merged TDLelem_typedef.
 
 def TDLmerge(e1, e2):
+    """
+    TDLmerge takes two TDLelem_typedef, merges them together as high up in
+    the tree as possible, and returns the merged TDLelem_typedef.
+    """
     if TDLmergeable(e1, e2):
         e0 = copy.copy(e1)
         e0.child = []
@@ -765,15 +760,15 @@ def TDLmerge(e1, e2):
     return e0
 
 ###########################################################################
-# A TDLsection describes a section in a TDLfile.  It has four attributes:
-#   name (the unique name by which the section can be addressed internally)
-#   comment (the comment that will precede the section)
-#   major (Boolean; True iff this is a major section
-#   force (Boolean; True iff the comment should appear even if the section
-#          is empty)
-
 
 class TDLsection(object):
+    """
+    A TDLsection describes a section in a TDLfile.  It has four attributes:
+    name (the unique name by which the section can be addressed internally)
+    comment (the comment that will precede the section)
+    major (Boolean; True iff this is a major section
+    force (Boolean; True iff the comment should appear even if the section is empty).
+    """
     name = ''
     comment = ''
     major = True
@@ -787,11 +782,13 @@ class TDLsection(object):
 
 
 ###########################################################################
-# A TDLfile contains the contents of a single .tdl file.  It is initialized
-# with a file name, to which it will be eventually saved.  Statements can
-# be added to the TDLfile using the add() method.
 
 class TDLfile(object):
+    """
+    A TDLfile contains the contents of a single .tdl file.  It is initialized
+    with a file name, to which it will be eventually saved.  Statements can
+    be added to the TDLfile using the add() method.
+    """
     def __init__(self, file_name):
         self.file_name = file_name  # we'll eventually save to this file
         self.typedefs = []
@@ -943,16 +940,12 @@ class TDLfile(object):
             self.typedefs.append(typedef)
 
     def add_comment(self, tdl_type, comment):
-        """
-        Add a comment to an existing type in this file
-        """
+        """Add a comment to an existing type in this file."""
         self.add(tdl_type + ':= [].', comment)
 
     def add_literal(self, literal,
                     comment='', section=''):
-        """
-        Add a literal string (which will never merge) to this file
-        """
+        """Add a literal string (which will never merge) to this file."""
         l = TDLelem_literal(literal)
         l.set_comment(comment)
 

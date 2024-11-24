@@ -1,0 +1,13 @@
+noun1 itr-verb3sg
+adj1 noun1 itr-verb3sg
+noun1 adv1 itr-verb3sg
+noun2 noun1-acc tr-verb3sg
+noun1-case3 itr-verb-nmz itr-verb3sg
+*noun1-case3 itr-verb3sg
+*itr-verb3sg
+*itr-verb-nmz itr-verb3sg
+*noun1 noun1-case3 tr-verb-nmz itr-verb3sg
+*noun1 itr-verb-nmz itr-verb3sg
+*noun1-case3 adv1 itr-verb-nmz itr-verb3sg
+*noun1-case3 adj1 itr-verb-nmz itr-verb3sg
+*noun1-case3 itr-verb-nmz

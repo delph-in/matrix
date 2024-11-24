@@ -1,5 +1,5 @@
 
-version=30
+version=34
 
 section=general
 language=ccomp-illustr1-rus
@@ -24,9 +24,19 @@ nom-acc-acc-case-name=acc
   case1_name=instr
   case2_name=gen
 
+section=adnom-poss
+  poss-strat1_order=either
+  poss-strat1_mod-spec=spec
+  poss-strat1_mark-loc=neither
+  poss-strat1_pronoun-allow=no
+    poss-strat1_feat1_name=case
+    poss-strat1_feat1_value=gen
+
 section=direct-inverse
 
 section=tense-aspect-mood
+
+section=evidentials
 
 section=other-features
 form-fin-nf=on
@@ -41,22 +51,31 @@ section=coordination
 
 section=matrix-yes-no
 
+section=wh-q
+
 section=info-str
 
 section=arg-opt
 
 section=nominalclause
   ns1_name=low
-  ns1_level=low
-  ns1_nmzRel=yes
-
-section=clausalmods
+  ns1_nmz_type=erg-poss
+  ns1_single-arg=on
+  ns1_trans=on
+  ns1_adj=on
+  ns2_name=low_intrans
+  ns2_nmz_type=erg-poss
+  ns2_intrans=on
+  ns2_adj=on
+same-word-order=yes
+  nmz_poss_strat1_name=poss-strat1
+non_sent_sem=verb-only
 
 section=clausal-comp
   comps1_clause-pos-same=on
   comps1_comp-pos-before=on
   comps1_comp=oblig
-    comps1_complementizer1_orth=chto
+    comps1_stem1_orth=chto
   comps1_cformvalue=chto
     comps1_feat1_name=form
     comps1_feat1_value=finite
@@ -68,11 +87,13 @@ section=clausal-comp
   comps4_clause-pos-same=on
   comps4_comp-pos-before=on
   comps4_comp=oblig
-    comps4_complementizer1_orth=kak
-    comps4_complementizer2_orth=chto
+    comps4_stem1_orth=kak
+    comps4_stem2_orth=chto
   comps4_cformvalue=kak
     comps4_feat1_name=form
     comps4_feat1_value=finite
+
+section=clausalmods
 
 section=lexicon
   noun1_name=masc
@@ -122,20 +143,24 @@ section=morphology
     noun-pc1_lrt1_name=nom1
       noun-pc1_lrt1_feat1_name=case
       noun-pc1_lrt1_feat1_value=nom
+      noun-pc1_lrt1_feat1_head=itself
       noun-pc1_lrt1_lri1_inflecting=no
     noun-pc1_lrt2_name=acc1
       noun-pc1_lrt2_feat1_name=case
       noun-pc1_lrt2_feat1_value=acc
+      noun-pc1_lrt2_feat1_head=itself
       noun-pc1_lrt2_lri1_inflecting=yes
       noun-pc1_lrt2_lri1_orth=-a
     noun-pc1_lrt3_name=instr1
       noun-pc1_lrt3_feat1_name=case
       noun-pc1_lrt3_feat1_value=instr
+      noun-pc1_lrt3_feat1_head=itself
       noun-pc1_lrt3_lri1_inflecting=yes
       noun-pc1_lrt3_lri1_orth=-om
     noun-pc1_lrt4_name=gen1
       noun-pc1_lrt4_feat1_name=case
       noun-pc1_lrt4_feat1_value=gen
+      noun-pc1_lrt4_feat1_head=itself
       noun-pc1_lrt4_lri1_inflecting=yes
       noun-pc1_lrt4_lri1_orth=-a
   noun-pc2_name=case2
@@ -145,16 +170,19 @@ section=morphology
     noun-pc2_lrt1_name=nom2
       noun-pc2_lrt1_feat1_name=case
       noun-pc2_lrt1_feat1_value=nom
+      noun-pc2_lrt1_feat1_head=itself
       noun-pc2_lrt1_lri1_inflecting=yes
       noun-pc2_lrt1_lri1_orth=-ja
     noun-pc2_lrt2_name=acc2
       noun-pc2_lrt2_feat1_name=case
       noun-pc2_lrt2_feat1_value=acc
+      noun-pc2_lrt2_feat1_head=itself
       noun-pc2_lrt2_lri1_inflecting=yes
       noun-pc2_lrt2_lri1_orth=-ju
     noun-pc2_lrt3_name=gen2
       noun-pc2_lrt3_feat1_name=case
       noun-pc2_lrt3_feat1_value=gen
+      noun-pc2_lrt3_feat1_head=itself
       noun-pc2_lrt3_lri1_inflecting=yes
       noun-pc2_lrt3_lri1_orth=-i
   noun-pc3_name=case3
@@ -164,11 +192,13 @@ section=morphology
     noun-pc3_lrt1_name=nom3
       noun-pc3_lrt1_feat1_name=case
       noun-pc3_lrt1_feat1_value=nom
+      noun-pc3_lrt1_feat1_head=itself
       noun-pc3_lrt1_lri1_inflecting=yes
       noun-pc3_lrt1_lri1_orth=-je
     noun-pc3_lrt2_name=acc3
       noun-pc3_lrt2_feat1_name=case
       noun-pc3_lrt2_feat1_value=acc
+      noun-pc3_lrt2_feat1_head=itself
       noun-pc3_lrt2_lri1_inflecting=yes
       noun-pc3_lrt2_lri1_orth=-je
   noun-pc4_name=case4
@@ -178,6 +208,7 @@ section=morphology
     noun-pc4_lrt1_name=acc4
       noun-pc4_lrt1_feat1_name=case
       noun-pc4_lrt1_feat1_value=acc
+      noun-pc4_lrt1_feat1_head=itself
       noun-pc4_lrt1_lri1_inflecting=yes
       noun-pc4_lrt1_lri1_orth=-o
   verb-pc1_name=nmz1
@@ -189,21 +220,15 @@ section=morphology
       verb-pc1_lrt1_feat1_head=verb
       verb-pc1_lrt1_feat2_name=case
       verb-pc1_lrt1_feat2_value=instr
-      verb-pc1_lrt1_feat2_head=subj
-      verb-pc1_lrt1_feat3_name=case
-      verb-pc1_lrt1_feat3_value=gen
-      verb-pc1_lrt1_feat3_head=obj
+      verb-pc1_lrt1_feat2_head=obj
       verb-pc1_lrt1_lri1_inflecting=yes
       verb-pc1_lrt1_lri1_orth=-ni
   verb-pc2_name=nmz2
   verb-pc2_order=suffix
   verb-pc2_inputs=verb8
     verb-pc2_lrt1_name=low2
-      verb-pc2_lrt1_feat1_name=case
-      verb-pc2_lrt1_feat1_value=gen
-      verb-pc2_lrt1_feat1_head=subj
       verb-pc2_lrt1_feat2_name=nominalization
-      verb-pc2_lrt1_feat2_value=low
+      verb-pc2_lrt1_feat2_value=low_intrans
       verb-pc2_lrt1_feat2_head=verb
       verb-pc2_lrt1_lri1_inflecting=yes
       verb-pc2_lrt1_lri1_orth=-stv

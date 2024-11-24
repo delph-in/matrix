@@ -1,0 +1,12 @@
+1@@@@1@@det n1 tv det n1 conj1 n2 @@@@1@7@@@
+2@@@@1@@det n1 tv det n1 conj2 n2 @@@@1@7@@@
+3@@@@1@@det n1 tv det n1 conj1 det n2 @@@@1@8@@@
+4@@@@1@@det n1 tv det n1 conj2 det n2@@@@1@8@@@
+5@@@@1@@det n1 cv det n1-poss iv-nmz conj1 det n1-poss iv-nmz@@@@1@10@@@
+6@@@@1@@det n1 cv det n1-poss iv-nmz conj2 det n1-poss iv-nmz@@@@1@10@@@
+7@@@@1@@det n1 cv det n1 conj1 det n1-poss iv-nmz@@@@1@9@@@
+8@@@@1@@det n1 cv det n1 conj2 det n1-poss iv-nmz@@@@0@9@@@
+9@@@@1@@det n1 cv det n1 conj1 iv-nmz@@@@1@7@@@
+10@@@@1@@det n1 cv det n1 conj2 iv-nmz@@@@0@7@@@
+11@@@@1@@det n1 cv det n1-poss n1 conj1 iv-nmz@@@@1@8@@@
+12@@@@1@@det n1 cv det n1-poss n1 conj2 iv-nmz@@@@0@8@@@

@@ -2,12 +2,12 @@ from gmcs.utils import TDLencode
 from gmcs.utils import orth_encode
 
 ######################################################################
-# customize_sentential_negation()
-#   Create the type definitions associated with the user's choices
-#   about sentential negation.
-
 
 def customize_sentential_negation(mylang, ch, lexicon, rules, lrules, hierarchies):
+    """
+    Create the type definitions associated with the user's choices
+    about sentential negation.
+    """
     # JDC 2012-06-01 Nowadays this function is something like
     # the entry point for the sentential negation library.
     # So it makes sense to put some notes here.
@@ -989,17 +989,19 @@ def validate(ch, vr):
     if ch.get('neg-aux', default=False):
         has_neg_aux = False
         for aux in ch.get('aux', []):
-            if aux.get('name') == 'neg':
-                has_neg_aux = True
-                break
+            stems = aux.get('stem', [])
+            for s in stems:
+                if s.get('pred') == 'neg_rel':
+                    has_neg_aux = True
+                    break
         if has_neg_aux == False:
             vr.warn('neg-aux',
                     'You\'ve selected neg-aux but there is no corresponding ' +
-                    'type in the lexicon.')
+                    'type in the lexicon with a neg_rel predicate.')
             # ERB 2009-01-23 Commenting out the following because infl-neg is
             # now handled with customize_inflection.  We should eventually give
             # a warning if infl-neg is selected but no lexical rules actually
-            # use it.  I think it would make sense for that warning to go
+            # use it. I think it would make sense for that warning to go
             # on the negation page.
 
             # If affix is indicated, must select prefix/suffix and
@@ -1019,7 +1021,7 @@ def validate(ch, vr):
         #         mess = 'You have not indicated on the word order page that your language has auxiliaries.'
         #         vr.err('neg-infl-type', mess)
 
-    # If adverb is indicated, must lexical entry, what it modifies, and
+    # If adverb is indicated, must specify lexical entry, what it modifies, and
     # ind/selected modifier -- now only applicable under single negation
     # bipartite negs need to validate this for themeselves
     if (ch.get('adv-neg') == 'on') and (ch.get('neg-exp') == '1'):
@@ -1039,6 +1041,15 @@ def validate(ch, vr):
             mess = 'If sentential negation is expressed through an adverb, ' + \
                    'you must specify the form of the adverb.'
             vr.err('neg-adv-orth', mess)
+            
+        # check that stem does not match any existing adverbs in lexicon
+        neg_adv = ch.get('neg-adv-orth')
+        for adv in ch.get('adv'):
+            stems = adv['stem']
+            for s in stems:
+                if s['orth'] == neg_adv:
+                    vr.err('neg-adv-orth', 'You have used this spelling for an adverb on the lexicon page. Please choose a unique spelling.')
+
 
     if ch.get('comp-neg') == 'on':
         if ch.get('comp-neg-head') == 'aux' and ch.get('has-aux') != 'yes':
