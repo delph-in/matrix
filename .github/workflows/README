@@ -15,5 +15,6 @@ Workflows can also be disabled entirely from the GitHub Actions page.
 
 Notes about GitHub Actions for future use:
 1. 2000 minutes of runtime and 500 MB storage per month allowed for GitHub Free plan.
-Given that each run takes under 30 seconds and uploads roughly 16 KB of logs
+Given that each run takes 2 minutes and uploads roughly 16 KB of logs
 (with 90-day retention), these resources are plenty. 
+2. Presently, the workflow will not be triggered if a UI change is made. 
