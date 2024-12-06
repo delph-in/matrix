@@ -1,8 +1,6 @@
 from gmcs.utils import TDLencode
 from gmcs.utils import orth_encode
 
-######################################################################
-
 def customize_sentential_negation(mylang, ch, lexicon, rules, lrules, hierarchies):
     """
     Create the type definitions associated with the user's choices
@@ -1109,3 +1107,63 @@ def validate(ch, vr):
 #     if (not ch.get('multi-neg')):
 #       mess = 'If you have selected both affix and adverb realizations of sentential negation, you must specify how they interact.'
 #       vr.err('multi-neg', mess)
+
+def get_neg_stemids(ch, stemids):
+    """
+    A function called by insert_ids() in lexical_items.py to check for 
+    name-space-collisions.
+    """
+    # The neg aux have already been added in insert_ids() so now just compare 
+    # with those possibly added negators from negation page.
+    # The logic will only allow one construction to be implemented.
+    # With simple construction, two adverbs are possible but 
+    # are handled as one entry if the ORTH value is the same. The only naming conflict 
+    # possible is between a negative aux and adverb. However, in the future when multiple 
+    # constructions are supported, this will allow more than one negator to be handled.
+    # TODO: For now, there is a bug where choices from one construction remain
+    # after switching to another so it is possible that i.e. a bipartite orth 
+    # and simple orth exist and need to be handled, even though currently only one 
+    # will be included in the grammar. This means that the orth ids might not 
+    # increment perfectly, but they will not conflict. 
+    other_neg_orth = ['neg-adv-orth', 'comp-neg-orth', 'neg-mod-orth', 'neg-comp-orth', \
+                        'comp-neg1-orth', 'comp-neg2-orth', 'neg1-mod-orth', 'neg2-mod-orth']
+    for ono in other_neg_orth:
+        if ch.get(ono):
+            orth = ch.get(ono)
+            if orth in list(stemids.keys()):
+                stemids[orth] += 1
+            else:
+                stemids[orth] = 1
+    return stemids
+
+def add_neg_name(ch, stemids, stemidcounters):
+    """
+    A function called by insert_ids() in lexical_items.py to
+    create a "name" for each negator in choices, preventing
+    name-space-collisions.
+    """
+    # The logic will only allow one construction to be implemented.
+    # With simple construction, two adverbs are possible but 
+    # are handled as one entry if the ORTH value is the same. The only naming conflict 
+    # possible is between a negative aux and adverb. However, in the future when multiple 
+    # constructions are supported, this will allow more than one negator to be handled.
+    # TODO: For now, there is a bug where choices from one construction remain
+    # after switching to another so it is possible that i.e. a bipartite orth 
+    # and simple orth exist and need to be handled, even though currently only one 
+    # will be included in the grammar. This means that the orth ids might not 
+    # increment perfectly, but they will not conflict. 
+    other_neg_orth = ['neg-adv-orth', 'comp-neg-orth', 'neg-mod-orth', 'neg-comp-orth', \
+                        'comp-neg1-orth', 'comp-neg2-orth', 'neg1-mod-orth', 'neg2-mod-orth']
+    for ono in other_neg_orth:
+        if ch.get(ono):
+            orth = ch.get(ono)
+            if stemids[orth] == 1:
+                ch[ono + '_name'] = orth
+            elif orth not in stemidcounters:
+                stemidcounters[orth] = 1
+                ch[ono + '_name'] = orth + '_1'
+            else:
+                stemidcounters[orth] += 1
+                ch[ono + '_name'] = orth + \
+                    '_' + str(stemidcounters[orth])
+
