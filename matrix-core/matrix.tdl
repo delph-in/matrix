@@ -132,7 +132,7 @@ non-affix-bearing := word-or-lexrule &
 """Words or lexical rules that do not take affixes.""".
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Trees 
+; Node labels
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ; LABEL-NAME used for labeling nodes in parse trees
