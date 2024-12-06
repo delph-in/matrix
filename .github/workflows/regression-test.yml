@@ -57,7 +57,7 @@ jobs:
         id: run-tests
         run: |
           source venv/bin/activate
-          python3 rtest.py wh-*
+          python3 rtest.py
         continue-on-error: true 
       - name: Upload test logs as artifact
         if: always()
