@@ -3,8 +3,14 @@
 name: Regression test
 
 on:
+  # Only trigger workflow on PR to trunk with changes at the included paths
   pull_request:
     branches: [ "trunk" ]
+    paths:
+      - 'gmcs'
+      - 'matrix-core'
+      - 'tests/regression'
+      - '*.py' # Any .py script on main level (matrix.py, myserver.py, rtest.py)
 
 permissions:
   contents: read

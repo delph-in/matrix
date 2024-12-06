@@ -1,0 +1,19 @@
+This directory contains the GitHub Actions workflows that are integrated with 
+this repository. Documentation and templates can be found at https://docs.github.com/en/actions.
+
+The regression-test.yml workflow is used to verify a successful run of the test suite 
+before introducing new code to the trunk branch. Any workflow that is triggered on a 
+pull request can be reversed by updating 
+
+on:
+  pull_request:
+    branches: [ "trunk" ]
+    
+to on: [push]
+
+Workflows can also be disabled entirely from the GitHub Actions page. 
+
+Notes about GitHub Actions for future use:
+1. 2000 minutes of runtime and 500 MB storage per month allowed for GitHub Free plan.
+Given that each run takes under 30 seconds and uploads roughly 16 KB of logs
+(with 90-day retention), these resources are plenty. 
