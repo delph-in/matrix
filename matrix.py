@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-### TEST
 """
 A general-purpose script for running Matrix code.
 
