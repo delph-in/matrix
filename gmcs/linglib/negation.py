@@ -204,7 +204,7 @@ def customize_comp_neg(mylang, ch, lexicon, rules, lrules):
                   SYNSEM.LKEYS.KEYREL.PRED \"neg_rel\" ].')
 
     # we need the lexical rule that adds these types to the comps lists
-    # of the verbs that selecte them
+    # of the verbs that select them
     if ch.get('comp-neg-order') == 'before':
         mylang.add('''neg-comp-add-lex-rule := const-val-change-only-lex-rule &
                [ SYNSEM.LOCAL [ CAT.VAL [  SUBJ #subj,
@@ -317,7 +317,7 @@ def customize_infl_comp_neg(mylang, ch, lexicon):
                 [ STEM < \"' + orthstr + '\" >,\
                   SYNSEM.LKEYS.KEYREL.PRED \"neg_rel\" ].')
 
-    # inflecting lexical rule must add neg-adv to comps list,
+    # inflecting lexical rule must add neg-adv to comps list
     for vpc in ch['verb-pc']:
         for lrt in vpc['lrt']:
             for f in lrt['feat']:
