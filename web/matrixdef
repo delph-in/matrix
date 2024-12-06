@@ -1384,7 +1384,7 @@ Radio comp-neg-head-infl-comp-neg "neg selected by" "Is neg selected by" "<br />
 . aux "aux" "" "a (sub-)class of aux-verbs" "neg_comp()"
 . v   "v"   "" "any (finite) verb" "neg_comp()"
 
-Radio comp-neg-order-infl-head "neg ordered" "How is neg ordered with resepct
+Radio comp-neg-order-infl-head "neg ordered" "How is neg ordered with respect
 to other COMPS?" "<br />(NB: After other complements order is only available
 for non-argument composing auxiliaries.)<br />"
 . before "before" "" "before "
@@ -2700,7 +2700,7 @@ BeginIter noun{i} "a Noun Type" 1 1
 
     Text orth "Noun {i} stem {j} spelling" "Spelling: " "" 30 "fill_pred('noun{i}_stem{j}', 'n')"
 
-    Text pred "Noun {i} stem {j} predicate" " Predicate: " "<br>Predicate suggestion for question pronouns: use _thing_n_rel, _person_n_rel, _place_n_rel or similar" 30
+    Text pred "Noun {i} stem {j} predicate" " Predicate: " "" 30
     
 
   EndIter stem

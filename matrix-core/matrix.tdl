@@ -1589,7 +1589,8 @@ headed-phrase := phrase &
 		   CONT.HOOK.ICONS-KEY #icons,
 		   AGR #agr,
 		   COORD -,
-		   COORD-REL #crel ] ].
+		   COORD-REL #crel ],
+    NON-HEAD-DTR sign & [ SYNSEM.LOCAL.COORD - ] ].
 
 non-headed-phrase := phrase.
 
@@ -1712,8 +1713,7 @@ binary-phrase := basic-binary-phrase &
     ARGS < [ INFLECTED infl-satisfied ],
            [ INFLECTED infl-satisfied ] > ].
 
-basic-binary-headed-phrase := headed-phrase & basic-binary-phrase &
-  [ NON-HEAD-DTR sign & [ SYNSEM.LOCAL.COORD - ] ].
+basic-binary-headed-phrase := headed-phrase & basic-binary-phrase.
 
 binary-headed-phrase := basic-binary-headed-phrase & binary-phrase.
 

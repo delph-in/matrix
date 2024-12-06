@@ -31,7 +31,7 @@ def tokenize_def(str):
 
 def TDLencode(string):
     """
-    Encode a string in such a way as to make it a legal TDL type name
+    Encode a string in such a way as to make it a legal TDL type name.
     """
     val = ''
     for c in string:

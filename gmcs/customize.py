@@ -1,9 +1,6 @@
 #
 # $Id: customize.py,v 1.71 2008-09-30 23:50:02 lpoulson Exp $
 
-######################################################################
-# imports
-
 import datetime
 import os
 import shutil
@@ -290,6 +287,10 @@ def customize_roots():
 def customize_vpm(ch, vpm, hierarchies):
     """
     Automatically create semi.vpm blocks.
+    
+    Args:
+        vpm (file): semi.vpm file
+        hierarchies (): list of TDLHierarchy
     """
     
     # Add default values to the file semi.vpm

@@ -1,14 +1,6 @@
 from gmcs.utils import orth_encode, TDLencode
 from gmcs.linglib.nominalized_clauses import needs_anc_wo_feat
 
-######################################################################
-# Clausal Modifiers
-#   Create the type definitions associated with the user's choices
-#   about clasual modification.
-
-######################################################################
-
-
 def customize_clausalmods(mylang, ch, lexicon, rules, roots, trigger):
     """
     The main clausal modifier customization routine.

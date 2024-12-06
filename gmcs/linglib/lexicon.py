@@ -1,5 +1,4 @@
 from collections import defaultdict
-
 from gmcs.linglib import case
 from gmcs.utils import get_name
 from gmcs import constants
@@ -9,7 +8,6 @@ from gmcs.linglib.lexbase import LexicalType, PositionClass
 from gmcs.linglib.lexbase import ALL_LEX_TYPES
 from gmcs.linglib.lexbase import LEXICAL_CATEGORIES
 from gmcs.linglib.lexbase import LEXICAL_SUPERTYPES
-
 import re
 
 def lexical_type_hierarchy(choices, lexical_supertype):
@@ -408,10 +406,21 @@ def validate_lexicon(ch, vr):
             vr.warn(n.full_key + '_det', mess % message_map[det])
             
         q = n.get('inter')
-        wh_q1 = ch.get(MTRX_FRONT)
-        if q == 'on' and (not wh_q1):
-            vr.warn(n.full_key + '_inter', 'A noun defined as a question pronoun is unusable ' + \
-                    'without any constituent question selections.')
+        if q == 'on':
+            wh_q1 = ch.get(MTRX_FRONT)
+            if not wh_q1:
+                vr.warn(n.full_key + '_inter', 'A noun defined as a question pronoun is unusable ' + \
+                        'without any constituent question selections.')
+            for stem in s:
+                p = stem.get('pred')
+                ques_preds = ["who", "what", "when", "where"]
+                needsPredicateWarning = True
+                for qp in ques_preds:
+                    if re.search(qp, p) != None:
+                        needsPredicateWarning = False
+                if needsPredicateWarning:
+                    vr.warn(stem.full_key + '_pred', 'Suggested predicates for question ' + \
+                        'pronouns include _thing_n_rel, _person_n_rel, _place_n_rel, or similar.')
 
         for stem in s:
             orth = stem.get('orth')

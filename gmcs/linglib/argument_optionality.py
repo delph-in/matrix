@@ -20,8 +20,6 @@ from gmcs.linglib.nominalized_clauses import get_nmz_clause_wo
 # subrules count just like above.  The subrules created are
 # different.
 
-######################################################################
-
 def customize_arg_op(mylang, ch, rules, hierarchies):
     """
     Create the lexical types, lexical, rules and phrase structure
@@ -224,7 +222,6 @@ def need_no_drop_rule(obj_subj, choices):
 ##################
 ### VALIDATION ###
 ##################
-
 
 def validate(choices):
     # add validation tests specific to this module

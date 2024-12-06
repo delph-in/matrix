@@ -129,9 +129,8 @@ ADP_LEX = '''norm-adposition-lex := norm-sem-lex-item & no-hcons-lex-item & basi
                                  SUBJ < >,
                                  COMPS < #comp & [ L-QUE #lque,
                                                  LOCAL [ CAT [ HEAD noun, VAL.SPR < > ],
-                                                 CONT.HOOK.INDEX #ind ] ] > ] ],
-                     CONT.RELS.LIST < [ PRED #pred, ARG0 event, ARG1 event-or-ref-index ] > ],
-             LKEYS.KEYREL arg12-ev-relation & [ PRED #pred, ARG2 #ind ],
+                                                 CONT.HOOK.INDEX #ind ] ] > ] ], ],
+             LKEYS.KEYREL arg12-ev-relation & [ ARG2 #ind, ARG1 event-or-ref-index ],
              L-QUE #lque ],
     ARG-ST < #comp > ].'''
 

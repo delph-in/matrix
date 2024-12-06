@@ -9,9 +9,6 @@ do with the matrixdef file.  The HTML-generation code should
 probably be split out into a separate module/class. Later. - sfd 3/5/2008
 """
 
-######################################################################
-# imports
-
 import os
 import cgitb
 import glob
@@ -717,8 +714,9 @@ class MatrixDefFile:
 
     def main_page(self, cookie, vr):
         """
-        Create and print the main matrix page.  The argument is a cookie
-        that determines where to look for the choices file.
+        Create and print the main matrix page.
+        Args:
+            cookie (string): determines where to look for the choices file.
         """
         print(HTTP_header)
         print('Set-cookie: session=' + cookie + '\n')
