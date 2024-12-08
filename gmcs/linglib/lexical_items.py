@@ -1559,6 +1559,9 @@ def create_lv_lex_types(ch: ChoicesFile, mylang: TDLfile, hierarchies: Dict[str,
 
     for lv in ch.get('lv'):
         is_bleached = lv.get('sem-bleached') == ON
+        # this technically no longer needs the for loop but just in case somebody
+        #   wants to revive allowing users to specify that a light verb accepts
+        #   noun and verb coverbs i'll leave it here
         for cv_pos in lv.get('cv-type').split(', '):
             lvtype = lv_id(lv, cv_pos, True, is_bleached)
             typedef = lvtype + ' := ' + lv_id(lv, cv_pos, False, is_bleached) + ' & \
