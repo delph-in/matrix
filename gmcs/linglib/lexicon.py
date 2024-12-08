@@ -317,7 +317,12 @@ def get_lt_name(key, choices, lv_val=None, lv_type=None, is_coverb=False):
             lex_st = LEXICAL_SUPERTYPES[lv_val]
             return '-'.join([name, lex_st.rsplit('-lv-lex', 1)[0], lv_type, 'lv'])
         elif is_coverb:
-            lex_st = LEXICAL_SUPERTYPES[lvc.interpret_cv_valence(choices[key]['coverb-type'])]
+            lexical_category = key.rstrip('0123456789')
+            lex_st = ''
+            if lexical_category == 'noun':
+                lex_st = LEXICAL_SUPERTYPES['cv-noun']
+            elif lexical_category == 'verb':
+                lex_st = LEXICAL_SUPERTYPES[lvc.interpret_cv_valence(choices[key]['coverb-type'])]
             return '-'.join([name, lex_st.rsplit('-lex', 1)[0]])
         else:
             lex_st = LEXICAL_SUPERTYPES[key.strip('1234567890')]
