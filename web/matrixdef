@@ -3114,7 +3114,7 @@ BeginIter lv{i} "a light verb" 1
     . coverb-only "just coverb" "just coverb"
     . coverb-1comp "coverb plus 1 complement" "coverb plus 1 complement"
   
-  MultiSelect cv-type "Coverb type" "Coverb type: " "<br>"
+  Select cv-type "Coverb type" "Coverb type: " "<br>"
   fillempty
     . noun "noun coverb" "noun coverb"
     . verb "verb coverb" "verb coverb"
