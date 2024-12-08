@@ -239,7 +239,7 @@ def add_lvc_phrase(ch: ChoicesFile, mylang: TDLfile, rules: TDLfile, lv_cv: bool
                 mylang.add(COVERB_VERB + '-lv-lex := \
                     [ SYNSEM [ LOCAL.CAT.VAL.COMPS.FIRST #comps ], \
                         ARG-ST.REST.FIRST #comps & [ LIGHT + ] ].', section='phrases')
-            if ch.get('lvc-bleached'):
+            if ch.get('lvc-bleached') == YES:
                 mylang.add(BLEACHED_COVERB_VERB + '-lv-lex := \
                 [ SYNSEM [ LOCAL.CAT.VAL.COMPS.FIRST #comps ], \
                     ARG-ST.REST.FIRST #comps & [ LIGHT + ] ].', section='phrases')
