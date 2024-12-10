@@ -72,7 +72,8 @@ LV_IT_ITEM = INTRANSITIVE + '-lv-lex := lv-lex & basic-' + INTRANSITIVE + '-lv-l
 BLEACHED_LV_IT_ITEM = 'bleached-' + INTRANSITIVE + '-lv-lex := bleached-lv-lex & basic-' + INTRANSITIVE + '-lv-lex.'
 
 BASIC_LV_TR_ITEM = 'basic-' + TRANSITIVE + '-lv-lex := non-mod-lex-item & non-local-none-no-hcons & basic-icons-lex-item & \
-    [ SYNSEM [ LOCAL [ CAT.VAL [ COMPS < [], [ LOCAL [ CAT cat-sat & [ VAL.SPR < > ], \
+    [ SYNSEM [ LOCAL [ CAT.VAL [ COMPS < [], [ OPT -, \
+                                               LOCAL [ CAT cat-sat & [ VAL.SPR < > ], \
                                                         CONT.HOOK [ INDEX ref-ind & #ind3, \
                                                                     ICONS-KEY.IARG1 #clause ] ] ] > ], \
                        CONT.HOOK.CLAUSE-KEY #clause ], \
