@@ -228,7 +228,9 @@ def add_lvc_phrase(ch: ChoicesFile, mylang: TDLfile, rules: TDLfile, lv_cv: bool
             # coverb doesn't take noun-normal dependents
             mylang.add(COVERB_NOUN + '-lv-lex := \
                 [ SYNSEM [ LOCAL.CAT.VAL.COMPS.FIRST #comps ], \
-                    ARG-ST.REST.FIRST #comps & [ LIGHT + ] ].', section='phrases')
+                    ARG-ST.REST.FIRST #comps & \
+                                        [ LIGHT +, \
+                                          MODIFIED notmod ] ].', section='phrases')
 
     if ch.get('coverb-v') == ON:
         if ch.get('lvc-verb-cv-dep') == YES:
@@ -239,13 +241,19 @@ def add_lvc_phrase(ch: ChoicesFile, mylang: TDLfile, rules: TDLfile, lv_cv: bool
             if not ch.get('lvc-all-bleached') == YES:
                 mylang.add(COVERB_VERB + '-lv-lex := \
                     [ SYNSEM [ LOCAL.CAT.VAL.COMPS.FIRST #comps ], \
-                        ARG-ST.REST.FIRST #comps & [ LIGHT + ] ].', section='phrases')
+                        ARG-ST.REST.FIRST #comps & \
+                                            [ LIGHT +, \
+                                              MODIFIED notmod ] ].', section='phrases')
             if ch.get('lvc-bleached') == YES:
                 mylang.add(BLEACHED_COVERB_VERB + '-lv-lex := \
                 [ SYNSEM [ LOCAL.CAT.VAL.COMPS.FIRST #comps ], \
-                    ARG-ST.REST.FIRST #comps & [ LIGHT + ] ].', section='phrases')
+                    ARG-ST.REST.FIRST #comps & \
+                                        [ LIGHT +, \
+                                          MODIFIED notmod ] ].', section='phrases')
 
-    if ch.get('lvc-adjacent') == YES:
+    # auxiliaries can't have LIGHT + in order to combine with
+    #   light verb using comp-head/head-comp
+    if ch.get('lvc-adjacent') == YES and ch.get('has-aux') == 'no':
         # coverb must be immediately adjacent to light verb
         if lv_cv:
             mylang.add('head-comp-phrase-lvc := [ HEAD-DTR.SYNSEM.LIGHT + ].', section='phrases')
