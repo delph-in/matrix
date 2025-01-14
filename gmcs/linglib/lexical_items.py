@@ -448,10 +448,12 @@ def add_itg_stem_to_lexicon(lexicon, stem, stype, predtype):
 
 def create_verb_lex_type(cases, ch, hierarchies, lexicon, mylang, verb, verb_cv_typedefs):
     from gmcs.constants import TRANSITIVE, INTRANSITIVE
+    from gmcs.linglib.case import interpret_verb_valence
 
     stypes = verb.get('supertypes').split(', ')
     stype_names = [verb_id(ch[st]) for st in stypes if st != '']
     vtype = verb_id(verb)
+    v_valence = interpret_verb_valence(verb.get('valence'))
     construct_supertype_names(cases, ch, stype_names, verb)
     # clausal verb's valence and its complement's head constraint:
     vtype, head = clausalcomps.update_verb_lextype(ch, verb, vtype)
@@ -459,9 +461,9 @@ def create_verb_lex_type(cases, ch, hierarchies, lexicon, mylang, verb, verb_cv_
     if verb.get('coverb-type') == 'cv-only':
         # create coverb-verb-lex for verb
         cvtype = coverb_id(verb, 'verb')
-        if verb.get('valence') == INTRANSITIVE:
+        if v_valence == 'iverb':
             mylang.add(cvtype + ' := coverb-intrans-verb-lex.', section='lvclex')
-        elif verb.get('valence') == TRANSITIVE:
+        elif v_valence == 'tverb':
             mylang.add(cvtype + ' := coverb-trans-verb-lex.', section='lvclex')
         add_lvtype_to_coverb(ch, mylang, hierarchies, verb, 'verb')
 
@@ -489,9 +491,9 @@ def create_verb_lex_type(cases, ch, hierarchies, lexicon, mylang, verb, verb_cv_
 
             # create verb-coverb-lex for verb
             cvtype = coverb_id(verb, 'verb')
-            if verb.get('valence') == INTRANSITIVE:
+            if v_valence == 'iverb':
                 mylang.add(cvtype + ' := coverb-intrans-verb-lex & ' + basic_vtype + '.', section='lvclex')
-            elif verb.get('valence') == TRANSITIVE:
+            elif v_valence == 'tverb':
                 mylang.add(cvtype + ' := coverb-trans-verb-lex & ' + basic_vtype + '.', section='lvclex')
             add_lvtype_to_coverb(ch, mylang, hierarchies, verb, 'verb')
         else:
@@ -589,12 +591,9 @@ def add_initial_verb_coverb_lex_types(ch: ChoicesFile, mylang: TDLfile):
     from gmcs.linglib.light_verb_constructions import COVERB_INTRANS_VERB_ITEM, COVERB_TRANS_VERB_ITEM
 
     mylang.add_literal('; Verb Coverbs', section='lvclex')
-
-    if ch.get('lvc-it') == ON:
-        mylang.add(COVERB_INTRANS_VERB_ITEM, section='lvclex')
-
-    if ch.get('lvc-tr') == ON:
-        mylang.add(COVERB_TRANS_VERB_ITEM, section='lvclex')
+    # in future, would be a good idea to have this be a choice on lvc page
+    mylang.add(COVERB_INTRANS_VERB_ITEM, section='lvclex')
+    mylang.add(COVERB_TRANS_VERB_ITEM, section='lvclex')
 
 
 def customize_determiners(mylang, ch, lexicon, hierarchies):
