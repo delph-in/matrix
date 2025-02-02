@@ -1507,10 +1507,12 @@ def create_lv_lex_types(ch: ChoicesFile, mylang: TDLfile, hierarchies: Dict[str,
         mainorverbtype = main_or_verb(ch)
         mylang.add('lv-lex := ' + mainorverbtype + '.', section='lvclex')
         mylang.add(LV_ITEM, section='lvclex')
+        mylang.add('lv-lex := [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CAT.HEAD ' + ch.case_head() + ' ].')
 
     # add bleached lv-lex item
     if ch.get('lvc-bleached') == YES:
         mylang.add(LV_BLEACHED_ITEM, section='lvclex')
+        mylang.add('bleached-lv-lex := [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CAT.HEAD ' + ch.case_head() + ' ].')
 
     if ch.get('lvc-it') == ON:
         mylang.add(BASIC_LV_IT_ITEM, section='lvclex')
