@@ -1,0 +1,74 @@
+# This workflow will install Python and ace dependencies on a virtual environment
+# and run the regression test suite before a pull request can be merged.
+name: Regression test
+
+on:
+  # Only trigger workflow on PR to trunk with changes at the included paths
+  pull_request:
+    branches: [ "trunk" ]
+    paths:
+      - 'gmcs'
+      - 'matrix-core'
+      - 'tests/regression'
+      - '*.py' # Any .py script on main level (matrix.py, myserver.py, rtest.py)
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Set up Python environment (with virtualenv)
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'  # or whatever version you're using
+
+      # Create a virtual environment (optional but recommended)
+      - name: Create virtual environment
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+
+      # Install dependencies (including delphin and ace)
+      - name: Install Delphin
+        run: |
+          source venv/bin/activate
+          pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      
+      - name: Install ace (download tar and move executable to virtual bin)
+        run: |
+          source venv/bin/activate
+          TAR_URL="https://sweaglesw.org/linguistics/ace/download/ace-0.9.34-x86-64.tar.gz"
+          curl -L $TAR_URL -o /tmp/file.tar.gz
+          mkdir -p /tmp/extracted
+          tar -xzvf /tmp/file.tar.gz -C /tmp/extracted
+          chmod +x /tmp/extracted/ace-0.9.34/ace
+          sudo mv /tmp/extracted/ace-0.9.34/ace $VIRTUAL_ENV/bin/ace
+
+      # Run regression test suite
+      - name: Test
+        id: run-tests
+        run: |
+          source venv/bin/activate
+          python3 rtest.py
+        continue-on-error: true 
+      - name: Upload test logs as artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-logs
+          path: /home/runner/work/matrix/matrix/tests/regression/logs/*
+      - name: Fail the job if the tests failed
+        if: always()
+        run: |
+          if [ ${{ steps.run-tests.outcome }} != 'success' ]; then
+              echo "Tests failed. Check logs for details."
+              exit 1
+            fi

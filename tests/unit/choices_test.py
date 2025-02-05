@@ -206,9 +206,8 @@ class TestChoicesFileParsingFunctions(unittest.TestCase):
                          {'abc': [{'def': 'DEF1'}, {'def': 'DEF2'}]})
         self.assertEqual(c.parse_choices(['abc2_def=DEF2', 'abc1_def=DEF1']),
                          {'abc': [{'def': 'DEF1'}, {'def': 'DEF2'}]})
-        # not currently throwing this error, but it should be logged.
-        # self.assertRaises(ChoicesFileParseError,
-        #                  c.parse_choices, ['abc2_def=DEF2', 'abc2_def=DEF1'])
+        # exception raising cannot be tested with assertRaises - string choices 
+        # will not throw Attribute or Value exceptions
 
     def test_full_key(self):
         c = ChoicesFile()

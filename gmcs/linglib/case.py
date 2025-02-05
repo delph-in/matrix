@@ -3,9 +3,6 @@ from gmcs.utils import orth_encode
 from gmcs.lib import TDLHierarchy
 from gmcs.utils import get_name
 
-
-######################################################################
-
 def case_names(ch):
     """
     Create and return a list containing information about the cases
@@ -315,9 +312,6 @@ def add_lexrules(ch):
                 ch[lrt_key + '_lri1_inflecting'] = 'no'
                 ch[lrt_key + '_lri1_orth'] = ''
 
-
-
-
 def interpret_verb_valence(valence):
     """
     Return the canonical valence name (e.g. iverb, tverb) given the
@@ -342,7 +336,6 @@ def customize_verb_case(mylang, ch):
     # Which should get fixed...  - sfd
 
     # OZ: This currently also adds clausal types.
-
     for p in ch.patterns():
         rule_pattern = p[2]
         p = p[0].split(',')  # split off ',dirinv', if present
@@ -390,12 +383,14 @@ def customize_verb_case(mylang, ch):
                         mylang.add(t_type + ' := transitive-verb-lex.')
                     else:
                         mylang.add(t_type + ' := clausal-verb-lex.')
-                # constrain the head of the agent/subject
-                typedef = \
-                    t_type + ' := \
-          [ ARG-ST.FIRST.LOCAL.CAT.HEAD ' + a_head + ' ].'
-                mylang.add(typedef)
-
+    
+                # constrain the head of the agent/subject on parent transitive-verb-lex            
+                if t_type == 'transitive-verb-lex':
+                    typedef = \
+                        t_type + ' := \
+              [ ARG-ST.FIRST.LOCAL.CAT.HEAD ' + a_head + ' ].'
+                    mylang.add(typedef)
+          
                 # constrain the case of the agent/subject
                 if a_case:
                     typedef = \
@@ -411,12 +406,13 @@ def customize_verb_case(mylang, ch):
           [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CAT.HEAD.CASE-MARKED + ] > ].'
                     mylang.add(typedef)
 
-                # constrain the head of the patient/object
-                if o_head:
-                    typedef = \
-                        t_type + ' := \
-          [ ARG-ST < [ ], [ LOCAL.CAT.HEAD ' + o_head + ' ] > ].'
-                    mylang.add(typedef)
+                # constrain the head of the patient/object on parent transitive-verb-lex
+                if t_type == 'transitive-verb-lex':
+                    if o_head:
+                        typedef = \
+                            t_type + ' := \
+              [ ARG-ST < [ ], [ LOCAL.CAT.HEAD ' + o_head + ' ] > ].'
+                        mylang.add(typedef)
 
                 # constrain the case of the patient/object
                 if o_case:
@@ -458,11 +454,12 @@ def customize_verb_case(mylang, ch):
                     else:
                         mylang.add(i_type + ' := clausal-verb-lex.')
 
-                # constrain the head of the subject
-                typedef = \
-                    i_type + ' := \
-          [ ARG-ST.FIRST.LOCAL.CAT.HEAD ' + s_head + ' ].'
-                mylang.add(typedef)
+                # constrain the head of the subject on parent intransitive-verb-lex
+                if i_type == 'intransitive-verb-lex':
+                    typedef = \
+                        i_type + ' := \
+              [ ARG-ST.FIRST.LOCAL.CAT.HEAD ' + s_head + ' ].'
+                    mylang.add(typedef)
 
                 # constrain the case of the subject
                 if s_case:
@@ -522,7 +519,6 @@ def get_verb_case(ch):
 # VALIDATION #
 ##############
 
-
 def validate(choices, vr):
     cm = choices.get('case-marking')
 
@@ -554,9 +550,6 @@ def validate(choices, vr):
                'If you define a direct-inverse scale, ' +
                'you must say what direction the verb is ' +
                'when the agent and patient have equal rank.')
-
-
-######################################################################
 
 def validate_one_case(ch, vr, pre):
     """

@@ -1,18 +1,12 @@
 # $Id: choices.py,v 1.24 2008-09-30 23:50:02 lpoulson Exp $
 
 ######################################################################
-# imports
 
 import re
 from gmcs.util.misc import safe_int
 from gmcs.linglib import case, clausalcomps
 
 ######################################################################
-# globals
-
-######################################################################
-# Errors
-
 
 class ChoicesFileParseError(Exception):
     def __init__(self, msg=''):
@@ -365,6 +359,10 @@ def look_through_inputs(self, verb_input, valence_set):
     can take both transitive and intransitive verbs, valence_set will contain the strings 'intrans'
     and 'trans', otherwise it will only contain one string corresponding to the valence of the verb inputs it
     can take.
+    
+    Args:
+        verb_input (string): the verb input type
+        valence_set (set): empty set 
     """
     verb_input = verb_input.strip()
     for verb_pc in self['verb-pc']:
@@ -410,8 +408,10 @@ class ChoicesFile:
                 self.load_choices(lines)
                 if type(choices_file) == str:
                     f.close()
-            except IOError:
-                pass  # TODO: we should really be logging these
+            except IOError as io:
+                message = 'Error loading choices from ' + choices_file + ": "
+                # TODO fix: this error prevents main matrix page from loading
+                # raise IOError(message + repr(io))
 
     def __str__(self):
         return str(self.choices)
@@ -459,17 +459,22 @@ class ChoicesFile:
         """
         choices = ChoiceDict()
         for line in [l.strip() for l in choice_lines if l.strip() != '']:
+            if line == "":
+                continue
             try:
                 (key, value) = line.split('=', 1)
                 if key.strip() in ('section', 'version'):
                     continue
                 choices[key.strip()] = value
-            except ValueError:
-                pass  # TODO: log this!
-            except AttributeError:
-                pass  # TODO: log this!
-            except ChoicesFileParseError:
-                pass  # TODO: log this!
+            except ValueError as v:
+                message = 'Error parsing choices on line: ' + line + ": "
+                raise ValueError(message + repr(v))
+            except AttributeError as a:
+                message = 'Error parsing choices on line :' + line + ": "
+                raise AttributeError(message + repr(a))
+            except ChoicesFileParseError as c:
+                message = 'Error parsing choices on line: ' + line + ": "
+                raise ChoicesFileParseError(message + repr(c))
         return choices
 
     ############################################################################
@@ -575,6 +580,8 @@ class ChoicesFile:
         """
         new_lines = []
         for line in choice_lines:
+            if line == "":
+                continue
             try:
                 (key, value) = line.split('=', 1)
                 if key in ('section', 'version'):
@@ -586,8 +593,9 @@ class ChoicesFile:
                 # add back to the lines
                 if key is not None:
                     new_lines += ['='.join([key, value])]
-            except ValueError:
-                pass  # TODO: log this!
+            except ValueError as v:
+                message = 'Error converting choices on line: ' + line + ": "
+                raise ValueError(message + repr(v))
             except ChoicesFileParseError:
                 raise ChoicesFileParseError(
                     'Variable is multiply defined: %s' % key)

@@ -1,5 +1,4 @@
 from collections import defaultdict
-
 from gmcs.linglib import case
 from gmcs.utils import get_name
 from gmcs import constants
@@ -9,6 +8,7 @@ from gmcs.linglib.lexbase import LexicalType, PositionClass
 from gmcs.linglib.lexbase import ALL_LEX_TYPES
 from gmcs.linglib.lexbase import LEXICAL_CATEGORIES
 from gmcs.linglib.lexbase import LEXICAL_SUPERTYPES
+import re
 
 def lexical_type_hierarchy(choices, lexical_supertype):
     if lexical_supertype not in LEXICAL_CATEGORIES:
@@ -406,10 +406,21 @@ def validate_lexicon(ch, vr):
             vr.warn(n.full_key + '_det', mess % message_map[det])
             
         q = n.get('inter')
-        wh_q1 = ch.get(MTRX_FRONT)
-        if q == 'on' and (not wh_q1):
-            vr.warn(n.full_key + '_inter', 'A noun defined as a question pronoun is unusable ' + \
-                    'without any constituent question selections.')
+        if q == 'on':
+            wh_q1 = ch.get(MTRX_FRONT)
+            if not wh_q1:
+                vr.warn(n.full_key + '_inter', 'A noun defined as a question pronoun is unusable ' + \
+                        'without any constituent question selections.')
+            for stem in s:
+                p = stem.get('pred')
+                ques_preds = ["who", "what", "when", "where"]
+                needsPredicateWarning = True
+                for qp in ques_preds:
+                    if re.search(qp, p) != None:
+                        needsPredicateWarning = False
+                if needsPredicateWarning:
+                    vr.warn(stem.full_key + '_pred', 'Suggested predicates for question ' + \
+                        'pronouns include _thing_n_rel, _person_n_rel, _place_n_rel, or similar.')
 
         for stem in s:
             orth = stem.get('orth')
@@ -563,18 +574,21 @@ def validate_lexicon(ch, vr):
             # otherwise we go again
             parents = next_parents
 
-        # now check val
-        # only care if it has stems
+        # check stems 
         s = v.get('stem', [])
-        if len(s) != 0:
-            if not val:
-                mess = 'You must specify the argument structure of each verb you ' + \
-                       'define.  Either on this type, or on a supertype.'
-                vr.err(v.full_key + '_valence', mess)
-            elif val[0:5] == 'trans' or '-' in val:
-                seenTrans = True
-            else:
-                seenIntrans = True
+        if s == []:
+            mess = 'You must define a stem for this verb class.'
+            vr.warn(v.full_key+'_stem', mess)
+        
+        # now check val
+        if not val:
+            mess = 'You must specify the argument structure of each verb you ' + \
+                   'define, either on this type, or on a supertype.'
+            vr.err(v.full_key + '_valence', mess)
+        elif val[0:5] == 'trans' or '-' in val:
+            seenTrans = True
+        else:
+            seenIntrans = True            
 
         if bistems and not bipartitepc:
             mess = 'If you add bipartite stems to a class, you must specify a ' + \
@@ -925,6 +939,10 @@ def validate_lexicon(ch, vr):
             if not stem.get('orth'):
                 mess = 'You must specify a spelling for each auxiliary you define.'
                 vr.err(stem.full_key + '_orth', mess)
+        
+        if aux.get('subj') in ['np-comp-case', 'np-aux-case'] and ch.get('case-marking') == 'none':
+            vr.err(aux.full_key + '_subj', 'You have specified that this language does not have case marking but indicated the subject ' + \
+                    'of this auxiliary has case.')
 
     # TODO: Copulas: TJT 2014-08-25
     # Copulas
@@ -1007,6 +1025,10 @@ def validate_lexicon(ch, vr):
             if not stem.get('pred'):
                 mess = 'You must specify a predicate for each determiner you define.'
                 vr.err(stem.full_key + '_pred', mess)
+
+            if re.search("^.*_q_rel$", stem.get('pred')) == None:
+                mess = 'Predicate should take the form *_q_rel.'
+                vr.warn(stem.full_key + '_pred', mess)
 
     # Adpositions
     for adp in ch.get('adp'):

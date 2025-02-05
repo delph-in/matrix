@@ -12,7 +12,7 @@ class TestValidate(unittest.TestCase):
     def assertErrorsOrWarnings(self, c, variables, errors):
         """
         Methods for asserting the presence of errors and warnings when
-        # a ChoicesFile is put through validation.
+        a ChoicesFile is put through validation.
         """
         vr = validate(c)
         for v in variables:
@@ -32,6 +32,20 @@ class TestValidate(unittest.TestCase):
 
     def assertErrors(self, c, errors):
         self.assertErrorsOrWarnings(c, errors, True)
+        
+    def assertNoErrors(self, c, errors):
+        vr = validate(c)
+        if isinstance(errors, str):
+            errors = [errors]
+        for e in errors:
+            self.assertFalse(e in vr.errors)
+
+    def assertNoWarnings(self, c, warnings):
+        vr = validate(c)
+        if isinstance(warnings, str):
+            warnings = [warnings]
+        for w in warnings:
+            self.assertFalse(w in vr.warnings)
 
     # Tests
 
@@ -62,7 +76,7 @@ class TestValidate(unittest.TestCase):
                      ['noun-pc2_lrt1_', '-lex-rule']]
 
         # Name for causing collisions, made up of the lower-case letter 'a' in:
-        #   Latin, accented Latin, accented Latin, Greek, Cyrillic, Armenian
+        # Latin, accented Latin, accented Latin, Greek, Cyrillic, Armenian
         value = 'aáāαаա'
 
         for v1 in variables:
@@ -279,6 +293,15 @@ class TestValidate(unittest.TestCase):
         c['neg-adv-orth'] = 'test'
         c['adv1_stem1_orth'] = 'test'
         self.assertError(c, 'neg-adv-orth')
+        
+        # no negation auxiliary in lexicon with neg_rel predicate
+        c['neg-aux'] = 'on'
+        self.assertWarning(c, 'neg-aux')
+        c['aux1_name'] =  'neg'
+        c['aux1_stem1_pred'] = 'test_rel'
+        self.assertWarning(c, 'neg-aux')
+        c['aux1_stem1_pred'] = 'neg_rel'
+        self.assertNoWarnings(c, 'neg-aux')
 
     def test_coordination(self):
         # missing answers
@@ -500,6 +523,14 @@ class TestValidate(unittest.TestCase):
         c['noun1_inter'] = 'on'
         self.assertWarnings(c, ['noun1_inter'])
         
+        # question pronoun, but not preferred predicate
+        c = ChoicesFile()
+        c['noun1_inter'] = 'on'
+        c['noun1_stem1_pred'] = '_test_n_rel'
+        self.assertWarning(c, 'noun1_stem1_pred')
+        c['noun1_stem1_pred'] = '_who_n_rel'
+        self.assertNoWarnings(c, ['noun1_stem1_pred'])
+        
         # Verbs
         c = ChoicesFile()
         c['verb1_dummy'] = 'dummy'
@@ -507,6 +538,12 @@ class TestValidate(unittest.TestCase):
         self.assertErrors(c, ['verb1_valence',
                               'verb1_stem1_orth',
                               'verb1_stem1_pred'])
+                              
+        # warning for verb classes and missing stems
+        c = ChoicesFile()
+        c['verb1_name'] = 'test'
+        c['verb1_valence'] = 'trans'
+        self.assertWarnings(c, ['verb1_valence', 'verb1_stem'])
 
         # Auxiliaries
         c = ChoicesFile()
@@ -529,6 +566,14 @@ class TestValidate(unittest.TestCase):
         c['aux1_sem'] = ''
         c['aux1_stem1_pred'] = 'dummy'
         self.assertError(c, 'aux1_sem')
+        
+        c = ChoicesFile()
+        c['case-marking'] = 'none'
+        c['aux1_subj'] = 'np-comp-case'
+        self.assertError(c, 'aux1_subj')
+        
+        c['aux1_subj'] = 'np-aux-case'
+        self.assertError(c, 'aux1_subj')
 
         # Adpositions
         c = ChoicesFile()
@@ -545,6 +590,19 @@ class TestValidate(unittest.TestCase):
         c['neg-adv-orth'] = 'test'
         c['adv1_stem1_orth'] = 'test'
         self.assertError(c, 'adv1_stem1_orth')
+        
+        # Determiners
+        c = ChoicesFile()
+        c['det1_stem1_pred'] = 'x_q_rel'
+        self.assertError(c, 'det1_stem1_orth')
+        
+        c = ChoicesFile()
+        c['det1_stem1_orth'] = 'test'
+        self.assertError(c, 'det1_stem1_pred')
+        
+        c = ChoicesFile()
+        c['det1_stem1_pred'] = 'test'
+        self.assertWarning(c, 'det1_stem1_pred')
 
         # Features
         for lt in ['noun', 'verb', 'aux', 'det', 'adp']:
@@ -606,7 +664,21 @@ class TestValidate(unittest.TestCase):
                 c['feature1_name'] = feature_name
                 c['feature1_cat'] = 'noun'
                 c[lt + '1_feat1_head'] = head
-                self.assertError(c, lt + '1_feat1_head')   
+                self.assertError(c, lt + '1_feat1_head')  
+                
+        # test features which can be specified for multiple values in one checkbox
+        for lt in ['noun-pc1_lrt', 'verb-pc1_lrt', 'adj-pc1_lrt']:
+            c = ChoicesFile()
+            c['number1_name'] = 'sg'
+            c['number2_name'] = 'pl'
+            c['person'] = '1-2-3'
+            c[lt + '1_feat1_name'] = 'number'
+            c[lt + '1_feat1_head'] = 'itself'
+            c[lt + '1_feat1_value'] = 'sg' 
+            c[lt + '1_feat2_name'] = 'number'
+            c[lt + '1_feat2_head'] = 'itself'
+            c[lt + '1_feat2_value'] = 'pl' 
+            self.assertError(c, lt + '1_feat2_value') 
 
     def test_argopt(self):
         c = ChoicesFile()

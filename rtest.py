@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""
-Grammar Matrix Regression Testing
-"""
+"""Grammar Matrix Regression Testing"""
 
 from typing import Tuple
 import sys

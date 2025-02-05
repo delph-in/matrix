@@ -1086,8 +1086,7 @@ they can be defined below.
 Label "<h3>Syntactic FORM Feature for verbs</h3>"
 
 Label "<p>To start, your
-grammar may utilize a syntactic feature characterizing the form the
-verb takes. The <span class=\"feat\">form</span> feature distinguishes
+grammar may utilize a syntactic feature characterizing the form taken by a verb, complementizer, or adposition. The <span class=\"feat\">form</span> feature distinguishes
 finite from non-finite forms and can be used to constrain auxiliary
 complement forms and for marking clausal complements (e.g. via morphology).
 If not applicable, you may leave this section
@@ -1104,7 +1103,7 @@ Check form-fin-nf "Finite-nonfinite" "" "Add finite/non-finite FORM feature dist
 
 Label "<p>It is often the case that languages have multiple non-finite
 forms, e.g., English: infinitive, past participle, present
-participle. If applicable, you may expand the hierarchy of verb <span
+participle. If applicable, you may expand the hierarchy of <span
 class=\"feat\">form</span> values in your grammar by providing
 subtypes of <span class=\"tt\">finite</span> and <span class=\"tt\">nonfinite</span>:</p>"
 
@@ -1281,7 +1280,7 @@ on the morphology page.  Defining morphemes that specify [<span class=\"feat\">n
 
 Check neg-aux "Negation by auxiliary verb" "<p>" "Negative auxiliary verb:
 Checking this box creates a neg-aux type which contributes a neg_rel that
-outscopes it's complement's handle.  This lexical type will show up on the
+outscopes its complement's handle.  This lexical type will show up on the
 lexicon page where you'll need to further specify its syntax.</p>"
 
 Text neg-aux-index "index for neg aux" "<span style='display:none'>" "</span>" 1
@@ -1384,7 +1383,7 @@ Radio comp-neg-head-infl-comp-neg "neg selected by" "Is neg selected by" "<br />
 . aux "aux" "" "a (sub-)class of aux-verbs" "neg_comp()"
 . v   "v"   "" "any (finite) verb" "neg_comp()"
 
-Radio comp-neg-order-infl-head "neg ordered" "How is neg ordered with resepct
+Radio comp-neg-order-infl-head "neg ordered" "How is neg ordered with respect
 to other COMPS?" "<br />(NB: After other complements order is only available
 for non-argument composing auxiliaries.)<br />"
 . before "before" "" "before "
@@ -2701,6 +2700,7 @@ BeginIter noun{i} "a Noun Type" 1 1
     Text orth "Noun {i} stem {j} spelling" "Spelling: " "" 30 "fill_pred('noun{i}_stem{j}', 'n')"
 
     Text pred "Noun {i} stem {j} predicate" " Predicate: " "" 30
+    
 
   EndIter stem
 
@@ -3034,6 +3034,7 @@ BeginIter aux{i} "an Auxiliary Type" 1
   Label "<br><br>"
 
   Radio subj "Aux {i} subject" "If this auxiliary type takes a VP or V complement, select the subject type:<br>" ""
+  . adp "Adpositional phrase" "" "adpositional phrase<br>"
   . np "Noun phrase" "" "noun phrase without case restrictions <br>"
   . np-comp-case "NP comp case" "" "noun phrase bearing the case the verbal complement assigns to its subject <br>"
   . np-aux-case "NP aux case" "" "noun phrase, receiving the following case from its auxiliary: "
@@ -3041,8 +3042,7 @@ BeginIter aux{i} "an Auxiliary Type" 1
   Select subj_case "Aux {i} subject-case" "" ""
   fillvalues p=case l=1
 
-  Radio subj "Aux {i} subject" "" ""
-  . adp "Adpositional phrase" "<br>" "adpositional phrase<br><br>"
+  Label "<br><br>"
 
   Label complabel "Complement Features:&nbsp; &nbsp; &nbsp; &nbsp; (Note: A
   value for the feature FORM is required.)<br>"
@@ -3173,9 +3173,9 @@ BeginIter det{i} "a Determiner" 1
 
   BeginIter stem{j} "a Stem" 0 1
 
-    Text orth "Determiner {i} spelling" "Spelling: " "" 30 "fill_pred('det{i}_stem{j}', 'q')"
+    Text orth "Determiner {i} spelling" "Spelling: " "" 30
 
-    Text pred "Determiner {i} predicate" " Predicate: " "<br>" 30
+    Text pred "Determiner {i} predicate" " Predicate: " "<br>Predicate suggestion: use exist_q_rel for existentials and all_q_rel for universals" 30
 
   EndIter stem
 
@@ -4154,7 +4154,7 @@ Section ToolboxLexicon "Toolbox Lexicon" 0
 
 Label "<p> Imported Toolbox Lexical items are displayed here, if any of these are incorrect
 we recommend changing your import configurations and reimporting your files instead of
-directly correcing the entries.</p>"
+directly correcting the entries.</p>"
 
 Separator
 

@@ -1386,7 +1386,9 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
     poss_strats = {}
     poss_prons = {}
     other_feats = {}
+    all_feats = {}
     for feat in lrt.get('feat'):
+        all_feats[feat.full_key] = (feat.get('name'), feat.get('value'), feat.get('head'))
         if 'poss-strat' in feat.get('name'):
             poss_strats[feat.full_key] = feat.get('name')
         elif 'poss-pron' in feat.get('name'):
@@ -1446,6 +1448,24 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
                     mess = 'Only possessive rules should have features specified on ' +\
                         'anything other than \'itself.\''
                     vr.err(feat.full_key+'_head', mess)
+
+    # A set to keep track of (name, head) pairs and their values
+    seen = {}
+    conflicts = []
+    for key, f in all_feats.items():
+        key_pair = (f[0], f[2])
+    
+        if key_pair in seen:
+            # Check if the value is different for this (name, head) combination
+            if seen[key_pair] != f[1]:
+                conflicts.append((key, f[0]))
+        else:
+            seen[key_pair] = f[1]
+    
+    for n in conflicts:
+        key = n[0]
+        vr.err(key+'_value', 'Please check all values for this feature name and head combination in one entry.')
+        
 
     # TJT 2014-08-21: Incorporated Adjective validation
     if incorp:

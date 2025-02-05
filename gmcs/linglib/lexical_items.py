@@ -16,6 +16,8 @@ from gmcs.linglib.nominalized_clauses import needs_anc_wo_feat
 from gmcs.linglib.parameters import determine_vcluster
 from gmcs.linglib.lexbase import ALL_LEX_TYPES, LEXICAL_SUPERTYPES
 from gmcs.linglib.lexicon import get_all_supertypes
+from gmcs.linglib.negation import get_neg_stemids
+from gmcs.linglib.negation import add_neg_name
 from gmcs.linglib.clausalmods import get_subord_stemids
 from gmcs.linglib.clausalmods import add_subord_name
 from gmcs.feature_type_use import USED_TYPES
@@ -109,10 +111,11 @@ def insert_ids(ch):
                     stemids[id] += 1
                 else:
                     stemids[id] = 1
-    # KPH Subordinators are added outside the lexicon,
+    # KPH Subordinators and negators are added outside the lexicon,
     # but should still be checked for possible name-space collisions
     # this should be a temporary/hacky fix- a bug has been filed
     stemids = get_subord_stemids(ch, stemids)
+    stemids = get_neg_stemids(ch, stemids)
 
     # Now that stemids has the full count, go through and add
     # to the choices file object.
@@ -143,7 +146,7 @@ def insert_ids(ch):
                         '_' + str(stemidcounters[orth])
     # KPH Do the same for subordinators and complementizers
     add_subord_name(ch, stemids, stemidcounters)
-
+    add_neg_name(ch, stemids, stemidcounters)
 
 ##########################################################
 

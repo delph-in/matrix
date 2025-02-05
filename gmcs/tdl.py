@@ -1,8 +1,5 @@
 # $Id: tdl.py,v 1.17 2008-07-24 11:16:41 sfd Exp $
 
-######################################################################
-# imports
-
 import sys
 import copy
 
@@ -496,16 +493,13 @@ class TDLelem_dlist(TDLelem):
 
 tok = []
 
-
 def TDLparse_type():
     global tok
     return TDLelem_type(tok.pop(0))
 
-
 def TDLparse_coref():
     global tok
     return TDLelem_coref(tok.pop(0))
-
 
 def TDLparse_av():
     global tok
@@ -525,7 +519,6 @@ def TDLparse_av():
         elem.add(TDLparse_conj())
     return elem
 
-
 def TDLparse_feat():
     global tok
     tok.pop(0)  # '['
@@ -536,7 +529,6 @@ def TDLparse_feat():
             tok.pop(0)
     tok.pop(0)  # ']'
     return elem
-
 
 def TDLparse_list():
     global tok
@@ -626,7 +618,6 @@ def TDLparse_list():
 
     return elem
 
-
 def TDLparse_dlist():
     global tok
     tok.pop(0)  # '<!'
@@ -637,7 +628,6 @@ def TDLparse_dlist():
             tok.pop(0)
     tok.pop(0)  # '!>'
     return elem
-
 
 def TDLparse_term():
     global tok
@@ -652,7 +642,6 @@ def TDLparse_term():
     elif tok[0] == '<!':
         return TDLparse_dlist()
 
-
 def TDLparse_conj():
     global tok
     elem = TDLelem_conj()
@@ -661,7 +650,6 @@ def TDLparse_conj():
         tok.pop(0)
         elem.add(TDLparse_term())
     return elem
-
 
 def TDLparse_typedef():
     global tok
@@ -679,12 +667,10 @@ def TDLparse_typedef():
     tok.pop(0)  # '.'
     return elem
 
-
 def TDLparse(s):
     global tok
     tok = TDLtokenize(s)
     return TDLparse_typedef()
-
 
 ###########################################################################
 
@@ -712,7 +698,6 @@ def TDLmergeable(e1, e2):
         isinstance(e1, TDLelem_feat) or
             isinstance(e1, TDLelem_dlist)):
         return True
-
 
 ###########################################################################
 
@@ -955,16 +940,12 @@ class TDLfile(object):
             self.typedefs.append(typedef)
 
     def add_comment(self, tdl_type, comment):
-        """
-        Add a comment to an existing type in this file
-        """
+        """Add a comment to an existing type in this file."""
         self.add(tdl_type + ':= [].', comment)
 
     def add_literal(self, literal,
                     comment='', section=''):
-        """
-        Add a literal string (which will never merge) to this file
-        """
+        """Add a literal string (which will never merge) to this file."""
         l = TDLelem_literal(literal)
         l.set_comment(comment)
 
