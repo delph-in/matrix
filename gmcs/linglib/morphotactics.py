@@ -1313,6 +1313,10 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
                'Any given Lexical Rule Type should contain either inflecting Lexical Rule Instances ' +
                'or non-inflecting Lexical Rule Instances.')
     orths = set()
+    # EEL 2025-1-15 validating that lrts must specify if they are inflecting or not
+    if len(lrt.get('lri', [])) == 0:
+        vr.err(lrt.full_key + '_lri',
+                "You must specify whether each instance is inflecting or non-inflecting.")
     for lri in lrt.get('lri', []):
         orth = lri.get('orth', '')
         if lri['inflecting'] == 'yes' and orth == '':

@@ -689,5 +689,16 @@ class TestValidate(unittest.TestCase):
                               'obj-mark-drop', 'obj-mark-no-drop',
                               'context1_feat1_head'])
 
+    def test_lrt(self):
+        c = ChoicesFile()
+        lt = 'verb-pc1_lrt'
+        feature_name = 'feat1'
+        for head in ['subj', 'obj', 'noun']:
+            c[lt + '1_feat1_name'] = feature_name
+            c['feature1_name'] = feature_name
+            c['feature1_cat'] = 'verb'
+            c[lt + '1_feat1_head'] = head
+        self.assertError(c, lt + '1_lri')
+
 if __name__ == '__main__':
     unittest.main()
