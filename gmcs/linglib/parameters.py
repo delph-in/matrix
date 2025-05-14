@@ -1,6 +1,5 @@
-# find out whether verbal clusters
-
 def determine_vcluster(auxcomp, auxorder, wo, ch):
+    """Find out whether there are verbal clusters."""
 
     vcluster = False
 

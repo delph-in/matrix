@@ -1,0 +1,24 @@
+itr-verb3sg noun1 
+adv1 itr-verb3sg noun1 
+itr-verb3sg adj1 noun1 
+noun1 tr-verb3sg noun1  
+itr-verb3sg noun1 noun2 
+itr-verb3sg pron3sg noun2 
+noun2 itr-verb-nmz tr-verb3sg noun1
+pron3sg itr-verb-nmz tr-verb3sg noun1
+adp1 noun1 noun2 tr-verb-nmz tr-verb3sg noun1
+adp1 noun1 pron3sg tr-verb-nmz tr-verb3sg noun1
+noun2 tr-verb-nmz tr-verb3sg noun1
+pron3sg tr-verb-nmz tr-verb3sg noun1
+adp1 noun1 tr-verb-nmz tr-verb3sg noun1
+*tr-verb-nmz tr-verb3sg noun1
+*itr-verb-nmz tr-verb3sg noun1
+*adp1 noun1 itr-verb-nmz tr-verb3sg noun1
+*adp1 noun1 noun2 tr-verb-nmz
+*noun1 tr-verb3sg noun1 tr-verb3sg noun1
+adp1 noun1 tr-verb-nmz noun1 tr-verb3sg noun1
+*adp1 noun1 tr-verb-nmz pron3sg tr-verb3sg noun1
+*adp1 noun1 noun2 adv1 tr-verb-nmz tr-verb3sg noun1
+*noun2 adv1 itr-verb-nmz tr-verb3sg noun1
+*adp1 noun1 noun2 adj1 tr-verb-nmz tr-verb3sg noun1
+*noun2 adj1 itr-verb-nmz tr-verb3sg noun1

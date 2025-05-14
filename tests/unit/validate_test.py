@@ -1,16 +1,19 @@
 # -*- coding: utf-8 -*-
+"""
+Run these tests with `python -m tests.unit.validate_test` from the matrix directory.
+"""
 
 import unittest
-from gmcs.choices import ChoicesFile
+from gmcs.choices import ChoicesFile, ChoiceList, ChoiceDict
 from gmcs.validate import validate
-
 
 class TestValidate(unittest.TestCase):
 
-    # Methods for asserting the presence of errors and warnings when
-    # a ChoicesFile is put through validation
-
     def assertErrorsOrWarnings(self, c, variables, errors):
+        """
+        Methods for asserting the presence of errors and warnings when
+        a ChoicesFile is put through validation.
+        """
         vr = validate(c)
         for v in variables:
             if errors:
@@ -29,6 +32,20 @@ class TestValidate(unittest.TestCase):
 
     def assertErrors(self, c, errors):
         self.assertErrorsOrWarnings(c, errors, True)
+        
+    def assertNoErrors(self, c, errors):
+        vr = validate(c)
+        if isinstance(errors, str):
+            errors = [errors]
+        for e in errors:
+            self.assertFalse(e in vr.errors)
+
+    def assertNoWarnings(self, c, warnings):
+        vr = validate(c)
+        if isinstance(warnings, str):
+            warnings = [warnings]
+        for w in warnings:
+            self.assertFalse(w in vr.warnings)
 
     # Tests
 
@@ -59,7 +76,7 @@ class TestValidate(unittest.TestCase):
                      ['noun-pc2_lrt1_', '-lex-rule']]
 
         # Name for causing collisions, made up of the lower-case letter 'a' in:
-        #   Latin, accented Latin, accented Latin, Greek, Cyrillic, Armenian
+        # Latin, accented Latin, accented Latin, Greek, Cyrillic, Armenian
         value = 'aáāαаա'
 
         for v1 in variables:
@@ -166,6 +183,14 @@ class TestValidate(unittest.TestCase):
         for person in ['none', '2-non-2', '3-non-3']:
             c['person'] = person
             self.assertError(c, 'first-person')
+        
+        # first person distinction, but no number specified    
+        self.assertError(c, 'incl-excl-number')
+        
+        # number selected for first person distinction, but no distinction
+        c['first-person'] = ""
+        c['incl-excl-number'] = 'sg'
+        self.assertWarning(c, 'incl-excl-number')
 
     def test_number(self):
         c = ChoicesFile()
@@ -263,6 +288,20 @@ class TestValidate(unittest.TestCase):
         c['comp-neg'] = 'on'
         c['comp-neg-head'] = 'aux'
         self.assertError(c, 'comp-neg-head')
+    
+        # negation adverb has same spelling as one already defined 
+        c['neg-adv-orth'] = 'test'
+        c['adv1_stem1_orth'] = 'test'
+        self.assertError(c, 'neg-adv-orth')
+        
+        # no negation auxiliary in lexicon with neg_rel predicate
+        c['neg-aux'] = 'on'
+        self.assertWarning(c, 'neg-aux')
+        c['aux1_name'] =  'neg'
+        c['aux1_stem1_pred'] = 'test_rel'
+        self.assertWarning(c, 'neg-aux')
+        c['aux1_stem1_pred'] = 'neg_rel'
+        self.assertNoWarnings(c, 'neg-aux')
 
     def test_coordination(self):
         # missing answers
@@ -290,7 +329,11 @@ class TestValidate(unittest.TestCase):
         # missing answers about particles
         c = ChoicesFile()
         c['q-part'] = 'on'
-        self.assertErrors(c, ['q-part-order', 'q-part-orth'])
+        # missing order and no specified particles
+        self.assertErrors(c, ['q-part-order', 'q-particle'])
+        # missing orth of specified particle
+        c['q-particle1_main'] = 'on' 
+        self.assertErrors(c, ['q-particle'])
 
         # missing or incompatible answers about inversion
         c = ChoicesFile()
@@ -305,7 +348,107 @@ class TestValidate(unittest.TestCase):
         c = ChoicesFile()
         c['q-infl'] = 'on'
         self.assertError(c, 'q-infl')
-
+    
+    def test_wh_questions(self):
+        # missing question words in lexicon when question strategy defined
+        for wh_q_strat in ['front-matrix', 'wh-q-infl', 'wh-q-part']:
+            if wh_q_strat == 'front-matrix':
+                # choices file instantiated on each iteration because of elif logic
+                c = ChoicesFile()
+                c[wh_q_strat] = 'multi'
+            else:
+                c = ChoicesFile()
+                c[wh_q_strat] = 'on'
+            self.assertError(c, wh_q_strat)
+            
+        # pied piping but no determiners defined 
+        for p in ['pied-pip', 'pied-pip-adp']:
+            c = ChoicesFile()
+            c[p] = 'on'
+            self.assertError(c, p)
+            
+        # pied piping with determiner, but not adposition
+        c = ChoicesFile()
+        c['pied-pip-adp'] = 'on'
+        c['det'] = ChoiceList()
+        self.assertError(c, 'pied-pip-adp')
+        
+        # pied piping with in-situ fronting option
+        for p in ['pied-pip', 'pied-pip-adp']:
+            c = ChoicesFile()
+            c[p] = 'on'
+            c['front-matrix'] = 'in-situ'
+            self.assertError(c, p)
+            
+        # pied piping obligatory but not selected
+        c = ChoicesFile()
+        c['oblig-pied-pip-noun'] = 'on'
+        self.assertError(c, 'pied-pip')
+        
+        c = ChoicesFile()
+        c['oblig-pied-pip-adp'] = 'on'
+        self.assertError(c, 'pied-pip-adp')
+        
+        # Multi question fronting but multiple questions in one clause not allowed
+        c = ChoicesFile()
+        c['no-multi-ques'] = 'on'
+        c['front-matrix'] = 'multi'
+        self.assertError(c, 'no-multi-ques')
+        c = ChoicesFile()
+        c['no-multi-ques'] = 'on'
+        c['matrix-front-opt'] = 'all-oblig'
+        self.assertError(c, 'no-multi-ques')
+        
+        # In-situ and obligatory fronting not compatible
+        for opt in ['all-oblig', 'single-oblig']:
+            c = ChoicesFile()
+            c['matrix-front-opt'] = opt 
+            c['front-matrix'] = 'in-situ'
+            self.assertError(c, 'matrix-front-opt')
+        
+        # Embed in-situ only valid if fronting is optional
+        c = ChoicesFile()
+        c['matrix-front-opt'] = 'all-oblig'
+        c['embed-insitu'] = 'on'
+        self.assertError(c, 'embed-insitu')
+        
+        # Inversion not selected on Y/N page
+        c = ChoicesFile()
+        c['wh-inv-matrix'] = 'on'
+        self.assertError(c, 'wh-inv-matrix')
+        
+        # Inversion in matrix clauses not selected, but desired in embedded
+        c = ChoicesFile()
+        c['wh-inv-embed'] = 'on'
+        self.assertError(c, 'wh-inv-embed')
+        
+        # Inversion in matrix clauses not selected
+        c = ChoicesFile()
+        c['wh-inv-notsubj'] = 'on'
+        self.assertError(c, 'wh-inv-notsubj')
+        
+        # No contrastive focus marker specified
+        c = ChoicesFile()
+        c['focus-marking'] = 'on'
+        self.assertError(c, 'focus-marking')
+        
+        # No qverbs defined
+        c = ChoicesFile()
+        c['wh-q-inter-verbs'] = 'on'
+        self.assertError(c, 'wh-q-inter-verbs')
+        
+        # Qverbs defined but not select on WH page 
+        c = ChoicesFile()
+        cl = ChoiceList()
+        cl += [ChoiceDict(full_key='qverb')]
+        c['qverb'] = cl
+        self.assertError(c, 'wh-q-inter-verbs')
+        
+        # Verbal inflection not selected on Y/N page
+        c = ChoicesFile()
+        c['wh-q-infl'] = 'on'
+        self.assertError(c, 'wh-q-infl')
+        
     def test_tanda(self):
         tenses = ['past', 'present', 'future', 'nonpast', 'nonfuture']
         # Tense
@@ -316,6 +459,11 @@ class TestValidate(unittest.TestCase):
                 c[st] = 'on'
                 c[t + '-subtype1_name'] = 'dummy'
                 self.assertError(c, t + '-subtype1_name')
+
+        # added a hierarchy element but didn't answer yes to tense-definition
+        c = ChoicesFile()
+        c['past'] = 'on'
+        self.assertWarning(c, 'tense-definition')
 
         # answered yes to tense-definition but then didn't define
         c = ChoicesFile()
@@ -371,6 +519,18 @@ class TestValidate(unittest.TestCase):
         c['has-dets'] = 'no'
         self.assertErrors(c, ['has-dets', 'noun1_det'])
 
+        # question pronoun, but no question constituent question selections
+        c['noun1_inter'] = 'on'
+        self.assertWarnings(c, ['noun1_inter'])
+        
+        # question pronoun, but not preferred predicate
+        c = ChoicesFile()
+        c['noun1_inter'] = 'on'
+        c['noun1_stem1_pred'] = '_test_n_rel'
+        self.assertWarning(c, 'noun1_stem1_pred')
+        c['noun1_stem1_pred'] = '_who_n_rel'
+        self.assertNoWarnings(c, ['noun1_stem1_pred'])
+        
         # Verbs
         c = ChoicesFile()
         c['verb1_dummy'] = 'dummy'
@@ -378,6 +538,12 @@ class TestValidate(unittest.TestCase):
         self.assertErrors(c, ['verb1_valence',
                               'verb1_stem1_orth',
                               'verb1_stem1_pred'])
+                              
+        # warning for verb classes and missing stems
+        c = ChoicesFile()
+        c['verb1_name'] = 'test'
+        c['verb1_valence'] = 'trans'
+        self.assertWarnings(c, ['verb1_valence', 'verb1_stem'])
 
         # Auxiliaries
         c = ChoicesFile()
@@ -400,16 +566,43 @@ class TestValidate(unittest.TestCase):
         c['aux1_sem'] = ''
         c['aux1_stem1_pred'] = 'dummy'
         self.assertError(c, 'aux1_sem')
+        
+        c = ChoicesFile()
+        c['case-marking'] = 'none'
+        c['aux1_subj'] = 'np-comp-case'
+        self.assertError(c, 'aux1_subj')
+        
+        c['aux1_subj'] = 'np-aux-case'
+        self.assertError(c, 'aux1_subj')
 
         # Adpositions
         c = ChoicesFile()
-        c['adp1_dummy'] = 'dummy'
-        self.assertWarning(c, 'adp1_feat1_name')
-
-        # Adpositions
+        c['adp1_feat1_name'] = 'poss-strat'
+        self.assertError(c, 'adp1_feat1_name')
+        
+        # Adverbs 
         c = ChoicesFile()
-        c['adp1_dummy'] = 'dummy'
-        self.assertWarning(c, 'adp1_feat1_name')
+        c['adv1_stem1_pred'] = '_pred_a_rel'
+        c['adv1_inter'] = 'on'
+        self.assertWarning(c, 'adv1_stem1_pred')
+
+        c = ChoicesFile()
+        c['neg-adv-orth'] = 'test'
+        c['adv1_stem1_orth'] = 'test'
+        self.assertError(c, 'adv1_stem1_orth')
+        
+        # Determiners
+        c = ChoicesFile()
+        c['det1_stem1_pred'] = 'x_q_rel'
+        self.assertError(c, 'det1_stem1_orth')
+        
+        c = ChoicesFile()
+        c['det1_stem1_orth'] = 'test'
+        self.assertError(c, 'det1_stem1_pred')
+        
+        c = ChoicesFile()
+        c['det1_stem1_pred'] = 'test'
+        self.assertWarning(c, 'det1_stem1_pred')
 
         # Features
         for lt in ['noun', 'verb', 'aux', 'det', 'adp']:
@@ -443,7 +636,7 @@ class TestValidate(unittest.TestCase):
                 #  self.assertErrors(c, [pcprefix + '-pc1_lrt1_feat1_name',
                 #                        pcprefix + '-pc1_lrt1_feat1_value'])
                 #  if pcprefix == 'verb':
-                #    self.assertError(c, pcprefix + '-pc1_lrt1_feat1_head')
+                #    self.assertError(c, pcprefix + '-pc1_lrt1_feat1_head')             
 
     def test_features(self):
         # try a bad feature and value everywhere
@@ -455,6 +648,37 @@ class TestValidate(unittest.TestCase):
             c[p + '1_feat1_name'] = 'dummy'
             c[p + '1_feat1_value'] = 'dummy'
             self.assertErrors(c, [p + '1_feat1_name', p + '1_feat1_value'])
+            
+        # test features whose categories do not match lrt feature head
+        for lt in ['verb-pc1_lrt' , 'adj-pc1_lrt']: 
+            c = ChoicesFile()
+            feature_name = 'feat1'
+            for head in ['subj', 'obj', 'noun']:
+                c[lt + '1_feat1_name'] = feature_name
+                c['feature1_name'] = feature_name
+                c['feature1_cat'] = 'verb'
+                c[lt + '1_feat1_head'] = head
+                self.assertError(c, lt + '1_feat1_head') 
+            for head in ['verb']:
+                c[lt + '1_feat1_name'] = feature_name
+                c['feature1_name'] = feature_name
+                c['feature1_cat'] = 'noun'
+                c[lt + '1_feat1_head'] = head
+                self.assertError(c, lt + '1_feat1_head')  
+                
+        # test features which can be specified for multiple values in one checkbox
+        for lt in ['noun-pc1_lrt', 'verb-pc1_lrt', 'adj-pc1_lrt']:
+            c = ChoicesFile()
+            c['number1_name'] = 'sg'
+            c['number2_name'] = 'pl'
+            c['person'] = '1-2-3'
+            c[lt + '1_feat1_name'] = 'number'
+            c[lt + '1_feat1_head'] = 'itself'
+            c[lt + '1_feat1_value'] = 'sg' 
+            c[lt + '1_feat2_name'] = 'number'
+            c[lt + '1_feat2_head'] = 'itself'
+            c[lt + '1_feat2_value'] = 'pl' 
+            self.assertError(c, lt + '1_feat2_value') 
 
     def test_argopt(self):
         c = ChoicesFile()
@@ -464,3 +688,17 @@ class TestValidate(unittest.TestCase):
         self.assertErrors(c, ['subj-mark-drop', 'subj-mark-no-drop',
                               'obj-mark-drop', 'obj-mark-no-drop',
                               'context1_feat1_head'])
+
+    def test_lrt(self):
+        c = ChoicesFile()
+        lt = 'verb-pc1_lrt'
+        feature_name = 'feat1'
+        for head in ['subj', 'obj', 'noun']:
+            c[lt + '1_feat1_name'] = feature_name
+            c['feature1_name'] = feature_name
+            c['feature1_cat'] = 'verb'
+            c[lt + '1_feat1_head'] = head
+        self.assertError(c, lt + '1_lri')
+
+if __name__ == '__main__':
+    unittest.main()

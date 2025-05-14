@@ -1,0 +1,27 @@
+det noun1 itr-verb3sg
+det noun1 adv1 itr-verb3sg
+det adj1 noun1 itr-verb3sg
+det noun1-acc det noun2 tr-verb3sg
+possessor det noun1 possessum noun2 itr-verb3sg
+det noun2-acc det noun2-case3 itr-verb-nmz tr-verb3sg
+det noun2-acc det itr-verb-nmz tr-verb3sg
+det noun2-acc itr-verb-nmz tr-verb3sg
+det noun2-acc det noun1-case4 det noun2-case3 tr-verb-nmz tr-verb3sg
+det noun2-acc det noun2-case3 tr-verb-nmz tr-verb3sg
+det noun2-acc det noun1-case4 tr-verb-nmz tr-verb3sg
+det noun2-acc det tr-verb-nmz tr-verb3sg
+det noun2-acc tr-verb-nmz tr-verb3sg
+*det noun2-acc det noun2-case4 itr-verb-nmz tr-verb3sg
+*det noun2-acc possessor det noun1 possessum itr-verb-nmz tr-verb3sg
+*det noun2-acc det noun2 itr-verb-nmz tr-verb3sg
+*det noun2-acc det noun2-case4 itr-verb-nmz tr-verb3sg
+*det noun2-acc det noun1 det noun2 tr-verb-nmz tr-verb3sg
+*det noun2-acc det noun1-acc det noun2 tr-verb-nmz tr-verb3sg
+*det noun2-acc det noun1-case3 det noun2-case4 tr-verb-nmz tr-verb3sg
+*det noun2-acc det noun2-case3 adv1 itr-verb-nmz tr-verb3sg
+*det noun2-acc det noun2-case3 adj1 itr-verb-nmz tr-verb3sg
+*det noun2-acc det noun1-case4 det noun2-case3 adv1 tr-verb-nmz tr-verb3sg
+*det noun2-acc det noun1-case4 det noun2-case3 adj1 tr-verb-nmz tr-verb3sg
+*det noun2-case3 itr-verb-nmz
+*det noun2-acc det noun1 itr-verb-nmz tr-verb3sg
+*det noun2-acc det noun1-acc det noun2 tr-verb-nmz tr-verb3sg

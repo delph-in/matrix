@@ -1,0 +1,19 @@
+1@@@@1@@det noun1 itr-verb3sg @@@@1@3@@@
+2@@@@1@@adv1 itr-verb3sg det noun1@@@@1@4@@@
+3@@@@1@@det noun1-acc tr-verb3sg det noun2 @@@@1@5@@@
+4@@@@1@@det noun1 tr-verb3sg det noun2-acc @@@@1@5@@@
+5@@@@1@@possessor det noun1 possessum noun2 itr-verb3sg@@@@1@6@@@
+6@@@@1@@possessum noun2 possessor det noun1 itr-verb3sg@@@@1@6@@@
+7@@@@1@@det noun1 tr-verb3sg det noun1-case3 tr-verb-nmz-acc det noun2-case4@@@@1@8@@@
+8@@@@1@@det noun1-case3 tr-verb-nmz-acc det noun2-case4 tr-verb3sg det noun1 @@@@1@8@@@
+9@@@@1@@det noun1 tr-verb3sg det tr-verb-nmz-acc det noun2-case4@@@@1@7@@@
+10@@@@1@@det noun1 tr-verb3sg det noun1-case3 tr-verb-nmz-acc @@@@1@6@@@
+11@@@@1@@det noun1 tr-verb3sg det tr-verb-nmz-acc@@@@1@5@@@
+12@@@@1@@det noun1 tr-verb3sg possessor det noun1 possessum tr-verb-nmz-acc det noun1-case3@@@@0@10@@@
+13@@@@1@@det noun1 tr-verb3sg det noun1-case3 possessum tr-verb-nmz-acc possessor det noun1@@@@0@10@@@
+14@@@@1@@det noun1 tr-verb3sg det noun1-case3 adv1 tr-verb-nmz-acc det noun2-case4@@@@0@9@@@
+15@@@@1@@det noun1 tr-verb3sg det noun1-case3 adj1 tr-verb-nmz-acc det noun2-case4@@@@0@9@@@
+16@@@@1@@det noun1 tr-verb3sg det noun1-case3 itr-verb-nmz-acc@@@@0@6@@@
+17@@@@1@@det noun1 tr-verb3sg det noun1-acc tr-verb-nmz-acc det noun2@@@@0@8@@@
+18@@@@1@@det noun1-case3 tr-verb-nmz det noun2-case4@@@@0@5@@@
+19@@@@1@@det noun1 tr-verb3sg det noun1-case3 tr-verb-nmz det noun2-case4@@@@0@8@@@

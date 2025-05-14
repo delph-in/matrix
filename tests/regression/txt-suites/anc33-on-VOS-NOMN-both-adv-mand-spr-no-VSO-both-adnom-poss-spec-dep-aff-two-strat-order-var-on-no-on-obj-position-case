@@ -1,0 +1,19 @@
+itr-verb3sg noun1
+adv1 itr-verb3sg noun1 
+itr-verb3sg adj1 noun1 
+tr-verb3sg noun1-acc noun2
+itr-verb3sg noun1possessor noun2
+itr-verb3sg noun2 noun1possessor2 
+tr-verb3sg itr-verb-nmz-acc noun1possessor2 noun1
+tr-verb3sg tr-verb-nmz-acc noun1possessor2 noun2-case3 noun1
+tr-verb3sg tr-verb-nmz-acc noun1possessor2 noun1
+tr-verb3sg adv1 tr-verb-nmz-acc noun1possessor2 noun2-case3 noun1
+*tr-verb3sg adj1 tr-verb-nmz-acc noun1possessor2 noun2-case3 noun1
+*tr-verb3sg noun1possessor tr-verb-nmz-acc noun2-case3 noun1
+*tr-verb3sg itr-verb-nmz-acc noun1
+*tr-verb3sg tr-verb-nmz-acc noun1
+*tr-verb3sg tr-verb-nmz-acc noun2-case3 noun1possessor2 noun1
+*tr-verb3sg tr-verb-nmz-acc noun2-case3 noun1
+*tr-verb-nmz-acc noun1possessor2 noun2-case3
+*tr-verb3sg tr-verb noun1possessor2 noun2-case3 noun1
+*tr-verb3sg tr-verb3sg noun1 noun2-acc noun1

@@ -1,1 +1,3 @@
 pydelphin==1.4.0
+
+# Run ./install_ace.sh

@@ -1,12 +1,10 @@
 from gmcs.utils import TDLencode
-#from gmcs.linglib.morphotactics import all_position_classes
 
 from functools import partial
 
 #### UTILITIES ####
 
 # currently only intransitive and strict transitive
-
 
 def added_argnum_for_vchop(vchop):
     position = vchop.get('argpos', 'post').lower()  # default to post
@@ -264,8 +262,8 @@ def added_arg_non_local_lex_rule(added_arg, total_args):
 # which uses val-change-ccont-lex-rule as the base supertype
 # for any position class with valence-changing lexical rules.
 
-# Generates the generic applicative (non-scopal) rule
 def basic_applicative_lex_rule():
+    """Generates the generic applicative (non-scopal) rule."""
     return '''{rulename} := comps-change-only-lex-rule &
   [ C-CONT [ RELS.LIST < event-relation &
                    [ ARG1 #evt ] >,
@@ -325,10 +323,8 @@ def causative_lex_rule_gen(demoted_argnum, transitive=True):
                                COMPS < {dtr-comps} > ] ].'''.format(**rulevars)
     return rule
 
-# Generates the generic causative rule
-
-
 def ocausative_lex_rule_gen(demoted_argnum, transitive=True):
+    """Generates the generic causative rule."""
     rulevars = {}
     # OSUBJ_ARG_FRAG = '#osubj & [ LOCAL.CONT.HOOK.INDEX #causee ]'
     compslist = [OSUBJ_ARG_FRAG]
@@ -361,10 +357,9 @@ def ocausative_lex_rule_gen(demoted_argnum, transitive=True):
                          CONT.HOOK.LTOP #larg ] ] ].'''.format(**rulevars)
     return rule
 
-# Generates the valence-specific constraint on the type of an added argument.
-
 
 def added_arg_head_lex_rule(argnum, numargs, head):
+    """Generates the valence-specific constraint on the type of an added argument."""
     rulename = lexrule_name('added-arg-head-type', argnum, numargs, head)
     hc = head.lower()
     if hc == 'np':
@@ -394,11 +389,12 @@ ADDED_ARG_APPLICATIVE_FRAGMENT = ''' [ LOCAL [ CAT [ VAL [ SPR < >,
                                                            COMPS < > ] ],
                                                CONT.HOOK.INDEX #nind ] ]'''
 
-# Generates the valence-specific applicative LR supertype.
-# Inherits from the valence-specific non-local rule and the generic applicative rule.
-
 
 def added_arg_applicative_lex_rule(added_arg, total_args):
+    """
+    Generates the valence-specific applicative LR supertype.
+    Inherits from the valence-specific non-local rule and the generic applicative rule.
+    """
     rulevars = {}
     compslist = []
     for i in range(2, total_args+1):
@@ -421,7 +417,6 @@ def added_arg_applicative_lex_rule(added_arg, total_args):
     return rule
 
 
-##########
 subj_rem_op_lex_rule_gen = subj_rem_op_lex_rule
 obj_rem_op_lex_rule_gen = obj_rem_op_lex_rule
 subj_dem_op_lex_rule_gen = subj_dem_op_lex_rule
@@ -484,9 +479,6 @@ class LexRuleWrapper(object):
 
     def __eq__(self, other):
         return str(self.name) == str(other.name)
-
-#from sys import stderr
-
 
 class LexRuleBuilder(object):
     def __init__(self):

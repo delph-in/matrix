@@ -1,7 +1,7 @@
-'''
+"""
 Module to support the Constituent (Wh-) Questions library.
 email olzama@uw.edu with both constituent and polar questions about the library.
-'''
+"""
 
 from gmcs.constants import MTRX_FR_OPT, MTRX_FRONT, NO_MULTI, \
     SINGLE, MULTI, SG_OBLIG, ALL_OBLIG, EMBED_INSITU, ON, WH_INFL, \
@@ -10,9 +10,9 @@ from gmcs.utils import get_name, TDLencode, orth_encode
 
 from gmcs.feature_type_use import USED_TYPES
 
-'''
+"""
 CONSTANTS
-'''
+"""
 
 WH_Q_PHR_NO_OR_SG_OBLIG_MULTI = '''wh-ques-phrase := 
 [ SYNSEM.NON-LOCAL.QUE #que,
@@ -322,8 +322,7 @@ def customize_wh_ques(mylang, ch, rules, roots):
 
 def add_lexrules(choices):
     from gmcs.linglib.morphotactics import all_position_classes
-    '''
-    '''
+    
     for pc in all_position_classes(choices):
         pc_key = pc.full_key
         idx = pc['lrt'].next_iter_num() if 'lrt' in pc else 1

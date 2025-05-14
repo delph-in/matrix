@@ -3,7 +3,7 @@
 ;;;
 ;;; HPSG Grammar Matrix
 ;;;
-;;; $Id: matrix.tdl,v 1.51 2008-05-23 01:44:21 sfd Exp $
+;;; $Id: matrix.tdl,v 3.1 2024-10-09 Exp $
 ;;;
 ;;;  Copyright (c) 2002-2005
 ;;;    Emily M. Bender, Dan Flickinger, Stephan Oepen
@@ -131,32 +131,17 @@ non-affix-bearing := word-or-lexrule &
     SYNSEM.LKEYS.KEYREL.WLINK cons ]
 """Words or lexical rules that do not take affixes.""".
 
-; Rule
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Node labels
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-rule := sign &
-  [ RULE-NAME string ]
-"""A rule with a display name.""".
-
-; LABEL-NAME and META used for labeling nodes in parse trees
-
-tree-node-label := *top* &
-  [ NODE sign ]
-"""Unused type for labeling nodes on trees.""".
+; LABEL-NAME used for labeling nodes in parse trees
 
 label := sign &
   [ LABEL-NAME string ]
 """User-friendly node labels, e.g., for labeled trees.
 <features>
 LABEL-NAME: The node label to display on the tree.""".
-
-; For complex node labels, like S/NP
-meta := sign &
-  [ META-PREFIX string,
-    META-SUFFIX string ]
-"""Node labels with two parts, e.g., S/NP.
-<features>
-META-PREFIX: The first part of the node label.
-META-SUFFIX: The second part of the node label.""".
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; SYNSEM values
@@ -493,22 +478,6 @@ head and the CLAUSE value of the dependent
 <history>
 SSH 2012-02-16 --ICONS""".
 
-; MRSs are divided into psoas (with a distinguished event) and
-; nom-objs (with a distinguished index).  We use a polymorphic
-; attribute name INDEX for both of these, to simplify manipulation of
-; these objects; for example, modifying PPs assign as their ARG's
-; value the INDEX of the phrase they modify, whether it's an N-bar
-; (with a ref-ind value) or a VP (with an event value).  Similarly
-; useful for coordination.
-
-psoa := mrs &
-  [ HOOK.INDEX event ]
-"""Type listed for deletion""".
-
-nom-obj := mrs &
-  [ HOOK.INDEX index ]
-"""Type listed for deletion""".
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; LKEYS
 
@@ -544,8 +513,8 @@ as of 2022""".
 ; Basic semantic types
 
 qeq := avm &
-  [ HARG handle,
-    LARG handle ]
+  [ HARG handle & [ INSTLOC #il ],
+    LARG handle & [ INSTLOC #il ] ]
 """<name lang='en'>equal modulo quantifiers<EOL>
 Relates scopal argument positions to the elementary predications
 they outscope, leaving room for quantifiers to intervene.
@@ -833,14 +802,11 @@ na-or-- := luk
 bool := luk
 """true or false""".
 
-+-or-- := luk
-"""<todo> remove this type; redundant with bool""".
-
 na := na-or-+ & na-or--
 """not applicable""".
-+ := bool & na-or-+ & +-or--
++ := bool & na-or-+
 """true""".
-- := bool & na-or-- & +-or--
+- := bool & na-or--
 """false""".
 
 xmod := sort &
@@ -1608,7 +1574,8 @@ headed-phrase := phrase &
 		   CONT.HOOK.ICONS-KEY #icons,
 		   AGR #agr,
 		   COORD -,
-		   COORD-REL #crel ] ].
+		   COORD-REL #crel ],
+    NON-HEAD-DTR sign & [ SYNSEM.LOCAL.COORD - ] ].
 
 non-headed-phrase := phrase.
 
@@ -1731,8 +1698,7 @@ binary-phrase := basic-binary-phrase &
     ARGS < [ INFLECTED infl-satisfied ],
            [ INFLECTED infl-satisfied ] > ].
 
-basic-binary-headed-phrase := headed-phrase & basic-binary-phrase &
-  [ NON-HEAD-DTR sign & [ SYNSEM.LOCAL.COORD - ] ].
+basic-binary-headed-phrase := headed-phrase & basic-binary-phrase.
 
 binary-headed-phrase := basic-binary-headed-phrase & binary-phrase.
 
@@ -2129,12 +2095,15 @@ basic-head-subj-nmc-phrase := declarative-clause & binary-nonloc-que-rel &
 
 ; OZ 2020-05-19 Adding WH feature for handling embedded constituent questions.
 
+; KR 2024-08-26 The rule mother now identifies its COMPS value with the HEAD-DTR and not 
+; the NON-HEAD-DTR to allow action nominals to take pass up their comps value
+
 basic-head-spec-phrase-super := binary-nonloc-phrase & phrasal &
               binary-headed-phrase &
   [ INFLECTED infl-satisfied,
     SYNSEM [ LOCAL.CAT [ WH [ OR < #or1, #or2 > ],
                          VAL [ SUBJ #subj,
-                               COMPS #spcomps,
+                               COMPS #comps,
                                SPR #spr,
                                SPEC #spec ],
                          POSTHEAD #ph,
@@ -2144,7 +2113,7 @@ basic-head-spec-phrase-super := binary-nonloc-phrase & phrasal &
                SYNSEM [ LOCAL [ CAT [ WH #or1,
                                       HEAD #head,
                                       VAL [ SUBJ #subj,
-                                            COMPS olist & #comps,
+                                            COMPS #comps,
                                             SPR < #synsem &
                                                   canonical-synsem . #spr >,
                                             SPEC #spec ],
@@ -2152,11 +2121,9 @@ basic-head-spec-phrase-super := binary-nonloc-phrase & phrasal &
                                 CONT.HOOK #hdhook ],
                         MODIFIED #hmodif ] ],
     NON-HEAD-DTR.SYNSEM #synsem &
-     [ LOCAL [ CAT [ WH #or2, VAL [ SPEC < [ LOCAL [ CAT [ HEAD #head,
-                                                  VAL.COMPS #comps ],
+     [ LOCAL [ CAT [ WH #or2, VAL [ SPEC < [ LOCAL [ CAT [ HEAD #head ],
                                             CONT.HOOK #hdhook ],
-                                    MODIFIED #hmodif ] >,
-                           COMPS #spcomps ] ] ],
+                                    MODIFIED #hmodif ] > ] ] ],
        MODIFIED #modif ],
     C-CONT [ RELS.LIST < >, HCONS.LIST < >, ICONS.LIST < > ] ].
 
@@ -2262,6 +2229,9 @@ basic-head-comp-nmc-phrase := binary-nonloc-que-rel & head-compositional &
 ; is, using [ ICONS.LIST.FIRST ... ] is dangerous. Plus, CLAUSE/TARGET
 ; are replaced by IARG1/IARG2.
 
+; KR 2024-03-07: Removing [ HEAD-DTR..INDEX event ] to allow nominalized 
+; verbs to take optional complements 
+ 
 basic-head-opt-comp-phrase := unary-nonloc-phrase & head-only &
                               head-compositional &
   [ INFLECTED #infl,
@@ -2286,8 +2256,7 @@ basic-head-opt-comp-phrase := unary-nonloc-phrase & head-only &
 					    SPEC #spec ],
 				      MC #mc,
 				      POSTHEAD #ph,
-              WH #wh ],
-				CONT.HOOK.INDEX event ],
+              WH #wh ]],
 			MODIFIED #mod ] ],
     C-CONT [ RELS.LIST < >,
 	     HCONS.LIST < >,
@@ -2316,6 +2285,7 @@ basic-head-opt-comp-phrase := unary-nonloc-phrase & head-only &
 ; ERB 2007-05-16 Moving MC identification from basic-head-opt-subj-phrase
 ; down to decl-head-opt-subj-phrase, since we might *not* want it for
 ; imperatives.
+
 
 basic-head-opt-subj-phrase := unary-nonloc-phrase & head-only &
   [ INFLECTED #infl,
@@ -3695,6 +3665,7 @@ conj-lex := basic-conj-lex & single-rel-lex-item &
 nosem-conj-lex := basic-conj-lex &
   [ SYNSEM [ LOCAL [ CAT [ HEAD conj & [ MOD null ],
                            VAL [ SPR < >,
+                                 SPEC < >,
                                  COMPS < >,
                                  SUBJ < > ]],
                      CONT.RELS.LIST < > ]]].
@@ -4240,7 +4211,7 @@ add-icons-subj-comp-verb-rule := lex-rule &
 
 
 ; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; ;  EPR     ; Edges and PRominence
+; ;  EPR     ; Edges and Prominence
 ; ;  LE      ; Left Edge
 ; ;  RE      ; Right Edge
 ; ;  DTE     ; Designated Terminal Element

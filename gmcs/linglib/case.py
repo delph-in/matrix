@@ -3,18 +3,12 @@ from gmcs.utils import orth_encode
 from gmcs.lib import TDLHierarchy
 from gmcs.utils import get_name
 
-
-######################################################################
-# customize_case()
-#   Create the type definitions associated with the user's choices
-#   about case.
-
-# case_names()
-#   Create and return a list containing information about the cases
-#   in the language described by the current choices.  This list consists
-#   of tuples with three values:
-#     [canonical name, friendly name, abbreviation]
 def case_names(ch):
+    """
+    Create and return a list containing information about the cases
+    in the language described by the current choices.  This list consists
+    of tuples with three values: [canonical name, friendly name, abbreviation].
+    """
     # first, make two lists: the canonical and user-provided case names
     cm = ch.get('case-marking')
     canon = []
@@ -79,21 +73,23 @@ def case_names(ch):
 
     return list(zip(canon, user, abbrev))
 
-
-# Given the canonical (i.e. choices variable) name of a case, return
-# its abbreviation from the list of cases, which should be created by
-# calling case_names().  If there is no abbreviation, return the name.
 def canon_to_abbr(name, cases):
+    """
+    Given the canonical (i.e. choices variable) name of a case, return
+    its abbreviation from the list of cases, which should be created by
+    calling case_names(). If there is no abbreviation, return the name.
+    """
     for c in cases:
         if c[0] == name:
             return c[2]
     return name
 
-
-# Given the name of a case, return its abbreviation from the list of
-# cases, which should be created by calling case_names().  If there
-# is no abbreviation, return the name.
 def name_to_abbr(name, cases):
+    """
+    Given the name of a case, return its abbreviation from the list of
+    cases, which should be created by calling case_names(). If there
+    is no abbreviation, return the name.
+    """
     for c in cases:
         if c[1] == name:
             return c[2]
@@ -146,7 +142,11 @@ def init_case_hierarchy(ch, hierarchies):
         abs_a = canon_to_abbr('abs', cases)
         if cm == 'split-v':
             for c in cases:
-                hier.add(c[2], 'case', c[1])
+                #hier.add(c[2], 'case', c[1])
+                if poss:
+                    hier.add(c[2], 'real-case', c[1])
+                else:
+                    hier.add(c[2], 'case', c[1])
         else:  # 'split-n':
             if poss:
                 hier.add('a_case', 'real-case', 'transitive agent')
@@ -173,17 +173,13 @@ def init_case_hierarchy(ch, hierarchies):
     if not hier.is_empty():
         hierarchies[hier.name] = hier
 
-
-# customize_case_type()
-#   Create a type for case
 def customize_case_type(mylang, hierarchies):
+    """Create a type for case."""
     if 'case' in hierarchies:
         hierarchies['case'].save(mylang)
 
-
-# customize_trigger_rules()
-#   Create trigger rules for case-marking adpositions
 def customize_trigger_rules(adp_type, trigger):
+    """Create trigger rules for case-marking adpositions."""
     grdef1 = adp_type + '_gr_1 := arg0e_gtr & \
                   [ CONTEXT [ RELS.LIST <  [ ARG1 individual & #i ] > ], \
                     FLAGS [ SUBSUME < #i >, TRIGGER "' + adp_type + '" ] ].'
@@ -198,13 +194,9 @@ def customize_trigger_rules(adp_type, trigger):
     trigger.add(grdef2)
     trigger.add(grdef3)
 
-
-# customize_case_adpositions()
-#   Create the appropriate types for case-marking adpositions
-def customize_case_adpositions(mylang, lexicon, trigger, ch, case_pos):
-    cases = case_names(ch)
+def customize_case_adpositions(mylang, ch, case_pos):
+    """Create the appropriate types for case-marking adpositions."""
     # features = ch.features()
-    to_cfv = []
 
     if ch.has_adp_case():
         comment = \
@@ -219,14 +211,9 @@ def customize_case_adpositions(mylang, lexicon, trigger, ch, case_pos):
         poss = True if ch.get('poss-strat') or ch.get('poss-pron') else False
 
         typedef = \
-            'case-marking-adp-lex := non-local-none-lex-item & raise-sem-lex-item & \
-                [ SYNSEM.LOCAL.CAT [ HEAD adp & [ CASE #case, MOD < > ], \
-                                     VAL [ SPR < >, \
-                                           SUBJ < >, \
-                                           COMPS < #comps >, \
-                                           SPEC < > ]], \
-                  ARG-ST < #comps & [ LOCAL.CAT [ HEAD noun & [ CASE #case ], \
-                                                  VAL.SPR < > ]] > ].'
+            'case-marking-adp-lex := non-infostr-marking-adp-lex & \
+            [ SYNSEM.LOCAL.CAT [ HEAD [ CASE #case]],  \
+              ARG-ST < [ LOCAL.CAT.HEAD.CASE #case ] > ].' 
         mylang.add(typedef)
 
         # EKN 03-02-2018 Add CASE real-case to comp of adp if possessives
@@ -246,82 +233,6 @@ def customize_case_adpositions(mylang, lexicon, trigger, ch, case_pos):
         if ch.get('coverb-v') == 'on' or ch.get('coverb-n') == 'on':
             mylang.add('case-marking-adp-lex := [ SYNSEM.LOCAL.CAT.HEAD.LVC lv-none ].')
 
-        # checking whether language has both prepositions and postpositions
-        bidirectional = False
-        adporders = []
-        for adp in ch.get('adp', []):
-            adp_order = adp.get('order')
-            if adp_order not in adporders:
-                adporders.append(adp_order)
-        if len(adporders) == 2:
-            bidirectional = True
-            mylang.add('case-marking-prep-lex := case-marking-adp-lex & \
-               [ SYNSEM.LOCAL.CAT.HEADFINAL - ].')
-            mylang.add('case-marking-postp-lex := case-marking-adp-lex & \
-               [ SYNSEM.LOCAL.CAT.HEADFINAL + ].')
-
-        # Lexical entries
-        lexicon.add_literal(';;; Case-marking adpositions')
-
-        adp_type_names = []
-        for adp in ch.get('adp', []):
-            orth = orth_encode(adp.get('orth'))
-            infix_tname = 'ad'
-            if bidirectional:
-                if adp.get('order') == 'before':
-                    infix_tname = 'pre'
-                elif adp.get('order') == 'after':
-                    infix_tname = 'post'
-
-            super_type = 'case-marking-' + infix_tname + 'p-lex'
-            # figure out the abbreviation for the case this adp marks
-            cn = ''
-            abbr = ''
-            for feat in adp.get('feat', []):
-                if feat['name'] == 'case':
-                    cn = feat['value']
-                    break
-
-            abbr = name_to_abbr(cn, cases)
-
-            # the type name for the adp marker includes the orthography of the marker at the end
-            # this serves to ensure each marker has its own lexical entry
-            # and prevents them from being "merged" due to having identical names
-            adp_type = TDLencode(abbr + '-marker_' + orth)
-            adp_type_names.append(adp_type)
-
-            typedef = \
-                adp_type + ' := ' + super_type + ' & \
-                        [ STEM < "' + orth + '" > ].'
-            lexicon.add(typedef)
-
-            has_inforstr_feat = False
-            for feat in adp.get('feat', []):
-                if feat['name'] == "information-structure meaning":
-                    has_inforstr_feat = True
-                    typedef = adp_type + \
-                        ' := [ SYNSEM.LOCAL \
-                                [ CAT.VAL.COMPS < \
-                                    [ LOCAL.CONT.HOOK.INDEX #target ] >, \
-                                  CONT [ HOOK.ICONS-KEY #icons, \
-                                         ICONS.LIST < info-str & \
-                                         #icons & [ \
-                                             IARG2 #target ] > ] ] ] ].'
-                    lexicon.add(typedef)
-                    break
-            if not has_inforstr_feat:
-                typedef = \
-                    adp_type + ' := [ SYNSEM.LOCAL.CONT [ \
-                                        HOOK [ ICONS-KEY.IARG1 #clause, \
-                                               CLAUSE-KEY #clause ], \
-                                        ICONS.LIST < > ] ].'
-                lexicon.add(typedef)
-
-            if cn.strip() != '':
-                customize_trigger_rules(adp_type, trigger)
-
-            to_cfv += [(adp.full_key, adp_type, 'adp')]
-    return to_cfv
 
 
 def customize_case(mylang, ch, hierarchies):
@@ -404,14 +315,11 @@ def add_lexrules(ch):
                 ch[lrt_key + '_lri1_inflecting'] = 'no'
                 ch[lrt_key + '_lri1_orth'] = ''
 
-
-
-
 def interpret_verb_valence(valence):
-    '''
+    """
     Return the canonical valence name (e.g. iverb, tverb) given the
     valence for a verb as defined in a choices file.
-    '''
+    """
     if valence == 'trans' or '-' in valence:
         return 'tverb'
     else:
@@ -431,7 +339,6 @@ def customize_verb_case(mylang, ch):
     # Which should get fixed...  - sfd
 
     # OZ: This currently also adds clausal types.
-
     for p in ch.patterns():
         rule_pattern = p[2]
         p = p[0].split(',')  # split off ',dirinv', if present
@@ -479,12 +386,14 @@ def customize_verb_case(mylang, ch):
                         mylang.add(t_type + ' := transitive-verb-lex.')
                     else:
                         mylang.add(t_type + ' := clausal-verb-lex.')
-                # constrain the head of the agent/subject
-                typedef = \
-                    t_type + ' := \
-          [ ARG-ST.FIRST.LOCAL.CAT.HEAD ' + a_head + ' ].'
-                mylang.add(typedef)
-
+    
+                # constrain the head of the agent/subject on parent transitive-verb-lex            
+                if t_type == 'transitive-verb-lex':
+                    typedef = \
+                        t_type + ' := \
+              [ ARG-ST.FIRST.LOCAL.CAT.HEAD ' + a_head + ' ].'
+                    mylang.add(typedef)
+          
                 # constrain the case of the agent/subject
                 if a_case:
                     typedef = \
@@ -500,12 +409,13 @@ def customize_verb_case(mylang, ch):
           [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CAT.HEAD.CASE-MARKED + ] > ].'
                     mylang.add(typedef)
 
-                # constrain the head of the patient/object
-                if o_head:
-                    typedef = \
-                        t_type + ' := \
-          [ ARG-ST < [ ], [ LOCAL.CAT.HEAD ' + o_head + ' ] > ].'
-                    mylang.add(typedef)
+                # constrain the head of the patient/object on parent transitive-verb-lex
+                if t_type == 'transitive-verb-lex':
+                    if o_head:
+                        typedef = \
+                            t_type + ' := \
+              [ ARG-ST < [ ], [ LOCAL.CAT.HEAD ' + o_head + ' ] > ].'
+                        mylang.add(typedef)
 
                 # constrain the case of the patient/object
                 if o_case:
@@ -547,11 +457,12 @@ def customize_verb_case(mylang, ch):
                     else:
                         mylang.add(i_type + ' := clausal-verb-lex.')
 
-                # constrain the head of the subject
-                typedef = \
-                    i_type + ' := \
-          [ ARG-ST.FIRST.LOCAL.CAT.HEAD ' + s_head + ' ].'
-                mylang.add(typedef)
+                # constrain the head of the subject on parent intransitive-verb-lex
+                if i_type == 'intransitive-verb-lex':
+                    typedef = \
+                        i_type + ' := \
+              [ ARG-ST.FIRST.LOCAL.CAT.HEAD ' + s_head + ' ].'
+                    mylang.add(typedef)
 
                 # constrain the case of the subject
                 if s_case:
@@ -569,14 +480,12 @@ def customize_verb_case(mylang, ch):
                     mylang.add(typedef)
 
 
-'''
-OZ 2020-06-09
-This is a reduced duplicate of the customize_verb_case() function; I did 
-not want to make it any more long or complex.
-'''
-
-
 def get_verb_case(ch):
+    """
+    OZ 2020-06-09
+    This is a reduced duplicate of the customize_verb_case() function; I did 
+    not want to make it any more long or complex.
+    """
     cases = case_names(ch)
     mycases = {'tran': None, 'intran': None}
     for p in ch.patterns():
@@ -613,7 +522,6 @@ def get_verb_case(ch):
 # VALIDATION #
 ##############
 
-
 def validate(choices, vr):
     cm = choices.get('case-marking')
 
@@ -646,12 +554,11 @@ def validate(choices, vr):
                'you must say what direction the verb is ' +
                'when the agent and patient have equal rank.')
 
-
-######################################################################
-# validate_one_case(pre)
-#   A helper function to validate the user's choices about one case.
-#   pre is the first few characters of the associated choices names
-#  (e.g. 'nom-acc-nom')
 def validate_one_case(ch, vr, pre):
+    """
+    A helper function to validate the user's choices about one case.
+    pre is the first few characters of the associated choices names
+    (e.g. 'nom-acc-nom').
+    """
     if not ch.get(pre + '-case-name'):
         vr.err(pre + '-case-name', 'You must specify a name for every case.')

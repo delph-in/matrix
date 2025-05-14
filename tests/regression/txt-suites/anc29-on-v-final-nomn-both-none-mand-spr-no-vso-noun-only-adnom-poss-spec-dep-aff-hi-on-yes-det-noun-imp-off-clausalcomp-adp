@@ -1,0 +1,21 @@
+det noun1 itr-verb3sg
+det noun1 adv1 itr-verb3sg 
+det adj1 noun1 itr-verb3sg 
+det noun1 det noun2 tr-verb3sg
+noun2 det noun1possessor itr-verb3sg
+det noun1 itr-verb-nmz det noun1possessor cv3sg
+det noun1 tr-verb-nmz det noun1possessor adp1 det noun2 cv3sg 
+det noun1 tr-verb-nmz det noun1possessor cv3sg
+*det noun1 itr-verb-nmz cv3sg
+*det noun1 tr-verb-nmz adp1 det noun2 cv3sg
+*det noun1 tr-verb-nmz cv3sg
+*itr-verb-nmz det noun1possessor
+*tr-verb-nmz det noun1possessor adp1 det noun2
+*det noun1 tr-verb det noun1possessor adp1 det noun2 cv3sg 
+*det noun2 det noun1 det noun2 tr-verb cv3sg 
+*det noun2 det noun1 det noun2 tr-verb3sg cv3sg 
+*det noun1 itr-verb-nmz adv1 det noun1possessor cv3sg
+*det noun1 tr-verb-nmz adv1 det noun1possessor adp1 det noun2 cv3sg 
+*det noun1 adj1 itr-verb-nmz det noun1possessor cv3sg
+*det noun1 adj1 tr-verb-nmz det noun1possessor adp1 det noun2 cv3sg 
+*det noun1 tr-verb-nmz det noun1possessor det noun2 cv3sg

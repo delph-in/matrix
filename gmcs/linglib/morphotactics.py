@@ -11,9 +11,9 @@ from gmcs.linglib.lexbase import (PositionClass, LexicalRuleType,
 
 from gmcs.lib import Hierarchy
 from gmcs.utils import get_name
+from gmcs.linglib.nominalized_clauses import needs_anc_wo_feat
 from functools import reduce
 from gmcs.linglib.light_verb_constructions import fix_coverb_pc_inputs
-#from gmcs.utils import TDLencode
 
 # Contents
 # 1. Module Variables
@@ -49,7 +49,7 @@ _supertypes = {}
 
 
 def all_position_classes(choices):
-    """ Yield each position class defined in the choices file. """
+    """Yield each position class defined in the choices file."""
     for lt in ALL_LEX_TYPES:
         for pc in choices[lt + '-pc']:
             yield pc
@@ -58,7 +58,7 @@ def all_position_classes(choices):
 def defined_lexrule_sts(lrt, pc):
     """
     Return the list of lexical rule supertypes, filtering out ones
-    not defined in the pc (likely Matrix types)
+    not defined in the pc (likely Matrix types).
     """
     sts = lrt.split_value('supertypes')
     to_return = []
@@ -233,8 +233,7 @@ def add_lexical_type_hierarchy(pch, choices):
 
 def pc_lrt_mergeable(pc):
     """
-    A pc is mergeable with its only daughter in case it only has
-    one daughter.
+    A pc is mergeable with its only daughter in case it only has one daughter.
     """
     return len([l for l in pc['lrt'] if not defined_lexrule_sts(l, pc)]) == 1
 
@@ -293,7 +292,7 @@ def create_lexical_rule_type(lrt, mtx_supertypes, cur_pc):
             # some kind, though it won't actually be used
             # to add any tdl here. It'll just prevent this
             # lrt from getting a default supertype added.
-            elif feat['value'] == 'plus':
+            elif feat['value'] == 'plus' or feat['value'] == 'ANC':
                 new_lrt.possessive = 'pron'
         # EKN 2018-02-17 Add info about lrts for possessum marking
         # that accompanies pronoun possessors:
@@ -367,12 +366,28 @@ def interpret_constraints(choices):
 def convert_obligatoriness_to_req(choices):
     """
     For all PCs marked as obligatory, add a "require" constraint for
-    that PC on each of its basetypes.
+    that PC on each of its basetypes. If the PC/LRT has a category-change rule
+    then the "require" constraint is added to the PC/LRT and not the basetype.
     """
-    for pc in all_position_classes(choices):
-        if pc.get('obligatory', '') == 'on':
-            basetypes = [i for i in list(_mns[pc.full_key].input_span().values())
-                         if len(i.inputs()) == 0]
+    for lc in LEXICAL_CATEGORIES:
+        for pc in choices[lc + '-pc']:
+            basetypes = []
+            if pc.get('obligatory', '') == 'on':
+                for i in list(_mns[pc.full_key].input_span().values()):
+                    #The input i is a basetype of the same lexical category
+                    # as the obligartory pc
+                    if len(i.inputs()) == 0 and lc in str(i):
+                        basetypes.append(i)
+                    #The "require" constraint still goes on the verb-lex basetype if the
+                    #the obligartory pc takes an auxilary as input
+                    elif len(i.inputs()) == 0 and lc == "verb" and "aux" in str(i):
+                        basetypes.append(i)
+                    #condition where i is a PC with a category-change rule
+                    elif len(i.inputs()) != 0 and isinstance(i,PositionClass) and i.has_category_change():
+                        i.constraints['req-fwd'][pc.full_key] = _mns[pc.full_key]
+                    #condition where i is a LRT with a category-change rule
+                    elif len(i.inputs()) != 0 and isinstance(i,LexicalRuleType) and "nominalization" in i.features:
+                        i.constraints['req-fwd'][pc.full_key] = _mns[pc.full_key]
             for bt in basetypes:
                 bt.constraints['req-fwd'][pc.full_key] = _mns[pc.full_key]
 
@@ -496,6 +511,7 @@ def set_req_bkwd_initial_flags(lex_pc, flag_tuple):
 # Changed the code to make the relationship explicit.
 LEX_RULE_SUPERTYPES = ['cat-change-only-lex-rule',
                        'same-agr-lex-rule',
+                       'same-non-local-lex-rule',
                        'cont-change-only-lex-rule',
                        'add-only-no-rels-hcons-rule',
                        'add-only-no-ccont-rule',
@@ -506,12 +522,23 @@ LEX_RULE_SUPERTYPES = ['cat-change-only-lex-rule',
                        'val-change-with-ccont-lex-rule',
                        'head-change-only-lex-rule',
                        'cont-change-only-lex-rule',
-                       'high-or-mid-nominalization-lex-rule',
-                       'mid-nominalization-lex-rule',
-                       'low-nmz-no-subjid-trans-lex-rule',
-                       'low-nmz-no-subjid-compsid-lex-rule',
-                       'low-nmz-subjid-trans-lex-rule',
-                       'low-nmz-subjid-compsid-lex-rule',
+                       'trans-sent-lex-rule',
+                       'intrans-sent-lex-rule',
+                       'trans-sent-alt-lex-rule',
+                       'intrans-sent-alt-lex-rule',
+                       'comps-anc-intrans-lex-rule',
+                       'comp-obj-trans-lex-rule',
+                       'comp-subj-trans-lex-rule',
+                       'non-sent-anc-intrans-lex-rule',
+                       'trans-poss-acc-lex-rule',
+                       'trans-erg-poss-lex-rule',
+                       'trans-nominal-lex-rule',
+                       'det-non-sent-anc-intrans-lex-rule',
+                       'det-trans-poss-acc-lex-rule',
+                       'det-trans-erg-poss-lex-rule',
+                       'det-trans-nominal-lex-rule',
+                       'trans-non-erg-poss-obj-only-lex-rule',
+                       'trans-erg-poss-subj-only-lex-rule',
                        'add-icons-subj-foc-lex-rule',
                        'add-icons-obj-foc-lex-rule']
 
@@ -612,6 +639,8 @@ def percolate_supertypes(pc):
                     x.supertypes.add('add-only-no-ccont-rule')
                 elif pc.has_infostr():
                     x.supertypes.add('add-only-no-rels-hcons-rule')
+                elif pc.has_possessive():
+                    x.supertypes.add('same-non-local-lex-rule')
 
     for r in pc.roots():
         r.percolate_down(items=lambda x: x.supertypes,
@@ -676,7 +705,6 @@ def get_infostr_constraints(choices):
         for j, lrt in enumerate(pc.get('lrt')):
             get_infostr_constraint(lrt.full_key, lrt.full_key)
 
-
 def write_rules(pch, mylang, irules, lrules, lextdl, choices):
     # Set up irules.tdl
     irules.define_sections([['regular', 'Inflecting Lexical Rule Instances', False, False],
@@ -701,6 +729,10 @@ def write_rules(pch, mylang, irules, lrules, lextdl, choices):
         # only lexical rules from this point
         write_supertypes(mylang, pc.identifier(), pc.supertypes)
         write_pc_flags(mylang, lextdl, pc, all_flags, choices)
+        if pc.has_possessive() and choices.get('ns', ''):
+            #possessive pcs should copy up MOD, NMZ, ADV-MOD, and ANC-WO values
+            #when a language has defined nominalization strategies
+            write_copy_nmz(mylang, choices, pc)
         for lrt in sorted(list(pc.nodes.values()), key=lambda x: x.tdl_order):
             write_i_or_l_rules(irules, lrules, lrt, pc.order)
             # TJT 2014-08-27: Write adjective position class features
@@ -794,12 +826,28 @@ def write_pc_flags(mylang, lextdl, pc, all_flags, choices):
         to_copy[mn.key] = write_mn_flags(mylang, lextdl, mn, out_flags, all_flags,
                                          choices)
     # for lex-rule PCs (not lexical types), write copy-up flags
-    if pc.is_lex_rule:
+    #Flags are not copied up for category-changing rules
+    if pc.is_lex_rule and not pc.has_category_change():
         # first write copy-ups for the root nodes
         copied_flags = write_copy_up_flags(mylang, to_copy, all_flags)
         # then, if any remain, copy up on the pc (if a lexrule)
         to_copy = {pc.key: all_flags.difference(out_flags.union(copied_flags))}
         write_copy_up_flags(mylang, to_copy, all_flags, force_write=True)
+
+def write_copy_nmz(mylang, choices, pc):
+    """
+    Require a pc to pass up MOD, NMZ, ADV-MOD, and ANC-WO values
+    """
+    mylang.add(pc.identifier() + ' := [SYNSEM.LOCAL.CAT.HEAD [NMZ #nmz,\
+                                                              MOD #mod ],\
+                                   DTR.SYNSEM.LOCAL.CAT.HEAD [NMZ #nmz,\
+                                                              MOD #mod]].')
+    if choices.get("adv", ''):
+        mylang.add(pc.identifier() + ' := [SYNSEM.LOCAL.CAT.HEAD.ADV-MOD #adv-mod,\
+                                           DTR.SYNSEM.LOCAL.CAT.HEAD.ADV-MOD #adv-mod ].')
+    if needs_anc_wo_feat(choices):
+         mylang.add(pc.identifier() + ' := [SYNSEM.LOCAL.CAT.HEAD.ANC-WO #anc-wo,\
+                                           DTR.SYNSEM.LOCAL.CAT.HEAD.ANC-WO #anc-wo ].')
 
 
 def write_mn_flags(mylang, lextdl, mn, output_flags, all_flags, choices):
@@ -916,7 +964,7 @@ def write_evidential_behavior(lrt, mylang, choices, pc_evidential):
         prev_section = mylang.section
         mylang.set_section('lexrules')
         mylang.add(EVIDENTIAL_LEX_RULE)
-        infl_evid_def = lrt.evidential + '''-evidential-lex-rule := evidential-lex-rule & 
+        infl_evid_def = lrt.evidential + '''-evidential-lex-rule := evidential-lex-rule &
         [ C-CONT.RELS.LIST < [ PRED "ev_''' + lrt.evidential + '''_rel" ] > ].
         '''
         mylang.add(infl_evid_def)
@@ -929,9 +977,9 @@ def write_possessive_behavior(pc, lrt, mylang, choices):
     ##############################################
     # FULL NP POSSESSIVE PHRASES:              ###
     ##############################################
-    POSSESSOR_LEX_RULE_DEFN = ''' := 
+    POSSESSOR_LEX_RULE_DEFN = ''' :=
              [ SYNSEM.LOCAL.CAT.HEAD noun ].'''
-    POSSESSUM_LEX_RULE_DEFN = ''' := 
+    POSSESSUM_LEX_RULE_DEFN = ''' :=
              [ SYNSEM.LOCAL.CAT.HEAD noun ].'''
     NON_POSS_LEX_RULE_DEFN = ''' := add-only-no-ccont-rule &
              [ SYNSEM.LOCAL.CAT [ HEAD noun & [ POSSESSOR nonpossessive ],\
@@ -957,6 +1005,30 @@ def write_possessive_behavior(pc, lrt, mylang, choices):
     elif lrt.possessive == None and pc.has_possessive():
         lrt.supertypes.add('add-only-no-ccont-rule')
 
+#Called by the adnominal_possessive library
+def add_nonpossessive_behavior(ch, mylang):
+    noun_inputs = set()
+    input_values = []
+    for pc in ch.get('noun-pc', ''):
+        poss_strat = False
+        for lrt in pc['lrt']:
+            if poss_strat:
+                break
+            for feat in lrt['feat']:
+                if 'poss-strat'in feat['name']:
+                    poss_strat = True
+                    break
+        if poss_strat:
+            input_values = _mns[pc.full_key].input_span()
+            for item in input_values:
+                lt_pc = item.split("-")
+                if len(lt_pc) == 1 and 'noun' in lt_pc[0]:
+                    noun_inputs.add(lt_pc[0])
+    for noun in ch.get('noun', ''):
+            noun_type = get_name(noun)  + '-noun-lex'
+            if noun.full_keys()[0].split("_")[0] not in noun_inputs:
+                mylang.add(noun_type + ':= [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR nonpossessive,\
+                                                     POSSESSUM nonpossessive ] ].', section='nounlex')
 
 def write_valence_change_behavior(pc, lrt, mylang, choices):
     from gmcs.linglib.valence_change import lexrule_name, added_argnum_for_vchop,demoted_argnum_for_vchop
@@ -1061,7 +1133,7 @@ def write_pc_adj_syntactic_behavior(lrt, mylang, choices):
                            ''' := [ SYNSEM.LOCAL.CAT.HEAD.PRD - ].''')
 
 
-'''
+"""
 OZ-2020-09-24
 The interrogative inflection without lexical threading
 requires an interrogative supertype (which will work for
@@ -1080,20 +1152,20 @@ wh-obj-lex-rule := itrg-lex-rule &
 
 -- but it is not clear to me how to properly incorporate this into the hierarchy,
 and at what stage.
-'''
+"""
 
 
 def write_interrogative_rules(lrt, mylang):
-    ITRG_LEX_RULE = '''itrg-lex-rule := add-only-no-ccont-rule & 
+    ITRG_LEX_RULE = '''itrg-lex-rule := add-only-no-ccont-rule &
     [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques ].'''
-    PROP_LEX_RULE = '''prop-lex-rule := add-only-no-ccont-rule & 
+    PROP_LEX_RULE = '''prop-lex-rule := add-only-no-ccont-rule &
     [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF prop ].'''
-    POLAR_LEX_RULE = '''polar-lex-rule := itrg-lex-rule & 
-    [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < [ NON-LOCAL.QUE.LIST < > ] >, 
+    POLAR_LEX_RULE = '''polar-lex-rule := itrg-lex-rule &
+    [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < [ NON-LOCAL.QUE.LIST < > ] >,
                              COMPS non-wh-list ] ].'''
-    WH_SUBJ = ''' wh-subj-lex-rule := itrg-lex-rule & 
+    WH_SUBJ = ''' wh-subj-lex-rule := itrg-lex-rule &
     [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < [ NON-LOCAL.QUE.LIST cons ] > ] ].'''
-    WH_OBJ = ''' wh-obj-lex-rule := itrg-lex-rule & 
+    WH_OBJ = ''' wh-obj-lex-rule := itrg-lex-rule &
 [ SYNSEM.LOCAL.CAT.VAL [ SUBJ non-wh-list,
                          COMPS < [ NON-LOCAL.QUE.LIST cons ] > ] ].'''
     mylang.set_section('lexrules')
@@ -1136,11 +1208,9 @@ def validate(choices, vr):
         switching = pc.get('switching', False)
         pc_switching_inputs = set()
         if pc.get('switching', ''):
-            inputs = pc.get('inputs', []).split(', ')
-            if isinstance(inputs, str):
-                pc_switching_inputs.add(inputs)
-            else:  # assume list
-                pc_switching_inputs.update(inputs)
+            inputs = pc.get('inputs', [])
+            inputs = inputs.split(', ') if isinstance(inputs, str) else inputs
+            pc_switching_inputs.update(inputs)
         for lrt in pc.get('lrt', []):
             lrt_validation(lrt, vr, index_feats, choices,
                            inputs=pc_switching_inputs, switching=switching)
@@ -1239,33 +1309,6 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
     #  vr.err(lrt.full_key + '_supertypes',
     #         'You must select a supertype for every lexical rule type.')
     # any features on an LR need a name and value (and head for verbs)
-    for feat in lrt.get('feat', []):
-        if 'name' not in feat:
-            vr.err(feat.full_key + '_name',
-                   'You must choose which feature you are specifying.')
-        if 'value' not in feat:
-            vr.err(feat.full_key + '_value',
-                   'You must choose a value for each feature you specify.')
-        # TJT 2014-08-22: check head for adjectives and incorporated stems
-        if lrt.full_key.startswith('verb-pc') or \
-                lrt.full_key.startswith('adj-pc') or \
-            'is-lrt' in lrt.full_key:
-            if 'head' not in feat:
-                vr.err(feat.full_key + '_head',
-                       'You must choose where the feature is specified.')
-            elif feat['head'] in ['higher', 'lower'] and not choices.get('scale'):
-                vr.err(feat.full_key + '_head',
-                       'To use higher/lower ranked NP, please define a scale on the direct-inverse page.')
-            # LTX 5/11/2022: CASE feature should also be a nouny feature only
-            elif feat['head'] == 'verb' and (feat.get('name', '') in index_feats or feat.get('name', '') in 'case'):
-                vr.err(feat.full_key + '_head',
-                       'This feature is associated with nouns, ' +
-                       'please select one of the NP options.')
-
-        # MTH 2017-11-27: check to make sure that only one evidential value is selected
-        if feat['name'] == 'evidential' and len(feat.get('value').split(',')) > 1:
-            vr.err(feat.full_key + '_value',
-                   'Choose only one evidential term.')
 
     # TJT 2015-02-02: Any given LRT should be either inflecting or non-inflecting
     inflecting_count = len([_f for _f in [lri.get(
@@ -1275,6 +1318,10 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
                'Any given Lexical Rule Type should contain either inflecting Lexical Rule Instances ' +
                'or non-inflecting Lexical Rule Instances.')
     orths = set()
+    # EEL 2025-1-15 validating that lrts must specify if they are inflecting or not
+    if len(lrt.get('lri', [])) == 0:
+        vr.err(lrt.full_key + '_lri',
+                "You must specify whether each instance is inflecting or non-inflecting.")
     for lri in lrt.get('lri', []):
         orth = lri.get('orth', '')
         if lri['inflecting'] == 'yes' and orth == '':
@@ -1344,7 +1391,9 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
     poss_strats = {}
     poss_prons = {}
     other_feats = {}
+    all_feats = {}
     for feat in lrt.get('feat'):
+        all_feats[feat.full_key] = (feat.get('name'), feat.get('value'), feat.get('head'))
         if 'poss-strat' in feat.get('name'):
             poss_strats[feat.full_key] = feat.get('name')
         elif 'poss-pron' in feat.get('name'):
@@ -1404,6 +1453,24 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
                     mess = 'Only possessive rules should have features specified on ' +\
                         'anything other than \'itself.\''
                     vr.err(feat.full_key+'_head', mess)
+
+    # A set to keep track of (name, head) pairs and their values
+    seen = {}
+    conflicts = []
+    for key, f in all_feats.items():
+        key_pair = (f[0], f[2])
+
+        if key_pair in seen:
+            # Check if the value is different for this (name, head) combination
+            if seen[key_pair] != f[1]:
+                conflicts.append((key, f[0]))
+        else:
+            seen[key_pair] = f[1]
+
+    for n in conflicts:
+        key = n[0]
+        vr.err(key+'_value', 'Please check all values for this feature name and head combination in one entry.')
+
 
     # TJT 2014-08-21: Incorporated Adjective validation
     if incorp:
@@ -1498,14 +1565,16 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
                             'unusable without a copula defined on the Lexicon page.')
 
     # KPH Validation for case change on nominalization rules
-    if lrt.full_key.startswith('verb-pc'):
-        for feat in lrt.get('feat'):
-            if feat.get('name') == 'case':
-                vr.warn(feat.full_key + '_name', 'If case change is specified on the object ' +
-                        'in a nominalization rule, the resulting lexical rule will only be ' +
-                        'compatible with transitive verbs. If this lexical rule should also ' +
-                        'be possible for intransitive verbs, create another lexical rule that ' +
-                        'requires intransitives verbs as the input.')
+    #Commenting out since the following message no longer applies
+    #after the changes to the nominalized clauses library
+    #if lrt.full_key.startswith('verb-pc'):
+    #    for feat in lrt.get('feat'):
+    #        if feat.get('name') == 'case':
+    #            vr.warn(feat.full_key + '_name', 'If case change is specified on the object ' +
+    #                    'in a nominalization rule, the resulting lexical rule will only be ' +
+    #                    'compatible with transitive verbs. If this lexical rule should also ' +
+    #                    'be possible for intransitive verbs, create another lexical rule that ' +
+    #                    'requires intransitives verbs as the input.')
 
 
 def hierarchy_validation(choices, pc, vr):
@@ -1638,10 +1707,8 @@ def hierarchy_validation(choices, pc, vr):
                        " is both an immediate supertype of "+lrt.full_key+" and also " +
                        "an ancestor of another supertype.")
 
-# check for a cycle in the inputs
-
-
 def cycle_validation(choices, vr):
+    """Checks for a cycle in the inputs."""
     try:
         pch = position_class_hierarchy(choices)
     except:
@@ -1664,11 +1731,11 @@ def cooccurrence_validation(lrt, choices, vr):
     #  + reqs violating explicit inputs
     #     (e.g. A > B > C, A > C, A reqs B)
 
-# TJT 2014-08-26: Warn about merging obligatory position classes
-# with same inputs and positions
-
-
 def warn_merged_pcs(all_pcs, vr):
+    """
+    TJT 2014-08-26: Warn about merging obligatory position classes
+    with same inputs and positions
+    """
     input_map = defaultdict(lambda: defaultdict(set))
     # Gather map of inputs to position classes
     for pc in all_pcs:

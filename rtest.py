@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""
-Grammar Matrix Regression Testing
-"""
+"""Grammar Matrix Regression Testing"""
 
 from typing import Tuple
 import sys
@@ -259,7 +257,7 @@ def list_tests(args, verbose=False):
 
 def update_test(args):
     """
-    Use the current test profile to the gold.
+    Update the current test profile to the gold.
     """
     tests = list(_discover(args))
     if len(tests) != 1:
@@ -345,7 +343,7 @@ def add_test(args):
 
 
 def remove_test(args):
-    '''
+    """
     Remove a test from the filesystem.
 
     This will look for and remove:
@@ -362,7 +360,7 @@ def remove_test(args):
     found, it is also good for removing partially created tests. It is
     the developer's responsibility to commit these changes to Git
     afterwards.
-    '''
+    """
     tests = list(_discover(args))
     if len(tests) > 1:
         raise RegressionTestError('only 1 test may be removed at a time')
@@ -391,7 +389,7 @@ def remove_test(args):
 
 
 def clean_up(args):
-    '''
+    """
     Delete temporary testing files.
 
     Temporary testing files include:
@@ -399,7 +397,7 @@ def clean_up(args):
     1) customized grammars
     2) current profiles
     3) logs
-    '''
+    """
     count = 0
     for name, _, _, _, _, prof, _ in _discover(args):
         deleted = False

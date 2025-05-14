@@ -55,7 +55,7 @@ function draw_hierarchy(type) {
     // input without being saved yet.
     //
     // basically, if we seen parans in the value, we'll assume this is the case
-    var lsuper = document.getElementById(lts[i]+"_supertypes_multitext");
+    var lsuper = document.getElementsByName(lts[i]+"_supertypes")[0]
     if (lsuper.value == "") {
       anchored = true;
       ltsups[i] = type 

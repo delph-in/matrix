@@ -91,15 +91,16 @@ WH_PRONOUN = '''wh-pronoun-noun-lex := basic-wh-word-lex & norm-hook-lex-item & 
 				        LARG #larg ] > ] ],
 	     NON-LOCAL.QUE.LIST < #arg0 > ] ].'''
 
+
+
 ADV_ITEM = '''adverb-lex-item := nonscop-adverb-lex & 
   [ SYNSEM [ LOCAL [ CAT [ VAL [ SUBJ < >, SPEC < >,
                              SPR < >,
                              COMPS < > ],
                        HEAD adv &
-                            [ MOD < [ LOCAL [ CAT.HEAD verb,
-                                              CONT.HOOK [ CLAUSE-KEY #clause, LTOP #ltop ] ] ] > ] ],
+                            [ MOD < [ LOCAL [ CONT.HOOK [ INDEX #arg1, LTOP #ltop ] ] ] > ] ],
                    CONT [ RELS.LIST < [ LBL #ltop, ARG0 event,
-                                    ARG1 #clause, ARG2 #ind ],
+                                    ARG1 #arg1, ARG2 #ind ],
                                   [ PRED #pred, ARG0 #ind, LBL #larg ],[ ARG0 #ind, RSTR #harg ] >,
                           HOOK.LTOP #ltop,
                           HCONS.LIST < qeq & [ HARG #harg,
@@ -137,9 +138,8 @@ ADP_LEX = '''norm-adposition-lex := norm-sem-lex-item & no-hcons-lex-item & basi
                                  SUBJ < >,
                                  COMPS < #comp & [ L-QUE #lque,
                                                  LOCAL [ CAT [ HEAD noun, VAL.SPR < > ],
-                                                 CONT.HOOK.INDEX #ind ] ] > ] ],
-                     CONT.RELS.LIST < [ PRED #pred, ARG0 event, ARG1 event-or-ref-index ] > ],
-             LKEYS.KEYREL arg12-ev-relation & [ PRED #pred, ARG2 #ind ],
+                                                 CONT.HOOK.INDEX #ind ] ] > ] ], ],
+             LKEYS.KEYREL arg12-ev-relation & [ ARG2 #ind, ARG1 event-or-ref-index ],
              L-QUE #lque ],
     ARG-ST < #comp > ].'''
 
@@ -269,8 +269,6 @@ class MorphotacticNode(HierarchyNode):
 
 
 class PositionClass(MorphotacticNode):
-    """
-    """
 
     def __init__(self, key, name, parents=None, order=None,
                  identifier_suffix=None, lex_rule=True):
@@ -287,6 +285,11 @@ class PositionClass(MorphotacticNode):
         # CMC 2017-02-20: Keep track of whether position
         # class has valence-changing operations
         self._has_vcops = None
+        # KR 2023-12-13: Keep track of whether a position
+        # class has any lrts with category-change operations
+        # Only currently includes nominalization
+        self._has_category_change = None
+        self._has_nominalization = None
 
     def __repr__(self):
         return 'PositionClass(' + self.identifier() + ')'
@@ -353,8 +356,10 @@ class PositionClass(MorphotacticNode):
         return False
 
     def has_incorporated_stems(self):
-        # 2014-08-21 TJT: Keep track of whether a PositionClass has
-        # Incorporated Stem Lexical Rule Instances
+        """
+        2014-08-21 TJT: Keep track of whether a PositionClass has
+        Incorporated Stem Lexical Rule Instances.
+        """
         if self._has_is == None:  # Only do this once
             for lrt in self.nodes.values():
                 for lri in lrt.lris:
@@ -363,6 +368,22 @@ class PositionClass(MorphotacticNode):
                         return self._has_is
             self._has_is = False
         return self._has_is
+    
+    def has_category_change(self):
+        # 2023-12-13 KR: Keep track of whether a position class has
+        # any lrts with category-changing operations (only currently includes nominalization)
+        if self.has_nominalization():
+            return True
+        return False
+
+    def has_nominalization(self):
+        # 2023-12-22 KR: Keep track of whether a position class has
+        # any nominalization lrts
+        for lrt in self.nodes.values():
+            for feature in lrt.features:
+                if feature == 'nominalization':
+                    return True
+            return False
 
 
 class LexicalType(MorphotacticNode):
@@ -419,13 +440,9 @@ class LexicalRuleType(MorphotacticNode):
         # return set(parents).union(self.supertypes)
         return set(parents).union(self.supertypes).difference(self.pc.supertypes)
 
-# TJT 2014-08-21: Class for keeping Lexical Rule Instances and their
-# predicates together
-
-
 class LexicalRuleInstance:
     """
-    Store LRI name and pred together
+    Class for keeping Lexical Rule Instances and their predicates together
     """
 
     def __init__(self, name, pred=None):

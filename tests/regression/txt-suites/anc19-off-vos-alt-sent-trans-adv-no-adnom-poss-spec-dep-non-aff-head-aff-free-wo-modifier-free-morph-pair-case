@@ -1,0 +1,18 @@
+itr-verb3sg det noun1
+adv1 itr-verb3sg det noun1
+itr-verb3sg det adj1 noun1
+tr-verb3sg det noun1-acc det noun2 
+itr-verb3sg possessor det noun1 noun2possessum
+itr-verb3sg noun2possessum possessor det noun1
+mod2 tr-verb-nmz det noun1-acc det noun2-case3 mod1 itr-verb3sg det noun1
+mod2 tr-verb-nmz det noun2-case3 mod1 itr-verb3sg det noun1
+mod2 tr-verb-nmz det noun1-acc mod1 itr-verb3sg det noun1
+mod2 adv1 tr-verb-nmz det noun1-acc det noun2-case3 mod1 itr-verb3sg det noun1
+*mod2 tr-verb-nmz det noun1-acc det noun2 mod1 itr-verb3sg det noun1
+*mod2 itr-verb-nmz det noun1 mod1 itr-verb3sg det noun1
+*mod2 det tr-verb-nmz det noun1-acc det noun2-case3 mod1 itr-verb3sg det noun1
+*mod2 adj1 tr-verb-nmz det noun1-acc det noun2-case3 mod1 itr-verb3sg det noun1
+*tr-verb-nmz det noun1-acc det noun2-case3
+*mod2 tr-verb det noun1-acc det noun2-case3 mod1 itr-verb3sg det noun1
+*mod2 tr-verb-nmz det noun1-acc det noun2 mod1 itr-verb3sg det noun1
+*mod2 tr-verb3sg det noun1-acc det noun2 mod1 itr-verb3sg det noun1

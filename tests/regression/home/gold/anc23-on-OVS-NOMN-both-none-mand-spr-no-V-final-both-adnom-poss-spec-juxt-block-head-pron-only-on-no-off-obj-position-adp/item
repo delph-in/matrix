@@ -1,0 +1,24 @@
+1@@@@1@@itr-verb3sg noun1 @@@@1@2@@@
+2@@@@1@@adv1 itr-verb3sg noun1 @@@@1@3@@@
+3@@@@1@@itr-verb3sg adj1 noun1 @@@@1@3@@@
+4@@@@1@@noun1 tr-verb3sg noun1  @@@@1@3@@@
+5@@@@1@@itr-verb3sg noun1 noun2 @@@@1@3@@@
+6@@@@1@@itr-verb3sg pron3sg noun2 @@@@1@3@@@
+7@@@@1@@noun2 itr-verb-nmz tr-verb3sg noun1@@@@1@4@@@
+8@@@@1@@pron3sg itr-verb-nmz tr-verb3sg noun1@@@@1@4@@@
+9@@@@1@@adp1 noun1 noun2 tr-verb-nmz tr-verb3sg noun1@@@@1@6@@@
+10@@@@1@@adp1 noun1 pron3sg tr-verb-nmz tr-verb3sg noun1@@@@1@6@@@
+11@@@@1@@noun2 tr-verb-nmz tr-verb3sg noun1@@@@1@4@@@
+12@@@@1@@pron3sg tr-verb-nmz tr-verb3sg noun1@@@@1@4@@@
+13@@@@1@@adp1 noun1 tr-verb-nmz tr-verb3sg noun1@@@@1@5@@@
+14@@@@1@@tr-verb-nmz tr-verb3sg noun1@@@@0@3@@@
+15@@@@1@@itr-verb-nmz tr-verb3sg noun1@@@@0@3@@@
+16@@@@1@@adp1 noun1 itr-verb-nmz tr-verb3sg noun1@@@@0@5@@@
+17@@@@1@@adp1 noun1 noun2 tr-verb-nmz@@@@0@4@@@
+18@@@@1@@noun1 tr-verb3sg noun1 tr-verb3sg noun1@@@@0@5@@@
+19@@@@1@@adp1 noun1 tr-verb-nmz noun1 tr-verb3sg noun1@@@@1@6@@@
+20@@@@1@@adp1 noun1 tr-verb-nmz pron3sg tr-verb3sg noun1@@@@0@6@@@
+21@@@@1@@adp1 noun1 noun2 adv1 tr-verb-nmz tr-verb3sg noun1@@@@0@7@@@
+22@@@@1@@noun2 adv1 itr-verb-nmz tr-verb3sg noun1@@@@0@5@@@
+23@@@@1@@adp1 noun1 noun2 adj1 tr-verb-nmz tr-verb3sg noun1@@@@0@7@@@
+24@@@@1@@noun2 adj1 itr-verb-nmz tr-verb3sg noun1@@@@0@5@@@

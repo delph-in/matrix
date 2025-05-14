@@ -1,27 +1,21 @@
 ### encoding: utf8
 # $Id: validate.py,v 1.44 2008-09-30 23:50:02 lpoulson Exp $
 
-######################################################################
-# imports
-
 import sys
 import re
 import os
 
 from gmcs import tdl
 from gmcs import constants
-from gmcs.choices import ChoicesFile
+from gmcs.choices import ChoicesFile, look_through_inputs
 from gmcs.utils import get_name
+from gmcs.linglib.nominalized_clauses import get_nmz_clause_wo
 
 import gmcs.linglib.case
 import gmcs.linglib.morphotactics
 import gmcs.linglib.negation
 import gmcs.linglib.lexicon
 import gmcs.linglib.clausalcomps
-
-
-######################################################################
-# ValidationResult class
 
 class ValidationResult:
     def __init__(self):
@@ -75,7 +69,6 @@ class ValidationResult:
             self.infos[key] = ValidationMessage(key+"_info", message, anchor)
 
 # NTS: we only need to define an anchor for the main page versionsx
-
 
 class ValidationMessage:
     def __init__(self, key, text, anchor):
@@ -153,6 +146,9 @@ cust_types = (
     'adj-comp-copula-verb-lex',
     'adj_incorporation-lex-rule',
     'wh-determiner-lex',
+    # Added for possessive pronouns
+    'poss-pron1'
+    # Added for LVCs
     'lv-lex',
     'intrans-lv-lex',
     'trans-lv-lex',
@@ -246,9 +242,37 @@ def validate_names(ch, vr):
         reserved_types['form'] = True
         reserved_types['finite'] = True
         reserved_types['nonfinite'] = True
+        if ch.has_adp_form():
+            for adp in ch.get('adp', []):
+                subform = adp.get('orth') + "_"
+                has_case = False
+                has_infostr = False
+                for feat in adp.get('feat', []):
+                    if feat['name'] == 'case':
+                        has_case = True
+                        subform += 'case'
+                    if feat['name'] == 'information-structure meaning':
+                        has_infostr = True
+                        subform += 'infostr'
+                if not (has_case or has_infostr):
+                    subform += 'sem'
+                reserved_types[subform] = True
+            for normadp in ch.get('normadp'):
+                for stem in normadp.get('stem'):
+                    if not stem.get("form"):
+                        reserved_types['adpform'] = True
+                        break
+            #Free morpheme adposition used to mark clausal modifier phrases
+            if 'cms' in ch:
+                for cms in ch.get('cms'):
+                    if cms.get('subordinator-type') == 'head':
+                        for freemorph in cms.get('freemorph'):
+                            subform = freemorph.get('orth') + "_clausalmod"
+                            reserved_types[subform] = True
 
     if 'ns' in ch:
         reserved_types['nominalization'] = True
+        reserved_types['NMZ'] = True
 
     for pattern in ch.patterns():
         p = pattern[0].split(',')
@@ -408,11 +432,9 @@ def validate_names(ch, vr):
                    ''.join(invalids))
 
 ######################################################################
-# validate_general(ch, vr)
-#   Validate the user's choices about general information
-
 
 def validate_general(ch, vr):
+    """Validate the user's choices about general information."""
     lang = ch.get('language')
 
     if not lang:
@@ -484,13 +506,12 @@ your installation root directory as iso.tab to enable iso validation:
                         ' Please see the General subpage.')
 
 ######################################################################
-# validate_person(ch, vr)
-#   Validate the user's choices about person
-
 
 def validate_person(ch, vr):
+    """Validate the user's choices about person."""
     person = ch.get('person')
     fp = ch.get('first-person')
+    n = ch.get('incl-excl-number')
 
     if not person:
         vr.err('person',
@@ -506,13 +527,18 @@ def validate_person(ch, vr):
                 vr.err('first-person',
                        'If your language has the first person, you must specify ' +
                        'whether it makes finer distinctions within that category.')
+    if fp == 'incl-excl' and n == "":
+        vr.err('incl-excl-number', 'If your language has first person distinction, you must specify ' +
+                                'which number values there are subtypes for.')
+    if not fp and n != "":
+        vr.warn('incl-excl-number', 'You have specified for which numbers your language distinguishes ' +
+                                    'clusivity. You must specify that it has first person distinction.')
 
 
 ######################################################################
-# validate_number(ch, vr)
-#   Validate the user's choices about number
 
 def validate_number(ch, vr):
+    """Validate the user's choices about number."""
     for number in ch.get('number'):
         if 'name' not in number:
             vr.err(number.full_key + '_name',
@@ -520,10 +546,9 @@ def validate_number(ch, vr):
 
 
 ######################################################################
-# validate_gender(ch, vr)
-#   Validate the user's choices about gender
 
 def validate_gender(ch, vr):
+    """Validate the user's choices about gender."""
     for gender in ch.get('gender'):
         if 'name' not in gender:
             vr.err(gender.full_key + '_name',
@@ -531,10 +556,9 @@ def validate_gender(ch, vr):
 
 
 ######################################################################
-# validate_other_features(ch, vr)
-#   Validate the user's choices about other features
 
 def validate_other_features(ch, vr):
+    """Validate the user's choices about other features."""
     for feature in ch.get('feature'):
         if 'name' not in feature:
             vr.err(feature.full_key + '_name',
@@ -574,19 +598,17 @@ def validate_other_features(ch, vr):
 
 
 ######################################################################
-# validate_information_structure_msg(ch, vr, marker, _type, msg)
-#   Leave an error msg for information structural affixes
+
 def validate_information_structure_msg(ch, vr, marker, _type, msg):
+    """Leave an error msg for information structural affixes."""
     for m in ch.get(marker):
         if m['type'].strip() == _type:
             vr.err(m.full_key + '_type', msg)
 
 ######################################################################
-# validate_information_structure_affix(ch, marker, values)
-#   Validate the user's choices about information structure for each value
-
 
 def validate_information_structure_affix(ch, marker, values):
+    """Validate the user's choices about information structure for each value."""
     for cat in ['noun-pc', 'verb-pc']:
         for pc in ch.get(cat):
             for lrt in pc.get('lrt', []):
@@ -596,11 +618,9 @@ def validate_information_structure_affix(ch, marker, values):
     return False
 
 ######################################################################
-# validate_information_structure_adp(ch, marker, values)
-#   Validate the user's choices about information structure for each value
-
 
 def validate_information_structure_adp(ch, marker, values):
+    """Validate the user's choices about information structure for each value."""
     for adp in ch.get('adp'):
         for feat in adp.get('feat', []):
             if feat['name'] == 'information-structure meaning' and feat['value'] in values:
@@ -608,11 +628,9 @@ def validate_information_structure_adp(ch, marker, values):
     return False
 
 ######################################################################
-# validate_information_structure(ch, vr)
-#   Validate the user's choices about information structure
-
 
 def validate_information_structure(ch, vr):
+    """Validate the user's choices about information structure."""
     infostr_values = {
         'focus-marker': ['focus', 'semantic-focus', 'contrast-focus', 'focus-or-topic', 'contrast-or-focus', 'non-topic'],
         'topic-marker': ['topic', 'aboutness-topic', 'contrast-topic', 'frame-setting-topic', 'focus-or-topic', 'contrast-or-topic', 'non-focus'],
@@ -673,18 +691,19 @@ def validate_information_structure(ch, vr):
 
 
 ######################################################################
-# validate_word_order(ch, vr)
-#   Validate the user's choices about basic word order.
-
-# There should be some value for word order
-# If has-dets is true, there should be some value for noun-det-order
-# If aux-verb is defined, then aux-order needs to be too
-# I'm currently adding AUX as a feature in specialize_word_order()
-# but wonder if instead (in addition?) we should be doing validation
-# so that we don't find ourselves worrying about auxiliaries if we
-# don't have any in the lexicon.
 
 def validate_word_order(ch, vr):
+    """
+    Validate the user's choices about basic word order.
+
+    There should be some value for word order.
+    If has-dets is true, there should be some value for noun-det-order.
+    If aux-verb is defined, then aux-order needs to be too.
+    I'm currently adding AUX as a feature in specialize_word_order()
+    but wonder if instead (in addition?) we should be doing validation
+    so that we don't find ourselves worrying about auxiliaries if we
+    don't have any in the lexicon.
+    """
     # General word order
     if (not ch.get('word-order')):
         vr.err('word-order',
@@ -770,10 +789,9 @@ def validate_word_order(ch, vr):
 
 
 ######################################################################
-# validate_coordination(ch, vr)
-#   Validate the user's choices about coordination.
 
 def validate_coordination(ch, vr):
+    """Validate the user's choices about coordination."""
     used_patterns = set()  # used later to check which aps were used in a cs
     for cs in ch.get('cs'):
         csnum = str(cs.iter_num())
@@ -1011,10 +1029,9 @@ def validate_coordination(ch, vr):
 
 
 ######################################################################
-# validate_yesno_questions(ch, vr)
-#   Validate the user's choices about matrix yes/no questions.
 
 def validate_yesno_questions(ch, vr):
+    """Validate the user's choices about matrix yes/no questions."""
     qinvverb = ch.get('q-inv-verb')
     qpartorder = ch.get('q-part-order')
     #qpartorth = ch.get('q-part-orth')
@@ -1027,6 +1044,10 @@ def validate_yesno_questions(ch, vr):
                    'for yes-no questions, you must specify ' + \
                    'where the question particle appears.'
             vr.err('q-part-order', mess)
+        if not ch.get('q-particle'):
+            mess = 'If you chose the question particle strategy for yes-no questions, ' + \
+                   'you must specify at least one question particle.'
+            vr.err('q-particle', mess)
         for qpart in ch.get('q-particle'):
             if not qpart['orth']:
                 mess = 'If you chose the question particle strategy ' + \
@@ -1104,14 +1125,9 @@ def validate_yesno_questions(ch, vr):
             #          'that your language has auxiliaries.'
             #   vr.err('q-infl-type', mess)
 
-# validate_tanda(ch, vr)
-#   Validate the user's choices about tense, aspect (viewpoint and
-#   situation) and form features
-
-
 def validate_tanda(ch, vr):
     """
-    Validate the user's choices about tense, aspect (viewpoint and situation), mood and form features
+    Validate the user's choices about tense, aspect (viewpoint and situation), mood and form features.
     """
 
     # validate tense
@@ -1124,6 +1140,11 @@ def validate_tanda(ch, vr):
             mess = 'You cannot add a subtype if the supertype is not selected.'
             for st in ch[t + '-subtype']:
                 vr.err(st.full_key + '_name', mess)
+
+    if chosen and not ch.get('tense-definition') == 'choose':
+        mess = 'You have selected a tense element. You need to choose to select among hierarchy elements ' + \
+                'in order to see the tense feature available in the lexicon.'
+        vr.warn('tense-definition', mess)
 
     if ch.get('tense-definition') == 'choose' and not chosen:
         mess = 'You have chosen to select among hierarchy elements. ' + \
@@ -1191,20 +1212,18 @@ def validate_tanda(ch, vr):
         vr.err('form-subtype', mess)
 
 ######################################################################
-# validate_test_sentences(ch, vr)
-#   Validate the user's choices about test sentences.
-
 
 def validate_test_sentences(ch, vr):
+    """Validate the user's choices about test sentences."""
     pass
 
 ######################################################################
-# validate_extra_constraints()
-#   Some extra constraints we want to put on the random grammars
-#   for the regression/other testing
-
 
 def validate_extra_constraints(ch, vr):
+    """
+    Some extra constraints we want to put on the random grammars
+    for the regression/other testing.
+    """
 
     if ch.get('aux-sem') == 'pred':
         mess = 'Only semantically empty auxiliaries in test grammars.'
@@ -1291,6 +1310,46 @@ def validate_features(ch, vr):
                         [[feat.full_key + '_value',
                             feat.get('name'), feat.get('value')]]
 
+                    if 'name' not in feat:
+                        vr.err(feat.full_key + '_name',
+                            'You must choose which feature you are specifying.')
+                    if 'value' not in feat:
+                        vr.err(feat.full_key + '_value',
+                            'You must choose a value for each feature you specify.')
+
+                    # MTH 2017-11-27: check to make sure that only one evidential value is selected
+                    if feat['name'] == 'evidential' and len(feat.get('value').split(',')) > 1:
+                        vr.err(feat.full_key + '_value',
+                               'Choose only one evidential term.')
+
+                    if lrt.full_key.startswith('verb-pc') or \
+                            lrt.full_key.startswith('adj-pc') or \
+                        'is-lrt' in lrt.full_key:
+                        if 'head' not in feat:
+                            vr.err(feat.full_key + '_head',
+                                   'You must choose where the feature is specified.')
+                        elif feat['head'] in ['higher', 'lower'] and not choices.get('scale'):
+                            vr.err(feat.full_key + '_head',
+                                   'To use higher/lower ranked NP, please define a scale on the direct-inverse page.')
+                        elif feat['head'] == 'verb' and (feat.get('name', '') in 'case'):
+                            vr.err(feat.full_key + '_head',
+                                   'This feature is associated with nouns, ' +
+                                   'please select one of the NP options.')
+
+                        name = feat['name']
+                        head = feat['head']
+                        other_features = ch.get('feature')
+
+                        for f in list(other_features):
+                            if name == f['name']:
+                                cat = f['cat']
+                                y1 = (cat == 'noun')
+                                y2 = (head in ['subj', 'obj', 'noun'])
+                                if cat == 'noun' and not head in ['subj', 'obj', 'noun']:
+                                    vr.err(feat.full_key + '_head', 'This feature is associated with nouns, please select one of the NP options.')
+                                if cat == 'verb' and not head in ['verb']:
+                                    vr.err(feat.full_key + '_head', 'This feature is associated with verbs, please select on of the VP options.')
+
     for context in ch.get('context', []):
         for feat in context.get('feat', []):
             name_list += \
@@ -1327,14 +1386,19 @@ def validate_features(ch, vr):
         for subval in value.split(', '):
             valid = False
             for f in features:
-                if f[0] == name:
-                    for v in f[1].split(';'):
-                        (vn, vf) = v.split('|')
-                        if vn == subval:
-                            valid = True
+                #features of category 'poss' don't take feature values and thus don't have any invalid value options
+                if f[3] == 'poss':
+                    valid = True
+                else:
+                    if f[0] == name:
+                        for v in f[1].split(';'):
+                            (vn, vf) = v.split('|')
+                            if vn == subval:
+                                valid = True
             if not valid:
                 break
-        if not valid:
+        # when value is blank, there is an alternate error message
+        if not valid and not value == '':
             vr.err(var, 'You have selected an invalid feature value.')
 
 
@@ -1448,8 +1512,10 @@ def validate_hierarchy(ch, vr):
 
 
 def validate_arg_opt(ch, vr):
-    """Check to see if the user completed the necessary portions of the arg
-     opt page and see that the OPT feature is used correctly elsewhere"""
+    """
+    Check to see if the user completed the necessary portions of the arg
+    opt page and see that the OPT feature is used correctly elsewhere.
+    """
 
     if ch.get('subj-drop') and not ch.get('subj-mark-drop'):
         vr.err('subj-mark-drop',
@@ -1486,12 +1552,12 @@ def validate_arg_opt(ch, vr):
                 vr.err(feat.full_key+'_head', mess)
 
 ######################################################################
-# Validation of clausal modifiers
-
 
 def validate_clausalmods(ch, vr):
-    """Check to see if the user completed the necessary portions of the
-       Clausal Modifiers page and check for unsupported combinations of choices"""
+    """
+    Check to see if the user completed the necessary portions of the
+    Clausal Modifiers page and check for unsupported combinations of choices.
+    """
     for cms in ch.get('cms'):
         # First check the choices that are required for all clausal mod strategies
         if not cms.get('position'):
@@ -1582,32 +1648,289 @@ def validate_clausalmods(ch, vr):
 
 
 ######################################################################
-# Validation nominalized clauses
+
 def validate_nominalized_clauses(ch, vr):
-    """Check to see if the user completed the necessary portions of the
-       Nominalized Clauses page and check for conflicts with word order"""
+    """
+    Check to see if the user completed the necessary portions of the
+    Nominalized Clauses page and check for conflicts with word order.
+    """
+
+    word_orders = {'head-initial': ['VSO', 'OVS', 'VOS', 'V-INITIAL'], 'head-final': ['SVO', 'SOV', 'OSV', 'V-FINAL'],
+                    'either': ['FREE','V2'] }
+    ns_strats = set()
+    sent_sem_strats = set()
+    non_sent_strat = set()
     for ns in ch.get('ns'):
+        #Messages regarding the change from the old (levels: low, mid, high) and new (6 different ANC types) versions of the nominalized clauses library
+        if ns.get('level') == 'high':
+             vr.warn(ns.full_key + '_nmz_type',
+                   'The current Nominalized Clauses library is no longer based on level (low, mid, high). ' +
+                    'All previously high nominalization strategies have been converted to sentential nominalization strategies ' +
+                    'modified exclusively by adverbs.')
+        elif ns.get('level') == 'mid':
+            vr.warn(ns.full_key + '_nmz_type',
+                   'The current Nominalized Clauses library is no longer based on level (low, mid, high). ' +
+                   'All previously mid nominalization strategies have been converted to alternative-sentential nominalization strategies '
+                   'modified by both adverbs and adjectives.')
+        elif ns.get('level') == 'low':
+            vr.err(ns.full_key + '_nmz_type',
+                   'The current Nominalized Clauses library is no longer based on level (low, mid, high). ' +
+                    'It is necessary to define a new nominalization strategy based on the options available in the current ' +
+                    'library. Once a new strategy is defined make sure to make any corresponding changes to all lrts using the ' +
+                    'nominalization feature on the Morphology page.')
+        ch.delete(ns.full_key + '_level')
+
+        nmz_type = ns.get('nmz_type')
+        #Mandatory questions for all nominalization strategies
         if not ns.get('name'):
             mess = 'You must enter a name for the nominalization strategy.'
             vr.err(ns.full_key + '_name', mess)
-        level = ns.get('level')
-        if level in ['mid', 'low'] and not ns['nmzRel'] == 'yes':
-            vr.err(ns.full_key + '_level',
-                   'Mid and low nominalization must be specified as having semantics.')
-        if not ns['nmzRel'] == 'yes' and not ns['nmzRel'] == 'no':
-            vr.err(ns.full_key + '_nmzRel',
-                   'Please choose whether nominalization contributes to the semantics.')
-        if ns.get('level') == 'mid':
-            if ch.get('word-order') == 'vso' or ch.get('word-order') == 'osv':
-                mess = 'The analysis for your word order does not include a' + \
-                       ' VP constituent. You must select V or S nominalization.'
-                vr.err(ns.full_key + '_level', mess)
+
+        ns_strats.add(ns.get('name'))
+        if not ns['nmz_type']:
+            vr.err(ns.full_key + '_nmz_type',
+                   'Please choose a nominalization type for this strategy.')
+        if not ns['intrans'] == 'on' and not ns['trans'] == 'on':
+            vr.err(ns.full_key + '_intrans',
+                   'Each nominalization strategy must be specified as acting on either intransitive verbs, transitive verbs or both.')
+        #Mandatory questions for sentential/alt-sent nominalization strategies
+        if nmz_type in ['sentential', 'alt-sent']:
+            if not ns['nmzRel'] == 'yes' and not ns['nmzRel'] == 'no':
+                vr.err(ns.full_key + '_nmzRel',
+                    'Please choose whether nominalization contributes to the semantics.')
+            else:
+                sent_sem_strats.add(ns['nmzRel'])
+            if len(sent_sem_strats) > 1:
+                vr.err(ns.full_key + '_nmzRel',
+                    'All sentential/alternative-sentential nominalization strategies should use the same semantic option.')
+            if ns['adj'] == 'on' or ns['both'] == 'on':
+                if ns['nmzRel'] == 'yes':
+                    vr.warn(ns.full_key + '_adj',
+                        'Adjective nominalization will only be possible at the S level (once the nominalized verb has picked up both arguments).')
+                elif ns['nmzRel'] == 'no':
+                     vr.err(ns.full_key + '_adj',
+                        'Adjective nominalization is not available for sentential/alternative-sentential strategies that do not contain nominalization semantics')
+
+        #Mandatory questions for all-comps nominalization strategies
+        if not ns['all_comps_arg_order'] and ns['trans'] == 'on' and nmz_type == 'all-comps':
+            vr.err(ns.full_key + '_all_comps_arg_order',
+                   'Please choose whether the first complement of the action nominal is the more patient-like or ' +
+                    'or more agent-like argument.')
+
+        #Mandatory questions for poss-acc/erg-poss/nominal nominalization strategies
+        if nmz_type in ['poss-acc', 'erg-poss', 'nominal']:
+            non_sent_strat.add(ns.get('name'))
+            if 'same-word-order' not in ch:
+                vr.err('same-word-order',
+                    'Please choose whether the word order in nominalized clauses is the same as in ' +
+                    'regular verb phrases.')
+                break
+            if ch.get('same-word-order') == 'no' and 'nmz-clause-word-order' not in ch:
+                vr.err('nmz-clause-word-order',
+                    'Please choose which alternate word order is used in nominalized clauses.')
+                break
+            if 'non_sent_sem' not in ch:
+                vr.err('non_sent_sem',
+                    'Please choose one of the three options for possessive semantics in nominalized clauses.')
+                break
+            if not ('poss-strat' in ch or 'poss-pron' in ch):
+                vr.err('non_sent_sem',
+                        'Please define at least one possessive strategy on the Adnominal Possession page and '
+                        'then select it as a possessive strategy which can be used in nominalized clauses on this page.')
+                break
+            elif not ch.get('nmz_poss_strat'):
+                vr.err('non_sent_sem',
+                        'Please select at least one possessive strategy which can be used in nominalized clauses.')
+                break
+
+            if ns['single-arg'] == 'on' and ch['non_sent_sem'] == 'noun-only':
+                vr.warn('non_sent_sem',
+                        'It it recommended to only use the single-possessor analysis with either the verb-only ' +
+                        'or both semantic options.')
+                break
+
+        #Issues with possessive strategies selected on the Nominalized Clauses page
+        if non_sent_strat:
+            second_break = False
+            for nmz_poss_strat in ch.get('nmz_poss_strat'):
+                anc_wo = get_nmz_clause_wo(ch).upper()
+                nmz_poss_strat_name = nmz_poss_strat.get('name')
+                for poss_strat in ch.get('poss-strat', []):
+                    if get_name(poss_strat) == nmz_poss_strat_name:
+                        if poss_strat.get('mod-spec') == 'mod':
+                            vr.err(nmz_poss_strat.full_key + '_name',
+                    'All possessive strategies used in nominalization strategies must be specifier (not modifier) strategies.')
+                            second_break = True
+                            break
+                        elif anc_wo not in word_orders[poss_strat.get('order')]:
+                            if anc_wo in word_orders['either']:
+                                vr.warn(nmz_poss_strat.full_key + '_name',
+                                    'The overall nominalized clause uses a ' + anc_wo + ' word order, while this selected possessive strategy applies further restrictions on word order. The argument marked by this possessive strategy will respect the stricter word order constraints imposed by the possessive strategy as defined on the Adnominal Possession page.')
+                            else:
+                                vr.err(nmz_poss_strat.full_key + '_name',
+                                    'The order of this possessive strategy is not compatible with the word order you have selected in nominalized clauses.')
+                            second_break = True
+                            break
+
+                for pron in ch.get('poss-pron', []):
+                    if get_name(pron) == nmz_poss_strat_name:
+                        if pron.get('mod-spec') == 'mod':
+                            vr.err(nmz_poss_strat.full_key + '_name',
+                        'All possessive strategies used in nominalization strategies must be specifier (not modifier) strategies.')
+                            second_break = True
+                            break
+                        elif pron.get('type') != 'affix':
+                            if anc_wo not in word_orders[pron.get('order')]:
+                                if anc_wo in word_orders['either']:
+                                    vr.warn(nmz_poss_strat.full_key + '_name',
+                                        'The overall nominalized clause uses a ' + anc_wo + ' word order, while this selected possessive strategy applies further restrictions \
+                                        on word order. The argument marked by this possessive strategy will respect the stricter word order constraints imposed by the possessive strategy \
+                                        as defined on the Adnominal Possession page.')
+                                else:
+                                    vr.err(nmz_poss_strat.full_key + '_name',
+                            'The order of this possessive strategy is not compatible with the word order you have selected in nominalized clauses.')
+                                second_break = True
+                                break
+            if second_break:
+                break
+
+    #Rules contains all nominalization lrts
+    rules = []
+    rule_ns_strats = set()
+    for vpc in ch['verb-pc']:
+        for lrt in vpc['lrt']:
+            for f in lrt['feat']:
+                if 'nominalization' in f['name']:
+                    for ns in ch.get('ns'):
+                        if ns.get('name') == f['value']:
+                            rules.append((lrt, ns, vpc))
+                            rule_ns_strats.add(f['value'])
+
+    #set_diff contains all the nominalization strategy names that are defined on the Nominalized Clauses page,
+    #but are never used on the Morphology page
+    set_diff = ns_strats - rule_ns_strats
+    if set_diff:
+        for ns in ch.get('ns'):
+            if ns.get('name') in set_diff:
+                vr.warn(ns.full_key + '_nmz_type',
+                   'There is no lrt on the Morphology page that uses this nominalization strategy meaning that this strategy is not currently realized in the grammar.')
+                for cms in ch.get('cms'):
+                    for feat in cms.get('feat'):
+                        if feat.get('name') == 'nominalization':
+                            values = feat.get('value').split(', ')
+                            for value in values:
+                                if value == ns.get('name'):
+                                    vr.err(feat.full_key + '_name', 'To be able to use this nominalization strategy, at least one lrt on the Morphology page needs to take ' +
+                                        'a nominalization feature with this nominalization strategy\'s name.')
+                for comps in ch.get('comps'):
+                    for feat in comps.get('feat'):
+                        if feat.get('name') == 'nominalization':
+                            values = feat.get('value').split(', ')
+                            for value in values:
+                                if value == ns.get('name'):
+                                    vr.err(feat.full_key + '_name', 'To be able to use this nominalization strategy, at least one lrt on the Morphology page needs to take ' +
+                                        'a nominalization feature with this nominalization strategy\'s name.')
+
+    #Validation issues with nominalization use in clausal modifier and clausal complement strategies
+    for cms in ch.get('cms'):
+        for feat in cms.get('feat'):
+            if feat.get('name') == 'nominalization':
+                values = feat.get('value').split(', ')
+                sem_values = set()
+                for value in values:
+                    for second_ns in ch.get('ns'):
+                        if second_ns.get('name') == value:
+                            if second_ns.get('nmz_type') in ['sentential', 'alt-sent']:
+                                sem_values.add(second_ns.get('nmzRel'))
+                            else:
+                                sem_values.add('yes')
+                if len(sem_values) > 1:
+                    vr.err(feat.full_key + '_value', 'Nominalization strategies which only have syntactic nominalization should be kept separate from those ' +
+                        'that have nominalization represented in the semantics. Create two separate clausal modifier strategies, one containing nominalization strategies lacking in nominalization ' +
+                        'and one containing nominalization strategies containing nominalization semantics.')
+
+    for comps in ch.get('comps'):
+        nominalized = False
+        for feat in comps.get('feat'):
+            if feat.get('name') == 'nominalization':
+                nominalized = True
+                values = feat.get('value').split(', ')
+                sem_values = set()
+                for value in values:
+                    for second_ns in ch.get('ns'):
+                        if second_ns.get('name') == value:
+                            if second_ns.get('nmz_type') in ['sentential', 'alt-sent']:
+                                sem_values.add(second_ns.get('nmzRel'))
+                            else:
+                                sem_values.add('yes')
+                if len(sem_values) > 1:
+                    vr.err(feat.full_key + '_value', 'Nominalization strategies which only have syntactic nominalization should be kept separate from those ' +
+                        'that have nominalization represented in the semantics. Create two separate comps strategies, one containing nominalization strategies lacking in nominalization ' +
+                        'and one containing nominalization strategies containing nominalization semantics.')
+        if nominalized:
+            if comps.get('ques') or comps.get('comp-pos-before') or comps.get('comp-pos-after') or comps.get('comp') or comps.get('stem') or comps.get('cfromvalue') or comps.get('comp-q'):
+                vr.err(comps.full_key + '_clause-pos-same', 'Nominalized clausal complements with overt complementizers are not supported.')
+
+
+   #Make sure each lrt is only marked by one nominalization strategy
+    for lrt, ns, vpc in rules:
+        nmz_type = ns.get('nmz_type')
+        for second_lrt in vpc.get('lrt'):
+            not_nominalized = True
+            nmz_count = 0
+            for feat in second_lrt.get('feat'):
+                if feat.get('name') == 'nominalization':
+                    nmz_count += 1
+                    not_nominalized = False
+                    if len(feat.get('value').split(', ')) > 1:
+                        vr.err(second_lrt.full_key + '_name', 'Each lrt can only use one nominalization strategy.')
+            if nmz_count > 1:
+                vr.err(second_lrt.full_key + '_name', 'Each lrt can only use one nominalization strategy.')
+            if not_nominalized:
+                vr.warn(second_lrt.full_key + '_name', 'It is recommended to keep nominalization lrts in separate position classes from any non-nominalization lrts. ' +
+                                                  'Any non-nominalization lrts in a position class with a nominalization lrt will lose all verbal morphological requirements ' +
+                                                  'as is typically the case for nominalization lrts.')
+
+        #Ensure only the correct arguments are being constrained for each nominalization type
+        if nmz_type == 'sentential':
+            for feat in lrt.get('feat'):
+                if feat['head'] == 'subj' or feat['head'] == 'obj':
+                    vr.warn(feat.full_key + '_head', 'Both the subject and object of a nominalized verb nominalized with a sentential strategy should be marked '+
+                                                    'in the same way as it would be with the underlying verb.')
+        elif nmz_type == 'alt-sent' or nmz_type == 'poss-acc':
+            for feat in lrt.get('feat'):
+                if feat['head'] == 'obj':
+                    vr.warn(feat.full_key + '_head', 'The object of a nominalized verb nominalized with a ' + nmz_type +  ' strategy should be marked '+
+                                                    'in the same way as it would be with the underlying verb.')
+
+        if nmz_type in ['all-comps', 'poss-acc', 'erg-poss', 'nominal']:
+             for feat in lrt.get('feat'):
+                if feat['head'] == 'subj':
+                    if nmz_type in ['poss-acc', 'erg-poss', 'nominal']:
+                        vr.err(feat.full_key + '_head', 'Nominalized verbs nominalized with a ' + nmz_type + ' strategy do not have subjects. Marking for the non-object argument ' +
+                                                        'of these nominalized verbs can be defined on the Adnominal Possession page for possessive marking. The behavior of these nominalized verbs ' +
+                                                        'with respect to determiners if relevant should be defined on the Nominalized Clauses page. ')
+                    else:
+                        vr.err(feat.full_key + '_head', 'Nominalized verbs nominalized with an ' + nmz_type + ' strategy do not have subjects. The behavior of these nominalized verbs ' +
+                                                        'with respect to determiners if relevant should be defined on the Nominalized Clauses page. ')
+        if ns['intrans'] == 'on' and ns['trans'] == 'on':
+            inputs = vpc['inputs'].split(',')
+            valence_set = set()
+            for i in inputs:
+                look_through_inputs(ch, i, valence_set)
+            if len(valence_set) == 1:
+                if valence_set.pop() == 'intrans':
+                    valence = 'intransitive'
+                else:
+                    valence = 'transitive'
+                vr.warn(lrt.full_key + '_name', 'This nominalization strategy acts on both intransitive and transitive verbs, but this lrt only takes ' + valence +  ' verbs as inputs.')
+
 
 
 ######################################################################
-# validate_adnominal_possession(ch, vr)
-#   Validate the user's choices about adnominal possession
+
 def validate_adnominal_possession(ch, vr):
+    """Validate the user's choices about adnominal possession."""
     png_feats = set(['person', 'number', 'gender', 'pernum'])
     for feat in ch.get('feature'):
         if feat.get('type') != 'type':
@@ -1829,12 +2152,9 @@ def validate_adnominal_possession(ch, vr):
 #                         'and the possessor is not supported.'
 #                    vr.err(pron.full_key+'_possessum-agr',mess)
 
-#############################################################
-########### Constituent questions validation ################
-#############################################################
-
 
 def validate_wh_ques(ch, vr):
+    """Validates users selections on WH questions."""
     from gmcs.constants import ON, IN_SITU, MTRX_FRONT, WH_QUE_PTCL, \
         WH_INFL, MULTI, ALL_OBLIG, NO_MULTI, PIED, \
         PIED_ADP, OBL_PIP_NOUN, OBL_PIP_ADP, \
@@ -1879,7 +2199,7 @@ def validate_wh_ques(ch, vr):
     # Pied piping of adpositions only makes sense when there are adpositions:
     if ch.get(PIED_ADP) == ON and not len(ch.get('normadp', [])) > 0:
         mess = 'You have not added any adpositions to the lexicon.'
-        vr.err(PIED, mess)
+        vr.err(PIED_ADP, mess)
 
     if ch.get(NO_MULTI) == ON:
         if (ch.get(MTRX_FRONT) == MULTI
@@ -1957,7 +2277,7 @@ def validate_lvc(ch: ChoicesFile, vr: ValidationResult):
             msg = 'If verb coverbs are allowed, you must specify ' + \
                   'whether they can pick up dependents.'
             vr.err('lvc-verb-cv-dep', msg)
-    
+
     # if whether dependents can be pick up is selected, make sure coverb-n/coverb-v is selected
     if ch.get('lvc-noun-cv-dep'):
         if not ch.get('coverb-n'):
@@ -1999,7 +2319,7 @@ def validate_lvc(ch: ChoicesFile, vr: ValidationResult):
     if ch.get('coverb-n') == ON and not n_coverb_seen:
         msg = 'You must specify at least one noun coverb in the lexicon.'
         vr.err('coverb-n', msg)
-    
+
     v_coverb_seen = False
     for v in ch.get('verb'):
         if v.get('coverb-type'):
@@ -2023,17 +2343,17 @@ def validate_lvc(ch: ChoicesFile, vr: ValidationResult):
     if ch.get('lvc-bleached') == YES and not bleached_lv_seen:
         msg = 'You must specify at least one bleached light verb in the lexicon.'
         vr.err('lvc-bleached', msg)
-    
+
     # make sure an option for lvc-all-bleached is selected if bleached lvs are possible
     if ch.get('lvc-bleached') == YES and not ch.get('lvc-all-bleached'):
         msg = 'If you specify that bleached light verbs are possible, you must specify whether or not all light verbs are bleached.'
         vr.err('lvc-bleached', msg)
-    
+
     # if selects that all lvs are bleached, make sure that bleached lvs are possible
     if ch.get('lvc-all-bleached') == YES and not ch.get('lvc-bleached') == YES:
         msg = 'If you specify that all light verbs are bleached, you must specify that bleached light verbs are possible.'
         vr.err('lvc-all-bleached', msg)
-    
+
     # make sure verb cvs are allowed if bleached lvs are possible
     if ch.get('lvc-bleached') == YES and not ch.get('coverb-v') == ON:
         msg = 'If you specify that bleached light verbs are possible, you must allow verb coverbs.'
@@ -2093,7 +2413,6 @@ def validate_choices(choices_file, extra=False):
 # Allow validate_choices() to be called directly from the
 # command line or shell scripts, and print out the errors
 # that result.
-
 
 if __name__ == "__main__":
     vr = validate_choices(sys.argv[1])

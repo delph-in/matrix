@@ -1,0 +1,24 @@
+noun1 itr-verb3sg
+noun1 adv1 itr-verb3sg 
+adj1 noun1 itr-verb3sg 
+noun1 noun2-acc tr-verb3sg
+noun1-acc noun2 tr-verb3sg
+noun1 noun2possessum itr-verb3sg
+noun2possessum noun1 itr-verb3sg
+mod2 noun1 tr-verb-nmzpossessum noun2-case3 mod1 noun1 itr-verb3sg
+mod2 tr-verb-nmzpossessum noun1 noun2-case3 mod1 noun1 itr-verb3sg
+mod2 noun1 noun2-case3 tr-verb-nmzpossessum mod1 noun1 itr-verb3sg
+mod2 noun1 tr-verb-nmzpossessum mod1 noun1 itr-verb3sg
+mod2 noun1 adj1 tr-verb-nmzpossessum noun2-case3 mod1 noun1 itr-verb3sg
+mod2 adj1 tr-verb-nmzpossessum noun1 noun2-case3 mod1 noun1 itr-verb3sg
+*mod2 noun1 tr-verb-nmzpossessum noun2 mod1 noun1 itr-verb3sg
+*mod2 tr-verb-nmz noun2-case3 mod1 noun1 itr-verb3sg
+*mod2 tr-verb-nmz mod1 noun1 itr-verb3sg
+*mod2 noun1 itr-verb-nmzpossessum mod1 noun1 itr-verb3sg
+*mod2 itr-verb-nmzpossessum noun1 mod1 noun1 itr-verb3sg
+*noun1 tr-verb-nmzpossessum noun2-case3
+*mod2 noun1 tr-verb noun2-case3 mod1 noun1 itr-verb3sg
+*mod2 noun1 noun2-acc tr-verb3-nmz mod1 noun1 itr-verb3sg
+*mod2 noun1 noun2-acc tr-verb33sg mod1 noun1 itr-verb3sg
+*mod2 noun1 adv1 tr-verb-nmzpossessum noun2-case3 mod1 noun1 itr-verb3sg
+*mod2 adv1 tr-verb-nmzpossessum noun1 noun2-case3 mod1 noun1 itr-verb3sg

@@ -1,24 +1,19 @@
 from gmcs.linglib import case
 
-######################################################################
-# customize_feature_values(ch_dict, type_name, pos, features, cases)
-#   In the passed-in choices dictionary, go through the 'feat'
-#   iterator and specify the feature/value pairs found to the
-#   passed-in type.
-
-
 def process_cfv_list(mylang, ch, hierarchies, to_cfv, tdlfile=None):
     for (ch_key, type_id, pos) in to_cfv:
         customize_feature_values(mylang, ch, hierarchies, ch[ch_key], type_id, pos,
                                  tdlfile=tdlfile or mylang)
 
-# olzama 2020-04-09 The below function has the benefit of serving many POS at once
+# TODO: olzama 2020-04-09 The below function has the benefit of serving many POS at once
 # however it is very difficult to follow and debug.
 # Consider improving it and perhaps even have several separate functions?
 
-
 def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, features=None, cases=None, tdlfile=None, section=''):
-
+    """
+    In the passed-in choices dictionary, go through the 'feat' iterator and
+    specify the feature/value pairs found to the passed-in type.
+    """
     if not features:
         features = ch.features()
     if not cases:
@@ -30,7 +25,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     # get the feature geometry of CASE
     # OZ 2020-01-28 The above only works for case-marking adpositions
     # but not for normal adpositions, for which CASE goes on the complement.
-    if cases and not pos == 'normadp':
+    if cases and not (pos == 'normadp' or pos == 'semadp'):
         for f in features:
             if f[0] == 'case':
                 case_geom = f[2]
@@ -49,10 +44,17 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                   'poss-pron-mod': 'SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.',
                   'poss-pron-spec': 'SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.',
                   'nounadp': 'SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.',
-                  'normadp': 'SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.'}
+                  'normadp': 'SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.',
+                  'semadp': 'SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.'}
+
     pos_geom_prefix = prefix_map[pos] if pos in prefix_map else 'SYNSEM.'
 
-    iter_feat = 'feat' if pos != 'auxcomplement' else 'compfeature'
+    if pos == 'auxcomplement':
+        iter_feat = 'compfeature'
+    elif pos == 'semadp':
+        iter_feat = 'adpcomp_feat'
+    else:
+        iter_feat = 'feat'
 
     basic_infl_neg_def = ''':= \
                    [ C-CONT [ HOOK [ XARG #xarg,\
@@ -102,6 +104,8 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
             v = [case.canon_to_abbr(c, cases) for c in v]
 
         geom_prefix = pos_geom_prefix
+
+
         # EKN 2017-01-02 If adding AGREEMENT PNG features to a
         # possessive marker or affix, they should be at
         # POSS.POSS-AGR, rather than at CONT.HOOK.INDEX.PNG.
@@ -169,6 +173,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
         # a noun's inherent features from features that agree with
         # another nominal element in a possessive phrase; however,
         # the head feature for possessive phrases is dealt with above
+
         head = feat.get('head', '')
         if head in head_map:  # TJT 2014-08-15: changing this to map for speed/easy reading
             if head in ('higher', 'lower'):
@@ -183,6 +188,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
         # If auxcomplement, add additional definition on top of any head definition
         if pos == 'auxcomplement':
             geom_prefix += 'LOCAL.CAT.VAL.COMPS.FIRST.'
+
 
         # TJT 2014-05-08 adding the break and moving the concatenation up
         geom = ''
@@ -236,6 +242,11 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                                 merge=True, section=section)
             else:
                 for value in v:
+                    if n == 'NMZ':
+                        if value == 'minus':
+                            value = '-'
+                        elif value == 'plus':
+                            value = '+'
                     tdlfile.add(type_name +
                                 ' := [ ' + geom + ' ' + value + ' ].',
                                 merge=True, section=section)
@@ -443,7 +454,3 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
             elif head == 'obj':
                 tdlfile.add(
                     type_name + ' := [SYNSEM.LOCAL.CAT.VAL.COMPS < '+d+' > ].', section=section)
-
-# Note: customize case code is now in gmcs/linglib/case.py
-
-# Note: direct inverse code is now in gmcs/linglib/direct_inverse.py

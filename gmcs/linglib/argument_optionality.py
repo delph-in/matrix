@@ -1,6 +1,7 @@
 from gmcs.linglib import morphotactics
 from gmcs.linglib import features
 from gmcs.utils import get_name
+from gmcs.linglib.nominalized_clauses import get_nmz_clause_wo
 
 # SS 2009-06-07 added check to see if a const rule which changes
 # the COMPS of the mother to OPT - is needed.  The code assumes
@@ -19,15 +20,11 @@ from gmcs.utils import get_name
 # subrules count just like above.  The subrules created are
 # different.
 
-######################################################################
-# customize_arg_op()
-#   Create phrase-structure and lexical rules associated with user's
-#   choices on argument optionality page.
-
-
 def customize_arg_op(mylang, ch, rules, hierarchies):
-    """ Create the lexical types, lexical, rules and phrase structure
-        rules to allow argument dropping"""
+    """
+    Create the lexical types, lexical, rules and phrase structure
+    rules associated with user's choices on argument optionality page.
+    """
 
     if 'scale' in ch and (ch.get('subj-drop') or ch.get('obj-drop')):
         mylang.add('dir-inv-scale := unexpressed-reg.')
@@ -39,9 +36,11 @@ def customize_arg_op(mylang, ch, rules, hierarchies):
     # appropriate types to mylang.tdl or rules.tdl
 
     if ch.get('subj-drop') == 'subj-drop-all' and not (ch.get('subj-con') == 'subj-con-some'):
-        rules.add('decl-head-opt-subj := decl-head-opt-subj-phrase.')
+        if not ch.get('ns', ''):
+            rules.add('decl-head-opt-subj := decl-head-opt-subj-phrase.')
     if ch.get('subj-drop') == 'subj-drop-lex' and not (ch.get('subj-con') == 'subj-con-some'):
-        rules.add('decl-head-opt-subj := decl-head-opt-subj-phrase.')
+        if not ch.get('ns', ''):
+            rules.add('decl-head-opt-subj := decl-head-opt-subj-phrase.')
         mylang.add('no-subj-drop-verb-lex := verb-lex &\
                          [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].')
         mylang.add('subj-drop-verb-lex := verb-lex.')
@@ -49,13 +48,47 @@ def customize_arg_op(mylang, ch, rules, hierarchies):
     # Figure out the constraints on object dropping and write the
     # appropriate types to mylang.tdl or rules.tdl
     if ch.get('obj-drop') == 'obj-drop-all':
-        rules.add('basic-head-opt-comp := basic-head-opt-comp-phrase.')
+        if not ch.get('ns', ''):
+            rules.add('basic-head-opt-comp := basic-head-opt-comp-phrase.')
+            mylang.add('basic-head-opt-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX event]. ')
 
     if ch.get('obj-drop') == 'obj-drop-lex':
-        rules.add('basic-head-opt-comp := basic-head-opt-comp-phrase.')
+        if not ch.get('ns', ''):
+            rules.add('basic-head-opt-comp := basic-head-opt-comp-phrase.')
+            mylang.add('basic-head-opt-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX event]. ')
         mylang.add('no-obj-drop-verb-lex := transitive-verb-lex &\
                         [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].')
-        mylang.add('obj-drop-verb-lex := transitive-verb-lex.')
+        mylang.add('obj-drop-verb-lex := transitive-verb-lex.') 
+    #Nominalized clauses have optional complements and subjects by default
+    if ch.get('ns', ''):
+        mylang.add('anc-head-opt-comp-phrase := basic-head-opt-comp-phrase & [HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD noun & [NMZ +]].')
+        nmz_use_poss_strats = False 
+        has_spr = False
+        for ns in ch.get('ns'):
+            nmz_type = ns.get('nmz_type')
+            if nmz_type == 'poss-acc' or  nmz_type == 'erg-poss' or  nmz_type == 'nominal':
+                nmz_use_poss_strats = True
+                break
+        if ('poss-strat' in ch or 'poss-pron' in ch) and nmz_use_poss_strats:
+                    mylang.add('anc-head-opt-comp-phrase := [ SYNSEM.LOCAL.CAT.POSSESSUM #possessum, \
+                                                              HEAD-DTR.SYNSEM.LOCAL.CAT.POSSESSUM #possessum ].') 
+
+
+        mylang.add('anc-decl-head-opt-subj-phrase := decl-head-opt-subj-phrase &  [HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.NMZ +].') 
+
+        rules.add('anc-head-opt-comp := anc-head-opt-comp-phrase.')
+        rules.add('anc-decl-head-opt-subj := anc-decl-head-opt-subj-phrase.')
+
+        #Adds the [NMZ -] version of the rules which can be used by non-nominalized verbs 
+        if ch.get('subj-drop'):
+            mylang.add('regular-decl-head-opt-subj-phrase := decl-head-opt-subj-phrase &  [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.NMZ - ].')
+            rules.add('regular-decl-head-opt-subj := regular-decl-head-opt-subj-phrase.')
+
+        if ch.get('obj-drop'):
+            mylang.add('regular-head-opt-comp-phrase := basic-head-opt-comp-phrase &  [ HEAD-DTR.SYNSEM.LOCAL [CAT.HEAD.NMZ -, \
+                                                                                                                   CONT.HOOK.INDEX event ]].')
+            rules.add('regular-head-opt-comp := regular-head-opt-comp-phrase.')
+
 
     if ch.get('subj-drop') == 'subj-drop-lex' and ch.get('obj-drop') == 'obj-drop-lex':
         mylang.add(
@@ -128,8 +161,6 @@ def customize_arg_op(mylang, ch, rules, hierarchies):
 
 
 def add_lexrules(choices):
-    '''
-    '''
     for pc in morphotactics.all_position_classes(choices):
         pc_key = pc.full_key
         idx = pc['lrt'].next_iter_num() if 'lrt' in pc else 1
@@ -177,11 +208,11 @@ def add_lexrules(choices):
 
 
 def need_no_drop_rule(obj_subj, choices):
-    '''
+    """
     Return True if the unordered values of the pair
     ((obj|subj)-mark-drop, (obj|subj)-mark-no-drop) is a valid pattern
     for needing a separate morpheme.
-    '''
+    """
     patterns = (set(['req', 'not']), set(['req', 'opt']))
     if set([choices[obj_subj + '-drop'].split('-')[-1],
             choices[obj_subj + '-no-drop'].split('-')[-1]]) in patterns:
@@ -191,7 +222,6 @@ def need_no_drop_rule(obj_subj, choices):
 ##################
 ### VALIDATION ###
 ##################
-
 
 def validate(choices):
     # add validation tests specific to this module

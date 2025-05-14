@@ -1,5 +1,5 @@
 
-version=31
+version=34
 
 section=general
 language=clausalmods-basque
@@ -70,6 +70,8 @@ section=coordination
 
 section=matrix-yes-no
 
+section=wh-q
+
 section=info-str
 
 section=arg-opt
@@ -80,8 +82,9 @@ subj-con=subj-con-always
 
 section=nominalclause
   ns1_name=nmz
-  ns1_level=low
+  ns1_nmz_type=sentential
   ns1_nmzRel=yes
+  ns1_trans=on
 
 section=clausal-comp
 
@@ -228,6 +231,7 @@ section=morphology
       noun-pc1_lrt2_feat1_head=itself
       noun-pc1_lrt2_lri1_inflecting=no
   noun-pc2_name=nmz-feat
+  noun-pc2_obligatory=on
   noun-pc2_order=suffix
   noun-pc2_inputs=verb-pc1_lrt3
     noun-pc2_lrt1_name=when
@@ -338,4 +342,3 @@ section=test-sentences
 section=gen-options
 
 section=ToolboxLexicon
-
