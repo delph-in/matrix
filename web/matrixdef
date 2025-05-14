@@ -112,17 +112,17 @@ Label "<p><span style=\"color:red\">NOTE: As Modules for V2 order are
 still under development, relative order of auxiliaries and their
 complements have not been implemented yet.</span></p>"
 
-Separator 
+Separator
 
 Label "<p>The word order in subordinate clauses is:</p>"
 
   Radio subord-word-order "Clausal Complement Type {i} clause word order" "" ""
-  . same "same as in indicative" "" "Same as in the matrix clause<br>" 
+  . same "same as in indicative" "" "Same as in the matrix clause<br>"
   . vfinal "Verb Final" "" "Verb-final (assuming matrix order is V2, like in German)"
-  
-Label "<p> NOTE: We assume that the order in all subordinate clauses 
+
+Label "<p> NOTE: We assume that the order in all subordinate clauses
 (e.g. clausal modifiers and clausal complements)
-is the same. If your language reveals different behavior, 
+is the same. If your language reveals different behavior,
 please let us know.</p>"
 
 Label "</div>"
@@ -431,7 +431,7 @@ Queensland. Ph.D. thesis, University of London.</p>"
 Label "</div>"
 
 
-Section adnom-poss "Adnominal Possession" 
+Section adnom-poss "Adnominal Possession"
 
 Label "<p>There are two ways to add possessive constructions to your grammar: you can define <b>possessive strategies</b>, or define classes of <b>possessor pronouns</b>. For many languages, both are appropriate.</p>"
 
@@ -460,30 +460,30 @@ BeginIter poss-strat{i} "a possessive strategy"
 
         Radio pronoun-allow "Pronoun allowability" "<p>Can the possessor in these unmarked possessive constructions be a pronoun?</p>" ""
         . yes "Pronouns allowed" "" "yes<br>"
-        . no "Pronouns disallowed" "" "no<br>" 	
-     
+        . no "Pronouns disallowed" "" "no<br>"
+
         Label "<p>If there are constraints on the features of the possessor (e.g. case) in these unmarked possessive constructions, please use the button below to add them.</p>"
 
         BeginIter feat{j} "a feature constraint on the possessor"
-     
+
            Select name "Juxtaposition construction possessor feature {j} Name" "Name: " " "
       	   fillnames c=noun
 
       	   MultiSelect value "Juxtaposition construction possessor feature {j} Value" "Value: " ""
-      	   fillvalues p=poss-strat{i}_feat{j}_name      
+      	   fillvalues p=poss-strat{i}_feat{j}_name
 
         EndIter feat
 
      Label "</div>"
 
      Label "<div id='possessor-morph{i}' style='display:none'>"
-     
+
 	Radio possessor-type "Possessor morpheme type" "<p>Is the morpheme that marks the <b>possessor</b> an affix? Or is it a separate word or clitic?</p>" ""
      	. affix "Possessor affix" "" "affix<br>"  "toggle_element.call(this, 'possessor-affix{i}', 'on'); toggle_element.call(this, 'possessor-non-affix{i}', 'off');"
      	. non-affix "Possessor non-affix" "" "separate word or clitic<br>" "toggle_element.call(this, 'possessor-affix{i}', 'off'); toggle_element.call(this, 'possessor-non-affix{i}', 'on');"
-     
+
         Label "<div id='possessor-affix{i}' style='display:none'>"
-	   
+
 	   Radio possessor-affix-agr "Possessor agreement" "<p>Does the affix that marks the possessor agree with the possessum (e.g. in person, number, or gender)?</p>" ""
 	   . agree "Possessor agree" "" "yes<br>"
 	   . non-agree "Possessor non-agree" "" "no<br>"
@@ -528,13 +528,13 @@ BeginIter poss-strat{i} "a possessive strategy"
 	   Label "<div id='possessor-agr{i}' style='display:none'>"
 
   	      BeginIter possessor-form{n} "a possessor-marking word with agreement features"
- 
+
  	         Text name "Type name" "Type name: " "-adp-lex<br>" 15
 
 	         Text agr-orth "Agreement orthography" "<br> The form spelled: " "<br>carries the following agreement features<br>" 15
 
 	         BeginIter feat{k} "an agreement feature"
-	   
+
 	            Select name "Possessive strategy {i} possessor-marking word Form {n} Feature {k} Name" "Name: " " "
       	            fillnames c=noun
 
@@ -549,26 +549,26 @@ BeginIter poss-strat{i} "a possessive strategy"
 
      	Label "</div>"
 
-     Label "</div>"                                                                                                                            
+     Label "</div>"
 
    Label "<div id='possessum-only{i}' style='display:none'>"
-     	   
+
       Label "<p>If there are any feature constraints (such as case) on the possessor in this construction, please enter them using the button below:</p>"
 
       BeginIter possessor-feat{j} "a feature constraint on the possessor"
-     
+
           Select name "Unmarked possessor feature {j} Name" "Name: " " "
           fillnames c=noun
 
           MultiSelect value "Unmarked possessor feature {j} Value" "Value: " ""
-          fillvalues p=poss-strat{i}_possessor-feat{j}_name      
+          fillvalues p=poss-strat{i}_possessor-feat{j}_name
 
      EndIter possessor-feat
 
    Label "</div>"
 
    Label "<div id='possessum-morph{i}' style='display:none'>"
-     
+
       Radio possessum-type "Possessum morpheme type" "<p>Is the morpheme that marks the <b>possessum</b> an affix? Or is it a separate word or clitic?</p>" ""
       . affix "Possessum affix" "" "affix<br>" "toggle_element.call(this, 'possessum-affix{i}', 'on'); toggle_element.call(this, 'possessum-non-affix{i}', 'off');"
       . non-affix "Possessum non-affix" "" "separate word or clitic<br>"  "toggle_element.call(this, 'possessum-affix{i}', 'off'); toggle_element.call(this, 'possessum-non-affix{i}', 'on');"
@@ -580,7 +580,7 @@ BeginIter poss-strat{i} "a possessive strategy"
 	  . non-agree "Possessum non-agree" "" "no<br>"
 
 	  Label "<p>A feature called <span class=\"feat\">poss-strat{i}</span> with possible values <span class=\"tt\">possessor</span>, <span class=\"tt\">possessum</span>, and <span class=\"tt\">nonpossessive</span> has been defined for use in defining morphemes on the morphology page.  In order to define a possessum-marking affix, add the appropriate position class and lexical rules, and mark the lexical rules as [<span class=\"feat\">poss-strat{i}</span> <span class=\"tt\">possessum</span>]. If you make the possessive marking obligatory (recommended), remember to also create a non-possessive inflecting rule in the same position class by creating a lexical rule type marked [<span class=\"feat\">poss-strat{i}</span> <span class=\"tt\">nonpossessive</span>]. Be sure to select the feature that corresponds to <span class=\"feat\">poss-strat{i}</span>. If the possessum-marking affix(es) agree(s) with the possessor, add appropriate person, number, and gender features to each lexical rule type. Note that any person/number/gender features that are listed on a possessum lexical rule type are assumed to be features that agree with the possessor.</p>"
-	   
+
      Label "</div>"
 
      Label "<div id='possessum-non-affix{i}' style='display:none'>"
@@ -594,7 +594,7 @@ BeginIter poss-strat{i} "a possessive strategy"
         . agree "Possessum agree" "" "yes<br>" "toggle_element.call(this, 'possessum-agr{i}', 'on'); toggle_element.call(this, 'possessum-non-agr{i}', 'off');"
         . non-agree "Possessum non agree" "" "no<br>"  "toggle_element.call(this, 'possessum-agr{i}', 'off');toggle_element.call(this, 'possessum-non-agr{i}', 'on');"
 
-	Label "<div id='possessum-non-agr{i}' style='display:none'>" 
+	Label "<div id='possessum-non-agr{i}' style='display:none'>"
 
           Text possessum-orth "Possessum word orth" "<br>The possessum-marking word is spelled " "<br>" 15
 
@@ -609,7 +609,7 @@ BeginIter poss-strat{i} "a possessive strategy"
 	      Text agr-orth "Orthography agreement" "<br>The form spelled: " "<br> carries the following agreement features:<br>" 15
 
               BeginIter feat{l} "an agreement feature"
-	   
+
                  Select name "Possessive strategy {i} possessum-marking word Form {k} Feature {l} Name" "Name: " " "
                  fillnames c=noun
 
@@ -624,7 +624,7 @@ BeginIter poss-strat{i} "a possessive strategy"
 
      Label "</div>"
 
-   Label "</div>"                                                                                                                                                                                         
+   Label "</div>"
 
 EndIter poss-strat
 
@@ -651,14 +651,14 @@ BeginIter poss-pron{i} "a class of possessor pronouns"
   Label "</div>"
 
   Label "<div id='pron-non-affix{i}' style='display:none'>"
-  
+
     Radio order "Possessive Pronoun Order" "<p>Do the possessor pronouns occur to the left or the right of the possessum?</p>" ""
     . head-final "head-final" "" "left<br>"
     . head-initial "head-initial" "" "right<br>"
     . either "either" "" "either<br>"
 
     Radio mod-spec "Modifier or Specifier" "<p>Does the possessor function more like a modifier or a specifier?</p>" ""
-    . mod "Modifier" "" "modifier<br>" 
+    . mod "Modifier" "" "modifier<br>"
     . spec "Specifier" "" "specifier<br>"
 
     Radio agr "Pronominal agreement" "<p>Do these pronouns agree with the possessum in person, number, gender, case, or other features?</p>" ""
@@ -672,7 +672,7 @@ BeginIter poss-pron{i} "a class of possessor pronouns"
       Text orth "Possessive Pronoun Orthography" "<br>Form spelling: " "" 15
 
       Label "<p>Add a feature (e.g. person, number, gender, case) that belongs to this pronoun inherently:</p>"
-  
+
       BeginIter feat{k} "an inherent feature to this pronoun"
 
          Select name "Possessive pronoun {i} Instance {j} Feature {k} Name" "Name: " " "
@@ -684,7 +684,7 @@ BeginIter poss-pron{i} "a class of possessor pronouns"
       EndIter feat
 
       Label "<p>Add any <b>person, number, or gender</b> agreement features to this pronoun that agree with the possessum:</p>"
-  
+
       BeginIter agr-feat{k} "a PNG agreement feature to this pronoun"
 
          Select name "Possessive pronoun {i}  Instance {j} Feature {k} Name" "Name: " " "
@@ -713,7 +713,7 @@ BeginIter poss-pron{i} "a class of possessor pronouns"
     . yes "Yes" "" "yes<br>" "toggle_element.call(this, 'possessum-mark-pron{i}', 'on')"
     . no "No" "" "no<br>" "toggle_element.call(this, 'possessum-mark-pron{i}', 'off')"
 
-    Label "<div id='possessum-mark-pron{i}' style='display:none'>"	
+    Label "<div id='possessum-mark-pron{i}' style='display:none'>"
 
      Radio possessum-mark-type "Possessum morpheme type" "<p>Is the morpheme that marks the <b>possessum</b> an affix? Or is it a separate word or clitic?</p>" ""
      . affix "Possessum affix" "" "affix<br>" "toggle_element.call(this, 'possessum-mark-affix{i}', 'on'); toggle_element.call(this, 'possessum-mark-non-affix{i}', 'off');"
@@ -726,7 +726,7 @@ BeginIter poss-pron{i} "a class of possessor pronouns"
        . non-agree "Possessum non-agree" "" "no<br>"
 
        Label "<p>A feature called <span class=\"feat\">poss-pron{i}_possessum</span> with possible values <span class=\"tt\">plus</span> and <span class=\"tt\">minus</span> has been defined for use in defining morphemes on the morphology page. In order to define a possessum-marking affix, add the appropriate position class and lexical rules, and mark the lexical rules as [<span class=\"feat\">poss-pron{i}_possessum</span> <span class=\"tt\">plus</span>]. If you make the possessive marking obligatory (recommended), remember to also create a non-possessive inflecting rule in the same position class by creating a lexical rule type marked [<span class=\"feat\">poss-pron{i}_possessum</span> <span class=\"tt\">minus</span>]. Be sure to select the feature that corresponds to <span class=\"feat\">poss-pron{i}_possessum</span>. If the possessum-marking affix(es) agree(s) with the possessor, add appropriate person, number, and gender features to each lexical rule type. Note that any person/number/gender features that are listed on a possessum lexical rule type are assumed to be features that agree with the possessor.</p>"
-	   
+
      Label "</div>"
 
      Label "<div id='possessum-mark-non-affix{i}' style='display:none'>"
@@ -737,7 +737,7 @@ BeginIter poss-pron{i} "a class of possessor pronouns"
        . either "Marter either order" "" "either<br>"
 
        Text possessum-orth "Possessum word orth" "<br>The possessum-marking word is spelled " "<br>" 15
-	   
+
       Label "</div>"
 
     Label "</div>"
@@ -1607,9 +1607,9 @@ Label "<b>Feature Resolution</b>"
 Label "<p>In a <b>feature resolution</b> pattern, the feature value of a coordinated phrase is derived from the values of both the child nodes. <p>For example, in many languages, person values follow a hierarchy in which any coordinated phrase with a 1st person conjunct will have 1st person value in the top node, phrases with a 2nd person conjunct (but no 1st person conjunct) will be 2nd person, and phrases with only 3rd person conjuncts will be 3rd person. You may also define feature resolution patterns for features such as gender and number. <p> You'll have to specify the rules that apply to each feature you wish to model.</p>"
 
 BeginIter fr{i} "a feature resolution pattern" 1
-  
+
   Label "<p>(Optionally) give this pattern a name: "
-  
+
   Text name "Feature resolution agreement pattern {i}'s name: " "" "" 10
 
 
@@ -1619,24 +1619,24 @@ BeginIter fr{i} "a feature resolution pattern" 1
 
     Select name "Feature resolution pattern {i} feature {j} name" "Feature: " " "
     fillnames c=noun
-    
+
     BeginIter rule{k} "a Rule"
 
       MultiSelect left "Feature resolution pattern {i} feature {j} value" "Child 1: " ""
-      fillvalues p=fr{i}_feat{j}_name 
-        . any "any" "any"  
-	. same "the same" "the same" 
+      fillvalues p=fr{i}_feat{j}_name
+        . any "any" "any"
+	. same "the same" "the same"
 
       Select right "Feature resolution pattern {i} feature {j} value" "Child 2:" ""
       fillvalues p=fr{i}_feat{j}_name
-        . any "any" "any" 
-	. same "the same" "the same"  
+        . any "any" "any"
+	. same "the same" "the same"
 	. nonmatching "any non-matching value in that list" "any non-matching value in that list"
 
       Select par "Feature resolution pattern {i} feature {j} value" "Parent: " ""
       fillvalues p=fr{i}_feat{j}_name
-        . any "any" "any" 
-	. same "the same" "the same"  
+        . any "any" "any"
+	. same "the same" "the same"
 
     EndIter rule
 
@@ -1649,7 +1649,7 @@ Label "<p><b>Distinguished Conjunct</b>"
 Label "<p>In a <b>distinguished conjunct</b> pattern, the feature value of a coordinated phrase is the same as the value of a particular conjunct. Typically, this conjunct is either the closest one to the verb (closest conjunct), or always in a particular position (first or last conjunct)."
 
 BeginIter dconj{i} "a distinguished conjunct pattern" 1
-  
+
   Label "<p>(Optionally) give this pattern a name: "
 
   Text name "Distinguished conjunct pattern {i}'s name: " "" "" 10
@@ -2059,17 +2059,17 @@ should only use a single nominalization strategy.</p>"
 Label "<p>The nominalization feature will also be available on both the Clausal Complements and Clausal Modifiers pages allowing
 both of these constructions to be marked by nominalization.</p>"
 
-Label "<p>In addition to the nominalization feature, an NMZ feature will become available on the Morphology, Lexicon and Coordination pages. 
+Label "<p>In addition to the nominalization feature, an NMZ feature will become available on the Morphology, Lexicon and Coordination pages.
 Specifying that a verb's argument is [NMZ +] indicates that the argument must be nominalized.
 Specifying that a verb's argument is [NMZ -] indicates that the argument cannot be nominalized.
 The NMZ feature can be used on the coordination page within feature resolution patterns.</p>"
 
-Label "<p> By default all arguments in nominalized clauses are treated as optional. 
+Label "<p> By default all arguments in nominalized clauses are treated as optional.
 If a nominalization strategy requires that one or both arguments are obligatory, check the box below.
 Then on the Morphology
-page, for each affix that uses a nominalization strategy specify that an argument must 
+page, for each affix that uses a nominalization strategy specify that an argument must
 appear by selecting [OPT -] on that argument. The only exception to this is optional arguments
-marked by possessive strategies (only relevant for poss-acc, erg-poss, or nominal 
+marked by possessive strategies (only relevant for poss-acc, erg-poss, or nominal
 nominalization strategies) which should be dealt with by answering the relevant question
 on this page.</p>"
 
@@ -2079,28 +2079,28 @@ Label "<p></p>"
 
 Label "
 
-Nominalization strategies are characterized according to the typology of action nominal 
+Nominalization strategies are characterized according to the typology of action nominal
 constructions proposed by Koptjevskaja-Tamm (1993). The typology organizes ANCs into four types
 based on how the arguments referring to the agent and the patient of the underlying verb are
-marked. These four types are sentential, poss-acc, erg-poss, and nominal. Descriptions of these 
+marked. These four types are sentential, poss-acc, erg-poss, and nominal. Descriptions of these
 four types as well as two additional categories (alternative-sentential and all-comps) which
-serve as slight extensions are given below. Each nominalization strategy should fall into one of 
-these categories according to the expected marking behavior of its arguments. In the 
-descriptions below A (agent) refers to the more agent-like argument while 
+serve as slight extensions are given below. Each nominalization strategy should fall into one of
+these categories according to the expected marking behavior of its arguments. In the
+descriptions below A (agent) refers to the more agent-like argument while
 P (patient) refers to the more patient-like argument. Examples of all six nominalization strategy
 types are given on the documentation page.
 
 <p> </p>
 
 <b>sentential:</b> All arguments are marked in the same way as they would be for the underlying verb.<br>
-<b>alternative-sentential:</b> The P is marked in the same as the original verb, 
-but the A is marked differently. The A can either take a distinct case-marking or be marked with a specific adposition. 
+<b>alternative-sentential:</b> The P is marked in the same as the original verb,
+but the A is marked differently. The A can either take a distinct case-marking or be marked with a specific adposition.
 Crucially, the marking of the A is not covered by any of the possessive strategies in the language.<br>
-<b>all-comps:</b> Both arguments of the nominalized verb are treated as complements. 
-In this type, neither argument can be marked with a possessive strategy.<br> 
+<b>all-comps:</b> Both arguments of the nominalized verb are treated as complements.
+In this type, neither argument can be marked with a possessive strategy.<br>
 <b>poss-acc:</b> The A of intransitive and transitive verbs is marked in the same way as possessors in a specific adnominal possessive strategy, the P is marked as it would be for the non-nominalized verb.<br>
 <b>erg-poss:</b> The A of intransitive verbs and the P of transitive verbs is marked in the same way as possessors in a specific adnominal possessive strategy, the A of transitive verbs uses an oblique verbal marking pattern.<br>
-<b>nominal:</b> The A of intransitive and transitive verbs is marked in the same way as possessors in a specific adnominal possessive strategy, the P is marked in manner typical of nominal arguments." 
+<b>nominal:</b> The A of intransitive and transitive verbs is marked in the same way as possessors in a specific adnominal possessive strategy, the P is marked in manner typical of nominal arguments."
 
 
 Label "<p></p>"
@@ -2115,7 +2115,7 @@ BeginIter ns{i} "a Nominalization Strategy" 1
 	toggle_element.call(this, 'alt-sent{i}', 'off');
 	toggle_element.call(this, 'poss-acc{i}', 'off');
 	toggle_element.call(this, 'erg-poss{i}', 'off');
-	toggle_element.call(this, 'nomn{i}', 'off');" 
+	toggle_element.call(this, 'nomn{i}', 'off');"
   . alt-sent "alternative-sentential" "" "alternative-sentential<br>" "toggle_element.call(this, 'use-poss-strat-general', 'off', null, '{i}'); toggle_element.call(this, 'use-poss-strat{i}', 'off'); toggle_element.call(this, 'has-dets{i}', 'off');toggle_element.call(this, 'sent-strat{i}', 'on');toggle_element.call(this, 'all-comps{i}', 'off');
 	toggle_element.call(this, 'sent{i}', 'off');
 	toggle_element.call(this, 'alt-sent{i}', 'on');
@@ -2149,7 +2149,7 @@ BeginIter ns{i} "a Nominalization Strategy" 1
 
 Label "<div id='sent{i}'' style='display:none'>"
 
-Label "<p> The A for this strategy is the subject and the P is the 
+Label "<p> The A for this strategy is the subject and the P is the
 object. Mandatory arguments can be specified on the Morphology page by selecting [OPT -]
 on the subject and/or object for lexical rule types that use this nominalization strategy.
 All other constraints on the subject and object will be identical to those specified
@@ -2159,10 +2159,10 @@ Label "</div>"
 
 Label "<div id='alt-sent{i}'' style='display:none'>"
 
-Label "<p> The A for this strategy is the subject and the P is the 
+Label "<p> The A for this strategy is the subject and the P is the
 object. Mandatory arguments can be specified on the Morphology page by selecting [OPT -]
 on the subject and/or object for lexical rule types that use this nominalization strategy.
-All other constraints on the object will be identical to those on the object of 
+All other constraints on the object will be identical to those on the object of
 the underlying verb. Additional feature constraints (case, form) can be specified for the subject on
 the Morphology page.<br></p>"
 
@@ -2171,15 +2171,15 @@ Label "</div>"
 Label "<div id='all-comps{i}'' style='display:none'>"
 
 Label "<p> The A and P for this strategy are the first (object) and second (second object)
-complements. Whether the first or second complement is the A or P for 
-transitive nominalized verbs can be selected below. Mandatory arguments can be specified on 
-the Morphology page by selecting [OPT -] on the object and/or second object 
+complements. Whether the first or second complement is the A or P for
+transitive nominalized verbs can be selected below. Mandatory arguments can be specified on
+the Morphology page by selecting [OPT -] on the object and/or second object
 for lexical rule types that use this nominalization strategy.
-Additional feature constraints (case, form) can be specified on the object and 
+Additional feature constraints (case, form) can be specified on the object and
 second object on the Morphology page.
-If this strategy is selected as acting on both intransitive and transitive verbs (see how 
+If this strategy is selected as acting on both intransitive and transitive verbs (see how
 to handle strategies which act on both intransitive and transitive verbs below), the single argument
-of the intransitive nominalized verb will take the same feature constraints 
+of the intransitive nominalized verb will take the same feature constraints
 as those placed on the first complement (the object) of the transitive nominalized verb.<br></p>"
 
 
@@ -2192,12 +2192,12 @@ Label "</div>"
 
 Label "<div id='poss-acc{i}'' style='display:none'>"
 
-Label "<p> The A for this strategy is the possessor and the P is the object. 
+Label "<p> The A for this strategy is the possessor and the P is the object.
 Mandatory objects can be specified on the Morphology page by selecting [OPT -]
 on the object for lexical rule types that use this nominalization strategy.
 Mandatory possessor arguments can be specified by answering the questions below.
-All constraints on the object will be identical to those on the object of 
-the underlying verb. The A argument will be marked using one of the possessive 
+All constraints on the object will be identical to those on the object of
+the underlying verb. The A argument will be marked using one of the possessive
 strategies selected at the bottom of the page.<br></p>"
 
 Label "</div>"
@@ -2205,11 +2205,11 @@ Label "</div>"
 Label "<div id='erg-poss{i}'' style='display:none'>"
 
 Label "<p> The A argument for this strategy is the object for transitive verbs and the possessor
-for intransitive verbs. For transitive verbs, the P argument is the possessor. 
+for intransitive verbs. For transitive verbs, the P argument is the possessor.
 Mandatory objects can be specified on the Morphology page by selecting [OPT -]
 on the object for lexical rule types that use this nominalization strategy.
 Mandatory possessors can be specified by answering the question below.
-Additional feature constraints (case, form) can be specified for the object 
+Additional feature constraints (case, form) can be specified for the object
 on the Morphology page.
 The P argument for transitive verbs and the A argument for intransitive verbs
 will be marked using one of the possessive strategies selected at the bottom of the page.<br></p>"
@@ -2218,7 +2218,7 @@ Label "</div>"
 
 Label "<div id='nomn{i}'' style='display:none'>"
 
-Label "<p> The A for this strategy is the possessor and the P is the object. 
+Label "<p> The A for this strategy is the possessor and the P is the object.
 Mandatory objects can be specified on the Morphology page by selecting [OPT -]
 on the object for lexical rule types that use this nominalization strategy.
 Mandatory possessors can be specified by answering the question below.
@@ -2239,15 +2239,15 @@ Label "</div>"
 
 Label "<div id='use-poss-strat{i}'' style='display:none'>"
 
-Label "<p><b> Check the box below if the argument marked by a possessive strategy 
+Label "<p><b> Check the box below if the argument marked by a possessive strategy
 is mandatory (this argument must be present in the full nominalized clause).</b><br></p>"
 
-Check mand-spr "Mandatory Specifier" "" "The argument marked by the possessive strategy or 
+Check mand-spr "Mandatory Specifier" "" "The argument marked by the possessive strategy or
 strategies listed below must appear in the nominalized clause.<br>"
 
 Label "<p></p>"
 
-Label "<p>single argument marking" "" "For strategies acting on transitive verbs, when only a single 
+Label "<p>single argument marking" "" "For strategies acting on transitive verbs, when only a single
 argument appears (either the A or the P), check the box below if the argument is always marked using a possessive strategy (the single-possessor analysis).
 This is despite how this same argument would be marked if it appeared alongside the other argument.
 This single argument will be ambiguous between a patient-like and agent-like interpretation.<br></p>"
@@ -2273,21 +2273,21 @@ Label "</div>"
 Label "<p></p>"
 
 Label "<p> <b>Specify whether this strategy acts on intransitive or transitive verbs.</b>
-           If both intransitive and transitive verbs are selected, only create 
+           If both intransitive and transitive verbs are selected, only create
            an LRT on the Morphology page corresponding to the transitive verb,
            but which can still take both intransitive and transitive verbs as input.
            An intransitive LRT will be created automatically based on the transitive one.<br>"
 
 Label "<p></p>"
 
-	Check intrans "Intransitive" "" "intransitive verbs<br>" 
+	Check intrans "Intransitive" "" "intransitive verbs<br>"
 	Check trans  "Transitive" "" "transitive verbs"
 
 Label "<p></p>"
 
 
 Label "<br><b>In this strategy, the nominalized verb can be modified by</b><br>"
-	Check adj "Adjectives" "" "Adjectives<br>" 
+	Check adj "Adjectives" "" "Adjectives<br>"
 	Check adv   "Adverbs" "" "Adverbs"
 
 
@@ -2297,12 +2297,12 @@ EndIter ns
 
 Label "<div id='use-poss-strat-general' style='display:none'>"
 
-Label "<p> A different word order from that in finite clauses can be selected 
-for poss-acc, erg-poss, or nominal nominalization strategies. 
+Label "<p> A different word order from that in finite clauses can be selected
+for poss-acc, erg-poss, or nominal nominalization strategies.
 However, the same alternative word order must be shared by all three of these types. For example,
-if the finite word order is SOV, and a language has both poss-acc and erg-poss nominalization strategies, 
-it is possible to specify that these two types should both use OSV word order. 
-However, it would not be possible for the poss-acc nominalization strategy to use SOV 
+if the finite word order is SOV, and a language has both poss-acc and erg-poss nominalization strategies,
+it is possible to specify that these two types should both use OSV word order.
+However, it would not be possible for the poss-acc nominalization strategy to use SOV
 word order and the erg-poss strategy to use OSV word order. </p>"
 
 
@@ -2334,8 +2334,8 @@ the verb (V) to the nominalized verb:</b><br>" "</p>"
 
 Label "<p></p>"
 
-Label "<p><b> Please select which possessive strategies can be used to mark a syntactic 
-possessor in nominalized clauses.</b> For nominal nominalization strategies, this should 
+Label "<p><b> Please select which possessive strategies can be used to mark a syntactic
+possessor in nominalized clauses.</b> For nominal nominalization strategies, this should
 only include strategies used on the A, even if the P is also marked as a syntactic possessor:</p>"
 
     BeginIter nmz_poss_strat{l} "a Possessive strategy"
@@ -2348,20 +2348,65 @@ only include strategies used on the A, even if the P is also marked as a syntact
 
 Radio non_sent_sem "Nominalization Strategy {i} Relation" "<br><br><b>When the nominalized verb appears with a syntactic possessor the semantic representation should: </b><br>
   </b><br>" ""
-    . both  "both" "" "Include both the possessive and verbal semantics (the argument marked by the possessive strategy will be interpretated as both a verbal argument and a possessor)<br>" 
+    . both  "both" "" "Include both the possessive and verbal semantics (the argument marked by the possessive strategy will be interpretated as both a verbal argument and a possessor)<br>"
     . verb-only "verb-only" "" "Include only the verbal semantics (the argument marked by the possessive strategy will be interpretated
 	as only a verbal argument)<br>"
-    . noun-only "noun-only" "" "Include only the possessive semantics (the argument marked by the possessive strategy will be interpretated 
+    . noun-only "noun-only" "" "Include only the possessive semantics (the argument marked by the possessive strategy will be interpretated
 	as only the possessor)<br>"
 
 Label "<p></p>"
- 
+
 
 Label "</div>"
 
 Label "<h4>References</h4>"
 Label "<div style=\"font-size:2\">"
 Label "<p>Koptjevskaja-Tamm, Maria. 1993. Nominalizations. London: Routledge.</p>"
+
+
+Section lvc "Light Verb Constructions"
+
+Label "<p>If your language uses light verb constructions (LVCs), mark the appropriate options below.</p>"
+
+Label "<p>What possible coverbs are allowed in your language?<br>(selecting one or more of these options will allow you to add coverbs of that type to the lexicon)</p>"
+Check coverb-n "Noun coverbs" "" "Noun Coverbs<br>" "toggle_element.call(this, 'lvc-noun-cv-dep', 'toggle');"
+Check coverb-v "Verb coverbs" "" "Verb Coverbs<br>" "toggle_element.call(this, 'lvc-verb-cv-dep', 'toggle');"
+
+Label "<div id='lvc-noun-cv-dep' style='display:none'>"
+Radio lvc-noun-cv-dep "LVC noun coverb dependents" "<p>Can noun coverbs pick up dependents on their own (e.g. determiner, modifier, complement)?</p>" ""
+. yes "Yes" "" "yes<br>"
+. no "No" "" "no<br>"
+
+Label "</div>"
+
+Label "<div id='lvc-verb-cv-dep' style='display:none'>"
+Radio lvc-verb-cv-dep "LVC verb coverb dependents" "<p>Can verb coverbs pick up dependents on their own (e.g. modifier, complement)?</p>" ""
+. yes "Yes" "" "yes<br>"
+. no "No" "" "no<br>"
+
+Label "</div>"
+
+Radio lvc-word-order "LVC order" "<p>The word order within an LVC is:</p>" ""
+. cv-lv "Coverb before light verb" "" "The coverb is before the light verb<br>"
+. lv-cv "Coverb after light verb" "" "The coverb is after the light verb<br>"
+. both "Coverb before/after light verb" "" "The coverb can be before or after the light verb<br>"
+
+Radio lvc-adjacent "LVC adjacent" "<p>Does a coverb (or the constituent it heads) have to be immediately adjacent to a light verb?</p>" ""
+. yes "Yes" "" "yes<br>"
+. no "No" "" "no <br>"
+
+Label "<p>What possible valence options are allowed for light verbs in your language?</p>"
+Check lvc-it "Just coverb" "" "A light verb can take just a coverb as an argument (i.e. intransitive)<br>"
+Check lvc-tr "Coverb plus 1 compelement" "" "A light verb can take a coverb plus an additional complement as arguments (i.e. transitive)<br>"
+
+Radio lvc-bleached "LVC bleached" "<p>Are bleached (semantically empty) verbs possible in your language?</p>" ""
+. yes "Yes" "" "yes<br>" "toggle_element.call(this, 'lvc-all-bleached', 'on');"
+. no "No" "" "no <br>" "toggle_element.call(this, 'lvc-all-bleached', 'off');"
+
+Label "<div id='lvc-all-bleached' style='display:none'>"
+Radio lvc-all-bleached "LVC all bleached" "<p>Are all light verbs bleached in your language?</p>" ""
+. yes "Yes" "" "yes<br>"
+. no "No" "" "no <br>"
 
 Section clausal-comp "Clausal Complements"
 
@@ -2413,7 +2458,7 @@ BeginIter comps{i} "a Clausal Complement Type" 1
 
         Label "<p> You can put a FORM feature on the obligatory complementizer if you want to constrain the clause-embedding
         verb in terms of which complementizers it can go with. (Note that (1) this is not about the embedded clause FORM; and (2) that all complementizers here
-        are still assumed to be semantically empty. A complementizer's FORM is usually just its orthography, like that of an adposition. 
+        are still assumed to be semantically empty. A complementizer's FORM is usually just its orthography, like that of an adposition.
         FORM is specified in Other Features.)</p>"
 
         Select cformvalue "Clausal Complement Type {i} Complementizer Form {k} Value" "Form Value: " ""
@@ -2426,12 +2471,12 @@ BeginIter comps{i} "a Clausal Complement Type" 1
   you can use custom syntactic but not semantic features; note that subject raising is not yet supported,
   so be careful with infinitives: you will not get the right semantics),
    nominalization (define in Nominalized Clauses):</p>"
-  
+
     BeginIter feat{l} "a Feature"
 
       Select name "Clausal Complement Type {i} Embedded Verb Feature {l} Name" "Name: " ""
 	  fillnames2 c=verb
- 
+
       MultiSelect value "Clausal Complement Type {i} Embedded Verb Feature {l} Value" "Value: " ""
       fillvalues p=comps{i}_feat{l}_name
 
@@ -2509,12 +2554,12 @@ Label "<p>The Grammar Matrix defines clausal modification with three types of su
 Label "<div style=\"padding-left: 16px\"><p><span
 class=\"dfn\">Free Subordinating Morpheme</span><br>&nbsp;&nbsp;&nbsp;&nbsp;A free morpheme
 that marks the subordinate clause<br><span
-class=\"dfn\">Free Subordinating Morpheme Pair</span><br>&nbsp;&nbsp;&nbsp;&nbsp;A pair of subordinator 
+class=\"dfn\">Free Subordinating Morpheme Pair</span><br>&nbsp;&nbsp;&nbsp;&nbsp;A pair of subordinator
 morphemes, one  of which marks the subordinate clause, the other of which marks the matrix clause<br><span
 class=\"dfn\">No Free Subordinating Morpheme</span><br>&nbsp;&nbsp;&nbsp;&nbsp;The clausal modifier does not contain a free subordinator morpheme<br></div>"
 
 Label "<p>Clausal modifiers may also be marked by special verbal morphology, nominalization of the subordinate
-clause, special word order in the subordinate clause, and subject sharing. You may define any number of 
+clause, special word order in the subordinate clause, and subject sharing. You may define any number of
 clausal modifier strategies by combining the free morpheme type with subject sharing and various morphologial constraints.</p>"
 
 Label "<p>Note: Some characteristics of clausal modifiers must be defined on other pages of the grammar matrix.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Special Word order (currently only supported for V2 languages with Vfinal word order in the subordinate clause) should be specified on the word order page<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nominalization strategies should be defined on the Nominalized Clauses page. These stragies can then be added to a clausal modifier strategy under Add a Feature.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Additional features such as finite/non-finite, or features associated with bound subordinator morphemes should be defined on the Other Features page and added to a clausal modifier strategy under Add a Feature.</p>"
@@ -2548,7 +2593,7 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
       Radio subordinator-type "Subordinator Type" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Is the free subordinator morpheme treated as the head of its clause or as and adverbial?:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
      	. head "Head" "" "it is the head of the subordinate clause<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"  "toggle_element.call(this, 'adverb{i}', 'off')"
      	. adverb "Adverb" "" "it is an adverb (not the head of its clause)<br>" "toggle_element.call(this, 'adverb{i}', 'on')"
-     
+
      	   Label "<div id='adverb{i}' style='display:none'>"
 
 	   Radio adverb-attach "Adverb Attach" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If the subordinator is an adverb, does it attach to VP, S or both?<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
@@ -2574,7 +2619,7 @@ BeginIter cms{i} "a Clausal Modifier Strategy" 1
       Radio subordinator-type "Subordinator Type" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Is the morpheme in the subordinate clause treated as the head of its clause or as and adverbial?:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
      	. head "Head" "" "it is the head of the subordinate clause<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"  "toggle_element.call(this, 'pair-adverb{i}', 'off')"
      	. adverb "Adverb" "" "it is an adverb (not the head of its clause)<br>" "toggle_element.call(this, 'pair-adverb{i}', 'on')"
-     
+
      	   Label "<div id='pair-adverb{i}' style='display:none'>"
 
 	   Radio adverb-attach "Adverb Attach" "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If the morpheme in the subordinate clause is an adverb, does it attach to VP, S or both?<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ""
@@ -2616,7 +2661,7 @@ BeginIter feat{k} "a Feature"
 
     Select name "Clausal Modifier Strategy {i} Embedded Verb Feature {k} Name" "Name: " ""
       fillnames2 c=verb
- 
+
     MultiSelect value "Clausal Modifier Strategy {i} Embedded Verb Feature {k} Value" "Value: " ""
       fillvalues p=cms{i}_feat{k}_name
 
@@ -2700,7 +2745,7 @@ BeginIter noun{i} "a Noun Type" 1 1
     Text orth "Noun {i} stem {j} spelling" "Spelling: " "" 30 "fill_pred('noun{i}_stem{j}', 'n')"
 
     Text pred "Noun {i} stem {j} predicate" " Predicate: " "" 30
-    
+
 
   EndIter stem
 
@@ -2719,6 +2764,19 @@ BeginIter noun{i} "a Noun Type" 1 1
     fillcache c=nounlrs
 
   EndIter forbid
+
+  Radio coverb-type "Coverb type" "<p>Light Verb Constructions:</p>" "" "coverb-n"
+    . cv-opt "Can be coverb" "" "This can be a coverb<br>" "toggle_element.call(this, 'lv-for-noun-cv{i}', 'on');"
+    . cv-only "Is only coverb" "" "This is only a coverb<br>" "toggle_element.call(this, 'lv-for-noun-cv{i}', 'on');"
+
+  Label "<div id='lv-for-noun-cv{i}' style='display:none'>"
+  Label "<p>Light verbs that take this coverb class as an argument:</p>"
+
+  MultiSelect lvs "Light verb {i}" "Light verb(s): " "<br>"
+    fillregex p=lv[0-9]+_name
+    . all-lv "all light verbs" "all light verbs"
+
+  Label "</div>"
 
   Label "</div>"
 
@@ -2799,6 +2857,19 @@ BeginIter verb{i} "a Verb Type" 1 2
     fillcache c=verblrs
 
   EndIter forbid
+
+  Radio coverb-type "Coverb type" "<p>Light Verb Constructions:</p>" "" "coverb-v"
+    . cv-opt "Can be coverb" "" "This can be a coverb<br>" "toggle_element.call(this, 'lv-for-verb-cv{i}', 'on');"
+    . cv-only "Is only coverb" "" "This is only a coverb<br>" "toggle_element.call(this, 'lv-for-verb-cv{i}', 'on');"
+
+  Label "<div id='lv-for-verb-cv{i}' style='display:none'>"
+  Label "<p>Light verbs that take this coverb class as an argument:</p>"
+
+  MultiSelect lvs "Light verb {i}" "Light verb(s): " "<br>"
+    fillregex p=lv[0-9]+_name
+    . all-lv "all light verbs" "all light verbs"
+
+  Label "</div>"
 
   Label "</div>"
 
@@ -3309,8 +3380,8 @@ BeginIter adp{i} "a Semantically Empty Adposition" 1
   EndIter feat
 
 
-Label "<p>A feature should only be specified on an adposition's complement, 
-if no features (case or information-marking) are specified on the adposition 
+Label "<p>A feature should only be specified on an adposition's complement,
+if no features (case or information-marking) are specified on the adposition
 itself.</p>"
 
   BeginIter adpcomp_feat{j} "a Feature on Adposition's Complement" 0 0
@@ -3325,6 +3396,62 @@ itself.</p>"
 
 EndIter adp
 
+Label "<h3>Light Verbs</h3>"
+
+BeginIter lv{i} "a light verb" 1
+
+  Label "<b>Light verb type {i}</b>:"
+
+  Label "<div style=\"padding-left: 16px\"></div>"
+
+  Text name "Light verb {i} name" "Type name: " "" 20
+
+  Label "<div style=\"padding-left: 16px\"></div><br>"
+
+  Label "Features:"
+
+  BeginIter feat{j} "a Feature"
+
+  Select name "Light verb {i} feature {j} name" "Name: " " "
+  fillnames c=both
+
+  MultiSelect value "Light verb {i} feature {j} value" "Value: " ""
+  fillvalues p=lv{i}_feat{j}_name
+
+  Select head "Ligh verb {i} feature {j} head" "Specified on: " ""
+  . verb "The verb" "the verb"
+  . subj "The subject" "the subject NP"
+  . obj "The object" "the object NP"
+  . higher "Higher-ranked" "the higher-ranked NP"
+  . lower "Lower-ranked" "the lower-ranked NP"
+
+  EndIter feat
+
+  Label "<div style=\"padding-left: 16px\"></div>"
+
+  Select valence "LVC valence" "LVC valence: " "<br>"
+  fillempty
+    . coverb-only "just coverb" "just coverb"
+    . coverb-1comp "coverb plus 1 complement" "coverb plus 1 complement"
+
+  Select cv-type "Coverb type" "Coverb type: " "<br>"
+  fillempty
+    . noun "noun coverb" "noun coverb"
+    . verb "verb coverb" "verb coverb"
+
+  Check sem-bleached "bleached?" "" "bleached?"
+
+  Label "<div style=\"padding-left: 16px\"></div><br>"
+
+  BeginIter stem{j} "a simple Stem" 0 1
+
+    Text orth "Light verb {i} stem {j} spelling" "Spelling: " "" 30 "fill_pred('lv{i}_stem{j}', 'v_lv');fill_name('lv{i}')"
+
+    Text pred "Light verb {i} stem {j} predicate" " Predicate: " "" 30
+
+  EndIter stem
+
+EndIter lv
 
 
 Section morphology "Morphology"
@@ -3336,6 +3463,7 @@ Cache auxes aux[0-9]+$ name
 Cache dets q?det[0-9]+$ name
 Cache adjs adj[0-9]+$ name
 Cache cops cop[0-9]+$ name
+Cache lverbs lv[0-9]+$ name
 
 Label "<p>Here you can define inflectional morphology for nouns, verbs, and
 determiners.  To do so, first define one or more inflectional <span
@@ -3525,12 +3653,14 @@ BeginIter verb-pc{i} "a Position Class" 1
   fillcache c=verbs
   fillcache c=qverbs
   fillcache c=auxes
+  fillcache c=lverbs
   fillregex p=verb-pc[0-9]+(_lrt[0-9]+)?_name
   . verb "Any verb" "any verb"
   . iverb "Any intransitive verb" "any intransitive verb"
   . tverb "Any transitive verb" "any transitive verb"
   . aux "Any auxiliary verb" "any auxiliary verb"
   . qverb "Any question verb" "any question verb"
+  . lverb "Any light verb" "any light verb"
 
   Label "<p>Morphotactic Constraints:</p>"
 
@@ -3539,12 +3669,18 @@ BeginIter verb-pc{i} "a Position Class" 1
     MultiSelect others "Verb Position Class {i} Requires" "Verb Position Class {i} requires one of the following: " ""
     fillcache c=verbs
     fillcache c=auxes
+<<<<<<< HEAD
     fillregex p=(verb|noun)-pc[0-9]+(_lrt[0-9]+)?_name
+=======
+    fillcache c=lverbs
+    fillregex p=verb-pc[0-9]+(_lrt[0-9]+)?_name
+>>>>>>> taraw28-lvc
     . verb "Any verb" "any verb"
     . iverb "Any intransitive verb" "any intransitive verb"
     . tverb "Any transitive verb" "any transitive verb"
     . aux "Any auxiliary verb" "any auxiliary verb"
     . qverb "Any question verb" "any question verb"
+    . lverb "Any light verb" "any light verb"
 
   EndIter require
 
@@ -3553,12 +3689,18 @@ BeginIter verb-pc{i} "a Position Class" 1
     Select others "Verb Position Class {i} Forbids" "Verb Position Class {i} forbids the following: " ""
     fillcache c=verbs
     fillcache c=auxes
+<<<<<<< HEAD
     fillregex p=(verb|noun)-pc[0-9]+(_lrt[0-9]+)?_name
+=======
+    fillcache c=lverbs
+    fillregex p=verb-pc[0-9]+(_lrt[0-9]+)?_name
+>>>>>>> taraw28-lvc
     . verb "Any verb" "any verb"
     . iverb "Any intransitive verb" "any intransitive verb"
     . tverb "Any transitive verb" "any transitive verb"
     . aux "Any auxiliary verb" "any auxiliary verb"
     . qverb "Any question verb" "any question verb"
+    . lverb "Any light verb" "any light verb"
 
   EndIter forbid
 
@@ -3573,10 +3715,10 @@ BeginIter verb-pc{i} "a Position Class" 1
 
     Label "<p>Features:</p>"
 
-    Label "<p> For lexical rule types using a nominalization strategy, if one of the arguments of the verb is marked through the use of 
-	       a semantically empty adposition (which is neither case-marking nor 
-		information structure marking), select the form value associated 
-		with the adposition and which argument it should mark. The form value for all semantically  
+    Label "<p> For lexical rule types using a nominalization strategy, if one of the arguments of the verb is marked through the use of
+	       a semantically empty adposition (which is neither case-marking nor
+		information structure marking), select the form value associated
+		with the adposition and which argument it should mark. The form value for all semantically
                 empty adpositions is just their orthography followed by _sem.</p>"
 
     BeginIter feat{k} "a Feature"
@@ -3635,7 +3777,7 @@ inputs are possible, these need to be created as two separate lexical rule types
       Select argtype "Verb Position Class {i} Lexical Rule Type {j} Valence-changing Operation {k} Argument Type" "The added argument must be a(n): " ""
       . np "NP" "NP"
       . pp "PP" "PP"
-      
+
     EndIter valchg
 
     Label "<p>Morphotactic Constraints:</p>"
@@ -3645,12 +3787,14 @@ inputs are possible, these need to be created as two separate lexical rule types
       MultiSelect others "Verb Position Class {i} Lexical Rule Type {j} Requires" "Lexical Rule Type {j} requires one of the following: " ""
       fillcache c=verbs
       fillcache c=auxes
+      fillcache c=lverbs
       fillregex p=(verb|noun)-pc[0-9]+(_lrt[0-9]+)?_name
       . verb "Any verb" "any verb"
       . iverb "Any intransitive verb" "any intransitive verb"
       . tverb "Any transitive verb" "any transitive verb"
       . aux "Any auxiliary verb" "any auxiliary verb"
       . qverb "Any question verb" "any question verb"
+      . lverb "Any light verb" "any light verb"
 
     EndIter require
 
@@ -3659,12 +3803,14 @@ inputs are possible, these need to be created as two separate lexical rule types
       Select others "Verb Position Class {i} Lexical Rule Type {j} forbids" "Lexical Rule Type {j} forbids the following: " ""
       fillcache c=verbs
       fillcache c=auxes
+      fillcache c=lverbs
       fillregex p=(verb|noun)-pc[0-9]+(_lrt[0-9]+)?_name
       . verb "Any verb" "any verb"
       . iverb "Any intransitive verb" "any intransitive verb"
       . tverb "Any transitive verb" "any transitive verb"
       . aux "Any auxiliary verb" "any auxiliary verb"
       . qverb "Any question verb" "any question verb"
+      . lverb "Any light verb" "any light verb"
 
     EndIter forbid
 

@@ -38,6 +38,8 @@ VO_ORDERS = ['svo', 'vos', 'vso', 'v-initial']
 
 # Linguistic terms
 QUES = 'question'
+INTRANSITIVE = 'intrans'
+TRANSITIVE = 'trans'
 
 
 # WH-QUESTIONS

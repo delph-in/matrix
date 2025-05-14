@@ -2,6 +2,12 @@ from collections import defaultdict
 
 from gmcs import feature_type_use
 
+# imports for typing
+from typing import Dict
+from gmcs.lib import TDLHierarchy
+from gmcs.tdl import TDLfile
+from gmcs.choices import ChoicesFile, ChoiceDict
+
 from gmcs.utils import get_name
 from gmcs.utils import TDLencode
 from gmcs.utils import orth_encode
@@ -62,8 +68,9 @@ def qpart_id(item):
     """Return the identifier for a question particle lexical item."""
     return get_name(item) + '-lex'
 
+
 def not_nominalized(ch, mylang, lex_type, pos):
-    """ Sets the NMZ, ADV-MOD, ANC-WO features as necessary 
+    """ Sets the NMZ, ADV-MOD, ANC-WO features as necessary
         for languages with defined nominalization strategies."""
     if ch.get('ns', ''):
             if pos != 'adp':
@@ -76,6 +83,46 @@ def not_nominalized(ch, mylang, lex_type, pos):
             if needs_anc_wo_feat(ch):
                  mylang.add( lex_type +' := [ SYNSEM.LOCAL.CAT.HEAD.ANC-WO - ].')
 
+
+def lv_id(item, cv_pos, with_name=True, is_bleached=False):
+    """Return the identifier for a light verb."""
+    from gmcs.constants import TRANSITIVE, INTRANSITIVE
+
+    valence = INTRANSITIVE if item.get('valence') == 'coverb-only' else TRANSITIVE
+
+    if is_bleached:
+        if with_name:
+            return get_name(item) + '-bleached-' + valence + '-' + cv_pos + '-lv-lex'
+        else:
+            return 'bleached-' + valence + '-' + cv_pos + '-lv-lex'
+    else:
+        if with_name:
+            return get_name(item) + '-' + valence + '-' + cv_pos + '-lv-lex'
+        else:
+            return valence + '-' + cv_pos + '-lv-lex'
+
+
+def lvctype_id(item):
+    """Return the identifier for the lvc type for a coverb."""
+    from gmcs.constants import TRANSITIVE, INTRANSITIVE
+
+    valence = INTRANSITIVE if item.get('valence') == 'coverb-only' else TRANSITIVE
+    return 'lv-' + get_name(item) + '-' + valence
+
+
+def coverb_id(item, cv_pos):
+    """ Return the identifier for a coverb lexical item."""
+    return get_name(item) + '-coverb-' + cv_pos + '-lex'
+
+
+def coverb_lvc_id(item, lvtype, cv_pos):
+    """
+    Return the identifier for the coverb lexical item based on the lvc type.
+
+    lvtype (str): the light verb type corresponding to the coverb
+    cv_pos (str): the coverb's part of speech
+    """
+    return get_name(item) + '-' + lvtype + '-coverb-' + cv_pos + '-lex'
 
 ##########################################################
 
@@ -209,6 +256,8 @@ def customize_bipartite_stems(ch):
 
 
 def customize_verbs(mylang, ch, lexicon, hierarchies):
+    from gmcs.constants import ON
+
     negmod = ch.get('neg-mod')
     negadv = ch.get('neg-adv')
     wo = ch.get('word-order')
@@ -218,7 +267,7 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
     hclight = (negadv == 'ind-adv' and negmod == 'v')
     hclightallverbs = False
 
-    if ch.get('has-aux') == 'yes':
+    if ch.get('has-aux') == 'yes' or ch.get('lvc-bleached') == 'yes':
         # TODO: OZ 11-30-2017 Reconcile this with my VC stuff in word_order.py
         vc = determine_vcluster(auxcomp, auxorder, wo, ch)
         if wo == 'vso' or wo == 'osv':
@@ -253,7 +302,7 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
     # Neither mainverbs or auxs should start out as modifiers (for now)
     # Assigning constraint to verb-lex
 
-    if ch.get('has-aux') == 'yes':
+    if ch.get('has-aux') == 'yes' or ch.get('lvc-bleached') == 'yes':
         mylang.add('head :+ [ AUX bool ].', section='addenda')
         #mainorverbtype = 'main-verb-lex'
 
@@ -348,19 +397,31 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
     # Add constraints to choices to create lex rules for bipartite stems
     customize_bipartite_stems(ch)
 
+    if ch.get('coverb-v') == ON:
+        add_initial_verb_coverb_lex_types(ch, mylang)
+
     # Lexical entries
     lexicon.add_literal(';;; Verbs')
+
+    # List of verb coverb typedefs to be added to lexicon later
+    verb_cv_typedefs = []
 
     # Now create the lexical entries for all the defined verb types
     cases = case.case_names(ch)
     for verb in ch.get('verb', []):
-        create_verb_lex_type(cases, ch, hierarchies, lexicon, mylang, verb)
+        verb_cv_typedefs = create_verb_lex_type(cases, ch, hierarchies, lexicon, mylang, verb, verb_cv_typedefs)
     if ch.get('wh-q-inter-verbs') == 'on':
         mylang.add(lexbase.ITRG_VB)
         not_nominalized(ch, mylang, 'interrogative-verb-lex', 'qverb')
         for verb in ch.get('qverb', []):
             create_interrogative_verb_type(
                 cases, ch, hierarchies, lexicon, mylang, verb)
+
+    # Add verb coverb lexical entries to lexicon
+    if ch.get('coverb-v') == ON:
+        lexicon.add_literal(';;; Verb Coverbs')
+        for verb_cv in verb_cv_typedefs:
+            lexicon.add(verb_cv, merge=False)
 
 
 def create_interrogative_verb_type(cases, ch, hierarchies, lexicon, mylang, verb):
@@ -406,43 +467,96 @@ def add_itg_stem_to_lexicon(lexicon, stem, stype, predtype):
         lexicon.add(typedef, merge=True)
 
 
-def create_verb_lex_type(cases, ch, hierarchies, lexicon, mylang, verb):
+def create_verb_lex_type(cases, ch, hierarchies, lexicon, mylang, verb, verb_cv_typedefs):
+    from gmcs.constants import TRANSITIVE, INTRANSITIVE
+    from gmcs.linglib.case import interpret_verb_valence
+
     stypes = verb.get('supertypes').split(', ')
     stype_names = [verb_id(ch[st]) for st in stypes if st != '']
     vtype = verb_id(verb)
+    v_valence = interpret_verb_valence(verb.get('valence'))
     construct_supertype_names(cases, ch, stype_names, verb)
     # clausal verb's valence and its complement's head constraint:
     vtype, head = clausalcomps.update_verb_lextype(ch, verb, vtype)
-    if len(stype_names) == 0:
-        mylang.add(vtype + ' := verb-lex .')
+
+    if verb.get('coverb-type') == 'cv-only':
+        # create coverb-verb-lex for verb
+        cvtype = coverb_id(verb, 'verb')
+        if v_valence == 'iverb':
+            mylang.add(cvtype + ' := coverb-intrans-verb-lex.', section='lvclex')
+        elif v_valence == 'tverb':
+            mylang.add(cvtype + ' := coverb-trans-verb-lex.', section='lvclex')
+        add_lvtype_to_coverb(ch, mylang, hierarchies, verb, 'verb')
+
+        features.customize_feature_values(
+            mylang, ch, hierarchies, verb, cvtype, 'verb', None, cases, section='lvclex')
     else:
-        mylang.add(vtype + ' := ' + ' & '.join(stype_names) + '.')
-    if head:
-        mylang.add(
-            vtype + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD ' + head + ' ] > ].', merge=True)
-    features.customize_feature_values(
-        mylang, ch, hierarchies, verb, vtype, 'verb', None, cases)
+        # create verb-lex for verb
+        if len(stype_names) == 0:
+            mylang.add(vtype + ' := verb-lex .')
+        else:
+            mylang.add(vtype + ' := ' + ' & '.join(stype_names) + '.')
+        if head:
+            mylang.add(
+                vtype + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD ' + head + ' ] > ].', merge=True)
+
+        if verb.get('coverb-type') == 'cv-opt':
+            # create basic-verb-lex for verb
+            basic_vtype = get_name(verb) + '-basic-verb-lex'
+            mylang.add(basic_vtype + ' := basic-verb-lex.')
+            features.customize_feature_values(
+                mylang, ch, hierarchies, verb, basic_vtype, 'verb', None, cases)
+
+            # add to verb-lex for verb
+            mylang.add(vtype + ' := ' + basic_vtype + '.')
+
+            # create verb-coverb-lex for verb
+            cvtype = coverb_id(verb, 'verb')
+            if v_valence == 'iverb':
+                mylang.add(cvtype + ' := coverb-intrans-verb-lex & ' + basic_vtype + '.', section='lvclex')
+            elif v_valence == 'tverb':
+                mylang.add(cvtype + ' := coverb-trans-verb-lex & ' + basic_vtype + '.', section='lvclex')
+            add_lvtype_to_coverb(ch, mylang, hierarchies, verb, 'verb')
+        else:
+            features.customize_feature_values(
+                mylang, ch, hierarchies, verb, vtype, 'verb', None, cases)
 
     stems = verb.get('stem', [])
     stems.extend(verb.get('bistem', []))
     for stem in stems:
-        add_stem_to_lexicon(lexicon, stem, vtype, ch, 'verb')
+        add_stem_to_lexicon(lexicon, stem, vtype, ch, 'verb', verb.get('coverb-type'))
+
+        # Create verb coverb lex entry if verb is/can be a coverb
+        if verb.get('coverb-type') == 'cv-only' or verb.get('coverb-type') == 'cv-opt':
+            typedef = create_coverb_lex_entry(ch, hierarchies, verb, stem, 'verb')
+            verb_cv_typedefs.append(typedef)
+
+    return verb_cv_typedefs
 
 
-def add_stem_to_lexicon(lexicon, stem, stype, ch, pos):
-    orthstr = orth_encode(stem.get('orth'))
-    pred = stem.get('pred')
-    name = stem.get('name')
-    lexicon.add(TDLencode(name) + ' := ' + stype + ' & \
-                    [ STEM < "' + orthstr + '" >, \
-                      SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].')
-    #Add the FORM value to the lexicon entry of normadps in languages
-    #with semantically empty adps that are neither case-marking nor information structure marking
-    if ch.has_adp_form() and pos == "adp":
-        if not stem.get('form', ''):
-            lexicon.add(TDLencode(name) + ' := [SYNSEM.LOCAL.CAT.HEAD.FORM adpform ].')
-        else:
-            lexicon.add(TDLencode(name) + ' := [SYNSEM.LOCAL.CAT.HEAD.FORM ' + stem.get('form') +  '].')
+def add_stem_to_lexicon(lexicon, stem, stype, ch, pos, coverb_type=None):
+    """
+    Create verb lexical entry and add to the lexicon if the verb
+        is not only a coverb.
+    """
+    if not coverb_type == 'cv-only':
+        orthstr = orth_encode(stem.get('orth'))
+        pred = stem.get('pred')
+        name = stem.get('name')
+
+        typedef = \
+            TDLencode(name) + ' := ' + stype + ' & \
+                        [ STEM < "' + orthstr + '" >, \
+                        SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
+        lexicon.add(typedef)
+
+        #Add the FORM value to the lexicon entry of normadps in languages
+        #with semantically empty adps that are neither case-marking nor information structure marking
+        if ch.has_adp_form() and pos == "adp":
+            if not stem.get('form', ''):
+                lexicon.add(TDLencode(name) + ' := [SYNSEM.LOCAL.CAT.HEAD.FORM adpform ].')
+            else:
+                lexicon.add(TDLencode(name) + ' := [SYNSEM.LOCAL.CAT.HEAD.FORM ' + stem.get('form') +  '].')
 
 
 def construct_supertype_names(cases, ch, stype_names, verb):
@@ -490,11 +604,23 @@ def construct_supertype_names(cases, ch, stype_names, verb):
             stype_names.append(dir_inv + tivity + 'itive-verb-lex')
 
 def main_or_verb(ch):
-    """Returns the verb type for lexical/main verbs."""
-    if ch.get('has-aux') == 'yes':
+    if ch.get('has-aux') == 'yes' or ch.get('lvc-bleached') == 'yes':
         return 'main-verb-lex'
     else:
         return 'verb-lex'
+
+
+def add_initial_verb_coverb_lex_types(ch: ChoicesFile, mylang: TDLfile):
+    """
+    Add initial verb coverb lexical types to LVC section of mylang.
+    """
+    from gmcs.constants import ON
+    from gmcs.linglib.light_verb_constructions import COVERB_INTRANS_VERB_ITEM, COVERB_TRANS_VERB_ITEM
+
+    mylang.add_literal('; Verb Coverbs', section='lvclex')
+    # in future, would be a good idea to have this be a choice on lvc page
+    mylang.add(COVERB_INTRANS_VERB_ITEM, section='lvclex')
+    mylang.add(COVERB_TRANS_VERB_ITEM, section='lvclex')
 
 
 def customize_determiners(mylang, ch, lexicon, hierarchies):
@@ -673,11 +799,11 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     imp_ancs = False
     for ns in ch.get('ns'):
         if ns['det'] == 'imp':
-            imp_ancs = True 
+            imp_ancs = True
 
     if (seen['imp'] or poss_prons or imp_ancs) and ch.get('has-dets') == 'yes':
         if ch.get('noun-det-order') == 'noun-det':
-            hs = 'head-spec' 
+            hs = 'head-spec'
         if ch.get('noun-det-order') == 'det-noun':
             hs = 'spec-head'
         mylang.add(
@@ -724,6 +850,16 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
                     else:
                         parents = next_parents
 
+    # List of noun coverb typedefs to be added to lexicon later
+    noun_cv_lexicon_typedefs = []
+
+    if ch.get('coverb-n') == ON:
+        add_initial_noun_coverb_lex_types(mylang, singlentype, seen)
+
+    # Make sure regular nouns (non-coverbs) can't be used in LVC constructions
+    if ch.get('coverb-n') == ON or ch.get('coverb-v') == ON :
+        mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT.HEAD.LVC lv-none ].')
+
     for noun in ch.get('noun', []):
         ntype = noun_id(noun)
         det = noun.get('det')
@@ -744,25 +880,135 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
                 stype_names.append('no-spr-noun-lex')
         if qpron:
             stype_names.append(WH_PRO)
-        if len(stype_names) == 0:
-            mylang.add(ntype + ' := noun-lex .')
+
+        if noun.get('coverb-type') == 'cv-only':
+            # create coverb-noun-lex for noun
+            cvtype = coverb_id(noun, 'noun')
+            mylang.add(cvtype + ' := coverb-noun-lex.', section='lvclex')
+            add_lvtype_to_coverb(ch, mylang, hierarchies, noun, 'noun')
+
+            features.customize_feature_values(
+                mylang, ch, hierarchies, noun, cvtype, 'noun', section='lvclex')
         else:
-            mylang.add(ntype + ' := ' + ' & '.join(stype_names) + '.')
-        # EKN 2018-01-31 Adding PRON feature to individual types:
-        if pron:
-            mylang.add(ntype + ' := [ SYNSEM.LOCAL.CAT.HEAD.PRON + ].')
-        features.customize_feature_values(
-            mylang, ch, hierarchies, noun, ntype, 'noun')
+            # create noun-lex for noun
+            if len(stype_names) == 0:
+                mylang.add(ntype + ' := noun-lex .')
+            else:
+                mylang.add(ntype + ' := ' + ' & '.join(stype_names) + '.')
+
+            # EKN 2018-01-31 Adding PRON feature to individual types:
+            if pron:
+                mylang.add(ntype + ' := [ SYNSEM.LOCAL.CAT.HEAD.PRON + ].')
+
+            if noun.get('coverb-type') == 'cv-opt':
+                # create basic-noun-lex for noun
+                basic_ntype = get_name(noun) + '-basic-noun-lex'
+                mylang.add(basic_ntype + ' := basic-noun-lex.')
+                features.customize_feature_values(
+                    mylang, ch, hierarchies, noun, basic_ntype, 'noun')
+
+                # add to noun-lex for noun
+                mylang.add(ntype + ' := ' + basic_ntype + '.')
+
+                # create noun-coverb-lex for noun
+                cvtype = coverb_id(noun, 'noun')
+                mylang.add(cvtype + ' := coverb-noun-lex & ' + basic_ntype + '.', section='lvclex')
+                add_lvtype_to_coverb(ch, mylang, hierarchies, noun, 'noun')
+            else:
+                features.customize_feature_values(
+                    mylang, ch, hierarchies, noun, ntype, 'noun')
+
         for stem in noun.get('stem', []):
             # consider instead using (should be the same effect):
             # add_stem_to_lexicon(lexicon, stem, ntype)
             orthstr = orth_encode(stem.get('orth'))
             pred = stem.get('pred')
             name = stem.get('name')
-            typedef = TDLencode(name) + ' := ' + ntype + ' & \
-                  [ STEM < "' + orthstr + '" >, \
+
+            # Create noun lex entry and add to lexicon if noun is not only a coverb
+            if not noun.get('coverb-type') == 'cv-only':
+                typedef = TDLencode(name) + ' := ' + ntype + ' & \
+                    [ STEM < "' + orthstr + '" >, \
+                        SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
+                lexicon.add(typedef)
+
+            # Create noun coverb lex entry if noun is/can be a coverb
+            if noun.get('coverb-type') == 'cv-only' or noun.get('coverb-type') == 'cv-opt':
+                typedef = create_coverb_lex_entry(ch, hierarchies, noun, stem, 'noun')
+                noun_cv_lexicon_typedefs.append(typedef)
+
+
+    if ch.get('coverb-n') == ON:
+        # Add noun coverb lex entries to lexicon
+        lexicon.add_literal(';;; Noun Coverbs')
+        for noun_cv in noun_cv_lexicon_typedefs:
+            lexicon.add(noun_cv, merge=False)
+
+
+def add_initial_noun_coverb_lex_types(mylang: TDLfile, singlentype: bool, seen: Dict[str, bool]):
+    """
+    Add initial noun coverb lexical types to LVC section of mylang.
+    """
+    from gmcs.linglib.light_verb_constructions import COVERB_NOUN_ITEM
+
+    mylang.add_literal('; Noun Coverbs', section='lvclex')
+    mylang.add(COVERB_NOUN_ITEM, section='lvclex')
+
+    if singlentype:
+        if seen['obl']:
+            typedef = 'coverb-noun-lex := [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT - ] > ].'
+            mylang.add(typedef, section='lvclex')
+        elif seen['imp']:
+            typedef = 'coverb-noun-lex := [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT + ] > ].'
+            mylang.add(typedef, section='lvclex')
+
+def add_lvtype_to_coverb(ch: ChoicesFile, mylang: TDLencode, hierarchies: Dict[str, TDLHierarchy], coverb: ChoiceDict, cv_pos: str):
+    """
+    Adds the LVC type for the coverb to the coverb's type.
+    """
+    from gmcs.linglib.light_verb_constructions import LVC_TYPE
+
+    lvtype_list = [get_lv_type(ch, cv_lv) for cv_lv in coverb.get('lvs').split(', ')]
+    lvtype = hierarchies[LVC_TYPE].get_type_covering(lvtype_list)
+    cv_lvtype = coverb_lvc_id(coverb, lvtype, cv_pos)
+    cvtype = coverb_id(coverb, cv_pos)
+    mylang.add(cv_lvtype + ' := ' + cvtype + ' & \
+            [ SYNSEM.LOCAL.CAT.HEAD.LVC ' + lvtype + ' ].', section='lvclex')
+
+def create_coverb_lex_entry(ch: ChoicesFile, hierarchies: Dict[str, TDLHierarchy], coverb: ChoiceDict, stem: ChoiceDict, cv_pos: str):
+    """
+    Create and return coverb lexical entry for the given stem.
+    """
+    from gmcs.linglib.light_verb_constructions import LVC_TYPE
+
+    orthstr = orth_encode(stem.get('orth'))
+    pred = stem.get('pred')
+    name = stem.get('name')
+
+    # lv_type_list = []
+
+    # for cv_lvs in coverb.get('lv'):
+    #     for cv_lv in cv_lvs.get('lvs').split(', '):
+    #         lv_type_list.append(get_lv_type(ch, cv_lv))
+
+    lvtype_list = [get_lv_type(ch, cv_lv) for cv_lv in coverb.get('lvs').split(', ')]
+    lvtype = hierarchies[LVC_TYPE].get_type_covering(lvtype_list)
+    coverb_type = coverb_lvc_id(coverb, lvtype, cv_pos)
+
+    typedef = TDLencode(name) + ' := ' + coverb_type + ' & \
+                    [ STEM < "' + orthstr + '" >, \
                     SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
-            lexicon.add(typedef)
+
+    return typedef
+
+def get_lv_type(ch: ChoicesFile, cv_lv: str) -> str:
+    """
+    Given a light verb id for a coverb (cv_lv), return the lvc
+        type for that light verb.
+    """
+    for lv in ch.get('lv'):
+        if cv_lv == lv.full_key:
+            return lvctype_id(lv)
 
 def customize_adverbs(mylang, ch, lexicon):
     mylang.set_section('otherlex')
@@ -770,7 +1016,7 @@ def customize_adverbs(mylang, ch, lexicon):
     lexicon.add_literal(';;; Adverbs')
     loc_adv_added = False
     manner_adv_added = False
-    if ch.get('adv'):     
+    if ch.get('adv'):
         mylang.add(lexbase.ADV_ITEM)
         not_nominalized(ch, mylang, 'adverb-lex-item', 'adv')
         if not ch.get('ns', ''):
@@ -812,7 +1058,7 @@ def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
     if ch.get('adj', []):
         mylang.add("adj-lex := basic-intersective-adjective-lex.")
         not_nominalized(ch, mylang, 'adj-lex', 'adj')
-        
+
 
     # Check which rules need to be added to rules.tdl
     adj_rules = {'adj_head': False, 'head_adj': False}
@@ -1042,7 +1288,7 @@ def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
                                                                 VAL.SPR cons ] ] > ].''',
                    comment='Basic attributive adjective definition')
 
-        #If action nominals cannot be modified by adjectives, then all the adjective lexical 
+        #If action nominals cannot be modified by adjectives, then all the adjective lexical
         #types need to constrain their MOD values to be [ADV-MOD -]
         for ns in ch.get('ns'):
             if ns.get('adj') != 'on':
@@ -1224,16 +1470,16 @@ def customize_cops(mylang, ch, lexicon, hierarchies, trigger):
                 name = stem.get('name')
                 typedef = TDLencode(name) + ' := ' + ctype + ' & \
                         [ STEM < "' + orthstr + '" > ].'
-                                
+
                 grdef= TDLencode(orth) +'_gr := arg0e_gtr & \
                             [ CONTEXT [ RELS.LIST < [ PRED "~._a_" ] > ], \
                                 FLAGS.TRIGGER "' + TDLencode(orth) + '" ].'
-                trigger.add(grdef)                
-                lexicon.add(typedef)             
+                trigger.add(grdef)
+                lexicon.add(typedef)
 
 def customize_adpositions(mylang, lexicon, ch, hierarchies):
     mylang.add(lexbase.ADP_LEX)
-    if ch.get('has-aux') == 'yes':
+    if ch.get('has-aux') == 'yes' or ch.get('lvc-bleached') == 'yes':
         mylang.add(
             'norm-adposition-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.HEAD.AUX - ] > ].')
     if ch.get('ns', ''):
@@ -1255,7 +1501,7 @@ def customize_adpositions(mylang, lexicon, ch, hierarchies):
         else:
             mylang.add(typename + ' := ' + supertype +
                        '& [ SYNSEM.LOCAL.CAT.HEAD.INIT - ].')
-            
+
 def customize_semantically_empty_adpositions(mylang, ch, lexicon, trigger, hierarchies):
         to_cfv = []
         if ch.get('adp'):
@@ -1270,18 +1516,18 @@ def customize_semantically_empty_adpositions(mylang, ch, lexicon, trigger, hiera
                                                             VAL.SPR < > ]] > ].')
             if ch.get('ns', ''):
                 not_nominalized(ch, mylang, 'no-sem-adp-lex', 'adp')
-                
+
             if 'poss-strat' in ch or 'poss-pron' in ch:
                 mylang.add('no-sem-adp-lex := [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR nonpossessive,\
                                                      POSSESSUM nonpossessive ] ].')
 
-            #Type neccesary for all non information structure marking adpositions 
+            #Type neccesary for all non information structure marking adpositions
             if ch.has_adp_case() or ch.has_adp_only_form():
                 mylang.add('non-infostr-marking-adp-lex := no-sem-adp-lex & \
                         [SYNSEM.LOCAL [ CONT [ HOOK [ ICONS-KEY.IARG1 #clause, \
                                                     CLAUSE-KEY #clause ], \
                                             ICONS.LIST < > ]]].')
-                
+
             # checking whether language has both prepositions and postpositions
             bidirectional = False
             adporders = []
@@ -1306,7 +1552,7 @@ def customize_semantically_empty_adpositions(mylang, ch, lexicon, trigger, hiera
                     [ SYNSEM.LOCAL.CAT.HEADFINAL - ].')
                     mylang.add('non-infostr-marking-postp-lex := non-infostr-marking-adp-lex & \
                     [ SYNSEM.LOCAL.CAT.HEADFINAL + ].')
-                        
+
             # Lexical entries
             if ch.has_adp_case():
                     lexicon.add_literal(';;; Case-marking adpositions')
@@ -1356,7 +1602,7 @@ def customize_semantically_empty_adpositions(mylang, ch, lexicon, trigger, hiera
                     super_type = 'infostr-marking-' + infix_tname + 'p-lex'
                     for feat in adp.get('feat', []):
                         if feat['name'] == 'information-structure meaning':
-                            feat_value += feat['value'] + "-" 
+                            feat_value += feat['value'] + "-"
                     adp_type = TDLencode(feat_value + 'marker_' + orth)
                 elif ch.has_adp_only_form():
                     super_type = 'non-infostr-marking-' + infix_tname + 'p-lex'
@@ -1367,7 +1613,7 @@ def customize_semantically_empty_adpositions(mylang, ch, lexicon, trigger, hiera
                     lexicon.add(adp_type + ' := [SYNSEM.LOCAL.CAT.HEAD.FORM '+ form + ' ].')
                     features.customize_feature_values(mylang, ch, hierarchies, adp, adp_type, 'semadp', None, None, lexicon)
 
-        
+
                 #trigger rules
                 if ch.has_adp_case() and cn.strip() != '':
                     case.customize_trigger_rules(adp_type, trigger)
@@ -1378,7 +1624,144 @@ def customize_semantically_empty_adpositions(mylang, ch, lexicon, trigger, hiera
 
         return to_cfv
 
-    
+
+
+def customize_light_verbs(ch: ChoicesFile, mylang: TDLfile, lexicon: TDLfile, hierarchies: Dict[str, TDLHierarchy]):
+    from gmcs.constants import ON
+    from gmcs.linglib.light_verb_constructions import LV_NONE_TYPE
+
+    if ch.get('coverb-n') == ON or ch.get('coverb-v') == ON :
+        # Lexical entries
+        lexicon.add_literal(';;; Light Verbs')
+
+        # Create lexical entries for all the defined light verb types
+        create_lv_lex_entries(ch, lexicon)
+
+        # Create lexical types for all the defined light verb types
+        create_lv_lex_types(ch, mylang, hierarchies)
+
+        # Update verb lexical types
+        # mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HEAD.LVC ' + LV_NONE_TYPE + ' ].', section='verblex')
+        mylang.add('transitive-verb-lex := [ ARG-ST.REST.FIRST.LOCAL.CAT.HEAD.LVC ' + LV_NONE_TYPE + ' ].', section='verblex')
+
+def create_lv_lex_entries(ch: ChoicesFile, lexicon: TDLfile):
+    """
+    Create light verb lexical entries and add them to the lexicon.
+    """
+    from gmcs.constants import ORTH, ON
+
+    lv_name_set = set() # keep track of which lvs have been added to the lexicon
+
+    for lv in ch.get('lv'):
+        # prevent duplicates
+        # only add lv to lexicon if the lv name has not yet been added
+        # (just in case, since this should be handled via validation)
+        # can probably just get rid of this in the future
+        if get_name(lv) not in lv_name_set:
+            # print(lv.full_key, lv.get('name'))
+            is_bleached = lv.get('sem-bleached') == ON
+
+            for cv_pos in lv.get('cv-type').split(', '):
+                lvtype = lv_id(lv, cv_pos, True, is_bleached)
+
+                for stem in lv.get('stem'):
+                    orthstr = orth_encode(stem.get(ORTH))
+                    pred = stem.get('pred')
+
+                    if is_bleached:
+                        typedef = TDLencode(orthstr) + ' := ' + lvtype + ' & \
+                            [ STEM < "' + orthstr + '" > ].'
+                        lexicon.add(typedef, merge=False)
+                    else:
+                        typedef = TDLencode(orthstr) + ' := ' + lvtype + ' & \
+                            [ STEM < "' + orthstr + '" >, \
+                            SYNSEM.LKEYS.KEYREL.PRED "' + pred + '" ].'
+                        lexicon.add(typedef, merge=False)
+
+        lv_name_set.add(get_name(lv))
+
+def create_lv_lex_types(ch: ChoicesFile, mylang: TDLfile, hierarchies: Dict[str, TDLHierarchy]):
+    """
+    Create light verb lexical types and add them to mylang.
+    """
+    from gmcs.constants import ON, YES
+    from gmcs.linglib.light_verb_constructions import LV_ITEM, LV_IT_ITEM, \
+        LV_TR_ITEM, LV_NOUN_ITEM, LV_VERB_ITEM, LV_IT_NOUN_ITEM, \
+        LV_IT_VERB_ITEM, LV_TR_NOUN_ITEM, LV_TR_VERB_ITEM, LV_BLEACHED_ITEM, \
+        BLEACHED_LV_VERB_ITEM, BLEACHED_LV_IT_VERB_ITEM, \
+        BLEACHED_LV_TR_VERB_ITEM, BASIC_LV_IT_ITEM, BLEACHED_LV_IT_ITEM, \
+        BASIC_LV_TR_ITEM, BLEACHED_LV_TR_ITEM
+
+    mylang.add_literal('; Light Verbs', section='lvclex')
+
+    # add basic lv-lex item
+    if not ch.get('lvc-all-bleached') == YES:
+        mainorverbtype = main_or_verb(ch)
+        mylang.add('lv-lex := ' + mainorverbtype + '.', section='lvclex')
+        mylang.add(LV_ITEM, section='lvclex')
+        mylang.add('lv-lex := [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CAT.HEAD ' + ch.case_head() + ' ].')
+
+    # add bleached lv-lex item
+    if ch.get('lvc-bleached') == YES:
+        mylang.add(LV_BLEACHED_ITEM, section='lvclex')
+        mylang.add('bleached-lv-lex := [ SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.LOCAL.CAT.HEAD ' + ch.case_head() + ' ].')
+
+    if ch.get('lvc-it') == ON:
+        mylang.add(BASIC_LV_IT_ITEM, section='lvclex')
+        if not ch.get('lvc-all-bleached') == YES:
+            mylang.add(LV_IT_ITEM, section='lvclex')
+        if ch.get('lvc-bleached') == YES:
+            mylang.add(BLEACHED_LV_IT_ITEM, section='lvclex')
+
+    if ch.get('lvc-tr') == ON:
+        mylang.add(BASIC_LV_TR_ITEM, section='lvclex')
+        if not ch.get('lvc-all-bleached') == YES:
+            mylang.add(LV_TR_ITEM, section='lvclex')
+        if ch.get('lvc-bleached') == YES:
+            mylang.add(BLEACHED_LV_TR_ITEM, section='lvclex')
+
+    if ch.get('coverb-n') == ON:
+        if not ch.get('lvc-all-bleached') == YES:
+            mylang.add(LV_NOUN_ITEM, section='lvclex')
+
+    if ch.get('coverb-v') == ON:
+        if not ch.get('lvc-all-bleached') == YES:
+            mylang.add(LV_VERB_ITEM, section='lvclex')
+        if ch.get('lvc-bleached') == YES:
+            mylang.add(BLEACHED_LV_VERB_ITEM, section='lvclex')
+
+    if ch.get('lvc-it') == ON and ch.get('coverb-n') == ON:
+        if not ch.get('lvc-all-bleached') == YES:
+            mylang.add(LV_IT_NOUN_ITEM, section='lvclex')
+
+    if ch.get('lvc-it') == ON and ch.get('coverb-v') == ON:
+        if not ch.get('lvc-all-bleached') == YES:
+            mylang.add(LV_IT_VERB_ITEM, section='lvclex')
+        if ch.get('lvc-bleached') == YES:
+            mylang.add(BLEACHED_LV_IT_VERB_ITEM, section='lvclex')
+
+    if ch.get('lvc-tr') == ON and ch.get('coverb-n') == ON:
+        if not ch.get('lvc-all-bleached') == YES:
+            mylang.add(LV_TR_NOUN_ITEM, section='lvclex')
+
+    if ch.get('lvc-tr') == ON and ch.get('coverb-v') == ON:
+        if not ch.get('lvc-all-bleached') == YES:
+            mylang.add(LV_TR_VERB_ITEM, section='lvclex')
+        if ch.get('lvc-bleached') == YES:
+            mylang.add(BLEACHED_LV_TR_VERB_ITEM, section='lvclex')
+
+    for lv in ch.get('lv'):
+        is_bleached = lv.get('sem-bleached') == ON
+        # this technically no longer needs the for loop but just in case somebody
+        #   wants to revive allowing users to specify that a light verb accepts
+        #   noun and verb coverbs i'll leave it here
+        for cv_pos in lv.get('cv-type').split(', '):
+            lvtype = lv_id(lv, cv_pos, True, is_bleached)
+            typedef = lvtype + ' := ' + lv_id(lv, cv_pos, False, is_bleached) + ' & \
+                [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.LVC ' + TDLencode(lvctype_id(lv)) + ' ].'
+            mylang.add(typedef, section='lvclex')
+
+            features.customize_feature_values(mylang, ch, hierarchies, lv, lvtype, 'lv', section='lvclex')
 
 ######################################################################
 
@@ -1433,7 +1816,9 @@ def customize_lexicon(mylang, ch, lexicon, trigger, hierarchies, rules):
     mylang.set_section('verblex')
     customize_verbs(mylang, ch, lexicon, hierarchies)
 
-    if ch.get('has-aux') == 'yes':
+    customize_light_verbs(ch, mylang, lexicon, hierarchies)
+
+    if ch.get('has-aux') == 'yes' or ch.get('lvc-bleached') == 'yes':
         mylang.set_section('auxlex')
         auxiliaries.customize_auxiliaries(
             mylang, ch, lexicon, trigger, hierarchies)

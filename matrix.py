@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/home/ubuntu/Desktop/thesis-work/matrix/matrix_env/bin/python3
 
 """
 A general-purpose script for running Matrix code.

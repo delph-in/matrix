@@ -14,7 +14,7 @@ from functools import reduce
 # it is a complementation strategy that is defined by a complementizer type.
 # Ideally we would have complementizers as actual lexical items some day.
 ALL_LEX_TYPES = ('noun', 'verb', 'det', 'aux', 'adj',
-                 'cop', 'comps', 'adv', 'normadp', 'qverb')
+                 'cop', 'comps', 'adv', 'normadp', 'qverb', 'lv', 'bleached-lv')
 
 # types used for lexical rules (verb and aux are merged)
 # TJT 2014-08-15: adding "cop"
@@ -23,7 +23,7 @@ LEXICAL_CATEGORIES = ('noun', 'verb', 'det', 'adj', 'cop', 'adv', 'qverb')
 
 # TJT 2014-09-03: Types not automatically added to mylanguage.tdl
 NON_ESSENTIAL_LEX_CATEGORIES = (
-    'det', 'adj', 'cop', 'comps', 'normadp', 'adv', 'qverb')
+    'det', 'adj', 'cop', 'comps', 'normadp', 'adv', 'qverb', 'lv', 'bleached-lv')
 
 # lexical_supertypes is a dictionary mapping the choices file
 # encodings to the actual lex-type identifiers of the supertypes.
@@ -39,7 +39,16 @@ LEXICAL_SUPERTYPES = {'noun': 'noun-lex',
                       'comp': 'comp-lex',
                       'adv': 'adverb-lex',
                       'normadp': 'norm-adposition-lex',
-                      'qverb': 'interrogative-verb-lex'}
+                      'qverb': 'interrogative-verb-lex',
+                      'lv': 'lv-lex',
+                      'lv-iverb': 'intrans-lv-lex',
+                      'lv-tverb': 'trans-lv-lex',
+                      'bleached-lv': 'bleached-lv-lex',
+                      'bleached-lv-iverb': 'bleached-intrans-lv-lex',
+                      'bleached-lv-tverb': 'bleached-trans-lv-lex',
+                      'cv-iverb': 'coverb-intrans-verb-lex',
+                      'cv-tverb': 'coverb-trans-verb-lex',
+                      'cv-noun': 'coverb-noun-lex'}
 
 # TYPE DEFINITIONS (that can be shared with other libraries)
 COMPLEMENTIZER = '''

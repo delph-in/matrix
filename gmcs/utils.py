@@ -72,7 +72,7 @@ def format_comment_block(comment_string, max_chars=70, prefix=';;;'):
                 lines += [prefix + ' ' + tok]
             else:
                 lines[-1] += ' ' + tok
-    return '\n'.join(lines)
+    return '\n'.join(lines).rstrip()
 
 
 def verify():

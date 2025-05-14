@@ -2,6 +2,7 @@
 
 import sys
 import copy
+import inspect
 
 ###########################################################################
 # TDL Tokenization
@@ -218,7 +219,10 @@ class TDLelem_typedef(TDLelem):
     def write(self):
         if self.comment and not self.one_line:
             for l in self.comment.split('\n'):
-                TDLwrite('; ' + l + '\n')
+                if l:
+                    TDLwrite('; ' + l + '\n')
+                else:
+                    TDLwrite(';\n')
             TDLwrite('\n')
 
         if debug_write:
@@ -250,6 +254,12 @@ class TDLelem_typedef(TDLelem):
 
     def get_one_line(self):
         return self.one_line
+
+    def set_merge(self, merge):
+        self.merge = merge
+
+    def get_merge(self):
+        return self.merge
 
 
 ###########################################################################
@@ -917,7 +927,7 @@ class TDLfile(object):
             t.write()
 
     def add(self, tdl_type,
-            comment='', one_line=False, merge=False, section=''):
+            comment='', one_line=False, merge=True, section=''):
         """
         Add a type definition to this file, merging with an existing
         definition if possible.
@@ -925,6 +935,7 @@ class TDLfile(object):
         typedef = TDLparse(tdl_type)
         typedef.set_comment(comment)
         typedef.set_one_line(one_line)
+        typedef.set_merge(merge)
 
         typedef.section = section
         if not section:
@@ -932,7 +943,7 @@ class TDLfile(object):
 
         handled = False
         for i in range(len(self.typedefs) - 1, -1, -1):
-            if TDLmergeable(self.typedefs[i], typedef):
+            if merge and TDLmergeable(self.typedefs[i], typedef):
                 self.typedefs[i] = TDLmerge(self.typedefs[i], typedef)
                 handled = True
                 break

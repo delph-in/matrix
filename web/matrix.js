@@ -123,6 +123,16 @@ function toggle_element(id, how, switchOn, strategy="") {
     else if (how == "off") {
       element.style.display = 'none';
     }
+
+    if (element.style.display === "block") {
+      let selects = element.querySelectorAll("select");
+      for (let i = 0; i < selects.length; i++) {
+        let s = selects[i];
+        if (s.className == 'multi' && is_displayed(s)) {
+          multi_create(s);
+        }
+      }
+    }
   }
 }
 
@@ -798,6 +808,14 @@ function fill_forms() {
   return items
 }
 
+/**
+ * Returns an empty array.
+ * @returns {Array} An empty array
+ */
+function fill_empty() {
+  return [];
+}
+
 
 // fill_cache()
 // Return items from the given cache.
@@ -1045,6 +1063,21 @@ function multi_keypress(e, select_name) {
 ////////////////////////////////////////////////////////////
 // Auto-Text filling Functions
 ////////////////////////////////////////////////////////////
+
+
+/**
+ * Fills the type name with the value based on first stem's orth value.
+ * @param {string} name - Name of the type
+ */
+function fill_name(name) {
+  const type_elem = document.getElementsByName(name + '_name')[0];
+
+  // Ff the type name is empty, fill it with the first stem's orth value
+  if (!type_elem.value) {
+      const stem1_orth = document.getElementsByName(name + "_stem1_orth")[0].value;
+      type_elem.value = stem1_orth;
+  }
+}
 
 // Fill pred elements with values based on the orth element
 function fill_pred(name, pos) {

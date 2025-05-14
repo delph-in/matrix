@@ -13,6 +13,7 @@ from gmcs.lib import Hierarchy
 from gmcs.utils import get_name
 from gmcs.linglib.nominalized_clauses import needs_anc_wo_feat
 from functools import reduce
+from gmcs.linglib.light_verb_constructions import fix_coverb_pc_inputs
 
 # Contents
 # 1. Module Variables
@@ -208,6 +209,9 @@ def position_class_hierarchy(choices):
             pc_lrt_merge(cur_pc, pc)
         # Fill the lexical rule types with the information we know
         create_lexical_rule_types(cur_pc, pc)
+
+    if choices.get('coverb-n') == 'on' or choices.get('coverb-v') == 'on':
+        pc_inputs = fix_coverb_pc_inputs(pc_inputs, choices)
     # now assign pc inputs
     for pc in pc_inputs:
         for inp in pc_inputs[pc]:
@@ -370,7 +374,7 @@ def convert_obligatoriness_to_req(choices):
             basetypes = []
             if pc.get('obligatory', '') == 'on':
                 for i in list(_mns[pc.full_key].input_span().values()):
-                    #The input i is a basetype of the same lexical category 
+                    #The input i is a basetype of the same lexical category
                     # as the obligartory pc
                     if len(i.inputs()) == 0 and lc in str(i):
                         basetypes.append(i)
@@ -753,7 +757,7 @@ def write_rules(pch, mylang, irules, lrules, lextdl, choices):
 def write_intermediate_types(mylang):
     if _dtrs:
         mylang.add_literal(';;; Intermediate rule types')
-        for dtr in _dtrs:
+        for dtr in sorted(list(_dtrs)):
             mylang.add('''%(dtr)s := word-or-lexrule.''' %
                        {'dtr': dtr}, one_line=True)
 
@@ -800,7 +804,7 @@ def write_daughter_types(mylang, pc):
 
 def write_inflected_avms(mylang, all_flags):
     mylang.set_section('addenda')
-    for f in all_flags:
+    for f in sorted(all_flags, key=flag_name):
         flag = flag_name(f)
         mylang.add('''inflected :+ [%(flag)s luk].''' % {'flag': flag})
         mylang.add(
@@ -867,11 +871,11 @@ def write_flags(tdlfile, mn):
     if len(mn.flags['in']) > 0:
         flag_strs += ['DTR.INFLECTED [ ' +
                       ', '.join(flag_name(flag) + ' ' + mn.flags['in'][flag]
-                                for flag in mn.flags['in']) + ' ]']
+                                for flag in sorted(mn.flags['in'], key=flag_name)) + ' ]']
     if len(mn.flags['out']) > 0:
         flag_strs += ['INFLECTED [ ' +
                       ', '.join(flag_name(flag) + ' ' + mn.flags['out'][flag]
-                                for flag in mn.flags['out']) + ' ]']
+                                for flag in sorted(mn.flags['out'], key=flag_name)) + ' ]']
     tdl_str = mn.identifier() + ' := [ ' + ', '.join(flag_strs) + ' ].'
     tdlfile.add(tdl_str)
 
@@ -896,6 +900,7 @@ def write_copy_up_flags(mylang, to_copy, all_flags, force_write=False):
         elif len(mn_copy_flags) > 0:
             flag_tags = [(flag_name(flag), disjunctive_typename(flag).lower())
                          for flag in mn_copy_flags]
+            flag_tags = sorted(flag_tags)
             tdl_str = mn.identifier() + ' := [ ' + \
                 'INFLECTED [ ' + \
                 ', '.join(['%(flag)s #%(tag)s' % {'flag': ft[0], 'tag':ft[1]}
@@ -959,7 +964,7 @@ def write_evidential_behavior(lrt, mylang, choices, pc_evidential):
         prev_section = mylang.section
         mylang.set_section('lexrules')
         mylang.add(EVIDENTIAL_LEX_RULE)
-        infl_evid_def = lrt.evidential + '''-evidential-lex-rule := evidential-lex-rule & 
+        infl_evid_def = lrt.evidential + '''-evidential-lex-rule := evidential-lex-rule &
         [ C-CONT.RELS.LIST < [ PRED "ev_''' + lrt.evidential + '''_rel" ] > ].
         '''
         mylang.add(infl_evid_def)
@@ -972,9 +977,9 @@ def write_possessive_behavior(pc, lrt, mylang, choices):
     ##############################################
     # FULL NP POSSESSIVE PHRASES:              ###
     ##############################################
-    POSSESSOR_LEX_RULE_DEFN = ''' := 
+    POSSESSOR_LEX_RULE_DEFN = ''' :=
              [ SYNSEM.LOCAL.CAT.HEAD noun ].'''
-    POSSESSUM_LEX_RULE_DEFN = ''' := 
+    POSSESSUM_LEX_RULE_DEFN = ''' :=
              [ SYNSEM.LOCAL.CAT.HEAD noun ].'''
     NON_POSS_LEX_RULE_DEFN = ''' := add-only-no-ccont-rule &
              [ SYNSEM.LOCAL.CAT [ HEAD noun & [ POSSESSOR nonpossessive ],\
@@ -1151,16 +1156,16 @@ and at what stage.
 
 
 def write_interrogative_rules(lrt, mylang):
-    ITRG_LEX_RULE = '''itrg-lex-rule := add-only-no-ccont-rule & 
+    ITRG_LEX_RULE = '''itrg-lex-rule := add-only-no-ccont-rule &
     [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF ques ].'''
-    PROP_LEX_RULE = '''prop-lex-rule := add-only-no-ccont-rule & 
+    PROP_LEX_RULE = '''prop-lex-rule := add-only-no-ccont-rule &
     [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF prop ].'''
-    POLAR_LEX_RULE = '''polar-lex-rule := itrg-lex-rule & 
-    [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < [ NON-LOCAL.QUE.LIST < > ] >, 
+    POLAR_LEX_RULE = '''polar-lex-rule := itrg-lex-rule &
+    [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < [ NON-LOCAL.QUE.LIST < > ] >,
                              COMPS non-wh-list ] ].'''
-    WH_SUBJ = ''' wh-subj-lex-rule := itrg-lex-rule & 
+    WH_SUBJ = ''' wh-subj-lex-rule := itrg-lex-rule &
     [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < [ NON-LOCAL.QUE.LIST cons ] > ] ].'''
-    WH_OBJ = ''' wh-obj-lex-rule := itrg-lex-rule & 
+    WH_OBJ = ''' wh-obj-lex-rule := itrg-lex-rule &
 [ SYNSEM.LOCAL.CAT.VAL [ SUBJ non-wh-list,
                          COMPS < [ NON-LOCAL.QUE.LIST cons ] > ] ].'''
     mylang.set_section('lexrules')
@@ -1454,18 +1459,18 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
     conflicts = []
     for key, f in all_feats.items():
         key_pair = (f[0], f[2])
-    
+
         if key_pair in seen:
             # Check if the value is different for this (name, head) combination
             if seen[key_pair] != f[1]:
                 conflicts.append((key, f[0]))
         else:
             seen[key_pair] = f[1]
-    
+
     for n in conflicts:
         key = n[0]
         vr.err(key+'_value', 'Please check all values for this feature name and head combination in one entry.')
-        
+
 
     # TJT 2014-08-21: Incorporated Adjective validation
     if incorp:
@@ -1560,7 +1565,7 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
                             'unusable without a copula defined on the Lexicon page.')
 
     # KPH Validation for case change on nominalization rules
-    #Commenting out since the following message no longer applies 
+    #Commenting out since the following message no longer applies
     #after the changes to the nominalized clauses library
     #if lrt.full_key.startswith('verb-pc'):
     #    for feat in lrt.get('feat'):
@@ -1706,7 +1711,7 @@ def cycle_validation(choices, vr):
     """Checks for a cycle in the inputs."""
     try:
         pch = position_class_hierarchy(choices)
-    except KeyError:
+    except:
         return  # there is probably another error that validation will pick up
     for pc in list(pch.nodes.values()):
         cyclic_inps = set([i.key for i in list(pc.input_span().values())

@@ -229,6 +229,9 @@ def customize_case_adpositions(mylang, ch, case_pos):
             mylang.add(
                 'case-marking-adp-lex := \
                  [ ARG-ST < [ LOCAL.CAT.HEAD.CASE-MARKED - ] > ].')
+        
+        if ch.get('coverb-v') == 'on' or ch.get('coverb-n') == 'on':
+            mylang.add('case-marking-adp-lex := [ SYNSEM.LOCAL.CAT.HEAD.LVC lv-none ].')
 
 
 

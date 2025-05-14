@@ -5,6 +5,7 @@
 import re
 from gmcs.util.misc import safe_int
 from gmcs.linglib import case, clausalcomps
+from gmcs.utils import get_name, orth_encode
 
 ######################################################################
 
@@ -355,14 +356,14 @@ def get_next_key(complex_key):
 def look_through_inputs(self, verb_input, valence_set):
     """
     Looks through the inputs of a verbal position class and determines whether the position class
-    is restricted to intransitive verbs, transitive verbs or allows both. If a verbal position class 
+    is restricted to intransitive verbs, transitive verbs or allows both. If a verbal position class
     can take both transitive and intransitive verbs, valence_set will contain the strings 'intrans'
     and 'trans', otherwise it will only contain one string corresponding to the valence of the verb inputs it
     can take.
-    
+
     Args:
         verb_input (string): the verb input type
-        valence_set (set): empty set 
+        valence_set (set): empty set
     """
     verb_input = verb_input.strip()
     for verb_pc in self['verb-pc']:
@@ -732,7 +733,7 @@ class ChoicesFile:
         self.cached_values[k] = result
 
         return result
-    
+
     def has_adp_form(self):
         """
         Returns True iff the target language has at least one sementically-empty adposition
@@ -746,7 +747,7 @@ class ChoicesFile:
             if not case_or_info:
                 return True
         return False
-    
+
     def has_adp_only_form(self):
         """
         Returns True iff the target language has only sementically-empty adpositions
@@ -1004,7 +1005,7 @@ class ChoicesFile:
         of the number feature implied by the current choices.
         This list consists of tuples: [name, supertype;supertype;...].
         """
-        
+
         numbers = []
 
         for n in self.get('number'):
@@ -1018,10 +1019,10 @@ class ChoicesFile:
     def persons(self):
         """
         Create and return a list containing information about the values
-        of the person feature implied by the current choices. This list consists 
+        of the person feature implied by the current choices. This list consists
         of tuples: [name, supertype].
         """
-        
+
         persons = []
 
         person = self.get('person')
@@ -1054,7 +1055,7 @@ class ChoicesFile:
         first-person plural has sub-types. This list consists of tuples:
         [name, supertype;supertype;...].
         """
-        
+
         pernums = []
 
         fp = self.get('first-person')
@@ -1109,7 +1110,7 @@ class ChoicesFile:
         genders implied by the current choices. This list consists of tuples:
         [name, supertype;supertype;...].
         """
-        
+
         genders = []
 
         for g in self.get('gender'):
@@ -1120,10 +1121,38 @@ class ChoicesFile:
 
         return genders
 
+    def light_verbs(self):
+        from gmcs.constants import INTRANSITIVE, TRANSITIVE
+        from gmcs.linglib.light_verb_constructions import LV_ALL_TYPE
+
+        light_verbs = set()
+
+        for lv in self.get('lv'):
+            for val_type in lv.get('valence').split(', '):
+                name = get_name(lv)
+                stype = LV_ALL_TYPE
+
+                if val_type == 'coverb-only':
+                    name += '-' + INTRANSITIVE
+                    stype += '-' + INTRANSITIVE
+                elif val_type == 'coverb-1comp':
+                    name += '-' + TRANSITIVE
+                    stype += '-' + TRANSITIVE
+
+                light_verbs.add((name, stype))
+
+        return light_verbs
+
+    # forms()
+    #   Create and return a list containing the values of the FORM
+    #   feature that constrains the form of verbs as
+    #   defined in the current choices.
+    #   This list consists of tuples:
+    #     [name, supertype]
     def forms(self):
         """
         Create and return a list containing the values of the FORM
-        feature that constrains the form of verbs as defined in the current 
+        feature that constrains the form of verbs as defined in the current
         choices. This list consists of tuples: [name, supertype].
         """
         if 'form-fin-nf' in self and self['form-fin-nf'] == 'on' or self.has_adp_form():
@@ -1152,7 +1181,7 @@ class ChoicesFile:
                     forms += [[subform, 'form']]
                 for normadp in self.get('normadp'):
                     for stem in normadp.get('stem'):
-                        #Add the FORM feature adpform for all 
+                        #Add the FORM feature adpform for all
                         #normadps that do not allready have user-defined FORM values
                         if not stem.get("form"):
                             forms += [['adpform', 'form']]
@@ -1163,10 +1192,10 @@ class ChoicesFile:
     def tenses(self):
         """
         Create and return a list containing information about the values
-        of the TENSE feature implied by the current choices. This list consists 
+        of the TENSE feature implied by the current choices. This list consists
         of tuples: [tense name].
         """
-        
+
         tenses = []
 
         tdefn = self.get('tense-definition')
@@ -1189,7 +1218,7 @@ class ChoicesFile:
         of the viewpoint ASPECT feature implied by the current choices.
         This list consists of tuples: [aspect name].
         """
-        
+
         aspects = []
 
         for asp in self.get('aspect'):
@@ -1207,7 +1236,7 @@ class ChoicesFile:
         of the SITUATION aspect feature implied by the current choices.
         This list consists of tuples: [situation name].
         """
-        
+
         return [[situation['name']] for situation in self.get('situation')]
 
     def moods(self):
@@ -1216,7 +1245,7 @@ class ChoicesFile:
         of the MOOD feature implied by the current choices.
         This list consists of tuples: [mood name].
         """
-        
+
         moods = []
 
         for md in self.get('mood'):
@@ -1288,7 +1317,7 @@ class ChoicesFile:
         is created in the customization system by users. A feature is specified as
         either 'customized=y' or 'customized=n'.
         """
-        
+
         features = []
 
         # Case
@@ -1350,7 +1379,7 @@ class ChoicesFile:
             strat_name = strat.full_key
             if strat.get('possessor-type') == 'affix' or strat.get('possessum-type') == 'affix':
                 features += [[strat_name, 'possessor|possessor;possessum|possessum;nonpossessive|nonpossessive', '', 'noun', 'y']]
-                #The category word 'poss' provides a way to list all and only the possessive 
+                #The category word 'poss' provides a way to list all and only the possessive
                 #strategies on the nominalized clauses subpage.
                 features += [[strat_name, '', '', 'poss', 'y']]
             else:
@@ -1368,7 +1397,7 @@ class ChoicesFile:
                     if pron.get('possessum-mark-type') == 'affix':
                         features += [[pron_name+'_possessum',
                                       'plus|plus;minus|minus', '', 'noun', 'y']]
-            
+
 
         # Questions
         if 'q-infl' in self.choices and not 'wh-q-infl' in self.choices:
@@ -2499,19 +2528,19 @@ class ChoicesFile:
                             if feat['name'] == 'question' and feat['value'] == 'plus':
                                 feat['value'] = 'polar'
 
-                
+
 
     def convert_34_to_35(self):
         '''
         Updates the treatment of nominalized clauses
         high nominalization is converted into SENT nominalization with adverb modification
         mid nominalization is converted into ALT-SENT nominalization with both adjective/adverb modfication.
-        low nominalization cannot be automatically converted and instead causes a validation error instructing 
+        low nominalization cannot be automatically converted and instead causes a validation error instructing
         the user to update the choices file.
         '''
         needs_both = True
         rules = []
-        #Get all nominalization lrts 
+        #Get all nominalization lrts
         for vpc in self['verb-pc']:
             for lrt in vpc['lrt']:
                 for f in lrt['feat']:
@@ -2520,9 +2549,9 @@ class ChoicesFile:
                             if f['value'] == ns['name']:
                                 rules.append((lrt, ns, vpc))
 
-        #For lrts in languages from older grammars determine whether the 
+        #For lrts in languages from older grammars determine whether the
         #lrts takes transitive or intransitive verbs as input
-        keep_track = {}       
+        keep_track = {}
         for lrt, ns, vpc in rules:
             #Can't do an automatic update for low nominalization strategies, so no point to figuring out their valence
             if ns.get('level') == 'low':
@@ -2566,10 +2595,10 @@ class ChoicesFile:
             if ns.get('level') == 'low':
                 continue
             if ns.get('name') in keep_track:
-                val_info = keep_track[ns.get('name')] 
+                val_info = keep_track[ns.get('name')]
                 #The old nominalized clauses library did not specifiy valence information in the nominalization strategy,
                 #but required users to create separate lrts for intransitive and transitive inputs. If an old choices file has
-                #intransitive and transitive lrts using the same nominalization strategy, 
+                #intransitive and transitive lrts using the same nominalization strategy,
                 #create additional nominalization strategies from the original (specific to intransitive verbs or transitive verbs as necessary)
                 #to still get the expected behavior
                 if len(val_info) == 3: #This nominalization strategy marks lrts specific to intransitive verbs, transitive verbs, and both
@@ -2638,7 +2667,7 @@ class ChoicesFile:
                                 for feat in lrt.get('feat'):
                                     if feat.get('name') == 'nominalization':
                                         self[feat.full_key + '_value'] = self[ns_key + '_name']
-        
+
         #Convert high and mid nominalization stratgies to work in the new library
         for ns in self.get('ns'):
             if ns['level'] == 'high':
@@ -2650,15 +2679,15 @@ class ChoicesFile:
                 self[ns.full_key + '_adv'] = 'on'
                 self[ns.full_key + '_adj'] = 'on'
 
-            
+
 ########################################################################
 
 class FormData:
     """
-    This Class acts like form data which would normally be sent from the server. 
+    This Class acts like form data which would normally be sent from the server.
     Used for testing purposes.
     """
-    
+
     def __init__(self):
         self.data = {}
 

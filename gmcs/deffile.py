@@ -584,6 +584,7 @@ class MatrixDefFile:
                 'arg-opt': 'Argument Optionality',
                 'clausal-comp': 'Clausal Complements',
                 'nominalclause': 'Nominalized Clauses',
+                'lvc': "Light Verb Constructions",
                 'clausalmods': 'Clausal Modifiers', 'lexicon': 'Lexicon',
                 'morphology': 'Morphology', 'toolbox-import': 'Toolbox Import',
                 'test-sentences': 'Test Sentences', 'gen-options': 'TbG Options',
@@ -603,6 +604,7 @@ class MatrixDefFile:
                 'arg-opt': 'ArgumentOptionality',
                 'clausal-comp': 'ClausalComplements',
                 'nominalclause': 'Nominalized Clauses',
+                'lvc': "Light Verb Constructions",
                 'clausalmods': 'Clausal Modifiers', 'lexicon': 'Lexicon',
                 'morphology': 'Morphology', 'toolbox-import': 'ImportToolboxLexicon',
                 'test-sentences': 'TestSentences', 'gen-options': 'TestByGeneration',
@@ -1017,7 +1019,8 @@ class MatrixDefFile:
                                'fillverbpat': 'fill_case_patterns(false)',
                                'fillnumbers': 'fill_numbers()',
                                'fillcache': 'fill_cache(%(args)s)',
-                               'fillforms': 'fill_forms()'}
+                               'fillforms': 'fill_forms()',
+                               'fillempty': 'fill_empty()'}
                 # look ahead and see if we have an auto-filled drop-down
                 i += 1
                 # OZ 2017-12-05 Adding check that i is not out of array bounds; managed to break it otherwise,
@@ -1131,7 +1134,12 @@ class MatrixDefFile:
                 if len(word) > 5:
                     # matrixdef contains name of choice to switch on
                     switch = word[5]
-                    skip_this_iter = self.check_choice_switch(switch, choices)
+                    if switch:
+                        skip_this_iter = self.check_choice_switch(switch, choices)
+                alt_val_prefix = False
+                if len(word) > 6: # TEW 2024-06-03 adding option to have iterable start with word other than "Add"
+                    # matrixdef contains alternate value prefix
+                    alt_val_prefix = word[6]
 
                 i += 1
 
@@ -1237,7 +1245,14 @@ class MatrixDefFile:
                     elif prefix + iter_name in vr.infos:
                         html += html_info_mark(vr.infos[prefix + iter_name])
                     # finally add the button
-                    html += '<input type="button" name="" ' + \
+                    if alt_val_prefix:
+                        html += '<input type="button" name="" ' + \
+                                'value="' + alt_val_prefix + ' ' + label + '" ' + \
+                                'onclick="clone_region(\'' + \
+                                prefix + iter_name + '\', \'' + \
+                                iter_var + '\','
+                    else:
+                        html += '<input type="button" name="" ' + \
                             'value="Add ' + label + '" ' + \
                             'onclick="clone_region(\'' + \
                             prefix + iter_name + '\', \'' + \

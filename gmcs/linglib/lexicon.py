@@ -1,5 +1,6 @@
 from collections import defaultdict
 from gmcs.linglib import case
+from gmcs.linglib import light_verb_constructions as lvc
 from gmcs.utils import get_name
 from gmcs import constants
 from gmcs.constants import MTRX_FRONT
@@ -8,7 +9,9 @@ from gmcs.linglib.lexbase import LexicalType, PositionClass
 from gmcs.linglib.lexbase import ALL_LEX_TYPES
 from gmcs.linglib.lexbase import LEXICAL_CATEGORIES
 from gmcs.linglib.lexbase import LEXICAL_SUPERTYPES
+from gmcs.constants import ON, YES
 import re
+
 
 def lexical_type_hierarchy(choices, lexical_supertype):
     if lexical_supertype not in LEXICAL_CATEGORIES:
@@ -19,8 +22,9 @@ def lexical_type_hierarchy(choices, lexical_supertype):
     lth.add_node(LexicalType(lexical_supertype,
                              get_lt_name(lexical_supertype, choices)))
     lts_to_add = [lexical_supertype]
+
     if lexical_supertype == 'verb':
-        if choices['has-aux'] == 'yes':
+        if choices['has-aux'] == 'yes' or choices.get('lvc-bleached') == 'yes':
             lth.add_node(LexicalType('aux', get_lt_name('aux', choices),
                                      parents={'verb': lth.nodes['verb']}))
             lth.add_node(LexicalType('mverb', get_lt_name('mverb', choices),
@@ -33,42 +37,143 @@ def lexical_type_hierarchy(choices, lexical_supertype):
         lth.add_node(LexicalType('tverb', get_lt_name('tverb', choices),
                                  parents={st: lth.nodes[st]}))
 
+        if choices.get('coverb-v') == ON or choices.get('coverb-n') == ON:
+            if not choices.get('lvc-all-bleached') == 'yes':
+                if choices.get('has-aux') == 'yes' or choices.get('lvc-bleached') == 'yes':
+                    # add lv inhertiting from mverb
+                    lth.add_node(LexicalType('lv', get_lt_name('lv', choices),
+                                            parents={'mverb': lth.nodes['mverb']}))
+                else:
+                    # add lv inhertiting from verb
+                    lth.add_node(LexicalType('lv', get_lt_name('lv', choices),
+                                            parents={'verb': lth.nodes['verb']}))
+
+                if choices.get('lvc-it') == ON:
+                    st = get_lexical_supertype('lv-iverb', choices)
+                    lth.add_node(LexicalType('lv-iverb', get_lt_name('lv-iverb', choices),
+                                            parents={st: lth.nodes[st]}))
+                if choices.get('lvc-tr') == ON:
+                    st = get_lexical_supertype('lv-tverb', choices)
+                    lth.add_node(LexicalType('lv-tverb', get_lt_name('lv-tverb', choices),
+                                            parents={st: lth.nodes[st]}))
+
+            if choices.get('lvc-bleached') == 'yes':
+                lth.add_node(LexicalType('bleached-lv', get_lt_name('bleached-lv', choices),
+                                         parents={'verb': lth.nodes['verb']}))
+
+                if choices.get('lvc-it') == ON:
+                    st = get_lexical_supertype('bleached-lv-iverb', choices)
+                    lth.add_node(LexicalType('bleached-lv-iverb', get_lt_name('bleached-lv-iverb', choices),
+                                            parents={st: lth.nodes[st]}))
+                if choices.get('lvc-tr') == ON:
+                    st = get_lexical_supertype('bleached-lv-tverb', choices)
+                    lth.add_node(LexicalType('bleached-lv-tverb', get_lt_name('bleached-lv-tverb', choices),
+                                            parents={st: lth.nodes[st]}))
+
+            lts_to_add += ['lv']
+
+        if choices['coverb-v'] == ON:
+            st = get_lexical_supertype('cv-iverb', choices)
+            lth.add_node(LexicalType('cv-iverb', get_lt_name('cv-iverb', choices),
+                                 parents={st: lth.nodes[st]}))
+            st = get_lexical_supertype('cv-tverb', choices)
+            lth.add_node(LexicalType('cv-tverb', get_lt_name('cv-tverb', choices),
+                                 parents={st: lth.nodes[st]}))
+
+    if lexical_supertype == 'noun' and choices['coverb-n'] == ON:
+        st = get_lexical_supertype('cv-noun', choices)
+        lth.add_node(LexicalType('cv-noun', get_lt_name('cv-noun', choices),
+                                 parents={st: lth.nodes[st]}))
+
     if lexical_supertype == 'qverb':
         st = get_lexical_supertype('qverb', choices)
+
     for lst in lts_to_add:
         for lt in choices[lst]:
-            st = get_lexical_supertype(lt.full_key, choices)
-            lth.add_node(LexicalType(lt.full_key, get_lt_name(lt.full_key, choices),
-                                     parents={st: lth.nodes[st]}))
-            # If we're dealing with a verb add nodes for all lexical entries
-            # because bistems can give rise to flags that need to appear on
-            # all verbs.
-            if lexical_supertype in ['verb', 'qverb']:
-                bistems = choices[lt.full_key]['bistem'] or []
-                stems = choices[lt.full_key]['stem'] or []
-                stems.extend(bistems)
-                for stem in stems:
-                    lth.add_node(LexicalType(stem.full_key, stem['name'],
-                                             parents={
-                                                 lt.full_key: lth.nodes[lt.full_key]},
-                                             entry=True))
+            if not lt.get('coverb-type') == 'cv-only':
+                st = get_lexical_supertype(lt.full_key, choices)
+
+                if lst == 'lv':
+                    for cv_type in lt.get('cv-type').split(', '):
+                        is_bleached = lt.get('sem-bleached') == ON
+                        st = get_lexical_supertype(lt.full_key, choices, is_bleached=is_bleached)
+                        lth.add_node(LexicalType(lt.full_key, get_lt_name(lt.full_key, choices, st, cv_type, False),
+                                        parents={st: lth.nodes[st]}))
+                else:
+                    lth.add_node(LexicalType(lt.full_key, get_lt_name(lt.full_key, choices),
+                                            parents={st: lth.nodes[st]}))
+                # If we're dealing with a verb add nodes for all lexical entries
+                # because bistems can give rise to flags that need to appear on
+                # all verbs.
+                if lexical_supertype in ['verb', 'qverb']:
+                    bistems = choices[lt.full_key]['bistem'] or []
+                    stems = choices[lt.full_key]['stem'] or []
+                    stems.extend(bistems)
+                    for stem in stems:
+                        lth.add_node(LexicalType(stem.full_key, stem['name'],
+                                                parents={
+                                                    lt.full_key: lth.nodes[lt.full_key]},
+                                                entry=True))
+
+            if lt.get('coverb-type') in ('cv-opt', 'cv-only'):
+                st = get_lexical_supertype(lt.full_key, choices, True)
+                # create unique key to avoid conflict with non-coverb
+                key = lt.full_key + '-coverb'
+                lth.add_node(LexicalType(key, get_lt_name(lt.full_key, choices, is_coverb=True),
+                                        parents={st: lth.nodes[st]}))
+                # If we're dealing with a verb add nodes for all lexical entries
+                # because bistems can give rise to flags that need to appear on
+                # all verbs.
+                if lexical_supertype in ['verb', 'qverb']:
+                    bistems = choices[lt.full_key]['bistem'] or []
+                    stems = choices[lt.full_key]['stem'] or []
+                    stems.extend(bistems)
+                    for stem in stems:
+                        # create unique key to avoid conflict with non-coverb
+                        stem_key = stem.full_key.split('_stem')
+                        stem_key = stem_key[0] + '-coverb_stem' + stem_key[1]
+                        lth.add_node(LexicalType(stem_key, stem['name'],
+                                                parents={
+                                                    key: lth.nodes[key]},
+                                                entry=True))
     return lth
 
 
-def get_lexical_supertype(lt_key, choices):
+def get_lexical_supertype(lt_key, choices, is_coverb=False, is_bleached=False):
     lexical_category = lt_key.rstrip('0123456789')
-    if lexical_category in ('iverb', 'tverb') and choices['has-aux'] == 'yes':
+    if is_bleached:
+        return lvc.interpret_bleached_lv_valence(choices[lt_key]['valence'])
+    elif is_coverb:
+        if lexical_category == 'verb':
+            return lvc.interpret_cv_valence(choices[lt_key]['valence'])
+        elif lexical_category == 'noun':
+            return 'cv-noun'
+    elif lexical_category in ('iverb', 'tverb') and (choices['has-aux'] == 'yes' or choices.get('lvc-bleached') == 'yes'):
         return 'mverb'
     elif lexical_category in ('aux', 'mverb', 'iverb', 'tverb'):
         return 'verb'
     elif lexical_category == 'verb':
         return case.interpret_verb_valence(choices[lt_key]['valence'])
+    elif lexical_category in ('lv-iverb', 'lv-tverb'):
+        return 'lv'
+    elif lexical_category == 'lv':
+        return lvc.interpret_lv_valence(choices[lt_key]['valence'])
+    elif lexical_category in ('bleached-lv-iverb', 'bleached-lv-tverb'):
+        return 'bleached-lv'
+    elif lexical_category == 'bleached-lv':
+        return lvc.interpret_bleached_lv_valence(choices[lt_key]['valence'])
+    elif lexical_category == 'cv-iverb':
+        return 'iverb'
+    elif lexical_category == 'cv-tverb':
+        return 'tverb'
+    elif lexical_category == 'cv-noun':
+        return 'noun'
     # TJT Added adj, cop, removed aux
     elif lexical_category in ('noun', 'det', 'adv', 'adj', 'cop', 'qverb'):
         return lexical_category
     return None
 
-
+# TODO possibly deprecated?
 def expand_lexical_supertype(st_key, choices):
     """
     Given a generic lexical supertype, like those defined in
@@ -91,7 +196,7 @@ def expand_lexical_supertype(st_key, choices):
     else:
         return [x.full_key for x in choices.get(st_key, [])]
 
-
+# TODO possibly deprecated?
 def get_lexical_supertype_expansions(choices):
     """
     Return a dictionary mapping each supertype to its possible
@@ -100,7 +205,7 @@ def get_lexical_supertype_expansions(choices):
     return dict([(st, expand_lexical_supertype(st, choices))
                  for st in LEXICAL_SUPERTYPES])
 
-
+# TODO possibly deprecated?
 def used_lexical_supertypes(choices):
     """
     Return a list of lexical supertypes (as defined in
@@ -116,9 +221,15 @@ def used_lexical_supertypes(choices):
                      for v in choices['verb']])
         if choices['has-aux'] == 'yes':
             used.add('mverb')
+
+    # if this function isn't used, this isn't necessary
+    if 'lv' in choices:
+        used.add('lv')
+        used.update([lvc.interpret_lv_valence(lv['valence'] for lv in choices.get('lv'))])
+
     return used
 
-
+# TODO possibly deprecated?
 def get_lexical_supertypes(lrt_key, choices):
     """
     Return the list of appropriate lexical types for the given rule
@@ -196,15 +307,27 @@ def get_all_supertypes_features(ch, lt):
                     supertype_feats.append(feat)
     return supertype_feats
 
-def get_lt_name(key, choices):
+def get_lt_name(key, choices, lv_val=None, lv_type=None, is_coverb=False):
     if key in LEXICAL_SUPERTYPES:
         # lexical supertype-- pull out of lexical_supertypes, remove '-lex'
         return LEXICAL_SUPERTYPES[key].rsplit('-lex', 1)[0]
     else:
         # defined lextype, name may or may not be defined
         name = get_name(choices[key])
-        lex_st = LEXICAL_SUPERTYPES[key.strip('1234567890')]
-        return '-'.join([name, lex_st.rsplit('-lex', 1)[0]])
+        if lv_val and lv_type:
+            lex_st = LEXICAL_SUPERTYPES[lv_val]
+            return '-'.join([name, lex_st.rsplit('-lv-lex', 1)[0], lv_type, 'lv'])
+        elif is_coverb:
+            lexical_category = key.rstrip('0123456789')
+            lex_st = ''
+            if lexical_category == 'noun':
+                lex_st = LEXICAL_SUPERTYPES['cv-noun']
+            elif lexical_category == 'verb':
+                lex_st = LEXICAL_SUPERTYPES[lvc.interpret_cv_valence(choices[key]['coverb-type'])]
+            return '-'.join([name, lex_st.rsplit('-lex', 1)[0]])
+        else:
+            lex_st = LEXICAL_SUPERTYPES[key.strip('1234567890')]
+            return '-'.join([name, lex_st.rsplit('-lex', 1)[0]])
 
 ######################################################################
 
@@ -213,7 +336,7 @@ def validate_lexicon(ch, vr):
     # This variable is used to check if the inheritance hierarchy
     # of lexicon types has a cycle
     contain_cycle = False
-    
+
     # Did they specify enough lexical entries?
     if 'noun' not in ch:
         mess = 'You should create at least one noun class.'
@@ -404,7 +527,7 @@ def validate_lexicon(ch, vr):
             mess = 'A noun defined as %s taking a determiner is unusable %s' + \
                    'without any determiners defined.'
             vr.warn(n.full_key + '_det', mess % message_map[det])
-            
+
         q = n.get('inter')
         if q == 'on':
             wh_q1 = ch.get(MTRX_FRONT)
@@ -435,6 +558,19 @@ def validate_lexicon(ch, vr):
             if not pred:
                 mess = 'You must specify a predicate for each noun you define.'
                 vr.err(stem.full_key + '_pred', mess)
+
+        # Coverb validation
+        if n.get('coverb-type'):
+            # If noun is a coverb, do they specify light verbs this coverb can take?
+            if not n.get('lvs'):
+                mess = 'You must specify light verbs for this coverb.'
+                vr.err(n.full_key + '_lvs', mess)
+            else:
+                # Can the light verbs they specified take this type of coverb?
+                for lv in n.get('lvs').split(', '):
+                    if ch.get(lv) and 'noun' not in ch.get(lv).get('cv-type').split(', '):
+                        mess = 'You must specify light verbs that can take *noun* coverbs.'
+                        vr.err(n.full_key + '_lvs', mess)
 
     # Verbs
     # check verb hierarchy for various properties
@@ -574,12 +710,12 @@ def validate_lexicon(ch, vr):
             # otherwise we go again
             parents = next_parents
 
-        # check stems 
+        # check stems
         s = v.get('stem', [])
         if s == []:
             mess = 'You must define a stem for this verb class.'
             vr.warn(v.full_key+'_stem', mess)
-        
+
         # now check val
         if not val:
             mess = 'You must specify the argument structure of each verb you ' + \
@@ -588,7 +724,7 @@ def validate_lexicon(ch, vr):
         elif val[0:5] == 'trans' or '-' in val:
             seenTrans = True
         else:
-            seenIntrans = True            
+            seenIntrans = True
 
         if bistems and not bipartitepc:
             mess = 'If you add bipartite stems to a class, you must specify a ' + \
@@ -624,6 +760,19 @@ def validate_lexicon(ch, vr):
             if not pred:
                 mess = 'You must specify a predicate for each verb you define.'
                 vr.err(bistem.full_key + '_pred', mess)
+
+        # Coverb validation
+        if v.get('coverb-type'):
+            # If verb is a coverb, do they specify light verbs this coverb can take?
+            if not v.get('lvs'):
+                mess = 'You must specify light verbs for this coverb.'
+                vr.err(v.full_key + '_lvs', mess)
+            else:
+                # Can the light verbs they specified take this type of coverb?
+                for lv in v.get('lvs').split(', '):
+                    if ch.get(lv) and 'verb' not in ch.get(lv).get('cv-type').split(', '):
+                        mess = 'You must specify light verbs that can take *verb* coverbs.'
+                        vr.err(v.full_key + '_lvs', mess)
 
     for qv in ch.get('qverb'):
         if not qv['predtype']:
@@ -939,7 +1088,7 @@ def validate_lexicon(ch, vr):
             if not stem.get('orth'):
                 mess = 'You must specify a spelling for each auxiliary you define.'
                 vr.err(stem.full_key + '_orth', mess)
-        
+
         if aux.get('subj') in ['np-comp-case', 'np-aux-case'] and ch.get('case-marking') == 'none':
             vr.err(aux.full_key + '_subj', 'You have specified that this language does not have case marking but indicated the subject ' + \
                     'of this auxiliary has case.')
@@ -1080,7 +1229,7 @@ def validate_lexicon(ch, vr):
         if not adv['type']:
             mess = 'Please select the type for this adverb.'
             vr.err(adv.full_key+'_type', mess)
-            
+
         q_adverb = adv['inter']
         if q_adverb == 'on':
             stems = adv['stem']
@@ -1088,13 +1237,82 @@ def validate_lexicon(ch, vr):
                 if "_a_rel" in stem['pred']:
                     mess = 'You have indicated this is a question adverb. Please update predicate to be a noun relation.'
                     vr.warn(stem.full_key+'_pred', mess)
-        
+
         # check that stem does not match any existing negative adverb
         neg_adv = ch.get('neg-adv-orth')
         stems = adv['stem']
-        for s in stems:        
+        for s in stems:
             if s['orth'] == neg_adv:
                 vr.err(s.full_key+'_orth', 'You have used this spelling for an adverb on the sentential negation page. Please choose a unique spelling.')
+
+    # Light Verbs
+    for lv in ch.get('lv'):
+        # Did they give a name?
+        if not lv.get('name'):
+            mess = 'You must specify a name for each light verb you define.'
+            vr.err(lv.full_key + '_name', mess)
+
+        # Did they specify the valence?
+        if not lv.get('valence'):
+            mess = 'You must specify the valence for each light verb you define.'
+            vr.err(lv.full_key + '_valence', mess)
+
+        # Is the valence option they selected allowed on the LVC subpage?
+        if lv.get('valence') == 'coverb-only' and not ch.get('lvc-it') == ON:
+            mess = 'You must allow intransitive light verbs as a valence option on the LVC subpage.'
+            vr.err(lv.full_key + '_valence', mess)
+        if lv.get('valence') == 'coverb-1comp' and not ch.get('lvc-tr') == ON:
+            mess = 'You must allow transitive light verbs as a valence option on the LVC subpage.'
+            vr.err(lv.full_key + '_valence', mess)
+
+        # Did they specify the types of coverbs this light verb can take?
+        if not lv.get('cv-type'):
+            mess = 'You must specify what types of coverb each light verb you define can take as an argument.'
+            vr.err(lv.full_key + '_cv-type', mess)
+
+        # Is the coverb type they selected allowed on the LVC subpage?
+        for cv_type in lv.get('cv-type').split(', '):
+            if cv_type == 'noun' and not ch.get('coverb-n') == ON:
+                mess = 'You must allow noun coverbs on the LVC subpage.'
+                vr.err(lv.full_key + '_cv-type', mess)
+            if cv_type == 'verb' and not ch.get('coverb-v') == ON:
+                mess = 'You must allow verb coverbs on the LVC subpage.'
+                vr.err(lv.full_key + '_cv-type', mess)
+
+        # If the light verb is bleached, does it take only verb coverbs?
+        if lv.get('sem-bleached') == ON and not lv.get('cv-type') == 'verb':
+            mess = 'If you specify that this light verb is bleached, it can only take verb coverbs as arguments.'
+            vr.err(lv.full_key + '_cv-type', mess)
+
+        # If bleached light verbs are possible, are they allowed on the LVC subpage?
+        if lv.get('sem-bleached') == ON and not ch.get('lvc-bleached') == YES:
+            mess = 'You must specify that bleached light verbs are possible on the LVC subpage.'
+            vr.err(lv.full_key + '_sem-bleached', mess)
+
+        # If all light verbs are bleached, is the bleached option selected?
+        if ch.get('lvc-all-bleached') == YES and not lv.get('sem-bleached') == ON:
+            mess = 'If you specify that all light verbs are bleached on the LVC page, you must specify that this light verb is bleached.'
+            vr.err(lv.full_key + '_sem-bleached', mess)
+
+        # Did they give a stem?
+        if not lv.get('stem'):
+            mess = 'You must specify at least one spelling and predicate for each light verb you define.'
+            vr.err(lv.full_key + '_stem1_orth', mess)
+
+        for stem in lv.get('stem'):
+            # Did they give a spelling?
+            if not stem.get('orth'):
+                mess = 'You must specify a spelling for each light verb you define.'
+                vr.err(stem.full_key + '_orth', mess)
+
+            # Did they give a predicate?
+            if not lv.get('sem-bleached') == ON and not stem.get('pred'):
+                mess = 'You must specify a predicate for each light verb you define.'
+                vr.err(stem.full_key + '_pred', mess)
+            if lv.get('sem-bleached') == ON and stem.get('pred'):
+                mess = 'You cannot specify a predicate for bleached light verbs.'
+                vr.err(stem.full_key + '_pred', mess)
+
 
     # Features on all lexical types
     # TJT 2014-09-02: Adding adj and cop
