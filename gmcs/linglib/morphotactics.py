@@ -210,7 +210,8 @@ def position_class_hierarchy(choices):
         # Fill the lexical rule types with the information we know
         create_lexical_rule_types(cur_pc, pc)
 
-    pc_inputs = fix_coverb_pc_inputs(pc_inputs, choices)
+    if choices.get('coverb-n') == 'on' or choices.get('coverb-v') == 'on':
+        pc_inputs = fix_coverb_pc_inputs(pc_inputs, choices)
     # now assign pc inputs
     for pc in pc_inputs:
         for inp in pc_inputs[pc]:

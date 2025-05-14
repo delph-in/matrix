@@ -64,7 +64,7 @@ BLEACHED_LV_VERB_ITEM = BLEACHED_COVERB_VERB + '-lv-lex := bleached-lv-lex & \
     [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST #comps, \
       ARG-ST.REST.FIRST #comps & [ LOCAL.CONT.HOOK.INDEX event ] ].'
 
-BASIC_LV_IT_ITEM = 'basic-' + INTRANSITIVE + '-lv-lex := non-mod-lex-item & \
+BASIC_LV_IT_ITEM = 'basic-' + INTRANSITIVE + '-lv-lex := non-mod-lex-item & non-local-none-no-hcons & basic-icons-lex-item & \
     [ SYNSEM.LOCAL.CAT.VAL.COMPS.REST null ].'
 
 LV_IT_ITEM = INTRANSITIVE + '-lv-lex := lv-lex & basic-' + INTRANSITIVE + '-lv-lex.'

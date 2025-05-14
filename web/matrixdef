@@ -2069,7 +2069,7 @@ EndIter ns
 
 Section lvc "Light Verb Constructions"
 
-Label "<p>If your langauge uses light verb constructions (LVCs), mark the appropriate options below.</p>"
+Label "<p>If your language uses light verb constructions (LVCs), mark the appropriate options below.</p>"
 
 Label "<p>What possible coverbs are allowed in your language?<br>(selecting one or more of these options will allow you to add coverbs of that type to the lexicon)</p>"
 Check coverb-n "Noun coverbs" "" "Noun Coverbs<br>" "toggle_element.call(this, 'lvc-noun-cv-dep', 'toggle');"

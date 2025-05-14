@@ -1227,7 +1227,7 @@ def validate_lexicon(ch, vr):
                 vr.err(lv.full_key + '_cv-type', mess)
 
         # If the light verb is bleached, does it take only verb coverbs?
-        if ch.get('lvc-bleached') == YES and not lv.get('cv-type') == 'verb':
+        if lv.get('sem-bleached') == ON and not lv.get('cv-type') == 'verb':
             mess = 'If you specify that this light verb is bleached, it can only take verb coverbs as arguments.'
             vr.err(lv.full_key + '_cv-type', mess)
 
