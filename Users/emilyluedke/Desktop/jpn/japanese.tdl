@@ -1,0 +1,339 @@
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Grammar of Japanese
+;;; created at:
+;;;     Mon Aug 18 20:53:26 UTC 2025
+;;; based on Matrix customization system version of:
+;;;     unknown time
+;;;
+;;; Sample grammar for Japanese.
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+; Type assigning empty mod list. Added to basic types for nouns, verbs and determiners.
+
+non-mod-lex-item := lex-item &
+  [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].
+
+;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Matrix Type Addenda
+;;;;;;;;;;;;;;;;;;;;;;;;;
+
+basic-head-comp-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC #mc,
+    SYNSEM [ LIGHT #light,
+             LOCAL.CAT [ HC-LIGHT #light,
+                         MC #mc,
+                         VC #vc ] ],
+    NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VC #vc ].
+
+head :+ [ PRON bool,
+    AUX bool,
+    FORM form ].
+
++np :+ [ CASE case ].
+
+inflected :+ [ TENSE-FLAG luk ].
+
+infl-satisfied :+ [ TENSE-FLAG na-or-+ ].
+
+png :+ [ PER person,
+    NUM number ].
+
+basic-head-opt-subj-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
+
+; Introducing VC keeps track whether main-verb is present in cluster
+
+cat :+ [ VC luk ].
+
+lex-rule :+ [ SYNSEM.LOCAL.CAT.VC #vc,
+    DTR.SYNSEM.LOCAL.CAT.VC #vc ].
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Language-specific Types for Feature Values
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; Person
+
+person := *top*.
+1st := person.
+2nd := person.
+3rd := person.
+
+;;; Number
+
+number := *top*.
+sg := number.
+pl := number.
+
+;;; Case
+
+case := *top*.
+nom := case.  ; nom
+acc := case.  ; acc
+
+;;; Form
+
+form := *top*.
+nonfinite := form.
+finite := form.
+
+;;; Tense
+
+nonpast := tense.
+past := tense.
+
+;;; Aspect
+
+prog := aspect.
+
+;;;;;;;;;;;;;;;;;;;
+;;; Lexical Types
+;;;;;;;;;;;;;;;;;;;
+
+;;; Nouns
+
+noun-lex := basic-noun-lex & basic-non-wh-word-lex & non-local-none-lex-item & no-hcons-lex-item & non-mod-lex-item &
+  [ SYNSEM.LOCAL.CAT.VAL [ SPR < #spr &
+                                 [ LOCAL.CAT.HEAD det ] >,
+                           COMPS < >,
+                           SUBJ < >,
+                           SPEC < > ],
+    ARG-ST < #spr > ].
+
+common-noun-lex := noun-lex &
+  [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG.PER 3rd ].
+
+;;; Verbs
+
+verb-lex := non-mod-lex-item &
+  [ SYNSEM [ LOCAL.CAT.HEAD verb,
+             L-QUE - ],
+    INFLECTED.TENSE-FLAG - ].
+
+main-verb-lex := verb-lex & basic-verb-lex & basic-non-wh-word-lex &
+  [ SYNSEM [ L-QUE -,
+             LOCAL [ CAT [ HEAD.AUX -,
+                           VC +,
+                           VAL [ SPEC < >,
+                                 SUBJ < #subj > ] ],
+                     CONT.HOOK.XARG #xarg ] ],
+    ARG-ST.FIRST #subj &
+                 [ LOCAL [ CAT cat-sat &
+                               [ VAL [ SPR < >,
+                                       COMPS < > ] ],
+                           CONT.HOOK.INDEX #xarg ] ] ].
+
+aux-lex := verb-lex & basic-icons-lex-item &
+  [ SYNSEM [ L-QUE -,
+             LOCAL.CAT [ HEAD.AUX +,
+                         VC - ] ] ].
+
+intransitive-verb-lex := main-verb-lex & intransitive-lex-item &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < >,
+    ARG-ST.FIRST.LOCAL.CAT.HEAD +np ].
+
+transitive-verb-lex := main-verb-lex & transitive-lex-item &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >,
+    ARG-ST < [ LOCAL.CAT.HEAD +np ],
+             #comps &
+             [ LOCAL.CAT cat-sat &
+                         [ VAL [ SPR < >,
+                                 COMPS < > ],
+                           HEAD +np ] ] > ].
+
+nom-intransitive-verb-lex := intransitive-verb-lex &
+  [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE nom ].
+
+nom-acc-transitive-verb-lex := transitive-verb-lex &
+  [ ARG-ST < [ LOCAL.CAT.HEAD.CASE nom ],
+             [ LOCAL.CAT.HEAD.CASE acc ] > ].
+
+trans-verb-lex := nom-acc-transitive-verb-lex.
+
+intrans-verb-lex := nom-intransitive-verb-lex.
+
+basic-head-opt-comp-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX event ].
+
+;;; Auxiliaries
+
+subj-raise-aux := aux-lex & trans-first-arg-raising-lex-item &
+  [ SYNSEM.LOCAL [ CAT.VAL [ SPEC < >,
+                             COMPS < #comps >,
+                             SUBJ < #subj > ],
+                   CONT.HOOK.XARG #xarg ],
+    ARG-ST < #subj &
+             [ LOCAL [ CAT [ HEAD noun &
+                                  [ CASE #case ],
+                             VAL [ SUBJ < >,
+                                   SPR < >,
+                                   SPEC < >,
+                                   COMPS < > ] ],
+                       CONT.HOOK.INDEX #xarg ] ],
+             #comps &
+             [ LOCAL.CAT [ HEAD verb &
+                                [ AUX - ],
+                           VAL [ COMPS < >,
+                                 SPR < >,
+                                 SPEC < >,
+                                 SUBJ < unexpressed &
+                                        [ LOCAL.CAT.HEAD.CASE #case ] > ] ] ] > ].
+
+subj-raise-aux-no-pred := subj-raise-aux & raise-sem-lex-item.
+
+progressive-aux-lex := subj-raise-aux-no-pred &
+  [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL [ CAT.HEAD.FORM nonfinite,
+                                             CONT.HOOK.INDEX.E.ASPECT prog ] ].
+
+;;; Complementizers
+
+; We treat question particles as complementizers.
+; Here is the lexical type for complementizers.
+
+complementizer-lex-item := raise-sem-lex-item & non-local-none-lex-item & basic-icons-lex-item &
+  [ SYNSEM.LOCAL.CAT [ HEAD comp &
+                            [ MOD < > ],
+                       VAL [ SPR < >,
+                             SPEC < >,
+                             SUBJ < >,
+                             COMPS < #comp > ] ],
+    ARG-ST < #comp &
+             [ LOCAL.CAT [ HEAD verb,
+                           VAL [ SUBJ < >,
+                                 COMPS < > ] ] ] > ].
+
+; Subtype for question particles. Constrains SF to ques.
+
+qpart-lex-item := complementizer-lex-item &
+  [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.SF ques,
+                   CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.FORM finite ] ].
+
+q-particle1-lex := qpart-lex-item.
+
+;;; Others
+
+no-sem-adp-lex := non-local-none-lex-item & raise-sem-lex-item &
+  [ SYNSEM.LOCAL.CAT [ HEAD adp &
+                            [ MOD < > ],
+                       VAL [ SPR < >,
+                             SUBJ < >,
+                             COMPS < #comps >,
+                             SPEC < > ] ],
+    ARG-ST < #comps &
+             [ LOCAL.CAT [ HEAD noun,
+                           VAL.SPR < > ] ] > ].
+
+non-infostr-marking-adp-lex := no-sem-adp-lex &
+  [ SYNSEM.LOCAL.CONT [ HOOK [ ICONS-KEY.IARG1 #clause,
+                               CLAUSE-KEY #clause ],
+                        ICONS.LIST < > ] ].
+
+;;; Case-marking adpositions
+;;; Case marking adpositions are constrained not to
+;;; be modifiers.
+
+case-marking-adp-lex := non-infostr-marking-adp-lex &
+  [ SYNSEM.LOCAL.CAT.HEAD.CASE #case,
+    ARG-ST < [ LOCAL.CAT.HEAD.CASE #case ] > ].
+
+;;; Determiners
+;;; SPEC is non-empty, and already specified by basic-determiner-lex.
+
+determiner-lex := basic-determiner-lex & basic-non-wh-word-lex & norm-zero-arg & non-mod-lex-item &
+  [ SYNSEM.LOCAL.CAT.VAL [ SPR < >,
+                           COMPS < >,
+                           SUBJ < > ] ].
+
+demonstrative-determiner-lex := determiner-lex & no-icons-lex-item &
+  [ SYNSEM.L-QUE - ].
+
+;;; Adverbs
+
+;;;;;;;;;;;;;;;;;;;
+;;; Lexical Rules
+;;;;;;;;;;;;;;;;;;;
+
+;;; Lexical rule types
+
+tense-lex-rule-super := infl-lex-rule &
+  [ INFLECTED.TENSE-FLAG +,
+    DTR verb-lex ].
+
+non-past-lex-rule := add-only-no-ccont-rule & tense-lex-rule-super &
+  [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.E.TENSE nonpast,
+                   CAT.HEAD.FORM finite ] ].
+
+; This adds negative semantics to the verb's
+; RELS list.
+
+past-lex-rule := cont-change-only-lex-rule & tense-lex-rule-super &
+  [ C-CONT [ HOOK [ XARG #xarg,
+                    LTOP #ltop,
+                    INDEX #ind ],
+             RELS.LIST < event-relation &
+                         [ PRED "neg_rel",
+                           LBL #ltop,
+                           ARG1 #harg ] >,
+             HCONS.LIST < qeq &
+                          [ HARG #harg,
+                            LARG #larg ] > ],
+    SYNSEM [ LOCAL [ CONT.HOOK.INDEX.E.TENSE past,
+                     CAT.HEAD.FORM finite ],
+             LKEYS #lkeys ],
+    DTR.SYNSEM [ LKEYS #lkeys,
+                 LOCAL [ CONT.HOOK [ XARG #xarg,
+                                     INDEX #ind,
+                                     LTOP #larg ],
+                         CAT.HEAD verb ] ] ].
+
+inf-lex-rule := add-only-no-ccont-rule & tense-lex-rule-super &
+  [ SYNSEM.LOCAL.CAT.HEAD.FORM nonfinite ].
+
+;;;;;;;;;;;;;;;;;;;
+;;; Phrasal Types
+;;;;;;;;;;;;;;;;;;;
+
+;Constraint on MC used to be part of matrix.tdl
+;;it applies to all wo implementations, except for v2
+
+comp-head-phrase := basic-head-1st-comp-phrase & head-final.
+
+subj-head-phrase := decl-head-subj-phrase & head-final &
+  [ HEAD-DTR.SYNSEM.LOCAL.CAT.VC + ].
+
+; Rules for building NPs.  Note that the Matrix uses SPR for
+; the specifier of nouns and SUBJ for the subject (specifier) of verbs.
+
+spec-head-phrase := basic-head-spec-phrase & head-final &
+  [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].
+
+; Bare NP phrase.  Consider modifying the PRED value of the quantifier relation
+; introduced to match the semantic effect of bare NPs in your language.
+
+bare-np-phrase := basic-bare-np-phrase &
+  [ C-CONT.RELS.LIST < [ PRED "exist_q_rel" ] > ].
+
+basic-filler-phrase :+ [ SYNSEM.NON-LOCAL.SLASH.LIST < >,
+    ARGS < [ SYNSEM [ LOCAL #slash,
+                      NON-LOCAL.SLASH.LIST < > ] ],
+           [ SYNSEM.NON-LOCAL.SLASH.LIST < #slash > ] > ].
+
+extracted-subj-phrase := basic-extracted-subj-phrase &
+  [ SYNSEM.LOCAL.CAT.HEAD verb ].
+
+;;; Wh-question-related phrasal types
+
+;;;;;;;;;;;;;;;;;;
+;;; Coordination
+;;;;;;;;;;;;;;;;;;
+
+;;; Coordination Strategy 1
+
+np1-top-coord-rule := basic-np-top-coord-rule & monopoly-top-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ].
+
+np1-mid-coord-rule := basic-np-mid-coord-rule & monopoly-mid-coord-rule &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ].
+
+np1-bottom-coord-rule := conj-last-bottom-coord-rule & np-bottom-coord-phrase &
+  [ SYNSEM.LOCAL.COORD-STRAT "1" ].
+
+clause :+ [ SYNSEM.NON-LOCAL.QUE.LIST < > ].

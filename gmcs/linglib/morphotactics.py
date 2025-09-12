@@ -139,7 +139,7 @@ def get_vtype(stem, choices):
 ### MAIN LOGIC METHODS ###
 ##########################
 
-def customize_inflection(choices, add_methods, mylang, irules, lrules, lextdl):
+def customize_inflection(choices, add_methods, mylang, irules, lrules, lextdl, rules):
     """
     Process the information in the given choices file and add the rules
     and types necessary to model the inflectional system into the irules,
@@ -155,7 +155,7 @@ def customize_inflection(choices, add_methods, mylang, irules, lrules, lextdl):
     pch = customize_lexical_rules(choices)
     # write_rules currently returns a list of items needing feature
     # customization. Hopefully we can find a better solution
-    return write_rules(pch, mylang, irules, lrules, lextdl, choices)
+    return write_rules(pch, mylang, irules, lrules, lextdl, choices, rules)
 
 
 def customize_lexical_rules(choices):
@@ -264,7 +264,7 @@ def create_lexical_rule_types(cur_pc, pc):
             cur_lrt = create_lexical_rule_type(lrt, mtx_supertypes, cur_pc)
             # the ordering should only mess up if there are 100+ lrts
             cur_lrt.tdl_order = cur_pc.tdl_order + (0.01 * j)
-            cur_pc.add_node(cur_lrt)
+            cur_pc.add_node(cur_lrt) # Emily NOTE: this is where lrt should be added
     for child in lrt_parents:
         for parent in lrt_parents[child]:
             cur_pc.relate_parent_child(_mns[parent], _mns[child])
@@ -510,6 +510,7 @@ def set_req_bkwd_initial_flags(lex_pc, flag_tuple):
 #   and the three generic 'supertypes of last resort'.
 # Changed the code to make the relationship explicit.
 LEX_RULE_SUPERTYPES = ['cat-change-only-lex-rule',
+                       'add-ccont-cat-change-only-lex-rule',
                        'same-agr-lex-rule',
                        'same-non-local-lex-rule',
                        'cont-change-only-lex-rule',
@@ -519,6 +520,7 @@ LEX_RULE_SUPERTYPES = ['cat-change-only-lex-rule',
                        'add-only-rule',
                        'same-head-lex-rule',
                        'val-change-only-lex-rule',
+                       'add-ccont-val-change-only-lex-rule',
                        'val-change-with-ccont-lex-rule',
                        'head-change-only-lex-rule',
                        'cont-change-only-lex-rule',
@@ -618,8 +620,17 @@ def percolate_supertypes(pc):
             if not any(st in LEX_RULE_SUPERTYPES for st in x.supertypes):
                 if pc.has_incorporated_stems():
                     # TJT 2014-08-21: Incorporated Adjective lexical rule supertypes
+                    # Emily NOTE: the only incorporated stems so far are adjs
+                    # so if this is true, then the adj_incorp-lex-rule is added
+                    # I'll want to change this so that add-only-rule still gets 
+                    # added to both, but will need to do a check if its an incorporated
+                    # noun or adjective to see what other lex rule is a supertype
                     x.supertypes.add('add-only-rule')
-                    x.supertypes.add('adj_incorporation-lex-rule')
+                    #if pc is an incorporated adjective:
+                        #x.supertypes.add('adj_incorporation-lex-rule')
+                elif pc.is_ghost_ni_pc(): #is a ghost pc for NI
+                    x.supertypes.add('add-ccont-val-change-only-lex-rule')
+                    x.supertypes.add('const-lex-rule') #this might be taken care of elsewhere if I get the lrt working. it didnt
                 elif pc.has_valchg_ops():
                     # CMC 2017-02-20: Valence-changing operations need
                     # less-constrained supertype
@@ -705,7 +716,7 @@ def get_infostr_constraints(choices):
         for j, lrt in enumerate(pc.get('lrt')):
             get_infostr_constraint(lrt.full_key, lrt.full_key)
 
-def write_rules(pch, mylang, irules, lrules, lextdl, choices):
+def write_rules(pch, mylang, irules, lrules, lextdl, choices, rules):
     # Set up irules.tdl
     irules.define_sections([['regular', 'Inflecting Lexical Rule Instances', False, False],
                             ['incorp', 'Incorporated Stem Lexical Rule Instances', False, False]])
@@ -737,6 +748,8 @@ def write_rules(pch, mylang, irules, lrules, lextdl, choices):
             write_i_or_l_rules(irules, lrules, lrt, pc.order)
             # TJT 2014-08-27: Write adjective position class features
             write_pc_adj_syntactic_behavior(lrt, mylang, choices)
+            # EEL 2015-08-28 Write noun incorporation rules
+            write_noun_incorporation_behavior(pc, lrt, mylang, choices, lrules, rules)
             # CMC 2017-03-28 Write valence change operations rules
             write_valence_change_behavior(pc, lrt, mylang, choices)
             # MTH 2017-10-16 Write evidential behavior
@@ -1092,6 +1105,46 @@ def write_valence_change_behavior(pc, lrt, mylang, choices):
     if 'subj-dem' in lrt_ops and 'obj-prom' not in lrt_ops:
         lrt.supertypes.add('same-cont-lex-rule')
 
+def write_noun_incorporation_behavior(pc, lrt, mylang, choices, lrules, rules):
+    from gmcs.linglib.noun_incorporation import PROMOTION_RULE, REDUCTION_RULE, NI_VALENCE, \
+                                DOUBLE_RULE, LEX_ITEM, TYPE_MOD_PHRASE, ADJ_MOD_PHRASE, BARE_NP
+
+    # not sure where to put this since its rules for the pc, and at this point we are 
+    # adding rules to the pc's lrts. The problem is that the ghost pc doesn't exist until 
+    # its added with the other add_lex_rules methods. Each of those is adding lrts though
+    # customize_ni happens before the lrt is created so it can't go there
+    # and the two methods that deal with pcs are adding DRT and INFLECTED info. maybe it
+    # goes there? currently this will happen each time a new ni strat is employed
+    if pc.name == 'NI-valence':
+        mylang.add(pc.identifier() + NI_VALENCE)
+
+    if lrt.name == 'promote':
+        mylang.add(lrt.identifier() + PROMOTION_RULE)
+        lrt_id = lrt.identifier()
+        lrules.add(lrt_id.rsplit('-rule', 1)[0] + ' := ' + lrt_id + '.')
+    elif lrt.name == 'reduce':
+        mylang.add(lrt.identifier() + REDUCTION_RULE)
+        lrt_id = lrt.identifier()
+        lrules.add(lrt_id.rsplit('-rule', 1)[0] + ' := ' + lrt_id + '.')
+    elif lrt.name == 'double':
+        mylang.add(lrt.identifier() + DOUBLE_RULE)
+        lrt_id = lrt.identifier()
+        lrules.add(lrt_id.rsplit('-rule', 1)[0] + ' := ' + lrt_id + '.')
+
+        # adding additions to lex-item definition
+        mylang.add(LEX_ITEM, section='addenda')
+
+        # adding phrase structure rule for NCORP-MOD + elements
+        if choices.get('stranded-noun') == 'on':
+            mylang.add(TYPE_MOD_PHRASE, section='phrases')
+            rules.add('type-ni-mod := type-ni-mod-phrase.')
+
+        if choices.get('stranded-adj') == 'on':
+            mylang.add(ADJ_MOD_PHRASE, section='phrases')
+            rules.add('adj-ni-mod := adj-ni-mod-phrase.')
+
+        # updating bare-np phrase
+        mylang.add('bare-np-phrase' + BARE_NP, section='phrases')
 
 def write_pc_adj_syntactic_behavior(lrt, mylang, choices):
     # TODO: Don't do this if a supertype is specified
@@ -1294,6 +1347,7 @@ def basic_pc_validation(choices, pc, vr):
     # TJT 2014-09-18: PCs should be either incorporated stems or inflection...
     # this seems true from adjective typology survey, but might not be right
     # for future incorporated stems
+    # Emily NOTE: I think this holds true for NI, might want to discuss with Emily B
     if 'is-lrt' in pc and 'lrt' in pc:
         vr.err(pc.full_key+'_lrt', 'Each position class should either have ' +
                'incorporated stems or regular lexical rule types. If your ' +
@@ -1481,6 +1535,7 @@ def lrt_validation(lrt, vr, index_feats, choices, incorp=False, inputs=set(), sw
                        "Each Incorporated Stem instance must have a pred " +
                        "value associated with it. If you do not require a " +
                        "pred value, use a regular lexical rule type + instances.")
+            # Emily NOTE: will need to change this as I'm now supporting more than adj incorp
             if pred[-len("_a_rel"):] != "_a_rel":
                 vr.warn(lri.full_key+'_pred',
                         "The Customization System currently only supports " +

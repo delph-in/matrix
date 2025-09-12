@@ -1,0 +1,105 @@
+
+version=35
+
+section=general
+language=NadebTest
+
+section=word-order
+word-order=osv
+has-dets=no
+has-aux=no
+subord-word-order=same
+
+section=number
+
+section=person
+person=1-2-3
+first-person=none
+
+section=gender
+
+section=case
+case-marking=none
+
+section=adnom-poss
+  poss-strat1_order=head-final
+  poss-strat1_mod-spec=spec
+  poss-strat1_mark-loc=neither
+  poss-strat1_pronoun-allow=no
+
+section=direct-inverse
+
+section=tense-aspect-mood
+
+section=evidentials
+
+section=other-features
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=wh-q
+
+section=info-str
+
+section=arg-opt
+
+section=nominalclause
+
+section=lvc
+
+section=clausal-comp
+
+section=clausalmods
+
+section=noun-incorporation
+noun_incorp=on
+reduction=on
+
+section=lexicon
+  noun1_name=common
+    noun1_feat1_name=person
+    noun1_feat1_value=3rd
+  noun1_det=imp
+    noun1_stem1_orth=tob
+    noun1_stem1_pred=_house_n_rel
+  noun2_name=proper
+    noun2_feat1_name=person
+    noun2_feat1_value=3rd
+  noun2_det=imp
+    noun2_stem1_orth=Subih
+    noun2_stem1_pred=_Subih_n_rel
+  noun3_name=pronoun
+  noun3_pron=on
+    noun3_feat1_name=person
+    noun3_feat1_value=1st
+  noun3_det=imp
+    noun3_stem1_orth=tih
+    noun3_stem1_pred=_I_n_rel
+  verb1_name=trans
+  verb1_valence=trans
+    verb1_stem1_orth=ma
+    verb1_stem1_pred=_make_v_rel
+  verb2_name=intrans
+  verb2_valence=intrans
+    verb2_stem1_orth=na
+    verb2_stem1_pred=_na_v_rel
+
+section=morphology
+  verb-pc1_order=prefix
+  verb-pc1_inputs=tverb
+    verb-pc1_is-lrt1_name=incorporated_noun
+      verb-pc1_is-lrt1_lri1_inflecting=yes
+      verb-pc1_is-lrt1_lri1_orth=tob
+      verb-pc1_is-lrt1_lri1_pred=_house_a_rel
+
+section=toolbox-import
+
+section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon

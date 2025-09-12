@@ -1,0 +1,40 @@
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+;;; Semantically Empty Lexical Entries
+
+nom-marker_が_gr_1 := arg0e_gtr &
+  [ CONTEXT.RELS.LIST < [ ARG1 individual & #i ] >,
+    FLAGS [ SUBSUME < #i >,
+            TRIGGER "nom-marker_が" ] ].
+
+nom-marker_が_gr_2 := arg0e_gtr &
+  [ CONTEXT.RELS.LIST < [ ARG2 individual & #i ] >,
+    FLAGS [ SUBSUME < #i >,
+            TRIGGER "nom-marker_が" ] ].
+
+nom-marker_が_gr_3 := arg0e_gtr &
+  [ CONTEXT.RELS.LIST < [ ARG3 individual & #i ] >,
+    FLAGS [ SUBSUME < #i >,
+            TRIGGER "nom-marker_が" ] ].
+
+acc-marker_を_gr_1 := arg0e_gtr &
+  [ CONTEXT.RELS.LIST < [ ARG1 individual & #i ] >,
+    FLAGS [ SUBSUME < #i >,
+            TRIGGER "acc-marker_を" ] ].
+
+acc-marker_を_gr_2 := arg0e_gtr &
+  [ CONTEXT.RELS.LIST < [ ARG2 individual & #i ] >,
+    FLAGS [ SUBSUME < #i >,
+            TRIGGER "acc-marker_を" ] ].
+
+acc-marker_を_gr_3 := arg0e_gtr &
+  [ CONTEXT.RELS.LIST < [ ARG3 individual & #i ] >,
+    FLAGS [ SUBSUME < #i >,
+            TRIGGER "acc-marker_を" ] ].
+
+い_gr := arg0e_gtr &
+  [ CONTEXT.RELS.LIST < [ PRED "non_existing_rel" ] >,
+    FLAGS.TRIGGER "い" ].
+
+か_gr := generator_rule &
+  [ CONTEXT.RELS.LIST < [ ARG0.SF ques ] >,
+    FLAGS.TRIGGER "か" ].

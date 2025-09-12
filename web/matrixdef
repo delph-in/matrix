@@ -2672,6 +2672,23 @@ Check shared-subj "Shared Subject" "" "Yes<br>"
 
 EndIter cms
 
+Section noun-incorporation "Noun Incorporation"
+
+Label "<p>Noun Incorporation is the process of morphologically incorporating a noun, usually the direct object of the verb, into the verb itself resulting in a complex verb.</p>"
+
+Check noun-incorp "noun-incorp" "" "Noun Incorporation occurs in this language."<br> 
+
+Label "<p>Do direct objects of transitive verbs incorporate? If so, what happens to the argument structure of the verb? Check all strategies that apply:</p>"
+
+    Check reduce "Reduced" "" "A transitive verb becomes intransitive after incorporating the noun.<br>"
+    Check promote "Promotion" "" "Another agrument is promoted to the direct object position and the verb remains transitive.<br>"
+    Check double "Doubled" "" "Elements of the incorporated noun appear outside of the verb. For example, a co-referent noun that is less specific than the incorporated noun, modifiers or demonstratives of the incorporated noun, or a copy of the incorporated noun itself.<br>"
+
+    Label "<div style=\"padding-left: 35px\">"
+    Label "<br>What elements can be stranded?<br>"
+
+        Check stranded-noun "StrandedNoun" "" "A more specific noun<br>"
+        Check stranded-adj "StrandedAdj" "" "A modifier<br>"
 
 Section lexicon "Lexicon"
 
@@ -3827,6 +3844,64 @@ inputs are possible, these need to be created as two separate lexical rule types
     EndIter lri
 
   EndIter lrt
+
+  BeginIter is-lrt{j} "an Incorporated Stem Lexical Rule Type" 1 0 "noun-incorp"
+
+    Text name "Verb Position Class {i} Lexical Rule Type {j} Name" "<b>Incorporated Stem Lexical Rule Type {j}</b>:<br/>Name: " "" 20
+
+    MultiSelect supertypes "Verb Position Class {i} Lexical Rule Type {j} Supertype" "<br/>Supertypes: " ""
+    fillregex p=verb-pc{i}_is-lrt[0-9]+_name
+
+    Label "<p>Features:</p>"
+
+    BeginIter feat{k} "a Feature"
+
+      Select name "Verb Position Class {i} Lexical Rule Type {j} Feature {k} Name" "Name: " " "
+      fillnames c=verb
+
+      MultiSelect value "Verb Position Class {i} Lexical Rule Type {j} Feature {k} Value" "Value: " ""
+      fillvalues p=verb-pc{i}_is-lrt{j}_feat{k}_name
+
+      Select head "Verb Position Class {i} Lexical Rule Type {j} Feature {k} Head" "Specified on: " ""
+      . dtr "The verb" "the verb"
+      . adj "The adjective" "the adjective"
+
+    EndIter feat
+
+    Label "<p>Morphotactic Constraints:</p>"
+
+    BeginIter require{k} "a Require constraint"
+
+      MultiSelect others "Verb Position Class {i} Lexical Rule Type {j} Requires" "Lexical Rule Type {j} requires one of the following: " ""
+      fillcache c=verbs
+      fillregex p=verb-pc[0-9]+(_is-lrt[0-9]+)?_name
+      . verb "Any verb" "any verb"
+
+    EndIter require
+
+    BeginIter forbid{k} "a Forbid constraint"
+
+      Select others "Verb Position Class {i} Lexical Rule Type {j} forbids" "Lexical Rule Type {j} forbids the following: " ""
+      fillcache c=verb
+      fillregex p=verb-pc[0-9]+(_is-lrt[0-9]+)?_name
+      . verb "Any verb" "any verb"
+
+    EndIter forbid
+
+    Label "<p>Lexical Rule Instances:</p>"
+
+    BeginIter lri{k} "a Lexical Rule Instance" 0 1
+
+      Radio inflecting "Verb Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Has Orthography" "Instance {k}<br>" ""
+      . no "No" "" "No affix<br>"
+      . yes "Yes" "" "Affix spelled"
+
+      Text orth "Verb Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Spelling" "" "" 20 "fill_pred('verb-pc{i}_is-lrt{j}_lri{k}', 'n')"
+      Text pred "Verb Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Predicate" "Predicate: " "" 20
+
+    EndIter lri
+
+  EndIter is-lrt  
 
 EndIter verb-pc
 

@@ -1,0 +1,53 @@
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+;;; Nouns
+
+猫 := common-noun-lex &
+  [ STEM < "猫" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_cat_n_rel" ].
+
+ネズミ := common-noun-lex &
+  [ STEM < "ネズミ" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_mouse_n_rel" ].
+
+;;; Adjectives
+
+;;; Case-marking adpositions
+
+nom-marker_が := case-marking-adp-lex &
+  [ STEM < "が" >,
+    SYNSEM.LOCAL.CAT.HEAD.CASE nom ].
+
+acc-marker_を := case-marking-adp-lex &
+  [ STEM < "を" >,
+    SYNSEM.LOCAL.CAT.HEAD.CASE acc ].
+
+;;; Verbs
+
+食べ := trans-verb-lex &
+  [ STEM < "食べ" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_eat_v_rel" ].
+
+寝 := intrans-verb-lex &
+  [ STEM < "寝" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_sleep_v_rel" ].
+
+;;; Auxiliaries
+
+い := progressive-aux-lex &
+  [ STEM < "い" > ].
+
+;;; Determiners
+
+その := demonstrative-determiner-lex &
+  [ STEM < "その" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_exist_q_rel" ].
+
+;;; Adverbs
+
+か := q-particle1-lex &
+  [ STEM < "か" > ].
+
+と := conj-lex &
+  [ STEM < "と" >,
+    SYNSEM.LKEYS.KEYREL.PRED "_and_coord_rel",
+    CFORM "1" ].

@@ -1,0 +1,18 @@
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+decl-head-opt-subj := decl-head-opt-subj-phrase.
+
+basic-head-opt-comp := basic-head-opt-comp-phrase.
+
+comp-head := comp-head-phrase.
+
+subj-head := subj-head-phrase.
+
+spec-head := spec-head-phrase.
+
+bare-np := bare-np-phrase.
+
+np1-top-coord := np1-top-coord-rule.
+
+np1-mid-coord := np1-mid-coord-rule.
+
+np1-bottom-coord := np1-bottom-coord-rule.

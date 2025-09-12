@@ -1,0 +1,7 @@
+;;; -*- Mode: TDL; Coding: utf-8 -*-
+;;; Incorporated Stem Lexical Rule Instances
+
+incorporated_noun-prefix :=
+%prefix (* tob)
+incorporated_noun-lex-rule &
+  [ C-CONT.RELS.LIST.FIRST.PRED "_house_a_rel" ].
