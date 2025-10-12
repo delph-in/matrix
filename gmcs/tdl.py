@@ -215,6 +215,7 @@ class TDLelem_typedef(TDLelem):
         self.section = ''
         self.type = type
         self.op = op
+        self.docstring = ''
 
     def write(self):
         if self.comment and not self.one_line:
@@ -233,9 +234,21 @@ class TDLelem_typedef(TDLelem):
         for ch in self.child:
             ch.write()
 
+        # AVERY:
+        if self.docstring: 
+            TDLwrite('\n\"\"\"\n')
+            TDLwrite(self.docstring + "\n")
+            TDLwrite('\"\"\"')
+            #Write the docstring
+
+
         TDLwrite('.')
         if self.one_line and self.comment:
             TDLwrite('  ; ' + self.comment)
+
+    #AVERY
+    def set_docstring(self, docstring):
+        self.docstring = docstring
 
     def set_comment(self, comment):
         self.comment = comment
@@ -927,7 +940,7 @@ class TDLfile(object):
             t.write()
 
     def add(self, tdl_type,
-            comment='', one_line=False, merge=True, section=''):
+            comment='', one_line=False, merge=True, section='', docstring=''):
         """
         Add a type definition to this file, merging with an existing
         definition if possible.
@@ -936,6 +949,8 @@ class TDLfile(object):
         typedef.set_comment(comment)
         typedef.set_one_line(one_line)
         typedef.set_merge(merge)
+        #AVERY:
+        typedef.set_docstring(docstring)
 
         typedef.section = section
         if not section:

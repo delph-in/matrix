@@ -746,6 +746,9 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     # head-spec rule has to require [OPT -] on its non-head daughter.
     # Adding that just in case we add the no-spr-noun-lex type.
 
+    #AVERY: 
+    docstring = "For more information on this lexical type, see https://delph-in.github.io/docs/matrix/MatrixDoc_Lexicon/"
+
     typedef = \
         'noun-lex := basic-noun-lex & basic-non-wh-word-lex & non-local-none-lex-item & no-hcons-lex-item & \
            [ SYNSEM [ LOCAL [ CAT [ VAL [ SPR < #spr & [ LOCAL.CAT.HEAD det ] >, \
@@ -763,7 +766,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     # noun must have a non-empty SPEC list even though it has gone
     # through no lexical rules.
 
-    mylang.add(typedef)
+    mylang.add(typedef, docstring = docstring)
 
     # Adding empty MOD on general definitiion for noun-lex
     mylang.add('noun-lex := non-mod-lex-item.')
