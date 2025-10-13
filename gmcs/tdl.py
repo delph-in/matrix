@@ -130,6 +130,14 @@ class TDLelem(object):
 
     def get_comment(self):
         return ''
+    
+    #AVERY:
+    def set_docstring(self, docstring):
+        pass
+
+    #AVERY:
+    def get_docstring(self):
+        return ''
 
     def set_type(self, type_name):
         pass
