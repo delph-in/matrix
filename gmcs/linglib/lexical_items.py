@@ -30,6 +30,9 @@ from gmcs.feature_type_use import USED_TYPES
 
 # helper functions
 
+#AVERY:
+docstring_starter = "For more information on this lexical type, see "
+matrix_doc_link = "https://delph-in.github.io/docs/matrix/"
 
 def verb_id(item):
     """Return the identifier for a verb lexical item."""
@@ -747,7 +750,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     # Adding that just in case we add the no-spr-noun-lex type.
 
     #AVERY: 
-    docstring = "For more information on this lexical type, see https://delph-in.github.io/docs/matrix/MatrixDoc_Lexicon/"
+    docstring = docstring_starter + matrix_doc_link + "MatrixDoc_Lexicon/"
 
     typedef = \
         'noun-lex := basic-noun-lex & basic-non-wh-word-lex & non-local-none-lex-item & no-hcons-lex-item & \
@@ -769,7 +772,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     mylang.add(typedef, docstring = docstring)
 
     # Adding empty MOD on general definitiion for noun-lex
-    mylang.add('noun-lex := non-mod-lex-item.')
+    mylang.add('noun-lex := non-mod-lex-item.', docstring = "test")
 
     # singlentype means there's only one type of n in the hierarchy.
     if singlentype:
@@ -784,13 +787,13 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
             typedef = \
                 'obl-spr-noun-lex := noun-lex & \
                    [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT - ] > ].'
-            mylang.add(typedef)
+            mylang.add(typedef, docstring = docstring)
 
         if seen['imp']:
             typedef = \
                 'no-spr-noun-lex := noun-lex & \
                    [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT + ] > ].'
-            mylang.add(typedef)
+            mylang.add(typedef, docstring = docstring)
     # EKN 2018-02-02 Possessor pronouns are a type which cannot
     # take dets, but won't trigger 'imp' below. Adding a check
     # for them specifically:
@@ -817,7 +820,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
 
     if ch.get('case-marking') != 'none':
         if not ch.has_adp_case() and not ch.has_det_case():
-            mylang.add('noun :+ [ CASE case ].', section='addenda')
+            mylang.add('noun :+ [ CASE case ].', section='addenda', docstring = docstring_starter + matrix_doc_link + "MatrixDoc_Case/")
 
     # Add the lexical entries
     lexicon.add_literal(';;; Nouns')

@@ -223,6 +223,7 @@ class TDLelem_typedef(TDLelem):
         self.section = ''
         self.type = type
         self.op = op
+        #AVERY:
         self.docstring = ''
 
     def write(self):
@@ -257,6 +258,10 @@ class TDLelem_typedef(TDLelem):
     #AVERY
     def set_docstring(self, docstring):
         self.docstring = docstring
+
+    #AVERY
+    def get_docstring(self):
+        return self.docstring
 
     def set_comment(self, comment):
         self.comment = comment
@@ -749,6 +754,17 @@ def TDLmerge(e1, e2):
                 c0 += '\n\n'
             c0 += c2
         e0.set_comment(c0)
+
+        #AVERY:
+        d1 = e1.get_docstring()
+        d2 = e2.get_docstring()
+        d0 = d1
+        if d1 != d2: 
+            if len(d1) and len(d2):
+                d0 += '\n'
+            d0 += d2
+        e0.set_docstring(d0)
+
         # if the elements are ordered (list or dlist), merge the list
         # items in order.  That is, <a,b,c> + <A,B,C> = <a&A,b&B,c&C>.
         # or (isinstance(e1,TDLelem_feat) and not e1.empty_list and e1.is_list())
