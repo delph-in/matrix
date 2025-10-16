@@ -1,4 +1,4 @@
-#!~/delphin/matrix/.venv/bin/python3
+#!/home/daniel/delphin/matrix/.venv/bin/python3
 # $Id: matrix.cgi,v 1.27 2008-09-09 08:37:52 sfd Exp $
 
 ######################################################################
