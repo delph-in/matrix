@@ -1,4 +1,4 @@
-#!/home/daniel/delphin/matrix/.venv/bin/python3
+#!/home/daniel/delphin/matrix/.venv/bin/python
 """
 A general-purpose script for running Matrix code.
 
@@ -669,7 +669,7 @@ def unescape(text):
             except KeyError:
                 pass
             return text  # leave as is
-    return re.sub("&#?\w+;", fixup, text) #to add second \ to fix syntax warning about escape character?
+    return re.sub("&#?\w+;", fixup, text) #added second \ to fix syntax warning about escape character
 
 
 if __name__ == '__main__':
