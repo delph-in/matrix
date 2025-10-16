@@ -105,8 +105,9 @@ or S) varies depending on the auxiliary please let us know.)<br><br>"
   . yes "Yes" "" "yes<br>"
   . no "No" "" "no<br><br>"
 
-Label "NOTE: If your language has free word order and allows more than one auxiliary per clause, we assume that the verbal group forms a cluster (i.e. that all verbal forms are adjacent to each other). If your language reveals different behavior, please let us know."
+Label "NOTE: If your language has free word order and allows more than one auxiliary per clause, we assume that the verbal group forms a cluster (i.e. that all verbal forms are adjacent to each other). If your language reveals different behavior, please let us know.<br><br>"
 
+Label "NOTE: Multiple auxiliaries are possible, but this is ONLY true for multiple auxiliaries that are predicate-bearing."
 
 Label "<p><span style=\"color:red\">NOTE: As Modules for V2 order are
 still under development, relative order of auxiliaries and their
@@ -2880,7 +2881,7 @@ Separator
 Label "<h3 style='display:inline'>Question Verb Types</h3>"
 Label "<span>| <a href='javascript:void(0);' onclick=\"draw_hierarchy('verb')\">visualize verb hierarchy</a> (experimental)</span><br />"
 
-BeginIter qverb{i} "a Question Verb Type" 0 0
+BeginIter qverb{i} "a Question Verb Type" 1 0
 
   Label "<b>Question Verb type {i}</b>:"
 
@@ -3320,7 +3321,7 @@ Separator
 
 Label "<h3>Adpositions</h3>"
 
-BeginIter normadp{i} "an Adposition" 0
+BeginIter normadp{i} "an Adposition" 1 0
 
     BeginIter stem{j} "a Stem" 0 1
 
