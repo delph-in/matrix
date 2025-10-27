@@ -28,11 +28,11 @@ from gmcs.linglib.clausalmods import get_subord_stemids
 from gmcs.linglib.clausalmods import add_subord_name
 from gmcs.feature_type_use import USED_TYPES
 
-# helper functions
-
 #AVERY:
-docstring_starter = "For more information on this lexical type, see "
-matrix_doc_link = "https://delph-in.github.io/docs/matrix/"
+from gmcs.linglib.docstrings import link_to
+from gmcs.linglib.docstrings import add_links
+
+# helper functions
 
 def verb_id(item):
     """Return the identifier for a verb lexical item."""
@@ -749,9 +749,6 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     # head-spec rule has to require [OPT -] on its non-head daughter.
     # Adding that just in case we add the no-spr-noun-lex type.
 
-    #AVERY: 
-    docstring = docstring_starter + matrix_doc_link + "MatrixDoc_Lexicon/"
-
     typedef = \
         'noun-lex := basic-noun-lex & basic-non-wh-word-lex & non-local-none-lex-item & no-hcons-lex-item & \
            [ SYNSEM [ LOCAL [ CAT [ VAL [ SPR < #spr & [ LOCAL.CAT.HEAD det ] >, \
@@ -769,31 +766,31 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     # noun must have a non-empty SPEC list even though it has gone
     # through no lexical rules.
 
-    mylang.add(typedef, docstring = docstring)
+    mylang.add(typedef, docstring = link_to(["lexicon"]))
 
     # Adding empty MOD on general definitiion for noun-lex
-    mylang.add('noun-lex := non-mod-lex-item.', docstring = "test")
+    mylang.add('noun-lex := non-mod-lex-item.')
 
     # singlentype means there's only one type of n in the hierarchy.
     if singlentype:
         if seen['obl']:
             typedef = 'noun-lex := [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT - ] > ].'
-            mylang.add(typedef)
+            mylang.add(typedef, docstring = add_links(["argumentoptionality"], note="for OPT on SPR"))
         elif seen['imp']:
             typedef = 'noun-lex := [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT + ] > ].'
-            mylang.add(typedef)
+            mylang.add(typedef, docstring = add_links(["argumentoptionality"], note="for OPT on SPR"))
     else:
         if seen['obl']:
             typedef = \
                 'obl-spr-noun-lex := noun-lex & \
                    [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT - ] > ].'
-            mylang.add(typedef, docstring = docstring)
+            mylang.add(typedef, docstring = link_to(["argumentoptionality"], note="for OPT on SPR"))
 
         if seen['imp']:
             typedef = \
                 'no-spr-noun-lex := noun-lex & \
                    [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT + ] > ].'
-            mylang.add(typedef, docstring = docstring)
+            mylang.add(typedef, docstring = link_to(["argumentoptionality"], note="for OPT on SPR"))
     # EKN 2018-02-02 Possessor pronouns are a type which cannot
     # take dets, but won't trigger 'imp' below. Adding a check
     # for them specifically:
@@ -816,11 +813,11 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
             hs + '-phrase := [ NON-HEAD-DTR.SYNSEM.OPT - ].',
             'Nouns which cannot take specifiers mark their SPR requirement\n' +
             'as OPT +.  Making the non-head daughter OPT - in this rule\n' +
-            'keeps such nouns out.')
+            'keeps such nouns out.', docstring = link_to(["wordorder"]))
 
     if ch.get('case-marking') != 'none':
         if not ch.has_adp_case() and not ch.has_det_case():
-            mylang.add('noun :+ [ CASE case ].', section='addenda', docstring = docstring_starter + matrix_doc_link + "MatrixDoc_Case/")
+            mylang.add('noun :+ [ CASE case ].', section='addenda')
 
     # Add the lexical entries
     lexicon.add_literal(';;; Nouns')
@@ -865,6 +862,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     # Make sure regular nouns (non-coverbs) can't be used in LVC constructions
     if ch.get('coverb-n') == ON or ch.get('coverb-v') == ON :
         mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT.HEAD.LVC lv-none ].')
+        # AVERY: add coverb/lvc docstring link once it's published
 
     for noun in ch.get('noun', []):
         ntype = noun_id(noun)
@@ -1027,6 +1025,7 @@ def customize_adverbs(mylang, ch, lexicon):
         not_nominalized(ch, mylang, 'adverb-lex-item', 'adv')
         if not ch.get('ns', ''):
             #In the absence of any nominalization strategies, adverbs can only modify verbs
+            #AVERY: where are adverbs?
             mylang.add('adverb-lex-item := [ SYNSEM.LOCAL.CAT.HEAD.MOD < [LOCAL.CAT.HEAD verb ]>].')
     for adv in ch.get('adv'):
         stypes = []
