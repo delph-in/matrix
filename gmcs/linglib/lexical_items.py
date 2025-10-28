@@ -29,8 +29,7 @@ from gmcs.linglib.clausalmods import add_subord_name
 from gmcs.feature_type_use import USED_TYPES
 
 #AVERY:
-from gmcs.linglib.docstrings import link_to
-from gmcs.linglib.docstrings import add_links
+from gmcs.linglib.docstrings import set_links
 
 # helper functions
 
@@ -320,17 +319,17 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
         typedef = \
             'verb-lex := non-mod-lex-item & \
                        [ SYNSEM [ LOCAL.CAT.HEAD verb, L-QUE - ] ].'
-        mylang.add(typedef)
+        mylang.add(typedef, links = set_links(["lexicon"]))
         typedef = \
             'main-verb-lex := verb-lex & basic-verb-lex & \
                             [ SYNSEM [ LOCAL.CAT.HEAD.AUX -,' \
                                        'L-QUE - ] ].'
-        mylang.add(typedef)
+        mylang.add(typedef, links = set_links(["lexicon"]))
         typedef = \
             'aux-lex := verb-lex & basic-icons-lex-item & \
                       [ SYNSEM [ LOCAL.CAT.HEAD.AUX +,' \
                                 'L-QUE - ] ].'
-        mylang.add(typedef)
+        mylang.add(typedef, links = set_links(["lexicon"]))
 
         if vcluster:
             mylang.add('main-verb-lex := [ SYNSEM.LOCAL.CAT.VC + ].')
@@ -370,7 +369,7 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
     typedef = \
         'intransitive-verb-lex := ' + mainorverbtype + ' & intransitive-lex-item & \
        [ SYNSEM.LOCAL.CAT.VAL.COMPS < > ].'
-    mylang.add(typedef)
+    mylang.add(typedef, links = set_links(["lexicon"]))
 
     # transitive verb lexical type
     typedef = \
@@ -380,7 +379,7 @@ def customize_verbs(mylang, ch, lexicon, hierarchies):
                   #comps & \
                   [ LOCAL [ CAT cat-sat & [ VAL [ SPR < >, \
                                       COMPS < > ] ] ] ] > ].'
-    mylang.add(typedef)
+    mylang.add(typedef, links = set_links(["lexicon"]))
 
     if ch.get(clausalcomps.COMPS):
         clausalcomps.add_clausalcomp_verb_supertype(ch, mainorverbtype, mylang)
@@ -766,7 +765,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     # noun must have a non-empty SPEC list even though it has gone
     # through no lexical rules.
 
-    mylang.add(typedef, docstring = link_to(["lexicon"]))
+    mylang.add(typedef, links = set_links(["lexicon"]))
 
     # Adding empty MOD on general definitiion for noun-lex
     mylang.add('noun-lex := non-mod-lex-item.')
@@ -775,22 +774,22 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     if singlentype:
         if seen['obl']:
             typedef = 'noun-lex := [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT - ] > ].'
-            mylang.add(typedef, docstring = add_links(["argumentoptionality"], note="for OPT on SPR"))
+            mylang.add(typedef)
         elif seen['imp']:
             typedef = 'noun-lex := [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT + ] > ].'
-            mylang.add(typedef, docstring = add_links(["argumentoptionality"], note="for OPT on SPR"))
+            mylang.add(typedef)
     else:
         if seen['obl']:
             typedef = \
                 'obl-spr-noun-lex := noun-lex & \
                    [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT - ] > ].'
-            mylang.add(typedef, docstring = link_to(["argumentoptionality"], note="for OPT on SPR"))
+            mylang.add(typedef)
 
         if seen['imp']:
             typedef = \
                 'no-spr-noun-lex := noun-lex & \
                    [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT + ] > ].'
-            mylang.add(typedef, docstring = link_to(["argumentoptionality"], note="for OPT on SPR"))
+            mylang.add(typedef)
     # EKN 2018-02-02 Possessor pronouns are a type which cannot
     # take dets, but won't trigger 'imp' below. Adding a check
     # for them specifically:
@@ -813,7 +812,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
             hs + '-phrase := [ NON-HEAD-DTR.SYNSEM.OPT - ].',
             'Nouns which cannot take specifiers mark their SPR requirement\n' +
             'as OPT +.  Making the non-head daughter OPT - in this rule\n' +
-            'keeps such nouns out.', docstring = link_to(["wordorder"]))
+            'keeps such nouns out.', links = set_links(["wordorder"]))
 
     if ch.get('case-marking') != 'none':
         if not ch.has_adp_case() and not ch.has_det_case():

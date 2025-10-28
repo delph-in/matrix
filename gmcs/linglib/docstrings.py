@@ -1,6 +1,4 @@
 
-#AVERY:
-DOCSTRING_STARTER = "This type as generated from the customization system bore constraints from these libraries:\n"
 
 # General link to the delph-in matrix documentation:
 MATRIX_DOC_LINK = "https://delph-in.github.io/docs/matrix/"
@@ -34,25 +32,10 @@ PAGE_LINKS = {
 
 }
 
-# Method for creating a docstring
-# Parameters: list of documentation page names
-# Returns: docstring with introduction and links
-def link_to(libraries: list, note="") -> str:
-    links = []
+# Method for creating a set of links based on matrix library names
+def set_links(libraries: list) -> set:
+    links = set()
     for library in libraries:
         library = library.replace(" ", "")
-        links.append(MATRIX_DOC_LINK + PAGE_LINKS[library.lower()])
-
-    if note != "":
-        note = " (" + note + ")"
-
-    return DOCSTRING_STARTER + "\n".join(links) + note
-
-def add_links(libraries: list, note="") -> str:
-    links = []
-    for library in libraries:
-        library = library.replace(" ", "")
-        links.append(MATRIX_DOC_LINK + PAGE_LINKS[library.lower()])
-    if note != "":
-        note = " (" + note + ")"
-    return "\n".join(links) + note
+        links.add(MATRIX_DOC_LINK + PAGE_LINKS[library.lower()])
+    return links

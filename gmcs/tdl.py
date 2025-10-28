@@ -138,6 +138,14 @@ class TDLelem(object):
     #AVERY:
     def get_docstring(self):
         return ''
+    
+    #AVERY:
+    def set_links(self, links):
+        pass
+
+    #AVERY
+    def get_links(self):
+        return set()
 
     def set_type(self, type_name):
         pass
@@ -225,6 +233,7 @@ class TDLelem_typedef(TDLelem):
         self.op = op
         #AVERY:
         self.docstring = ''
+        self.links = set() # links to relevant matrix doc pages
 
     def write(self):
         if self.comment and not self.one_line:
@@ -244,12 +253,17 @@ class TDLelem_typedef(TDLelem):
             ch.write()
 
         # AVERY:
-        if self.docstring: 
+        if self.docstring or self.links: 
             TDLwrite('\n\"\"\"\n')
-            TDLwrite(self.docstring + "\n")
+            if self.links:
+                # Write the links as a docstring
+                TDLwrite("This type as generated from the customization system bore constraints from these libraries:\n")
+                TDLwrite("\n".join(self.links) + "\n")
+            if self.docstring:
+                # Write the docstring as a docstring
+                TDLwrite(self.docstring + "\n")
             TDLwrite('\"\"\"')
             #Write the docstring
-
 
         TDLwrite('.')
         if self.one_line and self.comment:
@@ -262,7 +276,15 @@ class TDLelem_typedef(TDLelem):
     #AVERY
     def get_docstring(self):
         return self.docstring
+    
+    #AVERY
+    def set_links(self, links):
+        self.links = links
 
+    #AVERY
+    def get_links(self):
+        return self.links
+    
     def set_comment(self, comment):
         self.comment = comment
 
@@ -765,6 +787,11 @@ def TDLmerge(e1, e2):
             d0 += d2
         e0.set_docstring(d0)
 
+        #AVERY
+        s1 = e1.get_links()
+        s2 = e2.get_links()
+        e0.set_links(s1.union(s2)) # combine sets into one set
+
         # if the elements are ordered (list or dlist), merge the list
         # items in order.  That is, <a,b,c> + <A,B,C> = <a&A,b&B,c&C>.
         # or (isinstance(e1,TDLelem_feat) and not e1.empty_list and e1.is_list())
@@ -964,7 +991,7 @@ class TDLfile(object):
             t.write()
 
     def add(self, tdl_type,
-            comment='', one_line=False, merge=True, section='', docstring=''):
+            comment='', one_line=False, merge=True, section='', docstring='', links=set()):
         """
         Add a type definition to this file, merging with an existing
         definition if possible.
@@ -975,6 +1002,7 @@ class TDLfile(object):
         typedef.set_merge(merge)
         #AVERY:
         typedef.set_docstring(docstring)
+        typedef.set_links(links)
 
         typedef.section = section
         if not section:
