@@ -2695,6 +2695,12 @@ REST adv-list ].
 
 adv-null := adv-list & onull.
 
+; EEL 2025-01-10 need a sublist that is compatible with both adv-cons and nc-cons (and null)
+
+adv-nc-cons := adv-cons & nc-cons.
+
+adv-nc-null := adv-null & nc-null.
+
 ; ERB 2004-05-18 I'm guessing that MSG no-msg on the head
 ; daughter here is going to turn out too restrictive for other
 ; languages.

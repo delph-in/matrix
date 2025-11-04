@@ -93,6 +93,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
     head_map = {
         'subj': 'LOCAL.CAT.VAL.SUBJ.FIRST.',
         'obj': 'LOCAL.CAT.VAL.COMPS.',
+        'in': 'LOCAL.CAT.VAL.COMPS.FIRST.', # EEL trying to get features for incorporated nouns
         'obj2': 'LOCAL.CAT.VAL.COMPS.REST.FIRST.',
         'higher': 'SC-ARGS.FIRST.',
         'lower': 'SC-ARGS.REST.FIRST.',

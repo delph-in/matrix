@@ -65,31 +65,84 @@ basic_noun_incorp_def = ''':= \
                                                     ARG0 #ind,\
                                                     RSTR #harg ] > ] ]. '''  
 
-PROMOTION_RULE = ':= \
+# OPT - going in here, testing to see if this works for all the grammars
+# 9/24/25 making LBL of the poss_rel be the same as the LBL of the possessum
+# 11/5/25 copying up head value of comps so that new comp behaves how the old one should have
+PROMOTION_POSS = ':= \
                     [ SYNSEM.LOCAL.CAT.VAL [ SUBJ #subj, \
-                                                COMPS < [ LOCAL [ CAT [ NCORP-MOD -,\
-                                                                        VAL.SPR < >,\
-                                                                        HEAD noun ],\
-                                                                CONT.HOOK.INDEX #arg2 ] ] > ],\
-                        DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ #subj,\
-                                                    COMPS < [ LOCAL.CONT.HOOK.INDEX #arg1 ] > ],\
+                                             COMPS < [ OPT -, \
+                                                       LOCAL [ CAT [ NCORP-MOD #nc-mod,\
+                                                                     VAL.SPR < >,\
+                                                                     HEAD noun & \
+                                                                        #head ],\
+                                                               CONT.HOOK.INDEX #arg2 ] ] > ],\
+                        DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ #subj, \
+                                                   COMPS  < [ LOCAL [ CAT [ NCORP-MOD #nc-mod,\
+                                                                            HEAD #head ], \
+                                                                      CONT.HOOK [ INDEX #arg1, \
+                                                                                  LTOP #lbl ] ] ] > ], \
                         C-CONT.RELS.LIST < arg12-ev-relation & \
-                                            [ PRED "poss_rel",\
-                                            ARG1 #arg1,\
-                                            ARG2 #arg2 ] > ].'
+                                            [ PRED "poss_rel", \
+                                              LBL #lbl, \
+                                              ARG1 #arg1, \
+                                              ARG2 #arg2 ] > ].'
 
-REDUCTION_RULE = ':= no-ccont-lex-rule & \
-             [ SYNSEM.LOCAL.CAT.VAL [ SUBJ #subj,\
-                                     COMPS < > ],\
-             DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ #subj ].'
+PROMOTION_OBLIQUE = ':= \
+                        [ SYNSEM.LOCAL.CAT.VAL [ SUBJ #subj, \
+                                                COMPS < [ OPT -, \
+                                                          LOCAL [ CAT [ NCORP-MOD -,\
+                                                                        VAL.SPR < >,\
+                                                                        HEAD noun & \
+                                                                            #head ],\
+                                                                CONT.HOOK.INDEX #arg2 ] ] > ],\
+                        DTR.SYNSEM.LOCAL [ CAT.VAL [ COMPS < [ LOCAL.CAT.HEAD #head ] >, \
+                                                    SUBJ #subj ], \
+                                           CONT.HOOK.INDEX #arg1 ], \
+                        C-CONT.RELS.LIST < arg12-ev-relation & \
+                                            [ ARG1 #arg1, \
+                                             ARG2 #arg2 ] > ].'
+
+INTRANS_REDUCTION_RULE = ':= val-change-only-lex-rule & \
+             [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < [ LOCAL [ CONT.HOOK #hook, \
+                                                       CAT [ NCORP-MOD #nc-mod, \
+                                                             VAL #val, \
+                                                             HEAD +np ] ] ] >,\
+                                      COMPS < > ],\
+             DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL [ CONT.HOOK #hook, \
+                                                       CAT [ NCORP-MOD #nc-mod, \
+                                                             VAL #val ] ] ] > ] ].'
+
+TRANS_REDUCTION_RULE = ':= no-ccont-lex-rule & \
+                       [ SYNSEM.LOCAL.CAT.VAL [ SUBJ #subj, \
+                                                COMPS #comps & \
+                                                    [ FIRST.OPT + ] ], \
+                         DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ #subj, \
+                                                    COMPS #comps ] ].'
 
 NI_VALENCE = ':= \
             [ SYNSEM.LOCAL.CAT.VAL [ SPEC < >, \
                                     SPR < > ] ].'
 
+# separating double and strand rules for different forbid constraints
 DOUBLE_RULE = ':= \
             [ SYNSEM.LOCAL.CAT.VAL [ SUBJ #subj, \
-                                     COMPS < [ LOCAL [ CAT.NCORP-MOD +, \
+                                     COMPS < [ OPT -, \
+                                               LOCAL [ CAT [ NCORP-MOD +, \
+                                                             HEAD noun ],\
+                                                       CONT.HOOK [ LTOP #ltop, \
+                                                                   INDEX #ind ] ] ] > ], \
+              DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ #subj, \
+                                         COMPS < [ LOCAL.CONT.HOOK [ LTOP #ltop, \
+                                                                     INDEX #ind ] ] > ], \
+              C-CONT [ RELS.LIST < >, \
+                       HCONS.LIST < >, \
+                       ICONS.LIST < > ] ].'
+
+STRAND_RULE = ':= \
+            [ SYNSEM.LOCAL.CAT.VAL [ SUBJ #subj, \
+                                     COMPS < [ OPT -, \
+                                               LOCAL [ CAT [ NCORP-MOD +, \
+                                                             HEAD adj ], \
                                                        CONT.HOOK [ LTOP #ltop, \
                                                                    INDEX #ind ] ] ] > ], \
               DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ #subj, \
@@ -144,6 +197,8 @@ ADJ_MOD_PHRASE = 'adj-ni-mod-phrase := unary-nonloc-phrase & head-only & \
 BARE_NP = ':= \
         [ SYNSEM.LOCAL.CAT.NCORP-MOD - \
           HEAD-DTR.SYNSEM.LOCAL.CAT.NCORP-MOD - ].'
+
+HEAD_COMMENT = "This rule identifies the HEAD value of the element on the daughter's COMPS list with that of the element on the mother's COMPS list, even though these two element themselves are not identified. The reasoning for this identification is to ensure that elements promoted to object position as a result of noun incorporation behave as the incorporated noun would have if it had existed in an unincorporated position."
              
             
 def add_lexrules(ch):
@@ -165,15 +220,21 @@ def add_lexrules(ch):
                     pc_inp['inputs'] = ', '.join([i for i in pc_inp['inputs'].split(', ') if i != pc.full_key] + [key])
 
 
-            for kind in ['promote', 'reduce', 'double']:
-                if ch.get(kind) == 'on':
+            for ni_type in ['promote-poss', 'promote-obl', 'reduce', 'double-noun', 'strand-mod']:
+                if ch.get(ni_type) == 'on':
                     if ch[key + '_lrt']:
                         idx = ch[key + '_lrt'].next_iter_num() # i think this will be a problem
                     else:
                         idx = 1
                     lrt_key = key + '_lrt' + str(idx)
-                    ch[lrt_key + '_name'] = kind
+                    ch[lrt_key + '_name'] = ni_type
                     ch[lrt_key + '_lri_inflecting'] = 'no'
+
+                    #check for forbid constraints
+                    for forbid in ch.get(f'{ni_type.split("-")[0]}-forbid', []):
+                        string, value = str(forbid).removeprefix(f'{ni_type.split("-")[0]}-').split('=')
+                        ch[lrt_key + '_' + string] = value
+
 
 
 def customize_noun_incorporation(ch, mylang):

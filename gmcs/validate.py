@@ -157,7 +157,16 @@ cust_types = (
     'coverb-noun-lex',
     'head-final-lvc',
     'comp-head-phrase-lvc',
-    'head-como-phrase-lvc',
+    'head-comp-phrase-lvc',
+    # Added for noun incorporation
+    'type-ni-mod-phrase',
+    'adj-ni-mod-phrase'
+    'NI-valence-lex-rule',
+    'promote-obl-lex-rule',
+    'promote-poss-lex-rule',
+    'reduce-lex-rule',
+    'double-noun-lex-rule',
+    'strand-mod-lex-rule'
 )
 
 # regex patterns for sets of names that are not available for
@@ -2359,6 +2368,31 @@ def validate_lvc(ch: ChoicesFile, vr: ValidationResult):
         msg = 'If you specify that bleached light verbs are possible, you must allow verb coverbs.'
         vr.err('lvc-bleached', msg)
 
+def validate_ni(ch: ChoicesFile, vr: ValidationResult):
+    """
+    Valideate the user's choices about noun incorporation
+    """
+
+    # if noun incorporation exists, at least one of the strategies needs to be selected
+    if ch.get('noun-incorp') == 'on':
+        exist = False
+        for option in ['reduce', 'promote-poss', 'promote-obl', 'double-noun', 'strand-mod']:
+            if ch.get(option) == 'on':
+                exist = True
+        if not exist:
+            msg = 'If you indicate that noun incorporation is present in this language, you must select at least \
+                one NI strategy from below.'
+            vr.err('noun-incorp', msg)
+
+    # if reduce is chose, user must specify if it behaves intransitively or transitively
+
+    # if intransitively, the user must specify if the case value marked on the subject changes
+
+    # NI types should not forbid the general NI position class
+
+    # The user needs to define a predicate name if oblique args are promoted to DO position
+
+    # Warn user if PCs are unintentionally feeding other PCs
 
 def validate(ch, extra=False):
     """
