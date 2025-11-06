@@ -1,5 +1,7 @@
 from gmcs.utils import orth_encode, TDLencode
 from gmcs.linglib.nominalized_clauses import needs_anc_wo_feat
+from gmcs.linglib.docstrings import CLAUSALMODIFIERS_LINK, set_links
+from gmcs.linglib import docstrings
 
 def customize_clausalmods(mylang, ch, lexicon, rules, roots, trigger):
     """
@@ -54,7 +56,7 @@ def create_head_subordinator_basic_lex_type(mylang, ch, cms):
                                         SPEC < >,\
                                         COMPS < [ OPT -,\
                                                   LOCAL.CAT [ MC -,\
-                                                            VAL.COMPS < >]] > ]]].')
+                                                            VAL.COMPS < >]] > ]]].', links = set_links([CLAUSALMODIFIERS_LINK]))
     if ch.get('ns', ''):
             mylang.add('adposition-subord-lex-item := [ SYNSEM.LOCAL.CAT.HEAD.NMZ - ].')
             if needs_anc_wo_feat(ch):

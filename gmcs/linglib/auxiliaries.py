@@ -2,6 +2,8 @@ from gmcs.utils import TDLencode
 from gmcs.utils import orth_encode
 from gmcs.linglib import case
 from gmcs.linglib import features
+from gmcs.linglib.docstrings import CASE_LINK, LEXICON_AUXILIARIES_LINK, SENTENTIALNEGATION_LINK, set_links
+from gmcs.linglib import docstrings
 
 def set_supertypename(auxcomp):
     if auxcomp == 's':
@@ -30,7 +32,7 @@ def define_arg_str_and_valency(aux, auxcomp, ch, mylang, negaux):
     supertypename = set_supertypename(auxcomp)
     basic_typedef = supertypename + ' := aux-lex & \
                 [ SYNSEM.LOCAL.CAT.VAL [ SPEC < > ] ].'
-    mylang.add(basic_typedef)
+    mylang.add(basic_typedef, links = set_links([LEXICON_AUXILIARIES_LINK]))
 
     # EKN 03-02-2018 Add [ CASE real-case ] to args of auxes iff
     # the language has case and possessives:
@@ -43,6 +45,7 @@ def define_arg_str_and_valency(aux, auxcomp, ch, mylang, negaux):
 
     if auxcomp == 's':
         if not negaux:
+            links_1 = set_links([LEXICON_AUXILIARIES_LINK])
             comp_spec_typedef = supertypename + ' := non-local-none-lex-item & \
                             [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >, \
                                                      COMPS < #comps > ], \
@@ -54,8 +57,9 @@ def define_arg_str_and_valency(aux, auxcomp, ch, mylang, negaux):
             if ch.get('multiple-aux') == 'no':
                 auxrest_type = supertypename + ' := \
                          [ ARG-ST < [ LOCAL.CAT.HEAD.AUX - ] > ].'
-                mylang.add(auxrest_type)
+                mylang.add(auxrest_type, links = set_links([LEXICON_AUXILIARIES_LINK]))
         else:
+            links_1 = set_links([LEXICON_AUXILIARIES_LINK, SENTENTIALNEGATION_LINK])
             if norder == 'after':
                 comp_spec_typedef = supertypename + ' := non-local-none-lex-item & \
                               [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >, \
@@ -72,7 +76,7 @@ def define_arg_str_and_valency(aux, auxcomp, ch, mylang, negaux):
                 if ch.get('multiple-aux') == 'no':
                     auxrest_type = supertypename + ' := \
                            [ ARG-ST < [ LOCAL.CAT.HEAD.AUX - ], [ ] > ].'
-                    mylang.add(auxrest_type)
+                    mylang.add(auxrest_type, links = set_links([LEXICON_AUXILIARIES_LINK]))
             else:  # norder == 'before'
                 comp_spec_typedef = supertypename + ''' := non-local-none-lex-item &
                  [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < >, 
@@ -88,12 +92,13 @@ def define_arg_str_and_valency(aux, auxcomp, ch, mylang, negaux):
                 if ch.get('multiple-aux') == 'no':
                     auxrest_type = supertypename + ' := \
                              [ ARG-ST < [ ] , [ LOCAL.CAT.HEAD.AUX - ] > ].'
-                    mylang.add(auxrest_type)
+                    mylang.add(auxrest_type, links = set_links([LEXICON_AUXILIARIES_LINK]))
 
                 # VP and V-compl have more in common
 
     else:
         if not negaux:
+            links_1 = set_links([LEXICON_AUXILIARIES_LINK])
             comp_spec_typedef = supertypename + ' := \
                                [ SYNSEM.LOCAL [ CAT.VAL.SUBJ < #subj '+real_case+' >, \
                                                 CONT.HOOK.XARG #xarg ], \
@@ -107,8 +112,9 @@ def define_arg_str_and_valency(aux, auxcomp, ch, mylang, negaux):
             if ch.get('multiple-aux') == 'no':
                 auxrest_type = supertypename + ' := \
                            [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.AUX - ] > ].'
-                mylang.add(auxrest_type)
+                mylang.add(auxrest_type, links = set_links([LEXICON_AUXILIARIES_LINK]))
         else:  # negaux
+            links_1 = set_links([LEXICON_AUXILIARIES_LINK, SENTENTIALNEGATION_LINK])
             comp_spec_typedef = supertypename + ' := \
                                [ SYNSEM.LOCAL [ CAT.VAL.SUBJ < #subj '+real_case+' >, \
                                                 CONT.HOOK.XARG #xarg ], \
@@ -126,10 +132,11 @@ def define_arg_str_and_valency(aux, auxcomp, ch, mylang, negaux):
                 else:  # norder == 'before'
                     auxrest_type = supertypename + ' := \
                              [ ARG-ST < [ ], [ ], [ LOCAL.CAT.HEAD.AUX - ] > ].'
-                mylang.add(auxrest_type)
+                mylang.add(auxrest_type, links = set_links([LEXICON_AUXILIARIES_LINK]))
 
         if auxcomp == 'vp':
             if not negaux:
+                links_2 = set_links([LEXICON_AUXILIARIES_LINK])
                 comp_spec_typedef_2 = supertypename + ' := \
                                             trans-first-arg-raising-lex-item  & \
                      [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps >, \
@@ -141,6 +148,7 @@ def define_arg_str_and_valency(aux, auxcomp, ch, mylang, negaux):
                                                     SPEC < > ], \
                                               HEAD verb ]] > ].'
             else:  # negaux == True
+                links_2 = set_links([LEXICON_AUXILIARIES_LINK, SENTENTIALNEGATION_LINK])
                 if norder == 'after':
                     comp_spec_typedef_2 = supertypename + ' := \
                                               non-local-none-lex-item  & \
@@ -175,6 +183,7 @@ def define_arg_str_and_valency(aux, auxcomp, ch, mylang, negaux):
                 '; that the non-local features were previously amalgamated from subj, the\n' + \
                 '; lexical verb complement, but not the other complements, if any.'
             mylang.add_literal(comment)
+            links_2 = set_links([LEXICON_AUXILIARIES_LINK])
             comp_spec_typedef_2 = supertypename + ' := non-local-none-lex-item & \
              [ SYNSEM.LOCAL.CAT.VAL.COMPS < #comps . #vcomps >, \
                ARG-ST < [ ], \
@@ -184,10 +193,10 @@ def define_arg_str_and_valency(aux, auxcomp, ch, mylang, negaux):
                                             COMPS #vcomps ], \
                                       HEAD verb ], \
                                 CONT.HOOK.XARG #xarg ]] > ].'
-        mylang.add(comp_spec_typedef_2)
+        mylang.add(comp_spec_typedef_2, links = links_2)
         add_subj_tdl(aux, auxcomp, ch, mylang)
 
-    mylang.add(comp_spec_typedef)
+    mylang.add(comp_spec_typedef, links = links_1)
 
 
 def add_subj_tdl(aux, auxcomp, ch, mylang):
@@ -211,11 +220,11 @@ def add_subj_tdl(aux, auxcomp, ch, mylang):
         if subj == 'np-comp-case':
             scasetype = typename + ' := [ ARG-ST < [ LOCAL.CAT.HEAD.CASE #case  ], \
           [ LOCAL.CAT.VAL.SUBJ < [ LOCAL.CAT.HEAD.CASE #case ] > ] > ].'
-            mylang.add(scasetype)
+            mylang.add(scasetype, links = set_links([LEXICON_AUXILIARIES_LINK, CASE_LINK]))
         elif subj == 'np-aux-case':
             scasetype = typename + \
                 ' := [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + subjcase + ' ].'
-            mylang.add(scasetype)
+            mylang.add(scasetype, links = set_links([LEXICON_AUXILIARIES_LINK, CASE_LINK]))
 
     mylang.add(subjtype)
 
@@ -233,9 +242,11 @@ def create_semantics(sem, aux, auxcomp, mylang, ch, hierarchies, negaux):
         basic_typedef = auxtypename + ' := ' + supertypename + '.'
         if auxcomp == 'vp':
             if not negaux:
+                typedef_links = set_links([LEXICON_AUXILIARIES_LINK])
                 typedef = auxtypename + ' := norm-sem-lex-item & \
                                           trans-first-arg-raising-lex-item-1 .'
             else:  # negaux
+                typedef_links = set_links([LEXICON_AUXILIARIES_LINK, SENTENTIALNEGATION_LINK])
                 if norder == 'after':
                     typedef = auxtypename + ''' := norm-sem-lex-item &
           [ ARG-ST < [ ], [ LOCAL.CONT.HOOK.LTOP #larg ], [ ] >,
@@ -257,8 +268,10 @@ def create_semantics(sem, aux, auxcomp, mylang, ch, hierarchies, negaux):
                 arg_def = 'ARG-ST < [ ], [ LOCAL.CONT.HOOK.LTOP #larg ] >'
             else:  # == 's'
                 if not negaux:
+                    typedef_links = set_links([LEXICON_AUXILIARIES_LINK])
                     arg_def = 'ARG-ST < [ LOCAL.CONT.HOOK.LTOP #larg ] >'
                 else:
+                    typedef_links = set_links([LEXICON_AUXILIARIES_LINK, SENTENTIALNEGATION_LINK])
                     if norder == 'after':
                         arg_def = 'ARG-ST < [ LOCAL.CONT.HOOK.LTOP #larg ], [ ] >'
                     else:
@@ -276,8 +289,8 @@ def create_semantics(sem, aux, auxcomp, mylang, ch, hierarchies, negaux):
                           LKEYS.KEYREL event-relation & \
                                        [ ARG1 #harg ]],' + arg_def + ' ].'
 
-        mylang.add(basic_typedef)
-        mylang.add(typedef)
+        mylang.add(basic_typedef, links = set_links([LEXICON_AUXILIARIES_LINK]))
+        mylang.add(typedef, links = typedef_links)
     else:
         auxtypename = supertypename + '-no-pred'
         typedef = auxtypename + ' := ' + supertypename + ' & raise-sem-lex-item.'
@@ -314,9 +327,9 @@ def create_semantics(sem, aux, auxcomp, mylang, ch, hierarchies, negaux):
                 arg_str = '< [ ], [ LOCAL.CAT.HEAD.AUX - ] >'
 
             auxres_type = auxtypename + ' := [ ARG-ST ' + arg_str + ' ].'
-            mylang.add(auxres_type)
+            mylang.add(auxres_type, links = set_links([LEXICON_AUXILIARIES_LINK]))
 
-        mylang.add(typedef)
+        mylang.add(typedef, links = set_links([LEXICON_AUXILIARIES_LINK]))
     customize_users_auxtype(auxtypename, aux, ch, mylang, hierarchies)
 
 
@@ -334,7 +347,7 @@ def customize_users_auxtype(auxtypename, aux, ch, mylang, hierarchies):
         mylang, ch, hierarchies, aux, userstypename, 'aux')
     features.customize_feature_values(
         mylang, ch, hierarchies, aux, userstypename, 'auxcomplement')
-    mylang.add(userstypename + ':= ' + auxtypename + '.')
+    mylang.add(userstypename + ':= ' + auxtypename + '.', links = set_links([LEXICON_AUXILIARIES_LINK]))
     if ch.get('word-order') == 'v2' and ch.get('subord-word-order') == 'vfinal':
         mylang.add(userstypename + ':=' + auxtypename
                    + '& [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.MC na-or-- ].')
@@ -418,7 +431,7 @@ def customize_auxiliaries(mylang, ch, lexicon, trigger, hierarchies):
         # need to add a feature here for 'head-mod-neg' analysis
         if ch.get('bineg-type') == 'head-mod':
             if 'negation' in [f['name'] for f in aux['feat']]:
-                mylang.add(userstypename + ':= [ SYNSEM.NEG-SAT - ].')
+                mylang.add(userstypename + ':= [ SYNSEM.NEG-SAT - ].', links = set_links([LEXICON_AUXILIARIES_LINK, SENTENTIALNEGATION_LINK]))
         sem = aux.get('sem', '')
 
         define_arg_str_and_valency(aux, auxcomp, ch, mylang, negaux)

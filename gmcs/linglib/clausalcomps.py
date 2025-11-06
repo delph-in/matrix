@@ -2,6 +2,8 @@ from gmcs.utils import get_name, TDLencode, orth_encode
 from gmcs import constants, feature_type_use
 from gmcs.linglib import lexbase
 from gmcs.constants import MTRX_FRONT, SINGLE, MULTI
+from gmcs.linglib.docstrings import CLAUSALCOMPLEMENTS_LINK, LEXICON_AUXILIARIES_LINK, NOMINALIZEDCLAUSES_LINK, WHQUESTIONS_LINK, WORDORDER_LINK, set_links
+from gmcs.linglib import docstrings
 
 # TODO: All these module-specific constants should probably live in constants.py
 COMPS = 'comps'  # choice name for clausal complement strategies
@@ -102,9 +104,9 @@ def add_types_to_grammar(mylang, ch, rules, have_complementizer):
 def constrain_for_extra(wo, general, additional, cs, mylang):
     if cs[EXTRA] and additional_hcr_needed(cs, wo):
         mylang.add(
-            additional + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.EXTRA + ].', merge=True)
+            additional + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.EXTRA + ].', merge=True, links = set_links([CLAUSALCOMPLEMENTS_LINK]))
         mylang.add(
-            general + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.EXTRA - ].', merge=True)
+            general + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.EXTRA - ].', merge=True, links = set_links([CLAUSALCOMPLEMENTS_LINK]))
 
 
 # TODO: This should be handled in word order, and there is already relevant code, though it is mostly
@@ -114,7 +116,7 @@ def constrain_wrt_comp(cs, wo, ch, mylang):
     if additional:
         if not ch.get('q-particle') or ch.get('q-part-order') == 'second':
             mylang.add(additional + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD +nv ].',
-                       merge=True, section='phrases')
+                       merge=True, section='phrases', links = set_links([CLAUSALCOMPLEMENTS_LINK]))
 
 
 def has_additional(ch, cs, wo):
@@ -186,9 +188,9 @@ def constrain_complementizer(wo, cs, mylang, typename):
                 'Illegal combination of choises for complementizer position.')
         constrain_lexitem_for_feature(typename, path, 'INIT', init_val, mylang)
         mylang.add(my_phrase + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT ' + init_val + ' ].',
-                   merge=True)
+                   merge=True, links = set_links([CLAUSALCOMPLEMENTS_LINK]))
         mylang.add(other_phrase + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT ' + default_init_val + ' ].',
-                   merge=True)
+                   merge=True, links = set_links([CLAUSALCOMPLEMENTS_LINK]))
 
 
 def use_init(ch, mylang, wo):
@@ -203,15 +205,15 @@ def use_init(ch, mylang, wo):
 
 
 def add_complementizer_supertype(mylang, ch):
-    mylang.add(lexbase.COMPLEMENTIZER, section=COMPLEX, merge=True)
+    mylang.add(lexbase.COMPLEMENTIZER, section=COMPLEX, merge=True, links = set_links([CLAUSALCOMPLEMENTS_LINK]))
     if ch.get('ns'):
-        mylang.add('complementizer-lex-item := [SYNSEM.LOCAL.CAT.HEAD.NMZ -].')
+        mylang.add('complementizer-lex-item := [SYNSEM.LOCAL.CAT.HEAD.NMZ -].', links = set_links([NOMINALIZEDCLAUSES_LINK]))
 
 
 def add_complementizer_subtype(cs, mylang, ch, extra):
     id = cs.full_key
     typename = id + '-' + COMP_LEX_ITEM
-    mylang.add(typename + ' := ' + COMP_LEX_ITEM + '.', section=COMPLEX)
+    mylang.add(typename + ' := ' + COMP_LEX_ITEM + '.', section=COMPLEX, links = set_links([CLAUSALCOMPLEMENTS_LINK]))
     mylang.add(typename + ' := [ SYNSEM.LOCAL.CAT [ VAL.COMPS.FIRST.LOCAL.CAT.MC -,'
                'MC na-or-- ] ].', merge=True)
     constrain_for_features(
@@ -228,11 +230,11 @@ def add_complementizer_subtype(cs, mylang, ch, extra):
                 typename + ':= [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.EXTRA - ] > ].', merge=True)
     if cs['ques'] == 'ques':  # Should this be disallowed in validation? Or, is this the English "whether"?
         mylang.add(typename + ':= basic-wh-word-lex & [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.SF ques,'
-                              'CAT.VAL.COMPS.FIRST [ NON-LOCAL.QUE.LIST < > ] ] ].', merge=True)
+                              'CAT.VAL.COMPS.FIRST [ NON-LOCAL.QUE.LIST < > ] ] ].', merge=True, links = set_links([WHQUESTIONS_LINK]))
 
     elif cs['ques'] == 'prop':
         mylang.add(
-            typename + ':= basic-non-wh-word-lex & [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF prop ].', merge=True)
+            typename + ':= basic-non-wh-word-lex & [ SYNSEM.LOCAL.CONT.HOOK.INDEX.SF prop ].', merge=True, links = set_links([WHQUESTIONS_LINK]))
     # OZ 2020-05-09 The below doesn't work because it violates compositionality of semantics. Delete once sure.
 #    else:
 #        mylang.add(typename + ':= [ SYNSEM [ LOCAL [ CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.SF #sf ] >,'
@@ -288,12 +290,12 @@ def need_customize_hs(wo, cs):
 
 def constrain_head_subj_rules(cs, mylang, rules, ch):
     mylang.add('head-subj-ccomp-phrase := decl-head-subj-phrase & head-initial & '
-               '[ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.EXTRA + ] > ].', section='phrases')
+               '[ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.EXTRA + ] > ].', section='phrases', links = set_links([CLAUSALCOMPLEMENTS_LINK]))
     constrain_for_features('head-subj-ccomp-phrase', cs, mylang,
                            'HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.', ch, is_nominalized_complement(cs))
     rules.add('head-subj-ccomp := head-subj-ccomp-phrase.')
     mylang.add(
-        'head-subj-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].', merge=True)
+        'head-subj-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].', merge=True, links = set_links([CLAUSALCOMPLEMENTS_LINK]))
 
 
 def additional_hcr_needed(cs, wo):
@@ -360,14 +362,14 @@ def constrain_head_comp_rules(mylang, rules, init, general, additional, cs, ch):
         constants.HEAD_COMP) else 'head-final'
     init_gen, init_add = which_init(general, additional)
     mylang.add(additional + '-phrase := basic-head-1st-comp-phrase & ' +
-               supertype + '.', section='phrases', merge=True)
+               supertype + '.', section='phrases', merge=True, links = set_links([CLAUSALCOMPLEMENTS_LINK]))
     rules.add(additional + ' := ' + additional + '-phrase.')
     if is_nominalized_complement(cs):
         mylang.add(
-            additional + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.NMZ + ].', merge=True)
+            additional + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.NMZ + ].', merge=True, links = set_links([NOMINALIZEDCLAUSES_LINK]))
         if not cs[SAME]:
             mylang.add(
-                general + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.NMZ - ].')
+                general + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.NMZ - ].', links = set_links([CLAUSALCOMPLEMENTS_LINK, NOMINALIZEDCLAUSES_LINK]))
     if init:
         mylang.add(additional + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT ' + init_add + ' ].',
                    merge=True)
@@ -385,13 +387,13 @@ def constrain_head_comp_rules_headtype(mylang, rules, additional, cs, ch):
         constants.HEAD_COMP) else 'head-final'
     head = determine_head(ch.get(constants.WORD_ORDER), cs)
     mylang.add(additional + '-phrase := basic-head-1st-comp-phrase & ' +
-               supertype + '.', section='phrases', merge=True)
+               supertype + '.', section='phrases', merge=True, links = set_links([CLAUSALCOMPLEMENTS_LINK]))
     rules.add(additional + ' := ' + additional + '-phrase.')
     if is_nominalized_complement(cs):
         mylang.add(
-            additional + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.NMZ + ].', merge=True)
+            additional + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.NMZ + ].', merge=True, links = set_links([NOMINALIZEDCLAUSES_LINK]))
     mylang.add(additional + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD ' + head + ' ].',
-               merge=True)
+               merge=True, links = set_links([WORDORDER_LINK]))
     constrain_for_features(additional + '-phrase', cs, mylang,
                            'NON-HEAD-DTR.SYNSEM.', ch, is_nominalized_complement(cs))
     if need_low_subj_attachment(wo, cs, additional):
@@ -403,7 +405,7 @@ def constrain_for_features(typename, choice, mylang, path_prefix, ch, is_nmz):
         path = 'LOCAL.CAT.HEAD.'
         if nominalized_comps(ch) and not is_nmz:
             mylang.add(
-                typename + ' := [ ' + path_prefix + path + 'NMZ - ].', merge=True)
+                typename + ' := [ ' + path_prefix + path + 'NMZ - ].', merge=True, links = set_links([CLAUSALCOMPLEMENTS_LINK, NOMINALIZEDCLAUSES_LINK]))
         if f['name'] != 'nominalization':
             if f['name'] == 'mood' or f['name'] == 'aspect':
                 path = 'LOCAL.CONT.HOOK.INDEX.E.'
@@ -411,11 +413,11 @@ def constrain_for_features(typename, choice, mylang, path_prefix, ch, is_nmz):
                 path = 'LOCAL.CAT.HEAD.'
             mylang.add(typename + ' := '
                        '[ ' + path_prefix + path + f['name'].upper() + ' '
-                       + f['value'] + ' ].', merge=True)
+                       + f['value'] + ' ].', merge=True, links = set_links([CLAUSALCOMPLEMENTS_LINK]))
         else:
             path = 'LOCAL.CAT.HEAD.'
             mylang.add(
-                typename + ' := [ ' + path_prefix + path + 'NMZ + ].', merge=True)
+                typename + ' := [ ' + path_prefix + path + 'NMZ + ].', merge=True, links = set_links([CLAUSALCOMPLEMENTS_LINK]))
 
 
 def need_low_subj_attachment(wo, cs, additional):
@@ -429,7 +431,7 @@ def need_low_subj_attachment(wo, cs, additional):
 
 def enforce_low_subj(phrase_name, mylang):
     mylang.add(phrase_name + '-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].',
-               section='phrases', merge=True)
+               section='phrases', merge=True, links = set_links([CLAUSALCOMPLEMENTS_LINK]))
 
 
 # TODO: This isn't really special cases. This is EXTRA feature handling,
@@ -444,13 +446,13 @@ def add_special_complementizer_HCR(additional, cs, general, mylang, rules, wo, i
         name = 'comp-head' if not general == 'comp-head' else 'comp-head-compl'
         if is_more_flex:
             mylang.add(name + '-phrase := basic-head-1st-comp-phrase & head-final '
-                       '& [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD comp ].', section='phrases')
+                       '& [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD comp ].', section='phrases', links = set_links([CLAUSALCOMPLEMENTS_LINK]))
         else:
             mylang.add(name + '-phrase := basic-head-1st-comp-phrase & head-final '
-                       '& [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT - ].', section='phrases')
+                       '& [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT - ].', section='phrases', links = set_links([CLAUSALCOMPLEMENTS_LINK]))
         if not cs[SAME]:
             mylang.add(name + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.EXTRA + ].',
-                       merge=True)
+                       merge=True, links = set_links([CLAUSALCOMPLEMENTS_LINK]))
         rules.add(name + ' := ' + name + '-phrase.')
 
 
@@ -503,7 +505,7 @@ def constrain_lex_items_using_headtypes(ch, cs, comptype, mylang):
                     comptype, path, 'HEAD', head, mylang)
     if comptype and nominalized_comps(ch) and not is_nominalized_complement(cs):
         mylang.add(
-            comptype + ':= [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.NMZ - ] > ].', merge=True)
+            comptype + ':= [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.NMZ - ] > ].', merge=True, links = set_links([CLAUSALCOMPLEMENTS_LINK, NOMINALIZEDCLAUSES_LINK]))
 
 
 def constrain_lex_items(ch, cs, comptype, init_value, default_init_value, mylang, init):
@@ -537,15 +539,15 @@ def constrain_lex_items(ch, cs, comptype, init_value, default_init_value, mylang
             if ch.get(pos) or pos in ['tverb']:
                 name = lexbase.LEXICAL_SUPERTYPES[pos]
                 mylang.add(
-                    name + ' := [ ' + path + '.INIT ' + default_init_value + ' ].', merge=True)
+                    name + ' := [ ' + path + '.INIT ' + default_init_value + ' ].', merge=True, links = set_links([CLAUSALCOMPLEMENTS_LINK]))
     if comptype and nominalized_comps(ch) and not is_nominalized_complement(cs):
         mylang.add(
-            comptype + ':= [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.NMZ - ] > ].', merge=True)
+            comptype + ':= [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.NMZ - ] > ].', merge=True, links = set_links([CLAUSALCOMPLEMENTS_LINK, NOMINALIZEDCLAUSES_LINK]))
 
 
 def constrain_lexitem_for_feature(typename, feature_path, feature_name, feature_value, mylang):
     mylang.add(typename + ' := [ ' + feature_path + '.' + feature_name.upper() + ' ' + feature_value + ' ]. ',
-               merge=True)
+               merge=True, links = set_links([CLAUSALCOMPLEMENTS_LINK]))
 
 def determine_head(wo, cs):
     """
@@ -635,7 +637,7 @@ def extra_needed(ch, mylang):
     if res:
         mylang.add('head :+ [ EXTRA bool ].', section='addenda')
         mylang.add(
-            'transitive-verb-lex := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.EXTRA - ] > ].', merge=True)
+            'transitive-verb-lex := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.EXTRA - ] > ].', merge=True, links = set_links([CLAUSALCOMPLEMENTS_LINK, WORDORDER_LINK]))
     return res
 
 
@@ -651,7 +653,7 @@ def add_clausalcomp_verb_supertype(ch, mainorverbtype, mylang):
         ARG-ST < [ LOCAL.CAT.HEAD ' + head + ' ],\
                  #comps &\
                  [ LOCAL.CAT [ MC na-or--, VAL [ SPR < >, COMPS < >, SUBJ < > ] ] ] > ].'
-    mylang.add(typedef, section='verblex')
+    mylang.add(typedef, section='verblex', links = set_links([CLAUSALCOMPLEMENTS_LINK]))
 
 
 def is_nominalized_complement(cs):
@@ -664,9 +666,9 @@ def customize_clausal_verb(clausalverb, mylang, ch, cs, extra):
                                'SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.', ch, is_nominalized_complement(cs))
     else:
         mylang.add(clausalverb + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.FORM '
-                   + cs['cformvalue'] + ' ] > ].', merge=True)
+                   + cs['cformvalue'] + ' ] > ].', merge=True, links = set_links([CLAUSALCOMPLEMENTS_LINK]))
     supertype = clausalverb_supertype(ch, cs)
-    mylang.add(clausalverb + ' := ' + supertype + '.', merge=True)
+    mylang.add(clausalverb + ' := ' + supertype + '.', merge=True, links = set_links([CLAUSALCOMPLEMENTS_LINK]))
     if extra:
         val = None
         if cs[EXTRA] and not cs[SAME]:
@@ -681,13 +683,13 @@ def customize_clausal_verb(clausalverb, mylang, ch, cs, extra):
         if cs['ques'] == 'prop':
             mylang.add(clausalverb + ' := [ SYNSEM [ LOCAL.CAT.VAL.COMPS < [ LOCAL [ CAT.WH.BOOL -, '
                                      '                                               CONT.HOOK.INDEX.SF prop ] ] >,'
-                                     'NON-LOCAL.QUE.LIST < > ] ].', merge=True)
+                                     'NON-LOCAL.QUE.LIST < > ] ].', merge=True, links = set_links([WHQUESTIONS_LINK]))
         elif cs['ques'] == 'ques':
             mylang.add(
                 clausalverb + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK.INDEX.SF ques ] > ].', merge=True)
             if ch.get(MTRX_FRONT) in [SINGLE, MULTI] and not ch.get('embed-insitu') == 'on':
                 mylang.add(
-                    clausalverb + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.WH.BOOL + ] > ].', merge=True)
+                    clausalverb + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.WH.BOOL + ] > ].', merge=True, links = set_links([WHQUESTIONS_LINK]))
     else:
         for feat in cs['feat']:
             if feat["name"] ==  'nominalization':
@@ -703,11 +705,11 @@ def customize_clausal_verb(clausalverb, mylang, ch, cs, extra):
 
     if ch.get('wh-inv-embed') == 'on':
         mylang.add(
-            clausalverb + ':= [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.AUX + ] > ].', merge=True)
+            clausalverb + ':= [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.AUX + ] > ].', merge=True, links = set_links([LEXICON_AUXILIARIES_LINK]))
 
     # From the wh-questions library; disallow questions from crossing clause boundary
     # if ch.get('front-across-cl') != 'on' or ch.get(''):
-    #    mylang.add(clausalverb + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ NON-LOCAL.QUE.LIST < > ] > ].', merge=True)
+    #    mylang.add(clausalverb + ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ NON-LOCAL.QUE.LIST < > ] > ].', merge=True, links = set_links([WHQUESTIONS_LINK]))
 
 
 def clausalverb_supertype(ch, cs):

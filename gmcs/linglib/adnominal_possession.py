@@ -9,6 +9,8 @@ from gmcs.linglib.features import customize_feature_values
 from gmcs.linglib.lexical_items import adp_id, noun_id
 from gmcs.linglib import lexbase
 from gmcs.linglib.nominalized_clauses import need_specialized_head_spec, get_nmz_clause_wo, needs_anc_wo_feat
+from gmcs.linglib import docstrings
+from gmcs.linglib.docstrings import ADNOMINALPOSSESSION_LINK, CASE_LINK, NOMINALIZEDCLAUSES_LINK, WORDORDER_LINK, set_links
 
 ###############################################################################################
 # Parts of a possessive strategy:
@@ -169,10 +171,10 @@ def customize_poss_addenda(mylang, ch):
                                                              HEAD #head,\
                                                              POSSESSUM #possessum],\
                                           HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD #head,\
-                                                             POSSESSUM #possessum & nonpossessive ] ].', section='addenda')
+                                                             POSSESSUM #possessum & nonpossessive ] ].', section='addenda', links = set_links([ADNOMINALPOSSESSION_LINK]))
     mylang.add('basic-head-1st-comp-phrase :+ [ \
                   SYNSEM.LOCAL.CAT.POSSESSUM #poss,\
-                  HEAD-DTR.SYNSEM.LOCAL.CAT.POSSESSUM #poss ].', section='addenda')
+                  HEAD-DTR.SYNSEM.LOCAL.CAT.POSSESSUM #poss ].', section='addenda', links = set_links([ADNOMINALPOSSESSION_LINK]))
 
     # Set nouns to default nonpossessive behavior if no affixal strategies exist:
     poss_strat_types = set()
@@ -182,13 +184,13 @@ def customize_poss_addenda(mylang, ch):
         poss_strat_types.add(strat.get('possessum-mark-type'))
     if 'affix' not in poss_strat_types:
         mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR nonpossessive,\
-                                                     POSSESSUM nonpossessive ] ].', section='nounlex')
+                                                     POSSESSUM nonpossessive ] ].', section='nounlex', links = set_links([ADNOMINALPOSSESSION_LINK]))
     else:
         #If affixal strategies do exist, set any nouns that do not serve as input to a possessive rule
         #to have default nonpossessive behavior
         add_nonpossessive_behavior(ch, mylang)
     mylang.add('basic-determiner-lex :+ ' +
-                NON_POSS_LEX_ITEM, section='addenda')
+                NON_POSS_LEX_ITEM, section='addenda', links = set_links([ADNOMINALPOSSESSION_LINK]))
 
 
 
@@ -367,20 +369,20 @@ def handle_juxt_word_order(mylang, rules, strat, anc_strat, phrase_rule, anc_phr
         noun_phrase_rule: string containing the noun subtype (anc-poss-phrase-strat_num)
     """
     if strat.get('order') == 'either':
-        mylang.add(noun_phrase_rule+'-head-initial := head-initial & '+ noun_phrase_rule+'.')
-        mylang.add(noun_phrase_rule+'-head-final := head-final & '+ noun_phrase_rule+'.')
+        mylang.add(noun_phrase_rule+'-head-initial := head-initial & '+ noun_phrase_rule+'.', links = set_links([ADNOMINALPOSSESSION_LINK]))
+        mylang.add(noun_phrase_rule+'-head-final := head-final & '+ noun_phrase_rule+'.', links = set_links([ADNOMINALPOSSESSION_LINK]))
         rules.add(noun_phrase_rule.replace('-phrase', '') + '-head-initial := '+noun_phrase_rule+'-head-initial.')
         rules.add(noun_phrase_rule.replace('-phrase', '') + '-head-final := '+noun_phrase_rule+'-head-final. ')
         if anc_strat is not None:
                 #The nexus head-initial and head-final subtypes should both be added to these rules in the word-order library
                 #since the 'either' option in the adnom-poss library should always coincide with
                 #free or v2 word order in nominalized clauses
-                mylang.add(anc_phrase_rule+'-head-initial := '+ anc_phrase_rule + '.')
-                mylang.add(anc_phrase_rule+'-head-final := ' + anc_phrase_rule + '.')
+                mylang.add(anc_phrase_rule+'-head-initial := '+ anc_phrase_rule + '.', links = set_links([ADNOMINALPOSSESSION_LINK]))
+                mylang.add(anc_phrase_rule+'-head-final := ' + anc_phrase_rule + '.', links = set_links([ADNOMINALPOSSESSION_LINK]))
                 rules.add(anc_phrase_rule.replace('-phrase', '') + '-head-initial := '+anc_phrase_rule+'-head-initial.')
                 rules.add(anc_phrase_rule.replace('-phrase', '') + '-head-final := '+anc_phrase_rule+'-head-final. ')
     else:
-        mylang.add(phrase_rule + ' := '+strat.get('order') +'.', merge=True)
+        mylang.add(phrase_rule + ' := '+strat.get('order') +'.', merge=True, links = set_links([ADNOMINALPOSSESSION_LINK]))
         rules.add(noun_phrase_rule.replace('-phrase', '') + ':= '+noun_phrase_rule+'. ')
         if anc_strat is not None:
             rules.add(anc_phrase_rule.replace('-phrase', '') + ':= '+anc_phrase_rule+'. ')      
@@ -405,7 +407,7 @@ def add_juxt_semantics(mylang, phrase_rule, noun_phrase_rule, anc_phrase_rule, a
                                                      HOOK #hook,\
                                                      ICONS.LIST < > ]].'
 
-        mylang.add(noun_phrase_rule +' := ' + common_constraints)
+        mylang.add(noun_phrase_rule +' := ' + common_constraints, links = set_links([ADNOMINALPOSSESSION_LINK]))
     
     
         #Add constraints specific to non-derived noun phrases
@@ -415,12 +417,12 @@ def add_juxt_semantics(mylang, phrase_rule, noun_phrase_rule, anc_phrase_rule, a
                                                                     C-CONT [ RELS.LIST < [], '+POSS_REL+' > ]].')
         if anc_strat is None:
             if has_nmz:
-                 mylang.add(noun_phrase_rule+ ' := [HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.NMZ - ].')
+                 mylang.add(noun_phrase_rule+ ' := [HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.NMZ - ].', links = set_links([NOMINALIZEDCLAUSES_LINK]))
         else:
-            mylang.add(anc_phrase_rule + ' := ' + common_constraints)
+            mylang.add(anc_phrase_rule + ' := ' + common_constraints, links = set_links([ADNOMINALPOSSESSION_LINK]))
             #Syntactic constraints specific to the anc version of the poss-phrase rule
-            mylang.add(anc_phrase_rule+ ' := ' + phrase_rule + ' & [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.NMZ +].')
-            mylang.add(noun_phrase_rule+ ' := [HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.NMZ - ].')
+            mylang.add(anc_phrase_rule+ ' := ' + phrase_rule + ' & [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.NMZ +].', links = set_links([NOMINALIZEDCLAUSES_LINK]))
+            mylang.add(noun_phrase_rule+ ' := [HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.NMZ - ].', links = set_links([NOMINALIZEDCLAUSES_LINK]))
 
             mylang.add(anc_phrase_rule+ ' := ' + phrase_rule + ' & [ SYNSEM.LOCAL.CAT [ VAL.COMPS #comps],\
                                                                      HEAD-DTR.SYNSEM.LOCAL [ CAT.VAL [SPR <[LOCAL.CAT.HEAD.POSSESSOR possessive]>,\
@@ -434,14 +436,14 @@ def add_juxt_semantics(mylang, phrase_rule, noun_phrase_rule, anc_phrase_rule, a
             #Add semantic constraints based on whether "noun-only", "verb-only", or "both" semantics was selected
             if sem_type == "noun-only":
                 mylang.add(anc_phrase_rule+ ' := ' + phrase_rule + ' & [ NON-HEAD-DTR [SYNSEM.LOCAL.CONT.HOOK.INDEX #possessor],\
-                                                                         C-CONT [RELS.LIST < [], '+POSS_REL+' >, ] ].')
+                                                                         C-CONT [RELS.LIST < [], '+POSS_REL+' >, ] ].', links = set_links([ADNOMINALPOSSESSION_LINK]))
             elif sem_type == "verb-only":
                 mylang.add(anc_phrase_rule+' := ' + phrase_rule + ' & [ HEAD-DTR.SYNSEM.LOCAL [CAT.VAL.SPR < [LOCAL.CONT.HOOK.INDEX #subj] >],\
-                                                                        NON-HEAD-DTR [SYNSEM.LOCAL.CONT.HOOK.INDEX #subj]].')
+                                                                        NON-HEAD-DTR [SYNSEM.LOCAL.CONT.HOOK.INDEX #subj]].', links = set_links([ADNOMINALPOSSESSION_LINK]))
             elif sem_type == "both":
                 mylang.add(anc_phrase_rule+' := ' + phrase_rule + ' & [ HEAD-DTR.SYNSEM.LOCAL [CAT.VAL.SPR < [LOCAL.CONT.HOOK.INDEX #possessor] >],\
                                                                         NON-HEAD-DTR [SYNSEM.LOCAL.CONT.HOOK.INDEX #possessor],\
-                                                                        C-CONT [RELS.LIST < [], '+POSS_REL+' >]].')
+                                                                        C-CONT [RELS.LIST < [], '+POSS_REL+' >]].', links = set_links([ADNOMINALPOSSESSION_LINK]))
 
 def handle_poss_unary_word_order(mylang, rules, strat, head_spec_order, order_mismatch, anc_strat):
     """
@@ -473,28 +475,28 @@ def handle_poss_unary_word_order(mylang, rules, strat, head_spec_order, order_mi
 
     if strat.get('order') == 'either':
         #Regular non-head compositional version of the head-spec rule
-        mylang.add('non-head-comp-head-spec-phrase := head-spec-phrase &' + general_non_head_compositional)
-        mylang.add('non-head-comp-spec-head-phrase := spec-head-phrase &' + general_non_head_compositional)
+        mylang.add('non-head-comp-head-spec-phrase := head-spec-phrase &' + general_non_head_compositional, links = set_links([WORDORDER_LINK]))
+        mylang.add('non-head-comp-spec-head-phrase := spec-head-phrase &' + general_non_head_compositional, links = set_links([WORDORDER_LINK]))
         
-        mylang.add('noun-head-spec-phrase := non-head-comp-head-spec-phrase &' + regular_noun_non_head_compositional)
-        mylang.add('noun-spec-head-phrase := non-head-comp-spec-head-phrase &' + regular_noun_non_head_compositional)
+        mylang.add('noun-head-spec-phrase := non-head-comp-head-spec-phrase &' + regular_noun_non_head_compositional, links = set_links([WORDORDER_LINK, NOMINALIZEDCLAUSES_LINK]))
+        mylang.add('noun-spec-head-phrase := non-head-comp-spec-head-phrase &' + regular_noun_non_head_compositional, links = set_links([WORDORDER_LINK, NOMINALIZEDCLAUSES_LINK]))
 
         rules.add('noun-head-spec:= noun-head-spec-phrase.')
         rules.add('noun-spec-head:= noun-spec-head-phrase.')
 
         #head-compositional version of the head-spec rule used only by nominalized verbs
         if anc_strat is not None:
-            mylang.add('anc-head-spec-phrase := head-spec-phrase &' + anc_head_compositional)
-            mylang.add('anc-spec-head-phrase := spec-head-phrase &' + anc_head_compositional)
+            mylang.add('anc-head-spec-phrase := head-spec-phrase &' + anc_head_compositional, links = set_links([NOMINALIZEDCLAUSES_LINK, ADNOMINALPOSSESSION_LINK, WORDORDER_LINK]))
+            mylang.add('anc-spec-head-phrase := spec-head-phrase &' + anc_head_compositional, links = set_links([NOMINALIZEDCLAUSES_LINK, ADNOMINALPOSSESSION_LINK, WORDORDER_LINK]))
             rules.add('anc-head-spec:= anc-head-spec-phrase.')
             rules.add('anc-spec-head:= anc-spec-head-phrase.')
 
             #Language has determiners
             if head_spec_order == 'head-initial':
-                mylang.add('det-anc-head-spec-phrase := non-head-comp-head-spec-phrase &' + anc_non_head_compositional)
+                mylang.add('det-anc-head-spec-phrase := non-head-comp-head-spec-phrase &' + anc_non_head_compositional, links = set_links([WORDORDER_LINK, NOMINALIZEDCLAUSES_LINK, ADNOMINALPOSSESSION_LINK]))
                 rules.add('det-anc-head-spec:= det-anc-head-spec-phrase.')
             elif head_spec_order == 'head-final':
-                mylang.add('det-anc-spec-head-phrase := non-head-comp-spec-head-phrase &' + anc_non_head_compositional)
+                mylang.add('det-anc-spec-head-phrase := non-head-comp-spec-head-phrase &' + anc_non_head_compositional, links = set_links([WORDORDER_LINK, NOMINALIZEDCLAUSES_LINK, ADNOMINALPOSSESSION_LINK]))
                 rules.add('det-anc-spec-head:= det-anc-spec-head-phrase.')
     
 
@@ -505,42 +507,42 @@ def handle_poss_unary_word_order(mylang, rules, strat, head_spec_order, order_mi
     elif order_mismatch:
 
         #Regular non-head compositional version of the head-spec rule
-        mylang.add('non-head-comp-head-spec-phrase := head-spec-phrase &' + general_non_head_compositional)
-        mylang.add('non-head-comp-spec-head-phrase := spec-head-phrase &' + general_non_head_compositional)
+        mylang.add('non-head-comp-head-spec-phrase := head-spec-phrase &' + general_non_head_compositional, links = set_links([WORDORDER_LINK, ADNOMINALPOSSESSION_LINK]))
+        mylang.add('non-head-comp-spec-head-phrase := spec-head-phrase &' + general_non_head_compositional, links = set_links([WORDORDER_LINK, ADNOMINALPOSSESSION_LINK]))
         
-        mylang.add('noun-head-spec-phrase := non-head-comp-head-spec-phrase &' + regular_noun_non_head_compositional)
-        mylang.add('noun-spec-head-phrase := non-head-comp-spec-head-phrase &' + regular_noun_non_head_compositional)
+        mylang.add('noun-head-spec-phrase := non-head-comp-head-spec-phrase &' + regular_noun_non_head_compositional, links = set_links([WORDORDER_LINK, NOMINALIZEDCLAUSES_LINK, ADNOMINALPOSSESSION_LINK]))
+        mylang.add('noun-spec-head-phrase := non-head-comp-spec-head-phrase &' + regular_noun_non_head_compositional, links = set_links([WORDORDER_LINK, NOMINALIZEDCLAUSES_LINK, ADNOMINALPOSSESSION_LINK]))
 
         rules.add('noun-head-spec:= noun-head-spec-phrase.')
         rules.add('noun-spec-head:= noun-spec-head-phrase.')
 
         #head-compositional version of the head-spec rule used only by nominalized verbs
         if anc_strat is not None:
-            mylang.add('anc-'+ hs_phrase_name + '-phrase := ' + hs_phrase_name + '-phrase &' + anc_head_compositional)
+            mylang.add('anc-'+ hs_phrase_name + '-phrase := ' + hs_phrase_name + '-phrase &' + anc_head_compositional, links = set_links([WORDORDER_LINK, NOMINALIZEDCLAUSES_LINK, ADNOMINALPOSSESSION_LINK]))
             rules.add('anc-' + hs_phrase_name + ':= anc-' + hs_phrase_name + '-phrase.')
             
             #Language has determiners
             if head_spec_order == 'head-initial':
-                mylang.add('det-anc-head-spec-phrase := non-head-comp-head-spec-phrase &' + anc_non_head_compositional)
+                mylang.add('det-anc-head-spec-phrase := non-head-comp-head-spec-phrase &' + anc_non_head_compositional, links = set_links([WORDORDER_LINK, NOMINALIZEDCLAUSES_LINK, ADNOMINALPOSSESSION_LINK]))
                 rules.add('det-anc-head-spec:= det-anc-head-spec-phrase.')
             elif head_spec_order == 'head-final':
-                mylang.add('det-anc-spec-head-phrase := non-head-comp-spec-head-phrase &' + anc_non_head_compositional)
+                mylang.add('det-anc-spec-head-phrase := non-head-comp-spec-head-phrase &' + anc_non_head_compositional, links = set_links([WORDORDER_LINK, NOMINALIZEDCLAUSES_LINK, ADNOMINALPOSSESSION_LINK]))
                 rules.add('det-anc-spec-head:= det-anc-spec-head-phrase.')
 
     #noun-det and noun-possessor order is either the same or noun-det order is none
     else:
 
-        mylang.add('non-head-comp-' + hs_phrase_name + '-phrase := ' + hs_phrase_name + '-phrase &' + general_non_head_compositional)
-        mylang.add('noun-' + hs_phrase_name + '-phrase := non-head-comp-' + hs_phrase_name + '-phrase & [ SYNSEM.LOCAL.CAT.HEAD.NMZ -].')
+        mylang.add('non-head-comp-' + hs_phrase_name + '-phrase := ' + hs_phrase_name + '-phrase &' + general_non_head_compositional, links = set_links([WORDORDER_LINK, ADNOMINALPOSSESSION_LINK]))
+        mylang.add('noun-' + hs_phrase_name + '-phrase := non-head-comp-' + hs_phrase_name + '-phrase & [ SYNSEM.LOCAL.CAT.HEAD.NMZ -].', links = set_links([WORDORDER_LINK, NOMINALIZEDCLAUSES_LINK, ADNOMINALPOSSESSION_LINK]))
         rules.add('noun-' + hs_phrase_name  + ':= noun-' + hs_phrase_name + '-phrase.')
         if anc_strat is not None:
-            mylang.add('anc-' + hs_phrase_name + '-phrase := ' + hs_phrase_name + '-phrase &' + anc_head_compositional)
+            mylang.add('anc-' + hs_phrase_name + '-phrase := ' + hs_phrase_name + '-phrase &' + anc_head_compositional, links = set_links([WORDORDER_LINK, NOMINALIZEDCLAUSES_LINK, ADNOMINALPOSSESSION_LINK]))
             rules.add('anc-' + hs_phrase_name + ' := anc-' + hs_phrase_name + '-phrase.')
                 
             #Language has determiners
             if head_spec_order != 'none':
                 mylang.add('det-anc-' + hs_phrase_name + '-phrase := non-head-comp-' + hs_phrase_name + '-phrase & [ SYNSEM.LOCAL.CAT.HEAD.NMZ +, \
-                                                                                                                        NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSSESSOR nonpossessive].')
+                                                                                                                        NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.POSSESSOR nonpossessive].', links = set_links([WORDORDER_LINK, NOMINALIZEDCLAUSES_LINK, ADNOMINALPOSSESSION_LINK]))
                 rules.add('det-anc-' + hs_phrase_name  + ':= det-anc-' + hs_phrase_name + '-phrase.')
 
 def add_poss_unary_semantics(mylang, rules, anc_strat, phrase_rule, noun_phrase_rule, anc_phrase_rule, has_nmz):
@@ -560,7 +562,7 @@ def add_poss_unary_semantics(mylang, rules, anc_strat, phrase_rule, noun_phrase_
                                               C-CONT [ HCONS.LIST < qeq & [ HARG #harg, LARG #lbl ] >, \
                                                        RELS.LIST < '+POSSESSUM_EXIST_REL+' > \
                                                        ICONS.LIST < >   ] ].'
-    mylang.add(noun_phrase_rule+' := ' + common_constraints)
+    mylang.add(noun_phrase_rule+' := ' + common_constraints, links = set_links([ADNOMINALPOSSESSION_LINK]))
 
 
     #Add constraints specific to non-derived noun phrases
@@ -572,9 +574,9 @@ def add_poss_unary_semantics(mylang, rules, anc_strat, phrase_rule, noun_phrase_
 
     if anc_strat is None:
         if has_nmz:
-            mylang.add(noun_phrase_rule + ':= ' + phrase_rule + ' & [SYNSEM.LOCAL.CAT.VAL.SPEC < [ LOCAL.CAT.HEAD.NMZ -] > ].')
+            mylang.add(noun_phrase_rule + ':= ' + phrase_rule + ' & [SYNSEM.LOCAL.CAT.VAL.SPEC < [ LOCAL.CAT.HEAD.NMZ -] > ].', links = set_links([NOMINALIZEDCLAUSES_LINK]))
     else:
-        mylang.add(anc_phrase_rule+' := ' + common_constraints)
+        mylang.add(anc_phrase_rule+' := ' + common_constraints, links = set_links([ADNOMINALPOSSESSION_LINK, NOMINALIZEDCLAUSES_LINK]))
         rules.add(anc_phrase_rule.replace('-phrase', '') + ' := ' + anc_phrase_rule + '.')
         sem_type = anc_strat[1]
         #Add semantic constraints based on whether "noun-only", "verb-only", or "both" semantics was selected
@@ -589,8 +591,8 @@ def add_poss_unary_semantics(mylang, rules, anc_strat, phrase_rule, noun_phrase_
                                                     C-CONT [ RELS.LIST < [], '+POSS_REL+' >],\
                                                     ARGS < [ SYNSEM [ LOCAL [ CONT.HOOK.INDEX #possessor ]]] > ].')
             
-        mylang.add(anc_phrase_rule + ':= ' + phrase_rule + ' & [SYNSEM.LOCAL.CAT.VAL.SPEC < [ LOCAL.CAT.HEAD.NMZ +] > ].')
-        mylang.add(noun_phrase_rule + ':= ' + phrase_rule + ' & [SYNSEM.LOCAL.CAT.VAL.SPEC < [ LOCAL.CAT.HEAD.NMZ -] > ].')
+        mylang.add(anc_phrase_rule + ':= ' + phrase_rule + ' & [SYNSEM.LOCAL.CAT.VAL.SPEC < [ LOCAL.CAT.HEAD.NMZ +] > ].', links = set_links([NOMINALIZEDCLAUSES_LINK]))
+        mylang.add(noun_phrase_rule + ':= ' + phrase_rule + ' & [SYNSEM.LOCAL.CAT.VAL.SPEC < [ LOCAL.CAT.HEAD.NMZ -] > ].', links = set_links([NOMINALIZEDCLAUSES_LINK]))
        
 
 def add_spec_semantics(ch, mylang, strat, anc_strat, phrase_rule, poss_strat, order_mismatch, rules, head_spec_order, nmz_wo, has_nmz):
@@ -669,7 +671,7 @@ def customize_poss_rules(strat, mylang, ch, rules, hierarchies):
         # Add general juxtaposition rule:
         rule_added = True
         phrase_rule = 'poss-phrase-'+strat_num
-        mylang.add(phrase_rule+JUXTAPOSITION_RULE)
+        mylang.add(phrase_rule+JUXTAPOSITION_RULE, links = set_links([ADNOMINALPOSSESSION_LINK]))
         # Added binary-nonloc-phrase supertype
         mylang.add(phrase_rule + ' := binary-nonloc-phrase.')
         
@@ -691,7 +693,7 @@ def customize_poss_rules(strat, mylang, ch, rules, hierarchies):
                                                    HCONS.LIST < > ] ].')
             #Modifier possessive strategies are never used by nominalized verbs
             if ch.get('ns'):
-                mylang.add(phrase_rule+':= [HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.NMZ - ].')
+                mylang.add(phrase_rule+':= [HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.NMZ - ].', links = set_links([NOMINALIZEDCLAUSES_LINK]))
             # Add order variation and add rules to rules.tdl:
             if strat_order == 'either':
                 mylang.add(
@@ -759,24 +761,24 @@ def customize_poss_rules(strat, mylang, ch, rules, hierarchies):
             if head_comp_order == 'head-initial':
                 # Add new rule:
                 mylang.add('comp-head-phrase := basic-head-1st-comp-phrase & ' +
-                           hf+' & '+init_min+'.', section='phrases')
+                           hf+' & '+init_min+'.', section='phrases', links = set_links([ADNOMINALPOSSESSION_LINK, WORDORDER_LINK]))
                 rules.add('comp-head := comp-head-phrase.')
                 # Add INIT to old rule:
-                mylang.add('head-comp-phrase := '+init_plus+'.')
+                mylang.add('head-comp-phrase := '+init_plus+'.', links = set_links([ADNOMINALPOSSESSION_LINK]))
                 if (ch.get('word-order') == 'free' or ch.get('word-order') == 'v2'):
-                    mylang.add('head-comp-phrase-2 := '+init_plus+'.')
-                    mylang.add('comp-head-phrase-2 := '+init_min+'.')
+                    mylang.add('head-comp-phrase-2 := '+init_plus+'.', links = set_links([ADNOMINALPOSSESSION_LINK]))
+                    mylang.add('comp-head-phrase-2 := '+init_min+'.', links = set_links([ADNOMINALPOSSESSION_LINK]))
             # If the order of head-comps outside this lib is head-final:
             elif head_comp_order == 'head-final':
                 # Add new rule:
                 mylang.add('head-comp-phrase := basic-head-1st-comp-phrase & '+hi+' &\
-                                     '+init_plus+'.', section='phrases')
+                                     '+init_plus+'.', section='phrases', links = set_links([ADNOMINALPOSSESSION_LINK, WORDORDER_LINK]))
                 rules.add('head-comp := head-comp-phrase.')
                 # Add INIT to old rule:
-                mylang.add('comp-head-phrase := '+init_min+'.')
+                mylang.add('comp-head-phrase := '+init_min+'.', links = set_links([ADNOMINALPOSSESSION_LINK]))
                 if (ch.get('word-order') == 'free' or ch.get('word-order') == 'v2'):
-                    mylang.add('head-comp-phrase-2 := '+init_plus+'.')
-                    mylang.add('comp-head-phrase-2 := '+init_min+'.')
+                    mylang.add('head-comp-phrase-2 := '+init_plus+'.', links = set_links([ADNOMINALPOSSESSION_LINK]))
+                    mylang.add('comp-head-phrase-2 := '+init_min+'.', links = set_links([ADNOMINALPOSSESSION_LINK]))
 
             # If general order of head-comps is more restricted, add the correct default INIT
             # value for non-poss lexical items:
@@ -812,7 +814,7 @@ def customize_poss_rules(strat, mylang, ch, rules, hierarchies):
             if strat_order != 'either':
                 spec_init = '+' if strat_order == 'head-final' else '-'
                 mylang.add('poss-unary-phrase-'+strat_num +
-                           ' := [ SYNSEM.LOCAL.CAT.HEAD.SPEC-INIT ' + spec_init + ' ].', section='phrases')
+                           ' := [ SYNSEM.LOCAL.CAT.HEAD.SPEC-INIT ' + spec_init + ' ].', section='phrases', links = set_links([ADNOMINALPOSSESSION_LINK]))
                 # LTX 2022-04-28: Fix issue #598:
                 # The line above does not assign a supertype for poss-unary-phrase until
                 # the customized_possessor_irules() function is called (i.e., only
@@ -835,9 +837,9 @@ def customize_poss_rules(strat, mylang, ch, rules, hierarchies):
 
             # Add possessum identification to any preexisting head-spec rule:
             if head_spec_order == 'head-initial':
-                mylang.add('head-spec-phrase := '+POSSESSUM_ID_HS)
+                mylang.add('head-spec-phrase := '+POSSESSUM_ID_HS, links = set_links([ADNOMINALPOSSESSION_LINK, WORDORDER_LINK]))
             elif head_spec_order == 'head-final':
-                mylang.add('spec-head-phrase := '+POSSESSUM_ID_HS)
+                mylang.add('spec-head-phrase := '+POSSESSUM_ID_HS, links = set_links([ADNOMINALPOSSESSION_LINK, WORDORDER_LINK]))
 
             if strat_order == 'head-initial':
                 hs_phrase_name = 'head-spec'
@@ -857,7 +859,7 @@ def customize_poss_rules(strat, mylang, ch, rules, hierarchies):
                     if strat_order != 'either':
                         mylang.add(hs_phrase_name + '-phrase := '+strat_order+' & \
                                 [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SPEC < [ LOCAL.CAT.POSSESSUM #poss ] > ,\
-                                  HEAD-DTR.SYNSEM.LOCAL.CAT.POSSESSUM #poss  ].')
+                                  HEAD-DTR.SYNSEM.LOCAL.CAT.POSSESSUM #poss  ].', links = set_links([ADNOMINALPOSSESSION_LINK, WORDORDER_LINK]))
                         #If no subtypes of the head-spec rules are needed for ANCS,
                         #Then head-spec-phrase can inherit from basic-head-spec-phrase
                         #Otherwise head-spec-phrase inherits from a supertype basic-head-spec-phrase-super
@@ -923,7 +925,7 @@ def customize_poss_rules(strat, mylang, ch, rules, hierarchies):
                         mylang.add('spec-head-phrase := \
                                     [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.SPEC-INIT +,\
                                                                       VAL.SPEC < [ LOCAL.CAT.POSSESSUM #poss ] > ] ,\
-                                      HEAD-DTR.SYNSEM.LOCAL.CAT.POSSESSUM #poss  ].')
+                                      HEAD-DTR.SYNSEM.LOCAL.CAT.POSSESSUM #poss  ].', links = set_links([ADNOMINALPOSSESSION_LINK, WORDORDER_LINK]))
 
 
                     # If head-final rule exists, add head-initial and add SPEC-INIT feats to both:
@@ -943,7 +945,7 @@ def customize_poss_rules(strat, mylang, ch, rules, hierarchies):
                         mylang.add('head-spec-phrase :=\
                                          [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.SPEC-INIT -,\
                                                                            VAL.SPEC < [ LOCAL.CAT.POSSESSUM #poss ] > ] ,\
-                                           HEAD-DTR.SYNSEM.LOCAL.CAT.POSSESSUM #poss  ].')
+                                           HEAD-DTR.SYNSEM.LOCAL.CAT.POSSESSUM #poss  ].', links = set_links([ADNOMINALPOSSESSION_LINK, WORDORDER_LINK]))
 
             mylang.add('poss-unary-phrase'+POSS_UNARY)
             #Forces SENT/ALT-SENT ANCs to have nominal semantics before they can use the poss-unary-phrase
@@ -973,7 +975,7 @@ def customize_poss_rules(strat, mylang, ch, rules, hierarchies):
             if strat.get('mark-loc') != 'possessum' and strat.get('mark-loc') != 'both':
                 mylang.add('possessum-mod-rule := basic-head-mod-phrase-simple & [\
                                     NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.MOD.FIRST.LOCAL.CAT.POSSESSUM #poss ],\
-                                    HEAD-DTR.SYNSEM.LOCAL.CAT.POSSESSUM #poss ].')
+                                    HEAD-DTR.SYNSEM.LOCAL.CAT.POSSESSUM #poss ].', links = set_links([ADNOMINALPOSSESSION_LINK]))
                 if strat_order == 'head-initial':
                     mylang.add('head-adj-int-phrase :+ possessum-mod-rule.')
                     rules.add('head-adj-int := head-adj-int-phrase.')
@@ -1008,10 +1010,10 @@ def customize_poss_rules(strat, mylang, ch, rules, hierarchies):
 
                 if clmod_pos == 'head-adj' or clmod_pos == 'either':
                     mylang.add('head-adj-scop-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR nonpossessive,\
-                                                                                 POSSESSUM nonpossessive  ] ].', section='addenda')
+                                                                                 POSSESSUM nonpossessive  ] ].', section='addenda', links = set_links([ADNOMINALPOSSESSION_LINK]))
                 if clmod_pos == 'adj-head' or clmod_pos == 'either':
                     mylang.add('adj-head-scop-phrase :+ [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR nonpossessive,\
-                                                                                 POSSESSUM nonpossessive  ] ].', section='addenda')
+                                                                                 POSSESSUM nonpossessive  ] ].', section='addenda', links = set_links([ADNOMINALPOSSESSION_LINK]))
 
 #########################################################################################
 # Add inflectional rules
@@ -1088,7 +1090,7 @@ def customize_possessor_irules(strat, mylang, rules, ch, strat_num, mod_spec, ma
 
         mylang.add('poss-case := case.', section='addenda')
         mylang.add(possessor_rule_name +
-                   ' := [ SYNSEM.LOCAL.CAT.HEAD.CASE poss-case ].')
+                   ' := [ SYNSEM.LOCAL.CAT.HEAD.CASE poss-case ].', links = set_links([ADNOMINALPOSSESSION_LINK, CASE_LINK]))
 
     # Add constraints to possessor rule for spec version
     if mod_spec == 'spec':
@@ -1098,10 +1100,10 @@ def customize_possessor_irules(strat, mylang, rules, ch, strat_num, mod_spec, ma
         if mark_loc == 'possessor' or mark_loc == 'both':
 
             mylang.add(possessor_rule_name+' := head-change-only-lex-rule & \
-            [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR possessor-'+strat_num+' ] ].', merge=True)
+            [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR possessor-'+strat_num+' ] ].', merge=True, links = set_links([ADNOMINALPOSSESSION_LINK]))
 
             mylang.add('poss-unary-phrase-'+strat_num+' := poss-unary-phrase &\
-                               [ ARGS < [ SYNSEM.LOCAL.CAT.HEAD [ POSSESSOR possessor-'+strat_num+' ] ] > ].')
+                               [ ARGS < [ SYNSEM.LOCAL.CAT.HEAD [ POSSESSOR possessor-'+strat_num+' ] ] > ].', links = set_links([ADNOMINALPOSSESSION_LINK]))
 
         # Add case constraints if case exists:
 #        if case:
@@ -1112,7 +1114,7 @@ def customize_possessor_irules(strat, mylang, rules, ch, strat_num, mod_spec, ma
         if mark_loc == 'possessor':
 
             mylang.add('poss-unary-phrase-'+strat_num +
-                       ' := poss-unary-phrase & [ SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CAT [ POSSESSUM nonpossessive ] ].')
+                       ' := poss-unary-phrase & [ SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CAT [ POSSESSUM nonpossessive ] ].', links = set_links([ADNOMINALPOSSESSION_LINK]))
 
     # Add constraints to possessor rule for mod version
     elif mod_spec == 'mod':
@@ -1126,7 +1128,7 @@ def customize_possessor_irules(strat, mylang, rules, ch, strat_num, mod_spec, ma
             ph = 'bool'
         #Modifier possessive strategies are never used by nominalized verbs
         if ch.get('ns'):
-            mylang.add(possessor_rule_name+' := [SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.HEAD.NMZ -].')
+            mylang.add(possessor_rule_name+' := [SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.HEAD.NMZ -].', links = set_links([ADNOMINALPOSSESSION_LINK, NOMINALIZEDCLAUSES_LINK]))
         # Add constraints to mod version for single marking
         if mark_loc == 'possessor':
             agr_prefix = 'SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
@@ -1145,7 +1147,7 @@ def customize_possessor_irules(strat, mylang, rules, ch, strat_num, mod_spec, ma
                                    HCONS.LIST < >, \
                                    ICONS.LIST < >  ], \
                           DTR.SYNSEM.LOCAL [ CONT.HOOK #hook & [ INDEX #possessor ],\
-                                             CAT.VAL #val  ] ].', merge=True)
+                                             CAT.VAL #val  ] ].', merge=True, links = set_links([ADNOMINALPOSSESSION_LINK]))
 
         # Add constraints to mod version for double marking
         elif mark_loc == 'both':
@@ -1153,7 +1155,7 @@ def customize_possessor_irules(strat, mylang, rules, ch, strat_num, mod_spec, ma
             mylang.add(possessor_rule_name+' := add-only-no-ccont-rule &\
                               [ SYNSEM.LOCAL [ CAT [ HEAD.POSSESSOR possessor-'+strat_num+',\
                                                      VAL #val ] ] ,\
-                                DTR.SYNSEM.LOCAL [ CAT.VAL #val ] ].')
+                                DTR.SYNSEM.LOCAL [ CAT.VAL #val ] ].', links = set_links([ADNOMINALPOSSESSION_LINK]))
 
     # If an agreement strategy is indicated, identify POSS-AGR with PNG of possessum
 
@@ -1164,10 +1166,10 @@ def customize_possessor_irules(strat, mylang, rules, ch, strat_num, mod_spec, ma
         if not (mark_loc == 'both' and mod_spec == 'mod'):
             if mod_spec == 'mod':
                 mylang.add(possessor_rule_name+' := [ SYNSEM.LOCAL.CAT.HEAD.POSSESSOR.POSS-AGR #png,\
-                                                                               '+agr_prefix+' #png ].')
+                                                                               '+agr_prefix+' #png ].', links = set_links([ADNOMINALPOSSESSION_LINK]))
             elif mod_spec == 'spec':
                 mylang.add('poss-unary-phrase-'+strat_num+' := [ ARGS < [ SYNSEM.LOCAL.CAT.HEAD.POSSESSOR.POSS-AGR #png ] >,\
-                                                                                      '+agr_prefix+' #png ].', section='phrases')
+                                                                                      '+agr_prefix+' #png ].', section='phrases', links = set_links([ADNOMINALPOSSESSION_LINK]))
 
 
 def customize_possessum_irules(strat, mylang, rules, ch, strat_num, mod_spec, mark_loc, possessum_type, hierarchies):
@@ -1178,7 +1180,7 @@ def customize_possessum_irules(strat, mylang, rules, ch, strat_num, mod_spec, ma
     # Add constraints to possessor rule for spec version
     if mod_spec == 'spec':
 
-        mylang.add(possessum_rule_name+POSSESSUM_RULE)
+        mylang.add(possessum_rule_name+POSSESSUM_RULE, links = set_links([ADNOMINALPOSSESSION_LINK]))
 
         agr_prefix = 'SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
 
@@ -1198,7 +1200,7 @@ def customize_possessum_irules(strat, mylang, rules, ch, strat_num, mod_spec, ma
                                                      VAL #val ] ] ].', merge=True)
 
             mylang.add('poss-unary-phrase-'+strat_num +
-                       ' := poss-unary-phrase & [ SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CAT [ POSSESSUM possessum-'+strat_num+' ] ].', section='phrases')
+                       ' := poss-unary-phrase & [ SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CAT [ POSSESSUM possessum-'+strat_num+' ] ].', section='phrases', links = set_links([ADNOMINALPOSSESSION_LINK]))
 
             # If possessor isn't marked, don't let it be possessive
             if mark_loc == 'possessum':
@@ -1233,7 +1235,7 @@ def customize_possessum_irules(strat, mylang, rules, ch, strat_num, mod_spec, ma
     if mod_spec == 'mod':
 
         agr_prefix = 'SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CONT.HOOK.INDEX.PNG'
-        mylang.add(possessum_rule_name+POSSESSUM_RULE)
+        mylang.add(possessum_rule_name+POSSESSUM_RULE, links = set_links([ADNOMINALPOSSESSION_LINK]))
         #Modifier possessive strategies are never used by nominalized verbs
         if ch.get('ns'):
             mylang.add(possessum_rule_name+' := [SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.HEAD.NMZ -].')
@@ -1302,7 +1304,7 @@ def customize_possessum_irules(strat, mylang, rules, ch, strat_num, mod_spec, ma
                                                              '+agr_prefix+' #png ].')
         elif mod_spec == 'spec':
             mylang.add('poss-unary-phrase-'+strat_num+' := [ ARGS < [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png-um ] >,\
-                                                             SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CAT.POSSESSUM.POSS-AGR #png-um ].', section='phrases')
+                                                             SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CAT.POSSESSUM.POSS-AGR #png-um ].', section='phrases', links = set_links([ADNOMINALPOSSESSION_LINK]))
 
     # Note: in the mutual agreement, double marking mod-like scenario, the possessor is a COMP.
     # Therefore, it has no access to the possessum's PNG info. When the possessor agrees with
@@ -1311,7 +1313,7 @@ def customize_possessum_irules(strat, mylang, rules, ch, strat_num, mod_spec, ma
         if possessum_type == 'affix':
             mylang.add(possessum_rule_name+' :=\
             [ SYNSEM.LOCAL [ CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.POSSESSOR.POSS-AGR #poss-png,\
-                                                          CONT.HOOK.INDEX.PNG #poss-png ] ].')
+                                                          CONT.HOOK.INDEX.PNG #poss-png ] ].', links = set_links([ADNOMINALPOSSESSION_LINK]))
 
 
 def customize_possessor_pron_irules(ch, mylang, strat_name, feat, lrt, mod_spec, anc_strats, strat_num):
@@ -1411,13 +1413,13 @@ def customize_possessor_pron_irules(ch, mylang, strat_name, feat, lrt, mod_spec,
 
                 if has_anc:
                     mylang.add(get_name(lrt)+'-lex-rule := \
-               [ DTR.SYNSEM.LOCAL.CAT.HEAD.NMZ - ].')
+               [ DTR.SYNSEM.LOCAL.CAT.HEAD.NMZ - ].', links = set_links([NOMINALIZEDCLAUSES_LINK]))
                     
             else:
                 #Add all syntactic constraints to the lrt used by action nominals
                 mylang.add(get_name(lrt) + '-lex-rule '+ spec_lrt_syn_constraints)
                 mylang.add(get_name(lrt)+ '-lex-rule '+ ':= \
-               [ DTR.SYNSEM.LOCAL.CAT.HEAD.NMZ + ].' )
+               [ DTR.SYNSEM.LOCAL.CAT.HEAD.NMZ + ].', links = set_links([NOMINALIZEDCLAUSES_LINK]) )
                 
                 #Add semantic constraints for action nominals depending on the user's choice
                 if sem_type == 'noun-only':
@@ -1435,7 +1437,7 @@ def customize_possessor_pron_irules(ch, mylang, strat_name, feat, lrt, mod_spec,
                 DTR.SYNSEM.LOCAL [ CAT.HEAD #head ,\
                                 CONT.HOOK #hook & [ INDEX #possessum & [ COG-ST activ-or-more ],\
                                                   LTOP #lbl] ],\
-              C-CONT.HOOK #hook ].')
+              C-CONT.HOOK #hook ].', links = set_links([ADNOMINALPOSSESSION_LINK]))
             mylang.add(get_name(lrt)+'-lex-rule := \
                [ SYNSEM.LOCAL.CAT.VAL #val,\
                  DTR.SYNSEM.LOCAL.CAT [ HEAD.PRON -,\
@@ -1454,7 +1456,7 @@ def customize_possessor_pron_irules(ch, mylang, strat_name, feat, lrt, mod_spec,
                                            LARG #lbl2 ] > ] ].')
             #Modifier possessive strategies are never used by nominalized verbs
             if ch.get('ns'):
-                mylang.add(get_name(lrt)+'-lex-rule  := [SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.HEAD.NMZ -].')
+                mylang.add(get_name(lrt)+'-lex-rule  := [SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.HEAD.NMZ -].', links = set_links([NOMINALIZEDCLAUSES_LINK]))
 
 
 
@@ -1512,11 +1514,11 @@ def customize_possessor_lexicon(strat, mylang, ch, lexicon, strat_name, strat_nu
     # Add most general defn of possessor-marking adp:
     mylang.set_section('otherlex')
     mylang.add(TWO_REL_ADP)
-    mylang.add('possessor-adp-lex-'+strat_num+' '+POSSESSOR_ADP_LEX)
+    mylang.add('possessor-adp-lex-'+strat_num+' '+POSSESSOR_ADP_LEX, links = set_links([ADNOMINALPOSSESSION_LINK]))
 
     # Make sure no other adps are going to show up where possessor adp should:
     mylang.add('basic-adposition-lex :+ [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR nonpossessive,\
-                                                             POSSESSUM nonpossessive ] ].')
+                                                             POSSESSUM nonpossessive ] ].', links = set_links([ADNOMINALPOSSESSION_LINK]))
 
     # Check if ordering info needs to be added to adp
     hc = customize_major_constituent_order(
@@ -1534,26 +1536,26 @@ def customize_possessor_lexicon(strat, mylang, ch, lexicon, strat_name, strat_nu
             init = '-'
 
         mylang.add('possessor-adp-lex-'+strat_num +
-                   ' := [ SYNSEM.LOCAL.CAT.HEAD.INIT '+init+' ].')
+                   ' := [ SYNSEM.LOCAL.CAT.HEAD.INIT '+init+' ].', links = set_links([ADNOMINALPOSSESSION_LINK]))
 
     # Optionally block PRON + items from being possessors
     if not pron_allowed:
         mylang.add('possessor-adp-lex-'+strat_num +
-                   ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.PRON - ].')
+                   ' := [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.PRON - ].', links = set_links([ADNOMINALPOSSESSION_LINK]))
 
     # Add constraints to possessor adp for spec version
     if mod_spec == 'spec':
 
         mylang.add('possessor-adp-lex-'+strat_num+' := \
                                  [  SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR possessor-'+strat_num+',\
-                                                       POSSESSUM nonpossessive ] ].')
+                                                       POSSESSUM nonpossessive ] ].', links = set_links([ADNOMINALPOSSESSION_LINK]))
         mylang.add('possessor-adp-lex-'+strat_num+' := \
                 [  SYNSEM.LOCAL [ CAT.HEAD.MOD < >,\
                                   CONT [ RELS.LIST < >,\
                                          HCONS.LIST < > ] ] ].')
 
         mylang.add('poss-unary-phrase-'+strat_num +
-                   ' := poss-unary-phrase & [ ARGS < [ SYNSEM.LOCAL.CAT.HEAD [ POSSESSOR possessor-'+strat_num+' ] ] > ].', section='phrases')
+                   ' := poss-unary-phrase & [ ARGS < [ SYNSEM.LOCAL.CAT.HEAD [ POSSESSOR possessor-'+strat_num+' ] ] > ].', section='phrases', links = set_links([ADNOMINALPOSSESSION_LINK]))
 
         # If the possessor is the only marked constituent, forbid marking on the possessum:
         if mark_loc == 'possessor':
@@ -1576,7 +1578,7 @@ def customize_possessor_lexicon(strat, mylang, ch, lexicon, strat_name, strat_nu
                                                         HEAD [ POSSESSOR possessor-'+strat_num+',\
                                                              MOD.FIRST.LOCAL [ CAT [ HEAD noun & [ PRON - ],\
                                                                                      VAL.SPR < [ ] > ] ] ] ],\
-                                                  CONT.HCONS.LIST < > ] ] .')
+                                                  CONT.HCONS.LIST < > ] ] .', links = set_links([ADNOMINALPOSSESSION_LINK]))
         
         #Modifier possessive strategies are never used by nominalized verbs
         if ch.get('ns'):
@@ -1604,7 +1606,7 @@ def customize_possessor_lexicon(strat, mylang, ch, lexicon, strat_name, strat_nu
         mylang.add('poss-case := case.', section='addenda')
 
         mylang.add('possessor-adp-lex-'+strat_num +
-                   ' := [ SYNSEM.LOCAL.CAT.HEAD.CASE poss-case ].')
+                   ' := [ SYNSEM.LOCAL.CAT.HEAD.CASE poss-case ].', links = set_links([ADNOMINALPOSSESSION_LINK]))
 
     # Add agreement features to the possessor adp if appropriate:
     # TODO: these lex items don't follow nomenclature conventions yet:
@@ -1636,7 +1638,7 @@ def customize_possessor_lexicon(strat, mylang, ch, lexicon, strat_name, strat_nu
             if mod_spec == 'mod':
                 mylang.add(adp_type+' := possessor-adp-lex-'+strat_num+' &\
                                         [ SYNSEM.LOCAL.CAT.HEAD.POSSESSOR.POSS-AGR #png,\
-                                        '+agr_prefix+' #png ].')
+                                        '+agr_prefix+' #png ].', links = set_links([ADNOMINALPOSSESSION_LINK]))
 
                 customize_feature_values(
                     mylang, ch, hierarchies, form, adp_type, 'possessor-marker')
@@ -1645,8 +1647,8 @@ def customize_possessor_lexicon(strat, mylang, ch, lexicon, strat_name, strat_nu
             elif mod_spec == 'spec':
                 mylang.add('poss-unary-phrase-'+strat_num+' := \
                           [ SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CONT.HOOK.INDEX.PNG #png-or,\
-                            ARGS < [ SYNSEM.LOCAL.CAT.HEAD.POSSESSOR.POSS-AGR #png-or ] > ].', section='phrases')
-                mylang.add(adp_type+' := possessor-adp-lex-'+strat_num+'.')
+                            ARGS < [ SYNSEM.LOCAL.CAT.HEAD.POSSESSOR.POSS-AGR #png-or ] > ].', section='phrases', links = set_links([ADNOMINALPOSSESSION_LINK]))
+                mylang.add(adp_type+' := possessor-adp-lex-'+strat_num+'.', links = set_links([ADNOMINALPOSSESSION_LINK]))
                 customize_feature_values(
                     mylang, ch, hierarchies, form, adp_type, 'possessor-marker')
 
@@ -1668,9 +1670,9 @@ def customize_possessor_lexicon(strat, mylang, ch, lexicon, strat_name, strat_nu
     #If a language has nominalized verbs, set possessor-adp-lex to have the same NMZ value as its complement.
     if ch.get('ns', ''):
         mylang.add('possessor-adp-lex-'+strat_num+' := [ SYNSEM.LOCAL.CAT [ HEAD.NMZ #nmz \
-                                                                VAL.COMPS < [LOCAL.CAT.HEAD.NMZ #nmz] >]].')
+                                                                VAL.COMPS < [LOCAL.CAT.HEAD.NMZ #nmz] >]].', links = set_links([ADNOMINALPOSSESSION_LINK, NOMINALIZEDCLAUSES_LINK]))
         if needs_anc_wo_feat(ch):
-                 mylang.add('possessor-adp-lex-'+strat_num+ ' := [ SYNSEM.LOCAL.CAT.HEAD.ANC-WO - ].')
+                 mylang.add('possessor-adp-lex-'+strat_num+ ' := [ SYNSEM.LOCAL.CAT.HEAD.ANC-WO - ].', links = set_links([ADNOMINALPOSSESSION_LINK, NOMINALIZEDCLAUSES_LINK]))
 
 
 def customize_possessum_lexicon(strat, mylang, ch, lexicon, strat_name, strat_num, mod_spec, mark_loc, pron_allowed, possessor_type, hierarchies, rules):
@@ -1695,12 +1697,12 @@ def customize_possessum_lexicon(strat, mylang, ch, lexicon, strat_name, strat_nu
     if mod_spec == 'spec':
 
         mylang.add('poss-unary-phrase-'+strat_num +
-                   ' := poss-unary-phrase & [ SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CAT [ POSSESSUM possessum-'+strat_num+' ] ].', section='phrases')
+                   ' := poss-unary-phrase & [ SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CAT [ POSSESSUM possessum-'+strat_num+' ] ].', section='phrases', links = set_links([ADNOMINALPOSSESSION_LINK]))
 
         # Add constraints to spec version for single marking
         if mark_loc == 'possessum':
 
-            mylang.add('possessum-noun-lex-'+strat_num+' '+POSSESSUM_NOUN_LEX)
+            mylang.add('possessum-noun-lex-'+strat_num+' '+POSSESSUM_NOUN_LEX, links = set_links([ADNOMINALPOSSESSION_LINK]))
             mylang.add('possessum-noun-lex-'+strat_num+' := \
                           [ SYNSEM.LOCAL [ CAT [ VAL [ SPEC < >, SPR < [ LOCAL.CAT.HEAD.POSSESSOR possessor-'+strat_num+' ] > ],\
                                            HEAD [ POSSESSOR nonpossessive ],\
@@ -1720,7 +1722,7 @@ def customize_possessum_lexicon(strat, mylang, ch, lexicon, strat_name, strat_nu
         # Add constraints to spec version for double marking
         if mark_loc == 'both':
 
-            mylang.add('possessum-noun-lex-'+strat_num+' '+POSSESSUM_NOUN_LEX)
+            mylang.add('possessum-noun-lex-'+strat_num+' '+POSSESSUM_NOUN_LEX, links = set_links([ADNOMINALPOSSESSION_LINK]))
             mylang.add('possessum-noun-lex-'+strat_num+' := \
                                              [ SYNSEM.LOCAL [ CAT [ VAL [ SPEC < >, SPR < [ LOCAL.CAT.HEAD.POSSESSOR possessor-'+strat_num+' ] > ],\
                                                                     HEAD [ POSSESSOR nonpossessive ],\
@@ -1729,18 +1731,18 @@ def customize_possessum_lexicon(strat, mylang, ch, lexicon, strat_name, strat_nu
         if mark_loc == 'possessum-with-pron':
 
             mylang.add('possessum-noun-lex-'+strat_num +
-                       ' '+POSSESSUM_NOUN_LEX_W_PRON)
+                       ' '+POSSESSUM_NOUN_LEX_W_PRON, links = set_links([ADNOMINALPOSSESSION_LINK]))
             mylang.add('possessum-noun-lex-'+strat_num+' := [ SYNSEM.LOCAL [ CAT [ VAL [ SPEC < >, SPR < [ LOCAL.CAT.HEAD.POSSESSOR possessor-'+strat_num+' ] > ],\
                                                                                    HEAD [ POSSESSOR nonpossessive ],\
                                                                                           POSSESSUM possessum-'+strat_num+' ] ] ].', merge=True)
         if order_manip:
 
             mylang.add('possessum-noun-lex-'+strat_num +
-                       ' := [ SYNSEM.LOCAL.CAT.HEAD.INIT '+init+' ].')
+                       ' := [ SYNSEM.LOCAL.CAT.HEAD.INIT '+init+' ].', links = set_links([ADNOMINALPOSSESSION_LINK]))
 
         #If a language has nominalized verbs, the possessum noun marker should be NMZ -, ADV-MOD - just like all other nouns
         if ch.get('ns', ''):
-            mylang.add('possessum-noun-lex-'+strat_num + ' := [ SYNSEM.LOCAL.CAT.HEAD.NMZ - ].')
+            mylang.add('possessum-noun-lex-'+strat_num + ' := [ SYNSEM.LOCAL.CAT.HEAD.NMZ - ].', links = set_links([ADNOMINALPOSSESSION_LINK, NOMINALIZEDCLAUSES_LINK]))
             if ch.get('adv', ''):
                 mylang.add('possessum-noun-lex-'+strat_num +' := [ SYNSEM.LOCAL.CAT.HEAD.ADV-MOD - ].')
             if needs_anc_wo_feat(ch):
@@ -1755,7 +1757,7 @@ def customize_possessum_lexicon(strat, mylang, ch, lexicon, strat_name, strat_nu
         
         #Modifier possessive strategies are never used by nominalized verbs
         if ch.get('ns'):
-            mylang.add('possessum-noun-lex-'+strat_num+' :=  [SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.HEAD.NMZ -].')
+            mylang.add('possessum-noun-lex-'+strat_num+' :=  [SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.HEAD.NMZ -].', links = set_links([ADNOMINALPOSSESSION_LINK, NOMINALIZEDCLAUSES_LINK]))
         if mark_loc != 'possessum-with-pron':
 
             mylang.add('possessum-noun-lex-'+strat_num+' := non-local-none-lex-item &\
@@ -1779,7 +1781,7 @@ def customize_possessum_lexicon(strat, mylang, ch, lexicon, strat_name, strat_nu
                                                   RELS.LIST < '+POSS_REL+' >,\
                                                   HCONS.LIST < >,\
                                                   ICONS.LIST < >  ] ],\
-                            ARG-ST < #possessum-comp, #possessor-comp > ].')
+                            ARG-ST < #possessum-comp, #possessor-comp > ].', links = set_links([ADNOMINALPOSSESSION_LINK]))
         else:
 
             # When the possessum is marked and the possessor = pron, then the pron is the modifier of the possessum:
@@ -1797,7 +1799,7 @@ def customize_possessum_lexicon(strat, mylang, ch, lexicon, strat_name, strat_nu
                                                   RELS.LIST < >,\
                                                   HCONS.LIST < >,\
                                                   ICONS.LIST < >  ] ],\
-                            ARG-ST < #possessum-comp > ].')
+                            ARG-ST < #possessum-comp > ].', links = set_links([ADNOMINALPOSSESSION_LINK]))
         # Add any feature constraints to the possessor (only if the possessor is unmarked)
         instance_tmp = {}
         if strat.get('possessor-feat'):
@@ -1832,21 +1834,21 @@ def customize_possessum_lexicon(strat, mylang, ch, lexicon, strat_name, strat_nu
                     pron_type = noun_id(strat)
                     mylang.add(pron_type+' :=\
                               [ SYNSEM.LOCAL [ CAT.HEAD.MOD.FIRST.LOCAL.CAT [ HEAD noun, POSSESSUM.POSS-AGR #head-png ],\
-                                               CONT.HOOK.INDEX.PNG #head-png ] ].')
+                                               CONT.HOOK.INDEX.PNG #head-png ] ].', links = set_links([ADNOMINALPOSSESSION_LINK]))
                     mylang.add(
-                        noun_type+' := possessum-noun-lex-'+strat_num+'.')
+                        noun_type+' := possessum-noun-lex-'+strat_num+'.', links = set_links([ADNOMINALPOSSESSION_LINK]))
 
                 else:
                     # If mod and not w pronoun, then agreeing happens on possessum marker:
                     mylang.add(noun_type+' := possessum-noun-lex-'+strat_num+' &\
                           [ SYNSEM.LOCAL.CAT.POSSESSUM.POSS-AGR #png,\
-                                '+prefix+' #png ].')
+                                '+prefix+' #png ].', links = set_links([ADNOMINALPOSSESSION_LINK]))
 
             # If spec, then agreeing happens on poss-unary-rule:
             elif mod_spec == 'spec':
-                mylang.add(noun_type+' := possessum-noun-lex-'+strat_num+'.')
+                mylang.add(noun_type+' := possessum-noun-lex-'+strat_num+'.', links = set_links([ADNOMINALPOSSESSION_LINK]))
                 mylang.add('poss-unary-phrase-'+strat_num+' := [ ARGS < [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png-um ] >,\
-                                                                 SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CAT.POSSESSUM.POSS-AGR #png-um ].', section='phrases')
+                                                                 SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CAT.POSSESSUM.POSS-AGR #png-um ].', section='phrases', links = set_links(["adnominalpossession"]))
 
             customize_feature_values(
                 mylang, ch, hierarchies, form, noun_type, 'possessum-marker')
@@ -1867,11 +1869,11 @@ def customize_possessor_pron_lexicon(strat, mylang, ch, lexicon, strat_name, str
 
     # Add general form of pronoun:
     mylang.set_section('nounlex')
-    mylang.add(noun_type+POSSESSOR_PRON_LEX)
+    mylang.add(noun_type+POSSESSOR_PRON_LEX, links = set_links([ADNOMINALPOSSESSION_LINK]))
 
     #If a language has nominalized verbs, possessive pronouns should be NMZ -, ADV-MOD - just like all other nouns
     if ch.get('ns', ''):
-        mylang.add(noun_type +' := [ SYNSEM.LOCAL.CAT.HEAD.NMZ - ].')
+        mylang.add(noun_type +' := [ SYNSEM.LOCAL.CAT.HEAD.NMZ - ].', links = set_links([NOMINALIZEDCLAUSES_LINK]))
         if ch.get('adv', ''):
             mylang.add(noun_type +' := [ SYNSEM.LOCAL.CAT.HEAD.ADV-MOD - ].')
 
@@ -1886,7 +1888,7 @@ def customize_possessor_pron_lexicon(strat, mylang, ch, lexicon, strat_name, str
                                                   HCONS.LIST < > ] ] ].')
 
         mylang.add('poss-unary-phrase-pron-'+strat_num +
-                   ' := poss-unary-phrase & [ ARGS < [ SYNSEM.LOCAL [ COORD -, CAT.HEAD.POSSESSOR possessor-pron-'+strat_num+' ] ] > ].', section='phrases')
+                   ' := poss-unary-phrase & [ ARGS < [ SYNSEM.LOCAL [ COORD -, CAT.HEAD.POSSESSOR possessor-pron-'+strat_num+' ] ] > ].', section='phrases', links = set_links([ADNOMINALPOSSESSION_LINK]))
 
         if agr:
             mylang.add('poss-unary-phrase-pron-'+strat_num+' := [ ARGS < [ SYNSEM.LOCAL.CAT.HEAD.POSSESSOR.POSS-AGR #png ] >,\
@@ -1915,10 +1917,10 @@ def customize_possessor_pron_lexicon(strat, mylang, ch, lexicon, strat_name, str
                                                                                 LTOP #lbl ] ] ] > ] ],\
                                          CONT [ RELS.LIST  <  '+POSS_REL+',\
                                                            #altkeyrel >,\
-                                                HCONS.LIST < > ] ] ].')
+                                                HCONS.LIST < > ] ] ].', links = set_links([ADNOMINALPOSSESSION_LINK]))
         #Modifier possessive strategies are never used by nominalized verbs
         if ch.get('ns'):
-            mylang.add(noun_type+ ' :=  [SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.HEAD.NMZ -].')
+            mylang.add(noun_type+ ' :=  [SYNSEM.LOCAL.CAT.HEAD.MOD.FIRST.LOCAL.CAT.HEAD.NMZ -].', links = set_links([NOMINALIZEDCLAUSES_LINK]))
 
 
         if agr:
@@ -1928,7 +1930,7 @@ def customize_possessor_pron_lexicon(strat, mylang, ch, lexicon, strat_name, str
     if case:
 
         mylang.add('poss-case := case.', section='addenda')
-        mylang.add(noun_type+' := [ SYNSEM.LOCAL.CAT.HEAD.CASE poss-case ].')
+        mylang.add(noun_type+' := [ SYNSEM.LOCAL.CAT.HEAD.CASE poss-case ].', links = set_links([ADNOMINALPOSSESSION_LINK, CASE_LINK]))
 
     # Add forms to lexicon.tdl:
     for pron_inst in strat.get('instance'):
@@ -1976,11 +1978,11 @@ def customize_possessor_pron_lexicon(strat, mylang, ch, lexicon, strat_name, str
         # Make possessor pron req a marked possessum:
         if mod_spec == 'spec':
             mylang.add('poss-unary-phrase-pron-'+strat_num +
-                       ' := [ SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CAT.POSSESSUM possessum-pron-'+strat_num+' ].', section='phrases')
+                       ' := [ SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CAT.POSSESSUM possessum-pron-'+strat_num+' ].', section='phrases', links = set_links([ADNOMINALPOSSESSION_LINK]))
 
         if mod_spec == 'mod':
             mylang.add(
-                noun_type+' := [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT [ HEAD noun, POSSESSUM possessum-pron-'+strat_num+'] ] > ].')
+                noun_type+' := [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT [ HEAD noun, POSSESSUM possessum-pron-'+strat_num+'] ] > ].', links = set_links([ADNOMINALPOSSESSION_LINK]))
 
         # Add affixal markings:
         if strat.get('possessum-mark-type') == 'affix':
@@ -1993,12 +1995,12 @@ def customize_possessor_pron_lexicon(strat, mylang, ch, lexicon, strat_name, str
 
                     mylang.add('poss-unary-phrase-pron-'+strat_num+' := \
                               [ ARGS < [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png ] >,\
-                                SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CAT.POSSESSUM.POSS-AGR #png ].', section='phrases')
+                                SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CAT.POSSESSUM.POSS-AGR #png ].', section='phrases', links = set_links([ADNOMINALPOSSESSION_LINK]))
 
                 if mod_spec == 'mod':
                     mylang.add(noun_type+' := \
                               [ SYNSEM.LOCAL [ CONT.HOOK.INDEX.PNG #png,\
-                                               CAT.HEAD.MOD.FIRST.LOCAL.CAT [ HEAD noun, POSSESSUM.POSS-AGR #png ] ] ].')
+                                               CAT.HEAD.MOD.FIRST.LOCAL.CAT [ HEAD noun, POSSESSUM.POSS-AGR #png ] ] ].', links = set_links([ADNOMINALPOSSESSION_LINK]))
 
         if strat.get('possessum-mark-type') == 'non-affix':
 
@@ -2008,4 +2010,4 @@ def customize_possessor_pron_lexicon(strat, mylang, ch, lexicon, strat_name, str
         # If the possessor is the only marked constituent in a spec construction, forbid marking on the possessum:
         if mod_spec == 'spec':
             mylang.add('poss-unary-phrase-pron-'+strat_num +
-                       ' := [ SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CAT [ POSSESSUM nonpossessive ] ].', section='phrases')
+                       ' := [ SYNSEM.LOCAL.CAT.VAL.SPEC.FIRST.LOCAL.CAT [ POSSESSUM nonpossessive ] ].', section='phrases', links = set_links([ADNOMINALPOSSESSION_LINK]))
