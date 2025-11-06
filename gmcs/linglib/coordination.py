@@ -1,6 +1,8 @@
 from gmcs.utils import TDLencode
 from gmcs.utils import orth_encode
 from gmcs.lib import TDLHierarchy
+from gmcs.linglib import docstrings
+from docstrings import ADNOMINALPOSSESSION_LINK, CASE_LINK, COORDINATION_LINK, WORDORDER_LINK, set_links
 
 def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, mylang,
                        rules, irules, resrules, mixed_strat=False):
@@ -24,7 +26,7 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, mylang,
                  basic-' + pos + '-top-coord-rule &\
                  ' + top + 'top-coord-rule &\
                  ' + st +
-                   coord_strat_features(num, nm, mixed_strat))
+                   coord_strat_features(num, nm, mixed_strat), links = set_links([COORDINATION_LINK]))
 
         # add to rules.tdl
         rules.add(pn + nm + '-top-coord := ' + pn + nm + '-top-coord-rule.')
@@ -34,7 +36,7 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, mylang,
                    basic-' + pos + '-mid-coord-rule &\
                    ' + mid + 'mid-coord-rule &\
                    ' + st +
-                       coord_strat_features(num, nm, mixed_strat))
+                       coord_strat_features(num, nm, mixed_strat), links = set_links([COORDINATION_LINK]))
 
             # add to rules.tdl
             rules.add(pn + nm + '-mid-coord := ' + pn + nm + '-mid-coord-rule.')
@@ -47,7 +49,7 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, mylang,
                ' + bot + 'bottom-coord-rule &' + passup + '\
                [ SYNSEM.LOCAL.COORD-STRAT "' + num + '",\
                  SYNSEM.LOCAL.COORD-REL.PRED "_and_coord_rel",\
-                 DTR.SYNSEM.LOCAL.CAT.HEAD ' + headtype + ' ].')
+                 DTR.SYNSEM.LOCAL.CAT.HEAD ' + headtype + ' ].', links = set_links([COORDINATION_LINK]))
 
         # now the spelling change rule in irules.tdl
         rule = pn + '-bottom :=\n'
@@ -62,7 +64,7 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, mylang,
            ' + bot + 'bottom-coord-rule &\
            ' + pos + '-bottom-coord-phrase &' + passup + '\
            [ SYNSEM.LOCAL.COORD-STRAT "' + num + '" ].'
-        mylang.add(rule)
+        mylang.add(rule, links = set_links([COORDINATION_LINK]))
         if bot == 'unary-':
             rule = pn + '-bottom-coord-rule :=\
              [ SYNSEM.LOCAL.COORD-REL.PRED "_and_coord_rel" ].'
@@ -77,7 +79,7 @@ def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, mylang,
            ' + bot + 'left-coord-rule &\
            ' + pos + '-bottom-coord-phrase &' + passup + '\
            [ SYNSEM.LOCAL.COORD-STRAT "' + num + '" ].'
-        mylang.add(rule)
+        mylang.add(rule, links = set_links([COORDINATION_LINK]))
 
         if pre or suf:
             # constrain the predicate
@@ -141,10 +143,10 @@ def customize_feature_resolution(mylang, ch, ap):
             if v == 'case':
                 path = 'SYNSEM.LOCAL.CAT.HEAD.'  # special path for case
                 mylang.add('bare-np-phrase := [ SYNSEM.LOCAL.CAT.HEAD.CASE #case,'  # TODO is there any reason I can't use this for fr as well?
-                           'HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case ].')
+                           'HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case ].', links = set_links([CASE_LINK]))
                 mylang.add('pass-up-png-coord-rule := bottom-coord-phrase & \
               [  SYNSEM.LOCAL.CAT.HEAD.CASE #case,'
-                           'NONCONJ-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case ].')
+                           'NONCONJ-DTR.SYNSEM.LOCAL.CAT.HEAD.CASE #case ].', links = set_links([COORDINATION_LINK, CASE_LINK]))
 
             # now go through the rules and add them to the grammar
             for rule in feat.get('rule'):
@@ -212,7 +214,7 @@ def write_coord_rule(ch1, ch2, par, path, featname, mylang):
         tn += 'RCOORD-DTR.' + path + featname + ' ' + ch2 + '].'
 
     if tn:
-        mylang.add(tn)
+        mylang.add(tn, links = set_links([COORDINATION_LINK]))
 
 
 def get_feature_resolution_names(ap):
@@ -291,17 +293,17 @@ def customize_conj_wo(mylang, ch, agr, csap):
     # it looks like this type addendum is all we'll need for head-mod
     mylang.add('head-mod-phrase :+\
               [ SYNSEM.LOCAL.COORDAGR #cagr,\
-                HEAD-DTR.SYNSEM.LOCAL.COORDAGR #cagr ].', '', section='addenda')
+                HEAD-DTR.SYNSEM.LOCAL.COORDAGR #cagr ].', '', section='addenda', links = set_links([COORDINATION_LINK]))
 
     # head-spec
 
     if ch.get('has-dets') == 'yes':
         if ch.get('noun-det-order') == 'noun-det':
             mylang.add(
-                'head-spec-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR ' + after + '].')
+                'head-spec-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR ' + after + '].', links = set_links([COORDINATION_LINK, WORDORDER_LINK]))
         if ch.get('noun-det-order') == 'det-noun':
             mylang.add(
-                'spec-head-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR ' + before + '].')
+                'spec-head-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR ' + before + '].', links = set_links([COORDINATION_LINK, WORDORDER_LINK]))
 
     customize_coordagr_word_order(ch, mylang, before, after, subj_on, obj_on)
 
@@ -318,12 +320,12 @@ def customize_coordagr_word_order(ch, mylang, before, after, subj_on, obj_on):
         if wo == 'sov' or wo == 'osv' or wo == 'ovs' or wo == 'v-final':
             hc = 'comp-head'
             mylang.add(
-                hc + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR ' + before + '].')
+                hc + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR ' + before + '].', links = set_links([COORDINATION_LINK, WORDORDER_LINK]))
 
         if wo == 'svo' or wo == 'vos' or wo == 'vso' or wo == 'v-initial':
             hc = 'head-comp'
             mylang.add(
-                hc + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR ' + after + '].')
+                hc + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR ' + after + '].', links = set_links([COORDINATION_LINK, WORDORDER_LINK]))
 
     # Head-subj order
 
@@ -331,28 +333,28 @@ def customize_coordagr_word_order(ch, mylang, before, after, subj_on, obj_on):
         if wo == 'osv' or wo == 'sov' or wo == 'svo' or wo == 'v-final':
             hs = 'subj-head'
             mylang.add(
-                hs + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR ' + before + '].')
+                hs + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR ' + before + '].', links = set_links([COORDINATION_LINK, WORDORDER_LINK]))
 
         if wo == 'ovs' or wo == 'vos' or wo == 'vso' or wo == 'v-initial':
             hs = 'head-subj'
             mylang.add(
-                hs + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR ' + after + '].')
+                hs + '-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR ' + after + '].', links = set_links([COORDINATION_LINK, WORDORDER_LINK]))
 
     if wo == 'free' or wo == 'v2':
         if subj_on == True:
             mylang.add(
-                'head-subj-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR ' + after + '].')
+                'head-subj-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR ' + after + '].', links = set_links([COORDINATION_LINK, WORDORDER_LINK]))
             mylang.add(
-                'subj-head-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR ' + before + '].')
+                'subj-head-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR ' + before + '].', links = set_links([COORDINATION_LINK, WORDORDER_LINK]))
         if obj_on == True:
             mylang.add(
-                'head-comp-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR ' + after + '].')
+                'head-comp-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR ' + after + '].', links = set_links([COORDINATION_LINK, WORDORDER_LINK]))
             mylang.add(
-                'comp-head-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR ' + before + '].')
+                'comp-head-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR ' + before + '].', links = set_links([COORDINATION_LINK, WORDORDER_LINK]))
             mylang.add(
-                'head-comp-phrase-2 := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR ' + after + '].')
+                'head-comp-phrase-2 := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR ' + after + '].', links = set_links([COORDINATION_LINK, WORDORDER_LINK]))
             mylang.add(
-                'comp-head-phrase-2 := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR ' + before + '].')
+                'comp-head-phrase-2 := [ NON-HEAD-DTR.SYNSEM.LOCAL.COORDAGR ' + before + '].', links = set_links([COORDINATION_LINK, WORDORDER_LINK]))
 
 
 def customize_mixed_strat_resolution(ch, mylang, target):
@@ -389,10 +391,10 @@ def customize_conjunct_agreement(mylang, ch, agr, csap, cs):
     mylang.set_section('phrases')
 
     mylang.add('bare-np-phrase := [ SYNSEM.LOCAL.COORDAGR #cagr,'
-               'HEAD-DTR.SYNSEM.LOCAL.COORDAGR #cagr ].')
+               'HEAD-DTR.SYNSEM.LOCAL.COORDAGR #cagr ].', links = set_links([COORDINATION_LINK]))
 
     mylang.add('pass-up-png-coord-rule := [ SYNSEM.LOCAL.COORDAGR #cagr,'
-               'NONCONJ-DTR.SYNSEM.LOCAL.COORDAGR #cagr ].')
+               'NONCONJ-DTR.SYNSEM.LOCAL.COORDAGR #cagr ].', links = set_links([COORDINATION_LINK]))
 
     # the coordination section rules
     mylang.set_section('coord')
@@ -403,7 +405,7 @@ def customize_conjunct_agreement(mylang, ch, agr, csap, cs):
     mylang.add('same-coordagr-rule := coord-phrase &\
                 [ SYNSEM.LOCAL.COORDAGR #cagr,\
                   RCOORD-DTR.SYNSEM.LOCAL.COORDAGR #cagr,\
-                  LCOORD-DTR.SYNSEM.LOCAL.COORDAGR #cagr ].')
+                  LCOORD-DTR.SYNSEM.LOCAL.COORDAGR #cagr ].', links = set_links([COORDINATION_LINK]))
 
     if agr.get('order') == 'closest' or 'last':
         top_and_mid_rules += [('-right-conjunct',
@@ -411,14 +413,14 @@ def customize_conjunct_agreement(mylang, ch, agr, csap, cs):
         mylang.add('right-conjunct-coord-rule := same-coordagr-rule &\
                   [ SYNSEM.LOCAL [ COORDAGR r,\
                                    CONT.HOOK.INDEX.PNG #png ],\
-                    RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png ].')
+                    RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png ].', links = set_links([COORDINATION_LINK]))
 
     if agr.get('order') == 'closest' or 'first':
         top_and_mid_rules += [('-left-conjunct', 'left-conjunct-coord-rule &')]
         mylang.add('left-conjunct-coord-rule := same-coordagr-rule &\
                   [ SYNSEM.LOCAL [ COORDAGR l,\
                                    CONT.HOOK.INDEX.PNG #png ],\
-                    LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png ].')
+                    LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png ].', links = set_links([COORDINATION_LINK]))
 
     # now the word order stuff
     customize_conj_wo(mylang, ch, agr, csap)
@@ -443,7 +445,7 @@ def customize_agreement_pattern(mylang, ch, csap, cs):
                'HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png ].')
     mylang.add('pass-up-png-coord-rule := bottom-coord-phrase & \
         [SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png,\
-        NONCONJ-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png ].')
+        NONCONJ-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png ].', links = set_links([COORDINATION_LINK]))
 
     return rules
 
@@ -458,12 +460,12 @@ def customize_poss_feats(mylang, rule):
                                           RCOORD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #possessor,\
                                                                         POSSESSUM #possessum ],\
                                           LCOORD-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #possessor,\
-                                                                        POSSESSUM #possessum ] ].', section='addenda')
+                                                                        POSSESSUM #possessum ] ].', section='addenda', links = set_links([COORDINATION_LINK, ADNOMINALPOSSESSION_LINK]))
     elif rule == 'bottom':
         mylang.add('bottom-coord-phrase :+ [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #possessor,\
                                                                 POSSESSUM #possessum ],\
                                              NONCONJ-DTR.SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR #possessor,\
-                                                                         POSSESSUM #possessum ] ].', section='addenda')
+                                                                         POSSESSUM #possessum ] ].', section='addenda', links = set_links([COORDINATION_LINK, ADNOMINALPOSSESSION_LINK]))
 
 
 def customize_coordination(mylang, ch, lexicon, rules, irules):
@@ -568,11 +570,11 @@ def customize_coordination(mylang, ch, lexicon, rules, irules):
         # how this library works. Adverbs are unlikely to require agreement though?
         if len(ch.get('adv')) > 0:
             mylang.add('adv1-top-coord-rule := basic-adv-top-coord-rule & monopoly-top-coord-rule & \
-                            [ SYNSEM.LOCAL.COORD-STRAT "1" ].')
+                            [ SYNSEM.LOCAL.COORD-STRAT "1" ].', links = set_links([COORDINATION_LINK]))
             mylang.add('''adv1-mid-coord-rule := basic-adv-mid-coord-rule & monopoly-mid-coord-rule &
-                            [ SYNSEM.LOCAL.COORD-STRAT "1" ].''')
+                            [ SYNSEM.LOCAL.COORD-STRAT "1" ].''', links = set_links([COORDINATION_LINK]))
             mylang.add('''adv1-bottom-coord-rule := conj-first-bottom-coord-rule & adv-bottom-coord-phrase &
-                            [ SYNSEM.LOCAL.COORD-STRAT "1" ].''')
+                            [ SYNSEM.LOCAL.COORD-STRAT "1" ].''', links = set_links([COORDINATION_LINK]))
             rules.add('adv1-bottom-coord := adv1-bottom-coord-rule.')
             rules.add('adv1-mid-coord := adv1-mid-coord-rule.')
             rules.add('adv1-top-coord := adv1-top-coord-rule.')
