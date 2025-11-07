@@ -3,6 +3,8 @@ from gmcs.linglib import case
 from gmcs.linglib.lexbase import ALL_LEX_TYPES
 from gmcs.utils import get_name
 from gmcs.lib import TDLHierarchy
+from gmcs.linglib import docstrings
+from docstrings import DIRECTINVERSE_LINK, set_links
 
 dirinv_geom = 'LOCAL.CAT.HEAD.DIRECTION'
 
@@ -43,9 +45,9 @@ def write_dir_inv_types(choices, mylang, hierarchies):
     hier.save(mylang)
 
     if choices.has_SCARGS():
-        mylang.add('word-or-lexrule :+ [ SC-ARGS list ].', section='addenda')
+        mylang.add('word-or-lexrule :+ [ SC-ARGS list ].', section='addenda', links = set_links([DIRECTINVERSE_LINK]))
         mylang.add(
-            'lex-rule :+ [ SC-ARGS #1, DTR.SC-ARGS #1 ].', section='addenda')
+            'lex-rule :+ [ SC-ARGS #1, DTR.SC-ARGS #1 ].', section='addenda', links = set_links([DIRECTINVERSE_LINK]))
 
     cases = case.case_names(choices)
     features = choices.features()
@@ -61,7 +63,7 @@ def write_dir_inv_types(choices, mylang, hierarchies):
     mylang.set_section('dirinv')
     mylang.add_literal(';;; Direct-inverse scale')
     supertype = 'dir-inv-scale'
-    mylang.add(supertype + ' := canonical-synsem.')
+    mylang.add(supertype + ' := canonical-synsem.', links = set_links([DIRECTINVERSE_LINK]))
 
     scale_len = len(choices.get('scale', ''))
 
@@ -78,7 +80,7 @@ def write_dir_inv_types(choices, mylang, hierarchies):
         # create the left type in the pair
         type = 'dir-inv-' + str(i)
 
-        mylang.add(type + ' := ' + supertype + '.')
+        mylang.add(type + ' := ' + supertype + '.', links = set_links([DIRECTINVERSE_LINK]))
 
         for n in values:
             vset = values[n]
@@ -111,7 +113,7 @@ def write_dir_inv_types(choices, mylang, hierarchies):
         # create the right type in the pair
         type = 'dir-inv-non-' + str(i)
 
-        mylang.add(type + ' := ' + supertype + '.')
+        mylang.add(type + ' := ' + supertype + '.', links = set_links([DIRECTINVERSE_LINK]))
 
         for n in values:
             vset = values[n]
@@ -141,12 +143,12 @@ def write_dir_inv_types(choices, mylang, hierarchies):
     for i in range(1, scale_len):
         type = 'dir-inv-' + str(i)
         subtype = type + '-unexpressed'
-        mylang.add(subtype + ' := ' + type + ' & unexpressed.')
+        mylang.add(subtype + ' := ' + type + ' & unexpressed.', links = set_links([DIRECTINVERSE_LINK]))
 
     # now add the last, right-branching leaf
     type = 'dir-inv-non-' + str(scale_len-1)
     subtype = type + '-unexpressed'
-    mylang.add(subtype + ' := ' + type + ' & unexpressed.')
+    mylang.add(subtype + ' := ' + type + ' & unexpressed.', links = set_links([DIRECTINVERSE_LINK]))
 
 ############################
 ### LEXICAL RULE METHODS ###
@@ -157,18 +159,18 @@ def write_dir_inv_lexrule_supertypes(choices, mylang):
     mylang.set_section('dirinv')
     mylang.add_literal(';;; Direct-inverse lexical rules')
     mylang.add('dir-lex-rule := add-only-no-ccont-rule & ' +
-               '[ SYNSEM.' + dirinv_geom + ' dir ].')
+               '[ SYNSEM.' + dirinv_geom + ' dir ].', links = set_links([DIRECTINVERSE_LINK]))
     mylang.add('inv-lex-rule := add-only-no-ccont-rule & ' +
-               '[ SYNSEM.' + dirinv_geom + ' inv ].')
+               '[ SYNSEM.' + dirinv_geom + ' inv ].', links = set_links([DIRECTINVERSE_LINK]))
     if choices.has_SCARGS():
         mylang.add('dir-lex-rule := \
                    [ SC-ARGS < #1, #2 >, \
                      SYNSEM.LOCAL.CAT.VAL [ SUBJ < #1 >, \
-                                            COMPS < #2 > ] ].')
+                                            COMPS < #2 > ] ].', links = set_links([DIRECTINVERSE_LINK]))
         mylang.add('inv-lex-rule := \
                    [ SC-ARGS < #1, #2 >, \
                      SYNSEM.LOCAL.CAT.VAL [ SUBJ < #2 >, \
-                                            COMPS < #1 > ] ].')
+                                            COMPS < #1 > ] ].', links = set_links([DIRECTINVERSE_LINK]))
 
 
 def add_lexrules(choices):
