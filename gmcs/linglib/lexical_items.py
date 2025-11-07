@@ -28,8 +28,9 @@ from gmcs.linglib.clausalmods import get_subord_stemids
 from gmcs.linglib.clausalmods import add_subord_name
 from gmcs.feature_type_use import USED_TYPES
 
-from gmcs.linglib.docstrings import set_links
+
 from gmcs.linglib import docstrings
+from docstrings import set_links
 
 # helper functions
 
