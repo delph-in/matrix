@@ -670,7 +670,7 @@ def unescape(text):
             except KeyError:
                 pass
             return text  # leave as is
-    return re.sub("&#?\w+;", fixup, text) #added second \ to fix syntax warning about escape character
+    return re.sub("&#?\w+;", fixup, text)
 
 
 if __name__ == '__main__':
