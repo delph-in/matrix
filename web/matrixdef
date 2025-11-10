@@ -227,7 +227,7 @@ BeginIter person-subtype{i} "a Subtype"
 
   Text name "Subtype {i} name" "Name: " "" 20
 
-  MultiSelect number "Subtype {i} number" " in the first person: " ""
+  MultiSelect number "Number" " in the first person: " ""
   fillnumbers
 
 EndIter person-subtype
