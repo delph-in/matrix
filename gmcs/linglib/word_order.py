@@ -4,6 +4,8 @@ from gmcs.linglib.clausalcomps import extraposed_comps
 from gmcs.linglib.nominalized_clauses import need_specialized_head_spec, get_nmz_clause_wo
 from gmcs.utils import get_name
 from gmcs.linglib import lexbase
+from gmcs.linglib import docstrings
+from gmcs.linglib.docstrings import set_links
 
 def customize_word_order(mylang, ch, rules):
     """

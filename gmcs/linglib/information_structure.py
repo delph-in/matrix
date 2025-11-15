@@ -3,7 +3,7 @@ from gmcs.utils import get_name
 from gmcs.utils import TDLencode
 from gmcs.utils import orth_encode
 from gmcs.linglib import docstrings
-from docstrings import INFORMATIONSTRUCTURE_LINK, set_links
+from gmcs.linglib.docstrings import INFORMATIONSTRUCTURE_LINK, set_links
 
 g_tdls = []
 

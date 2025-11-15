@@ -30,7 +30,7 @@ from gmcs.feature_type_use import USED_TYPES
 
 
 from gmcs.linglib import docstrings
-from docstrings import set_links
+from gmcs.linglib.docstrings import LEXICON_NOUNS_LINK, WORDORDER_LINK, LEXICON_VERBS_LINK, LEXICON_DETERMINERS_LINK, set_links
 
 # helper functions
 
@@ -905,7 +905,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
             if noun.get('coverb-type') == 'cv-opt':
                 # create basic-noun-lex for noun
                 basic_ntype = get_name(noun) + '-basic-noun-lex'
-                mylang.add(basic_ntype + ' := basic-noun-lex.', links = set_links([LEXICON_NOUNS_LINK])
+                mylang.add(basic_ntype + ' := basic-noun-lex.', links = set_links([LEXICON_NOUNS_LINK]))
                 features.customize_feature_values(
                     mylang, ch, hierarchies, noun, basic_ntype, 'noun')
 
@@ -1323,7 +1323,7 @@ def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
                 mylang.add('''%s [ SYNSEM.LOCAL.CAT [ HEAD.PRD -,
                                               VAL.SUBJ < > ] ].''' %
                            attr_only_map[sort]['type_name'],
-                           section=attr_only_map[sort]['section']), links = set_links([LEXICON_ADJECTIVES_LINK])
+                           section=attr_only_map[sort]['section'], links = set_links([LEXICON_ADJECTIVES_LINK]))
 
     # Add predicative-only adjective types
     if adj_types['pred_only']:

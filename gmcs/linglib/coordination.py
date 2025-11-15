@@ -2,7 +2,7 @@ from gmcs.utils import TDLencode
 from gmcs.utils import orth_encode
 from gmcs.lib import TDLHierarchy
 from gmcs.linglib import docstrings
-from docstrings import ADNOMINALPOSSESSION_LINK, CASE_LINK, COORDINATION_LINK, WORDORDER_LINK, set_links
+from gmcs.linglib.docstrings import ADNOMINALPOSSESSION_LINK, CASE_LINK, COORDINATION_LINK, WORDORDER_LINK, set_links
 
 def define_coord_strat(num, pos, top, mid, bot, left, pre, suf, mylang,
                        rules, irules, resrules, mixed_strat=False):

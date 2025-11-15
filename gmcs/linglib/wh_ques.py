@@ -10,6 +10,9 @@ from gmcs.utils import get_name, TDLencode, orth_encode
 
 from gmcs.feature_type_use import USED_TYPES
 
+from gmcs.linglib import docstrings
+from gmcs.linglib.docstrings import set_links
+
 """
 CONSTANTS
 """

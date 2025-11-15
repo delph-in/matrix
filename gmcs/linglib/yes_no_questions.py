@@ -1,5 +1,8 @@
 from gmcs.linglib import lexbase
 
+from gmcs.linglib import docstrings
+from gmcs.linglib.docstrings import set_links
+
 INT_CL = '''int-cl := head-only & interrogative-clause &
   [ SYNSEM [ LOCAL.CAT [ HEAD +vc, VAL #val,
                                          MC bool ],

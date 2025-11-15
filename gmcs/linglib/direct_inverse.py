@@ -4,7 +4,7 @@ from gmcs.linglib.lexbase import ALL_LEX_TYPES
 from gmcs.utils import get_name
 from gmcs.lib import TDLHierarchy
 from gmcs.linglib import docstrings
-from docstrings import DIRECTINVERSE_LINK, set_links
+from gmcs.linglib.docstrings import DIRECTINVERSE_LINK, set_links
 
 dirinv_geom = 'LOCAL.CAT.HEAD.DIRECTION'
 

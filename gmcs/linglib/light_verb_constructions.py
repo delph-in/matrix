@@ -6,7 +6,7 @@ from gmcs.choices import ChoicesFile
 from gmcs.constants import ON, YES, INTRANSITIVE, TRANSITIVE
 
 from gmcs.linglib import docstrings
-from docstrings import LIGHTVERBCONSTRUCTIONS_LINK, WORDORDER_LINK, set_links
+from gmcs.linglib.docstrings import set_links
 
 ###########################################
 ### CONSTANTS (specific to this module) ###

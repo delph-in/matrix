@@ -1,5 +1,7 @@
 from gmcs.utils import get_name
 from gmcs.linglib import lexbase
+from gmcs.linglib import docstrings
+from gmcs.linglib.docstrings import set_links
 
 # Constants for lexical rules
 

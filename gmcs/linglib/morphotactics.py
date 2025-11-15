@@ -15,7 +15,7 @@ from gmcs.linglib.nominalized_clauses import needs_anc_wo_feat
 from functools import reduce
 from gmcs.linglib.light_verb_constructions import fix_coverb_pc_inputs
 from gmcs.linglib import docstrings
-from docstrings import ADNOMINALPOSSESSION_LINK, EVIDENTIALS_LINK, LEXICON_ADJECTIVES_LINK, MORPHOLOGY_LINK, WHQUESTIONS_LINK, set_links
+from gmcs.linglib.docstrings import set_links, MORPHOLOGY_LINK
 
 # Contents
 # 1. Module Variables
