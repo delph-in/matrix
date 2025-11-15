@@ -1,7 +1,7 @@
 from gmcs.utils import get_name
 from gmcs.linglib import lexbase
 from gmcs.linglib import docstrings
-from gmcs.linglib.docstrings import set_links
+from gmcs.linglib.docstrings import ADNOMINALPOSSESSION_LINK, NOMINALIZEDCLAUSES_LINK, set_links
 
 # Constants for lexical rules
 
@@ -268,7 +268,7 @@ def add_sem_empty_adp(mylang, nmz_lrt, type_name, geom, arg):
             head = feat['head']
             if head == arg:
                 mylang.set_section('lexrules')
-                mylang.add(type_name + ':= [ ' + geom +  ' adp ] > ].', merge=True)
+                mylang.add(type_name + ':= [ ' + geom +  ' adp ] > ].', merge=True, links = set_links([NOMINALIZEDCLAUSES_LINK]))
 
 def write_head_type(ch, mylang, nmz_lrt, type_name, geom, arg):
     """
@@ -284,7 +284,7 @@ def write_head_type(ch, mylang, nmz_lrt, type_name, geom, arg):
         mylang.set_section('lexrules')
         head_type = get_head_type(arg, nmz_lrt, ch)
         mylang.add(
-            type_name + ' := [ ' + geom + ' ' + head_type + '] > ].',merge=True)
+            type_name + ' := [ ' + geom + ' ' + head_type + '] > ].',merge=True, links = set_links([NOMINALIZEDCLAUSES_LINK]))
 
 def customize_non_user_nmz_features(ch, mylang, nmz_lrt, val, pos, type_name, geom):
     """
@@ -346,13 +346,13 @@ def customize_non_user_nmz_features(ch, mylang, nmz_lrt, val, pos, type_name, ge
                 mylang.set_section('lexrules')
                 #nominalized verb only modified by adjectives
                 if adj and not adv:
-                    mylang.add(type_name  + ' := [' +  geom + ' - ].',merge=True)
+                    mylang.add(type_name  + ' := [' +  geom + ' - ].',merge=True, links = set_links([NOMINALIZEDCLAUSES_LINK]))
                 #nominalized verb only modified by adverbs
                 elif adv and not adj:
-                    mylang.add(type_name + ' := [ ' + geom + ' + ].',merge=True)
+                    mylang.add(type_name + ' := [ ' + geom + ' + ].',merge=True, links = set_links([NOMINALIZEDCLAUSES_LINK]))
                 ##nominalized verb modified by neither
                 elif not adv or not adj:
-                    mylang.add(type_name + ' := [ ' + geom + ' na ].',merge=True)
+                    mylang.add(type_name + ' := [ ' + geom + ' na ].',merge=True, links = set_links([NOMINALIZEDCLAUSES_LINK]))
 
 def get_nmz_clause_wo(ch):
     """
@@ -743,7 +743,7 @@ def update_lexical_rules(mylang, ch):
                         lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') +
                                                   ['trans-sent-lex-rule'])
                         if has_poss_strats:
-                            mylang.add(get_name(lrt) + '-lex-rule :=' + non_poss_comp)
+                            mylang.add(get_name(lrt) + '-lex-rule :=' + non_poss_comp, links = set_links([NOMINALIZEDCLAUSES_LINK, ADNOMINALPOSSESSION_LINK]))
                 elif nmz_type == 'alt-sent':
                     if (intrans and not trans) or needs_intrans:
                         lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') +
@@ -752,7 +752,7 @@ def update_lexical_rules(mylang, ch):
                         lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') +
                                                   ['trans-sent-alt-lex-rule'])
                         if has_poss_strats:
-                            mylang.add(get_name(lrt) + '-lex-rule :=' + non_poss_comp)
+                            mylang.add(get_name(lrt) + '-lex-rule :=' + non_poss_comp, links = set_links([NOMINALIZEDCLAUSES_LINK, ADNOMINALPOSSESSION_LINK]))
                     customize_non_user_nmz_features(ch, mylang, lrt, val, 'nmz-subj-change', get_name(lrt) + '-lex-rule', path_subj)
                 elif nmz_type == 'all-comps':
                     if (intrans and not trans) or needs_intrans:
@@ -760,7 +760,7 @@ def update_lexical_rules(mylang, ch):
                                                   ['comps-anc-intrans-lex-rule'])
                         customize_non_user_nmz_features(ch, mylang, lrt, val, 'nmz-comp-change', get_name(lrt) + '-lex-rule', path_comps)
                         if has_poss_strats:
-                            mylang.add(get_name(lrt) + '-lex-rule :=' + non_poss_comp)
+                            mylang.add(get_name(lrt) + '-lex-rule :=' + non_poss_comp, links = set_links([NOMINALIZEDCLAUSES_LINK, ADNOMINALPOSSESSION_LINK]))
                     elif trans:
                         if ns.get('all_comps_arg_order') == 'agent':
                             lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') +
@@ -771,7 +771,7 @@ def update_lexical_rules(mylang, ch):
                         if has_poss_strats:
                             mylang.add(get_name(lrt) + '-lex-rule := [SYNSEM.LOCAL.CAT.VAL.COMPS < [LOCAL.CAT [HEAD.POSSESSOR nonpossessive, \
                                                                         POSSESSUM nonpossessive]], [LOCAL.CAT [HEAD.POSSESSOR nonpossessive, \
-                                                                        POSSESSUM nonpossessive]] >].')
+                                                                        POSSESSUM nonpossessive]] >].', links = set_links([NOMINALIZEDCLAUSES_LINK, ADNOMINALPOSSESSION_LINK]))
                         customize_non_user_nmz_features(ch, mylang, lrt, val, 'nmz-comp-change', get_name(lrt) + '-lex-rule', path_comps)
                         customize_non_user_nmz_features(ch, mylang, lrt, val, 'nmz-second-comp-change', get_name(lrt) + '-lex-rule', path_second_comps)
 
@@ -793,7 +793,7 @@ def update_lexical_rules(mylang, ch):
                         lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') +
                                                   ['trans-poss-acc-lex-rule'])
                         if has_poss_strats:
-                            mylang.add(get_name(lrt) + '-lex-rule :=' + non_poss_comp)
+                            mylang.add(get_name(lrt) + '-lex-rule :=' + non_poss_comp, links = set_links([NOMINALIZEDCLAUSES_LINK, ADNOMINALPOSSESSION_LINK]))
                 elif nmz_type == 'erg-poss':
                     if needs_extra_rule:
                         lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') +
@@ -805,7 +805,7 @@ def update_lexical_rules(mylang, ch):
                         lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') +
                                                     ['trans-erg-poss-lex-rule'])
                         if has_poss_strats:
-                            mylang.add(get_name(lrt) + '-lex-rule :=' + non_poss_comp)
+                            mylang.add(get_name(lrt) + '-lex-rule :=' + non_poss_comp, links = set_links([NOMINALIZEDCLAUSES_LINK, ADNOMINALPOSSESSION_LINK]))
                     customize_non_user_nmz_features(ch, mylang, lrt, val, 'nmz-comp-change', get_name(lrt) + '-lex-rule', path_comps)
 
                 elif nmz_type == 'nominal':
@@ -819,7 +819,7 @@ def update_lexical_rules(mylang, ch):
                         lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') +
                                                     ['trans-nominal-lex-rule'])
                         if has_poss_strats:
-                            mylang.add(get_name(lrt) + '-lex-rule :=' + non_poss_comp)
+                            mylang.add(get_name(lrt) + '-lex-rule :=' + non_poss_comp, links = set_links([NOMINALIZEDCLAUSES_LINK, ADNOMINALPOSSESSION_LINK]))
                     customize_non_user_nmz_features(ch, mylang, lrt, val, 'nmz-comp-change', get_name(lrt) + '-lex-rule', path_comps)
 
 def add_nmz_feature(mylang):
@@ -827,11 +827,11 @@ def add_nmz_feature(mylang):
     Add NMZ feature to addenda, verb, and nouns.
     """
     mylang.set_section('addenda')
-    mylang.add('head :+ [ NMZ bool ].')
+    mylang.add('head :+ [ NMZ bool ].', links = set_links([NOMINALIZEDCLAUSES_LINK]))
     mylang.set_section('noun-lex')
-    mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT.HEAD.NMZ - ].')
+    mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT.HEAD.NMZ - ].', links = set_links([NOMINALIZEDCLAUSES_LINK]))
     mylang.set_section('verb-lex')
-    mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HEAD.NMZ - ].')
+    mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HEAD.NMZ - ].', links = set_links([NOMINALIZEDCLAUSES_LINK]))
 
 
 def add_anc_lex_supertype(mylang, ch): 
@@ -842,12 +842,12 @@ def add_anc_lex_supertype(mylang, ch):
         ch (ChoicesFile): the entire choices object 
     """
     mylang.set_section('lexrules')
-    mylang.add(ANC_LEX_RULE)
+    mylang.add(ANC_LEX_RULE, links = set_links([NOMINALIZEDCLAUSES_LINK]))
     if ('poss-strat' in ch or 'poss-pron' in ch):
         mylang.add('anc-lex-rule := [ SYNSEM.LOCAL.CAT [HEAD [POSSESSOR #possessor], \
                                                         POSSESSUM #possessum ],\
                                      DTR.SYNSEM.LOCAL [ CAT [ HEAD [POSSESSOR #possessor & nonpossessive], \
-                                                              POSSESSUM #possessum & nonpossessive ] ] ].')
+                                                              POSSESSUM #possessum & nonpossessive ] ] ].', links = set_links([ADNOMINALPOSSESSION_LINK]))
 
 def add_nmz_clause_phrases(ch, mylang, rules):
     """
@@ -858,10 +858,10 @@ def add_nmz_clause_phrases(ch, mylang, rules):
         rules: rules
     """
     mylang.set_section('phrases')
-    mylang.add(HIGH_NMZ_CLAUSE)
+    mylang.add(HIGH_NMZ_CLAUSE, links = set_links([NOMINALIZEDCLAUSES_LINK]))
     if 'poss-strat' in ch or 'poss-pron' in ch:
             mylang.add('high-nominalized-clause-phrase := [SYNSEM.LOCAL.CAT.VAL.SPR < [LOCAL.CAT.HEAD.POSSESSOR nonpossessive] >].')
-    rules.add('high-nominalized-clause := high-nominalized-clause-phrase.')
+    rules.add('high-nominalized-clause := high-nominalized-clause-phrase.', links = set_links([ADNOMINALPOSSESSION_LINK]))
 
 
 def add_nmz_lexrules(ch, mylang, ns, nmz_type, single_arg, arg_order):
@@ -891,75 +891,75 @@ def add_nmz_lexrules(ch, mylang, ns, nmz_type, single_arg, arg_order):
         
     mylang.set_section('lexrules')
     if nmz_type == 'sentential' or nmz_type == 'alt-sent':
-        mylang.add(SENTENTIAL_LEX_RULE)
+        mylang.add(SENTENTIAL_LEX_RULE, links = set_links([NOMINALIZEDCLAUSES_LINK]))
         if 'poss-strat' in ch or 'poss-pron' in ch:
             mylang.add('sentential-lex-rule := [SYNSEM.LOCAL.CAT.VAL.SUBJ < [LOCAL.CAT [HEAD.POSSESSOR nonpossessive, \
-                                                                                        POSSESSUM nonpossessive]]>].')
+                                                                                        POSSESSUM nonpossessive]]>].', links = set_links([ADNOMINALPOSSESSION_LINK]))
         if nmz_type == 'sentential':
             if intrans:
-                mylang.add(INTRANS_SENT_LEX_RULE)
+                mylang.add(INTRANS_SENT_LEX_RULE, links = set_links([NOMINALIZEDCLAUSES_LINK]))
             if trans:
-                mylang.add(TRANS_SENT_LEX_RULE)
+                mylang.add(TRANS_SENT_LEX_RULE, links = set_links([NOMINALIZEDCLAUSES_LINK]))
         else:
             if intrans:
-                mylang.add(INTRANS_SENT_ALT_LEX_RULE)
+                mylang.add(INTRANS_SENT_ALT_LEX_RULE, links = set_links([NOMINALIZEDCLAUSES_LINK]))
             if trans:
-                mylang.add(TRANS_SENT_ALT_LEX_RULE)
+                mylang.add(TRANS_SENT_ALT_LEX_RULE, links = set_links([NOMINALIZEDCLAUSES_LINK]))
 
     else:
-        mylang.add(ANC_LOW_NMZ_LEX_RULE)
+        mylang.add(ANC_LOW_NMZ_LEX_RULE, links = set_links([NOMINALIZEDCLAUSES_LINK]))
         if nmz_type == 'all-comps':
-            mylang.add(COMP_ANC_LEX_RULE)
+            mylang.add(COMP_ANC_LEX_RULE, links = set_links([NOMINALIZEDCLAUSES_LINK]))
             if 'poss-strat' in ch or 'poss-pron' in ch:
-                mylang.add('comps-anc-lex-rule := [ SYNSEM.LOCAL.CAT.VAL.SPR < [LOCAL.CAT.HEAD.POSSESSOR nonpossessive] > ].')
+                mylang.add('comps-anc-lex-rule := [ SYNSEM.LOCAL.CAT.VAL.SPR < [LOCAL.CAT.HEAD.POSSESSOR nonpossessive] > ].', links = set_links([ADNOMINALPOSSESSION_LINK]))
             if intrans:
-                mylang.add(COMP_ANC_INTRANS_LEX_RULE)
+                mylang.add(COMP_ANC_INTRANS_LEX_RULE, links = set_links([NOMINALIZEDCLAUSES_LINK]))
             if  trans and arg_order == 'agent':
-                mylang.add(COMP_SUBJ_FIRST_TRANS_LEX_RULE)
+                mylang.add(COMP_SUBJ_FIRST_TRANS_LEX_RULE, links = set_links([NOMINALIZEDCLAUSES_LINK]))
             if trans and arg_order == 'patient':
-                mylang.add(COMP_OBJ_FIRST_TRANS_LEX_RULE)
+                mylang.add(COMP_OBJ_FIRST_TRANS_LEX_RULE, links = set_links([NOMINALIZEDCLAUSES_LINK]))
         elif intrans:
             lex_rule_name = 'non-sent-anc-intrans-lex-rule'
-            mylang.add(NON_SENT_ANC_INTRANS_LEX_RULE_SUPERTPYE)
-            mylang.add(NON_SENT_ANC_INTRANS_LEX_RULE)
+            mylang.add(NON_SENT_ANC_INTRANS_LEX_RULE_SUPERTPYE, links = set_links([NOMINALIZEDCLAUSES_LINK]))
+            mylang.add(NON_SENT_ANC_INTRANS_LEX_RULE, links = set_links([NOMINALIZEDCLAUSES_LINK]))
             if 'poss-strat' in ch or 'poss-pron' in ch:
-                mylang.add('non-sent-anc-intrans-lex-rule := [ SYNSEM.LOCAL.CAT.VAL.SPR < [LOCAL.CAT.HEAD.POSSESSOR possessive] > ].')
+                mylang.add('non-sent-anc-intrans-lex-rule := [ SYNSEM.LOCAL.CAT.VAL.SPR < [LOCAL.CAT.HEAD.POSSESSOR possessive] > ].', links = set_links([ADNOMINALPOSSESSION_LINK]))
             if det_rules:
-                mylang.add('det-' + lex_rule_name + ':=' + lex_rule_name + '_supertype &' + det_rule_constraint)
+                mylang.add('det-' + lex_rule_name + ':=' + lex_rule_name + '_supertype &' + det_rule_constraint, links = set_links([NOMINALIZEDCLAUSES_LINK]))
         if trans and nmz_type == 'poss-acc':
             lex_rule_name = 'trans-poss-acc-lex-rule'
-            mylang.add(TRANS_POSS_ACC_LEX_RULE_SUPERTYPE)
-            mylang.add(TRANS_POSS_ACC_LEX_RULE)
+            mylang.add(TRANS_POSS_ACC_LEX_RULE_SUPERTYPE, links = set_links([NOMINALIZEDCLAUSES_LINK]))
+            mylang.add(TRANS_POSS_ACC_LEX_RULE, links = set_links([NOMINALIZEDCLAUSES_LINK]))
             if 'poss-strat' in ch or 'poss-pron' in ch:
-                mylang.add('trans-poss-acc-lex-rule := [ SYNSEM.LOCAL.CAT.VAL.SPR < [LOCAL.CAT.HEAD.POSSESSOR possessive] > ].')
+                mylang.add('trans-poss-acc-lex-rule := [ SYNSEM.LOCAL.CAT.VAL.SPR < [LOCAL.CAT.HEAD.POSSESSOR possessive] > ].', links = set_links([ADNOMINALPOSSESSION_LINK]))
             if det_rules:
-                mylang.add('det-' + lex_rule_name + ':=' + lex_rule_name + '_supertype &' + det_rule_constraint)
+                mylang.add('det-' + lex_rule_name + ':=' + lex_rule_name + '_supertype &' + det_rule_constraint, links = set_links([NOMINALIZEDCLAUSES_LINK]))
         if trans and nmz_type == 'erg-poss':
             lex_rule_name = 'trans-erg-poss-lex-rule'
-            mylang.add(TRANS_ERG_POSS_LEX_RULE_SUPERTYPE)
-            mylang.add(TRANS_ERG_POSS_LEX_RULE)
+            mylang.add(TRANS_ERG_POSS_LEX_RULE_SUPERTYPE, links = set_links([NOMINALIZEDCLAUSES_LINK]))
+            mylang.add(TRANS_ERG_POSS_LEX_RULE, links = set_links([NOMINALIZEDCLAUSES_LINK]))
             if 'poss-strat' in ch or 'poss-pron' in ch:
-                mylang.add('trans-erg-poss-lex-rule := [ SYNSEM.LOCAL.CAT.VAL.SPR < [LOCAL.CAT.HEAD.POSSESSOR possessive] > ].')
+                mylang.add('trans-erg-poss-lex-rule := [ SYNSEM.LOCAL.CAT.VAL.SPR < [LOCAL.CAT.HEAD.POSSESSOR possessive] > ].', links = set_links([ADNOMINALPOSSESSION_LINK]))
             if det_rules:
-                mylang.add('det-' + lex_rule_name + ':=' + lex_rule_name + '_supertype &' + det_rule_constraint)
+                mylang.add('det-' + lex_rule_name + ':=' + lex_rule_name + '_supertype &' + det_rule_constraint, links = set_links([NOMINALIZEDCLAUSES_LINK]))
         if trans and nmz_type == 'nominal':
             lex_rule_name = 'trans-nominal-lex-rule'
-            mylang.add(TRANS_NOMINAL_LEX_RULE_SUPERTYPE)
-            mylang.add(TRANS_NOMINAL_LEX_RULE)
+            mylang.add(TRANS_NOMINAL_LEX_RULE_SUPERTYPE, links = set_links([NOMINALIZEDCLAUSES_LINK]))
+            mylang.add(TRANS_NOMINAL_LEX_RULE, links = set_links([NOMINALIZEDCLAUSES_LINK]))
             if 'poss-strat' in ch or 'poss-pron' in ch:
-                mylang.add('trans-nominal-lex-rule := [ SYNSEM.LOCAL.CAT.VAL.SPR < [LOCAL.CAT.HEAD.POSSESSOR possessive] > ].')
+                mylang.add('trans-nominal-lex-rule := [ SYNSEM.LOCAL.CAT.VAL.SPR < [LOCAL.CAT.HEAD.POSSESSOR possessive] > ].', links = set_links([ADNOMINALPOSSESSION_LINK]))
             if det_rules:
-                mylang.add('det-' + lex_rule_name + ':=' + lex_rule_name + '_supertype &' + det_rule_constraint)
+                mylang.add('det-' + lex_rule_name + ':=' + lex_rule_name + '_supertype &' + det_rule_constraint, links = set_links([NOMINALIZEDCLAUSES_LINK]))
         if trans and single_arg == 'on':
-            mylang.add(lex_rule_name + ':=  [ SYNSEM.LOCAL.CAT.VAL.SPR < [OPT -] >].')
+            mylang.add(lex_rule_name + ':=  [ SYNSEM.LOCAL.CAT.VAL.SPR < [OPT -] >].', links = set_links([NOMINALIZEDCLAUSES_LINK]))
             if det_rules:
-                mylang.add('det-' + lex_rule_name + ':=  [ SYNSEM.LOCAL.CAT.VAL.COMPS < [OPT +] >].')
+                mylang.add('det-' + lex_rule_name + ':=  [ SYNSEM.LOCAL.CAT.VAL.COMPS < [OPT +] >].', links = set_links([NOMINALIZEDCLAUSES_LINK]))
                 #Non-possessive argument cannot appear by itself along with a determiner
-                mylang.add(lex_rule_name + ':=  [ SYNSEM.LOCAL.CAT.VAL.SPR < [LOCAL.CAT.HEAD.POSSESSOR possessive] >].')
+                mylang.add(lex_rule_name + ':=  [ SYNSEM.LOCAL.CAT.VAL.SPR < [LOCAL.CAT.HEAD.POSSESSOR possessive] >].', links = set_links([ADNOMINALPOSSESSION_LINK]))
             if nmz_type == 'poss-acc' or nmz_type == 'nominal':
-                mylang.add(TRANS_NON_ERG_POSS_OBJ_ONLY_LEX)
+                mylang.add(TRANS_NON_ERG_POSS_OBJ_ONLY_LEX, links = set_links([NOMINALIZEDCLAUSES_LINK]))
             elif nmz_type == 'erg-poss':
-                mylang.add(TRANS_ERG_POSS_SUBJ_ONLY_LEX)
+                mylang.add(TRANS_ERG_POSS_SUBJ_ONLY_LEX, links = set_links([NOMINALIZEDCLAUSES_LINK]))
 
 
 def add_nmz_mod_constraints(ch, mylang):
@@ -971,13 +971,13 @@ def add_nmz_mod_constraints(ch, mylang):
         mylang (TDLFile): TDL representation of language
     """
     mylang.set_section('addenda')
-    mylang.add('head :+ [ ADV-MOD luk ].')
+    mylang.add('head :+ [ ADV-MOD luk ].', links = set_links([NOMINALIZEDCLAUSES_LINK]))
     mylang.set_section('noun-lex')
-    mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT.HEAD.ADV-MOD - ].')
+    mylang.add('noun-lex := [ SYNSEM.LOCAL.CAT.HEAD.ADV-MOD - ].', links = set_links([NOMINALIZEDCLAUSES_LINK]))
     mylang.set_section('verb-lex')
-    mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HEAD.ADV-MOD + ].')
+    mylang.add('verb-lex := [ SYNSEM.LOCAL.CAT.HEAD.ADV-MOD + ].', links = set_links([NOMINALIZEDCLAUSES_LINK]))
     if ch.get("adv", ''):
-        mylang.add('adverb-lex-item := [ SYNSEM.LOCAL.CAT.HEAD.MOD < [LOCAL.CAT.HEAD +nv & [ADV-MOD + ] ] >].')
+        mylang.add('adverb-lex-item := [ SYNSEM.LOCAL.CAT.HEAD.MOD < [LOCAL.CAT.HEAD +nv & [ADV-MOD + ] ] >].', links = set_links([NOMINALIZEDCLAUSES_LINK]))
     for lrt, val, vpc in get_nmz_lexrules(ch):
         customize_non_user_nmz_features(ch, mylang, lrt, val, 'nmz_adv-mod', get_name(lrt) + '-lex-rule', 'SYNSEM.LOCAL.CAT.HEAD.ADV-MOD')
 
@@ -991,9 +991,9 @@ def add_anc_coord_constraints(mylang, ch):
         mylang.set_section('addenda')
         mylang.add('bottom-coord-phrase :+ [ SYNSEM.LOCAL.CAT.HEAD.NMZ #nmz,\
                     NONCONJ-DTR.SYNSEM.LOCAL.CAT.HEAD.NMZ #nmz,\
-                    CONJ-DTR.SYNSEM.LOCAL.CAT.HEAD.NMZ #nmz ].')
+                    CONJ-DTR.SYNSEM.LOCAL.CAT.HEAD.NMZ #nmz ].', links = set_links([NOMINALIZEDCLAUSES_LINK]))
         mylang.add('unary-bottom-coord-rule :+ [ SYNSEM.LOCAL.CAT.HEAD.NMZ #nmz,\
-                            ARGS < [ SYNSEM.LOCAL.CAT.HEAD.NMZ #nmz ] > ].')
+                            ARGS < [ SYNSEM.LOCAL.CAT.HEAD.NMZ #nmz ] > ].', links = set_links([NOMINALIZEDCLAUSES_LINK]))
 
         has_nmz_rel = False
         for ns in ch.get('ns'):
@@ -1006,9 +1006,9 @@ def add_anc_coord_constraints(mylang, ch):
         #Needed to force SENT/ALT-SENT nominalized verbs to go through the high-nominalization phrase structure rule 
         if has_nmz_rel:
             mylang.add('np-coord-phrase :+ [ LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX ref-ind, \
-                                            RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX ref-ind].')
+                                            RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX ref-ind].', links = set_links([NOMINALIZEDCLAUSES_LINK]))
             mylang.add('n-coord-phrase :+ [ LCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX ref-ind, \
-                                            RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX ref-ind].')
+                                            RCOORD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX ref-ind].', links = set_links([NOMINALIZEDCLAUSES_LINK]))
         
 def handle_anc_spr_restrictions(mylang, ch):
     """
@@ -1025,16 +1025,16 @@ def handle_anc_spr_restrictions(mylang, ch):
                 #Argument marked as a possessor must appear (only relevant for poss-acc/erg-poss/nominal)
                 if ns.get('mand-spr'):
                     mylang.add(get_name(lrt) + '-lex-rule := [SYNSEM.LOCAL.CAT.VAL.SPR < [OPT -, \
-                                                                                         LOCAL.CAT.HEAD.POSSESSOR possessive ] > ].')
+                                                                                         LOCAL.CAT.HEAD.POSSESSOR possessive ] > ].', links = set_links([NOMINALIZEDCLAUSES_LINK, ADNOMINALPOSSESSION_LINK]))
                 if ch.get('has-dets'):
                     if ns.get('det') == 'obl':
-                        mylang.add(get_name(lrt) + '-lex-rule := [SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.OPT - ].')
+                        mylang.add(get_name(lrt) + '-lex-rule := [SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.OPT - ].', links = set_links([NOMINALIZEDCLAUSES_LINK]))
 
                     elif ns.get('det') == 'imp':
                         if nmz_type == 'all-comps':
-                            mylang.add(get_name(lrt) + '-lex-rule := [SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.OPT +].')
+                            mylang.add(get_name(lrt) + '-lex-rule := [SYNSEM.LOCAL.CAT.VAL.SPR.FIRST.OPT +].', links = set_links([NOMINALIZEDCLAUSES_LINK]))
                         else:
-                            mylang.add(get_name(lrt) + '-lex-rule := [SYNSEM.LOCAL.CAT.VAL.SPR < [LOCAL.CAT.HEAD.POSSESSOR possessive ] > ].')
+                            mylang.add(get_name(lrt) + '-lex-rule := [SYNSEM.LOCAL.CAT.VAL.SPR < [LOCAL.CAT.HEAD.POSSESSOR possessive ] > ].', links = set_links([NOMINALIZEDCLAUSES_LINK, ADNOMINALPOSSESSION_LINK]))
 
 def set_anc_wo_value(ch, mylang):
     """
@@ -1046,7 +1046,7 @@ def set_anc_wo_value(ch, mylang):
     """
     mylang.add('head :+ [ ANC-WO bool ].', 'The ANC-WO feature is added to certain languages to handle word order in\n' +
        'action nominal constructions (ANCs). [ANC-WO +] indicates that an action nominal (nominalized verb) uses a word order\n' +
-'distinct from that of regular verbs, while [ANC-WO -] indicates that a lexical item uses the same word order as non-derived verbs.' ,section='addenda')
+'distinct from that of regular verbs, while [ANC-WO -] indicates that a lexical item uses the same word order as non-derived verbs.' ,section='addenda', links = set_links([NOMINALIZEDCLAUSES_LINK]))
     for pos in ['noun', 'tverb', 'comps','comp', 'aux']:
         if ch.get(pos) or pos in ['tverb', 'comp']:
             if pos == 'comps':
@@ -1058,25 +1058,25 @@ def set_anc_wo_value(ch, mylang):
             else:
                 name = lexbase.LEXICAL_SUPERTYPES[pos]
             mylang.add(
-                name + ' := [ SYNSEM.LOCAL.CAT.HEAD.ANC-WO - ].', merge=True)
+                name + ' := [ SYNSEM.LOCAL.CAT.HEAD.ANC-WO - ].', merge=True, links = set_links([NOMINALIZEDCLAUSES_LINK]))
     for ns in ch.get('ns'):
         if ns.get('trans') != 'on':
             continue
         else:
             nmz_type = ns.get('nmz_type')
             if nmz_type == 'sentential' or nmz_type == 'alt-sent':
-                mylang.add('sentential-lex-rule := [ SYNSEM.LOCAL.CAT.HEAD.ANC-WO - ].', merge=True)
+                mylang.add('sentential-lex-rule := [ SYNSEM.LOCAL.CAT.HEAD.ANC-WO - ].', merge=True, links = set_links([NOMINALIZEDCLAUSES_LINK]))
             elif nmz_type == 'all-comps':
-                    mylang.add('comps-anc-lex-rule := [ SYNSEM.LOCAL.CAT.HEAD.ANC-WO - ].', merge=True)
+                    mylang.add('comps-anc-lex-rule := [ SYNSEM.LOCAL.CAT.HEAD.ANC-WO - ].', merge=True, links = set_links([NOMINALIZEDCLAUSES_LINK]))
             elif nmz_type == 'poss-acc':
-                mylang.add('trans-poss-acc-lex-rule := [ SYNSEM.LOCAL.CAT.HEAD.ANC-WO + ].', merge=True)
+                mylang.add('trans-poss-acc-lex-rule := [ SYNSEM.LOCAL.CAT.HEAD.ANC-WO + ].', merge=True, links = set_links([NOMINALIZEDCLAUSES_LINK]))
                 if ns.get('single-arg') == 'on':
-                    mylang.add('trans-non-erg-poss-obj-only-lex-rule:= [ SYNSEM.LOCAL.CAT.HEAD.ANC-WO + ].', merge=True)
+                    mylang.add('trans-non-erg-poss-obj-only-lex-rule:= [ SYNSEM.LOCAL.CAT.HEAD.ANC-WO + ].', merge=True, links = set_links([NOMINALIZEDCLAUSES_LINK]))
             elif nmz_type == 'erg-poss':
-                mylang.add('trans-erg-poss-lex-rule := [ SYNSEM.LOCAL.CAT.HEAD.ANC-WO + ].', merge=True)
+                mylang.add('trans-erg-poss-lex-rule := [ SYNSEM.LOCAL.CAT.HEAD.ANC-WO + ].', merge=True, links = set_links([NOMINALIZEDCLAUSES_LINK]))
                 if ns.get('single-arg') == 'on':
-                    mylang.add('trans-erg-poss-subj-only-lex-rule := [ SYNSEM.LOCAL.CAT.HEAD.ANC-WO + ].', merge=True)
+                    mylang.add('trans-erg-poss-subj-only-lex-rule := [ SYNSEM.LOCAL.CAT.HEAD.ANC-WO + ].', merge=True, links = set_links([NOMINALIZEDCLAUSES_LINK]))
             elif nmz_type == 'nominal':
-                mylang.add('trans-nominal-lex-rule := [ SYNSEM.LOCAL.CAT.HEAD.ANC-WO + ].', merge=True)
+                mylang.add('trans-nominal-lex-rule := [ SYNSEM.LOCAL.CAT.HEAD.ANC-WO + ].', merge=True, links = set_links([NOMINALIZEDCLAUSES_LINK]))
                 if ns.get('single-arg') == 'on':
-                    mylang.add('trans-non-erg-poss-obj-only-lex-rule := [ SYNSEM.LOCAL.CAT.HEAD.ANC-WO + ].', merge=True)
+                    mylang.add('trans-non-erg-poss-obj-only-lex-rule := [ SYNSEM.LOCAL.CAT.HEAD.ANC-WO + ].', merge=True, links = set_links([NOMINALIZEDCLAUSES_LINK]))
