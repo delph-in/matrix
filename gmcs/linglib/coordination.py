@@ -377,9 +377,9 @@ def customize_conjunct_agreement(mylang, ch, agr, csap, cs):
     # define the COORDAGR feature
     mylang.set_section('features')
     mylang.add_literal(';;; Distinguished Conjunct Directon')
-    mylang.add('dir := *top*.', '', True)
-    mylang.add('l := dir.', '', True)
-    mylang.add('r := dir.', '', True)
+    mylang.add('dir := *top*.', '', True, links = set_links([COORDINATION_LINK]))
+    mylang.add('l := dir.', '', True, links = set_links([COORDINATION_LINK]))
+    mylang.add('r := dir.', '', True, links = set_links([COORDINATION_LINK]))
 
     # do we have a mixed strategy language? if so, what's the target on the fr pattern?
     for csap in cs.get('csap'):

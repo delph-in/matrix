@@ -1,5 +1,8 @@
 from gmcs.lib import TDLHierarchy
 
+from gmcs.linglib import docstrings
+from gmcs.linglib.docstrings import GENDER_LINK, NUMBER_LINK, OTHERFEATURES_LINK, PERSON_LINK, set_links
+
 def init_person_hierarchy(ch, hierarchies):
     """
     Create the type definitions associated with the user's choices about person.
@@ -44,14 +47,14 @@ def init_pernum_hierarchy(ch, hierarchies):
 
 def customize_person_and_number(mylang, hierarchies):
     if 'pernum' in hierarchies:
-        mylang.add('png :+ [ PERNUM pernum ].', section='addenda')
+        mylang.add('png :+ [ PERNUM pernum ].', section='addenda', links = set_links([PERSON_LINK, NUMBER_LINK]))
         hierarchies['pernum'].save(mylang)
     else:
         if 'person' in hierarchies:
-            mylang.add('png :+ [ PER person ].', section='addenda')
+            mylang.add('png :+ [ PER person ].', section='addenda', links = set_links([PERSON_LINK]))
             hierarchies['person'].save(mylang)
         if 'number' in hierarchies:
-            mylang.add('png :+ [ NUM number ].', section='addenda')
+            mylang.add('png :+ [ NUM number ].', section='addenda', links = set_links([NUMBER_LINK]))
             hierarchies['number'].save(mylang)
 
 
@@ -71,7 +74,7 @@ def init_gender_hierarchy(ch, hierarchies):
 
 def customize_gender(mylang, hierarchies):
     if 'gender' in hierarchies:
-        mylang.add('png :+ [ GEND gender ].', section='addenda')
+        mylang.add('png :+ [ GEND gender ].', section='addenda', links = set_links([GENDER_LINK]))
         hierarchies['gender'].save(mylang)
 
 
@@ -94,10 +97,10 @@ def init_other_hierarchies(ch, mylang, hierarchies):
         else:
             if type == 'head':
                 mylang.add('head :+ [ ' + feat.upper() + ' ' + feature.get('existing', '') + ' ].',
-                           section='addenda')
+                           section='addenda', links = set_links([OTHERFEATURES_LINK]))
             else:
                 mylang.add('png :+ [ ' + feat.upper() + ' ' + feature.get('existing', '') + ' ].',
-                           section='addenda')
+                           section='addenda', links = set_links([OTHERFEATURES_LINK]))
 
         if not hier.is_empty():
             hierarchies[hier.name] = hier
@@ -113,10 +116,10 @@ def customize_other_features(mylang, hierarchies):
                         'form', 'tense', 'aspect', 'situation', 'mood', 'lvc'):
             if type == 'head':
                 mylang.add('head :+ [ ' + feat.upper() + ' ' + feat + ' ].',
-                           section='addenda')
+                           section='addenda', links = set_links([OTHERFEATURES_LINK]))
             else:
                 mylang.add('png :+ [ ' + feat.upper() + ' ' + feat + ' ].',
-                           section='addenda')
+                           section='addenda', links = set_links([OTHERFEATURES_LINK]))
 
             # sfd: If it's an 'index' feature, we should make sure to strip it
             # out in the VPM

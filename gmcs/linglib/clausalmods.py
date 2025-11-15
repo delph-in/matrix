@@ -698,9 +698,9 @@ def create_subordinated_feature(mylang, roots, cms, ch):
     it is tracked through the grammar, and appropriately constrains verb-lex.
     """
     mylang.set_section('addenda')
-    mylang.add('canonical-synsem :+ [ SUBORDINATED xsubord ].')
-    mylang.add('xsubord := *top*.')
-    mylang.add('none := xsubord.')
+    mylang.add('canonical-synsem :+ [ SUBORDINATED xsubord ].', links = set_links([CLAUSALMODIFIERS_LINK]))
+    mylang.add('xsubord := *top*.', links = set_links([CLAUSALMODIFIERS_LINK]))
+    mylang.add('none := xsubord.', links = set_links([CLAUSALMODIFIERS_LINK]))
     if cms.get('subordinator') == 'free':
         for adverb in cms.get('freemorph'):
             pred = adverb.get('pred')
@@ -793,8 +793,8 @@ def create_subpair_feature(mylang, roots, morphpair, ch):
         mylang.add('unary-bottom-coord-rule :+ [ SYNSEM.LOCAL.CAT.SUBPAIR #subpair,\
                            				    ARGS < [ SYNSEM.LOCAL.CAT.SUBPAIR #subpair ] > ].', links = set_links([CLAUSALMODIFIERS_LINK]))
     mylang.set_section('features')
-    mylang.add('subpair := *top*.')
-    mylang.add('nopair := subpair.')
+    mylang.add('subpair := *top*.', links = set_links([CLAUSALMODIFIERS_LINK]))
+    mylang.add('nopair := subpair.', links = set_links([CLAUSALMODIFIERS_LINK]))
     for pair in morphpair:
         subpair = pair.get('subordpred')
         if subpair.split('_')[0] == '':

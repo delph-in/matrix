@@ -164,9 +164,9 @@ def customize_poss_addenda(mylang, ch):
     Adds things to the addenda section that are necessary
     for any strategy.
     """
-    mylang.add('head :+ [ POSSESSOR poss ].', section='addenda')
-    mylang.add('cat :+ [ POSSESSUM poss ].', section='addenda')
-    mylang.add('poss := *top* & [ POSS-AGR png ].', section='addenda')
+    mylang.add('head :+ [ POSSESSOR poss ].', section='addenda', links = set_links([ADNOMINALPOSSESSION_LINK]))
+    mylang.add('cat :+ [ POSSESSUM poss ].', section='addenda', links = set_links([ADNOMINALPOSSESSION_LINK]))
+    mylang.add('poss := *top* & [ POSS-AGR png ].', section='addenda', links = set_links([ADNOMINALPOSSESSION_LINK]))
     mylang.add('basic-bare-np-phrase :+ [ SYNSEM.LOCAL.CAT [ VAL.SPEC < >,\
                                                              HEAD #head,\
                                                              POSSESSUM #possessum],\
