@@ -28,8 +28,6 @@ from gmcs.linglib.clausalmods import get_subord_stemids
 from gmcs.linglib.clausalmods import add_subord_name
 from gmcs.feature_type_use import USED_TYPES
 
-
-from gmcs.linglib import docstrings
 from gmcs.linglib.docstrings import LEXICON_NOUNS_LINK, WORDORDER_LINK, LEXICON_VERBS_LINK, LEXICON_DETERMINERS_LINK, LEXICON_ADJECTIVES_LINK, set_links
 
 # helper functions
