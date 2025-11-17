@@ -449,26 +449,26 @@ def customize_information_structure_pos_once(mylang, ch, rules, infostr_type, in
 
     if pos in ['preverbal', 'postverbal'] or wo == 'v2':
         mylang.add_literal(
-            'lex-or-phrase-synsem :+ [ INFOSTR-FLAG luk ].', '', section='addenda')
+            'lex-or-phrase-synsem :+ [ INFOSTR-FLAG luk ].', '', section='addenda', links = set_links([INFORMATIONSTRUCTURE_LINK]))
         mylang.add_literal(
-            'decl-head-subj-phrase :+ [ SYNSEM.INFOSTR-FLAG -, NON-HEAD-DTR.SYNSEM.INFOSTR-FLAG - ].', '', section='addenda')
+            'decl-head-subj-phrase :+ [ SYNSEM.INFOSTR-FLAG -, NON-HEAD-DTR.SYNSEM.INFOSTR-FLAG - ].', '', section='addenda', links = set_links([INFORMATIONSTRUCTURE_LINK]))
         # OZ 2020-09-24: The below condition is to support the same tests without lexical threading.
         # I do not actually understand it or have reasons to think it is a good change.
         if not infostr_type == 'c-focus-pos':
             mylang.add_literal(
-                'basic-head-1st-comp-phrase :+ [ SYNSEM.INFOSTR-FLAG -, NON-HEAD-DTR.SYNSEM.INFOSTR-FLAG - ].', '', section='addenda')
+                'basic-head-1st-comp-phrase :+ [ SYNSEM.INFOSTR-FLAG -, NON-HEAD-DTR.SYNSEM.INFOSTR-FLAG - ].', '', section='addenda', links = set_links([INFORMATIONSTRUCTURE_LINK]))
         mylang.add_literal(
-            'basic-head-2nd-comp-phrase :+ [ SYNSEM.INFOSTR-FLAG -, NON-HEAD-DTR.SYNSEM.INFOSTR-FLAG - ].', '', section='addenda')
+            'basic-head-2nd-comp-phrase :+ [ SYNSEM.INFOSTR-FLAG -, NON-HEAD-DTR.SYNSEM.INFOSTR-FLAG - ].', '', section='addenda', links = set_links([INFORMATIONSTRUCTURE_LINK]))
         mylang.add_literal(
-            'basic-head-opt-subj-phrase :+ [ SYNSEM.INFOSTR-FLAG - ].', '', section='addenda')
+            'basic-head-opt-subj-phrase :+ [ SYNSEM.INFOSTR-FLAG - ].', '', section='addenda', links = set_links([INFORMATIONSTRUCTURE_LINK]))
         mylang.add_literal(
-            'basic-head-opt-comp-phrase :+ [ SYNSEM.INFOSTR-FLAG - ].', '', section='addenda')
+            'basic-head-opt-comp-phrase :+ [ SYNSEM.INFOSTR-FLAG - ].', '', section='addenda', links = set_links([INFORMATIONSTRUCTURE_LINK]))
         mylang.add_literal(
-            'basic-head-mod-phrase-simple :+ [ SYNSEM.INFOSTR-FLAG - ].', '', section='addenda')
+            'basic-head-mod-phrase-simple :+ [ SYNSEM.INFOSTR-FLAG - ].', '', section='addenda', links = set_links([INFORMATIONSTRUCTURE_LINK]))
         mylang.add_literal(
-            'basic-head-spec-phrase :+ [ SYNSEM.INFOSTR-FLAG - ].', '', section='addenda')
+            'basic-head-spec-phrase :+ [ SYNSEM.INFOSTR-FLAG - ].', '', section='addenda', links = set_links([INFORMATIONSTRUCTURE_LINK]))
         mylang.add_literal(
-            'basic-bare-np-phrase :+ [ SYNSEM.INFOSTR-FLAG -, HEAD-DTR.SYNSEM.INFOSTR-FLAG - ].', '', section='addenda')
+            'basic-bare-np-phrase :+ [ SYNSEM.INFOSTR-FLAG -, HEAD-DTR.SYNSEM.INFOSTR-FLAG - ].', '', section='addenda', links = set_links([INFORMATIONSTRUCTURE_LINK]))
         #mylang.add_literal('basic-binary-headed-phrase :+ [ SYNSEM.INFOSTR-FLAG - ].', '', section='addenda')
         if pos != 'clause-initial':
             ph_types['head-nf-subj-phrase-super'] = head_nf_subj_phrase_super
@@ -1086,7 +1086,7 @@ def customize_information_structure_marker(mylang, ch, rules, irules, lexicon, t
             orth = orth_encode(_orth)
             if _head == '+nv':
                 mylang.add(
-                    'bare-np-phrase := [ SYNSEM.LIGHT - ].', section='phrases')
+                    'bare-np-phrase := [ SYNSEM.LIGHT - ].', section='phrases', links = set_links([INFORMATIONSTRUCTURE_LINK]))
                 modifier1 = TDLencode(_orth + '-marker-n')
                 modifier2 = TDLencode(_orth + '-marker-v')
                 tdl1 = modifier1 + ' := ' + modifier_lex + ' & \

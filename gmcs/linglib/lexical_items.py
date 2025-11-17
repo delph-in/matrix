@@ -28,7 +28,7 @@ from gmcs.linglib.clausalmods import get_subord_stemids
 from gmcs.linglib.clausalmods import add_subord_name
 from gmcs.feature_type_use import USED_TYPES
 
-from gmcs.linglib.docstrings import LEXICON_NOUNS_LINK, WORDORDER_LINK, LEXICON_VERBS_LINK, LEXICON_DETERMINERS_LINK, LEXICON_ADJECTIVES_LINK, set_links
+from gmcs.linglib.docstrings import LEXICON_NOUNS_LINK, WORDORDER_LINK, LEXICON_VERBS_LINK, LEXICON_DETERMINERS_LINK, LEXICON_ADJECTIVES_LINK, WHQUESTIONS_LINK, LEXICON_AUXILIARIES_LINK, set_links
 
 # helper functions
 
@@ -1402,7 +1402,7 @@ def customize_adjs(mylang, ch, lexicon, hierarchies, rules):
             typedef = TDLencode(stem.get('name')) + ' := ' + atype + ' & \n \
                 [ STEM < "' + orth_encode(stem.get('orth')) + '" >, \
                 SYNSEM.LKEYS.KEYREL.PRED "' + stem.get('pred') + '" ].'
-            lexicon.add(typedef)
+            lexicon.add(typedef, links = set_links([LEXICON_ADJECTIVES_LINK]))
 
 # TJT 2014-05-05
 
