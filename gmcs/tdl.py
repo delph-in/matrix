@@ -258,7 +258,7 @@ class TDLelem_typedef(TDLelem):
             if self.links:
                 # Write the links as a docstring
                 TDLwrite("This type as generated from the customization system bore constraints from these libraries:\n")
-                TDLwrite("\n".join(self.links) + "\n")
+                TDLwrite("\n".join(sorted(self.links)) + "\n")
             if self.docstring:
                 # Write the docstring as a docstring
                 TDLwrite(self.docstring + "\n")
