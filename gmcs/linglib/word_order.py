@@ -5,7 +5,7 @@ from gmcs.linglib.nominalized_clauses import need_specialized_head_spec, get_nmz
 from gmcs.utils import get_name
 from gmcs.linglib import lexbase
 from gmcs.linglib import docstrings
-from gmcs.linglib.docstrings import ARGUMENTOPTIONALITY_LINK, LEXICON_AUXILIARIES_LINK, NOMINALIZEDCLAUSES_LINK, WORDORDER_LINK, set_links
+from gmcs.linglib.docstrings import ARGUMENTOPTIONALITY_LINK, LEXICON_AUXILIARIES_LINK, LEXICON_NOUNS_LINK, NOMINALIZEDCLAUSES_LINK, WORDORDER_LINK, set_links
 
 def customize_word_order(mylang, ch, rules):
     """
@@ -1018,7 +1018,7 @@ def customize_np_word_order(mylang, ch, rules, nmz_wo):
                  [ C-CONT.RELS.LIST < [ PRED \"exist_q_rel\" ] > ].',
                'Bare NP phrase.  Consider modifying the PRED value '
                'of the quantifier relation\nintroduced to match '
-               'the semantic effect of bare NPs in your language.')
+               'the semantic effect of bare NPs in your language.', links = set_links([LEXICON_NOUNS_LINK]))
     rules.add('bare-np := bare-np-phrase.')
 
 

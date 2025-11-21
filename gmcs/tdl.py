@@ -188,6 +188,8 @@ class TDLelem_literal(object):
         self.one_line = False
         self.section = ''
         self.literal = literal
+        self.links = set()
+        self.docstring = ''
 
     def write(self):
         if self.comment:
@@ -198,13 +200,45 @@ class TDLelem_literal(object):
         if debug_write:
             TDLwrite('literal\n')
 
-        tdl_file.write(self.literal)
+        # AVERY:
+        if self.docstring or self.links: 
+            # Remove final period to allow docstrings to work later.
+            literal = list(self.literal)
+            if literal[-1] == ".":
+                literal.pop()
+                literal = "".join(literal)
+            TDLwrite(literal)
+            TDLwrite('\n\"\"\"\n')
+            if self.links:
+                # Write the links as a docstring
+                TDLwrite("This type as generated from the customization system bore constraints from these libraries:\n")
+                TDLwrite("\n".join(sorted(self.links)) + "\n")
+            if self.docstring:
+                # Write the docstring as a docstring
+                TDLwrite(self.docstring + "\n")
+            TDLwrite('\"\"\"')
+            # Add the final period at the end
+            TDLwrite(".")
+        else:
+            tdl_file.write(self.literal)
 
     def set_comment(self, comment):
         self.comment = comment
 
     def get_comment(self):
         return self.comment
+    
+    def set_links(self, links):
+        self.links = links
+
+    def get_links(self):
+        return self.links
+    
+    def set_docstring(self, docstring):
+        self.docstring = docstring
+
+    def get_docstring(self):
+        return self.docstring
 
     def set_type(self, type_name):
         pass
@@ -1022,10 +1056,12 @@ class TDLfile(object):
         self.add(tdl_type + ':= [].', comment)
 
     def add_literal(self, literal,
-                    comment='', section=''):
+                    comment='', section='', links = set(), docstring = ''):
         """Add a literal string (which will never merge) to this file."""
         l = TDLelem_literal(literal)
         l.set_comment(comment)
+        l.set_links(links)
+        l.set_docstring(docstring)
 
         l.section = section
         if not section:

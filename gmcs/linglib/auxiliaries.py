@@ -238,6 +238,7 @@ def create_semantics(sem, aux, auxcomp, mylang, ch, hierarchies, negaux):
         if feat.get('name') == 'evidential':
             evid_present = True
     if sem == 'add-pred' or evid_present:
+        typedef_links = []
         auxtypename = supertypename + '-with-pred'
         basic_typedef = auxtypename + ' := ' + supertypename + '.'
         if auxcomp == 'vp':

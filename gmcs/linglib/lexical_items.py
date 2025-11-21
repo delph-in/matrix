@@ -28,7 +28,7 @@ from gmcs.linglib.clausalmods import get_subord_stemids
 from gmcs.linglib.clausalmods import add_subord_name
 from gmcs.feature_type_use import USED_TYPES
 
-from gmcs.linglib.docstrings import LEXICON_NOUNS_LINK, WORDORDER_LINK, LEXICON_VERBS_LINK, LEXICON_DETERMINERS_LINK, LEXICON_ADJECTIVES_LINK, WHQUESTIONS_LINK, LEXICON_AUXILIARIES_LINK, set_links
+from gmcs.linglib.docstrings import LEXICON_NOUNS_LINK, WORDORDER_LINK, LEXICON_VERBS_LINK, LEXICON_DETERMINERS_LINK, LEXICON_ADJECTIVES_LINK, WHQUESTIONS_LINK, LEXICON_AUXILIARIES_LINK, LEXICON_COPULAS_LINK, CASE_LINK, NOMINALIZEDCLAUSES_LINK, CLAUSALMODIFIERS_LINK, LIGHTVERBCONSTRUCTIONS_LINK, LEXICON_CASEMARKINGADPOSITIONS_LINK, INFORMATIONSTRUCTURE_LINK, set_links
 
 # helper functions
 
@@ -720,7 +720,7 @@ def customize_nouns(mylang, ch, lexicon, hierarchies):
     from gmcs.constants import INTER, ON, WH_PRO
 
     # EKN 2018-01-26 Adding a PRON feature to mark all pronouns:
-    mylang.add('head :+ [ PRON bool ].', section='addenda')
+    mylang.add('head :+ [ PRON bool ].', section='addenda', links = set_links([LEXICON_NOUNS_LINK]))
 
     # Figure out which kinds of determiner-marking are in the language
     seen = {'obl': False, 'opt': False, 'imp': False}

@@ -754,7 +754,7 @@ def customize_poss_rules(strat, mylang, ch, rules, hierarchies):
                 hi = 'head-initial'
                 hf = 'head-final'
 
-            mylang.add('head :+ [ INIT bool ].', section='addenda')
+            mylang.add('head :+ [ INIT bool ].', section='addenda', links = set_links([ADNOMINALPOSSESSION_LINK]))
             init_min = '  [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT - ]'
             init_plus = '  [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.INIT + ]'
             # If the order of head-comps outside this lib is head-initial:
@@ -810,7 +810,7 @@ def customize_poss_rules(strat, mylang, ch, rules, hierarchies):
             # NB: possessors are the only nouns that act as specifiers, so this'll be added
             # directly to the noun supertype, rather than on the possessor lex rules items.
             # Otherwise leave nouns unconstrainted for SPEC_INIT, and they'll go through both:
-            mylang.add('head :+ [ SPEC-INIT bool ].', section='addenda')
+            mylang.add('head :+ [ SPEC-INIT bool ].', section='addenda', links = set_links([ADNOMINALPOSSESSION_LINK]))
             if strat_order != 'either':
                 spec_init = '+' if strat_order == 'head-final' else '-'
                 mylang.add('poss-unary-phrase-'+strat_num +
@@ -1088,7 +1088,7 @@ def customize_possessor_irules(strat, mylang, rules, ch, strat_num, mod_spec, ma
     # Add case constraints if case exists:
     if case:
 
-        mylang.add('poss-case := case.', section='addenda')
+        mylang.add('poss-case := case.', section='addenda', links = set_links([ADNOMINALPOSSESSION_LINK, CASE_LINK]))
         mylang.add(possessor_rule_name +
                    ' := [ SYNSEM.LOCAL.CAT.HEAD.CASE poss-case ].', links = set_links([ADNOMINALPOSSESSION_LINK, CASE_LINK]))
 
@@ -1602,8 +1602,8 @@ def customize_possessor_lexicon(strat, mylang, ch, lexicon, strat_name, strat_nu
 
     if case:
 
-        mylang.add('+np :+ [ CASE case ].', section='addenda')
-        mylang.add('poss-case := case.', section='addenda')
+        mylang.add('+np :+ [ CASE case ].', section='addenda', links = set_links([CASE_LINK]))
+        mylang.add('poss-case := case.', section='addenda', links = set_links([CASE_LINK, ADNOMINALPOSSESSION_LINK]))
 
         mylang.add('possessor-adp-lex-'+strat_num +
                    ' := [ SYNSEM.LOCAL.CAT.HEAD.CASE poss-case ].', links = set_links([ADNOMINALPOSSESSION_LINK]))
@@ -1750,7 +1750,7 @@ def customize_possessum_lexicon(strat, mylang, ch, lexicon, strat_name, strat_nu
 
     if mod_spec == 'mod':
 
-        mylang.add('head :+ [ INIT bool ].', section='addenda')
+        mylang.add('head :+ [ INIT bool ].', section='addenda', links = set_links([ADNOMINALPOSSESSION_LINK]))
 
         possessor_constr = '& [ POSSESSOR possessor-' + \
             strat_num+' ]' if mark_loc == 'both' else ''

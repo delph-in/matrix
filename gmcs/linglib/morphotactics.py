@@ -14,8 +14,7 @@ from gmcs.utils import get_name
 from gmcs.linglib.nominalized_clauses import needs_anc_wo_feat
 from functools import reduce
 from gmcs.linglib.light_verb_constructions import fix_coverb_pc_inputs
-from gmcs.linglib import docstrings
-from gmcs.linglib.docstrings import set_links, MORPHOLOGY_LINK
+from gmcs.linglib.docstrings import set_links, MORPHOLOGY_LINK, ADNOMINALPOSSESSION_LINK, EVIDENTIALS_LINK, LEXICON_ADJECTIVES_LINK, WHQUESTIONS_LINK
 
 # Contents
 # 1. Module Variables
@@ -1184,7 +1183,7 @@ def write_interrogative_rules(lrt, mylang):
             lrt.supertypes.add('itrg-lex-rule')
         elif lrt.interrogative == 'wh':
             mylang.add(WH_SUBJ)
-            lrt.supertypes.add('wh-subj-lex-rule', links = set_links([MORPHOLOGY_LINK, WHQUESTIONS_LINK]))
+            lrt.supertypes.add('wh-subj-lex-rule')
         elif lrt.interrogative == 'wh-pseudo':
             mylang.add_literal(
                 ''';;;The below rule is added as a copy of another wh-rule. The user did not specify it.''')

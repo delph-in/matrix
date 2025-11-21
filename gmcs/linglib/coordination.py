@@ -442,7 +442,7 @@ def customize_agreement_pattern(mylang, ch, csap, cs):
         rules = customize_conjunct_agreement(mylang, ch, agr, csap, cs)
 
     mylang.add('bare-np-phrase := [ SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png,'  # TODO is there any reason I can't use this for fr as well?
-               'HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png ].')
+               'HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png ].', links = set_links([COORDINATION_LINK]))
     mylang.add('pass-up-png-coord-rule := bottom-coord-phrase & \
         [SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png,\
         NONCONJ-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX.PNG #png ].', links = set_links([COORDINATION_LINK]))
