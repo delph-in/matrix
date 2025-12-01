@@ -131,19 +131,15 @@ class TDLelem(object):
     def get_comment(self):
         return ''
     
-    #AVERY:
     def set_docstring(self, docstring):
         pass
 
-    #AVERY:
     def get_docstring(self):
         return ''
     
-    #AVERY:
     def set_links(self, links):
         pass
 
-    #AVERY
     def get_links(self):
         return set()
 
@@ -200,7 +196,6 @@ class TDLelem_literal(object):
         if debug_write:
             TDLwrite('literal\n')
 
-        # AVERY:
         if self.docstring or self.links: 
             # Remove final period to allow docstrings to work later.
             literal = list(self.literal)
@@ -265,7 +260,6 @@ class TDLelem_typedef(TDLelem):
         self.section = ''
         self.type = type
         self.op = op
-        #AVERY:
         self.docstring = ''
         self.links = set() # links to relevant matrix doc pages
 
@@ -286,7 +280,6 @@ class TDLelem_typedef(TDLelem):
         for ch in self.child:
             ch.write()
 
-        # AVERY:
         if self.docstring or self.links: 
             TDLwrite('\n\"\"\"\n')
             if self.links:
@@ -303,19 +296,15 @@ class TDLelem_typedef(TDLelem):
         if self.one_line and self.comment:
             TDLwrite('  ; ' + self.comment)
 
-    #AVERY
     def set_docstring(self, docstring):
         self.docstring = docstring
 
-    #AVERY
     def get_docstring(self):
         return self.docstring
     
-    #AVERY
     def set_links(self, links):
         self.links = links
 
-    #AVERY
     def get_links(self):
         return self.links
     
@@ -811,7 +800,6 @@ def TDLmerge(e1, e2):
             c0 += c2
         e0.set_comment(c0)
 
-        #AVERY:
         d1 = e1.get_docstring()
         d2 = e2.get_docstring()
         d0 = d1
@@ -821,7 +809,6 @@ def TDLmerge(e1, e2):
             d0 += d2
         e0.set_docstring(d0)
 
-        #AVERY
         s1 = e1.get_links()
         s2 = e2.get_links()
         e0.set_links(s1.union(s2)) # combine sets into one set
@@ -1034,7 +1021,6 @@ class TDLfile(object):
         typedef.set_comment(comment)
         typedef.set_one_line(one_line)
         typedef.set_merge(merge)
-        #AVERY:
         typedef.set_docstring(docstring)
         typedef.set_links(links)
 
