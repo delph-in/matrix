@@ -105,8 +105,9 @@ or S) varies depending on the auxiliary please let us know.)<br><br>"
   . yes "Yes" "" "yes<br>"
   . no "No" "" "no<br><br>"
 
-Label "NOTE: If your language has free word order and allows more than one auxiliary per clause, we assume that the verbal group forms a cluster (i.e. that all verbal forms are adjacent to each other). If your language reveals different behavior, please let us know."
+Label "NOTE: If your language has free word order and allows more than one auxiliary per clause, we assume that the verbal group forms a cluster (i.e. that all verbal forms are adjacent to each other). If your language reveals different behavior, please let us know.<br><br>"
 
+Label "NOTE: Multiple auxiliaries are possible, but this is ONLY true for multiple auxiliaries that are predicate-bearing."
 
 Label "<p><span style=\"color:red\">NOTE: As Modules for V2 order are
 still under development, relative order of auxiliaries and their
@@ -226,7 +227,7 @@ BeginIter person-subtype{i} "a Subtype"
 
   Text name "Subtype {i} name" "Name: " "" 20
 
-  MultiSelect number "Subtype {i} number" " in the first person: " ""
+  MultiSelect number "Number" " in the first person: " ""
   fillnumbers
 
 EndIter person-subtype
@@ -2319,14 +2320,14 @@ Label "<div id='diff-wo' style='display:none'>"
 Radio nmz-clause-word-order "nominalized clause word order" "<b>Please indicate which pattern best describes the word order of nominalized clauses in a language.
 Here the subject (S) should map to the semantic agent, the object (O) to the semantic patient, and
 the verb (V) to the nominalized verb:</b><br>" "</p>"
-. sov "Subject, Object, Nominalized verb" "" "SOV<br>"
-. svo "Subject, Nominalized verb, Object" "" "SVO<br>"
-. vso "Nominalized verb, Subject, Object" "" "VSO<br>"
-. osv "Object, Subject, Nominalized verb" "" "OSV<br>"
-. ovs "Object, Nominalized verb, Subject" "" "OVS<br>"
-. vos "Verb, Nominalized verb, Object" "" "VOS<br>"
-. v-final "Nominalized verb-final" "" "V-final<br>"
-. v-initial "Nominalized verb-initial" "" "V-initial<br>"
+. sov "Subject, Object, Verb" "" "SOV<br>"
+. svo "Subject, Verb, Object" "" "SVO<br>"
+. vso "Verb, Subject, Object" "" "VSO<br>"
+. osv "Object, Subject, Verb" "" "OSV<br>"
+. ovs "Object, Verb, Subject" "" "OVS<br>"
+. vos "Verb, Object, Subject" "" "VOS<br>"
+. v-final "Verb-final" "" "V-final<br>"
+. v-initial "Verb-initial" "" "V-initial<br>"
 . free "Free word order" "" "free (pragmatically determined word order)<br>"
 . v2 "v2 word order" "" "finite verb or auxiliary in second position, else free word order<br>"
 
@@ -2880,7 +2881,7 @@ Separator
 Label "<h3 style='display:inline'>Question Verb Types</h3>"
 Label "<span>| <a href='javascript:void(0);' onclick=\"draw_hierarchy('verb')\">visualize verb hierarchy</a> (experimental)</span><br />"
 
-BeginIter qverb{i} "a Question Verb Type" 0 0
+BeginIter qverb{i} "a Question Verb Type" 1 0
 
   Label "<b>Question Verb type {i}</b>:"
 
@@ -3320,7 +3321,7 @@ Separator
 
 Label "<h3>Adpositions</h3>"
 
-BeginIter normadp{i} "an Adposition" 0
+BeginIter normadp{i} "an Adposition" 1 0
 
     BeginIter stem{j} "a Stem" 0 1
 
