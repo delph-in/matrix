@@ -2,6 +2,9 @@ from gmcs.utils import TDLencode
 
 from functools import partial
 
+from gmcs.linglib import docstrings
+from gmcs.linglib.docstrings import set_links
+
 #### UTILITIES ####
 
 # currently only intransitive and strict transitive

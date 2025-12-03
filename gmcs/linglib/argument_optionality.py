@@ -2,6 +2,8 @@ from gmcs.linglib import morphotactics
 from gmcs.linglib import features
 from gmcs.utils import get_name
 from gmcs.linglib.nominalized_clauses import get_nmz_clause_wo
+from gmcs.linglib.docstrings import ADNOMINALPOSSESSION_LINK, ARGUMENTOPTIONALITY_LINK, NOMINALIZEDCLAUSES_LINK, set_links
+from gmcs.linglib import docstrings
 
 # SS 2009-06-07 added check to see if a const rule which changes
 # the COMPS of the mother to OPT - is needed.  The code assumes
@@ -42,26 +44,26 @@ def customize_arg_op(mylang, ch, rules, hierarchies):
         if not ch.get('ns', ''):
             rules.add('decl-head-opt-subj := decl-head-opt-subj-phrase.')
         mylang.add('no-subj-drop-verb-lex := verb-lex &\
-                         [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].')
-        mylang.add('subj-drop-verb-lex := verb-lex.')
+                         [SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', links = set_links([ARGUMENTOPTIONALITY_LINK]))
+        mylang.add('subj-drop-verb-lex := verb-lex.', links = set_links([ARGUMENTOPTIONALITY_LINK]))
 
     # Figure out the constraints on object dropping and write the
     # appropriate types to mylang.tdl or rules.tdl
     if ch.get('obj-drop') == 'obj-drop-all':
         if not ch.get('ns', ''):
             rules.add('basic-head-opt-comp := basic-head-opt-comp-phrase.')
-            mylang.add('basic-head-opt-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX event]. ')
+            mylang.add('basic-head-opt-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX event]. ', links = set_links([ARGUMENTOPTIONALITY_LINK]))
 
     if ch.get('obj-drop') == 'obj-drop-lex':
         if not ch.get('ns', ''):
             rules.add('basic-head-opt-comp := basic-head-opt-comp-phrase.')
-            mylang.add('basic-head-opt-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX event]. ')
+            mylang.add('basic-head-opt-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CONT.HOOK.INDEX event]. ', links = set_links([ARGUMENTOPTIONALITY_LINK]))
         mylang.add('no-obj-drop-verb-lex := transitive-verb-lex &\
-                        [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].')
-        mylang.add('obj-drop-verb-lex := transitive-verb-lex.') 
+                        [SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', links = set_links([ARGUMENTOPTIONALITY_LINK]))
+        mylang.add('obj-drop-verb-lex := transitive-verb-lex.', links = set_links([ARGUMENTOPTIONALITY_LINK])) 
     #Nominalized clauses have optional complements and subjects by default
     if ch.get('ns', ''):
-        mylang.add('anc-head-opt-comp-phrase := basic-head-opt-comp-phrase & [HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD noun & [NMZ +]].')
+        mylang.add('anc-head-opt-comp-phrase := basic-head-opt-comp-phrase & [HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD noun & [NMZ +]].', links = set_links([NOMINALIZEDCLAUSES_LINK, ARGUMENTOPTIONALITY_LINK]))
         nmz_use_poss_strats = False 
         has_spr = False
         for ns in ch.get('ns'):
@@ -71,34 +73,34 @@ def customize_arg_op(mylang, ch, rules, hierarchies):
                 break
         if ('poss-strat' in ch or 'poss-pron' in ch) and nmz_use_poss_strats:
                     mylang.add('anc-head-opt-comp-phrase := [ SYNSEM.LOCAL.CAT.POSSESSUM #possessum, \
-                                                              HEAD-DTR.SYNSEM.LOCAL.CAT.POSSESSUM #possessum ].') 
+                                                              HEAD-DTR.SYNSEM.LOCAL.CAT.POSSESSUM #possessum ].', links = set_links([ADNOMINALPOSSESSION_LINK])) 
 
 
-        mylang.add('anc-decl-head-opt-subj-phrase := decl-head-opt-subj-phrase &  [HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.NMZ +].') 
+        mylang.add('anc-decl-head-opt-subj-phrase := decl-head-opt-subj-phrase &  [HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.NMZ +].', links = set_links([ARGUMENTOPTIONALITY_LINK, NOMINALIZEDCLAUSES_LINK])) 
 
         rules.add('anc-head-opt-comp := anc-head-opt-comp-phrase.')
         rules.add('anc-decl-head-opt-subj := anc-decl-head-opt-subj-phrase.')
 
         #Adds the [NMZ -] version of the rules which can be used by non-nominalized verbs 
         if ch.get('subj-drop'):
-            mylang.add('regular-decl-head-opt-subj-phrase := decl-head-opt-subj-phrase &  [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.NMZ - ].')
+            mylang.add('regular-decl-head-opt-subj-phrase := decl-head-opt-subj-phrase &  [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.NMZ - ].', links = set_links([ARGUMENTOPTIONALITY_LINK, NOMINALIZEDCLAUSES_LINK]))
             rules.add('regular-decl-head-opt-subj := regular-decl-head-opt-subj-phrase.')
 
         if ch.get('obj-drop'):
             mylang.add('regular-head-opt-comp-phrase := basic-head-opt-comp-phrase &  [ HEAD-DTR.SYNSEM.LOCAL [CAT.HEAD.NMZ -, \
-                                                                                                                   CONT.HOOK.INDEX event ]].')
+                                                                                                                   CONT.HOOK.INDEX event ]].', links = set_links([ARGUMENTOPTIONALITY_LINK, NOMINALIZEDCLAUSES_LINK]))
             rules.add('regular-head-opt-comp := regular-head-opt-comp-phrase.')
 
 
     if ch.get('subj-drop') == 'subj-drop-lex' and ch.get('obj-drop') == 'obj-drop-lex':
         mylang.add(
-            'subj-drop-only-verb-lex := subj-drop-verb-lex & no-obj-drop-verb-lex.')
+            'subj-drop-only-verb-lex := subj-drop-verb-lex & no-obj-drop-verb-lex.', links = set_links([ARGUMENTOPTIONALITY_LINK]))
         mylang.add(
-            'obj-drop-only-verb-lex := obj-drop-verb-lex & no-subj-drop-verb-lex.')
+            'obj-drop-only-verb-lex := obj-drop-verb-lex & no-subj-drop-verb-lex.', links = set_links([ARGUMENTOPTIONALITY_LINK]))
         mylang.add(
-            'subj-obj-drop-verb-lex := subj-drop-verb-lex & obj-drop-verb-lex.')
+            'subj-obj-drop-verb-lex := subj-drop-verb-lex & obj-drop-verb-lex.', links = set_links([ARGUMENTOPTIONALITY_LINK]))
         mylang.add(
-            'no-drop-verb-lex := no-subj-drop-verb-lex & no-obj-drop-verb-lex.')
+            'no-drop-verb-lex := no-subj-drop-verb-lex & no-obj-drop-verb-lex.', links = set_links([ARGUMENTOPTIONALITY_LINK]))
 
     mylang.set_section('phrases')
 
@@ -108,7 +110,7 @@ def customize_arg_op(mylang, ch, rules, hierarchies):
         ptype = name + '-decl-head-opt-subj-phrase'
         features.customize_feature_values(
             mylang, ch, hierarchies, context, ptype, 'con')
-        mylang.add(ptype + ':= decl-head-opt-subj-phrase.')
+        mylang.add(ptype + ':= decl-head-opt-subj-phrase.', links = set_links([ARGUMENTOPTIONALITY_LINK]))
         rules.add(name + '-decl-head-opt-subj := ' +
                   name + '-decl-head-opt-subj-phrase.')
 
@@ -116,43 +118,43 @@ def customize_arg_op(mylang, ch, rules, hierarchies):
 
     if (ch.get('subj-mark-no-drop') == 'subj-mark-no-drop-not' and (ch.get('subj-mark-drop') == 'subj-mark-drop-opt' or ch.get('subj-mark-drop') == 'subj-mark-drop-req')):
         mylang.add(
-            'basic-head-subj-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge=True, section='addenda')
+            'basic-head-subj-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge=True, section='addenda', links = set_links([ARGUMENTOPTIONALITY_LINK]))
 
     if ((ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-not' and ch.get('obj-mark-drop') == 'obj-mark-drop-req') or ((ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt' and ch.get('obj-mark-drop') == 'obj-mark-drop-req'))):
         mylang.add(
-            'basic-head-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge=True, section='addenda')
+            'basic-head-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge=True, section='addenda', links = set_links([ARGUMENTOPTIONALITY_LINK]))
 
     if ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-not' and ch.get('obj-mark-drop') == 'obj-mark-drop-opt':
         mylang.add(
-            'basic-head-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge=True, section='addenda')
+            'basic-head-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge=True, section='addenda', links = set_links([ARGUMENTOPTIONALITY_LINK]))
 
     if ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-req' and ch.get('obj-mark-drop') == 'obj-mark-drop-not':
         mylang.add(
-            'basic-head-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge=True, section='addenda')
+            'basic-head-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge=True, section='addenda', links = set_links([ARGUMENTOPTIONALITY_LINK]))
 
     if ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-opt' and ch.get('obj-mark-drop') == 'obj-mark-drop-not':
         mylang.add(
-            'basic-head-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge=True, section='addenda')
+            'basic-head-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge=True, section='addenda', links = set_links([ARGUMENTOPTIONALITY_LINK]))
 
     if ch.get('obj-mark-drop') == 'obj-mark-drop-opt' and ch.get('obj-mark-no-drop') == 'obj-mark-no-drop-req':
         mylang.add(
-            'basic-head-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge=True, section='addenda')
+            'basic-head-comp-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.OPT -].', merge=True, section='addenda', links = set_links([ARGUMENTOPTIONALITY_LINK]))
 
     if ch.get('subj-mark-drop') == 'subj-mark-drop-opt' and ch.get('subj-mark-no-drop') == 'subj-mark-no-drop-req':
         mylang.add(
-            'basic-head-subj-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge=True, section='addenda')
+            'basic-head-subj-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge=True, section='addenda', links = set_links([ARGUMENTOPTIONALITY_LINK]))
 
     if ch.get('subj-mark-no-drop') == 'subj-mark-no-drop-not' and ch.get('subj-mark-drop') == 'subj-mark-drop-opt':
         mylang.add(
-            'basic-head-subj-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge=True, section='addenda')
+            'basic-head-subj-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge=True, section='addenda', links = set_links([ARGUMENTOPTIONALITY_LINK]))
 
     if ch.get('subj-mark-no-drop') == 'subj-mark-no-drop-req' and ch.get('subj-mark-drop') == 'subj-mark-drop-not':
         mylang.add(
-            'basic-head-subj-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge=True, section='addenda')
+            'basic-head-subj-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge=True, section='addenda', links = set_links([ARGUMENTOPTIONALITY_LINK]))
 
     if ch.get('subj-mark-no-drop') == 'subj-mark-no-drop-opt' and ch.get('subj-mark-drop') == 'subj-mark-drop-not':
         mylang.add(
-            'basic-head-subj-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge=True, section='addenda')
+            'basic-head-subj-phrase :+ [HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ.FIRST.OPT -].', merge=True, section='addenda', links = set_links([ARGUMENTOPTIONALITY_LINK]))
 
     # def customize_subj_phrase(phrase)
     # Trying to get the subject/object marker co-occurrence to work out

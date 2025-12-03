@@ -130,6 +130,18 @@ class TDLelem(object):
 
     def get_comment(self):
         return ''
+    
+    def set_docstring(self, docstring):
+        pass
+
+    def get_docstring(self):
+        return ''
+    
+    def set_links(self, links):
+        pass
+
+    def get_links(self):
+        return set()
 
     def set_type(self, type_name):
         pass
@@ -172,6 +184,8 @@ class TDLelem_literal(object):
         self.one_line = False
         self.section = ''
         self.literal = literal
+        self.links = set()
+        self.docstring = ''
 
     def write(self):
         if self.comment:
@@ -182,13 +196,44 @@ class TDLelem_literal(object):
         if debug_write:
             TDLwrite('literal\n')
 
-        tdl_file.write(self.literal)
+        if self.docstring or self.links: 
+            # Remove final period to allow docstrings to work later.
+            literal = list(self.literal)
+            if literal[-1] == ".":
+                literal.pop()
+                literal = "".join(literal)
+            TDLwrite(literal)
+            TDLwrite('\n\"\"\"\n')
+            if self.links:
+                # Write the links as a docstring
+                TDLwrite("This type as generated from the customization system bore constraints from these libraries:\n")
+                TDLwrite("\n".join(sorted(self.links)) + "\n")
+            if self.docstring:
+                # Write the docstring as a docstring
+                TDLwrite(self.docstring + "\n")
+            TDLwrite('\"\"\"')
+            # Add the final period at the end
+            TDLwrite(".")
+        else:
+            tdl_file.write(self.literal)
 
     def set_comment(self, comment):
         self.comment = comment
 
     def get_comment(self):
         return self.comment
+    
+    def set_links(self, links):
+        self.links = links
+
+    def get_links(self):
+        return self.links
+    
+    def set_docstring(self, docstring):
+        self.docstring = docstring
+
+    def get_docstring(self):
+        return self.docstring
 
     def set_type(self, type_name):
         pass
@@ -215,6 +260,8 @@ class TDLelem_typedef(TDLelem):
         self.section = ''
         self.type = type
         self.op = op
+        self.docstring = ''
+        self.links = set() # links to relevant matrix doc pages
 
     def write(self):
         if self.comment and not self.one_line:
@@ -233,10 +280,34 @@ class TDLelem_typedef(TDLelem):
         for ch in self.child:
             ch.write()
 
+        if self.docstring or self.links: 
+            TDLwrite('\n\"\"\"\n')
+            if self.links:
+                # Write the links as a docstring
+                TDLwrite("This type as generated from the customization system bore constraints from these libraries:\n")
+                TDLwrite("\n".join(sorted(self.links)) + "\n")
+            if self.docstring:
+                # Write the docstring as a docstring
+                TDLwrite(self.docstring + "\n")
+            TDLwrite('\"\"\"')
+            #Write the docstring
+
         TDLwrite('.')
         if self.one_line and self.comment:
             TDLwrite('  ; ' + self.comment)
 
+    def set_docstring(self, docstring):
+        self.docstring = docstring
+
+    def get_docstring(self):
+        return self.docstring
+    
+    def set_links(self, links):
+        self.links = links
+
+    def get_links(self):
+        return self.links
+    
     def set_comment(self, comment):
         self.comment = comment
 
@@ -728,6 +799,20 @@ def TDLmerge(e1, e2):
                 c0 += '\n\n'
             c0 += c2
         e0.set_comment(c0)
+
+        d1 = e1.get_docstring()
+        d2 = e2.get_docstring()
+        d0 = d1
+        if d1 != d2: 
+            if len(d1) and len(d2):
+                d0 += '\n'
+            d0 += d2
+        e0.set_docstring(d0)
+
+        s1 = e1.get_links()
+        s2 = e2.get_links()
+        e0.set_links(s1.union(s2)) # combine sets into one set
+
         # if the elements are ordered (list or dlist), merge the list
         # items in order.  That is, <a,b,c> + <A,B,C> = <a&A,b&B,c&C>.
         # or (isinstance(e1,TDLelem_feat) and not e1.empty_list and e1.is_list())
@@ -927,7 +1012,7 @@ class TDLfile(object):
             t.write()
 
     def add(self, tdl_type,
-            comment='', one_line=False, merge=True, section=''):
+            comment='', one_line=False, merge=True, section='', docstring='', links=set()):
         """
         Add a type definition to this file, merging with an existing
         definition if possible.
@@ -936,6 +1021,8 @@ class TDLfile(object):
         typedef.set_comment(comment)
         typedef.set_one_line(one_line)
         typedef.set_merge(merge)
+        typedef.set_docstring(docstring)
+        typedef.set_links(links)
 
         typedef.section = section
         if not section:
@@ -955,10 +1042,12 @@ class TDLfile(object):
         self.add(tdl_type + ':= [].', comment)
 
     def add_literal(self, literal,
-                    comment='', section=''):
+                    comment='', section='', links = set(), docstring = ''):
         """Add a literal string (which will never merge) to this file."""
         l = TDLelem_literal(literal)
         l.set_comment(comment)
+        l.set_links(links)
+        l.set_docstring(docstring)
 
         l.section = section
         if not section:

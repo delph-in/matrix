@@ -2,6 +2,8 @@ from gmcs.utils import TDLencode
 from gmcs.utils import orth_encode
 from gmcs.lib import TDLHierarchy
 from gmcs.utils import get_name
+from gmcs.linglib.docstrings import ADNOMINALPOSSESSION_LINK, CASE_LINK, LIGHTVERBCONSTRUCTIONS_LINK, set_links
+from gmcs.linglib import docstrings
 
 def case_names(ch):
     """
@@ -214,7 +216,7 @@ def customize_case_adpositions(mylang, ch, case_pos):
             'case-marking-adp-lex := non-infostr-marking-adp-lex & \
             [ SYNSEM.LOCAL.CAT [ HEAD [ CASE #case]],  \
               ARG-ST < [ LOCAL.CAT.HEAD.CASE #case ] > ].' 
-        mylang.add(typedef)
+        mylang.add(typedef, links = set_links([CASE_LINK]))
 
         # EKN 03-02-2018 Add CASE real-case to comp of adp if possessives
         # implemented:
@@ -222,7 +224,7 @@ def customize_case_adpositions(mylang, ch, case_pos):
             mylang.add('case-marking-adp-lex := [ SYNSEM.LOCAL.CAT \
                            [ HEAD.POSSESSOR nonpossessive, \
                                   POSSESSUM nonpossessive ], \
-                             ARG-ST < [ LOCAL.CAT.HEAD.CASE real-case ] > ].')
+                             ARG-ST < [ LOCAL.CAT.HEAD.CASE real-case ] > ].', links = set_links([ADNOMINALPOSSESSION_LINK]))
 
         if ch.has_mixed_case():
             mylang.add('+np :+ [ CASE-MARKED bool ].', section='addenda')
@@ -231,7 +233,7 @@ def customize_case_adpositions(mylang, ch, case_pos):
                  [ ARG-ST < [ LOCAL.CAT.HEAD.CASE-MARKED - ] > ].')
         
         if ch.get('coverb-v') == 'on' or ch.get('coverb-n') == 'on':
-            mylang.add('case-marking-adp-lex := [ SYNSEM.LOCAL.CAT.HEAD.LVC lv-none ].')
+            mylang.add('case-marking-adp-lex := [ SYNSEM.LOCAL.CAT.HEAD.LVC lv-none ].', links = set_links([LIGHTVERBCONSTRUCTIONS_LINK]))
 
 
 
@@ -383,23 +385,23 @@ def customize_verb_case(mylang, ch):
                 if t_type != 'transitive-verb-lex' and \
                         t_type != 'clausal-verb-lex':
                     if not clausal:
-                        mylang.add(t_type + ' := transitive-verb-lex.')
+                        mylang.add(t_type + ' := transitive-verb-lex.', links = set_links([CASE_LINK]))
                     else:
-                        mylang.add(t_type + ' := clausal-verb-lex.')
+                        mylang.add(t_type + ' := clausal-verb-lex.', links = set_links([CASE_LINK]))
     
                 # constrain the head of the agent/subject on parent transitive-verb-lex            
                 if t_type == 'transitive-verb-lex':
                     typedef = \
                         t_type + ' := \
               [ ARG-ST.FIRST.LOCAL.CAT.HEAD ' + a_head + ' ].'
-                    mylang.add(typedef)
+                    mylang.add(typedef, links = set_links([CASE_LINK]))
           
                 # constrain the case of the agent/subject
                 if a_case:
                     typedef = \
                         t_type + ' := \
           [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + a_case + ' ].'
-                    mylang.add(typedef)
+                    mylang.add(typedef, links = set_links([CASE_LINK]))
 
                 # constrain CASE-MARKING of the agent/subject, if appropriate
                 if a_case and ch.has_mixed_case() and \
@@ -407,7 +409,7 @@ def customize_verb_case(mylang, ch):
                     typedef = \
                         t_type + ' := \
           [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CAT.HEAD.CASE-MARKED + ] > ].'
-                    mylang.add(typedef)
+                    mylang.add(typedef, links = set_links([CASE_LINK]))
 
                 # constrain the head of the patient/object on parent transitive-verb-lex
                 if t_type == 'transitive-verb-lex':
@@ -415,14 +417,14 @@ def customize_verb_case(mylang, ch):
                         typedef = \
                             t_type + ' := \
               [ ARG-ST < [ ], [ LOCAL.CAT.HEAD ' + o_head + ' ] > ].'
-                        mylang.add(typedef)
+                        mylang.add(typedef, links = set_links([CASE_LINK]))
 
                 # constrain the case of the patient/object
                 if o_case:
                     typedef = \
                         t_type + ' := \
           [ ARG-ST < [ ], [ LOCAL.CAT.HEAD.CASE ' + o_case + ' ] > ].'
-                    mylang.add(typedef)
+                    mylang.add(typedef, links = set_links([CASE_LINK]))
 
                 # constrain CASE-MARKING of the patient/object, if appropriate
                 if o_case and ch.has_mixed_case() and \
@@ -430,7 +432,7 @@ def customize_verb_case(mylang, ch):
                     typedef = \
                         t_type + ' := \
           [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CAT.HEAD.CASE-MARKED + ] > ].'
-                    mylang.add(typedef)
+                    mylang.add(typedef, links = set_links([CASE_LINK]))
             else:  # intransitive or clausal with constrained subject
                 if c[0] == 'intrans':
                     s_case = ''
@@ -453,23 +455,23 @@ def customize_verb_case(mylang, ch):
                 if i_type != 'intransitive-verb-lex' and \
                         i_type != 'clausal-verb-lex':
                     if not clausal:
-                        mylang.add(i_type + ' := intransitive-verb-lex.')
+                        mylang.add(i_type + ' := intransitive-verb-lex.', links = set_links([CASE_LINK]))
                     else:
-                        mylang.add(i_type + ' := clausal-verb-lex.')
+                        mylang.add(i_type + ' := clausal-verb-lex.', links = set_links([CASE_LINK]))
 
                 # constrain the head of the subject on parent intransitive-verb-lex
                 if i_type == 'intransitive-verb-lex':
                     typedef = \
                         i_type + ' := \
               [ ARG-ST.FIRST.LOCAL.CAT.HEAD ' + s_head + ' ].'
-                    mylang.add(typedef)
+                    mylang.add(typedef, links = set_links([CASE_LINK]))
 
                 # constrain the case of the subject
                 if s_case:
                     typedef = \
                         i_type + ' := \
           [ ARG-ST.FIRST.LOCAL.CAT.HEAD.CASE ' + s_case + ' ].'
-                    mylang.add(typedef)
+                    mylang.add(typedef, links = set_links([CASE_LINK]))
 
                 # constrain CASE-MARKING of the subject, if appropriate
                 if s_case and ch.has_mixed_case() and \
@@ -477,7 +479,7 @@ def customize_verb_case(mylang, ch):
                     typedef = \
                         i_type + ' := \
           [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CAT.HEAD.CASE-MARKED + ] > ].'
-                    mylang.add(typedef)
+                    mylang.add(typedef, links = set_links([CASE_LINK]))
 
 
 def get_verb_case(ch):

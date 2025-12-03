@@ -5,6 +5,8 @@ from gmcs.choices import ChoicesFile
 
 from gmcs.constants import ON, YES, INTRANSITIVE, TRANSITIVE
 
+from gmcs.linglib.docstrings import set_links, LIGHTVERBCONSTRUCTIONS_LINK, WORDORDER_LINK
+
 ###########################################
 ### CONSTANTS (specific to this module) ###
 ###########################################
@@ -128,9 +130,9 @@ def customize_light_verb(mylang: TDLfile, ch: ChoicesFile, hierarchies: Dict[str
     """
     if LVC_TYPE in hierarchies:
         if ch.has_adp_case():
-            mylang.add('+nvp :+ [ LVC lvc ].', section='addenda')
+            mylang.add('+nvp :+ [ LVC lvc ].', section='addenda', links = set_links([LIGHTVERBCONSTRUCTIONS_LINK]))
         else:
-            mylang.add('+nv :+ [ LVC lvc ].', section='addenda')
+            mylang.add('+nv :+ [ LVC lvc ].', section='addenda', links = set_links([LIGHTVERBCONSTRUCTIONS_LINK]))
         hierarchies[LVC_TYPE].save(mylang)
 
 
@@ -159,21 +161,21 @@ def create_lvc_phrase_types(ch: ChoicesFile, mylang: TDLfile, rules: TDLfile):
     # head-comp
     if wo in ['svo', 'vos', 'vso', 'v-initial']:
         # prevents LVCs from combining using this rule
-        mylang.add('head-comp-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.LVC ' + LV_NONE_TYPE + ' ].', section='phrases')
+        mylang.add('head-comp-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.LVC ' + LV_NONE_TYPE + ' ].', section='phrases', links = set_links([LIGHTVERBCONSTRUCTIONS_LINK, WORDORDER_LINK]))
 
     # comp-head
     if wo in ['sov', 'osv', 'ovs', 'v-final']:
         # prevents LVCs from combining using this rule
-        mylang.add('comp-head-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.LVC ' + LV_NONE_TYPE + ' ].', section='phrases')
+        mylang.add('comp-head-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.LVC ' + LV_NONE_TYPE + ' ].', section='phrases', links = set_links([LIGHTVERBCONSTRUCTIONS_LINK, WORDORDER_LINK]))
 
     # head-comp and comp-head
     if wo in ['free', 'v2']:
         head_type_suffix = '-head-nexus'
         # prevents LVCs from combining using these rules
-        mylang.add('head-comp-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.LVC ' + LV_NONE_TYPE + ' ].', section='phrases')
-        mylang.add('comp-head-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.LVC ' + LV_NONE_TYPE + ' ].', section='phrases')
-        mylang.add('head-comp-phrase-2 := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.LVC ' + LV_NONE_TYPE + ' ].', section='phrases')
-        mylang.add('comp-head-phrase-2 := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.LVC ' + LV_NONE_TYPE + ' ].', section='phrases')
+        mylang.add('head-comp-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.LVC ' + LV_NONE_TYPE + ' ].', section='phrases', links = set_links([LIGHTVERBCONSTRUCTIONS_LINK, WORDORDER_LINK]))
+        mylang.add('comp-head-phrase := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.LVC ' + LV_NONE_TYPE + ' ].', section='phrases', links = set_links([LIGHTVERBCONSTRUCTIONS_LINK, WORDORDER_LINK]))
+        mylang.add('head-comp-phrase-2 := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.LVC ' + LV_NONE_TYPE + ' ].', section='phrases', links = set_links([LIGHTVERBCONSTRUCTIONS_LINK, WORDORDER_LINK]))
+        mylang.add('comp-head-phrase-2 := [ NON-HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.LVC ' + LV_NONE_TYPE + ' ].', section='phrases', links = set_links([LIGHTVERBCONSTRUCTIONS_LINK, WORDORDER_LINK]))
 
     # coverb after light verb
     if lvc_wo == 'lv-cv':
@@ -196,7 +198,7 @@ def add_lvc_phrase(ch: ChoicesFile, mylang: TDLfile, rules: TDLfile, lv_cv: bool
 
         # allows for formation of LVC
         mylang.add('head-comp-phrase-lvc := basic-head-1st-comp-phrase & head-initial' + head_type_suffix + ' & \
-            [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.LVC ' + LV_ALL_TYPE + ' ].', section='phrases')
+            [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.LVC ' + LV_ALL_TYPE + ' ].', section='phrases', links = set_links([LIGHTVERBCONSTRUCTIONS_LINK]))
 
     if cv_lv:
         rules.add('comp-head-lvc := comp-head-phrase-lvc.')
@@ -205,20 +207,20 @@ def add_lvc_phrase(ch: ChoicesFile, mylang: TDLfile, rules: TDLfile, lv_cv: bool
         # langauges with free word order
         if ch.get('word-order') == 'free':
             mylang.add('head-final-lvc := head-final & \
-                [ SYNSEM.ATTACH lmod ].', section='phrases')
+                [ SYNSEM.ATTACH lmod ].', section='phrases', links = set_links([LIGHTVERBCONSTRUCTIONS_LINK, WORDORDER_LINK]))
 
         # prevents object from combining w/ coverb in "subj obj coverb lv" 
         # before coverb + lv have combined
         mylang.add('decl-head-subj-phrase :+ \
-            [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.LVC ' + LV_NONE_TYPE + ' ].', section='phrases')
+            [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.LVC ' + LV_NONE_TYPE + ' ].', section='phrases', links = set_links([LIGHTVERBCONSTRUCTIONS_LINK]))
 
         # allows for formation of LVC
         if ch.get('word-order') == 'free':
             mylang.add('comp-head-phrase-lvc := basic-head-1st-comp-phrase & head-final-lvc & \
-                [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.LVC ' + LV_ALL_TYPE + ' ].', section='phrases')
+                [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.LVC ' + LV_ALL_TYPE + ' ].', section='phrases', links = set_links([LIGHTVERBCONSTRUCTIONS_LINK, WORDORDER_LINK]))
         else:
             mylang.add('comp-head-phrase-lvc := basic-head-1st-comp-phrase & head-final & \
-                [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.LVC ' + LV_ALL_TYPE + ' ].', section='phrases')
+                [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.LOCAL.CAT.HEAD.LVC ' + LV_ALL_TYPE + ' ].', section='phrases', links = set_links([LIGHTVERBCONSTRUCTIONS_LINK, WORDORDER_LINK]))
 
     if ch.get('coverb-n') == ON:
         if ch.get('lvc-noun-cv-dep') == YES:
@@ -230,7 +232,7 @@ def add_lvc_phrase(ch: ChoicesFile, mylang: TDLfile, rules: TDLfile, lv_cv: bool
                 [ SYNSEM [ LOCAL.CAT.VAL.COMPS.FIRST #comps ], \
                     ARG-ST.REST.FIRST #comps & \
                                         [ LIGHT +, \
-                                          MODIFIED notmod ] ].', section='phrases')
+                                          MODIFIED notmod ] ].', section='phrases', links = set_links([LIGHTVERBCONSTRUCTIONS_LINK]))
 
     if ch.get('coverb-v') == ON:
         if ch.get('lvc-verb-cv-dep') == YES:
@@ -243,22 +245,22 @@ def add_lvc_phrase(ch: ChoicesFile, mylang: TDLfile, rules: TDLfile, lv_cv: bool
                     [ SYNSEM [ LOCAL.CAT.VAL.COMPS.FIRST #comps ], \
                         ARG-ST.REST.FIRST #comps & \
                                             [ LIGHT +, \
-                                              MODIFIED notmod ] ].', section='phrases')
+                                              MODIFIED notmod ] ].', section='phrases', links = set_links([LIGHTVERBCONSTRUCTIONS_LINK]))
             if ch.get('lvc-bleached') == YES:
                 mylang.add(BLEACHED_COVERB_VERB + '-lv-lex := \
                 [ SYNSEM [ LOCAL.CAT.VAL.COMPS.FIRST #comps ], \
                     ARG-ST.REST.FIRST #comps & \
                                         [ LIGHT +, \
-                                          MODIFIED notmod ] ].', section='phrases')
+                                          MODIFIED notmod ] ].', section='phrases', links = set_links([LIGHTVERBCONSTRUCTIONS_LINK]))
 
     # auxiliaries can't have LIGHT + in order to combine with
     #   light verb using comp-head/head-comp
     if ch.get('lvc-adjacent') == YES and ch.get('has-aux') == 'no':
         # coverb must be immediately adjacent to light verb
         if lv_cv:
-            mylang.add('head-comp-phrase-lvc := [ HEAD-DTR.SYNSEM.LIGHT + ].', section='phrases')
+            mylang.add('head-comp-phrase-lvc := [ HEAD-DTR.SYNSEM.LIGHT + ].', section='phrases', links = set_links([LIGHTVERBCONSTRUCTIONS_LINK]))
         if cv_lv:
-            mylang.add('comp-head-phrase-lvc := [ HEAD-DTR.SYNSEM.LIGHT + ].', section='phrases')
+            mylang.add('comp-head-phrase-lvc := [ HEAD-DTR.SYNSEM.LIGHT + ].', section='phrases', links = set_links([LIGHTVERBCONSTRUCTIONS_LINK]))
     else:
         # coverb doesn't have to be immediately adjacent to light verb
         pass
