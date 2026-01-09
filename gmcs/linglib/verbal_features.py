@@ -1,5 +1,8 @@
 from gmcs.lib import TDLHierarchy
 
+from gmcs.linglib import docstrings
+from gmcs.linglib.docstrings import LEXICON_VERBS_LINK, TENSEASPECTMOOD_LINK, set_links
+
 def init_tense_hierarchy(ch, hierarchies):
     """Create tense feature value hierarchies per the user's choices."""
     hier = TDLHierarchy('tense')
@@ -95,8 +98,8 @@ def customize_situation(mylang, hierarchies):
     """
     if 'situation' in hierarchies:
         mylang.set_section('features')
-        mylang.add('situation := sort.')
-        mylang.add('tam :+ [SITUATION situation].', section='addenda')
+        mylang.add('situation := sort.', links = set_links([LEXICON_VERBS_LINK, TENSEASPECTMOOD_LINK]))
+        mylang.add('tam :+ [SITUATION situation].', section='addenda', links = set_links([LEXICON_VERBS_LINK, TENSEASPECTMOOD_LINK]))
         hierarchies['situation'].save(mylang, False)
 
 ######################################################################
@@ -180,7 +183,7 @@ def init_form_hierarchy(ch, hierarchies):
 
 def customize_form(mylang, hierarchies):
     if 'form' in hierarchies:
-        mylang.add('head :+ [FORM form].', section='addenda')
+        mylang.add('head :+ [FORM form].', section='addenda', links = set_links([LEXICON_VERBS_LINK]))
         hierarchies['form'].save(mylang)
 
 

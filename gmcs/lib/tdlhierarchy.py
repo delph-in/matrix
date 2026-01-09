@@ -1,5 +1,7 @@
 ######################################################################
 
+from gmcs.linglib.docstrings import CASE_LINK, INFORMATIONSTRUCTURE_LINK, NUMBER_LINK, PERSON_LINK, TENSEASPECTMOOD_LINK, set_links
+
 class TDLHierarchy:
     """
     A class for storing, operating on, and saving to TDL a type
@@ -38,8 +40,21 @@ class TDLHierarchy:
 
         tdl_file.add_literal(';;; ' + self.name[0:1].upper() + self.name[1:])
 
+        if self.name == "person":
+            link = str(list(set_links([PERSON_LINK]))[0])
+        elif self.name == "number":
+            link = str(list(set_links([NUMBER_LINK]))[0])
+        elif self.name == "case":
+            link = str(list(set_links([CASE_LINK]))[0])
+        elif self.name == "tense" or self.name == "aspect" or self.name == "mood":
+            link = str(list(set_links([TENSEASPECTMOOD_LINK]))[0])
+        elif self.name == "mark":
+            link = str(list(set_links([INFORMATIONSTRUCTURE_LINK]))[0])
+        else:
+            link = str(self.name)
+
         if define:
-            tdl_file.add(self.name + ' := *top*.', '', True)
+            tdl_file.add(self.name + ' := *top*.', '', True, docstring = "The type hierarchy beneath this type as generated from the customization system bore constraints from this library: \n" + link)
 
         for h in self.hierarchy:
             tdl_file.add(h[0] + ' := ' + h[1] + '.', h[2], True)

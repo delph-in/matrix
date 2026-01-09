@@ -3,12 +3,16 @@ Module to support the Constituent (Wh-) Questions library.
 email olzama@uw.edu with both constituent and polar questions about the library.
 """
 
+from ctypes.wintypes import WORD
 from gmcs.constants import MTRX_FR_OPT, MTRX_FRONT, NO_MULTI, \
     SINGLE, MULTI, SG_OBLIG, ALL_OBLIG, EMBED_INSITU, ON, WH_INFL, \
     IN_SITU, NONE_OBLIG
 from gmcs.utils import get_name, TDLencode, orth_encode
 
 from gmcs.feature_type_use import USED_TYPES
+
+from gmcs.linglib import docstrings
+from gmcs.linglib.docstrings import WHQUESTIONS_LINK, WORDORDER_LINK, set_links
 
 """
 CONSTANTS
@@ -106,12 +110,12 @@ NC_SUBJ_HEAD = '''subj-head-nc-phrase := decl-head-subj-phrase & head-final &
 
 # This function should be finished when/if WH feature is moved from matrix.tdl to customization
 def customize_wh_feature(mylang, ch):
-    mylang.add('cat :+ [ WH and-or ].')
+    mylang.add('cat :+ [ WH and-or ].', links = set_links([WHQUESTIONS_LINK]))
     if ch.get(MTRX_FRONT):
-        mylang.add('wh-ques-phrase := [ SYNSEM.LOCAL.CAT.WH.BOOL + ].')
+        mylang.add('wh-ques-phrase := [ SYNSEM.LOCAL.CAT.WH.BOOL + ].', links = set_links([WHQUESTIONS_LINK]))
         if len(ch.get('adv', [])) > 0 or len(ch.get('normadp', [])) > 0:
             mylang.add(
-                'norm-adposition-lex := [ SYNSEM.LOCAL.CAT.WH.BOOL + ].')
+                'norm-adposition-lex := [ SYNSEM.LOCAL.CAT.WH.BOOL + ].', links = set_links([WHQUESTIONS_LINK]))
 
 
 def customize_wh_ques(mylang, ch, rules, roots):
@@ -119,33 +123,33 @@ def customize_wh_ques(mylang, ch, rules, roots):
         # If there are no wh-questions, need to put the default
         # constraints to establish the semantic links between
         # the filler and the gap and the extracted subject and the verb:
-        mylang.add(BASIC_FILLER_SG, section='phrases')
-        mylang.add(EX_SUBJ, section='phrases')
-        mylang.add('''clause :+ [ SYNSEM.NON-LOCAL.QUE.LIST < > ]. ''')
+        mylang.add(BASIC_FILLER_SG, section='phrases', links = set_links([WHQUESTIONS_LINK]))
+        mylang.add(EX_SUBJ, section='phrases', links = set_links([WHQUESTIONS_LINK]))
+        mylang.add('''clause :+ [ SYNSEM.NON-LOCAL.QUE.LIST < > ]. ''', links = set_links([WHQUESTIONS_LINK]))
 
     # Either no fronting at all or single fronting
     if (not ch.get(MTRX_FRONT)) or ch.get(MTRX_FRONT) == SINGLE:
         if len(ch.get('adv', [])) > 0 or len(ch.get('normadp', [])) > 0:
             mylang.add(
-                '''adj-head-int-phrase :+ [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < > ].''', section='addenda')
+                '''adj-head-int-phrase :+ [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < > ].''', section='addenda', links = set_links([WHQUESTIONS_LINK]))
 
     if (not ch.get(MTRX_FRONT) and ch.get(WH_INFL) != ON):
-        mylang.add('''clause :+ [ SYNSEM.NON-LOCAL.QUE.LIST < > ]. ''')
+        mylang.add('''clause :+ [ SYNSEM.NON-LOCAL.QUE.LIST < > ]. ''', links = set_links([WHQUESTIONS_LINK]))
         if len(ch.get('adv', [])) > 0 or len(ch.get('normadp', [])) > 0:
             mylang.add(
-                '''head-adj-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ]. ''', section='addenda')
+                '''head-adj-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ]. ''', section='addenda', links = set_links([WHQUESTIONS_LINK]))
 
     if ch.get(NO_MULTI) == ON:
         if ch.get(MTRX_FRONT) == SINGLE:
             mylang.add(
-                '''wh-ques-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].''')
+                '''wh-ques-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].''', links = set_links([WHQUESTIONS_LINK]))
         if ch.get(MTRX_FRONT) == IN_SITU or \
                 (ch.get(MTRX_FRONT) == SINGLE and ch.get(MTRX_FR_OPT) == NONE_OBLIG):
             mylang.add(
-                '''insitu-int-cl := [ HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < [ ] > ].''')
+                '''insitu-int-cl := [ HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < [ ] > ].''', links = set_links([WHQUESTIONS_LINK]))
         if len(ch.get('adv', [])) > 0 or len(ch.get('normadp', [])) > 0:
             mylang.add(
-                '''wh-adverb-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.WH.BOOL - ] > ].''')
+                '''wh-adverb-lex := [ SYNSEM.LOCAL.CAT.HEAD.MOD < [ LOCAL.CAT.WH.BOOL - ] > ].''', links = set_links([WHQUESTIONS_LINK]))
 
     mylang.add_literal(
         ';;; Wh-question-related phrasal types', section='phrases')
@@ -153,20 +157,20 @@ def customize_wh_ques(mylang, ch, rules, roots):
     if ch.get(MTRX_FRONT) in [SINGLE, MULTI]:
         mylang.add_literal('''; Do not allow extracting "And Kim"''')
         mylang.add('''basic-head-filler-phrase :+
-   [ ARGS < [ SYNSEM.LOCAL.COORD - ], [ SYNSEM.LOCAL.COORD - ] > ].''')
-        mylang.add(WH_Q_PHR, section='phrases')
+   [ ARGS < [ SYNSEM.LOCAL.COORD - ], [ SYNSEM.LOCAL.COORD - ] > ].''', links = set_links([WHQUESTIONS_LINK]))
+        mylang.add(WH_Q_PHR, section='phrases', links = set_links([WHQUESTIONS_LINK]))
         if not ch.get('wh-inv-matrix') == ON:
             mylang.add(
-                'wh-ques-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC na-or-+ ].')
+                'wh-ques-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC na-or-+ ].', links = set_links([WHQUESTIONS_LINK]))
         else:
             if not ch.get('wh-inv-embed') == ON:
-                mylang.add(MAIN_WHQ)
-                mylang.add(EMBED_WHQ)
+                mylang.add(MAIN_WHQ, links = set_links([WHQUESTIONS_LINK]))
+                mylang.add(EMBED_WHQ, links = set_links([WHQUESTIONS_LINK]))
             else:
                 mylang.add(
-                    'wh-ques-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC na-or-+ ].')
+                    'wh-ques-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.MC na-or-+ ].', links = set_links([WHQUESTIONS_LINK]))
         mylang.add_literal('; Complement extraction', section='phrases')
-        mylang.add(EX_COMP)
+        mylang.add(EX_COMP, links = set_links([WHQUESTIONS_LINK]))
         rules.add('ex-comp := extracted-comp-phrase.')
         mylang.add_literal('; Adjunct extraction', section='phrases')
         rules.add('ex-adj := basic-extracted-adj-phrase.')
@@ -176,16 +180,16 @@ def customize_wh_ques(mylang, ch, rules, roots):
                 mylang.add(
                     'extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ cons ].', merge=True)
             mylang.add(
-                'extracted-subj-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].', merge=True)
+                'extracted-subj-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].', merge=True, links = set_links([WHQUESTIONS_LINK]))
         elif ch.get('word-order') in ['vso', 'osv', 'ovs']:
             mylang.add(
                 'extracted-comp-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < > ].', merge=True)
 
     if ch.get(MTRX_FRONT) == SINGLE:
         # With single fronting, can restrict SLASH to one element at most
-        mylang.add(BASIC_FILLER_SG, section='phrases')
+        mylang.add(BASIC_FILLER_SG, section='phrases', links = set_links([WHQUESTIONS_LINK]))
         mylang.add_literal('; Subject extraction')
-        mylang.add(EX_SUBJ)
+        mylang.add(EX_SUBJ, links = set_links([WHQUESTIONS_LINK]))
         rules.add('ex-subj := extracted-subj-phrase.')
         if not ch.get('wh-inv-matrix') == ON:
             rules.add('wh-ques := wh-ques-phrase.')
@@ -198,60 +202,60 @@ def customize_wh_ques(mylang, ch, rules, roots):
 
         if ch.get(MTRX_FR_OPT) == SG_OBLIG:
             mylang.add(
-                '''head-adj-int-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ clist, COMPS clist ] ].''')
+                '''head-adj-int-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ clist, COMPS clist ] ].''', links = set_links([WHQUESTIONS_LINK]))
 
         if ch.get('wh-inv-matrix') == ON:
             if not ch.get('wh-inv-notsubj') == ON:
                 mylang.add(
-                    'wh-ques-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.AUX + ].')
+                    'wh-ques-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.AUX + ].', links = set_links([WHQUESTIONS_LINK]))
             else:
                 mylang.add(
                     'extracted-subj-phrase := [ HEAD-DTR.SYNSEM.LOCAL.CAT.HEAD.AUX - ].')
             if not ch.get('wh-inv-embed') == ON:
                 mylang.add('subj-head-phrase := [ SYNSEM.LOCAL.CAT.MC na-or-+,'
-                           'HEAD-DTR.SYNSEM.NON-LOCAL [ QUE.LIST < >, SLASH.LIST < > ] ].')
+                           'HEAD-DTR.SYNSEM.NON-LOCAL [ QUE.LIST < >, SLASH.LIST < > ] ].', links = set_links([WHQUESTIONS_LINK]))
                 mylang.add(
-                    'adj-head-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL [ QUE.LIST < > ] ].')
-                mylang.add(NC_SUBJ_HEAD, section='phrases')
+                    'adj-head-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL [ QUE.LIST < > ] ].', links = set_links([WHQUESTIONS_LINK]))
+                mylang.add(NC_SUBJ_HEAD, section='phrases', links = set_links([WHQUESTIONS_LINK]))
                 rules.add('nc-subjh := subj-head-nc-phrase.')
             mylang.add('basic-extracted-adj-phrase :+ '
                        '[ SYNSEM.NON-LOCAL.SLASH.LIST < [ CAT.HEAD.MOD < [ LOCAL.CAT.HEAD [ INV - ] ] > ] >, '
-                       '  HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].')
+                       '  HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.COMPS < > ].', links = set_links([WHQUESTIONS_LINK]))
 
     if ch.get(MTRX_FRONT) in [MULTI]:
-        mylang.add(EX_SUBJ, section='phrases')
+        mylang.add(EX_SUBJ, section='phrases', links = set_links([WHQUESTIONS_LINK]))
         mylang.add('extracted-subj-phrase := [ HEAD-DTR.SYNSEM.L-QUE - ].')
         rules.add('ex-subj := extracted-subj-phrase.')
         mylang.add(
-            'wh-ques-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < [], ... > ].')
-        mylang.add(FIRST_FILLER)
+            'wh-ques-phrase := [ HEAD-DTR.SYNSEM.NON-LOCAL.SLASH.LIST < [], ... > ].', links = set_links([WHQUESTIONS_LINK]))
+        mylang.add(FIRST_FILLER, links = set_links([WHQUESTIONS_LINK]))
         # prevent adjunct extraction, as it will be done out of head-subj
         if ch.get(MTRX_FR_OPT) == 'none-oblig':
             mylang.add('1st-head-filler-phrase := [ SYNSEM.MODIFIED hasmod ].')
         mylang.add('wh-ques-phrase := 1st-head-filler-phrase.')
         rules.add('wh-ques := wh-ques-phrase.')
         if ch.get(MTRX_FR_OPT) == ALL_OBLIG:
-            mylang.add(WH_Q_PHR_NO_OR_SG_OBLIG_MULTI)  # QUE.LIST is empty
+            mylang.add(WH_Q_PHR_NO_OR_SG_OBLIG_MULTI, links = set_links([WHQUESTIONS_LINK]))  # QUE.LIST is empty
         # Rule out structural ambiguity for sentences like "Who sleeps where?"
         if ch.get('word-order') in ['svo', 'sov', 'osv']:
             mylang.add('''head-adj-int-phrase :+ [ 
-             SYNSEM.LOCAL.CAT.VAL [ SUBJ clist, COMPS clist ] ] ].''', section='addenda')
+             SYNSEM.LOCAL.CAT.VAL [ SUBJ clist, COMPS clist ] ] ].''', section='addenda', links = set_links([WHQUESTIONS_LINK, WORDORDER_LINK]))
         if ch.get('word-order') == 'free':
             mylang.add(
-                '''adj-head-int-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ clist ].''', merge=True)
+                '''adj-head-int-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ clist ].''', merge=True, links = set_links([WHQUESTIONS_LINK, WORDORDER_LINK]))
             mylang.add(
-                '''head-adj-int-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ clist ].''', merge=True)
+                '''head-adj-int-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ clist ].''', merge=True, links = set_links([WHQUESTIONS_LINK, WORDORDER_LINK]))
 
     if (ch.get(MTRX_FRONT) in [SINGLE] and ch.get(MTRX_FR_OPT) == 'none-oblig'):
         if ch.get('word-order') in ['ovs', 'vos', 'vso']:
             mylang.add(
-                '''adj-head-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].''', section='addenda')
+                '''adj-head-int-phrase :+ [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].''', section='addenda', links = set_links([WHQUESTIONS_LINK, WORDORDER_LINK]))
 
     # If fronting is optional, need to use the peripheral feature to rule out ambiguity.
     if (ch.get(MTRX_FRONT) == SINGLE) \
             or (ch.get(MTRX_FRONT) == MULTI and not ch.get(MTRX_FR_OPT) == ALL_OBLIG):
         mylang.add(
-            'phrase-or-lexrule :+ [ SYNSEM.L-QUE #lque, ARGS.FIRST.SYNSEM.L-QUE #lque ].')
+            'phrase-or-lexrule :+ [ SYNSEM.L-QUE #lque, ARGS.FIRST.SYNSEM.L-QUE #lque ].', links = set_links([WHQUESTIONS_LINK]))
 
     # If the fronting isn't obligatory or if only one question phrase
     # is obligatorily fronted, need also in-situ rules:
@@ -261,7 +265,7 @@ def customize_wh_ques(mylang, ch, rules, roots):
             or ch.get(WH_INFL) == ON:
         mylang.add_literal(
             '; In-situ interrogative clause.', section='phrases')
-        mylang.add(IN_SITU_PHRASE)
+        mylang.add(IN_SITU_PHRASE, links = set_links([WHQUESTIONS_LINK]))
         rules.add('in-situ-ques := insitu-int-cl.')
         if ch.get('q-part-order') == 'second':
             mylang.add('''insitu-int-cl := 
@@ -284,7 +288,7 @@ def customize_wh_ques(mylang, ch, rules, roots):
                 and not (ch.get(MTRX_FRONT) == IN_SITU
                          or ch.get(WH_INFL) == ON):
             mylang.add(
-                'subj-head-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].')
+                'subj-head-phrase := [ NON-HEAD-DTR.SYNSEM.NON-LOCAL.QUE.LIST < > ].', links = set_links([WHQUESTIONS_LINK, WORDORDER_LINK]))
 
     # Obligatory pied piping of both nouns and adpositions is the default.
     # If there is no pied piping or it is optional, additional extraction rules are needed.
@@ -294,7 +298,7 @@ def customize_wh_ques(mylang, ch, rules, roots):
             mylang.add_literal('; If there is no obligatory pied-piping, determiners '
                                'can be extracted separately:', section='phrases')
             if USED_TYPES['qdet']:
-                mylang.add(EX_DET_PHRASE, section='phrases')
+                mylang.add(EX_DET_PHRASE, section='phrases', links = set_links([WHQUESTIONS_LINK]))
                 rules.add('ex-det := extracted-det-phrase.')
         # The following would rule out "Which royal house did you see a member of?"
         # if ch.get('pied-pip-adp') == 'on' and not ch.get('oblig-pied-pip-adp') == ON:
@@ -306,11 +310,11 @@ def customize_wh_ques(mylang, ch, rules, roots):
 
         if ch.get('oblig-pied-pip-adp') == ON:
             mylang.add(
-                'norm-adposition-lex := [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.NON-LOCAL.SLASH.LIST < > ].')
+                'norm-adposition-lex := [ SYNSEM.LOCAL.CAT.VAL.COMPS.FIRST.NON-LOCAL.SLASH.LIST < > ].', links = set_links([WHQUESTIONS_LINK]))
 
     if ch.get('q-part') == ON:
         if ch.get(MTRX_FRONT) == IN_SITU:
-            mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.WH.BOOL + ].')
+            mylang.add('insitu-int-cl := [ SYNSEM.LOCAL.CAT.WH.BOOL + ].', links = set_links([WHQUESTIONS_LINK]))
             if len(ch.get('q-particle')) == 1:
                 # This is 1 and not 0 because the Choices len method is overriden; see Choices.py
                 qpart = ch.get('q-particle')[1]
