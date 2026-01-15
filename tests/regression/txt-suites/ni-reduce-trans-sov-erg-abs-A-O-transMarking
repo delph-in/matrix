@@ -1,0 +1,26 @@
+girl-erg cookie-abs bake-TR-3FemSgS-3NeutSgO
+girl-erg bake-cookie-TR-3FemSgS-3NeutSgO
+girl-abs smile-IT-3FemSgS
+*girl-erg bake-cookie-IT-3FemSgS-3NeutSgO
+*girl-abs bake-cookie-TR-3FemSgS
+*girl-abs bake-cookie-IT-3FemSgS
+*girl-abs bake-cookie-TR-3FemSgS-3NeutSgO
+*cookie-abs girl-erg bake-TR-3FemSgS-3NeutSgO
+*bake-cookie-TR-3FemSgS-3NeutSgO girl-abs
+girl-erg friend-abs bake-cookie-TR-3FemSgS-3MascSgO
+*girl-erg friend bake-cookie-TR-3FemSgS-3MascSgO
+*girl-erg friend-abs bake-cookie-TR-3FemSgS
+*girl-erg friend-abs bake-cookie-TR-3FemSgS-3NeutSgO
+*friend-abs girl-erg bake-cookie-TR-3FemSgS-3MascSgO
+*friend-abs bake-cookie-TR-3FemSgS-3MascSgO girl-erg
+*bake-cookie-TR-3FemSgS-3MascSgO girl-erg friend-abs
+*bake-cookie-TR-3FemSgS-3MascSgO friend-abs girl-erg
+girl-erg yummy bake-cookie-TR-3FemSgS-3NeutSgO
+*girl-erg bake-cookie-TR-3FemSgS-3NeutSgO yummy
+girl-erg snickerdoodle-abs bake-cookie-TR-3FemSgS-3NeutSgO
+*girl-erg bake-cookie-TR-3FemSgS-3NeutSgO snickerdoodle-abs
+*girl-erg snickerdoodle bake-cookie-TR-3FemSgS-3NeutSgO
+*girl-abs snickerdoodle bake-cookie-TR-3FemSgS-3NeutSgO
+*girl-erg snickerdoodle-abs bake-cookie-IT-3FemSgS-3NeutSgO
+*girl-erg snickerdoodle-abs bake-cookie-TR-3FemSgS-3MascSgO
+*snickerdoodle-abs girl-erg bake-cookie-TR-3FemSgS-3NeutSgO

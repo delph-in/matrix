@@ -1085,7 +1085,7 @@ def write_valence_change_behavior(pc, lrt, mylang, choices):
         elif operation == 'obj-add':
             lrt.supertypes.add('same-cont-lex-rule')
             lrt.supertypes.add(lexrule_name(
-                'added-arg-applicative', argnum, numargs))
+                'added-arg-applicative', argnum, numargs, True))
             lrt.supertypes.add(lexrule_name(
                 'added-arg-head-type', argnum, numargs, op['argtype'].lower()))
             predname = op.get('predname', 'undef_pred')
@@ -1105,7 +1105,8 @@ def write_valence_change_behavior(pc, lrt, mylang, choices):
 def write_noun_incorporation_behavior(pc, lrt, mylang, choices, lrules, rules):
     from gmcs.linglib.noun_incorporation import PROMOTION_POSS, PROMOTION_OBLIQUE, INTRANS_REDUCTION_RULE, \
                                 NI_VALENCE, DOUBLE_RULE, LEX_ITEM, TYPE_MOD_PHRASE, ADJ_MOD_PHRASE, \
-                                BARE_NP, TRANS_REDUCTION_RULE, STRAND_RULE, HEAD_COMMENT
+                                BARE_NP, TRANS_REDUCTION_RULE, STRAND_RULE, HEAD_COMMENT, basic_noun_incorp_def
+    from gmcs.linglib.case import canon_to_abbr, case_names
 
     # not sure where to put this since its rules for the pc, and at this point we are 
     # adding rules to the pc's lrts. The problem is that the ghost pc doesn't exist until 
@@ -1113,6 +1114,18 @@ def write_noun_incorporation_behavior(pc, lrt, mylang, choices, lrules, rules):
     # customize_ni happens before the lrt is created so it can't go there
     # and the two methods that deal with pcs are adding DRT and INFLECTED info. maybe it
     # goes there? currently this will happen each time a new ni strat is employed
+
+    # trying to move this further down in mylang.tdl
+    if choices.get('noun-incorp') == 'on':
+        for vpc in choices['verb-pc']:
+            for is_lrt in vpc['is-lrt']:
+                mylang.add(get_name(vpc)+ '-lex-rule-super ' + basic_noun_incorp_def,
+                           merge=True, section='lexrules')
+
+    # update head-comp phrases
+    if choices.get('noun-incorp') == 'on':
+        mylang.add('basic-head-comp-phrase :+ [ HEAD-DTR.SYNSEM.LOCAL.CAT.NCORP-MOD - ].', section='addenda')
+
     if pc.name == 'NI-valence':
         mylang.add(pc.identifier() + NI_VALENCE)
 
@@ -1136,7 +1149,9 @@ def write_noun_incorporation_behavior(pc, lrt, mylang, choices, lrules, rules):
 
             # if the case of the subject changes
             if choices.get('red-val-intrans-case') == 'red-val-intrans-yes':
+                cases = case_names(choices)
                 a_case = choices.get('red-val-intrans-yes-case')
+                a_case = canon_to_abbr(a_case, cases)
                 mylang.add(lrt.identifier() + \
                            ':= [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CAT.HEAD.CASE ' + a_case + ' ] > ].')
                 
@@ -1174,6 +1189,19 @@ def write_noun_incorporation_behavior(pc, lrt, mylang, choices, lrules, rules):
         mylang.add(lrt.identifier() + STRAND_RULE)
         lrt_id = lrt.identifier()
         lrules.add(lrt_id.rsplit('-rule', 1)[0] + ' := ' + lrt_id + '.')
+
+        if choices.get('red-val-intrans-case') == 'red-val-intrans-yes':
+                cases = case_names(choices)
+                a_case = choices.get('red-val-intrans-yes-case')
+                a_case = canon_to_abbr(a_case, cases)
+                mylang.add(lrt.identifier() + \
+                           ':= [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CAT.HEAD.CASE ' + a_case + ' ] > ].')
+                
+        elif choices.get('red-val-intrans-case', '') in ['red-val-intrans-no', '']:
+            if choices.get('case-marking') != 'none':
+                mylang.add(lrt.identifier() + \
+                        ':= [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CAT.HEAD.CASE #case ] >, \
+                                DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CAT.HEAD.CASE #case ] > ].')
 
         # adding phrase structure rule for NCORP-MOD + elements
         mylang.add(ADJ_MOD_PHRASE, section='phrases')

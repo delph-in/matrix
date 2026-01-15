@@ -51,12 +51,16 @@ from gmcs.utils import get_name
                        DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ #subj ].''',
                        section='lexrules') """
 
+# copy up comps.rest?
 basic_noun_incorp_def = ''':= \
-                    [ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK [ INDEX #ind,\
-                                                                        LTOP #larg ] ] >,\
+                    [ SYNSEM.LOCAL.CAT.VAL.COMPS [ FIRST.LOCAL.CONT.HOOK [ INDEX #ind,\
+                                                                           LTOP #larg ], \
+                                                   REST #rest ],\
+                     DTR.SYNSEM.LOCAL.CAT.VAL.COMPS.REST #rest,
                     C-CONT [ HCONS.LIST < qeq &\
                                             [ HARG #harg, \
                                                 LARG #larg ] >,\
+                                ICONS.LIST < >, \
                                 RELS.LIST < noun-relation &\
                                             [ ARG0 #ind,\
                                             LBL #larg ],\
@@ -70,47 +74,56 @@ basic_noun_incorp_def = ''':= \
 # 11/5/25 copying up head value of comps so that new comp behaves how the old one should have
 PROMOTION_POSS = ':= \
                     [ SYNSEM.LOCAL.CAT.VAL [ SUBJ #subj, \
-                                             COMPS < [ OPT -, \
-                                                       LOCAL [ CAT [ NCORP-MOD #nc-mod,\
-                                                                     VAL.SPR < >,\
-                                                                     HEAD noun & \
-                                                                        #head ],\
-                                                               CONT.HOOK.INDEX #arg2 ] ] > ],\
+                                             COMPS [ FIRST [ OPT -, \
+                                                             LOCAL [ CAT [ NCORP-MOD #nc-mod,\
+                                                                           VAL.SPR < >,\
+                                                                           HEAD noun & \
+                                                                                #head ],\
+                                                                     CONT.HOOK.INDEX #arg2 ] ],\
+                                                     REST #rest ] ],\
                         DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ #subj, \
-                                                   COMPS  < [ LOCAL [ CAT [ NCORP-MOD #nc-mod,\
-                                                                            HEAD #head ], \
-                                                                      CONT.HOOK [ INDEX #arg1, \
-                                                                                  LTOP #lbl ] ] ] > ], \
-                        C-CONT.RELS.LIST < arg12-ev-relation & \
+                                                   COMPS [ FIRST [ LOCAL [ CAT [ NCORP-MOD #nc-mod,\
+                                                                                HEAD #head ], \
+                                                                          CONT.HOOK [ INDEX #arg1, \
+                                                                                      LTOP #lbl ] ] ], \
+                                                           REST #rest ] ], \
+                        C-CONT [ RELS.LIST < arg12-ev-relation & \
                                             [ PRED "poss_rel", \
                                               LBL #lbl, \
                                               ARG1 #arg1, \
-                                              ARG2 #arg2 ] > ].'
-
+                                              ARG2 #arg2 ] >,\
+                                 ICONS.LIST < >, \
+                                 HCONS.LIST < > ] ].'
+# look to copy up COMPS.REST
 PROMOTION_OBLIQUE = ':= \
                         [ SYNSEM.LOCAL.CAT.VAL [ SUBJ #subj, \
-                                                COMPS < [ OPT -, \
-                                                          LOCAL [ CAT [ NCORP-MOD -,\
-                                                                        VAL.SPR < >,\
-                                                                        HEAD noun & \
-                                                                            #head ],\
-                                                                CONT.HOOK.INDEX #arg2 ] ] > ],\
-                        DTR.SYNSEM.LOCAL [ CAT.VAL [ COMPS < [ LOCAL.CAT.HEAD #head ] >, \
+                                                COMPS [ FIRST [ OPT -, \
+                                                                LOCAL [ CAT [ NCORP-MOD -,\
+                                                                              VAL.SPR < >,\
+                                                                              HEAD noun & \
+                                                                                   #head ],\
+                                                                        CONT.HOOK.INDEX #arg2 ] ],\
+                                                        REST #rest ] ],\
+                        DTR.SYNSEM.LOCAL [ CAT.VAL [ COMPS [ FIRST.LOCAL.CAT.HEAD #head,\
+                                                             REST #rest ], \
                                                     SUBJ #subj ], \
                                            CONT.HOOK.INDEX #arg1 ], \
-                        C-CONT.RELS.LIST < arg12-ev-relation & \
+                        C-CONT [ RELS.LIST < arg12-ev-relation & \
                                             [ ARG1 #arg1, \
-                                             ARG2 #arg2 ] > ].'
+                                             ARG2 #arg2 ] >, \
+                                 ICONS.LIST < >, \
+                                 HCONS.LIST < > ] ].'
 
 INTRANS_REDUCTION_RULE = ':= val-change-only-lex-rule & \
              [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < [ LOCAL [ CONT.HOOK #hook, \
                                                        CAT [ NCORP-MOD #nc-mod, \
                                                              VAL #val, \
                                                              HEAD +np ] ] ] >,\
-                                      COMPS < > ],\
-             DTR.SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL [ CONT.HOOK #hook, \
-                                                       CAT [ NCORP-MOD #nc-mod, \
-                                                             VAL #val ] ] ] > ] ].'
+                                      COMPS #comps ],\
+             DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ < [ LOCAL [ CONT.HOOK #hook, \
+                                                        CAT [ NCORP-MOD #nc-mod, \
+                                                              VAL #val ] ] ] >, \
+                                        COMPS.REST #comps ] ].'
 
 TRANS_REDUCTION_RULE = ':= no-ccont-lex-rule & \
                        [ SYNSEM.LOCAL.CAT.VAL [ SUBJ #subj, \
@@ -118,36 +131,52 @@ TRANS_REDUCTION_RULE = ':= no-ccont-lex-rule & \
                                                     [ FIRST.OPT + ] ], \
                          DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ #subj, \
                                                     COMPS #comps ] ].'
+# for now, changing this back to SPEC and SPR empty for verb, not addressing
+# SPEC and SPR for the verb's SUBJ and COMPS
+#NI_VALENCE = ':= \
+            #[ SYNSEM.LOCAL.CAT.VAL [ COMPS.FIRST.LOCAL.CAT.VAL [ SPEC < >, \
+                                                                 #SPR < > ], \
+                                     #SUBJ < [ LOCAL.CAT.VAL [ SPEC < >, \
+                                                              #SPR < > ] ] > ] ].'
 
 NI_VALENCE = ':= \
             [ SYNSEM.LOCAL.CAT.VAL [ SPEC < >, \
-                                    SPR < > ] ].'
+                                     SPR < > ] ].'
 
 # separating double and strand rules for different forbid constraints
 DOUBLE_RULE = ':= \
             [ SYNSEM.LOCAL.CAT.VAL [ SUBJ #subj, \
-                                     COMPS < [ OPT -, \
-                                               LOCAL [ CAT [ NCORP-MOD +, \
-                                                             HEAD noun ],\
-                                                       CONT.HOOK [ LTOP #ltop, \
-                                                                   INDEX #ind ] ] ] > ], \
+                                     COMPS [ FIRST [ OPT -, \
+                                                     LOCAL [ CAT [ NCORP-MOD +, \
+                                                                   HEAD noun ],\
+                                                             CONT.HOOK [ LTOP #ltop, \
+                                                                         INDEX #ind ] ] ],\
+                                             REST #rest ] ], \
               DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ #subj, \
-                                         COMPS < [ LOCAL.CONT.HOOK [ LTOP #ltop, \
-                                                                     INDEX #ind ] ] > ], \
+                                         COMPS [ FIRST.LOCAL.CONT.HOOK [ LTOP #ltop, \
+                                                                         INDEX #ind ],\
+                                                 REST #rest ] ], \
               C-CONT [ RELS.LIST < >, \
                        HCONS.LIST < >, \
                        ICONS.LIST < > ] ].'
 
 STRAND_RULE = ':= \
-            [ SYNSEM.LOCAL.CAT.VAL [ SUBJ #subj, \
-                                     COMPS < [ OPT -, \
-                                               LOCAL [ CAT [ NCORP-MOD +, \
-                                                             HEAD adj ], \
-                                                       CONT.HOOK [ LTOP #ltop, \
-                                                                   INDEX #ind ] ] ] > ], \
-              DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ #subj, \
-                                         COMPS < [ LOCAL.CONT.HOOK [ LTOP #ltop, \
-                                                                     INDEX #ind ] ] > ], \
+            [ SYNSEM.LOCAL.CAT.VAL [ SUBJ < [ LOCAL [ CONT.HOOK #hook, \
+                                                       CAT [ NCORP-MOD #nc-mod, \
+                                                             VAL #val, \
+                                                             HEAD +np ] ] ] >, \
+                                     COMPS [ FIRST [ OPT -, \
+                                                     LOCAL [ CAT [ NCORP-MOD +, \
+                                                                   HEAD +jp ], \
+                                                             CONT.HOOK [ LTOP #ltop, \
+                                                                         INDEX #ind ] ] ],\
+                                             REST #rest ] ], \
+              DTR.SYNSEM.LOCAL.CAT.VAL [ SUBJ < [ LOCAL [ CONT.HOOK #hook, \
+                                                        CAT [ NCORP-MOD #nc-mod, \
+                                                              VAL #val ] ] ] >, \
+                                         COMPS [ FIRST.LOCAL.CONT.HOOK [ LTOP #ltop, \
+                                                                         INDEX #ind ],\
+                                                 REST #rest ] ], \
               C-CONT [ RELS.LIST < >, \
                        HCONS.LIST < >, \
                        ICONS.LIST < > ] ].'
@@ -177,15 +206,20 @@ TYPE_MOD_PHRASE = 'type-ni-mod-phrase := unary-nonloc-phrase & head-only & \
                                  HCONS.LIST < >, \
                                  HOOK [ LTOP #lbl, \
                                         INDEX #ind ] ] ].'
-
+# SPR empty on mother
 ADJ_MOD_PHRASE = 'adj-ni-mod-phrase := unary-nonloc-phrase & head-only & \
                       [ SYNSEM.LOCAL.CAT [ WH #wh, \
-                                           VAL #val, \
+                                           VAL [ SUBJ #subj,\
+                                                 COMPS #comps,\
+                                                 SPEC #spec,\
+                                                 SPR < > ], \
                                            NCORP-MOD + ], \
-                        HEAD-DTR.SYNSEM.LOCAL [ CAT [ HEAD adj & \
+                        HEAD-DTR.SYNSEM.LOCAL [ CAT [ HEAD +jp & \
                                                            [ MOD.FIRST.LOCAL.CONT.HOOK.INDEX #arg1 ],  \
                                                       WH #wh, \
-                                                      VAL #val, \
+                                                      VAL [ SUBJ #subj, \
+                                                            COMPS #comps, \
+                                                            SPEC #spec ], \
                                                       NCORP-MOD - ], \
                                                 CONT.HOOK.LTOP #ltop ], \
                         C-CONT [ RELS.LIST < >, \
@@ -237,13 +271,10 @@ def add_lexrules(ch):
 
 
 
-def customize_noun_incorporation(ch, mylang):
-    if ch.get('noun-incorp') == 'on':
-        for vpc in ch['verb-pc']:
-            for lrt in vpc['is-lrt']:
-                #print(lrt.identifier())
-                #lrt['supertypes'] = ', '.join(lrt['supertypes'].split(', ') + 
-                                                #['add-only-rule']) # not sure which rule needs to be added here
-                mylang.add(get_name(vpc)+ '-lex-rule-super ' + basic_noun_incorp_def,
-                           merge=True, section='lexrules')
+#def customize_noun_incorporation(ch, mylang):
+#    if ch.get('noun-incorp') == 'on':
+#        for vpc in ch['verb-pc']:
+ #           for lrt in vpc['is-lrt']:
+ #               mylang.add(get_name(vpc)+ '-lex-rule-super ' + basic_noun_incorp_def,
+#                           merge=True, section='lexrules')
                 

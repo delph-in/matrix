@@ -521,7 +521,7 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
     # but provide the methods the components above have for their own
     # contributions to the lexical rules
 
-    ni.customize_noun_incorporation(ch, mylang) 
+    #ni.customize_noun_incorporation(ch, mylang) 
     nominalized_clauses.customize_nmcs(mylang, ch, rules)
     negation.customize_sentential_negation(
         mylang, ch, lexicon, rules, lrules, hierarchies)

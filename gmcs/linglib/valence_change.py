@@ -49,7 +49,7 @@ def added_arg_non_local_lex_rule_name(added_arg, total_args):
     return 'added-arg{0}of{1}-non-local-lex-rule'.format(added_arg, total_args)
 
 
-def added_arg_applicative_lex_rule_name(added_arg, total_args):
+def added_arg_applicative_lex_rule_name(added_arg, total_args, ni):
     return 'added-arg{0}of{1}-applicative-lex-rule'.format(added_arg, total_args)
 
 
@@ -389,8 +389,14 @@ ADDED_ARG_APPLICATIVE_FRAGMENT = ''' [ LOCAL [ CAT [ VAL [ SPR < >,
                                                            COMPS < > ] ],
                                                CONT.HOOK.INDEX #nind ] ]'''
 
+# EEL 2025-12-12 adding NCORP-MOD - feature to added objects if doubling or stranding occurs
+ADDED_ARG_APPLICATIVE_FRAGMENT_NI = ''' [ LOCAL [ CAT [ VAL [ SPR < >,
+                                                              COMPS < > ],
+                                                        NCORP-MOD - ],
+                                                  CONT.HOOK.INDEX #nind ] ]'''
 
-def added_arg_applicative_lex_rule(added_arg, total_args):
+
+def added_arg_applicative_lex_rule(added_arg, total_args, ni):
     """
     Generates the valence-specific applicative LR supertype.
     Inherits from the valence-specific non-local rule and the generic applicative rule.
@@ -399,13 +405,17 @@ def added_arg_applicative_lex_rule(added_arg, total_args):
     compslist = []
     for i in range(2, total_args+1):
         if i == added_arg:
-            compslist.append(ADDED_ARG_APPLICATIVE_FRAGMENT)
+            # EEL 2020-12-12 fragment contains NCORP-MOD -
+            if ni:
+                compslist.append(ADDED_ARG_APPLICATIVE_FRAGMENT_NI)
+            else:
+                compslist.append(ADDED_ARG_APPLICATIVE_FRAGMENT)
         else:
             compslist.append('#ocomp')
     rulevars['comps'] = ', '.join(compslist)
     rulevars['dtr-comps'] = '#ocomp' if total_args > 2 else ''
     rulevars['rulename'] = lexrule_name(
-        'added-arg-applicative', added_arg, total_args)
+        'added-arg-applicative', added_arg, total_args, True) # EEL 2025-12-12 new arg in applicative rule name
     rulevars['basic-applicative-rule'] = lexrule_name('basic-applicative')
     rulevars['added-arg-non-local-rule'] = lexrule_name(
         'added-arg-non-local', added_arg, total_args)
@@ -526,7 +536,11 @@ def customize_valence_change(mylang, ch, lexicon, rules, irules, lrules):
                     rules.add('obj-prom-op', argnum, numargs)
                 elif opname == 'obj-add':
                     rules.add('basic-applicative')
-                    rules.add('added-arg-applicative', argnum, numargs)
+                    # EEL 2025-12-12 for added objects that need NCORP-MOD -
+                    if ch.get('double') == 'on':
+                        rules.add('added-arg-applicative', argnum, numargs, True)
+                    else:
+                        rules.add('added-arg-applicative', argnum, numargs, False)
                     rules.add('added-arg-non-local', argnum, numargs)
                     argtype = vchop.get('argtype', '').lower()
                     rules.add('added-arg-head-type', argnum, numargs, argtype)
@@ -535,6 +549,10 @@ def customize_valence_change(mylang, ch, lexicon, rules, irules, lrules):
                     position = vchop.get('argpos', '').lower()
                     inputval = vchop.get('input', '').lower()
                     rules.add('subj-add', argnum, transitive)
+                    # EEL 2025-12-12
+                    if ch.get('double') == 'on':
+                        rulename = gen_rulename('subj-add', argnum, transitive)
+                        mylang.add(rulename + ':= [ SYNSEM.LOCAL.CAT.VAL.SUBJ < [ LOCAL.CAT.NCORP-MOD - ] > ].', section='lexrules')
     rules.generate_tdl(mylang)
 
 

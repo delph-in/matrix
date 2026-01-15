@@ -1,0 +1,300 @@
+
+version=35
+
+section=general
+language=SouthernTiwa
+iso-code=tix
+punctuation-chars=keep-all
+archive=no
+vcs=none
+
+section=word-order
+word-order=free
+has-dets=yes
+noun-det-order=det-noun
+has-aux=no
+
+section=number
+  number1_name=sing
+  number2_name=plural
+
+section=person
+person=1-2-3
+first-person=none
+
+section=gender
+
+section=case
+case-marking=nom-acc
+nom-acc-nom-case-name=nominative
+nom-acc-acc-case-name=accusative
+  case1_name=locative
+
+section=adnom-poss
+
+section=direct-inverse
+
+section=tense-aspect-mood
+tense-definition=choose
+past=on
+future=on
+
+section=evidentials
+
+section=other-features
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=wh-q
+
+section=info-str
+
+section=arg-opt
+subj-drop=subj-drop-all
+subj-mark-drop=subj-mark-drop-req
+subj-mark-no-drop=subj-mark-no-drop-req
+subj-con=subj-con-always
+obj-drop=obj-drop-all
+obj-mark-drop=obj-mark-drop-req
+obj-mark-no-drop=obj-mark-no-drop-req
+
+section=nominalclause
+
+section=lvc
+
+section=clausal-comp
+
+section=clausalmods
+
+section=noun-incorporation
+noun-incorp=on
+reduce=on
+red-val=red-trans
+double=on
+strand-mod=on
+
+section=lexicon
+  noun1_name=common
+    noun1_feat1_name=person
+    noun1_feat1_value=3rd
+    noun1_feat2_name=case
+    noun1_feat2_value=acc
+  noun1_det=imp
+    noun1_stem2_orth=diru
+    noun1_stem2_pred=_chicken_n_rel
+    noun1_stem3_orth=musa
+    noun1_stem3_pred=_cat_n_rel
+    noun1_stem4_orth=kan
+    noun1_stem4_pred=_horse_n_rel
+    noun1_stem5_orth=khwien
+    noun1_stem5_pred=_dog_n_rel
+    noun1_stem6_orth=seuan
+    noun1_stem6_pred=_man_n_rel
+  noun2_name=inanimate
+    noun2_feat1_name=person
+    noun2_feat1_value=3rd
+    noun2_feat2_name=case
+    noun2_feat2_value=nom
+  noun2_det=imp
+    noun2_stem1_orth=shut
+    noun2_stem1_pred=_shirt_n_rel
+  verb1_name=trans
+    verb1_feat1_name=case
+    verb1_feat1_value=acc
+    verb1_feat1_head=obj
+  verb1_valence=trans
+    verb1_stem1_orth=mu
+    verb1_stem1_pred=_see_v_rel
+    verb1_stem2_orth=kar
+    verb1_stem2_pred=_eat_v_rel
+    verb1_stem3_orth=tuwi
+    verb1_stem3_pred=_buy_v_rel
+    verb1_stem4_orth=edeuri
+    verb1_stem4_pred=_kick_v_rel
+    verb1_stem5_orth=pe
+    verb1_stem5_pred=_make_v_rel
+  verb2_name=intrans
+  verb2_valence=intrans
+    verb2_stem1_orth=na
+    verb2_stem1_pred=_na_v_rel
+  adj1_name=demonstrative
+  adj1_mod=attr
+  adj1_modpos=after
+    adj1_stem1_orth=yed
+    adj1_stem1_pred=_that_a_rel
+  adj2_name=number
+  adj2_mod=attr
+  adj2_modpos=after
+    adj2_stem1_orth=wisi
+    adj2_stem1_pred=_two_a_rel
+
+section=morphology
+  noun-pc1_name=num
+  noun-pc1_obligatory=on
+  noun-pc1_order=suffix
+  noun-pc1_inputs=noun1
+    noun-pc1_lrt1_name=sing
+      noun-pc1_lrt1_feat1_name=number
+      noun-pc1_lrt1_feat1_value=sing
+      noun-pc1_lrt1_feat1_head=itself
+      noun-pc1_lrt1_lri1_inflecting=yes
+      noun-pc1_lrt1_lri1_orth=-ide
+    noun-pc1_lrt2_name=plural
+      noun-pc1_lrt2_feat1_name=number
+      noun-pc1_lrt2_feat1_value=plural
+      noun-pc1_lrt2_feat1_head=itself
+      noun-pc1_lrt2_lri1_inflecting=yes
+      noun-pc1_lrt2_lri1_orth=-in
+  noun-pc2_name=case
+  noun-pc2_obligatory=on
+  noun-pc2_order=suffix
+  noun-pc2_inputs=noun-pc1
+    noun-pc2_lrt1_name=loc
+      noun-pc2_lrt1_feat1_name=case
+      noun-pc2_lrt1_feat1_value=locative
+      noun-pc2_lrt1_feat1_head=itself
+      noun-pc2_lrt1_lri1_inflecting=yes
+      noun-pc2_lrt1_lri1_orth=-ba
+    noun-pc2_lrt2_name=non-loc
+      noun-pc2_lrt2_feat1_name=case
+      noun-pc2_lrt2_feat1_value=acc
+      noun-pc2_lrt2_feat1_head=itself
+      noun-pc2_lrt2_lri1_inflecting=no
+  verb-pc1_name=tense
+  verb-pc1_obligatory=on
+  verb-pc1_order=suffix
+  verb-pc1_inputs=verb-pc3, verb-pc4
+    verb-pc1_lrt1_name=past
+      verb-pc1_lrt1_feat1_name=tense
+      verb-pc1_lrt1_feat1_value=past
+      verb-pc1_lrt1_feat1_head=verb
+      verb-pc1_lrt1_lri1_inflecting=yes
+      verb-pc1_lrt1_lri1_orth=-ban
+    verb-pc1_lrt2_name=future
+      verb-pc1_lrt2_feat1_name=tense
+      verb-pc1_lrt2_feat1_value=future
+      verb-pc1_lrt2_feat1_head=verb
+      verb-pc1_lrt2_lri1_inflecting=yes
+      verb-pc1_lrt2_lri1_orth=-hi
+  verb-pc2_name=noun-incorporation
+  verb-pc2_order=prefix
+  verb-pc2_inputs=tverb, verb-pc4
+    verb-pc2_is-lrt1_name=incorporated-noun
+      verb-pc2_is-lrt1_feat1_name=person
+      verb-pc2_is-lrt1_feat1_value=3rd
+      verb-pc2_is-lrt1_feat1_head=in
+      verb-pc2_is-lrt1_lri1_inflecting=yes
+      verb-pc2_is-lrt1_lri1_orth=seuan-
+      verb-pc2_is-lrt1_lri1_pred=_man_n_rel
+      verb-pc2_is-lrt1_lri2_inflecting=yes
+      verb-pc2_is-lrt1_lri2_orth=diru-
+      verb-pc2_is-lrt1_lri2_pred=_chicken_n_rel
+      verb-pc2_is-lrt1_lri3_inflecting=yes
+      verb-pc2_is-lrt1_lri3_orth=musa-
+      verb-pc2_is-lrt1_lri3_pred=_cat_n_rel
+      verb-pc2_is-lrt1_lri4_inflecting=yes
+      verb-pc2_is-lrt1_lri4_orth=khwien-
+      verb-pc2_is-lrt1_lri4_pred=_dog_n_rel
+      verb-pc2_is-lrt1_lri5_inflecting=yes
+      verb-pc2_is-lrt1_lri5_orth=kan-
+      verb-pc2_is-lrt1_lri5_pred=_horse_n_rel
+      verb-pc2_is-lrt1_lri6_inflecting=yes
+      verb-pc2_is-lrt1_lri6_orth=shut-
+      verb-pc2_is-lrt1_lri6_pred=_shirt_n_rel
+  verb-pc3_name=agreement
+  verb-pc3_obligatory=on
+  verb-pc3_order=prefix
+  verb-pc3_inputs=tverb, verb-pc2
+    verb-pc3_lrt1_name=1sS-sO
+      verb-pc3_lrt1_feat1_name=number
+      verb-pc3_lrt1_feat1_value=sing
+      verb-pc3_lrt1_feat1_head=subj
+      verb-pc3_lrt1_feat2_name=person
+      verb-pc3_lrt1_feat2_value=1st
+      verb-pc3_lrt1_feat2_head=subj
+      verb-pc3_lrt1_feat3_name=number
+      verb-pc3_lrt1_feat3_value=sing
+      verb-pc3_lrt1_feat3_head=obj
+      verb-pc3_lrt1_lri1_inflecting=yes
+      verb-pc3_lrt1_lri1_orth=ti-
+    verb-pc3_lrt2_name=1sS-pO
+      verb-pc3_lrt2_feat1_name=number
+      verb-pc3_lrt2_feat1_value=sing
+      verb-pc3_lrt2_feat1_head=subj
+      verb-pc3_lrt2_feat2_name=person
+      verb-pc3_lrt2_feat2_value=1st
+      verb-pc3_lrt2_feat2_head=subj
+      verb-pc3_lrt2_feat3_name=number
+      verb-pc3_lrt2_feat3_value=plural
+      verb-pc3_lrt2_feat3_head=obj
+      verb-pc3_lrt2_lri1_inflecting=yes
+      verb-pc3_lrt2_lri1_orth=bi-
+      verb-pc3_lrt2_lri2_inflecting=yes
+      verb-pc3_lrt2_lri2_orth=te-
+    verb-pc3_lrt3_name=2sS-sO
+      verb-pc3_lrt3_feat1_name=number
+      verb-pc3_lrt3_feat1_value=sing
+      verb-pc3_lrt3_feat1_head=subj
+      verb-pc3_lrt3_feat2_name=person
+      verb-pc3_lrt3_feat2_value=2nd
+      verb-pc3_lrt3_feat2_head=subj
+      verb-pc3_lrt3_feat3_name=number
+      verb-pc3_lrt3_feat3_value=sing
+      verb-pc3_lrt3_feat3_head=obj
+      verb-pc3_lrt3_lri1_inflecting=yes
+      verb-pc3_lrt3_lri1_orth=a-
+    verb-pc3_lrt4_name=sS-sO
+      verb-pc3_lrt4_feat1_name=number
+      verb-pc3_lrt4_feat1_value=sing
+      verb-pc3_lrt4_feat1_head=subj
+      verb-pc3_lrt4_feat2_name=number
+      verb-pc3_lrt4_feat2_value=sing
+      verb-pc3_lrt4_feat2_head=obj
+      verb-pc3_lrt4_lri1_inflecting=no
+  verb-pc4_name=passive
+  verb-pc4_order=suffix
+  verb-pc4_inputs=tverb
+    verb-pc4_lrt1_name=pass
+      verb-pc4_lrt1_feat1_name=case
+      verb-pc4_lrt1_feat1_value=locative
+      verb-pc4_lrt1_feat1_head=obj
+      verb-pc4_lrt1_valchg1_operation=subj-dem
+      verb-pc4_lrt1_valchg1_inputs=trans
+      verb-pc4_lrt1_valchg1_argpos=pre
+      verb-pc4_lrt1_valchg1_predname=pass
+      verb-pc4_lrt1_valchg1_argtype=np
+      verb-pc4_lrt1_valchg2_operation=obj-prom
+      verb-pc4_lrt1_valchg2_inputs=trans
+      verb-pc4_lrt1_valchg2_argpos=pre
+      verb-pc4_lrt1_valchg2_predname=pass_2
+      verb-pc4_lrt1_valchg2_argtype=np
+      verb-pc4_lrt1_lri1_inflecting=yes
+      verb-pc4_lrt1_lri1_orth=-e
+  adj-pc1_name=dem-number
+  adj-pc1_obligatory=on
+  adj-pc1_order=suffix
+  adj-pc1_inputs=adj1
+    adj-pc1_lrt1_name=dem-plural
+      adj-pc1_lrt1_feat1_name=number
+      adj-pc1_lrt1_feat1_value=plural
+      adj-pc1_lrt1_feat1_head=xarg
+      adj-pc1_lrt1_lri1_inflecting=yes
+      adj-pc1_lrt1_lri1_orth=-i
+    adj-pc1_lrt2_name=dem-sing
+      adj-pc1_lrt2_feat1_name=number
+      adj-pc1_lrt2_feat1_value=sing
+      adj-pc1_lrt2_feat1_head=xarg
+      adj-pc1_lrt2_lri1_inflecting=yes
+      adj-pc1_lrt2_lri1_orth=-e
+
+section=toolbox-import
+
+section=test-sentences
+
+section=gen-options
+
+section=ToolboxLexicon
