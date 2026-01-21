@@ -2427,6 +2427,7 @@ def validate(ch, extra=False):
     validate_arg_opt(ch, vr)
     validate_wh_ques(ch, vr)
     validate_lvc(ch, vr)
+    validate_ni(ch, vr)
 
     if extra:
         validate_extra_constraints(ch, vr)
