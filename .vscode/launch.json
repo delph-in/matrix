@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "matrix.py",
             "console": "integratedTerminal",
-            "args": "customize /Users/emilyluedke/Desktop/shared/pl6/choices /Users/emilyluedke/Desktop"
+            "args": "v /Users/emilyluedke/Desktop/matrix/mohawk/choices.txt"
         }
     ]
 }
