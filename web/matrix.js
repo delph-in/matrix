@@ -136,6 +136,16 @@ function toggle_element(id, how, switchOn, strategy="") {
   }
 }
 
+// Trigger toggle_elements for checked radios and checkboxes when
+// loading saved choices
+function toggle_checked(){
+    checks = document.querySelectorAll('[checked="checked"]');
+    for (let i = 0; i < checks.length; i++){
+        checks[i].click(); //triggers all onclick scripts
+        checks[i].checked = "checked";
+    }
+}
+
 //////////////////////////////////////////////////////////////////////
 // Main Page functions
 
