@@ -971,7 +971,9 @@ class MatrixDefFile:
                     # TJT 2014-08-28: changing this to "startswith" to enforce syntax
                     while lines[i].strip().startswith('.'):
                         # Reset flags on each item
-                        dis, js = '', ''
+                        # Flag for ctrkey set to default, allowing radio buttons to be reset
+                        # Any Radio button with some other js function will append
+                        dis, js = '', '{if (event.ctrlKey) {this.checked = false}};'
                         checked = False
                         word = tokenize_def(replace_vars(lines[i], vars))
                         # TJT 2014-05-07 Rearranged this logic (hoping for speed)
@@ -981,7 +983,7 @@ class MatrixDefFile:
                         if choices.get(vn) == rval:
                             checked = True
                         if len(word) >= 6:
-                            js = word[5]
+                            js = js + word[5]
                         if len(word) >= 7:  # TJT 2014-03-19: option for disabled radio buttons
                             if word[6]:  # If anything here...
                                 dis = True
