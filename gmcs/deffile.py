@@ -239,12 +239,12 @@ HTML_sentencespostbody = '''
 <a href="http://www.delph-in.net/lkb">To the LKB page</a>
 '''
 
-HTML_prebody = '''<body onload="animate(); multi_init_and_focus_all_fields(); fill_hidden_errors(); scalenav();">
+HTML_prebody = '''<body onload="animate(); multi_init_and_focus_all_fields(); fill_hidden_errors(); scalenav(); toggle_checked();">
 '''
 
-HTML_prebody_sn = '''<body onload="animate(); multi_init_and_focus_all_fields(); fill_hidden_errors();display_neg_form();scalenav();">'''
+HTML_prebody_sn = '''<body onload="animate(); multi_init_and_focus_all_fields(); fill_hidden_errors();display_neg_form();scalenav(); toggle_checked();">'''
 
-HTML_prebody_ap = '''<body onload="animate(); multi_init_and_focus_all_fields(); fill_hidden_errors();display_poss();scalenav();">'''
+HTML_prebody_ap = '''<body onload="animate(); multi_init_and_focus_all_fields(); fill_hidden_errors();display_poss();scalenav(); toggle_checked();">'''
 
 HTML_method = 'post'
 
