@@ -1,0 +1,297 @@
+
+version=35
+
+section=general
+language=Moloko
+iso-code=mlw
+punctuation-chars=keep-all
+archive=no
+vcs=none
+
+section=word-order
+word-order=svo
+has-dets=no
+has-aux=no
+
+section=number
+  number1_name=sing
+  number2_name=plural
+
+section=person
+person=1-2-3
+first-person=none
+
+section=gender
+
+section=case
+case-marking=nom-acc
+nom-acc-nom-case-name=nominative
+nom-acc-acc-case-name=accusative
+  case1_name=loc
+  case2_name=dat
+
+section=adnom-poss
+  poss-pron1_type=affix
+  poss-pron1_agr=agree
+  poss-pron1_mod-spec=spec
+
+section=direct-inverse
+
+section=tense-aspect-mood
+perimper=on
+
+section=evidentials
+
+section=other-features
+
+section=sentential-negation
+neg-exp=1
+adv-neg=on
+neg-mod=s
+neg-order=after
+neg-adv-orth=baj
+
+section=coordination
+
+section=matrix-yes-no
+
+section=wh-q
+
+section=info-str
+
+section=arg-opt
+subj-drop=subj-drop-all
+subj-mark-drop=subj-mark-drop-req
+subj-mark-no-drop=subj-mark-no-drop-req
+obj-drop=obj-drop-all
+obj-mark-drop=obj-mark-drop-req
+obj-mark-no-drop=obj-mark-no-drop-opt
+
+section=nominalclause
+
+section=lvc
+
+section=clausal-comp
+
+section=clausalmods
+
+section=noun-incorporation
+noun-incorp=on
+reduce=on
+red-val=red-intrans
+red-val-intrans-case=red-val-intrans-no
+
+section=lexicon
+  noun1_name=common
+    noun1_feat1_name=number
+    noun1_feat1_value=sing
+    noun1_feat2_name=person
+    noun1_feat2_value=3rd
+  noun1_det=imp
+    noun1_stem1_orth=Mala
+    noun1_stem1_pred=_Mala_n_rel
+    noun1_stem2_orth=lihe
+    noun1_stem2_pred=_bush_n_rel
+    noun1_stem3_orth=mama
+    noun1_stem3_pred=_mother_n_rel
+    noun1_stem4_orth=ma
+    noun1_stem4_pred=_word_n_rel
+    noun1_stem5_orth=Hawa
+    noun1_stem5_pred=_Hawa_n_rel
+    noun1_stem6_orth=bahay
+    noun1_stem6_pred=_chief_n_rel
+    noun1_stem7_orth=Mana
+    noun1_stem7_pred=_Mana_n_rel
+    noun1_stem8_orth=war
+    noun1_stem8_pred=_child_n_rel
+  noun2_name=2sg-pron
+  noun2_pron=on
+    noun2_feat1_name=number
+    noun2_feat1_value=sing
+    noun2_feat2_name=person
+    noun2_feat2_value=2nd
+  noun2_det=imp
+    noun2_stem1_orth=nok
+    noun2_stem1_pred=_you_n_rel
+  verb1_name=trans
+  verb1_valence=nom-acc
+    verb1_stem1_orth=menzar
+    verb1_stem1_pred=_see_v_rel
+    verb1_stem2_orth=ts
+    verb1_stem2_pred=_hear_v_rel
+    verb1_stem3_orth=ges
+    verb1_stem3_pred=_catch_v_rel
+    verb1_stem4_orth=h
+    verb1_stem4_pred=_tell_v_rel
+    verb1_stem5_orth=tar
+    verb1_stem5_pred=_call_v_rel
+    verb1_stem6_orth=sok
+    verb1_stem6_pred=_point_v_rel
+    verb1_stem7_orth=zem
+    verb1_stem7_pred=_eat_v_rel
+  verb2_name=intrans
+  verb2_valence=nom
+    verb2_stem1_orth=na
+    verb2_stem1_pred=_na_v_rel
+  adj1_name=adj
+  adj1_mod=attr
+  adj1_modpos=before
+    adj1_stem1_orth=hwesese-ga
+    adj1_stem1_pred=_small_a_rel
+  adp1_orth=a
+  adp1_opt=on
+  adp1_order=before
+    adp1_feat1_name=case
+    adp1_feat1_value=loc
+  adp2_orth=ana
+  adp2_opt=on
+  adp2_order=before
+    adp2_feat1_name=case
+    adp2_feat1_value=dat
+
+section=morphology
+  noun-pc1_name=possessive
+  noun-pc1_obligatory=on
+  noun-pc1_order=suffix
+  noun-pc1_inputs=noun
+    noun-pc1_lrt1_name=3sg-poss
+      noun-pc1_lrt1_feat1_name=number
+      noun-pc1_lrt1_feat1_value=sing
+      noun-pc1_lrt1_feat1_head=possessor
+      noun-pc1_lrt1_feat2_name=person
+      noun-pc1_lrt1_feat2_value=3rd
+      noun-pc1_lrt1_feat2_head=possessor
+      noun-pc1_lrt1_feat3_name=poss-pron1
+      noun-pc1_lrt1_feat3_value=plus
+      noun-pc1_lrt1_feat3_head=itself
+      noun-pc1_lrt1_lri1_inflecting=yes
+      noun-pc1_lrt1_lri1_orth=-ahan
+    noun-pc1_lrt2_name=2sg-poss
+      noun-pc1_lrt2_feat1_name=number
+      noun-pc1_lrt2_feat1_value=sing
+      noun-pc1_lrt2_feat1_head=possessor
+      noun-pc1_lrt2_feat2_name=person
+      noun-pc1_lrt2_feat2_value=2nd
+      noun-pc1_lrt2_feat2_head=possessor
+      noun-pc1_lrt2_feat3_name=poss-pron1
+      noun-pc1_lrt2_feat3_value=plus
+      noun-pc1_lrt2_feat3_head=itself
+      noun-pc1_lrt2_lri1_inflecting=yes
+      noun-pc1_lrt2_lri1_orth=-ango
+    noun-pc1_lrt3_name=non-poss
+      noun-pc1_lrt3_feat1_name=poss-pron1
+      noun-pc1_lrt3_feat1_value=minus
+      noun-pc1_lrt3_feat1_head=itself
+      noun-pc1_lrt3_lri1_inflecting=no
+  verb-pc1_name=subj-agr
+  verb-pc1_obligatory=on
+  verb-pc1_order=prefix
+  verb-pc1_inputs=tverb
+    verb-pc1_lrt1_name=3singS
+      verb-pc1_lrt1_feat1_name=number
+      verb-pc1_lrt1_feat1_value=sing
+      verb-pc1_lrt1_feat1_head=subj
+      verb-pc1_lrt1_feat2_name=person
+      verb-pc1_lrt1_feat2_value=3rd
+      verb-pc1_lrt1_feat2_head=subj
+      verb-pc1_lrt1_lri1_inflecting=yes
+      verb-pc1_lrt1_lri1_orth=a-
+    verb-pc1_lrt2_name=3pluralS
+      verb-pc1_lrt2_feat1_name=number
+      verb-pc1_lrt2_feat1_value=plural
+      verb-pc1_lrt2_feat1_head=subj
+      verb-pc1_lrt2_feat2_name=person
+      verb-pc1_lrt2_feat2_value=3rd
+      verb-pc1_lrt2_feat2_head=subj
+      verb-pc1_lrt2_lri1_inflecting=yes
+      verb-pc1_lrt2_lri1_orth=ta-
+  verb-pc2_name=ind-obj-agr
+  verb-pc2_order=suffix
+  verb-pc2_inputs=verb-pc3
+    verb-pc2_lrt1_name=1singIO
+      verb-pc2_lrt1_feat1_name=number
+      verb-pc2_lrt1_feat1_value=sing
+      verb-pc2_lrt1_feat1_head=obj2
+      verb-pc2_lrt1_feat2_name=person
+      verb-pc2_lrt1_feat2_value=1st
+      verb-pc2_lrt1_feat2_head=obj2
+      verb-pc2_lrt1_require1_others=verb-pc4
+      verb-pc2_lrt1_lri1_inflecting=yes
+      verb-pc2_lrt1_lri1_orth=-aw
+    verb-pc2_lrt2_name=2singIO
+      verb-pc2_lrt2_feat1_name=number
+      verb-pc2_lrt2_feat1_value=sing
+      verb-pc2_lrt2_feat1_head=obj2
+      verb-pc2_lrt2_feat2_name=person
+      verb-pc2_lrt2_feat2_value=2nd
+      verb-pc2_lrt2_feat2_head=obj2
+      verb-pc2_lrt2_require1_others=verb-pc4
+      verb-pc2_lrt2_lri1_inflecting=yes
+      verb-pc2_lrt2_lri1_orth=-ok
+    verb-pc2_lrt3_name=3singIO
+      verb-pc2_lrt3_feat1_name=number
+      verb-pc2_lrt3_feat1_value=sing
+      verb-pc2_lrt3_feat1_head=obj2
+      verb-pc2_lrt3_feat2_name=person
+      verb-pc2_lrt3_feat2_value=3rd
+      verb-pc2_lrt3_feat2_head=obj2
+      verb-pc2_lrt3_require1_others=verb-pc4
+      verb-pc2_lrt3_lri1_inflecting=yes
+      verb-pc2_lrt3_lri1_orth=-an
+  verb-pc3_name=val-change-tr
+  verb-pc3_order=suffix
+  verb-pc3_inputs=verb-pc1
+      verb-pc3_lrt1_feat1_name=case
+      verb-pc3_lrt1_feat1_value=loc, dat
+      verb-pc3_lrt1_feat1_head=newobj
+      verb-pc3_lrt1_valchg1_operation=obj-add
+      verb-pc3_lrt1_valchg1_inputs=trans
+      verb-pc3_lrt1_valchg1_argpos=post
+      verb-pc3_lrt1_valchg1_predname=ind-object
+      verb-pc3_lrt1_valchg1_argtype=pp
+      verb-pc3_lrt1_lri1_inflecting=no
+  verb-pc4_name=noun-incorporation
+  verb-pc4_order=suffix
+  verb-pc4_inputs=verb-pc1, verb-pc2, verb-pc5, verb-pc6
+    verb-pc4_is-lrt1_name=IN
+      verb-pc4_is-lrt1_lri1_inflecting=yes
+      verb-pc4_is-lrt1_lri1_orth=-ele
+      verb-pc4_is-lrt1_lri1_pred=_eye_n_rel
+      verb-pc4_is-lrt1_lri2_inflecting=yes
+      verb-pc4_is-lrt1_lri2_orth=-lemaj
+      verb-pc4_is-lrt1_lri2_pred=_ear_n_rel
+      verb-pc4_is-lrt1_lri3_inflecting=yes
+      verb-pc4_is-lrt1_lri3_orth=-har
+      verb-pc4_is-lrt1_lri3_pred=_body_n_rel
+      verb-pc4_is-lrt1_lri4_inflecting=yes
+      verb-pc4_is-lrt1_lri4_orth=-ma
+      verb-pc4_is-lrt1_lri4_pred=_mouth_n_rel
+  verb-pc5_name=CL
+  verb-pc5_order=suffix
+  verb-pc5_inputs=verb-pc1
+      verb-pc5_lrt1_lri1_inflecting=yes
+      verb-pc5_lrt1_lri1_orth=-oy
+  verb-pc6_name=tam
+  verb-pc6_order=suffix
+  verb-pc6_inputs=verb-pc1, verb-pc3
+      verb-pc6_lrt1_feat1_name=aspect
+      verb-pc6_lrt1_feat1_value=perfective
+      verb-pc6_lrt1_feat1_head=verb
+      verb-pc6_lrt1_lri1_inflecting=yes
+      verb-pc6_lrt1_lri1_orth=-va
+
+section=toolbox-import
+
+section=test-sentences
+  sentence1_orth=Mala a-menzar-ele
+  sentence2_orth=Mala a-menzar-ele a lihe
+  sentence3_orth=a-ts-lemaj ana mama-ahan baj
+  sentence4_orth=ma-ango a-ges-aw-har
+  sentence5_orth=ta-h-ok-ma
+  sentence6_orth=a-tar-an-ma
+  sentence7_orth=Hawa a-sok-ma
+  sentence8_orth=Hawa a-zem-an-ma ana bahay
+
+section=gen-options
+
+section=ToolboxLexicon

@@ -1,0 +1,42 @@
+bake-NF cookie girl
+bake-cookie-F girl
+bake-cookie-MF friend girl
+bake-NF cookie yummy girl
+bake-cookie-F yummy girl
+bake-cookie-NF snickerdoodle girl
+bake-pass-N girl-instr cookie
+bake-pass-girl-N cookie
+bake-appl-NF cookie Jen-for girl
+bake-cookie-appl-F Jen-for girl
+bake-cookie-appl-NF snickerdoodle Jen-for girl
+bake-cookie-appl-F yummy Jen-for girl
+bake-caus-NN cookie girl-instr Jen
+bake-cookie-caus-N girl-instr Jen
+bake-cookie-caus-MN friend girl-instr Jen
+bake-cookie-caus-N yummy girl-instr Jen
+*bake-FN cookie girl
+*bake-cookie-N girl
+*bake-coookie-NF girl
+*bake-friend-NF cookie girl
+*bake-cookie-NF yummy girl
+*bake-snickerdoodle-NF cookie girl
+*bake-pass-N girl cookie
+*bake-pass-FN girl-instr cookie
+*bake-pass-cookie-N girl
+*bake-girl-pass-N cookie
+*bake-appl-NF cookie Jen girl
+*bake-cookie-appl-NF Jen-for girl
+*bake-cookie-appl-N Jen-for girl
+*bake-appl-cookie-F Jen-for girl
+*bake-cookie-appl-NF snickerdoodle Jen girl
+*bake-cookie-appl-F yummy Jen girl
+*bake-cookie-appl-NF yummy Jen-for girl
+*bake-caus-FN cookie girl-instr Jen
+*bake-caus-NN cookie girl Jen
+*bake-cookie-caus-N girl Jen
+*bake-cookie-caus-FN girl-instr Jen
+*bake-caus-cookie-N girl-instr Jen
+*bake-cookie-caus-MN friend girl Jen
+*bake-cookie-caus-N yummy girl Jen
+*bake-cookie-caus-NN yummy girl-instr Jen
+*bake-cookie-caus-FN yummy girl-instr Jen

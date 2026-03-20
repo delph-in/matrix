@@ -359,8 +359,6 @@ class PositionClass(MorphotacticNode):
         """
         2014-08-21 TJT: Keep track of whether a PositionClass has
         Incorporated Stem Lexical Rule Instances.
-        Emily NOTE: this method just looks to see if an lri in a pc contributes a pred value meaning 
-        that it is an incorporated stem. this will be the same case for NI
         """
         if self._has_is == None:  # Only do this once
             for lrt in self.nodes.values():

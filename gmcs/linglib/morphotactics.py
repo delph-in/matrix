@@ -1435,7 +1435,6 @@ def basic_pc_validation(choices, pc, vr):
     # TJT 2014-09-18: PCs should be either incorporated stems or inflection...
     # this seems true from adjective typology survey, but might not be right
     # for future incorporated stems
-    # Emily NOTE: I think this holds true for NI, might want to discuss with Emily B
     if 'is-lrt' in pc and 'lrt' in pc:
         vr.err(pc.full_key+'_lrt', 'Each position class should either have ' +
                'incorporated stems or regular lexical rule types. If your ' +

@@ -2739,7 +2739,7 @@ Label "<p>Do direct objects of transitive verbs incorporate? If so, what happens
 
         Label "</div>"
 
-    Check double "Doubled" "" "Elements of the incorporated noun appear outside of the verb. For example, a co-referent noun that is less specific than the incorporated noun, modifiers or demonstratives of the incorporated noun, or a copy of the incorporated noun itself.<br>"
+    Check double "Doubled" "" "Elements of the incorporated noun appear outside of the verb. For example, a co-referent noun that is more specific than the incorporated noun, modifiers or demonstratives of the incorporated noun, or a copy of the incorporated noun itself.<br>"
 
     Label "<div style=\"padding-left: 35px\">"
     Label "<br>If so, what elements can be stranded?<br>"

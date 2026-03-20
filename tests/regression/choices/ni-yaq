@@ -1,0 +1,207 @@
+
+version=35
+
+section=general
+language=yaqui
+iso-code=yaq
+punctuation-chars=keep-all
+archive=no
+
+section=word-order
+word-order=sov
+has-dets=no
+has-aux=no
+
+section=number
+  number1_name=sing
+
+section=person
+person=1-2-3
+first-person=none
+
+section=gender
+
+section=case
+case-marking=nom-acc
+nom-acc-nom-case-name=nominative
+nom-acc-acc-case-name=accusative
+
+section=adnom-poss
+  poss-strat1_order=head-final
+  poss-strat1_mod-spec=spec
+  poss-strat1_mark-loc=neither
+  poss-strat1_pronoun-allow=no
+    poss-strat1_feat1_name=case
+    poss-strat1_feat1_value=acc
+  poss-strat1_possessor-type=affix
+  poss-strat1_possessor-affix-agr=non-agree
+
+section=direct-inverse
+
+section=tense-aspect-mood
+tense-definition=choose
+past=on
+perimper=on
+
+section=evidentials
+
+section=other-features
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=wh-q
+
+section=info-str
+
+section=arg-opt
+
+section=nominalclause
+
+section=lvc
+
+section=clausal-comp
+
+section=clausalmods
+
+section=noun-incorporation
+noun-incorp=on
+reduce=on
+red-val=red-intrans
+red-val-intrans-case=red-val-intrans-no
+
+section=lexicon
+  noun1_name=common
+  noun1_det=imp
+    noun1_stem1_orth=maaso
+    noun1_stem1_pred=_deer_n_rel
+    noun1_stem2_orth=Peo
+    noun1_stem2_pred=_Peo_n_rel
+    noun1_stem3_orth=Huan
+    noun1_stem3_pred=_Huan_n_rel
+  noun2_name=pronoun
+  noun2_pron=on
+    noun2_feat1_name=number
+    noun2_feat1_value=sing
+    noun2_feat2_name=person
+    noun2_feat2_value=3rd
+  noun2_det=imp
+    noun2_stem1_orth=aapo
+    noun2_stem1_pred=_he_n_rel
+  verb1_name=trans
+  verb1_valence=nom-acc
+    verb1_stem1_orth=peu
+    verb1_stem1_pred=_butcher_v_rel
+  verb2_name=intrans
+  verb2_valence=nom
+    verb2_stem1_orth=na
+    verb2_stem1_pred=_na_v_rel
+  adj1_name=adj
+  adj1_mod=attr
+  adj1_modpos=before
+    adj1_stem1_orth=bweuu
+    adj1_stem1_pred=_big_a_rel
+
+section=morphology
+  noun-pc1_name=case
+  noun-pc1_obligatory=on
+  noun-pc1_order=suffix
+  noun-pc1_inputs=noun1
+    noun-pc1_lrt1_name=acc
+      noun-pc1_lrt1_feat1_name=case
+      noun-pc1_lrt1_feat1_value=acc
+      noun-pc1_lrt1_feat1_head=itself
+      noun-pc1_lrt1_lri1_inflecting=yes
+      noun-pc1_lrt1_lri1_orth=-ta
+    noun-pc1_lrt2_name=nom
+      noun-pc1_lrt2_feat1_name=case
+      noun-pc1_lrt2_feat1_value=nom
+      noun-pc1_lrt2_feat1_head=itself
+      noun-pc1_lrt2_lri1_inflecting=no
+    noun-pc1_lrt3_name=no-infl-acc
+      noun-pc1_lrt3_feat1_name=case
+      noun-pc1_lrt3_feat1_value=acc
+      noun-pc1_lrt3_feat1_head=itself
+      noun-pc1_lrt3_lri1_inflecting=no
+  verb-pc1_name=trans
+  verb-pc1_obligatory=on
+  verb-pc1_order=suffix
+  verb-pc1_inputs=tverb
+    verb-pc1_lrt1_name=TR
+      verb-pc1_lrt1_lri1_inflecting=yes
+      verb-pc1_lrt1_lri1_orth=-ta
+  verb-pc2_name=intrans
+  verb-pc2_obligatory=on
+  verb-pc2_order=suffix
+  verb-pc2_inputs=iverb, verb-pc4
+    verb-pc2_lrt1_name=ITR
+      verb-pc2_lrt1_lri1_inflecting=yes
+      verb-pc2_lrt1_lri1_orth=-te
+  verb-pc3_name=TAM
+  verb-pc3_order=suffix
+  verb-pc3_inputs=verb-pc1_lrt1, verb-pc2_lrt1, verb-pc5
+    verb-pc3_lrt1_name=perf
+      verb-pc3_lrt1_feat1_name=aspect
+      verb-pc3_lrt1_feat1_value=perfective
+      verb-pc3_lrt1_feat1_head=verb
+      verb-pc3_lrt1_lri1_inflecting=yes
+      verb-pc3_lrt1_lri1_orth=-k
+    verb-pc3_lrt2_name=past
+      verb-pc3_lrt2_feat1_name=tense
+      verb-pc3_lrt2_feat1_value=past
+      verb-pc3_lrt2_feat1_head=verb
+      verb-pc3_lrt2_lri1_inflecting=yes
+      verb-pc3_lrt2_lri1_orth=-n
+  verb-pc4_name=NI
+  verb-pc4_order=prefix
+  verb-pc4_inputs=tverb
+    verb-pc4_is-lrt1_name=IN
+      verb-pc4_is-lrt1_lri1_inflecting=yes
+      verb-pc4_is-lrt1_lri1_orth=maaso-
+      verb-pc4_is-lrt1_lri1_pred=_deer_n_rel
+  verb-pc5_name=passive
+  verb-pc5_order=suffix
+  verb-pc5_inputs=verb-pc2_lrt1
+    verb-pc5_lrt1_name=pass
+      verb-pc5_lrt1_valchg2_operation=subj-rem
+      verb-pc5_lrt1_valchg2_inputs=intrans
+      verb-pc5_lrt1_valchg2_argpos=post
+      verb-pc5_lrt1_valchg2_argtype=np
+      verb-pc5_lrt1_lri1_inflecting=yes
+      verb-pc5_lrt1_lri1_orth=-wa
+  adj-pc1_name=adj-case
+  adj-pc1_obligatory=on
+  adj-pc1_order=suffix
+  adj-pc1_inputs=adj1
+    adj-pc1_lrt1_name=adj-acc
+      adj-pc1_lrt1_feat1_name=case
+      adj-pc1_lrt1_feat1_value=acc
+      adj-pc1_lrt1_feat1_head=xarg
+      adj-pc1_lrt1_lri1_inflecting=yes
+      adj-pc1_lrt1_lri1_orth=-k
+    adj-pc1_lrt2_name=adj-nom
+      adj-pc1_lrt2_feat1_name=case
+      adj-pc1_lrt2_feat1_value=nom
+      adj-pc1_lrt2_feat1_head=xarg
+      adj-pc1_lrt2_lri1_inflecting=no
+
+section=toolbox-import
+
+section=test-sentences
+  sentence1_orth=aapo maaso-ta peu-ta-k
+  sentence2_orth=aapo maaso-peu-te-n
+  sentence3_orth=aapo bweuu-k maaso-peu-te-n
+  sentence3_star=on
+  sentence4_orth=Peo Huan-ta maaso peu-ta
+  sentence5_orth=Peo Huan-ta maaso-peu-te
+  sentence5_star=on
+  sentence6_orth=Maaso-peu-te-wa-k
+  sentence7_orth=Huan-ta maaso-peu-te-wa-k
+  sentence7_star=on
+
+section=gen-options
+
+section=ToolboxLexicon

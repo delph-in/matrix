@@ -314,11 +314,6 @@ def add_lexrules(ch):
                 ch[lrt_key + '_feat1_value'] = adp_case_name
                 ch[lrt_key + '_lri1_inflecting'] = 'no'
                 ch[lrt_key + '_lri1_orth'] = ''
-                # Emily NOTE: use this as inspo 
-                # add ltr to choices file, specifies input, it is required (obligitory), make 
-                # this the input to whatever the other one was input to
-                # potentially supress this if it shows up in the printed choices file
-                # if oblig doesnt work, say that the user's pc requires this one
 
 def interpret_verb_valence(valence):
     """

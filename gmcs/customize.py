@@ -543,7 +543,6 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
                             ni.add_lexrules]
     to_cfv = morphotactics.customize_inflection(ch, add_lexrules_methods,
                                                 mylang, irules, lrules, lexicon, rules)
-    # Emily NOTE: to_cfv is a list of lrts that need features
 
     # customize_feature_values is called by process_cfv_list
     # negation.py needs to run first!

@@ -9,7 +9,7 @@ archive=no
 vcs=none
 
 section=word-order
-word-order=free
+word-order=v-initial
 has-dets=yes
 noun-det-order=det-noun
 has-aux=yes

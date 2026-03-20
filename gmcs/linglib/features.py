@@ -55,7 +55,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
         iter_feat = 'adpcomp_feat'
     else:
         iter_feat = 'feat'
-    # Emily NOTE: this is what adds the neg_rel to whatever rule
+    
     basic_infl_neg_def = ''':= \
                    [ C-CONT [ HOOK [ XARG #xarg,\
                      LTOP #ltop,\

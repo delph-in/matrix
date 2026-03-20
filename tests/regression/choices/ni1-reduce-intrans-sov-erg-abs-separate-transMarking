@@ -3,6 +3,7 @@ version=35
 
 section=general
 language=ni1-reduce-intrans-sov-erg-abs-separate-transMarking
+iso-code=pl1
 punctuation-chars=keep-all
 archive=no
 vcs=git

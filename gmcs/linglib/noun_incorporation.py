@@ -69,9 +69,6 @@ basic_noun_incorp_def = ''':= \
                                                     ARG0 #ind,\
                                                     RSTR #harg ] > ] ]. '''  
 
-# OPT - going in here, testing to see if this works for all the grammars
-# 9/24/25 making LBL of the poss_rel be the same as the LBL of the possessum
-# 11/5/25 copying up head value of comps so that new comp behaves how the old one should have
 PROMOTION_POSS = ':= \
                     [ SYNSEM.LOCAL.CAT.VAL [ SUBJ #subj, \
                                              COMPS [ FIRST [ OPT -, \
@@ -94,22 +91,27 @@ PROMOTION_POSS = ':= \
                                               ARG2 #arg2 ] >,\
                                  ICONS.LIST < >, \
                                  HCONS.LIST < > ] ].'
-# look to copy up COMPS.REST
+
+#CHANGE: copy up ncorp-mod
+#CHANGE: identify LBL of EP with verb's LTOP
 PROMOTION_OBLIQUE = ':= \
-                        [ SYNSEM.LOCAL.CAT.VAL [ SUBJ #subj, \
-                                                COMPS [ FIRST [ OPT -, \
-                                                                LOCAL [ CAT [ NCORP-MOD -,\
-                                                                              VAL.SPR < >,\
-                                                                              HEAD noun & \
-                                                                                   #head ],\
-                                                                        CONT.HOOK.INDEX #arg2 ] ],\
-                                                        REST #rest ] ],\
-                        DTR.SYNSEM.LOCAL [ CAT.VAL [ COMPS [ FIRST.LOCAL.CAT.HEAD #head,\
+                        [ SYNSEM.LOCAL [ CONT.HOOK.LTOP #lbl, \
+                                         CAT.VAL [ SUBJ #subj, \
+                                                   COMPS [ FIRST [ OPT -, \
+                                                                   LOCAL [ CAT [ NCORP-MOD #nc-mod,\
+                                                                                 VAL.SPR < >,\
+                                                                                 HEAD noun & \
+                                                                                      #head ],\
+                                                                           CONT.HOOK.INDEX #arg2 ] ],\
+                                                           REST #rest ] ] ],\
+                        DTR.SYNSEM.LOCAL [ CAT.VAL [ COMPS [ FIRST.LOCAL.CAT [ NCORP-MOD #nc-mod, \
+                                                                                HEAD #head ],\
                                                              REST #rest ], \
                                                     SUBJ #subj ], \
                                            CONT.HOOK.INDEX #arg1 ], \
                         C-CONT [ RELS.LIST < arg12-ev-relation & \
-                                            [ ARG1 #arg1, \
+                                            [ LBL #lbl, \
+                                             ARG1 #arg1, \
                                              ARG2 #arg2 ] >, \
                                  ICONS.LIST < >, \
                                  HCONS.LIST < > ] ].'
@@ -143,7 +145,6 @@ NI_VALENCE = ':= \
             [ SYNSEM.LOCAL.CAT.VAL [ SPEC < >, \
                                      SPR < > ] ].'
 
-# separating double and strand rules for different forbid constraints
 DOUBLE_RULE = ':= \
             [ SYNSEM.LOCAL.CAT.VAL [ SUBJ #subj, \
                                      COMPS [ FIRST [ OPT -, \
@@ -206,7 +207,7 @@ TYPE_MOD_PHRASE = 'type-ni-mod-phrase := unary-nonloc-phrase & head-only & \
                                  HCONS.LIST < >, \
                                  HOOK [ LTOP #lbl, \
                                         INDEX #ind ] ] ].'
-# SPR empty on mother
+
 ADJ_MOD_PHRASE = 'adj-ni-mod-phrase := unary-nonloc-phrase & head-only & \
                       [ SYNSEM.LOCAL.CAT [ WH #wh, \
                                            VAL [ SUBJ #subj,\
@@ -244,9 +245,9 @@ def add_lexrules(ch):
             ch[key + '_order'] = pc['order']
             ch[key + '_inputs'] = pc.full_key
 
-            ch[key + '_require1_others'] = pc.full_key
-            ch[pc.full_key + '_require1_others'] = key
-            # need to eventually handle the index here
+            ch[key + '_require1_others'] = pc.full_key 
+            ch[pc.full_key + '_require1_others'] = key 
+            
 
             # make ghost pc the input to whatever the IN pc used to be input to
             for pc_inp in ch['verb-pc']:
@@ -257,7 +258,7 @@ def add_lexrules(ch):
             for ni_type in ['promote-poss', 'promote-obl', 'reduce', 'double-noun', 'strand-mod']:
                 if ch.get(ni_type) == 'on':
                     if ch[key + '_lrt']:
-                        idx = ch[key + '_lrt'].next_iter_num() # i think this will be a problem
+                        idx = ch[key + '_lrt'].next_iter_num() 
                     else:
                         idx = 1
                     lrt_key = key + '_lrt' + str(idx)
@@ -270,11 +271,4 @@ def add_lexrules(ch):
                         ch[lrt_key + '_' + string] = value
 
 
-
-#def customize_noun_incorporation(ch, mylang):
-#    if ch.get('noun-incorp') == 'on':
-#        for vpc in ch['verb-pc']:
- #           for lrt in vpc['is-lrt']:
- #               mylang.add(get_name(vpc)+ '-lex-rule-super ' + basic_noun_incorp_def,
-#                           merge=True, section='lexrules')
                 
