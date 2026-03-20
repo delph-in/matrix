@@ -1089,7 +1089,7 @@ class MatrixDefFile:
                     oc = ''
                 # TJT 2014-08-27: Prepend auto onchange events (instead of assinging)
                 if vn == "name":
-                    oc = "fill_display_name('"+prefix[:-1]+"');" + oc
+                    oc =  oc + "fill_display_name('"+prefix[:-1]+"');"
                 # TJT 2014-08-26: Adding auto check radio button
                 # on morphology page affixes
                 elif vn == "orth":

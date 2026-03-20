@@ -320,8 +320,9 @@ function toggle_all_display_lex(on) {
 }
 
 // fill_display_name()
-// Used to fill the name of the show/hide label after editing the
-// name text field.
+// Used to fill the name of the show/hide label after editing the name text field.
+// If there is no label, this will not run correctly, and may prevent
+// any subsequent functions from being called.
 function fill_display_name(id) {
   var elm = document.getElementById(id + 'button');
   var name = document.getElementsByName(id + '_name')[0].value;
