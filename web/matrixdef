@@ -1111,7 +1111,7 @@ subtypes of <span class=\"tt\">finite</span> and <span class=\"tt\">nonfinite</s
 
 BeginIter form-subtype{i} "a Subtype for FORM"
 
-  Text name "Feature FORM Subtype {i} name" "Name: " "" 20
+  Text name "Feature FORM Subtype {i} name" "Name: " "" 20 "document.forms[0].submit();"
 
   MultiSelect supertype "FORM Subtype {i} supertype" " Supertype: " ""
   fillforms
