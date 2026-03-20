@@ -604,7 +604,7 @@ class MatrixDefFile:
                 'arg-opt': 'ArgumentOptionality',
                 'clausal-comp': 'ClausalComplements',
                 'nominalclause': 'Nominalized Clauses',
-                'lvc': "Light Verb Constructions",
+                'lvc': "LightVerbConstructions",
                 'clausalmods': 'Clausal Modifiers', 'lexicon': 'Lexicon',
                 'morphology': 'Morphology', 'toolbox-import': 'ImportToolboxLexicon',
                 'test-sentences': 'TestSentences', 'gen-options': 'TestByGeneration',
