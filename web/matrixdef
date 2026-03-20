@@ -1118,7 +1118,7 @@ BeginIter form-subtype{i} "a Subtype for FORM"
 
 EndIter form-subtype
 
-Label "<p>(Hint: Click Save and Stay to see the supertypes.)</p>"
+Label "<p>(Hint: Add all subtypes of FORM, then click Save and Stay to see the supertypes.)</p>"
 
 Label "<h3>Other Syntactic and Semantic Features</h3>"
 
