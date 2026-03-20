@@ -1437,7 +1437,7 @@ class MatrixDefFile:
             # TJT 2014-05-28: Not sure why the following doesn't work -- need to do more investigation
             # print '<a href="?subpage=%s" onclick="document.forms[0].submit()" class="navleft">Save &amp; stay</a><br />' % section
             print(
-                '<a href="#clear" onclick="clear_form()" class="navleft">Clear current subpage</a><br />')
+                '<a href="#clear" onclick="clear_form()" title="Clearing the form will remove responses for all fields. To clear a single radio button, you may use Ctrl+Click on the response." class="navleft">Clear current subpage</a><br />')
             print('<a href="#" onclick="nav_customize_test(\'tgz\')" class="navleft">Test by Generation</a><br />')
 
             # if there are errors, then we print the links in red and
