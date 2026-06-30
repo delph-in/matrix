@@ -608,7 +608,7 @@ class MatrixDefFile:
                 'nominalclause': 'Nominalized Clauses',
                 'lvc': "Light Verb Constructions",
                 'clausalmods': 'Clausal Modifiers', 
-                'noun-incorporation': 'Noun Incorporation',
+                'noun-incorporation': 'NounIncorporation',
                 'lexicon': 'Lexicon',
                 'morphology': 'Morphology', 'toolbox-import': 'ImportToolboxLexicon',
                 'test-sentences': 'TestSentences', 'gen-options': 'TestByGeneration',

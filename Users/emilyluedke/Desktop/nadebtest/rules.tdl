@@ -1,8 +1,0 @@
-;;; -*- Mode: TDL; Coding: utf-8 -*-
-noun-poss-1 := noun-poss-phrase-1.
-
-comp-head := comp-head-phrase.
-
-subj-head := subj-head-phrase.
-
-bare-np := bare-np-phrase.
