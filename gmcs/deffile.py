@@ -239,12 +239,12 @@ HTML_sentencespostbody = '''
 <a href="http://www.delph-in.net/lkb">To the LKB page</a>
 '''
 
-HTML_prebody = '''<body onload="animate(); multi_init_and_focus_all_fields(); fill_hidden_errors(); scalenav();">
+HTML_prebody = '''<body onload="animate(); multi_init_and_focus_all_fields(); fill_hidden_errors(); scalenav(); toggle_checked();">
 '''
 
-HTML_prebody_sn = '''<body onload="animate(); multi_init_and_focus_all_fields(); fill_hidden_errors();display_neg_form();scalenav();">'''
+HTML_prebody_sn = '''<body onload="animate(); multi_init_and_focus_all_fields(); fill_hidden_errors();display_neg_form();scalenav(); toggle_checked();">'''
 
-HTML_prebody_ap = '''<body onload="animate(); multi_init_and_focus_all_fields(); fill_hidden_errors();display_poss();scalenav();">'''
+HTML_prebody_ap = '''<body onload="animate(); multi_init_and_focus_all_fields(); fill_hidden_errors();display_poss();scalenav(); toggle_checked();">'''
 
 HTML_method = 'post'
 
@@ -606,7 +606,7 @@ class MatrixDefFile:
                 'arg-opt': 'ArgumentOptionality',
                 'clausal-comp': 'ClausalComplements',
                 'nominalclause': 'Nominalized Clauses',
-                'lvc': "Light Verb Constructions",
+                'lvc': "LightVerbConstructions",
                 'clausalmods': 'Clausal Modifiers', 
                 'noun-incorporation': 'NounIncorporation',
                 'lexicon': 'Lexicon',
@@ -975,7 +975,9 @@ class MatrixDefFile:
                     # TJT 2014-08-28: changing this to "startswith" to enforce syntax
                     while lines[i].strip().startswith('.'):
                         # Reset flags on each item
-                        dis, js = '', ''
+                        # Flag for ctrkey set to default, allowing radio buttons to be reset
+                        # Any Radio button with some other js function will append
+                        dis, js = '', '{if (event.ctrlKey) {this.checked = false}};'
                         checked = False
                         word = tokenize_def(replace_vars(lines[i], vars))
                         # TJT 2014-05-07 Rearranged this logic (hoping for speed)
@@ -985,7 +987,7 @@ class MatrixDefFile:
                         if choices.get(vn) == rval:
                             checked = True
                         if len(word) >= 6:
-                            js = word[5]
+                            js = js + word[5]
                         if len(word) >= 7:  # TJT 2014-03-19: option for disabled radio buttons
                             if word[6]:  # If anything here...
                                 dis = True
@@ -1091,7 +1093,7 @@ class MatrixDefFile:
                     oc = ''
                 # TJT 2014-08-27: Prepend auto onchange events (instead of assinging)
                 if vn == "name":
-                    oc = "fill_display_name('"+prefix[:-1]+"');" + oc
+                    oc =  oc + "fill_display_name('"+prefix[:-1]+"');"
                 # TJT 2014-08-26: Adding auto check radio button
                 # on morphology page affixes
                 elif vn == "orth":
@@ -1439,7 +1441,7 @@ class MatrixDefFile:
             # TJT 2014-05-28: Not sure why the following doesn't work -- need to do more investigation
             # print '<a href="?subpage=%s" onclick="document.forms[0].submit()" class="navleft">Save &amp; stay</a><br />' % section
             print(
-                '<a href="#clear" onclick="clear_form()" class="navleft">Clear current subpage</a><br />')
+                '<a href="#clear" onclick="clear_form()" title="Clearing the form will remove responses for all fields. To clear a single radio button, you may use Ctrl+Click on the response." class="navleft">Clear current subpage</a><br />')
             print('<a href="#" onclick="nav_customize_test(\'tgz\')" class="navleft">Test by Generation</a><br />')
 
             # if there are errors, then we print the links in red and

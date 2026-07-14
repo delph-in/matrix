@@ -14,6 +14,7 @@ from gmcs.utils import get_name
 from gmcs.linglib.nominalized_clauses import needs_anc_wo_feat
 from functools import reduce
 from gmcs.linglib.light_verb_constructions import fix_coverb_pc_inputs
+from gmcs.linglib.docstrings import set_links, MORPHOLOGY_LINK, ADNOMINALPOSSESSION_LINK, EVIDENTIALS_LINK, LEXICON_ADJECTIVES_LINK, WHQUESTIONS_LINK
 
 # Contents
 # 1. Module Variables
@@ -769,7 +770,7 @@ def write_intermediate_types(mylang):
         mylang.add_literal(';;; Intermediate rule types')
         for dtr in sorted(list(_dtrs)):
             mylang.add('''%(dtr)s := word-or-lexrule.''' %
-                       {'dtr': dtr}, one_line=True)
+                       {'dtr': dtr}, one_line=True, links = set_links([MORPHOLOGY_LINK]))
 
 
 def get_section_from_pc(pc):
@@ -809,16 +810,16 @@ def write_daughter_types(mylang, pc):
     """
     if pc.is_lex_rule:
         mylang.add('''%(id)s := [ DTR %(dtr)s ].''' %
-                   {'id': pc.identifier(), 'dtr': pc.daughter_type})
+                   {'id': pc.identifier(), 'dtr': pc.daughter_type}, links = set_links([MORPHOLOGY_LINK]))
 
 
 def write_inflected_avms(mylang, all_flags):
     mylang.set_section('addenda')
     for f in sorted(all_flags, key=flag_name):
         flag = flag_name(f)
-        mylang.add('''inflected :+ [%(flag)s luk].''' % {'flag': flag})
+        mylang.add('''inflected :+ [%(flag)s luk].''' % {'flag': flag}, links = set_links([MORPHOLOGY_LINK]))
         mylang.add(
-            '''infl-satisfied :+ [%(flag)s na-or-+].''' % {'flag': flag})
+            '''infl-satisfied :+ [%(flag)s na-or-+].''' % {'flag': flag}, links = set_links([MORPHOLOGY_LINK]))
 
 
 def write_pc_flags(mylang, lextdl, pc, all_flags, choices):
@@ -851,7 +852,7 @@ def write_copy_nmz(mylang, choices, pc):
     mylang.add(pc.identifier() + ' := [SYNSEM.LOCAL.CAT.HEAD [NMZ #nmz,\
                                                               MOD #mod ],\
                                    DTR.SYNSEM.LOCAL.CAT.HEAD [NMZ #nmz,\
-                                                              MOD #mod]].')
+                                                              MOD #mod]].', links = set_links([MORPHOLOGY_LINK]))
     if choices.get("adv", ''):
         mylang.add(pc.identifier() + ' := [SYNSEM.LOCAL.CAT.HEAD.ADV-MOD #adv-mod,\
                                            DTR.SYNSEM.LOCAL.CAT.HEAD.ADV-MOD #adv-mod ].')
@@ -906,7 +907,7 @@ def write_copy_up_flags(mylang, to_copy, all_flags, force_write=False):
             mn_copy_flags.difference_update(common_flags)
         if mn_copy_flags == all_flags:
             mylang.add(mn.identifier() + ''' := [ INFLECTED #infl,
-                                            DTR.INFLECTED #infl ].''')
+                                            DTR.INFLECTED #infl ].''', links = set_links([MORPHOLOGY_LINK]))
         elif len(mn_copy_flags) > 0:
             flag_tags = [(flag_name(flag), disjunctive_typename(flag).lower())
                          for flag in mn_copy_flags]
@@ -918,7 +919,7 @@ def write_copy_up_flags(mylang, to_copy, all_flags, force_write=False):
                 'DTR.INFLECTED [ ' + \
                 ', '.join(['%(flag)s #%(tag)s' % {'flag': ft[0], 'tag':ft[1]}
                            for ft in flag_tags]) + ' ] ].'
-            mylang.add(tdl_str)
+            mylang.add(tdl_str, links = set_links([MORPHOLOGY_LINK]))
         copied_flags.update(mn_copy_flags)
     return copied_flags
 
@@ -973,11 +974,11 @@ def write_evidential_behavior(lrt, mylang, choices, pc_evidential):
         lrt.supertypes.add(lrt.evidential + '-evidential-lex-rule')
         prev_section = mylang.section
         mylang.set_section('lexrules')
-        mylang.add(EVIDENTIAL_LEX_RULE)
+        mylang.add(EVIDENTIAL_LEX_RULE, links = set_links([MORPHOLOGY_LINK, EVIDENTIALS_LINK]))
         infl_evid_def = lrt.evidential + '''-evidential-lex-rule := evidential-lex-rule &
         [ C-CONT.RELS.LIST < [ PRED "ev_''' + lrt.evidential + '''_rel" ] > ].
         '''
-        mylang.add(infl_evid_def)
+        mylang.add(infl_evid_def, links = set_links([MORPHOLOGY_LINK, EVIDENTIALS_LINK]))
         mylang.set_section(prev_section)
     elif pc_evidential:
         lrt.supertypes.add("add-only-no-ccont-rule")
@@ -998,16 +999,16 @@ def write_possessive_behavior(pc, lrt, mylang, choices):
         possessor_rule_name = 'possessor-lex-rule-'+lrt.poss_strat_num
         lrt.supertypes.add(possessor_rule_name)
         mylang.add(possessor_rule_name +
-                   POSSESSOR_LEX_RULE_DEFN, section='lexrules')
+                   POSSESSOR_LEX_RULE_DEFN, section='lexrules', links = set_links([MORPHOLOGY_LINK, ADNOMINALPOSSESSION_LINK]))
     if lrt.possessive == 'possessum':
         possessum_rule_name = 'possessum-lex-rule-'+lrt.poss_strat_num
         mylang.add(possessum_rule_name +
-                   POSSESSUM_LEX_RULE_DEFN, section='lexrules')
+                   POSSESSUM_LEX_RULE_DEFN, section='lexrules', links = set_links([MORPHOLOGY_LINK, ADNOMINALPOSSESSION_LINK]))
         lrt.supertypes.add(possessum_rule_name)
     if lrt.possessive == 'nonpossessive':
         nonpossessive_rule_name = 'nonpossessive-lex-rule-'+lrt.poss_strat_num
         mylang.add(nonpossessive_rule_name +
-                   NON_POSS_LEX_RULE_DEFN, section='lexrules')
+                   NON_POSS_LEX_RULE_DEFN, section='lexrules', links = set_links([MORPHOLOGY_LINK, ADNOMINALPOSSESSION_LINK]))
         lrt.supertypes.add(nonpossessive_rule_name)
     # If a non-possessive rule is in the same pc as a possessive rule, make
     # sure it isn't missing supertypes. Note: to keep this simple, validating
@@ -1038,7 +1039,7 @@ def add_nonpossessive_behavior(ch, mylang):
             noun_type = get_name(noun)  + '-noun-lex'
             if noun.full_keys()[0].split("_")[0] not in noun_inputs:
                 mylang.add(noun_type + ':= [ SYNSEM.LOCAL.CAT [ HEAD.POSSESSOR nonpossessive,\
-                                                     POSSESSUM nonpossessive ] ].', section='nounlex')
+                                                     POSSESSUM nonpossessive ] ].', section='nounlex', links = set_links([MORPHOLOGY_LINK, ADNOMINALPOSSESSION_LINK]))
 
 def write_valence_change_behavior(pc, lrt, mylang, choices):
     from gmcs.linglib.valence_change import lexrule_name, added_argnum_for_vchop,demoted_argnum_for_vchop
@@ -1065,23 +1066,23 @@ def write_valence_change_behavior(pc, lrt, mylang, choices):
             lrt.supertypes.add(
                 'xarg-change-only-ccont-lex-rule' if transitive else 'same-cont-lex-rule')
             mylang.add(lrt.identifier() + ' := ' +
-                       lexrule_name('subj-rem-op', transitive) + '.')
+                       lexrule_name('subj-rem-op', transitive) + '.', links = set_links([MORPHOLOGY_LINK]))
         elif operation == 'subj-dem':
             lrt.supertypes.add('local-change-only-lex-rule')
             lrt.supertypes.add('same-cont-lex-rule')
             mylang.add(lrt.identifier() + ' := ' +
-                       lexrule_name('subj-dem-op',argnum,numargs) + '.', merge=True)
+                       lexrule_name('subj-dem-op',argnum,numargs) + '.', merge=True, links = set_links([MORPHOLOGY_LINK]))
         elif operation == 'obj-prom':
             lrt.supertypes.add('local-change-only-lex-rule')
             lrt.supertypes.add('xarg-change-only-ccont-lex-rule')
             mylang.add(lrt.identifier() + ' := ' +
-                       lexrule_name('obj-prom-op',argnum,numargs) + '.', merge=True)
+                       lexrule_name('obj-prom-op',argnum,numargs) + '.', merge=True, links = set_links([MORPHOLOGY_LINK]))
         elif operation == 'obj-rem':
             # includes no-ccont
             lrt.supertypes.add('local-change-only-lex-rule')
             lrt.supertypes.add('same-cont-lex-rule')
             mylang.add(lrt.identifier() + ' := ' +
-                       lexrule_name('obj-rem-op') + '.')
+                       lexrule_name('obj-rem-op') + '.', links = set_links([MORPHOLOGY_LINK]))
         elif operation == 'obj-add':
             lrt.supertypes.add('same-cont-lex-rule')
             lrt.supertypes.add(lexrule_name(
@@ -1090,13 +1091,13 @@ def write_valence_change_behavior(pc, lrt, mylang, choices):
                 'added-arg-head-type', argnum, numargs, op['argtype'].lower()))
             predname = op.get('predname', 'undef_pred')
             mylang.add(
-                lrt.identifier() + ' := [ C-CONT.RELS.LIST < [ PRED "' + predname + '" ] > ].')
+                lrt.identifier() + ' := [ C-CONT.RELS.LIST < [ PRED "' + predname + '" ] > ].', links = set_links([MORPHOLOGY_LINK]))
         elif operation == 'subj-add':
             lrt.supertypes.add('same-non-local-lex-rule')
             lrt.supertypes.add(lexrule_name('subj-add', argnum, transitive))
             predname = op.get('predname', 'causative_rel')
             mylang.add(
-                lrt.identifier() + ' := [ C-CONT.RELS.LIST < [ PRED "' + predname + '" ] > ].')
+                lrt.identifier() + ' := [ C-CONT.RELS.LIST < [ PRED "' + predname + '" ] > ].', links = set_links([MORPHOLOGY_LINK]))
 
     # final cleanup once all ops are known
     if 'subj-dem' in lrt_ops and 'obj-prom' not in lrt_ops:
@@ -1239,7 +1240,7 @@ def write_pc_adj_syntactic_behavior(lrt, mylang, choices):
     if 'mod' in lrt.features:
         if lrt.features['mod'] in ('both', 'attr'):
             # Basic attributive behavoir
-            mylang.add(lrt.identifier() + " := attr-adj-lex-rule.")
+            mylang.add(lrt.identifier() + " := attr-adj-lex-rule.", links = set_links([MORPHOLOGY_LINK, LEXICON_ADJECTIVES_LINK]))
             # Attributive only
             if lrt.features['mod'] == "attr":
                 mylang.add(lrt.identifier() + ''' := attr-adj-lex-rule &
@@ -1257,21 +1258,21 @@ def write_pc_adj_syntactic_behavior(lrt, mylang, choices):
             if lrt.features['mod'] == "pred":
                 # Predicative only
                 mylang.add(lrt.identifier() +
-                           " := [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].")
+                           " := [ SYNSEM.LOCAL.CAT.HEAD.MOD < > ].", links = set_links([MORPHOLOGY_LINK, LEXICON_ADJECTIVES_LINK]))
                 # elif lrt.features['mod'] == "both":
                 # Do nothing... gets PRD or stative predicate from below
             # TJT 2014-08-27: Making 'predcop' dependent on 'mod: pred or both'
             if 'predcop' in lrt.features:
                 # This is the copula complement LRT
                 mylang.add(lrt.identifier() + ''' := [ SYNSEM.LOCAL.CAT [ HEAD.PRD +
-                                                                  VAL.SUBJ < > ] ].''')
+                                                                  VAL.SUBJ < > ] ].''', links = set_links([MORPHOLOGY_LINK, LEXICON_ADJECTIVES_LINK]))
             else:
                 # This is the stative predicate LRT
                 # This only fires if "mod" is ("both" or "pred") and "pred" not checked
                 lrt.supertypes.add('stative-pred-lex-rule')
                 # TJT: 2014-09-24: Stative predicate lexical rule is PRD -
                 mylang.add(lrt.identifier() +
-                           ''' := [ SYNSEM.LOCAL.CAT.HEAD.PRD - ].''')
+                           ''' := [ SYNSEM.LOCAL.CAT.HEAD.PRD - ].''', links = set_links([MORPHOLOGY_LINK, LEXICON_ADJECTIVES_LINK]))
 
 
 """
@@ -1312,10 +1313,10 @@ def write_interrogative_rules(lrt, mylang):
     mylang.set_section('lexrules')
 
     if lrt.interrogative:
-        mylang.add(ITRG_LEX_RULE)
-        mylang.add(PROP_LEX_RULE)
+        mylang.add(ITRG_LEX_RULE, links = set_links([MORPHOLOGY_LINK]))
+        mylang.add(PROP_LEX_RULE, links = set_links([MORPHOLOGY_LINK]))
         if lrt.interrogative == 'polar':
-            mylang.add(POLAR_LEX_RULE)
+            mylang.add(POLAR_LEX_RULE, links = set_links([MORPHOLOGY_LINK]))
             lrt.supertypes.add('polar-lex-rule')
         elif lrt.interrogative == 'no':
             lrt.supertypes.add('prop-lex-rule')
@@ -1327,7 +1328,7 @@ def write_interrogative_rules(lrt, mylang):
         elif lrt.interrogative == 'wh-pseudo':
             mylang.add_literal(
                 ''';;;The below rule is added as a copy of another wh-rule. The user did not specify it.''')
-            mylang.add(WH_OBJ)
+            mylang.add(WH_OBJ, links = set_links([MORPHOLOGY_LINK, WHQUESTIONS_LINK]))
             lrt.supertypes.add('wh-obj-lex-rule')
 
 
