@@ -3,7 +3,6 @@ Module to support the Constituent (Wh-) Questions library.
 email olzama@uw.edu with both constituent and polar questions about the library.
 """
 
-from ctypes.wintypes import WORD
 from gmcs.constants import MTRX_FR_OPT, MTRX_FRONT, NO_MULTI, \
     SINGLE, MULTI, SG_OBLIG, ALL_OBLIG, EMBED_INSITU, ON, WH_INFL, \
     IN_SITU, NONE_OBLIG
