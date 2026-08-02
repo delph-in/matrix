@@ -562,9 +562,6 @@ class ChoicesFile:
                 idx = split_variable_key(d.full_key)[-1]
                 self.__reset_full_keys(key + str(idx))
 
-    def keys(self):
-        return list(self.choices.keys())
-
     def full_keys(self):
         return self.choices.full_keys()
 
