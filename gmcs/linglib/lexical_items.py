@@ -962,7 +962,7 @@ def add_initial_noun_coverb_lex_types(mylang: TDLfile, singlentype: bool, seen: 
             typedef = 'coverb-noun-lex := [ SYNSEM.LOCAL.CAT.VAL.SPR < [ OPT + ] > ].'
             mylang.add(typedef, section='lvclex')
 
-def add_lvtype_to_coverb(ch: ChoicesFile, mylang: TDLencode, hierarchies: Dict[str, TDLHierarchy], coverb: ChoiceDict, cv_pos: str):
+def add_lvtype_to_coverb(ch: ChoicesFile, mylang: TDLfile, hierarchies: Dict[str, TDLHierarchy], coverb: ChoiceDict, cv_pos: str):
     """
     Adds the LVC type for the coverb to the coverb's type.
     """
