@@ -2673,6 +2673,101 @@ Check shared-subj "Shared Subject" "" "Yes<br>"
 
 EndIter cms
 
+Section noun-incorporation "Noun Incorporation"
+
+Cache verbpcs verb-pc[0-9]+$ name
+Cache verblrs verb-pc[0-9]+(_lrt[0-9]+)?$ name
+
+Label "<p>Noun Incorporation is the process of morphologically incorporating a noun, usually the direct object of the verb, into the verb itself resulting in a complex verb.</p>"
+
+Check noun-incorp "noun-incorp" "" "Noun Incorporation occurs in this language."<br> 
+
+Label "<p>Do direct objects of transitive verbs incorporate? If so, what happens to the argument structure of the verb? Check all strategies that apply. A second position class for noun incorporation will be created behind the scenes with lexical rule types for each NI strategy that you select below. This position class and its associated lexical rule types will not be visible on the customization page. You might want to define a forbid constraint for one NI strategy but not another as you would do for LRTs or PCs on the morphotactics page. You will have the option to select previously defined PCs or LRTs to forbid with each selected NI type below.</p>"
+
+  Label "<div style=\"padding-left: 16px\">"
+
+    Check reduce "Reduced" "" "The direct object of the verb incorporates and there is no other overt expression of this argument.<br>"
+        Label "<div style=\"padding-left: 35px\">"
+        Label "<br>If so, how does the verb behave?<br>"
+        
+            Label "<div style=\"padding-left: 16px\">"
+            Radio red-val "ReducedValence" "" ""
+            . red-trans "ReducedTransitive" "" "The verb appears transitive (i.e. transitive morphology, case)<br>"
+            . red-intrans "ReducedIntransitive" "" "The verb appears intransitive (i.e. intransitive morphology, case)<br>"
+
+                Label "<div style=\"padding-left: 35px\">"
+                Label "<br> If intransitive, does the case marked on the subject change?<br>"
+
+                  Label "<div style=\"padding-left: 16px\">"
+                  Radio red-val-intrans-case "ReducedValenceIntransitiveCase" "" ""
+                  . red-val-intrans-no "NoCaseChange" "" "No<br>"
+                  . red-val-intrans-yes "YesCaseChange" "" "Yes."
+
+                  MultiSelect red-val-intrans-yes-case "ReducedValCase" " New case: " "<br><br>" 
+                  fillvalues p=case l=1 
+                
+                Label "</div>"
+              Label "</div>"
+          Label "</div>"
+
+          Label "Are there any position classes that this type of NI should not co-occur with?<br><br>"
+            BeginIter reduce-forbid{j} "a Forbid constraint"
+
+            Select others "Reduction NI types Forbid" "Reduction NI types forbid the following: " ""
+            fillcache c=verblrs
+
+            EndIter reduce-forbid
+
+        Label "</div>"
+    Check promote "Promotion" "" "The direct object of the verb incorporates and another argument (such as a possessor, locative, instrumental, etc.) becomes the new direct object.<br>"
+        Label "<div style=\"padding-left: 35px\">"
+        Label "<br>If so, what type of noun is promoted to object position?<br>"
+            Label "<div style=\"padding-left: 16px\">"
+        
+            Check promote-poss "PossessorRaising" "" "The possessor of the incorporated noun is raised to object position<br>"
+            Check promote-obl "ObliqueRaising" "" "An oblique argument is promoted to object position. You may define a predicate name for this process. "
+            Text ni-predname "PromotionPredicate" "Predicate: " "<br><br>" 20
+            
+            Label "</div>"
+
+            Label "Are there any position classes that this type of NI should not co-occur with?<br><br>"
+            BeginIter promote-forbid{j} "a Forbid constraint"
+
+            Select others "Promotion NI types Forbid" "Promotion NI types forbid the following: " ""
+            fillcache c=verblrs
+
+            EndIter promote-forbid
+
+        Label "</div>"
+
+    Check double "Doubled" "" "Elements of the incorporated noun appear outside of the verb. For example, a co-referent noun that is more specific than the incorporated noun, modifiers or demonstratives of the incorporated noun, or a copy of the incorporated noun itself.<br>"
+
+    Label "<div style=\"padding-left: 35px\">"
+    Label "<br>If so, what elements can be stranded?<br>"
+        Label "<div style=\"padding-left: 16px\">"
+        Check double-noun "DoubledNoun" "" "A more specific noun or doubled noun<br><br>"
+
+          Label "<div style=\"padding-left: 35px\">"
+            Label "Are there any position classes that this type of NI should not co-occur with?<br><br>"
+            BeginIter double-forbid{j} "a Forbid constraint"
+
+            Select others "Doubled NI types Forbid" "Doubled NI types forbid the following: " ""
+            fillcache c=verblrs
+
+            EndIter double-forbid
+          Label "</div>"
+
+        Check strand-mod "StrandedMod" "" "A modifier (ex: adjective, demonstrative, quantifier) <br><br>"
+
+          Label "<div style=\"padding-left: 35px\">"
+            Label "Are there any position classes that this type of NI should not co-occur with?<br><br>"
+            BeginIter strand-forbid{j} "a Forbid constraint"
+
+            Select others "Stranded NI types Forbid" "Stranded NI types forbid the following: " ""
+            fillcache c=verblrs
+
+            EndIter strand-forbid
+          Label "</div>"
 
 Section lexicon "Lexicon"
 
@@ -3828,6 +3923,64 @@ inputs are possible, these need to be created as two separate lexical rule types
     EndIter lri
 
   EndIter lrt
+
+  BeginIter is-lrt{j} "an Incorporated Stem Lexical Rule Type" 1 0 "noun-incorp"
+
+    Text name "Verb Position Class {i} Lexical Rule Type {j} Name" "<b>Incorporated Stem Lexical Rule Type {j}</b>:<br/>Name: " "" 20
+
+    MultiSelect supertypes "Verb Position Class {i} Lexical Rule Type {j} Supertype" "<br/>Supertypes: " ""
+    fillregex p=verb-pc{i}_is-lrt[0-9]+_name
+
+    Label "<p>Features:</p>"
+
+    BeginIter feat{k} "a Feature"
+
+      Select name "Verb Position Class {i} Lexical Rule Type {j} Feature {k} Name" "Name: " " "
+      fillnames c=both
+
+      MultiSelect value "Verb Position Class {i} Lexical Rule Type {j} Feature {k} Value" "Value: " ""
+      fillvalues p=verb-pc{i}_is-lrt{j}_feat{k}_name
+
+      Select head "Verb Position Class {i} Lexical Rule Type {j} Feature {k} Head" "Specified on: " ""
+      . dtr "The verb" "the verb"
+      . in "The incorporated noun" "the incorporated noun"
+
+    EndIter feat
+
+    Label "<p>Morphotactic Constraints:</p>"
+
+    BeginIter require{k} "a Require constraint"
+
+      MultiSelect others "Verb Position Class {i} Lexical Rule Type {j} Requires" "Lexical Rule Type {j} requires one of the following: " ""
+      fillcache c=verbs
+      fillregex p=verb-pc[0-9]+(_is-lrt[0-9]+)?_name
+      . verb "Any verb" "any verb"
+
+    EndIter require
+
+    BeginIter forbid{k} "a Forbid constraint"
+
+      Select others "Verb Position Class {i} Lexical Rule Type {j} forbids" "Lexical Rule Type {j} forbids the following: " ""
+      fillcache c=verb
+      fillregex p=verb-pc[0-9]+(_is-lrt[0-9]+)?_name
+      . verb "Any verb" "any verb"
+
+    EndIter forbid
+
+    Label "<p>Lexical Rule Instances:</p>"
+
+    BeginIter lri{k} "a Lexical Rule Instance" 0 1
+
+      Radio inflecting "Verb Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Has Orthography" "Instance {k}<br>" ""
+      . no "No" "" "No affix<br>"
+      . yes "Yes" "" "Affix spelled"
+
+      Text orth "Verb Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Spelling" "" "" 20 "fill_pred('verb-pc{i}_is-lrt{j}_lri{k}', 'n')"
+      Text pred "Verb Position Class {i} Lexical Rule Type {j} Lexical Rule Instance {k} Predicate" "Predicate: " "" 20
+
+    EndIter lri
+
+  EndIter is-lrt  
 
 EndIter verb-pc
 

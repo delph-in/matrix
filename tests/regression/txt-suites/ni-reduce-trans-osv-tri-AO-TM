@@ -1,0 +1,27 @@
+cookie-O girl-A NeutFem-bake-TR
+girl-S Fem-smile-IT
+girl-A NeutFem-cookie-bake-TR
+friend-O girl-A MascFem-cookie-bake-TR
+yummy girl-A NeutFem-cookie-bake-TR
+yummy cookie-O girl-A NeutFem-bake-TR
+snickerdoodle-O girl-A NeutFem-cookie-bake-TR
+*cookie-O girl-A NeutFem-bake-IT
+*cookie-O girl-S NeutFem-bake-TR
+*cookie-O girl-A MascFem-bake-TR
+*girl-S Fem-smile-TR
+*girl-A Fem-smile-IT
+*girl-S NeutFem-smile-IT
+*girl-S Fem-bake-IT
+*girl-A NeutFem-cookie-bake-IT
+*girl-S NeutFem-cookie-bake-TR
+*girl-A Fem-cookie-bake-TR
+*girl-A MascFem-cookie-bake-TR
+*friend-O girl-A MascFem-cookie-bake-IT
+*friend-O girl-A NeutFem-cookie-bake-TR
+*yummy girl-S NeutFem-cookie-bake-TR
+*yummy girl-A NeutFem-cookie-bake-IT
+*girl-A NeutFem-cookie-bake-TR yummy
+*cookie-O yummy girl-A NeutFem-bake-TR
+*snickerdoodle girl-A NeutFem-cookie-bake-TR
+*snickerdoodle-O girl-S NeutFem-cookie-bake-TR
+*snickerdoodle-O girl-A NeutFem-cookie-bake-IT

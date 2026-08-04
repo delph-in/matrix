@@ -369,6 +369,11 @@ class PositionClass(MorphotacticNode):
             self._has_is = False
         return self._has_is
     
+    def is_ghost_ni_pc(self):
+        if self.name == 'NI-valence':
+            return True
+        return False
+    
     def has_category_change(self):
         # 2023-12-13 KR: Keep track of whether a position class has
         # any lrts with category-changing operations (only currently includes nominalization)

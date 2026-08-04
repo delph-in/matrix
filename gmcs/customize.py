@@ -27,6 +27,7 @@ from gmcs.linglib import light_verb_constructions as lvc
 from gmcs.linglib import morphotactics
 from gmcs.linglib import negation
 from gmcs.linglib import nominalized_clauses
+from gmcs.linglib import noun_incorporation as ni
 from gmcs.linglib import toolboximport
 from gmcs.linglib import valence_change
 from gmcs.linglib import verbal_features
@@ -520,6 +521,7 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
     # but provide the methods the components above have for their own
     # contributions to the lexical rules
 
+    #ni.customize_noun_incorporation(ch, mylang) 
     nominalized_clauses.customize_nmcs(mylang, ch, rules)
     negation.customize_sentential_negation(
         mylang, ch, lexicon, rules, lrules, hierarchies)
@@ -537,10 +539,10 @@ def customize_matrix(path, arch_type, destination=None, force_dest=False):
                             argument_optionality.add_lexrules,
                             valence_change.add_lexrules,
                             direct_inverse.add_lexrules,
-                            wh_ques.add_lexrules]
+                            wh_ques.add_lexrules,
+                            ni.add_lexrules]
     to_cfv = morphotactics.customize_inflection(ch, add_lexrules_methods,
-                                                mylang, irules, lrules, lexicon)
-
+                                                mylang, irules, lrules, lexicon, rules)
 
     # customize_feature_values is called by process_cfv_list
     # negation.py needs to run first!

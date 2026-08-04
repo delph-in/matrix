@@ -55,7 +55,7 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
         iter_feat = 'adpcomp_feat'
     else:
         iter_feat = 'feat'
-
+    
     basic_infl_neg_def = ''':= \
                    [ C-CONT [ HOOK [ XARG #xarg,\
                      LTOP #ltop,\
@@ -73,12 +73,27 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                                               INDEX #ind,\
                                         LTOP #larg ],\
                           CAT.HEAD verb ] ] ] ]. '''
+    
+    #basic_noun_incorp_def = ''':= \
+                        #[ SYNSEM.LOCAL.CAT.VAL.COMPS < [ LOCAL.CONT.HOOK [ INDEX #ind,\
+                                                                            #LTOP #larg ] ] >,\
+                        #C-CONT [ HCONS.LIST < qeq &\
+                                                #[ HARG #harg, \
+                                                  #LARG #larg ] >,\
+                                    #RELS.LIST < noun-relation &\
+                                                #[ ARG0 #ind,\
+                                                #LBL #larg ],\
+                                                #quant-relation &\
+                                                    #[ PRED "exist_q_rel",\
+                                                        #ARG0 #ind,\
+                                                        #RSTR #harg ] > ] ]. '''
 
     # TJT Initializing head -> geom_prefix map outside of loop for speed
     # Map from head value to geometry prefix
     head_map = {
         'subj': 'LOCAL.CAT.VAL.SUBJ.FIRST.',
         'obj': 'LOCAL.CAT.VAL.COMPS.',
+        'in': 'LOCAL.CAT.VAL.COMPS.FIRST.', # EEL trying to get features for incorporated nouns
         'obj2': 'LOCAL.CAT.VAL.COMPS.REST.FIRST.',
         'higher': 'SC-ARGS.FIRST.',
         'lower': 'SC-ARGS.REST.FIRST.',
@@ -278,6 +293,11 @@ def customize_feature_values(mylang, ch, hierarchies, ch_dict, type_name, pos, f
                     tdlfile.add(type_name +
                                 ' := [ ARG-ST < [ ' + s_case + '] > ].',
                                 merge=True, section=section)
+
+        #elif (n == 'noun-incorp'):
+            #tdlfile.add(type_name + basic_noun_incorp_def,
+                        #'This adds incorporated noun semantics.',
+                        #merge=True, section=section)
 
         # ERB 2009-01-22 This is where we deal with the
         # negative affixes.

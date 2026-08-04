@@ -1,0 +1,241 @@
+
+version=35
+
+section=general
+language=ni-reduce-intrans-yes-vso-erg-abs-A-O-transMarking
+iso-code=pl3
+punctuation-chars=keep-all
+archive=no
+vcs=none
+
+section=word-order
+word-order=vso
+has-dets=no
+has-aux=no
+
+section=number
+
+section=person
+person=none
+
+section=gender
+  gender1_name=masculine
+  gender2_name=feminine
+  gender3_name=neuter
+
+section=case
+case-marking=erg-abs
+erg-abs-erg-case-name=ergative
+erg-abs-abs-case-name=absolutive
+
+section=adnom-poss
+
+section=direct-inverse
+
+section=tense-aspect-mood
+
+section=evidentials
+
+section=other-features
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=wh-q
+
+section=info-str
+
+section=arg-opt
+
+section=nominalclause
+
+section=lvc
+
+section=clausal-comp
+
+section=clausalmods
+
+section=noun-incorporation
+noun-incorp=on
+reduce=on
+red-val=red-intrans
+red-val-intrans-case=red-val-intrans-yes
+red-val-intrans-yes-case=abs
+promote=on
+promote-poss=on
+promote-obl=on
+ni-predname=benefactive
+double=on
+double-noun=on
+strand-mod=on
+
+section=lexicon
+  noun1_name=fem
+    noun1_feat1_name=gender
+    noun1_feat1_value=feminine
+  noun1_det=imp
+    noun1_stem1_orth=girl
+    noun1_stem1_pred=_girl_n_rel
+  noun2_name=masc
+    noun2_feat1_name=gender
+    noun2_feat1_value=masculine
+  noun2_det=imp
+    noun2_stem1_orth=friend
+    noun2_stem1_pred=_friend_n_rel
+  noun3_name=neut
+    noun3_feat1_name=gender
+    noun3_feat1_value=neuter
+  noun3_det=imp
+    noun3_stem1_orth=cookie
+    noun3_stem1_pred=_cookie_n_rel
+    noun3_stem2_orth=snickerdoodle
+    noun3_stem2_pred=_snickerdoodle_n_rel
+  verb1_name=trans
+  verb1_valence=erg-abs
+    verb1_stem1_orth=bake
+    verb1_stem1_pred=_bake_v_rel
+  verb2_name=intrans
+  verb2_valence=abs
+    verb2_stem1_orth=smile
+    verb2_stem1_pred=_smile_v_rel
+  adj1_name=adj
+  adj1_mod=attr
+    adj1_feat1_name=gender
+    adj1_feat1_value=neuter
+    adj1_feat1_head=xarg
+  adj1_modpos=before
+    adj1_stem1_orth=yummy
+    adj1_stem1_pred=_yummy_a_rel
+
+section=morphology
+  noun-pc1_name=case
+  noun-pc1_obligatory=on
+  noun-pc1_order=suffix
+  noun-pc1_inputs=noun
+    noun-pc1_lrt1_name=erg
+      noun-pc1_lrt1_feat1_name=case
+      noun-pc1_lrt1_feat1_value=erg
+      noun-pc1_lrt1_feat1_head=itself
+      noun-pc1_lrt1_lri1_inflecting=yes
+      noun-pc1_lrt1_lri1_orth=-erg
+    noun-pc1_lrt2_name=abs
+      noun-pc1_lrt2_feat1_name=case
+      noun-pc1_lrt2_feat1_value=abs
+      noun-pc1_lrt2_feat1_head=itself
+      noun-pc1_lrt2_lri1_inflecting=yes
+      noun-pc1_lrt2_lri1_orth=-abs
+  verb-pc1_name=NI
+  verb-pc1_order=suffix
+  verb-pc1_inputs=tverb
+    verb-pc1_is-lrt1_name=incorporated_noun
+      verb-pc1_is-lrt1_lri1_inflecting=yes
+      verb-pc1_is-lrt1_lri1_orth=-cookie
+      verb-pc1_is-lrt1_lri1_pred=_cookie_n_rel
+  verb-pc2_name=A
+  verb-pc2_obligatory=on
+  verb-pc2_order=suffix
+  verb-pc2_inputs=tverb, verb-pc1
+    verb-pc2_lrt1_name=femA
+      verb-pc2_lrt1_feat1_name=gender
+      verb-pc2_lrt1_feat1_value=feminine
+      verb-pc2_lrt1_feat1_head=subj
+      verb-pc2_lrt1_lri1_inflecting=yes
+      verb-pc2_lrt1_lri1_orth=-femA
+  verb-pc3_name=O
+  verb-pc3_obligatory=on
+  verb-pc3_order=suffix
+  verb-pc3_inputs=verb-pc2
+    verb-pc3_lrt1_name=neutO
+      verb-pc3_lrt1_feat1_name=gender
+      verb-pc3_lrt1_feat1_value=neuter
+      verb-pc3_lrt1_feat1_head=obj
+      verb-pc3_lrt1_lri1_inflecting=yes
+      verb-pc3_lrt1_lri1_orth=-neutO
+    verb-pc3_lrt2_name=mascO
+      verb-pc3_lrt2_feat1_name=gender
+      verb-pc3_lrt2_feat1_value=masculine
+      verb-pc3_lrt2_feat1_head=obj
+      verb-pc3_lrt2_lri1_inflecting=yes
+      verb-pc3_lrt2_lri1_orth=-mascO
+  verb-pc4_name=S
+  verb-pc4_obligatory=on
+  verb-pc4_order=suffix
+  verb-pc4_inputs=iverb, verb-pc1
+    verb-pc4_lrt1_name=femS
+      verb-pc4_lrt1_feat1_name=gender
+      verb-pc4_lrt1_feat1_value=feminine
+      verb-pc4_lrt1_feat1_head=subj
+      verb-pc4_lrt1_lri1_inflecting=yes
+      verb-pc4_lrt1_lri1_orth=-femS
+  verb-pc5_name=transitive
+  verb-pc5_obligatory=on
+  verb-pc5_order=suffix
+  verb-pc5_inputs=verb-pc3
+    verb-pc5_lrt1_name=TR
+      verb-pc5_lrt1_lri1_inflecting=yes
+      verb-pc5_lrt1_lri1_orth=-TR
+  verb-pc6_name=intransitive
+  verb-pc6_obligatory=on
+  verb-pc6_order=suffix
+  verb-pc6_inputs=verb-pc4
+    verb-pc6_lrt1_name=IT
+      verb-pc6_lrt1_lri1_inflecting=yes
+      verb-pc6_lrt1_lri1_orth=-IT
+
+section=toolbox-import
+
+section=test-sentences
+  sentence1_orth=bake-femA-neutO-TR girl-erg cookie-abs
+  sentence2_orth=smile-femS-IT girl-abs
+  sentence3_orth=bake-cookie-femS-IT girl-abs
+  sentence4_orth=bake-cookie-femA-mascO-TR girl-erg friend-abs
+  sentence5_orth=bake-cookie-femS-IT girl-abs yummy
+  sentence6_orth=bake-femA-neutO-TR girl-erg cookie-abs yummy
+  sentence7_orth=bake-cookie-femA-neutO-TR girl-erg snickerdoodle-abs
+  sentence8_orth=bake-femA-mascO-TR girl-erg cookie-abs
+  sentence8_star=on
+  sentence9_orth=bake-mascA-neutO-TR girl-erg cookie-abs
+  sentence9_star=on
+  sentence10_orth=bake-femA-neutO-IT girl-erg cookie-abs
+  sentence10_star=on
+  sentence11_orth=smile-femS-TR girl-abs
+  sentence11_star=on
+  sentence12_orth=smile-femS-IT girl-erg
+  sentence12_star=on
+  sentence13_orth=bake-femS-IT girl-erg
+  sentence13_star=on
+  sentence14_orth=bake-cookie-femS-TR girl-abs
+  sentence14_star=on
+  sentence15_orth=girl-abs bake-cookie-femS-IT
+  sentence15_star=on
+  sentence16_orth=bake-cookie-femA-mascO-TR girl-abs friend-erg
+  sentence16_star=on
+  sentence17_orth=bake-cookie-femA-mascO-IT girl-erg friend-abs
+  sentence17_star=on
+  sentence18_orth=bake-cookie-femA-mascO-TR girl-erg friend
+  sentence18_star=on
+  sentence19_orth=bake-cookie-femA-mascO-IT girl-erg friend
+  sentence19_star=on
+  sentence20_orth=bake-cookie-femA-mascO-TR girl-erg friend-abs yummy
+  sentence20_star=on
+  sentence21_orth=bake-cookie-femS-TR girl-abs yummy
+  sentence21_star=on
+  sentence22_orth=bake-cookie-femS-neutO-TR girl-abs yummy
+  sentence22_star=on
+  sentence23_orth=yummy bake-cookie-femS-IT girl-abs
+  sentence23_star=on
+  sentence24_orth=bake-cookie-femA-TR girl-erg snickerdoodle-abs
+  sentence24_star=on
+  sentence25_orth=bake-cookie-femA-IT girl-erg snickerdoodle-abs
+  sentence25_star=on
+  sentence26_orth=bake-snickerdoodle-femA-neutO-TR girl-erg cookie-abs
+  sentence26_star=on
+  sentence27_orth=bake-cookie-femA-neutO-TR girl-erg snickerdoodle-abs friend-abs
+  sentence27_star=on
+
+section=gen-options
+
+section=ToolboxLexicon

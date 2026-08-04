@@ -157,7 +157,16 @@ cust_types = (
     'coverb-noun-lex',
     'head-final-lvc',
     'comp-head-phrase-lvc',
-    'head-como-phrase-lvc',
+    'head-comp-phrase-lvc',
+    # Added for noun incorporation
+    'type-ni-mod-phrase',
+    'adj-ni-mod-phrase'
+    'NI-valence-lex-rule',
+    'promote-obl-lex-rule',
+    'promote-poss-lex-rule',
+    'reduce-lex-rule',
+    'double-noun-lex-rule',
+    'strand-mod-lex-rule'
 )
 
 # regex patterns for sets of names that are not available for
@@ -2359,6 +2368,111 @@ def validate_lvc(ch: ChoicesFile, vr: ValidationResult):
         msg = 'If you specify that bleached light verbs are possible, you must allow verb coverbs.'
         vr.err('lvc-bleached', msg)
 
+def validate_ni(ch: ChoicesFile, vr: ValidationResult):
+    """
+    Valideate the user's choices about noun incorporation
+    """
+
+    # if noun incorporation exists, at least one of the strategies needs to be selected
+    if ch.get('noun-incorp') == 'on':
+        exist = False
+        for option in ['reduce', 'promote-poss', 'promote-obl', 'double-noun', 'strand-mod']:
+            if ch.get(option) == 'on':
+                exist = True
+        if not exist:
+            msg = 'If you indicate that noun incorporation is present in this language, you must select at least \
+                one NI strategy from below.'
+            vr.err('noun-incorp', msg)
+    
+    # if any strategies are selected, NI should exist
+    exist = False
+    for option in ['reduce', 'promote-poss', 'promote-obl', 'double-noun', 'strand-mod']:
+        if ch.get(option) == 'on':
+            exist = True
+    if exist:
+        if not ch.get('noun-incorp') == 'on':
+            msg = 'You have selected one or more NI strategies. Please indicate that NI occurs in the language.'
+            vr.warn('noun-incorp', msg)
+
+    # if reduce is chosen, user must specify if it behaves intransitively or transitively
+    if ch.get('reduce') == 'on':
+        if not ch.get('red-val'):
+            msg = 'You must select whether reduction type NI constructions behave transitively or intransitively.'
+            vr.err('red-val', msg)
+
+    # if intransitively, the user must specify if the case value marked on the subject changes
+    if ch.get('red-val') == 'red-intrans':
+        if not ch.get('red-val-intrans-case'):
+            msg = 'You must specify whether or not the case value on the subject changes. If no case value exists, select "No." '
+            vr.err('red-val-intrans-case', msg)
+
+    # NI types should not forbid the general NI position class
+
+    # if promote is chosen, user must also choose either possessor raising or oblique promotion
+    if ch.get('promote') == 'on':
+        if not ( ch.get('promote-poss') == 'on' or ch.get('promote-obl') == 'on' ):
+            msg = 'You have stated that promotion type NI occurs in this language. You must select one or both of the following promotion types.'
+            vr.err('promote', msg)
+
+    # The user needs to define a predicate name if oblique args are promoted to DO position
+    if ch.get('promote-obl') == 'on':
+        if not ch.get('ni-predname'):
+            msg = 'Please specify the predicate value for this promoted argument.'
+            vr.err('ni-predname', msg)
+
+    # If a predicate name is given, promote-obl needs to be selected
+    if ch.get('ni-predname'):
+        if not ch.get('promote-obl') == 'on':
+            msg = 'You have defined a predicate value but have not selected the choice for promoted oblique arguments. If you do not do so, this predicate value will be ignored.'
+            vr.warn('promote-obl', msg)
+
+    # If double/strand ni type is selected, one of these two should also be
+    if ch.get('double') == 'on':
+        if not ( ch.get('double-noun') == 'on' or ch.get('strand-mod') == 'on' ): 
+            msg = 'You must select what kind of information appears outside of the verb: doubled nouns and/or stranded modifiers.'
+            vr.err('double', msg)
+
+    # if trans/intrans selected, reduce must be
+    if ch.get('red-val') or ch.get('red-val-intrans-case'):
+        if not ch.get('reduce') == 'on':
+            msg = 'You have made a choice about Reduction type NI. Please state that it occurs in the language.'
+            vr.warn('reduce', msg)
+    
+    # if case marking selected, tran shouldn't be
+    if ch.get('red-val-intrans-case'):
+        if ch.get('red-val') == 'red-trans':
+            msg = 'You have stated that Reduction NI constructions behave transitively but have made a selection about changing case values. This selection will be ignored.'
+            vr.warn('red-val', msg)
+        
+    # if case change, new case must be specified
+    if ch.get('red-val-intrans-case') == 'red-val-intrans-yes':
+        if not ch.get('red-val-intrans-yes-case'):
+            msg = 'Please specify a new case. Case must first be defined on the case subpage.'
+            vr.err('red-val-intrans-yes-case', msg)
+
+    # if poss/obl selected, promote must be
+    if ch.get('promote-poss') == 'on' or ch.get('promote-obl') == 'on':
+        if not ch.get('promote'):
+            msg = 'You have made a choice about Promotion type NI. Please state that it occurs in the language.'
+            vr.warn('promote', msg)
+
+    # if strand/double selected, outer type must be
+    if ch.get('double-noun') == 'on' or ch.get('strand-mod') == 'on':
+        if not ch.get('double') == 'on':
+            msg = 'You have made a choice about Stranding/Doubling NI. Please state that it occurs in the language.'
+            vr.warn('double', msg)
+
+    # Warn user if PCs are unintentionally feeding other PCs
+    for pc in ch['verb-pc']:
+        inputs = set(pc['inputs'].split(', '))
+        for opc in ch['verb-pc']:
+            if opc.full_key in inputs:
+                if opc['is-lrt']:
+                    oinputs = set(opc['inputs'].split(', '))
+                    diff = oinputs - inputs
+                    if diff:
+                        msg = 'An input to this position class might accidentally be feeding another. See documentation on noun incorporation for more information.'
+                        vr.warn(opc.full_key + '_inputs', msg)
 
 def validate(ch, extra=False):
     """
@@ -2393,6 +2507,7 @@ def validate(ch, extra=False):
     validate_arg_opt(ch, vr)
     validate_wh_ques(ch, vr)
     validate_lvc(ch, vr)
+    validate_ni(ch, vr)
 
     if extra:
         validate_extra_constraints(ch, vr)

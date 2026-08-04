@@ -1,0 +1,27 @@
+girl-nom bake-3FemSgA-3NeutSgO-TR cookie-acc
+girl-nom smile-3FemSgS-IT
+girl-nom bake-3FemSgS-IT-cookie
+girl-nom bake-3FemSgA-3MascSgO-TR-cookie friend-acc
+girl-nom bake-3FemSgS-IT-cookie yummy
+girl-nom bake-3FemSgA-3NeutSgO-TR yummy cookie-acc
+girl-nom bake-3FemSgA-3NeutSgO-TR-cookie snickerdoodle-acc
+*girl-nom bake-3FemSgA-3MascSgO-TR cookie-acc
+*girl-nom bake-3MascSgA-3NeutSgO-TR cookie-acc
+*girl-nom bake-3FemSgA-3NeutSgO-IT cookie-acc
+*girl-nom smile-3FemSgS-TR
+*girl-acc smile-3FemSgS-IT
+*girl-acc bake-3FemSgS-IT-cookie
+*girl-nom bake-3FemSgS-TR-cookie
+*bake-3FemSgS-IT-cookie girl-nom
+*girl-acc bake-3FemSgA-3MascSgO-TR-cookie friend-nom
+*girl-nom bake-3FemSgA-3MascSgO-IT-cookie friend-acc
+*girl-nom bake-3FemSgA-3MascSgO-IT-cookie friend
+*girl-nom bake-3FemSgA-3MascSgO-TR-cookie friend
+*girl-nom bake-3FemSgA-3MascSgO-TR-cookie yummy friend-acc
+*girl-nom bake-3FemSgS-TR-cookie yummy
+*girl-nom bake-3FemSgA-3NeutSgO-TR-cookie yummy
+*girl-nom yummy bake-3FemSgS-IT-cookie
+*girl-nom bake-3FemSgS-TR-cookie snickerdoodle-acc
+*girl-nom bake-3FemSgS-IT-cookie snickerdoodle-acc
+*girl-nom bake-3FemSgA-3NeutSgO-TR-snickerdoodle cookie-acc
+*girl-nom bake-3FemSgA-3NeutSgO-TR-cookie snickerdoodle-acc friend-acc

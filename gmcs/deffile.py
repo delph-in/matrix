@@ -585,7 +585,9 @@ class MatrixDefFile:
                 'clausal-comp': 'Clausal Complements',
                 'nominalclause': 'Nominalized Clauses',
                 'lvc': "Light Verb Constructions",
-                'clausalmods': 'Clausal Modifiers', 'lexicon': 'Lexicon',
+                'clausalmods': 'Clausal Modifiers', 
+                'noun-incorporation': 'Noun Incorporation',
+                'lexicon': 'Lexicon',
                 'morphology': 'Morphology', 'toolbox-import': 'Toolbox Import',
                 'test-sentences': 'Test Sentences', 'gen-options': 'TbG Options',
                 'ToolboxLexicon': 'Toolbox Lexicon'}
@@ -605,7 +607,9 @@ class MatrixDefFile:
                 'clausal-comp': 'ClausalComplements',
                 'nominalclause': 'Nominalized Clauses',
                 'lvc': "LightVerbConstructions",
-                'clausalmods': 'Clausal Modifiers', 'lexicon': 'Lexicon',
+                'clausalmods': 'Clausal Modifiers', 
+                'noun-incorporation': 'NounIncorporation',
+                'lexicon': 'Lexicon',
                 'morphology': 'Morphology', 'toolbox-import': 'ImportToolboxLexicon',
                 'test-sentences': 'TestSentences', 'gen-options': 'TestByGeneration',
                 'ToolboxLexicon': 'ImportToolboxLexicon'}

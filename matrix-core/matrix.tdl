@@ -298,6 +298,9 @@ cat-min := avm.
 ; also that it is WH.BOOL +. A constituent question will be WH.BOOL + if the head-complement
 ; rule's mother's WH is the OR of its daughters.
 
+; EEL 2025-08-06 Adding NCORP-MOD feature which is + for phrases 
+; can modify an incorporated noun
+
 cat := cat-min &
   [ HEAD head-min,
     VAL valence-min,
@@ -305,7 +308,8 @@ cat := cat-min &
     MKG mkg,
     HC-LIGHT luk,
     POSTHEAD bool,
-    WH logical-or ].
+    WH logical-or,
+    NCORP-MOD bool].
 
 cat-sat := cat &
  [ VAL [ SPR olist,
@@ -1041,6 +1045,34 @@ non-wh-onull := non-wh-null & onull.
 
 non-wh-ocons := non-wh-cons & ocons.
 
+; EEL 2025-08-06 adding new paramaterized list for things that are NCORP-MOD -
+
+nc-list := list.
+
+nc-cons := nc-list & cons &
+    [ FIRST synsem & [ LOCAL.CAT.NCORP-MOD - ],
+      REST nc-list].
+
+nc-null := nc-list & null.
+
+nc-olist := nc-list & olist.
+
+nc-ocons := nc-cons & ocons.
+
+nc-onull := nc-null & onull.
+
+non-wh-nc-list := nc-list & non-wh-list.
+
+non-wh-nc-cons := nc-cons & non-wh-cons.
+
+non-wh-nc-null := nc-null & non-wh-null.
+
+non-wh-nc-olist := non-wh-nc-list & non-wh-olist & nc-olist.
+
+non-wh-nc-ocons := non-wh-nc-cons & non-wh-ocons & nc-ocons.
+
+non-wh-nc-onull := non-wh-nc-null & non-wh-onull & nc-onull.
+
 
 ; The LinGO grammar also makes use of a prolist -- or list
 ; of synsems of type pro-ss.
@@ -1300,9 +1332,13 @@ non-local-change-only-lex-rule := same-local-lex-rule &
 				  same-light-lex-rule &
 				  no-ccont-lex-rule.
 
-local-change-only-lex-rule := same-non-local-lex-rule &
-			      same-modified-lex-rule &
-			      same-light-lex-rule &
+; EEL 2025-08-06 want to be able to change LOCAL and add C-CONT
+
+add-ccont-local-change-only-lex-rule := same-non-local-lex-rule &
+					same-modified-lex-rule &
+					same-light-lex-rule.
+
+local-change-only-lex-rule := add-ccont-local-change-only-lex-rule &
 			      no-ccont-lex-rule.
 
 ; ERB 2004-04-13 The only permissible changes to CONT are
@@ -1339,6 +1375,13 @@ cat-change-only-lex-rule := local-change-only-lex-rule &
 			    same-cont-lex-rule &
 			    same-agr-lex-rule.
 
+; EEL 2025-08-06 want to be able to change CAT and also add to the C-CONT
+
+add-ccont-cat-change-only-lex-rule := add-ccont-local-change-only-lex-rule &
+				      same-ctxt-lex-rule &
+				      same-cont-lex-rule &
+				      same-agr-lex-rule.
+
 head-change-only-lex-rule := cat-change-only-lex-rule &
 			     same-val-lex-rule &
 			     same-hc-light-lex-rule &
@@ -1360,6 +1403,14 @@ val-change-only-lex-rule := cat-change-only-lex-rule &
 			    same-hc-light-lex-rule &
 			    same-posthead-lex-rule &
 			    same-mc-lex-rule.
+
+; EEL 2025-08-06 want to be able to change VAL and also add to C-CONT
+
+add-ccont-val-change-only-lex-rule := add-ccont-cat-change-only-lex-rule &
+				      same-head-lex-rule &
+				      same-hc-light-lex-rule &
+				      same-posthead-lex-rule &
+				      same-mc-lex-rule.
 
 ; CMC 2017-03-21 Additional convenience subtypes for
 ; valence-changing operations, e.g., may need to change
@@ -2643,6 +2694,12 @@ adv-cons := adv-list & ocons &
 REST adv-list ].
 
 adv-null := adv-list & onull.
+
+; EEL 2025-01-10 need a sublist that is compatible with both adv-cons and nc-cons (and null)
+
+adv-nc-cons := adv-cons & nc-cons.
+
+adv-nc-null := adv-null & nc-null.
 
 ; ERB 2004-05-18 I'm guessing that MSG no-msg on the head
 ; daughter here is going to turn out too restrictive for other

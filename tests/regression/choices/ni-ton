@@ -1,0 +1,174 @@
+
+version=35
+
+section=general
+language=Tongan
+iso-code=ton
+punctuation-chars=keep-all
+archive=no
+vcs=none
+
+section=word-order
+word-order=v-initial
+has-dets=yes
+noun-det-order=det-noun
+has-aux=yes
+aux-comp-order=before
+aux-comp=s
+multiple-aux=no
+
+section=number
+
+section=person
+person=none
+
+section=gender
+
+section=case
+case-marking=erg-abs
+erg-abs-erg-case-name=ergative
+erg-abs-abs-case-name=absolutive
+
+section=adnom-poss
+
+section=direct-inverse
+
+section=tense-aspect-mood
+tense-definition=choose
+past=on
+
+section=evidentials
+
+section=other-features
+form-fin-nf=on
+
+section=sentential-negation
+
+section=coordination
+
+section=matrix-yes-no
+
+section=wh-q
+
+section=info-str
+
+section=arg-opt
+
+section=nominalclause
+
+section=lvc
+
+section=clausal-comp
+
+section=clausalmods
+
+section=noun-incorporation
+noun-incorp=on
+reduce=on
+red-val=red-intrans
+red-val-intrans-case=red-val-intrans-yes
+red-val-intrans-yes-case=abs
+double=on
+strand-mod=on
+
+section=lexicon
+  noun1_name=common
+  noun1_det=opt
+    noun1_stem1_orth=makioke
+    noun1_stem1_pred=_cassava_n_rel
+    noun1_stem2_orth=ika
+    noun1_stem2_pred=_fish_n_rel
+    noun1_stem3_orth=talo
+    noun1_stem3_pred=_taro_n_rel
+    noun1_stem4_orth=kita
+    noun1_stem4_pred=_guitar_n_rel
+    noun1_stem5_orth=kava
+    noun1_stem5_pred=_kava_n_rel
+    noun1_stem6_orth=siana
+    noun1_stem6_pred=_man_n_rel
+    noun1_stem7_orth=fale
+    noun1_stem7_pred=_house_n_rel
+  noun2_name=propper
+  noun2_det=imp
+    noun2_stem1_orth=Sione
+    noun2_stem1_pred=_Sione_n_rel
+  verb1_name=trans
+  verb1_valence=erg-abs
+    verb1_stem1_orth=haka
+    verb1_stem1_pred=_cook_v_rel
+    verb1_stem2_orth=inu
+    verb1_stem2_pred=_drink_v_rel
+    verb1_stem3_orth=to
+    verb1_stem3_pred=_plant_v_rel
+    verb1_stem4_orth=ta
+    verb1_stem4_pred=_play_v_rel
+    verb1_stem5_orth=fakamaa
+    verb1_stem5_pred=_clean_v_rel
+  verb2_name=intrans
+  verb2_valence=abs
+    verb2_stem1_orth=na
+    verb2_stem1_pred=_na_v_rel
+  adj1_name=attributive
+  adj1_mod=attr
+  adj1_modpos=before
+    adj1_stem1_orth=foou
+    adj1_stem1_pred=_new_a_rel
+  aux1_name=past
+  aux1_sem=add-pred
+    aux1_feat1_name=tense
+    aux1_feat1_value=past
+    aux1_feat1_head=verb
+    aux1_compfeature1_name=form
+    aux1_compfeature1_value=form
+    aux1_stem1_orth=nae
+    aux1_stem1_pred=_nae_v_rel
+  det1_name=definite-article
+    det1_stem1_orth=he
+    det1_stem1_pred=the_q_rel
+    normadp1_stem1_orth=i
+    normadp1_stem1_pred=_in_p_rel
+  normadp1_order=before
+    normadp2_stem1_orth=moe
+    normadp2_stem1_pred=_with_p_rel
+  normadp2_order=before
+  adp1_orth=e
+  adp1_order=before
+    adp1_feat1_name=case
+    adp1_feat1_value=erg
+  adp2_orth=a
+  adp2_order=before
+    adp2_feat1_name=case
+    adp2_feat1_value=abs
+
+section=morphology
+  verb-pc1_name=noun_incorporation
+  verb-pc1_order=suffix
+  verb-pc1_inputs=tverb
+    verb-pc1_is-lrt1_name=incorporated_noun
+      verb-pc1_is-lrt1_lri1_inflecting=yes
+      verb-pc1_is-lrt1_lri1_orth=-ika
+      verb-pc1_is-lrt1_lri1_pred=_fish_n_rel
+      verb-pc1_is-lrt1_lri2_inflecting=yes
+      verb-pc1_is-lrt1_lri2_orth=-kava
+      verb-pc1_is-lrt1_lri2_pred=_kava_n_rel
+      verb-pc1_is-lrt1_lri3_inflecting=yes
+      verb-pc1_is-lrt1_lri3_orth=-manioke
+      verb-pc1_is-lrt1_lri3_pred=_cassava_n_rel
+      verb-pc1_is-lrt1_lri4_inflecting=yes
+      verb-pc1_is-lrt1_lri4_orth=-kita
+      verb-pc1_is-lrt1_lri4_pred=_guitar_n_rel
+      verb-pc1_is-lrt1_lri5_inflecting=yes
+      verb-pc1_is-lrt1_lri5_orth=-sea
+      verb-pc1_is-lrt1_lri5_pred=_chair_n_rel
+
+section=toolbox-import
+
+section=test-sentences
+  sentence1_orth=haka e he siana a he ika
+  sentence2_orth=haka-ika a he siana
+  sentence3_orth=haka-ika e he siana
+  sentence3_star=on
+
+section=gen-options
+
+section=ToolboxLexicon

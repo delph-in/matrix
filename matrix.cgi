@@ -1,4 +1,4 @@
-#!/home/ubuntu/Desktop/thesis-work/matrix/matrix_env/bin/python3
+#!/usr/bin/env python3
 
 # $Id: matrix.cgi,v 1.27 2008-09-09 08:37:52 sfd Exp $
 
